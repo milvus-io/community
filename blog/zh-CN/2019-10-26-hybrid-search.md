@@ -1,4 +1,5 @@
 ---
+id: 2019-10-26-hybrid-search.md
 title: 基于 Milvus 实现向量与结构化数据混合查询
 author: 顾钧
 ---

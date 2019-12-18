@@ -1,4 +1,5 @@
 ---
+id: 2019-12-16-table-partition.md
 title: Milvus 0.6.0新增功能：分区表
 author: 莫毅华
 ---

@@ -1,4 +1,5 @@
 ---
+id: 2019-11-08-data-management.md
 title: Milvus 数据管理系列文章（一）数据管理策略总览
 author: 莫毅华
 ---

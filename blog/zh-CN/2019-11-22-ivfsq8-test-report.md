@@ -1,4 +1,5 @@
 ---
+id: 2019-11-22-ivfsq8-test-report.md
 title: Milvus 测试报告：IVF_SQ8 索引
 author: 陈子睿
 ---

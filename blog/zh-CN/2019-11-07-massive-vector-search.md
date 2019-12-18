@@ -1,4 +1,5 @@
 ---
+id: 2019-11-07-massive-vector-search.md
 title: 大规模向量检索
 author: 莫毅华
 ---

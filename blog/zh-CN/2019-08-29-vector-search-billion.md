@@ -1,4 +1,5 @@
 ---
+id: 2019-08-29-vector-search-billion.md
 title: 如何玩转十亿向量检索（SIFT1B）
 author: 陈室余
 ---

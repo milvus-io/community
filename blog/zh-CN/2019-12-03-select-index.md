@@ -1,4 +1,5 @@
 ---
+id: 2019-12-03-select-index.md
 title: 如何选择索引类型 (一)
 author: 蔡宇东
 ---

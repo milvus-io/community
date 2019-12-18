@@ -1,8 +1,9 @@
 ---
+id: 2019-08-26-vector-search-million.md
 title: Milvus 百万向量搜索（SIFT1B）
 author: 顾钧
 ---
-# Milvus百万向量搜索（SIFT1B）
+# Milvus 百万向量搜索（SIFT1B）
 
 ## 开始之前
 
