@@ -1,0 +1,95 @@
+{
+  "menuList": [
+  {
+      "id": "2019-08-26-vector-search-million.md",
+      "title": "Milvus 百万向量搜索（SIFT1B）",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 0
+    },
+  {
+      "id": "2019-08-29-vector-search-billion.md",
+      "title": "如何轻松玩转十亿向量检索（SIFT1B）",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 1
+    },
+  {
+      "id": "2019-10-26-hybrid-search.md",
+      "title": "向量与结构化数据混合查询",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 2
+    },
+  {
+      "id": "2019-11-07-massive-vector-search.md",
+      "title": "大规模向量检索",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 3
+    },
+  {
+      "id": "2019-11-08-data-management.md",
+      "title": "Milvus 数据管理系列文章（一）数据管理策略总览",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 3
+    },
+  {
+      "id": "2019-11-22-ivfsq8-test-report.md",
+      "title": "Milvus 测试报告：IVF_SQ8 索引",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 4
+    },
+  {
+      "id": "2019-11-25-docker-compilation.md",
+      "title": "在 Docker 容器中编译运行 Milvus",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 5
+    },
+  {
+      "id": "2019-12-03-select-index.md",
+      "title": "如何选择索引类型 (一)",
+      "lang": "cn",
+      "label1": "",
+      "label2": null,
+      "label3": null,
+      "order": 6
+    },
+    {
+      "id": "2019-12-16-table-partition.md",
+      "title": "Milvus 0.6.0新增功能：分区表",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": null,
+      "order": 7
+    },
+    {
+      "id": "2019-12-18-datafile-cleanup.md",
+      "title": "Milvus 数据管理系列文章（二）数据文件清理机制的改进",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": "",
+      "order": 8
+    }
+    
+  ]
+}
