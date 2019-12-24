@@ -72,9 +72,9 @@ IVFFLAT 在 CPU 上的查询时间与 nq、nprobe 正相关，而 IVFFLAT 在 GP
 
 当磁盘或内存、显存资源有限时，IVFSQ8 是一个更好的选择。它通过对向量进行标量量化（Scalar Quantization），能把原始向量中每个 FLOAT（4字节）转为 UINT8（1字节），从而可以把磁盘及内存、显存资源的消耗量减少为原来的1/4~1/3。同样以 sift-1b 数据集为例，生成的 IVFSQ8 索引文件只有140 GB。
 
--  优点：查询速度快，资源占用仅为IVFFLAT的1/4~1/3
+-  优点：查询速度快，资源占用仅为 IVFFLAT 的 1/4~1/3
 
--  缺点：查询召回率比IVFFLAT低
+-  缺点：查询召回率比 IVFFLAT 低
 
 用公开数据集sift-1b（10亿条128维向量）建立 IVFSQ8 索引，并分别只用 CPU 或 GPU 做查询，在不同 nprobe 参数下测得的查询时间随 nq 变化曲线如下图：
 
@@ -86,11 +86,11 @@ IVFSQ8 的查询性能曲线跟 IVFFLAT 非常相似，但索引大小的精减�
 
 ![ivfsq8_recall](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/index_select/ivfsq8_recall.PNG)
 
-对比IVFSQ 和 IVFSQ8 的召回率，IVFSQ8 对原始数据的压缩并未导致明显的查询召回率下降。对应不同的 nprobe，IVFSQ8 的召回率（k = 10）最多只比 IVFFLAT 低1个百分点。
+对比 IVFSQ 和 IVFSQ8 的召回率，IVFSQ8 对原始数据的压缩并未导致明显的查询召回率下降。对应不同的 nprobe，IVFSQ8 的召回率（k = 10）最多只比 IVFFLAT 低1个百分点。
 
 ## IVFSQ8H
 
-IVFSQ8H 是 Milvus 对 IVFSQ8 进行深度优化后新建的一种索引类型。IVFSQ8 索引在 CPU 上查询时，找出距离被查询向量最近的 nprobe 个分桶（Coarse Quantizer）所用的时间占了总查询时间的大部分。IVFSQ8H 把用于 Coarse Quantizer 运算的数据（大小远小于索引数据）单独拷贝到 GPU运算，能大大缩短 Coarse Quantizer 时间。Coarse Quantizer 之后，每个分桶中的查询受配置参数 `gpu_search_threshold` 控制，当nq >= gpu_search_threshold 时，查询在 GPU 上进行；反之在 CPU 上进行。
+IVFSQ8H 是 Milvus 对 IVFSQ8 进行深度优化后新建的一种索引类型。IVFSQ8 索引在 CPU 上查询时，找出距离被查询向量最近的 nprobe 个分桶（Coarse Quantizer）所用的时间占了总查询时间的大部分。IVFSQ8H 把用于 Coarse Quantizer 运算的数据（大小远小于索引数据）单独拷贝到 GPU运算，能大大缩短 Coarse Quantizer 时间。Coarse Quantizer 之后，每个分桶中的查询受配置参数 `gpu_search_threshold` 控制，当 nq >= gpu\_search\_threshold 时，查询在 GPU 上进行；反之在 CPU 上进行。
 
 - 优点：同 IVFSQ8，且查询性能优于IVFSQ8
 
@@ -98,7 +98,7 @@ IVFSQ8H 是 Milvus 对 IVFSQ8 进行深度优化后新建的一种索引类型�
 
 IVFSQ8H 需要 CPU 和 GPU 协同工作，因此必须安装支持 GPU 的 Milvus。
 
-用公开数据集 sift-1b（10亿条128维向量）建立 IVFSQ8H 索引，在 `gpu_search_threshold`=1001 时，在不同 nprobe 参数下测得的查询时间随 nq 变化曲线如下图：
+用公开数据集 sift-1b（10亿条128维向量）建立 IVFSQ8H 索引，在 gpu\_search\_threshold=1001 时，在不同 nprobe 参数下测得的查询时间随 nq 变化曲线如下图：
 
 ![img](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/index_select/ivfsq8h_query.PNG)
 
