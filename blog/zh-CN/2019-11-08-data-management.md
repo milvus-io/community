@@ -12,7 +12,7 @@ author: 莫毅华
 - 表：表可以理解为向量数据的集合，每条向量必须有一个唯一的 ID 来区分，每一条向量以及它的 ID 就是表里的一行数据，每个表里的所有向量必须是同一维度的。
 下面是一张维度为10的表的示意图：
 
-![table](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/table.png)
+![table](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png)
 
 - 索引：建立索引的过程可以理解为通过某种算法把大批向量分成很多簇。索引是要额外使用磁盘空间的。有些类型的索引会对数据压缩或简化，占用量相对较小；有的索引类型占用的空间甚至比原始向量数据都大。
 
@@ -26,7 +26,7 @@ author: 莫毅华
 
 首先我们要把这一亿条向量录入向量数据库中，每条这样的向量要占据2 KB的空间，一亿条就是200 GB，显然想一次性导入不现实，写入磁盘的数据文件也不可能只有一个文件，肯定要分成多个文件。插入性能也是主要性能指标之一，Milvus 允许批量地插入向量，一次性地插入几百甚至几万条向量都是允许的，对于512维的高维向量，通常可以达到每秒三万条的插入速度。
 
-![insert](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/insert.png)
+![insert](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png)
 
 并不是每次插入向量数据都去写磁盘，系统会给每个表在内存里开辟一块空间作为可写缓冲（mutable buffer），数据可以很快速地直接写入可写缓冲里，当积累到一定数据量之后，这个可写缓冲就会被标记为只读的（immutable buffer），并且会自动开辟新的可写缓冲等待新的数据。immutable buffer 会被定时写入磁盘，写入完成后这块内存会被释放，这里的定时写磁盘机制与 Elasticsearch 类似（Elasticsearch 默认是每隔1秒将缓冲数据写入磁盘）。另外，熟悉 LevelDB/RocksDB 的读者能看出来这里面有 MemTable 的影子。
 
@@ -46,11 +46,11 @@ author: 莫毅华
 
 下图是合并之前的检索：
 
-![rawdata1](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/rawdata1.png)
+![rawdata1](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png)
 
 合并成功之后是这样检索：
 
-![rawdata2](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/rawdata2.png)
+![rawdata2](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png)
 
 **（3）索引文件：Index File**
 
@@ -60,7 +60,7 @@ author: 莫毅华
 
 下图是这两种文件格式上的简化表示：
 
-![indexfile](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/indexfile.png)
+![indexfile](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png)
 
 总的来说索引文件包含的信息比原始数据文件要多，不过有的索引类型对向量数据进行了简化或者压缩，所以总的文件 size 会小很多。
 
@@ -68,19 +68,19 @@ author: 莫毅华
 
 系统自动对达到1 GB的原始数据文件建立索引：
 
-![buildindex](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/buildindex.png)
+![buildindex](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png)
 
 1 GB的原始数据文件索引完成：
 
-![indexcomplete](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/indexcomplete.png)
+![indexcomplete](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png)
 
 未达到1 GB的文件不会被自动建立索引，会影响检索速度。如果想得到更好的检索效率，就要对该表进行强制建立索引的操作：
 
-![forcebuild](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/forcebuild.png)
+![forcebuild](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png)
 
 强制建立索引后，检索速度最快：
 
-![indexfinal](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/indexfinal.png)
+![indexfinal](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png)
 
 **（4）数据的信息：Meta Data**
 
@@ -92,7 +92,7 @@ author: 莫毅华
 
 TableFiles 则记录了文件所属的表名（table_id）、文件的索引类型（engine_type）、文件名（file_id）、文件类型（file_type）、文件大小（file_size）、向量行数（row_count）、创建日期（created_on）。
 
-![metadata](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/Metadata.png)
+![metadata](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png)
 
 有了这些元数据，就可以根据元数据来进行各种操作了。
 
@@ -106,7 +106,7 @@ TableFiles 则记录了文件所属的表名（table_id）、文件的索引类�
 
 下图表示了一个有若干文件（包括原始数据文件和索引文件）的表做一次 top-k 查询时，数据在磁盘、内存、显存中发生拷贝，分别在 CPU 和 GPU 进行向量搜索得出最终结果的过程：
 
-![topkresult](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/topkresult.png)
+![topkresult](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png)
 
 查询调度算法对性能的影响极为明显，其基本原则是最大程度地利用硬件资源获得最好的查询性能。以后我们会有专门文章讲解 Milvus 的查询调度机制。这里只是先简单讲解一下。
 
@@ -120,14 +120,14 @@ TableFiles 则记录了文件所属的表名（table_id）、文件的索引类�
 
 调度器中主要有两组任务队列，一个是加载数据的任务队列，另一个是执行搜索队列，它们就像流水线一样处理这些任务。
 
-![queryschedule](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/queryschedule.png)
+![queryschedule](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png)
 
 **（6）结果集的归并：Result Reducer**
 向量检索有两个关键参数：一个是 n，指 n 条目标向量；另一个是 k，指最相似的前 k 个向量。对于一次查询来说，结果集是 n 组 key-value 键值对，每组键值对有 k 对键值。一张表包含了多个文件，不管是原始数据文件还是索引文件，都要单独做一次检索。因此，每个文件检索出 n 组 top-k 结果集。然后，将多个文件的结果集进行归并，得出全表最接近的 top-k。
 
 下图是一个示例，假设某张表有四个索引文件，对其做一个 n=2, k=3的查询。示例中结果集的两列数字，左边代表相似向量的编号，右边代表欧氏距离，我们之前已经知道，欧氏距离越小，意味着和目标向量越相似。调度器先分别对四个文件检索得出四组结果集，然后分别两两归并，经过两轮归并后，得到最终的结果集。
 
-![result](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/data_manage/resultreduce.png)
+![result](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png)
 
 **（7）可能的优化方向**
 

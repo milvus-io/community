@@ -72,13 +72,13 @@ author: 陈子睿
 
 ### GPU 模式（search_resources: gpu0, gpu1）
 
-![query_gpu](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/test_report/ivfsq8_query_time_gpu.png)
+![query_gpu](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/test_report/ivfsq8_query_time_gpu.png)
 
 当 nq 为1000时，在 GPU 模式下查询一条128维向量需要耗时约17毫秒。
 
 ### CPU 模式（search_resources: cpu, gpu0）
 
-![query_cpu](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/test_report/ivfsq8_query_time_gpu.png)
+![query_cpu](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/test_report/ivfsq8_query_time_gpu.png)
 
 当 nq 为1000时，在 GPU 模式下查询一条128维向量需要耗时约27毫秒。
 
@@ -94,11 +94,11 @@ author: 陈子睿
 
 ### GPU 模式（search_resources: gpu0, gpu1）
 
-![recall_gpu](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/test_report/ivfsq8_recall_gpu.png)
+![recall_gpu](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/test_report/ivfsq8_recall_gpu.png)
 
 ### CPU 模式（search_resources: cpu, gpu0）
 
-![recall_cpu](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/test_report/ivfsq8_recall_cpu.png)
+![recall_cpu](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/test_report/ivfsq8_recall_cpu.png)
 
 ### 总结
 

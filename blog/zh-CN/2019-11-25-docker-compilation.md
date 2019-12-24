@@ -22,7 +22,7 @@ GPU 版编译环境的镜像：
 ```
 docker pull milvusdb/milvus-gpu-build-env:v0.6.0-ubuntu18.04
 ```
-![docker_image](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/docker_compile/docker_image.png)
+![docker_image](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/docker_compile/docker_image.png)
 
 我的 docker 做了免 sudo 运行的设置，有些使用者可能需要加 sudo 才能运行。
 
@@ -40,7 +40,7 @@ docker run  -it -p 19530:19530 -d milvusdb/milvus-cpu-build-env:v0.6.0-ubuntu18.
 docker run --runtime=nvidia -it -p 19530:19530 -d milvusdb/milvus-gpu-build-env:v0.6.0-ubuntu1
 ```
 
-![docker_run](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/docker_compile/docker_run_gpu.png)
+![docker_run](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/docker_compile/docker_run_gpu.png)
 
 容器创建出来后，会给出一个容器的 ID，比如上面这个 `d4adxxxxx`。我们现在要进入这个容器里：
 
@@ -49,7 +49,7 @@ docker exec -it [container_id] bash
 ```
 这里的 `container_id` 就换成上一条命令看到的那个 `d4adxxxxx`，我们就进入了容器内部。
 
-![docker_exec](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/docker_compile/docker_exec.png)
+![docker_exec](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/docker_compile/docker_exec.png)
 
 ## 步骤3 在容器中下载 Milvus 源码并进行编译
 
@@ -104,7 +104,7 @@ cd ./milvus-0.6.0/core
 ./start_server.sh
 ```
 
-![server_start](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/docker_compile/server_start.png)
+![server_start](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/docker_compile/server_start.png)
 
 这个 `start_server.sh` 指定 `core/conf` 目录下的 `server_config.yaml` 和 `log_config.conf` 作为配置启动 Milvus。
 
@@ -122,7 +122,7 @@ pymilvus 的主页上有一张 Milvus 和 pymilvus 版本配对的表格，目�
 
 python 的环境都没问题的话，就可以写测试脚本了，比如可以在 pycharm 里写个脚本在 Milvus 里创建一张表，运行之后就能看到返回的成功信息：
 
-![connect_py](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/docker_compile/connect_py.png)
+![connect_py](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/docker_compile/connect_py.png)
 
 
 
