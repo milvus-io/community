@@ -38,7 +38,7 @@
     },
   {
       "id": "2019-11-08-data-management.md",
-      "title": "Milvus 数据管理系列文章（一）数据管理策略总览",
+      "title": "Milvus 数据管理系列（一）：数据管理策略",
       "lang": "cn",
       "label1": "",
       "label2": null,
@@ -83,13 +83,21 @@
     },
     {
       "id": "2019-12-18-datafile-cleanup.md",
-      "title": "Milvus 数据管理系列文章（二）数据文件清理机制的改进",
+      "title": "Milvus 数据管理系列（二）：数据文件清理机制的改进",
       "lang": "cn",
       "label1": "",
       "label2": "",
       "label3": "",
       "order": 8
+    },
+    {
+      "id": "2019-12-24-view-metadata.md",
+      "title": "Milvus 数据管理系列（三）：元数据管理 - 查看元数据",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": "",
+      "order": 9
     }
-    
   ]
 }
