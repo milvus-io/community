@@ -98,6 +98,15 @@
       "label2": "",
       "label3": "",
       "order": 9
+    },
+    {
+      "id": "2019-12-27-meta-table.md",
+      "title": "Milvus 数据管理系列（四）：元数据管理 - 元数据表的字段",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": "",
+      "order": 10
     }
   ]
 }
