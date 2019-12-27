@@ -19,7 +19,7 @@ author: 顾钧
 ## 解决方案
 
 Milvus 是一款向量搜索引擎，可以轻松实现针对海量向量的高性能检索。结合传统关系型数据库如 PostgreSQL ，用其存储 Milvus 对向量的唯一标识 ID 和向量的对应属性。将 Milvus 向量检索结果，在 PostgreSQL 中进一步查询，就能快速得出混合查询结果，具体解决方案如下：
-![hybrid_search](assets/hybrid_search.png)
+![hybrid_search](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hybrid_search.png)
 
 **特征向量存储**
 

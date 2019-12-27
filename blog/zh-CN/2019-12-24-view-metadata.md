@@ -47,7 +47,7 @@ SELECT \* FROM Tables
 ```sql
 SELECT \* FROM TableFiles
 ```
-![sqlite3](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/meta_manage/sqlite3.png)
+![sqlite3](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/sqlite3.png)
 
 ### 使用 MySQL 查看
 
@@ -73,4 +73,4 @@ mysql -h127.0.0.1 -uroot -p123456 -Dmilvus
 
 这样，我们可以用 SQL 语句来查询元数据信息了：
 
-![mysql](https://raw.githubusercontent.com/milvus-io/www.milvus.io/master/website/blog/assets/meta_manage/mysql.png)
+![mysql](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/mysql.png)

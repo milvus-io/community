@@ -80,7 +80,7 @@ $ python3 milvus_bootcamp.py --table=ann_1m_sq8 --index=ivfsq8 -t
 ```
 
 脚本会创建一张名为 `ann_1m_sq8` 的表，它采用的索引类型为 `ivfsq8`  ，并导入数据：
-![insert](assets/data_insert.png)
+![insert](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_insert.png)
 上述过程完成之后，运行如下脚本以查看 Milvus 中存在的的表，以及表中的向量条数：
 
 ```bash
@@ -138,7 +138,7 @@ $ python3 milvus_bootcamp.py --table=ann_1m_sq8 -q 10 -k 20 -s
 
 上述脚本运行完成后，将会生成一个名为 `accuracy_results` 的文件夹，在该文件夹下面会有一个名为 `10_20_result.csv` 的文件，文件里的内容如下图所示：
 
-![search_accuracy](assets/accuracy.png)
+![search_accuracy](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/accuracy.png)
 - `nq`: 第几个查询向量
 - `topk`: 查询该向量的前 k 个相似的向量
 - `total_time`: 整个查询所用的总时间，单位：秒
@@ -159,7 +159,7 @@ $ python3 milvus_bootcamp.py --table=ann_1m_sq8 -s
 
 运行结束后，将会生成一个名为 `performance_results` 的文件夹，在该文件夹下会有一个名为 `xxx_results.csv` 的文件，`xxx` 代表执行命令的时间。文件内容如下图所示（未完全展示）：
 
-![search_performance](assets/performance.png)
+![search_performance](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/performance.png)
 - `nq`: 要查询的向量条数
 - `topk`: 查询某个向量的前 k 个相似的向量
 - `total_time`: 查询 nq个向量的前 k 个相似向量一共花费的时间，单位：秒
