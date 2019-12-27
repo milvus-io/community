@@ -43,7 +43,7 @@ Tables 的各个字段类型及其简介如下表所示：
 | `partition_tag` | string   | 分区表的标签（tag），不能是空字符串 |
 | `version`       | string   | 储存 Milvus 的版本号，暂时没啥用    |
 
-#### **TableFiles 表的字段**
+## TableFiles 表的字段
 
 下面这个例子里有两个文件，它们都属于 table_1 向量表。第一个文件的索引类型（engine_type）是1（FLAT），文件状态（file_type）是 7（备份文件），文件大小是 411200113 字节，向量行数是 20 万条。第二个文件除了索引类型是 2（IVFLAT），文件状态为 3（索引文件），它实际上是第一个文件的索引，后面我们会介绍。
 
