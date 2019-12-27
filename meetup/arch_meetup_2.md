@@ -17,7 +17,7 @@ author: 金海，杨杰
 > 讲师介绍：金海，Milvus 项目负责人，ZILLIZ 产品研发总监。
 
 - [视频 | Arch Meetup No.2: Milvus 的总体架构](https://www.bilibili.com/video/av79955956/)
-- [PPT 链接](https://raw.githubusercontent.com/milvus-io/community/master/meetup/assets/meetup2/arch-meetup-2-金海-Milvus异构加速向量搜索.pdf)
+- [PPT 链接](https://github.com/milvus-io/community/blob/master/meetup/slides/arch-meetup-2-金海-Milvus异构加速向量搜索.pdf)
 
 本次的分享会，金海主要就以下方面对 Milvus 项目进行了介绍:
 
@@ -32,7 +32,7 @@ author: 金海，杨杰
 
 > 讲师介绍：杨杰，云从科技中台产品中心技术总监。
 
-- [PPT 链接](https://raw.githubusercontent.com/milvus-io/community/master/meetup/assets/meetup2/arch-meetup-2-杨杰-Milvus与云从一人一档产品.pdf)
+- [PPT 链接](https://github.com/milvus-io/community/blob/master/meetup/slides/arch-meetup-2-杨杰-Milvus与云从一人一档产品.pdf)
 
 杨杰分享的主题是《Milvus 与云从一人一档产品》，主要内容包括 Milvus 在智慧城市类场景的深度实践，从而帮助云从拓展技术边界，加深产品厚度，提升研发效率。
 
