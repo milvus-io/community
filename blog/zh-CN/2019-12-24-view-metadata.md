@@ -74,3 +74,10 @@ mysql -h127.0.0.1 -uroot -p123456 -Dmilvus
 这样，我们可以用 SQL 语句来查询元数据信息了：
 
 ![mysql](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/mysql.png)
+
+## 相关博客
+
+- [Milvus 数据管理系列（一）：数据管理策略](2019-11-08-data-management.md)
+- [Milvus 数据管理系列（二）：数据文件清理机制的改进](2019-12-24-datafile-cleanup.md)
+- [Milvus 数据管理系列（四）：元数据表的字段](2019-12-27-meta-table.md)
+
