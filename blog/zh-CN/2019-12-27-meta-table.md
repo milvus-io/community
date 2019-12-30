@@ -1,5 +1,5 @@
 ---
-id: 2019-12-24-view-metadata.md
+id: 2019-12-27-meta-table.md
 title: Milvus 数据管理系列（四）：元数据管理 - 元数据表的字段
 author: 莫毅华
 ---

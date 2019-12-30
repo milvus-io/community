@@ -22,7 +22,7 @@ author: 顾钧
 | 内存     | 8 GB DDR4                       |
 | 硬盘    | NVMe SSD 256 GB                 |
 
-- 请按说明安装 Milvus：[快速开始](https://github.com/milvus-io/bootcamp/blob/master/docs/milvus101/quickstart.md)
+- 请按说明[安装 Milvus](https://github.com/milvus-io/docs/blob/branch-0.3.1/QuickStart.md)
 
 
 ## 1、准备测试数据和脚本
@@ -71,7 +71,7 @@ $ docker restart <container id>
 
 ## 3、数据导入
 
-导入数据之前，首先确保 `bvecs_data` 文件夹与测试脚本 `milvus_bootcamp.py` 都放在 `milvus_sift1m` 目录下，然后确认 Milvus 已经正常启动。（ Milvus 安装及启动方法参见：[Milvus 快速上手](../milvus101/quickstart.md) ）
+导入数据之前，首先确保 `bvecs_data` 文件夹与测试脚本 `milvus_bootcamp.py` 都放在 `milvus_sift1m` 目录下，然后确认 Milvus 已经正常启动。
 
 进入 milvus_sift1m 目录，运行如下脚本：
 
@@ -166,3 +166,4 @@ $ python3 milvus_bootcamp.py --table=ann_1m_sq8 -s
 - `avg_time`: 查询一个向量的 topk 个相似向量的平均时间，单位：秒
 
 > **注意**: 1. `milvus_bootcamp.py` 中设置的待测试的 `nq` 为：1、50、100、150、200、250、300、350、400、450、500、550、600、650、700、750、800。对于每一个 nq，`milvus_bootcamp.py` 设置的 `topk` 为：1、20、50、100、300、500、800、1000。<br/> 2. Milvus 启动后，进行第一次向量检索时，需要花部分时间加载数据到内存。<br/> 3. 如果两次测试间隔一段时间，Intel CPU可能降频至基础频率。性能测试时尽量连续运行测试案例。第一个测试案例可以运行两次，取第二次的运行时间。
+
