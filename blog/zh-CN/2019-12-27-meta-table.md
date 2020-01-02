@@ -67,6 +67,6 @@ TableFiles的各个字段类型及其简介如下表所示：
 ## 相关博客
 
 - [Milvus 数据管理系列（一）：数据管理策略](2019-11-08-data-management.md)
-- [Milvus 数据管理系列（二）：数据文件清理机制的改进](2019-12-24-datafile-cleanup.md)
+- [Milvus 数据管理系列（二）：数据文件清理机制的改进](2019-12-18-datafile-cleanup.md)
 - [Milvus 数据管理系列（三）：怎样查看元数据](2019-12-24-view-metadata.md)
 

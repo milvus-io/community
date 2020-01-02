@@ -78,6 +78,6 @@ mysql -h127.0.0.1 -uroot -p123456 -Dmilvus
 ## 相关博客
 
 - [Milvus 数据管理系列（一）：数据管理策略](2019-11-08-data-management.md)
-- [Milvus 数据管理系列（二）：数据文件清理机制的改进](2019-12-24-datafile-cleanup.md)
+- [Milvus 数据管理系列（二）：数据文件清理机制的改进](2019-12-18-datafile-cleanup.md)
 - [Milvus 数据管理系列（四）：元数据表的字段](2019-12-27-meta-table.md)
 
