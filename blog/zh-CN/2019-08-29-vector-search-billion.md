@@ -103,11 +103,11 @@ $$ 单条向量查询平均时间 = \frac {Milvus 批量查询总时间}{query_r
 
 | 数据规模                                                     | 单条向量查询时间(s) | 批量查询平均时间(s) |
 | ------------------------------------------------------------ | ------------------- | ------------------- |
-| [ANN_SIFT一百万](https://github.com/milvus-io/bootcamp) | 0.0029              | 0.3-1.4             |
-| [ANN_SIFT一亿](https://github.com/milvus-io/bootcamp) | 0.092               | 0.0078~0.010        |
+| [ANN_SIFT一百万](https://github.com/milvus-io/bootcamp/tree/0.3.1) | 0.0029              | 0.3-1.4             |
+| [ANN_SIFT一亿](https://github.com/milvus-io/bootcamp/tree/0.3.1) | 0.092               | 0.0078~0.010        |
 | ANN_SIFT十亿                                                 | 1.3~1.5             | 0.03~0.08           |
 
-> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 * 2的环境下进行。
+> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 * 2的环境下进行。
 
 ## 总结
 
@@ -115,7 +115,7 @@ $$ 单条向量查询平均时间 = \frac {Milvus 批量查询总时间}{query_r
 
 从使用角度来看， Milvus 特征向量数据库不需要考虑复杂数据在不同系统间的转换和迁移，只关心向量数据，它支持不同 AI 模型所训练出的特征向量，同时由于采用了 GPU/CPU 异构带来的超高算力，可以在单机实现十亿向量的高性能检索。
 
-如果您想尝试自己动手进行海量向量检索，请访问 [Milvus 在线训练营](https://github.com/milvus-io/bootcamp)，手把手教您如何进行海量向量检索。
+如果您想尝试自己动手进行海量向量检索，请访问 [Milvus 在线训练营](https://github.com/milvus-io/bootcamp/tree/0.3.1)，手把手教您如何进行海量向量检索。
 
 Milvus 正在建设开发者社区，如果对 Milvus 的技术讨论和试用感兴趣，欢迎加入我们的 [Slack channel](https://milvusio.slack.com/join/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk)，进群讨论。
 
