@@ -1,6 +1,6 @@
 ---
 id: 2019-12-24-view-metadata.md
-title: Milvus Metadata Management (1): How to View Metadata
+title: Milvus Metadata Management (1) How to View Metadata
 author: Yihua Mo
 ---
 

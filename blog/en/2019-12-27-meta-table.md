@@ -1,6 +1,6 @@
 ---
 id: 2019-12-27-meta-table.md
-title: Milvus Metadata Management (2): Fields in the Metadata Table
+title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 ---
 
