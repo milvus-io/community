@@ -31,7 +31,7 @@ Milvus 是一款向量搜索引擎，可以轻松实现针对海量向量的高�
 
 ## Milvus 混合查询
 
-至此，你可能会有疑问，为什么不直接将特征向量和对应属性存储在关系型数据库中呢？接下来将用 Milvus 对 [ANN_SIFT1B](http://corpus-texmex.irisa.fr/) 中的一亿数据进行测试，为你解答，[参考链接](https://github.com/milvus-io/bootcamp/blob/master/solutions/hybrid_search/readme.md)。
+至此，你可能会有疑问，为什么不直接将特征向量和对应属性存储在关系型数据库中呢？接下来将用 Milvus 对 [ANN_SIFT1B](http://corpus-texmex.irisa.fr/) 中的一亿数据进行测试，为你解答，[参考链接](https://github.com/milvus-io/bootcamp/blob/0.3.1/solutions/hybrid_search/readme.md)。
 
 **1. 特征向量数据集**
 
@@ -89,7 +89,7 @@ cur.execute(sql)
 
 本示范实现了基于 Milvus 的混合查询。在一亿特征向量数据集的情况下，混合查询时间不超过 77 ms 。
 
-并且基于 Milvus 易管易用的特性，通过参考 [ Milvus 混合查询方案](https://github.com/milvus-io/bootcamp/tree/master/solutions/hybrid_search) 所提供的工具，能轻松实现向量和结构化数据的混合查询，更好的支持业务需求。
+并且基于 Milvus 易管易用的特性，通过参考 [ Milvus 混合查询方案](https://github.com/milvus-io/bootcamp/tree/0.3.1/solutions/hybrid_search) 所提供的工具，能轻松实现向量和结构化数据的混合查询，更好的支持业务需求。
 
 Milvus 正在建设线上开发者社区，如果对 Milvus 的技术讨论和试用感兴趣，欢迎加入我们的 [Slack 频道](https://milvusio.slack.com/join/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk)，进群沟通。
 
