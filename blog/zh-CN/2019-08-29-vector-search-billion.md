@@ -103,11 +103,11 @@ $$ 单条向量查询平均时间 = \frac {Milvus 批量查询总时间}{query_r
 
 | 数据规模                                                     | 单条向量查询时间(s) | 批量查询平均时间(s) |
 | ------------------------------------------------------------ | ------------------- | ------------------- |
-| [ANN_SIFT一百万](https://github.com/milvus-io/bootcamp/blob/master/docs/labs/lab1_sift1b_1m.md) | 0.0029              | 0.3-1.4             |
-| [ANN_SIFT一亿](https://github.com/milvus-io/bootcamp/blob/master/docs/labs/lab2_sift1b_100m.md) | 0.092               | 0.0078~0.010        |
+| [ANN_SIFT一百万](https://github.com/milvus-io/bootcamp) | 0.0029              | 0.3-1.4             |
+| [ANN_SIFT一亿](https://github.com/milvus-io/bootcamp) | 0.092               | 0.0078~0.010        |
 | ANN_SIFT十亿                                                 | 1.3~1.5             | 0.03~0.08           |
 
-> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/blob/master/docs/labs/lab1_sift1b_1m.md) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/blob/master/docs/labs/lab2_sift1b_100m.md) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 * 2的环境下进行。
+> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 * 2的环境下进行。
 
 ## 总结
 
