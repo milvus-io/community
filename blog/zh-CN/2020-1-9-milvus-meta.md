@@ -1,10 +1,10 @@
 ---
 id: 2019-12-27-meta-table.md
-title: Milvus 数据管理系列（五）：Milvus 如何通过元数据管理数据文件
+title: Milvus 数据管理系列（五）：如何通过元数据管理数据文件
 author: 莫毅华
 ---
 
-# Milvus 数据管理系列（五）：Milvus 如何通过元数据管理数据文件
+# Milvus 数据管理系列（五）：如何通过元数据管理数据文件
 
 > 作者：莫毅华
 >
