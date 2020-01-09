@@ -1,6 +1,6 @@
 # Communication
 
-The Milvus community abides by the [Milvus code of conduct](CODE_OF_CONDUCT.md) on all communication platforms listed below.
+The Milvus community abides by the [Milvus code of conduct](../CODE_OF_CONDUCT.md) on all communication platforms listed below.
 
 ## Slack
 
