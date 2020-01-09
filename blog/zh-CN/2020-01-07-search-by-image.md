@@ -58,8 +58,9 @@ VGG 的结构简单，但是所包含的权重数目却很大，达到了 139,35
 
 train API 的参数如下表所示：
 
-||~methods||name||type||
-||POST||File||string||
+| Methods | Name | Type |
+|---------|------|------|
+| POST    | File | String|
 
 在进行相似图片检索之前，需要将图片库加载进 Milvus，此时调用 train API 将图片的路径传入系统。因为 Milvus 仅支持向量数据的检索，故而需要将图片转化为特征向量，转化过程主要利用 Python 调用 VGG 模型来实现：
 
@@ -91,8 +92,9 @@ count API 的 methods 为 POST，调用时也不需要传入其他参数。count
 
 search API 的参数如下表所示：
 
-||~methods||Num||file||
-||POST||topk (int)||image file||
+| Methods | Num | File |
+|---------|------|------|
+| POST    | Topk (int) | Image File|
 
 当你选择好一张图片进行相似图片检索时，就可以调用 search API。当把待搜索的图片传入系统时，首先还是调用 VGG 模型将图片转化为向量：
 
