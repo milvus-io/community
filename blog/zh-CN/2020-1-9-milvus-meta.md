@@ -1,5 +1,5 @@
 ---
-id: 2019-12-27-meta-table.md
+id: 2020-1-9-milvus-meta.md
 title: Milvus 数据管理系列（五）：如何通过元数据管理数据文件
 author: 莫毅华
 ---
