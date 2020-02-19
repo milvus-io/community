@@ -32,14 +32,14 @@ Milvus 在进行搜索时，会调用 faiss 库的低层函数进行向量距离
 - 直接使用 CPU 指令集
 
 根据我们的经验，使用 CPU 指令集性能会好一些，但在相同的搜索条件下，有可能出现前后两次耗时相差两倍这样的情况，比如前一次0.1秒，后一次0.2秒，我们把这叫做性能抖动。用 OpenBLAS 库性能稍差，尤其在 nq 比较小的时候，性能会比 CPU 指令集慢（有可能慢两倍以上），但是性能不会出现抖动，相同搜索条件下的多次查询耗时基本相同。
+
 具体要使用哪种计算方式则取决于 `use_blas_threshold` 的值以及搜索参数 nq（目标向量条数），如果 nq 大于等于 `use_blas_threshold`，使用 OpenBLAS 库。如果 nq 小于 `use_blas_threshold`，使用CPU 指令集。
 
 以下是使用公开数据集 sift50m 针对 `use_blas_threshold` 做的一个测试，索引类型为 SQ8：
 
 ![image2](../assets/milvus_manage/config_blog_pic2.png)
 
-从上表可以看出，在CPU模式下，如果 `use_blas_threshold` 的值设置为1100，所有测试nq都小于该值，使用了 CPU 指令集，其查询性能基本上是线性增长的，并且性能较好。当 `use_blas_threshold` 设为500时，则可以明显地观察到，在 nq=500 之前的测试结果和1100那组相近，nq 大于500之后因为使用了 OpenBLAS 库，性能慢了数倍；
-在纯GPU模式下，因为计算在 GPU 中进行，与 CPU 无关，因此 `use_blas_threshold` 的值不会对搜索性能产生影响。
+从上表可以看出，在CPU模式下，如果 `use_blas_threshold` 的值设置为1100，所有测试nq都小于该值，使用了 CPU 指令集，其查询性能基本上是线性增长的，并且性能较好。当 `use_blas_threshold` 设为500时，则可以明显地观察到，在 nq=500 之前的测试结果和1100那组相近，nq 大于500之后因为使用了 OpenBLAS 库，性能慢了数倍；在纯GPU模式下，因为计算在 GPU 中进行，与 CPU 无关，因此 `use_blas_threshold` 的值不会对搜索性能产生影响。
  
 ## 3. `gpu_cache_capacity`
 
@@ -49,7 +49,8 @@ Milvus 在进行搜索时，会调用 faiss 库的低层函数进行向量距离
 
 在GPU模式下，实际上也可以使用 CPU 进行查询，具体使用那种设备是由 `gpu_search_threshold` 以及 nq 共同决定的。如果 nq 大于等于 `gpu_search_threshold`，使用 GPU 进行搜索；如果 nq 小于`gpu_search_threshold`，使用 CPU 进行搜索。为什么在 GPU 模式下也提供了 CPU 计算的选项呢？这是由于利用GPU进行搜索时需要将数据从内存拷贝至显存，这步需要耗费一些时间。当 nq 较小时，显卡并行计算的优势发挥不出来，使得数据拷贝的时间占比较大，总体性能反而比 CPU 计算要慢。
          
-以下是使用公开测试数据集 sift50m 针对 `gpu_search_threshold` 的一个测试，索引类型为SQ8：
+
+以下是使用公开测试数据集 sift50m 针对 `gpu_search_threshold` 的一个测试，索引类型为 SQ8：
 
 ![image3](../assets/milvus_manage/config_blog_pic3.png)
 
