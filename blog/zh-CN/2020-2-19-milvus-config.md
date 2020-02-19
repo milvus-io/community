@@ -3,7 +3,7 @@
 在[如何选择索引类型 (一)](2019-12-03-select-index.md)中，针对 Milvus 0.5.3 版本和不同用户需求提出了关于选择索引类型的意见。本文针对 Milvus 0.6.0 版本的一些关键系统配置项进行详细说明与测试验证，并给予如何设置的建议。
 系统配置项是 Milvus 在启动服务时进行的参数设置，需要在 Milvus docker 镜像启动前对 `server_config.yaml` 文件进行修改。下面我们详细说明几个影响性能的重要参数。
 
-1. `cpu_cache_capacity`
+## 1. `cpu_cache_capacity`
 
 `cpu_cache_capacity` 用于限定 Milvus 运行过程中用于缓存向量（索引）数据的内存量，其单位为 GB。设置该值时要根据数据量考虑。数据量怎样计算呢？有两种类型的数据：
 
@@ -19,12 +19,12 @@
 以下是使用公开数据集 sift50m 针对 `cpu_cache_capacity` 的一个测试，索引类型为 SQ8。这个数据集有5000万条向量，向量维度是128。我们建立了 SQ8 索引，所以查询所需的数据量为 `5000万*128*4*0.3=7.5 GB`。我们分别将 `cpu_cache_capacity` 设为4GB，10GB，50GB，使用相同的查询参数来查询，性能对比如下表：
  
  
-![image1](assets/milvus_manage/config_blog_pic1.png)
+![image1](../assets/milvus_manage/config_blog_pic1.png)
  
  
 从上表可以看出，在 CPU 和 GPU 模式下，对于大于索引大小的 `cpu_cache_capacity` 的值（10 G 和 50 G），其搜索速度基本一致；而当该参数的值设置为 4 G 时，由于内存数据被频繁置换，搜索性能降低了两个数量级。
  
-2. `use_blas_threshold`
+## 2. `use_blas_threshold`
 
 Milvus 在进行搜索时，会调用 faiss 库的低层函数进行向量距离的计算。对于使用 CPU 的计算，faiss 库提供了两种计算方式：
 
@@ -36,22 +36,22 @@ Milvus 在进行搜索时，会调用 faiss 库的低层函数进行向量距离
 
 以下是使用公开数据集 sift50m 针对 `use_blas_threshold` 做的一个测试，索引类型为 SQ8：
 
-![image2](assets/milvus_manage/config_blog_pic2.png)
+![image2](../assets/milvus_manage/config_blog_pic2.png)
 
 从上表可以看出，在CPU模式下，如果 `use_blas_threshold` 的值设置为1100，所有测试nq都小于该值，使用了 CPU 指令集，其查询性能基本上是线性增长的，并且性能较好。当 `use_blas_threshold` 设为500时，则可以明显地观察到，在 nq=500 之前的测试结果和1100那组相近，nq 大于500之后因为使用了 OpenBLAS 库，性能慢了数倍；
 在纯GPU模式下，因为计算在 GPU 中进行，与 CPU 无关，因此 `use_blas_threshold` 的值不会对搜索性能产生影响。
  
-3. `gpu_cache_capacity`
+## 3. `gpu_cache_capacity`
 
 `gpu_cache_capacity` 是显存中用于驻留搜索数据的缓存空间大小。一方面，该值不能超过显存总量，一般来说设置为显存的50%到70%之间比较合适；另一方面，该值应当大于搜索所需的数据文件的大小，即创建表时`index_file_size` 参数的大小，如果建立了 SQ8 索引，由前面所述，这种索引占用的空间是原始向量数据的大约30%，所以该值也可以相应设小一些。
  
-4. `gpu_search_threshold`
+## 4. `gpu_search_threshold`
 
 在GPU模式下，实际上也可以使用 CPU 进行查询，具体使用那种设备是由 `gpu_search_threshold` 以及 nq 共同决定的。如果 nq 大于等于 `gpu_search_threshold`，使用 GPU 进行搜索；如果 nq 小于`gpu_search_threshold`，使用 CPU 进行搜索。为什么在 GPU 模式下也提供了 CPU 计算的选项呢？这是由于利用GPU进行搜索时需要将数据从内存拷贝至显存，这步需要耗费一些时间。当 nq 较小时，显卡并行计算的优势发挥不出来，使得数据拷贝的时间占比较大，总体性能反而比 CPU 计算要慢。
          
 以下是使用公开测试数据集 sift50m 针对 `gpu_search_threshold` 的一个测试，索引类型为SQ8：
 
-![image3](assets/milvus_manage/config_blog_pic3.png)
+![image3](../assets/milvus_manage/config_blog_pic3.png)
 
 从上表可以看出，当 `gpu_search_threshold` 设置为1时，Milvus 为纯 GPU 模式，完全利用 GPU 进行搜索，nq 从1到1000，耗时基本相同，这是因为 GPU 的并行度很高，1000条向量可以同时查询，跟1条向量花费的时间差不多；当参数值为500时，可以看到 nq 小于500时是利用 CPU 进行搜索，因为 nq 从1到400的耗时是线性递增的，这是因为 CPU 没有那么多核，无法同时查询几百条向量，而nq大于等于500时利用 GPU 进行搜索，耗时变化很小；当参数值为1100时，完全利用 CPU 进行搜索，nq 从1到1000的耗时都是呈线性递增的态势。
  
