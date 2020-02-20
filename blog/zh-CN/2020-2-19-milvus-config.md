@@ -57,7 +57,7 @@ Milvus 在进行搜索时，会调用 faiss 库的低层函数进行向量距离
  
 ## 4. `gpu_search_threshold`
 
-在GPU模式下，实际上也可以使用 CPU 进行查询，具体使用那种设备是由 `gpu_search_threshold` 以及 nq 共同决定的。如果 nq 大于等于 `gpu_search_threshold`，使用 GPU 进行搜索；如果 nq 小于`gpu_search_threshold`，使用 CPU 进行搜索。为什么在 GPU 模式下也提供了 CPU 计算的选项呢？这是由于利用GPU进行搜索时需要将数据从内存拷贝至显存，这步需要耗费一些时间。当 nq 较小时，显卡并行计算的优势发挥不出来，使得数据拷贝的时间占比较大，总体性能反而比 CPU 计算要慢。
+在GPU模式下，实际上也可以使用 CPU 进行查询，具体使用哪种设备是由 `gpu_search_threshold` 以及 nq 共同决定的。如果 nq 大于等于 `gpu_search_threshold`，使用 GPU 进行搜索；如果 nq 小于`gpu_search_threshold`，使用 CPU 进行搜索。为什么在 GPU 模式下也提供了 CPU 计算的选项呢？这是由于利用GPU进行搜索时需要将数据从内存拷贝至显存，这步需要耗费一些时间。当 nq 较小时，显卡并行计算的优势发挥不出来，使得数据拷贝的时间占比较大，总体性能反而比 CPU 计算要慢。
          
 
 以下是使用公开测试数据集 sift50m 针对 `gpu_search_threshold` 的一个测试，索引类型为 SQ8：
