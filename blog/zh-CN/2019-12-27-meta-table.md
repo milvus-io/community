@@ -12,7 +12,7 @@ author: 莫毅华
 
 ## Tables 表的字段
 
-我们以 SQLite 为例。下图显示的打印结果是 0.5.0 版本的示例。0.6.0 版本比 0.5.0 多了几个字段，后面再介绍。这个 Tables 里有一行记录，表示有一张向量表，它的表名叫 table_1，是 512 维度的，建表时设置的index_file_size 是1024 MB，索引类型（engine_type）是 1（FLAT），nlist 是 16384，metric_type 是 1（欧氏距离L2）。另外还有字段 id 是该表的内部唯一标识，state 是表的状态 0（正常），created_on 是创建的时间，flag 是给内部使用预留的标志位信息。
+我们以 SQLite 为例。下图显示的打印结果是 0.5.0 版本的示例。0.6.0 版本比 0.5.0 多了几个字段，后面再介绍。这个 Tables 里有一行记录，表示有一张向量表，它的表名叫 `table_1`，是 512 维度的，建表时设置的 `index_file_size` 是1024 MB，索引类型（`engine_type`）是 1（FLAT），nlist 是 16384，`metric_type` 是 1（欧氏距离L2）。另外还有字段 id 是该表的内部唯一标识，state 是表的状态 0（正常），`created_on` 是创建的时间，flag 是给内部使用预留的标志位信息。
 
 ![tables](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png)
 
@@ -31,7 +31,7 @@ Tables 的各个字段类型及其简介如下表所示：
 | `nlist`           | int32    | 建立索引时，每个数据文件里的向量被分为多少个’簇‘，默认值为 16384 |
 | `metric_type`     | int32    | 计算向量距离的方式，1 是欧氏距离（L2），2 代表内积（inner product） |
 
-在 0.6.0 版本里我们增加了分区功能，因此多了几个字段，如下图所示。这里我们看到多了 owner_table，partition_tag 和 version 几个字段。这个示例里面有一张向量表，表名叫 table_1，它有一个分区叫 table_1_p1。可以看到分区在内部实际上是以一张向量表的形式存在的，partition_name 实际上对应于 table_id，分区表的参数都继承自它的母表，owner_table 字段记录了母表的名字，partition_tag 则是分区表的标签（tag）。
+在 0.6.0 版本里我们增加了分区功能，因此多了几个字段，如下图所示。这里我们看到多了 `owner_table`，`partition_tag` 和 `version` 几个字段。这个示例里面有一张向量表，表名叫 `table_1`，它有一个分区叫 `table_1_p1`。可以看到分区在内部实际上是以一张向量表的形式存在的，`partition_name` 实际上对应于 `table_id`，分区表的参数都继承自它的母表，`owner_table` 字段记录了母表的名字，`partition_tag` 则是分区表的标签（tag）。
 
 ![tables_new](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png)
 
@@ -45,7 +45,7 @@ Tables 的各个字段类型及其简介如下表所示：
 
 ## TableFiles 表的字段
 
-下面这个例子里有两个文件，它们都属于 table_1 向量表。第一个文件的索引类型（engine_type）是1（FLAT），文件状态（file_type）是 7（备份文件），文件大小是 411200113 字节，向量行数是 20 万条。第二个文件除了索引类型是 2（IVFLAT），文件状态为 3（索引文件），它实际上是第一个文件的索引，后面我们会介绍。
+下面这个例子里有两个文件，它们都属于 `table_1` 向量表。第一个文件的索引类型（`engine_type`）是1（FLAT），文件状态（`file_type`）是 7（备份文件），文件大小是 411200113 字节，向量行数是 20 万条。第二个文件除了索引类型是 2（IVFLAT），文件状态为 3（索引文件），它实际上是第一个文件的索引，后面我们会介绍。
 
 ![tablefiles](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png)
 
