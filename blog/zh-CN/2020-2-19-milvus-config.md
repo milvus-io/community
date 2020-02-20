@@ -72,6 +72,6 @@ Milvus 在进行搜索时，会调用 faiss 库的低层函数进行向量距离
 - `cpu_cache_capacity`：该值大于搜索所需的数据量大小时，搜索性能最好。设值不能超过系统内存。
 - `use_blas_threshold`：CPU 模式时，nq 小于该值时搜索性能更好，但性能有抖动；nq 大于等于该值时搜索性能略差，但搜索耗时比较稳定。在使用 GPU 计算时，该值对性能没有影响。
 - `gpu_cache_capacity`：一般来说设置为显存的50%到70%之间比较合适。但要保证其值大于每个数据文件的大小。
-- `gpu_search_threshold`：与 nq 一起决定了是使用CPU计算还是使用 GPU 计算，nq 较小时用CPU计算性能较好，nq 较大时用 GPU 计算性能较好，因此综合考虑根据数据集的规模和硬件性能，使用 `gpu_search_threshold` 来确定使用哪种硬件来计算。
+- `gpu_search_threshold`：与 nq 一起决定了是使用 CPU 计算还是使用 GPU 计算，nq 较小时用 CPU 计算性能较好，nq 较大时用 GPU 计算性能较好，因此综合考虑根据数据集的规模和硬件性能，使用 `gpu_search_threshold` 来确定使用哪种硬件来计算。
 
 
