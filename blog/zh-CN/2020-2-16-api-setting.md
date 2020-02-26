@@ -18,7 +18,7 @@ author: 莫毅华
 
 Milvus 在进行搜索时，是依次对每个索引文件进行搜索。根据我们的经验，当 `index_file_size` 从1024改为2048时，搜索性能会有30%～50%左右的提升。但要注意如果该值设的过大，有可能导致大文件无法加载进显存（甚至内存），比如显存只有2 GB，该参数设为3 GB，显存明显放不下。常用的 `index_file_size` 为1024 MB 和2048 MB。
 
-以下是使用公开测试数据集 sift50m 针对 `gpu_search_threshold` 的一个测试，索引类型为 SQ8：
+以下是使用公开测试数据集 sift50m 针对 `index_file_size` 的一个测试，索引类型为 SQ8：
 
 ![image1](../assets/blog_api_set_01.png)
 
