@@ -143,6 +143,15 @@
       "label2": "",
       "label3": "",
       "order": 14
+    },
+    {
+      "id": "2020-2-16-api-setting.md",
+      "title": "如何设置 Milvus 客户端参数",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": "",
+      "order": 15
     }
   ]
 }
