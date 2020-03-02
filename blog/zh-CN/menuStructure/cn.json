@@ -152,6 +152,15 @@
       "label2": "",
       "label3": "",
       "order": 15
+    },
+    {
+      "id": "2020-3-2-scheduler.md",
+      "title": "Milvus 查询任务调度原理",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": "",
+      "order": 16
     }
   ]
 }
