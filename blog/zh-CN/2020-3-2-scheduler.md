@@ -18,7 +18,7 @@ author: 王翔宇
 
 衡量向量相似性的距离有很多种，以最典型的欧氏距离为例，其计算公式为：
 
-![image1](..\assets\scheduler\scheduler_01.png)
+![image1](../assets/scheduler/scheduler_01.png)
 
 其中 x 和 y 是两个向量，n 是向量的维度。
  
@@ -36,7 +36,7 @@ author: 王翔宇
 
 ## 查询调度机制
 
-![image2](..\assets\scheduler\scheduler_02.png)
+![image2](../assets/scheduler/scheduler_02.png)
 
 1. Milvus server 启动时，会根据配置文件中的 `gpu_resource_config` 启动对应的 GpuResource，DiskResource 和 CpuResource 启动暂时不可以通过配置修改。启动的 Resource 是配置文件中 `search_resources` 和 `build_index_resources` 的并集，在这里是`{gpu0, gpu1}`。
 
@@ -51,15 +51,15 @@ gpu_resource_config:
     - gpu0
 ```
 
-![image3](..\assets\scheduler\scheduler_03.png)
+![image3](../assets/scheduler/scheduler_03.png)
 
 2. 收到请求。前面文章提到过，关于 Table 的一些元数据（Metadata）存在一个外部的数据库中，单机场景下是 SQLite 或者 MySQL，分布式场景下是 MySQL。所以 Milvus server 在收到一条搜索请求后会验证 Table 是否存在、Dimension 是否一致，然后读出此 Table 的 TableFile 列表。
 
-![image4](..\assets\scheduler\scheduler_04.png)
+![image4](../assets/scheduler/scheduler_04.png)
 
 3. 创建 SearchTask。因为每个的 TableFile 的计算是独立进行，与其他 TableFile 无关的。所以，Milvus 为每一个 TableFile 创建一个 SearchTask。SearchTask 上包含搜索的目标向量、搜索参数以及 TableFile 的文件名。SearchTask 是任务调度的基本单位。
 
-![image5](..\assets\scheduler\scheduler_05.png)
+![image5](../assets/scheduler/scheduler_05.png)
 
 4. 选择计算设备。一个 SearchTask 在什么设备上计算取决于在每个设备上的 “预计完成时间”。”预计完成时间” 指这个任务从现在到计算完成的预计时间。
 
@@ -67,7 +67,7 @@ gpu_resource_config:
 
 这里假设 GPU1 的估计计算完成时间比较短。
 
-![image6](..\assets\scheduler\scheduler_06.png)
+![image6](../assets/scheduler/scheduler_06.png)
 
 5. 将 SearchTask 加入到 DiskResource 的任务队列上。
 
@@ -77,11 +77,11 @@ gpu_resource_config:
 
 8. SearchTask 在 GpuResource 上被执行。由于单个 SearchTask 的计算结果一般不会特别大，所以在这一步直接就将结果传输回到了内存。
 
-![image7](..\assets\scheduler\scheduler_07.png)
+![image7](../assets/scheduler/scheduler_07.png)
 
 9. SearchTask 的结果与整个搜索请求的结果进行归并。
 
-![image8](..\assets\scheduler\scheduler_08.png)
+![image8](../assets/scheduler/scheduler_08.png)
 
 10. 所有 SearchTask 都完成后，Milvus 会把整个搜索的结果返回给客户端。
 
@@ -101,7 +101,7 @@ gpu_resource_config:
 
 我们将一个数据块的计算分成了3个阶段（磁盘加载到内存，CPU 计算，结果归并）或4个阶段（磁盘加载到内存，内存加载到显存，GPU 计算且结果拷回，结果归并）。以3阶段为例，我们可以启动3个线程分别负责做这3件事情以达到类似 Instruction pipelining 的效果。由于结果集大多数情况下比较小，结果归并占用时间并不多，在一些情况下，计算与数据加载重叠能使得整个查询时间降到原查询时间的约1/2。
 
-![image9](..\assets\scheduler\scheduler_09.png)
+![image9](../assets/scheduler/scheduler_09.png)
 
 ## 问题与解决方案
 
