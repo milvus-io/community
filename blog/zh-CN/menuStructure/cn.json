@@ -161,6 +161,15 @@
       "label2": "",
       "label3": "",
       "order": 16
+    },
+    {
+      "id": "2020-3-12-mishards.md",
+      "title": "Milvus 分布式向量检索-Mishards架构介绍",
+      "lang": "cn",
+      "label1": "",
+      "label2": "",
+      "label3": "",
+      "order": 17
     }
   ]
 }
