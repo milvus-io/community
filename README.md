@@ -32,9 +32,11 @@ See our [community](https://github.com/milvus-io/community) repository to learn 
 -   [Milvus Technical Discuss](https://lists.lfai.foundation/g/milvus-technical-discuss)
 -   [Milvus Announce](https://lists.lfai.foundation/g/milvus-announce)
 
-## Contributors
+## All Contributors ✨
 
-Below is a list of Milvus contributors. We greatly appreciate your contributions!
+Below is a list of Milvus contributors. We welcome all forms of contribution!
+Emoji Key (Contribution Types)♿️🐛📝💼💻🖋🔣📖🎨💡📋🤔🚇🚧🔌💬🌍⚠️✅📢📓📹 
+please see emoji explanation here: https://allcontributors.org/docs/en/emoji-key
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
