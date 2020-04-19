@@ -4,7 +4,7 @@ Welcome to the Milvus community! The mission of the community is to make AI more
 
 You can become a Milvus contributor in many different ways, we value all forms of contribution including but not limited to:
 
-- Improve code
+- Improve code 
 - Improve docs
 - Report bugs
 - Write blogs
@@ -13,6 +13,7 @@ You can become a Milvus contributor in many different ways, we value all forms o
 - Answer questions
 
 We adopted the principles created by: https://allcontributors.org/
+See [community_roles]https://github.com/milvus-io/community/blob/master/community_roles for different roles of code contributors.
 
 ## Contribution guidelines
 
