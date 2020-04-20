@@ -51,6 +51,7 @@ please see emoji explanation here: https://allcontributors.org/docs/en/emoji-key
     <td align="center"><a href="https://github.com/levylll"><img src="https://avatars2.githubusercontent.com/u/5645285?v=4" width="100px;" alt=""/><br /><sub><b>levylll</b></sub></a><br /><a href="https://github.com/milvus-io/milvus/commits?author=levylll" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/aaronjin2010"><img src="https://avatars1.githubusercontent.com/u/48044391?v=4" width="100px;" alt=""/><br /><sub><b>aaronjin2010</b></sub></a><br /><a href="https://github.com/milvus-io/milvus/commits?author=aaronjin2010" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/kateshaowanjou"><img src="https://avatars0.githubusercontent.com/u/58837504?s=400&u=1a18759bc2e768d157317718c4f24a9c7425c2dd&v=4" width="100px;" alt=""/><br /><sub><b>kateshao</b></sub></a><br /><a href="https://github.com/kateshaowanjou" title="Talk"> 📢</a></td>
+  <td align="center"><a href="https://github.com/rifewang"><img src="https://avatars0.githubusercontent.com/u/20348639?s=400&u=ec56a2f8b8317f0be0ffca9a1db8700df97120c8&v=4" width="100px;" alt=""/><br /><sub><b>rifewang</b></sub></a><br /><a href="https://github.com/RifeWang/milvus/pull/2" title="Blog">📝</a></td>
   </tr>
 </table>
 
