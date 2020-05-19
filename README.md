@@ -18,7 +18,7 @@ See [community_roles]https://github.com/milvus-io/community/blob/master/communit
 ## Open Source Promotion Plan Summer 2020 Tasks List 
 （开源软件供应链点亮计划——暑期2020 项目列表）
 Thank you for your interests in choosing Milvus to be your summer project!
-For the tasks list, please check out [Events] (https://github.com/milvus-io/community/tree/master/Events)
+For the tasks list, please check out [Events](https://github.com/milvus-io/community/tree/master/Events)
 
 
 ## Contribution guidelines
