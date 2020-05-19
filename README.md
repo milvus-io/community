@@ -13,7 +13,7 @@ You can become a Milvus contributor in many different ways, we value all forms o
 - Answer questions
 
 We adopted the principles created by: https://allcontributors.org/
-See [community_roles]https://github.com/milvus-io/community/blob/master/community_roles for different roles of code contributors.
+See [community_roles](https://github.com/milvus-io/community/blob/master/community_roles) for different roles of code contributors.
 
 ## Open Source Promotion Plan Summer 2020 Tasks List 
 （开源软件供应链点亮计划——暑期2020 项目列表）
