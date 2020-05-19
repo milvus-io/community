@@ -15,6 +15,11 @@ You can become a Milvus contributor in many different ways, we value all forms o
 We adopted the principles created by: https://allcontributors.org/
 See [community_roles]https://github.com/milvus-io/community/blob/master/community_roles for different roles of code contributors.
 
+## Open Source Promotion Plan Summer 2020 Tasks List （开源软件供应链点亮计划——暑期2020 项目列表）
+Thank you for your interests in choosing Milvus to be your summer project!
+For the tasks list, please check out [Events] (https://github.com/milvus-io/community/tree/master/Events)
+
+
 ## Contribution guidelines
 
 Contributions are welcomed and greatly appreciated. Please read our [contribution guidelines](CONTRIBUTING.md) for detailed contribution workflow. This project adheres to the [code of conduct](CODE_OF_CONDUCT.md) of Milvus. By participating, you are expected to uphold this code.
