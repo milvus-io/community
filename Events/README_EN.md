@@ -12,42 +12,6 @@ Milvus community will take part and publish the requirements of several assignme
 
 
 
-### Using ETCD as Milvus Metadata Backend
-
-Project description: Milvus is an open source feature vector search engine. Its storage system uses metadata to manage data files. The current metadata backend supports either SQLite or MySQL, and needs to support more. You are required to implement a metadata backend with a set of metadata interfaces supporting ETCD.
-
-Difficulty level: Medium
-
-Mentor: Yihua Mo
-
-Email address: yihua.mo@zilliz.com
-
-Deliveries: 
-
-- A set of Milvus metadata interfaces implemented in C++.
-
-- A performance comparison between the ETCD backend and the current metadata backend.
-
-- A comprehensive set of functional tests.
-
-- A user manual.
-
-Technical requirements:
-
-- Familiar with Linux development environment.
-- Using Git for collaborative development.
-
-- Proficient in C++
-
-- Rigorous reasoning. 
-
-Repositories: 
-
-- https://github.com/milvus-io/milvus
-- https://github.com/etcd-io/etcd
-
-
-
 ### Milvus  Data Backup and Recovery Tool
 
 Project description: Milvus is an open source feature vector search engine. Version 0.10.0 is currently under development. Because data between certain versions are incompatible with each other, you are required to develop a tool set for data backup, recovery, and migration, which can export data of an old version and recover it in a way compatible with a specified Milvus version. 
