@@ -6,11 +6,12 @@
 
 
 
-This year, the Institute of Software of the Chinese Academy of Sciences and the Huawei openEuler project will co-sponsor the initiative of ["Open Source Promotion Plan Summer 2020"] (https://isrc.iscas.ac.cn/summer2020/). Similar to Google's Summer of Code (GSoC), this plan publishes assignments as well as the corresponding mentor information in the open source community, and provides a certain amount of bonus for those college students who have successfully completed one of the assignments during summer holidays. Such initiatives make a perfect touchstone in the way of facilitating understanding of open source and increasing interaction with the community.
+This year, the Institute of Software of the Chinese Academy of Sciences and the Huawei openEuler project will co-sponsor the initiative of ["Open Source Promotion Plan Summer 2020"](https://isrc.iscas.ac.cn/summer2020/). Similar to Google's Summer of Code (GSoC), this plan publishes assignments as well as the corresponding mentor information in the open source community, and provides a certain amount of bonus for those college students who have successfully completed one of the assignments during summer holidays. Such initiatives make a perfect touchstone in the way of facilitating understanding of open source and increasing interaction with the community.
 
-Milvus community will take part and publish the requirements of several assignments. ** Students who are passionate about coding and interested in big data projects are welcome to join. For those who plan to publish more assignments, please note that the deadline is May 29.** The Milvus community is willing to work with everyone to contribute to the domestic open source ecosystem.
+Milvus community will take part and publish the requirements of several assignments. **Students who are passionate about coding and interested in big data projects are welcome to join. For those who plan to publish more assignments, please note that the deadline is May 29.** The Milvus community is willing to work with everyone to contribute to the domestic open source ecosystem.
 
-
+## Task List
+Below tasks adopt [Apache 2.0 license](https://github.com/milvus-io/milvus/blob/master/LICENSE)
 
 ### Milvus  Data Backup and Recovery Tool
 
