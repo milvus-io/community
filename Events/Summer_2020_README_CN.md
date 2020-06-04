@@ -1,4 +1,3 @@
-# Open Source Promotion Plan Summer 2020
 
 # “开源软件供应链点亮计划——暑期2020”任务清单“
 
@@ -10,6 +9,9 @@ Milvus 作为社区加入这一计划，提供若干项目需求。**欢迎对�
 
 *感谢上方来自 [TUNA](https://tuna.moe/blog/2020/ospp-summer-2020/) 的文案*
 
+## 可选项目列表
+
+下列所有项目都与 Milvus 一致，采用开源协议：Apache 2.0 license
 
 
 ### Milvus 数据备份恢复工具
