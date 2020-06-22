@@ -59,7 +59,7 @@ please see emoji explanation here: https://allcontributors.org/docs/en/emoji-key
     <td align="center"><a href="https://github.com/kateshaowanjou"><img src="https://avatars0.githubusercontent.com/u/58837504?s=400&u=1a18759bc2e768d157317718c4f24a9c7425c2dd&v=4" width="100px;" alt=""/><br /><sub><b>kateshao</b></sub></a><br /><a href="https://github.com/kateshaowanjou" title="Talk"> 📢</a></td>
   <td align="center"><a href="https://github.com/rifewang"><img src="https://avatars0.githubusercontent.com/u/20348639?s=400&u=ec56a2f8b8317f0be0ffca9a1db8700df97120c8&v=4" width="100px;" alt=""/><br /><sub><b>rifewang</b></sub></a><br /><a href="https://github.com/RifeWang/milvus/pull/2" title="Blog">📝</a></td>
   </tr>
-  <td align="center"><a href="https://github.com/rock4you"><img src="https://avatars1.githubusercontent.com/u/2437212?s=400&u=387b3e74640940b40fde49ee127f34c88b1a470d&v=4" width="100px;" alt=""/><br /><sub><b>rifewang</b></sub></a><br /><a href="https://blog.csdn.net/rock4you/article/details/106107702">📝</a></td>
+  <td align="center"><a href="https://github.com/rock4you"><img src="https://avatars1.githubusercontent.com/u/2437212?s=400&u=387b3e74640940b40fde49ee127f34c88b1a470d&v=4" width="100px;" alt=""/><br /><sub><b>rock</b></sub></a><br /><a href="https://blog.csdn.net/rock4you/article/details/106107702">📝</a></td>
   </tr>
 </table>
 
