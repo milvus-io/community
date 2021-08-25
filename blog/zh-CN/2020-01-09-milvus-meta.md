@@ -2,6 +2,11 @@
 id: 2020-01-09-milvus-meta.md
 title: Milvus 数据管理系列（五）：如何通过元数据管理数据文件
 author: 莫毅华
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test1
 ---
 
 # Milvus 数据管理系列（五）：如何通过元数据管理数据文件
@@ -10,8 +15,6 @@ author: 莫毅华
 >
 > 日期：2020-01-09
 
-
-
 通过上面的介绍我们了解了 Milvus 的元数据里有些什么信息，现在我们来看这些信息是怎样被使用的。我们仍以 SQLite 为例。
 
 ## （1）创建向量表
@@ -19,14 +22,14 @@ author: 莫毅华
 我们用 Python 客户端创建一张表：
 
 ```python
-milvus.create_table({    
-    'table_name': 'table_1',    
-    'dimension': 512,    
-    'index_file_size': 1000,    
+milvus.create_table({
+    'table_name': 'table_1',
+    'dimension': 512,
+    'index_file_size': 1000,
     'metric_type': MetricType.L2})
 ```
 
-Milvus 立即会在 Tables 里增加一行记录，dimension 为512，`index_file_size` 为1048576000字节（1000乘1024再乘1024），`metric_type` 为1（欧氏距离 L2）。而 TableFiles 里仍然是空的。
+Milvus 立即会在 Tables 里增加一行记录，dimension 为 512，`index_file_size` 为 1048576000 字节（1000 乘 1024 再乘 1024），`metric_type` 为 1（欧氏距离 L2）。而 TableFiles 里仍然是空的。
 
 ```sql
 INSERT INTO Tables VALUES(1, 'table_1', 0, 512, 1576306272821064, 2, 1048576000, 1, 16384, 1, , , '0.6.0')
@@ -44,13 +47,13 @@ INSERT INTO Tables VALUES(1, 'table_1', 0, 512, 1576306272821064, 2, 1048576000,
 milvus.insert(table_name='table_1', records=vec_list, ids=vec_ids)
 ```
 
-假设我们分批每次1万条向量插入，总共插入了100万条512维的向量，如果在插入过程中去查看 TableFiles 里的信息的话，你会看到 TableFiles 里面不断有新条目生成并且不断地删除一部分旧条目，这是因为合并文件的线程在不断地把小文件合并成大文件，并删除小文件。
+假设我们分批每次 1 万条向量插入，总共插入了 100 万条 512 维的向量，如果在插入过程中去查看 TableFiles 里的信息的话，你会看到 TableFiles 里面不断有新条目生成并且不断地删除一部分旧条目，这是因为合并文件的线程在不断地把小文件合并成大文件，并删除小文件。
 
-当100万条向量插入完成后你再去查询 TableFiles，大致会看到最终有两个文件留下：
+当 100 万条向量插入完成后你再去查询 TableFiles，大致会看到最终有两个文件留下：
 
 ![tablefiles](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/table_files.png)
 
-从 `row_count` 字段可以看到，第一个文件有53万条向量，另一个有47万条向量，这是因为在合并文件过程中第一个文件被合并到超过1048576000字节后就不再参与合并（我们可以看到它的大小是1089680113字节）。剩下的向量则被合并到第二个文件里，最终达到966320113字节，还没达到 `index_file_size` 的大小，这意味着如果还有向量进来的话，这个文件仍会被拿来和其他小文件做合并。
+从 `row_count` 字段可以看到，第一个文件有 53 万条向量，另一个有 47 万条向量，这是因为在合并文件过程中第一个文件被合并到超过 1048576000 字节后就不再参与合并（我们可以看到它的大小是 1089680113 字节）。剩下的向量则被合并到第二个文件里，最终达到 966320113 字节，还没达到 `index_file_size` 的大小，这意味着如果还有向量进来的话，这个文件仍会被拿来和其他小文件做合并。
 
 Milvus 内部对 TableFiles 的操作也都是通过 SQL 完成，主要借助两种语句：
 
@@ -77,7 +80,7 @@ Milvus 内部会执行一条 SQL 查询：
 SELECT SUM(row_count) FROM TableFiles where table_id = 'table_1' AND file_type IN (1, 2, 3);
 ```
 
-学过 SQL 的应该很容易看出来这条语句的意思，它是把 TableFiles 里所有符合条件记录的 `row_count` 字段的值相加，得出这个表总共有多少条向量。要符合什么条件呢？首先表名要是 `table_1`；其次只统计文件状态为1，2，3的条目，也就是说，只统计原始向量文件，将要建立索引的文件，建立好索引的文件。如果有文件状态为4（软删除状态）或者7（备份状态）的，是不参与统计的。
+学过 SQL 的应该很容易看出来这条语句的意思，它是把 TableFiles 里所有符合条件记录的 `row_count` 字段的值相加，得出这个表总共有多少条向量。要符合什么条件呢？首先表名要是 `table_1`；其次只统计文件状态为 1，2，3 的条目，也就是说，只统计原始向量文件，将要建立索引的文件，建立好索引的文件。如果有文件状态为 4（软删除状态）或者 7（备份状态）的，是不参与统计的。
 
 ## （4）搜索向量
 
@@ -87,17 +90,17 @@ SELECT SUM(row_count) FROM TableFiles where table_id = 'table_1' AND file_type I
 milvus.search(table_name='table_1', query_records=query_vectors, top_k=100, nprobe=32)
 ```
 
-Mlvus内部执行一条SQL语句来获得需要被检索的文件：
+Mlvus 内部执行一条 SQL 语句来获得需要被检索的文件：
 
 ```sql
 SELECT * FROM TableFiles WHERE table_id = 'table_1' AND file_type IN (1, 2, 3);
 ```
 
-这样就获得了所有需要被检索的文件信息，同样，只有文件状态为1，2，3的文件会被拿来检索。接着 Milvus 会通过文件的 `file_id` 找到它们所在的路径，之后查询调度器会把这些文件逐个加载进内存或者显存计算。
+这样就获得了所有需要被检索的文件信息，同样，只有文件状态为 1，2，3 的文件会被拿来检索。接着 Milvus 会通过文件的 `file_id` 找到它们所在的路径，之后查询调度器会把这些文件逐个加载进内存或者显存计算。
 
 ## （5）建立索引
 
-客户端通过 `create_index` 来建立索引，下面这个调用是建立一个 SQ8 索引，我们指定 nlist 为5000：
+客户端通过 `create_index` 来建立索引，下面这个调用是建立一个 SQ8 索引，我们指定 nlist 为 5000：
 
 ```python
 milvus.create_index(table_name='table_1', {'index_type': IndexType.IVF_SQ8, 'nlist': 5000})
@@ -113,15 +116,15 @@ milvus.create_index(table_name='table_1', {'index_type': IndexType.IVF_SQ8, 'nli
 UPDATE Tables SET engine_type = 3, nlist = 5000 WHERE table_id = 'table_1';
 ```
 
-接着，Milvus 把属于该表的能够检索引的文件状态置为2（将要被建立索引），也是通过 SQL 操作：
+接着，Milvus 把属于该表的能够检索引的文件状态置为 2（将要被建立索引），也是通过 SQL 操作：
 
 ```sql
 UPDATE TableFiles SET file_type = 2 WHERE table_id = 'table_1' AND file_type = 1;
 ```
 
-这时，客户端的 `create_index` 调用仍然在等待，一直等到全部文件建立索引完成。Milvus 里会不断地检查是否有新的原始向量文件生成，如果有，则立刻把它们的 `file_type` 置为2（将要建立索引）。而调度器会为 `file_type` 为2的文件建立任务，逐个建立索引。直到所有文件都建立了索引，客户端调用才会真正返回。
+这时，客户端的 `create_index` 调用仍然在等待，一直等到全部文件建立索引完成。Milvus 里会不断地检查是否有新的原始向量文件生成，如果有，则立刻把它们的 `file_type` 置为 2（将要建立索引）。而调度器会为 `file_type` 为 2 的文件建立任务，逐个建立索引。直到所有文件都建立了索引，客户端调用才会真正返回。
 
-当索引建立完成后，会有新的索引文件生成，而之前的原始向量文件则会被标记为备份状态（`file_type` 置为7），这是为了之后能够切换成别的索引类型。
+当索引建立完成后，会有新的索引文件生成，而之前的原始向量文件则会被标记为备份状态（`file_type` 置为 7），这是为了之后能够切换成别的索引类型。
 
 ![tablefiles](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/index_2.png)
 
@@ -135,7 +138,7 @@ UPDATE TableFiles SET file_type = 2 WHERE table_id = 'table_1' AND file_type = 1
 milvus.drop_index(table_name='table_1')
 ```
 
-在 Milvus 内部，删除索引操作要做几件事，先是把向量表的索引类型切换回1（FLAT），然后把索引文件的 `file_type` 置为4（软删除），同时把备份文件的 `file_type` 切换为1（原始向量文件）：
+在 Milvus 内部，删除索引操作要做几件事，先是把向量表的索引类型切换回 1（FLAT），然后把索引文件的 `file_type` 置为 4（软删除），同时把备份文件的 `file_type` 切换为 1（原始向量文件）：
 
 ```sql
 UPDATE Tables SET engine_type = 1 WHERE table_id = 'table_1';
@@ -159,7 +162,7 @@ DELETE FROM TableFiles WHERE table_id = 'table_1' AND file_type = 4;
 milvus.drop_table(table_name='table_1')
 ```
 
-Milvus 内部会把向量表的 state 置为1（软删除），然后把该表的所有文件的 `file_type` 置为4（软删除）：
+Milvus 内部会把向量表的 state 置为 1（软删除），然后把该表的所有文件的 `file_type` 置为 4（软删除）：
 
 ```sql
 UPDATE Tables SET state = 1 WHERE table_id = 'table_1';

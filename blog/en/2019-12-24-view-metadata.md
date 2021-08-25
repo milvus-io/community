@@ -2,6 +2,11 @@
 id: 2019-12-24-view-metadata.md
 title: Milvus Metadata Management (1) How to View Metadata
 author: Yihua Mo
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test3
 ---
 
 # Milvus Metadata Management (1)
@@ -46,9 +51,11 @@ To query Tables and TableFiles using SQL statements (case-insensitive):
 ```sql
 SELECT \* FROM Tables
 ```
+
 ```sql
 SELECT \* FROM TableFiles
 ```
+
 ![sqlite3](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/sqlite3.png)
 
 ### MySQL
@@ -85,4 +92,3 @@ Now, you can use SQL statements to query metadata information:
 
 - [Managing Data in Massive Scale Vector Search Engine](https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f)
 - [Milvus Metadata Management (2): Fields in the Metadata Table](https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d)
-

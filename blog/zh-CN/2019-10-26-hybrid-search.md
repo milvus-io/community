@@ -2,6 +2,11 @@
 id: 2019-10-26-hybrid-search.md
 title: 基于 Milvus 实现向量与结构化数据混合查询
 author: 顾钧
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test1 test3
 ---
 
 # 基于 Milvus 实现向量与结构化数据混合查询
@@ -81,9 +86,9 @@ cur.execute(sql)
 
 总的来说，利用 Milvus 特征向量数据库，可以快速实现向量与结构化数据的混合查询。若仅使用传统的关系型数据库进行向量查询，不仅大规模向量数据存储难，而且无法高性能完成特征向量检索。
 
-| Milvus 特征向量搜索时间 | PostgreSQL 搜索ids时间 |
-| ----------------------- | -------------------- |
-| 70 ms                   | 1 ms ~ 7 ms          |
+| Milvus 特征向量搜索时间 | PostgreSQL 搜索 ids 时间 |
+| ----------------------- | ------------------------ |
+| 70 ms                   | 1 ms ~ 7 ms              |
 
 ## 总结
 
@@ -92,4 +97,3 @@ cur.execute(sql)
 并且基于 Milvus 易管易用的特性，通过参考 [ Milvus 混合查询方案](https://github.com/milvus-io/bootcamp/tree/0.3.1/solutions/hybrid_search) 所提供的工具，能轻松实现向量和结构化数据的混合查询，更好的支持业务需求。
 
 Milvus 正在建设线上开发者社区，如果对 Milvus 的技术讨论和试用感兴趣，欢迎加入我们的 [Slack 频道](https://milvusio.slack.com/join/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk)，进群沟通。
-

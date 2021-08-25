@@ -2,6 +2,11 @@
 id: 2019-12-18-datafile-cleanup.md
 title: Improvements of the Data File Cleanup Mechanism
 author: Yihua Mo
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test2
 ---
 
 # Improvements of the Data File Cleanup Mechanism
@@ -14,7 +19,7 @@ author: Yihua Mo
 
 In [Managing Data in Massive-Scale Vector Search Engine](2019-11-08-data-management.md), we mentioned the delete mechanism of data files. Delete includes soft-delete and hard-delete. After performing a delete operation on a table, the table is marked with soft-delete. Search or update operations afterwards are no longer allowed. However, the query operation that starts before delete can still run. The table is really deleted together with metadata and other files only when the query operation is complete.
 
-So, when the files marked with soft-delete are really deleted?  Before 0.6.0, the strategy is that a file is really deleted after soft-deleted for 5 minutes. The following figure displays the strategy:
+So, when the files marked with soft-delete are really deleted? Before 0.6.0, the strategy is that a file is really deleted after soft-deleted for 5 minutes. The following figure displays the strategy:
 
 ![5mins](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5mins.png)
 
@@ -24,9 +29,9 @@ Extending the time may help reduce the risk of query failures, but also causes a
 
 ![result](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5min_result.png)
 
-As shown in the previous figure, the first batch of inserted data (insert\_1) is flushed to disk and becomes file\_1, then insert_2 becomes file\_2. The thread responsible for file combination combines the files to file\_3. Then, file\_1 and file\_2 are marked as soft-delete. The third batch of insert data becomes file\_4. The thread combines file\_3 and file\_4 to file\_5 and marks file\_3 and file\_4 as soft-delete.
+As shown in the previous figure, the first batch of inserted data (insert_1) is flushed to disk and becomes file_1, then insert_2 becomes file_2. The thread responsible for file combination combines the files to file_3. Then, file_1 and file_2 are marked as soft-delete. The third batch of insert data becomes file_4. The thread combines file_3 and file_4 to file_5 and marks file_3 and file_4 as soft-delete.
 
-Likewise, insert\_6 and insert\_5 are combined. In t3, file\_5 and file\_6 are marked as soft-delete. Between t3 and t4, although many files are marked as soft-delete, they are still in the disk. Files are really deleted after t4. Thus, between t3 and t4, the disk usage is 64 + 64 + 128 + 64 + 196 + 64 + 256 = 836 MB. The inserted data is 64 + 64 + 64 + 64 = 256 MB. The disk usage is 3 times the size of inserted data. The faster the write speed of the disk, the higher the disk usage during a specific time period.
+Likewise, insert_6 and insert_5 are combined. In t3, file_5 and file_6 are marked as soft-delete. Between t3 and t4, although many files are marked as soft-delete, they are still in the disk. Files are really deleted after t4. Thus, between t3 and t4, the disk usage is 64 + 64 + 128 + 64 + 196 + 64 + 256 = 836 MB. The inserted data is 64 + 64 + 64 + 64 = 256 MB. The disk usage is 3 times the size of inserted data. The faster the write speed of the disk, the higher the disk usage during a specific time period.
 
 ## Improvements of the delete strategy in 0.6.0
 
@@ -34,7 +39,7 @@ Thus, we changed the strategy to delete files in v0.6.0. Hard-delete no longer u
 
 ![newstrategy](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/new_strategy.png)
 
-Assume two batches of vectors are inserted. In t1 a query request is given, Milvus acquires two files to be queried (file\_1 and file\_2, because file\_3 still does not exist.) Then, the backend thread starts combining the two files with the query running at the same time. When file\_3 is generated, file\_1 and file\_2 are marked as soft-delete. After the query, no other tasks will use file\_1 and file\_2, so they will be hard-deleted in t4. The interval between t2 and t4 is very small and depends on the interval of the query. In this way, unused files will be removed in time.
+Assume two batches of vectors are inserted. In t1 a query request is given, Milvus acquires two files to be queried (file_1 and file_2, because file_3 still does not exist.) Then, the backend thread starts combining the two files with the query running at the same time. When file_3 is generated, file_1 and file_2 are marked as soft-delete. After the query, no other tasks will use file_1 and file_2, so they will be hard-deleted in t4. The interval between t2 and t4 is very small and depends on the interval of the query. In this way, unused files will be removed in time.
 
 As for internal implementation, reference counting, which is familiar to software engineers, is used to determine whether a file can be hard-deleted. To explain using comparison, when a player has lives in a game, he can still play. When the number of lives becomes 0, the game is over. Milvus monitors the status of each file. When a file is used by a task, a life will be added to the file. When the file is no longer used, a life will be removed from the file. When a file is marked with soft-delete and the number of lives is 0, the file is ready for hard-delete.
 

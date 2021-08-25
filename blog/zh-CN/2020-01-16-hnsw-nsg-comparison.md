@@ -2,7 +2,13 @@
 id: 2020-01-16-hnsw-nsg-comparison.md
 title: Milvus 揭秘系列（一）：向量索引算法HNSW和NSG的比较
 author: 林孝君
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test1
 ---
+
 # Milvus 揭秘系列（一）：向量索引算法 HNSW 和 NSG 的比较
 
 > 作者：林孝君
@@ -59,5 +65,3 @@ NSG 这样做的原因是考虑到由于边数一多，整个图就会变得稠�
 至此，我们大致了解了 HNSW 以及 NSG 两种算法的基本思路。HNSW 从结构入手，利用分层图提高图的导航性减少无效计算从而降低搜索时间，达到优化的目的。而 NSG 选择将图的整体度数控制在尽可能小的情况下，提高导航性，缩短搜索路径来提高搜索效率。
 
 下面我们从内存占用，搜索速度，精度等方面来比较 HNSW 和 NSG。HNSW 由于多层图的结构以及连边策略，导致搜索时内存占用量会大于 NSG，在内存受限场景下选择 NSG 会更好。但是 NSG 在建图过程中无论内存占用还是耗时都大于 HNSW。此外 HNSW 还拥有目前 NSG 不支持的特性，即增量索引，虽然耗时巨大。对比其他的索引类型，无论 NSG 还是 HNSW 在搜索时间和精度两个方面，都有巨大优势。目前在 Milvus 内部已经实现了 NSG 算法，并将 KNNG 计算放到了 GPU 上进行从而极大地加快了 NSG 图的构建。未来 Milvus 还会集成 HNSW，以适配更广泛的场景。
-
-
