@@ -19,5 +19,5 @@ jobs:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         run: |
           mv trigger-milvus-build.md trigger-milvus-build.js
-          yarn
+          npm install axios -g
           node trigger-milvus-build.js
