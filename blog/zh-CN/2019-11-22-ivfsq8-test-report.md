@@ -2,6 +2,11 @@
 id: 2019-11-22-ivfsq8-test-report.md
 title: Milvus 测试报告：IVF_SQ8 索引
 author: 陈子睿
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test2
 ---
 
 # Milvus 测试报告：IVF_SQ8 索引
@@ -24,7 +29,7 @@ author: 陈子睿
 
 ## 软硬件环境
 
-- 操作系统：CentOS Linux release 7.6.1810 (Core) 
+- 操作系统：CentOS Linux release 7.6.1810 (Core)
 
 - CPU：Intel(R) Xeon(R) CPU E5-2678 v3 @ 2.50 GHz
 
@@ -48,8 +53,8 @@ author: 陈子睿
 
 - 数据集（[SIFT1B](http://corpus-texmex.irisa.fr/)）
 
-  - 数据：1,000,000,000向量, 128维
-  
+  - 数据：1,000,000,000 向量, 128 维
+
   - 数据类型：hdf5
 
 - 表格属性
@@ -78,19 +83,19 @@ author: 陈子睿
 
 ![query_gpu](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/test_report/ivfsq8_query_time_gpu.png)
 
-当 nq 为1000时，在 GPU 模式下查询一条128维向量需要耗时约17毫秒。
+当 nq 为 1000 时，在 GPU 模式下查询一条 128 维向量需要耗时约 17 毫秒。
 
 ### CPU 模式（search_resources: cpu, gpu0）
 
 ![query_cpu](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/test_report/ivfsq8_query_time_gpu.png)
 
-当 nq 为1000时，在 GPU 模式下查询一条128维向量需要耗时约27毫秒。
+当 nq 为 1000 时，在 GPU 模式下查询一条 128 维向量需要耗时约 27 毫秒。
 
 ### 总结
 
 在 CPU 模式下查询耗时随 nq 的增长快速增大，而在 GPU 模式下查询耗时的增大则缓慢许多。当 nq 较小时，CPU 模式比 GPU 模式耗时更少。但当 nq 足够大时，GPU 模式则更具有优势。
 
-在 GPU 模式下的查询耗时由两部分组成：（1）索引从 CPU 到 GPU 的拷贝时间；（2）所有分桶的查询时间。当 nq 小于500时，索引从 CPU 到 GPU 的拷贝时间无法被有效均摊，此时 CPU 模式时一个更优的选择；当 nq 大于500时，选择 GPU 模式更合理。
+在 GPU 模式下的查询耗时由两部分组成：（1）索引从 CPU 到 GPU 的拷贝时间；（2）所有分桶的查询时间。当 nq 小于 500 时，索引从 CPU 到 GPU 的拷贝时间无法被有效均摊，此时 CPU 模式时一个更优的选择；当 nq 大于 500 时，选择 GPU 模式更合理。
 
 和 CPU 相比，GPU 具有更多的核数和更强的算力。当 nq 较大时，GPU 在计算上的优势能被更好地被体现。
 
@@ -106,8 +111,6 @@ author: 陈子睿
 
 ### 总结
 
-随着 nq 的增大，召回率逐渐稳定至93%以上。
+随着 nq 的增大，召回率逐渐稳定至 93%以上。
 
 如果您想了解更详细的测试报告结果，请参阅 [IVF_SQ8 测试报告](https://github.com/milvus-io/milvus/blob/0.6.0/docs/test_report/milvus_ivfsq8_test_report_detailed_version_cn.md)。
-
-

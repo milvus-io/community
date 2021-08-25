@@ -2,6 +2,11 @@
 id: 2019-08-29-vector-search-billion.md
 title: 如何玩转十亿向量检索（SIFT1B）
 author: 陈室余
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test1 test2
 ---
 
 # 如何轻松玩转十亿向量检索（SIFT1B）
@@ -13,19 +18,21 @@ author: 陈室余
 ## 开始之前
 
 请阅读以下文章，以了解 Milvus 的基本操作原理：
+
 - [Milvus 快速上手](https://github.com/milvus-io/docs/blob/branch-0.3.1/QuickStart.md)
 - [小试牛刀：百万向量搜索 ](2019-08-26-vector-search-million.md)
 
 这次需要用到的服务器大概长这样子：
 
-| 组件           | 最低配置               |
-| ------------------ | -------------------------- |
-| 操作系统           | CentOS 7.6               |
-| CPU          | Intel Xeon E5-2678 v3 @ 2.50GHz x 2   |
-| GPU          | NVIDIA GeForce GTX 1080, 8GB GDDR5 x 2|
-| GPU 驱动软件   | CUDA 10.1, Driver 418.74 |
-| 内存       | 256 GB    |
-| 硬盘      | NVMe SSD 2 TB                       |
+| 组件         | 最低配置                               |
+| ------------ | -------------------------------------- |
+| 操作系统     | CentOS 7.6                             |
+| CPU          | Intel Xeon E5-2678 v3 @ 2.50GHz x 2    |
+| GPU          | NVIDIA GeForce GTX 1080, 8GB GDDR5 x 2 |
+| GPU 驱动软件 | CUDA 10.1, Driver 418.74               |
+| 内存         | 256 GB                                 |
+| 硬盘         | NVMe SSD 2 TB                          |
+
 （实验中约需消耗 140 GB 内存）
 
 ## 十亿向量检索
@@ -64,7 +71,7 @@ milvus.add_vectors(table_name='test01', records=vectors)
 
 ### 数据检索
 
-Milvus 不仅支持批量检索多个向量，还可以指定 `query_ranges` （检索范围），通过参数 `query_records` （查询向量）和 `top_k` ，在Milvus中检索 `query_records` 得到与该向量组相似度最高的 `top_k` 个向量，要求 `query_records` 维度必须与所建表的维度一致，其数据类型为浮点型二维数组。
+Milvus 不仅支持批量检索多个向量，还可以指定 `query_ranges` （检索范围），通过参数 `query_records` （查询向量）和 `top_k` ，在 Milvus 中检索 `query_records` 得到与该向量组相似度最高的 `top_k` 个向量，要求 `query_records` 维度必须与所建表的维度一致，其数据类型为浮点型二维数组。
 
 ```bash
 # 获取 ANN_SIFT1B 的 Query set 得出 query_records
@@ -81,8 +88,8 @@ milvus.search_vectors(table_name='test01', query_records=query_records, top_k=10
 
 本文使用 ANN_SIFT1B 的 Ground truth 来评估查询准确率。其中 `query_records` 为 ANN_SIFT1B 的 Query set 中随机选择的 20 个向量。在 Milvus 中通过修改参数 `nprobe` 可以控制搜索子空间的范围， `nprobe` 参考值 1~16384 ，该值越大准确率越高，但检索时间也越长。下表为改变 `nprobe` 值计算平均准确率的测试结果：
 
-| 平均准确率 | top_k=1 | top_k=10 | top_k=30 | top_k=50 | top_k=100 | top_k=500 |
-| ---------- | ------- | -------- | -------- | -------- | --------- | --------- |
+| 平均准确率   | top_k=1 | top_k=10 | top_k=30 | top_k=50 | top_k=100 | top_k=500 |
+| ------------ | ------- | -------- | -------- | -------- | --------- | --------- |
 | `nprobe`=16  | 95.0%   | 89.5%    | 85.0%    | 89.8%    | 83.0%     | 81.9%     |
 | `nprobe`=32  | 90.0%   | 96.0%    | 91.0%    | 92.3%    | 92.0%     | 94.2%     |
 | `nprobe`=64  | 95.0%   | 97.0%    | 96.2%    | 94.5%    | 97.4%     | 93.6%     |
@@ -90,7 +97,7 @@ milvus.search_vectors(table_name='test01', query_records=query_records, top_k=10
 
 其中，
 
-$$ 平均准确率＝\frac{Milvus 查询结果与 Ground truth 一致的向量个数}{query records 的向量个数 * top_k} $$
+$$ 平均准确率＝\frac{Milvus 查询结果与 Ground truth 一致的向量个数}{query records 的向量个数 \* top_k} $$
 
 #### 性能查询
 
@@ -101,21 +108,20 @@ $$ 平均准确率＝\frac{Milvus 查询结果与 Ground truth 一致的向量�
 $$ 单条向量查询平均时间 = \frac {Milvus 批量查询总时间}{query_records 向量个数}$$
 经过多次测试实验，在相同环境下，数据规模与查询时间成正比。下表是在不同环境下的性能查询结果：
 
-| 数据规模                                                     | 单条向量查询时间(s) | 批量查询平均时间(s) |
-| ------------------------------------------------------------ | ------------------- | ------------------- |
-| [ANN_SIFT一百万](https://github.com/milvus-io/bootcamp/tree/0.3.1) | 0.0029              | 0.3-1.4             |
-| [ANN_SIFT一亿](https://github.com/milvus-io/bootcamp/tree/0.3.1) | 0.092               | 0.0078~0.010        |
-| ANN_SIFT十亿                                                 | 1.3~1.5             | 0.03~0.08           |
+| 数据规模                                                            | 单条向量查询时间(s) | 批量查询平均时间(s) |
+| ------------------------------------------------------------------- | ------------------- | ------------------- |
+| [ANN_SIFT 一百万](https://github.com/milvus-io/bootcamp/tree/0.3.1) | 0.0029              | 0.3-1.4             |
+| [ANN_SIFT 一亿](https://github.com/milvus-io/bootcamp/tree/0.3.1)   | 0.092               | 0.0078~0.010        |
+| ANN_SIFT 十亿                                                       | 1.3~1.5             | 0.03~0.08           |
 
-> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 * 2的环境下进行。
+> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU _ 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU _ 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 \* 2 的环境下进行。
 
 ## 总结
 
-在超大数据量下，Milvus 仍具备超高性能，十亿向量查询时单条向量查询时间不高于1.5秒，批量查询的平均时间不高于0.08秒，在毫秒级检索十亿向量。
+在超大数据量下，Milvus 仍具备超高性能，十亿向量查询时单条向量查询时间不高于 1.5 秒，批量查询的平均时间不高于 0.08 秒，在毫秒级检索十亿向量。
 
 从使用角度来看， Milvus 特征向量数据库不需要考虑复杂数据在不同系统间的转换和迁移，只关心向量数据，它支持不同 AI 模型所训练出的特征向量，同时由于采用了 GPU/CPU 异构带来的超高算力，可以在单机实现十亿向量的高性能检索。
 
 如果您想尝试自己动手进行海量向量检索，请访问 [Milvus 在线训练营](https://github.com/milvus-io/bootcamp/tree/0.3.1)，手把手教您如何进行海量向量检索。
 
 Milvus 正在建设开发者社区，如果对 Milvus 的技术讨论和试用感兴趣，欢迎加入我们的 [Slack channel](https://milvusio.slack.com/join/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk)，进群讨论。
-

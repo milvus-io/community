@@ -2,6 +2,11 @@
 id: 2019-11-08-data-management.md
 title: Managing Data in Massive-Scale Vector Search Engine
 author: Yihua Mo
+date: 2021-07-30
+desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+banner: ../assets/blogCover.png
+cover: ../assets/blogCover.png
+tag: test1
 ---
 
 # Managing Data in Massive-Scale Vector Search Engine
@@ -147,5 +152,3 @@ This article mainly introduces the data management strategy in Milvus. More arti
 
 - [Milvus Metadata Management (1): How to View Metadata](https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0)
 - [Milvus Metadata Management (2): Fields in the Metadata Table](https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d)
-
-
