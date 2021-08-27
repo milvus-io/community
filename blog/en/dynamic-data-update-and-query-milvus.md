@@ -7,7 +7,7 @@ desc: Vector search is now more intuitive and convenient
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/dynamic-data-update-and-query-milvus
+origin: zilliz.com/blog/dynamic-data-update-and-query-milvus
 ---
   
 # How Milvus Implements Dynamic Data Update And Query

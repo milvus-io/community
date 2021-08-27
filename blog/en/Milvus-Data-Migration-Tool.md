@@ -7,7 +7,7 @@ desc: Learn how to use Milvus data migration tool to greatly improve efficiency 
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Milvus-Data-Migration-Tool
+origin: zilliz.com/blog/Milvus-Data-Migration-Tool
 ---
   
 # Introducing Milvus Data Migration Tool

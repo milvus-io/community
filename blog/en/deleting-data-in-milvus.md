@@ -7,7 +7,7 @@ desc: In Milvus v0.7.0 we came up with a brand new design to make deletion more 
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/deleting-data-in-milvus
+origin: zilliz.com/blog/deleting-data-in-milvus
 ---
   
 # How Milvus Realizes the Delete Function

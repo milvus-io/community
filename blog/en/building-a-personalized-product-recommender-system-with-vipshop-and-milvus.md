@@ -7,7 +7,7 @@ desc: Milvus makes it easy to provide the personalized recommendation service to
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
+origin: zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
   
 # Building a Personalized Product Recommender System with Vipshop and Milvus

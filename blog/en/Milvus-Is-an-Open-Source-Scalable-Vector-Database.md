@@ -7,7 +7,7 @@ desc: Build powerful machine learning applications and manage massive-scale vect
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database
+origin: zilliz.com/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database
 ---
   
 # Milvus Is an Open-Source Scalable Vector Database

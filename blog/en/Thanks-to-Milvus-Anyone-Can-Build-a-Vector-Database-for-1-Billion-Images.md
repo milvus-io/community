@@ -7,7 +7,7 @@ desc: AI and open-source software make it possible to build a reverse image sear
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
+origin: zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
 ---
   
 # Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images 
