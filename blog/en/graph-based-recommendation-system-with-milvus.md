@@ -7,7 +7,7 @@ desc: Recommender systems can generate revenue, reduce costs, and offer a compet
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/graph-based-recommendation-system-with-milvus
+origin: zilliz.com/blog/graph-based-recommendation-system-with-milvus
 ---
   
 # Building a Graph-based Recommendation System with Milvus, PinSage, DGL, and MovieLens Datasets

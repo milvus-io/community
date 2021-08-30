@@ -7,7 +7,7 @@ desc: Discover what vector similarity search is, its various applications, and t
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
+origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 ---
   
 # Vector Similarity Search Hides in Plain View

@@ -7,7 +7,7 @@ desc: Audio retrieval with Milvus makes it possible to classify and analyze soun
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/audio-retrieval-based-on-milvus
+origin: zilliz.com/blog/audio-retrieval-based-on-milvus
 ---
   
 # Audio Retrieval Based on Milvus

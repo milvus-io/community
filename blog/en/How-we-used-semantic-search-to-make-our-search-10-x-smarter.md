@@ -7,7 +7,7 @@ desc: null
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/How-we-used-semantic-search-to-make-our-search-10-x-smarter
+origin: zilliz.com/blog/How-we-used-semantic-search-to-make-our-search-10-x-smarter
 ---
   
 # How we used semantic search to make our search 10x smarter

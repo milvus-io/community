@@ -1,13 +1,13 @@
 ---
 id: Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro.md
-title: Making with Milvus: Detecting Android Viruses in Real Time for Trend Micro
+title: Making with Milvus Detecting Android Viruses in Real Time for Trend Micro
 author: Zilliz
 date: 2021-04-23 06:46:13.732+00
 desc: Learn how Milvus is used to mitigate threats to critical data and strengthen cybersecurity with real-time virus detection.
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro
+origin: zilliz.com/blog/Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro
 ---
   
 # Making with Milvus: Detecting Android Viruses in Real Time for Trend Micro

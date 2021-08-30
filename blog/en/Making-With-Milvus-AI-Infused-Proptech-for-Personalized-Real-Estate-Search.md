@@ -1,13 +1,13 @@
 ---
 id: Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search.md
-title: Making With Milvus: AI-Infused Proptech for Personalized Real Estate Search
+title: Making With Milvus AI-Infused Proptech for Personalized Real Estate Search
 author: Zilliz
 date: 2021-03-18 03:53:54.736+00
 desc: AI is transforming the real estate industry, discover how intelligent proptech accelerates the home search and purchase process. 
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search
+origin: zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search
 ---
   
 # Making With Milvus: AI-Infused Proptech for Personalized Real Estate Search

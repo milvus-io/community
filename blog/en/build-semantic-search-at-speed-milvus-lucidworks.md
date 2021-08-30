@@ -7,7 +7,7 @@ desc: Learn more about using semantic machine learning methodologies to power mo
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/build-semantic-search-at-speed-milvus-lucidworks
+origin: zilliz.com/blog/build-semantic-search-at-speed-milvus-lucidworks
 ---
   
 # Build Semantic Search at Speed

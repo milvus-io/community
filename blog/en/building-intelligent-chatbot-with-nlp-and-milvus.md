@@ -7,7 +7,7 @@ desc: The Next-Gen QA Bot is here
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
+origin: zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
 ---
   
 # Building an Intelligent QA System with NLP and Milvus

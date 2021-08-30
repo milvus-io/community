@@ -7,7 +7,7 @@ desc: Explore the power of open-source in your next AI or machine learning proje
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search
+origin: zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search
 ---
   
 # Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search

@@ -7,7 +7,7 @@ desc: MLOps is superseding DevOps as we make the transition to Software 2.0. Fin
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvus
+origin: zilliz.com/blog/Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvus
 ---
   
 # Operationalize AI at Scale with Software 2.0, MLOps, and Milvus

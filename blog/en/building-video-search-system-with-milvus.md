@@ -7,7 +7,7 @@ desc: Searching for videos by image with Milvus
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-video-search-system-with-milvus
+origin: zilliz.com/blog/building-video-search-system-with-milvus
 ---
   
 # 4 Steps to Building a Video Search System

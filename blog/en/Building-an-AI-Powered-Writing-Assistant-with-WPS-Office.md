@@ -7,7 +7,7 @@ desc: Learn how Kingsoft leveraged Milvus, an open-source similarity search engi
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office
+origin: zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office
 ---
   
 # Building an AI-Powered Writing Assistant for WPS Office

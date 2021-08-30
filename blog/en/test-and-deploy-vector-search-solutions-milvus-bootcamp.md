@@ -7,7 +7,7 @@ desc: Build, test, and customize vector similarity search solutions with Milvus,
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
+origin: zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
 ---
   
 # Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp

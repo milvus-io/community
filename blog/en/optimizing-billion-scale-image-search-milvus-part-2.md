@@ -7,7 +7,7 @@ desc: A case study with UPYUN
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
+origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
   
 # The Journey to Optimizing Billion-scale Image Search (2/2)

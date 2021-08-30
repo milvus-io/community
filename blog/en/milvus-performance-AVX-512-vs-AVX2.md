@@ -7,7 +7,7 @@ desc: Discover how Milvus performs on AVX-512 vs. AVX2 using a variety of differ
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2
+origin: zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2
 ---
   
 # Milvus performance on AVX-512 vs. AVX2

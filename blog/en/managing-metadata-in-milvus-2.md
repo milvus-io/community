@@ -7,7 +7,7 @@ desc: Fields in the Metadata Table
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/managing-metadata-in-milvus-2
+origin: zilliz.com/blog/managing-metadata-in-milvus-2
 ---
   
 # Milvus Metadata Management (2)

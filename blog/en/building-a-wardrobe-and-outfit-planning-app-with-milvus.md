@@ -7,7 +7,7 @@ desc: Discover how Milvus, an open-source vector database, is used by Mozat to p
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus
+origin: zilliz.com/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus
 ---
   
 # Building a Wardrobe and Outfit Planning App with Milvus

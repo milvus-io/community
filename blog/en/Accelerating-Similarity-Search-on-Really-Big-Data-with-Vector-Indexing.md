@@ -7,7 +7,7 @@ desc: Without vector indexing, many modern applications of AI would be impossibl
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing
+origin: zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing
 ---
   
 # Accelerating Similarity Search on Really Big Data with Vector Indexing
