@@ -4,8 +4,8 @@ title: 如何玩转十亿向量检索（SIFT1B）
 author: 陈室余
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1 test2
 ---
 
@@ -114,7 +114,7 @@ $$ 单条向量查询平均时间 = \frac {Milvus 批量查询总时间}{query_r
 | [ANN_SIFT 一亿](https://github.com/milvus-io/bootcamp/tree/0.3.1)   | 0.092               | 0.0078~0.010        |
 | ANN_SIFT 十亿                                                       | 1.3~1.5             | 0.03~0.08           |
 
-> **注意**：1. ANN_SIFT1B 一百万测试在 Intel Core i5-8250U CPU _ 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 2. ANN_SIFT1B 一亿测试在 Intel Core i7-8700 CPU _ 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 \* 2 的环境下进行。
+> **注意**：1. ANN*SIFT1B 一百万测试在 Intel Core i5-8250U CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 2. ANN*SIFT1B 一亿测试在 Intel Core i7-8700 CPU * 1 的环境下进行。[查看教程](https://github.com/milvus-io/bootcamp/tree/0.3.1) <br/> 3. ANN_SIFT1B 十亿测试在 Intel Xeon E5-2678 v3 \* 2 的环境下进行。
 
 ## 总结
 

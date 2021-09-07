@@ -4,8 +4,8 @@ title: Milvus 0.6.0新增功能：分区表
 author: 莫毅华
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test5
 ---
 

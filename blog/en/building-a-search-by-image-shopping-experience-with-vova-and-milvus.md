@@ -3,16 +3,17 @@ id: building-a-search-by-image-shopping-experience-with-vova-and-milvus.md
 title: Building a Search by Image Shopping Experience with VOVA and Milvus
 author: Zilliz
 date: 2021-05-13 08:44:05.528+00
-desc: Discover how Milvus, an open-source vector database, was used by e-commerce platform VOVA to power shopping by image. 
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+desc: Discover how Milvus, an open-source vector database, was used by e-commerce platform VOVA to power shopping by image.
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
 ---
-  
+
 # Building a Search by Image Shopping Experience with VOVA and Milvus
+
 Jump to:
- 
+
 - [How does image search work?](#how-does-image-search-work)
 - [Target detection using the YOLO model](#target-detection-using-the-yolo-model)
 - [Image feature vector extraction with ResNet](#image-feature-vector-extraction-with-resnet)
@@ -23,7 +24,7 @@ Online shopping surged in 2020, [up 44%](https://www.digitalcommerce360.com/2021
 
 To help users overcome the limitations of keyword-based queries, companies can build image search engines that allow users to use images instead of words for search. Not only does this allow users to find items that are difficult to describe, but it also helps them shop for things they encounter in real life. This functionality helps build a unique user experience and offers general convenience that customers appreciate.
 
-VOVA is an emerging e-commerce platform that focuses on affordability and offering a positive shopping experience to its users, with listings covering millions of products and support for 20 languages and 35 major currencies. To enhance the shopping experience for its users, the company used Milvus to build image search functionality into its e-commerce platform. The article explores how VOVA successfully built an image search engine with Milvus. 
+VOVA is an emerging e-commerce platform that focuses on affordability and offering a positive shopping experience to its users, with listings covering millions of products and support for 20 languages and 35 major currencies. To enhance the shopping experience for its users, the company used Milvus to build image search functionality into its e-commerce platform. The article explores how VOVA successfully built an image search engine with Milvus.
 
 <br/>
 
@@ -32,19 +33,20 @@ VOVA is an emerging e-commerce platform that focuses on affordability and offeri
 VOVA's shop by image system searches the company's inventory for product images that are similar to user uploads. The following chart shows the two stages of the system process, the data import stage (blue) and the query stage (orange):
 
 1. Use the YOLO model to detect targets from uploaded photos;
-2. Use ResNet to extract feature vectors from the detected targets; 
+2. Use ResNet to extract feature vectors from the detected targets;
 3. Use Milvus for vector similarity search.
 
 ![Vova-1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Vova_1_47ee6f2da9.png)
-###### *System process of VOVA's search by image functionality.*
+
+###### _System process of VOVA's search by image functionality._
 
 <br/>
 
 ### Target detection using the YOLO model
 
-VOVA's mobile apps on Android and iOS currently support image search. The company uses a state-of-the-art, real-time object detection system called YOLO (You only look once) to detect objects in user uploaded images. The YOLO model is currently in its fifth iteration. 
+VOVA's mobile apps on Android and iOS currently support image search. The company uses a state-of-the-art, real-time object detection system called YOLO (You only look once) to detect objects in user uploaded images. The YOLO model is currently in its fifth iteration.
 
-YOLO is a one-stage model, using only one convolutional neural network (CNN) to predict categories and positions of different targets. It is small, compact, and well suited for mobile use. 
+YOLO is a one-stage model, using only one convolutional neural network (CNN) to predict categories and positions of different targets. It is small, compact, and well suited for mobile use.
 
 YOLO uses convolutional layers to extract features and fully-connected layers to obtain predicted values. Drawing inspiration from the GooLeNet model, YOLO’s CNN includes 24 convolutional layers and two fully-connected layers.
 
@@ -53,7 +55,8 @@ As the following illustration shows, a 448 &times; 448 input image is converted 
 The predicted output of YOLO P is a two-dimensional tensor, whose shape is [batch,7 &times;7 &times;30]. Using slicing, P[:,0:7&times;7&times;20] is the category probability, P[:,7&times;7&times;20:7&times;7&times;(20+2)] is the confidence, and P[:,7&times;7&times;(20+2)]:] is the predicted result of the bounding box.
 
 ![vova-2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/vova_2_1ccf38f721.png)
-###### *YOLO network architecture.*
+
+###### _YOLO network architecture._
 
 <br/>
 
@@ -64,27 +67,29 @@ VOVA adopted the residual neural network (ResNet) model to extract feature vecto
 The ResNet structure is easy to modify and scale. By changing the number of channels in the block and the number of stacked blocks, the width and depth of the network can be easily adjusted to obtain networks with different expressive capabilities. This effectively solves the network degeneration effect, where accuracy declines as the depth of learning increases. With sufficient training data, a model with improving expressive performance can be obtained while gradually deepening the network. Through model training, features are extracted for each picture and converted to 256-dimensional floating point vectors.
 
 ![vova-3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/vova_3_df4b810281.png)
-###### *ResNet structure.*
+
+###### _ResNet structure._
 
 <br/>
 
 ### Vector similarity search powered by Milvus
- 
+
 VOVA's product image database includes 30 million pictures and is growing rapidly. To quickly retrieve the most similar product images from this massive dataset, Milvus is used to conduct vector similarity search. Thanks to a number of optimizations, Milvus offers a fast and streamlined approach to managing vector data and building machine learning applications. Milvus offers integration with popular index libraries (e.g., Faiss, Annoy), supports multiple index types and distance metrics, has SDKs in multiple languages, and provides rich APIs for managing vector data.
 
 Milvus can conduct similarity search on trillion-vector datasets in milliseconds, with a query time under 1.5 seconds when nq=1 and an average batch query time under 0.08 seconds. To build its image search engine, VOVA referred to the design of Mishards, Milvus' sharding middleware solution (see the chart below for its system design), to implement a highly available server cluster. By leveraging the horizontal scalability of a Milvus cluster, the project requirement for high query performance on massive datasets was met.
 
 ![vova-4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/vova_4_e305f1955c.png)
-###### *Mishards architecture in Milvus.*
 
+###### _Mishards architecture in Milvus._
 
 ### VOVA's shop by image tool
- 
+
 The screenshots below show the VOVA search by image shopping tool on the company's Android app.
 
 ![vova-5.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/vova_5_c4c25a3bae.png)
-###### *Screenshots of VOVA's search by image shopping tool.*
- 
+
+###### _Screenshots of VOVA's search by image shopping tool._
+
 As more users search for products and upload photos, VOVA will continue to optimize the models that power the system. Additionally, the company will incorporate new Milvus functionality that can further enhance the online shopping experience of its users.
 
 ### Reference
@@ -102,10 +107,3 @@ https://arxiv.org/abs/1512.03385
 **Milvus:**
 
 https://milvus.io/docs/overview.md
-
-
-
-
-
- 
-  

@@ -4,13 +4,14 @@ title: Set Up Milvus in Google Colaboratory for Easy ML Application Building
 author: Zilliz
 date: 2021-01-21 10:30:58.02+00
 desc: Google Colab makes developing and testing machine learning applications a breeze. Learn how to setup Milvus in Colab for better massive-scale vector data management.
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building
 ---
-  
+
 # Set Up Milvus in Google Colaboratory for Easy ML Application Building
+
 Technological progress is perpetually making artificial intelligence (AI) and machine-scale analytics more accessible and easier to use. The [proliferation](https://techcrunch.com/2019/01/12/how-open-source-software-took-over-the-world/?guccounter=1&guce_referrer=aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS8&guce_referrer_sig=AQAAAL_qokucWT-HjbiOznq2RlO5TG78V6UYf332FKnWl3_knuMo6t5HZvZkIHFL3fhYX0nLzM6V1lVVAK4G3BXZHENX3zCXXgggGt39L9HKde3BufW1-iM2oKm0NIav2fcqgxvfpvx_7EPGstI7c_n99stI9oJf9sdsRPTQ6Wnu7DYX) of open-source software, public datasets, and other free tools are primary forces driving this trend. By pairing two free resources, [Milvus](https://milvus.io/) and [Google Colaboratory](https://colab.research.google.com/notebooks/intro.ipynb#scrollTo=5fCEDCU_qrC0) (“Colab” for short), anyone can create powerful, flexible AI and data analytics solutions. This article provides instructions for setting up Milvus in Colab, as well as performing basic operations using the Python software development kit (SDK).
 
 **Jump to:**
@@ -21,7 +22,6 @@ Technological progress is perpetually making artificial intelligence (AI) and ma
 - [Run basic Milvus operations in Google Colab with Python](#run-basic-milvus-operations-in-google-colab-with-python)
 - [Milvus and Google Colaboratory work beautifully together](#milvus-and-google-colaboratory-work-beautifully-together)
 
-
 ### What is Milvus?
 
 [Milvus](https://milvus.io/) is an open-source vector similarity search engine that can integrate with widely adopted index libraries, including Faiss, NMSLIB, and Annoy. The platform also includes a comprehensive set of intuitive APIs. By pairing Milvus with artificial intelligence (AI) models, a wide variety of applications can be built including:
@@ -29,7 +29,6 @@ Technological progress is perpetually making artificial intelligence (AI) and ma
 - Image, video, audio, and semantic text search engines.
 - Recommendation systems and chatbots.
 - New drug development, genetic screening, and other biomedical applications.
-
 
 ### What is Google Colaboratory?
 
@@ -45,20 +44,21 @@ Google Colab comes with all supporting software for Milvus preinstalled, includi
 
 1. Download Milvus’ source code: Milvus_tutorial.ipynb.
 
-```Wget https://raw.githubusercontent.com/milvus-io/bootcamp/0.10.0/getting_started/basics/milvus_tutorial/Milvus_tutorial.ipynb```
+`Wget https://raw.githubusercontent.com/milvus-io/bootcamp/0.10.0/getting_started/basics/milvus_tutorial/Milvus_tutorial.ipynb`
 
 2. Upload Milvus’ source code to [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb#recent=true) and create a new notebook.
 
 ![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_2_27809b0ce2.png)
 
 ### Compile Milvus from source code
+
 #### Download Milvus source code
 
-```git clone -b 0.10.3 https://github.com/milvus-io/milvus.git```
+`git clone -b 0.10.3 https://github.com/milvus-io/milvus.git`
 
 #### Install dependencies
 
-```% cd /content/milvus/core ./ubuntu_build_deps.sh./ubuntu_build_deps.sh```
+`% cd /content/milvus/core ./ubuntu_build_deps.sh./ubuntu_build_deps.sh`
 
 #### Build Milvus source code
 
@@ -104,8 +104,7 @@ os.environ['LD_LIBRARY_PATH'] +=":/content/milvus/core/milvus/lib"
 
 ![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_3_b15138cd59.png)
 
-
-###### *Milvus server started successfully!*
+###### _Milvus server started successfully!_
 
 ### Run basic Milvus operations in Google Colab with Python
 
@@ -113,7 +112,7 @@ After successfully launching in Google Colab, Milvus can provide a variety of AP
 
 #### Install pymilvus:
 
-```! pip install pymilvus==0.2.14```
+`! pip install pymilvus==0.2.14`
 
 #### Connect to the server:
 
@@ -136,7 +135,7 @@ param={'collection_name':collection_name, 'dimension': _DIM, 'index_file_size': 
 milvus.create_collection(param, timeout=10)
 
 # Create a partition for a collection.
-milvus.create_partition(collection_name=collection_name, partition_tag=partition_tag, timeout=10)    
+milvus.create_partition(collection_name=collection_name, partition_tag=partition_tag, timeout=10)
 ivf_param = {'nlist': 16384}
 
 # Create index for a collection.
@@ -172,7 +171,6 @@ milvus.search(collection_name=collection_name,query_records=[vectors[0]],partiti
 # Show index information of a collection.    milvus.get_index_info(collection_name=collection_name, timeout=10)
 ```
 
-
 #### Get vectors by ID:
 
 ```
@@ -184,8 +182,8 @@ milvus.list_id_in_segment(collection_name =collection_name, segment_name='160032
 milvus.get_entity_by_id(collection_name=collection_name, ids=[0], timeout=None)
 ```
 
-
 #### Get/set parameters:
+
 ```
 # Get Milvus configurations.    milvus.get_config(parent_key='cache', child_key='cache_size')
 
@@ -193,10 +191,11 @@ milvus.get_entity_by_id(collection_name=collection_name, ids=[0], timeout=None)
 ```
 
 #### Delete index/vectors/partition/collection:
+
 ```
 # Remove an index.    milvus.drop_index(collection_name=collection_name, timeout=None)
 
-# Delete vectors in a collection by vector ID.    
+# Delete vectors in a collection by vector ID.
 # id_array (list[int]) -- list of vector id    milvus.delete_entity_by_id(collection_name=collection_name, id_array=[0], timeout=None)
 
 # Delete a partition in a collection.    milvus.drop_partition(collection_name=collection_name, partition_tag=partition_tag, timeout=None)
@@ -213,6 +212,3 @@ Google Colaboratory is a free and intuitive cloud service that greatly simplifie
 - For additional tutorials covering a wide variety of applications, visit [Milvus Bootcamp](https://github.com/milvus-io/bootcamp).
 - For developers interested in making contributions or leveraging the system, find [Milvus on GitHub](https://github.com/milvus-io/milvus).
 - For more information about the company that launched Milvus, visit [Zilliz.com](https://zilliz.com/).
-
-
-  

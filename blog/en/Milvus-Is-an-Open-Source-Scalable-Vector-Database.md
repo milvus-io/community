@@ -4,13 +4,14 @@ title: Milvus Is an Open-Source Scalable Vector Database
 author: Zilliz
 date: 2021-01-21 07:46:40.506+00
 desc: Build powerful machine learning applications and manage massive-scale vector data with Milvus.
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database
 ---
-  
+
 # Milvus Is an Open-Source Scalable Vector Database
+
 Searching data using easily defined criteria, for example querying a movie database by actor, director, genre, or release date, is simple. A relational database is well equipped for these types of basic searches using a query language such as SQL. But when searches involve complex objects and more abstract queries, such as searching a video streaming library using natural language or a video clip, simple similarity metrics like matching words in a title or description are no longer sufficient.
 
 [Artificial intelligence (AI)](https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#d62b) has made computers significantly more capable of understanding the semantics of language, as well as helping people make sense of massive, difficult to analyze unstructured datasets (e.g., audio, video, documents, and social media data). AI makes it possible for Netflix to create sophisticated content recommendation engines, Google users to search the web by image, and pharmaceutical companies to discover new drugs.
@@ -26,7 +27,8 @@ This results in [drastically faster](https://medium.com/unstructured-data-servic
 [Milvus](https://milvus.io/) is an open-source data management platform built specifically for massive-scale vector data and streamlining machine learning operations (MLOps). Powered by Facebook AI Similarity Search (Faiss), Non-Metric Space Library (NMSLIB), and Annoy, Milvus brings a variety of powerful tools together in one place while extending their standalone functionality. The system was purpose built for storing, processing, and analyzing large vector datasets, and can be used to build AI applications spanning computer vision, recommendation engines, and much more.
 
 ![Blog_Milvus Is an Open-Source Scalable AI Search Engine_1.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Milvus_Is_an_Open_Source_Scalable_AI_Search_Engine_1_997255eb27.jpg)
-###### *The structure of an AI-powered similarity search engine.*
+
+###### _The structure of an AI-powered similarity search engine._
 
 ### Milvus was made to power vector similarity search
 
@@ -34,11 +36,6 @@ Milvus was designed for flexibility, allowing developers to optimize the platfor
 
 For more information about Milvus, check out the following resources:
 
-- Explore Milvus' [technical documentation](https://milvus.io/) and learn more about the platform’s inner workings. 
+- Explore Milvus' [technical documentation](https://milvus.io/) and learn more about the platform’s inner workings.
 - Learn how to launch Milvus, build applications, and more using [Milvus tutorials](https://tutorials.milvus.io/).
 - Make contributions to the project and engage with Milvus' open-source community on [GitHub](https://github.com/milvus-io).
-
-
-
-
-  

@@ -4,13 +4,14 @@ title: Building a Personalized Product Recommender System with Vipshop and Milvu
 author: Zilliz
 date: 2021-07-29 08:46:39.92+00
 desc: Milvus makes it easy to provide the personalized recommendation service to users.
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
-  
+
 # Building a Personalized Product Recommender System with Vipshop and Milvus
+
 With the explosive growth of Internet data scale, the product quantity as well as category in the current mainstream e-commerce platform increase on the one hand, the difficulty for users to find the products they need surges on the other hand.
 
 [Vipshop](https://www.vip.com/) is a leading online discount retailer for brands in China. The Company offers high-quality and popular branded products to consumers throughout China at a significant discount from retail prices. To optimize the shopping experience for their customers, the company decided to build a personalized search recommendation system based on user query keywords and user portraits.
@@ -30,6 +31,7 @@ After althorough research, we decided to use Milvus, an open source vector datab
 Using various deep learning models, we convert massive unstructured data into feature vectors, and import the vectors into Milvus. With the excellent performance of Milvus, our e-commerce search recommendation system can efficiently query the TopK vectors that are similar to the target vectors.
 
 ## Overall Architecture
+
 ![Architecture](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_01551e7b2b.jpg)
 As shown in the diagram, the system overall architecture consists of two main parts.
 
@@ -51,6 +53,7 @@ The read node only needs to read existing metadata information and vector data o
 
 The data update service includes not only writing vector data, but also data volume detection of vectors, index construction, index pre-loading, alias control, etc. The overall process is as follows.
 ![Process](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_6052b01334.jpg)
+
 1. Assume that before building the entire data, CollectionA provides data service to the public, and the entire data being used is directed to CollectionA (`redis key1 = CollectionA`). The purpose of constructing entire data is to create a new collection CollectionB.
 
 2. Commodity data check - check the item number of commodity data in the MySQL table, compare the commodity data with the existing data in CollectionA. Alert can be set in accordance with quantity or percentage. If the set quantity (percentage) is not reached, the entire data will not be built, and it will be regarded as the failure of this building operation, triggering the alert; once the set quantity (percentage) is reached, the entire data building process starts.
@@ -61,7 +64,7 @@ The data update service includes not only writing vector data, but also data vol
 
 5. Data batch write-in - calculate the partition ID of each commodity data with its own ID using modulo operation, and write the data to multiple partitions to the newly created collection in batches.
 
-6. Build and pre-load index - Create index (`createIndex()`) for the new collection. The index file is stored in distributed storage server GlusterFS. The system automatically simulates query on the new collection and pre-load the index for query warm-up. 
+6. Build and pre-load index - Create index (`createIndex()`) for the new collection. The index file is stored in distributed storage server GlusterFS. The system automatically simulates query on the new collection and pre-load the index for query warm-up.
 
 7. Collection data check - check the item number of data in the new collection, compare the data with the existing collection, and set alarms based on the quantity and percentage. If the set number (percentage) is not reached, the collection will not be switched and the building process will be regarded as a failure, triggering the alert.
 
@@ -102,7 +105,6 @@ The three most anticipated features of Milvus in the future are as follows.
 
 1. For applications where read operations are the primary focus, a read-write separation deployment can significantly increase the processing power and improve performance.
 2. The Milvus Java client lacks a reconnection mechanism because the Milvus client used by the recall service is resident in memory. We have to build our own connection pool to ensure the availability of the connection between the Java client and the server through heartbeat test.
-3. Slow queries occur occasionally on Milvus. This is due to insufficient warm-up of the new collection. By simulating the query on the new collection, the index file is loaded into the memory to achieve the  index warm-up.
+3. Slow queries occur occasionally on Milvus. This is due to insufficient warm-up of the new collection. By simulating the query on the new collection, the index file is loaded into the memory to achieve the index warm-up.
 4. nlist is the index building parameter and nprobe is the query parameter. You need to get a reasonable threshold value according to your business scenario through pressure testing experiments to balance the retrieval performance and accuracy.
 5. For static data scenario, it is more efficient to import all data into the collection first and build indexes later.
-  
