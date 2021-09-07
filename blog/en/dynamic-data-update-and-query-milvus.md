@@ -4,13 +4,14 @@ title: How Milvus Implements Dynamic Data Update And Query
 author: Zilliz
 date: 2021-04-09 21:02:08.632+00
 desc: Vector search is now more intuitive and convenient
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/dynamic-data-update-and-query-milvus
 ---
-  
+
 # How Milvus Implements Dynamic Data Update And Query
+
 In this article, we will mainly describe how vector data are recorded in the memory of Milvus, and how these records are maintained.
 
 Below are our main design goals:
@@ -23,7 +24,7 @@ Therefore, we have established a memory buffer (insert buffer) to insert data to
 
 ## Preparation
 
-When the user is ready to insert a vector into Milvus, he first needs to create a Collection (* Milvus renames Table to Collection in 0.7.0 version). Collection is the most basic unit for recording and searching vectors in Milvus.
+When the user is ready to insert a vector into Milvus, he first needs to create a Collection (\* Milvus renames Table to Collection in 0.7.0 version). Collection is the most basic unit for recording and searching vectors in Milvus.
 
 Each Collection has a unique name and some properties that can be set, and vectors are inserted or searched based on the Collection name. When creating a new Collection, Milvus will record the information of this Collection in the metadata.
 
@@ -32,7 +33,8 @@ Each Collection has a unique name and some properties that can be set, and vecto
 When the user sends a request to insert data, the data are serialized and deserialized to reach the Milvus server. Data are now written into memory. Memory writing is roughly divided into the following steps:
 
 ![2-data-insertion-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_data_insertion_milvus_99448bae50.png)
-###### *Two steps to insert data in Milvus.*
+
+###### _Two steps to insert data in Milvus._
 
 1. In MemManager, find or create a new MemTable corresponding to the name of the Collection. Each MemTable corresponds to a Collection buffer in memory.
 2. A MemTable will contain one or more MemTableFile. Whenever we create a new MemTableFile, we will record this information in the Meta at the same time. We divide MemTableFile into two states: Mutable and Immutable. When the size of MemTableFile reaches the threshold, it will become Immutable. Each MemTable can only have one Mutable MemTableFile to be written at any time.
@@ -46,7 +48,8 @@ Through MemManager, MemTable and MemTableFile multi-level architecture, data ins
 In Milvus, you only need to wait for one second at the longest for the inserted data to move from memory to disk. This entire process can be roughly summarized by the following picture:
 
 ![2-near-real-time-query-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_near_real_time_query_milvus_f3cfdd00fb.png)
-###### *Flow of data insertion in Milvus.*
+
+###### _Flow of data insertion in Milvus._
 
 First, the inserted data will enter an insert buffer in memory. The buffer will periodically change from the initial Mutable state to the Immutable state in preparation for serialization. Then, these Immutable buffers will be serialized to disk periodically by the background serialization thread. After the data are placed, the order information will be recorded in the metadata. At this point, the data can be searched!
 
@@ -55,14 +58,16 @@ Now, we will describe the steps in the picture in detail.
 We already know the process of inserting data into the mutable buffer. The next step is to switch from the mutable buffer to the immutable buffer:
 
 ![3-mutable-buffer-immutable-buffer-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_mutable_buffer_immutable_buffer_milvus_282b66c5fe.png)
-###### *Switching from the mutable buffer to the immutable buffer.*
+
+###### _Switching from the mutable buffer to the immutable buffer._
 
 Immutable queue will provide the background serialization thread with the immutable state and the MemTableFile that is ready to be serialized. Each MemTable manages its own immutable queue, and when the size of the MemTable’s only mutable MemTableFile reaches the threshold, it will enter the immutable queue. A background thread responsible for ToImmutable will periodically pull all the MemTableFiles in the immutable queue managed by MemTable and send them to the total Immutable queue. It should be noted that the two operations of writing data into the memory and changing the data in the memory into a state that cannot be written cannot occur at the same time, and a common lock is required. However, the operation of ToImmutable is very simple and almost does not cause any delay, so the performance impact on inserted data is minimal.
 
 The next step is to serialize the MemTableFile in the serialization queue to disk. This is mainly divided into three steps:
 
 ![4-serialize-memtablefile-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_serialize_memtablefile_milvus_95766abdfb.png)
-###### *Three steps to serialize the MemTableFile to disk.*
+
+###### _Three steps to serialize the MemTableFile to disk._
 
 First, the background serialization thread will periodically pull MemTableFile from the immutable queue. Then, they are serialized into fixed-size raw files (Raw TableFiles). Finally, we will record this information in the metadata. When we conduct a vector search, we will query the corresponding TableFile in the metadata. From here, these data can be searched!
 
@@ -73,5 +78,3 @@ In addition, according to the set index_file_size, after the serialization threa
 In fact, you will find that with the help of TableFile and metadata, vector search becomes more intuitive and convenient. In general, we need to get the TableFiles corresponding to the queried Collection from the metadata, search in each TableFile, and finally merge. In this article, we do not delve into the specific implementation of search.
 
 If you want to know more, welcome to read our source code, or read our other technical articles about Milvus!
-
-  

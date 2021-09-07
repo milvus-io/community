@@ -4,8 +4,8 @@ title: 如何选择索引类型 (一)
 author: 蔡宇东
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test4
 ---
 

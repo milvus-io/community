@@ -4,13 +4,14 @@ title: Building an Intelligent QA System with NLP and Milvus
 author: Zilliz
 date: 2021-04-08 22:33:34.726+00
 desc: The Next-Gen QA Bot is here
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
 ---
-  
+
 # Building an Intelligent QA System with NLP and Milvus
+
 Milvus Project：github.com/milvus-io/milvus
 
 The question answering system is commonly used in the field of natural language processing. It is used to answer questions in the form of natural language and has a wide range of applications. Typical applications include: intelligent voice interaction, online customer service, knowledge acquisition, personalized emotional chatting, and more. Most question answering systems can be classified as: generative and retrieval question answering systems, single-round question answering and multi-round question answering systems, open question answering systems, and specific question answering systems.
@@ -93,12 +94,3 @@ With the BERT model, you no longer need to sort and organize the text corpora be
 Milvus has officially joined the Linux AI (LF AI) Foundation for incubation. You are welcome to join the Milvus community and work with us to accelerate the application of AI technologies!
 
 => Try our online demo here: https://www.milvus.io/scenarios
-
-
-
-
-
-
-
-
-  

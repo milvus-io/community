@@ -4,13 +4,14 @@ title: 4 Steps to Building a Video Search System
 author: Zilliz
 date: 2021-03-31 00:18:19.703+00
 desc: Searching for videos by image with Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 origin: zilliz.com/blog/building-video-search-system-with-milvus
 ---
-  
+
 # 4 Steps to Building a Video Search System
+
 As its name suggests, searching for videos by image is the process of retrieving from the repository videos containing similar frames to the input image. One of the key steps is to turn videos into embeddings, which is to say, extract the key frames and convert their features to vectors. Now, some curious readers might wonder what the difference is between searching for video by image and searching for an image by image? In fact, searching for the key frames in videos is equivalent to searching for an image by image.
 
 You can refer to our previous article [Milvus x VGG: Building a Content-based Image Retrieval System](https://medium.com/unstructured-data-service/milvus-application-1-building-a-reverse-image-search-system-based-on-milvus-and-vgg-aed4788dd1ea) if interested.
@@ -111,9 +112,3 @@ In this article, we used Milvus to build a system for searching for videos by im
 Milvus is compatible with multiple deep learning frameworks, and it makes possible searches in milliseconds for vectors at the scale of billions. Feel free to take Milvus with you to more AI scenarios: https://github.com/milvus-io/milvus.
 
 Don’t be a stranger, follow us on [Twitter](https://twitter.com/milvusio/) or join us on [Slack](https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/)!👇🏻
-
-
-
-
-
-  

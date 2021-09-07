@@ -4,8 +4,8 @@ title: 基于 Milvus 实现向量与结构化数据混合查询
 author: 顾钧
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1 test3
 ---
 
