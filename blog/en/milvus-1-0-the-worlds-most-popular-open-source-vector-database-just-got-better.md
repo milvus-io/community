@@ -1,13 +1,13 @@
 ---
 id: milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better.md
-title: Milvus 1.0: The World's Most Popular Open-Source Vector Database Just Got Better
+title: Milvus 1.0 The World's Most Popular Open-Source Vector Database Just Got Better
 author: Zilliz
 date: 2021-04-19 06:58:36.647+00
 desc: Milvus v1.0 is available now. This stable, long-term support version powers image/video search, chatbots, and many more AI applications.
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better
+origin: zilliz.com/blog/milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better
 ---
   
 # Milvus 1.0: The World's Most Popular Open-Source Vector Database Just Got Better

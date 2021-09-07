@@ -7,7 +7,7 @@ desc: How to scale out
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/mishards-distributed-vector-search-milvus
+origin: zilliz.com/blog/mishards-distributed-vector-search-milvus
 ---
   
 # Mishards — Distributed Vector Search in Milvus

@@ -7,7 +7,7 @@ desc: Learn how to build a Milvus cluster based on JuiceFS, a shared file system
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-a-milvus-cluster-based-on-juicefs
+origin: zilliz.com/blog/building-a-milvus-cluster-based-on-juicefs
 ---
   
 # Building a Milvus Cluster Based on JuiceFS

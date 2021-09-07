@@ -7,7 +7,7 @@ desc: Milvus accelerates machine learning application development and machine le
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/AI-applications-with-Milvus
+origin: zilliz.com/blog/AI-applications-with-Milvus
 ---
   
 # How to Make 4 Popular AI Applications with Milvus

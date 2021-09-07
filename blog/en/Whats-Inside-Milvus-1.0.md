@@ -7,7 +7,7 @@ desc: 	 Milvus v1.0 is available now. This stable, long-term support version pow
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Whats-Inside-Milvus-1.0
+origin: zilliz.com/blog/Whats-Inside-Milvus-1.0
 ---
   
 # What's Inside Milvus 1.0?

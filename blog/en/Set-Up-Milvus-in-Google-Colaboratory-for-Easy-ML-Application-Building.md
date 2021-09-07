@@ -7,7 +7,7 @@ desc: Google Colab makes developing and testing machine learning applications a 
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building
+origin: zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building
 ---
   
 # Set Up Milvus in Google Colaboratory for Easy ML Application Building

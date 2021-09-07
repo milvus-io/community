@@ -7,7 +7,7 @@ desc: A case study with WANYIN APP
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/music-recommender-system-item-based-collaborative-filtering-milvus
+origin: zilliz.com/blog/music-recommender-system-item-based-collaborative-filtering-milvus
 ---
   
 # Item-based Collaborative Filtering for Music Recommender System

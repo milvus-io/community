@@ -7,7 +7,7 @@ desc: How to run molecular structure similarity analysis in Milvus
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/molecular-structure-similarity-with-milvus
+origin: zilliz.com/blog/molecular-structure-similarity-with-milvus
 ---
   
 # Accelerating New Drug Discovery

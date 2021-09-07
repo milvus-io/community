@@ -7,7 +7,7 @@ desc: Discover how Milvus, an open-source vector database, was used by e-commerc
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
+origin: zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
 ---
   
 # Building a Search by Image Shopping Experience with VOVA and Milvus

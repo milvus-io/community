@@ -7,7 +7,7 @@ desc: Learn how Milvus was used to build an intelligent news recommendation syst
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app
+origin: zilliz.com/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app
 ---
   
 # Building an Intelligent News Recommendation System Inside Sohu News App

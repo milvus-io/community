@@ -7,7 +7,7 @@ desc: An interview with Charles Xie
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/Making-Sense-of-Unstructured-Data-with-Zilliz-Founder-and-CEO-Charles-Xie
+origin: zilliz.com/blog/Making-Sense-of-Unstructured-Data-with-Zilliz-Founder-and-CEO-Charles-Xie
 ---
   
 # Making Sense of Unstructured Data with Zilliz Founder and CEO Charles Xie

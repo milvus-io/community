@@ -7,7 +7,7 @@ desc: The work behind the scene
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/scheduling-query-tasks-milvus
+origin: zilliz.com/blog/scheduling-query-tasks-milvus
 ---
   
 # How Does Milvus Schedule Query Tasks

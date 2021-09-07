@@ -1,13 +1,13 @@
 ---
 id: milmil-a-milvus-powered-faq-chatbot-that-answers-questions-about-milvus.md
-title: MilMil: A Milvus-powered FAQ Chatbot that Answers Questions About Milvus
+title: MilMil A Milvus-powered FAQ Chatbot that Answers Questions About Milvus
 author: Zilliz
 date: 2021-07-20 07:21:43.897+00
 desc: Using open-source vector search tools to build a question answering service. 
 banner: ../assets/blogCover.png
 cover: ../assets/blogCover.png
 tag: test1
-origin: https://zilliz.com/blog/milmil-a-milvus-powered-faq-chatbot-that-answers-questions-about-milvus
+origin: zilliz.com/blog/milmil-a-milvus-powered-faq-chatbot-that-answers-questions-about-milvus
 ---
   
 # MilMil: A Milvus-powered FAQ Chatbot that Answers Questions About Milvus
