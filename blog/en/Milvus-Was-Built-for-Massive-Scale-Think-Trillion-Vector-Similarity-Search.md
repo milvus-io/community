@@ -6,7 +6,7 @@ date: 2021-01-21 08:56:00.48+00
 desc: Explore the power of open-source in your next AI or machine learning project. Manage massive-scale vector data and power similarity search with Milvus.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology Community
 origin: zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search
 ---
 
@@ -18,10 +18,15 @@ Vector similarity search has applications spanning e-commerce, security, new dru
 
 **Jump to:**
 
-- [LSM trees keep dynamic data management efficient at massive scales](#lsm-trees-keep-dynamic-data-management-efficient-at-massive-scales)
-- [Data management is optimized for rapid access and limited fragmentation](#data-management-is-optimized-for-rapid-access-and-limited-fragmentation)
-- [Similarity searched is accelerated by indexing vector data](#similarity-searched-is-accelerated-by-indexing-vector-data)
-- [Learn more about Milvus](#learn-more-about-Milvus)
+- [Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search](#milvus-was-built-for-massive-scale-think-trillion-vector-similarity-search)
+    - [LSM trees keep dynamic data management efficient at massive scales](#lsm-trees-keep-dynamic-data-management-efficient-at-massive-scales)
+          - [_A segment of 10-dimensional vectors in Milvus._](#a-segment-of-10-dimensional-vectors-in-milvus)
+    - [Data management is optimized for rapid access and limited fragmentation](#data-management-is-optimized-for-rapid-access-and-limited-fragmentation)
+          - [_An illustration of inserting vectors in Milvus._](#an-illustration-of-inserting-vectors-in-milvus)
+          - [_Queried data files before the merge._](#queried-data-files-before-the-merge)
+          - [_Queried data files after the merge._](#queried-data-files-after-the-merge)
+    - [Similarity searched is accelerated by indexing vector data](#similarity-searched-is-accelerated-by-indexing-vector-data)
+    - [Learn more about Milvus](#learn-more-about-milvus)
 
 ### LSM trees keep dynamic data management efficient at massive scales
 

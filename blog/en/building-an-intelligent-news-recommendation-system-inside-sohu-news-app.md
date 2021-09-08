@@ -6,7 +6,7 @@ date: 2021-06-08 01:42:53.489+00
 desc: Learn how Milvus was used to build an intelligent news recommendation system inside an app.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app
 ---
 

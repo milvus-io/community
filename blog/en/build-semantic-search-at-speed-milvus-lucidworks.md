@@ -6,7 +6,7 @@ date: 2021-04-19 07:32:50.416+00
 desc: Learn more about using semantic machine learning methodologies to power more relevant search results across your organization.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag:  Scenarios
 origin: zilliz.com/blog/build-semantic-search-at-speed-milvus-lucidworks
 ---
 

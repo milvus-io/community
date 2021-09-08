@@ -6,7 +6,7 @@ date: 2021-03-18 03:53:54.736+00
 desc: AI is transforming the real estate industry, discover how intelligent proptech accelerates the home search and purchase process.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search
 ---
 

@@ -6,7 +6,7 @@ date: null
 desc: Milvus 2.0 is available now. This refactored, cloud-native version powers image/video search, chatbots, and many more AI applications.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: null
 ---
 

@@ -6,7 +6,7 @@ date: 2021-03-30 21:41:08.582+00
 desc: Recommender systems can generate revenue, reduce costs, and offer a competitive advantage. Learn how to build one for free with open-source tools.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/graph-based-recommendation-system-with-milvus
 ---
 

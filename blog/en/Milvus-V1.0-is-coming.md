@@ -6,7 +6,7 @@ date: null
 desc: Today we proudly announce the release of Milvus V1.0.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Community
 origin: null
 ---
 

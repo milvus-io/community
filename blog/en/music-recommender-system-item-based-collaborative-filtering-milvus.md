@@ -6,7 +6,7 @@ date: 2021-03-31 00:01:59.064+00
 desc: A case study with WANYIN APP
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/music-recommender-system-item-based-collaborative-filtering-milvus
 ---
 

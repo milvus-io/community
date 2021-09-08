@@ -6,7 +6,7 @@ date: 2021-05-19 03:41:20.776+00
 desc: Milvus can be used to build AI applications for the finance industry including chatbots, recommender systems, and more.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/ai-in-finance
 ---
 

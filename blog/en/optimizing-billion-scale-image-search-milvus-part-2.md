@@ -6,7 +6,7 @@ date: 2021-04-08 22:20:27.855+00
 desc: A case study with UPYUN
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
 

@@ -6,7 +6,7 @@ date: 2021-04-12 20:41:13.864+00
 desc: Fields in the Metadata Table
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/managing-metadata-in-milvus-2
 ---
 

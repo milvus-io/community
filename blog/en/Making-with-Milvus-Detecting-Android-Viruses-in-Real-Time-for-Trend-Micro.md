@@ -6,7 +6,7 @@ date: 2021-04-23 06:46:13.732+00
 desc: Learn how Milvus is used to mitigate threats to critical data and strengthen cybersecurity with real-time virus detection.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro
 ---
 

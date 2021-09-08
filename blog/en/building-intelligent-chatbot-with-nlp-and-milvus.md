@@ -6,7 +6,7 @@ date: 2021-04-08 22:33:34.726+00
 desc: The Next-Gen QA Bot is here
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
 ---
 
