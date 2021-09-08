@@ -6,7 +6,7 @@ date: 2021-04-09 23:12:34.209+00
 desc: How to build a deep learning powered recommender system
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-personalized-recommender-systems-milvus-paddlepaddle
 ---
 

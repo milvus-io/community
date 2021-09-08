@@ -6,7 +6,7 @@ date: 2021-04-12 19:08:18.815+00
 desc: How to run molecular structure similarity analysis in Milvus
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/molecular-structure-similarity-with-milvus
 ---
 

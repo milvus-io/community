@@ -6,7 +6,7 @@ date: null
 desc: Discover how zilliz to reduce compile times 2.5x using dependency decoupling and containerization techniques for large-scale AI and MLOps projects.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: null
 ---
 

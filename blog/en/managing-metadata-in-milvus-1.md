@@ -6,7 +6,7 @@ date: 2021-04-12 19:21:42.469+00
 desc: How to View Metadata
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/managing-metadata-in-milvus-1
 ---
 

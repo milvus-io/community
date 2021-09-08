@@ -6,7 +6,7 @@ date: 2021-04-09 21:36:16.974+00
 desc: How to scale out
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/mishards-distributed-vector-search-milvus
 ---
 

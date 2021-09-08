@@ -6,7 +6,7 @@ date: 2021-03-30 22:15:39.156+00
 desc: Discover how Milvus performs on AVX-512 vs. AVX2 using a variety of different vector indexes.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2
 ---
 

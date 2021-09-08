@@ -6,7 +6,7 @@ date: 2021-07-29 08:46:39.92+00
 desc: Milvus makes it easy to provide the personalized recommendation service to users.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
 

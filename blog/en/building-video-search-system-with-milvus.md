@@ -6,7 +6,7 @@ date: 2021-03-31 00:18:19.703+00
 desc: Searching for videos by image with Milvus
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-video-search-system-with-milvus
 ---
 

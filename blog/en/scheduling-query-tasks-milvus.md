@@ -6,7 +6,7 @@ date: 2021-04-09 22:38:17.829+00
 desc: The work behind the scene
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/scheduling-query-tasks-milvus
 ---
 

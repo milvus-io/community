@@ -6,7 +6,7 @@ date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
 
 cover: ../assets/pc-blog.jpg
-tag: test4
+tag: Technology
 ---
 
 # Milvus Metadata Management (2)

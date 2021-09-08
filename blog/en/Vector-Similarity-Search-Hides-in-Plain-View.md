@@ -6,7 +6,7 @@ date: 2021-05-12 03:40:20.821+00
 desc: Discover what vector similarity search is, its various applications, and the public resources making artificial intelligence more accessible than ever.
 
 cover: ../assets/pc-blog.jpg
-tag: test1
+tag: Community
 origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 ---
 
