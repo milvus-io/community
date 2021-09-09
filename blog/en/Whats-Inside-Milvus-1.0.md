@@ -3,18 +3,16 @@ id: Whats-Inside-Milvus-1.0.md
 title: What's Inside Milvus 1.0?
 author: Zilliz
 date: 2021-04-29 08:46:04.019+00
-desc: Milvus v1.0 is available now. This stable, long-term support version powers image/video search, chatbots, and many more AI applications.
-
-cover: ../assets/pc-blog.jpg
-tag: Technology
+desc: 	 Milvus v1.0 is available now. This stable, long-term support version powers image/video search, chatbots, and many more AI applications.
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/Milvus_510cf50aee.jpeg
+tag: test1
 origin: zilliz.com/blog/Whats-Inside-Milvus-1.0
 ---
-
+  
 # What's Inside Milvus 1.0?
-
 ![Milvus.jpeg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Milvus_510cf50aee.jpeg)
 
-Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more.
+Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more. 
 
 In March, 2021 Zilliz, the company behind Milvus, released the platform's first long-term support version—Milvus v1.0. After months of extensive testing, a stable, production ready version of the world's most popular vector database is ready for prime time. This blog article covers some Milvus fundamentals as well as key features of v1.0.
 
@@ -24,7 +22,7 @@ In March, 2021 Zilliz, the company behind Milvus, released the platform's first 
 
 Milvus is available in CPU-only and GPU-enabled distributions. The former relies exclusively on CPU for index building and search; the latter enables CPU and GPU hybrid search and index building that further accelerates Milvus. For example, using the hybrid distribution, CPU can be used for search and GPU for index building, further improving query efficiency.
 
-Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported).
+Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported). 
 
 <br/>
 
@@ -41,7 +39,6 @@ Milvus supports creating partitions in a collection. In situations where data is
 <br/>
 
 ### Index algorithm optimizations
-
 Milvus is built on top of multiple widely-adopted index libraries, including Faiss, NMSLIB, and Annoy. Milvus is far more than a basic wrapper for these index libraries. Here are some of the major enhancements that have been made to the underlying libraries:
 
 - IVF index performance optimizations using the Elkan k-means algorithm.
@@ -53,11 +50,11 @@ Milvus is built on top of multiple widely-adopted index libraries, including Fai
 
 ### Search, index building, and other Milvus optimizations
 
-The following optimizations have been made to Milvus to improve search and index building performance.
+The following optimizations have been made to Milvus to improve search and index building performance. 
 
-- Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads.
-- Milvus combines search requests from a client that take the same topK and search parameters.
-- Index building is suspended when search requests come in.
+- Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads. 
+- Milvus combines search requests from a client that take the same topK and search parameters. 
+- Index building is suspended when search requests come in. 
 - Milvus automatically preloads collections to memory at start.
 - Multiple GPU devices can be assigned to accelerate vector similarity search.
 
@@ -94,7 +91,7 @@ Milvus is compatible with Prometheus, an open-source system monitoring and alert
 
 ### Metadata management
 
-Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management.
+Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management. 
 
 <br/>
 
@@ -103,3 +100,7 @@ Milvus uses SQLite for metadata management by default. SQLite is implemented in 
 - Find or contribute to Milvus on [GitHub](https://github.com/milvus-io/milvus/).
 - Interact with the community via [Slack](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ).
 - Connect with us on [Twitter](https://twitter.com/milvusio).
+
+
+
+  

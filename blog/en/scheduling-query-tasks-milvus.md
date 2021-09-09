@@ -4,14 +4,12 @@ title: How Does Milvus Schedule Query Tasks
 author: Zilliz
 date: 2021-04-09 22:38:17.829+00
 desc: The work behind the scene
-
-cover: ../assets/pc-blog.jpg
-tag: Technology
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/eric_rothermel_Fo_KO_4_Dp_Xam_Q_unsplash_469fe12aeb.jpg
+tag: test1
 origin: zilliz.com/blog/scheduling-query-tasks-milvus
 ---
-
+  
 # How Does Milvus Schedule Query Tasks
-
 n this article, we will discuss how Milvus schedules query tasks. We will also talk about problems, solutions, and future orientations for implementing Milvus scheduling.
 
 ## Background
@@ -70,7 +68,7 @@ Here we assume that the **estimated completion time** for GPU1 is shorter.
 
 8. Milvus executes SearchTask in GpuResource. Because the result of a SearchTask is relatively small, the result is directly returned to CPU memory.
 
-![7-scheduler.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_scheduler_53f1fbbaba.png)
+![7-scheduler.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_scheduler_53f1fbbaba.png) 
 
 9. Milvus merges the result of SearchTask to the whole search result.
 
@@ -112,3 +110,23 @@ Query optimization
 
 During experimentation, we discovered some opportunities for performance improvement. For example, when the server receives multiple queries for the same table, the queries can be merged under some conditions. By using data locality, we can improve the performance. These optimizations will be implemented in our future development.
 Now we already know how queries are scheduled and performed for the single-host, multi-GPU scenario. We will continue to introduce more inner mechanisms for Milvus in the upcoming articles.
+
+ 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

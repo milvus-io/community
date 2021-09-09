@@ -4,14 +4,12 @@ title: Accelerating New Drug Discovery
 author: Zilliz
 date: 2021-04-12 19:08:18.815+00
 desc: How to run molecular structure similarity analysis in Milvus
-
-cover: ../assets/pc-blog.jpg
-tag: Scenarios
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_44d6b6aacd.jpg
+tag: test1
 origin: zilliz.com/blog/molecular-structure-similarity-with-milvus
 ---
-
+  
 # Accelerating New Drug Discovery
-
 ## Introduction
 
 Drug discovery, as the source of medicine innovation, is an important part of new medicine research and development. Drug discovery is implemented by target selection and confirmation. When fragments or lead compounds are discovered, similar compounds are usually searched in internal or commercial compound libraries in order to discover structure-activity relationship (SAR), compound availability, thus evaluating the potential of the lead compounds to be optimized to candidate compounds.
@@ -48,19 +46,15 @@ We can then import the Morgan fingerprints into Milvus to build a chemical struc
     Milvus.search_vectors(table_name=MILVUS_TABLE, query_records=query_mvec, top_k=topk)
 
 ### Substructure search
-
 Checks whether a chemical structure contains another chemical structure.
 
 ### Similarity search
-
 Searches similar chemical structures. Tanimoto distance is used as the metric by default.
 
 ### Exact search
-
 Checks whether a specified chemical structure exists. This kind of search requires exact match.
 
 ## Computing chemical fingerprints
-
 Tanimoto distance is often used as a metric for chemical fingerprints. In Milvus, Jaccard distance corresponds with Tanimoto distance.
 
 ![3-computing-chem-fingerprings-table-1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_computing_chem_fingerprings_table_1_3814744fce.png)
@@ -86,3 +80,11 @@ We can search specified chemical structures in the system and returns similar ch
 Similarity search is indispensable in a number of fields, such as images and videos. For drug discovery, similarity search can be applied to chemical structure databases to discover potentially available compounds, which are then converted to seeds for practical synthesis and point-of-care testing. Milvus, as an open-source similarity search engine for massive-scale feature vectors, is built with heterogeneous computing architecture for the best cost efficiency. Searches over billion-scale vectors take only milliseconds with minimum computing resources. Thus, Milvus can help implement accurate, fast chemical structure search in fields such as biology and chemistry.
 
 You can access the demo by visiting http://40.117.75.127:8002/, and don’t forget to also pay a visit to our GitHub https://github.com/milvus-io/milvus to learn more!
+
+
+
+
+
+
+
+  

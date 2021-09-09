@@ -4,14 +4,12 @@ title: Milvus Metadata Management (1)
 author: Zilliz
 date: 2021-04-12 19:21:42.469+00
 desc: How to View Metadata
-
-cover: ../assets/pc-blog.jpg
-tag: Technology
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c2eb459468.jpg
+tag: test1
 origin: zilliz.com/blog/managing-metadata-in-milvus-1
 ---
-
+  
 # Milvus Metadata Management (1)
-
 We introduced some information about metadata in [Managing Data in Massive-Scale Vector Search Engine](https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f). This article mainly shows how to view the metadata of Milvus.
 
 Milvus supports metadata storage in SQLite or MySQL. There’s a parameter <code>backend_url</code> (in the configuration file <code>server_config.yaml</code>) by which you can specify if to use SQLite or MySQL to manage your metadata.
@@ -41,7 +39,6 @@ To query Tables and TableFiles using SQL statements (case-insensitive):
     SELECT * FROM TableFiles
 
 ![1-use-sql-lite.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_use_sql_lite_2418fc1787.png)
-
 ###### Use SQLite3 to view metadata
 
 ## MySQL
@@ -66,7 +63,6 @@ Use the following command to connect to MySQL service:
 Now, you can use SQL statements to query metadata information:
 
 ![2-my-sql-view-meta-data.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_my_sql_view_meta_data_c871735349.png)
-
 ###### Use MySQL to view metadata
 
 ## What’s coming next
@@ -78,3 +74,7 @@ Any questions, welcome to join our [Slack channel](https://join.slack.com/t/milv
 GitHub repo: https://github.com/milvus-io/milvus
 
 If you like this article or find it useful, don’t forget to clap!
+
+
+
+  
