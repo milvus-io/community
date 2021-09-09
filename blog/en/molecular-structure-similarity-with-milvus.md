@@ -1,11 +1,11 @@
 ---
 id: molecular-structure-similarity-with-milvus.md
 title: Accelerating New Drug Discovery
-author: Zilliz
-date: 2021-04-12 19:08:18.815+00
+author: Shiyu Chen
+date: 2020-02-06 19:08:18.815+00
 desc: How to run molecular structure similarity analysis in Milvus
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_44d6b6aacd.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/molecular-structure-similarity-with-milvus
 ---
   

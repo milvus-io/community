@@ -1,11 +1,11 @@
 ---
 id: building-video-search-system-with-milvus.md
 title: 4 Steps to Building a Video Search System
-author: Zilliz
-date: 2021-03-31 00:18:19.703+00
+author: milvus
+date: 2020-08-29 00:18:19.703+00
 desc: Searching for videos by image with Milvus
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_3a822736b3.gif
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-video-search-system-with-milvus
 ---
   

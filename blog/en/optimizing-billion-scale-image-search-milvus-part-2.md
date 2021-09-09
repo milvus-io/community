@@ -1,11 +1,11 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-2.md
 title: The Journey to Optimizing Billion-scale Image Search (2/2)
-author: Zilliz
-date: 2021-04-08 22:20:27.855+00
+author: Rife Wang
+date: 2020-08-11 22:20:27.855+00
 desc: A case study with UPYUN
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c73631b1e7.png
-tag: test1
+tag: Scenarios Technology
 origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
   

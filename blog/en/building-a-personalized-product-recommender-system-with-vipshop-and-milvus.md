@@ -1,11 +1,11 @@
 ---
 id: building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md
 title: Building a Personalized Product Recommender System with Vipshop and Milvus
-author: Zilliz
+author: milvus
 date: 2021-07-29 08:46:39.92+00
 desc: Milvus makes it easy to provide the personalized recommendation service to users.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_shopping_27fba2c990.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
   

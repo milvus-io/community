@@ -1,11 +1,11 @@
 ---
 id: Extracting-Events-Highlights-Using-iYUNDONG-Sports-App.md
 title: Extracting Event Highlights Using iYUNDONG Sports App
-author: Zilliz
-date: 2021-03-15 03:41:30.983+00
+author: milvus
+date: 2021-03-16 03:41:30.983+00
 desc: Making with Milvus Intelligent image retrieval system for sports App iYUNDONG
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_iyundong_6db0f70ef4.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/Extracting-Events-Highlights-Using-iYUNDONG-Sports-App
 ---
   
@@ -19,12 +19,15 @@ One of the key features of iYUNDONG App is called “Find me in motion“.  Phot
 <br/>
 
 **Jump to:**
-- [Difficulties and solutions](#difficulties-and-solutions)
-- [What is Milvus](#what-is-milvus)
-- [Why Milvus](#why-milvus)
-- [System and Workflow](#system-and-workflow)
-- [iYUNDONG App Interface](#iyundong-app-interface)
-- [Conclusion](#conclusion)
+- [Extracting Event Highlights Using iYUNDONG Sports App](#extracting-event-highlights-using-iyundong-sports-app)
+    - [Difficulties and solutions](#difficulties-and-solutions)
+    - [What is Milvus](#what-is-milvus)
+          - [*An overview of Milvus.*](#an-overview-of-milvus)
+    - [Why Milvus](#why-milvus)
+    - [System and Workflow](#system-and-workflow)
+    - [iYUNDONG App Interface](#iyundong-app-interface)
+          - [*iYUNDONG app interface.*](#iyundong-app-interface-1)
+    - [Conclusion](#conclusion)
 
 <br/>
 

@@ -1,22 +1,29 @@
 ---
 id: building-a-search-by-image-shopping-experience-with-vova-and-milvus.md
 title: Building a Search by Image Shopping Experience with VOVA and Milvus
-author: Zilliz
+author: milvus
 date: 2021-05-13 08:44:05.528+00
 desc: Discover how Milvus, an open-source vector database, was used by e-commerce platform VOVA to power shopping by image. 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/vova_thumbnail_db2d6c0c9c.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
 ---
   
 # Building a Search by Image Shopping Experience with VOVA and Milvus
 Jump to:
  
-- [How does image search work?](#how-does-image-search-work)
-- [Target detection using the YOLO model](#target-detection-using-the-yolo-model)
-- [Image feature vector extraction with ResNet](#image-feature-vector-extraction-with-resnet)
-- [Vector similarity search powered by Milvus](#vector-similarity-search-powered-by-milvus)
-- [VOVA's shop by image tool](#vovas-shop-by-image-tool)
+- [Building a Search by Image Shopping Experience with VOVA and Milvus](#building-a-search-by-image-shopping-experience-with-vova-and-milvus)
+    - [How does image search work?](#how-does-image-search-work)
+          - [*System process of VOVA's search by image functionality.*](#system-process-of-vovas-search-by-image-functionality)
+    - [Target detection using the YOLO model](#target-detection-using-the-yolo-model)
+          - [*YOLO network architecture.*](#yolo-network-architecture)
+    - [Image feature vector extraction with ResNet](#image-feature-vector-extraction-with-resnet)
+          - [*ResNet structure.*](#resnet-structure)
+    - [Vector similarity search powered by Milvus](#vector-similarity-search-powered-by-milvus)
+          - [*Mishards architecture in Milvus.*](#mishards-architecture-in-milvus)
+    - [VOVA's shop by image tool](#vovas-shop-by-image-tool)
+          - [*Screenshots of VOVA's search by image shopping tool.*](#screenshots-of-vovas-search-by-image-shopping-tool)
+    - [Reference](#reference)
 
 Online shopping surged in 2020, [up 44%](https://www.digitalcommerce360.com/2021/02/15/ecommerce-during-coronavirus-pandemic-in-charts/) in large part due to the coronavirus pandemic. As people sought to socially distance and avoid contact with strangers, no-contact delivery became an incredibly desirable option for many consumers. This popularity has also led to people buying a greater variety of goods online, including niche items that can be hard to describe using a traditional keyword search.
 

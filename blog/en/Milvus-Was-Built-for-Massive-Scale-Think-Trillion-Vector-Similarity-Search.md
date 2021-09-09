@@ -1,11 +1,11 @@
 ---
 id: Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search.md
 title: Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search
-author: Zilliz
-date: 2021-01-21 08:56:00.48+00
+author: milvus
+date: 2021-01-13 08:56:00.48+00
 desc: Explore the power of open-source in your next AI or machine learning project. Manage massive-scale vector data and power similarity search with Milvus. 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/1_9a6be0b54f.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search
 ---
   
@@ -15,10 +15,15 @@ Every day, an incalculable number of business-critical insights are squandered b
 Vector similarity search has applications spanning e-commerce, security, new drug development, and more. These solutions rely on dynamic datasets containing millions, billions, or even trillions of vectors, and their usefulness often depends on returning near instantaneous results. [Milvus](https://milvus.io/) is an open-source vector data management solution built from the ground up for efficiently managing and searching large vector datasets. This article covers Milvus’ approach to vector data management, as well as how the platform has been optimized for vector similarity search.
 
 **Jump to:**
-- [LSM trees keep dynamic data management efficient at massive scales](#lsm-trees-keep-dynamic-data-management-efficient-at-massive-scales)
-- [Data management is optimized for rapid access and limited fragmentation](#data-management-is-optimized-for-rapid-access-and-limited-fragmentation)
-- [Similarity searched is accelerated by indexing vector data](#similarity-searched-is-accelerated-by-indexing-vector-data)
-- [Learn more about Milvus](#learn-more-about-Milvus)
+- [Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search](#milvus-was-built-for-massive-scale-think-trillion-vector-similarity-search)
+    - [LSM trees keep dynamic data management efficient at massive scales](#lsm-trees-keep-dynamic-data-management-efficient-at-massive-scales)
+          - [*A segment of 10-dimensional vectors in Milvus.*](#a-segment-of-10-dimensional-vectors-in-milvus)
+    - [Data management is optimized for rapid access and limited fragmentation](#data-management-is-optimized-for-rapid-access-and-limited-fragmentation)
+          - [*An illustration of inserting vectors in Milvus.*](#an-illustration-of-inserting-vectors-in-milvus)
+          - [*Queried data files before the merge.*](#queried-data-files-before-the-merge)
+          - [*Queried data files after the merge.*](#queried-data-files-after-the-merge)
+    - [Similarity searched is accelerated by indexing vector data](#similarity-searched-is-accelerated-by-indexing-vector-data)
+    - [Learn more about Milvus](#learn-more-about-milvus)
 
 ### LSM trees keep dynamic data management efficient at massive scales
 

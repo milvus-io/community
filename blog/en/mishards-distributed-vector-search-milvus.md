@@ -1,11 +1,11 @@
 ---
 id: mishards-distributed-vector-search-milvus.md
 title: Mishards — Distributed Vector Search in Milvus
-author: Zilliz
-date: 2021-04-09 21:36:16.974+00
+author: milvus
+date: 2020-03-17 21:36:16.974+00
 desc: How to scale out
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/tim_j_ots0_EO_Yu_Gt_U_unsplash_14f939b344.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/mishards-distributed-vector-search-milvus
 ---
   

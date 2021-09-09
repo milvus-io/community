@@ -1,11 +1,11 @@
 ---
 id: dynamic-data-update-and-query-milvus.md
 title: How Milvus Implements Dynamic Data Update And Query
-author: Zilliz
-date: 2021-04-09 21:02:08.632+00
+author: milvus
+date: 2020-04-13 21:02:08.632+00
 desc: Vector search is now more intuitive and convenient
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_62d7b8c823.png
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/dynamic-data-update-and-query-milvus
 ---
   

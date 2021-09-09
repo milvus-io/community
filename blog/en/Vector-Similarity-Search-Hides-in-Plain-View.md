@@ -1,11 +1,11 @@
 ---
 id: Vector-Similarity-Search-Hides-in-Plain-View.md
 title: Vector Similarity Search Hides in Plain View
-author: Zilliz
-date: 2021-05-12 03:40:20.821+00
+author: milvus
+date: 2021-01-05 03:40:20.821+00
 desc: Discover what vector similarity search is, its various applications, and the public resources making artificial intelligence more accessible than ever.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/plainview_703d8497ca.jpg
-tag: test1
+tag: Technology Community
 origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 ---
   

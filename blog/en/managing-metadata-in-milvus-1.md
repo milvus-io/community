@@ -1,11 +1,11 @@
 ---
 id: managing-metadata-in-milvus-1.md
 title: Milvus Metadata Management (1)
-author: Zilliz
-date: 2021-04-12 19:21:42.469+00
+author: milvus
+date: 2019-12-25 19:21:42.469+00
 desc: How to View Metadata
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c2eb459468.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/managing-metadata-in-milvus-1
 ---
   

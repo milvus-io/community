@@ -5,7 +5,7 @@ author: Jigao Luo
 date: 2021-08-26 07:18:47.925+00
 desc: HM-ANN Efficient Billion-Point Nearest Neighbor Search on Heterogeneous Memory
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_cover_4a9807b9e0.png
-tag: test1
+tag: Technology Community
 origin: zilliz.com/blog/paper-reading-hm-ann-when-anns-meets-heterogeneous-memory
 ---
   

@@ -2,10 +2,10 @@
 id: milvus2.0-redefining-vector-database.md
 title: Milvus 2.0 Redefining Vector Database
 author: Xiaofan Luan
-date: null
+date: 2021-08-01
 desc: Milvus 2.0 is available now. This refactored, cloud-native version powers image/video search, chatbots, and many more AI applications.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/2_0_cover_bbc582b347.jpg
-tag: test1
+tag: Technology Community
 origin: null
 ---
   

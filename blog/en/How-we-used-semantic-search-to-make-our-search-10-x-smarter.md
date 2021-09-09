@@ -5,7 +5,7 @@ author: Rahul Yadav
 date: 2021-02-05 06:27:15.076+00
 desc: null
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_1_a7bac91379.jpeg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/How-we-used-semantic-search-to-make-our-search-10-x-smarter
 ---
   

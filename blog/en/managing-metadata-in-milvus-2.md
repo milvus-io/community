@@ -1,11 +1,11 @@
 ---
 id: managing-metadata-in-milvus-2.md
 title: Milvus Metadata Management (2)
-author: Zilliz
-date: 2021-04-12 20:41:13.864+00
+author: milvus
+date: 2019-12-31 20:41:13.864+00
 desc: Fields in the Metadata Table
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c65a2a523c.png
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/managing-metadata-in-milvus-2
 ---
   
