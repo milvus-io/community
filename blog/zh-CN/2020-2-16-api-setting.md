@@ -4,8 +4,8 @@ title: 如何设置 Milvus 客户端参数
 author: 莫毅华
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 ---
 
@@ -30,8 +30,6 @@ Milvus 在进行搜索时，是依次对每个索引文件进行搜索。根据�
 
 如上图所示，在 CPU 模式和 GPU 模式下，`index_file_size` 设为 2048 MB，其搜索性能相对于 1024 MB 有显著提高。
 
-
-
 ## 2. `nlist` 和 `nprobe`
 
 `nlist` 是使用客户端创建索引设置的参数，`nprobe` 则是进行搜索设置的参数。我们知道，IVFLAT 和 SQ8 索引都是通过聚类算法把大量的向量划分成很多‘簇’（也可以叫‘桶’），`nlist` 指的就是聚类时划分桶的总数。通过索引查询时，第一步先找到和目标向量最接近的若干个桶，第二步在这若干个桶里通过比较向量距离查找出最相似的 k 条向量。`nprobe` 指的就是第一步若干个桶的数量。
@@ -43,8 +41,6 @@ Milvus 在进行搜索时，是依次对每个索引文件进行搜索。根据�
 ![image2](../assets/blog_api_set_02.png)
 
 上图分别是采用不同的 `nlist`/`nprobe` 组合时的搜索性能和准确率对比。因 CPU 和 GPU 测试结果类似，此处仅展示 GPU 测试的结果。在本次测试中，对成比例增长的 `nlist`/`nprobe` 而言，随着他们的增大，准确率呈现上升的趋势，性能则在 `nlist` 为 4096 和 `nprobe` 为 128 时呈现最好的情况。因此在实际选择 `nlist` 和 `nprobe` 的值时，需要针对不同数据集，根据用户自己的需求，在速度和准确率两者之间进行合适的取舍。
-
-
 
 ## 总结
 

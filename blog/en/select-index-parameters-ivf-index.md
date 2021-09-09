@@ -4,13 +4,14 @@ title: How to Select Index Parameters for IVF Index
 author: Zilliz
 date: 2021-04-09 22:57:02.071+00
 desc: Best practices for IVF index
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
-tag: test1
+
+cover: ../assets/pc-blog.jpg
+tag: Technology
 origin: zilliz.com/blog/select-index-parameters-ivf-index
 ---
-  
+
 # How to Select Index Parameters for IVF Index
+
 In [Best Practices for Milvus Configuration](https://medium.com/@milvusio/best-practices-for-milvus-configuration-f38f1e922418), some best practices for Milvus 0.6.0 configuration were introduced. In this article, we will also introduce some best practices for setting key parameters in Milvus clients for operations including creating a table, creating indexes, and searching. These parameters can affect search performance.
 
 ## 1. <code>index_file_size</code>
@@ -33,7 +34,7 @@ When searching using indexes, the first step is to find a certain number of buck
 
 Generally, increasing <code>nlist</code> leads to more buckets and fewer vectors in a bucket during clustering. As a result, the computation load decreases and search performance improves. However, with fewer vectors for similarity comparison, the correct result might be missed.
 
-Increasing <code>nprobe</code> leads to more buckets to search. As a result, the computation load increases and search performance deteriorates, but search precision improves. The situation may differ per datasets with different distributions. You should also consider the size of the dataset when setting <code>nlist</code> and <code>nprobe</code>. Generally, it is recommended that <code>nlist<code> can be <code>4 * sqrt(n)</code>, where n is the total number of vectors. As for <code>nprobe</code>, you must make a trade-off between precision and efficiency and the best way is to determine the value through trial and error.
+Increasing <code>nprobe</code> leads to more buckets to search. As a result, the computation load increases and search performance deteriorates, but search precision improves. The situation may differ per datasets with different distributions. You should also consider the size of the dataset when setting <code>nlist</code> and <code>nprobe</code>. Generally, it is recommended that <code>nlist<code> can be <code>4 \* sqrt(n)</code>, where n is the total number of vectors. As for <code>nprobe</code>, you must make a trade-off between precision and efficiency and the best way is to determine the value through trial and error.
 
 The following table shows a test using sift50m for <code>nlist</code> and <code>nprobe</code>. The index type is SQ8.
 
@@ -45,5 +46,3 @@ The table compares search performance and precision using different values of <c
 
 <code>index_file_size</code>: When the data size is greater than <code>index_file_size</code>, the greater the value of <code>index_file_size</code>, the better the search performance.
 <code>nlist</code> and <code>nprobe</code>：You must make a trade-off between performance and precision.
-
-  

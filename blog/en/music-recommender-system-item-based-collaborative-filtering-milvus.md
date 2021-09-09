@@ -4,13 +4,14 @@ title: Item-based Collaborative Filtering for Music Recommender System
 author: Zilliz
 date: 2021-03-31 00:01:59.064+00
 desc: A case study with WANYIN APP
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
-tag: test1
+
+cover: ../assets/pc-blog.jpg
+tag: Scenarios
 origin: zilliz.com/blog/music-recommender-system-item-based-collaborative-filtering-milvus
 ---
-  
+
 # Item-based Collaborative Filtering for Music Recommender System
+
 Wanyin App is an AI-based music sharing community with an intention to encourage music sharing and make music composition easier for music enthusiasts.
 
 Wanyin’s library contains a massive amount of music uploaded by users. The primary task is to sort out the music of interest based on users’ previous behavior. We evaluated two classic models: user-based collaborative filtering (User-based CF) and item-based collaborative filtering (Item-based CF), as the potential recommender system models.
@@ -38,12 +39,14 @@ After deciding to use Milvus as the feature vector search engine, we configured 
 Milvus provides both Mishards, a cluster sharding middleware, and Milvus-Helm for configuration. The process of deploying a Milvus cluster service is simple. We only need to update some parameters and pack them for deployment in Kubernetes. The diagram below from Milvus’ documentation shows how Mishards works:
 
 ![1-how-mishards-works-in-milvus-documentation.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_how_mishards_works_in_milvus_documentation_43a73076bf.png)
-###### *A diagram of Mishards' working mechanism.*
+
+###### _A diagram of Mishards' working mechanism._
 
 Mishards cascades a request from upstream down to its sub-modules splitting the upstream request, and then collects and returns the results of the sub-services to upstream. The overall architecture of the Mishards-based cluster solution is shown below:
 
 ![2-mishards-based-cluster-solution-architecture.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_mishards_based_cluster_solution_architecture_3ad89cf269.jpg)
-###### *Overall architecture of Mishards.*
+
+###### _Overall architecture of Mishards._
 
 The official documentation provides a clear introduction of Mishards. You can refer to [Mishards](https://milvus.io/cn/docs/v0.10.2/mishards.md) if you are interested.
 
@@ -54,7 +57,8 @@ In our music recommender system, we deployed one writable node, two read-only no
 As mentioned above, we built Wanyin’s I2I music recommender system using the extracted embeddings of the existing songs. First, we separated the vocal and the BGM (track separation) of a new song uploaded by the user and extracted the BGM embeddings as the feature representation of the song. This also helps sort out cover versions of original songs. Next, we stored these embeddings in Milvus, searched for similar songs based on the songs that the user listened to, and then sorted and rearranged the retrieved songs to generate music recommendations. The implementation process is shown below:
 
 ![3-music-recommender-system-implementation.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_music_recommender_system_implementation_c52a333eb8.png)
-###### *Implementation of Wanyin's I2I music recommender system.*
+
+###### _Implementation of Wanyin's I2I music recommender system._
 
 ## 🚫 Duplicate song filter
 
@@ -65,7 +69,8 @@ Another scenario in which we use Milvus is duplicate song filtering. Some users 
 Same with the previous scenario, we implemented duplicate song filtering by means of searching for similar feature vectors. First, we separated the vocal and the BGM and retrieved a number of similar songs using Milvus. In order to filter duplicate songs accurately, we extracted the audio fingerprints of the target song and the similar songs (with technologies such as Echoprint, Chromaprint, etc.), calculated the similarity between the audio fingerprint of the target song with each of the similar songs’ fingerprints. If the similarity goes beyond the threshold, we define a song as a duplicate of the target song. The process of audio fingerprint matching makes the filtering of duplicate songs more accurate, but it is also time-consuming. Therefore, when it comes to filtering songs in a massive music library, we use Milvus to filter our candidate duplicate songs as a preliminary step.
 
 ![4-using-milvus-filter-songs-music-recommender-duplicates.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_using_milvus_filter_songs_music_recommender_duplicates_0ff68d3e67.png)
-###### *Using Milvus to achieve duplicate song filtering.*
+
+###### _Using Milvus to achieve duplicate song filtering._
 
 To implement the I2I recommender system for Wanyin’s massive music library, our approach is to extract the embeddings of songs as their feature, recall similar embeddings to the embedding of the target song, and then sort and rearrange the results to generate recommendation lists for the user. To achieve real-time recommendation, we choose Milvus over Faiss as our feature vector similarity search engine, since Milvus proves to be more user-friendly and sophisticated. By the same token, we have also applied Milvus to our duplicate song filter, which improves user experience and efficiency.
 
@@ -83,4 +88,3 @@ Mishards: https://github.com/milvus-io/milvus/tree/master/shards
 Milvus-Helm: https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus
 
 **🤗 Don’t be a stranger, follow us on [Twitter](https://twitter.com/milvusio/) or join us on [Slack](https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/)!👇🏻**
-  

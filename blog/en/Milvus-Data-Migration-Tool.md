@@ -4,14 +4,16 @@ title: Introducing Milvus Data Migration Tool
 author: Zilliz
 date: 2021-03-15 10:19:51.125+00
 desc: Learn how to use Milvus data migration tool to greatly improve efficiency of data management and reduce DevOps costs.
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
-tag: test1
+
+cover: ../assets/pc-blog.jpg
+tag: Technology Tools
 origin: zilliz.com/blog/Milvus-Data-Migration-Tool
 ---
-  
+
 # Introducing Milvus Data Migration Tool
+
 ### Overview
+
 [MilvusDM](https://github.com/milvus-io/milvus-tools) (Milvus Data Migration) is an open-source tool designed specifically for importing and exporting data files with Milvus. MilvusDM can greatly improve data mangement efficiency and reduce DevOps costs in the following ways:
 
 - [Faiss to Milvus](#faiss-to-milvus): Import unzipped data from Faiss to Milvus.
@@ -23,17 +25,18 @@ origin: zilliz.com/blog/Milvus-Data-Migration-Tool
 - [Milvus to HDF5](#milvus-to-hdf5): Save data in Milvus as HDF5 files.
 
 ![milvusdm blog 1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvusdm_blog_1_199cbdebe7.png)
-###### *Importing and exporting data files with Milvus.*
 
-MilvusDM is hosted on [Github](https://github.com/milvus-io/milvus-tools) and can be easily installed by running the command line ```pip3 install pymilvusdm```. MilvusDM allows you to migrate data in a specific collection or partition. In the following sections, we will explain how to use each data migration type. 
+###### _Importing and exporting data files with Milvus._
+
+MilvusDM is hosted on [Github](https://github.com/milvus-io/milvus-tools) and can be easily installed by running the command line `pip3 install pymilvusdm`. MilvusDM allows you to migrate data in a specific collection or partition. In the following sections, we will explain how to use each data migration type.
 
 <br/>
-
 
 ### Faiss to Milvus
 
 #### Steps
-1.Download **F2M.yaml**: 
+
+1.Download **F2M.yaml**:
 
 ```
 $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/F2
@@ -41,13 +44,13 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/F2
 
 2.Set the following parameters:
 
-- ``` data_path ```: Data path (vectors and their corresponding IDs) in Faiss.
+- `data_path`: Data path (vectors and their corresponding IDs) in Faiss.
 
-- ```dest_host```: Milvus server address.  
+- `dest_host`: Milvus server address.
 
-- ```dest_port```: Milvus server port.
+- `dest_port`: Milvus server port.
 
-- ```mode```: Data can be imported to Milvus using the following modes:
+- `mode`: Data can be imported to Milvus using the following modes:
 
   - Skip: Ignore data if the collection or partition already exists.
 
@@ -55,11 +58,11 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/F2
 
   - Overwrite: Delete data before insertion if the collection or partition already exists.
 
-- ```dest_collection_name```: Name of receiving collection for data import.
+- `dest_collection_name`: Name of receiving collection for data import.
 
-- ```dest_partition_name```: Name of receiving partition for data import. 
+- `dest_partition_name`: Name of receiving partition for data import.
 
-- ```collection_parameter```: Collection-specific information such as vector dimension, index file size, and distance metric.
+- `collection_parameter`: Collection-specific information such as vector dimension, index file size, and distance metric.
 
 ```
 F2M:
@@ -75,6 +78,7 @@ F2M:
     index_file_size: 1024
     metric_type: 'L2'
 ```
+
 3.Run **F2M.yaml:**
 
 ```
@@ -89,7 +93,7 @@ $ milvusdm --yaml F2M.yaml
 ids, vectors = faiss_data.read_faiss_data()
 ```
 
-2.Insert the retrieved data into Milvus: 
+2.Insert the retrieved data into Milvus:
 
 ```
 insert_milvus.insert_data(vectors, self.dest_collection_name, self.collection_parameter, self.mode, ids, self.dest_partition_name)
@@ -98,7 +102,9 @@ insert_milvus.insert_data(vectors, self.dest_collection_name, self.collection_pa
 <br/>
 
 ### HDF5 to Milvus
+
 #### Steps
+
 1.Download **H2M.yaml**.
 
 ```
@@ -107,15 +113,15 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/H2M.y
 
 2.Set the following parameters:
 
-- ```data_path```: Path to the HDF5 files. 
+- `data_path`: Path to the HDF5 files.
 
-- ```data_dir```: Directory holding the HDF5 files.
+- `data_dir`: Directory holding the HDF5 files.
 
-- ```dest_host```: Milvus server address. 
+- `dest_host`: Milvus server address.
 
-- ```dest_port```: Milvus server port.
+- `dest_port`: Milvus server port.
 
-- ```mode```: Data can be imported to Milvus using the following modes:
+- `mode`: Data can be imported to Milvus using the following modes:
 
   - Skip: Ignore data if the collection or partition already exists.
 
@@ -123,13 +129,13 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/H2M.y
 
   - Overwrite: Delete data before insertion if the collection or partition already exists.
 
-- ```dest_collection_name```: Name of receiving collection for data import.
+- `dest_collection_name`: Name of receiving collection for data import.
 
-- ```dest_partition_name```: Name of receiving partition for data import.
+- `dest_partition_name`: Name of receiving partition for data import.
 
-- ```collection_parameter```: Collection-specific information such as vector dimension, index file size, and distance metric. 
+- `collection_parameter`: Collection-specific information such as vector dimension, index file size, and distance metric.
 
-> Set either ```data_path``` or ```data_dir```. Do **not** set both. Use ```data_path``` to specify multiple file paths, or ```data_dir``` to specify the directory holding your data file.
+> Set either `data_path` or `data_dir`. Do **not** set both. Use `data_path` to specify multiple file paths, or `data_dir` to specify the directory holding your data file.
 
 ```
 H2M:
@@ -148,6 +154,7 @@ H2M:
     index_file_size: 1024
     metric_type: 'L2'
 ```
+
 3.Run **H2M.yaml:**
 
 ```
@@ -171,7 +178,9 @@ ids = insert_milvus.insert_data(vectors, self.c_name, self.c_param, self.mode, i
 <br/>
 
 ### Milvus to Milvus
+
 #### Steps
+
 1.Download **M2M.yaml**.
 
 ```
@@ -180,17 +189,17 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2M.y
 
 2.Set the following parameters:
 
-- ```source_milvus_path```: Source Milvus work path.
+- `source_milvus_path`: Source Milvus work path.
 
-- ```mysql_parameter```: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as ''.
+- `mysql_parameter`: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as ''.
 
-- ```source_collection```: Names of the collection and its partitions in the source Milvus.
+- `source_collection`: Names of the collection and its partitions in the source Milvus.
 
-- ```dest_host```: Milvus server address. 
+- `dest_host`: Milvus server address.
 
-- ```dest_port```: Milvus server port.
+- `dest_port`: Milvus server port.
 
-- ```mode```: Data can be imported to Milvus using the following modes:
+- `mode`: Data can be imported to Milvus using the following modes:
 
   - Skip: Ignore data if the collection or partition already exists.
 
@@ -225,15 +234,14 @@ $ milvusdm --yaml M2M.yaml
 
 #### Sample Code
 
-1.According to a specified collection or partition's metadata, read the files under **milvus/db** on your local drive to retrieve vectors and their corresponding IDs from the source Milvus. 
+1.According to a specified collection or partition's metadata, read the files under **milvus/db** on your local drive to retrieve vectors and their corresponding IDs from the source Milvus.
 
 ```
 collection_parameter, _ = milvus_meta.get_collection_info(collection_name)
-r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(self.milvus_meta, collection_name, partition_tag) 
+r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(self.milvus_meta, collection_name, partition_tag)
 ```
 
 2.Insert the retrieved data into the target Milvus.
-
 
 ```
 milvus_insert.insert_data(r_vectors, collection_name, collection_parameter, self.mode, r_ids, partition_tag)
@@ -242,23 +250,24 @@ milvus_insert.insert_data(r_vectors, collection_name, collection_parameter, self
 <br/>
 
 ### Milvus to HDF5
+
 #### Steps
+
 1.Download **M2H.yaml**:
 
 ```
 $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2H.yaml
 ```
 
-
 2.Set the following parameters:
 
-- ```source_milvus_path```: Source Milvus work path.
+- `source_milvus_path`: Source Milvus work path.
 
-- ```mysql_parameter```: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as ''.
+- `mysql_parameter`: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as ''.
 
-- ```source_collection```: Names of the collection and its partitions in the source Milvus.
+- `source_collection`: Names of the collection and its partitions in the source Milvus.
 
-- ```data_dir```: Directory for holding the saved HDF5 files.
+- `data_dir`: Directory for holding the saved HDF5 files.
 
 ```
 M2H:
@@ -284,6 +293,7 @@ $ milvusdm --yaml M2H.yaml
 ```
 
 #### Sample Code
+
 1.According to a specified collection or partition's metadata, read the files under **milvus/db** on your local drive to retrieve vectors and their corresponding IDs.
 
 ```
@@ -302,7 +312,8 @@ data_save.save_yaml(collection_name, partition_tag, collection_parameter, versio
 The flow chart below shows how MilvusDM performs different tasks according to the YAML file it receives:
 
 ![milvusdm blog 2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvusdm_blog_2_7824b16e5e.png)
-###### *How does MilvusDM work?*
+
+###### _How does MilvusDM work?_
 
 MilvusDM file structure:
 
@@ -344,7 +355,7 @@ MilvusDM file structure:
 
 ### Recap
 
-MilvusDM primarily handles migrating data in and out of Milvus, which includes Faiss to Milvus, HDF5 to Milvus, Milvus to Milvus, and Milvus to HDF5. 
+MilvusDM primarily handles migrating data in and out of Milvus, which includes Faiss to Milvus, HDF5 to Milvus, Milvus to Milvus, and Milvus to HDF5.
 
 The following features are planned for upcoming releases:
 
@@ -357,6 +368,3 @@ The following features are planned for upcoming releases:
 - Backup and recovery of the Milvus data.
 
 The MilvusDM project is open sourced on [Github](https://github.com/milvus-io/milvus-tools). Any and all contributions to the project are welcome. Give it a star 🌟, and feel free to file an [issue](https://github.com/milvus-io/milvus-tools/issues) or submit your own code!
-
-
-  

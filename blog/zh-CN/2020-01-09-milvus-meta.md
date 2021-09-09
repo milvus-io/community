@@ -4,8 +4,8 @@ title: Milvus 数据管理系列（五）：如何通过元数据管理数据文
 author: 莫毅华
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test1
 ---
 

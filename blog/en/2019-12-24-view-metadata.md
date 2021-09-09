@@ -4,9 +4,9 @@ title: Milvus Metadata Management (1) How to View Metadata
 author: Yihua Mo
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
-tag: test3
+
+cover: ../assets/pc-blog.jpg
+tag: Technology
 ---
 
 # Milvus Metadata Management (1)

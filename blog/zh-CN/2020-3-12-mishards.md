@@ -4,8 +4,8 @@ title: Milvus 分布式向量检索-Mishards架构介绍
 author: 徐鹏
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test3
 ---
 

@@ -4,8 +4,8 @@ title: Milvus 测试报告：IVF_SQ8 索引
 author: 陈子睿
 date: 2021-07-30
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
-banner: ../assets/blogCover.png
-cover: ../assets/blogCover.png
+
+cover: ../assets/pc-blog.jpg
 tag: test2
 ---
 
