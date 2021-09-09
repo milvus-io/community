@@ -4,21 +4,18 @@ title: Accelerating AI in Finance with Milvus, an Open-Source Vector Database
 author: Zilliz
 date: 2021-05-19 03:41:20.776+00
 desc: Milvus can be used to build AI applications for the finance industry including chatbots, recommender systems, and more.
-
-cover: ../assets/pc-blog.jpg
-tag: Scenarios
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/03_1_1e5aaf7dd1.jpg
+tag: test1
 origin: zilliz.com/blog/ai-in-finance
 ---
-
+  
 # Accelerating AI in Finance with Milvus, an Open-Source Vector Database
-
 Banks and other financial institutions have long been early adopters of open-source software for big data processing and analytics. In 2010, Morgan Stanley [began using](https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db) the open-source Apache Hadoop framework as part of a small experiment. The company was struggling to successfully scale traditional databases to the massive volumes of data its scientists wanted to leverage, so it decided to explore alternative solutions. Hadoop is now a staple at Morgan Stanley, helping with everything from managing CRM data to portfolio analysis. Other open-source relational database software such as MySQL, MongoDB, and PostgreSQL have been indispensable tools for making sense of big data in the finance industry.
 
 Technology is what gives the financial services industry a competitive edge, and artificial intelligence (AI) is rapidly becoming the standard approach to extracting valuable insights from big data and analyzing activity in real-time across the banking, asset management, and insurance sectors. By using AI algorithms to convert unstructured data such as images, audio, or video to vectors, a machine-readable numeric data format, it is possible to run similarity searches on massive million, billion, or even trillion vector datasets. Vector data is stored in high-dimensional space, and similar vectors are found using similarity search, which requires a dedicated infrastructure called a vector database.
 
 ![01 (1).jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/01_1_cb99f15886.jpg)
-
-###### _Development of open source big data technologies._
+###### *Development of open source big data technologies.*
 
 [Milvus](https://github.com/milvus-io/milvus) is an open-source vector database built specifically for managing vector data, which means engineers and data scientists can focus on building AI applications or conducting analysis—instead of the underlying data infrastructure. The platform was built around AI application development workflows and is optimized to streamline machine learning operations (MLOps). For more information about Milvus and its underlying technology, check out our [blog](https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View).
 
@@ -63,3 +60,6 @@ Learn more about how to [use deepset's Haystack with Milvus](https://medium.com/
 - Find or contribute to Milvus on [GitHub](https://github.com/milvus-io/milvus/).
 - Interact with the community via [Slack](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ).
 - Connect with us on [Twitter](https://twitter.com/milvusio).
+
+
+  

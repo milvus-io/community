@@ -3,26 +3,24 @@ id: accelerating-compilation-with-dependency-decoupling-and-testing-containeriza
 title: Accelerating Compilation 2.5X with Dependency Decoupling & Testing Containerization
 author: Zhifeng Zhang
 date: null
-desc: Discover how zilliz to reduce compile times 2.5x using dependency decoupling and containerization techniques for large-scale AI and MLOps projects.
-
-cover: ../assets/pc-blog.jpg
-tag: Technology
+desc: Discover how zilliz to reduce compile times 2.5x using dependency decoupling and containerization techniques for large-scale AI and MLOps projects.  
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/cover_20e3cddb96.jpeg
+tag: test1
 origin: null
 ---
-
+  
 # Accelerating Compilation 2.5X with Dependency Decoupling & Testing Containerization
+Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects: 
 
-Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects:
+**Prohibitively long compilation** - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours. 
 
-**Prohibitively long compilation** - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours.
+**Complex compilation environment** - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.     
 
-**Complex compilation environment** - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.
+**Complex dependencies** - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.   
 
-**Complex dependencies** - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.
+**Third-party dependency download is slow or fails** - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration. 
 
-**Third-party dependency download is slow or fails** - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration.
-
-By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project [Milvus](https://milvus.io/).
+By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project [Milvus](https://milvus.io/). 
 
 <br/>
 
@@ -32,7 +30,6 @@ Project compilation usually involves a large number of internal and external com
 Poor maintenance, complex dependencies, or faulty dependencies can cause conflicts that slow or stall development. In practice, this can mean lagging resource downloads, access failures that negatively impact code integration, and more. Decoupling project dependencies can mitigate defects and reduce compile time, accelerating system testing and avoiding unnecessary drag on software development.
 
 Therefore, we recommend decouple dependencies your project:
-
 - Split up components with complex dependencies
 - Use different repositories for version management.
 - Use configuration files to manage version information, compilation options, dependencies, etc.
@@ -73,7 +70,6 @@ Optimization of the compilation within components includes the following steps:
 ### Further compilation optimization
 
 Our initially-built occupies too much disk space and network bandwidth, and takes a long time to deploy, we took the following measures:
-
 1. Choose the leanest base image to reduce the image size, e.g. alpine, busybox, etc.
 2. Reduce the number of image layers. Reuse dependencies as much as possible. Merge multiple commands with “&&”.
 3. Clean up the intermediate products during image building.
@@ -105,7 +101,7 @@ This above-mentioned practices have reduced the compile time of the project by 6
 
 <br/>
 
-_The following sources were used for this article:_
+*The following sources were used for this article:*
 
 - “Decoupling Source Trees into Build-Level Components”
 - “[Factors to consider when adding third party dependencies to a project](https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf)”
@@ -117,3 +113,12 @@ _The following sources were used for this article:_
 ### About the author
 
 Zhifeng Zhang is a senior DevOps engineer at Zilliz.com working on Milvus, an open-source vector database, and authorized instructor of the LF open-source software university in China. He received his bachelor’s degree in Internet of Things (IOT) from Software Engineering Institute of Guangzhou. He spends his career participating in and leading projects in the area of CI/CD, DevOps, IT infrastructure management, Cloud-Native toolkit, containerization, and compilation process optimization.
+
+
+
+
+
+
+
+
+  

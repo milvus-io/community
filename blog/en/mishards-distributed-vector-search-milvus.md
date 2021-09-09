@@ -4,14 +4,12 @@ title: Mishards — Distributed Vector Search in Milvus
 author: Zilliz
 date: 2021-04-09 21:36:16.974+00
 desc: How to scale out
-
-cover: ../assets/pc-blog.jpg
-tag: Technology
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/tim_j_ots0_EO_Yu_Gt_U_unsplash_14f939b344.jpg
+tag: test1
 origin: zilliz.com/blog/mishards-distributed-vector-search-milvus
 ---
-
+  
 # Mishards — Distributed Vector Search in Milvus
-
 Milvus aims to achieve efficient similarity search and analytics for massive-scale vectors. A standalone Milvus instance can easily handle vector search for billion-scale vectors. However, for 10 billion, 100 billion or even larger datasets, a Milvus cluster is needed. The cluster can be used as a standalone instance for upper-level applications and can meet the business needs of low latency, high concurrency for massive-scale data. A Milvus cluster can resend requests, separate reading from writing, scale horizontally, and expand dynamically, thus providing a Milvus instance that can expand without limit. Mishards is a distributed solution for Milvus.
 
 This article will briefly introduce components of the Mishards architecture. More detailed information will be introduced in the upcoming articles.
@@ -37,12 +35,10 @@ This article will briefly introduce components of the Mishards architecture. Mor
 - Metadata service: All Milvus nodes use this service to share metadata. Currently, only MySQL is supported. This service requires MySQL high availability solution.
 
 ## Scalable components
-
 - Mishards
 - Read-only Milvus nodes
 
 ## Components introduction
-
 **Mishards nodes**
 
 Mishards is responsible for breaking up upstream requests and routing sub-requests to sub-services. The results are summarized to return to upstream.
@@ -73,8 +69,7 @@ Milvus nodes are responsible for CRUD related core operations, so they have rela
 When the data size is extremely large, or the latency requirement is extremely high, you can horizontally scale read-only nodes as stateful nodes. Assume there are 4 hosts and each has the following configuration: CPU Cores: 16, GPU: 1, Memory: 64 GB. The following chart shows the cluster when horizontally scaling stateful nodes. Both computing power and memory scale linearly. The data is split into 8 shards with each node processing requests from 2 shards.
 
 ![5-read-only-node-scalability-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/5_read_only_node_scalability_milvus_be3ee6e0a7.png)
-
-###### _Scaling read-only nodes as stateful nodes._
+###### *Scaling read-only nodes as stateful nodes.*
 
 When the number of requests is large for some shards, stateless read-only nodes can be deployed for these shards to increase throughput. Take the hosts above as an example. when the hosts are combined into a serverless cluster, the computing power increases linearly. Because the data to process does not increase, the processing power for the same data shard also increases linearly.
 
@@ -91,8 +86,7 @@ For more information about Milvus metadata, refer to How to view metadata. In a 
 Keywords: Apache Zookeeper, etcd, Consul, Kubernetes
 
 ![7-service-discovery.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_service_discovery_054a977c6e.png)
-
-###### _Service discovery._
+###### *Service discovery.*
 
 Service discovery provides information about all Milvus nodes. Milvus nodes register their information when going online and log out when going offline. Milvus nodes can also detect abnormal nodes by periodically checking the health status of services.
 
@@ -103,8 +97,7 @@ Service discovery contains a lot of frameworks, including etcd, Consul, ZooKeepe
 Keywords: Nginx, HAProxy, Kubernetes
 
 ![7-load-balancing-and-service-sharding.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_load_balancing_and_service_sharding_f91891c6c1.png)
-
-###### _Load balancing and service sharding._
+###### *Load balancing and service sharding.*
 
 Service discovery and load balancing are used together. Load balancing can be configured as polling, hashing, or consistent hashing.
 
@@ -147,7 +140,18 @@ As the service middleware, Mishards integrates service discovery, routing reques
 - Mishards uses proxy as the middle layer and has latency costs.
 - Milvus writable nodes are single-point services.
 - Dependent on highly-available MySQL service.
-  -Deployment is complicated when there are multiple shards and a single shard has multiple copies.
+-Deployment is complicated when there are multiple shards and a single shard has multiple copies.
 - Lacks a cache layer, such as access to metadata.
 
 We will fix these know issues in the upcoming versions so that Mishards can be applied to the production environment more conveniently.
+
+
+
+
+
+
+
+
+
+
+  
