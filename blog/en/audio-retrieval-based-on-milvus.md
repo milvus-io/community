@@ -5,7 +5,7 @@ author: Shiyu Chen
 date: 2021-07-27 03:05:57.524+00
 desc: Audio retrieval with Milvus makes it possible to classify and analyze sound data in real time.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_audio_search_56b990cee5.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/audio-retrieval-based-on-milvus
 ---
   

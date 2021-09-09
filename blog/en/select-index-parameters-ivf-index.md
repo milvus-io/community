@@ -1,11 +1,11 @@
 ---
 id: select-index-parameters-ivf-index.md
 title: How to Select Index Parameters for IVF Index
-author: Zilliz
-date: 2021-04-09 22:57:02.071+00
+author: milvus
+date: 2020-02-26 22:57:02.071+00
 desc: Best practices for IVF index
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_4d3fc44879.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/select-index-parameters-ivf-index
 ---
   

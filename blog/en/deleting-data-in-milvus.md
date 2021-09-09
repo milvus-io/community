@@ -1,11 +1,11 @@
 ---
 id: deleting-data-in-milvus.md
 title: How Milvus Realizes the Delete Function
-author: Zilliz
-date: 2021-03-31 20:27:23.266+00
+author: milvus
+date: 2020-08-22 20:27:23.266+00
 desc: In Milvus v0.7.0 we came up with a brand new design to make deletion more efficient and support more index types.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c9b45e546c.png
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/deleting-data-in-milvus
 ---
   

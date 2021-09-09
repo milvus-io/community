@@ -1,11 +1,11 @@
 ---
 id: graph-based-recommendation-system-with-milvus.md
 title: Building a Graph-based Recommendation System with Milvus, PinSage, DGL, and MovieLens Datasets
-author: Zilliz
-date: 2021-03-30 21:41:08.582+00
+author: Shiyu Chen
+date: 2020-12-01 21:41:08.582+00
 desc: Recommender systems can generate revenue, reduce costs, and offer a competitive advantage. Learn how to build one for free with open-source tools. 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/thisisengineering_raeng_z3c_Mj_I6k_P_I_unsplash_2228b9411c.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/graph-based-recommendation-system-with-milvus
 ---
   

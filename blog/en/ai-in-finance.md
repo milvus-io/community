@@ -1,11 +1,11 @@
 ---
 id: ai-in-finance.md
 title: Accelerating AI in Finance with Milvus, an Open-Source Vector Database
-author: Zilliz
+author: milvus
 date: 2021-05-19 03:41:20.776+00
 desc: Milvus can be used to build AI applications for the finance industry including chatbots, recommender systems, and more.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/03_1_1e5aaf7dd1.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/ai-in-finance
 ---
   

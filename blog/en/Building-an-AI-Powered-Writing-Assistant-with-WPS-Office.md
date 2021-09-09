@@ -1,11 +1,11 @@
 ---
 id: Building-an-AI-Powered-Writing-Assistant-with-WPS-Office.md
 title: Building an AI-Powered Writing Assistant for WPS Office
-author: Zilliz
-date: 2021-01-27 03:35:40.105+00
+author: milvus
+date: 2020-07-28 03:35:40.105+00
 desc: Learn how Kingsoft leveraged Milvus, an open-source similarity search engine, to build a recommendation engine for WPS Office’s AI-powered writing assistant.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/wps_thumbnail_6cb7876963.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office
 ---
   
@@ -15,11 +15,13 @@ WPS Office is a productivity tool developed by Kingsoft with over 150M users wor
 The writing assistant’s recommendation engine uses Milvus, an open-source similarity search engine, to power its core vector processing module. Below we’ll explore the process for building WPS Offices’ smart writing assistant, including how features are extracted from unstructured data as well as the role Milvus plays in storing data and powering the tool’s recommendation engine.
 
 Jump to:
-- [Making sense of unstructured textual data](#making-sense-of-unstructured-textual-data)
-- [Using the TFIDF model to maximize feature extraction](#using-the-tfidf-model-to-maximize-feature-extraction)
-- [Extracting features with the bi-directional LSTM-CNNs-CRF deep learning model](#extracting-features-with-the-bi-directional-lstm-cnns-crf-deep-learning-model)
-- [Creating sentence embeddings using Infersent](#creating-sentence-embeddings-using-infersent)
-- [Storing and querying vectors with Milvus](#storing-and-querying-vectors-with-milvus)
+- [Building an AI-Powered Writing Assistant for WPS Office](#building-an-ai-powered-writing-assistant-for-wps-office)
+    - [Making sense of unstructured textual data](#making-sense-of-unstructured-textual-data)
+    - [Using the TFIDF model to maximize feature extraction](#using-the-tfidf-model-to-maximize-feature-extraction)
+    - [Extracting features with the bi-directional LSTM-CNNs-CRF deep learning model](#extracting-features-with-the-bi-directional-lstm-cnns-crf-deep-learning-model)
+    - [Creating sentence embeddings using Infersent](#creating-sentence-embeddings-using-infersent)
+    - [Storing and querying vectors with Milvus](#storing-and-querying-vectors-with-milvus)
+    - [AI isn’t replacing writers, it’s helping them write](#ai-isnt-replacing-writers-its-helping-them-write)
 
 
 ### Making sense of unstructured textual data

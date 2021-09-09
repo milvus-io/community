@@ -1,11 +1,11 @@
 ---
 id: building-personalized-recommender-systems-milvus-paddlepaddle.md
 title: Building Personalized Recommender Systems with Milvus and PaddlePaddle
-author: Zilliz
-date: 2021-04-09 23:12:34.209+00
+author: Shiyu Chen
+date: 2021-02-24 23:12:34.209+00
 desc: How to build a deep learning powered recommender system
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_e6c4a8aee6.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-personalized-recommender-systems-milvus-paddlepaddle
 ---
   

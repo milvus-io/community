@@ -1,11 +1,11 @@
 ---
 id: Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvus.md
 title: Operationalize AI at Scale with Software 2.0, MLOps, and Milvus
-author: Zilliz
+author: milvus
 date: 2021-03-31 09:51:38.653+00
 desc: MLOps is superseding DevOps as we make the transition to Software 2.0. Find  what model operations is, and how the open-source vector database Milvus supports it. 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/milvus_5b2cdec665.jpg
-tag: test1
+tag: Community Technology
 origin: zilliz.com/blog/Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvus
 ---
   

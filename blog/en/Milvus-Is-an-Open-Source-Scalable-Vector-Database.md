@@ -1,11 +1,11 @@
 ---
 id: Milvus-Is-an-Open-Source-Scalable-Vector-Database.md
 title: Milvus Is an Open-Source Scalable Vector Database
-author: Zilliz
-date: 2021-01-21 07:46:40.506+00
+author: milvus
+date: 2021-01-13 07:46:40.506+00
 desc: Build powerful machine learning applications and manage massive-scale vector data with Milvus.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/milvus_5b2cdec665.jpg
-tag: test1
+tag: Scenarios Community
 origin: zilliz.com/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database
 ---
   

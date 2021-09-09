@@ -1,11 +1,11 @@
 ---
 id: Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images.md
 title: Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images 
-author: Zilliz
-date: 2021-01-21 07:13:02.135+00
+author: milvus
+date: 2020-11-11 07:13:02.135+00
 desc: AI and open-source software make it possible to build a reverse image search engine with just one server and 10 lines of code. Search 1+ billion images in real time and more with Milvus, an open-source vector data management platform. 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/build_search_9299109ca7.jpg
-tag: test1
+tag: Technology Scenarios
 origin: zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
 ---
   
@@ -14,10 +14,19 @@ Rising compute power and declining compute costs have made machine-scale analyti
 
 **Jump to:**
 
-- [How does AI enable unstructured data analytics?](#how-does-ai-enable-unstructured-data-analytics)
-- [What are vector data management platforms?](#what-are-vector-data-management-platforms)
-- [What are limitations of existing approaches to vector data management?](#what-are-limitations-of-existing-approaches-to-vector-data-management)
-- [What are applications for vector data management platforms and vector similarity search?](#what-are-applications-for-vector-data-management-platforms-and-vector-similarity-search)
+- [Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images](#thanks-to-milvus-anyone-can-build-a-vector-database-for-1-billion-images)
+    - [How does AI enable unstructured data analytics?](#how-does-ai-enable-unstructured-data-analytics)
+    - [Neural networks convert unstructured data into computer-friendly feature vectors](#neural-networks-convert-unstructured-data-into-computer-friendly-feature-vectors)
+          - [*AI algorithms convert unstructured data to vectors*](#ai-algorithms-convert-unstructured-data-to-vectors)
+    - [What are vector data management platforms?](#what-are-vector-data-management-platforms)
+    - [What are limitations of existing approaches to vector data management?](#what-are-limitations-of-existing-approaches-to-vector-data-management)
+          - [*An overview of Milvus’ architecture.*](#an-overview-of-milvus-architecture)
+    - [What are applications for vector data management platforms and vector similarity search?](#what-are-applications-for-vector-data-management-platforms-and-vector-similarity-search)
+    - [Reverse image search](#reverse-image-search)
+          - [*Google’s “search by image” feature.*](#googles-search-by-image-feature)
+      - [Video recommendation systems](#video-recommendation-systems)
+      - [Natural language processing (NLP)](#natural-language-processing-nlp)
+    - [Learn more about Milvus](#learn-more-about-milvus)
 
 
 ### How does AI enable unstructured data analytics?

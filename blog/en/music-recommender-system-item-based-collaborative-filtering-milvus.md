@@ -1,11 +1,11 @@
 ---
 id: music-recommender-system-item-based-collaborative-filtering-milvus.md
 title: Item-based Collaborative Filtering for Music Recommender System
-author: Zilliz
-date: 2021-03-31 00:01:59.064+00
+author: milvus
+date: 2020-09-08 00:01:59.064+00
 desc: A case study with WANYIN APP
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_f8cea596d2.png
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/music-recommender-system-item-based-collaborative-filtering-milvus
 ---
   

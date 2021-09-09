@@ -5,7 +5,7 @@ author: Yu Fang
 date: 2021-07-09 06:30:06.439+00
 desc: Discover how Milvus, an open-source vector database, is used by Mozat to power a fashion app that offers personalized style recommendations and an image search system.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/mozat_blog_0ea9218c71.jpg
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus
 ---
   

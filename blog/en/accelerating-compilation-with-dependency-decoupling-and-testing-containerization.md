@@ -2,10 +2,10 @@
 id: accelerating-compilation-with-dependency-decoupling-and-testing-containerization.md
 title: Accelerating Compilation 2.5X with Dependency Decoupling & Testing Containerization
 author: Zhifeng Zhang
-date: null
+date: 2021-05-28
 desc: Discover how zilliz to reduce compile times 2.5x using dependency decoupling and containerization techniques for large-scale AI and MLOps projects.  
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/cover_20e3cddb96.jpeg
-tag: test1
+tag: Technology
 origin: null
 ---
   

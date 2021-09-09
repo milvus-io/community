@@ -1,11 +1,11 @@
 ---
 id: building-intelligent-chatbot-with-nlp-and-milvus.md
 title: Building an Intelligent QA System with NLP and Milvus
-author: Zilliz
-date: 2021-04-08 22:33:34.726+00
+author: milvus
+date: 2020-05-12 22:33:34.726+00
 desc: The Next-Gen QA Bot is here
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_ce3a0e103d.png
-tag: test1
+tag: Scenarios
 origin: zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
 ---
   

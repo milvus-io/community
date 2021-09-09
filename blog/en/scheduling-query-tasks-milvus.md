@@ -1,11 +1,11 @@
 ---
 id: scheduling-query-tasks-milvus.md
 title: How Does Milvus Schedule Query Tasks
-author: Zilliz
-date: 2021-04-09 22:38:17.829+00
+author: milvus
+date: 2020-03-03 22:38:17.829+00
 desc: The work behind the scene
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/eric_rothermel_Fo_KO_4_Dp_Xam_Q_unsplash_469fe12aeb.jpg
-tag: test1
+tag: Technology
 origin: zilliz.com/blog/scheduling-query-tasks-milvus
 ---
   

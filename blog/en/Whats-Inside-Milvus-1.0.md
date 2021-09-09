@@ -1,11 +1,11 @@
 ---
 id: Whats-Inside-Milvus-1.0.md
 title: What's Inside Milvus 1.0?
-author: Zilliz
+author: milvus
 date: 2021-04-29 08:46:04.019+00
 desc: 	 Milvus v1.0 is available now. This stable, long-term support version powers image/video search, chatbots, and many more AI applications.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/Milvus_510cf50aee.jpeg
-tag: test1
+tag: Technology Community
 origin: zilliz.com/blog/Whats-Inside-Milvus-1.0
 ---
   
