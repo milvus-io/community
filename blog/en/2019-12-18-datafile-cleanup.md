@@ -2,7 +2,7 @@
 id: 2019-12-18-datafile-cleanup.md
 title: Improvements of the Data File Cleanup Mechanism
 author: Yihua Mo
-date: 2021-07-30
+date: 2019-12-18
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
