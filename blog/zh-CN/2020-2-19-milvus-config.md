@@ -3,10 +3,10 @@ id: 2020-2-19-milvus-config.md
 title: 如何设置系统配置项
 author: 莫毅华
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1
+tag:
 ---
 
 # 如何设置系统配置项

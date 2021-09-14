@@ -3,7 +3,7 @@ id: 2019-11-08-data-management.md
 title: Managing Data in Massive-Scale Vector Search Engine
 author: Yihua Mo
 date: 2019-11-08
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
 tag: Technology

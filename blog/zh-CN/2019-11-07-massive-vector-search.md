@@ -3,10 +3,10 @@ id: 2019-11-07-massive-vector-search.md
 title: 大规模向量检索
 author: 莫毅华
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test4
+tag:
 ---
 
 # 大规模向量检索

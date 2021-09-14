@@ -3,10 +3,10 @@ id: 2019-11-25-docker-compilation.md
 title: 在 Docker 容器中编译运行 Milvus
 author: 莫毅华
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test3
+tag:
 ---
 
 # 在 Docker 容器中编译运行 Milvus

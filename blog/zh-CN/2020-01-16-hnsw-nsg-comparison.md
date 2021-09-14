@@ -3,10 +3,10 @@ id: 2020-01-16-hnsw-nsg-comparison.md
 title: Milvus 揭秘系列（一）：向量索引算法HNSW和NSG的比较
 author: 林孝君
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1
+tag:
 ---
 
 # Milvus 揭秘系列（一）：向量索引算法 HNSW 和 NSG 的比较

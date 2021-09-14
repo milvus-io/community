@@ -3,10 +3,10 @@ id: 2019-08-29-vector-search-billion.md
 title: 如何玩转十亿向量检索（SIFT1B）
 author: 陈室余
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1 test2
+tag:
 ---
 
 # 如何轻松玩转十亿向量检索（SIFT1B）

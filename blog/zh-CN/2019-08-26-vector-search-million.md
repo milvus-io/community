@@ -3,10 +3,10 @@ id: 2019-08-26-vector-search-million.md
 title: Milvus 百万向量搜索（SIFT1B）
 author: 顾钧
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1
+tag:
 ---
 
 # Milvus 百万向量搜索（SIFT1B）
