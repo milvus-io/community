@@ -5,7 +5,7 @@ author: Yihua Mo
 date: 2019-11-08
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag: Technology
 origin: null
 ---

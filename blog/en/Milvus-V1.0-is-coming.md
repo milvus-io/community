@@ -3,27 +3,28 @@ id: Milvus-V1.0-is-coming.md
 title: Milvus V1.0 is coming
 author: milvus
 date: 2021-04-15
-desc: Today we proudly announce the release of Milvus V1.0. 
+desc: Today we proudly announce the release of Milvus V1.0.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/Milvus_510cf50aee.jpeg
-tag: Technology Community
+tag: Technology,Community
 origin: null
 ---
-  
+
 # Milvus V1.0 is coming
+
 Today we proudly announce the release of Milvus v1.0. After 8 months of painstaking tests and trials by hundreds of Milvus community users, Milvus v0.10.x finally became stable, and it’s now time to release Milvus v1.0 based on Milvus v0.10.6.
 
 Milvus v1.0 brings with it the following features:
 
 - Support for mainstream similarity metrics, including Euclidean distance, inner product, Hamming distance, Jaccard coefficient, and more.
-- Integration with and improvements to SOTA ANNs algorithms, including Faiss, Hnswlib, Annoy, NSG, and more. 
+- Integration with and improvements to SOTA ANNs algorithms, including Faiss, Hnswlib, Annoy, NSG, and more.
 - Scale-out capability through the Mishards sharding proxy.
 - Support for processors commonly used in AI scenarios, including X86, Nvidia GPU, Xilinx FPGA, and more.
 
-See the [Release Notes](https://www.milvus.io/docs/v1.0.0/release_notes.md) for more of the v1.0 features. 
+See the [Release Notes](https://www.milvus.io/docs/v1.0.0/release_notes.md) for more of the v1.0 features.
 
 Milvus is an ongoing Open-Source Software (OSS) project. Still, we believe the first major release is of crucial importance to our community users for the following reasons:
 
-- Milvus v1.0 will be supported for the long term. 
+- Milvus v1.0 will be supported for the long term.
 - A stable version of Milvus can be readily integrated into the AI ecosystem.
 - Milvus is now well structured to move to the next stage.
 
@@ -31,12 +32,11 @@ Milvus is an ongoing Open-Source Software (OSS) project. Still, we believe the f
 
 ### Long-term support
 
-Milvus v1.0 is our first Long-Term Support (LTS) version. The Milvus community will provide bug fix support for Milvus v1.0 till December 31st, 2024 (sponsored by Zilliz). New features will be available only in releases subsequent to v1.0. 
+Milvus v1.0 is our first Long-Term Support (LTS) version. The Milvus community will provide bug fix support for Milvus v1.0 till December 31st, 2024 (sponsored by Zilliz). New features will be available only in releases subsequent to v1.0.
 
 See [The Milvus Release Guideline](https://www.milvus.io/docs/v1.0.0/milvus_release_guideline.md) for more information about the release strategy of Milvus.
 
 <br/>
-
 
 ### Toolchain and AI Ecosystem Integration
 
@@ -59,10 +59,3 @@ To continuously nurture and advance the Milvus community, we have drawn up our [
 - Moving forward, the distributed/cluster/cloud Milvus will use the existing cloud components as much as possible.
 
 Let’s work together to build the next-generation cloud data fabric made for AI!
-
- 
-
-
-
-
-  

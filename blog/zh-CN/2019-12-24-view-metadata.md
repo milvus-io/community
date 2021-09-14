@@ -2,10 +2,10 @@
 id: 2019-12-24-view-metadata.md
 title: Milvus 数据管理系列（三）：元数据管理 - 查看元数据
 author: 莫毅华
-date: 2021-07-30
+date: 2019-12-24
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 

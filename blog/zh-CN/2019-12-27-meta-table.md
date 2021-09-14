@@ -2,10 +2,10 @@
 id: 2019-12-27-meta-table.md
 title: Milvus 数据管理系列（四）：元数据管理 - 元数据表的字段
 author: 莫毅华
-date: 2021-07-30
+date: 2019-12-27
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 

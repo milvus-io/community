@@ -5,11 +5,12 @@ author: Rife Wang
 date: 2020-08-11 22:20:27.855+00
 desc: A case study with UPYUN
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c73631b1e7.png
-tag: Scenarios Technology
+tag: Scenarios,Technology
 origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
-  
+
 # The Journey to Optimizing Billion-scale Image Search (2/2)
+
 This article is the second part of **The Journey to Optimizing Billion-scale Image Search by UPYUN**. If you miss the first one, click [here](https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1).
 
 ## The second-generation search-by-image system
@@ -26,6 +27,7 @@ The term CNN is difficult to understand. Here we focus on answering two question
 - Why can I use CNN for an image search?
 
 ![1-meme.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_meme_649be6dfe8.jpg)
+
 ###### Photo by memegenerator.net
 
 There are many competitions in the AI field and image classification is one of the most important. The job of image classification is to determine whether the content of the picture is about a cat, a dog, an apple, a pear, or other types of objects.
@@ -83,7 +85,7 @@ In practical terms, image content is often transmitted through the network. Ther
 
     img = img.resize((224, 224), Image.NEAREST)
 
- The above img is the same as the result obtained by the image.load_img method. There are two things to pay attention to:
+The above img is the same as the result obtained by the image.load_img method. There are two things to pay attention to:
 
 - You must do RGB conversion.
 - You must resize (resize is the second parameter of the <code>load_img method</code>).
@@ -116,9 +118,10 @@ This is pretty much what I want to talk about using CNN to extract image feature
 ## Vector search engine
 
 The problem of extracting feature vectors from images has been solved. Then the remaining problems are:
+
 - How to store feature vectors?
 - How to calculate the similarity of feature vectors, that is, how to search?
-The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.
+  The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.
 
 ![3-milvus-logo.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_milvus_logo_3a7411f2c8.png)
 
@@ -165,9 +168,11 @@ Actually our memory may not be that big. (It doesn’t really matter if you don�
 ### 3. System configuration
 
 For more information about the system configuration, see the Milvus documentation:
+
 - Milvus server configuration: https://milvus.io/docs/v0.10.1/milvus_config.md
 
 ### 4. Database design
+
 **Collection & Partition**
 
 - Collection is also known as table.
@@ -180,6 +185,7 @@ How many collections and partitions can we have? The basic information on collec
 The data structure supported by Milvus’ collection and partition is very simple, that is, <code>ID + vector</code>. In other words, there are only two columns in the table: ID and vector data.
 
 **Note:**
+
 - ID should be integers.
 - We need to ensure that the ID is unique within a collection instead of within a partition.
 
@@ -201,8 +207,9 @@ You can refer to the following articles:
 - How to select index: https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212
 
 ### 5. Processing search results
- 
+
 The search results of Milvus are a collection of ID + distance:
+
 - ID: the ID in a collection.
 - Distance: a distance value of 0 ~ 1 indicates similarity level; the smaller the value, the more similar the two vectors.
 
@@ -221,19 +228,3 @@ Milvus does not support pagination. We need to implement the pagination function
 The distance between the vectors of two images is between 0 and 1. If we want to decide whether two images are similar in a specific business scenario, we need to specify a threshold within this range. The two images are similar if the distance is smaller than the threshold, or they are quite different from each other if the distance is larger than the threshold. You need to adjust the threshold to meet your own business needs.
 
 > This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi @ https://github.com/rifewang.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
