@@ -2,10 +2,10 @@
 id: 2019-12-27-meta-table.md
 title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
-date: 2021-07-30
+date: 2019-12-27
 desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
 
-cover: ../assets/pc-blog.jpg
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
 tag: Technology
 ---
 

@@ -4,14 +4,12 @@ title: Building a Milvus Cluster Based on JuiceFS
 author: Changjian Gao and Jingjing Jia
 date: 2021-06-15 07:21:07.938+00
 desc: Learn how to build a Milvus cluster based on JuiceFS, a shared file system designed for cloud-native environments.
-
-cover: ../assets/pc-blog.jpg
-tag: Technology
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/Juice_FS_blog_cover_851cc9e726.jpg
+tag: Technology Tools
 origin: zilliz.com/blog/building-a-milvus-cluster-based-on-juicefs
 ---
-
+  
 # Building a Milvus Cluster Based on JuiceFS
-
 Collaborations between open-source communities are a magical thing. Not only do passionate, intelligent, and creative volunteers keep open-source solutions innovative, they also work to bring different tools together in interesting and useful ways. [Milvus](https://milvus.io/), the world's most popular vector database, and [JuiceFS](https://github.com/juicedata/juicefs), a shared file system designed for cloud-native environments, were united in this spirit by their respective open-source communities. This article explains what JuiceFS is, how to build a Milvus cluster based on JuiceFS shared file storage, and the performance users can expect using this solution.
 
 ## **What is JuiceFS?**
@@ -21,16 +19,14 @@ JuiceFS is a high-performance, open-source distributed POSIX file system, which 
 After data, and its corresponding metadata, are persisted to object storage and [Redis](https://redis.io/) respectively, JuiceFS serves as a stateless middleware. Data sharing is realized by enabling different applications to dock with each other seamlessly through a standard file system interface. JuiceFS relies on Redis, an open-source in-memory data store, for metadata storage. Redis is used because it guarantees atomicity and provides high performance metadata operations. All data is stored in object storage through the JuiceFS client. The architecture diagram is as follows:
 
 ![juicefs-architecture.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/juicefs_architecture_2023b37a4e.png)
-
-###### _Overall architecture of JuiceFS._
+###### *Overall architecture of JuiceFS.*
 
 ## **Build a Milvus cluster based on JuiceFS**
 
 A Milvus cluster built with JuiceFS (see architecture diagram below) works by splitting upstream requests using Mishards, a cluster sharding middleware, to cascade the requests down to its sub-modules. When inserting data, Mishards allocates upstream requests to the Milvus write node, which stores newly inserted data in JuiceFS. When reading data, Mishards loads the data from JuiceFS through a Milvus read node to memory for processing, then collects and returns results from sub-services upstream.
 
 ![milvus-cluster-built-with-juicefs.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvus_cluster_built_with_juicefs_3a43cd262c.png)
-
-###### _Architecture of Milvus cluster built with JuiceFS._
+###### *Architecture of Milvus cluster built with JuiceFS.*
 
 ### **Step 1: Launch MySQL service**
 
@@ -63,14 +59,14 @@ When the installation succeeds, JuiceFS returns the shared storage page **/root/
 
 All the nodes in the cluster should have Milvus installed, and each Milvus node should be configured with read or write permission. Only one Milvus node can be configured as write node, and the rest must be read nodes. First, set the parameters of sections `cluster` and `general` in the Milvus system configuration file **server_config.yaml**:
 
-**Section** `cluster`
+**Section** `cluster` 
 
 | **Parameter** | **Description**                | **Configuration** |
 | :------------ | :----------------------------- | :---------------- |
-| `enable`      | Whether to enable cluster mode | `true`            |
-| `role`        | Milvus deployment role         | `rw`/`ro`         |
+| `enable`        | Whether to enable cluster mode | `true`              |
+| `role`          | Milvus deployment role         | `rw`/`ro`             |
 
-**Section** `general`
+**Section** `general` 
 
 ```
 # meta_uri is the URI for metadata storage, using MySQL (for Milvus Cluster). Format: mysql://<username:password>@host:port/database
@@ -79,17 +75,18 @@ general:
   meta_uri: mysql://root:milvusroot@host:3306/milvus
 ```
 
+
 During installation, the configured JuiceFS shared storage path is set as **/root/jfs/milvus/db**.
 
 ```
-1 sudo docker run -d --name milvus_gpu_1.0.0 --gpus all \
-2 -p 19530:19530 \
-3 -p 19121:19121 \
-4 -v /root/jfs/milvus/db:/var/lib/milvus/db \  #/root/jfs/milvus/db is the shared storage path
-5 -v /home/$USER/milvus/conf:/var/lib/milvus/conf \
-6 -v /home/$USER/milvus/logs:/var/lib/milvus/logs \
-7 -v /home/$USER/milvus/wal:/var/lib/milvus/wal \
-8 milvusdb/milvus:1.0.0-gpu-d030521-1ea92e
+1 sudo docker run -d --name milvus_gpu_1.0.0 --gpus all \ 
+2 -p 19530:19530 \ 
+3 -p 19121:19121 \ 
+4 -v /root/jfs/milvus/db:/var/lib/milvus/db \  #/root/jfs/milvus/db is the shared storage path 
+5 -v /home/$USER/milvus/conf:/var/lib/milvus/conf \ 
+6 -v /home/$USER/milvus/logs:/var/lib/milvus/logs \ 
+7 -v /home/$USER/milvus/wal:/var/lib/milvus/wal \ 
+8 milvusdb/milvus:1.0.0-gpu-d030521-1ea92e 
 9
 ```
 
@@ -106,13 +103,10 @@ Unlike traditional NAS systems, JuiceFS is implemented based on Filesystem in Us
 
 Benchmark testing reveals that JuiceFS offers major advantages over EFS. In the metadata benchmark (Figure 1), JuiceFS sees I/O operations per second (IOPS) up to ten times higher than EFS. Additionally, the I/O throughput benchmark (Figure 2) shows JuiceFS outperforms EFS in both single- and multi-job scenarios.
 
-![performance-benchmark-1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/performance_benchmark_1_b7fcbb4439.png)
-
-###### _Figure 1. Metadata benchmark_
-
+![performance-benchmark-1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/performance_benchmark_1_b7fcbb4439.png) 
+###### *Figure 1. Metadata benchmark*
 ![performance-benchmark-2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/performance_benchmark_2_e311098123.png)
-
-###### _Figure 2. Sequential read/write benchmark._
+###### *Figure 2. Sequential read/write benchmark.*
 
 Additionally, benchmark testing shows first query retrieval time, or time to load newly inserted data from disk to memory, for the JuiceFS-based Milvus cluster is just 0.032 seconds on average, indicating that data is loaded from disk to memory almost instantaneously. For this test, first query retrieval time is measured using one million rows of 128-dimensional vector data inserted in batches of 100k at intervals of 1 to 8 seconds.
 
@@ -129,3 +123,6 @@ Milvus is a powerful tool capable of powering a vast array of artificial intelli
 
 ![writer bio-changjian gao.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/writer_bio_changjian_gao_68018f7716.png)
 ![writer bio-jingjing jia.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/writer_bio_jingjing_jia_a85d1c2e3b.png)
+
+
+  

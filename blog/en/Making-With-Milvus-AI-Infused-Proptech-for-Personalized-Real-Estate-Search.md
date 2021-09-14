@@ -1,18 +1,16 @@
 ---
 id: Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search.md
 title: Making With Milvus AI-Infused Proptech for Personalized Real Estate Search
-author: Zilliz
+author: milvus
 date: 2021-03-18 03:53:54.736+00
-desc: AI is transforming the real estate industry, discover how intelligent proptech accelerates the home search and purchase process.
-
-cover: ../assets/pc-blog.jpg
+desc: AI is transforming the real estate industry, discover how intelligent proptech accelerates the home search and purchase process. 
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_realistate_search_da4e8ee01d.jpg
 tag: Scenarios
 origin: zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search
 ---
-
+  
 # Making With Milvus: AI-Infused Proptech for Personalized Real Estate Search
-
-Artificial intelligence (AI) has [powerful applications](https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#d62b) in real estate that are transforming the home search process. Tech savvy real estate professionals have been taking advantage of AI for years, recognizing its ability to help clients find the right home faster and simplify the process of purchasing property. The coronavirus pandemic has [accelerated](https://www.pwc.com/ca/en/industries/real-estate/emerging-trends-in-real-estate-2021/shifting-landscape-proptech.html) interest, adoption, and investement in property technology (or proptech) worldwide, suggesting it will play an increasingly greater role in the real estate industry moving forward.
+Artificial intelligence (AI) has [powerful applications](https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#d62b) in real estate that are transforming the home search process. Tech savvy real estate professionals have been taking advantage of AI for years, recognizing its ability to help clients find the right home faster and simplify the process of purchasing property. The coronavirus pandemic has [accelerated](https://www.pwc.com/ca/en/industries/real-estate/emerging-trends-in-real-estate-2021/shifting-landscape-proptech.html) interest, adoption, and investement in property technology (or proptech) worldwide, suggesting it will play an increasingly greater role in the real estate industry moving forward. 
 
 This article explores how Beike used vector similarity search to build a house hunting platform that provides personalized results and recommends listings in near real-time.
 
@@ -33,8 +31,7 @@ This article explores how Beike used vector similarity search to build a house h
 Unstructured data makes up an estimated 80-90% of all data, and extracting insights from it is quickly becoming a requrement for businesses that want to remain competitive in an ever-changing world. Increasing demand for unstructured data analytics, rising compute power, and declining compute costs have made AI-enabled vector search more accessible than ever.
 
 ![beike-blog-img1.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_blog_img1_2dc95cac08.jpg)
-
-###### _Understanding the difference between structured and unstructured data._
+###### *Understanding the difference between structured and unstructured data.*
 
 Traditionally, unstructured data has been a challenge to process and analyze at scale because it doesn't follow a predefined model or organizational structure. Neural networks (e.g., CNN, RNN, and BERT) make it possible to convert unstructured data into feature vectors, a numerical data format that can be easily interpreted by computers. Algorithms are then used to calculate similarity between vectors using metrics like cosine similarity or Euclidean distance.
 
@@ -47,8 +44,7 @@ Ultimately, vector similarity search is a broad term that desribes techniques fo
 Milvus was built specifically for large-scale vector data management, and has applications spanning image and video search, chemical similarity analysis, personalized recommendation systems, conversational AI, and much more. Vector datasets stored in Milvus can be efficiently queried, with most implementations following this general process:
 
 ![beike-blog-img2.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_blog_img2_d5abb58f95.jpg)
-
-###### _How does Milvus manage vector data?_
+###### *How does Milvus manage vector data?*
 
 <br/>
 
@@ -62,11 +58,11 @@ For example, when searching for more homes similar to a given listing, features 
 
 2. Milvus stores and indexes the feature vectors.
 
-3. Milvus returns similarity search results based on user queries.
+3. Milvus returns similarity search results based on user queries. 
 
 ![milvus-overview-diagram.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvus_overview_diagram_d17cda0e47.png)
 
-###### _An overview of Milvus._
+###### *An overview of Milvus.*
 
 <br/>
 
@@ -74,17 +70,17 @@ Beike’s intelligent real estate search platform is powered by a recommendation
 
 1. Based on an input listing, characteristics such as floor plan, size, and orientation are used to extract 4 collections of feature vectors.
 
-2. The extracted feature collections are used to perform similarity search in Milvus. Results of the query for each collection of vectors are a measure of similarity between the input listing and other similar listings.
+2. The extracted feature collections are used to perform similarity search in Milvus. Results of the query for each collection of vectors are a measure of similarity between the input listing and other similar listings. 
 
-3. The search results from each of the 4 vector collections are compared then used to recommend similar homes.
+3. The search results from each of the 4 vector collections are compared then used to recommend similar homes. 
 
 ![beike-intelligent-house-platform-diagram.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_intelligent_house_platform_diagram_6e278da118.jpg)
 
-###### _An overview of Beike’s intelligent house hunting platform._
+###### *An overview of Beike’s intelligent house hunting platform.*
 
 <br/>
 
-As the figure above shows, the system implements an A/B table switching mechanism for updating data. Milvus stores the data for the first T days in table A, on day T+1 it starts to store data in table B, on day 2T+1, it starts to rewrite table A, and so forth.
+As the figure above shows, the system implements an A/B table switching mechanism for updating data. Milvus stores the data for the first T days in table A, on day T+1 it starts to store data in table B, on day 2T+1, it starts to rewrite table A, and so forth. 
 
 <br/>
 
@@ -93,3 +89,4 @@ As the figure above shows, the system implements an A/B table switching mechanis
 - [Building an AI-Powered Writing Assistant for WPS Office](https://zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office)
 
 - [Making with Milvus: AI-Powered News Recommendation Inside Xiaomi's Mobile Browser](https://zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser)
+  

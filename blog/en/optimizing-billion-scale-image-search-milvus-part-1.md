@@ -1,17 +1,15 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-1.md
 title: The Journey to Optimizing Billion-scale Image Search (1/2)
-author: Zilliz
-date: 2021-03-31 20:39:09.882+00
-desc: A Case Study with UPYUN
-
-cover: ../assets/pc-blog.jpg
-tag: Scenarios
+author: Rife Wang
+date: 2020-08-04 20:39:09.882+00
+desc: A case study with UPYUN
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_23bbd76c8b.jpg
+tag: Scenarios Technology
 origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1
 ---
-
+  
 # The Journey to Optimizing Billion-scale Image Search (1/2)
-
 Yupoo Picture Manager serves tens of millions of users and manages tens of billions of pictures. As its user gallery is growing larger, Yupoo has an urgent business need for a solution that can quickly locate the image. In other words, when a user inputs an image, the system should find its original image and similar images in the gallery. The development of the search by image service provides an effective approach to this problem.
 
 The search by image service has undergone two evolutions:
@@ -44,7 +42,7 @@ Each image can be represented by a matrix. Each pixel in the image corresponds t
 ### Binary images
 
 The pixels of a binary image is either black or white, so each pixel can be represented by 0 or 1.
-For example, the matrix representation of a 4 \* 4 binary image is:
+For example, the matrix representation of a 4 * 4 binary image is:
 
     0 1 0 1
     1 0 0 0
@@ -57,7 +55,7 @@ The three primary colors (red, green, and blue) can be mixed to produce any colo
 
     ([0 .. 255], [0 .. 255], [0 .. 255])
 
-Taking a 4 \* 4 RGB image as an example:
+Taking a 4 * 4 RGB image as an example:
 
 ![3-4-x-4-rgb-image.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_4_x_4_rgb_image_136cec77ce.png)
 
@@ -127,8 +125,11 @@ The first-generation search-by-image system chooses the pHash + ElasticSearch so
 
 - The pHash algorithm is simple to use and can resist a certain degree of compression, watermark, and noise.
 - ElasticSearch uses the existing resources of the project without adding additional costs to the search.
-- But the limitation of this system is obvious: The pHash algorithm is an abstract representation of the entire image. Once we destroy the integrity of the image, such as adding a black border to the original image, it is almost impossible to judge the similarity between the original and the others.
+- 
+But the limitation of this system is obvious: The pHash algorithm is an abstract representation of the entire image. Once we destroy the integrity of the image, such as adding a black border to the original image, it is almost impossible to judge the similarity between the original and the others.
 
 To break through such limitations, the second-generation image search system with a completely different underlying technology emerged.
 
 This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi! https://github.com/rifewang
+
+  

@@ -1,17 +1,15 @@
 ---
 id: managing-metadata-in-milvus-2.md
 title: Milvus Metadata Management (2)
-author: Zilliz
-date: 2021-04-12 20:41:13.864+00
+author: milvus
+date: 2019-12-31 20:41:13.864+00
 desc: Fields in the Metadata Table
-
-cover: ../assets/pc-blog.jpg
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c65a2a523c.png
 tag: Technology
 origin: zilliz.com/blog/managing-metadata-in-milvus-2
 ---
-
+  
 # Milvus Metadata Management (2)
-
 In the last blog, we mentioned how to view your metadata using MySQL or SQLite. This article mainly intends to introduce in detail the fields in the metadata tables.
 
 ## Fields in the <code>Tables</code> table
@@ -23,7 +21,6 @@ Take SQLite as an example. The following result comes from 0.5.0. Some fields ar
 The following table shows field types and descriptions of the fields in <code>Tables</code>.
 
 ![2-field-types-descriptions-milvus-metadata.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_field_types_descriptions_milvus_metadata_d0b068c413.png)
-
 ###### Fields in “Tables”
 
 Table partitioning is enabled in 0.6.0 with a few new fields, including <code>owner_table</code>，<code>partition_tag</code> and <code>version</code>. A vector table, <code>table_1</code>, has a partition called <code>table_1_p1</code>, which is also a vector table. <code>partition_name</code> corresponds to <code>table_id</code>. Fields in a partition table are inherited from the <code>owner table</code>, with the owner table field specifying the name of the owner table and the <code>partition_tag</code> field specifying the tag of the partition.
@@ -33,7 +30,6 @@ Table partitioning is enabled in 0.6.0 with a few new fields, including <code>ow
 The following table shows new fields in 0.6.0:
 
 ![4-new-fields-milvus-0.6.0.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_new_fields_milvus_0_6_0_bb82bfaadf.png)
-
 ###### New fields in “Tables”
 
 ## Fields in the TableFiles table
@@ -45,7 +41,6 @@ The following example contains two files, which both belong to the <code>table_1
 The following table shows fields and descriptions of <code>TableFiles</code>:
 
 ![6-field-types-descriptions-tablefile.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/6_field_types_descriptions_tablefile_7a7b57d715.png)
-
 ###### Fields in “Tablefiles”
 
 ## What’s coming next
@@ -55,3 +50,6 @@ The upcoming article will show you how to use SQLite to manage metadata in Milvu
 Any questions, welcome to join our [Slack channel](https://join.slack.com/t/milvusio/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk)or file an issue in the repo.
 
 GitHub repo: https://github.com/milvus-io/milvus
+
+
+  
