@@ -3,10 +3,10 @@ id: 2020-01-09-milvus-meta.md
 title: Milvus 数据管理系列（五）：如何通过元数据管理数据文件
 author: 莫毅华
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1
+tag:
 ---
 
 # Milvus 数据管理系列（五）：如何通过元数据管理数据文件

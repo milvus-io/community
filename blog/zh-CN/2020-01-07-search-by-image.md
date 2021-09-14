@@ -3,10 +3,10 @@ id: 2020-01-07-search-by-image.md
 title: Milvus 实战：轻松搭建以图搜图系统
 author: 小龙
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1
+tag:
 ---
 
 # Milvus 实战系列之 - 以图搜图系统

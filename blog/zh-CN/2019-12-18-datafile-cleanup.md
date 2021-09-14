@@ -3,10 +3,10 @@ id: 2019-12-18-datafile-cleanup.md
 title: Milvus 数据管理系列（二）：数据文件清理机制的改进
 author: 莫毅华
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test2 test5
+tag:
 ---
 
 # Milvus 数据管理系列（二）：数据文件清理机制的改进

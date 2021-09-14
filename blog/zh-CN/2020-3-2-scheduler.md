@@ -3,10 +3,10 @@ id: 2020-3-2-scheduler.md
 title: Milvus 查询任务调度原理
 author: 王翔宇
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test2
+tag:
 ---
 
 # Milvus 查询任务调度原理
