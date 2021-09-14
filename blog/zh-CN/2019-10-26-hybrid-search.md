@@ -3,10 +3,10 @@ id: 2019-10-26-hybrid-search.md
 title: 基于 Milvus 实现向量与结构化数据混合查询
 author: 顾钧
 date: 2021-07-30
-desc: Open-source communities are creative and collaborative spaces. In that vein, the Milvus
+desc:
 
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
-tag: test1 test3
+tag:
 ---
 
 # 基于 Milvus 实现向量与结构化数据混合查询
