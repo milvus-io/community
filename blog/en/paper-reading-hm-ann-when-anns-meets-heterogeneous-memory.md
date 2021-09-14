@@ -5,13 +5,13 @@ author: Jigao Luo
 date: 2021-08-26 07:18:47.925+00
 desc: HM-ANN Efficient Billion-Point Nearest Neighbor Search on Heterogeneous Memory
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_cover_4a9807b9e0.png
-tag: Technology Community
+tag: Technology,Community
 origin: zilliz.com/blog/paper-reading-hm-ann-when-anns-meets-heterogeneous-memory
 ---
-  
-# Paper Reading｜HM-ANN: When ANNS Meets Heterogeneous Memory
-[HM-ANN: Efficient Billion-Point Nearest Neighbor Search on Heterogenous Memory](https://proceedings.neurips.cc/paper/2020/file/788d986905533aba051261497ecffcbb-Paper.pdf) is a research paper that was accepted at the 2020 Conference on Neural Information Processing Systems ([NeurIPS 2020](https://nips.cc/Conferences/2020)). In this paper, a novel algorithm for graph-based similarity search, called HM-ANN, is proposed. This algorithm considers both memory heterogeneity and data heterogeneity in a modern hardware setting. HM-ANN enables billion-scale similarity search on a single machine without compression technologies. Heterogeneous memory (HM) represents the combination of fast but small dynamic random-access memory (DRAM) and slow but large persistent memory (PMem). HM-ANN achieves low search latency and high search accuracy, especially when the dataset cannot fit into DRAM. The algorithm has a distinct advantage over the state-of-art approximate nearest neighbor (ANN) search solutions.
 
+# Paper Reading ｜ HM-ANN: When ANNS Meets Heterogeneous Memory
+
+[HM-ANN: Efficient Billion-Point Nearest Neighbor Search on Heterogenous Memory](https://proceedings.neurips.cc/paper/2020/file/788d986905533aba051261497ecffcbb-Paper.pdf) is a research paper that was accepted at the 2020 Conference on Neural Information Processing Systems ([NeurIPS 2020](https://nips.cc/Conferences/2020)). In this paper, a novel algorithm for graph-based similarity search, called HM-ANN, is proposed. This algorithm considers both memory heterogeneity and data heterogeneity in a modern hardware setting. HM-ANN enables billion-scale similarity search on a single machine without compression technologies. Heterogeneous memory (HM) represents the combination of fast but small dynamic random-access memory (DRAM) and slow but large persistent memory (PMem). HM-ANN achieves low search latency and high search accuracy, especially when the dataset cannot fit into DRAM. The algorithm has a distinct advantage over the state-of-art approximate nearest neighbor (ANN) search solutions.
 
 # Motivation
 
@@ -71,13 +71,13 @@ The search algorithm consists of two phases: fast memory search and parallel lay
 
 ### Fast memory search
 
-As the same as in HNSW, the search in DRAM begins at the entry point in the very top layer and then performs 1-greedy search from top to layer 2. To narrow down the search space in layer 0, HM-ANN performs the search in layer 1 with a search budget with ```efSearchL1```, which limits the size of the candidate list in layer 1. Those candidates of the list are used as multiple entry points for search in layer 0, to enhance search quality in layer 0. While HNSW using only one entry point, the gap between layer 0 and layer 1 is more specially handled in HM-ANN than gaps between any other two layers.
+As the same as in HNSW, the search in DRAM begins at the entry point in the very top layer and then performs 1-greedy search from top to layer 2. To narrow down the search space in layer 0, HM-ANN performs the search in layer 1 with a search budget with `efSearchL1`, which limits the size of the candidate list in layer 1. Those candidates of the list are used as multiple entry points for search in layer 0, to enhance search quality in layer 0. While HNSW using only one entry point, the gap between layer 0 and layer 1 is more specially handled in HM-ANN than gaps between any other two layers.
 
 ### Parallel layer-0 search with prefetching
 
 In the bottom layer, HM-ANN evenly partitions the aforementioned candidates from searching layer 1 and sees them as entry points to perform a parallel multi-start 1-greedy search with threads. The top candidates from each search are collected to find the best candidates. As known, going down from layer 1 to layer 0 is exactly going to PMem. Parallel search hides the latency of PMem and makes the best use of memory bandwidth, to improve search quality without increasing search time.
 
-HM-ANN implements a software-managed buffer in DRAM to prefetch data from PMem before the memory access happens. When searching layer 1, HM-ANN asynchronously copies neighbor elements of those candidates in ```efSearchL1``` and the neighbor elements’ connections in layer 1 from PMem to the buffer. When the search in layer 0 happens, a portion of to-be-accessed data is already prefetched in DRAM, which hides the latency to access PMem and leads to shorter query time. It matches the design goal of HM-ANN, where most memory accesses happen in DRAM and memory accesses in PMem are reduced.
+HM-ANN implements a software-managed buffer in DRAM to prefetch data from PMem before the memory access happens. When searching layer 1, HM-ANN asynchronously copies neighbor elements of those candidates in `efSearchL1` and the neighbor elements’ connections in layer 1 from PMem to the buffer. When the search in layer 0 happens, a portion of to-be-accessed data is already prefetched in DRAM, which hides the latency to access PMem and leads to shorter query time. It matches the design goal of HM-ANN, where most memory accesses happen in DRAM and memory accesses in PMem are reduced.
 
 # Evaluation
 
@@ -130,4 +130,3 @@ We notice a trend in academia as well as in industry, where building indexes on 
 [https://dl.acm.org/doi/abs/10.1145/3329785.3329930](https://dl.acm.org/doi/abs/10.1145/3329785.3329930)
 
 [Persistent Memory I/O Primitives](https://arxiv.org/abs/1904.01614)
-  

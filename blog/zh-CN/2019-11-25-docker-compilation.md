@@ -2,10 +2,10 @@
 id: 2019-11-25-docker-compilation.md
 title: 在 Docker 容器中编译运行 Milvus
 author: 莫毅华
-date: 2021-07-30
+date: 2019-11-25
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 

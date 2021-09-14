@@ -5,7 +5,7 @@ author: milvus
 date: 2021-07-20 07:21:43.897+00
 desc: Using open-source vector search tools to build a question answering service.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/milmil_4600f33f1c.jpg
-tag: Scenarios Tools
+tag: Scenarios,Tools
 origin: zilliz.com/blog/milmil-a-milvus-powered-faq-chatbot-that-answers-questions-about-milvus
 ---
 
