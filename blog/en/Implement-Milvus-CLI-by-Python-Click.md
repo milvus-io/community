@@ -10,15 +10,43 @@ isPublish: true
 
 # Implement Milvus CLI by Python Click
 
-[toc]
+- [Implement Milvus CLI by Python Click](#Implement-Milvus-CLI-by-Python-Click)
+  - [Overview](#Overview)
+  - [Group commands](#Group-commands)
+    - [Create a command](#Create-a-command)
+    - [Create a sub command of command group](#Create-a-sub-command-of-command-group)
+    - [Create a sub group of a command group](#Create-a-sub-group-of-a-command-group)
+  - [Custom a command](#Custom-a-command)
+    - [Add options](#Add-options)
+    - [Add flag options](#Add-flag-options)
+    - [Add arguments](#Add-arguments)
+    - [Add full help message](#Add-full-help-message)
+    - [Add confirm](#Add-confirm)
+    - [Add prompts](#Add-prompts)
+    - [Add choices](#Add-choices)
+    - [Add clear screen](#Add-clear-screen)
+    - [Additional tips](#Additional-tips)
+  - [Implement prompt CLI for user to input](#Implement-prompt-cli-for-user-to-input)
+    - [Why prompt CLI](#Why-prompt-cli)
+    - [Implement](#Implement)
+  - [Manually implement autocomplete](#Manually-implement-autocomplete)
+  - [Add one-time option](#Add-one-time-option)
+  - [Build and release](#Build-and-release)
+    - [Install locally for test](#Install-locally-for-test)
+    - [Create package files](#Create-package-files)
+      - [Create the package directory](#Create-the-package-directory)
+      - [Write the entry code](#Write-the-entry-code)
+      - [Edit the `setup.py`](#Edit-the-setuppy)
+      - [Build](#Build)
+    - [Publish release](#Publish-release)
+    - [CI/CD by Github workflows](#CICD-by-Github-workflows)
+  - [Learn more about Milvus](#Learn-more-about-Milvus)
 
 ## Overview
 
 Project URL: https://github.com/milvus-io/milvus_cli
 
-Preparation: `Python3.8`,[ `Click 8.0.x`](https://click.palletsprojects.com/en/8.0.x/api/) 
-
-
+Preparation: `Python3.8`,[ `Click 8.0.x`](https://click.palletsprojects.com/en/8.0.x/api/)
 
 ## Group commands
 
@@ -61,7 +89,7 @@ def help():
     click.echo(print_help_msg(cli))
 ```
 
-Now we can use `cli help`  in terminal:
+Now we can use `cli help` in terminal:
 
 ```shell
 $ python milvus_cli/scripts/milvus_cli.py help
@@ -297,8 +325,6 @@ def clear():
 
 - Default value is `None`, so it's meaningless if you specified the default value as `None`. And default `None` will cause `click.prompt` continously show if you want to leave a value empty to jump over it.
 
-
-
 ## Implement prompt CLI for user to input
 
 ### Why prompt CLI
@@ -389,7 +415,7 @@ def runCliPrompt():
 5. After all settled, the CLI now looks like:
 
 ```shell
-milvus_cli > 
+milvus_cli >
 milvus_cli > connect
 +-------+-----------+
 | Host  | 127.0.0.1 |
@@ -738,7 +764,7 @@ Some tips here:
 
 1. We use `README.md` content as the package's long description.
 2. Add all dependencies to `install_requires`.
-3. Specify the `entry_points`. In this case,  we set `milvus_cli` as a child of  `console_scripts`, so that we can type `milvus_cli` as a command directly after we install this package. And the `milvus_cli`'s entry point is `runCliPrompt` function in `milvus_cli/scripts/milvus_cli.py`.
+3. Specify the `entry_points`. In this case, we set `milvus_cli` as a child of `console_scripts`, so that we can type `milvus_cli` as a command directly after we install this package. And the `milvus_cli`'s entry point is `runCliPrompt` function in `milvus_cli/scripts/milvus_cli.py`.
 
 #### Build
 
@@ -812,7 +838,7 @@ jobs:
           --wheel
           --outdir dist/
           .
-      # Update target github release's assets 
+      # Update target github release's assets
       - name: Update assets
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -828,3 +854,10 @@ jobs:
           packages_dir: dist/
           verify_metadata: false
 ```
+
+## Learn more about Milvus
+Milvus is a powerful tool capable of powering a vast array of artificial intelligence and vector similarity search applications. To learn more about the project, check out the following resources:
+- Read our [blog](https://milvus.io/blog).
+- Interact with our open-source community on [Slack](https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email).
+- Use or contribute to the world’s most popular vector database on [GitHub](https://github.com/milvus-io/milvus/).
+- Quickly test and deploy AI applications with our new [bootcamp](https://github.com/milvus-io/bootcamp).
