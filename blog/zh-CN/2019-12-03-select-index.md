@@ -2,10 +2,10 @@
 id: 2019-12-03-select-index.md
 title: 如何选择索引类型 (一)
 author: 蔡宇东
-date: 2021-07-30
+date: 2019-12-03
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 

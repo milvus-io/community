@@ -2,10 +2,10 @@
 id: 2020-2-16-api-setting.md
 title: 如何设置 Milvus 客户端参数
 author: 莫毅华
-date: 2021-07-30
+date: 2020-02-16
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 

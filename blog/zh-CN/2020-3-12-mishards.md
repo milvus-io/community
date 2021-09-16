@@ -2,10 +2,10 @@
 id: 2020-3-12-mishards.md
 title: Milvus 分布式向量检索-Mishards架构介绍
 author: 徐鹏
-date: 2021-07-30
+date: 2020-03-12
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 

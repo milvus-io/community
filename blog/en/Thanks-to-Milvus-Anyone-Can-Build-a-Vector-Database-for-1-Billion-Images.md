@@ -1,33 +1,30 @@
 ---
 id: Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images.md
-title: Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images 
+title: Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images
 author: milvus
 date: 2020-11-11 07:13:02.135+00
-desc: AI and open-source software make it possible to build a reverse image search engine with just one server and 10 lines of code. Search 1+ billion images in real time and more with Milvus, an open-source vector data management platform. 
+desc: AI and open-source software make it possible to build a reverse image search engine with just one server and 10 lines of code. Search 1+ billion images in real time and more with Milvus, an open-source vector data management platform.
 cover: zilliz-cms.s3.us-west-2.amazonaws.com/build_search_9299109ca7.jpg
-tag: Technology Scenarios
+tag: Technology,Scenarios
 origin: zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
 ---
-  
-# Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images 
+
+# Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images
+
 Rising compute power and declining compute costs have made machine-scale analytics and artificial intelligence (AI) more accessible than ever before. In practice, this means with just one server and 10 lines of code, it is possible to build a reverse image search engine capable of querying 1+ billion images in real time. This article explains how [Milvus](https://milvus.io/), an open-source vector data management platform, can be used to create powerful systems for unstructured data processing and analysis, as well as the underlying technology that makes this all possible.
 
 **Jump to:**
 
 - [Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images](#thanks-to-milvus-anyone-can-build-a-vector-database-for-1-billion-images)
-    - [How does AI enable unstructured data analytics?](#how-does-ai-enable-unstructured-data-analytics)
-    - [Neural networks convert unstructured data into computer-friendly feature vectors](#neural-networks-convert-unstructured-data-into-computer-friendly-feature-vectors)
-          - [*AI algorithms convert unstructured data to vectors*](#ai-algorithms-convert-unstructured-data-to-vectors)
-    - [What are vector data management platforms?](#what-are-vector-data-management-platforms)
-    - [What are limitations of existing approaches to vector data management?](#what-are-limitations-of-existing-approaches-to-vector-data-management)
-          - [*An overview of Milvus’ architecture.*](#an-overview-of-milvus-architecture)
-    - [What are applications for vector data management platforms and vector similarity search?](#what-are-applications-for-vector-data-management-platforms-and-vector-similarity-search)
-    - [Reverse image search](#reverse-image-search)
-          - [*Google’s “search by image” feature.*](#googles-search-by-image-feature)
-      - [Video recommendation systems](#video-recommendation-systems)
-      - [Natural language processing (NLP)](#natural-language-processing-nlp)
-    - [Learn more about Milvus](#learn-more-about-milvus)
-
+  - [How does AI enable unstructured data analytics?](#how-does-ai-enable-unstructured-data-analytics)
+  - [Neural networks convert unstructured data into computer-friendly feature vectors](#neural-networks-convert-unstructured-data-into-computer-friendly-feature-vectors) - [_AI algorithms convert unstructured data to vectors_](#ai-algorithms-convert-unstructured-data-to-vectors)
+  - [What are vector data management platforms?](#what-are-vector-data-management-platforms)
+  - [What are limitations of existing approaches to vector data management?](#what-are-limitations-of-existing-approaches-to-vector-data-management) - [_An overview of Milvus’ architecture._](#an-overview-of-milvus-architecture)
+  - [What are applications for vector data management platforms and vector similarity search?](#what-are-applications-for-vector-data-management-platforms-and-vector-similarity-search)
+  - [Reverse image search](#reverse-image-search) - [_Google’s “search by image” feature._](#googles-search-by-image-feature)
+    - [Video recommendation systems](#video-recommendation-systems)
+    - [Natural language processing (NLP)](#natural-language-processing-nlp)
+  - [Learn more about Milvus](#learn-more-about-milvus)
 
 ### How does AI enable unstructured data analytics?
 
@@ -41,7 +38,7 @@ Using neural networks (e.g. [CNN](https://en.wikipedia.org/wiki/Convolutional_ne
 
 ![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_2.jpeg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_2_db8c16aea4.jpeg)
 
-###### *AI algorithms convert unstructured data to vectors*
+###### _AI algorithms convert unstructured data to vectors_
 
 Computing vector similarity is a relatively simple process that relies on established algorithms. However, unstructured datasets, even after being converted into feature vectors, are typically several orders of magnitude larger than traditional structured and semi-structured datasets. Vector similarity search is complicated by the sheer storage space and compute power required to efficiently and accurately query massive-scale unstructured data.
 However, if some degree of accuracy can be sacrificed, there are various approximate nearest neighbor (ANN) search algorithms that can drastically improve query efficiency for massive datasets with high dimensionality. These ANN algorithms decrease storage requirements and computation load by clustering similar vectors together, resulting in faster vector search. Commonly used algorithms include tree-based, graph-based, and combined ANNs.
@@ -63,7 +60,7 @@ Milvus attempts to overcome all of these limitations. The system enhances flexib
 
 ![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_3_380e31d32c.png)
 
-###### *An overview of Milvus’ architecture.*
+###### _An overview of Milvus’ architecture._
 
 Using various ANN indexing techniques, Milvus is able to achieve a 99% top-5 recall rate. The system is also capable of loading 1+ million data entries per minute. This results in query time of less than one second when running a reverse image search on 1 billion images. As a cloud native application that can operate as a distributed system deployed across multiple nodes, Milvus can easily and reliably achieve similar performance on datasets that contain 10, or even 100, billion images. Additionally, the system is not limited to image data, with applications spanning computer vision, conversational AI, recommendation systems, new drug discovery, and more.
 
@@ -77,10 +74,9 @@ Major search engines like Google already give users the option to search by imag
 
 ![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_4_7884aabcd8.png)
 
-###### *Google’s “search by image” feature.*
+###### _Google’s “search by image” feature._
 
 Open-source software like Milvus makes it possible for any business to create their own reverse image search system, lowering the barriers to entry for this increasingly in-demand feature. Developers can use pre-trained AI models to convert their own image datasets into vectors, and then leverage Milvus to enable searching for similar products by image.
-
 
 #### Video recommendation systems
 
@@ -95,7 +91,6 @@ Natural language processing is a branch of artificial intelligence that aims to 
 If you would like to learn more about Milvus visit our [website](https://milvus.io/). Additionally, our [bootcamp](https://github.com/milvus-io/bootcamp) offers several tutorials, with instructions for setting up Milvus, benchmark testing, and building a variety of different applications. If you’re interested in vector data management, artificial intelligence, and big data challenges, please join our open-source community on [GitHub](https://github.com/milvus-io) and chat with us on [Slack](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ).
 
 Want more information about building an image search system? Check out this case study:
+
 - [The Journey to Optimizing Billion-scale Image Search (1/2)](https://dzone.com/articles/the-journey-to-optimize-billion-scale-image-search)
 - [The Journey to Optimizing Billion-scale Image Search (2/2)](https://medium.com/unstructured-data-service/the-journey-to-optimizing-billion-scale-image-search-2-2-572a36d5d0d)
-
-  

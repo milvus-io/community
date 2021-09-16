@@ -2,10 +2,10 @@
 id: 2020-01-07-search-by-image.md
 title: Milvus 实战：轻松搭建以图搜图系统
 author: 小龙
-date: 2021-07-30
+date: 2020-01-07
 desc:
 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/pc_blog_8ed7696269.jpg
+cover:
 tag:
 ---
 
