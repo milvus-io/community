@@ -33,29 +33,29 @@ tag: Technology
 
 修改 Milvus.yaml 中的配置参数，如下图所示把日志形式从 text 改成 json：
 
-![图片](/Users/wenyi/projects/community/blog/assets/640-20210926222916233-2666556.)
+![图片](../assets/640-20210926222916233-2666556.)
 
 Milvus.yaml 配置文件修改完毕之后，也需要修改 docker-compose.yml 文件。docker-compose.yml 文件修改的部分为：将本地已经修改的配置文件的路径 /data/workspace/***/milvus.yaml ，映射到相对应的 docker 容器内部的配置文件路径 /milvus/configs/milvus.yaml 中：
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916249" alt="图片" style="zoom:77%;" />
+<img src="../assets/640-20210926222916249" alt="图片" style="zoom:77%;" />
 
 让我们来验证一下是否生效，用 docker-compose up -d 命令启动 Milvus 2.0，然后用 docker logs 查看日志是否变成 json 形式：
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916251" alt="图片" style="zoom:67%;" />
+<img src="../assets/640-20210926222916251" alt="图片" style="zoom:67%;" />
 
 ## Milvus 2.0 分布式版本修改 milvus.yaml 配置文件
 
 首先，还是跟单机版本一样，根据需求去修改 milvus.yaml 文件，这里一样将日志形式从 text 修改成了 json：
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916233-2666556." alt="图片" style="zoom:110%;" />
+<img src="../assets/640-20210926222916233-2666556." alt="图片" style="zoom:110%;" />
 
 然后，修改对应的 docker-compose.yml 文件，修改方式如下图所示：在 rootcoord 、datacoord、datanode 、querycoord、querynode、 indexcoord、 indexnode proxy 这些组件中增加 volumes：
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916244" alt="图片" style="zoom:67%;" />
+<img src="../assets/640-20210926222916244" alt="图片" style="zoom:67%;" />
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916279" alt="图片" style="zoom:67%;" />
+<img src="../assets/640-20210926222916279" alt="图片" style="zoom:67%;" />
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916233" alt="图片" style="zoom:112%;" />
+<img src="../assets/640-20210926222916233" alt="图片" style="zoom:112%;" />
 
 最后，启动 Milvus 和查看日志的命令和单机版本一致。
 
@@ -64,10 +64,10 @@ Milvus.yaml 配置文件修改完毕之后，也需要修改 docker-compose.yml 
 
 首先，在 Milvus.yaml 配置文件中修改日志文件的 rootpath，我这里将其修改为 /milvus/logs (也可以自定义)：
 
-![图片](/Users/wenyi/projects/community/blog/assets/640-20210926222916321)
+![图片](../assets/640-20210926222916321)
 
 然后，修改 docker-compose.yml 文件，如果需要把日志文件导出 ，那么 /milvus/logs 也需要挂载 volume：
 
-<img src="/Users/wenyi/projects/community/blog/assets/640-20210926222916349" alt="图片" style="zoom:83%;" />
+<img src="../assets/640-20210926222916349" alt="图片" style="zoom:83%;" />
 
 最后，用 docker-compose up -d 命令进行启动 Milvus 即可，就可以查看设置路径下的日志文件了。
