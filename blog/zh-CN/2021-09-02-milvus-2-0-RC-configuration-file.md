@@ -5,7 +5,7 @@ author: 迷茫的梦醒
 date: 2021-09-02
 desc:
 
-cover: https://zilliz-cms.s3.us-west-2.amazonaws.com/blog_cover_4a9807b9e0.png
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_cover_4a9807b9e0.png
 tag: Technology
 ---
 
