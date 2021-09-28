@@ -9,6 +9,8 @@ cover: https://zilliz-cms.s3.us-west-2.amazonaws.com/blog_cover_4a9807b9e0.png
 tag: Technology
 ---
 
+
+
 # 技术分享｜如何对 Milvus 2.0 进行参数配置
 
 > 编者按：
