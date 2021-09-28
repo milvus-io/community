@@ -5,7 +5,7 @@ author: James Zhang
 date: 2021-09-28
 desc: 飞书深诺集团用户案例
 
-cover: ../assets/0928/cover.png
+cover: zilliz-cms.s3.us-west-2.amazonaws.com/cover_df408226e8.png
 tag: Technology
 
 ---
