@@ -4,7 +4,7 @@ title: Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootc
 author: milvus
 date: 2021-07-15 03:05:45.742+00
 desc: Build, test, and customize vector similarity search solutions with Milvus, an open-source vector database.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/cover_80db9ee49c.png
+cover: assets.zilliz.com/cover_80db9ee49c.png
 tag: Technology,Community
 origin: zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
 ---
@@ -215,9 +215,9 @@ end = time.time() - start
 The vector IDs returned from the queries are used to find the corresponding images. Matplotlib is then used to display the image search results.
 <br/>
 
-![pic1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/pic1_c8652c7fae.png)
-![pic2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/pic2_355b054161.png)
-![pic3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/pic3_01780c6aac.png)
+![pic1.png](https://assets.zilliz.com/pic1_c8652c7fae.png)
+![pic2.png](https://assets.zilliz.com/pic2_355b054161.png)
+![pic3.png](https://assets.zilliz.com/pic3_01780c6aac.png)
 
 <br/>
 

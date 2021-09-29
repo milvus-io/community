@@ -4,7 +4,7 @@ title: Build Semantic Search at Speed
 author: Elizabeth Edmiston
 date: 2021-04-19 07:32:50.416+00
 desc: Learn more about using semantic machine learning methodologies to power more relevant search results across your organization.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/lucidworks_4753c98727.png
+cover: assets.zilliz.com/lucidworks_4753c98727.png
 tag: Scenarios,Technology
 origin: zilliz.com/blog/build-semantic-search-at-speed-milvus-lucidworks
 ---
@@ -49,7 +49,7 @@ Let’s get back to the semantic search workflow, now that we’ve learned a lit
 
 ### Indexing into Milvus
 
-![Lucidworks-1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Lucidworks_1_47a9221723.png)
+![Lucidworks-1.png](https://assets.zilliz.com/Lucidworks_1_47a9221723.png)
 
 ###### _Architectural diagram for indexing into Milvus._
 
@@ -71,15 +71,15 @@ In order to prove that our semantic search flows are running at the efficiency w
 
 Let’s jump into some numbers from a recent example we ran:
 
-![Lucidworks-2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Lucidworks_2_3162113560.png)
+![Lucidworks-2.png](https://assets.zilliz.com/Lucidworks_2_3162113560.png)
 
 ###### _Performance of Milvus FLAT and HNSW indexes on a small dataset._
 
-![Lucidworks-3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Lucidworks_3_3dc17f0ed8.png)
+![Lucidworks-3.png](https://assets.zilliz.com/Lucidworks_3_3dc17f0ed8.png)
 
 ###### _Performance of Milvus FLAT and HNSW indexes on a medium dataset._
 
-![Lucidworks-4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Lucidworks_4_8a6edd2f59.png)
+![Lucidworks-4.png](https://assets.zilliz.com/Lucidworks_4_8a6edd2f59.png)
 
 ###### _Performance of Milvus FLAT and HNSW indexes on a large dataset._
 

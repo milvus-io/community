@@ -4,7 +4,7 @@ title: Operationalize AI at Scale with Software 2.0, MLOps, and Milvus
 author: milvus
 date: 2021-03-31 09:51:38.653+00
 desc: MLOps is superseding DevOps as we make the transition to Software 2.0. Find  what model operations is, and how the open-source vector database Milvus supports it.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/milvus_5b2cdec665.jpg
+cover: assets.zilliz.com/milvus_5b2cdec665.jpg
 tag: Community,Technology
 origin: zilliz.com/blog/Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvus
 ---
@@ -21,7 +21,7 @@ This article explains MLOps, a systemic approach to AI model life cycle manageme
 
 Machine learning operations (MLOps), also known as model operations (ModelOps) or AI model operationalization, is necessary to build, maintain, and deploy AI applications at scale. As companies seek to apply the AI models they develop to hundreds of different scenarios, it is mission critical that models in use, and those under development, are operationalized across the entire organization. MLOps involves monitoring a machine learning model throughout its lifecycle, and governing everything from underlying data to the effectiveness of a production system that relies on a particular model.
 
-![01.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/01_362a07d156.jpg)
+![01.jpg](https://assets.zilliz.com/01_362a07d156.jpg)
 
 ###### _MLOps governs the life cycle of a machine learning model._
 
@@ -45,7 +45,7 @@ Using just one model in a production application presents a number of difficult 
 
 As depicted in the ML model life cycle above, building a machine learning model is an iterative process that involves incorporating new data, retraining models, and dealing with general model decay over time. These are all issues that traditional developer operations, or DevOps, does not address or provide solutions for. MLOps has become necessary as a way to manage investment in AI models and ensure a productive model life cycle. Because machine learning models will be leveraged by a variety of different production systems, MLOps becomes integral to making sure requirements can be met across different environments and amid varying scenarios.
 
-![02.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/02_403e7f2fe2.jpg)
+![02.jpg](https://assets.zilliz.com/02_403e7f2fe2.jpg)
 
 ###### _A machine learning model being deployed in a cloud environment that feeds into an application._
 
@@ -61,7 +61,7 @@ Not only are machine learning models trained in different environments from the 
 
 DevOps was built around Software 1.0’s reliance on specific instructions dictated by programmers using languages, but never considered the life cycle of a machine learning model that powers a variety of different applications. MLOps addresses the need for the process of managing software development to change alongside the software under development. As Software 2.0 becomes the new standard for computer-based problem solving, having the right tools and processes for managing model life cycles will make or break investments in new technology. Milvus is an open-source vector similarity search engine built to support the transition to Software 2.0 and manage model life cycles with MLOps.
 
-![03.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/03_c63c501995.jpg)
+![03.jpg](https://assets.zilliz.com/03_c63c501995.jpg)
 
 ###### _How Milvus supports the transition to Software 2.0._
 

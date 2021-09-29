@@ -4,7 +4,7 @@ title: DNA Sequence Classification based on Milvus
 author: Jael Gu
 date: 2021-09-06 06:02:27.431+00
 desc: Use Milvus, an open-source vector database, to recognize gene families of DNA sequences. Less space but higher accuracy.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/11111_5d089adf08.png
+cover: assets.zilliz.com/11111_5d089adf08.png
 tag: Scenarios
 origin: zilliz.com/blog/dna-sequence-classification-based-on-milvus
 ---
@@ -23,7 +23,7 @@ The open source vector database [Milvus](https://milvus.io/docs/v2.0.0/overview.
 
 A gene that encodes genetic information is made up of a small section of DNA sequences, which consists of 4 nucleotide bases [A, C, G, T]. There are about 30,000 genes in human genome, nearly 3 billion DNA base pairs, and each base pair has 2 corresponding bases. To support diverse uses, DNA sequences can be classified into various categories. In order to reduce the cost and make easier use of data of long DNA sequnces, [k-mer ](https://en.wikipedia.org/wiki/K-mer#:~:text=Usually%2C%20the%20term%20k%2Dmer,total%20possible%20k%2Dmers%2C%20where)is introduced to data preprocessing. Meanwhile, it makes DNA sequence data more similar to plain text. Furthermore, vectorized data can speed up calculation in data analysis or machine learning.
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_a7469e9eac.png)
+![1.png](https://assets.zilliz.com/1_a7469e9eac.png)
 
 **k-mer**
 
@@ -39,7 +39,7 @@ Milvus can easily manage unstructured data and recall most similar results among
 
 Here is a demo showing how to build a DNA sequence classification system with Milvus. The [experimental dataset ](https://www.kaggle.com/nageshsingh/dna-sequence-dataset)includes 3 organisms and 7 gene families. All data are converted to lists of short sequences by k-mers. With a pre-trained CountVectorizer model, the system then encodes sequence data into vectors. The flow chart below depicts the system structure and the processes of inserting and searching.
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_ebd89660f6.png)
+![1.png](https://assets.zilliz.com/1_ebd89660f6.png)
 
 Try out this demo at [Milvus bootcamp](https://github.com/milvus-io/bootcamp/tree/master/solutions/dna_sequence_classification).
 
@@ -58,8 +58,8 @@ for results in res:
 **DNA Sequence Classification**
 Searching for most similar DNA sequences in Milvus could imply the gene family of an unknown sample, thus learn about its possible functionality.[ If a sequence is classified as GPCRs, then it probably has influence in body functions. ](https://www.nature.com/scitable/topicpage/gpcr-14047471/)In this demo, Milvus has successfully enabled the system to identify the gene families of the human DNA sequences searched with.
 
-![3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_1616da5bb0.png)
-![4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_d719b22fc7.png)
+![3.png](https://assets.zilliz.com/3_1616da5bb0.png)
+![4.png](https://assets.zilliz.com/4_d719b22fc7.png)
 
 **Genetic Similarity**
 
@@ -79,7 +79,7 @@ X, y = human_sequence_kmers, human_labels
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 ```
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_6541a7dec6.png)
+![1.png](https://assets.zilliz.com/1_6541a7dec6.png)
 
 
 # Further Exploration

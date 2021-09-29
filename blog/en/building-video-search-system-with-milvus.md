@@ -4,7 +4,7 @@ title: 4 Steps to Building a Video Search System
 author: milvus
 date: 2020-08-29 00:18:19.703+00
 desc: Searching for videos by image with Milvus
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_3a822736b3.gif
+cover: assets.zilliz.com/header_3a822736b3.gif
 tag: Scenarios
 origin: zilliz.com/blog/building-video-search-system-with-milvus
 ---
@@ -18,7 +18,7 @@ You can refer to our previous article [Milvus x VGG: Building a Content-based Im
 
 The following diagram illustrates the typical workflow of such a video search system.
 
-![1-video-search-system-workflow.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_video_search_system_workflow_c68d658b93.png)
+![1-video-search-system-workflow.png](https://assets.zilliz.com/1_video_search_system_workflow_c68d658b93.png)
 
 When importing videos, we use the OpenCV library to cut each video into frames, extract vectors of the key frames using image feature extraction model VGG, and then insert the extracted vectors (embeddings) into Milvus. We use Minio for storing the original videos and Redis for storing correlations between videos and vectors.
 
@@ -46,7 +46,7 @@ The video retrieval system requires Milvus v0.7.1 docker, Redis docker, Minio do
 
 Here we use docker-compose.yml to manage the above-mentioned five containers. See the following table for the configuration of docker-compose.yml:
 
-![2-configure-docker-compose-yml.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_configure_docker_compose_yml_a33329e5e9.png)
+![2-configure-docker-compose-yml.png](https://assets.zilliz.com/2_configure_docker_compose_yml_a33329e5e9.png)
 
 The IP address 192.168.1.38 in the table above is the server address especially for building the video retrieval system in this article. You need to update it to your server address.
 
@@ -56,7 +56,7 @@ You need to manually create storage directories for Milvus, Redis, and Minio, an
 
 You can configure Milvus, Redis, and Minio in docker-compose.yml as follows:
 
-![3-configure-milvus-redis-minio-docker-compose-yml.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_configure_milvus_redis_minio_docker_compose_yml_4a8104d53e.png)
+![3-configure-milvus-redis-minio-docker-compose-yml.png](https://assets.zilliz.com/3_configure_milvus_redis_minio_docker_compose_yml_4a8104d53e.png)
 
 ## Step 3: Start the system.
 
@@ -66,7 +66,7 @@ Use the modified docker-compose.yml to start up the five docker containers to be
 
 Then, you can run docker-compose ps to check whether the five docker containers have started up properly. The following screenshot shows a typical interface after a successful startup.
 
-![4-sucessful-setup.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_sucessful_setup_f2b3006487.png)
+![4-sucessful-setup.png](https://assets.zilliz.com/4_sucessful_setup_f2b3006487.png)
 
 Now, you have successfully built a video search system, though the database has no videos.
 
@@ -74,7 +74,7 @@ Now, you have successfully built a video search system, though the database has 
 
 In the deploy directory of the system repository, lies import_data.py, script for importing videos. You only need to update the path to the video files and the importing interval to run the script.
 
-![5-update-path-video.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/5_update_path_video_5065928961.png)
+![5-update-path-video.png](https://assets.zilliz.com/5_update_path_video_5065928961.png)
 
 data_path: The path to the videos to import.
 
@@ -91,15 +91,15 @@ Once the videos are imported, you are all set with your own video search system!
 
 Open your browser and enter 192.168.1.38:8001 to see the interface of the video search system as shown below.
 
-![6-video-search-interface.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/6_video_search_interface_4c26d93e02.png)
+![6-video-search-interface.png](https://assets.zilliz.com/6_video_search_interface_4c26d93e02.png)
 
 Toggle the gear switch in the top right to view all videos in the repository.
 
-![7-view-all-videos-repository.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_view_all_videos_repository_26ff37cad5.png)
+![7-view-all-videos-repository.png](https://assets.zilliz.com/7_view_all_videos_repository_26ff37cad5.png)
 
 Click on the upload box on the top left to input a target image. As shown below, the system returns videos containing the most similar frames.
 
-![8-enjoy-recommender-system-cats.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/8_enjoy_recommender_system_cats_bda1bf9db3.png)
+![8-enjoy-recommender-system-cats.png](https://assets.zilliz.com/8_enjoy_recommender_system_cats_bda1bf9db3.png)
 
 Next, have fun with our video search system!
 

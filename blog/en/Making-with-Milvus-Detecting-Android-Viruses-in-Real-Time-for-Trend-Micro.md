@@ -4,7 +4,7 @@ title: Making with Milvus Detecting Android Viruses in Real Time for Trend Micro
 author: milvus
 date: 2021-04-23 06:46:13.732+00
 desc: Learn how Milvus is used to mitigate threats to critical data and strengthen cybersecurity with real-time virus detection.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_Trend_Micro_5c8ba3e2ce.jpg
+cover: assets.zilliz.com/blog_Trend_Micro_5c8ba3e2ce.jpg
 tag: Scenarios
 origin: zilliz.com/blog/Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro
 ---
@@ -33,7 +33,7 @@ Although Faiss is an incredibly useful tool, it has limitations. It only works a
 #### Plug-ins based on Faiss & other ANN search libraries
 There are several plug-ins built on top of Faiss, NMSLIB, and other ANN search libraries that are designed to enhance the basic functionality of the underlying tool that powers them. Elasticsearch (ES) is a search engine based on the Lucene library with a number of such plugins. Below is an architecture diagram of an ES plug-in:
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_3ce4e516c3.png)
+![1.png](https://assets.zilliz.com/1_3ce4e516c3.png)
 
 ###### *Architecture diagram of an Elasticsearch plug-in.*
 
@@ -70,7 +70,7 @@ To detect APKs with nefarious code, Trend Micro developed its own system for ret
 
 Below is the architecture diagram of Trend Micro’s mobile security system.
 
-![image-20210118-022039.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/image_20210118_022039_ae824b663c.png)
+![image-20210118-022039.png](https://assets.zilliz.com/image_20210118_022039_ae824b663c.png)
 
 ###### *Architecture diagram for Trend Micro Mobile Security.*
 
@@ -93,7 +93,7 @@ Milvus will soon support string vector ID, and integer IDs won’t have to be ma
 
 Trend Micro adopts a cloud-based solution and deploys many tasks on [Kubernetes](https://kubernetes.io/). To achieve high availability, Trend Micro uses [Mishards](https://www.milvus.io/docs/v1.0.0/mishards.md), a Milvus cluster sharding middleware developed in Python. 
 
-![image-20210118-022104.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/image_20210118_022104_3001950ee8.png)
+![image-20210118-022104.png](https://assets.zilliz.com/image_20210118_022104_3001950ee8.png)
 
 ###### *Mishards architecture in Milvus.*
 
@@ -126,7 +126,7 @@ The monitoring and alert system works as follows:
 ### System Performance
 A couple months have passed since the ThashSearch service built on Milvus was first launched. The graph below shows that end-to-end query latency is less than 95 milliseconds.
 
-![image-20210118-022116.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/image_20210118_022116_a0c735ce20.png)
+![image-20210118-022116.png](https://assets.zilliz.com/image_20210118_022116_a0c735ce20.png)
 
 ###### *Query latency for Thash search service built on Milvus.*
 

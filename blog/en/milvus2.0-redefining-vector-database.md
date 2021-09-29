@@ -4,7 +4,7 @@ title: Milvus 2.0 Redefining Vector Database
 author: Xiaofan Luan
 date: 2021-08-01
 desc: Milvus 2.0 is available now. This refactored, cloud-native version powers image/video search, chatbots, and many more AI applications.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/2_0_cover_bbc582b347.jpg
+cover: assets.zilliz.com/2_0_cover_bbc582b347.jpg
 tag: Technology,Community
 origin: null
 ---
@@ -50,7 +50,7 @@ As our next-generation cloud-native vector database, Milvus 2.0 is built around 
 
 **Unified batch and stream processing:** Milvus 2.0 implements the unified Lambda architecture, which integrates the processing of the incremental and historical data. Compared with the Kappa architecture, Milvus 2.0 introduces log backfill, which stores log snapshots and indexes in the object storage to improve failure recovery efficiency and query performance. To break unbounded (stream) data down into bounded windows, Milvus embraces a new watermark mechanism, which slices the stream data into multiple message packs according to write time or event time, and maintains a timeline for users to query by time.
 
-![2.0 image 1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_0_image_1_59d7316324.png)
+![2.0 image 1.png](https://assets.zilliz.com/2_0_image_1_59d7316324.png)
 
 _Unified Lambda architecture._
 
@@ -71,7 +71,7 @@ As mentioned above, the design of Milvus 2.0 strictly follows the principles of 
 - Implemented by MinIO or S3, object storage is used mainly to store log snapshots and index files.
 
 The following is the system architecture diagram of Milvus 2.0:
-![2.0 image 2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_0_image_2_2cc7d7fc9c.png)
+![2.0 image 2.png](https://assets.zilliz.com/2_0_image_2_2cc7d7fc9c.png)
 
 _System architecture diagram._
 
@@ -103,7 +103,7 @@ Data engineers often need to do data rollback to fix dirty data and code bugs. T
 
 Object relational mapping (ORM) allows users to focus more on the upper-level business model than on the underlying data model, making it easier for developers to manage relations between collections, fields, and programs. To close the gap between proof of concept (PoC) for AI algorithms and production deployment, we engineered PyMilvus ORM APIs, which can work with an embedded library, a standalone deployment, a distributed cluster , or even a cloud service. With a unified set of APIs, we provide users with a consistent user experience and reduce code migration or adaptation costs.
 
-![2.0 image 3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_0_image_3_55394d6e80.png)
+![2.0 image 3.png](https://assets.zilliz.com/2_0_image_3_55394d6e80.png)
 
 _Object relational mapping (ORM)_
 

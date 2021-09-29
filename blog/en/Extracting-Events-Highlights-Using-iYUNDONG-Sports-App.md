@@ -4,7 +4,7 @@ title: Extracting Event Highlights Using iYUNDONG Sports App
 author: milvus
 date: 2021-03-16 03:41:30.983+00
 desc: Making with Milvus Intelligent image retrieval system for sports App iYUNDONG
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_iyundong_6db0f70ef4.jpg
+cover: assets.zilliz.com/blog_iyundong_6db0f70ef4.jpg
 tag: Scenarios
 origin: zilliz.com/blog/Extracting-Events-Highlights-Using-iYUNDONG-Sports-App
 ---
@@ -71,7 +71,7 @@ Milvus is an open-source vector database that is easy to use, highly flexible, r
 
 ● Milvus performs similarity search and returns accurate search results based on various business needs.
 
-![iYUNDONG Blog 1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/i_YUNDONG_Blog_1_d8abe065ae.png)
+![iYUNDONG Blog 1.png](https://assets.zilliz.com/i_YUNDONG_Blog_1_d8abe065ae.png)
 ###### *An overview of Milvus.*
 
 <br/>
@@ -99,7 +99,7 @@ A series of latest sports events are listed on the homepage. By tapping one of t
 
 After tapping the button on the top of the photo gallery page, users can then upload a photo of their own to retrieve images of their highlights. 
 
-![iyundong-interface.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/iyundong_interface_3da684d206.jpg)
+![iyundong-interface.jpg](https://assets.zilliz.com/iyundong_interface_3da684d206.jpg)
 ###### *iYUNDONG app interface.*
 
 <br/>

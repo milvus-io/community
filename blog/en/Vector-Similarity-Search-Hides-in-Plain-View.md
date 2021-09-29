@@ -4,7 +4,7 @@ title: Vector Similarity Search Hides in Plain View
 author: milvus
 date: 2021-01-05 03:40:20.821+00
 desc: Discover what vector similarity search is, its various applications, and the public resources making artificial intelligence more accessible than ever.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/plainview_703d8497ca.jpg
+cover: assets.zilliz.com/plainview_703d8497ca.jpg
 tag: Technology,Community
 origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 ---
@@ -13,7 +13,7 @@ origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 
 [Artificial intelligence (AI)](https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#a291) has the potential to change the way even the most obscure things are done. For example, every year (before COVID, anyway) over 73,000 people congregate to compete in the Hong Kong Marathon. In order to properly sense and record finishing times for all race participants, organizers distribute 73,000 RFID chip timers to attach to each runner. Chip timing is a complex undertaking with obvious downsides. Materials (chips and electronic reading devices) must be purchased or rented from timing companies, and a registration area must be staffed for runners to collect chips on race day. Additionally, if sensors are installed only at the start and finish lines, it’s possible for unscrupulous runners to cut the course.
 
-![blog-1.jpeg](https://zilliz-cms.s3.us-west-2.amazonaws.com/blog_1_e55c133e05.jpeg)
+![blog-1.jpeg](https://assets.zilliz.com/blog_1_e55c133e05.jpeg)
 
 ###### Timing marathon runners is a logistical challenge few think about.
 

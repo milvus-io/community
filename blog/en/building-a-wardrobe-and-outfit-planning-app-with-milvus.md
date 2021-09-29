@@ -4,13 +4,13 @@ title: Building a Wardrobe and Outfit Planning App with Milvus
 author: Yu Fang
 date: 2021-07-09 06:30:06.439+00
 desc: Discover how Milvus, an open-source vector database, is used by Mozat to power a fashion app that offers personalized style recommendations and an image search system.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/mozat_blog_0ea9218c71.jpg
+cover: assets.zilliz.com/mozat_blog_0ea9218c71.jpg
 tag: Scenarios
 origin: zilliz.com/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus
 ---
   
 # Building a Wardrobe and Outfit Planning App with Milvus
-![stylepedia-1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_1_5f239a8d48.png)
+![stylepedia-1.png](https://assets.zilliz.com/stylepedia_1_5f239a8d48.png)
 
 Founded in 2003, [Mozat](http://www.mozat.com/home) is a start-up headquartered in Singapore with offices in China and Saudi Arabia. The company specializes in building social media, communication, and lifestyle applications. [Stylepedia](https://stylepedia.com/) is a wardrobe app built by Mozat that helps users discover new styles and connect with other people that are passionate about fashion. Its key features include the ability to curate a digital closet, personalized style recommendations, social media functionality, and an image search tool for finding similar items to something seen online or in real life.
 
@@ -18,7 +18,7 @@ Founded in 2003, [Mozat](http://www.mozat.com/home) is a start-up headquartered 
 
 ## System overview
 
-![stylepedia-system-process.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_system_process_8e7e2ab3e4.png)
+![stylepedia-system-process.png](https://assets.zilliz.com/stylepedia_system_process_8e7e2ab3e4.png)
 ###### *System process diagram.*
 
 The image search system is divided into offline and online components. 
@@ -65,25 +65,25 @@ To improve the similarity between the image retrieval results and the query imag
 
 Users can take pictures of their own clothes and upload them to their Stylepedia digital closet, then retrieve product images most similar to their uploads.
 
-![stylepedia-search-results.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_search_results_0568e20dc0.png)
+![stylepedia-search-results.png](https://assets.zilliz.com/stylepedia_search_results_0568e20dc0.png)
 ###### *Search results of a denim jacket image.*
 
 ### Outfit suggestions
 
 By conducting similarity search on the Stylepedia database, users can find fashion photographs that contain a specific fashion item. These could be new garments someone is thinking about purchasing, or something from their own collection that could be worn or paired differently. Then, through the clustering of the items it is often paired with, outfit suggestions are generated. For example, a black biker jacket can go with a variety of items, such as a pair of black skinny jeans. Users can then browse relevant fashion photographs where this match occurs in the selected formula.
 
-![stylepedia-jacket-outfit.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_jacket_outfit_e84914da9e.png)
+![stylepedia-jacket-outfit.png](https://assets.zilliz.com/stylepedia_jacket_outfit_e84914da9e.png)
 ###### *Outfit ideas for a black biker jacket.*
-![stylepedia-jacket-snapshot.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_jacket_snapshot_25f53cc09b.png)
+![stylepedia-jacket-snapshot.png](https://assets.zilliz.com/stylepedia_jacket_snapshot_25f53cc09b.png)
 ###### *A spread of snapshots featuring a black biker jacket + black skinny jeans match.*
 
 ### Fashion photograph recommendations
 
 Based on a user's browsing history, likes, and the contents of their digital closet, the system calculates similarity and provides customized fashion photograph recommendations that may be of interest.
 
-![stylepedia-user-wardrobe.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_user_wardrobe_6770c856b9.png)
+![stylepedia-user-wardrobe.png](https://assets.zilliz.com/stylepedia_user_wardrobe_6770c856b9.png)
 ###### *Items in user's digital closet.*
-![stylepedia-streetsnap-rec.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/stylepedia_streetsnap_rec_901601a34d.png)
+![stylepedia-streetsnap-rec.png](https://assets.zilliz.com/stylepedia_streetsnap_rec_901601a34d.png)
 ###### *Fashion photograph recommendations that match user preferences and tastes.*
 
 By combining deep learning and computer vision methodologies, Mozat was able to build a fast, stable, and accurate image similarity search system using Milvus to power various features in the Stylepedia app.

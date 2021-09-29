@@ -4,7 +4,7 @@ title: Milvus Metadata Management (1)
 author: milvus
 date: 2019-12-25 19:21:42.469+00
 desc: How to View Metadata
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c2eb459468.jpg
+cover: assets.zilliz.com/header_c2eb459468.jpg
 tag: Technology
 origin: zilliz.com/blog/managing-metadata-in-milvus-1
 ---
@@ -38,7 +38,7 @@ To query Tables and TableFiles using SQL statements (case-insensitive):
     SELECT * FROM Tables
     SELECT * FROM TableFiles
 
-![1-use-sql-lite.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_use_sql_lite_2418fc1787.png)
+![1-use-sql-lite.png](https://assets.zilliz.com/1_use_sql_lite_2418fc1787.png)
 ###### Use SQLite3 to view metadata
 
 ## MySQL
@@ -62,7 +62,7 @@ Use the following command to connect to MySQL service:
 
 Now, you can use SQL statements to query metadata information:
 
-![2-my-sql-view-meta-data.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_my_sql_view_meta_data_c871735349.png)
+![2-my-sql-view-meta-data.png](https://assets.zilliz.com/2_my_sql_view_meta_data_c871735349.png)
 ###### Use MySQL to view metadata
 
 ## What’s coming next

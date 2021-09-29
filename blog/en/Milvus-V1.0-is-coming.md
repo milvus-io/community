@@ -4,7 +4,7 @@ title: Milvus V1.0 is coming
 author: milvus
 date: 2021-04-15
 desc: Today we proudly announce the release of Milvus V1.0.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/Milvus_510cf50aee.jpeg
+cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Technology,Community
 origin: null
 ---

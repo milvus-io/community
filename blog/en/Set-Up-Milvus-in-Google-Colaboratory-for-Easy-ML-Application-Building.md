@@ -4,7 +4,7 @@ title: Set Up Milvus in Google Colaboratory for Easy ML Application Building
 author: milvus
 date: 2020-12-23 10:30:58.02+00
 desc: Google Colab makes developing and testing machine learning applications a breeze. Learn how to setup Milvus in Colab for better massive-scale vector data management.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/3_cbea41e9a6.jpg
+cover: assets.zilliz.com/3_cbea41e9a6.jpg
 tag: Technology,Community
 origin: zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building
 ---
@@ -47,7 +47,7 @@ Google Colab comes with all supporting software for Milvus preinstalled, includi
 
 2. Upload Milvus’ source code to [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb#recent=true) and create a new notebook.
 
-![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_2_27809b0ce2.png)
+![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_2.png](https://assets.zilliz.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_2_27809b0ce2.png)
 
 ### Compile Milvus from source code
 
@@ -101,7 +101,7 @@ os.environ['LD_LIBRARY_PATH'] +=":/content/milvus/core/milvus/lib"
 
 > Note: If the Milvus server is launched successfully, the following prompt appears:
 
-![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_3_b15138cd59.png)
+![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_3.png](https://assets.zilliz.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_3_b15138cd59.png)
 
 ###### _Milvus server started successfully!_
 

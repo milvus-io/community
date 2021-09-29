@@ -4,7 +4,7 @@ title: Introducing Milvus Data Migration Tool
 author: Zilliz
 date: 2021-03-15 10:19:51.125+00
 desc: Learn how to use Milvus data migration tool to greatly improve efficiency of data management and reduce DevOps costs.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/Generic_Tool_Announcement_97eb04a898.jpg
+cover: assets.zilliz.com/Generic_Tool_Announcement_97eb04a898.jpg
 tag: Technology,Tools
 origin: zilliz.com/blog/Milvus-Data-Migration-Tool
 ---
@@ -23,7 +23,7 @@ origin: zilliz.com/blog/Milvus-Data-Migration-Tool
 
 - [Milvus to HDF5](#milvus-to-hdf5): Save data in Milvus as HDF5 files.
 
-![milvusdm blog 1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvusdm_blog_1_199cbdebe7.png)
+![milvusdm blog 1.png](https://assets.zilliz.com/milvusdm_blog_1_199cbdebe7.png)
 
 ###### _Importing and exporting data files with Milvus._
 
@@ -310,7 +310,7 @@ data_save.save_yaml(collection_name, partition_tag, collection_parameter, versio
 
 The flow chart below shows how MilvusDM performs different tasks according to the YAML file it receives:
 
-![milvusdm blog 2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvusdm_blog_2_7824b16e5e.png)
+![milvusdm blog 2.png](https://assets.zilliz.com/milvusdm_blog_2_7824b16e5e.png)
 
 ###### _How does MilvusDM work?_
 

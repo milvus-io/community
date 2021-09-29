@@ -4,7 +4,7 @@ title: Paper Reading｜HM-ANN When ANNS Meets Heterogeneous Memory
 author: Jigao Luo
 date: 2021-08-26 07:18:47.925+00
 desc: HM-ANN Efficient Billion-Point Nearest Neighbor Search on Heterogeneous Memory
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_cover_4a9807b9e0.png
+cover: assets.zilliz.com/blog_cover_4a9807b9e0.png
 tag: Technology,Community
 origin: zilliz.com/blog/paper-reading-hm-ann-when-anns-meets-heterogeneous-memory
 ---
@@ -21,7 +21,7 @@ There are other workarounds to avoid letting DRAM store billion-scale datasets i
 
 # Introduction to Heterogeneous Memory
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_f577cd3b24.png)
+![1.png](https://assets.zilliz.com/1_f577cd3b24.png)
 
 Name of the pictureMemory/Storage Hierarchy with HM
 
@@ -33,7 +33,7 @@ Heterogeneous memory (HM) represents the combination of fast but small DRAM and 
 
 HM-ANN is an accurate and fast billion-scale ANN search algorithm that runs on a single machine without compression. The design of HM-ANN generalizes the idea of HNSW, whose hierarchical structure naturally fits into HM. HNSW consists of multiple layers—only layer 0 contains the whole dataset, and each remaining layer contains a subset of elements from the layer directly underneath it.
 
-![2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_25a1836e8b.png)
+![2.png](https://assets.zilliz.com/2_25a1836e8b.png)
 
 An example of HNSW with 3 layers
 
@@ -44,7 +44,7 @@ Source: [https://arxiv.org/pdf/1603.09320.pdf](https://arxiv.org/pdf/1603.09320.
 
 ## Graph Construction Algorithm
 
-![3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_dd9627c753.png)
+![3.png](https://assets.zilliz.com/3_dd9627c753.png)
 
 An example of graph construction of HM-ANN
 
@@ -61,7 +61,7 @@ The bottom-up promotion phase promotes pivot points from the bottom layer to for
 
 ## Graph Seach Algorithm
 
-![4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_a5a7f29c93.png)
+![4.png](https://assets.zilliz.com/4_a5a7f29c93.png)
 
 An example of graph seach of HM-ANN
 
@@ -85,27 +85,27 @@ In this paper, an extensive evaluation is conducted. All experiments are done on
 
 ## Billion-scale algorithm comparison
 
-![5.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/5_4297db66a9.png)
+![5.png](https://assets.zilliz.com/5_4297db66a9.png)
 
 In table 1, the build time and storage of different graph-based indexes are compared. HNSW takes the shortest build time and HM-ANN needs 8% additional time than HNSW. In terms of whole storage usage, HM-ANN indexes are 5–13% larger than HSNW, because it promotes more nodes from layer 0 to layer 1.
 
-![6.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/6_f363e64d3f.png)
+![6.png](https://assets.zilliz.com/6_f363e64d3f.png)
 
 In Figure 1, the query performance of different indexes is analyzed. Figure 1 (a) and (b) show that HM-ANN achieves the top-1 recall of > 95% within 1ms. Figures 1 (c) and (d) show that HM-ANN obtains top-100 recall of > 90% within 4 ms. HM-ANN provides the best latency-vs-recall performance than all other approaches.
 
 ## Million-scale algorithm comparison
 
-![7.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_a5c23de240.png)
+![7.png](https://assets.zilliz.com/7_a5c23de240.png)
 
 In Figure 2, the query performance of different indexes is analyzed in a pure DRAM setting. HNSW, NSG, and HM-ANN are evaluated with the three million-scale datasets fitting in DRAM. HM-ANN still achieves better query performance than HNSW. The reason is that the total number of distance computations from HM-ANN is lower (on average 850/query) than that of HNSW (on average 900/query) to achieve 99% recall target.
 
-![8.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/8_1c7d716e07.png)
+![8.png](https://assets.zilliz.com/8_1c7d716e07.png)
 
 ## Effectiveness of high-degree promotion
 
 In Figure 3, the random promotion and high-degree promotion strategies are compared in the same configuration. The high-degree promotion outperforms the baseline. The high-degree promotion performs 1.8x, 4.3x, and 3.9x faster than the random promotion to reach 95%, 99%, and 99.5% recall targets, respectively.
 
-![10.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/10_56b10fd3a7.png)
+![10.png](https://assets.zilliz.com/10_56b10fd3a7.png)
 
 ## Performance benefit of memory management techniques
 

@@ -4,7 +4,7 @@ title: The Journey to Optimizing Billion-scale Image Search (2/2)
 author: Rife Wang
 date: 2020-08-11 22:20:27.855+00
 desc: A case study with UPYUN
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/header_c73631b1e7.png
+cover: assets.zilliz.com/header_c73631b1e7.png
 tag: Scenarios,Technology
 origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
@@ -26,7 +26,7 @@ The term CNN is difficult to understand. Here we focus on answering two question
 - What can CNN do?
 - Why can I use CNN for an image search?
 
-![1-meme.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_meme_649be6dfe8.jpg)
+![1-meme.jpg](https://assets.zilliz.com/1_meme_649be6dfe8.jpg)
 
 ###### Photo by memegenerator.net
 
@@ -123,7 +123,7 @@ The problem of extracting feature vectors from images has been solved. Then the 
 - How to calculate the similarity of feature vectors, that is, how to search?
   The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.
 
-![3-milvus-logo.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_milvus_logo_3a7411f2c8.png)
+![3-milvus-logo.png](https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png)
 
 ## Milvus, the vector search engine
 

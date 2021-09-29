@@ -4,7 +4,7 @@ title: Building an Intelligent News Recommendation System Inside Sohu News App
 author: milvus
 date: 2021-06-08 01:42:53.489+00
 desc: Learn how Milvus was used to build an intelligent news recommendation system inside an app.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_Sohu_News_dec53d0814.jpg
+cover: assets.zilliz.com/blog_Sohu_News_dec53d0814.jpg
 tag: Scenarios
 origin: zilliz.com/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app
 ---
@@ -36,7 +36,7 @@ For each user profile, sets of tag phrases have a [corresponding set of topics](
 
 The system is able to make personalized news recommendations by calculating the cosine similarity of the semantic vectors extracted from both user profiles and news articles.
 
-![Sohu01.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Sohu01_1e466fe0c3.jpg)
+![Sohu01.jpg](https://assets.zilliz.com/Sohu01_1e466fe0c3.jpg)
 ###### *Sohu News DSSM structure.*
 
 ### Computing new semantic user profile vectors and inserting them to Milvus
@@ -51,7 +51,7 @@ The semantic vector of the existing set of tag phrases is stored, and a new set 
 
 Through this process, the daily conversion of the tens of millions of vectors mentioned above is reduced from days to around two hours. Although other methods of storing semantic vectors might be more appropriate depending on specific project requirements, computing similarity between two tag phrases using Jaccard distance in a Milvus database remains an efficient and accurate method in a wide variety of scenarios.
 
-![Sohu02.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Sohu02_d50fccc538.jpg)
+![Sohu02.jpg](https://assets.zilliz.com/Sohu02_d50fccc538.jpg)
 ###### *Using Jaccard distance to compute similarity between two sets.*
 
 ## Overcoming “bad cases” of short text classification
@@ -66,7 +66,7 @@ BERT-as-service is used to encode a total number of five million long news artic
 
 This process quickly identifies and corrects inaccurate short text classifications. Random sampling statistics show that after short text classifications are corrected, the overall accuracy of text classification exceeds 95%. By leveraging the classification of high-confidence long text to correct the classification of short text, the majority of bad classification cases are corrected in a short amount of time. This also offers a good corpus for training a short text classifier.
 
-![Sohu03.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Sohu03_a43074cf5f.jpg)
+![Sohu03.jpg](https://assets.zilliz.com/Sohu03_a43074cf5f.jpg)
 ###### *Flowchart of discovery of "bad cases" of short text classification.*
 
 ## Milvus can power real-time news content recommendation and more

@@ -4,7 +4,7 @@ title: Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Sea
 author: milvus
 date: 2021-01-13 08:56:00.48+00
 desc: Explore the power of open-source in your next AI or machine learning project. Manage massive-scale vector data and power similarity search with Milvus. 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/1_9a6be0b54f.jpg
+cover: assets.zilliz.com/1_9a6be0b54f.jpg
 tag: Technology
 origin: zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search
 ---
@@ -31,7 +31,7 @@ To provide efficient dynamic data management, Milvus uses a log-structured merge
 
 Vectors exist as entities in Milvus and are stored in segments. Each segment contains anywhere from one up to ~8 million entities. Each entity has fields for a unique ID and vector inputs, with the latter representing anywhere from 1 to 32768 dimensions.
 
-![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_2_492d31c7a0.png)
+![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_2.png](https://assets.zilliz.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_2_492d31c7a0.png)
 ###### *A segment of 10-dimensional vectors in Milvus.*
 
 ### Data management is optimized for rapid access and limited fragmentation
@@ -42,17 +42,17 @@ When receiving an insert request, Milvus writes new data to the [write ahead log
 2. **Buffer size:** Accumulated data reaches the upper limit for the mutable buffer (128 MB).
 3. **Manual trigger:** Data is manually flushed to disk when the client calls the flush function.
 
-![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_3_852dc2c9bb.png)
+![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_3.png](https://assets.zilliz.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_3_852dc2c9bb.png)
 ###### *An illustration of inserting vectors in Milvus.*
 
 Users can add tens or millions of vectors at a time, generating data files of different sizes as new vectors are inserted. This results in fragmentation that can complicate data management and slow down vector similarity search. To prevent excessive data fragmentation, Milvus constantly merges data segments until the combined file size reaches a user configurable limit (e.g., 1 GB). For example, given an upper limit of 1 GB, inserting 100 million 512-dimensional vectors will result in just ~200 data files.
 
 In incremental computation scenarios where vectors are inserted and searched concurrently, Milvus makes newly inserted vector data immediately available for search before merging it with other data. After data merges, the original data files will be removed and the newly created merged file will be used for search instead.
 
-![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_4_6bef3d914c.png)
+![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_4.png](https://assets.zilliz.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_4_6bef3d914c.png)
 ###### *Queried data files before the merge.*
 
-![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_5.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_5_3851c2d789.png)
+![Blog_Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search_5.png](https://assets.zilliz.com/Blog_Milvus_Was_Built_for_Massive_Scale_Think_Trillion_Vector_Similarity_Search_5_3851c2d789.png)
 ###### *Queried data files after the merge.*
 
 ### Similarity searched is accelerated by indexing vector data

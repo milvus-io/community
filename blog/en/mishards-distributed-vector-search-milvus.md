@@ -4,7 +4,7 @@ title: Mishards — Distributed Vector Search in Milvus
 author: milvus
 date: 2020-03-17 21:36:16.974+00
 desc: How to scale out
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/tim_j_ots0_EO_Yu_Gt_U_unsplash_14f939b344.jpg
+cover: assets.zilliz.com/tim_j_ots0_EO_Yu_Gt_U_unsplash_14f939b344.jpg
 tag: Technology
 origin: zilliz.com/blog/mishards-distributed-vector-search-milvus
 ---
@@ -14,15 +14,15 @@ Milvus aims to achieve efficient similarity search and analytics for massive-sca
 
 This article will briefly introduce components of the Mishards architecture. More detailed information will be introduced in the upcoming articles.
 
-![1-milvus-cluster-mishards.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_milvus_cluster_mishards_daf78a0a91.png)
+![1-milvus-cluster-mishards.png](https://assets.zilliz.com/1_milvus_cluster_mishards_daf78a0a91.png)
 
 ## Distributed architecture overview
 
-![2-distributed-architecture-overview.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_distributed_architecture_overview_f059fe8c90.png)
+![2-distributed-architecture-overview.png](https://assets.zilliz.com/2_distributed_architecture_overview_f059fe8c90.png)
 
 ## Service tracing
 
-![3-service-tracing-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_service_tracing_milvus_38559f7fd7.png)
+![3-service-tracing-milvus.png](https://assets.zilliz.com/3_service_tracing_milvus_38559f7fd7.png)
 
 ## Primary service components
 
@@ -43,7 +43,7 @@ This article will briefly introduce components of the Mishards architecture. Mor
 
 Mishards is responsible for breaking up upstream requests and routing sub-requests to sub-services. The results are summarized to return to upstream.
 
-![4-mishards-nodes.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_mishards_nodes_3fbe7d255d.jpg)
+![4-mishards-nodes.jpg](https://assets.zilliz.com/4_mishards_nodes_3fbe7d255d.jpg)
 
 As is indicated in the chart above, after accepting a TopK search request, Mishards first breaks up the request into sub-requests and send the sub-requests to the downstream service. When all sub-responses are collected, the sub-responses are merged and returned to upstream.
 
@@ -68,12 +68,12 @@ Milvus nodes are responsible for CRUD related core operations, so they have rela
 
 When the data size is extremely large, or the latency requirement is extremely high, you can horizontally scale read-only nodes as stateful nodes. Assume there are 4 hosts and each has the following configuration: CPU Cores: 16, GPU: 1, Memory: 64 GB. The following chart shows the cluster when horizontally scaling stateful nodes. Both computing power and memory scale linearly. The data is split into 8 shards with each node processing requests from 2 shards.
 
-![5-read-only-node-scalability-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/5_read_only_node_scalability_milvus_be3ee6e0a7.png)
+![5-read-only-node-scalability-milvus.png](https://assets.zilliz.com/5_read_only_node_scalability_milvus_be3ee6e0a7.png)
 ###### *Scaling read-only nodes as stateful nodes.*
 
 When the number of requests is large for some shards, stateless read-only nodes can be deployed for these shards to increase throughput. Take the hosts above as an example. when the hosts are combined into a serverless cluster, the computing power increases linearly. Because the data to process does not increase, the processing power for the same data shard also increases linearly.
 
-![6-read-only-node-scalability-milvus-2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/6_read_only_node_scalability_milvus_2_2cb98b9aa8.png)
+![6-read-only-node-scalability-milvus-2.png](https://assets.zilliz.com/6_read_only_node_scalability_milvus_2_2cb98b9aa8.png)
 
 ### Metadata service
 
@@ -85,7 +85,7 @@ For more information about Milvus metadata, refer to How to view metadata. In a 
 
 Keywords: Apache Zookeeper, etcd, Consul, Kubernetes
 
-![7-service-discovery.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_service_discovery_054a977c6e.png)
+![7-service-discovery.png](https://assets.zilliz.com/7_service_discovery_054a977c6e.png)
 ###### *Service discovery.*
 
 Service discovery provides information about all Milvus nodes. Milvus nodes register their information when going online and log out when going offline. Milvus nodes can also detect abnormal nodes by periodically checking the health status of services.
@@ -96,7 +96,7 @@ Service discovery contains a lot of frameworks, including etcd, Consul, ZooKeepe
 
 Keywords: Nginx, HAProxy, Kubernetes
 
-![7-load-balancing-and-service-sharding.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_load_balancing_and_service_sharding_f91891c6c1.png)
+![7-load-balancing-and-service-sharding.png](https://assets.zilliz.com/7_load_balancing_and_service_sharding_f91891c6c1.png)
 ###### *Load balancing and service sharding.*
 
 Service discovery and load balancing are used together. Load balancing can be configured as polling, hashing, or consistent hashing.
@@ -113,17 +113,17 @@ Keywords: OpenTracing, Jaeger, Zipkin
 
 Given the complexity of a distributed system, requests are sent to multiple internal service invocations. To help pinpoint problems, we need to trace the internal service invocation chain. As the complexity increases, the benefits of an available tracing system are self-explanatory. We choose the CNCF OpenTracing standard. OpenTracing provides platform-independent, vendor-independent APIs for developers to conveniently implement a tracing system.
 
-![8-tracing-demo-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/8_tracing_demo_milvus_fd385f0aba.png)
+![8-tracing-demo-milvus.png](https://assets.zilliz.com/8_tracing_demo_milvus_fd385f0aba.png)
 
 The previous chart is an example of tracing during search invocation. Search invokes <code>get_routing</code>, <code>do_search</code>, and <code>do_merge</code> consecutively. <code>do_search</code> also invokes <code>search_127.0.0.1</code>.
 
 The whole tracing record forms the following tree:
 
-![8-search-traceid-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/8_search_traceid_milvus_35040d75bc.png)
+![8-search-traceid-milvus.png](https://assets.zilliz.com/8_search_traceid_milvus_35040d75bc.png)
 
 The following chart shows examples of request/response info and tags of each node:
 
-![request-response-info-tags-node-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/request_response_info_tags_node_milvus_e169a31cb1.png)
+![request-response-info-tags-node-milvus.png](https://assets.zilliz.com/request_response_info_tags_node_milvus_e169a31cb1.png)
 
 OpenTracing has been integrated to Milvus. More information will be covered in the upcoming articles.
 
@@ -131,7 +131,7 @@ OpenTracing has been integrated to Milvus. More information will be covered in t
 
 Keywords: Prometheus, Grafana
 
-![10-monitor-alert-milvus.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/10_monitor_alert_milvus_3ae8910af6.jpg)
+![10-monitor-alert-milvus.jpg](https://assets.zilliz.com/10_monitor_alert_milvus_3ae8910af6.jpg)
 
 ## Summary
 

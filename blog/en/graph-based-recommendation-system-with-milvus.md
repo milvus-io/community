@@ -4,7 +4,7 @@ title: Building a Graph-based Recommendation System with Milvus, PinSage, DGL, a
 author: Shiyu Chen
 date: 2020-12-01 21:41:08.582+00
 desc: Recommender systems can generate revenue, reduce costs, and offer a competitive advantage. Learn how to build one for free with open-source tools. 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/thisisengineering_raeng_z3c_Mj_I6k_P_I_unsplash_2228b9411c.jpg
+cover: assets.zilliz.com/thisisengineering_raeng_z3c_Mj_I6k_P_I_unsplash_2228b9411c.jpg
 tag: Scenarios
 origin: zilliz.com/blog/graph-based-recommendation-system-with-milvus
 ---
@@ -43,7 +43,7 @@ In this example, building a graph-based recommendation system from scratch depen
 
 Pinterest users can "pin" content that interests them to "boards," which are collections of pinned content. With over [478 million](https://business.pinterest.com/audience/) monthly active users (MAU) and over [240 billion](https://newsroom.pinterest.com/en/company) objects saved, the company has an immense amount of user data that it must build new technology to keep up with. 
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_742d28f7a9.png)
+![1.png](https://assets.zilliz.com/1_742d28f7a9.png)
 ###### *Pins-boards bipartite graph.*
 
 PinSage uses pins-boards bipartite graphs to generate high-quality embeddings from pins that are used to recommend visually similar content to users. Unlike traditional GCN algorithms, which perform convolutions on the feature matrices and the full graph, PinSage samples the nearby nodes/Pins and performs more efficient local convolutions through dynamic construction of computational graphs.
@@ -54,14 +54,14 @@ Because there is often overlap in k-hop neighborhoods, local convolution on node
 
 ### Deep Graph Library: A scalable python package for deep learning on graphs
 
-![dgl-framework-building-graph-based-recommender-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/dgl_framework_building_graph_based_recommender_milvus_af62de6dd4.png)
+![dgl-framework-building-graph-based-recommender-milvus.png](https://assets.zilliz.com/dgl_framework_building_graph_based_recommender_milvus_af62de6dd4.png)
 ###### *DGL framework.*
 
 [Deep Graph Library (DGL)](https://www.dgl.ai/) is a Python package designed for building graph-based neural network models on top of existing deep learning frameworks (e.g., PyTorch, MXNet, Gluon, and more). DGL includes a user friendly backend interface, making it easy to implant in frameworks based on tensors and that support automatic generation. The PinSage algorithm mentioned above is optimized for use with DGL and PyTorch.
 
 ### Milvus: An open-source vector database built for AI and similarity search
 
-![how-does-milvus-work.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/how_does_milvus_work_6926180543.png)
+![how-does-milvus-work.png](https://assets.zilliz.com/how_does_milvus_work_6926180543.png)
 ###### *How does similarity search work in Milvus?*
 
 Milvus is an open-source vector database built to power vector similarity search and artificial intelligence (AI) applications. At a high level, Using Milvus for similarity search works as follows:
@@ -71,9 +71,9 @@ Milvus is an open-source vector database built to power vector similarity search
 
 ## Building a graph-based recommendation system with Milvus
 
-![beike-intelligent-house-platform-diagram.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_intelligent_house_platform_diagram_6e278da118.jpg)
+![beike-intelligent-house-platform-diagram.jpg](https://assets.zilliz.com/beike_intelligent_house_platform_diagram_6e278da118.jpg)
 
-![3-building-graph-based-recommender-system.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_building_graph_based_recommender_system_bf89770634.png)
+![3-building-graph-based-recommender-system.png](https://assets.zilliz.com/3_building_graph_based_recommender_system_bf89770634.png)
 ###### *Basic workflow of a graph-based recommendation system in Milvus.*
 
 Building a graph-based recommendation system with Milvus involves the following steps: 

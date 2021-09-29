@@ -4,7 +4,7 @@ title: Building an AI-Powered Writing Assistant for WPS Office
 author: milvus
 date: 2020-07-28 03:35:40.105+00
 desc: Learn how Kingsoft leveraged Milvus, an open-source similarity search engine, to build a recommendation engine for WPS Office’s AI-powered writing assistant.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/wps_thumbnail_6cb7876963.jpg
+cover: assets.zilliz.com/wps_thumbnail_6cb7876963.jpg
 tag: Scenarios
 origin: zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office
 ---

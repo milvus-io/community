@@ -4,7 +4,7 @@ title: Making With Milvus AI-Infused Proptech for Personalized Real Estate Searc
 author: milvus
 date: 2021-03-18 03:53:54.736+00
 desc: AI is transforming the real estate industry, discover how intelligent proptech accelerates the home search and purchase process. 
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/blog_realistate_search_da4e8ee01d.jpg
+cover: assets.zilliz.com/blog_realistate_search_da4e8ee01d.jpg
 tag: Scenarios
 origin: zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search
 ---
@@ -30,7 +30,7 @@ This article explores how Beike used vector similarity search to build a house h
 
 Unstructured data makes up an estimated 80-90% of all data, and extracting insights from it is quickly becoming a requrement for businesses that want to remain competitive in an ever-changing world. Increasing demand for unstructured data analytics, rising compute power, and declining compute costs have made AI-enabled vector search more accessible than ever.
 
-![beike-blog-img1.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_blog_img1_2dc95cac08.jpg)
+![beike-blog-img1.jpg](https://assets.zilliz.com/beike_blog_img1_2dc95cac08.jpg)
 ###### *Understanding the difference between structured and unstructured data.*
 
 Traditionally, unstructured data has been a challenge to process and analyze at scale because it doesn't follow a predefined model or organizational structure. Neural networks (e.g., CNN, RNN, and BERT) make it possible to convert unstructured data into feature vectors, a numerical data format that can be easily interpreted by computers. Algorithms are then used to calculate similarity between vectors using metrics like cosine similarity or Euclidean distance.
@@ -43,7 +43,7 @@ Ultimately, vector similarity search is a broad term that desribes techniques fo
 
 Milvus was built specifically for large-scale vector data management, and has applications spanning image and video search, chemical similarity analysis, personalized recommendation systems, conversational AI, and much more. Vector datasets stored in Milvus can be efficiently queried, with most implementations following this general process:
 
-![beike-blog-img2.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_blog_img2_d5abb58f95.jpg)
+![beike-blog-img2.jpg](https://assets.zilliz.com/beike_blog_img2_d5abb58f95.jpg)
 ###### *How does Milvus manage vector data?*
 
 <br/>
@@ -60,7 +60,7 @@ For example, when searching for more homes similar to a given listing, features 
 
 3. Milvus returns similarity search results based on user queries. 
 
-![milvus-overview-diagram.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/milvus_overview_diagram_d17cda0e47.png)
+![milvus-overview-diagram.png](https://assets.zilliz.com/milvus_overview_diagram_d17cda0e47.png)
 
 ###### *An overview of Milvus.*
 
@@ -74,7 +74,7 @@ Beike’s intelligent real estate search platform is powered by a recommendation
 
 3. The search results from each of the 4 vector collections are compared then used to recommend similar homes. 
 
-![beike-intelligent-house-platform-diagram.jpg](https://zilliz-cms.s3.us-west-2.amazonaws.com/beike_intelligent_house_platform_diagram_6e278da118.jpg)
+![beike-intelligent-house-platform-diagram.jpg](https://assets.zilliz.com/beike_intelligent_house_platform_diagram_6e278da118.jpg)
 
 ###### *An overview of Beike’s intelligent house hunting platform.*
 

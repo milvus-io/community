@@ -4,7 +4,7 @@ title: Accelerating Compilation 2.5X with Dependency Decoupling & Testing Contai
 author: Zhifeng Zhang
 date: 2021-05-28
 desc: Discover how zilliz to reduce compile times 2.5x using dependency decoupling and containerization techniques for large-scale AI and MLOps projects.  
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/cover_20e3cddb96.jpeg
+cover: assets.zilliz.com/cover_20e3cddb96.jpeg
 tag: Technology
 origin: null
 ---
@@ -41,17 +41,17 @@ To optimize compilation between components:
 
 1.Create dependency relationship graph — Use the configuration files in the component libraries to create dependency relationship graph. Use the dependency relationship to retrieve the version information (Git Branch, Tag, and Git commit ID) and compilation options and more of both upstream and downstream dependent components.
 
-![1.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_949dffec32.png)
+![1.png](https://assets.zilliz.com/1_949dffec32.png)
 
 2.**Check for dependencies** — Generate alerts for circular dependencies, version conflicts, and other issues that arise between components.
 
 3.**Flatten dependencies** — Sort dependencies by Depth First Search (DFS) and front-merge components with duplicate dependencies to form a dependency graph.
 
-![2.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_45130c55e4.png)
+![2.png](https://assets.zilliz.com/2_45130c55e4.png)
 
 4.Use MerkleTree algorithm to generate a hash (Root Hash) containing dependencies of each component based on version information, compilation options, and more. Combined with information such as component name, the algorithm forms a unique tag for each component.
 
-![3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_6a4fcdf4e3.png)
+![3.png](https://assets.zilliz.com/3_6a4fcdf4e3.png)
 
 5.Based on the component’s unique tag information, check if a corresponding compilation archive exists in the private repo. If a compilation archive is retrieved, unzip it to get the manifest file for playback; if not, compile the component, mark up the generated compilation object files and manifest file, and upload them to the private repo.
 

@@ -4,7 +4,7 @@ title: Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Image
 author: milvus
 date: 2020-11-11 07:13:02.135+00
 desc: AI and open-source software make it possible to build a reverse image search engine with just one server and 10 lines of code. Search 1+ billion images in real time and more with Milvus, an open-source vector data management platform.
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/build_search_9299109ca7.jpg
+cover: assets.zilliz.com/build_search_9299109ca7.jpg
 tag: Technology,Scenarios
 origin: zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
 ---
@@ -36,7 +36,7 @@ For decades, computer scientists have developed indexing algorithms tailored for
 
 Using neural networks (e.g. [CNN](https://en.wikipedia.org/wiki/Convolutional_neural_network), [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network), and [BERT](https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270)) unstructured data can be converted into feature vectors (a.k.a., embeddings), which are a string of integers or floats. This numerical data format is far more readily processed and analyzed by machines. Applications spanning reverse image search, video search, natural language processing (NLP) and more can be built by embedding unstructured data into feature vectors, then calculating similarity between vectors using measures like Euclidean distance or cosine similarity.
 
-![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_2.jpeg](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_2_db8c16aea4.jpeg)
+![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_2.jpeg](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_2_db8c16aea4.jpeg)
 
 ###### _AI algorithms convert unstructured data to vectors_
 
@@ -58,7 +58,7 @@ A common way to build an unstructured data analytics system is to pair algorithm
 
 Milvus attempts to overcome all of these limitations. The system enhances flexibility by offering support for a variety of application interfaces (including SDKs in Python, Java, Go, C++ and RESTful APIs), multiple vector index types (e.g., quantization-based indexes and graph-based indexes), and advanced query processing. Milvus handles dynamic vector data using a log-structured merge-tree (LSM tree), keeping data insertions and deletions efficient and searches humming along in real time. Milvus also provides optimizations for heterogeneous computing architectures on modern CPUs and GPUs, allowing developers to adjust systems for specific scenarios, datasets, and application environments.
 
-![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_3.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_3_380e31d32c.png)
+![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_3.png](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_3_380e31d32c.png)
 
 ###### _An overview of Milvus’ architecture._
 
@@ -72,7 +72,7 @@ As outlined above, a capable vector data management platform like Milvus paired 
 
 Major search engines like Google already give users the option to search by image. Additionally, e-commerce platforms have realized the benefits this functionality offers online shoppers, with Amazon incorporating image search into its smartphone applications.
 
-![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_4.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_4_7884aabcd8.png)
+![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_4.png](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_4_7884aabcd8.png)
 
 ###### _Google’s “search by image” feature._
 

@@ -4,7 +4,7 @@ title: How Does Milvus Schedule Query Tasks
 author: milvus
 date: 2020-03-03 22:38:17.829+00
 desc: The work behind the scene
-cover: zilliz-cms.s3.us-west-2.amazonaws.com/eric_rothermel_Fo_KO_4_Dp_Xam_Q_unsplash_469fe12aeb.jpg
+cover: assets.zilliz.com/eric_rothermel_Fo_KO_4_Dp_Xam_Q_unsplash_469fe12aeb.jpg
 tag: Technology
 origin: zilliz.com/blog/scheduling-query-tasks-milvus
 ---
@@ -18,7 +18,7 @@ We know from Managing Data in Massive-Scale Vector Search Engine that vector sim
 
 There are many ways to measure vector distance, such as Euclidean distance:
 
-![1-euclidean-distance.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/1_euclidean_distance_156037c939.png)
+![1-euclidean-distance.png](https://assets.zilliz.com/1_euclidean_distance_156037c939.png)
 
 where x and y are two vectors. n is the dimension of the vectors.
 
@@ -36,21 +36,21 @@ Each Resource has a task array, which records tasks belonging to the Resource. E
 
 ### Query scheduling
 
-![2-query-scheduling.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/2_query_scheduling_5798178be2.png)
+![2-query-scheduling.png](https://assets.zilliz.com/2_query_scheduling_5798178be2.png)
 
 1. When the Milvus server starts, Milvus launches the corresponding GpuResource via the <code>gpu_resource_config</code> parameters in the <code>server_config.yaml</code> configuration file. DiskResource and CpuResource still cannot be edited in <code>server_config.yaml</code>. GpuResource is the combination of <code>search_resources</code> and <code>build_index_resources</code> and referred to as <code>{gpu0, gpu1}</code> in the following example:
 
-![3-sample-code.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_sample_code_ffee1c290f.png)
+![3-sample-code.png](https://assets.zilliz.com/3_sample_code_ffee1c290f.png)
 
-![3-example.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/3_example_0eeb85da71.png)
+![3-example.png](https://assets.zilliz.com/3_example_0eeb85da71.png)
 
 2. Milvus receives a request. Table metadata is stored in an external database, which is SQLite or MySQl for single-host and MySQL for distributed. After receiving a search request, Milvus validates whether the table exists and the dimension is consistent. Then, Milvus reads the TableFile list of the table.
 
-![4-milvus-reads-tablefile-list.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/4_milvus_reads_tablefile_list_1e9d851543.png)
+![4-milvus-reads-tablefile-list.png](https://assets.zilliz.com/4_milvus_reads_tablefile_list_1e9d851543.png)
 
 3. Milvus creates a SearchTask. Because the computation of each TableFile is performed independently, Milvus creates a SearchTask for each TableFile. As the basic unit of task scheduling, a SearchTask contains the target vectors, search parameters, and the filenames of TableFile.
 
-![5-table-file-list-task-creator.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/5_table_file_list_task_creator_36262593e4.png)
+![5-table-file-list-task-creator.png](https://assets.zilliz.com/5_table_file_list_task_creator_36262593e4.png)
 
 4. Milvus chooses a computing device. The device that a SearchTask performs computation depends on the **estimated completion** time for each device. The **estimated completion** time specifies the estimated interval between the current time and the estimated time when the computation completes.
 
@@ -58,7 +58,7 @@ For example, when a data block of a SearchTask is loaded to CPU memory, the next
 
 Here we assume that the **estimated completion time** for GPU1 is shorter.
 
-![6-GPU1-shorter-estimated-completion-time.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/6_GPU_1_shorter_estimated_completion_time_42c7639b87.png)
+![6-GPU1-shorter-estimated-completion-time.png](https://assets.zilliz.com/6_GPU_1_shorter_estimated_completion_time_42c7639b87.png)
 
 5. Milvus adds SearchTask to the task queue of DiskResource.
 
@@ -68,11 +68,11 @@ Here we assume that the **estimated completion time** for GPU1 is shorter.
 
 8. Milvus executes SearchTask in GpuResource. Because the result of a SearchTask is relatively small, the result is directly returned to CPU memory.
 
-![7-scheduler.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/7_scheduler_53f1fbbaba.png) 
+![7-scheduler.png](https://assets.zilliz.com/7_scheduler_53f1fbbaba.png) 
 
 9. Milvus merges the result of SearchTask to the whole search result.
 
-![8-milvus-merges-searchtast-result.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/8_milvus_merges_searchtast_result_9f3446e65a.png)
+![8-milvus-merges-searchtast-result.png](https://assets.zilliz.com/8_milvus_merges_searchtast_result_9f3446e65a.png)
 
 After all SearchTasks are complete, Milvus returns the whole search result to the client.
 
@@ -92,7 +92,7 @@ The cache cannot satisfy our needs for better search performance. Data needs to 
 
 We split the computation on a data block into 3 stages (loading from disk to CPU memory, CPU computation, result merging) or 4 stages (loading from disk to CPU memory, loading from CPU memory to GPU memory, GPU computation and result retrieval, and result merging). Take 3-stage computation as an example, we can launch 3 threads responsible for the 3 stages to function as instruction pipelining. Because the results sets are mostly small, result merging does not take much time. In some cases, the overlap of data loading and computation can reduce the search time by 1/2.
 
-![9-sequential-overlapping-load-milvus.png](https://zilliz-cms.s3.us-west-2.amazonaws.com/9_sequential_overlapping_load_milvus_1af809b29e.png)
+![9-sequential-overlapping-load-milvus.png](https://assets.zilliz.com/9_sequential_overlapping_load_milvus_1af809b29e.png)
 
 ## Problems and solutions
 
