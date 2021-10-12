@@ -1,16 +1,16 @@
 ---
 id: 2021-10-10-milvus-helps-analys-vedios.md
-title: What is it? Who is she? Milvus helps analyze videos intelligently
+title: What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently
 author: Shiyu
 date: 2021-10-11
 desc: Learn how Milvus powers the AI analysis of video contents.
-cover: assets.zilliz.com/4_7890a1c49b.png
+cover: assets.zilliz.com/1011cover_9d984a07f6.png
 tag: Technology
 ---
 
-# What is it? Who is she? Milvus helps analyze videos intelligently
+#  What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently
 
-> Shiyu Chen, a data engineer at Zilliz, graduated from Xidian University with a degree in Computer Science. Since joining Zilliz, she has been exploring solutions for Milvus in various fields, such as audio and video analysis, molecule formula retrieval, etc., which has greatly enriched the application scenarios of the community. She is currently exploring more interesting solutions. In her spare time, she loves sports and reading.
+*Shiyu Chen, a data engineer at Zilliz, graduated from Xidian University with a degree in Computer Science. Since joining Zilliz, she has been exploring solutions for Milvus in various fields, such as audio and video analysis, molecule formula retrieval, etc., which has greatly enriched the application scenarios of the community. She is currently exploring more interesting solutions. In her spare time, she loves sports and reading.*
 
 When I was watching *Free Guy* last weekend, I felt that I'd seen the actor who plays Buddy, the security guard, somewhere before, yet couldn't recall any of his works. My head was stuffed with "who's this guy?" I was sure about having seen that face and was trying so hard to remember his name. A similar case is that once I saw the leading actor in a video having a drink I used to like a lot, but I ended up failing to recall the brand name.
 
