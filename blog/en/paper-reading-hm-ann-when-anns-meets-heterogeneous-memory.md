@@ -21,7 +21,7 @@ There are other workarounds to avoid letting DRAM store billion-scale datasets i
 
 # Introduction to Heterogeneous Memory
 
-![1.png](https://assets.zilliz.com/1_f577cd3b24.png)
+![1.png](https://assets.zilliz.com/image_32_d26cfa9480.png)
 
 Name of the pictureMemory/Storage Hierarchy with HM
 
@@ -99,13 +99,13 @@ In Figure 1, the query performance of different indexes is analyzed. Figure 1 (a
 
 In Figure 2, the query performance of different indexes is analyzed in a pure DRAM setting. HNSW, NSG, and HM-ANN are evaluated with the three million-scale datasets fitting in DRAM. HM-ANN still achieves better query performance than HNSW. The reason is that the total number of distance computations from HM-ANN is lower (on average 850/query) than that of HNSW (on average 900/query) to achieve 99% recall target.
 
-![8.png](https://assets.zilliz.com/8_1c7d716e07.png)
+![8.png](https://assets.zilliz.com/image_33_f99d31f322.png)
 
 ## Effectiveness of high-degree promotion
 
 In Figure 3, the random promotion and high-degree promotion strategies are compared in the same configuration. The high-degree promotion outperforms the baseline. The high-degree promotion performs 1.8x, 4.3x, and 3.9x faster than the random promotion to reach 95%, 99%, and 99.5% recall targets, respectively.
 
-![10.png](https://assets.zilliz.com/10_56b10fd3a7.png)
+![10.png](https://assets.zilliz.com/image_34_3af47e0842.png)
 
 ## Performance benefit of memory management techniques
 
