@@ -87,6 +87,3 @@ For cluster, you will need to map both paths in every component.
 ![1.9.png](https://assets.zilliz.com/1_9_22d8929d92.png)
 
 Lastly, start Milvus standalone or cluster using `docker-compose up -d` and check the log files to see if the modification is successful.
-![img](https://zilliverse.feishu.cn/space/api/box/stream/download/asynccode/?code=NWI5ZmY1YmUwNTE3Y2FiMTA4NWZiYTNmNTYyYjQxNjhfbURTbFJUTk1wY2NBZGFHTGpVSjlwWndPeDllRUJUMDFfVG9rZW46Ym94Y25CSDROSGlqbFpWZ0ExM2Q5Q0IzUEdoXzE2MzQyMDc5NDY6MTYzNDIxMTU0Nl9WNA)
-
-Lastly, start Milvus standalone or cluster using `docker-compose up -d` and check the log files to see if the modification is successful.
