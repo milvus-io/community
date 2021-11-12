@@ -93,7 +93,7 @@ If you have any questions about contributing, you can always ask the community u
 
 ### 🏆 Be a Milvus Advocate
 
-![image-20211110180730866](https://assets.zilliz.com/advocate_73017add3c.png)
+![image-20211110180730866](https://assets.zilliz.com/advocate_1052d8249a.jpg)
 
 
 
