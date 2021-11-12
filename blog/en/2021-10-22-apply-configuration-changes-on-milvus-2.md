@@ -5,7 +5,7 @@ author: Jingjing
 date: 2021-10-22
 desc: Learn how apply configuration changes on Milvus 2.0
 cover: assets.zilliz.com/coverimage_8edf38fd9c.png
-tag: Technology, Products
+tag: Technology
 ---
 
 # Technical Sharing: Apply Configuration Changes on Milvus 2.0 using Docker Compose

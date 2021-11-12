@@ -12,7 +12,7 @@ tag: Technology
 
 ## Background
 
-While using Milvus vector database, you will need to modify the default configuration to satisfy the requirements of different scenarios. Previously, a Milvus user shared on [how to modify the configuration of Milvus deployed using Docker Compose] (https://zilliz.com/blog/apply-configuration-changes-on-milvus-2). And in this article, I would like to share with you on how to modify the configuration of Milvus deployed on Kubernetes.
+While using Milvus vector database, you will need to modify the default configuration to satisfy the requirements of different scenarios. Previously, a Milvus user shared on [How to Modify the Configuration of Milvus Deployed Using Docker Compose](https://zilliz.com/blog/apply-configuration-changes-on-milvus-2). And in this article, I would like to share with you on how to modify the configuration of Milvus deployed on Kubernetes.
 
 ## Modify configuration of Milvus on Kubernetes
 
