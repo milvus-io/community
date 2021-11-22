@@ -24,7 +24,7 @@ Data such as product information, user search intent, and user preferences are a
 
 We tried to develop our own locally sensitive hash plug-in to accelerate the CosineSimilarity calculation of ES. Although the performance and throughput were significantly improved after the acceleration, the latency of 100+ ms was still difficult to meet the actual online product retrieval requirements.
 
-After althorough research, we decided to use Milvus, an open source vector database, which is advantaged with the support for distributed deployment, multi-language SDKs, read/write separation, etc. compared to the commonly used standalone Faiss.
+After a thorough research, we decided to use Milvus, an open source vector database, which is advantaged with the support for distributed deployment, multi-language SDKs, read/write separation, etc. compared to the commonly used standalone Faiss.
 
 Using various deep learning models, we convert massive unstructured data into feature vectors, and import the vectors into Milvus. With the excellent performance of Milvus, our e-commerce search recommendation system can efficiently query the TopK vectors that are similar to the target vectors.
 
