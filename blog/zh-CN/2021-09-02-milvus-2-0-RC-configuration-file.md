@@ -1,8 +1,8 @@
 ---
-id: 2021-09-02-milvus-2-0-RC-configuration-file.md
+id: 2021-10-22-apply-configuration-changes-on-milvus-2.md
 title: 技术分享｜如何对 Milvus 2.0 进行参数配置
 author: 迷茫的梦醒
-date: 2021-09-02
+date: 2021-10-22
 desc:
 
 cover: assets.zilliz.com/blog_cover_4a9807b9e0.png
