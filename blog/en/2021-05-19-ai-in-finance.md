@@ -1,5 +1,5 @@
 ---
-id: ai-in-finance.md
+id: ai-in-.md
 title: Accelerating AI in Finance with Milvus, an Open-Source Vector Database
 author: milvus
 date: 2021-05-19 03:41:20.776+00
