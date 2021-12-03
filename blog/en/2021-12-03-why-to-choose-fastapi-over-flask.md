@@ -1,9 +1,9 @@
 ---
 id: 2021-12-03-why-to-choose-fastapi-over-flask.md
-title: Accelerating Candidate Generation in Recommender Systems Using Milvus paired with PaddlePaddle
+title: Why to Choose FastAPI over Flask? 
 author: Yunmei
 date: 2021-11-26
-desc: the minimal workflow of a recommender system
+desc: choose the appropriate framework according to your application scenario
 cover: assets.zilliz.com/1_d5de035def.png
 tag: Technology
 ---
