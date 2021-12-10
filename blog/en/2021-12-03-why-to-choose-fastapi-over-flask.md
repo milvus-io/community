@@ -2,7 +2,7 @@
 id: 2021-12-03-why-to-choose-fastapi-over-flask.md
 title: Why to Choose FastAPI over Flask? 
 author: Yunmei
-date: 2021-11-26
+date: 2021-12-03
 desc: choose the appropriate framework according to your application scenario
 cover: assets.zilliz.com/1_d5de035def.png
 tag: Technology
