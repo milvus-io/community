@@ -94,7 +94,7 @@ With the development of big data technology, vectorization of DNA sequence will 
 
 # Learn more about Milvus
 Milvus is a powerful tool capable of powering a vast array of artificial intelligence and vector similarity search applications. To learn more about the project, check out the following resources:
-- Read our [blog](https://zilliz.com/blog).
+- Read our [blog](https://milvus.io/blog).
 - Interact with our open-source community on [Slack](https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email).
 - Use or contribute to the world’s most popular vector database on [GitHub](https://github.com/milvus-io/milvus/).
 - Quickly test and deploy AI applications with our new [bootcamp](https://github.com/milvus-io/bootcamp).
