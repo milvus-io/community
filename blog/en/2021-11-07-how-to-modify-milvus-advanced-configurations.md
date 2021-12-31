@@ -3,7 +3,7 @@ id: 2021-11-07-how-to-modify-milvus-advanced-configurations.md
 title: How to Modify Milvus Advanced Configurations
 author: Zilliz
 date: 2021-11-08
-descHow : to modify the configuration of Milvus deployed on Kubernetes
+desc: How to modify the configuration of Milvus deployed on Kubernetes
 cover: assets.zilliz.com/blog_cover_4a9807b9e0.png
 tag: Technology
 ---
