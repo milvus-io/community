@@ -6,6 +6,7 @@ date: 2021-12-03
 desc: choose the appropriate framework according to your application scenario
 cover: assets.zilliz.com/1_d5de035def.png
 tag: Technology
+isPublish: false
 ---
 
 To help you quickly get started with Milvus, the open-source vector database, we released another affiliated open-source project, [Milvus Bootcamp](https://github.com/milvus-io/bootcamp) on GitHub. The Milvus Bootcamp not only provides scripts and data for benchmark tests, but also includes projects that use Milvus to build some MVPs (minimum viable products), such as a reverse image search system, a video analysis system, a QA chatbot, or a recommender system. You can learn how to apply vector similarity search in a world full of unstructured data and get some hands-on experience in Milvus Bootcamp.

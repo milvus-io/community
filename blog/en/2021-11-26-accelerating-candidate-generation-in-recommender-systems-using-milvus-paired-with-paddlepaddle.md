@@ -4,7 +4,7 @@ title: Accelerating Candidate Generation in Recommender Systems Using Milvus pai
 author: Yunmei
 date: 2021-11-26
 desc: the minimal workflow of a recommender system
-cover: assets.zilliz.com/1_d2090c29c8.png
+cover: assets.zilliz.com/5scenarios_Recommander_system_851f5c643a.png
 tag: Scenarios
 ---
 
