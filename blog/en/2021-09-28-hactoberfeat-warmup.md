@@ -3,8 +3,8 @@ id: 2021-09-28-hactoberfest-warmup.md
 title: Milvus To Participate In Hacktoberfest 2021
 author: Zilliz
 date: 2021-09-28
-desc:
-cover: assets.zilliz.com/hacktoberfest_Cover_fd77d4bd34.png
+desc: Everyone is welcome!
+cover: assets.zilliz.com/hacktoberfestrelease_695f45bb41.png
 tag: Community
 ---
 
