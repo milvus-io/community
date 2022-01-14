@@ -4,7 +4,7 @@ title: It's a Wrap! Milvus Hacktoberfest 2021
 author: Zilliz
 date: 2021-11-10
 desc: Thank you to everyone who participated in Milvus Hacktoberfest 2021!
-cover: assets.zilliz.com/Blog_cover_a6ce8748d7.jpeg
+cover: assets.zilliz.com/hacktoberfest_ea6cdfef28.png
 tag: Community
 ---
 

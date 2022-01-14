@@ -4,7 +4,7 @@ title: Technical Sharing:Apply Configuration Changes on Milvus 2.0 using Docker 
 author: Jingjing
 date: 2021-10-22
 desc: Learn how apply configuration changes on Milvus 2.0
-cover: assets.zilliz.com/coverimage_8edf38fd9c.png
+cover: assets.zilliz.com/7_Milvus_Hacktoberfest_2021_265b0e19a7.png
 tag: Technology
 ---
 

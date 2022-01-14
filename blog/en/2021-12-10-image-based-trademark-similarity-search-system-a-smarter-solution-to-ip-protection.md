@@ -4,7 +4,7 @@ title: Milvus in IP Protection：Building a Trademark Similarity Search System w
 author: Zilliz
 date: 2021-12-10
 desc: Learn how to apply vector similarity search in the industry of IP protection.
-cover: assets.zilliz.com/blog_cover_4a9807b9e0.png
+cover: assets.zilliz.com/4_Tech_IP_02_17121141e1.png
 tag: Scenarios
 ---
 
