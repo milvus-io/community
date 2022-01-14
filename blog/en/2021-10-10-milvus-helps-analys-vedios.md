@@ -4,7 +4,7 @@ title: What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently
 author: Shiyu
 date: 2021-10-11
 desc: Learn how Milvus powers the AI analysis of video contents.
-cover: assets.zilliz.com/1011cover_9d984a07f6.png
+cover: assets.zilliz.com/vedio_f404fb81e0.png
 tag: Technology
 ---
 
