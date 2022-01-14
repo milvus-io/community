@@ -4,8 +4,8 @@ title: Milvus in 2021 - Year in Review
 author: Xiaofan, Luan
 date: 2022-01-07
 desc: Learn what Milvus community has achieved and what's in store for year 2022.
-cover: assets.zilliz.com/Year_in_Review_2274ba6912.jpeg
-tag: Community
+cover: assets.zilliz.com/1_Commnity_Year_in_review_939cc516bb.png
+tag: Events
 ---
 
 2021 was an amazing year for Milvus as an open-source project. I want to take a moment to thank all the contributors and users of Milvus, as well as partners for contributing to such an outstanding year.
@@ -28,7 +28,7 @@ First, here’s a summary of community statistics from GitHub and Slack. By the 
 - **Slack members** have increased from 541  in December 2020 to 1233 in December 2021 (up 227%)
 
 
-![img](https://assets.zilliz.com/middle_img_v2_f6b6b211_44ff_4313_9ab7_66b5562c5c8g_7bed1238ec.png)
+![img](https://assets.zilliz.com/1_1_e94deb087f.png)
 
 ## Community Governance and Advocacy
 
@@ -39,7 +39,7 @@ As a result, we have appointed 5 new maintainers in 2021 to keep track of the on
 We've also launched the [Milvus Advocate Program](https://milvus.io/community/milvus_advocate.md), and we welcome more people to join us to share your experiences, offer help to community members and gain recognition in return.
 
 
-![img](https://assets.zilliz.com/8765d07e_d34d_44b9_8141_4334a00aedaa_ce38421fcd.png)
+![img](https://assets.zilliz.com/1_2_835f379fb0.png)
 
 (Image: Milvus GitHub contributors, made with dynamicwebpaige's [project](https://github.com/dynamicwebpaige/nanowrimo-2021/blob/main/15_VS_Code_contributors.ipynb) )
 
