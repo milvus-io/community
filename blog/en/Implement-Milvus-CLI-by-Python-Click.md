@@ -6,6 +6,7 @@ date: 2021-09-15
 desc: Introduce how to implement a CLI based on Python Click.
 tag: Milvus, Python
 isPublish: true
+recommend: true
 ---
 
 # Implement Milvus CLI by Python Click
