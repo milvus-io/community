@@ -5,7 +5,7 @@ author: Zilliz
 date: 2021-09-28
 desc: Everyone is welcome!
 cover: assets.zilliz.com/hacktoberfestrelease_d8c109dca1.png
-tag: Community
+tag: Events
 ---
 
 # Milvus To Participate In Hacktoberfest 2021

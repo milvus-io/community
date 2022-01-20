@@ -5,7 +5,7 @@ author: Zilliz
 date: 2021-11-10
 desc: Thank you to everyone who participated in Milvus Hacktoberfest 2021!
 cover: assets.zilliz.com/hacktoberfest_ea6cdfef28.png
-tag: Community
+tag: Events
 ---
 
 # It's a Wrap - Milvus Hacktoberfest 2021

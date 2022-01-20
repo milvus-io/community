@@ -3,7 +3,7 @@ id: 2019-12-27-meta-table.md
 title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 date: 2019-12-27
-desc:
+desc: How to View Metadata
 
 cover:
 tag: Technology
@@ -19,7 +19,7 @@ tag: Technology
 
 In the last blog, we mentioned how to view your metadata using MySQL or SQLite. This article mainly intends to introduce in detail the fields in the metadata tables.
 
-### Fields in the "`Tables”` table
+### Fields in the "`Tables`” table
 
 Take SQLite as an example. The following result comes from 0.5.0. Some fields are added to 0.6.0, which will be introduced later. There is a row in `Tables` specifying a 512-dimensional vector table with the name `table_1`. When the table is created, `index_file_size` is 1024 MB, `engine_type` is 1 (FLAT), `nlist` is 16384, `metric_type` is 1 (Euclidean distance L2). `id` is the unique identifier of the table. `state` is the state of the table with 0 indicating a normal state. `created_on` is the creation time. `flag` is the flag reserved for internal use.
 

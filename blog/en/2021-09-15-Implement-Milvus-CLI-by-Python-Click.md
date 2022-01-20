@@ -4,7 +4,7 @@ title: Implement Milvus CLI by Python Click
 author: Zhen Chen
 date: 2021-09-15
 desc: Introduce how to implement a CLI based on Python Click.
-tag: technology
+tag: Engineering
 isPublish: true
 ---
 
