@@ -5,7 +5,7 @@ author: milvus
 date: 2019-12-25 19:21:42.469+00
 desc: How to View Metadata
 cover: assets.zilliz.com/header_c2eb459468.jpg
-tag: Technology
+tag: Engineering
 origin: zilliz.com/blog/managing-metadata-in-milvus-1
 ---
   

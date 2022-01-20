@@ -5,7 +5,7 @@ author: milvus
 date: 2020-02-26 22:57:02.071+00
 desc: Best practices for IVF index
 cover: assets.zilliz.com/header_4d3fc44879.jpg
-tag: Technology
+tag: Engineering
 origin: zilliz.com/blog/select-index-parameters-ivf-index
 ---
   

@@ -5,7 +5,7 @@ author: milvus
 date: 2019-12-05 08:33:04.23+00
 desc: Without vector indexing, many modern applications of AI would be impossibly slow. Learn how to select the right index for your next machine learning application. 
 cover: assets.zilliz.com/4_1143e443aa.jpg
-tag: Technology
+tag: Engineering
 origin: zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing
 ---
   

@@ -5,7 +5,7 @@ author: milvus
 date: 2021-01-13 07:46:40.506+00
 desc: Build powerful machine learning applications and manage massive-scale vector data with Milvus.
 cover: assets.zilliz.com/milvus_5b2cdec665.jpg
-tag: Scenarios,Community
+tag: Scenarios
 origin: zilliz.com/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database
 ---
 

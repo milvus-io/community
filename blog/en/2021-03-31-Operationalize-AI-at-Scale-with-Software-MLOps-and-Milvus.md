@@ -5,7 +5,7 @@ author: milvus
 date: 2021-03-31 09:51:38.653+00
 desc: MLOps is superseding DevOps as we make the transition to Software 2.0. Find  what model operations is, and how the open-source vector database Milvus supports it.
 cover: assets.zilliz.com/milvus_5b2cdec665.jpg
-tag: Community,Technology
+tag: Engineering
 origin: zilliz.com/blog/Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvus
 ---
 
