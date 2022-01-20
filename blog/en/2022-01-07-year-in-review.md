@@ -1,11 +1,12 @@
 ---
-id: 2022-01-07-year-in review.md
+id: 2022-01-07-year-in-review.md
 title: Milvus in 2021 - Year in Review
-author: Xiaofan, Luan
+author: Xiaofan Luan
 date: 2022-01-07
 desc: Learn what Milvus community has achieved and what's in store for year 2022.
 cover: assets.zilliz.com/1_ca3747f982.png
 tag: Events
+recommend: true
 ---
 
 2021 was an amazing year for Milvus as an open-source project. I want to take a moment to thank all the contributors and users of Milvus, as well as partners for contributing to such an outstanding year.
