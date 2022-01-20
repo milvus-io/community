@@ -5,7 +5,7 @@ author: Rife Wang
 date: 2020-08-11 22:20:27.855+00
 desc: A case study with UPYUN
 cover: assets.zilliz.com/header_c73631b1e7.png
-tag: Scenarios,Technology
+tag: Scenarios
 origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
 

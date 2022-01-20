@@ -5,7 +5,7 @@ author: milvus
 date: 2021-01-13 08:56:00.48+00
 desc: Explore the power of open-source in your next AI or machine learning project. Manage massive-scale vector data and power similarity search with Milvus. 
 cover: assets.zilliz.com/1_9a6be0b54f.jpg
-tag: Technology
+tag: Engineering
 origin: zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search
 ---
   

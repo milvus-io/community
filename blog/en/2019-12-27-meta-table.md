@@ -6,7 +6,7 @@ date: 2019-12-27
 desc: How to View Metadata
 
 cover:
-tag: Technology
+tag: Engineering
 ---
 
 # Milvus Metadata Management (2)

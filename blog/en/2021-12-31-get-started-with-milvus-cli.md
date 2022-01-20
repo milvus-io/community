@@ -5,7 +5,7 @@ author: ChenZhuanghong & Chenzhen
 date: 2021-12-31
 desc: This article introduces Milvus_CLI and helps you complete common tasks.
 cover: assets.zilliz.com/2_Tech_Get_Started_With_Milvus_CLI_a8f12fdc46.png
-tag: Tools
+tag: Engineering
 recommend: true
 ---
 

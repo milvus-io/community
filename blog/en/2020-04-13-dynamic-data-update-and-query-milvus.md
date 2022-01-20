@@ -5,7 +5,7 @@ author: milvus
 date: 2020-04-13 21:02:08.632+00
 desc: Vector search is now more intuitive and convenient
 cover: assets.zilliz.com/header_62d7b8c823.png
-tag: Technology
+tag: Engineering
 origin: zilliz.com/blog/dynamic-data-update-and-query-milvus
 ---
   

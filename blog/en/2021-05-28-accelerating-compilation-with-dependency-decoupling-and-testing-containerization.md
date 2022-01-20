@@ -5,7 +5,7 @@ author: Zhifeng Zhang
 date: 2021-05-28
 desc: Discover how zilliz to reduce compile times 2.5x using dependency decoupling and containerization techniques for large-scale AI and MLOps projects.  
 cover: assets.zilliz.com/cover_20e3cddb96.jpeg
-tag: Technology
+tag: Engineering
 origin: null
 ---
   

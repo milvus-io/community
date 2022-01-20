@@ -5,7 +5,7 @@ author: milvus
 date: 2020-08-22 20:27:23.266+00
 desc: In Milvus v0.7.0 we came up with a brand new design to make deletion more efficient and support more index types.
 cover: assets.zilliz.com/header_c9b45e546c.png
-tag: Technology
+tag: Engineering
 origin: zilliz.com/blog/deleting-data-in-milvus
 ---
   
