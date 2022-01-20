@@ -5,7 +5,7 @@ author: Zilliz
 date: 2021-11-08
 desc: How to modify the configuration of Milvus deployed on Kubernetes
 cover: assets.zilliz.com/7_Milvus_Hacktoberfest_2021_265b0e19a7.png
-tag: Technology
+tag: Engineering
 ---
 
 *Yufen Zong, a Zilliz Test Development Engineer, graduated from Huazhong University of Science and Technology with a master's degree in computer technology. She is currently engaged in the quality assurance of Milvus vector database, including but not limited to interface integration testing, SDK testing, Benchmark testing, etc. Yufen is an enthusiastic problem-shooter in the test and development of Milvus, and a huge fan of chaos engineering theory and fault drill practice.*

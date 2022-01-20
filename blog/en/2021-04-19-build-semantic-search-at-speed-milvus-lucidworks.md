@@ -5,7 +5,7 @@ author: Elizabeth Edmiston
 date: 2021-04-19 07:32:50.416+00
 desc: Learn more about using semantic machine learning methodologies to power more relevant search results across your organization.
 cover: assets.zilliz.com/lucidworks_4753c98727.png
-tag: Scenarios,Technology
+tag: Scenarios
 origin: zilliz.com/blog/build-semantic-search-at-speed-milvus-lucidworks
 ---
 

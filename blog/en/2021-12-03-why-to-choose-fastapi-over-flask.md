@@ -5,7 +5,7 @@ author: Yunmei
 date: 2021-12-03
 desc: choose the appropriate framework according to your application scenario
 cover: assets.zilliz.com/1_d5de035def.png
-tag: Technology
+tag: Engineering
 isPublish: false
 ---
 

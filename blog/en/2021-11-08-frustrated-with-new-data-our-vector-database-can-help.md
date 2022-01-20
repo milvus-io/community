@@ -5,7 +5,7 @@ author: Zilliz
 date: 2021-11-08
 desc: Design and Practice of AI-oriented General-purpose Vector Database Systems
 cover: assets.zilliz.com/9_Tech_Frustrated_with_New_Data_1aa1ffebac.png
-tag: Technology
+tag: Engineering
 ---
 
 # Frustrated with New Data? Our Vector Database can Help
