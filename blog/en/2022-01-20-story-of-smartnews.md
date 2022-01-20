@@ -32,9 +32,7 @@ At the beginning of 2021, the dynamic Ad algorithm team at SmartNews sent a requ
 
 The open-source vector database Milvus is adopted in the SmartNews Ad system to match and recommend dynamic ads from a 10-milllion-scale dataset to its users. By doing so, SmartNews can create a mapping relationship between two previously unmatchable datasets - user data and advertisement data. In the second quarter of 2021, Shu managed to deploy Milvus 1.0 on Kubernetes. Learn more about how to [deploy Milvus](https://milvus.io/docs).
 
-![img](https://assets.zilliz.com/image1_2a88ed162f.png)
-
-###### *Milvus documentation.*
+![img](https://assets.zilliz.com/image1_2a88ed162f.png "Milvus documentation.")
 
 After the successful deployment of Milvus 1.0, the first project to use Milvus was the advertisement recall project initiated by the Ad team at SmartNews. During the initial stage, the advertisement dataset was on a million scale. Meanwhile, the P99 latency was strictly controlled within less than 10 milliseconds.
 
