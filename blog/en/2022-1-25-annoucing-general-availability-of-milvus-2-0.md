@@ -6,6 +6,7 @@ date: 2022-01-25
 desc: An easy way to handle massive high-dimensional data 
 cover: assets.zilliz.com/Announcing_General_Availability_of_Milvus_2_0_1dfc59febc.png
 tag: News
+recommend: true
 ---
 
 *This article is edited by [Claire Yu](https://www.linkedin.com/in/wuchuanzi-yu-claire/).*
