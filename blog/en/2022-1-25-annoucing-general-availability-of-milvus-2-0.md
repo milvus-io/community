@@ -8,6 +8,8 @@ cover: assets.zilliz.com/Announcing_General_Availability_of_Milvus_2_0_1dfc59feb
 tag: News
 ---
 
+*This article is edited by [Claire Yu](https://www.linkedin.com/in/wuchuanzi-yu-claire/).*
+
 Today, six months after the first Release Candidate (RC) was made public, we are thrilled to announce that Milvus 2.0 is General Available (GA) and production ready! It's been a long journey, and we thank everyone – community contributors, users, and the LF AI & Data Foundation – along the way who helped us make this happen.
 
 The ability to handle billions of high dimensional data is a big deal for AI systems these days, and for good reasons:
