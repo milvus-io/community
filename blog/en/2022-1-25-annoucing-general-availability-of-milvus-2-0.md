@@ -11,19 +11,19 @@ recommend: true
 
 Dear Members and Friends of the Milvus Community:
 
-Today, six months after the first Release Candidate (RC) was made public, we are thrilled to announce that Milvus 2.0 is General Available (GA) and production ready! It's been a long journey, and we thank everyone – community contributors, users, and the LF AI & Data Foundation – along the way who helped us make this happen.
+Today, six months after the first Release Candidate (RC) was made public, we are thrilled to announce that Milvus 2.0 is [General Available (GA)](https://milvus.io/docs/v2.0.0/release_notes.md#v200) and production ready! It's been a long journey, and we thank everyone – community contributors, users, and the LF AI & Data Foundation – along the way who helped us make this happen.
 
 The ability to handle billions of high dimensional data is a big deal for AI systems these days, and for good reasons:
   1. Unstructured data occupy dominant volumes compared to traditional structured data.
   2. Data freshness has never been more important. Data scientists are eager for timely data solutions rather than the traditional T+1 compromise.
-  3. Cost and performance have become even more critical, and yet there still exists a big gap between current solutions and real world user cases.
+  3. Cost and performance have become even more critical, and yet there still exists a big gap between current solutions and real world use cases.
 Hence, Milvus 2.0. Milvus is a database that helps handle high dimensional data at scale. It is designed for cloud with the ability to run everywhere. If you've been following our RC releases, you know we've spent great effort on making Milvus more stable and easier to deploy and maintain. 
 
 ## Milvus 2.0 GA now offers
 
 **Entity deletion**
 
-As a database, Milvus now supports deleting entities by primary key and will support deleting entities by expression later on.
+As a database, Milvus now supports [deleting entities by primary key](https://milvus.io/docs/v2.0.0/delete_data.md) and will support deleting entities by expression later on.
 
 **Automatic load balance**
 
@@ -43,15 +43,15 @@ Under Milvus standalone mode, we can remove etcd/MinIO dependency with just a fe
 
 **Multi language SDKs**
 
-In addition to PyMilvus, Node.js, Java and Go SDKs are now ready-to-use.
+In addition to [PyMilvus](https://github.com/milvus-io/pymilvus), [Node.js](https://github.com/milvus-io/milvus-sdk-node), [Java](https://github.com/milvus-io/milvus-sdk-java) and [Go](https://github.com/milvus-io/milvus-sdk-go) SDKs are now ready-to-use.
 
 **Milvus K8s Operator**
 
-Milvus Operator provides an easy solution to deploy and manage a full Milvus service stack, including both Milvus components and its relevant dependencies (e.g. etcd, Pulsar and MinIO), to the target [Kubernetes](https://kubernetes.io/) clusters in a scalable and highly available manner.
+[Milvus Operator](https://milvus.io/docs/v2.0.0/install_cluster-milvusoperator.md) provides an easy solution to deploy and manage a full Milvus service stack, including both Milvus components and its relevant dependencies (e.g. etcd, Pulsar and MinIO), to the target [Kubernetes](https://kubernetes.io/) clusters in a scalable and highly available manner.
 
 **Tools that help to manage Milvus**
 
-We have Zilliz to thank for the fantastic contribution of management tools. We now have Attu, which allows us to interact with Milvus via an intuitive GUI, and Milvus_CLI, a command-line tool for managing Milvus.
+We have [Zilliz](https://zilliz.com/) to thank for the fantastic contribution of management tools. We now have [Attu](https://milvus.io/docs/v2.0.0/attu.md), which allows us to interact with Milvus via an intuitive GUI, and [Milvus_CLI](https://milvus.io/docs/v2.0.0/cli_overview.md), a command-line tool for managing Milvus.
 
 Thanks to all 212 contributors, the community finished 6718 commits during the last 6 months, and tons of stability and performance issues have been closed. We'll open our stability and performance benchmark report soon after the 2.0 GA release. 
 
