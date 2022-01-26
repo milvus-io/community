@@ -14,8 +14,8 @@ Banks and other financial institutions have long been early adopters of open-sou
 
 Technology is what gives the financial services industry a competitive edge, and artificial intelligence (AI) is rapidly becoming the standard approach to extracting valuable insights from big data and analyzing activity in real-time across the banking, asset management, and insurance sectors. By using AI algorithms to convert unstructured data such as images, audio, or video to vectors, a machine-readable numeric data format, it is possible to run similarity searches on massive million, billion, or even trillion vector datasets. Vector data is stored in high-dimensional space, and similar vectors are found using similarity search, which requires a dedicated infrastructure called a vector database.
 
-![01 (1).jpg](https://assets.zilliz.com/01_1_cb99f15886.jpg)
-###### *Development of open source big data technologies.*
+![01 (1).jpg](https://assets.zilliz.com/01_1_cb99f15886.jpg "Development of open source big data technologies.")
+
 
 [Milvus](https://github.com/milvus-io/milvus) is an open-source vector database built specifically for managing vector data, which means engineers and data scientists can focus on building AI applications or conducting analysis—instead of the underlying data infrastructure. The platform was built around AI application development workflows and is optimized to streamline machine learning operations (MLOps). For more information about Milvus and its underlying technology, check out our [blog](https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View).
 
@@ -33,7 +33,7 @@ Banking chatbots can improve customer experiences by helping consumers select in
 
 Learn more in our demo that covers building [chatbots with Milvus](https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus).
 
-![02 (1).jpg](https://assets.zilliz.com/02_1_8c298c45e5.jpg)
+![02 (1).jpg](https://assets.zilliz.com/02_1_8c298c45e5.jpg "Chatbot.")
 
  <br/>
 

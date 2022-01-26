@@ -36,9 +36,8 @@ For decades, computer scientists have developed indexing algorithms tailored for
 
 Using neural networks (e.g. [CNN](https://en.wikipedia.org/wiki/Convolutional_neural_network), [RNN](https://en.wikipedia.org/wiki/Recurrent_neural_network), and [BERT](https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270)) unstructured data can be converted into feature vectors (a.k.a., embeddings), which are a string of integers or floats. This numerical data format is far more readily processed and analyzed by machines. Applications spanning reverse image search, video search, natural language processing (NLP) and more can be built by embedding unstructured data into feature vectors, then calculating similarity between vectors using measures like Euclidean distance or cosine similarity.
 
-![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_2.jpeg](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_2_db8c16aea4.jpeg)
+![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_2.jpeg](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_2_db8c16aea4.jpeg "AI algorithms convert unstructured data to vectors.")
 
-###### _AI algorithms convert unstructured data to vectors_
 
 Computing vector similarity is a relatively simple process that relies on established algorithms. However, unstructured datasets, even after being converted into feature vectors, are typically several orders of magnitude larger than traditional structured and semi-structured datasets. Vector similarity search is complicated by the sheer storage space and compute power required to efficiently and accurately query massive-scale unstructured data.
 However, if some degree of accuracy can be sacrificed, there are various approximate nearest neighbor (ANN) search algorithms that can drastically improve query efficiency for massive datasets with high dimensionality. These ANN algorithms decrease storage requirements and computation load by clustering similar vectors together, resulting in faster vector search. Commonly used algorithms include tree-based, graph-based, and combined ANNs.
@@ -58,9 +57,8 @@ A common way to build an unstructured data analytics system is to pair algorithm
 
 Milvus attempts to overcome all of these limitations. The system enhances flexibility by offering support for a variety of application interfaces (including SDKs in Python, Java, Go, C++ and RESTful APIs), multiple vector index types (e.g., quantization-based indexes and graph-based indexes), and advanced query processing. Milvus handles dynamic vector data using a log-structured merge-tree (LSM tree), keeping data insertions and deletions efficient and searches humming along in real time. Milvus also provides optimizations for heterogeneous computing architectures on modern CPUs and GPUs, allowing developers to adjust systems for specific scenarios, datasets, and application environments.
 
-![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_3.png](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_3_380e31d32c.png)
+![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_3.png](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_3_380e31d32c.png "An overview of Milvus’ architecture.")
 
-###### _An overview of Milvus’ architecture._
 
 Using various ANN indexing techniques, Milvus is able to achieve a 99% top-5 recall rate. The system is also capable of loading 1+ million data entries per minute. This results in query time of less than one second when running a reverse image search on 1 billion images. As a cloud native application that can operate as a distributed system deployed across multiple nodes, Milvus can easily and reliably achieve similar performance on datasets that contain 10, or even 100, billion images. Additionally, the system is not limited to image data, with applications spanning computer vision, conversational AI, recommendation systems, new drug discovery, and more.
 
@@ -72,9 +70,8 @@ As outlined above, a capable vector data management platform like Milvus paired 
 
 Major search engines like Google already give users the option to search by image. Additionally, e-commerce platforms have realized the benefits this functionality offers online shoppers, with Amazon incorporating image search into its smartphone applications.
 
-![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_4.png](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_4_7884aabcd8.png)
+![Blog_Thanks to AI, Anyone Can Build a Search Engine for 1+ Billion Images_4.png](https://assets.zilliz.com/Blog_Thanks_to_AI_Anyone_Can_Build_a_Search_Engine_for_1_Billion_Images_4_7884aabcd8.png "Google’s “search by image” feature.")
 
-###### _Google’s “search by image” feature._
 
 Open-source software like Milvus makes it possible for any business to create their own reverse image search system, lowering the barriers to entry for this increasingly in-demand feature. Developers can use pre-trained AI models to convert their own image datasets into vectors, and then leverage Milvus to enable searching for similar products by image.
 

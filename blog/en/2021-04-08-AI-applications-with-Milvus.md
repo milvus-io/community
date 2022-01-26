@@ -10,7 +10,7 @@ origin: zilliz.com/blog/AI-applications-with-Milvus
 ---
   
 # How to Make 4 Popular AI Applications with Milvus
-![blog cover.png](https://assets.zilliz.com/blog_cover_4a9807b9e0.png)
+![blog cover.png](https://assets.zilliz.com/blog_cover_4a9807b9e0.png "Cover image.")
 
 [Milvus](https://milvus.io/) is an open-source vector database. It supports adding, deleting, updating, and near real-time search of massive vector datasets created by extracting feature vectors from unstructured data using AI models. With a comprehensive set of intuitive APIs, and support for multiple widely adopted index libraries (e.g., Faiss, NMSLIB, and Annoy), Milvus accelerates machine learning application development and machine learning operations (MLOps). With Milvus, you can rapidly develop a minimum viable product (MVP) while keeping costs at lower limits.
 
@@ -37,8 +37,7 @@ Milvus can be used to build chatbots that use natural language processing to sim
 
 👉Source code：[zilliz-bootcamp/intelligent_question_answering_v2](https://github.com/zilliz-bootcamp/intelligent_question_answering_v2)
 
-![1.png](https://assets.zilliz.com/1_c301a9e4bd.png)
-###### *AI-powered chatbot built with Milvus and BERT.*
+![1.png](https://assets.zilliz.com/1_c301a9e4bd.png "AI-powered chatbot built with Milvus and BERT.")
 
 #### How to use
 
@@ -72,8 +71,8 @@ Reverse image search is transforming e-commerce through personalized product rec
 
 👉Source code：[zilliz-bootcamp/image_search](https://github.com/zilliz-bootcamp/image_search)
 
-![2.jpeg](https://assets.zilliz.com/2_09000e2e2e.jpeg)
-###### *Reverse image search system built with Milvus and VGG.*
+![2.jpeg](https://assets.zilliz.com/2_09000e2e2e.jpeg "Reverse image search system built with Milvus and VGG.")
+
 
 #### How to use
 1. Upload a zipped image dataset comprised of .jpg images only (other image file types are not accepted). Alternatively, a [sample dataset](https://zilliz.com/solutions/image-search) is available for download.
@@ -101,8 +100,7 @@ Images are converted into 512-dimensional feature vectors using the VGG model, t
 Speech, music, sound effects, and other types of audio search makes it possible to quickly query massive volumes of audio data and surface similar sounds. Applications include identifying similar sound effects, minimizing IP infringement, and more. To demonstrate this application scenario, Zilliz built a highly efficient audio similarity search system by combining Milvus with [PANNs](https://arxiv.org/abs/1912.10211)—a large-scale pretrained audio neural networks built for audio pattern recognition.
 
 👉Source code：[zilliz-bootcamp/audio_search](https://github.com/zilliz-bootcamp/audio_search)
-![3.png](https://assets.zilliz.com/3_419bac3dd2.png)
-###### *Audio search system built with Milvus and PANNs.*
+![3.png](https://assets.zilliz.com/3_419bac3dd2.png "Audio search system built with Milvus and PANNs.")
 
 #### How to use
 1. Upload a zipped audio dataset comprised of .wav files only (other audio file types are not accepted). Alternatively, a [sample dataset](https://zilliz.com/solutions/audio-search) is available for download.
@@ -130,8 +128,8 @@ Video object detection has applications in computer vision, image retrieval, aut
 
 👉Source code: [zilliz-bootcamp/video_analysis](https://github.com/zilliz-bootcamp/video_analysis)
 
-![4.png](https://assets.zilliz.com/4_54b4ceb2ad.png)
-###### *Video object detection system with Milvus.*
+![4.png](https://assets.zilliz.com/4_54b4ceb2ad.png "Video object detection system with Milvus.")
+
 
 #### How to use
 1. Upload a zipped image dataset comprised of .jpg files only (other image file types are not accepted). Ensure that each image file is named by the object it depicts. Alternatively, a [sample dataset](https://zilliz.com/solutions/video-obj-analysis) is available for download. 

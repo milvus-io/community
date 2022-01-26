@@ -13,9 +13,8 @@ origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 
 [Artificial intelligence (AI)](https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#a291) has the potential to change the way even the most obscure things are done. For example, every year (before COVID, anyway) over 73,000 people congregate to compete in the Hong Kong Marathon. In order to properly sense and record finishing times for all race participants, organizers distribute 73,000 RFID chip timers to attach to each runner. Chip timing is a complex undertaking with obvious downsides. Materials (chips and electronic reading devices) must be purchased or rented from timing companies, and a registration area must be staffed for runners to collect chips on race day. Additionally, if sensors are installed only at the start and finish lines, it’s possible for unscrupulous runners to cut the course.
 
-![blog-1.jpeg](https://assets.zilliz.com/blog_1_e55c133e05.jpeg)
+![blog-1.jpeg](https://assets.zilliz.com/blog_1_e55c133e05.jpeg "Timing marathon runners is a logistical challenge few think about.")
 
-###### Timing marathon runners is a logistical challenge few think about.
 
 Now imagine a [video AI](https://cloud.google.com/video-intelligence) application capable of automatically identifying individual runners from footage captured at the finish line using a single photo. Rather than attach timing chips to each participant, runners simply upload a photo of themselves via an app after they cross the finish line. Instantly, a personalized highlight reel, race stats, and other relevant information is provided. Cameras installed at various points throughout the race can capture additional footage of participants and ensure each runner traverses the entire course. Which solution seems easier and more cost-effective to implement?
 

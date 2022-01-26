@@ -22,7 +22,7 @@ First of all, some basic concepts of Milvus:
 
 - Table: Table is a data set of vectors, with each vector having a unique ID. Each vector and its ID represent a row of the table. All vectors in a table must have the same dimensions. Below is an example of a table with 10-dimensional vectors:
 
-![table](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png)
+![table](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png "Table.")
 
 - Index: Building index is the process of vector clustering by certain algorithm, which requires additional disk space. Some index types require less space since they simplify and compress vectors, while some other types require more space than raw vectors.
 
@@ -36,7 +36,7 @@ Let’s take a look at how vectors are inserted into Milvus.
 
 As each vector takes 2 KB space, the minimum storage space for 100 million vectors is about 200 GB, which makes one-time insertion of all these vectors unrealistic. There need to be multiple data files instead of one. Insertion performance is one of the key performance indicators. Milvus supports one-time insertion of hundreds or even tens of thousands of vectors. For example, one-time insertion of 30 thousand 512-dimensional vectors generally takes only 1 second.
 
-![insert](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png)
+![insert](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png "Insert.")
 
 Not every vector insertion is loaded into disk. Milvus reserves a mutable buffer in the CPU memory for every table that is created, where inserted data can be quickly written to. And as the data in the mutable buffer reaches a certain size, this space will be labeled as immutable. In the mean time, a new mutable buffer will be reserved. Data in immutable buffer are written to disk regularly and corresponding CPU memory is freed up. The regular writing to disk mechanism is similar to the one used in Elasticsearch, which writes buffered data to disk every 1 second. In addition, users that are familiar with LevelDB/RocksDB can see some resemblance to MemTable here.
 
@@ -56,11 +56,11 @@ In consideration to incremental computation scenarios, where vectors are inserte
 
 This is how queried files look before the merge:
 
-![rawdata1](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png)
+![rawdata1](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png "Raw data 1.")
 
 Queried files after the merge:
 
-![rawdata2](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png)
+![rawdata2](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png "Raw data 2.")
 
 **(3) Index File**
 
@@ -68,7 +68,7 @@ The search based on Raw Data File is brute-force search which compares the dista
 
 So what are the differences between Raw Data Files and Index Files? To put it simple, Raw Data File records every single vector together with their unique ID while Index File records vector clustering results such as index type, cluster centroids, and vectors in each cluster.
 
-![indexfile](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png)
+![indexfile](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png "Index file.")
 
 Generally speaking, Index File contains more information than Raw Data File, yet the file sizes are much smaller as vectors are simplified and quantized during the index building process (for certain index types).
 
@@ -76,19 +76,19 @@ Newly created tables are by default searched by brute-computation. Once the inde
 
 Milvus automatically build index for files that reach 1 GB:
 
-![buildindex](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png)
+![buildindex](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png "Build index.")
 
 Index building completed:
 
-![indexcomplete](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png)
+![indexcomplete](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png "Build index complete.")
 
 Index will not be automatically built for raw data files that do not reach 1 GB, which may slow down the search speed. To avoid this situation, you need to manually force build index for this table.
 
-![forcebuild](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png)
+![forcebuild](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png "Force build.")
 
 After index is force built for the file, the search performance is greatly enhanced.
 
-![indexfinal](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png)
+![indexfinal](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png "Final index.")
 
 **(4) Meta Data**
 
@@ -100,7 +100,7 @@ As demonstrated in below flowchart, ‘Tables’ contains meta data information 
 
 And ‘TableFiles’ contains name of the table the file belongs to (table_id), index type of the file (engine_type), file name (file_id), file type (file_type), file size (file_size), number of rows (row_count) and file creation date (created_on).
 
-![metadata](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png)
+![metadata](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png "Metadata.")
 
 With these meta data, various operations can be executed. The following are some examples:
 
@@ -112,7 +112,7 @@ With these meta data, various operations can be executed. The following are some
 
 Below chart demonstrates the vector search process in both CPU and GPU by querying files (raw data files and index files) which are copied and saved in disk, CPU memory and GPU memory for the topk most similar vectors.
 
-![topkresult](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png)
+![topkresult](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png "TopK results.")
 
 Query scheduling algorithm significantly improves system performance. The basic design philosophy is to achieve the best search performance through maximum utilization of hardware resources. Below is just a brief description of query scheduler and there will be a dedicated article about this topic in the future.
 
@@ -126,7 +126,7 @@ When the search starts, 3 index files are loaded into CPU memory for query. The 
 
 Query scheduler mainly handles 2 sets of task queues, one queue is about data loading and another is about search execution.
 
-![queryschedule](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png)
+![queryschedule](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png "Query schedule.")
 
 **(6) Result Reducer**
 
@@ -134,7 +134,7 @@ There are 2 key parameters related to vector search: one is ’n’ which means 
 
 Below example shows how result sets are merged and reduced for the vector search against a table with 4 index files (n=2, k=3). Note that each result set has 2 columns. The left column represents the vector id and the right column represents the Euclidean distance.
 
-![result](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png)
+![result](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png "Result.")
 
 **(7) Future Optimization**
 

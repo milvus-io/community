@@ -25,7 +25,7 @@ This article sets out to briefly describe the minimal workflow of a recommender 
 
 Before going deep into the project itself, let's first take a look at the basic workflow of a recommender system. A recommender system can return personalized results according to unique user interest and needs. To make such personalized recommendations, the system goes through two stages, candidate generation and ranking. 
 
-![2.png](https://assets.zilliz.com/2_29e27eb9b1.png)
+![2.png](https://assets.zilliz.com/2_29e27eb9b1.png "Stages of a recommender system.")
 
 
 The first stage is candidate generation, which returns the most relevant or similar data, such as a product or a video that matches the user profile. During candidate generation, the system compares the user trait with the data stored in its database, and retrieves those similar ones. Then during ranking, the system scores and reorders the retrieved data. Finally, those results on the top of the list are shown to users. 
@@ -34,7 +34,7 @@ The first stage is candidate generation, which returns the most relevant or simi
 
 In our case of a product recommender system, it first compares the user profile with the characteristics of the products in inventory to filter out a list of products catering to the user's needs. Then the system scores the products based on their similarity to user profile, ranks them, and finally returns the top 10 products to the user.
 
-![3.png](https://assets.zilliz.com/3_5850ba2c46.png)
+![3.png](https://assets.zilliz.com/3_5850ba2c46.png "Recommender system workflow.")
 
 
 
@@ -56,7 +56,7 @@ Specifically, MIND adopts a [multi-interest network](https://arxiv.org/pdf/2005.
 
 The following diagram illustrates the network structure of MIND. 
 
-![4.png](https://assets.zilliz.com/4_9e6f284ea2.png)
+![4.png](https://assets.zilliz.com/4_9e6f284ea2.png "MIND network structure.")
 
 
 
@@ -77,7 +77,7 @@ When all data are converted into vectors, an extra label-aware attention layer i
 
 [PaddleRec](https://github.com/PaddlePaddle/PaddleRec/blob/release/2.2.0/README_EN.md) is a large-scale search model library for recommendation. It is part of the Baidu [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) ecosystem. PaddleRec aims to provide developers with an integrated solution to build a recommendation system in an easy and rapid way.
 
-![5.png](https://assets.zilliz.com/5_35f7526ea7.png)
+![5.png](https://assets.zilliz.com/5_35f7526ea7.png "PaddleRec.")
 
 
 As mentioned in the opening paragraph, engineers developing recommender systems often have to face the challenges of poor usability and complicated deployment of the system. However, PaddleRec can help developers in the following aspects:
@@ -328,9 +328,9 @@ curl -X 'POST' \
 
 If you run the candidate generation service on your local server, you can also access the above interfaces at `127.0.0.1:8000/docs`. You can play around by clicking on the four interfaces and entering the value for the parameters. Then click "Try it out" to get the recommendation result. 
 
-![6.png](https://assets.zilliz.com/6_43e41086f8.png)
+![6.png](https://assets.zilliz.com/6_43e41086f8.png "FastAPI.")
 
-![7.png](https://assets.zilliz.com/7_f016a3221d.png)
+![7.png](https://assets.zilliz.com/7_f016a3221d.png "Demo.")
 
 
 ## Recap

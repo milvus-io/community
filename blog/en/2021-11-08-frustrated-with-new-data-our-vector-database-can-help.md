@@ -33,10 +33,10 @@ According to IDC statistics, more than 40,000 exabytes of new data was generated
 Fortunately, we are experiencing a concurrent, rapid evolution in unstructured data and AI, with AI allowing us to better understand the data through various types of neural networks, as shown in Figure 1.
 
 
-![newdata1.jpeg](https://assets.zilliz.com/newdata1_d5c34497d0.jpeg)
+![newdata1.jpeg](https://assets.zilliz.com/newdata1_d5c34497d0.jpeg "Figure 1: Embedding process.")
 
 
-Figure 1: Embedding process
+
 
 Embedding technology has quickly gained popularity after the debut of Word2vec, with the idea of "embed everything" reaching all sectors of machine learning. This leads to the emergence of two major data layers: the raw data layer and the vector data layer. The raw data layer is comprised of unstructured data and certain types of structured data; the vector layer is the collection of easily analyzable embeddings that originates from the raw layer passing through machine learning models. 
 
@@ -48,19 +48,15 @@ When compared with raw data, vectorized data features the following advantages:
 - Arithmetic can also be performed across embedding vectors. Figure 2 shows an example of cross-modal semantic approximate matching - the pictures shown in the figure are the result of matching words embeddings with image embeddings. 
 
 
-![newdata2.png](https://assets.zilliz.com/newdata2_14e0554305.png)
+![newdata2.png](https://assets.zilliz.com/newdata2_14e0554305.png "Figure 2: Visualizing semantic embedding based on a cross-modal neural language model.")
 
-
-Figure 2:   Visualizing semantic embedding based on a cross-modal neural language model
 
 
 
 As shown in Figure 3, combining image and word semantics can be done with simple vector addition and subtraction across their corresponding embeddings.
 
-![newdata3.png](https://assets.zilliz.com/newdata3_3c71fc56b9.png)
+![newdata3.png](https://assets.zilliz.com/newdata3_3c71fc56b9.png "Figure 3: Unified visualization semantic embedding based on cross-modal neural language model.")
 
-
-Figure 3: Unified visualization semantic embedding based on cross-modal neural language model
 
 Apart from the above features, these operators support more complicated query statements in practical scenarios. Content recommendation is a well-known example. Generally, the system embeds both the content and the users' viewing preferences. Next, the system matches the embedded user's preferences with the most similar embedded content via semantic similarity analysis, resulting in new content that is similar to users' preferences. This vector data layer isn't just limited to recommender systems, use cases include e-commerce, malware analysis, data analysis, biometric verification, chemical formula analysis, finance, insurance, etc.
 
@@ -100,17 +96,14 @@ The volume of vector data mushrooms with the exponential growth of data collecti
 
 Milvus 2.0 follows the design principles of "log as data", "unified batch and stream processing", "stateless", and "micro-services". Figure 4 depicts the overall architecture of Milvus 2.0.
 
-![newdata4.png](https://assets.zilliz.com/newdata4_b7f3ab6969.png)
-
-
-Figure 4: Overall architecture of Milvus 2.0
+![newdata4.png](https://assets.zilliz.com/newdata4_b7f3ab6969.png "Figure 4: Overall architecture of Milvus 2.0.")
 
 
 
 **Log as data**: Milvus 2.0 does not maintain any physical tables. Instead, it ensures data reliability via log persistence and log snapshots. The log broker (the system's backbone) stores logs and decouples components and services through the log publication-subscription (pub-sub) mechanism. As shown in Figure 5, the log broker is comprised of "log sequence" and "log subscriber". The log sequence records all operations that change the state of a collection (equivalent to a table in a relational database ); log subscriber subscribes to the log sequence to update its local data and provide services in the form of read-only copies. The pub-sub mechanism also makes room for system extendability in terms of change data capture (CDC) and globally-distributed deployment.
 
-![newdata5.png](https://assets.zilliz.com/newdata5_853dd38bc3.png)
-Figure 5: A simplified model for log storage
+![newdata5.png](https://assets.zilliz.com/newdata5_853dd38bc3.png "Figure 5: A simplified model for log storage.")
+
 
 **Unified batch and stream processing**: Log streaming allows Milvus to update data in real time, thereby ensuring real-time deliverability. Furthermore, by transforming data batches into log snapshots and building index on snapshots, Milvus is able to achieve higher query efficiency. During a query, Milvus merges the query results from both incremental data and historical data to guarantee the integrality of the data returned. Such design better balances real-time performance and efficiency, easing the maintenance burden of both online and offline systems compared to that of the traditional Lambda architecture.
 

@@ -47,7 +47,7 @@ pip install milvus-cli
 
 To install Milvus_CLI offline, [download](https://github.com/milvus-io/milvus_cli/releases) the latest tarball from the release page first.
 
-![1.png](https://assets.zilliz.com/1_af0e832119.png)
+![1.png](https://assets.zilliz.com/1_af0e832119.png "Download tarball.")
 
 After the tarball is downloaded, run the following command to install Milvus_CLI.
 
@@ -57,7 +57,7 @@ pip install milvus_cli-<version>.tar.gz
 
 After Milvus_CLI is installed, run `milvus_cli`. The `milvus_cli >` prompt that appears indicates that the command line is ready.
 
-![2.png](https://assets.zilliz.com/2_b50f5d2a5a.png)
+![2.png](https://assets.zilliz.com/2_b50f5d2a5a.png "The command line is ready.")
 
 If you're using a Mac with the M1 chip or a PC without a Python environment, you can choose to use a portable application instead. To accomplish this, [download](https://github.com/milvus-io/milvus_cli/releases) a file on the release page corresponding to your OS, run `chmod +x` on the file to make it executable, and run `./` on the file to run it.
 
@@ -78,7 +78,7 @@ Before connecting to Milvus, ensure that Milvus is installed on your server. See
 
 If Milvus is installed on your localhost with the default port, run `connect`.
 
-![3.png](https://assets.zilliz.com/3_f950d3739a.png)
+![3.png](https://assets.zilliz.com/3_f950d3739a.png "Connect.")
 
 Otherwise, run the following command with the IP address of your Milvus server. The following example uses `172.16.20.3` as the IP address and `19530` as the port number.
 
@@ -86,7 +86,7 @@ Otherwise, run the following command with the IP address of your Milvus server. 
 connect -h 172.16.20.3
 ```
 
-![4.png](https://assets.zilliz.com/4_9ff2db9855.png)
+![4.png](https://assets.zilliz.com/4_9ff2db9855.png "Connect.")
 
 ### Create a collection
 
@@ -94,7 +94,7 @@ This section introduces how to create a collection.
 
 A collection consists of entities and is similar to a table in RDBMS. See [Glossary](https://milvus.io/docs/v2.0.0/glossary.md) for more information.
 
-![5.png](https://assets.zilliz.com/5_95a88c1cbf.png)
+![5.png](https://assets.zilliz.com/5_95a88c1cbf.png "Create a collection.")
 
 #### Example
 
@@ -112,7 +112,7 @@ Run the following command to list all collections in this Milvus instance.
 list collections
 ```
 
-![6.png](https://assets.zilliz.com/6_1331f4c8bc.png)
+![6.png](https://assets.zilliz.com/6_1331f4c8bc.png "List collections.")
 
 Run the following command to check the details of the `car` collection.
 
@@ -120,7 +120,7 @@ Run the following command to check the details of the `car` collection.
 describe collection -c car 
 ```
 
-![7.png](https://assets.zilliz.com/7_1d70beee54.png)
+![7.png](https://assets.zilliz.com/7_1d70beee54.png "Details of the car collection.")
 
 ### Calculate the distance between two vectors
 
@@ -130,11 +130,11 @@ Run the following command to import data into the `car` collection.
 import -c car 'https://raw.githubusercontent.com/zilliztech/milvus_cli/main/examples/import_csv/vectors.csv'
 ```
 
-![8.png](https://assets.zilliz.com/8_7609a4359a.png)
+![8.png](https://assets.zilliz.com/8_7609a4359a.png "Calculate the distance between two vectors.")
 
 Run `query` and enter `car` as the collection name and `id>0` as the query expression when prompted. The IDs of the entities that meet the criteria are returned as shown in the following figure.
 
-![9.png](https://assets.zilliz.com/9_f0755589f6.png)
+![9.png](https://assets.zilliz.com/9_f0755589f6.png "Results.")
 
 
 Run `calc` and enter appropriate values when prompted to calculate the distances between vector arrays.
@@ -147,13 +147,13 @@ Run the following command to delete the `car` collection.
 delete collection -c car
 ```
 
-![10.png](https://assets.zilliz.com/10_16b2b01935.png)
+![10.png](https://assets.zilliz.com/10_16b2b01935.png "Delete a collection.")
 
 ## More
 
 Milvus_CLI is not limited to the preceding functions. Run `help` to view all commands that Milvus_CLI includes and the respective descriptions. Run `<command> --help` to view the details of a specified command.
 
-![11.png](https://assets.zilliz.com/11_5f31ccb1e8.png)
+![11.png](https://assets.zilliz.com/11_5f31ccb1e8.png "Details of commands.")
 
 **See also:**
 

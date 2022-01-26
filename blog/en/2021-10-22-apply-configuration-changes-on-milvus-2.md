@@ -36,17 +36,17 @@ First, you will need to [download](https://github.com/milvus-io/milvus/blob/mast
 
 Then you can change the configurations in the file. For instance, you can change the log format as `.json`. 
 
-![1.1.png](https://assets.zilliz.com/1_1_ee4a16a3ee.png)
+![1.1.png](https://assets.zilliz.com/1_1_ee4a16a3ee.png "Change the log format.")
 
 
 
 Once **milvus.yaml** file is modified, you will also need to [download](https://github.com/milvus-io/milvus/blob/master/deployments/docker/standalone/docker-compose.yml) and modify in **docker-compose.yaml** file for standalone by mapping the local path to milvus.yaml onto the corresponding docker container path to configuration file `/milvus/configs/milvus.yaml` under the `volumes` section.
 
-![1.2.png](https://assets.zilliz.com/1_2_5e7c73708c.png)
+![1.2.png](https://assets.zilliz.com/1_2_5e7c73708c.png "Download and modify the file.")
 
 Lastly, start Milvus standalone using `docker-compose up -d` and check if the modifications are successful. For instance, run `docker logs` to check the log format.
 
-![1.3.png](https://assets.zilliz.com/1_3_a0406df3ab.png)
+![1.3.png](https://assets.zilliz.com/1_3_a0406df3ab.png "Check the log format.")
 
 
 
@@ -54,16 +54,16 @@ Lastly, start Milvus standalone using `docker-compose up -d` and check if the mo
 
 First, [download](https://github.com/milvus-io/milvus/blob/master/configs/milvus.yaml) and modify the **milvus.yaml** file to suit your needs.
 
-![1.4.png](https://assets.zilliz.com/1_4_758b182846.png)
+![1.4.png](https://assets.zilliz.com/1_4_758b182846.png "Download and modify the file.")
 
 
 Then you will need to [download](https://github.com/milvus-io/milvus/blob/master/deployments/docker/cluster/docker-compose.yml) and modify the cluster **docker-compose.yml** file by mapping the local path to **milvus.yaml** onto the corresponding path to configuration files in all components, i.e. root coord, data coord, data node, query coord, query node, index coord, index node, and proxy.
 
-![1.5.png](https://assets.zilliz.com/1_5_80e15811b8.png)
+![1.5.png](https://assets.zilliz.com/1_5_80e15811b8.png "Download and modify the file.")
 
 
-![1.6.png](https://assets.zilliz.com/1_6_b2f3e4e47f.png)
-![1.7.png](https://assets.zilliz.com/1_7_4d1eb5e1e5.png)
+![1.6.png](https://assets.zilliz.com/1_6_b2f3e4e47f.png "Download and modify the file.")
+![1.7.png](https://assets.zilliz.com/1_7_4d1eb5e1e5.png "Download and modify the file.")
 
 
 Finally, you can start Milvus cluster using `docker-compose up -d` and check if the modifications are successful.
@@ -73,7 +73,7 @@ Finally, you can start Milvus cluster using `docker-compose up -d` and check if 
 First, [download](https://github.com/milvus-io/milvus/blob/master/configs/milvus.yaml) the **milvus.yaml** file, and change the `rootPath` section as the directory where you expect to store the log files in Docker container. 
 
 
-![1.8.png](https://assets.zilliz.com/1_8_e3bdc4843f.png)
+![1.8.png](https://assets.zilliz.com/1_8_e3bdc4843f.png "Change the rootPath.")
 
 
 
@@ -84,6 +84,6 @@ For standalone, you need to map the local path to **milvus.yaml** onto the corre
 
 For cluster, you will need to map both paths in every component.
 
-![1.9.png](https://assets.zilliz.com/1_9_22d8929d92.png)
+![1.9.png](https://assets.zilliz.com/1_9_22d8929d92.png "Map paths in every component.")
 
 Lastly, start Milvus standalone or cluster using `docker-compose up -d` and check the log files to see if the modification is successful.

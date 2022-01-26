@@ -30,11 +30,11 @@ The answer is that an image is a collection of pixels.
 
 For example, the part in the red box on this image is virtually a series of pixels.
 
-![1-what-is-an-image.png](https://assets.zilliz.com/1_what_is_an_image_021e0280cc.png)
+![1-what-is-an-image.png](https://assets.zilliz.com/1_what_is_an_image_021e0280cc.png "A series of pixels.")
 
 Suppose the part in the red box is an image, then each independent small square in the image is a pixel, the basic information unit. Then, the size of the image is 11 x 11 px.
 
-![2-what-is-an-image.png](https://assets.zilliz.com/2_what_is_an_image_602a91b4a0.png)
+![2-what-is-an-image.png](https://assets.zilliz.com/2_what_is_an_image_602a91b4a0.png "What is an image.")
 
 ### Mathematical representation of images
 
@@ -58,7 +58,7 @@ The three primary colors (red, green, and blue) can be mixed to produce any colo
 
 Taking a 4 \* 4 RGB image as an example:
 
-![3-4-x-4-rgb-image.png](https://assets.zilliz.com/3_4_x_4_rgb_image_136cec77ce.png)
+![3-4-x-4-rgb-image.png](https://assets.zilliz.com/3_4_x_4_rgb_image_136cec77ce.png "A 4 \* 4 RGB image.")
 
 The essence of image processing is to process these pixel matrices.
 
@@ -82,7 +82,7 @@ More specifically, we need the following features:
 
 The first-generation search-by-image system uses Perceptual hash or pHash algorithm for feature extraction. What are the basics of this algorithm?
 
-![4-first-generation-image-search.png](https://assets.zilliz.com/4_first_generation_image_search_ffd7088158.png)
+![4-first-generation-image-search.png](https://assets.zilliz.com/4_first_generation_image_search_ffd7088158.png "First-generation search-by-image system.")
 
 As shown in the figure above, the pHash algorithm performs a series of transformations on the image to get the hash value. During the transformation process, the algorithm continuously abstract images, thereby pushing the results of similar images closer to each other.
 
