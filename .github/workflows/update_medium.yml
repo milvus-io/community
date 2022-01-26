@@ -43,6 +43,7 @@ jobs:
         if: ${{ steps.added_files.outputs.added }}
         env:
           MEDIUM_ID: ${{secrets.MEDIUM_ID}}
+          MEDIUM_PUBLICATION_ID: ${{secrets.MEDIUM_PUBLICATION_ID}}
           MEDIUM_TOKEN: ${{secrets.MEDIUM_TOKEN}}
           FILES: ${{ steps.added_files.outputs.added }}
         run: |
