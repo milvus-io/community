@@ -4,7 +4,7 @@ title: Announcing General Availability of Milvus 2.0
 author: Xiaofan Luan
 date: 2022-01-25
 desc: An easy way to handle massive high-dimensional data 
-cover: assets.zilliz.com/Announcing_General_Availability_of_Milvus_2_0_1dfc59febc.png
+cover: assets.zilliz.com/Announcing_General_Availability_of_Milvus_3_a23495f5e0.png
 tag: News
 recommend: true
 ---
