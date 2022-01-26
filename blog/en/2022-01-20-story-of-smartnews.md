@@ -66,7 +66,7 @@ Yusup started from this request and helped the whole SmartNews team understand t
 
 Currently, the AI infrastructure team is taking the lead to deploy Milvus 2.0 and migrate all data gradually from Milvus 1.0 to 2.0.
 
-![img](https://assets.zilliz.com/image2_96c064a627.png)
+![img](https://assets.zilliz.com/image2_96c064a627.png "Collection alis doc.")
 
 ###### *Collection alias doc.*
 
