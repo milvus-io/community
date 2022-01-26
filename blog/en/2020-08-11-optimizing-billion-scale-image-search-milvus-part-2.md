@@ -26,9 +26,7 @@ The term CNN is difficult to understand. Here we focus on answering two question
 - What can CNN do?
 - Why can I use CNN for an image search?
 
-![1-meme.jpg](https://assets.zilliz.com/1_meme_649be6dfe8.jpg)
-
-###### Photo by memegenerator.net
+![1-meme.jpg](https://assets.zilliz.com/1_meme_649be6dfe8.jpg "Photo by memegenerator.net.")
 
 There are many competitions in the AI field and image classification is one of the most important. The job of image classification is to determine whether the content of the picture is about a cat, a dog, an apple, a pear, or other types of objects.
 
@@ -123,7 +121,7 @@ The problem of extracting feature vectors from images has been solved. Then the 
 - How to calculate the similarity of feature vectors, that is, how to search?
   The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.
 
-![3-milvus-logo.png](https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png)
+![3-milvus-logo.png](https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png "Milvus.")
 
 ## Milvus, the vector search engine
 

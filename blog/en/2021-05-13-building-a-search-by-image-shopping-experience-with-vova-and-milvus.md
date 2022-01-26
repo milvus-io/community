@@ -41,8 +41,7 @@ VOVA's shop by image system searches the company's inventory for product images 
 2. Use ResNet to extract feature vectors from the detected targets; 
 3. Use Milvus for vector similarity search.
 
-![Vova-1.png](https://assets.zilliz.com/Vova_1_47ee6f2da9.png)
-###### *System process of VOVA's search by image functionality.*
+![Vova-1.png](https://assets.zilliz.com/Vova_1_47ee6f2da9.png "System process of VOVA's search by image functionality.")
 
 <br/>
 
@@ -58,8 +57,8 @@ As the following illustration shows, a 448 &times; 448 input image is converted 
 
 The predicted output of YOLO P is a two-dimensional tensor, whose shape is [batch,7 &times;7 &times;30]. Using slicing, P[:,0:7&times;7&times;20] is the category probability, P[:,7&times;7&times;20:7&times;7&times;(20+2)] is the confidence, and P[:,7&times;7&times;(20+2)]:] is the predicted result of the bounding box.
 
-![vova-2.png](https://assets.zilliz.com/vova_2_1ccf38f721.png)
-###### *YOLO network architecture.*
+![vova-2.png](https://assets.zilliz.com/vova_2_1ccf38f721.png "YOLO network architecture.)
+
 
 <br/>
 
@@ -69,8 +68,8 @@ VOVA adopted the residual neural network (ResNet) model to extract feature vecto
 
 The ResNet structure is easy to modify and scale. By changing the number of channels in the block and the number of stacked blocks, the width and depth of the network can be easily adjusted to obtain networks with different expressive capabilities. This effectively solves the network degeneration effect, where accuracy declines as the depth of learning increases. With sufficient training data, a model with improving expressive performance can be obtained while gradually deepening the network. Through model training, features are extracted for each picture and converted to 256-dimensional floating point vectors.
 
-![vova-3.png](https://assets.zilliz.com/vova_3_df4b810281.png)
-###### *ResNet structure.*
+![vova-3.png](https://assets.zilliz.com/vova_3_df4b810281.png "ResNet structure.")
+
 
 <br/>
 
@@ -80,16 +79,16 @@ VOVA's product image database includes 30 million pictures and is growing rapidl
 
 Milvus can conduct similarity search on trillion-vector datasets in milliseconds, with a query time under 1.5 seconds when nq=1 and an average batch query time under 0.08 seconds. To build its image search engine, VOVA referred to the design of Mishards, Milvus' sharding middleware solution (see the chart below for its system design), to implement a highly available server cluster. By leveraging the horizontal scalability of a Milvus cluster, the project requirement for high query performance on massive datasets was met.
 
-![vova-4.png](https://assets.zilliz.com/vova_4_e305f1955c.png)
-###### *Mishards architecture in Milvus.*
+![vova-4.png](https://assets.zilliz.com/vova_4_e305f1955c.png "Mishards architecture in Milvus.")
+
 
 
 ### VOVA's shop by image tool
  
 The screenshots below show the VOVA search by image shopping tool on the company's Android app.
 
-![vova-5.png](https://assets.zilliz.com/vova_5_c4c25a3bae.png)
-###### *Screenshots of VOVA's search by image shopping tool.*
+![vova-5.png](https://assets.zilliz.com/vova_5_c4c25a3bae.png "Screenshots of VOVA's search by image shopping tool.")
+
  
 As more users search for products and upload photos, VOVA will continue to optimize the models that power the system. Additionally, the company will incorporate new Milvus functionality that can further enhance the online shopping experience of its users.
 

@@ -21,11 +21,8 @@ There are other workarounds to avoid letting DRAM store billion-scale datasets i
 
 # Introduction to Heterogeneous Memory
 
-![1.png](https://assets.zilliz.com/image_32_d26cfa9480.png)
+![1.png](https://assets.zilliz.com/image_32_d26cfa9480.png "Name of the pictureMemory/Storage Hierarchy with HM. Source: [http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-presentation_slides.pdf](http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-presentation_slides.pdf)")
 
-Name of the pictureMemory/Storage Hierarchy with HM
-
-Source: [http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-presentation_slides.pdf](http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-presentation_slides.pdf)
 
 Heterogeneous memory (HM) represents the combination of fast but small DRAM and slow but large PMem. DRAM is normal hardware that can be found in every modern server, and its access is relatively fast. New PMem technologies, such as Intel® Optane™ DC Persistent Memory Modules, bridge the gap between NAND-based flash (SSD) and DRAM, eliminating the I/O bottleneck. PMem is durable like SSD, and directly addressable by the CPU, like memory. Renen et al. [2] discover that the PMem read bandwidth is 2.6× lower, and the write bandwidth 7.5× lower, than DRAM in the configured experiment environment.
 
@@ -33,22 +30,17 @@ Heterogeneous memory (HM) represents the combination of fast but small DRAM and 
 
 HM-ANN is an accurate and fast billion-scale ANN search algorithm that runs on a single machine without compression. The design of HM-ANN generalizes the idea of HNSW, whose hierarchical structure naturally fits into HM. HNSW consists of multiple layers—only layer 0 contains the whole dataset, and each remaining layer contains a subset of elements from the layer directly underneath it.
 
-![2.png](https://assets.zilliz.com/2_25a1836e8b.png)
+![2.png](https://assets.zilliz.com/2_25a1836e8b.png "An example of HNSW with 3 layers. Source: [https://arxiv.org/pdf/1603.09320.pdf](https://arxiv.org/pdf/1603.09320.pdf)" )
 
-An example of HNSW with 3 layers
-
-Source: [https://arxiv.org/pdf/1603.09320.pdf](https://arxiv.org/pdf/1603.09320.pdf)
 
 - Elements in the upper layers, which include only subsets of the dataset, consume a small portion of the whole storage. This observation makes them decent candidates to be placed in DRAM. In this way, the majority of searches on HM-ANN are expected to happen in the upper layers, which maximizes the utilization of the fast access characteristic of DRAM. However, in the cases of HNSW, most searches happen in the bottom layer.
 - The bottom-most layer carries the whole dataset, which makes it suitable to be placed in PMem. Since accessing layer 0 is slower, it is preferable to have only a small portion accessed by each query and the access frequency reduced.
 
 ## Graph Construction Algorithm
 
-![3.png](https://assets.zilliz.com/3_dd9627c753.png)
+![3.png](https://assets.zilliz.com/3_dd9627c753.png "An example of graph construction of HM-ANN. Source: [http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf](http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf)")
 
-An example of graph construction of HM-ANN
 
-Source: [http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf](http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf)
 
 The key idea of HM-ANN’s construction is to create high-quality upper layers, in order to provide better navigation for search at layer 0. Thus most memory access happens in DRAM, and access in PMem is reduced. To make this possible, the construction algorithm of HM-ANN has a top-down insertion phase and a bottom-up promotion phase.
 
@@ -61,11 +53,8 @@ The bottom-up promotion phase promotes pivot points from the bottom layer to for
 
 ## Graph Seach Algorithm
 
-![4.png](https://assets.zilliz.com/4_a5a7f29c93.png)
+![4.png](https://assets.zilliz.com/4_a5a7f29c93.png "An example of graph seach of HM-ANN. Source: [http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf](http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf)")
 
-An example of graph seach of HM-ANN
-
-Source: [http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf](http://nvmw.ucsd.edu/nvmw2021-program/nvmw2021-data/nvmw2021-paper63-poster.pdf)
 
 The search algorithm consists of two phases: fast memory search and parallel layer-0 search with prefetching.
 
@@ -85,27 +74,27 @@ In this paper, an extensive evaluation is conducted. All experiments are done on
 
 ## Billion-scale algorithm comparison
 
-![5.png](https://assets.zilliz.com/5_4297db66a9.png)
+![5.png](https://assets.zilliz.com/5_4297db66a9.png "Table 1.")
 
 In table 1, the build time and storage of different graph-based indexes are compared. HNSW takes the shortest build time and HM-ANN needs 8% additional time than HNSW. In terms of whole storage usage, HM-ANN indexes are 5–13% larger than HSNW, because it promotes more nodes from layer 0 to layer 1.
 
-![6.png](https://assets.zilliz.com/6_f363e64d3f.png)
+![6.png](https://assets.zilliz.com/6_f363e64d3f.png "Figure 1.")
 
 In Figure 1, the query performance of different indexes is analyzed. Figure 1 (a) and (b) show that HM-ANN achieves the top-1 recall of > 95% within 1ms. Figures 1 (c) and (d) show that HM-ANN obtains top-100 recall of > 90% within 4 ms. HM-ANN provides the best latency-vs-recall performance than all other approaches.
 
 ## Million-scale algorithm comparison
 
-![7.png](https://assets.zilliz.com/7_a5c23de240.png)
+![7.png](https://assets.zilliz.com/7_a5c23de240.png "Figure 2.")
 
 In Figure 2, the query performance of different indexes is analyzed in a pure DRAM setting. HNSW, NSG, and HM-ANN are evaluated with the three million-scale datasets fitting in DRAM. HM-ANN still achieves better query performance than HNSW. The reason is that the total number of distance computations from HM-ANN is lower (on average 850/query) than that of HNSW (on average 900/query) to achieve 99% recall target.
 
-![8.png](https://assets.zilliz.com/image_33_f99d31f322.png)
+![8.png](https://assets.zilliz.com/image_33_f99d31f322.png "Figure 3.")
 
 ## Effectiveness of high-degree promotion
 
 In Figure 3, the random promotion and high-degree promotion strategies are compared in the same configuration. The high-degree promotion outperforms the baseline. The high-degree promotion performs 1.8x, 4.3x, and 3.9x faster than the random promotion to reach 95%, 99%, and 99.5% recall targets, respectively.
 
-![10.png](https://assets.zilliz.com/image_34_3af47e0842.png)
+![10.png](https://assets.zilliz.com/image_34_3af47e0842.png "Figure 5.")
 
 ## Performance benefit of memory management techniques
 

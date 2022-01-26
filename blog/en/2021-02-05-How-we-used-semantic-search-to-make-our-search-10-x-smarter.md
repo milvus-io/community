@@ -20,8 +20,8 @@ Tokopedia Search uses **Elasticsearch** for the search and ranking of products. 
 ## Vector representation
 One solution to this would be to come up with an alternative representation, which tells us not only about the letters contained in the word but also something about its meaning. For example, we could encode *which other words our word is frequently used together with* (represent by the probable context). We’d then assume that similar contexts represent similar things, and try to compare them using mathematical methods. We could even find a way to encode whole sentences by their meaning.
 
-![Blog_How we used semantic search to make our search 10x smarter_2.png](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_2_776af567a8.png)
-###### *Vector representation also reveals the meaning of words compared with ASCII representation.*
+![Blog_How we used semantic search to make our search 10x smarter_2.png](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_2_776af567a8.png "Vector representation also reveals the meaning of words compared with ASCII representation.")
+
 
 ## Select an embedding similarity search engine
 Now that we have feature vectors, the remaining issue is how to retrieve from the large volume of vectors the ones that are similar to the target vector. When it comes to the embeddings search engine, we tried POC on several engines available on Github some of them are FAISS, Vearch, Milvus.
@@ -39,12 +39,10 @@ After deciding to use Milvus as the feature vector search engine, we decided to 
 
 Milvus provides both Mishards, a cluster sharding middleware, and Milvus-Helm for configuration. In Tokopedia we use Ansible playbooks for infrastructure setup so we created a playbook for infra orchestration. The diagram below from Milvus’ documentation shows how Mishards works:
 
-![Blog_How we used semantic search to make our search 10x smarter_3.png](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_3_4fa0c8a1a1.png)
-###### *How Mishards works.*
+![Blog_How we used semantic search to make our search 10x smarter_3.png](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_3_4fa0c8a1a1.png "How Mishards works.")
 
 Mishards cascade a request from upstream down to its sub-modules splitting the upstream request, and then collects and returns the results of the sub-services to upstream. The overall architecture of the Mishards-based cluster solution is shown below:
-![Blog_How we used semantic search to make our search 10x smarter_4.jpeg](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_4_724618be4e.jpeg)
-###### *Overall architecture of Mishards.*
+![Blog_How we used semantic search to make our search 10x smarter_4.jpeg](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_4_724618be4e.jpeg "Overall architecture of Mishards.")
 
 The official documentation provides a clear introduction of Mishards. You can refer to [Mishards](https://milvus.io/cn/docs/v0.10.2/mishards.md) if you are interested.
 
@@ -56,7 +54,7 @@ Similarity search engines work by comparing input to a database to find objects 
 An analogy can be drawn to a dictionary, where words are sorted alphabetically. When looking up a word, it is possible to quickly navigate to a section that only contains words with the same initial — drastically accelerating the search for the input word’s definition.
 
 ## What next, you ask?
-![Blog_How we used semantic search to make our search 10x smarter_5.jpeg](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_5_035480c8af.jpeg)
+![Blog_How we used semantic search to make our search 10x smarter_5.jpeg](https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_5_035480c8af.jpeg "Illustration.")
 
 As shown above, there is no solution that fits all, we always want to improve the model’s performance used for getting the embeddings.
 

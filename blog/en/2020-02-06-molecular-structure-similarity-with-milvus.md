@@ -22,13 +22,13 @@ Compared with traditional methods, Milvus has faster search speed and broader co
 
 The system uses RDKit to generate chemical fingerprints, and Milvus to perform chemical structure similarity search. Refer to https://github.com/milvus-io/bootcamp/blob/master/EN_solutions/mols_search/README.md to learn more about the system.
 
-![1-system-overview.png](https://assets.zilliz.com/1_system_overview_4b7c2de377.png)
+![1-system-overview.png](https://assets.zilliz.com/1_system_overview_4b7c2de377.png "System overview.")
 
 ## 1. Generating chemical fingerprints
 
 Chemical fingerprints are usually used for substructure search and similarity search. The following image shows a sequential list represented by bits. Each digit represents an element, atom pair, or functional groups. The chemical structure is <code>C1C(=O)NCO1</code>.
 
-![2-identifying-patterns-molecules.png](https://assets.zilliz.com/2_identifying_patterns_molecules_2aeef349c8.png)
+![2-identifying-patterns-molecules.png](https://assets.zilliz.com/2_identifying_patterns_molecules_2aeef349c8.png "Identifying molecule patterns.")
 
 We can use RDKit to generate Morgan fingerprints, which defines a radius from a specific atom and calculates the number of chemical structures within the range of the radius to generate a chemical fingerprint. Specify different values for the radius and bits to acquire the chemical fingerprints of different chemical structures. The chemical structures are represented in SMILES format.
 
@@ -57,11 +57,11 @@ Checks whether a specified chemical structure exists. This kind of search requir
 ## Computing chemical fingerprints
 Tanimoto distance is often used as a metric for chemical fingerprints. In Milvus, Jaccard distance corresponds with Tanimoto distance.
 
-![3-computing-chem-fingerprings-table-1.png](https://assets.zilliz.com/3_computing_chem_fingerprings_table_1_3814744fce.png)
+![3-computing-chem-fingerprings-table-1.png](https://assets.zilliz.com/3_computing_chem_fingerprings_table_1_3814744fce.png "Computing chemical fingerprints - table 1.")
 
 Based on the previous parameters, chemical fingerprint computation can be described as:
 
-![4-computing-chem-fingerprings-table-2.png](https://assets.zilliz.com/4_computing_chem_fingerprings_table_2_7d16075836.png)
+![4-computing-chem-fingerprings-table-2.png](https://assets.zilliz.com/4_computing_chem_fingerprings_table_2_7d16075836.png "Computing chemical fingerprints - table 2.")
 
 We can see that <code>1- Jaccard = Tanimoto</code>. Here we use Jaccard in Milvus to compute the chemical fingerprint, which is actually consistent with Tanimoto distance.
 
@@ -69,11 +69,11 @@ We can see that <code>1- Jaccard = Tanimoto</code>. Here we use Jaccard in Milvu
 
 To better demonstrate how the system works, we have built a demo that uses Milvus to search more than 90 million chemical fingerprints. The data used comes from ftp://ftp.ncbi.nlm.nih.gov/pubchem/Compound/CURRENT-Full/SDF. The initial interface looks as follows:
 
-![5-system-demo-1.jpg](https://assets.zilliz.com/5_system_demo_1_46c6e6cd96.jpg)
+![5-system-demo-1.jpg](https://assets.zilliz.com/5_system_demo_1_46c6e6cd96.jpg "System demo 1.")
 
 We can search specified chemical structures in the system and returns similar chemical structures:
 
-![6-system-demo-2.gif](https://assets.zilliz.com/6_system_demo_2_19d6cd8f92.gif)
+![6-system-demo-2.gif](https://assets.zilliz.com/6_system_demo_2_19d6cd8f92.gif "System demo 2.")
 
 ## Conclusion
 

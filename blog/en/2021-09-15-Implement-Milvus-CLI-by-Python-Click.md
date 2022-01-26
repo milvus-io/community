@@ -123,7 +123,7 @@ def partitions(obj, collection):
 
 After all these complete, we have a miltigroup commands that look like:
 
-![image](https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png)
+![image](https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png "a miltigroup commands.")
 
 ## Custom a command
 

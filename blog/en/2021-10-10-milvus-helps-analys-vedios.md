@@ -38,14 +38,14 @@ Video analysis is converted to image analysis using frame extraction. Currently,
 
 Object detection is about finding objects in extracted frames and extracting screenshots of the objects according to their positions. As shown in the following figures, a bike, a dog, and a car were detected. This topic introduces how to detect objects using YOLOv3, which is commonly used for object detection.
 
-![](../assets/1011/p1.png)
+![](../assets/1011/p1.png "Object detection.")
 
 
 - Feature extraction
 
 Feature extraction refers to converting unstructured data, which is difficult for machines to recognize, to feature vectors. For example, images can be converted to multi-dimensional feature vectors using deep learning models. Currently, the most popular image recognition AI models include VGG, GNN, and ResNet. This topic introduces how to extract features from detected objects using ResNet-50.
 
-![](../assets/1011/p2.png)
+![](../assets/1011/p2.png "Feature extraction.")
 
 - Vector analysis
 
@@ -86,7 +86,7 @@ The following procedures describe how Milvus works.
 2. Milvus stores and indexes the feature vectors.
 3. Milvus returns the most similar vectors to the vector queried by users.
 
-![](../assets/1011/p3.png)
+![](../assets/1011/p3.png "How Milvus works.")
 
 
 ## Deployment
@@ -97,7 +97,7 @@ Now you have some understanding of Milvus-based video analysis systems. The syst
 
 - The black arrows indicate the video analysis process. First, extract frames from a video and save the frames as images. Second, detect and extract objects in the images using YOLOv3. Then, use ResNet-50 to extract feature vectors from the images. Lastly, Milvus searches and returns the information of the objects with the corresponding feature vectors.
 
-![](../assets/1011/p4.png)
+![](../assets/1011/p4.png "A Milvus-based video analysis systems.")
 
 For more information, see [Milvus Bootcamp: Video Object Detection System](https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search/object_detection). 
 

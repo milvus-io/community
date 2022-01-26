@@ -21,13 +21,13 @@ In [Managing Data in Massive-Scale Vector Search Engine](2019-11-08-data-managem
 
 So, when the files marked with soft-delete are really deleted? Before 0.6.0, the strategy is that a file is really deleted after soft-deleted for 5 minutes. The following figure displays the strategy:
 
-![5mins](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5mins.png)
+![5mins](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5mins.png "5 minutes.")  
 
 This strategy is based on the premise that queries normally do not last more than 5 minutes and is not reliable. If a query lasts more than 5 minutes, the query will fail. The reason is that when a query starts, Milvus collects information about files that can be searched and creates query tasks. Then, the query scheduler loads files to memory one by one and searches for files one by one. If a file no longer exists when loading a file, the query will fail.
 
 Extending the time may help reduce the risk of query failures, but also causes another problem: disk usage is too large. The reason is that when large quantities of vectors are being inserted, Milvus continually combines data files and the combined files are not immediately removed from the disk, even though no query happens. If data insertion is too fast and/or the amount of inserted data is too large, extra disk usage can amount to tens of GBs. Refer to the following figure as an example:
 
-![result](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5min_result.png)
+![result](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5min_result.png "Result.")
 
 As shown in the previous figure, the first batch of inserted data (insert_1) is flushed to disk and becomes file_1, then insert_2 becomes file_2. The thread responsible for file combination combines the files to file_3. Then, file_1 and file_2 are marked as soft-delete. The third batch of insert data becomes file_4. The thread combines file_3 and file_4 to file_5 and marks file_3 and file_4 as soft-delete.
 
@@ -37,7 +37,7 @@ Likewise, insert_6 and insert_5 are combined. In t3, file_5 and file_6 are marke
 
 Thus, we changed the strategy to delete files in v0.6.0. Hard-delete no longer uses time as triggers. Instead, the trigger is when the file is not in use by any task.
 
-![newstrategy](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/new_strategy.png)
+![newstrategy](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/new_strategy.png "New strategy.")
 
 Assume two batches of vectors are inserted. In t1 a query request is given, Milvus acquires two files to be queried (file_1 and file_2, because file_3 still does not exist.) Then, the backend thread starts combining the two files with the query running at the same time. When file_3 is generated, file_1 and file_2 are marked as soft-delete. After the query, no other tasks will use file_1 and file_2, so they will be hard-deleted in t4. The interval between t2 and t4 is very small and depends on the interval of the query. In this way, unused files will be removed in time.
 

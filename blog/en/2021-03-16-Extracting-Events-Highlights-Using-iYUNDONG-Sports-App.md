@@ -71,8 +71,8 @@ Milvus is an open-source vector database that is easy to use, highly flexible, r
 
 ● Milvus performs similarity search and returns accurate search results based on various business needs.
 
-![iYUNDONG Blog 1.png](https://assets.zilliz.com/i_YUNDONG_Blog_1_d8abe065ae.png)
-###### *An overview of Milvus.*
+![iYUNDONG Blog 1.png](https://assets.zilliz.com/i_YUNDONG_Blog_1_d8abe065ae.png "An overview of Milvus.")
+
 
 <br/>
 
@@ -99,8 +99,8 @@ A series of latest sports events are listed on the homepage. By tapping one of t
 
 After tapping the button on the top of the photo gallery page, users can then upload a photo of their own to retrieve images of their highlights. 
 
-![iyundong-interface.jpg](https://assets.zilliz.com/iyundong_interface_3da684d206.jpg)
-###### *iYUNDONG app interface.*
+![iyundong-interface.jpg](https://assets.zilliz.com/iyundong_interface_3da684d206.jpg "iYUNDONG app interface.")
+
 
 <br/>
 

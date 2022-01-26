@@ -46,22 +46,18 @@ Xiaomi selected Milvus to manage vector data for its intelligent news recommenda
 - Multi-task learning goals, masked language modeling (MLM), and next sentence prediction (NSP).
 - BERT performs better with greater amounts of data, and can enhance other natural language processing techniques such as Word2Vec by acting as a conversion matrix.
 
-![Blog_Xiaomi_1.jpeg](https://assets.zilliz.com/Blog_Xiaomi_1_6301344312.jpeg)
-###### *Milvus working with BERT.*
+![Blog_Xiaomi_1.jpeg](https://assets.zilliz.com/Blog_Xiaomi_1_6301344312.jpeg "Milvus working with BERT.")
 
 <br/>
 
 BERT’s network architecture uses a multi-layer transformer structure that abandons the traditional RNN and CNN neural networks. It works by converting the distance between two words at any position into one through its attention mechanism, and solves the dependency issue that has persisted in NLP for some time.
 
-![Blog-Xiaomi-2.jpeg](https://assets.zilliz.com/Blog_Xiaomi_2_fe5cf2e401.jpeg)
-
-###### *A transformer’s network architecture in BERT.*
+![Blog-Xiaomi-2.jpeg](https://assets.zilliz.com/Blog_Xiaomi_2_fe5cf2e401.jpeg "A transformer’s network architecture in BERT.")
 
 <br/>
 
-![Blog-Xiaomi-3.jpeg](https://assets.zilliz.com/Blog_Xiaomi_3_5d10b51440.jpeg)
+![Blog-Xiaomi-3.jpeg](https://assets.zilliz.com/Blog_Xiaomi_3_5d10b51440.jpeg "BERT’s network structure. ‘Trm’ represents the transformer network architecture depicted above.")
 
-###### *BERT’s network structure. ‘Trm’ represents the transformer network architecture depicted above.*
 
 <br/>
 
@@ -80,9 +76,8 @@ Vectorization is process where article titles are converted into general sentenc
 
 ANN algorithms compare vectorized article titles to the entire news library stored in Milvus, then return similar content for users. ID mapping is used to obtain relevant information such as page views and clicks for corresponding articles.
 
-![Blog-Xiaomi-N1.jpeg](https://assets.zilliz.com/Blog_Xiaomi_N1_f4749b3131.jpeg)
+![Blog-Xiaomi-N1.jpeg](https://assets.zilliz.com/Blog_Xiaomi_N1_f4749b3131.jpeg "How content recommendation works.")
 
-###### *How content recommendation works.*
 
 <br/>
 

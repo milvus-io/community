@@ -52,8 +52,7 @@ After extracting the feature vectors of the audio data, we can implement high-pe
 
 The following diagram depicts the general similarity search process using Milvus: 
    
-![how-does-milvus-work.png](https://assets.zilliz.com/how_does_milvus_work_6926180543.png)
-###### *Milvus' vector similarity search process.*
+![how-does-milvus-work.png](https://assets.zilliz.com/how_does_milvus_work_6926180543.png "Milvus' vector similarity search process.")
 
 1. Unstructured data are converted to feature vectors by deep learning models and inserted into Milvus.
 2. Milvus stores and indexes these feature vectors.
@@ -63,8 +62,8 @@ The following diagram depicts the general similarity search process using Milvus
 
 The audio retrieval system mainly consists of two parts: insert (black line) and search(red line).
 
-![audio-retrieval-system.png](https://assets.zilliz.com/audio_retrieval_system_663a911c95.png)
-###### *Audio retrieval system powered by Milvus.*
+![audio-retrieval-system.png](https://assets.zilliz.com/audio_retrieval_system_663a911c95.png "Audio retrieval system powered by Milvus.")
+
 
 The sample dataset used in this project contains open-source game sounds, and the code is detailed in the [Milvus bootcamp](https://github.com/milvus-io/bootcamp/tree/master/solutions/audio_similarity_search).
 
@@ -115,8 +114,7 @@ This audio retrieval system is built with open-source code. Its main features ar
 
 We host a [live demo](https://zilliz.com/solutions ) of the Milvus-based audio retrieval system online that you can try out with your own audio data. 
 
-![audio-search-demo.png](https://assets.zilliz.com/audio_search_demo_cae60625db.png)
-###### *Audio search demo powered by Milvus.*
+![audio-search-demo.png](https://assets.zilliz.com/audio_search_demo_cae60625db.png "Audio search demo powered by Milvus.")
 
 ## Conclusion
 

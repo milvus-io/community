@@ -47,7 +47,7 @@ Google Colab comes with all supporting software for Milvus preinstalled, includi
 
 2. Upload Milvus’ source code to [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb#recent=true) and create a new notebook.
 
-![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_2.png](https://assets.zilliz.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_2_27809b0ce2.png)
+![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_2.png](https://assets.zilliz.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_2_27809b0ce2.png "Google Colab.")
 
 ### Compile Milvus from source code
 
@@ -101,9 +101,7 @@ os.environ['LD_LIBRARY_PATH'] +=":/content/milvus/core/milvus/lib"
 
 > Note: If the Milvus server is launched successfully, the following prompt appears:
 
-![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_3.png](https://assets.zilliz.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_3_b15138cd59.png)
-
-###### _Milvus server started successfully!_
+![Blog_Set Up Milvus in Google Colaboratory for Easy ML Application Building_3.png](https://assets.zilliz.com/Blog_Set_Up_Milvus_in_Google_Colaboratory_for_Easy_ML_Application_Building_3_b15138cd59.png "Milvus server started successfully!")
 
 ### Run basic Milvus operations in Google Colab with Python
 
