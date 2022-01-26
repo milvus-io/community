@@ -9,8 +9,6 @@ tag: News
 recommend: true
 ---
 
-*This article is edited by [Claire Yu](https://www.linkedin.com/in/wuchuanzi-yu-claire/).*
-
 Today, six months after the first Release Candidate (RC) was made public, we are thrilled to announce that Milvus 2.0 is General Available (GA) and production ready! It's been a long journey, and we thank everyone – community contributors, users, and the LF AI & Data Foundation – along the way who helped us make this happen.
 
 The ability to handle billions of high dimensional data is a big deal for AI systems these days, and for good reasons:
@@ -80,3 +78,4 @@ We will refine the membership rules and clarify the requirements and responsibil
 We’re really excited about the latest Milvus GA release! As always, we are happy to hear your feedback. If you encounter any problems, don't hesitate to contact us on [GitHub](https://github.com/milvus-io/milvus) or via [Slack](http://milvusio.slack.com/).
 
 
+*This article is edited by [Claire Yu](https://github.com/claireyuw).*
