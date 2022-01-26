@@ -28,7 +28,7 @@ First, here’s a summary of community statistics from GitHub and Slack. By the 
 - **Slack members** have increased from 541  in December 2020 to 1233 in December 2021 (up 227%)
 
 
-![img](https://assets.zilliz.com/1_1_e94deb087f.png)
+![img](https://assets.zilliz.com/1_1_e94deb087f.png "Milvus contributor badge.")
 
 ## Community Governance and Advocacy
 
@@ -39,7 +39,7 @@ As a result, we have appointed 5 new maintainers in 2021 to keep track of the on
 We've also launched the [Milvus Advocate Program](https://milvus.io/community/milvus_advocate.md), and we welcome more people to join us to share your experiences, offer help to community members and gain recognition in return.
 
 
-![img](https://assets.zilliz.com/1_2_835f379fb0.png)
+![img](https://assets.zilliz.com/1_2_835f379fb0.png "Milvus contributors.")
 
 (Image: Milvus GitHub contributors, made with dynamicwebpaige's [project](https://github.com/dynamicwebpaige/nanowrimo-2021/blob/main/15_VS_Code_contributors.ipynb) )
 
