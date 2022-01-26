@@ -68,7 +68,6 @@ Currently, the AI infrastructure team is taking the lead to deploy Milvus 2.0 an
 
 ![img](https://assets.zilliz.com/image2_96c064a627.png "Collection alis doc.")
 
-###### *Collection alias doc.*
 
 Support for collection alias can greatly improve user experience, especially for those large Internet companies with great volumes of user requests. Chenglong Li, data engineer from the Milvus community, who helped build the bridge between Milvus and Smartnews, said, "The collection alias function arises from the real business request of SmartNews, a Milvus user. And SmartNews contributed the code to the Milvus community. This act of reciprocity is a great example of the open-source spirit: from the community and for the community. We hope to see more contributors like SmartNews and jointly build a more prosperous Milvus community."
 
