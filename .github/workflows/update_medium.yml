@@ -1,0 +1,52 @@
+name: Trigger medium publish if new post
+
+on:
+  push:
+    paths:
+      - "blog/**"
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - uses: jitterbit/get-changed-files@v1
+        id: added_files
+        with:
+          format: space-delimited
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Printing
+        run: |
+          echo "All:"
+          echo "${{ steps.added_files.outputs.all }}"
+          echo "Added:"
+          echo "${{ steps.added_files.outputs.added }}"
+          echo "Removed:"
+          echo "${{ steps.added_files.outputs.removed }}"
+          echo "Renamed:"
+          echo "${{ steps.added_files.outputs.renamed }}"
+          echo "Modified:"
+          echo "${{ steps.added_files.outputs.modified }}"
+          echo "Added+Modified:"
+          echo "${{ steps.added_files.outputs.added_modified }}"
+
+      - name: Post new blog to medium
+        if: ${{ steps.added_files.outputs.added }}
+        env:
+          MEDIUM_ID: ${{secrets.MEDIUM_ID}}
+          MEDIUM_PUBLICATION_ID: ${{secrets.MEDIUM_PUBLICATION_ID}}
+          MEDIUM_TOKEN: ${{secrets.MEDIUM_TOKEN}}
+          FILES: ${{ steps.added_files.outputs.added }}
+        run: |
+          mv postMedium.md postMedium.js
+          yarn
+          node postMedium.js $FILES

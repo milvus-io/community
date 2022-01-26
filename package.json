@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "front-matter": "^4.0.2",
+    "fs": "^0.0.1-security"
   }
 }
