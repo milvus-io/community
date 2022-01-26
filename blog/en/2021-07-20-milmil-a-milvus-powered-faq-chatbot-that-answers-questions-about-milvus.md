@@ -25,9 +25,8 @@ First, the FAQ data is converted into semantic vectors using BERT, a natural lan
 
 When users submit a question, the system converts it into a feature vector using BERT. Next it searches Milvus for five vectors that are most similar to the query vector and retrieves their IDs. Finally, the questions and answers that correspond with the retrieved vector IDs are returned to the user.
 
-![system-process.png](https://assets.zilliz.com/system_process_dca67a80a6.png)
+![system-process.png](https://assets.zilliz.com/system_process_dca67a80a6.png "The blue line represents the data insertion process, and the black line represents the query process.")
 
-###### _The blue line represents the data insertion process, and the black line represents the query process._
 
 See the [question answering system](https://github.com/milvus-io/bootcamp/tree/master/solutions/question_answering_system) project in the Milvus bootcamp to explore the code used to build AI chatbots.
 
@@ -35,15 +34,13 @@ See the [question answering system](https://github.com/milvus-io/bootcamp/tree/m
 
 To chat with MilMil, navigate to any page on [Milvus.io](https://milvus.io/) and click the bird icon in the lower-right corner. Type your question into the text input box and hit send. MilMil will get back to you in milliseconds! Additionally, the dropdown list in the upper-left corner can be used to switch between technical documentation for different versions of Milvus.
 
-![milvus-chatbot-icon.png](https://assets.zilliz.com/milvus_chatbot_icon_f3c25708ca.png)
+![milvus-chatbot-icon.png](https://assets.zilliz.com/milvus_chatbot_icon_f3c25708ca.png "Click on the Milvus icon in the lower right corner to use Milvus FAQ Chatbot")
 
-###### _Click on the Milvus icon in the lower right corner to use Milvus FAQ Chatbot._
 
 After submitting a question, the bot immediately returns three questions that are semantically similar to the query question. You can click "See answer" to browse potential answers to your question, or click "See more" to view more questions related to your search. If a suitable answer is unavailable, click "Put in your feedback here" to ask your question along with an email address. Help from the Milvus community will arrive shortly!
 
-![chatbot_UI.png](https://assets.zilliz.com/chatbot_UI_0f4a7655d4.png)
+![chatbot_UI.png](https://assets.zilliz.com/chatbot_UI_0f4a7655d4.png "MilMil's search results.")
 
-###### _MilMil's search results of "The way to install Milvus."_
 
 Give MilMil a try and let us know what you think. All questions, comments, or any form of feedback are welcome.
 

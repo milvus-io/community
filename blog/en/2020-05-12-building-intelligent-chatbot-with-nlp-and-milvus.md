@@ -35,7 +35,7 @@ When a user asks a question:
 
 The system architecture diagram is as follows (the blue lines represent the import process and the yellow lines represent the query process):
 
-![1-system-architecture-milvus-bert-postgresql.png](https://assets.zilliz.com/1_system_architecture_milvus_bert_postgresql_63de466754.png)
+![1-system-architecture-milvus-bert-postgresql.png](https://assets.zilliz.com/1_system_architecture_milvus_bert_postgresql_63de466754.png "System architecture.")
 
 Next, we will show you how to build an online Q&A system step by step.
 
@@ -55,15 +55,15 @@ This system uses a model that BERT has pre-trained. Download it from the link be
 
 Use this model to convert the question database to feature vectors for future similarity search. For more information about the BERT service, see https://github.com/hanxiao/bert-as-service.
 
-![2-code-block.png](https://assets.zilliz.com/2_code_block_e1b2021a91.png)
+![2-code-block.png](https://assets.zilliz.com/2_code_block_e1b2021a91.png "Code block.")
 
 ### 3. Import to Milvus and PostgreSQL
 
 Normalize and import the generated feature vectors import to Milvus, and then import the IDs returned by Milvus and the corresponding answers to PostgreSQL. The following shows the table structure in PostgreSQL:
 
-![3-import-milvus-postgresql.png](https://assets.zilliz.com/3_import_milvus_postgresql_bb2a258c61.png)
+![3-import-milvus-postgresql.png](https://assets.zilliz.com/3_import_milvus_postgresql_bb2a258c61.png "Import.")
 
-![4-import-milvus-postgresql.png](https://assets.zilliz.com/4_import_milvus_postgresql_2abc29a4c4.png)
+![4-import-milvus-postgresql.png](https://assets.zilliz.com/4_import_milvus_postgresql_2abc29a4c4.png "Import.")
 
 ### 4. Retrieve Answers
 
@@ -71,17 +71,17 @@ The user inputs a question, and after generating the feature vector through BERT
 
 In practice, your system may not have perfectly matched questions in the library. Then, you can set a threshold of 0.9. If the greatest similarity distance retrieved is less than this threshold, the system will prompt that it does not include related questions.
 
-![4-retrieve-answers.png](https://assets.zilliz.com/4_retrieve_answers_6424db1032.png)
+![4-retrieve-answers.png](https://assets.zilliz.com/4_retrieve_answers_6424db1032.png "Retrieve answers.")
 
 ## System Demonstration
 
 The following shows an example interface of the system:
 
-![5-milvus-QA-system-application.png](https://assets.zilliz.com/5_milvus_QA_system_application_e5860cee42.png)
+![5-milvus-QA-system-application.png](https://assets.zilliz.com/5_milvus_QA_system_application_e5860cee42.png "QA system application.")
 
 Enter your question in the dialog box and you will receive a corresponding answer:
 
-![5-milvus-QA-system-application-2.png](https://assets.zilliz.com/5_milvus_QA_system_application_2_8064237e2a.png)
+![5-milvus-QA-system-application-2.png](https://assets.zilliz.com/5_milvus_QA_system_application_2_8064237e2a.png "QA system application.")
 
 ## Summary
 

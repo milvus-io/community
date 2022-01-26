@@ -49,9 +49,8 @@ Let’s get back to the semantic search workflow, now that we’ve learned a lit
 
 ### Indexing into Milvus
 
-![Lucidworks-1.png](https://assets.zilliz.com/Lucidworks_1_47a9221723.png)
+![Lucidworks-1.png](https://assets.zilliz.com/Lucidworks_1_47a9221723.png "Architectural diagram for indexing into Milvus.")
 
-###### _Architectural diagram for indexing into Milvus._
 
 As shown in the above diagram, the query stage begins similarly to the indexing stage, just with queries coming in instead of documents. For each query:
 
@@ -71,17 +70,14 @@ In order to prove that our semantic search flows are running at the efficiency w
 
 Let’s jump into some numbers from a recent example we ran:
 
-![Lucidworks-2.png](https://assets.zilliz.com/Lucidworks_2_3162113560.png)
+![Lucidworks-2.png](https://assets.zilliz.com/Lucidworks_2_3162113560.png "Performance of Milvus FLAT and HNSW indexes on a small dataset.")
 
-###### _Performance of Milvus FLAT and HNSW indexes on a small dataset._
 
-![Lucidworks-3.png](https://assets.zilliz.com/Lucidworks_3_3dc17f0ed8.png)
+![Lucidworks-3.png](https://assets.zilliz.com/Lucidworks_3_3dc17f0ed8.png "Performance of Milvus FLAT and HNSW indexes on a medium dataset.")
 
-###### _Performance of Milvus FLAT and HNSW indexes on a medium dataset._
 
-![Lucidworks-4.png](https://assets.zilliz.com/Lucidworks_4_8a6edd2f59.png)
+![Lucidworks-4.png](https://assets.zilliz.com/Lucidworks_4_8a6edd2f59.png "Performance of Milvus FLAT and HNSW indexes on a large dataset.")
 
-###### _Performance of Milvus FLAT and HNSW indexes on a large dataset._
 
 <br/>
 

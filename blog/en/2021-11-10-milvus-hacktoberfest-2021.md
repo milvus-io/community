@@ -10,7 +10,7 @@ tag: Events
 
 # It's a Wrap - Milvus Hacktoberfest 2021
 
-![img](https://assets.zilliz.com/Blog_cover_a6ce8748d7.jpeg)
+![img](https://assets.zilliz.com/Blog_cover_a6ce8748d7.jpeg "Cover image.")
 
 Hacktoberfest has come to an end but there is no end to contributing to open-source projects!
 
@@ -29,7 +29,7 @@ During Hacktoberfest this year, the Milvus project repositories saw **44 pull re
 
 
 
-![image-20211110180357460](https://assets.zilliz.com/_80b0d87746.png)
+![image-20211110180357460](https://assets.zilliz.com/_80b0d87746.png "Hacktoberfest 2021.")
 
 
 
@@ -69,7 +69,7 @@ During Hacktoberfest this year, the Milvus project repositories saw **44 pull re
 
 ### Share your feedback with us! 
 
-![img](https://assets.zilliz.com/h3_412b0f649b.png)
+![img](https://assets.zilliz.com/h3_412b0f649b.png "Feedback.")
 
 You are more than welcome to share your experience of Milvus Hacktoberfest 2021 with us! Whether it's a blog post, a tweet (@milvusio) or just a post in our [forum](https://discuss.milvus.io/c/hacktoberfest/9), anything will be greatly appreciated!
 
@@ -83,9 +83,9 @@ You are more than welcome to share your experience of Milvus Hacktoberfest 2021 
 
 If you have limited knowledge of Milvus, you can get familiar with how the community works first by contributing to [pymilvus](https://github.com/milvus-io/pymilvus/labels/Hacktoberfest) or [docs](https://github.com/milvus-io/milvus-docs) repos. You can also look for tags such as **#goodfirstissue** or **#helpwanted**. 
 
-![img](https://assets.zilliz.com/h4_f18c9b6c2c.png)
+![img](https://assets.zilliz.com/h4_f18c9b6c2c.png "Good first issue.")
 
-![img](https://assets.zilliz.com/h5_a4f90c24a8.png)
+![img](https://assets.zilliz.com/h5_a4f90c24a8.png "Help wanted.")
 
 If you have any questions about contributing, you can always ask the community under the Forum's **Contributor** category: https://discuss.milvus.io/t/things-you-need-to-know-before-you-get-started/64. 
 
@@ -93,7 +93,7 @@ If you have any questions about contributing, you can always ask the community u
 
 ### 🏆 Be a Milvus Advocate
 
-![image-20211110180730866](https://assets.zilliz.com/advocate_1052d8249a.jpg)
+![image-20211110180730866](https://assets.zilliz.com/advocate_1052d8249a.jpg "Milvus advocate.")
 
 
 

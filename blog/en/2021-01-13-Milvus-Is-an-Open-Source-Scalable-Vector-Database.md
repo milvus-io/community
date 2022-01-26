@@ -25,9 +25,8 @@ This results in [drastically faster](https://medium.com/unstructured-data-servic
 
 [Milvus](https://milvus.io/) is an open-source data management platform built specifically for massive-scale vector data and streamlining machine learning operations (MLOps). Powered by Facebook AI Similarity Search (Faiss), Non-Metric Space Library (NMSLIB), and Annoy, Milvus brings a variety of powerful tools together in one place while extending their standalone functionality. The system was purpose built for storing, processing, and analyzing large vector datasets, and can be used to build AI applications spanning computer vision, recommendation engines, and much more.
 
-![Blog_Milvus Is an Open-Source Scalable AI Search Engine_1.jpg](https://assets.zilliz.com/Blog_Milvus_Is_an_Open_Source_Scalable_AI_Search_Engine_1_997255eb27.jpg)
+![Blog_Milvus Is an Open-Source Scalable AI Search Engine_1.jpg](https://assets.zilliz.com/Blog_Milvus_Is_an_Open_Source_Scalable_AI_Search_Engine_1_997255eb27.jpg "The structure of an AI-powered similarity search engine.")
 
-###### _The structure of an AI-powered similarity search engine._
 
 ### Milvus was made to power vector similarity search
 

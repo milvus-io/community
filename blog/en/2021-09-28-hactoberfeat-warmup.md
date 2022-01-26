@@ -10,7 +10,7 @@ tag: Events
 
 # Milvus To Participate In Hacktoberfest 2021
 
-![hacktoberfestCover](../assets/hacktoberfestCover.png)
+![hacktoberfestCover](../assets/hacktoberfestCover.png "Cover image.")
 
 **Milvus, the vector database empowering AI applications, announced today its participation in the 8th annual Hacktoberfest event sponsored by DigitalOcean!**
 
@@ -26,7 +26,7 @@ Check out the details [here](https://discuss.milvus.io/t/join-hacktoberfest-2021
 
 ## Contribute, get noticed & earn swag
 
-![swag](../assets/swag.jpeg)
+![swag](../assets/swag.jpeg "Milvus swags.")
 
 Certainly contributing to open source, or the concept of open source, is in esence an embodiment of altruism, but some cool swag doesn't hurt. We have up for grabs exclusive stickers, t-shirts, keyboards and a drone too! Check out the details on our [forum page](https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#prizes-8).
 

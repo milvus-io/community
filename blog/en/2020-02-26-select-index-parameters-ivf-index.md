@@ -20,7 +20,7 @@ During a search, Milvus searches each index file one by one. Per our experience,
 
 The following table shows a test using sift50m for index_file_size. The index type is SQ8.
 
-![1-sift50m-test-results-milvus.png](https://assets.zilliz.com/1_sift50m_test_results_milvus_74f60de4aa.png)
+![1-sift50m-test-results-milvus.png](https://assets.zilliz.com/1_sift50m_test_results_milvus_74f60de4aa.png "sift50m test results.")
 
 We can see that in CPU mode and GPU mode, when index_file_size is 2048 MB instead of 1024 MB, the search performance significantly improves.
 
@@ -36,7 +36,7 @@ Increasing <code>nprobe</code> leads to more buckets to search. As a result, the
 
 The following table shows a test using sift50m for <code>nlist</code> and <code>nprobe</code>. The index type is SQ8.
 
-![sq8-index-test-sift50m.png](https://assets.zilliz.com/sq8_index_test_sift50m_b5daa9f7b5.png)
+![sq8-index-test-sift50m.png](https://assets.zilliz.com/sq8_index_test_sift50m_b5daa9f7b5.png "SQ8 index test.")
 
 The table compares search performance and precision using different values of <code>nlist</code>/<code>nprobe</code>. Only GPU results are displayed because CPU and GPU tests have similar results. In this test, as the values of <code>nlist</code>/<code>nprobe</code> increase by the same percentage, search precision also increase. When <code>nlist</code> = 4096 and <code>nprobe</code> is 128, Milvus has the best search performance. In conclusion, when determining the values for <code>nlist</code> and <code>nprobe</code>, you must make a trade-off between performance and precision with consideration to different datasets and requirements.
 

@@ -57,7 +57,7 @@ SELECT \* FROM Tables
 SELECT \* FROM TableFiles
 ```
 
-![sqlite3](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/sqlite3.png)
+![sqlite3](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/sqlite3.png "SQLite 3.")
 
 ### MySQL
 
@@ -87,7 +87,7 @@ mysql -h127.0.0.1 -uroot -p123456 -Dmilvus
 
 Now, you can use SQL statements to query metadata information:
 
-![mysql](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/mysql.png)
+![mysql](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/mysql.png "MySQL.")
 
 ## 相关博客
 

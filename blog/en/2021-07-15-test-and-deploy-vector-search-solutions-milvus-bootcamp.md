@@ -215,9 +215,9 @@ end = time.time() - start
 The vector IDs returned from the queries are used to find the corresponding images. Matplotlib is then used to display the image search results.
 <br/>
 
-![pic1.png](https://assets.zilliz.com/pic1_c8652c7fae.png)
-![pic2.png](https://assets.zilliz.com/pic2_355b054161.png)
-![pic3.png](https://assets.zilliz.com/pic3_01780c6aac.png)
+![pic1.png](https://assets.zilliz.com/pic1_c8652c7fae.png "Results.")
+![pic2.png](https://assets.zilliz.com/pic2_355b054161.png "Results.")
+![pic3.png](https://assets.zilliz.com/pic3_01780c6aac.png "Results.")
 
 <br/>
 

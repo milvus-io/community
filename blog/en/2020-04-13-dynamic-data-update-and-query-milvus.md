@@ -30,8 +30,7 @@ Each Collection has a unique name and some properties that can be set, and vecto
 
 When the user sends a request to insert data, the data are serialized and deserialized to reach the Milvus server. Data are now written into memory. Memory writing is roughly divided into the following steps:
 
-![2-data-insertion-milvus.png](https://assets.zilliz.com/2_data_insertion_milvus_99448bae50.png)
-###### *Two steps to insert data in Milvus.*
+![2-data-insertion-milvus.png](https://assets.zilliz.com/2_data_insertion_milvus_99448bae50.png "Two steps to insert data in Milvus.")
 
 1. In MemManager, find or create a new MemTable corresponding to the name of the Collection. Each MemTable corresponds to a Collection buffer in memory.
 2. A MemTable will contain one or more MemTableFile. Whenever we create a new MemTableFile, we will record this information in the Meta at the same time. We divide MemTableFile into two states: Mutable and Immutable. When the size of MemTableFile reaches the threshold, it will become Immutable. Each MemTable can only have one Mutable MemTableFile to be written at any time.
@@ -44,8 +43,7 @@ Through MemManager, MemTable and MemTableFile multi-level architecture, data ins
 
 In Milvus, you only need to wait for one second at the longest for the inserted data to move from memory to disk. This entire process can be roughly summarized by the following picture:
 
-![2-near-real-time-query-milvus.png](https://assets.zilliz.com/2_near_real_time_query_milvus_f3cfdd00fb.png)
-###### *Flow of data insertion in Milvus.*
+![2-near-real-time-query-milvus.png](https://assets.zilliz.com/2_near_real_time_query_milvus_f3cfdd00fb.png "Flow of data insertion in Milvus.")
 
 First, the inserted data will enter an insert buffer in memory. The buffer will periodically change from the initial Mutable state to the Immutable state in preparation for serialization. Then, these Immutable buffers will be serialized to disk periodically by the background serialization thread. After the data are placed, the order information will be recorded in the metadata. At this point, the data can be searched!
 
@@ -53,15 +51,13 @@ Now, we will describe the steps in the picture in detail.
 
 We already know the process of inserting data into the mutable buffer. The next step is to switch from the mutable buffer to the immutable buffer:
 
-![3-mutable-buffer-immutable-buffer-milvus.png](https://assets.zilliz.com/3_mutable_buffer_immutable_buffer_milvus_282b66c5fe.png)
-###### *Switching from the mutable buffer to the immutable buffer.*
+![3-mutable-buffer-immutable-buffer-milvus.png](https://assets.zilliz.com/3_mutable_buffer_immutable_buffer_milvus_282b66c5fe.png "Switching from the mutable buffer to the immutable buffer.")
 
 Immutable queue will provide the background serialization thread with the immutable state and the MemTableFile that is ready to be serialized. Each MemTable manages its own immutable queue, and when the size of the MemTable’s only mutable MemTableFile reaches the threshold, it will enter the immutable queue. A background thread responsible for ToImmutable will periodically pull all the MemTableFiles in the immutable queue managed by MemTable and send them to the total Immutable queue. It should be noted that the two operations of writing data into the memory and changing the data in the memory into a state that cannot be written cannot occur at the same time, and a common lock is required. However, the operation of ToImmutable is very simple and almost does not cause any delay, so the performance impact on inserted data is minimal.
 
 The next step is to serialize the MemTableFile in the serialization queue to disk. This is mainly divided into three steps:
 
-![4-serialize-memtablefile-milvus.png](https://assets.zilliz.com/4_serialize_memtablefile_milvus_95766abdfb.png)
-###### *Three steps to serialize the MemTableFile to disk.*
+![4-serialize-memtablefile-milvus.png](https://assets.zilliz.com/4_serialize_memtablefile_milvus_95766abdfb.png "Three steps to serialize the MemTableFile to disk.")
 
 First, the background serialization thread will periodically pull MemTableFile from the immutable queue. Then, they are serialized into fixed-size raw files (Raw TableFiles). Finally, we will record this information in the metadata. When we conduct a vector search, we will query the corresponding TableFile in the metadata. From here, these data can be searched!
 
