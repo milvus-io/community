@@ -1,16 +1,16 @@
 ---
 id: 2022-1-27-milvus-2-0-a-glimpse-at-new-features.md
 title: Milvus 2.0 - A Glimpse at New Features
-author: Qiao Yanliang
+author: Yanliang Qiao
 date: 2022-01-27
-desc: Check the Newest Features of Milvus 2.0. 
-cover: assets.zilliz.com/20220127_142811_e8ae2a5864.png
+desc: Check out the Newest Features of Milvus 2.0. 
+cover: assets.zilliz.com/20220127_152408_68d3af6c13.png
 tag: Engineering
 ---
 
 # Milvus 2.0: A Glimpse at New Features
 
-It has been half a year since the first release candidate of Milvus 2.0. Now we are proud to announce the general availability of the Milvus 2.0. Please follow me to catch a glimpse at some of the new features that Milvus supports.
+It has been half a year since the first release candidate of Milvus 2.0. Now we are proud to announce the general availability of the Milvus 2.0. Please follow me step by step to catch a glimpse at some of the new features that Milvus supports.
 
 ## Entity deletion
 
@@ -93,7 +93,7 @@ after deleted: query res: [{'cus_id': 246}, {'cus_id': 2}, {'cus_id': 76}]
 completed
 ```
 
-4. Why is the deleted entity still retrievable? If you have checked the source code of Milvus, you will find that the deletion within Milvus is asynchronous and logical, which means that entities won't be physically deleted. Instead, they will be attached with a "deleted" mark so that no search or query requests will retrieve them. In addition, Milvus searches under Bounded Staleness consistency level by default. Therefore, the deleted entities are still retrievable before the data is synchronized in data node and query node. Try search or query the deleted entity after a few seconds, you will then find it is no longer in the result. 
+Why is the deleted entity still retrievable? If you have checked the source code of Milvus, you will find that the deletion within Milvus is asynchronous and logical, which means that entities won't be physically deleted. Instead, they will be attached with a "deleted" mark so that no search or query requests will retrieve them. In addition, Milvus searches under Bounded Staleness consistency level by default. Therefore, the deleted entities are still retrievable before the data is synchronized in data node and query node. Try search or query the deleted entity after a few seconds, you will then find it is no longer in the result. 
 If you want the deleted data immediately invisible, you can set the consistency level as Strong.
 
 ```python
@@ -117,11 +117,12 @@ Users can adjust the consistency level for Milvus flexibly to adapt it to variou
 - `CONSISTENCY_BOUNDED`: `GuaranteeTs` is set relatively smaller than the newest system timestamp, and query nodes search on a tolerable, less updated data view.
 - `CONSISTENCY_SESSION`: The client uses the timestamp of the last write operation as the `GuaranteeTs`, so that each client can at least retrieve the data inserted by itself. 
 
-In the previous RC release, Milvus adopts Strong as the default consistency. However, taking account of the fact that most users are less demanding about consistency than performance, Milvus changes the default consistency as Bounded Staleness, which can balance their requirements to a greater extent. In the future, we will further optimize the configuration of the GuaranteeTs, which can be achieved only during collection creation in current release. For more information about `GuaranteeTs`, see Guarantee Timestamp in Search Requests. 
+In the previous RC release, Milvus adopts Strong as the default consistency. However, taking account of the fact that most users are less demanding about consistency than performance, Milvus changes the default consistency as Bounded Staleness, which can balance their requirements to a greater extent. In the future, we will further optimize the configuration of the GuaranteeTs, which can be achieved only during collection creation in current release. For more information about `GuaranteeTs`, see [Guarantee Timestamp in Search Requests](https://github.com/milvus-io/milvus/blob/master/docs/developer_guides/how-guarantee-ts-works-cn.md). 
 
 Will lower consistency lead to better performance? You can never find the answer until you try it.
 
-5. Modify the code above to record the search latency.
+4. Modify the code above to record the search latency.
+
 ```python
 for i in range(5):
     start = time.time()
@@ -132,7 +133,7 @@ for i in range(5):
     print(f"search result ids: {ids}")
 ```
 
-6. Search with the identical data scale and parameters except that `consistency_level` is set as `CONSISTENCY_STRONG`.
+5. Search with the identical data scale and parameters except that `consistency_level` is set as `CONSISTENCY_STRONG`.
 
 ```python
 collection_name = "hello_milmil_consist_strong"
@@ -148,7 +149,7 @@ search latency: 0.198
 completed
 ```
 
-7. Search in a collection with `consistency_level` set as `CONSISTENCY_BOUNDED`.
+6. Search in a collection with `consistency_level` set as `CONSISTENCY_BOUNDED`.
 
 ```python
 collection_name = "hello_milmil_consist_bounded"
@@ -164,13 +165,14 @@ search latency: 0.0102
 completed
 ```
 
-8. Clearly, average search latency in CONSISTENCY_BOUNDED collection is 200ms shorter than that in CONSISTENCY_STRONG collection.
+7. Clearly, average search latency in `CONSISTENCY_BOUNDED` collection is 200ms shorter than that in `CONSISTENCY_STRONG` collection.
+
 Are the deleted entities immediately invisible if the consistency level is set as Strong? The answer is Yes. You can still try this on your own.
 
 ## Handoff
 Working with streaming dataset, many users are used to building an index and loading the collection before inserting data into it. In previous releases of Milvus, users have to load collection manually after the index building to replace the raw data with the index, which is slow and laborious. The handoff feature allows Milvus 2.0 to automatically load indexed segment to replace the streaming data that reaches certain thresholds of indexing, greatly improving the search performance.
 
-9. Build index and load the collection before inserting more entities.
+8. Build index and load the collection before inserting more entities.
 ```python
 # index
 index_params = {"index_type": "IVF_SQ8", "metric_type": "L2", "params": {"nlist": 64}}
@@ -179,7 +181,7 @@ collection.create_index(field_name=embedding_field.name, index_params=index_para
 collection.load()
 ```
 
-10. Insert 50,000 rows of entities 200 times (same batches of vectors are used for the sake of convenience, but this will not affect the result).
+9. Insert 50,000 rows of entities 200 times (same batches of vectors are used for the sake of convenience, but this will not affect the result).
 ```python
 import random
 # insert data with customized ids
@@ -193,12 +195,12 @@ for i in range(200):
     print(f"insert entities primary keys: {ins_res.primary_keys}")
 ```
 
-11. Check the loading segment information in query node during and after the inserting. 
+10. Check the loading segment information in query node during and after the inserting. 
 ```python
 # did this in another python console
 utility.get_query_segment_info("hello_milmil_handoff")
 ```
-12. You will find that all sealed segments loaded to query node are indexed.
+11. You will find that all sealed segments loaded to query node are indexed.
 ```
 [segmentID: 430640405514551298
 collectionID: 430640403705757697
@@ -222,9 +224,12 @@ state: Sealed
 ```
 
 ## What's more
-In addition to the above functionalities, new features such as Data Compaction, Dynamic Load Balance, and more are introduced into Milvus 2.0. Please enjoy your explorative journey with Milvus!
+
+In addition to the above functionalities, new features such as Data Compaction, Dynamic Load Balance, and more are introduced into Milvus 2.0. Please enjoy your exploratory journey with Milvus!
+
 In the near future, we will share with you a series of blogs introducing the design of Deletion, Data Compaction, Dynamic Load Balance, and Bitset in Milvus 2.0.
+
 Find us on:
-[GitHub](https://github.com/milvus-io/milvus)
-[Milvus.io](https://milvus.io/)
-[Slack Channel](milvusio.slack.com)
+- [GitHub](https://github.com/milvus-io/milvus)
+- [Milvus.io](https://milvus.io/)
+- [Slack Channel](milvusio.slack.com)
