@@ -42,11 +42,12 @@ const readMdFiles = async (pathList = []) => {
             license,
             notifyFollowers,
           } = {},
+          body: fileContentBody,
         } = fileData;
         if (!title) {
           throw Error("title should not be empty.");
         }
-        const requestBody = { title, contentFormat, content: fileContent };
+        const requestBody = { title, contentFormat, content: fileContentBody };
         tags &&
           (requestBody.tags = JSON.parse(
             `[${tags.split(",").map((i) => `"${i.trim()}"`)}]`
