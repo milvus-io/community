@@ -4,7 +4,7 @@ title: Milvus 2.0 - A Glimpse at New Features
 author: Yanliang Qiao
 date: 2022-01-27
 desc: Check out the Newest Features of Milvus 2.0. 
-cover: assets.zilliz.com/20220127_152408_68d3af6c13.png
+cover: assets.zilliz.com/20220207_160756_b19497dd1f.png
 tag: Engineering
 ---
 
