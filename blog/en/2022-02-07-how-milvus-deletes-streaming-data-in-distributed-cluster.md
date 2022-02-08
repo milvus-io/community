@@ -58,8 +58,9 @@ data = [
 collection.insert(data)
 # Query to make sure the entities to delete exist
 collection.load()
+expr = "id in [2,4,6,8,10]"
 pre_del_res = collection.query(
-    expr = "id in [2,4,6,8,10]",
+    expr,
     output_fields = ["id", "vector"]
 )
 print(pre_del_res)
@@ -67,7 +68,7 @@ print(pre_del_res)
 collection.delete(expr)
 # Query again to check if the deleted entities exist
 post_del_res = collection.query(
-    expr = "id in [2,4,6,8,10]",
+    expr,
     output_fields = ["id", "vector"]
 )
 print(post_del_res)
