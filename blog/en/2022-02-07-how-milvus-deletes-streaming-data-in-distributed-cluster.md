@@ -47,7 +47,7 @@ collection = Collection(
     schema=schema, 
     using='default', 
     shards_num=2,
-    consistency_level=CONSISTENCY_STRONG
+    consistency_level="Strong"
 )
 # Insert randomly generated vectors
 import random
