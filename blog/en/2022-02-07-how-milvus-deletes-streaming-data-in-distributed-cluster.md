@@ -90,7 +90,7 @@ When data DELETE messages come in, data node buffers all bloom filters in the co
 
 ![Data Node](https://assets.zilliz.com/data_node_2397ad70c3.png "DELETE workflow in data node")
 
-Since one shard is only assigned with one DML-Channel, extra query nodes added to the cluster will not be able to subscribe to the DML-Channel. To ensure that all query nodes can receive the DELETE messages, data nodes filters the DELETE messages from the DML-Channel, and forwards them to Delta-Channel to notify all query nodes of the delete operations.
+Since one shard is only assigned with one DML-Channel, extra query nodes added to the cluster will not be able to subscribe to the DML-Channel. To ensure that all query nodes can receive the DELETE messages, data nodes filter the DELETE messages from the DML-Channel, and forward them to Delta-Channel to notify all query nodes of the delete operations.
 
 ### Query node
 
@@ -104,6 +104,6 @@ As mentioned above, only a certain number of query nodes can receive DELETE mess
 
 Query nodes that cannot subscribe to the DML-Channel are only allowed to process search or query requests on sealed segments because they can only subscribe to the Delta-Channel, and receive the DELETE messages forwarded by data nodes. Having collected all DELETE messages in the sealed segments from Delta-Channel, the query nodes locate the entities by matching the provided primary keys with the bloom filters of the sealed segments, and then record the delete operations in the corresponding segments.
 
-Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there is a latency of several seconds before the deleted entities become invisible.
+Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there will be several seconds of latency before the deleted entities become invisible.
 
 In the upcoming articles of this series of blogs, we will introduce the design of Data Compaction, Dynamic Load Balance, and Bitset in Milvus 2.0. Please stay tuned.
