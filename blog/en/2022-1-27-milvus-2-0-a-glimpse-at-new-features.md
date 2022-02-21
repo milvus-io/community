@@ -121,7 +121,7 @@ Users can adjust the consistency level for Milvus flexibly to adapt it to variou
 - `CONSISTENCY_SESSION`: The client uses the timestamp of the last write operation as the `GuaranteeTs`, so that each client can at least retrieve the data inserted by itself. 
 
 
-In the previous RC release, Milvus adopts Strong as the default consistency. However, taking account of the fact that most users are less demanding about consistency than performance, Milvus changes the default consistency as Bounded Staleness, which can balance their requirements to a greater extent. In the future, we will further optimize the configuration of the GuaranteeTs, which can be achieved only during collection creation in current release. For more information about `GuaranteeTs`, see [Guarantee Timestamp in Search Requests](https://github.com/milvus-io/milvus/blob/master/docs/developer_guides/how-guarantee-ts-works-cn.md). 
+In the previous RC release, Milvus adopts Strong as the default consistency. However, taking account of the fact that most users are less demanding about consistency than performance, Milvus changes the default consistency as Bounded Staleness, which can balance their requirements to a greater extent. In the future, we will further optimize the configuration of the GuaranteeTs, which can be achieved only during collection creation in current release. For more information about `GuaranteeTs`, see [Guarantee Timestamp in Search Requests](https://github.com/milvus-io/milvus/blob/master/docs/developer_guides/how-guarantee-ts-works.md). 
 
 Will lower consistency lead to better performance? You can never find the answer until you try it.
 
