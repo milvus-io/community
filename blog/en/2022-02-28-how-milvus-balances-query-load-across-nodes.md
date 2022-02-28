@@ -98,14 +98,14 @@ To avoid such circumstances, the query coordinator (query coord) is programmed t
 
 ### Trigger automatic load balance
 
-According to the default value of the configuration queryCoord.balanceIntervalSeconds, the query coord checks the RAM usage (in percentage) of all query nodes every 60 seconds. If either of the following conditions is satisfied, the query coord starts to balance the query load across the query node:
+According to the default value of the configuration `queryCoord.balanceIntervalSeconds`, the query coord checks the RAM usage (in percentage) of all query nodes every 60 seconds. If either of the following conditions is satisfied, the query coord starts to balance the query load across the query node:
 
-1. RAM usage of any query node in the cluster is larger than queryCoord.overloadedMemoryThresholdPercentage (default: 90);
-2. Or the absolute value of any two query nodes' RAM usage difference is larger than queryCoord.memoryUsageMaxDifferencePercentage (default: 30).
+1. RAM usage of any query node in the cluster is larger than `queryCoord.overloadedMemoryThresholdPercentage` (default: 90);
+2. Or the absolute value of any two query nodes' RAM usage difference is larger than `queryCoord.memoryUsageMaxDifferencePercentage` (default: 30).
 
 After the segments are transferred from the source query node to the destination query node, they should also satisfy both the following conditions:
 
-1. RAM usage of the destination query node is no larger than queryCoord.overloadedMemoryThresholdPercentage (default: 90);
+1. RAM usage of the destination query node is no larger than `queryCoord.overloadedMemoryThresholdPercentage` (default: 90);
 2. The absolute value of the source and destination query nodes' RAM usage difference after load balancing is less than that before load balancing.
 
 With the above conditions satisfied, the query coord proceeds to balance the query load across the nodes.
