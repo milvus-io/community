@@ -1,63 +1,99 @@
 # Community membership
 
-This doc outlines the various responsibilities of contributor roles in Milvus.
+**Note:** This document is a work in progress
+
+This doc outlines the various responsibilities of contributor roles in
+Milvus.  The [Maintainers](https://github.com/milvus-io/milvus/blob/master/OWNERS_ALIASES) is in charge of membership maintenance and arbitrates divergence between members.
 
 | Role | Responsibilities | Requirements | Defined by |
 | -----| ---------------- | ------------ | -------|
-| Member | Active contributor in the community | Sponsored by 2 reviewers and multiple contributions to the project | milvus-io GitHub org member |
-| Reviewer | Review contributions from other members | History of review and authorship in a subproject | [OWNERS] file reviewer entry |
-| Approver | Contributions acceptance approval| Highly experienced active reviewer and contributor to a subproject | [OWNERS] file approver entry|
-| Subproject owner | Set direction and priorities for a subproject | Demonstrated responsibility and excellent technical judgement for the subproject | [sigs.yaml] subproject [OWNERS] file *owners* entry |
+| Contributor | Active contributor in the community | Finish at least one contribution to the project | Github all contributor list|
+| Committer | Review contributions from other members | Finish at least one major contributions, History of reviews| [COMITTER](https://github.com/milvus-io/milvus/blob/master/OWNERS) |
+| Maintainer | Contributions acceptance approval| Highly experienced active reviewer and contributor| [MAINTAINERS](https://github.com/milvus-io/milvus/blob/master/OWNERS_ALIASES)|
 
-## New contributors
+## Roles and Responsibilities
 
-[New contributors] should be welcomed to the community by existing members,
-helped with PR workflow, and directed to relevant documentation and
-communication channels.
+### Contributors
+Contributors are individuals who actively make contribution and are willing to participate in the code review of new contributions. They can have
+issues and PRs assigned to them, participate in discussion through GitHub and slack, and pre-submit tests are automatically run for their PRs. 
 
-## Member
+**Defined by:** Github all contributor list
 
-Members are continuously active contributors in the community.  They can have
-issues and PRs assigned to them, participate in SIGs through GitHub teams, and
-pre-submit tests are automatically run for their PRs. Members are expected to
-remain active contributors to the community.
+#### Requirements
+- Have made at least one contribution to the project or community.  Contribution may include, but is not limited to:
+    - Authoring or reviewing PRs on GitHub. At least one PR must be **merged**.
+    - Filing or commenting on issues on GitHub
+    - Contributing to community discussions (e.g. meetings, Slack, github discussion)
+    - Improve docs
+  
+- Subscribed to the community [slack](milvusio.slack.com)
+- Have read the [contributor guide](https://github.com/milvus-io/community/blob/master/CONTRIBUTING.md)
+- Actively contributing to 1 or more milvus related repos.
 
-**Defined by:** Member of the milvus-io GitHub organization
+#### Responsibilities and privileges
 
-## Reviewer
+- Expected to be responsive to issues and PRs assigned to them
+- Expected to follow community rules and values
+- They can be assigned to issues and PRs, and people can ask contributors for reviews with a `/assign @username`.
+- Tests can be run against their PRs automatically. 
+- Ask for mentorship from Committers/Maintainers
+- Join the community meetings and give their advice
 
-Reviewers are able to review code for quality and correctness on some part of a
-subproject. They are knowledgeable about both the codebase and software
-engineering principles.
+### Committer
+Committers are able to review code for quality and correctness on some part of the project. They are knowledgeable about both the codebase and software
+engineering principles and they should practice the community core values and guidelines as an example.
 
-**Defined by:** *reviewers* entry in an OWNERS file in a repo owned by the
-milvus project.
+**Defined by:** [COMITTER](https://github.com/milvus-io/milvus/blob/master/OWNERS)
 
-## Approver
+#### Requirements
 
-Code approvers are able to both review and approve code contributions.  While
-code review is focused on code quality and correctness, approval is focused on
-holistic acceptance of a contribution including: backwards / forwards
-compatibility, adhering to API and flag conventions, subtle performance and
-correctness issues, interactions with other parts of the system, etc.
+- contributor for at least 3 months
+- Finish at least one major contribution to the community
+- Reviewers for at least 5 PRs to the codebase
+- Reviewed or merged at least 5 substantial PRs to the codebase
+- Knowledgeable about the codebase/doc
+- Nominated by at least 1 Maintainer, seconded by at least 3 other committers/maintainers.
 
-**Defined by:** *approvers* entry in an OWNERS file in a repo owned by the
-milvus project.
+#### Responsibilities and privileges
+- Expected to be responsive to review pull requests
+- Expected to assign issues and prs to related expertise
+- Expected to be responsive to mentions of others on github and slack
+- Expected to join the community meetings and activities in time
+- Committer status may be a precondition to accepting large code contributions
+- Mentor and guide new contributors
+- Committers can do `/lgtm` on open PRs.
+- Committers can vote for the new commiters
+- Prioritized technical support from the community 
 
-## Subproject Owner
+A committer is considered emeritus by their own declaration. An emeritus committer will be list on our hall of fame and may request reinstatement of review access from the maintainers, which will be sufficient to restore him or her to active committer status.
 
-**Note:** This is a generalized high-level description of the role, and the
-specifics of the subproject owner role's responsibilities and related
-processes *MUST* be defined for individual SIGs or subprojects.
+### Maintainer
+Maintainers are able to both review and approve contributions. The maintainers consist group of active committers that moderate the discussion, manage the project release, and proposes new committers or maintainer. Maintainers should serve the community by upholding the community values and guidelines to make Milvus a better community for everyone.
 
-Subproject Owners are the technical authority for a subproject in the Kubernetes
-project.  They *MUST* have demonstrated both good judgement and responsibility
-towards the health of that subproject.  Subproject Owners *MUST* set technical
-direction and make or approve design decisions for their subproject - either
-directly or through delegation of these responsibilities.
+#### Requirements
+- Commiter of the codebase for at least 3 months
+- Merged at least 20 PRs to the codebase
+- Primary reviewer for at least 10 substantial PRs to the codebase
+- Deep understanding of the technical goals and design details of Milvus
+- Nominated by at least 1 Approver, and reaches quorum in the exising Maintainer group.
 
-**Defined by:** *owners* entry in subproject [OWNERS] files as defined by [sigs.yaml]  *subproject.owners*
+#### Responsibilities and privileges
+- Make and approve technical design decisions for the project.
+- Define milestones and releases.
+- Mentor and guide other memberships in the community.
+- Ensure continued health of subproject
+  - Adequate test coverage to confidently release
+  - Tests are passing reliably (i.e. not flaky) and are fixed when they fail
+- Ensure a healthy process for discussion and decision making is in place.
+- Join the community meeting and discussion in time
+- Nominate maintainers and committers and vote for new membership change.
+- Prioritized technical support from the community 
 
+maintainers has no concept of tenure, but will retire under the following circumstances:
 
+Actively choose to retire due to personal reasons.
 
-[New contributors]: /CONTRIBUTING.md
+- When a maintainer can no longer participate in community affairs and become inactive in the last 6 months.
+- If the maintainer absent on half of the community meetings and votings in the last 6 months.
+- Retirees will become emeritus members and will be list at hall of fame.
+
