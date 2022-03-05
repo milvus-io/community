@@ -8,8 +8,8 @@ Milvus.  The [Maintainers](https://github.com/milvus-io/milvus/blob/master/OWNER
 | Role | Responsibilities | Requirements | Defined by |
 | -----| ---------------- | ------------ | -------|
 | Contributor | Active contributor in the community | Finish at least one contribution to the project | Github all contributor list|
-| Committer | Review contributions from other members | Finish at least one major contributions, History of reviews| [COMITTER](https://github.com/milvus-io/milvus/blob/master/OWNERS) |
-| Maintainer | Contributions acceptance approval| Highly experienced active reviewer and contributor| [MAINTAINERS](https://github.com/milvus-io/milvus/blob/master/OWNERS_ALIASES)|
+| Committer | Review contributions from other members | Finish at least one major contributions, History of reviews| [COMITTER](https://github.com/milvus-io/milvus/blob/master/COMMITTERS) |
+| Maintainer | Contributions acceptance approval| Highly experienced active reviewer and contributor| [MAINTAINERS](https://github.com/milvus-io/milvus/blob/master/MAINTAINERS)|
 
 ## Roles and Responsibilities
 
@@ -43,7 +43,7 @@ issues and PRs assigned to them, participate in discussion through GitHub and sl
 Committers are able to review code for quality and correctness on some part of the project. They are knowledgeable about both the codebase and software
 engineering principles and they should practice the community core values and guidelines as an example.
 
-**Defined by:** [COMITTER](https://github.com/milvus-io/milvus/blob/master/OWNERS)
+**Defined by:** [COMITTER](https://github.com/milvus-io/milvus/blob/master/COMMITTERS)
 
 #### Requirements
 
@@ -69,6 +69,8 @@ A committer is considered emeritus by their own declaration. An emeritus committ
 
 ### Maintainer
 Maintainers are able to both review and approve contributions. The maintainers consist group of active committers that moderate the discussion, manage the project release, and proposes new committers or maintainer. Maintainers should serve the community by upholding the community values and guidelines to make Milvus a better community for everyone.
+
+**Defined by:** [MAINTAINER](https://github.com/milvus-io/milvus/blob/master/MAINTAINERS)
 
 #### Requirements
 - Commiter of the codebase for at least 3 months
