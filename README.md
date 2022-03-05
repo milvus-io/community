@@ -35,6 +35,6 @@ See our [community](https://github.com/milvus-io/community) repository to learn 
 -   [Milvus Announce](https://lists.lfai.foundation/g/milvus-announce)
 
 ## Members
-All contributors see [milvus readme](https://github.com/milvus-io/milvus)
-All committers see [committers](https://github.com/milvus-io/milvus/blob/master/COMMITTERS)
-All maintainers see [maintainers](https://github.com/milvus-io/milvus/blob/master/MAINTAINERS)
+- All contributors [milvus readme](https://github.com/milvus-io/milvus)
+- All committers [committers](https://github.com/milvus-io/milvus/blob/master/COMMITTERS)
+- All maintainers [maintainers](https://github.com/milvus-io/milvus/blob/master/MAINTAINERS)
