@@ -1,7 +1,7 @@
 ---
 id: 2022-01-20-story-of-smartnews.md
 title: The Story of SmartNews - from a Milvus User to an Active Contributor
-author: Zilliz
+author: Milvus
 date: 2022-01-20
 desc: Learn about the story of SmartNews, both a Milvus user and contributor.
 cover: assets.zilliz.com/Smart_News_from_a_Milvus_User_to_an_Active_Contributor_ca8415fad2.png
