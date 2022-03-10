@@ -94,7 +94,9 @@ You can now check the newly created collection in the **Overview** page.
 Import the test dataset into Milvus.
 
 ![Import data](https://assets.zilliz.com/import_data_1_f73d71be85.png "Import data with Attu")
+
 ![Import data](https://assets.zilliz.com/import_data_2_4b3c3c3c25.png "Import data with Attu")
+
 ![Import data](https://assets.zilliz.com/import_data_3_0def4e8550.png "Import data with Attu")
 
 Click the collection name in Overview or Collection page to enter query interface to check the imported data.
