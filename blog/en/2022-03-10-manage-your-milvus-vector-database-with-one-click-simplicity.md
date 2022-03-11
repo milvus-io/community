@@ -1,7 +1,7 @@
 ---
 id: 2022-03-10-manage-your-milvus-vector-database-with-one-click-simplicity.md
 title: Manage Your Milvus Vector Database with One-click Simplicity
-author: Xuan Yang
+author: Zhen Chen
 date: 2022-03-10
 desc: Attu - a GUI tool for Milvus 2.0.
 cover: assets.zilliz.com/attu_b966019b3c.png
@@ -12,9 +12,9 @@ canonicalUrl: http://milvus.io/blog/2022-03-10-manage-your-milvus-vector-databas
 
 ![Binlog Cover Image](https://assets.zilliz.com/attu_b966019b3c.png "Attu - a GUI tool for Milvus 2.0")
 
-By [Xuan Yang](https://github.com/XuanYang-cn).
+Draft by [Zhen Chen](https://github.com/czhen-zilliz) and transcreation by [Lichen Wang](https://github.com/LocoRichard).
 
-<p style="font-size: 12px;color: #4c5a67; text-align: center">Click <a href="https://zilliz.com/blog/manage-your-milvus-vector-database-with-one-click-simplicity">here</a> to check the original post.</p> 
+<p style="font-size: 12px;color: #4c5a67>Click <a href="https://zilliz.com/blog/manage-your-milvus-vector-database-with-one-click-simplicity">here</a> to check the original post.</p> 
 
 In the face of rapidly growing demand for unstructured data processing, Milvus 2.0 stands out. It is an AI-oriented vector database system designed for massive production scenarios. Apart from all these Milvus SDKs and Milvus CLI, a command-line interface for Milvus, is there a tool that allows users to operate Milvus more intuitively? The anwer is YES. Zilliz has announced a graphical user interface - Attu - specifically for Milvus. In this article, we would like to show you step by step how to perform a vector similarity search with Attu.
 
