@@ -21,14 +21,14 @@ Jump to:
   - [Vector and scalars](#Vector-and-scalars)
   - [From vector search engine to vector database](#From-vector-search-engine-to-vector-database)
   - [A cloud-native first approach](#A-cloud-native-first-approach)
-- [The design principles of Milvus 2.0](#The-design-principles-of-Milvus-2.0)
+- [The design principles of Milvus 2.0](#The-design-principles-of-Milvus-20)
   - [Log as data](#Log-as-data)
-  - [Duality of table and log](#Duality of table and log)
+  - [Duality of table and log](#Duality-of-table-and-log)
   - [Log persistency](#Log-persistency)
 - [Building a vector database for scalable similarity search](#Building-a-vector-database-for-scalable-similarity-search)
   - [Standalone and cluster](#Standalone-and-cluster)
-  - [A bare-bone skeleton of the Milvus architecture](#A-bare-bone-skeleton-of-the-Milvus-architecture)
-  - [Data model](#Data-model)
+  - [A bare-bones skeleton of the Milvus architecture](#A-bare-bones-skeleton-of-the-Milvus-architecture)
+  - [Data model](#Data-Model)
 
 ## Unstructured data requires a complete basic software stack 
 
@@ -190,5 +190,6 @@ Topics covered in this blog series include:
 - QA system
 - Milvus_Cli and Attu
 - Vector execution engine
+
 
 The Deep Dive series blogs will be released at a regular cadence. So please stay tuned!
