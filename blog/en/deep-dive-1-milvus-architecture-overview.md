@@ -1,6 +1,6 @@
 ---
 id: deep-dive-1-milvus-architecture-overview.md
-title: Deep Dive #1: Building a Vector Database for Scalable Similarity Search
+title: Building a Vector Database for Scalable Similarity Search
 author: Xiaofan Luan
 date: 2022-03-14
 desc: The first one in a blog series to take a closer look at the thought process and design principles behind the building of the most popular open-source vector database.
