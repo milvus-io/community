@@ -18,7 +18,7 @@ According to [statistics](https://mitsloan.mit.edu/ideas-made-to-matter/tapping-
 
 Jump to:
 - [Unstructured data requires a complete basic software stack](#Unstructured-data-requires-a-complete-basic-software-stack)
-  - [Vector and scalars](#Vector-and-scalars)
+  - [Vectors and scalars](#Vectors-and-scalars)
   - [From vector search engine to vector database](#From-vector-search-engine-to-vector-database)
   - [A cloud-native first approach](#A-cloud-native-first-approach)
 - [The design principles of Milvus 2.0](#The-design-principles-of-Milvus-20)
