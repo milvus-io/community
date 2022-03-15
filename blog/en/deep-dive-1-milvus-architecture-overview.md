@@ -36,13 +36,13 @@ As the Internet grew and evolved, unstructured data became more and more common,
 
 Milvus stores and indexes these vectors, and analyzes the correlation between two vectors by calculating their similarity distance. If the two embedding vectors are very similar, it means that the original data sources are similar as well.
 
-![The workflow of processing unstructured data.](https://assets.zilliz.com/processing_unstructured_data_40013c5797.png "The workflow of processing unstructured data.")
+![The workflow of processing unstructured data.](https://assets.zilliz.com/Frame_1_6_5e0ab80f2c.png "The workflow of processing unstructured data.")
 
 ### Vectors and scalars
 
 A scalar is a quantity that is described only in one measurement - magnitude. A scalar can be represented as a number. For instance, a car is traveling at the speed of 80 km/h. Here, the speed (80km/h) is a scalar. Meanwhile, a vector is a quantity that is described in at least two measurements - magnitude and direction. If a car is traveling towards west at the speed of 80 km/h, here the velocity (80 km/h west) is a vector. The image below is an example of common scalars and vectors.
 
-![Scalars vs. Vectors](https://assets.zilliz.com/2022_03_02_10_11_00_6b9b142ebf.png "Scalars and vectors. Image source: NASA Glenn Research Center.")
+![Scalars vs. Vectors](https://assets.zilliz.com/Frame_1_7_90a142ab5b.png "Scalars and vectors. Image source: NASA Glenn Research Center.")
 
 Since most of the important data have more than one attribute, we can understand these data better if we convert them into vectors. One common way for us to manipulate vector data is to calculate the  distance between vectors using [metrics](https://milvus.io/docs/v2.0.x/metric.md) such as Euclidean distance, inner product, Tanimoto distance, Hamming distance, etc. The closer the distance, the more similar the vectors are. To query a massive vector dataset efficiently, we can organize vector data by building indexes on them. After the dataset is indexed, queries can be routed to clusters, or subsets of data, that are most likely to contain vectors similar to an input query. 
 
@@ -93,7 +93,7 @@ As our next-generation cloud-native vector database, Milvus 2.0 is built around 
 
 A log in a database serially records all the changes made to data. As shown in the figure below, from left to right are "old data" and "new data". And the logs are in time order. Milvus has a global timer mechanism assigning one globally unique and auto-incremental timestamp.
 
-![Logs](https://assets.zilliz.com/logs_2d0f34b80d.png "Logs in a database.")
+![Logs](https://assets.zilliz.com/Frame_1_8_6e40211f44.png "Logs in a database.")
 
 In Milvus 2.0, the log broker serves as the system's backbone: all data insert and update operations must go through the log broker, and worker nodes execute CRUD operations by subscribing to and consuming logs.
 
