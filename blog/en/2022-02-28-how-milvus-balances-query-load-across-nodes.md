@@ -4,13 +4,13 @@ title: How Milvus Balances Query Load across Nodes?
 author: Xi Ge
 date: 2022-02-28
 desc: Milvus 2.0 supports automatic load balance across query nodes.
-cover: assets.zilliz.com/20220228_145318_eb8d1ce83f.png
+cover: assets.zilliz.com/Load_balance_b2f35a5577.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md
 ---
 
-![Binlog Cover Image](https://assets.zilliz.com/20220228_145318_eb8d1ce83f.png "How Milvus Balances Query Load across Nodes?")
+![Binlog Cover Image](https://assets.zilliz.com/Load_balance_b2f35a5577.png "How Milvus Balances Query Load across Nodes?")
 
 By [Xi Ge](https://github.com/xige-16).
 
