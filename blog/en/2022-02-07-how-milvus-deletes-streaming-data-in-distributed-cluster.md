@@ -4,7 +4,7 @@ title: How Milvus Deletes Streaming Data in a Distributed Cluster
 author: Lichen Wang
 date: 2022-02-07
 desc: The cardinal design behind the deletion function in Milvus 2.0, the world's most advanced vector database.
-cover: assets.zilliz.com/delete_cover_021941a48c.png
+cover: assets.zilliz.com/Delete_9f40bbfa94.png
 tag: Engineering
 ---
 
