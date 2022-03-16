@@ -4,13 +4,13 @@ title: Milvus To Participate In Hacktoberfest 2021
 author: Zilliz
 date: 2021-09-28
 desc: Everyone is welcome!
-cover: assets.zilliz.com/hacktoberfestrelease_d8c109dca1.png
+cover: assets.zilliz.com/Hacktoberfest_89c929cace.png
 tag: Events
 ---
 
 # Milvus To Participate In Hacktoberfest 2021
 
-![hacktoberfestCover](../assets/hacktoberfestCover.png "Cover image.")
+![hacktoberfestCover](https://assets.zilliz.com/Hacktoberfest_89c929cace.png "Cover image.")
 
 **Milvus, the vector database empowering AI applications, announced today its participation in the 8th annual Hacktoberfest event sponsored by DigitalOcean!**
 
