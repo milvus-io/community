@@ -4,13 +4,13 @@ title: Manage Your Milvus Vector Database with One-click Simplicity
 author: Zhen Chen
 date: 2022-03-10
 desc: Attu - a GUI tool for Milvus 2.0.
-cover: assets.zilliz.com/attu_b966019b3c.png
+cover: assets.zilliz.com/Attu_3ff9a76156.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/2022-03-10-manage-your-milvus-vector-database-with-one-click-simplicity.md
 ---
 
-![Binlog Cover Image](https://assets.zilliz.com/attu_b966019b3c.png "Attu - a GUI tool for Milvus 2.0")
+![Binlog Cover Image](https://assets.zilliz.com/Attu_3ff9a76156.png "Attu - a GUI tool for Milvus 2.0")
 
 Draft by [Zhen Chen](https://github.com/czhen-zilliz) and transcreation by [Lichen Wang](https://github.com/LocoRichard).
 
