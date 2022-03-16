@@ -4,7 +4,7 @@ title: Milvus in 2021 - Year in Review
 author: Xiaofan Luan
 date: 2022-01-07
 desc: Learn what Milvus community has achieved and what's in store for year 2022.
-cover: assets.zilliz.com/1_ca3747f982.png
+cover: assets.zilliz.com/Year_in_review_6deaee3a96.png
 tag: Events
 ---
 
