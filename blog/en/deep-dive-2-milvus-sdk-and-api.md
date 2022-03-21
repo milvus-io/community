@@ -3,7 +3,7 @@ id: deep-dive-2-milvus-sdk-and-api.md
 title: An Introduction to Milvus Python SDK and API
 author: Xuan Yang
 date: 2022-03-21
-desc: Learn how SDKs interact with Milvus and why ORM-style API helps you better manages Milvus.
+desc: Learn how SDKs interact with Milvus and why ORM-style API helps you better manage Milvus.
 cover: assets.zilliz.com/deep_dive_2_a3630c85d3.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
