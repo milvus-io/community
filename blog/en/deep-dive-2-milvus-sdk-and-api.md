@@ -4,13 +4,13 @@ title: An Introduction to Milvus Python SDK and API
 author: Xuan Yang
 date: 2022-03-21
 desc: Learn how SDKs interact with Milvus and why ORM-style API helps you better manage Milvus.
-cover: assets.zilliz.com/deep_dive_2_a3630c85d3.png
+cover: assets.zilliz.com/20220322_175856_e8e7bea7dc.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md
 ---
 
-![Cover image](https://assets.zilliz.com/deep_dive_2_a3630c85d3.png "An Introduction to Milvus Python SDK and API")
+![Cover image](https://assets.zilliz.com/20220322_175856_e8e7bea7dc.png "An Introduction to Milvus Python SDK and API")
 
 By [Xuan Yang](https://github.com/XuanYang-cn)
 
