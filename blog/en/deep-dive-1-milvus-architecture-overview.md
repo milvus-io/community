@@ -177,19 +177,15 @@ To access data in real time, the system reads data in both growing segments and 
 
 Each segment contains massive amount of entities. An entity in Milvus is equivalent to a row in a traditional database. Each entity has a unique primary key field, which can also be automatically generated. Entities must also contain timestamp (ts), and vector field - the core of Milvus.
 
-## What's next?
+## About the Deep Dive Series
 
-With the official [announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we plan to release this Milvus Deep Dive blog series, aiming to provide the community with an in-depth interpretation of the Milvus architecture and source code.
-Topics covered in this blog series include:
-- Milvus architecture overview
-- APIs and Python SDKs
-- Proxy and major data processing flow
+With the [official announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:
+- [Milvus architecture overview](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md)
+- [APIs and Python SDKs](https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md)
+- [Data processing](http://milvus.io/blog/deep-dive-3-data-processing.md)
 - Data management
 - Real-time query
 - Scalar execution engine
 - QA system
 - Milvus_Cli and Attu
 - Vector execution engine
-
-
-The Deep Dive series blogs will be released at a regular cadence. So please stay tuned!
