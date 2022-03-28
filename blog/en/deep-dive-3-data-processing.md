@@ -143,7 +143,8 @@ In addition, the index coord is also in charge of the requests of dropping index
 ![Dropping an index.](https://assets.zilliz.com/Dropping_an_index_afdab6a339.png "Dropping an index.")
 
 When the root coord receives a request of dropping an index from the client, it first marks the index as "dropped", and returns the result to the client while notifying the index coord. Then the index  coord filters all indexing tasks with the `IndexID` and those tasks matching the condition are dropped.
-The index coord coroutine in the background will gradually delete all indexing tasks marked as "dropped" from object storage (MinIO and S3). This process involves the recycleIndexFiles interface. When all corresponding index files are deleted, the meta information of the deleted indexing tasks are removed from meta storage (etcd).
+
+The background coroutine of the index coord will gradually delete all indexing tasks marked as "dropped" from object storage (MinIO and S3). This process involves the recycleIndexFiles interface. When all corresponding index files are deleted, the meta information of the deleted indexing tasks are removed from meta storage (etcd).
 
 ## About the Deep Dive Series
 
