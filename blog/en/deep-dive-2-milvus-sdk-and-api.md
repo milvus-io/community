@@ -84,14 +84,15 @@ To create a partition object, you can either create it with its parent collectio
 
 In the case that these partition or index objects exist, you can get them through their parent collection object.
 
-## What's more
+## About the Deep Dive Series
 
-It is recommended to learn about PyMilvus through our technical document. The document consists of two major sections, including an automated API reference and usage instructions made by our contributors.
-
-- [Milvus Technical Document](https://milvus.io/docs)
-- [PyMilvus Source Document](https://github.com/milvus-io/pymilvus/tree/master/docs)
-
-
-
-
-
+With the [official announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:
+- [Milvus architecture overview](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md)
+- [APIs and Python SDKs](https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md)
+- [Data processing](http://milvus.io/blog/deep-dive-3-data-processing.md)
+- Data management
+- Real-time query
+- Scalar execution engine
+- QA system
+- Milvus_Cli and Attu
+- Vector execution engine
