@@ -12,6 +12,8 @@ canonicalUrl: https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persist
 
 ![Cover image](https://assets.zilliz.com/Deep_Dive_4_812021d715.png "Data Insertion and Data Persistence in a Vector Database.")
 
+> This article is written by [Bingyi Sun](https://github.com/sunby) and transcreated by [Angela Ni](https://www.linkedin.com/in/yiyun-n-2aa713163/).
+
 In the previous post in the Deep Dive series, we have introduced [how data is processed in Milvus](https://milvus.io/blog/deep-dive-3-data-processing.md), the world's most advanced vector database. In this article, we will continue to examine the components involved in data insertion, illustrate the data model in detail, and explain how data persistence is achieved in Milvus.
 
 Jump to:
