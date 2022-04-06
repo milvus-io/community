@@ -12,7 +12,7 @@ canonicalUrl: http://milvus.io/blog/deep-dive-3-data-processing.md
 
 ![Cover image](https://assets.zilliz.com/How_Is_Data_Processed_in_a_Vector_Database_9fb236bc01.png "How Is Data Processed in a Vector Database?")
 
-> This article is written by [Zhenshan Cao](https://github.com/czs007) and transcreated by Angela Ni.
+> This article is written by [Zhenshan Cao](https://github.com/czs007) and transcreated by [Angela Ni](https://www.linkedin.com/in/yiyun-n-2aa713163/).
 
 In the previous two posts in this blog series, we have already covered the [system architecture](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md) of Milvus, the world's most advanced vector database, and its [Python SDK and API](https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md). 
 
