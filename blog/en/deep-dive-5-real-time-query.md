@@ -31,7 +31,7 @@ There are two types of data that are loaded to query node: streaming data from [
 
 ![Flowchart](https://assets.zilliz.com/flowchart_b1c51dfdaa.png "A flowchart of loading data to query node.")
 
-Data coord is in charge of handling streaming data that are continuously inserted into Milvus. When a Milvus user calls 'collection.load()' to load a collection, query coord will inquire the data coord to learn which segments have been persisted in storage and their corresponding checkpoints. A checkpoint is a mark to signify that persisted segments before the checkpoints are consumed while those after the checkpoint are not.
+Data coord is in charge of handling streaming data that are continuously inserted into Milvus. When a Milvus user calls `collection.load()` to load a collection, query coord will inquire the data coord to learn which segments have been persisted in storage and their corresponding checkpoints. A checkpoint is a mark to signify that persisted segments before the checkpoints are consumed while those after the checkpoint are not.
 
 Then, the query coord outputs allocation strategy based on the information from the data coord: either by segment or by channel. The segment allocator is responsible for allocating segments in persistent storage  (batch data) to different query nodes. For instance, in the image above, the segment allocator allocates segment 1 and 3 (S1, S3) to query node 1, and segment 2 and 4 (S2, S4) to query node 2. The channel allocator assigns different query nodes to watch multiple data manipulation [channels](https://milvus.io/docs/v2.0.x/data_processing.md#Data-insertion) (DMChannels) in the log broker. For instance, in the image above, the channel allocator assigns query node 1 to watch  channel 1 (Ch1), and query node 2 to watch channel 2 (Ch2).
 
@@ -63,7 +63,7 @@ After being filtered, the incremental data are inserted into growing segments, a
 
 During data insertion, each insertion message is assigned a timestamp. In the DMChannel shown in the image above, data are are inserted in order, from left to right. The timestamp for the first insertion message is 1; the second, 2; and the third, 6. The fourth message marked in red is not an insertion message, but rather a timetick message. This is to signify that inserted data whose timestamps are smaller than this timetick are already in log broker. In other words, data inserted after this timetick message should all have timestamps whose values are bigger than this timetick. For instance, in the image above, when query node perceives that the current timetick is 5, it means all insertion messages whose timestamp value is less than 5 are all loaded to query node. 
 
-The server time node provides an updated 'tsafe' value every time it receives a timetick from the insert node. 'tsafe' means safety time, and all data inserted before this point of time can be queried. Take an example, if 'tsafe' = 9, inserted data with timestamps smaller than 9 can all be queried. 
+The server time node provides an updated `tsafe` value every time it receives a timetick from the insert node. `tsafe` means safety time, and all data inserted before this point of time can be queried. Take an example, if `tsafe` = 9, inserted data with timestamps smaller than 9 can all be queried. 
 
 ## Real-time query in Milvus
 
@@ -77,7 +77,7 @@ A query message includes the following crucial information about a query:
 - `msgID`: Message ID, the ID of the query message assigned by the system.
 - `collectionID`: The ID of the collection to query (if specified by user).
 - `execPlan`: The execution plan is mainly used for attribute filtering in a query. 
-- `service_ts`: Service timestamp will be updated together with 'tsafe' mentioned above. Service timestamp signifies at which point is the service in. All data inserted before `service_ts` are available for query.
+- `service_ts`: Service timestamp will be updated together with `tsafe` mentioned above. Service timestamp signifies at which point is the service in. All data inserted before `service_ts` are available for query.
 - `travel_ts`: Travel timestamp specifies a range of time in the past. And the query will be conducted on data existing in the time period specified by `travel_ts`. 
 - `guarantee_ts`: Guarantee timestamp specifies a period of time after which the query needs to be conducted. Query will only be conducted when `service_ts` > `guarantee_ts`.
 
@@ -89,7 +89,7 @@ When a query message is received, Milvus first judges if the current service tim
 
 However, if the current service time is smaller than the guarantee timestamp in a newly inserted query message, the query message will become an unsolved message and wait to be processed till the service time becomes bigger than the guarantee timestamp.
 
-Query results are ultimately pushed to the result channel. Proxy obtains the query results from that channel. Likewise, proxy will conduct a 'global reduce' as well because it receives results from multiple query nodes and query results might be repetitive.
+Query results are ultimately pushed to the result channel. Proxy obtains the query results from that channel. Likewise, proxy will conduct a "global reduce" as well because it receives results from multiple query nodes and query results might be repetitive.
 
 To ensure that the proxy has received all query results before returning them to the SDK, result message will also keep a record of information including searched sealed segments, searched DMChannels, and global sealed segments (all segments on all query nodes). The system can conclude that the proxy has received all query results only if both of the following conditions are met:
 
