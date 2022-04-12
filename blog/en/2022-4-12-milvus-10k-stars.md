@@ -16,6 +16,10 @@ We recently hit an incredible milestone in the journey of vector database - over
 
 It has been a wonderful 2.5 years since Milvus became an open-source project. When we first started, very few people understood exactly what a vector database is, let alone talking about how it would enable and accelerate AI adoption in our daily lives. Milvus vector database carries our vision of defining and building the next-generation database for AI. We combine SOTA algorithms with cloud technologies in the Milvus project so developers could build AI applications at ease with Milvus vector database.
 
+![Gif2](https://assets.zilliz.com/Milvus_0_10000_d50a914332.gif "Milvus repository development visualization - road to 10,000 stargazers.")
+
+Click [here](https://www.youtube.com/watch?v=zIAX_oPI2Jk&ab_channel=Milvus-VectorDatabase) to watch the full video of Milvus repository development visualization.
+
 
 There are many [brilliant projects](https://github.com/milvus-io/milvus) that laid the foundation for Milvus, and we are thankful to stand on the shoulders of the giants. Without them Milvus wouldn't have existed. 
 
