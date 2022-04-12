@@ -20,6 +20,8 @@ It has been a wonderful 2.5 years since Milvus became an open-source project. Wh
 
 <div align="center">Click <a href="https://www.youtube.com/watch?v=zIAX_oPI2Jk&ab_channel=Milvus-VectorDatabase">here</a> to watch the full video of Milvus repository development visualization.</div>
 
+<br/>
+
 
 There are many [brilliant projects](https://github.com/milvus-io/milvus) that laid the foundation for Milvus, and we are thankful to stand on the shoulders of the giants. Without them Milvus wouldn't have existed. 
 
