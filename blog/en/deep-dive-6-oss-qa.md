@@ -1,6 +1,6 @@
 ---
 id: deep-dive-6-oss-qa.md
-title: Open Source Software (OSS) Quality Assurance: A Milvus Case Study
+title: Open Source Software (OSS) Quality Assurance\: A Milvus Case Study
 author: Wenxing Zhu
 date: 2022-04-25
 desc: Quality assurance is a process of determining whether a product or service meets certain requirements.
