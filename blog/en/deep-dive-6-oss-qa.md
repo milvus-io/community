@@ -178,7 +178,7 @@ From the module testing section, we can see that the procedure for most of the t
 
 ![SDK test framework](https://assets.zilliz.com/SDK_test_framework_8219e28f4c.png "SDK test framework.")
 
-To accelerate the testing process, we can add an `API_request` wrapper to the original testing framework, and set it as something similar to the API gateway. This API gateway will be inchrage of collecting all API requests and then pass them to Milvus to collectively receive responses. These responses will be passed back to the client afterwards. Such a design makes capturing certain log information like parameters, and returned results much more easier. In addition, the checker component in the SDK test framework can verify and examine the results from Milvus. And all checking methods can be defining within this checker component.
+To accelerate the testing process, we can add an `API_request` wrapper to the original testing framework, and set it as something similar to the API gateway. This API gateway will be in charge of collecting all API requests and then pass them to Milvus to collectively receive responses. These responses will be passed back to the client afterwards. Such a design makes capturing certain log information like parameters, and returned results much more easier. In addition, the checker component in the SDK test framework can verify and examine the results from Milvus. And all checking methods can be defining within this checker component.
 
 With the SDK test framework, some crucial initialization processes can be wrapped into one single function. By doing so, large chunks of tedious codes can be eliminated.
 
