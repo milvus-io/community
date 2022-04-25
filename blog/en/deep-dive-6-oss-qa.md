@@ -19,7 +19,7 @@ Quality assurance (QA) is a systematic process of determining whether a product 
 This post introduces the QA framework adopted in developing the Milvus vector database, aiming to provide a guideline for contributing developers and users to participate in the process. It will also cover the major test modules in Milvus as well as methods and tools that can be leveraged to improve the efficiency of QA testings.
 
 **Jump to:**
-- [A general introduction to the Milvus QA system](#A-general-introduction-to the-Milvus-QA-system)
+- [A general introduction to the Milvus QA system](#A-general-introduction-to-the-Milvus-QA-system)
 - [Test modules in Milvus](#Test-modules-in-Milvus)
 - [Tools and methods for better QA efficiency](#Tools-and-methods-for-better-QA-efficiency)
 
@@ -41,7 +41,7 @@ QA in Milvus involves both conducting tests and managing issues emerged during s
 
 Milvus conducts different types of QA testing according to Milvus features and user needs in order of priority as shown in the image below. 
 
-![QA testing priority](https://assets.zilliz.com/QA_testing_priority_6cd400cf33.png "QA testings and priority.")
+![QA testing priority](https://assets.zilliz.com/Frame_1_14_2aff081d41.png "QA testings and priority.")
 
 QA testings are conducted on the following aspects in Milvus in the following priority:
 
@@ -156,9 +156,9 @@ The figure below describes the purposes, test scenarios, and metrics of stabilit
 
 |            | Stability test                                                                                                                                                                                                                                                                                                                                                                                   | Performance test                                                                                                                                                                                                                    |
 |------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Purposes   | Ensure that Milvus can work smoothly for a fixed period of time under normal workload. <br>Make sure resources are consumed stably when the Milvus service starts.                                                                                                                                                                                                                               | Test the performance of alll Milvus interfaces. <br>Find the optimal configuration with the help of performance tests.  <br>Serve as the benchmark for future releases. <br>Find the bottleneck that hampers a better performance.  |
-| Scenarios  | Offline read-intensive scenario where data are barely updated after insertion and the percentage of processing each type of request is: search request 90%, insert request 5%, others 5%. <br>Online write-intensive scenario where data are inserted and searched simultaneously and the percentage of processing each type of request is: insert request 50%, search request 40%, others 10%.  | Data insertion <br>Index building <br>Vector search                                                                                                                                                                                 |
-| Metrics    | Memory usage <br>CPU consumption <br>IO latency <br>The status of Milvus pods <br>Response time of the Milvus service <br>etc.                                                                                                                                                                                                                                                                   | Data throughput during data insertion <br>The time it takes to build an index <br>Response time during a vector search <br>Query per second (QPS) <br>Request per second  <br>Recall rate <br>etc.                                  |
+| Purposes   | - Ensure that Milvus can work smoothly for a fixed period of time under normal workload. <br> - Make sure resources are consumed stably when the Milvus service starts.                                                                                                                                                                                                                               | - Test the performance of alll Milvus interfaces. <br> - Find the optimal configuration with the help of performance tests.  <br> - Serve as the benchmark for future releases. <br> - Find the bottleneck that hampers a better performance.  |
+| Scenarios  | - Offline read-intensive scenario where data are barely updated after insertion and the percentage of processing each type of request is: search request 90%, insert request 5%, others 5%. <br> - Online write-intensive scenario where data are inserted and searched simultaneously and the percentage of processing each type of request is: insert request 50%, search request 40%, others 10%.  | - Data insertion <br> - Index building <br> - Vector search                                                                                                                                                                                 |
+| Metrics    | - Memory usage <br> - CPU consumption <br> - IO latency <br> - The status of Milvus pods <br> - Response time of the Milvus service <br> etc.                                                                                                                                                                                                                                                                   | - Data throughput during data insertion <br> - The time it takes to build an index <br> - Response time during a vector search <br> - Query per second (QPS) <br> - Request per second  <br> - Recall rate <br> etc.                                  |
 
 Both stability test and performance test share the same set of workflow:
 
@@ -204,7 +204,7 @@ Apart from the characteristics above, another reason for adopting GitHub action 
 
 To make QA tests more efficient, a number of tools are used.
 
-![QA tools](https://assets.zilliz.com/QA_tools_a99ab3e7e4.png "An overview of the tools for benchmark tests.")
+![QA tools](https://assets.zilliz.com/Frame_1_13_fbc71dfe4f.png "An overview of the tools for benchmark tests.")
 
 - [Argo](https://argoproj.github.io/): a set of open-source tools for Kubernetes to run workflows and manage clusters by scheduling tasks. It can also enable running multiple tasks in parallel.
 - [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/): a web-based Kubernetes user interface for visualizing `server-configmap`  and `client-configmap`.
