@@ -5,13 +5,13 @@
 This doc outlines the process of nominating and voting a maintainer/committer of the Milvus project. The process should be operated transparently, openly, collaboratively, and ethically. To learn the details about the responsibilities and priviliges of a maintainer/committer, please check the [community membership](https://github.com/milvus-io/community/blob/master/community-membership.md)
 
 ## Process Summary
-	1. A maintainer nominate a qualified community member, with the call for vote template sent to slack channel and community mailing list.
-	2. Close the vote after 14 days
-	3. If the result is positive, send tht invitation to the new committer/maintainer and waitfor response.
+	1. A maintainer nominate a qualified community member, with a notification using call for vote template sent to slack channel and community mailing list.
+	2. Close the vote after 7 days
+	3. If the result is positive, send the invitation to the new committer/maintainer with the inviting template and wait for response.
 
 	If nominees accept, then:
-		1. Announce to mailing list and slack channel, with the template committer aacp
-		2. Change the committer/maintainer list on github
+		1. Change the committer/maintainer list on github
+		2. Announce to mailing list and slack channel
 
 ## Detailed Process
 
@@ -23,7 +23,7 @@ Anyone could comment on the issue about what we feel about the candidates, with 
 
 The nominator should be responsible to open a voting and send email notification to all maintainers/contributors.
 
-Let the discussion process run for one week, a positive result is achieved by Consensus Approval: at least 3 +1 votes and no vetoes for committer nomination and achieve quorum for maintainer nomination.
+Let the discussion process run for one week, a positive result is achieved by Consensus Approval: at least 3 +1 votes and no vetoes for committer nomination and achieve maintainer quorum for maintainer nomination.
 
 Any veto must be accompanied by reasoning and the vetoer must be prepared to defend it. Other voters can attempt to encourage them to change their mind.
 
