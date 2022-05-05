@@ -27,17 +27,17 @@ This post aims to examine how a query is completed in Milvus 2.0 from the input 
 
 Expression of query with attribute filtering in Milvus adopts the EBNF(Extended Backus–Naur form) syntax. The image below is the expression rules in Milvus.
 
-![Expression Syntax](https://assets.zilliz.com/Expression_Syntax_d4acadb868.png "The EBNF syntax of a logical expression.")
+![Expression Syntax](https://assets.zilliz.com/Expression_Syntax_966493a5be.png "The EBNF syntax of a logical expression.")
 
 Logical expressions can be created using the combination of binary logical operators, unary logical operators, logical expressions, and single expressions. Since EBNF syntax is itself recursive, a logical expression can be the outcome of the combination or part of a bigger logical expression. A logical expression can contain many sub-logical expressions. The same rule applies in Milvus. If a user needs to filter the attributes of the results with many conditions, the user can create his own set of filtering conditions by combining different logical operators and expressions.
 
-![Boolean expression](https://assets.zilliz.com/boolean_expression_3c5e283d23.png "Boolean expression rules in Milvus.")
+![Boolean expression](https://assets.zilliz.com/Boolean_expression_1_dce12f8483.png "Boolean expression rules in Milvus.")
 
 The image above shows part of the [Boolean expression rules](https://milvus.io/docs/v2.0.x/boolean.md) in Milvus. Unary logical operators can be added to an expression. Currently Milvus only supports the unary logical operator "not", which indicates that the system needs to take the vectors whose scalar field values do not satisfy the calculation results. Binary logical operators include "and" and "or". Single expressions include term expressions and compare expressions.
 
 Basic arithmetic calculation like addition, subtraction, multiplication, and division is also supported during a query in Milvus. The following image demonstrates the precedence of the operations. Operators are listed from top to bottom in descending precedence.
 
-![Precedence](https://assets.zilliz.com/precedence_57fe19c8f5.png "The precedence of operations in Milvus.")
+![Precedence](https://assets.zilliz.com/Precedence_b8cfbdf17b.png "The precedence of operations in Milvus.")
 
 ### How a query expression on certain films is processed in Milvus?
 
@@ -79,7 +79,7 @@ Query execution is at root the execution of the plan AST generated in the previo
 
 In Milvus, a plan AST is defined in a proto structure. The image below is a message with the protobuf structure. There are six types of expressions, among which binary expression and unary expression can further have binary logical expression and unary logical expression.
 
-![protobuf1](https://assets.zilliz.com/protobuf1_f9f68f6424.png "A query message with the protobuf structure.")
+![protobuf1](https://assets.zilliz.com/Protobuf1_232132dcf2.png "A query message with the protobuf structure.")
 
 ![protobuf2](https://assets.zilliz.com/protobuf2_193f92f033.png "A query message with the protobuf structure.")
 
