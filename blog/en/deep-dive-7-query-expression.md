@@ -16,7 +16,7 @@ canonicalUrl: https://milvus.io/blog/deep-dive-6-query-expression.md
 
 A [vector query](https://milvus.io/docs/v2.0.x/query.md) in Milvus is the process of retrieving vectors via scalar filtering based on boolean expression. With scalar filtering, users can limit their query results with certain conditions applied on attributes of data. For instance, if a user queries for films released during 1990-2010 and with scores higher than 8.5, only films whose attributes (release year and score) fulfill the condition.
 
-This post aims to examine how a query is completed in Milvus 2.0 from the input of a query expression to query plan generation and query execution. 
+This post aims to examine how a query is completed in Milvus from the input of a query expression to query plan generation and query execution. 
 
 **Jump to:**
 - [Query expression](#Query-expression)
