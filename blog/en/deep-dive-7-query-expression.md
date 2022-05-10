@@ -7,7 +7,7 @@ desc: A vector query is the process of retrieving vectors via scalar filtering.
 cover: assets.zilliz.com/Deep_Dive_7_baae830823.png
 tag: Engineering
 tags: Data science, Database, Tech, Artificial Intelligence, Vector Management
-canonicalUrl: https://milvus.io/blog/deep-dive-6-query-expression.md
+canonicalUrl: https://milvus.io/blog/deep-dive-7-query-expression.md
 ---
 
 ![Cover image](https://assets.zilliz.com/Deep_Dive_7_baae830823.png "How Does the Database Understand and Execute Your Query?")
