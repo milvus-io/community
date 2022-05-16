@@ -56,7 +56,7 @@ The concept of consensus is introduced to distributed systems as users are eager
 To put it simple, consensus is a general agreement on value. For instance, Steve and Frank wanted to grab something to eat. Steve suggested having sandwiches. Frank agreed to Steve's suggestion and both of them are had sandwiches. They reached a consensus. More specifically, a value (sandwiches) proposed by one of them is agreed upon by both, and both of them take actions based on the value. Similarly, consensus in a distributed system means when a process propose a value, all the rest processes in the system agree on and act upon this value. 
 
 
-![Consensus](https://user-images.githubusercontent.com/1500781/165926366-9ec31267-50fa-465b-8c35-c1e105a36f9d.png "Consensus in a distributed system.")
+![Consensus](https://assets.zilliz.com/2bb46e57_9eb5_456e_be7e_e7762aa9eb7e_68dd2e8e65.png "Consensus in a distributed system.")
 
 ## Consensus-based replication
 
@@ -105,12 +105,12 @@ A separate microservice dedicated to data synchronization is needed. The synchro
 For instance, Socrates decouples storage, log, and computing. There is one dedicated log service (XLog service in the middle of the figure below).
 
 
-![Socrates architecture](https://user-images.githubusercontent.com/1500781/165935427-19f3d1d4-6d2f-4cb8-a9fb-ca15f2c8a33e.png "The architecture of Socrates.")
+![Socrates architecture](https://assets.zilliz.com/1_0d7822a781.png "The architecture of Socrates.")
 
 XLog service is an individual service. Data persistence is achieved with the help of low-latency storage. The landing zone in Socrates is in charge of keeping three replicas at an accelerated speed.
 
 
-![Socrates XLog service](https://user-images.githubusercontent.com/1500781/165935551-b863bfb8-d04b-4081-9fc4-ef2f78dc5dac.png "The SoCrates XLog service.")
+![Socrates XLog service](https://assets.zilliz.com/2_6d1182b6f1.png "The Socrates XLog service.")
 
 The leader node distributes logs to log broker asynchronously, and flushes data to Xstore. Local SSD cache can accelerate data read. Once data flush is successful, buffers in the landing zone can be cleaned. Obviously, all log data are divided into three layers - landing zone, local SSD, and XStore.
 
