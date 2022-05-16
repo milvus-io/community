@@ -4,13 +4,13 @@ title: A Small Step for Milvus - 10,000 Stars
 author: The Milvus Community
 date: 2022-04-12
 desc: We recently hit an incredible milestone in the journey of vector database - over 10K stars on the GitHub repo of Milvus.
-cover: assets.zilliz.com/1_c1b02d6ab8.png
+cover: assets.zilliz.com/20220516_163732_d40acac221.png
 tag: News
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/2022-4-12-milvus-10k-stars.md
 ---
 
-![Cover image](https://assets.zilliz.com/1_c1b02d6ab8.png "Milvus reached 10K stars on GitHub.")
+![Cover image](https://assets.zilliz.com/20220516_163732_d40acac221.png "Milvus reached 10K stars on GitHub.")
 
 We recently hit an incredible milestone in the journey of vector database - over 10K stars on the [GitHub repo of Milvus](https://github.com/milvus-io/milvus). Thanks to each and every one of you who has supported us by giving us a star ⭐️.
 
