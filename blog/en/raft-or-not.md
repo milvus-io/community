@@ -12,7 +12,7 @@ canonicalUrl: http://milvus.io/blog/raft-or-not.md
 
 ![Cover image](https://assets.zilliz.com/Tech_Modify_5_e18025ffbc.png "Raft or not? The Best Solution to Data Consistency in Cloud-native Databases")
 
-This article was written by [Xiaofan Luan](https://github.com/xiaofan-luan) and transcreated by [Angela Ni](https://www.linkedin.com/in/yiyun-n-2aa713163/).
+> This article was written by [Xiaofan Luan](https://github.com/xiaofan-luan) and transcreated by [Angela Ni](https://www.linkedin.com/in/yiyun-n-2aa713163/).
 
 Consensus-based replication is a widely-adopted strategy in many cloud-native, distributed databases. However, it has certain shortcomings and is definitely not the silver bullet.
 
