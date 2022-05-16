@@ -208,7 +208,7 @@ To make QA tests more efficient, a number of tools are used.
 
 - [Argo](https://argoproj.github.io/): a set of open-source tools for Kubernetes to run workflows and manage clusters by scheduling tasks. It can also enable running multiple tasks in parallel.
 - [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/): a web-based Kubernetes user interface for visualizing `server-configmap`  and `client-configmap`.
-- [NAS](https://arxiv.org/abs/2110.05668): Network attached storage (NAS) is a file-level computer data storage server for keeping common ANN-benchmark datasets.
+- [NAS](https://en.wikipedia.org/wiki/Network-attached_storage): Network attached storage (NAS) is a file-level computer data storage server for keeping common ANN-benchmark datasets.
 - [InfluxDB](https://www.influxdata.com/) and [MongoDB](https://www.mongodb.com/): Databases for saving results of benchmark tests.
 - [Grafana](https://grafana.com/): An open-source analytics and monitoring solution for monitoring server resource metrics and client performance metrics.
 - [Redash](https://redash.io/): A service that helps visualize your data and create charts for benchmark tests.
@@ -224,5 +224,4 @@ With the [official announcement of general availability](https://milvus.io/blog/
 - [Real-time query](https://milvus.io/blog/deep-dive-5-real-time-query.md)
 - [QA system](https://milvus.io/blog/deep-dive-6-oss-qa.md)
 - Scalar execution engine
-- Milvus_Cli and Attu
 - Vector execution engine
