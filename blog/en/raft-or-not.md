@@ -142,3 +142,11 @@ In addition, Milvus also adopts multiple microservices and separates storage fro
 
 Nowadays, an increasing number of cloud-native databases are making log replication an individual service. By doing so, the cost of adding read-only replicas and heterogeneous replication can be reduced. Using multiple microservices enables quick utilization of mature cloud-based infrastructure, which is impossible for traditional databases. An individual log service can rely on consensus-based replication, but it can also follow the Russian doll strategy to adopt various consistency protocols together with Paxos or Raft to achieve linearizability.
 
+## References
+
+- Lamport L. Paxos made simple[J]. ACM SIGACT News (Distributed Computing Column) 32, 4 (Whole Number 121, December 2001), 2001: 51-58.
+- Ongaro D, Ousterhout J. In search of an understandable consensus algorithm[C]//2014 USENIX Annual Technical Conference (Usenix ATC 14). 2014: 305-319.
+- Oki B M, Liskov B H. Viewstamped replication: A new primary copy method to support highly-available distributed systems[C]//Proceedings of the seventh annual ACM Symposium on Principles of distributed computing. 1988: 8-17.
+- Lin W, Yang M, Zhang L, et al. PacificA: Replication in log-based distributed storage systems[J]. 2008.
+- Verbitski A, Gupta A, Saha D, et al. Amazon aurora: On avoiding distributed consensus for i/os, commits, and membership changes[C]//Proceedings of the 2018 International Conference on Management of Data. 2018: 789-796.
+- Antonopoulos P, Budovski A, Diaconu C, et al. Socrates: The new sql server in the cloud[C]//Proceedings of the 2019 International Conference on Management of Data. 2019: 1743-1756.
