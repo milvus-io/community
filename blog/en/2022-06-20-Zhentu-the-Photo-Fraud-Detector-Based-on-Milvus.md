@@ -1,5 +1,5 @@
 ---
-id: 2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus
+id: 2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
 title: Zhentu: the Photo Fraud Detector Based on Milvus
 author: Yan Shi, Minwei Tang
 date: 2022-06-20
