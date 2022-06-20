@@ -20,9 +20,9 @@ In this article, we will cover some interesting aspects relevant to vector datab
 
 Unstructured data, as the name suggests, does not have an implicit structure, like a table of rows and columns (hence called tabular or structured data). Unlike structured data, there is no easy way to store the contents of unstructured data within a relational database. There are three main challenges with leveraging unstructured data for insights:
 
-- Storage: Regular relational databases are good for holding structured data. While you can use NoSQL databases to store such data, it becomes an additional overhead to process such data to extract the right representations to power AI applications at scale
-- Representation: Computers don’t understand text or images like we do. They only understand numbers and we need to covert unstructed data into some useful numeric representation, typically vectors or embeddings.
-- Querying: You can’t query unstructured data directly based on definite conditional statements like SQL for structured data. Imagine, a simple example of you trying to search for similar shoes given a photo of your favorite pair of shoes! You can’t use raw pixel values for search, neither can you represent structured features like shoe shape, size, style, color and more. Now imagine having to do this for millions of shoes!
+- **Storage:** Regular relational databases are good for holding structured data. While you can use NoSQL databases to store such data, it becomes an additional overhead to process such data to extract the right representations to power AI applications at scale
+- **Representation:** Computers don’t understand text or images like we do. They only understand numbers and we need to covert unstructed data into some useful numeric representation, typically vectors or embeddings.
+- **Querying:** You can’t query unstructured data directly based on definite conditional statements like SQL for structured data. Imagine, a simple example of you trying to search for similar shoes given a photo of your favorite pair of shoes! You can’t use raw pixel values for search, neither can you represent structured features like shoe shape, size, style, color and more. Now imagine having to do this for millions of shoes!
 
 Hence, in order for computers to understand, process and represent unstructured data, we typically convert them into dense vectors, often called embeddings.
 
