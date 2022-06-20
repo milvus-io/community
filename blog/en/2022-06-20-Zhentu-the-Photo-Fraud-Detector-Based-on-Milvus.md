@@ -6,6 +6,8 @@ date: 2022-06-20
 desc: How is Zhentu's detection system built with Milvus as its vector search engine?
 cover: assets.zilliz.com/zhentu_0ae11c98ee.png
 tag: Scenarios
+tags: Use Cases of Milvus
+canonicalUrl: http://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
 ---
 
 > This article is written by Yan Shi and Minwei Tang, senior algorithm engineers at BestPay, and translated by [Rosie Zhang](https://www.linkedin.cn/incareer/in/rosie-zhang-694528149).
