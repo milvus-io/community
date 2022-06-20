@@ -4,13 +4,13 @@ title: Scalable and Blazing Fast Similarity Search with Milvus Vector Database
 author: Dipanjan Sarkar
 date: 2022-06-21
 desc: Store, index, manage and search trillions of document vectors in milliseconds!
-cover: assets.zilliz.com/1_14_Rd_Zi_Sj_SMG_Ydxo_Xqhxjs_Q_7d2622ce88.png
+cover: assets.zilliz.com/repo_cover_0810e0b6d9.png
 tag: Engineering
 tags: Data science, Database, Tech, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/scalable_and_blazing_fast_similarity_search_with_milvus_vector_database.md
 ---
 
-![cover image](https://assets.zilliz.com/1_14_Rd_Zi_Sj_SMG_Ydxo_Xqhxjs_Q_7d2622ce88.png)
+![cover image](https://assets.zilliz.com/repo_cover_0810e0b6d9.png "Scalable and Blazing Fast Similarity Search with Milvus Vector Database")
 
 ## Introduction
 
