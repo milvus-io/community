@@ -1,5 +1,5 @@
 ---
-id: scalable_and_blazing_fast_similarity_search_with_milvus_vector_database.md
+id: scalable-and-blazing-fast-similarity-search-with-milvus-vector-database.md
 title: Scalable and Blazing Fast Similarity Search with Milvus Vector Database
 author: Dipanjan Sarkar
 date: 2022-06-21
