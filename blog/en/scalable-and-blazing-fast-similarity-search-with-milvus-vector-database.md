@@ -186,5 +186,5 @@ Liked this article? Do [reach out to me](https://www.linkedin.com/in/dipanzan/) 
 
 ## About the author
 
-Dipanjan (DJ) Sarkar is a Data Science Lead @Applied4Tech, @Google Developer Expert — Machine Learning, Author, Consultant, AI Advisor @Springboard, Connect: http://bit.ly/djs_linkedin
+Dipanjan (DJ) Sarkar is a Data Science Lead, Google Developer Expert — Machine Learning, Author, Consultant and AI Advisor. Connect: http://bit.ly/djs_linkedin
 
