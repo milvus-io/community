@@ -99,7 +99,7 @@ The figure above showcases how [Milvus](https://milvus.io/), the vector database
 
 [Milvus](https://milvus.io/) is an open-source vector database management platform built specifically for massive-scale vector data and streamlining machine learning operations (MLOps).
 
-![figure 6](https://assets.zilliz.com/0_ml3_C4d_A_Ma3t49_C_Ky_bfabd8d4a0.png "Milvus")
+![figure 6](https://assets.zilliz.com/milvus_Logo_ee3ae48b61.png "Milvus")
 
 
 [Zilliz](https://zilliz.com/), is the organization behind building [Milvus](https://milvus.io/), the world’s most advanced vector database, to accelerate the development of next generation data fabric. Milvus is currently a graduation project at the [LF AI & Data Foundation](https://lfaidata.foundation/) and focuses on managing massive unstructured datasets for storage and search. The platform’s efficiency and reliability simplifies the process of deploying AI models and MLOps at scale. Milvus has broad applications spanning drug discovery, computer vision, recommendation systems, chatbots, and much more.
