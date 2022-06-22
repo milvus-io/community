@@ -21,7 +21,7 @@ This post aims to first explain the concepts of replication, consistency, and co
 **Jump to:**
 - [Understanding replication, consistency, and consensus](#Understanding-replication-consistency-and-consensus)
 - [Consensus-based replication](#Consensus-based-replication)
-- [A log replication strategy for cloud-native and distributed database](#a-log-replication-strategy-for-cloud-native-and-distributed-database)
+- [A log replication strategy for cloud-native and distributed database](#A-log-replication-strategy-for-cloud-native-and-distributed-database)
 - [Summary](#Summary)
 
 
