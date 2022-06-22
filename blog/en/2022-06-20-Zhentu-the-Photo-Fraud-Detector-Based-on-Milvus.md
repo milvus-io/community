@@ -20,12 +20,12 @@ Traditional risk control methods are no longer effective in the face of a substa
 
 Traditional algorithms for measuring image similarity, such as [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and ORB, are slow and inaccurate, only applicable to offline tasks. Deep learning, on the other hand, is capable of processing large-scale image data in real-time and is the ultimate method for matching similar images. With the joint efforts of BestPay’s R&D team and [the Milvus community](https://milvus.io/), a photo fraud detection system is developed as part of Zhentu. It functions by converting massive amounts of image data into feature vectors through deep learning models and inserting them into [Milvus](https://milvus.io/), a vector search engine. With Milvus, the detection system is able to index trillions of vectors and efficiently retrieve similar photos among tens of millions of images.
 
-## Jump to:
-[An overview of Zhentu](#An overview of Zhentu)
-[System structure](#System structure)
-[Deployment](#Deployment)
-[Real-world performance](#Real-world performance)
-[About BestPay](#About BestPay)
+**Jump to:**
+- [An overview of Zhentu](#An-overview-of-Zhentu)
+- [System structure](#System-structure)
+- [Deployment](#Deployment)
+- [Real-world performance](#Real-world-performance)
+- [About BestPay](#About-BestPay)
 
 ## An overview of Zhentu
 
