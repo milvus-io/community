@@ -10,6 +10,8 @@ tags: Use Cases of Milvus
 canonicalUrl: http://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
 ---
 
+![cover image](http://assets.zilliz.com/zhentu_0ae11c98ee.png "Zhentu - the Photo Fraud Detector Based on Milvus")
+
 > This article is written by Yan Shi and Minwei Tang, senior algorithm engineers at BestPay, and translated by [Rosie Zhang](https://www.linkedin.cn/incareer/in/rosie-zhang-694528149).
 
 In recent years, as e-commerce and online transactions become commonplace throughout the world, e-commerce fraud also flourished. By using computer-generated photos instead of real ones to pass identity verification on online business platforms, fraudsters create massive fake accounts and cash in on businesses' special offers (e.g. membership gifts, coupons, tokens), which brings irretrievable losses to both consumers and businesses.
@@ -17,6 +19,13 @@ In recent years, as e-commerce and online transactions become commonplace throug
 Traditional risk control methods are no longer effective in the face of a substantial amount of data. To solve the problem, [BestPay](https://www.bestpay.com.cn/global/oig/index.html) created a photo fraud detector, namely Zhentu (meaning detecting images in Chinese), based on deep learning (DL) and digital image processing (DIP) technologies. Zhentu is applicable to various scenarios involving image recognition, with one important offshoot being the identification of fake business licenses. If the business license photo submitted by a user is very similar to another photo already existing in a platform's photo library, it is likely that the user has stolen the photo somewhere or has forged a license for fraudulent purposes.
 
 Traditional algorithms for measuring image similarity, such as [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and ORB, are slow and inaccurate, only applicable to offline tasks. Deep learning, on the other hand, is capable of processing large-scale image data in real-time and is the ultimate method for matching similar images. With the joint efforts of BestPay’s R&D team and [the Milvus community](https://milvus.io/), a photo fraud detection system is developed as part of Zhentu. It functions by converting massive amounts of image data into feature vectors through deep learning models and inserting them into [Milvus](https://milvus.io/), a vector search engine. With Milvus, the detection system is able to index trillions of vectors and efficiently retrieve similar photos among tens of millions of images.
+
+## Jump to:
+[An overview of Zhentu](#An overview of Zhentu)
+[System structure](#System structure)
+[Deployment](#Deployment)
+[Real-world performance](#Real-world performance)
+[About BestPay](#About BestPay)
 
 ## An overview of Zhentu
 
