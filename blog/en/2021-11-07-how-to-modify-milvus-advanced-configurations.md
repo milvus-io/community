@@ -4,13 +4,14 @@ title: How to Modify Milvus Advanced Configurations
 author: Zilliz
 date: 2021-11-08
 desc: How to modify the configuration of Milvus deployed on Kubernetes
-cover: assets.zilliz.com/Modify_configurations_f9162c5670.png
+cover: assets.zilliz.com/modify_4d93b9da3a.png
 tag: Engineering
 ---
 
 *Yufen Zong, a Zilliz Test Development Engineer, graduated from Huazhong University of Science and Technology with a master's degree in computer technology. She is currently engaged in the quality assurance of Milvus vector database, including but not limited to interface integration testing, SDK testing, Benchmark testing, etc. Yufen is an enthusiastic problem-shooter in the test and development of Milvus, and a huge fan of chaos engineering theory and fault drill practice.*
 
 ## Background
+
 
 While using Milvus vector database, you will need to modify the default configuration to satisfy the requirements of different scenarios. Previously, a Milvus user shared on [How to Modify the Configuration of Milvus Deployed Using Docker Compose](https://zilliz.com/blog/apply-configuration-changes-on-milvus-2). And in this article, I would like to share with you on how to modify the configuration of Milvus deployed on Kubernetes.
 
