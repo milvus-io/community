@@ -4,13 +4,13 @@ title: Building a Vector Database for Scalable Similarity Search
 author: Xiaofan Luan
 date: 2022-03-14
 desc: The first one in a blog series to take a closer look at the thought process and design principles behind the building of the most popular open-source vector database.
-cover: assets.zilliz.com/Deep_Dive_1_b6587c94a5.png
+cover: assets.zilliz.com/20220705_102717_dd4124dee3.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md
 ---
 
-![Cover image](https://assets.zilliz.com/Deep_Dive_1_b6587c94a5.png "Building a Vector Database for Scalable Similarity Search")
+![Cover image](https://assets.zilliz.com/20220705_102717_dd4124dee3.png "Building a Vector Database for Scalable Similarity Search")
 
 > This article is written by Xiaofan Luan and transcreated by Angela Ni and Claire Yu.
 
