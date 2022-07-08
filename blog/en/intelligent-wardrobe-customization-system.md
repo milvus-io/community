@@ -4,7 +4,7 @@ title: Building an Intelligent Wardrobe Customization System Powered by Milvus V
 author: Yiyun Ni
 date: 2022-07-08
 desc: Using similarity search technology to unlock the potential of unstructured data, even like wardrobes and its components!
-cover: assets.zilliz.com/Frame_1282_edc1fb7d99.pn
+cover: assets.zilliz.com/Frame_1282_edc1fb7d99.png
 tag: Engineering
 tags: Data science, Database, Use Cases of Milvus, Artificial Intelligence, Vector Management
 canonicalUrl: http://milvus.io/blog/intelligent-wardrobe-customization-system.md
