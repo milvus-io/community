@@ -10,7 +10,7 @@ tags: Data science, Database, Use Cases of Milvus, Artificial Intelligence, Vect
 canonicalUrl: http://milvus.io/blog/intelligent-wardrobe-customization-system.md
 ---
 
-![cover image](https://assets.zilliz.com/IKEA_cover_7991d8b215.jpeg "Building an intelligent wardrobe customization system powered by Milvus vector database")
+![cover image](https://assets.zilliz.com/Frame_1282_edc1fb7d99.png "Building an intelligent wardrobe customization system powered by Milvus vector database")
 
 If you are looking for a wardrobe to fit perfectly into your bedroom or fitting room, I bet most people will think of the made-to-measure ones. However, not everyone's budget can stretch that far. Then what about those ready-made ones? The problem with this type of wardrobe is that they are very likely to fall short of your expectation as they are not flexible enough to cater to your unique storage needs. Plus, when searching online, it is rather difficult to summarize the particular type of wardrobe you are looking for with keywords. Very likely, the keyword you type in the search box (eg. A wardrobe with a jewellery tray) might be very different from how it is defined in the search engine (eg. A wardrobe with [pullout tray with insert](https://www.ikea.com/us/en/p/komplement-pull-out-tray-with-insert-black-brown-s79249366/)).  
 
