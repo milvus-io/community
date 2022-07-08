@@ -1,6 +1,6 @@
 ---
 id: intelligent-wardrobe-customization-system.md
-title: Scalable and Blazing Fast Similarity Search with Milvus Vector Database
+title: Building an Intelligent Wardrobe Customization System Powered by Milvus Vector Database
 author: Yiyun Ni
 date: 2022-07-08
 desc: Using similarity search technology to unlock the potential of unstructured data, even like wardrobes and its components!
