@@ -35,7 +35,7 @@ How does Likee identify duplicate videos? Every time a query video is input into
 # System architecture
 Let's take a closer look at how Likee's video de-duplication system works using Milvus. As is shown in the diagram below, new videos uploaded to Likee will be written to Kafka, a data storage system, in real-time and consumed by Kafka consumers. The feature vectors of these videos are extracted through deep learning models, where unstructured data (video) is converted into feature vectors. These feature vectors will be packaged by the system and sent to the similarity auditor.
 
-![Architechure of Likee's video de-duplication system](https://assets.zilliz.com/Likee_architecture_58ff7f1748.png "Architechure of Likee's video de-duplication system")
+![Architechure of Likee's video de-duplication system](https://assets.zilliz.com/Likee_1_6f7ebcd8fc.png "Architechure of Likee's video de-duplication system")
 
 The feature vectors extracted will be indexed by Milvus and stored in Ceph, before being [loaded by the Milvus query node](https://milvus.io/blog/deep-dive-5-real-time-query.md) for further search. The corresponding video IDs of these feature vectors will also be stored simultaneously in TiDB or Pika according to the actual needs.
 
@@ -50,6 +50,6 @@ As is shown in the diagram below, the procedure of a similarity search goes as f
 
 3. Finally, Milvus calculates and scores the similarity between each set of the feature vectors retrieved and the feature vectors of the query video. The video ID with the highest score is returned as the result. Thus the video similarity search is concluded.
 
-![Procedure of a similarity search](https://assets.zilliz.com/Likee_similarity_search_922b06bffc.png "Procedure of a similarity search")
+![Procedure of a similarity search](https://assets.zilliz.com/02_a24d251c8f.png "Procedure of a similarity search")
 
 As a high-performance vector search engine, Milvus has done an extraordinary job in Likee's video de-duplication system, greatly fueling the growth of BIGO's short-video business. In terms of video businesses, there are many other scenarios where Milvus can be applied to, such as illegal content blocking or personalized video recommendation. Both BIGO and Milvus are looking forward to future cooperation in more areas.
