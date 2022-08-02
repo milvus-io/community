@@ -87,12 +87,12 @@ In the case that these partition or index objects exist, you can get them throug
 ## About the Deep Dive Series
 
 With the [official announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:
+
 - [Milvus architecture overview](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md)
 - [APIs and Python SDKs](https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md)
-- [Data processing](http://milvus.io/blog/deep-dive-3-data-processing.md)
-- Data management
-- Real-time query
-- Scalar execution engine
-- QA system
-- Milvus_Cli and Attu
-- Vector execution engine
+- [Data processing](https://milvus.io/blog/deep-dive-3-data-processing.md)
+- [Data management](https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md)
+- [Real-time query](https://milvus.io/blog/deep-dive-5-real-time-query.md)
+- [Scalar execution engine](https://milvus.io/blog/deep-dive-7-query-expression.md)
+- [QA system](https://milvus.io/blog/deep-dive-6-oss-qa.md)
+- [Vector execution engine](https://milvus.io/blog/deep-dive-8-knowhere.md)
