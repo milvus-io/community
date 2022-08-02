@@ -98,7 +98,7 @@ To ensure that the proxy has received all query results before returning them to
 
 Ultimately, proxy returns the final results after "global reduce" to the Milvus SDK.
 
-## What's next?
+## About the Deep Dive Series
 
 With the [official announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:
 
@@ -107,7 +107,6 @@ With the [official announcement of general availability](https://milvus.io/blog/
 - [Data processing](https://milvus.io/blog/deep-dive-3-data-processing.md)
 - [Data management](https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md)
 - [Real-time query](https://milvus.io/blog/deep-dive-5-real-time-query.md)
-- Scalar execution engine
-- QA system
-- Milvus_Cli and Attu
-- Vector execution engine
+- [Scalar execution engine](https://milvus.io/blog/deep-dive-7-query-expression.md)
+- [QA system](https://milvus.io/blog/deep-dive-6-oss-qa.md)
+- [Vector execution engine](https://milvus.io/blog/deep-dive-8-knowhere.md)
