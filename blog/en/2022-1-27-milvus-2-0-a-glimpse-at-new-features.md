@@ -243,10 +243,13 @@ state: Sealed
 
 ## What's more
 
-
 In addition to the above functionalities, new features such as Data Compaction, Dynamic Load Balance, and more are introduced into Milvus 2.0. Please enjoy your exploratory journey with Milvus!
 
-In the near future, we will share with you a series of blogs introducing the design of Deletion, Data Compaction, Dynamic Load Balance, and Bitset in Milvus 2.0.
+In the near future, we will share with you a series of blogs introducing the design of the new features in Milvus 2.0.
+- [Deletion](https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md)
+- [Data Compaction](https://milvus.io/blog/2022-2-21-compact.md)
+- [Dynamic Load Balance](https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md)
+- [Bitset](https://milvus.io/blog/2022-2-14-bitset.md) 
 
 Find us on:
 - [GitHub](https://github.com/milvus-io/milvus)

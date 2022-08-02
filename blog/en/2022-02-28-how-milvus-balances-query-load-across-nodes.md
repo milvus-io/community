@@ -51,4 +51,12 @@ Having received the `sealedSegmentChangeInfo`, the source query node then releas
 
 The whole process succeeds when the source query node releases the target segment. By completing that, the query load is set balanced across the query nodes, meaning the RAM usage of all query nodes is no larger than `queryCoord.overloadedMemoryThresholdPercentage`, and the absolute value of the source and destination query nodes' RAM usage difference after load balancing is less than that before load balancing.
 
-This is the finale of the Milvus 2.0 New feature blog series. Following this series, we are planning a new series of Milvus Deep Dive, which introduces the basic architecture of Milvus 2.0. Please stay tuned.
+## What's next?
+
+In the 2.0 new feature series blog, we aim to explain the design of the new features. Read more in this blog series!
+- [How Milvus Deletes Streaming Data in a Distributed Cluster](https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md)
+- [How to Compact Data in Milvus?](https://milvus.io/blog/2022-2-21-compact.md)
+- [How Milvus Balances Query Load across Nodes?](https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md)
+- [How Bitset Enables the Versatility of Vector Similarity Search](https://milvus.io/blog/2022-2-14-bitset.md) 
+
+This is the finale of the Milvus 2.0 new feature blog series. Following this series, we are planning a new series of Milvus [Deep Dive](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md), which introduces the basic architecture of Milvus 2.0. Please stay tuned.

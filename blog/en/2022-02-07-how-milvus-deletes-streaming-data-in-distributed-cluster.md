@@ -106,4 +106,10 @@ Query nodes that cannot subscribe to the DML-Channel are only allowed to process
 
 Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there will be several seconds of latency before the deleted entities become invisible.
 
-In the upcoming articles of this series of blogs, we will introduce the design of Data Compaction, Dynamic Load Balance, and Bitset in Milvus 2.0. Please stay tuned.
+## What's next?
+
+In the 2.0 new feature series blog, we aim to explain the design of the new features. Read more in this blog series!
+- [How Milvus Deletes Streaming Data in a Distributed Cluster](https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md)
+- [How to Compact Data in Milvus?](https://milvus.io/blog/2022-2-21-compact.md)
+- [How Milvus Balances Query Load across Nodes?](https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md)
+- [How Bitset Enables the Versatility of Vector Similarity Search](https://milvus.io/blog/2022-2-14-bitset.md) 
