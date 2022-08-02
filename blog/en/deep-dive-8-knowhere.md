@@ -137,7 +137,7 @@ After referring to the existing index, you can follow the steps below to add a n
 5. Add unit test under the `unittest` directory.
 
 
-## What's next?
+## About the Deep Dive Series
 
 With the [official announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:
 
