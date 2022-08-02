@@ -91,7 +91,7 @@ When executing a plan AST, Milvus first receives a proto-type plan node. Then a 
 
 ![execute workflow](https://assets.zilliz.com/execute_workflow_d89f1ee925.png "The workflow of executing a plan AST in Milvus.")
 
-## What's next?
+## About the Deep Dive Series
 
 With the [official announcement of general availability](https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md) of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:
 
@@ -102,7 +102,7 @@ With the [official announcement of general availability](https://milvus.io/blog/
 - [Real-time query](https://milvus.io/blog/deep-dive-5-real-time-query.md)
 - [Scalar execution engine](https://milvus.io/blog/deep-dive-7-query-expression.md)
 - [QA system](https://milvus.io/blog/deep-dive-6-oss-qa.md)
-- Vector execution engine
+- [Vector execution engine](https://milvus.io/blog/deep-dive-8-knowhere.md)
 
 
 
