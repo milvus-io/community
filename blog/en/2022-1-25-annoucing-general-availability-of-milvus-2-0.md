@@ -6,7 +6,6 @@ date: 2022-01-25
 desc: An easy way to handle massive high-dimensional data 
 cover: assets.zilliz.com/Milvus_2_0_GA_4308a0f552.png
 tag: News
-recommend: true
 ---
 
 Dear Members and Friends of the Milvus Community:
