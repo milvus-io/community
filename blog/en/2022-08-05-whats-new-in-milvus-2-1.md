@@ -4,11 +4,13 @@ title: What's new in Milvus 2.1 - Towards simplicity and speed
 author: Xiaofan Luan
 date: 2022-08-05
 desc: Milvus, the open-source vector database, now has performance and usability improvements that users have long been anticipating.
-cover: assets.zilliz.com/How_Short_video_Platform_Likee_Removes_Duplicate_Videos_with_Milvus_07bd75ec82.png
+cover: assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png
 tag: News
 recommend: true
 canonicalUrl: http://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md
 ---
+
+![What's new in Milvus 2.1 - Towards simplicity and speed](https://assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png)
 
 We are very glad to announce the
 [release](https://milvus.io/docs/v2.1.x/release_notes.md) of Milvus 2.1
@@ -102,8 +104,8 @@ matching on strings. Our test results show that the memory requirement
 of MARISA-trie is only 10% of that of Python dictionaries to load all
 the data into memory and provide query capabilities.
 
-![Milvus 2.1 harnesses combines MARISA-Trie with inverted index to
-significantly improve filtering speed.](https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png)
+<img src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 harnesses combines MARISA-Trie with inverted index to
+significantly improve filtering speed." width="75%" height="75%">
 
 In the future, Milvus will continue focusing on scalar query-related
 developments, support more scalar index types and query operators, and
