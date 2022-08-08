@@ -17,8 +17,8 @@ Milvus 2.1 comes with [some significant updates](https://milvus.io/blog/2022-08-
 This article presents an introduction to the support of string data type. Read and learn what you can do with it and how to use it.
 
 **Jump to:**
-- [What can you do with string data](#What-can-you-do-with-string-data)
-- [How to manage string data in Milvus 2.1](#How-to-manage-string-data-in-Milvus-2.1)
+- [What can you do with string data?](#What-can-you-do-with-string-data)
+- [How to manage string data in Milvus 2.1?](#How-to-manage-string-data-in-Milvus-2-1)
     - [Create a collection](#Create-a-collection)
     - [Insert data](#Insert-data)
     - [Delete data](#Delete-data)
