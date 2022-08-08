@@ -18,10 +18,9 @@ This article presents an introduction to the support of string data type. Read a
 
 **Jump to:**
 - [What can you do with string data?](#What-can-you-do-with-string-data)
-- [How to manage string data in Milvus 2.1?](#How-to-manage-string-data-in-Milvus-2-1)
+- [How to manage string data in Milvus 2.1?](#How-to-manage-string-data-in-Milvus-21)
     - [Create a collection](#Create-a-collection)
-    - [Insert data](#Insert-data)
-    - [Delete data](#Delete-data)
+    - [Insert and delete data](#Insert-data)
     - [Build an index](#Build-an-index)
     - [Hybrid search](#Hybrid-search)
     - [String expressions](#String-expressions)
