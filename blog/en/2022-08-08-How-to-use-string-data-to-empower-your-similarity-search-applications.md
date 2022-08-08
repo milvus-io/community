@@ -31,7 +31,7 @@ The support of string data type has been one of the functions most expected by u
 
 Specifically, Milvus 2.1 supports VARCHAR data type, which stores character strings of varying length. With the support of VARCHAR data type, you can:
 
-- Directly manage string data without the help of an external relational database.
+1. Directly manage string data without the help of an external relational database.
 
 The support of VARCHAR data type enables you to skip the step of converting strings into other data types when inserting data into Milvus. Let's say you're working on a book search system for your own online bookstore. You are creating a book dataset and want to identify the books with their names. While in previous versions where Milvus does not support the string data type, before inserting data into MIilvus, you may need to first transform the strings (the names of the books) into book IDs with the help of a relational database like MySQL. Right now, as string data type is supported, you can simply create a string field and directly enter the book names instead of their ID numbers.
 
@@ -39,7 +39,7 @@ The convenience also goes to the search and query process. Imagine there is a cl
 
 In a word, the support of string data type saves you the effort to turn to other tools to manage string data, which greatly simplifies the development process.
 
-- Accelerate the speed of [hybrid search](https://milvus.io/docs/v2.1.x/hybridsearch.md) and [vector query](https://milvus.io/docs/v2.1.x/query.md) through attribute filtering.
+2. Accelerate the speed of [hybrid search](https://milvus.io/docs/v2.1.x/hybridsearch.md) and [vector query](https://milvus.io/docs/v2.1.x/query.md) through attribute filtering.
 
 Like other scalar data types, VARCHAR can be used for attribute filtering in hybrid search and vector query through Boolean expression. It is particularly worth mentioning that Milvus 2.1 adds the operator `like`, which enables you to perform prefix matching. Also, you can perform exact matching using the operator `==`.
 
@@ -142,9 +142,9 @@ search_param = {
 res = collection.search(**search_param)
 ```
 
-## [String expressions](https://milvus.io/docs/v2.1.x/boolean.md)
+## String expressions
 
-Apart from the newly added operator `like`, other operators, which are already supported in previous versions of Milvus, can also be used for string field filtering. Below are some examples of commonly used string expressions, where `A` represents a field of type VARCHAR. Remember that all the string expressions below can be logically combined using logical operators, such as AND, OR, and NOT.
+Apart from the newly added operator `like`, other operators, which are already supported in previous versions of Milvus, can also be used for string field filtering. Below are some examples of commonly used [string expressions]((https://milvus.io/docs/v2.1.x/boolean.md)), where `A` represents a field of type VARCHAR. Remember that all the string expressions below can be logically combined using logical operators, such as AND, OR, and NOT.
 
 ### Set operations
 
