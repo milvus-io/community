@@ -104,8 +104,7 @@ matching on strings. Our test results show that the memory requirement
 of MARISA-trie is only 10% of that of Python dictionaries to load all
 the data into memory and provide query capabilities.
 
-<img src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 harnesses combines MARISA-Trie with inverted index to
-significantly improve filtering speed.">
+<img src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 harnesses combines MARISA-Trie with inverted index to significantly improve filtering speed."
 
 In the future, Milvus will continue focusing on scalar query-related
 developments, support more scalar index types and query operators, and
