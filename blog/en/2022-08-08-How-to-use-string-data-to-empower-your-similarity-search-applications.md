@@ -144,7 +144,7 @@ res = collection.search(**search_param)
 
 ## String expressions
 
-Apart from the newly added operator `like`, other operators, which are already supported in previous versions of Milvus, can also be used for string field filtering. Below are some examples of commonly used [string expressions]((https://milvus.io/docs/v2.1.x/boolean.md)), where `A` represents a field of type VARCHAR. Remember that all the string expressions below can be logically combined using logical operators, such as AND, OR, and NOT.
+Apart from the newly added operator `like`, other operators, which are already supported in previous versions of Milvus, can also be used for string field filtering. Below are some examples of commonly used [string expressions](https://milvus.io/docs/v2.1.x/boolean.md), where `A` represents a field of type VARCHAR. Remember that all the string expressions below can be logically combined using logical operators, such as AND, OR, and NOT.
 
 ### Set operations
 
