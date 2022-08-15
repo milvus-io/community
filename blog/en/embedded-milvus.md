@@ -37,9 +37,9 @@ Everything you do with embedded Milvus, and every piece of code you write for it
 
 ### When to use embedded Milvus?
 
-Embedded Milvus and [PyMilvus](https://milvus.io/docs/v2.0.x/install-pymilvus.md) are constructed for different purposes. You may consider choosing embedded Milvus in the following scenarios:
+Embedded Milvus and [PyMilvus](https://milvus.io/docs/v2.1.x/install-pymilvus.md) are constructed for different purposes. You may consider choosing embedded Milvus in the following scenarios:
 
-- You want to use Milvus without installing Milvus in any of the ways provided [here](https://milvus.io/docs/v2.0.x/install_standalone-docker.md).
+- You want to use Milvus without installing Milvus in any of the ways provided [here](https://milvus.io/docs/v2.1.x/install_standalone-docker.md).
 
 - You want to use Milvus without keeping a long-running Milvus process in your machine.
 
