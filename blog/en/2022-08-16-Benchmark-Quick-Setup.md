@@ -1,17 +1,17 @@
-id: 2022-08-16.md
-title: 
-author: 
+id: 2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md
+title: A Quick Guide to Benchmarking Milvus 2.1 
+author: Yanliang Qiao
 date: 2022-08-16
-desc: 
+desc: A Quick Guide to Benchmarking Milvus 2.1 
 cover: assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png
-tag: 
+tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/2022-08-16.md
+canonicalUrl: http://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md
 ---
 
-![Cover](https://assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png "1")
+![Cover](https://assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png "A Quick Guide to Benchmarking Milvus 2.1 ")
 
-Recently, we have updated the[ benchmark report of Milvus 2.1](https://milvus.io/docs/v2.1.x/benchmark.md). Tests with a dataset of 1 million vectors have proved that QPS can be dramatically increased by merging small-[nq](https://milvus.io/docs/v2.1.x/benchmark.md#Terminology) queries.
+Recently, we have updated the [benchmark report of Milvus 2.1](https://milvus.io/docs/v2.1.x/benchmark.md). Tests with a dataset of 1 million vectors have proved that QPS can be dramatically increased by merging small-[nq](https://milvus.io/docs/v2.1.x/benchmark.md#Terminology) queries.
 
 Here are some simple scripts for you to easily reproduce the tests.
 
@@ -27,11 +27,11 @@ pip install pymilvus==2.1.1
 
 3. Download and copy the following files to the same working directory as the client. In this case, the working directory is `/go_ben`.
 
-- `collection_prepare.py` 
+- `[collection_prepare.py](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/collection_prepare.py)` 
 
-- `go_benchmark.py`
+- `[go_benchmark.py](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/go_benchmark.py)`
 
-- `benchmark` (for Ubuntu) or `benchmark-mac` (for macOS)
+- `[benchmark](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark)` (for Ubuntu) or `[benchmark-mac](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac)` (for macOS)
    
     **Note:**
    
@@ -41,7 +41,7 @@ pip install pymilvus==2.1.1
    
     - Executable permissions are required to access `benchmark` or `benchmark-mac`. 
    
-    - Mac users need  to trust the `benchmark-mac` file by configuring Security & Privacy in System Preferences.
+    - Mac users need to trust the `benchmark-mac` file by configuring Security & Privacy in System Preferences.
    
     - Settings on concurrent search can be found and modified in the `go_benchmark.py` source code.
    
@@ -60,7 +60,7 @@ root@milvus-pytest:/go_ben# python collection_prepare.py 10.100.31.105
 08/11/2022 17:33:54 PM - INFO - Collection prepared completed
 ```
 
-6. Call `benchmark` (or `benchmark-mac` on Mac) to conduct a concurrent search.
+6. Call `benchmark` (or `benchmark-mac` on macOS) to conduct a concurrent search.
 
 ```
 root@milvus-pytest:/go_ben# python go_benchmark.py 10.100.31.105 ./benchmark
