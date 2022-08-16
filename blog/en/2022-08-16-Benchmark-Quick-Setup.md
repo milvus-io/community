@@ -1,5 +1,5 @@
 id: 2022-08-16.md
-title: How to Use String Data to Empower Your Similarity Search Applications
+title: 
 author: 
 date: 2022-08-16
 desc: 
@@ -33,17 +33,17 @@ pip install pymilvus==2.1.1
 
 - `benchmark` (for Ubuntu) or `benchmark-mac` (for macOS)
    
-Note:
+    **Note:**
    
-- `benchmark` and `benchmark-mac` are executable files developed and compiled using Go SDK 2.1.1. They are only used to conduct a concurrent search. 
+    - `benchmark` and `benchmark-mac` are executable files developed and compiled using Go SDK 2.1.1. They are only used to conduct a concurrent search. 
    
-- For Ubuntu users, please download `benchmark`; for macOS users, please download `benchmark-mac`.
+    - For Ubuntu users, please download `benchmark`; for macOS users, please download `benchmark-mac`.
    
-- Executable permissions are required to access `benchmark` or `benchmark-mac`. 
+    - Executable permissions are required to access `benchmark` or `benchmark-mac`. 
    
-- Mac users need  to trust the `benchmark-mac` file by configuring Security & Privacy in System Preferences.
+    - Mac users need  to trust the `benchmark-mac` file by configuring Security & Privacy in System Preferences.
    
-- Settings on concurrent search can be found and modified in the `go_benchmark.py` source code.
+    - Settings on concurrent search can be found and modified in the `go_benchmark.py` source code.
    
 
 4. Create a collection and insert vector data.
@@ -80,11 +80,11 @@ Result of go_benchmark: {'response': True, 'err_code': 0, 'err_message': ''}
 ```
 
 7. Open the `go_log_file.log` file under the current directory to check the detailed search log. The following is the search information you can find in the search log.
-   - reqs: number of search requests from the moment when concurrency happens to the current moment (the current time-span)
-   - fails: number of failed requests as a percentage of reqs in the current time-span
-   - Avg: average request response time in the current time-span (unit: milliseconds)
-   - Min: minimum request response time in the current time-span (unit: milliseconds)
-   - Max: maximum request response time in the current time-span (unit: milliseconds)
-   - Median: median request response time in the current time-span (unit: milliseconds)
-   - req/s: average request response time per second, i.e. QPS
-   - failures/s: average number of failed requests per second in the current time-span
+- reqs: number of search requests from the moment when concurrency happens to the current moment (the current time-span)
+- fails: number of failed requests as a percentage of reqs in the current time-span
+- Avg: average request response time in the current time-span (unit: milliseconds)
+- Min: minimum request response time in the current time-span (unit: milliseconds)
+- Max: maximum request response time in the current time-span (unit: milliseconds)
+- Median: median request response time in the current time-span (unit: milliseconds)
+- req/s: average request response time per second, i.e. QPS
+- failures/s: average number of failed requests per second in the current time-span
