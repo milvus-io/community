@@ -22,7 +22,7 @@ Here are some simple scripts for you to easily reproduce the tests.
 
 2. Deploy a client. In this case, we use Ubuntu 18.04 and Python 3.8.13 for the deployment. Run the following code to install PyMilvus 2.1.1.
 
-```python
+```
 pip install pymilvus==2.1.1
 ```
 
