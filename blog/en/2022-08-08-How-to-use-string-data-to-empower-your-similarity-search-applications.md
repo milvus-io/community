@@ -174,7 +174,7 @@ With the official release of Milvus 2.1, we have prepared a series of blogs intr
 
 Read more in this blog series:
 
-- Embedded Milvus
+- [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
 - Understanding Consistency Level in the Milvus Vector Database
 - In-memory replicas
 - How Does the Milvus Vector Database Ensures Data Security?
