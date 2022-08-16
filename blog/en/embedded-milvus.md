@@ -140,8 +140,8 @@ With the official release of Milvus 2.1, we have prepared a series of blogs intr
 
 Read more in this blog series:
 
-- [How to Use String Data to Empower Your Similarity Search Applications](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md#How-to-manage-string-data-in-Milvus-21)
-- [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus)
+- [How to Use String Data to Empower Your Similarity Search Applications](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md)
+- [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
 - Understanding Consistency Level in the Milvus Vector Database
 - In-memory replicas
 - How Does the Milvus Vector Database Ensures Data Security?
