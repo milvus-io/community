@@ -3,7 +3,7 @@ id: 2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md
 title: A Quick Guide to Benchmarking Milvus 2.1 
 author: Yanliang Qiao
 date: 2022-08-16
-desc: A Quick Guide to Benchmarking Milvus 2.1 
+desc: Follow our step-by-step guide to perform a Milvus 2.1 benchmark by yourself.
 cover: assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
