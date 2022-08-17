@@ -4,13 +4,13 @@ title: How to Use String Data to Empower Your Similarity Search Applications
 author: Xi Ge
 date: 2022-08-08
 desc: Use string data to streamline the process of building your own similarity search applications. 
-cover: assets.zilliz.com/Use_string_data_to_empower_your_similarity_search_applications_c552b790e1.png
+cover: assets.zilliz.com/string_6129ce83e6.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
 canonicalUrl: http://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md
 ---
 
-![Cover](https://assets.zilliz.com/Use_string_data_to_empower_your_similarity_search_applications_c552b790e1.png "How to use string data to empower your similarity search applications?")
+![Cover](https://assets.zilliz.com/string_6129ce83e6.png "How to use string data to empower your similarity search applications?")
 
 Milvus 2.1 comes with [some significant updates](https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md) which make working with Milvus a lot easier. One of them is the support of string data type. Right now Milvus [supports data types](https://milvus.io/docs/v2.1.x/schema.md#Supported-data-type) including strings, vectors, Boolean, integers, floating-point numbers, and more. 
 
