@@ -51,7 +51,7 @@ Now we know the string data type is extremely useful, but when exactly do we nee
 
 ## Create a collection
 
-Let's follow the previous example. You are still working on the book recommender system and want to create a book collection with a field called `book_name`, into which you will insert string data. In this case, you can set the data type as `DataType.VARCHAR`when setting the field schema, as shown in the example below. 
+Let's follow the previous example. You are still working on the book recommender system and want to create a book collection with a primary key field called `book_name`, into which you will insert string data. In this case, you can set the data type as `DataType.VARCHAR`when setting the field schema, as shown in the example below. 
 
 Note that when creating a VARCHAR field, it is necessary to specify the maximum character length via the parameter `max_length` whose value can range from 1 to 65,535.  In this example, we set the maximum length as 200.
 
@@ -129,7 +129,7 @@ collection.create_index(
 
 By specifying boolean expressions, you can filter the string fields during a vector similarity search. 
 
-For example, if you are searching for the books most similar to *Hello Milvus* and only want to get the books whose names start with 'Hello', you can use the operator `like`to perform a prefix match and get the targeted books, as shown in the example below. 
+For example, if you are searching for books whose intro are most similar to Hello Milvus but only want to get the books whose names start with 'book_2', you can use the operator `like`to perform a prefix match and get the targeted books, as shown in the example below. 
 
 ```Python
 search_param = {
@@ -177,6 +177,6 @@ Read more in this blog series:
 - [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
 - Understanding Consistency Level in the Milvus Vector Database
 - In-memory replicas
-- How Does the Milvus Vector Database Ensures Data Security?
+- How Does the Milvus Vector Database Ensure Data Security?
 
 
