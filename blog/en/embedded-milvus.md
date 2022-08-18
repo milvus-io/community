@@ -144,4 +144,4 @@ Read more in this blog series:
 - [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
 - Understanding Consistency Level in the Milvus Vector Database
 - In-memory replicas
-- How Does the Milvus Vector Database Ensures Data Security?
+- How Does the Milvus Vector Database Ensure Data Security?
