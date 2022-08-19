@@ -16,7 +16,7 @@ Recently, we have updated the [benchmark report of Milvus 2.1](https://milvus.io
 
 Here are some simple scripts for you to easily reproduce the tests.
 
-# Procedures
+## Procedures
 
 1. Deploy a Milvus standalone or cluster. In this case, the IP address of the Milvus server is 10.100.31.105.
 
@@ -96,3 +96,11 @@ Result of go_benchmark: {'response': True, 'err_code': 0, 'err_message': ''}
    - req/s: average request response time per second, i.e. QPS
    
    - failures/s: average number of failed requests per second in the current time-span
+
+## Downloading Scripts and Executable Files
+
+   - [collection_prepare.py](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/collection_prepare.py)
+
+   - [`go_benchmark.py`](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/go_benchmark.py)
+
+   - [`benchmark`](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark) (for Ubuntu) or [`benchmark-mac`](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac) (for macOS)
