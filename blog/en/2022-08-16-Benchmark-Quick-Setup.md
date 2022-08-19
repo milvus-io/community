@@ -101,6 +101,6 @@ Result of go_benchmark: {'response': True, 'err_code': 0, 'err_message': ''}
 
    - [collection_prepare.py](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/collection_prepare.py)
 
-   - [`go_benchmark.py`](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/go_benchmark.py)
+   - [go_benchmark.py](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/go_benchmark.py)
 
-   - [`benchmark`](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark) (for Ubuntu) or [`benchmark-mac`](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac) (for macOS)
+   - [benchmark](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark) (for Ubuntu) or [benchmark-mac](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac) (for macOS)
