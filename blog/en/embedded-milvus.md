@@ -101,7 +101,8 @@ please do the following if you have not already done so:
 If you have successfully started embedded Milvus before and comes back to restart it, you can directly run `milvus.start()` after importing Milvus.
 
 ```
-$ python3Python 3.9.10 (main, Jan 15 2022, 11:40:53)
+$ python3
+Python 3.9.10 (main, Jan 15 2022, 11:40:53)
 [Clang 13.0.0 (clang-1300.0.29.3)] on darwinType "help", "copyright", "credits" or "license" for more information.
 >>> import milvus
 >>> milvus.start()
