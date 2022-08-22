@@ -26,7 +26,7 @@ With its official release, Milvus 2.1 comes with many new features to provide co
 
 - [Why are in-memory replicas important?](#Why-are-in-memory-replicas-important)
 
-- [Enable in-memory replicas in the Milvus vector database](#Enable-in-memory-replicas-in-the-milvus-vector-database)
+- [Enable in-memory replicas in the Milvus vector database](#Enable-in-memory-replicas-in-the-Milvus-vector-database)
 
 
 
