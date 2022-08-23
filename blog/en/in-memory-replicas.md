@@ -16,7 +16,7 @@ canonicalUrl: http://milvus.io/blog/in-memory-replicas.md
 > This article is co-authored by [Congqi Xia](https://github.com/congqixia) and [Angela Ni](https://www.linkedin.com/in/yiyun-n-2aa713163/).
 
 
-With its official release, Milvus 2.1 comes with many new features to provide convenience and a better user experience. Though the concept of in-memory replica is nothing new to the world of distributed databases, it is a critical feature that can help you boost system performance in an effortless way. Therefore, this post sets out to explain what in-memory replica is and why it is important, and then introduces how to enable this new feature in Milvus, a vector database for AI.
+With its official release, Milvus 2.1 comes with many new features to provide convenience and a better user experience. Though the concept of in-memory replica is nothing new to the world of distributed databases, it is a critical feature that can help you boost system performance and enhance system availability in an effortless way. Therefore, this post sets out to explain what in-memory replica is and why it is important, and then introduces how to enable this new feature in Milvus, a vector database for AI.
 
 **Jump to:**
 
