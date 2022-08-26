@@ -50,9 +50,9 @@ Knowhere not only further extends the functions of Faiss but also optimizes the 
 
 ### 1. Support for BitsetView
 
-Initially, bitset was introduced in Milvus for the purpose of "soft deletion". A soft-deleted vector still exists in the database but will not be computed during a vector similarity search or query. Each bit in the bitset corresponds to an indexed vector. If a vector is marked as "1" in the bitset, it means this vector is soft-deleted and will be not be involved during a vector search.
+Initially, bitset was introduced in Milvus for the purpose of "soft deletion". A soft-deleted vector still exists in the database but will not be computed during a vector similarity search or query. Each bit in the bitset corresponds to an indexed vector. If a vector is marked as "1" in the bitset, it means this vector is soft-deleted and will not be involved during a vector search.
 
-The bitset parameters are added to all the exposed Faiss index query API in Knowhere, including CPU and GPU indexes. 
+The bitset parameters are added to all the exposed Faiss index query APIs in Knowhere, including CPU and GPU indexes. 
 
 Learn more about [how bitset enables the versatility of vector search](https://milvus.io/blog/2022-2-14-bitset.md).
 
