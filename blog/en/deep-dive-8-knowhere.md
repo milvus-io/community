@@ -80,7 +80,7 @@ As mentioned in the first section, Knowhere only handles vector search operation
 
 ### Index
 
-Index is a type of independent data structure from the original vector data. Indexing requires four steps: create an index, insert data, train data, and build an index.
+Index is a type of independent data structure from the original vector data. Indexing requires four steps: create an index, train data, insert data and build an index.
 
 For some of the AI applications, dataset training is an individual process from vector search. In this type of application, data from datasets are first trained and then inserted into a vector database like Milvus for similarity search. Open datasets like sift1M and sift1B provides data for training and testing. However, in Knowhere, data for training and searching are mixed together. That is to say, Knowhere trains all the data in a segment and then inserts all the trained data and builds an index for them.
 
