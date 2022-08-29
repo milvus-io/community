@@ -3,7 +3,7 @@ id: understanding-consistency-levels-in-the-milvus-vector-database.md
 title: Understanding Consistency Level in the Milvus Vector Database
 author: Chenglong Li
 date: 2022-08-29
-desc: Learn about the four levels of consistency: strong, bounded staleness, session, and eventual supported in the Milvus vector database.
+desc: Learn about the four levels of consistency - strong, bounded staleness, session, and eventual supported in the Milvus vector database.
 cover: assets.zilliz.com/1280_X1280_0e0d4bc107.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
