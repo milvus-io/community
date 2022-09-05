@@ -19,7 +19,7 @@ This article aims to analyze how Milvus the vector database ensures data securit
 
 **Jump to:**
 
-- [What is database security?](#What-is-database-security)
+- [What is database security and why is it important?](#What-is-database-security-and-why-is-it-important)
 - [How does the Milvus vector database ensure data security?](#How-does-the-Milvus-vector-database-ensure-data-security)
   - [User authentication](#User-authentication)
   - [TLS connection](#TLS-connection)
