@@ -89,10 +89,7 @@ In the next post, we will unveil the mechanism behind and explain how the Milvus
 
 ## What's next
 
-With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. More blogs will be published soon. Stay tuned!
-
-
-Read more in this blog series:
+With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:
 
 - [How to Use String Data to Empower Your Similarity Search Applications](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md)
 - [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
