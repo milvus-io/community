@@ -106,3 +106,15 @@ Result of go_benchmark: {'response': True, 'err_code': 0, 'err_message': ''}
    - [benchmark](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark) for Ubuntu
    
    - [benchmark-mac](https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac) for macOS
+ 
+
+## What's next
+
+With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:
+
+- [How to Use String Data to Empower Your Similarity Search Applications](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md)
+- [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
+- [Increase Your Vector Database Read Throughput with In-Memory Replicas](https://milvus.io/blog/in-memory-replicas.md)
+- [Understanding Consistency Level in the Milvus Vector Database](https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md)
+- [How Does the Milvus Vector Database Ensure Data Security?](https://milvus.io/blog/data-security.md)
+
