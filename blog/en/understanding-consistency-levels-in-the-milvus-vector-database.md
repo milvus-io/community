@@ -47,7 +47,7 @@ However, Milvus was refactored in its 2.0 version and [Milvus 2.0 is a distribut
 
 ## Four levels of consistency in the Milvus vector database
 
-Milvus supports four levels of consistency:  strong, bounded staleness, session, and eventual*.* And a Milvus user can specify the consistency level when [creating a collection](https://milvus.io/docs/v2.1.x/create_collection.md) or conducting a [vector similarity search](https://milvus.io/docs/v2.1.x/search.md) or [query](https://milvus.io/docs/v2.1.x/query.md). This section will continue to explain how these four levels of consistency are different and which scenario are they best suited for. 
+Milvus supports four levels of consistency:  strong, bounded staleness, session, and eventual. And a Milvus user can specify the consistency level when [creating a collection](https://milvus.io/docs/v2.1.x/create_collection.md) or conducting a [vector similarity search](https://milvus.io/docs/v2.1.x/search.md) or [query](https://milvus.io/docs/v2.1.x/query.md). This section will continue to explain how these four levels of consistency are different and which scenario are they best suited for. 
 
 ### Strong
 
@@ -95,8 +95,7 @@ With the official release of Milvus 2.1, we have prepared a series of blogs intr
 - [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
 - [Increase Your Vector Database Read Throughput with In-Memory Replicas](https://milvus.io/blog/in-memory-replicas.md)
 - [Understanding Consistency Level in the Milvus Vector Database](https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md)
+- [Understanding Consistency Level in the Milvus Vector Database (Part II)](https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-part-2.md)
 - [How Does the Milvus Vector Database Ensure Data Security?](https://milvus.io/blog/data-security.md)
-
-
 
 
