@@ -168,7 +168,6 @@ You can use `>`, `>=`, `<`, `<=` to filter string fields with a single range, su
 
 As mentioned earlier, Milvus 2.1 adds the operator `like` for prefix matching, such as `A like "prefix%"`. 
 
-
 ## What's next
 
 With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:
@@ -177,4 +176,5 @@ With the official release of Milvus 2.1, we have prepared a series of blogs intr
 - [Using Embedded Milvus to Instantly Install and Run Milvus with Python](https://milvus.io/blog/embedded-milvus.md)
 - [Increase Your Vector Database Read Throughput with In-Memory Replicas](https://milvus.io/blog/in-memory-replicas.md)
 - [Understanding Consistency Level in the Milvus Vector Database](https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md)
+- [Understanding Consistency Level in the Milvus Vector Database (Part II)](https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-part-2.md)
 - [How Does the Milvus Vector Database Ensure Data Security?](https://milvus.io/blog/data-security.md)
