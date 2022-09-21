@@ -56,7 +56,7 @@ Then you can make adjustments by specifying the log level. Log level options inc
 
 - `panic`
 
-- `fatal`.
+- `fatal`
 
 The following example code changes the log level from the default log level from `info` to `error`. 
 
