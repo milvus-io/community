@@ -91,7 +91,7 @@ Vector databases mainly should satisfy the following key requirements considerin
 
 Vector databases don’t just store data vectors. They are also responsible for using efficient data structures to index these vectors for fast retrieval and supporting CRUD (create, read, update and delete) operations. Vector databases should also ideally support attribute filtering which is filtering based on metadata fields which are usually scalar fields. A simple example would be retrieving similar shoes based on the image vectors for a specific brand. Here brand would be the attribute based on which filtering would be done.
 
-![figure 5](https://assets.zilliz.com/The_Milvus_filtering_mechanism_23188800de.png "The Milvus filtering mechanism; Source: https://zilliz.com/learn/attribute-filtering")
+![figure 5](https://assets.zilliz.com/Bitmask_f72259b751.png "The Milvus filtering mechanism; Source: https://zilliz.com/learn/attribute-filtering")
 
 The figure above showcases how [Milvus](https://milvus.io/), the vector database we will talk about shortly, uses attribute filtering. [Milvus](https://milvus.io/) introduces the concept of a bitmask to the filtering mechanism to keep similar vectors with a bitmask of 1 based on satisfying specific attribute filters. More details on this [here](https://zilliz.com/learn/attribute-filtering).
 
