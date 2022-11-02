@@ -74,7 +74,6 @@ Milvus not only supports multiple indexes for vector similarity search, but also
 ## Looking for more resources?
 
 - Build more vector similarity search systems for other application scenarios with Milvus:
-  - [What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently](https://milvus.io/blog/2021-10-10-milvus-helps-analys-vedios.md?page=1#all)
   - [DNA Sequence Classification based on Milvus](https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md?page=2#all)
   - [Audio Retrieval Based on Milvus](https://milvus.io/blog/audio-retrieval-based-on-milvus.md?page=2#all)
   - [4 Steps to Building a Video Search System](https://milvus.io/blog/building-video-search-system-with-milvus.md?page=6#all)
