@@ -1,14 +1,14 @@
 ---
-id: 2021-10-10-milvus-helps-analys-vedios.md
-title: What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently
-author: Shiyu
+id: 2021-10-10-milvus-helps-analyze-videos.md
+title: Building a Video Analysis System with Milvus Vector Database
+author: Shiyu Chen
 date: 2021-10-11
 desc: Learn how Milvus powers the AI analysis of video contents.
 cover: assets.zilliz.com/Who_is_it_e9d4510ace.png
 tag: Scenarios
 ---
 
-#  What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently
+#  Building a Video Analysis System with Milvus Vector Database
 
 *Shiyu Chen, a data engineer at Zilliz, graduated from Xidian University with a degree in Computer Science. Since joining Zilliz, she has been exploring solutions for Milvus in various fields, such as audio and video analysis, molecule formula retrieval, etc., which has greatly enriched the application scenarios of the community. She is currently exploring more interesting solutions. In her spare time, she loves sports and reading.*
 
