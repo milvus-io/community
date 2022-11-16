@@ -42,7 +42,7 @@ DigitalOcean also provides swag for participants, check out the rules from the o
 
 ## Helpful links
 
-* [**Milvus x Hactoberfest event page**](https://milvus.io/hacktoberfest-2021)
+* [**Milvus x Hactoberfest event page**](https://hacktoberfest.com/)
 
 * [**Milvus Discussion Forum**](https://discuss.milvus.io/c/hacktoberfest/9) - Join our Milvus forum to stay up-to-date on Milvus releases, interact with other users, and ask questions during the event.
 
