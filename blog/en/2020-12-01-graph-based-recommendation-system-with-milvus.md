@@ -39,7 +39,7 @@ In this example, building a graph-based recommendation system from scratch depen
 
 ### Pinsage: A graph convolutional network
 
-[PinSage](https://medium.com/pinterest-engineering/pinsage-a-new-graph-convolutional-neural-network-for-web-scale-recommender-systems-88795a107f48) is a random-walk graph convolutional network capable of learning embeddings for nodes in web-scale graphs containing billions of objects. The network was developed by [Pinterest](Pinterest), an online pinboard company, to offer thematic visual recommendations to its users. 
+[PinSage](https://medium.com/pinterest-engineering/pinsage-a-new-graph-convolutional-neural-network-for-web-scale-recommender-systems-88795a107f48) is a random-walk graph convolutional network capable of learning embeddings for nodes in web-scale graphs containing billions of objects. The network was developed by [Pinterest](https://www.pinterest.com/), an online pinboard company, to offer thematic visual recommendations to its users. 
 
 Pinterest users can "pin" content that interests them to "boards," which are collections of pinned content. With over [478 million](https://business.pinterest.com/audience/) monthly active users (MAU) and over [240 billion](https://newsroom.pinterest.com/en/company) objects saved, the company has an immense amount of user data that it must build new technology to keep up with. 
 
