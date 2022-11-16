@@ -254,4 +254,4 @@ In the near future, we will share with you a series of blogs introducing the des
 Find us on:
 - [GitHub](https://github.com/milvus-io/milvus)
 - [Milvus.io](https://milvus.io/)
-- [Slack Channel](milvusio.slack.com)
+- [Slack Channel](https://slack.milvus.io/)
