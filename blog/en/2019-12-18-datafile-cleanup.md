@@ -46,5 +46,5 @@ As for internal implementation, reference counting, which is familiar to softwar
 ## Related blogs
 
 - [Managing Data in Massive-Scale Vector Search Engine](2019-11-08-data-management.md)
-- [Milvus Metadata Management (1): How to View Metadata](2019-12-24-view-metadata.md)
+- [Milvus Metadata Management (1): How to View Metadata](https://milvus.io/blog/managing-metadata-in-milvus-1.md)
 - [Milvus Metadata Management (2): Fields in the Metadata Table](2019-12-27-meta-table.md)
