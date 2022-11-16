@@ -119,7 +119,7 @@ Milvus [5] vector similarity search engine is compatible with various deep learn
 2. ml-1m-README: http://files.grouplens.org/datasets/movielens/ml-1m-README.txt
 3. Fusion Recommendation Model by PaddlePaddle: https://www.paddlepaddle.org.cn/documentation/docs/zh/beginners_guide/basics/recommender_system/index.html#id7
 4. Bootcamp: https://github.com/milvus-io/bootcamp/tree/master/solutions/recommendation_system
-5. Milvus: https://milvus.io/en/ 
+5. Milvus: https://milvus.io/
 
 
   
