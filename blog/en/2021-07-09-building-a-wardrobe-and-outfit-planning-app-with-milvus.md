@@ -42,7 +42,7 @@ Clothing items in each image are recognized and cropped out to serve as the feat
 
 ### Feature extraction
 
-The key to similarity search is the feature extraction model. Cropped clothes images are embedded into 512-dimensional floating point vectors that represent their attributes in a machine readable numeric data format. The [deep metric learning (DML)](https://github.com/kdhht2334/Survey_of_Deep_Metric_Learning) methodology is adopted with [EfficientNet](https://arxiv.org/abs/1905.11946) as the backbone model.
+The key to similarity search is the feature extraction model. Cropped clothes images are embedded into 512-dimensional floating point vectors that represent their attributes in a machine readable numeric data format. The [deep metric learning (DML)](https://github.com/Joon-Park92/Survey_of_Deep_Metric_Learning) methodology is adopted with [EfficientNet](https://arxiv.org/abs/1905.11946) as the backbone model.
 
 Metric learning aims to train a CNN-based nonlinear feature extraction module (or an encoder) to reduce the distance between the feature vectors corresponding to the same class of samples, and increase the distance between the feature vectors corresponding to different classes of samples. In this scenario, the same class of samples refers to the same piece of clothing.
 
