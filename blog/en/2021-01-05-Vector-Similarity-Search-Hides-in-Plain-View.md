@@ -82,6 +82,7 @@ Although this list is by no means exhaustive, it is a good starting point for di
 
 ## To learn more about vector similarity search, check out the following resources:
 
-- [Thanks to Milvus, Anyone Can Build a Search Engine for 1+ Billion Images](https://zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images)
-- [Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search](https://zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search)
+- [Thanks to Milvus, Anyone Can Build a Search Engine for 1+ Billion Images](https://milvus.io/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images.md)
+- [Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search](https://milvus.io/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search.md)
 - [Accelerating Similarity Search on Really Big Data with Vector Indexing](https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing)
+- [Accelerating Similarity Search on Really Big Data with Vector Indexing (Part II)](https://zilliz.com/learn/index-overview-part-2)
