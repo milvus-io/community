@@ -11,7 +11,7 @@ origin: zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
 
 # Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp
 
-With the release of Milvus 2.0, the team has revamped the Milvus [bootcamp](https://github.com/milvus-io/bootcamp). The new and improved bootcamp offers updated guides and easier to follow code examples for a variety of use cases and deployments. Additionally, this new version is updated for [Milvus 2.0](https://zilliz.com/blog/milvus2.0-redefining-vector-database), a reimagined version of the world's most advanced vector databse.
+With the release of Milvus 2.0, the team has revamped the Milvus [bootcamp](https://github.com/milvus-io/bootcamp). The new and improved bootcamp offers updated guides and easier to follow code examples for a variety of use cases and deployments. Additionally, this new version is updated for [Milvus 2.0](https://milvus.io/blog/milvus2.0-redefining-vector-database.md), a reimagined version of the world's most advanced vector databse.
 <br/>
 
 Jump to:
