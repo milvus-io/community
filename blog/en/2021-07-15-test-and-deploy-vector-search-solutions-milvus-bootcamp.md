@@ -111,7 +111,7 @@ red = redis.Redis(host = '127.0.0.1', port=6379, db=0)
 
 #### Step 5: Create a collection
 
-After starting the servers, create a collection in Milvus for storing all the vectors. In this example, the dimension size is set to 512, the size of the resnet-18 output, and the similarity metric is set to the Euclidean distance (L2). Milvus supports a variety of different [similarity metrics](https://milvus.io/docs/metric.md#floating).
+After starting the servers, create a collection in Milvus for storing all the vectors. In this example, the dimension size is set to 512, the size of the resnet-18 output, and the similarity metric is set to the Euclidean distance (L2). Milvus supports a variety of different [similarity metrics](https://milvus.io/docs/v2.0.x/metric.md).
 
 ```
 collection_name = "image_similarity_search"
@@ -126,7 +126,7 @@ collection = Collection(name=collection_name, schema=default_schema)
 
 #### Step 6: Build an index for the collection
 
-Once the collection is made, build an index for it. In this case, the IVF_SQ8 index is used. This index requires the 'nlist' parameter, which tells Milvus how many clusters to make within each datafile (segment). Different [indices](https://milvus.io/docs/index.md#CPU) require different parameters.
+Once the collection is made, build an index for it. In this case, the IVF_SQ8 index is used. This index requires the 'nlist' parameter, which tells Milvus how many clusters to make within each datafile (segment). Different [indices](https://milvus.io/docs/v2.0.x/index.md) require different parameters.
 
 ```
 default_index = {"index_type": "IVF_SQ8", "params": {"nlist": 2048}, "metric_type": "L2"}
