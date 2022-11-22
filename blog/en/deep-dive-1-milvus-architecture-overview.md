@@ -46,7 +46,7 @@ A scalar is a quantity that is described only in one measurement - magnitude. A 
 
 Since most of the important data have more than one attribute, we can understand these data better if we convert them into vectors. One common way for us to manipulate vector data is to calculate the  distance between vectors using [metrics](https://milvus.io/docs/v2.0.x/metric.md) such as Euclidean distance, inner product, Tanimoto distance, Hamming distance, etc. The closer the distance, the more similar the vectors are. To query a massive vector dataset efficiently, we can organize vector data by building indexes on them. After the dataset is indexed, queries can be routed to clusters, or subsets of data, that are most likely to contain vectors similar to an input query. 
 
-To learn more about the indexes, refer to [Vector Index](https://milvus.io/docs/index.md).
+To learn more about the indexes, refer to [Vector Index](https://milvus.io/docs/v2.0.x/index.md).
 
 ### From vector search engine to vector database
 

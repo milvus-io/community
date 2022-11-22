@@ -36,7 +36,7 @@ DigitalOcean also provides swag for participants, check out the rules from the o
 
 * We recently hosted a virtual Q&A call about Hacktoberfest.  You can view the recording [here](https://www.youtube.com/watch?v=cHjSTEHoiF8).
 
-* To participate in the event, we recommend starting on our milvus.io Hacktoberfest page and checking out the ["Quick Start" Guide]( https://milvus.io/hacktoberfest-2021)
+* To participate in the event, we recommend starting on our milvus.io Hacktoberfest page and checking out the ["Quick Start" Guide]( https://hacktoberfest.com/)
 * Check out our [GitHub repo]( https://github.com/milvus-io) (and give us a star)!
 * View our list of curated ["issues"](https://github.com/milvus-io/milvus/issues?q=is%3Aopen+is%3Aissue+label%3AHacktoberfest) for participants that can help you become a rockstar!
 
