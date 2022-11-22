@@ -20,7 +20,7 @@ Compared with traditional methods, Milvus has faster search speed and broader co
 
 ## System overview
 
-The system uses RDKit to generate chemical fingerprints, and Milvus to perform chemical structure similarity search. Refer to https://github.com/milvus-io/bootcamp/blob/master/EN_solutions/mols_search/README.md to learn more about the system.
+The system uses RDKit to generate chemical fingerprints, and Milvus to perform chemical structure similarity search. Refer to https://github.com/milvus-io/bootcamp/tree/master/solutions/molecular_similarity_search to learn more about the system.
 
 ![1-system-overview.png](https://assets.zilliz.com/1_system_overview_4b7c2de377.png "System overview.")
 

@@ -36,7 +36,7 @@ Launch the MySQL service on **any** node in the cluster. For details, see [Manag
 
 ### **Step 2: Create a JuiceFS file system**
 
-For demonstration purposes, the pre-compiled binary JuiceFS program is used. Download the correct [installation package](https://github.com/juicedata/juicefs/releases) for your system and follow the JuiceFS [Quick Start Guide](https://github.com/juicedata/juicefs/blob/main/docs/en/quick_start_guide.md) for detailed install instructions. To create a JuiceFS file system, first set up a Redis database for metadata storage. It is recommended that for public cloud deployments you host the Redis service on the same cloud as the application. Additionally, set up object storage for JuiceFS. In this example, Azure Blob Storage is used; however, JuiceFS supports almost all object services. Select the object storage service that best suits the demands of your scenario.
+For demonstration purposes, the pre-compiled binary JuiceFS program is used. Download the correct [installation package](https://github.com/juicedata/juicefs/releases) for your system and follow the JuiceFS [Quick Start Guide](https://github.com/juicedata/juicefs-quickstart) for detailed install instructions. To create a JuiceFS file system, first set up a Redis database for metadata storage. It is recommended that for public cloud deployments you host the Redis service on the same cloud as the application. Additionally, set up object storage for JuiceFS. In this example, Azure Blob Storage is used; however, JuiceFS supports almost all object services. Select the object storage service that best suits the demands of your scenario.
 
 After configuring the Redis service and object storage, format a new file system and mount JuiceFS to the local directory:
 

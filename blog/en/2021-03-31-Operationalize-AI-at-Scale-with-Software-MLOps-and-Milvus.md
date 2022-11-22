@@ -11,7 +11,7 @@ origin: zilliz.com/blog/Operationalize-AI-at-Scale-with-Software-MLOps-and-Milvu
 
 # Operationalize AI at Scale with Software 2.0, MLOps, and Milvus
 
-Building machine learning (ML) applications is a complex and iterative process. As more companies realize the untapped potential of unstructured data, the demand for [AI-powered data processing and analytics](https://zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images) will continue to rise. Without effective machine learning operations, or MLOps, most ML application investments will wither on the vine. Research has found that [as little as 5%](https://www.forbes.com/sites/cognitiveworld/2020/03/31/modelops-is-the-key-to-enterprise-ai/?sh=44c0f5066f5a) of the AI adoptions companies plan to deploy actually reach deployment. Many organizations incur "model debt," where changes in market conditions, and failure to adapt to them, result in unrealized investments in models that linger unrefreshed (or worse, never get deployed at all).
+Building machine learning (ML) applications is a complex and iterative process. As more companies realize the untapped potential of unstructured data, the demand for [AI-powered data processing and analytics](https://milvus.io/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images.md) will continue to rise. Without effective machine learning operations, or MLOps, most ML application investments will wither on the vine. Research has found that [as little as 5%](https://www.forbes.com/sites/cognitiveworld/2020/03/31/modelops-is-the-key-to-enterprise-ai/?sh=44c0f5066f5a) of the AI adoptions companies plan to deploy actually reach deployment. Many organizations incur "model debt," where changes in market conditions, and failure to adapt to them, result in unrealized investments in models that linger unrefreshed (or worse, never get deployed at all).
 
 This article explains MLOps, a systemic approach to AI model life cycle management, and how the open-source vector data management platform [Milvus](https://milvus.io/) can be used to operationalize AI at scale.
 
@@ -81,6 +81,6 @@ Milvus is a vector data management platform that was made specifically for stori
 
 Regardless of the machine learning applications you’re building today, or the plans you have for applications in the future, Milvus is a flexible data management platform created with Software 2.0 and MLOps in mind. To learn more about Milvus or make contributions, find the project on [Github](https://github.com/milvus-io). To get involved with the community or ask questions, join our [Slack](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ) channel. Hungry for more content? Check out the following resources:
 
-- [Milvus Is an Open-Source Scalable Vector Database](https://zilliz.com/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database)
-- [Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search](https://zilliz.com/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search)
-- [Set Up Milvus in Google Colaboratory for Easy ML Application Building](https://zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building)
+- [Milvus Is an Open-Source Scalable Vector Database](https://milvus.io/blog/Milvus-Is-an-Open-Source-Scalable-Vector-Database.md)
+- [Milvus Was Built for Massive-Scale (Think Trillion) Vector Similarity Search](https://milvus.io/blog/Milvus-Was-Built-for-Massive-Scale-Think-Trillion-Vector-Similarity-Search.md)
+- [Set Up Milvus in Google Colaboratory for Easy ML Application Building](https://milvus.io/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building.md)

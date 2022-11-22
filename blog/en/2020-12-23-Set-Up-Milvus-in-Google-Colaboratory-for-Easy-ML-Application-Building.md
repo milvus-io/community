@@ -35,7 +35,7 @@ Technological progress is perpetually making artificial intelligence (AI) and ma
 
 ### Getting started with Milvus in Google Colaboratory
 
-Although Milvus recommends [using Docker](https://milvus.io/docs/v0.10.4/milvus_docker-cpu.md) to install and start the service, the current Google Colab cloud environment does not support Docker installation. Additionally, this tutorial aims to be as accessible as possible — and not everyone uses Docker. Install and start the system by [compiling Milvus’ source code](https://github.com/milvus-io/milvus/blob/0.10.4/INSTALL.md) to avoid using Docker.
+Although Milvus recommends [using Docker](https://milvus.io/docs/v0.10.4/milvus_docker-cpu.md) to install and start the service, the current Google Colab cloud environment does not support Docker installation. Additionally, this tutorial aims to be as accessible as possible — and not everyone uses Docker. Install and start the system by [compiling Milvus’ source code](https://github.com/milvus-io/milvus/blob/master/DEVELOPMENT.md) to avoid using Docker.
 
 ### Download Milvus’ source code and create a new notebook in Colab
 

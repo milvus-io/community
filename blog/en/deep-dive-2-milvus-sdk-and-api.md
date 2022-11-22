@@ -32,7 +32,7 @@ The following code sample shows the interface `CreatePartitionRequest`. It has t
 
 ![CreatePartitionRequest](https://assets.zilliz.com/code_d5f034d58d.png "CreatePartitionRequest interface")
 
-Check an example of Protocol in [PyMilvus GitHub Repository](https://github.com/milvus-io/pymilvus/blob/master/pymilvus/grpc_gen/proto/milvus.proto) on line 19.
+Check an example of Protocol in [PyMilvus GitHub Repository](https://github.com/milvus-io/milvus-proto/blob/44f59db22b27cc55e4168c8e53b6e781c010a713/proto/milvus.proto) on line 19.
 
 ![Example](https://assets.zilliz.com/create_partition_938691f07f.png "An example of Protocol")
 
