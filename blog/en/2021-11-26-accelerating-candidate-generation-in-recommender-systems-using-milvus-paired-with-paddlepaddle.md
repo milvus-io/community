@@ -352,15 +352,15 @@ Yunmei Li, Zilliz Data Engineer, graduated from Huazhong University of Science a
 ## Looking for more resources?
 
 - More user cases of building a recommender system:
-  - [Building a Personalized Product Recommender System with Vipshop with Milvus](https://milvus.io/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md?page=1#scenarios)
-  - [Building a Wardrobe and Outfit Planning App with Milvus](https://milvus.io/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus.md?page=1#scenarios)
-  - [Building an Intelligent News Recommendation System Inside Sohu News App](https://milvus.io/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app.md?page=1#scenarios)
-  - [Item-based Collaborative Filtering for Music Recommender System](https://milvus.io/blog/music-recommender-system-item-based-collaborative-filtering-milvus.md?page=3#scenarios)
-  - [Making with Milvus: AI-Powered News Recommendation Inside Xiaomi's Mobile Browser](https://milvus.io/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser.md?page=3#scenarios)
+  - [Building a Personalized Product Recommender System with Vipshop with Milvus](https://milvus.io/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md)
+  - [Building a Wardrobe and Outfit Planning App with Milvus](https://milvus.io/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus.md)
+  - [Building an Intelligent News Recommendation System Inside Sohu News App](https://milvus.io/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app.md)
+  - [Item-based Collaborative Filtering for Music Recommender System](https://milvus.io/blog/music-recommender-system-item-based-collaborative-filtering-milvus.md)
+  - [Making with Milvus: AI-Powered News Recommendation Inside Xiaomi's Mobile Browser](https://milvus.io/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser.md)
 - More Milvus projects in collaboration with other communities:
-  - [Combine AI Models for Image Search Using ONNX and Milvus](https://milvus.io/blog/2021-09-26-onnx.md?page=1#technology)
-  - [Building a Graph-based recommendation system with Milvus, PinSage, DGL, and Movielens Datasets](https://milvus.io/blog/graph-based-recommendation-system-with-milvus.md?page=2#scenarios)
-  - [Building a Milvus Cluster Based on JuiceFS](https://milvus.io/blog/building-a-milvus-cluster-based-on-juicefs.md?page=2#technology)
+  - [Combine AI Models for Image Search Using ONNX and Milvus](https://milvus.io/blog/2021-09-26-onnx.md)
+  - [Building a Graph-based recommendation system with Milvus, PinSage, DGL, and Movielens Datasets](https://milvus.io/blog/graph-based-recommendation-system-with-milvus.md)
+  - [Building a Milvus Cluster Based on JuiceFS](https://milvus.io/blog/building-a-milvus-cluster-based-on-juicefs.md)
 - Engage with our open-source community:
   - Find or contribute to Milvus on [GitHub](https://bit.ly/307b7jC)
   - Interact with the community via [Forum](https://bit.ly/3qiyTEk)

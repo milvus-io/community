@@ -74,11 +74,11 @@ Milvus not only supports multiple indexes for vector similarity search, but also
 ## Looking for more resources?
 
 - Build more vector similarity search systems for other application scenarios with Milvus:
-  - [DNA Sequence Classification based on Milvus](https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md?page=2#all)
-  - [Audio Retrieval Based on Milvus](https://milvus.io/blog/audio-retrieval-based-on-milvus.md?page=2#all)
-  - [4 Steps to Building a Video Search System](https://milvus.io/blog/building-video-search-system-with-milvus.md?page=6#all)
-  - [Building an Intelligent QA System with NLP and Milvus](https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md?page=6#all)
-  - [Accelerating New Drug Discovery](https://milvus.io/blog/molecular-structure-similarity-with-milvus.md?page=7#all)
+  - [DNA Sequence Classification based on Milvus](https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md)
+  - [Audio Retrieval Based on Milvus](https://milvus.io/blog/audio-retrieval-based-on-milvus.md)
+  - [4 Steps to Building a Video Search System](https://milvus.io/blog/building-video-search-system-with-milvus.md)
+  - [Building an Intelligent QA System with NLP and Milvus](https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md)
+  - [Accelerating New Drug Discovery](https://milvus.io/blog/molecular-structure-similarity-with-milvus.md)
 
 - Engage with our open-source community:
   - Find or contribute to Milvus on [GitHub](https://bit.ly/307b7jC).

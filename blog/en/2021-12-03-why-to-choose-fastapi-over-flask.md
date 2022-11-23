@@ -104,13 +104,13 @@ Yunmei Li, Zilliz Data Engineer, graduated from Huazhong University of Science a
 ## Looking for more resources?
 
 - Start to build AI system with Milvus and get more hands-on experience by reading our tutorials!
-  - [What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently](https://milvus.io/blog/2021-10-10-milvus-helps-analys-vedios.md?page=1#all)
-  - [Combine AI Models for Image Search using ONNX and Milvus](https://milvus.io/blog/2021-09-26-onnx.md?page=1#all)
-  - [DNA Sequence Classification based on Milvus](https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md?page=2#all)
-  - [Audio Retrieval Based on Milvus](https://milvus.io/blog/audio-retrieval-based-on-milvus.md?page=2#all)
-  - [4 Steps to Building a Video Search System](https://milvus.io/blog/building-video-search-system-with-milvus.md?page=6#all)
-  - [Building an Intelligent QA System with NLP and Milvus](https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md?page=6#all)
-  - [Accelerating New Drug Discovery](https://milvus.io/blog/molecular-structure-similarity-with-milvus.md?page=7#all)
+  - [What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently](https://milvus.io/blog/2021-10-10-milvus-helps-analys-vedios.md)
+  - [Combine AI Models for Image Search using ONNX and Milvus](https://milvus.io/blog/2021-09-26-onnx.md)
+  - [DNA Sequence Classification based on Milvus](https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md)
+  - [Audio Retrieval Based on Milvus](https://milvus.io/blog/audio-retrieval-based-on-milvus.md)
+  - [4 Steps to Building a Video Search System](https://milvus.io/blog/building-video-search-system-with-milvus.md)
+  - [Building an Intelligent QA System with NLP and Milvus](https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md)
+  - [Accelerating New Drug Discovery](https://milvus.io/blog/molecular-structure-similarity-with-milvus.md)
 
 - Engage with our open-source community:
   - Find or contribute to Milvus on [GitHub](https://bit.ly/307b7jC).

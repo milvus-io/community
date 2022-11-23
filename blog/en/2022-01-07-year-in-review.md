@@ -48,11 +48,11 @@ We've also launched the [Milvus Advocate Program](https://milvus.io/community/mi
 
 1. **Number of version releases：14**
 
-- [Milvus 1.0 release](https://milvus.io/blog/Whats-Inside-Milvus-1.0.md?page=4#all)
-- [Milvus 2.0 release RC](https://milvus.io/blog/milvus2.0-redefining-vector-database.md?page=2#all) 
+- [Milvus 1.0 release](https://milvus.io/blog/Whats-Inside-Milvus-1.0.md)
+- [Milvus 2.0 release RC](https://milvus.io/blog/milvus2.0-redefining-vector-database.md) 
 - [Milvus 2.0 release PreGA](https://milvus.io/docs/v2.0.0/release_notes.md#v200-PreGA)
 
-2. **Milvus v2.0.0 GA supported SDKs**
+1. **Milvus v2.0.0 GA supported SDKs**
 
 - PyMilvus (Available)
 
