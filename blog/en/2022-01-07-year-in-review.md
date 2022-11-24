@@ -50,7 +50,7 @@ We've also launched the [Milvus Advocate Program](https://milvus.io/community/mi
 
 - [Milvus 1.0 release](https://milvus.io/blog/Whats-Inside-Milvus-1.0.md)
 - [Milvus 2.0 release RC](https://milvus.io/blog/milvus2.0-redefining-vector-database.md) 
-- [Milvus 2.0 release PreGA](https://milvus.io/docs/v2.0.0/release_notes.md#v200-PreGA)
+- [Milvus 2.0 release PreGA](https://milvus.io/docs/v2.0.x/release_notes.md#v200-PreGA)
 
 1. **Milvus v2.0.0 GA supported SDKs**
 
