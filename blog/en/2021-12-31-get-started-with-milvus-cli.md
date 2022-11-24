@@ -74,7 +74,7 @@ sudo chmod +x milvus_cli-v0.1.8-fix2-macOS
 
 ### Connect to Milvus
 
-Before connecting to Milvus, ensure that Milvus is installed on your server. See [Install Milvus Standalone](https://milvus.io/docs/v2.0.0/install_standalone-docker.md) or [Install Milvus Cluster](https://milvus.io/docs/v2.0.0/install_cluster-docker.md) for more information.
+Before connecting to Milvus, ensure that Milvus is installed on your server. See [Install Milvus Standalone](https://milvus.io/docs/v2.0.x/install_standalone-docker.md) or [Install Milvus Cluster](https://milvus.io/docs/v2.0.x/install_cluster-docker.md) for more information.
 
 If Milvus is installed on your localhost with the default port, run `connect`.
 
@@ -92,13 +92,13 @@ connect -h 172.16.20.3
 
 This section introduces how to create a collection.
 
-A collection consists of entities and is similar to a table in RDBMS. See [Glossary](https://milvus.io/docs/v2.0.0/glossary.md) for more information.
+A collection consists of entities and is similar to a table in RDBMS. See [Glossary](https://milvus.io/docs/v2.0.x/glossary.md) for more information.
 
 ![5.png](https://assets.zilliz.com/5_95a88c1cbf.png "Create a collection.")
 
 #### Example
 
-The following example creates a collection named `car`. The `car` collection has four fields which are `id`, `vector`, `color`, and `brand`. The primary key field is `id`. See [create collection](https://milvus.io/docs/v2.0.0/cli_commands.md#create-collection) for more information.
+The following example creates a collection named `car`. The `car` collection has four fields which are `id`, `vector`, `color`, and `brand`. The primary key field is `id`. See [create collection](https://milvus.io/docs/v2.0.x/cli_commands.md#create-collection) for more information.
 
 ```
 create collection -c car -f id:INT64:primary_field -f vector:FLOAT_VECTOR:128 -f color:INT64:color -f brand:INT64:brand -p id -a -d 'car_collection'
@@ -159,7 +159,7 @@ Milvus_CLI is not limited to the preceding functions. Run `help` to view all com
 
 [Milvus_CLI Command Reference](https://github.com/zilliztech/milvus_cli/blob/main/doc/en/cli_commands.md) on GitHub
 
-[Milvus_CLI Command Reference](https://milvus.io/docs/v2.0.0/cli_commands.md) under Milvus Docs
+[Milvus_CLI Command Reference](https://milvus.io/docs/v2.0.x/cli_commands.md) under Milvus Docs
 
 We hope Milvus_CLI could help you easily use the Milvus vector database. We will keep optimizing Milvus_CLI and your contributions are welcome.
 

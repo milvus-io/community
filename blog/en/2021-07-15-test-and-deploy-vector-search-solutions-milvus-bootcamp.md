@@ -88,7 +88,7 @@ pip install -r requirements.txt
 
 #### Step 2: Server startup
 
-After the packages are installed, start the servers and ensure both are running properly. Be sure to follow the correct instructions for starting the [Milvus](https://milvus.io/docs/v2.0.0/install_standalone-docker.md) and [Redis](https://hub.docker.com/_/redis) servers.
+After the packages are installed, start the servers and ensure both are running properly. Be sure to follow the correct instructions for starting the [Milvus](https://milvus.io/docs/v2.0.x/install_standalone-docker.md) and [Redis](https://hub.docker.com/_/redis) servers.
 
 #### Step 3: Download project data
 

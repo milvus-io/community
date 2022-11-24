@@ -46,9 +46,9 @@ While integrating Milvus into the Smartnews product architecture, Shu and other 
 
 Data reload supports code editing while running the code. With the help of data reload, developers no longer need to stop at a breakpoint or restart the application. Instead, they can edit the code directly and see the result in real time.
 
-In late July, Yusup, engineer at SmartNews proposed an idea of using [collection alias](https://milvus.io/docs/v2.0.0/collection_alias.md?python#Collection-Alias) to achieve hot reload.
+In late July, Yusup, engineer at SmartNews proposed an idea of using [collection alias](https://milvus.io/docs/v2.0.x/collection_alias.md?python#Collection-Alias) to achieve hot reload.
 
-Creating collection alias refers to specifying alias names for a collection. A collection can have multiple aliases. However, an alias corresponds to a maximum of one collection. Simply draw an analogy between a collection and a locker. A locker, like a collection, has its own number and position, which will always remain unchanged. However, you can always put in and draw out different things from the locker. Similarly, the name of the collection is fixed but the data in the collection is dynamic. You can always insert or delete vectors in a collection, as data deletion is supported in the Milvus [pre-GA version](https://milvus.io/docs/v2.0.0/release_notes.md#v200-PreGA).
+Creating collection alias refers to specifying alias names for a collection. A collection can have multiple aliases. However, an alias corresponds to a maximum of one collection. Simply draw an analogy between a collection and a locker. A locker, like a collection, has its own number and position, which will always remain unchanged. However, you can always put in and draw out different things from the locker. Similarly, the name of the collection is fixed but the data in the collection is dynamic. You can always insert or delete vectors in a collection, as data deletion is supported in the Milvus [pre-GA version](https://milvus.io/docs/v2.0.x/release_notes.md#v200-PreGA).
 
 In the case of SmartNews advertisement business, nearly 100 million vectors are inserted or updated as new dynamic ad vectors are generated. There are several solutions to this:
 

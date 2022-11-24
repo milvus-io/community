@@ -28,7 +28,7 @@ There are many [brilliant projects](https://github.com/milvus-io/milvus) that la
 We are also incredibly grateful to our awesome community, who has helped open an exciting chapter for this new type of database. Before we look forward, we want to take a moment to reflect on this journey, gaze at our milestones and acknowledge and thank our developers:
 
 - We joined LF AI & Data Foundation at [incubation](https://lfaidata.foundation/blog/2020/04/02/milvus-joins-lf-ai-as-new-incubation-project/) level, finding our home alongside many other great open source AI and data projects. Now Milvus is already a [graduation project](https://lfaidata.foundation/blog/2021/06/23/lf-ai-data-foundation-announces-graduation-of-milvus-project/). 
-- We delivered two major releases: [Milvus 1.0](https://milvus.io/docs/v1.0.0/announcement.md) and [Milvus 2.0](https://milvus.io/docs/v2.0.0/comparison.md). 
+- We delivered two major releases: [Milvus 1.0](https://milvus.io/docs/v1.0.0/announcement.md) and [Milvus 2.0](https://milvus.io/docs/v2.0.x/comparison.md). 
 - A SIGMOD paper was published: [Milvus: A Purpose-Built Vector Data Management System](https://dl.acm.org/doi/abs/10.1145/3448016.3457550).
 - Currently, we have more than 10,000 community members and over 220 contributors worldwide. 
 - There are over [1000 enterprise users](https://milvus.io/) who adopted Milvus. Among them, there are many industry leaders. 
