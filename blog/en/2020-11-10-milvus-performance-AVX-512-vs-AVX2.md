@@ -39,7 +39,7 @@ Note: `nlist` is the indexing parameter to create from the client; `nprobe` the 
 These tests use the [SIFT10M dataset](https://archive.ics.uci.edu/ml/datasets/SIFT10M), which contains one million 128-dimensional vectors and is often used for analyzing the performance of corresponding nearest-neighbor search methods. The top-1 search time for nq = [1, 10, 100, 500, 1000] will be compared between the two instruction sets.
 
 ### Results by vector index type
-[Vector indexes](https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing) are time- and space-efficient data structures built on the vector field of a collection using various mathematical models. Vector indexing allows large datasets to be searched efficiently when trying to identify similar vectors to an input vector. Due to the time consuming nature of accurate retrieval, most of the index types [supported by Milvus](https://milvus.io/docs/v2.0.0/index.md#CPU) use approximate nearest neighbor (ANN) search.
+[Vector indexes](https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing) are time- and space-efficient data structures built on the vector field of a collection using various mathematical models. Vector indexing allows large datasets to be searched efficiently when trying to identify similar vectors to an input vector. Due to the time consuming nature of accurate retrieval, most of the index types [supported by Milvus](https://milvus.io/docs/v2.0.x/index.md#CPU) use approximate nearest neighbor (ANN) search.
 
 For these tests, three indexes were used with AVX-512 and AVX2: IVF_FLAT, IVF_SQ8, and HNSW.
 
