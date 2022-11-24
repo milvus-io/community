@@ -141,7 +141,7 @@ You can refer to any of the plugin to learn how to build a plugin. By setting th
 
 ![Add plugins to Attu](https://assets.zilliz.com/add_plugins_e3ef53cc0d.png "Add plugins to Attu")
 
-You can see [Attu GitHub Repo](https://github.com/zilliztech/attu/tree/main/doc) and [Milvus Technical Document](https://milvus.io/docs/v2.0.0/attu.md) for detailed instruction.
+You can see [Attu GitHub Repo](https://github.com/zilliztech/attu/tree/main/doc) and [Milvus Technical Document](https://milvus.io/docs/v2.0.x/attu.md) for detailed instruction.
 
 Attu is an open-source project. All contributions are welcome. You can also [file an issue](https://github.com/zilliztech/attu/issues) if you had any problem with Attu.
 
