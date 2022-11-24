@@ -66,7 +66,7 @@ Milvus is a cloud-native database featuring high scalability and elasticity. Als
 
 When inserting the logo vectors, you can create collections in Milvus for different types of logo vectors according to the [International (Nice) Classification of Goods and Services](https://en.wikipedia.org/wiki/International_(Nice)_Classification_of_Goods_and_Services), a system of classifying goods and services for registering trademarks. For example, you can insert a group of vectors of clothing brand logos into a collection named "clothing" in Milvus and insert another group of vectors of technological brand logos into a different collection named "technology". By doing so, you can greatly increase the efficiency and speed of your vector similarity search.
 
-Milvus not only supports multiple indexes for vector similarity search, but also provides rich APIs and tools to facilitate DevOps. The following diagram is an illustration of the [Milvus architecture](https://milvus.io/docs/v2.0.0/architecture_overview.md). You can learn more about Milvus by reading its [introduction](https://milvus.io/docs/v2.0.0/overview.md).
+Milvus not only supports multiple indexes for vector similarity search, but also provides rich APIs and tools to facilitate DevOps. The following diagram is an illustration of the [Milvus architecture](https://milvus.io/docs/v2.0.x/architecture_overview.md). You can learn more about Milvus by reading its [introduction](https://milvus.io/docs/v2.0.x/overview.md).
 
 ![11.png](https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png "The Milvus architecture.")
 
