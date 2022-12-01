@@ -7,7 +7,7 @@ desc: Milvus provides a data management infrastructure essential for production 
 cover: assets.zilliz.com/How_Is_Data_Processed_in_a_Vector_Database_9fb236bc01.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
-canonicalUrl: http://milvus.io/blog/deep-dive-3-data-processing.md
+canonicalUrl: https://milvus.io/blog/deep-dive-3-data-processing.md
 ---
 
 ![Cover image](https://assets.zilliz.com/How_Is_Data_Processed_in_a_Vector_Database_9fb236bc01.png "How Is Data Processed in a Vector Database?")

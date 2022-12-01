@@ -7,7 +7,7 @@ desc: A Python user-friendly Milvus version that makes installation more flexibl
 cover: assets.zilliz.com/embeddded_milvus_1_8132468cac.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/embedded-milvus.md
+canonicalUrl: https://milvus.io/blog/embedded-milvus.md
 ---
 
 

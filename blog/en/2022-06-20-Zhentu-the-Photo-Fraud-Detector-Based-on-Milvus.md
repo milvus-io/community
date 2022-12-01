@@ -7,7 +7,7 @@ desc: How is Zhentu's detection system built with Milvus as its vector search en
 cover: assets.zilliz.com/zhentu_0ae11c98ee.png
 tag: Scenarios
 tags: Use Cases of Milvus
-canonicalUrl: http://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
+canonicalUrl: https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
 ---
 
 ![cover image](https://assets.zilliz.com/zhentu_0ae11c98ee.png "Zhentu - the Photo Fraud Detector Based on Milvus")

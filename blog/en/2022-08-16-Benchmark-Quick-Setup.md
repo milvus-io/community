@@ -7,7 +7,7 @@ desc: Follow our step-by-step guide to perform a Milvus 2.1 benchmark by yoursel
 cover: assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md
+canonicalUrl: https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md
 ---
 
 ![Cover](https://assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png "A Quick Guide to Benchmarking Milvus 2.1 ")

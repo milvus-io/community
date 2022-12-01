@@ -7,7 +7,7 @@ desc: Why consensus-based replication algorithm is not the silver bullet for ach
 cover: assets.zilliz.com/Tech_Modify_5_e18025ffbc.png
 tag: Engineering
 tags: Data science, Database, Tech, Artificial Intelligence, Vector Management
-canonicalUrl: http://milvus.io/blog/raft-or-not.md
+canonicalUrl: https://milvus.io/blog/raft-or-not.md
 ---
 
 ![Cover image](https://assets.zilliz.com/Tech_Modify_5_e18025ffbc.png "Raft or not? The Best Solution to Data Consistency in Cloud-native Databases")

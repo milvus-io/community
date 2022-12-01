@@ -7,7 +7,7 @@ desc: Milvus 2.0 supports automatic load balance across query nodes.
 cover: assets.zilliz.com/Load_balance_b2f35a5577.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
-canonicalUrl: http://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md
+canonicalUrl: https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md
 ---
 
 ![Binlog Cover Image](https://assets.zilliz.com/Load_balance_b2f35a5577.png "How Milvus Balances Query Load across Nodes?")

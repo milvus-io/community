@@ -7,7 +7,7 @@ desc: Learn how to adjust log level in Milvus without restarting the service.
 cover: assets.zilliz.com/Dynamically_Change_Log_Levels_in_the_Milvus_Vector_Database_58e31c66cc.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/dynamically-change-log-levels-in-the-milvus-vector-database.md
+canonicalUrl: https://milvus.io/blog/dynamically-change-log-levels-in-the-milvus-vector-database.md
 ---
 
 ![Cover image](https://assets.zilliz.com/Dynamically_Change_Log_Levels_in_the_Milvus_Vector_Database_58e31c66cc.png "Dynamically Change Log Levels in the Milvus Vector Database.")

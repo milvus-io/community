@@ -7,7 +7,7 @@ desc: The first one in a blog series to take a closer look at the thought proces
 cover: assets.zilliz.com/20220705_102717_dd4124dee3.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
-canonicalUrl: http://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md
+canonicalUrl: https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md
 ---
 
 ![Cover image](https://assets.zilliz.com/20220705_102717_dd4124dee3.png "Building a Vector Database for Scalable Similarity Search")

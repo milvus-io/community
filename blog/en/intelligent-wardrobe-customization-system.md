@@ -7,7 +7,7 @@ desc: Using similarity search technology to unlock the potential of unstructured
 cover: assets.zilliz.com/Frame_1282_edc1fb7d99.png
 tag: Engineering
 tags: Data science, Database, Use Cases of Milvus, Artificial Intelligence, Vector Management
-canonicalUrl: http://milvus.io/blog/intelligent-wardrobe-customization-system.md
+canonicalUrl: https://milvus.io/blog/intelligent-wardrobe-customization-system.md
 ---
 
 ![cover image](https://assets.zilliz.com/Frame_1282_edc1fb7d99.png "Building an intelligent wardrobe customization system powered by Milvus vector database")
@@ -47,7 +47,7 @@ With the generated vectors, we need powerful vector databases and search engines
 
 ![tool architecture](https://assets.zilliz.com/tool_architecutre_33fb646954.png "The architecture of the customization tool.")
 
-The customization tool leverages some of the most popular search engines and databases: Elasticsearch, [Milvus](http://milvus.io/), and PostgreSQL.
+The customization tool leverages some of the most popular search engines and databases: Elasticsearch, [Milvus](https://milvus.io/), and PostgreSQL.
 
 ### Why Milvus?
 A wardrobe component contains highly complex information, such as color, shape, and interior organization, etc. However, the traditional way of keeping wardrobe data in a relational database is far from enough. A popular way is to use embedding techniques to convert wardrobes into vectors. Therefore, we need to look for a new type of database specifically designed for vector storage and similarity search. After probing into several popular solutions, the [Milvus](https://github.com/milvus-io/milvus) vector database is selected for its excellent performance, stability, compatibility, and ease-of-use. The chart below is a comparison of several popular vector search solutions.

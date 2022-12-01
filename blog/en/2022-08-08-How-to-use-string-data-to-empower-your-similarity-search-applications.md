@@ -7,7 +7,7 @@ desc: Use string data to streamline the process of building your own similarity 
 cover: assets.zilliz.com/string_6129ce83e6.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md
+canonicalUrl: https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md
 ---
 
 ![Cover](https://assets.zilliz.com/string_6129ce83e6.png "How to use string data to empower your similarity search applications?")

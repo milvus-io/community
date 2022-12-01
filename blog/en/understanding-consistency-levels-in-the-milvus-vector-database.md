@@ -7,7 +7,7 @@ desc: Learn about the four levels of consistency - strong, bounded staleness, se
 cover: assets.zilliz.com/1280_X1280_0e0d4bc107.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md
+canonicalUrl: https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md
 ---
 
 ![Cover_image](https://assets.zilliz.com/1280_X1280_0e0d4bc107.png "Understanding Consistency Level in the Milvus Vector Database")

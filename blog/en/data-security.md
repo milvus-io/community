@@ -7,7 +7,7 @@ desc: Learn about user authentication and encryption in transit in Milvus.
 cover: assets.zilliz.com/Security_192e35a790.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/data-security.md
+canonicalUrl: https://milvus.io/blog/data-security.md
 ---
 
 ![Cover image](https://assets.zilliz.com/Security_192e35a790.png "How Does the Milvus Vector Database Ensure Data Security?")

@@ -30,7 +30,7 @@ The aforementioned dispute between Apple and Woolworths is mainly over trademark
 ![8.png](https://assets.zilliz.com/image_8_b2fff6ca11.png "The text-based trademark search options offered by the Trademark Electronic Search System (TESS).")
 
 
-This article thereby intends to showcase how to build an efficient image-based trademark similarity search system using [Milvus](http://milvus.io), an open-source vector database.
+This article thereby intends to showcase how to build an efficient image-based trademark similarity search system using [Milvus](https://milvus.io), an open-source vector database.
 
 ## A vector similarity search system for trademarks
 

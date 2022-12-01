@@ -14,7 +14,7 @@ iYUNDONG is an Internet company aiming to engage more sport lovers and participa
 
  
 
-One of the key features of iYUNDONG App is called “Find me in motion“.  Photographers usually take massive volumes of photos or videos during a sporting event such as a marathon race, and would upload the photos and videos in real time to the iYUNDONG media database. Marathon runners who want to see their highlighted moments can retrieve pictures including themselves simply by uploading one of their selfies. This saves them a lot of time because an image retrieval system in the iYUNDONG App does all the image matching. [Milvus](http://milvus.io/) is adopted by iYUNDONG to power this system as Milvus can greatly accelerate the retrieval process and return highly accurate results.
+One of the key features of iYUNDONG App is called “Find me in motion“.  Photographers usually take massive volumes of photos or videos during a sporting event such as a marathon race, and would upload the photos and videos in real time to the iYUNDONG media database. Marathon runners who want to see their highlighted moments can retrieve pictures including themselves simply by uploading one of their selfies. This saves them a lot of time because an image retrieval system in the iYUNDONG App does all the image matching. [Milvus](https://milvus.io/) is adopted by iYUNDONG to power this system as Milvus can greatly accelerate the retrieval process and return highly accurate results.
 
 <br/>
 

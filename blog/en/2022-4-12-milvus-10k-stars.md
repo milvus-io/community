@@ -7,7 +7,7 @@ desc: We recently hit an incredible milestone in the journey of vector database 
 cover: assets.zilliz.com/20220516_163732_d40acac221.png
 tag: News
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
-canonicalUrl: http://milvus.io/blog/2022-4-12-milvus-10k-stars.md
+canonicalUrl: https://milvus.io/blog/2022-4-12-milvus-10k-stars.md
 ---
 
 ![Cover image](https://assets.zilliz.com/20220516_163732_d40acac221.png "Milvus reached 10K stars on GitHub.")

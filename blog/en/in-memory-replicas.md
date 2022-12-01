@@ -7,7 +7,7 @@ desc: Use in-memory replicas to enhance read throughput and the utilization of h
 cover: assets.zilliz.com/in_memory_replica_af1fa21d61.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/in-memory-replicas.md
+canonicalUrl: https://milvus.io/blog/in-memory-replicas.md
 ---
 
 ![Cover_image](https://assets.zilliz.com/in_memory_replica_af1fa21d61.png "Increase Your Vector Database Read Throughput with In-Memory Replicas")

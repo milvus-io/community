@@ -7,7 +7,7 @@ desc: An anatomy of the mechanism behind tunable consistency levels in the Milvu
 cover: assets.zilliz.com/1280_X1280_0e0d4bc107.png
 tag: Engineering
 tags: Vector Database for AI, Artificial Intelligence, Machine Learning
-canonicalUrl: http://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md
+canonicalUrl: https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md
 ---
 
 ![Cover_image](https://assets.zilliz.com/1280_X1280_0e0d4bc107.png "Understanding Consistency Level in the Milvus Vector Database")
