@@ -3,7 +3,7 @@ id: 2019-12-27-meta-table.md
 title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 date: 2019-12-27
-desc: How to View Metadata
+desc: Learn about the detail of the fields in metadata tables in Milvus.
 
 cover:
 tag: Engineering
