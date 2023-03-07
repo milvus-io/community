@@ -93,7 +93,7 @@ Result of go_benchmark: {'response': True, 'err_code': 0, 'err_message': ''}
    
    - Median: median request response time in the current time-span (unit: milliseconds)
    
-   - req/s: average number of requests per second, i.e. QPS
+   - req/s: number of requests per second, i.e. QPS
    
    - failures/s: average number of failed requests per second in the current time-span
 
