@@ -1,18 +1,18 @@
 ---
 id: milvus-at-its-best-exploring-2-2-to-2-2-6.md
 title: 
-  >
-  Milvus at Its Best: Exploring v2.2 to v2.2.6
+ > 
+ Milvus at Its Best: Exploring v2.2 to v2.2.6
 author: Fendy Feng
 date: 2023-04-22
-cover: assets.zilliz.com/explore-milvus-latest-versions.png
+cover: https://assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.md
 ---
 
-![Milvus at Its Best: Exploring v2.2 to v2.2.6](assets.zilliz.com/explore-milvus-latest-versions.png)
+![Milvus at Its Best: Exploring v2.2 to v2.2.6](https://assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png)
 
 Welcome back, Milvus followers! We know it's been a while since we last shared our updates on this cutting-edge open-source vector database. But fear not, because we’re here to catch you up on all the exciting developments that have taken place since last August.
 
@@ -47,9 +47,10 @@ Milvus v2.2.1 and v2.2.2 are minor releases focusing on fixing critical issues i
 ### Milvus v2.2.2
 
 * Fixes the issue that the proxy doesn't update the cache of shard leaders
-Fixes the issue that the loaded info is not cleaned for released collections/partitions
+* Fixes the issue that the loaded info is not cleaned for released collections/partitions
 * Fixes the issue that the load count is not cleared on time
-* For more details, see [Milvus v2.2.1 Release Notes](https://milvus.io/docs/release_notes.md#v221) and [Milvus v2.2.2 Release Notes](https://milvus.io/docs/release_notes.md#v222). 
+
+For more details, see [Milvus v2.2.1 Release Notes](https://milvus.io/docs/release_notes.md#v221) and [Milvus v2.2.2 Release Notes](https://milvus.io/docs/release_notes.md#v222). 
 
 ## Milvus v2.2.3: more secure, stable, and available 
 
@@ -59,7 +60,7 @@ Milvus v2.2.3 is a release that focuses on enhancing the system’s security, st
 
 * **Coordinator high availability (HA)**: This feature enables Milvus coordinators to work in an active-standby mode, reducing the risk of single-point failures. Even in unexpected disasters, the recovery time is reduced to at most 30 seconds. 
 
-In addition to these new features, Milvus v2.2.3 includes numerous improvements and bug fixes, including enhanced bulk insert performance, reduced memory usage, optimized monitoring metrics, and improved meta-storage performance. For more details, see [Milvus v2.2.3 Release Note](https://milvus.io/docs/release_notes.md#v223). 
+In addition to these new features, Milvus v2.2.3 includes numerous improvements and bug fixes, including enhanced bulk insert performance, reduced memory usage, optimized monitoring metrics, and improved meta-storage performance. For more details, see [Milvus v2.2.3 Release Notes](https://milvus.io/docs/release_notes.md#v223). 
 
 ## Milvus v2.2.4: faster, more reliable and resource saving
 
@@ -78,7 +79,8 @@ Milvus v2.2.5 has several critical issues, and therefore, we do not recommend us
 
 ## Milvus v2.2.6: resolves critical issues from v2.2.5 
 
-Milvus v2.2.6 has successfully addressed the critical issues discovered in v2.2.5, including problems with recycling dirty binlog data and the DataCoord GC failure. If you currently use v2.2.5, please upgrade to ensure optimal performance and stability.
+Milvus v2.2.6 has successfully addressed the critical issues discovered in v2.2.5, including problems with recycling dirty binlog data and the DataCoord GC failure. If you currently use v2.2.5, please upgrade it to ensure optimal performance and stability.
+
 Critical issues fixed include: 
 
 * DataCoord GC failure
