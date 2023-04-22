@@ -1,8 +1,8 @@
 ---
 id: milvus-at-its-best-exploring-2-2-to-2-2-6.md
 title: 
-> 
-Milvus at Its Best: Exploring v2.2 to v2.2.6
+ > 
+ Milvus at Its Best: Exploring v2.2 to v2.2.6
 author: Fendy Feng
 date: 2023-04-22
 cover: https://assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png
