@@ -6,7 +6,6 @@ date: 2022-08-05
 desc: Milvus, the open-source vector database, now has performance and usability improvements that users have long been anticipating.
 cover: assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png
 tag: News
-recommend: true
 canonicalUrl: https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md
 ---
 
