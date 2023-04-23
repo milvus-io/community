@@ -5,14 +5,14 @@ title:
  Milvus at Its Best: Exploring v2.2 to v2.2.6
 author: Fendy Feng
 date: 2023-04-22
-cover: https://assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png
+cover: assets.zilliz.com/exploring_milvus_latest_versions_4fa890533e.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.md
 ---
 
-![Milvus at Its Best: Exploring v2.2 to v2.2.6](https://assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png)
+![Milvus at Its Best](https://assets.zilliz.com/exploring_milvus_latest_versions_4fa890533e.png)
 
 Welcome back, Milvus followers! We know it's been a while since we last shared our updates on this cutting-edge open-source vector database. But fear not, because we’re here to catch you up on all the exciting developments that have taken place since last August.
 
