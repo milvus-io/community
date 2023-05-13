@@ -1,5 +1,5 @@
 ---
-id: Milvus-2-2-8-better-query-performance-20%-higher-throughputs.md
+id: Milvus-2-2-8-better-query-performance-20-higher-throughputs.md
 title: 
  > 
  Milvus 2.2.8: Better Query Performance, 20% Higher Throughput 
@@ -9,7 +9,7 @@ cover: assets.zilliz.com/What_s_New_in_2_2_8_f4dd6de0f2.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
 recommend: true
-canonicalUrl: https://milvus.io/blog/Milvus-2-2-8-better-query-performance-20%-higher-throughputs.md
+canonicalUrl: https://milvus.io/blog/Milvus-2-2-8-better-query-performance-20-higher-throughputs.md
 ---
 
 ![Milvus 2.2.8](https://assets.zilliz.com/What_s_New_in_2_2_8_f4dd6de0f2.png)
