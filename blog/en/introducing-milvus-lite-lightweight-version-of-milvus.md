@@ -149,7 +149,7 @@ with default_server:
 $ milvus-server --data milvus_data
 ```
 
-## Configure Milvus Lite
+### Configure Milvus Lite
 
 Configuring Milvus Lite is similar to setting up Milvus instances using Python APIs or CLI.
 
