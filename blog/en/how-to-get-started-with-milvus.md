@@ -21,7 +21,7 @@ In this post, you'll learn how to install and run Milvus. You'll understand how 
 
 ## What is Milvus?
 
-Milvus is an open-source vector database designed to handle large-scale unstructured data. It's powered by an advanced indexing system and provides various search algorithms to efficiently handle high-dimensional data such as images, audio, and text. 
+[Milvus](https://zilliz.com/what-is-milvus) is an open-source vector database designed to handle large-scale unstructured data. It's powered by an advanced indexing system and provides various search algorithms to efficiently handle high-dimensional data such as images, audio, and text. 
 
 Some of the advantages you can expect from leveraging Milvus include the following: 
 1. Improved search efficiency for high-dimensional data
