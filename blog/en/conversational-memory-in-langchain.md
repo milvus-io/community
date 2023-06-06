@@ -21,8 +21,8 @@ In this post, we look at how to use conversational memory with LangChain and Mil
 
 In this post, we’ll learn about:
 - Conversational Memory with LangChain
-    - Setting Up Conversation Context
-    - Prompting the Conversational Memory with LangChain
+- Setting Up Conversation Context
+- Prompting the Conversational Memory with LangChain
 - LangChain Conversational Memory Summary
 
 ## Conversational Memory with LangChain
@@ -54,7 +54,7 @@ from milvus import default_server
 default_server.start()
 ```
 
-### Setting Up Conversation Context
+## Setting Up Conversation Context
 
 Now that we have all our prerequisites set up, we can proceed to create our conversational memory. Our first step is to create a connection to the Milvus server using LangChain. Next, we use an empty dictionary to create our LangChain Milvus collection. In addition, we pass in the embeddings we created above and the connection details for the Milvus Lite server.
 
@@ -85,7 +85,7 @@ for example in about_me:
    memory.save_context({"input": example["input"]}, {"output": example["output"]})
 ```
 
-### Prompting the Conversational Memory with LangChain
+## Prompting the Conversational Memory with LangChain
 
 It’s time to look at how we can use our conversational memory. Let’s start by connecting to the OpenAI LLM through LangChain. We use a temperature of 0 to indicate that we don’t want our LLM to be creative. 
 
