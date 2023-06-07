@@ -28,7 +28,7 @@ With support for JSON data, Milvus 2.2.9 now provides dynamic schema functionali
 
 Starting with Milvus 2.2.9, the Milvus SDK includes a high-level API that automatically fills dynamic fields into the hidden JSON field of the collection, allowing users to concentrate solely on their business fields.
 
-## etter data separation and enhanced search efficiency with Partition Key
+## Better data separation and enhanced search efficiency with Partition Key
 
 Milvus 2.2.9 enhances its partitioning capabilities by introducing the Partition Key feature. It allows user-specific columns as primary keys for partitioning, eliminating the need for additional APIs such as `loadPartition` and `releasePartition`. This new feature also removes the limit on the number of partitions, leading to more efficient resource utilization. 
 
