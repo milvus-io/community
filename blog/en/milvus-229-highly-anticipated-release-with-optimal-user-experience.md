@@ -12,6 +12,8 @@ recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-229-highly-anticipated-release-with-optimal-user-experience.md
 ---
 
+![](https://assets.zilliz.com/What_s_New_in_2_2_9_858e54a2d3.png)
+
 We are thrilled to announce the arrival of Milvus 2.2.9, a highly anticipated release that marks a significant milestone for the team and the community. This release offers many exciting features, including long-awaited support for JSON data types, dynamic schema, and partition keys, ensuring an optimized user experience and streamlined development workflow. Additionally, this release incorporates numerous enhancements and bug fixes. Join us in exploring Milvus 2.2.9 and discovering why this release is so exciting.
 
 ## Optimized user experience with JSON support
@@ -26,7 +28,7 @@ With support for JSON data, Milvus 2.2.9 now provides dynamic schema functionali
 
 Starting with Milvus 2.2.9, the Milvus SDK includes a high-level API that automatically fills dynamic fields into the hidden JSON field of the collection, allowing users to concentrate solely on their business fields.
 
-## etter data separation and enhanced search efficiency with Partition Key
+## Better data separation and enhanced search efficiency with Partition Key
 
 Milvus 2.2.9 enhances its partitioning capabilities by introducing the Partition Key feature. It allows user-specific columns as primary keys for partitioning, eliminating the need for additional APIs such as `loadPartition` and `releasePartition`. This new feature also removes the limit on the number of partitions, leading to more efficient resource utilization. 
 
