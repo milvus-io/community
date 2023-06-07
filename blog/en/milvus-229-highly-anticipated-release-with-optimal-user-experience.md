@@ -1,7 +1,7 @@
 ---
 id: milvus-229-highly-anticipated-release-with-optimal-user-experience.md
 title: 
-> 
+ > 
  Milvus 2.2.9: A Highly Anticipated Release with Optimal User Experience
 author: Owen Jiao, Fendy Feng
 date: 2023-06-06
