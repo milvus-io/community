@@ -12,6 +12,8 @@ recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-229-highly-anticipated-release-with-optimal-user-experience.md
 ---
 
+![](https://assets.zilliz.com/What_s_New_in_2_2_9_858e54a2d3.png)
+
 We are thrilled to announce the arrival of Milvus 2.2.9, a highly anticipated release that marks a significant milestone for the team and the community. This release offers many exciting features, including long-awaited support for JSON data types, dynamic schema, and partition keys, ensuring an optimized user experience and streamlined development workflow. Additionally, this release incorporates numerous enhancements and bug fixes. Join us in exploring Milvus 2.2.9 and discovering why this release is so exciting.
 
 ## Optimized user experience with JSON support
