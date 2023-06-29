@@ -16,14 +16,14 @@ Let's break out the confetti and celebrate!
 
 [Milvus](https://github.com/milvus-io/milvus) has achieved a stellar milestone - surpassing 20,000 stars on GitHub! We couldn't have achieved it without the support and feedback of our loyal fans and community members. Thank you so much. 
 
-To share the joy, we've put together a list of 20 critical topics from the broader Milvus community, including: 
-- Five prominent projects that utilize Milvus
+To share the joy, we've put together a list of critical topics from the broader Milvus community, including:
+ 
+- Six prominent projects that utilize Milvus
 - Five integrations with other open-source projects
+- Five well-known use cases of Milvus
 - Five excellent upcoming features
-- Five well-known use cases of Milvus 
-- Five awesome upcoming features 
 
-## Five LLM projects that utilize Milvus
+## Six LLM projects that utilize Milvus
 
 ### PaperGPT
 
@@ -71,7 +71,7 @@ The [ChatGPT Retrieval Plugin](https://github.com/openai/chatgpt-retrieval-plugi
 
 LLM API calls can be both expensive and slow. [GPTCache](https://github.com/zilliztech/gptcache) can remedy both problems by providing a semantic cache for LLM queries. 
 
-### Five well-known use cases of Milvus
+## Five well-known use cases of Milvus
 
 ### LLM augmentation
 
@@ -102,7 +102,9 @@ GPU support is coming in Milvus 2.3 and is already available in the most [recent
 ### Delete by Expression
 
 You can already perform scalar/metadata filtering via boolean expressions in Milvus. The Delete by Expression feature is also coming.
-Change Data Capture (CDC)
+
+### Change Data Capture (CDC)
+
 CDC is a technique to capture and track changes made to your Milvus instance in real-time.
 
 ### Range Search
