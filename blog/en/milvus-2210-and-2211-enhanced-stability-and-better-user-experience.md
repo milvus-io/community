@@ -1,6 +1,6 @@
 ---
 id: milvus-2210-and-2211-enhanced-stability-and-better-user-experience.md
-title: "Miluvs 2.2.10 & 2.2.11: Minor Updates for Enhanced System Stability and User Experience"
+title: "Milvus 2.2.10 & 2.2.11: Minor Updates for Enhanced System Stability and User Experience"
 author: Fendy Feng, Owen Jiao 
 date: 2023-07-06
 cover: assets.zilliz.com/What_s_New_in_Milvus_2_2_10_and_2_2_11_5018946465.png
