@@ -2,7 +2,7 @@
 id: unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md
 title: 'Unveiling Milvus 2.3: A Milestone Release Offering Support for GPU, Arm64, CDC, and Many Other Highly Anticipated Features'
 author: Owen Jiao, Fendy Feng
-date: 2023-08-24
+date: 2023-08-28
 desc: Milvus 2.3 is a milestone release with numerous highly anticipated features, including support for GPU, Arm64, upsert, change data capture, ScaNN index, and range search. It also introduces improved query performance, more robust load balancing and scheduling, and better observability and operability. 
 cover: assets.zilliz.com/Milvus_2_3_Milvus_io_2e3b0eb55c.jpeg
 tag: News
