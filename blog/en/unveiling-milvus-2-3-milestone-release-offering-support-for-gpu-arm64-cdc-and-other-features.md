@@ -7,6 +7,7 @@ desc: Milvus 2.3 is a milestone release with numerous highly anticipated feature
 cover: assets.zilliz.com/Milvus_2_3_Milvus_io_2e3b0eb55c.jpeg
 tag: News
 tags: Vector Database, AI, Artificial Intelligence, Machine Learning, Milvus, LLM, Large Language Models, Embeddings, Vector search, Vector similarity search
+recommend: true
 canonicalUrl: https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md
 ---
 
