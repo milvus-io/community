@@ -3,14 +3,16 @@ id: why-and-when-you-need-a-purpose-built-vector-database.md
 title: Why and When Do You Need a Purpose-Built Vector Database?
 author: James Luan
 date: 2023-08-29
-cover: assets.zilliz.com/Aug_14_Why_you_need_a_real_vector_database_1_d0bd5f9ee3.png
+cover: assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg
 tag: Engineering
 tags: Vector Database, AI, Artificial Intelligence, Machine Learning, Milvus, LLM, Large Language Models, Embeddings, Vector search, Vector similarity search
 recommend: true
 canonicalUrl: https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/ 
 ---
 
-![image]()
+![](https://assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg)
+
+*This article was originally published on [AIAI](https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/) and is reposted here with permission.*
 
 
 The increasing popularity of [ChatGPT](https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code) and other large language models (LLMs) has fueled the rise of vector search technologies, including purpose-built vector databases such as [Milvus](https://milvus.io/docs/overview.md) and [Zilliz Cloud](https://zilliz.com/cloud), vector search libraries such as [FAISS](https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss), and vector search plugins integrated with traditional databases. However, choosing the best solution for your needs can be challenging. Like choosing between a high-end restaurant and a fast-food chain, selecting the right vector search technology depends on your needs and expectations.
