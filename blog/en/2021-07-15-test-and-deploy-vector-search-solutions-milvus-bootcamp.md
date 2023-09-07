@@ -12,30 +12,6 @@ origin: zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
 # Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp
 
 With the release of Milvus 2.0, the team has revamped the Milvus [bootcamp](https://github.com/milvus-io/bootcamp). The new and improved bootcamp offers updated guides and easier to follow code examples for a variety of use cases and deployments. Additionally, this new version is updated for [Milvus 2.0](https://milvus.io/blog/milvus2.0-redefining-vector-database.md), a reimagined version of the world's most advanced vector databse.
-<br/>
-
-Jump to:
-
-- [Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp](#quickly-test-and-deploy-vector-search-solutions-with-the-milvus-20-bootcamp)
-    - [Stress test your system against 1M and 100M dataset benchmarks](#stress-test-your-system-against-1m-and-100m-dataset-benchmarks)
-    - [Explore and build popular vector similarity search solutions](#explore-and-build-popular-vector-similarity-search-solutions)
-    - [Quickly deploy a fully built application on any system](#quickly-deploy-a-fully-built-application-on-any-system)
-    - [Use scenario specific notebooks to easily deploy pre-configured applications](#use-scenario-specific-notebooks-to-easily-deploy-pre-configured-applications)
-    - [Image similarity search notebook example](#image-similarity-search-notebook-example)
-      - [Step 1: Download required packages](#step-1-download-required-packages)
-      - [Step 2: Server startup](#step-2-server-startup)
-      - [Step 3: Download project data](#step-3-download-project-data)
-      - [Step 4: Connect to the servers](#step-4-connect-to-the-servers)
-      - [Step 5: Create a collection](#step-5-create-a-collection)
-      - [Step 6: Build an index for the collection](#step-6-build-an-index-for-the-collection)
-      - [Step 7: Set up model and data loader](#step-7-set-up-model-and-data-loader)
-      - [Step 8: Insert vectors into the collection](#step-8-insert-vectors-into-the-collection)
-      - [Step 9: Conduct a vector similarity search](#step-9-conduct-a-vector-similarity-search)
-      - [Step 10: Image search results](#step-10-image-search-results)
-    - [Learn how to deploy Milvus in different enviroments](#learn-how-to-deploy-milvus-in-different-enviroments)
-    - [Don't be a stranger](#dont-be-a-stranger)
-
-<br/>
 
 ### Stress test your system against 1M and 100M dataset benchmarks
 
