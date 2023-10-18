@@ -5,7 +5,7 @@ title:
  Ingesting Chaos: The MLOps Behind Handling Unstructured Data Reliably at Scale for RAG 
 author: David Garnitz 
 date: 2023-10-16
-cover: assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png
+cover: assets.zilliz.com/Ingesting_Chaos_20231017_110103_54fe2009cb.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Retrieval Augmented Generation, RAG, Unstructured Data
 recommend: true
@@ -13,7 +13,7 @@ canonicalUrl: https://milvus.io/blog/Ingesting-Chaos-MLOps-Behind-Handling-Unstr
 ---
 
 
-![](https://assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png)
+![](https://assets.zilliz.com/Ingesting_Chaos_20231017_110103_54fe2009cb.png)
 
 
 Data is being generated faster than ever before in every form imaginable. This data is the gasoline that will power a new wave of artificial intelligence applications, but these productivity enhancement engines need help ingesting this fuel. The wide range of scenarios and edge cases surrounding unstructured data makes it challenging to use in production AI systems.
