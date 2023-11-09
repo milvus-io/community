@@ -5,7 +5,7 @@ title:
  Comparing Vector Databases, Vector Search Libraries, and Vector Search Plugins
 author: Frank Liu
 date: 2023-11-9
-desc: Experience the speed and efficiency of Milvus Lite, the lightweight variant of the renowned Milvus vector database for lightning-fast similarity search.
+desc: In this post, we’ll continue to explore the intricate realm of vector search, comparing vector databases, vector search plugins, and vector search libraries.
 cover: assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, vector search 
