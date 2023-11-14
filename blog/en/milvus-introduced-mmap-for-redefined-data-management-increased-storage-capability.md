@@ -1,7 +1,6 @@
 ---
 id: milvus-introduced-mmap-for-redefined-data-management-increased-storage-capability.md
 title: Milvus Introduced MMap for Redefined Data Management and Increased Storage Capability
-Introducing Milvus Lite: the Lightweight Version of Milvus
 author: Yang Cen
 date: 2023-11-15
 desc: The Milvus MMap feature empowers users to handle more data within limited memory, striking a delicate balance between performance, cost, and system limits.
