@@ -3,14 +3,14 @@ id: why-and-when-you-need-a-purpose-built-vector-database.md
 title: Why and When Do You Need a Purpose-Built Vector Database?
 author: James Luan
 date: 2023-08-29
-cover: assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg
+cover: assets.zilliz.com/Why_you_need_a_real_vector_database2_20230830_075505_1_4b32582c87.png
 tag: Engineering
 tags: Vector Database, AI, Artificial Intelligence, Machine Learning, Milvus, LLM, Large Language Models, Embeddings, Vector search, Vector similarity search
 recommend: true
 canonicalUrl: https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/ 
 ---
 
-![](https://assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg)
+![](https://assets.zilliz.com/Why_you_need_a_real_vector_database2_20230830_075505_1_4b32582c87.png)
 
 *This article was originally published on [AIAI](https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/) and is reposted here with permission.*
 
