@@ -11,7 +11,7 @@ recommend: true
 canonicalUrl: https://zilliz.com/blog/milvus-introduced-mmap-for-redefined-data-management-increased-storage-capability
 ---
 
-![]https://assets.zilliz.com/Exploring_M_Map_5086d652bd.png
+![](https://assets.zilliz.com/Exploring_M_Map_5086d652bd.png)
 
 [Milvus](https://zilliz.com/what-is-milvus) is the fastest solution in open-source [vector databases](https://zilliz.com/blog/what-is-a-real-vector-database), catering to users with intensive performance requirements. However, the diversity of user needs mirrors the data they work with. Some prioritize budget-friendly solutions and expansive storage over sheer speed. Understanding this spectrum of demands, Milvus introduces the MMap feature, redefining how we handle large data volumes while promising cost efficiency without sacrificing functionality.
 
