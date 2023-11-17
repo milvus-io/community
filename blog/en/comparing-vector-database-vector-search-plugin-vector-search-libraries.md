@@ -6,7 +6,7 @@ title:
 author: Frank Liu
 date: 2023-11-9
 desc: In this post, we’ll continue to explore the intricate realm of vector search, comparing vector databases, vector search plugins, and vector search libraries.
-cover: assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg
+cover: assets.zilliz.com/Vector_Databases_vs_Vector_Search_Plugins_vs_Vector_Search_Libraries_74def521ad.png
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, vector search 
 recommend: true
@@ -14,7 +14,7 @@ canonicalUrl: https://zilliz.com/learn/comparing-vector-database-vector-search-l
 ---
 
 
-![](https://assets.zilliz.com/why_you_need_a_real_vector_database_f56fa9e3ad.jpeg)
+![](https://assets.zilliz.com/Vector_Databases_vs_Vector_Search_Plugins_vs_Vector_Search_Libraries_74def521ad.png)
 
 Hey there - welcome back to Vector Database 101!
 
