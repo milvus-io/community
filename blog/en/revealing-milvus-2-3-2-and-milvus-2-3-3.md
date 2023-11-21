@@ -1,16 +1,14 @@
 ---
 id: revealing-milvus-2-3-2-and-milvus-2-3-3.md
-title:
->
-Revealing Milvus 2.3.2 & 2.3.3: Support for Array Data Types, Complex Delete, TiKV Integration, and More
-author: Fendy Feng
+title: "Revealing Milvus 2.3.2 & 2.3.3: Support for Array Data Types, Complex Delete, TiKV Integration, and More"
+author: Fendy Feng, Owen Jiao
 date: 2023-11-20
 desc: Today, we are thrilled to announce the release of Milvus 2.3.2 and 2.3.3! These updates bring many exciting features, optimizations, and improvements, enhancing system performance, flexibility, and overall user experience.
 cover: assets.zilliz.com/What_s_New_in_Milvus_2_3_2_and_2_3_3_d3d0db03c3.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, Vector Search
 recommend: true
-canonicalUrl: https://zilliz.com/blog/whats-new-in-milvus-2-3-2-and-2-3-3
+canonicalUrl: 
 ---
 ![](https://assets.zilliz.com/What_s_New_in_Milvus_2_3_2_and_2_3_3_d3d0db03c3.png)
 
