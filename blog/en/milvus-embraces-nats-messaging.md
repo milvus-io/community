@@ -1,8 +1,6 @@
 ---
 id: milvus-embraces-nats-messaging.md
-title:
->
-Optimizing Data Communication: Milvus Embraces NATS Messaging
+title: 'Optimizing Data Communication: Milvus Embraces NATS Messaging'
 author: Zhen Ye
 date: 2023-10-11
 desc: Introducing the integration of NATS and Milvus, exploring its features, setup and migration process, and performance testing results.
