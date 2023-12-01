@@ -1,6 +1,6 @@
 ---
 id: how-to-migrate-data-to-milvus-seamlessly.md
-title: "How to Migrate Your Data to Milvus Seamlessly: A Comprehensive Guide"
+title: 'How to Migrate Your Data to Milvus Seamlessly: A Comprehensive Guide'
 author: Wenhui Zhang
 date: 2023-12-01
 desc: A comprehensive guide on migrating your data from Elasticsearch, FAISS, and older Milvus 1.x to Milvus 2.x versions.
