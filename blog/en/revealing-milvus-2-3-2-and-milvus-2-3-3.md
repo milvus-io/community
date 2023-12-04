@@ -28,7 +28,7 @@ Note: Ensure you’ve loaded collections before utilizing complex expressions. A
 
 ## TiKV integration - scalable metadata storage with stability
 
-Previously relying on Etcd for metadata storage, Milvus faced limited capacity and scalability challenges in metadata storage. To address these problems, Milvus switched to TiKV, an open-source key-value store, for metadata storage. TiKV offers enhanced scalability, stability, and efficiency, making it an ideal solution for Milvus's evolving requirements. Starting from Milvus 2.3.2, users can seamlessly transition to TiKV for their metadata storage by modifying the configuration.
+Previously relying on Etcd for metadata storage, Milvus faced limited capacity and scalability challenges in metadata storage. To address these problems, Milvus added TiKV, an open-source key-value store, as one more option for metadata storage. TiKV offers enhanced scalability, stability, and efficiency, making it an ideal solution for Milvus's evolving requirements. Starting from Milvus 2.3.2, users can seamlessly transition to TiKV for their metadata storage by modifying the configuration.
 
 ## Support for FP16 vector type - embracing machine learning efficiency
 
