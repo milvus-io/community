@@ -4,7 +4,7 @@ title: 'Milvus in 2023: An Unprecedented Vector Database Amidst Tech Buzz'
 author: James Luan
 date: 2024-01-05
 desc: Reflecting on the entire vector database industry, with a special focus on Milvus—a standout product in this landscape. 
-cover: assets.zilliz.com/Milvus_in_2023_An_Atypical_Vector_DB_Amidst_Tech_Buzz_742470e4c7.png
+cover: assets.zilliz.com/Milvus_in_2023_An_Atypical_Vector_DB_Amidst_Tech_Buzz_1_1151400765.png
 tags: Milvus, Vector Database, LLM, RAG, Open Source, Artificial Intelligence
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-in-2023-unprecedented-vector-database-amidst-tech-buzz.md
