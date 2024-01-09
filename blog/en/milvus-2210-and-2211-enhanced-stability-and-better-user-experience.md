@@ -7,6 +7,7 @@ cover: assets.zilliz.com/What_s_New_in_Milvus_2_2_10_and_2_2_11_5018946465.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
 recommend: true
+metaTitle: Milvus 2.2.10 & 2.2.11 Enhanced System Stability and User Experience
 canonicalUrl: https://milvus.io/blog/milvus-2210-and-2211-enhanced-stability-and-better-user-experience.md
 ---
 
