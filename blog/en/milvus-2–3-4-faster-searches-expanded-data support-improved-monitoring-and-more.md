@@ -15,7 +15,7 @@ canonicalUrl: https://milvus.io/blog/milvus-2–3-4-faster-searches-expanded-dat
 
 We are excited to unveil the latest release of Milvus 2.3.4. This update introduces a suite of features and enhancements meticulously crafted to optimize performance, boost efficiency, and deliver a seamless user experience. In this blog post, we'll delve into the highlights of Milvus 2.3.4. 
 
-# Access logs for improved monitoring
+## Access logs for improved monitoring
 
 Milvus now supports access logs, offering invaluable insights into interactions with external interfaces. These logs record method names, user requests, response times, error codes, and other interaction information, empowering developers and system administrators to conduct performance analysis, security auditing, and efficient troubleshooting. 
 
