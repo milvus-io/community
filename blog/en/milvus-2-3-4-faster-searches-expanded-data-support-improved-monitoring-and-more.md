@@ -1,5 +1,5 @@
 ---
-id: milvus-2–3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
+id: milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
 title: 'Milvus 2.3.4: Faster Searches, Expanded Data Support, Improved Monitoring, and More'
 author: Ken Zhang, Fendy Feng
 date: 2024-01-12
@@ -7,7 +7,7 @@ cover: assets.zilliz.com/What_is_new_in_Milvus_2_3_4_1847b0fa8a.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, Vector Search
 recommend: true
-canonicalUrl: https://milvus.io/blog/milvus-2–3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
+canonicalUrl: https://milvus.io/blog/milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
 ---
 
 ![](https://assets.zilliz.com/What_is_new_in_Milvus_2_3_4_1847b0fa8a.png)
