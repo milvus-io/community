@@ -25,7 +25,7 @@ If you are interested in Milvus's release planning, refer to the [Milvus Roadmap
 
 ## #2 Search — beyond Vector Search
 
-"Search" takes second place, reflecting its fundamental role in database operations. Milvus supports various search capabilities, from Top-K ANN search to scalar filtered search and range search. The imminent release of Milvus 2.4.0 promises keyword search, which many RAG app developers eagerly await.
+"Search" takes second place, reflecting its fundamental role in database operations. Milvus supports various search capabilities, from Top-K ANN search to scalar filtered search and range search. The imminent release of Milvus 3.0 (Beta) promises keyword search (sparse embeddings), which many RAG app developers eagerly await.
 
 Community discussions about searching focus on performance, capabilities, and principles. Users often ask questions about attribute filtering, setting index threshold values, and addressing latency concerns. Resources like [query and search documentation](https://milvus.io/docs/v2.0.x/search.md), [Milvus Enhancement Proposals (MEPs)](https://wiki.lfaidata.foundation/pages/viewpage.action?pageId=43287103), and Discord discussions have become the go-to references for unraveling the intricacies of searching within Milvus.
 
@@ -63,7 +63,7 @@ Once users identify "which parameters to adjust," the subsequent questions of "h
 
 "Logs" serve as the troubleshooter's compass. Users sought guidance in the community on exporting Milvus logs, adjusting log levels, and integrating with systems like Grafana’s Loki. Here are some suggestions about Milvus logs. 
 
-- **How to view and export Milvus logs:** You can easily export Milvus logs with the one-click script[ `export-milvus-log.sh](https://github.com/milvus-io/milvus/tree/master/deployments/export-log)` which is available on the GitHub repository. 
+- **How to view and export Milvus logs:** You can easily export Milvus logs with the one-click script[export-milvus-log.sh](https://github.com/milvus-io/milvus/tree/master/deployments/export-log) which is available on the GitHub repository. 
 
 - **Log level:** Milvus has multiple log levels to accommodate diverse use cases. The info level is enough for most cases, and the debug level is for debugging. An excess of Milvus logs may signal misconfigured log levels.
 
