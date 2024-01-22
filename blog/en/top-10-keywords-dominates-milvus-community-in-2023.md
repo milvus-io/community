@@ -41,7 +41,9 @@ In the case of Artificial Intelligence Generated Content (AIGC), developers usua
 
 ## #4 Insert — smooth sailing through data insertion
 
-Efficient data insertion is a crucial concern for developers, sparking frequent discussions on optimizing insertion speed within the Milvus community. Here are some valuable insights and recommendations about data insertions: 
+Efficient data insertion is a crucial concern for developers, sparking frequent discussions on optimizing insertion speed within the Milvus community. Milvus excels in the efficient insertion of streaming data and the building of indexes, thanks to its adept separation of streaming and batch data. This capability sets it apart as a highly performant solution compared to other vector database providers, such as Pinecone.
+
+Here are some valuable insights and recommendations about data insertions: 
 
 - **Batch Insertion:** Opt for batch over single-row insertion for enhanced efficiency. Notably, insertion from files surpasses batch insertion in speed. When handling large datasets exceeding ten million records, consider using the `bulk_insert` interface for a streamlined and accelerated import process.
 
@@ -63,7 +65,7 @@ Once users identify "which parameters to adjust," the subsequent questions of "h
 
 "Logs" serve as the troubleshooter's compass. Users sought guidance in the community on exporting Milvus logs, adjusting log levels, and integrating with systems like Grafana’s Loki. Here are some suggestions about Milvus logs. 
 
-- **How to view and export Milvus logs:** You can easily export Milvus logs with the one-click script[export-milvus-log.sh](https://github.com/milvus-io/milvus/tree/master/deployments/export-log) which is available on the GitHub repository. 
+- **How to view and export Milvus logs:** You can easily export Milvus logs with the one-click script [export-milvus-log.sh](https://github.com/milvus-io/milvus/tree/master/deployments/export-log) which is available on the GitHub repository. 
 
 - **Log level:** Milvus has multiple log levels to accommodate diverse use cases. The info level is enough for most cases, and the debug level is for debugging. An excess of Milvus logs may signal misconfigured log levels.
 
@@ -88,7 +90,7 @@ Serving as the gateway to understanding Milvus, around 80% of community inquirie
 
 Simple deployment remains the Milvus team’s ongoing goal. To fulfill this commitment, we introduced [Milvus Lite](https://milvus.io/docs/milvus_lite.md#Get-Started-with-Milvus-Lite), a lightweight alternative to Milvus that is fully functional but has no K8s or Docker dependencies. 
 
-We further streamlined deployment by introducing the lighter [NATS](https://zilliz.com/blog/optimizing-data-communication-milvus-embraces-nats-messaging)messaging solution and consolidating node components. Responding to user feedback, we're gearing up to release a standalone version without dependencies, with ongoing efforts to enhance features and simplify deployment operations. The rapid iteration of Milvus showcases the community's continuous commitment to the continued refinement of the deployment process.
+We further streamlined deployment by introducing the lighter [NATS](https://zilliz.com/blog/optimizing-data-communication-milvus-embraces-nats-messaging) messaging solution and consolidating node components. Responding to user feedback, we're gearing up to release a standalone version without dependencies, with ongoing efforts to enhance features and simplify deployment operations. The rapid iteration of Milvus showcases the community's continuous commitment to the continued refinement of the deployment process.
 
 
 ## #10 Deletion — unraveling the impact
