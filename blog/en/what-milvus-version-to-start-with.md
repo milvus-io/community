@@ -1,8 +1,6 @@
 ---
 id: what-milvus-version-to-start-with.md
-title:
->
-What Milvus version to start with
+title: What Milvus version to start with
 author: Chris Churilo
 date: 2024-02-19
 desc: A comprehensive guide to the features and capabilities of each Milvus version to make an informed decision for your vector search projects.
