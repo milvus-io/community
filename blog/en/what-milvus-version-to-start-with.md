@@ -14,24 +14,24 @@ canonicalUrl: https://milvus.io/blog/what-milvus-version-to-start-with.md
 
 ![](https://assets.zilliz.com/Feb_04_What_Milvus_version_to_start_with_cca104c012.png)
 
-# Introduction to the Milvus versions<a id="introduction-to-the-milvus-versions"></a>
+# Introduction to the Milvus versions
 
 Selecting the appropriate Milvus version is foremost to the success of any project leveraging vector search technology. With different Milvus versions tailored to varying requirements, understanding the importance of selecting the correct version is crucial for achieving the desired results.
 
 The right Milvus version can help a developer to learn and prototype quickly or help optimize resource utilization, streamline development efforts, and ensure compatibility with existing infrastructure and tools. Ultimately, it is about maintaining developer productivity and improving efficiency, reliability, and user satisfaction.
 
 
-## Available Milvus versions <a id="available-milvus-versions"></a>
+## Available Milvus versions 
 
 Three versions of Milvus are available for developers, and all are open source. The three versions are Milvus Lite, Milvus Standalone, and Milvus Cluster, which differ in features and how users plan to use Milvus in the short and long term. So, let's explore these individually.
 
 
-## Milvus Lite<a id="milvus-lite"></a>
+## Milvus Lite
 
 As the name suggests, Milvus Lite is a lightweight version that integrates seamlessly with Google Colab and Jupyter Notebook. It is packaged as a single binary with no additional dependencies, making it easy to install and run on your machine or embed in Python applications. Additionally, Milvus Lite includes a CLI-based Milvus standalone server, providing flexibility for running it directly on your machine. Whether you embed it within your Python code or utilize it as a standalone server is entirely up to your preference and specific application requirements.
 
 
-### Features and Capabilities<a id="features-and-capabilities"></a>
+### Features and Capabilities
 
 Milvus Lite includes all core Milvus vector search features. 
 
@@ -44,12 +44,12 @@ Milvus Lite includes all core Milvus vector search features. 
 - **CRUD Operations**: Offers full CRUD support (create, read, update/upsert, delete), empowering users with comprehensive data management capabilities.
 
 
-### Applications and limitations<a id="applications-and-limitations"></a>
+### Applications and limitations
 
 Milvus Lite is ideal for rapid prototyping and local development, offering support for quick setup and experimentation with small-scale datasets on your machine. However, its limitations become apparent when transitioning to production environments with larger datasets and more demanding infrastructure requirements. As such, while Milvus Lite is an excellent tool for initial exploration and testing, it may not be suitable for deploying applications in high-volume or production-ready settings.
 
 
-### Available Resources<a id="available-resources"></a>
+### Available Resources
 
 - [Documentation](https://milvus.io/docs/milvus_lite.md)
 
@@ -60,14 +60,14 @@ Milvus Lite is ideal for rapid prototyping and local development, offering suppo
 - [Getting Started Video](https://www.youtube.com/watch?v=IgJdrGiB5ZY)
 
 
-## Milvus Standalone<a id="milvus-standalone"></a>
+## Milvus Standalone
 
 Milvus offers two operational modes: Standalone and Cluster. Both modes are identical in core vector database features and differ in data size support and scalability requirements. This distinction allows you to select the mode that best aligns with your dataset size, traffic volume, and other infrastructure requirements for production. 
 
 Milvus Standalone is a mode of operation for the Milvus vector database system where it operates independently as a single instance without any clustering or distributed setup. Milvus runs on a single server or machine in this mode, providing functionalities such as indexing and searching for vectors. It is suitable for situations where the data and traffic volume scale is relatively small and does not require the distributed capabilities provided by a clustered setup.
 
 
-### Features and Capabilities<a id="features-and-capabilities-1"></a>
+### Features and Capabilities
 
 - **High Performance**: Conduct vector searches on massive datasets (billions or more) with exceptional speed and efficiency.
 
@@ -86,7 +86,7 @@ Milvus Standalone is a mode of operation for the Milvus vector database system w
 - **CRUD Operations**: Offers full CRUD support (create, read, update/upsert, delete), empowering users with comprehensive data management capabilities.
 
 
-### Essential components:<a id="essential-components"></a>
+### Essential components:
 
 - Milvus: The core functional component.
 
@@ -99,7 +99,7 @@ Milvus Standalone is a mode of operation for the Milvus vector database system w
 Figure 1: Milvus Standalone Architecture
 
 
-### Available Resources<a id="available-resources-1"></a>
+### Available Resources
 
 - Documentation
 
@@ -110,12 +110,12 @@ Figure 1: Milvus Standalone Architecture
 - [Github Repository](https://github.com/milvus-io/milvus)
 
 
-## Milvus Cluster<a id="milvus-cluster"></a>
+## Milvus Cluster
 
 Milvus Cluster is a mode of operation for the Milvus vector database system where it operates and is distributed across multiple nodes or servers. In this mode, Milvus instances are clustered together to form a unified system that can handle larger volumes of data and higher traffic loads compared to a standalone setup. Milvus Cluster offers scalability, fault tolerance, and load balancing features, making it suitable for scenarios that need to handle big data and serve many concurrent queries efficiently.
 
 
-### Features and Capabilities<a id="features-and-capabilities-2"></a>
+### Features and Capabilities
 
 - Inherits all features available in Milvus Standalone, including high-performance vector search, support for multiple index types and similarity metrics, and seamless integration with batch and stream processing frameworks.
 
@@ -124,12 +124,12 @@ Milvus Cluster is a mode of operation for the Milvus vector database system wher
 - Enables deploying and scaling secure, enterprise-grade workloads with lower total costs by efficiently utilizing resources across the cluster and optimizing resource allocation based on workload demands.
 
 
-### Essential components:<a id="essential-components-1"></a>
+### Essential components:
 
 Milvus Cluster includes eight microservice components and three third-party dependencies. All microservices can be deployed on Kubernetes independently from each other.
 
 
-#### Microservice components<a id="microservice-components"></a>
+#### Microservice components
 
 - Root coord
 
@@ -148,7 +148,7 @@ Milvus Cluster includes eight microservice components and three third-party depe
 - Data node
 
 
-#### Third-party dependencies<a id="third-party-dependencies"></a>
+#### Third-party dependencies
 
 - etcd: Stores metadata for various components in the cluster.
 
@@ -161,7 +161,7 @@ Milvus Cluster includes eight microservice components and three third-party depe
 Figure 2: Milvus Cluster Architecture
 
 
-#### Available Resources<a id="available-resources-2"></a>
+#### Available Resources
 
 - [Documentation](https://milvus.io/docs/install_cluster-milvusoperator.md) | How to get started
 
@@ -174,7 +174,7 @@ Figure 2: Milvus Cluster Architecture
 - [Github Repository](https://github.com/milvus-io/milvus)
 
 
-## Making the Decision on which Milvus version to use<a id="making-the-decision-on-which-milvus-version-to-use"></a>
+## Making the Decision on which Milvus version to use
 
 When deciding which version of Milvus to use for your project, you must consider factors such as your dataset size, traffic volume, scalability requirements, and production environment constraints. Milvus Lite is perfect for prototyping on your laptop. Milvus Standalone offers high performance and flexibility for conducting vector searches on your datasets, making it suitable for smaller-scale deployments, CI/CD, and offline deployments when you have no Kubernetes support.. And finally, Milvus Cluster provides unparalleled availability, scalability, and cost optimization for enterprise-grade workloads, making it the preferred choice for large-scale, highly available production environments.
 
