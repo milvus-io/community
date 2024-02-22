@@ -4,15 +4,12 @@ title: What Milvus version to start with
 author: Chris Churilo
 date: 2024-02-19
 desc: A comprehensive guide to the features and capabilities of each Milvus version to make an informed decision for your vector search projects.
-cover: assets.zilliz.com/Feb_04_What_Milvus_version_to_start_with_cca104c012.png
+cover: assets.zilliz.com/which_milvus_to_start_4a4250e314.jpeg
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
 recommend: true
 canonicalUrl: https://milvus.io/blog/what-milvus-version-to-start-with.md
 ---
-
-
-![](https://assets.zilliz.com/Feb_04_What_Milvus_version_to_start_with_cca104c012.png)
 
 # Introduction to the Milvus versions
 
