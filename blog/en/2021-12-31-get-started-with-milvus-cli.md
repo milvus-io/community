@@ -7,6 +7,7 @@ desc: This article introduces Milvus_CLI and helps you complete common tasks.
 cover: assets.zilliz.com/CLI_9a10de4fcc.png
 tag: Engineering
 recommend: true
+canonicalUrl: https://zilliz.com/blog/get-started-with-milvus-cli
 ---
 
 In the age of information explosion, we are producing voice, images, videos, and other unstructured data all the time. How do we efficiently analyze this massive amount of data? The emergence of neural networks enables unstructured data to be embedded as vectors, and the Milvus database is a basic data service software, which helps complete the storage, search, and analysis of vector data.

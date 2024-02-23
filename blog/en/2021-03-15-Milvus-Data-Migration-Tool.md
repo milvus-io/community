@@ -6,7 +6,7 @@ date: 2021-03-15 10:19:51.125+00
 desc: Learn how to use Milvus data migration tool to greatly improve efficiency of data management and reduce DevOps costs.
 cover: assets.zilliz.com/Generic_Tool_Announcement_97eb04a898.jpg
 tag: Engineering
-origin: zilliz.com/blog/Milvus-Data-Migration-Tool
+canonicalUrl: https://zilliz.com/blog/Milvus-Data-Migration-Tool
 ---
 
 # Introducing Milvus Data Migration Tool

@@ -6,7 +6,7 @@ date: 2021-07-29 08:46:39.92+00
 desc: Milvus makes it easy to provide the personalized recommendation service to users.
 cover: assets.zilliz.com/blog_shopping_27fba2c990.jpg
 tag: Scenarios
-origin: zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
+canonicalUrl: https://zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
   
 # Building a Personalized Product Recommender System with Vipshop and Milvus

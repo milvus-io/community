@@ -6,7 +6,7 @@ date: 2021-09-06 06:02:27.431+00
 desc: Use Milvus, an open-source vector database, to recognize gene families of DNA sequences. Less space but higher accuracy.
 cover: assets.zilliz.com/11111_5d089adf08.png
 tag: Scenarios
-origin: zilliz.com/blog/dna-sequence-classification-based-on-milvus
+canonicalUrl: https://zilliz.com/blog/dna-sequence-classification-based-on-milvus
 ---
   
 # DNA Sequence Classification based on Milvus

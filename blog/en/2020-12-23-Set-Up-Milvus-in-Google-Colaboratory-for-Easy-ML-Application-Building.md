@@ -6,7 +6,7 @@ date: 2020-12-23 10:30:58.02+00
 desc: Google Colab makes developing and testing machine learning applications a breeze. Learn how to setup Milvus in Colab for better massive-scale vector data management.
 cover: assets.zilliz.com/3_cbea41e9a6.jpg
 tag: Engineering
-origin: zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building
+canonicalUrl: https://zilliz.com/blog/Set-Up-Milvus-in-Google-Colaboratory-for-Easy-ML-Application-Building
 ---
 
 # Set Up Milvus in Google Colaboratory for Easy ML Application Building

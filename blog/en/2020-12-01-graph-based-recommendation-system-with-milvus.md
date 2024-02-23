@@ -6,7 +6,7 @@ date: 2020-12-01 21:41:08.582+00
 desc: Recommender systems can generate revenue, reduce costs, and offer a competitive advantage. Learn how to build one for free with open-source tools. 
 cover: assets.zilliz.com/thisisengineering_raeng_z3c_Mj_I6k_P_I_unsplash_2228b9411c.jpg
 tag: Scenarios
-origin: zilliz.com/blog/graph-based-recommendation-system-with-milvus
+canonicalUrl: https://zilliz.com/blog/graph-based-recommendation-system-with-milvus
 ---
   
 # Building a Graph-based Recommendation System with Milvus, PinSage, DGL, and MovieLens Datasets

@@ -8,7 +8,7 @@ cover: assets.zilliz.com/nvidia_4921837ca6.png
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, NVIDIA, Merlin
 recommend: true
-canonicalUrl: https://medium.com/nvidia-merlin/efficient-vector-similarity-search-in-recommender-workflows-using-milvus-with-nvidia-merlin-84d568290ee4
+canonicalUrl: https://zilliz.com/blog/efficient-vector-similarity-search-recommender-workflows-using-milvus-nvidia-merlin
 ---
 
 ![](https://assets.zilliz.com/nvidia_4921837ca6.png)

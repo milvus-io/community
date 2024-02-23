@@ -6,7 +6,7 @@ date: 2021-04-29 08:46:04.019+00
 desc: Milvus v1.0 is available now. Learn about the Milvus fundamentals as well as key features of Milvus v1.0.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
-origin: zilliz.com/blog/Whats-Inside-Milvus-1.0
+canonicalUrl: https://zilliz.com/blog/Whats-Inside-Milvus-1.0
 ---
 
 # What's Inside Milvus 1.0?

@@ -6,7 +6,7 @@ date: 2021-07-15 03:05:45.742+00
 desc: Build, test, and customize vector similarity search solutions with Milvus, an open-source vector database.
 cover: assets.zilliz.com/cover_80db9ee49c.png
 tag: Engineering
-origin: zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
+canonicalUrl: https://zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
 ---
 
 # Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp

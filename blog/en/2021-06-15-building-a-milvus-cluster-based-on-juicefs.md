@@ -6,7 +6,7 @@ date: 2021-06-15 07:21:07.938+00
 desc: Learn how to build a Milvus cluster based on JuiceFS, a shared file system designed for cloud-native environments.
 cover: assets.zilliz.com/Juice_FS_blog_cover_851cc9e726.jpg
 tag: Engineering
-origin: zilliz.com/blog/building-a-milvus-cluster-based-on-juicefs
+canonicalUrl: https://zilliz.com/blog/building-a-milvus-cluster-based-on-juicefs
 ---
 
 # Building a Milvus Cluster Based on JuiceFS

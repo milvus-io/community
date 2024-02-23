@@ -6,7 +6,7 @@ date: 2020-05-12 22:33:34.726+00
 desc: The Next-Gen QA Bot is here
 cover: assets.zilliz.com/header_ce3a0e103d.png
 tag: Scenarios
-origin: zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
+canonicalUrl: https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus
 ---
   
 # Building an Intelligent QA System with NLP and Milvus

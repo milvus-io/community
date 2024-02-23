@@ -6,7 +6,7 @@ date: 2020-08-11 22:20:27.855+00
 desc: A user case of leveraging Milvus to build an image similarity search system for real-world business.
 cover: assets.zilliz.com/header_c73631b1e7.png
 tag: Scenarios
-origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
+canonicalUrl: https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2
 ---
 
 # The Journey to Optimizing Billion-scale Image Search (2/2)

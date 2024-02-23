@@ -6,7 +6,7 @@ date: 2021-07-20 07:21:43.897+00
 desc: Using open-source vector search tools to build a question answering service.
 cover: assets.zilliz.com/milmil_4600f33f1c.jpg
 tag: Scenarios
-origin: zilliz.com/blog/milmil-a-milvus-powered-faq-chatbot-that-answers-questions-about-milvus
+canonicalUrl: https://zilliz.com/blog/milmil-a-milvus-powered-faq-chatbot-that-answers-questions-about-milvus
 ---
 
 # MilMil: A Milvus-powered FAQ Chatbot that Answers Questions About Milvus

@@ -6,7 +6,7 @@ date: 2020-06-04 02:30:34.75+00
 desc:  Discover how Xiaomi leveraged AI and Milvus to build an intelligent news recommendation system capable of finding the most relevant content for users of its mobile web browser. 
 cover: assets.zilliz.com/blog_Sohu_News_dec53d0814.jpg
 tag: Scenarios
-origin: zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser
+canonicalUrl: https://zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser
 ---
   
 # Making with Milvus: AI-Powered News Recommendation Inside Xiaomi's Mobile Browser

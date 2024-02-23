@@ -6,7 +6,7 @@ date: 2021-04-08 04:14:03.7+00
 desc: Milvus accelerates machine learning application development and machine learning operations (MLOps). With Milvus, you can rapidly develop a minimum viable product (MVP) while keeping costs at lower limits.
 cover: assets.zilliz.com/blog_cover_4a9807b9e0.png
 tag: Scenarios
-origin: zilliz.com/blog/AI-applications-with-Milvus
+canonicalUrl: https://zilliz.com/blog/AI-applications-with-Milvus
 ---
   
 # How to Make 4 Popular AI Applications with Milvus

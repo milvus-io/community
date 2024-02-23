@@ -6,7 +6,7 @@ date: 2020-02-06 19:08:18.815+00
 desc: How to run molecular structure similarity analysis in Milvus
 cover: assets.zilliz.com/header_44d6b6aacd.jpg
 tag: Scenarios
-origin: zilliz.com/blog/molecular-structure-similarity-with-milvus
+canonicalUrl: https://zilliz.com/blog/molecular-structure-similarity-with-milvus
 ---
   
 # Accelerating New Drug Discovery

@@ -6,7 +6,7 @@ date: 2021-03-10 06:58:36.647+00
 desc: Milvus v1.0, a stable, long-term support version, is available now. Milvlus powers image/video search, chatbots, and many more AI applications.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
-origin: zilliz.com/blog/milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better
+canonicalUrl: https://zilliz.com/blog/milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better
 ---
 
 # Milvus 1.0: The World's Most Popular Open-Source Vector Database Just Got Better

@@ -6,7 +6,7 @@ date: 2021-05-13 08:44:05.528+00
 desc: Discover how Milvus, an open-source vector database, was used by e-commerce platform VOVA to power shopping by image. 
 cover: assets.zilliz.com/vova_thumbnail_db2d6c0c9c.jpg
 tag: Scenarios
-origin: zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
+canonicalUrl: https://zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
 ---
   
 # Building a Search by Image Shopping Experience with VOVA and Milvus

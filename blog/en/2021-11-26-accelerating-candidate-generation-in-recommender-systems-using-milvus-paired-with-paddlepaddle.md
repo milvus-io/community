@@ -6,6 +6,7 @@ date: 2021-11-26
 desc: the minimal workflow of a recommender system
 cover: assets.zilliz.com/Candidate_generation_9baf7beb86.png
 tag: Scenarios
+canonicalUrl: https://zilliz.com/blog/accelerating-candidate-generation-in-recommender-systems-using-milvus-paired-with-paddlepaddle
 ---
 
 If you have experience developing a recommender system, you are likely to have fallen victim to at least one of the following: 

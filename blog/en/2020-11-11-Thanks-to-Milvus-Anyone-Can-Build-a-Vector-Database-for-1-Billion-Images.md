@@ -6,7 +6,7 @@ date: 2020-11-11 07:13:02.135+00
 desc: AI and open-source software make it possible to build a reverse image search engine with just one server and 10 lines of code. Search 1+ billion images in real time and more with Milvus, an open-source vector data management platform.
 cover: assets.zilliz.com/build_search_9299109ca7.jpg
 tag: Scenarios
-origin: zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
+canonicalUrl: https://zilliz.com/blog/Thanks-to-Milvus-Anyone-Can-Build-a-Vector-Database-for-1-Billion-Images
 ---
 
 # Thanks to Milvus, Anyone Can Build a Vector Database for 1+ Billion Images

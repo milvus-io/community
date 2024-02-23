@@ -6,7 +6,7 @@ date: 2019-12-25 19:21:42.469+00
 desc: Learnn about how to view metadata in the Milvus vector database.
 cover: assets.zilliz.com/header_c2eb459468.jpg
 tag: Engineering
-origin: zilliz.com/blog/managing-metadata-in-milvus-1
+canonicalUrl: https://zilliz.com/blog/managing-metadata-in-milvus-1
 ---
   
 # Milvus Metadata Management (1)

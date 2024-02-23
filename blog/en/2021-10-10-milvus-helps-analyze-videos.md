@@ -6,6 +6,7 @@ date: 2021-10-11
 desc: Learn how Milvus powers the AI analysis of video contents.
 cover: assets.zilliz.com/Who_is_it_e9d4510ace.png
 tag: Scenarios
+canonicalUrl: https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently
 ---
 
 #  Building a Video Analysis System with Milvus Vector Database

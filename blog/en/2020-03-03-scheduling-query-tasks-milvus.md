@@ -6,7 +6,7 @@ date: 2020-03-03 22:38:17.829+00
 desc: The work behind the scene
 cover: assets.zilliz.com/eric_rothermel_Fo_KO_4_Dp_Xam_Q_unsplash_469fe12aeb.jpg
 tag: Engineering
-origin: zilliz.com/blog/scheduling-query-tasks-milvus
+canonicalUrl: https://zilliz.com/blog/scheduling-query-tasks-milvus
 ---
   
 # How Does Milvus Schedule Query Tasks

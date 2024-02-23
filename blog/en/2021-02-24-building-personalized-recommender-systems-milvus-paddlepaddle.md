@@ -6,7 +6,7 @@ date: 2021-02-24 23:12:34.209+00
 desc: How to build a deep learning powered recommender system
 cover: assets.zilliz.com/header_e6c4a8aee6.jpg
 tag: Scenarios
-origin: zilliz.com/blog/building-personalized-recommender-systems-milvus-paddlepaddle
+canonicalUrl: https://zilliz.com/blog/building-personalized-recommender-systems-milvus-paddlepaddle
 ---
   
 # Building Personalized Recommender Systems with Milvus and PaddlePaddle

@@ -6,7 +6,7 @@ date: 2021-01-05 03:40:20.821+00
 desc: Discover what vector similarity search is, its various applications, and the public resources making artificial intelligence more accessible than ever.
 cover: assets.zilliz.com/plainview_703d8497ca.jpg
 tag: Engineering
-origin: zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
+canonicalUrl: https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View
 ---
 
 # Vector Similarity Search Hides in Plain View

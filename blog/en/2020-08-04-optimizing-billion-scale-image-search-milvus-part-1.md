@@ -6,7 +6,7 @@ date: 2020-08-04 20:39:09.882+00
 desc: A case study with UPYUN. Learn about how Milvus stands out from traditional database solutions and helps to build an image similarity search system.
 cover: assets.zilliz.com/header_23bbd76c8b.jpg
 tag: Scenarios
-origin: zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1
+canonicalUrl: https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1
 ---
 
 # The Journey to Optimizing Billion-scale Image Search (1/2)

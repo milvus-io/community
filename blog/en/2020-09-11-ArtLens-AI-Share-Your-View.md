@@ -6,7 +6,7 @@ date: 2020-09-11 06:55:00.939+00
 desc: Artificial Intelligence Offers a New Way to Find Your View in the CMA Collection
 cover: assets.zilliz.com/blog_artlens_dc759fff70.jpg
 tag: Scenarios
-origin: zilliz.com/blog/ArtLens-AI-Share-Your-View
+canonicalUrl: https://zilliz.com/blog/ArtLens-AI-Share-Your-View
 ---
   
 # ArtLens AI: Share Your View

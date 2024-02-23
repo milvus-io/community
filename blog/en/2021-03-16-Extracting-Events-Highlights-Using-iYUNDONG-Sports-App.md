@@ -6,7 +6,7 @@ date: 2021-03-16 03:41:30.983+00
 desc: Making with Milvus Intelligent image retrieval system for sports App iYUNDONG
 cover: assets.zilliz.com/blog_iyundong_6db0f70ef4.jpg
 tag: Scenarios
-origin: zilliz.com/blog/Extracting-Events-Highlights-Using-iYUNDONG-Sports-App
+canonicalUrl: https://zilliz.com/blog/Extracting-Events-Highlights-Using-iYUNDONG-Sports-App
 ---
   
 # Extracting Event Highlights Using iYUNDONG Sports App

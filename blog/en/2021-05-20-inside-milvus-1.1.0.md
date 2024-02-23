@@ -6,7 +6,7 @@ date: 2021-05-20 08:35:42.7+00
 desc: Milvus v1.1.0 has arrived! New features, improvements, and bug fixes are available now.
 cover: assets.zilliz.com/v1_1_cover_487e70971a.jpeg
 tag: News
-origin: zilliz.com/blog/inside-milvus-1.1.0
+canonicalUrl: https://zilliz.com/blog/inside-milvus-1.1.0
 ---
   
 # Inside Milvus 1.1.0

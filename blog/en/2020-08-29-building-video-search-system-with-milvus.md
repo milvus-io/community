@@ -6,7 +6,7 @@ date: 2020-08-29 00:18:19.703+00
 desc: Searching for videos by image with Milvus
 cover: assets.zilliz.com/header_3a822736b3.gif
 tag: Scenarios
-origin: zilliz.com/blog/building-video-search-system-with-milvus
+canonicalUrl: https://zilliz.com/blog/building-video-search-system-with-milvus
 ---
   
 # 4 Steps to Building a Video Search System

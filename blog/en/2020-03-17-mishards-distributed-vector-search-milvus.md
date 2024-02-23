@@ -6,7 +6,7 @@ date: 2020-03-17 21:36:16.974+00
 desc: How to scale out
 cover: assets.zilliz.com/tim_j_ots0_EO_Yu_Gt_U_unsplash_14f939b344.jpg
 tag: Engineering
-origin: zilliz.com/blog/mishards-distributed-vector-search-milvus
+canonicalUrl: https://zilliz.com/blog/mishards-distributed-vector-search-milvus
 ---
   
 # Mishards — Distributed Vector Search in Milvus

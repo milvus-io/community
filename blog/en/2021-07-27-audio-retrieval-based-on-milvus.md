@@ -6,7 +6,7 @@ date: 2021-07-27 03:05:57.524+00
 desc: Audio retrieval with Milvus makes it possible to classify and analyze sound data in real time.
 cover: assets.zilliz.com/blog_audio_search_56b990cee5.jpg
 tag: Scenarios
-origin: zilliz.com/blog/audio-retrieval-based-on-milvus
+canonicalUrl: https://zilliz.com/blog/audio-retrieval-based-on-milvus
 ---
   
 # Audio Retrieval Based on Milvus

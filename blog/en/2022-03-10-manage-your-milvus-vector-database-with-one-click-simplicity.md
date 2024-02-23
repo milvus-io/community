@@ -7,7 +7,7 @@ desc: Attu - a GUI tool for Milvus 2.0.
 cover: assets.zilliz.com/Attu_3ff9a76156.png
 tag: Engineering
 tags: Data science, Database, Technology, Artificial Intelligence, Vector Management
-canonicalUrl: https://milvus.io/blog/2022-03-10-manage-your-milvus-vector-database-with-one-click-simplicity.md
+canonicalUrl: https://zilliz.com/blog/manage-your-milvus-vector-database-with-one-click-simplicity
 ---
 
 ![Binlog Cover Image](https://assets.zilliz.com/Attu_3ff9a76156.png "Attu - a GUI tool for Milvus 2.0")

@@ -6,7 +6,7 @@ date: 2019-12-31 20:41:13.864+00
 desc: Fields in the Metadata Table
 cover: assets.zilliz.com/header_c65a2a523c.png
 tag: Engineering
-origin: zilliz.com/blog/managing-metadata-in-milvus-2
+canonicalUrl: https://zilliz.com/blog/managing-metadata-in-milvus-2
 ---
   
 # Milvus Metadata Management (2)
