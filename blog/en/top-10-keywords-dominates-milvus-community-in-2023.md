@@ -15,7 +15,7 @@ canonicalUrl: https://milvus.io/blog/top-10-keywords-dominates-milvus-community-
 As we conclude 2023, let's review the Milvus community's remarkable journey: boasting [25,000 GitHub Stars](https://github.com/milvus-io/milvus), the launch of [Milvus 2.3.0](https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md), and exceeding 10 million [Docker image](https://hub.docker.com/r/milvusdb/milvus) downloads. This post explores the heart of the community by analyzing chat histories and revealing the top 10 keywords in discussions.
 
 
-<iframe width="750" height="422" src="https://www.youtube.com/embed/o5uMdNLioQ0?list=PLPg7_faNDlT5Fb8WN8r1PzzQTNzdechnS" title="Mastering Milvus: Turbocharge Your Vector Database with Optimization Secrets!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/o5uMdNLioQ0?list=PLPg7_faNDlT5Fb8WN8r1PzzQTNzdechnS" title="Mastering Milvus: Turbocharge Your Vector Database with Optimization Secrets!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## #1 Version — The rise of AIGC drives rapid Milvus iteration
 
