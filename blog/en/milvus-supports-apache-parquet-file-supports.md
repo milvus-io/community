@@ -43,7 +43,7 @@ If your data is already in Parquet file format, importing is easy. Upload the Pa
 The code snippet below is an example of importing Parquet files into Milvus.
 
 
-```python
+```
 remote_files = []
 try:
     print("Prepare upload files")
@@ -79,7 +79,7 @@ If your data is not Parquet files or has dynamic fields, you can leverage BulkWr
 
 The code snippet below is an example of using BulkWriter to generate Parquet files. 
 
-```python
+```
 import numpy as np
 import json
 
@@ -146,7 +146,7 @@ remote_files = remote_writer.batch_files
 
 Then, you can start to import your Parquet files into Milvus. 
 
-```python
+```
 remote_files = [remote_file_path]
 task_id = utility.do_bulk_insert(collection_name=collection_name,
                                  files=remote_files)
@@ -161,7 +161,7 @@ for state in states:
 
 Now, your data is seamlessly integrated into Milvus.
 
-## hat's Next?
+## What's Next?
 
 As Milvus continues to support ever-growing data volumes, the challenge arises in managing sizable imports, particularly when Parquet files surpass 10GB. To tackle this challenge, we plan to segregate the import data into scalar and vector columns, creating two Parquet files per import to alleviate the I/O pressure. For datasets exceeding several hundred gigabytes, we recommend importing the data multiple times. 
 
