@@ -19,7 +19,7 @@ We are happy to announce the launch of Milvus 2.4, a major advancement in enhanc
 
 Milvus 2.4 provides multivector search capability, allowing simultaneous search and reranking of different vector types within the same Milvus system. This feature streamlines multimodal searches, significantly enhancing recall rates and enabling developers to effortlessly manage intricate AI applications with varied data types. Additionally, this functionality simplifies the integration and fine-tuning of custom reranking models, aiding in the creation of advanced search functions like precise [recommender systems](https://zilliz.com/vector-database-use-cases/recommender-system) that utilize insights from multidimensional data.
 
-![How the Milti-Vector Search Feature Works]](https://assets.zilliz.com/How_the_multi_vector_search_feature_works_6c85961349.png)
+![How the Milti-Vector Search Feature Works](https://assets.zilliz.com/How_the_multi_vector_search_feature_works_6c85961349.png)
 
 Multivector support in Milvus has two components: 
 
