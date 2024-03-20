@@ -46,7 +46,7 @@ We are labeling this feature as “Beta” to continue our performance testing o
 
 Developed by NVIDIA, [CAGRA](https://arxiv.org/abs/2308.15136) (Cuda Anns GRAph-based) is a GPU-based graph indexing technology that significantly surpasses traditional CPU-based methods like the HNSW index in efficiency and performance, especially in high-throughput environments.
 
-With the introduction of the CAGRA Index, Milvus 2.4 provides enhanced GPU-accelerated graph indexing capability. This enhancement is ideal for building similarity search applications requiring minimal latency. Additionally, Milvus 2.4 integrates a brute-force search with the CAGRA index to achieve maximum recall rates in applications. For detailed insights, refer to the CAGRA documentation or explore the [introduction blog on CAGRA](https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA).
+With the introduction of the CAGRA Index, Milvus 2.4 provides enhanced GPU-accelerated graph indexing capability. This enhancement is ideal for building similarity search applications requiring minimal latency. Additionally, Milvus 2.4 integrates a brute-force search with the CAGRA index to achieve maximum recall rates in applications. For detailed insights, explore the [introduction blog on CAGRA](https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA).
 
 ![](https://assets.zilliz.com/Milvus_raft_cagra_vs_milvus_hnsw_ffe0415ff5.png)
 
