@@ -19,7 +19,7 @@ We are happy to announce the launch of Milvus 2.4, a major advancement in enhanc
 
 Milvus 2.4 provides multivector search capability, allowing simultaneous search and reranking of different vector types within the same Milvus system. This feature streamlines multimodal searches, significantly enhancing recall rates and enabling developers to effortlessly manage intricate AI applications with varied data types. Additionally, this functionality simplifies the integration and fine-tuning of custom reranking models, aiding in the creation of advanced search functions like precise [recommender systems](https://zilliz.com/vector-database-use-cases/recommender-system) that utilize insights from multidimensional data.
 
-![](https://assets.zilliz.com/How_the_multi_vector_search_feature_works_6c85961349.png)
+![How the Milti-Vector Search Feature Works]](https://assets.zilliz.com/How_the_multi_vector_search_feature_works_6c85961349.png)
 
 Multivector support in Milvus has two components: 
 
@@ -48,8 +48,7 @@ Developed by NVIDIA, [CAGRA](https://arxiv.org/abs/2308.15136) (Cuda Anns GRAph-
 
 With the introduction of the CAGRA Index, Milvus 2.4 provides enhanced GPU-accelerated graph indexing capability. This enhancement is ideal for building similarity search applications requiring minimal latency. Additionally, Milvus 2.4 integrates a brute-force search with the CAGRA index to achieve maximum recall rates in applications. For detailed insights, explore the [introduction blog on CAGRA](https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA).
 
-![](https://assets.zilliz.com/Milvus_raft_cagra_vs_milvus_hnsw_ffe0415ff5.png)
-
+![Milvus Raft CAGRA vs. Milvus HNSW](https://assets.zilliz.com/Milvus_raft_cagra_vs_milvus_hnsw_ffe0415ff5.png)
 
 ## Additional Enhancements and Features
 
