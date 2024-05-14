@@ -12,8 +12,6 @@ canonicalUrl: https://medium.com/intel-tech/optimize-vector-databases-enhance-ra
 ---
 
 
-![]https://assets.zilliz.com/Optimize_Vector_Databases_Enhance_RAG_Driven_Generative_AI_6e3b370f25.png
-
 Two methods to optimize your vector database when using RAG
 
 
