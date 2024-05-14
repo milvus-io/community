@@ -1,15 +1,13 @@
 ---
 id: optimize-vector-databases-enhance-rag-driven-generative-ai.md
-title:
->
-Optimize Vector Databases, Enhance RAG-Driven Generative AI
-author: Cathy Zhang and Dr. Malini Bhandaru
+title: Optimize Vector Databases, Enhance RAG-Driven Generative AI
+author: Cathy Zhang, Dr. Malini Bhandaru
 date: 2024-05-13
 desc: In this article, you’ll learn more about vector databases and their benchmarking frameworks, datasets to tackle different aspects, and the tools used for performance analysis — everything you need to start optimizing vector databases.
 cover: assets.zilliz.com/Optimize_Vector_Databases_Enhance_RAG_Driven_Generative_AI_6e3b370f25.png
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, RAG, Generative AI
-recommend: false
+recommend: true
 canonicalUrl: https://medium.com/intel-tech/optimize-vector-databases-enhance-rag-driven-generative-ai-90c10416cb9c
 ---
 
@@ -26,11 +24,8 @@ Photo by [Ilya Pavlov](https://unsplash.com/@ilyapavlov?utm_content=creditCopyTe
 
 
 
-
-### By Cathy Zhang and Dr. Malini Bhandaru
-
-
-### Contributors: Lin Yang and Changyan Liu
+By Cathy Zhang and Dr. Malini Bhandaru
+Contributors: Lin Yang and Changyan Liu
 
 
 Generative AI (GenAI) models, which are seeing exponential adoption in our daily lives, are being improved by [retrieval-augmented generation (RAG)](https://www.techtarget.com/searchenterpriseai/definition/retrieval-augmented-generation), a technique used to enhance response accuracy and reliability by fetching facts from external sources. RAG helps a regular [large language model (LLM)](https://www.techtarget.com/whatis/definition/large-language-model-LLM) understand context and reduce [hallucinations](https://en.wikipedia.org/wiki/Hallucination_\(artificial_intelligence\)) by leveraging a giant database of unstructured data stored as vectors — a mathematical presentation that helps capture context and relationships between data.
@@ -44,7 +39,7 @@ In this article, you’ll learn more about vector databases and their benchmarki
 
 
 
-# Understanding Vector Databases
+## Understanding Vector Databases
 
 
 Unlike traditional relational or non-relational databases where data is stored in a structured manner, a vector database contains a mathematical representation of individual data items, called a vector, constructed using an embedding or transformation function. The vector commonly represents features or semantic meanings and can be short or long. Vector databases do vector retrieval by similarity search using a distance metric (where closer means the results are more similar) such as [Euclidean, dot product, or cosine similarity](https://www.pinecone.io/learn/vector-similarity/).
@@ -70,7 +65,7 @@ We’ll take a closer look at one from each category, Milvus and Redis.
 
 
 
-# Improving Performance
+## Improving Performance
 
 
 Before diving into the optimizations, let’s review how vector databases are evaluated, some evaluation frameworks, and available performance analysis tools.
@@ -78,7 +73,7 @@ Before diving into the optimizations, let’s review how vector databases are ev
 
 
 
-## Performance Metrics
+### Performance Metrics
 
 
 Let’s look at key metrics that can help you measure vector database performance.
@@ -91,7 +86,7 @@ Let’s look at key metrics that can help you measure vector database performanc
 
 
 
-## Benchmarking Frameworks
+### Benchmarking Frameworks
 
 
 ![](https://miro.medium.com/v2/resize:fit:920/1*mssEjZAuXg6nf-pad67rHA.jpeg)
@@ -118,7 +113,7 @@ But the benchmark framework is only part of the equation. We need data that exer
 
 
 
-## Open Datasets to Exercise Vector Databases
+### Open Datasets to Exercise Vector Databases
 
 
 Large datasets are good candidates to test load latency and resource allocation. Some datasets have high dimensional data and are good for testing speed of computing similarity.
@@ -132,7 +127,7 @@ To test for load latency, we needed a large collection of vectors, which [deep-i
 
 
 
-## Performance Tools
+### Performance Tools
 
 
 We’ve covered ways to stress the system to identify metrics of interest, but let’s examine what’s happening at a lower level: How busy is the computing unit, memory consumption, waits on locks, and more? These provide clues to databasebehavior, particularly useful in identifying problem areas.
@@ -143,7 +138,7 @@ The Linux [top](https://www.redhat.com/sysadmin/interpret-top-output) utility pr
 
 
 
-# Milvus Vector Database Optimizations
+## Milvus Vector Database Optimizations
 
 
 Let’s walk through some examples of how we attempted to improve the performance of the Milvus vector database.
@@ -151,7 +146,7 @@ Let’s walk through some examples of how we attempted to improve the performanc
 
 
 
-## Reducing Memory Movement Overhead in Datanode Buffer Write
+### Reducing Memory Movement Overhead in Datanode Buffer Write
 
 
 Milvus’s write path proxies write data into a log broker via _MsgStream_. The data nodes then consume the data, converting and storing it into segments. Segments will merge the newly inserted data. The merge logic allocates a new buffer to hold/move both the old data and the new data to be inserted and then returns the new buffer as old data for the next data merge. This results in the old data getting successively larger, which in turn makes data movement slower. Perf profiles showed a high overhead for this logic.
@@ -174,7 +169,7 @@ Figure 5. With less copying we see a performance improvement of more than 50 per
 
 
 
-## Inverted Index Building with Reduced Memory Allocation Overhead
+### Inverted Index Building with Reduced Memory Allocation Overhead
 
 
 The Milvus search engine, [Knowhere](https://milvus.io/docs/knowhere.md), employs the [Elkan k-means algorithm](https://www.vlfeat.org/api/kmeans-fundamentals.html#kmeans-elkan) to train cluster data for creating [inverted file (IVF) indices](https://milvus.io/docs/v1.1.1/index.md). Each round of data training defines an iteration count. The larger the count, the better the training results. However, it also implies that the Elkan algorithm will be called more frequently.
@@ -191,7 +186,7 @@ The _IndexFlatElkan_ structure is specifically designed and constructed to suppo
 
 
 
-# Redis Vector Search Acceleration through Software Prefetch
+## Redis Vector Search Acceleration through Software Prefetch
 
 
 Redis, a popular traditional in-memory key-value data store, recently began supporting vector search. To go beyond a typical key-value store, it offers extensibility modules; the [RediSearch](https://github.com/RediSearch/RediSearch) module facilitates the storage and search of vectors directly within Redis.
@@ -205,7 +200,7 @@ Each vector candidate encompasses substantial metadata in addition to the vector
 
 
 
-# GCC Default Behavior Change to Prevent Mixed Assembly Code Penalties
+## GCC Default Behavior Change to Prevent Mixed Assembly Code Penalties
 
 
 To drive maximum performance, frequently used sections of code are often handwritten in assembly. However, when different segments of code are written either by different people or at different points in time, the instructions used may come from incompatible assembly instruction sets such as [Intel® Advanced Vector Extensions 512 (Intel® AVX-512)](https://www.intel.com/content/www/us/en/architecture-and-technology/avx-512-overview.html) and [Streaming SIMD Extensions (SSE)](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions). If not compiled appropriately, the mixed code results in a performance penalty. [Learn more about mixing Intel AVX and SSE instructions here](https://www.intel.com/content/dam/develop/external/us/en/documents/11mc12-avoiding-2bavx-sse-2btransition-2bpenalties-2brh-2bfinal-809104.pdf).
@@ -218,11 +213,9 @@ The Clang compiler by default inserts _VZEROUPPER_, avoiding any mixed mode pena
 
 
 
-
-# Start Optimizing Your Vector Databases
+## Start Optimizing Your Vector Databases
 
 
 Vector databases are playing an integral role in GenAI, and they are growing ever larger to generate higher-quality responses. With respect to optimization, AI applications are no different from other software applications in that they reveal their secrets when one employs standard performance analysis tools along with benchmark frameworks and stress input.
-
 
 Using these tools, we uncovered performance traps pertaining to unnecessary memory allocation, failing to prefetch instructions, and using incorrect compiler options. Based on our findings, we upstreamed enhancements to Milvus, Knowhere, Redis, and the GCC compiler to help make AI a little more performant and sustainable. Vector databases are an important class of applications worthy of your optimization efforts. We hope this article helps you get started.
