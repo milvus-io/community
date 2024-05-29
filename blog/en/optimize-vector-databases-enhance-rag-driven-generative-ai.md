@@ -11,6 +11,10 @@ recommend: true
 canonicalUrl: https://medium.com/intel-tech/optimize-vector-databases-enhance-rag-driven-generative-ai-90c10416cb9c
 ---
 
+*This post was originally published on [Intel's Medium Channel](https://medium.com/intel-tech/optimize-vector-databases-enhance-rag-driven-generative-ai-90c10416cb9c) and is reposted here with permission.*
+
+
+<br>
 
 Two methods to optimize your vector database when using RAG
 
