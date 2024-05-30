@@ -133,7 +133,7 @@ The rest of this article will describe specific practices and points to be noted
 
 To use Milvus, your CPU must support the avx2 instruction set. For Linux systems, use the following command to check which instruction sets your CPU supports:
 
-<code>cat /proc/cpuinfo | grep flags</code?
+<code>cat /proc/cpuinfo | grep flags</code>
 
 Then you get something like:
 
