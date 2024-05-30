@@ -3,11 +3,11 @@ id: introducing-milvus-lite.md
 title: 'Introducing Milvus Lite: Start Building a GenAI Application in Seconds'
 author: Jiang Chen
 date: 2024-05-30
-cover: assets.zilliz.com/2_72e444c8dc.JPG
+cover: assets.zilliz.com/1_10011_283380bc9b.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, GenAI developers, Retrieval Augmented Generation, RAG 
 recommend: true
-canonicalUrl: hhttps://milvus.io/blog/introducing-milvus-lite.md
+canonicalUrl: https://milvus.io/blog/introducing-milvus-lite.md
 ---
 
 ![](https://assets.zilliz.com/2_72e444c8dc.JPG)
@@ -30,7 +30,7 @@ Milvus Lite is a crucial addition to our suite of offerings within the Milvus ec
 
 Milvus Lite supports all the basic operations available in Milvus, such as creating collections and inserting, searching, and deleting vectors. It will soon support advanced features like hybrid search. Milvus Lite loads data into memory for efficient searches and persists it as an SQLite file.
 
-Milvus Lite is included in the _[Python SDK of Milvus](https://github.com/milvus-io/pymilvus)_ and can be deployed with a simple `pip install pymilvus`. The following code snippet demonstrates how to set up a vector database with Milvus Lite by specifying a local file name and then creating a new collection. For those familiar with the Milvus API, the only difference is that the `uri` refers to a local file name instead of a network endpoint, e.g., `"milvus_demo.db"` instead of `"http://localhost:19530"` for a Milvus server. Everything else remains the same. Milvus Lite also supports storing raw text and other labels as metadata, using a dynamic or explicitly defined schema, as shown below.
+Milvus Lite is included in the [Python SDK of Milvus](https://github.com/milvus-io/pymilvus) and can be deployed with a simple `pip install pymilvus`. The following code snippet demonstrates how to set up a vector database with Milvus Lite by specifying a local file name and then creating a new collection. For those familiar with the Milvus API, the only difference is that the `uri` refers to a local file name instead of a network endpoint, e.g., `"milvus_demo.db"` instead of `"http://localhost:19530"` for a Milvus server. Everything else remains the same. Milvus Lite also supports storing raw text and other labels as metadata, using a dynamic or explicitly defined schema, as shown below.
 
 ```
 from pymilvus import MilvusClient
@@ -48,7 +48,7 @@ For scalability, an AI application developed with Milvus Lite can easily transit
 
 ## Integration with AI Development Stack
 
-In addition to introducing Milvus Lite to make vector search easy to start with, Milvus also integrates with many frameworks and providers of the AI development stack, including [LangChain](https://python.langchain.com/v0.2/docs/integrations/vectorstores/milvus/), [LlamaIndex](https://docs.llamaindex.ai/en/stable/examples/vector_stores/MilvusIndexDemo/), [Haystack](https://haystack.deepset.ai/integrations/milvus-document-store), [Voyage AI](https://blog.voyageai.com/2024/05/30/semantic-search-with-milvus-lite-and-voyage-ai/), [Ragas](https://milvus.io/docs/integrate_with_ragas.md), [Jina AI](https://milvus.io/docs/integrate_with_jina.md), [DSPy](https://dspy-docs.vercel.app/docs/deep-dive/retrieval_models_clients/MilvusRM), [BentoML](https://www.bentoml.com/blog/building-a-rag-app-with-bentocloud-and-milvus-lite), [WhyHow](https://chiajy.medium.com/70873c7576f1), [Relari AI](https://blog.relari.ai/case-study-using-synthetic-data-to-benchmark-rag-systems-be324904ace1), [Airbyte](https://docs.airbyte.com/integrations/destinations/milvus), [HuggingFace](https://milvus.io/docs/integrate_with_hugging-face.md) and [MemGPT](https://memgpt.readme.io/docs/storage#milvus). Thanks to their extensive tooling and services, these integrations simplify the development of AI applications with vector search capability.
+In addition to introducing Milvus Lite to make vector search easy to start with, Milvus also integrates with many frameworks and providers of the AI development stack, including [LangChain](https://python.langchain.com/v0.2/docs/integrations/vectorstores/milvus/), [LlamaIndex](https://docs.llamaindex.ai/en/stable/examples/vector_stores/MilvusIndexDemo/), [Haystack](https://haystack.deepset.ai/integrations/milvus-document-store), [Voyage AI](https://milvus.io/docs/integrate_with_voyageai.md), [Ragas](https://milvus.io/docs/integrate_with_ragas.md), [Jina AI](https://milvus.io/docs/integrate_with_jina.md), [DSPy](https://dspy-docs.vercel.app/docs/deep-dive/retrieval_models_clients/MilvusRM), [BentoML](https://www.bentoml.com/blog/building-a-rag-app-with-bentocloud-and-milvus-lite), [WhyHow](https://chiajy.medium.com/70873c7576f1), [Relari AI](https://blog.relari.ai/case-study-using-synthetic-data-to-benchmark-rag-systems-be324904ace1), [Airbyte](https://docs.airbyte.com/integrations/destinations/milvus), [HuggingFace](https://milvus.io/docs/integrate_with_hugging-face.md) and [MemGPT](https://memgpt.readme.io/docs/storage#milvus). Thanks to their extensive tooling and services, these integrations simplify the development of AI applications with vector search capability.
 
 And this is just the beginning—many more exciting integrations are coming soon! Stay tuned! 
 
