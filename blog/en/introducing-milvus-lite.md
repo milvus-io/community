@@ -3,7 +3,7 @@ id: introducing-milvus-lite.md
 title: 'Introducing Milvus Lite: Start Building a GenAI Application in Seconds'
 author: Jiang Chen
 date: 2024-05-30
-cover: assets.zilliz.com/1_10011_283380bc9b.png
+cover: assets.zilliz.com/introducing_Milvus_Lite_76ed4baf75.jpeg
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, GenAI developers, Retrieval Augmented Generation, RAG 
 recommend: true
@@ -48,7 +48,7 @@ For scalability, an AI application developed with Milvus Lite can easily transit
 
 ## Integration with AI Development Stack
 
-In addition to introducing Milvus Lite to make vector search easy to start with, Milvus also integrates with many frameworks and providers of the AI development stack, including [LangChain](https://python.langchain.com/v0.2/docs/integrations/vectorstores/milvus/), [LlamaIndex](https://docs.llamaindex.ai/en/stable/examples/vector_stores/MilvusIndexDemo/), [Haystack](https://haystack.deepset.ai/integrations/milvus-document-store), [Voyage AI](https://milvus.io/docs/integrate_with_voyageai.md), [Ragas](https://milvus.io/docs/integrate_with_ragas.md), [Jina AI](https://milvus.io/docs/integrate_with_jina.md), [DSPy](https://dspy-docs.vercel.app/docs/deep-dive/retrieval_models_clients/MilvusRM), [BentoML](https://www.bentoml.com/blog/building-a-rag-app-with-bentocloud-and-milvus-lite), [WhyHow](https://chiajy.medium.com/70873c7576f1), [Relari AI](https://blog.relari.ai/case-study-using-synthetic-data-to-benchmark-rag-systems-be324904ace1), [Airbyte](https://docs.airbyte.com/integrations/destinations/milvus), [HuggingFace](https://milvus.io/docs/integrate_with_hugging-face.md) and [MemGPT](https://memgpt.readme.io/docs/storage#milvus). Thanks to their extensive tooling and services, these integrations simplify the development of AI applications with vector search capability.
+In addition to introducing Milvus Lite to make vector search easy to start with, Milvus also integrates with many frameworks and providers of the AI development stack, including [LangChain](https://python.langchain.com/v0.2/docs/integrations/vectorstores/milvus/), [LlamaIndex](https://docs.llamaindex.ai/en/stable/examples/vector_stores/MilvusIndexDemo/), [Haystack](https://haystack.deepset.ai/integrations/milvus-document-store), [Voyage AI](https://blog.voyageai.com/2024/05/30/semantic-search-with-milvus-lite-and-voyage-ai/), [Ragas](https://milvus.io/docs/integrate_with_ragas.md), [Jina AI](https://jina.ai/news/implementing-a-chat-history-rag-with-jina-ai-and-milvus-lite/), [DSPy](https://dspy-docs.vercel.app/docs/deep-dive/retrieval_models_clients/MilvusRM), [BentoML](https://www.bentoml.com/blog/building-a-rag-app-with-bentocloud-and-milvus-lite), [WhyHow](https://chiajy.medium.com/70873c7576f1), [Relari AI](https://blog.relari.ai/case-study-using-synthetic-data-to-benchmark-rag-systems-be324904ace1), [Airbyte](https://docs.airbyte.com/integrations/destinations/milvus), [HuggingFace](https://milvus.io/docs/integrate_with_hugging-face.md) and [MemGPT](https://memgpt.readme.io/docs/storage#milvus). Thanks to their extensive tooling and services, these integrations simplify the development of AI applications with vector search capability.
 
 And this is just the beginning—many more exciting integrations are coming soon! Stay tuned! 
 
