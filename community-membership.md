@@ -15,7 +15,7 @@ Milvus.  The [Maintainers](https://github.com/milvus-io/milvus/blob/master/OWNER
 
 ### Contributors
 Contributors are individuals who actively make contribution and are willing to participate in the code review of new contributions. They can have
-issues and PRs assigned to them, participate in discussion through GitHub and slack, and pre-submit tests are automatically run for their PRs. 
+issues and PRs assigned to them, participate in discussion through GitHub and Discord, and pre-submit tests are automatically run for their PRs. 
 
 **Defined by:** Github all contributor list
 
@@ -23,10 +23,10 @@ issues and PRs assigned to them, participate in discussion through GitHub and sl
 - Have made at least one contribution to the project or community.  Contribution may include, but is not limited to:
     - Authoring or reviewing PRs on GitHub. At least one PR must be **merged**.
     - Filing or commenting on issues on GitHub
-    - Contributing to community discussions (e.g. meetings, Slack, github discussion)
+    - Contributing to community discussions (e.g. meetings, Discord, github discussion)
     - Improve docs
   
-- Subscribed to the community [slack](milvusio.slack.com)
+- Subscribed to the community [Discord](https://discord.gg/FG6hMJStWu)
 - Have read the [contributor guide](https://github.com/milvus-io/community/blob/master/CONTRIBUTING.md)
 - Actively contributing to 1 or more milvus related repos.
 
@@ -57,7 +57,7 @@ engineering principles and they should practice the community core values and gu
 #### Responsibilities and privileges
 - Expected to be responsive to review pull requests
 - Expected to assign issues and prs to related expertise
-- Expected to be responsive to mentions of others on github and slack
+- Expected to be responsive to mentions of others on github and Discord
 - Expected to join the community meetings and activities in time
 - Committer status may be a precondition to accepting large code contributions
 - Mentor and guide new contributors
