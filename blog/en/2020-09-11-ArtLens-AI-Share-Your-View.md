@@ -4,14 +4,13 @@ title: ArtLens AI Share Your View
 author: Anna Faxon and Haley Kedziora
 date: 2020-09-11 06:55:00.939+00
 desc: Artificial Intelligence Offers a New Way to Find Your View in the CMA Collection
-cover: assets.zilliz.com/blog_artlens_dc759fff70.jpg
+cover: assets.zilliz.com/Blog_Art_Lens_AI_1_a7b1054511.jpeg 
 tag: Scenarios
 canonicalUrl: https://zilliz.com/blog/ArtLens-AI-Share-Your-View
 ---
   
 # ArtLens AI: Share Your View
 ![Blog_ArtLens AI_ 1.jpeg](https://assets.zilliz.com/Blog_Art_Lens_AI_1_a7b1054511.jpeg "Cover image.")
-
 
 <br/>
 
