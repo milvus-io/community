@@ -52,7 +52,7 @@ Milvus Lite is ideal for rapid prototyping and local development, offering suppo
 
 - [Github Repository](https://github.com/milvus-io/milvus-lite/)
 
-- [Google Colab Example](https://github.com/milvus-io/milvus-lite/blob/main/examples/example.ipynb)
+- [Google Colab Example](https://github.com/milvus-io/milvus-lite/tree/main/examples)
 
 - [Getting Started Video](https://www.youtube.com/watch?v=IgJdrGiB5ZY)
 

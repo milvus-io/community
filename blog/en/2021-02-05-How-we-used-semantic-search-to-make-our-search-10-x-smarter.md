@@ -3,7 +3,7 @@ id: How-we-used-semantic-search-to-make-our-search-10-x-smarter.md
 title: How we used semantic search to make our search 10x smarter
 author: Rahul Yadav
 date: 2021-02-05 06:27:15.076+00
-desc: null
+desc: Tokopedia used Milvus to build a 10x smarter search system that has dramatically enhanced the user experience.
 cover: assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_1_a7bac91379.jpeg
 tag: Scenarios
 canonicalUrl: https://zilliz.com/blog/How-we-used-semantic-search-to-make-our-search-10-x-smarter

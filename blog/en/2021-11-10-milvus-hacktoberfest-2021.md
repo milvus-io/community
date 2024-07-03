@@ -56,7 +56,7 @@ During Hacktoberfest this year, the Milvus project repositories saw **44 pull re
 
 **🚀  Bootcamp**
 
-- [Enhancement Jupyter Notebook tutorial for image hash search ](https://github.com/milvus-io/bootcamp/pull/858)by [generalZman](https://github.com/generalZman)
+- [Enhancement Jupyter Notebook tutorial for image hash search ](https://github.com/milvus-io/bootcamp/pull/858)by [generalZman](https://github.com/zamanmub)
 - [fix the TOPK bug of reverse_image_search](https://github.com/milvus-io/bootcamp/pull/792) by [RafaelDSS](https://github.com/RafaelDSS)
 
 
@@ -81,7 +81,7 @@ You are more than welcome to share your experience of Milvus Hacktoberfest 2021 
 
 ### **👩‍💻** **Code & Documentation**
 
-If you have limited knowledge of Milvus, you can get familiar with how the community works first by contributing to [pymilvus](https://github.com/milvus-io/pymilvus/labels/Hacktoberfest) or [docs](https://github.com/milvus-io/milvus-docs) repos. You can also look for tags such as **#goodfirstissue** or **#helpwanted**. 
+If you have limited knowledge of Milvus, you can get familiar with how the community works first by contributing to [pymilvus](https://github.com/milvus-io/pymilvus) or [docs](https://github.com/milvus-io/milvus-docs) repos. You can also look for tags such as **#goodfirstissue** or **#helpwanted**. 
 
 ![img](https://assets.zilliz.com/h4_f18c9b6c2c.png "Good first issue.")
 

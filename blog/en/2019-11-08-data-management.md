@@ -3,7 +3,7 @@ id: 2019-11-08-data-management.md
 title: Managing Data in Massive-Scale Vector Search Engine
 author: Yihua Mo
 date: 2019-11-08
-desc:
+desc: This post introduces the data management strategy in Milvus. 
 
 cover:
 tag: Engineering

@@ -8,6 +8,7 @@ date: 2023-04-22
 cover: assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
+desc: what is new with Milvus 2.2 to 2.2.6
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.md
 ---

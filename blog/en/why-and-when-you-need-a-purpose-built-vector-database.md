@@ -6,6 +6,7 @@ date: 2023-08-29
 cover: assets.zilliz.com/Why_you_need_a_real_vector_database2_20230830_075505_1_4b32582c87.png
 tag: Engineering
 tags: Vector Database, AI, Artificial Intelligence, Machine Learning, Milvus, LLM, Large Language Models, Embeddings, Vector search, Vector similarity search
+desc: This post provides an overview of vector search and its functioning, compare different vector search technologies, and explain why opting for a purpose-built vector database is crucial.
 recommend: true
 canonicalUrl: https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/ 
 ---

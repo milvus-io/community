@@ -12,17 +12,7 @@ canonicalUrl: https://zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for
 # Making With Milvus: AI-Infused Proptech for Personalized Real Estate Search
 Artificial intelligence (AI) has [powerful applications](https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#d62b) in real estate that are transforming the home search process. Tech savvy real estate professionals have been taking advantage of AI for years, recognizing its ability to help clients find the right home faster and simplify the process of purchasing property. The coronavirus pandemic has [accelerated](https://www.pwc.com/ca/en/industries/real-estate/emerging-trends-in-real-estate-2021/shifting-landscape-proptech.html) interest, adoption, and investement in property technology (or proptech) worldwide, suggesting it will play an increasingly greater role in the real estate industry moving forward. 
 
-This article explores how Beike used vector similarity search to build a house hunting platform that provides personalized results and recommends listings in near real-time.
-
-**Jump to:**
-
-- [What is vector similarity search?](#what-is-vector-similarity-search)
-
-- [How does Milvus manage vector data?](#how-does-milvus-manage-vector-data)
-
-- [How does Beike use Milvus to make house hunting smarter?](#how-does-beike-use-milvus-to-make-house-hunting-smarter)
-
-<br/>
+This article explores how [Beike](https://bj.ke.com/) used vector similarity search to build a house hunting platform that provides personalized results and recommends listings in near real-time.
 
 ### What is vector similarity search?
 
@@ -49,7 +39,7 @@ Milvus was built specifically for large-scale vector data management, and has ap
 
 ### How does Beike use Milvus to make house hunting smarter?
 
-Commonly described as China's answer to Zillow, [Beike](https://bj.ke.com/) is an online platform that allows real estate agents to list properties for rent or sale. To help improve the home search experience for house hunters, and to help agents close deals faster, the company built an AI-powered search engine for its listing database. Beike’s real estate listing database was converted into feature vectors then fed into Milvus for indexing and storage. Milvus is then used to conduct similarity search based on an input listing, search criteria, user profile, or other criteria.
+Commonly described as China's answer to Zillow, Beike is an online platform that allows real estate agents to list properties for rent or sale. To help improve the home search experience for house hunters, and to help agents close deals faster, the company built an AI-powered search engine for its listing database. Beike’s real estate listing database was converted into feature vectors then fed into Milvus for indexing and storage. Milvus is then used to conduct similarity search based on an input listing, search criteria, user profile, or other criteria.
 
 For example, when searching for more homes similar to a given listing, features such as floor plan, size, orientation, interior finishings, paint colors, and more are extracted. Since the original database of property listings listing data has been [indexed](https://medium.com/unstructured-data-service/how-to-choose-an-index-in-milvus-4f3d15259212), searches can be conducted in mere milliseconds. Beike’s final product had an average query time of 113 milliseconds on a dataset containing over 3 million vectors. However, Milvus is capable of maintaining efficient speeds on trillion-scale datasets—making light work of this relatively small real estate database. In general, the system follows the following process:
 

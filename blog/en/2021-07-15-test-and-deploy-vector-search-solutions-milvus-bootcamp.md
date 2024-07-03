@@ -48,7 +48,7 @@ The notebooks contain a simple example of deploying Milvus to solve the problem 
 
 Image similarity search is one of the core ideas behind many different technologies, including autonomous cars recognizing objects. This example explains how to easily build computer vision programs with Milvus.
 
-This [notebook](https://github.com/milvus-io/bootcamp/blob/master/solutions/reverse_image_search/reverse_image_search.ipynb) revolves around three things:
+This notebookrevolves around three things:
 
 - Milvus server
 - Redis server (for metadata storage)

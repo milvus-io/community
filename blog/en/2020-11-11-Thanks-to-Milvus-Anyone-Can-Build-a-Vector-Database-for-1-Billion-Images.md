@@ -89,5 +89,5 @@ If you would like to learn more about Milvus visit our [website](https://milvus.
 
 Want more information about building an image search system? Check out this case study:
 
-- [The Journey to Optimizing Billion-scale Image Search (1/2)](https://dzone.com/articles/the-journey-to-optimize-billion-scale-image-search)
+- [The Journey to Optimizing Billion-scale Image Search (1/2)](https://medium.com/vector-database/the-journey-to-optimize-billion-scale-image-search-part-1-a270c519246d)
 - [The Journey to Optimizing Billion-scale Image Search (2/2)](https://medium.com/unstructured-data-service/the-journey-to-optimizing-billion-scale-image-search-2-2-572a36d5d0d)
