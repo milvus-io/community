@@ -158,8 +158,6 @@ Milvus_CLI is not limited to the preceding functions. Run `help` to view all com
 
 **See also:**
 
-[Milvus_CLI Command Reference](https://github.com/zilliztech/milvus_cli/blob/main/doc/en/cli_commands.md) on GitHub
-
 [Milvus_CLI Command Reference](https://milvus.io/docs/v2.0.x/cli_commands.md) under Milvus Docs
 
 We hope Milvus_CLI could help you easily use the Milvus vector database. We will keep optimizing Milvus_CLI and your contributions are welcome.

@@ -73,7 +73,7 @@ When designing a database system, the commit order of logs and state machines sh
 
 ### Pros and cons
 
-Indeed, Raft, [ZAB](https://marcoserafini.github.io/papers/zab.pdf), and [quorum-based log protocol](https://aws.amazon.com/blogs/database/amazon-aurora-under-the-hood-quorum-and-correlated-failure/) in Aurora are all Paxos variations. Consensus-based replication has the following advantages:
+Indeed, Raft, ZAB, and [quorum-based log protocol](https://aws.amazon.com/blogs/database/amazon-aurora-under-the-hood-quorum-and-correlated-failure/) in Aurora are all Paxos variations. Consensus-based replication has the following advantages:
 
 1. Though consensus-based replication focus more on consistency and network partition in the CAP theorem, it provides relatively better availability compared to traditional leader-follower replication. 
 2. Raft is a breakthrough that greatly simplified consensus-based algorithms. And there are many open-source Raft libraries on GitHub (Eg. [sofa-jraft](https://github.com/sofastack/sofa-jraft)).

@@ -9,6 +9,7 @@ cover: assets.zilliz.com/Ingesting_Chaos_20231017_110103_54fe2009cb.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Retrieval Augmented Generation, RAG, Unstructured Data
 recommend: true
+desc: With technologies like VectorFlow and Milvus, the team can efficiently test across different environments while complying with privacy and security requirements.
 canonicalUrl: https://milvus.io/blog/Ingesting-Chaos-MLOps-Behind-Handling-Unstructured-Data-Reliably-at-Scale-for-RAG.md
 ---
 

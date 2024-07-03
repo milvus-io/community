@@ -31,7 +31,7 @@ To share the joy, we've put together a list of critical topics from the broader 
 
 ### NoticeAI
 
-[NoticeAI](https://www.noticeai.com/) helps companies automate their customer support process. It utilizes Milvus and LangChain to track customer support questions, update the knowledge base, and decide whether or not to involve a human.
+NoticeAI helps companies automate their customer support process. It utilizes Milvus and LangChain to track customer support questions, update the knowledge base, and decide whether or not to involve a human.
 
 ### Search.anything.io 
 

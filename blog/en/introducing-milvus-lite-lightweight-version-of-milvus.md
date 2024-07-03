@@ -9,6 +9,7 @@ desc: Experience the speed and efficiency of Milvus Lite, the lightweight varian
 cover: assets.zilliz.com/introducing_Milvus_Lite_7c0d0a1174.jpeg
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
+desc: Based on the open-source Milvus, Milvus Lite reuses the core components for vector indexing and query parsing while removing elements designed for high scalability in distributed systems. 
 recommend: true
 canonicalUrl: https://milvus.io/blog/introducing-milvus-lite-lightweight-version-of-milvus.md
 ---
@@ -189,7 +190,7 @@ $ milvus-server --proxy-port 19531
 $ milvus-server --extra-config dataCoord.segment.maxSize=1024
 ```
 
-All configurable items are in [the `config.yaml` template](https://github.com/milvus-io/milvus-lite/blob/main/src/milvus/data/config.yaml.template) shipped with the Milvus package. 
+All configurable items are in the `config.yaml` template shipped with the Milvus package. 
 
 For more technical details on how to install and configure Milvus Lite, see our [documentation](https://milvus.io/docs/milvus_lite.md#Prerequisites). 
 

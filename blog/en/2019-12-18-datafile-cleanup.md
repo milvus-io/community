@@ -3,7 +3,7 @@ id: 2019-12-18-datafile-cleanup.md
 title: Improvements of the Data File Cleanup Mechanism
 author: Yihua Mo
 date: 2019-12-18
-desc:
+desc: We improved the file delete strategy to fix the query operation related issues. 
 
 cover:
 tag: Engineering

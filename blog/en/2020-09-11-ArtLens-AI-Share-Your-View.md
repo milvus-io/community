@@ -10,7 +10,6 @@ canonicalUrl: https://zilliz.com/blog/ArtLens-AI-Share-Your-View
 ---
   
 # ArtLens AI: Share Your View
-![Blog_ArtLens AI_ 1.jpeg](https://assets.zilliz.com/Blog_Art_Lens_AI_1_a7b1054511.jpeg "Cover image.")
 
 <br/>
 
@@ -48,7 +47,7 @@ ArtLens AI: Share Your View can help students, teachers, and parents feeling dra
 
 <br/>
 
-Since the launch of [ARTLENS Gallery](https://www.clevelandart.org/artlens-gallery/about) in 2012, the CMA has been a leader in creating digital connections to art. This year we have added many [new curator videos](https://www.clevelandart.org/home-where-art-video-series) for online viewing and created the [ArtLens for Slack app](https://www.clevelandart.org/artlens-for-slack) so workplaces can share a daily moment of discussion and interaction centered around artwork in the museum’s [Open Access](https://www.clevelandart.org/open-access) collection. We hope the new AI feature will help you find yourself in some surprising and inspiring places inside some of the most beautiful art in the world.
+Since the launch of [ARTLENS Gallery](https://www.clevelandart.org/artlens-gallery) in 2012, the CMA has been a leader in creating digital connections to art. This year we have added many [new curator videos](https://www.clevelandart.org/home-where-art-video-series) for online viewing and created the [ArtLens for Slack app](https://www.clevelandart.org/artlens-for-slack) so workplaces can share a daily moment of discussion and interaction centered around artwork in the museum’s [Open Access](https://www.clevelandart.org/open-access) collection. We hope the new AI feature will help you find yourself in some surprising and inspiring places inside some of the most beautiful art in the world.
 
 ![Blog_ArtLens AI_ 6.png](https://assets.zilliz.com/Blog_Art_Lens_AI_6_36d8922e8c.png "Right: [The Acropolis of Athens: Western Portico of the Parthenon](https://www.clevelandart.org/art/1993.34), 1882. William James Stillman (American, 1828–1901). Albumen print from gelatin dry plate negative; image: 38.2 x 36.7 cm. The Cleveland Museum of Art, John L. Severance Fund, 1993.34. Image courtesy of the Cleveland Museum of Art.")
 

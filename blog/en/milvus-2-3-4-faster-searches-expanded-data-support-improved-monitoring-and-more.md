@@ -6,6 +6,7 @@ date: 2024-01-12
 cover: assets.zilliz.com/What_is_new_in_Milvus_2_3_4_1847b0fa8a.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, Vector Search
+desc: introducing Milvus 2.3.4 new features and improvements
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
 ---

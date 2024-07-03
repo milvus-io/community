@@ -3,7 +3,7 @@ id: 2019-12-24-view-metadata.md
 title: Milvus Metadata Management (1) How to View Metadata
 author: Yihua Mo
 date: 2019-12-24
-desc:
+desc: Milvus supports metadata storage in SQLite or MySQL. This post introduces how to view metadata With SQLite and MySQL. 
 
 cover:
 tag: Engineering

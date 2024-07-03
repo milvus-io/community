@@ -26,7 +26,7 @@ This article aims to introduce the mechanism behind that enables changing log le
 
 The Milvus vector database adopts the [zap](https://github.com/uber-go/zap) logger open sourced by Uber. As one the most powerful log components in the Go language ecosystem, zap incorporates an [http_handler.go](https://github.com/uber-go/zap/blob/master/http_handler.go) module so that you can view the current log level and dynamically change the log level via an HTTP interface.
 
-Milvus listens the HTTP service provided by the `9091` port. Therefore, you can access the `9091` port to take advantage such features as performance debugging, metrics, health checks. Similarly, the `9091` port is reused to enable dynamic log level modification and a `/log/level` path is also added to the port. See the[ log interface PR](https://github.com/milvus-io/milvus/pull/18430) or the [source code](https://github.com/milvus-io/milvus/blob/master/internal/log/log.go#L69-L73) for more information.
+Milvus listens the HTTP service provided by the `9091` port. Therefore, you can access the `9091` port to take advantage such features as performance debugging, metrics, health checks. Similarly, the `9091` port is reused to enable dynamic log level modification and a `/log/level` path is also added to the port. See the[ log interface PR](https://github.com/milvus-io/milvus/pull/18430) for more information.
 
 ## How to dynamically change log levels
 
