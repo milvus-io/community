@@ -38,8 +38,7 @@ In the following sections, we’ll demonstrate three practical examples of using
 You must install the `pymilvus` client with the `model` package to use embedding and reranking functions with Milvus. 
 
 ```
-pip install pymilvus[model]
-# Use "pip install 'pymilvus[model]'" for zsh.
+pip install "pymilvus[model]"
 ```
 
 This step will install [Milvus Lite](https://milvus.io/docs/quickstart.md), allowing you to run Milvus locally within your Python application. It also includes the model subpackage, which includes all utilities for Embedding and reranking.
