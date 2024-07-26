@@ -26,7 +26,7 @@ Check out the details [here](https://discuss.milvus.io/t/join-hacktoberfest-2021
 
 ## Contribute, get noticed & earn swag
 
-![swag](../assets/swag.jpeg "Milvus swags.")
+![swag](https://assets.zilliz.com/swag_cae44023e8.png)
 
 Certainly contributing to open source, or the concept of open source, is in esence an embodiment of altruism, but some cool swag doesn't hurt. We have up for grabs exclusive stickers, t-shirts, keyboards and a drone too! Check out the details on our [forum page](https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#prizes-8).
 
