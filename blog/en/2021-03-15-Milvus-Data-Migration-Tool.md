@@ -11,6 +11,28 @@ canonicalUrl: https://zilliz.com/blog/Milvus-Data-Migration-Tool
 
 # Introducing Milvus Data Migration Tool
 
+
+***Important Note**: The Mivus Data Migration Tool has been deprecated. For data migration from other databases to Milvus, we recommend that you use the more advanced Milvus-migration Tool.*
+
+The Milvus-migration tool currently supprots: 
+
+- Elasticsearch to Milvus 2.x
+- Faiss to Milvus 2.x
+- Milvus 1.x to Milvus 2.x
+- Milvus 2.3.x to Milvus 2.3.x or above
+
+We will support migration from more vector data sources such as Pinecone, Chroma, and Qdrant. Stay tuned. 
+
+**For more information, see the [Milvus-migration documentation](https://milvus.io/docs/migrate_overview.md) or its [GitHub repository](https://github.com/zilliztech/milvus-migration).**
+
+
+
+--------------------------------- **Mivus Data Migration Tool has been deprecated** ----------------------
+
+
+
+
+
 ### Overview
 
 [MilvusDM](https://github.com/milvus-io/milvus-tools) (Milvus Data Migration) is an open-source tool designed specifically for importing and exporting data files with Milvus. MilvusDM can greatly improve data mangement efficiency and reduce DevOps costs in the following ways:
