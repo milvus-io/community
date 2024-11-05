@@ -73,7 +73,7 @@ Popular Matryoshka embedding models include: 
 
 - Alibaba’s [`gte-multilingual-base`](https://huggingface.co/Alibaba-NLP/gte-multilingual-base)
 
-For a complete guide on using Matryoshka embeddings with Milvus, see the notebook _Funnel Search with Matryoshka Embeddings_ (coming soon).
+For a complete guide on using Matryoshka embeddings with Milvus, see the notebook _[Funnel Search with Matryoshka Embeddings](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/funnel_search_with_matryoshka.ipynb)_.
 
 
 ## Summary
@@ -87,7 +87,7 @@ Ready to streamline your search capabilities? Get started with Milvus + Matryosh
 
 ## Resources
 
-- Notebook: Store and Retrieve Matryoshka embedding with Milvus （coming soon）
+- Notebook: [Funnel Search with Matryoshka Embeddings](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/funnel_search_with_matryoshka.ipynb) 
 
 - Paper: [Matryoshka Representation Learning](https://arxiv.org/abs/2205.13147)
 
