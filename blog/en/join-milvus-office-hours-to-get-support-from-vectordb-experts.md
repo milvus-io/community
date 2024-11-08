@@ -1,5 +1,5 @@
 ---
-id: join-milvus-office-hours-to-get-support-from-vectordb-experts
+id: join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 title: Join Milvus Office Hours to Get Support from Vector DB Experts!
 author: Emily Kurze
 date: 2024-11-08
