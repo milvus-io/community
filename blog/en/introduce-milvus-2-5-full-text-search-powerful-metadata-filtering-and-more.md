@@ -13,7 +13,7 @@ canonicalUrl: https://milvus.io/blog/introduce-milvus-2-5-full-text-search-power
 
 ## Overview
 
-We are thrilled to present the latest version of Milvus, 2.5, which introduces a powerful new capability: _[full-text search](https://milvus.io/docs/full-text-search.md#Full-Text-Search), also known as lexical or keyword search. If you are new to search, full-text search allows you to find documents by searching for specific words or phrases within them, similar to how you search in Google. This complements our existing semantic search capabilities, which understand the meaning behind your search rather than just matching exact words.
+We are thrilled to present the latest version of Milvus, 2.5, which introduces a powerful new capability: [full-text search](https://milvus.io/docs/full-text-search.md#Full-Text-Search), also known as lexical or keyword search. If you are new to search, full-text search allows you to find documents by searching for specific words or phrases within them, similar to how you search in Google. This complements our existing semantic search capabilities, which understand the meaning behind your search rather than just matching exact words.
 
 We use the industry-standard BM25 metric for document similarity, and our implemention is based on sparse vectors, allowing for more efficient storage and retrieval. For those unfamiliar with the term, sparse vectors are a way to represent text where most values are zero, making them very efficient to store and process—imagine a huge spreadsheet where only a few cells contain numbers, and the rest are empty. This approach fits well into Milvus's product philosophy where the vector is the core search entity.
 
