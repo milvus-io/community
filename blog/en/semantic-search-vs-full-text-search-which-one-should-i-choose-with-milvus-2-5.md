@@ -1,6 +1,6 @@
 ---
 id: semantic-search-vs-full-text-search-which-one-should-i-choose-with-milvus-2-5.md
-title: 'Semantic Search v.s. Full-Text Search: Which Do I Choose in Milvus 2.5?'
+title: 'Semantic Search vs. Full-Text Search: Which Do I Choose in Milvus 2.5?'
 author: David Wang, Jiang Chen
 date: 2024-12-17
 cover: assets.zilliz.com/Semantic_Search_v_s_Full_Text_Search_5d93431c56.png
