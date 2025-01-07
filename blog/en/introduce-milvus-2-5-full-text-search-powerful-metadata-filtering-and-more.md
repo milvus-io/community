@@ -153,7 +153,7 @@ Specifically:
 
 1. **BitMap Index** can be used to accelerate tag filtering (common operators include in, array_contains, etc.), and is suitable for scenarios with fewer field category data (data cardinality). The principle is to determine whether a row of data has a certain value on a column, with 1 for yes and 0 for no, and then maintain a BitMap list. The following chart shows the performance test comparison we conducted based on a customer's business scenario. In this scenario, the data volume is 500 million, the data category is 20, different values have different distribution proportions (1%, 5%, 10%, 50%), and the performance under different filtering amounts also varies. With 50% filtering, we can achieve a 6.8-fold performance gain through BitMap Index. It's worth noting that as cardinality increases, compared to BitMap Index, Inverted Index will show more balanced performance. 
 
-![](https://assets.zilliz.com/QPS_comparison_no_index_vs_inverted_index_vs_bitmap_index_377aa1498f.png)
+![](https://assets.zilliz.com/QPS_comparison_f3f580d697.png)
 
 
 2. **Text Match** is based on the Inverted Index after the text field is tokenized. Its performance far exceeds the Wildcard Match (i.e., like + %) function we provided in 2.4. According to our internal test results, the advantages of Text Match are very clear, especially in concurrent query scenarios, where it can achieve up to a 400-fold QPS increase. 
