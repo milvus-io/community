@@ -13,7 +13,7 @@ canonicalUrl: https://milvus.io/blog/semantic-search-vs-full-text-search-which-o
 
 Milvus, a leading high-performance vector database, has long specialized in semantic search using vector embeddings from deep learning models. This technology powers AI applications like Retrieval-Augmented Generation (RAG), search engines, and recommender systems. With the rising popularity of RAG and other text search applications, the community has recognized the advantages of combining traditional text-matching methods with semantic search, known as hybrid search. This approach is particularly beneficial in scenarios that heavily rely on keyword matching. To address this need, Milvus 2.5 introduces full-text search (FTS) functionality and integrates it with the sparse vector search and hybrid search capabilities already available since version 2.4, creating a powerful synergy.
 
-Hybrid search is a method that combines results from multiple search paths. Users can search different data fields in various ways, then merge and rank the results to obtain a comprehensive outcome. In popular RAG scenarios today, a typical hybrid approach combines semantic search with lexical search (also known as full-text search). Specifically, this involves merging results from dense embedding-based semantic search and BM25-based lexical matching using RRF (Reciprocal Rank Fusion) to enhance result ranking.
+Hybrid search is a method that combines results from multiple search paths. Users can search different data fields in various ways, then merge and rank the results to obtain a comprehensive outcome. In popular RAG scenarios today, a typical hybrid approach combines semantic search with full-text search. Specifically, this involves merging results from dense embedding-based semantic search and BM25-based lexical matching using RRF (Reciprocal Rank Fusion) to enhance result ranking.
 
 In this article, we will demonstrate this using a dataset provided by Anthropic, which consists of code snippets from nine code repositories. This resembles a popular use case of RAG: an AI-assisted coding bot. Because code data contains a lot of definitions, keywords, and other information, text-based search can be particularly effective in this context. Meanwhile, dense embedding models trained on large code datasets can capture higher-level semantic information. Our goal is to observe the effects of combining these two approaches through experimentation.
 
@@ -31,12 +31,14 @@ In addition to analyzing the quality on a case-by-case basis, we broadened our e
 
 # Discussion
 
-We examine the specific results retrieved for three different search queries, comparing semantic and full-text search to hybrid search.
+We examine the specific results retrieved for three different search queries, comparing semantic and full-text search to hybrid search. You can also check out [the full code in this repo](https://github.com/wxywb/milvus_fts_exps). 
 
 
 ## Case 1: **Hybrid Search Outperforms Semantic Search**
 
-**Question:** How is the log file created? This question aims to inquire about creating a log file, and the correct answer should be a snippet of Rust code that creates a log file. In the semantic search results, we saw some code introducing the log header file and the C++ code for obtaining the logger. However, the key here is the "logfile" variable. In the hybrid search result #hybrid 0, we found this relevant result, which is naturally from the full-text search since hybrid search merges semantic and full-text search results.
+**Query:** How is the log file created? 
+
+This query aims to inquire about creating a log file, and the correct answer should be a snippet of Rust code that creates a log file. In the semantic search results, we saw some code introducing the log header file and the C++ code for obtaining the logger. However, the key here is the "logfile" variable. In the hybrid search result #hybrid 0, we found this relevant result, which is naturally from the full-text search since hybrid search merges semantic and full-text search results.
 
 In addition to this result, we can find unrelated test mock code in #hybrid 2, especially the repeated phrase, "long string to test how those are handled." This requires understanding the principles behind the BM25 algorithm used in full-text search. Full-text search aims to match more infrequent words (since common words reduce the distinctiveness of the text and hinder object discrimination). Suppose we perform a statistical analysis on a large corpus of natural text. In that case, it is easy to conclude that "how" is a very common word and contributes very little to the relevance score. However, in this case, the dataset consists of code, and there aren't many occurrences of the word "how" in the code, making it a key search term in this context.
 
@@ -324,7 +326,9 @@ std::vector<std::string> MakeStrings() {
 
 ## Case 2: Hybrid Search Outperforms Full-Text Search
 
-**Question:** How do you initialize the logger? This question is quite similar to the previous one, and the correct answer is also the same code snippet, but in this case, hybrid search found the answer (via semantic search), while full-text search did not. The reason for this discrepancy lies in the statistical weightings of words in the corpus, which do not align with our intuitive understanding of the question. The model failed to recognize that the match for the word "how" was not as important here. The word "logger" appeared more frequently in the code than "how," which led to "how" becoming more significant in the full-text search ranking.
+**Query:** How do you initialize the logger? 
+
+This query is quite similar to the previous one, and the correct answer is also the same code snippet, but in this case, hybrid search found the answer (via semantic search), while full-text search did not. The reason for this discrepancy lies in the statistical weightings of words in the corpus, which do not align with our intuitive understanding of the question. The model failed to recognize that the match for the word "how" was not as important here. The word "logger" appeared more frequently in the code than "how," which led to "how" becoming more significant in the full-text search ranking.
 
 **GroundTruth**
 
@@ -452,7 +456,6 @@ std::vector<std::string> MakeStrings() {
 
 ```C++
 
-
  ##hybrid 0 0.016393441706895828 
 use {
     crate::args::LogArgs,
@@ -545,7 +548,7 @@ After adding the stopwords to filter out low-information words like "How" and "W
 
 Furthermore, we noticed that hybrid search reduced the number of low-quality matches in the results. In this case, the hybrid search method successfully integrated the semantic search with the full-text search, leading to more relevant results with improved accuracy.
 
-**Question:** How is the RegistryClient instance created in the test methods?
+**Query:** How is the RegistryClient instance created in the test methods?
 
 The hybrid search effectively retrieved the answer related to creating the "RegistryClient" instance, which semantic search alone failed to find. Adding stopwords helped avoid irrelevant results from terms like "How," leading to better-quality matches and fewer low-quality results.
 
