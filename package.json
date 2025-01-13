@@ -1,7 +1,22 @@
 {
+  "scripts": {
+    "translate": "node tools/translate.js",
+    "glossary": "node tools/glossary.js"
+  },
+  "type": "module",
   "dependencies": {
     "axios": "^1.7.4",
     "front-matter": "^4.0.2",
     "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@zilliz/toolkit": "^0.1.9",
+    "dotenv": "^16.4.5",
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.10.0",
+    "jsdom": "^25.0.0",
+    "katex": "^0.16.11",
+    "remarkable": "^2.0.1",
+    "remarkable-katex": "^1.2.1"
   }
 }
