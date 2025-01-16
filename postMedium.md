@@ -1,6 +1,6 @@
-const axios = require("axios");
-const fs = require("fs");
-const fm = require("front-matter");
+import axios from "axios";
+import fs from "fs";
+import fm from"front-matter";
 
 const args = process.argv.slice(2);
 const MEDIUM_POST_API = `https://api.medium.com/v1/publications/${process.env.MEDIUM_PUBLICATION_ID}/posts`;
