@@ -2,6 +2,8 @@ name: Trigger medium publish if new post
 
 on:
   push:
+    paths-ignore:
+      - 'localization/**'
     paths:
       - "blog/**"
     branches:
