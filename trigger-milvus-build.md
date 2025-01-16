@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios";
 
 const token = process.env.GH_TOKEN;
 const publish = async () => {

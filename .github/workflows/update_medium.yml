@@ -51,4 +51,4 @@ jobs:
         run: |
           mv postMedium.md postMedium.js
           yarn
-          node postMedium.js $(echo "$FILES" | grep -v "localization/")
+          node postMedium.js $FILES
