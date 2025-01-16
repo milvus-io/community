@@ -2,8 +2,6 @@ name: Trigger medium publish if new post
 
 on:
   push:
-    paths-ignore:
-      - 'localization/**'
     paths:
       - "blog/**"
     branches:
@@ -53,4 +51,4 @@ jobs:
         run: |
           mv postMedium.md postMedium.js
           yarn
-          node postMedium.js $FILES
+          node postMedium.js $(echo "$FILES" | grep -v "^localization/")
