@@ -1,422 +1,368 @@
 ---
 id: how-to-get-started-with-milvus.md
-title: 
- > 
- How to Get Started with Milvus
-author: Eric Goebelbecker
-date: 2023-05-18
+title: How to Get Started with Milvus
+author: Ruben Winastwan
+date: 2025-01-17
 cover: assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
-recommend: true
+recommend: false
 canonicalUrl: https://milvus.io/blog/how-to-get-started-with-milvus.md
 ---
 
 ![How to get started with Milvus](https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png)
 
+**_Last updated January 2025_**
 
-As the volume and complexity of information grow, so does the need for tools to store and search large-scale, unstructured datasets. [Milvus](https://github.com/milvus-io/milvus) is an open-source vector database that efficiently handles complex unstructured data like images, audio, and text. It's a popular choice for applications that need high-speed and scalable access to vast data collections. 
+The advancements in Large Language Models ([LLMs](https://zilliz.com/glossary/large-language-models-(llms))) and the increasing volume of data necessitate a flexible and scalable infrastructure to store massive amounts of information, such as a database. However, [traditional databases](https://zilliz.com/blog/relational-databases-vs-vector-databases) are designed to store tabular and structured data, while the information commonly useful for leveraging the power of sophisticated LLMs and information retrieval algorithms is [unstructured](https://zilliz.com/learn/introduction-to-unstructured-data), such as text, images, videos, or audio.
 
-In this post, you'll learn how to install and run Milvus. You'll understand how to run this robust [vector database](https://zilliz.com/learn/what-is-vector-database), setting you on the path to harnessing its full potential for your projects. Whether you're a developer, data scientist, or simply curious about the power of vector similarity search engines, this blog post is the perfect starting point for your journey with [Milvus](https://milvus.io/). 
+[Vector databases](https://zilliz.com/learn/what-is-vector-database) are database systems specifically designed for unstructured data. Not only can we store massive amounts of unstructured data with vector databases, but we can also perform [vector searches](https://zilliz.com/learn/vector-similarity-search) with them. Vector databases have advanced indexing methods such as Inverted File Index (IVFFlat) or Hierarchical Navigable Small World ([HNSW](https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW)) to perform fast and efficient vector search and information retrieval processes.
+
+**Milvus** is an open-source vector database that we can use to leverage all of the beneficial features a vector database can offer. Here are what we’ll cover in this post: 
+
+- [An Overview of Milvus](https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus)
+
+- [Milvus deployment options](https://milvus.io/blog/how-to-get-started-with-milvus.md#Milvus-Deployment-Options) 
+
+- [Getting started with Milvus Lite](https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Lite)
+
+- [Getting started with Milvus Standalone](https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Standalone)
+
+- [Fully Managed Milvus ](https://milvus.io/blog/how-to-get-started-with-milvus.md#Fully-Managed-Milvus)
+
 
 ## What is Milvus?
 
-[Milvus](https://zilliz.com/what-is-milvus) is an open-source vector database designed to handle large-scale unstructured data. It's powered by an advanced indexing system and provides various search algorithms to efficiently handle high-dimensional data such as images, audio, and text. 
+[**Milvus** ](https://milvus.io/docs/overview.md)is an open-source vector database that enables us to store massive amounts of unstructured data and perform fast and efficient vector searches on them. Milvus is highly useful for many popular GenAI applications, such as recommendation systems, personalized chatbots, anomaly detection, image search, natural language processing, and retrieval augmented generation ([RAG](https://zilliz.com/learn/Retrieval-Augmented-Generation)).
 
-Some of the advantages you can expect from leveraging Milvus include the following: 
-1. Improved search efficiency for high-dimensional data
-2. Scalability for handling large-scale datasets
-3. Extensive support for various search algorithms and indexing techniques
-4. A wide range of applications, including image search, natural language processing, recommender systems, anomaly detection, bioinformatics, and audio analysis
+There are several advantages that you can get by using Milvus as a vector database:
 
-## Prerequisites
+- Milvus offers multiple deployment options that you can choose from depending on your use case and the size of the applications you want to build.
 
-To follow this tutorial, you'll need a system installed with the latest version of Docker. This tutorial relies on [Docker Compose](https://docs.docker.com/compose/), which is already included in the most recent version of the Docker runtime. 
+- Milvus supports a diverse array of indexing methods to meet various data and performance needs, including in-memory options like FLAT, IVFFlat, HNSW, and [SCANN](https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google), quantized variants for memory efficiency, the on-disk [DiskANN](https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm) for large datasets, and GPU-optimized indexes such as GPU_CAGRA, GPU_IVF_FLAT, and GPU_IVF_PQ for accelerated, memory-efficient searches. 
 
-To use Milvus, you need to download both the Milvus Python libraries and the command line interface (CLI). Ensure that you have Python version 3.9 or later, and note that the CLI is compatible with Windows, macOS, and Linux. The sample shell commands provided below are for a Linux system but can also be used with macOS or the Windows Subsystem for Linux. 
+- Milvus also offers hybrid search, where we can use a combination of dense embeddings, sparse embeddings, and metadata filtering during vector search operations, leading to more accurate retrieval results. Additionally, [Milvus 2.5](https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md) now supports a hybrid [full-text search](https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md) and vector search, making your retrieval even more accurate. 
 
-The tutorial uses **wget** to download files from GitHub. For macOS, you can install **wget** with [Homebrew](https://brew.sh/), or download the files with your browser. For Windows, you will find **wget** in the Windows Subsystem for Linux (WSL). 
+- Milvus can be fully used on the cloud via [Zilliz Cloud](https://zilliz.com/cloud), where you can optimize its operational costs and vector search speed due to four advanced features: logical clusters, streaming and historical data disaggregation, tiered storage, autoscaling, and multi-tenancy hot-cold separation. 
 
-## Running Milvus Standalone
-### Allocate Additional Memory to Docker
+When using Milvus as your vector database, you can choose three different deployment options, each with its strengths and benefits. We’ll talk about each of them in the next section.
 
-For optimal performance, Milvus requires a minimum of 8GB of available memory. However, Docker usually only allocates 2GB by default. To fix this, go to Settings and click on Resources to [increase the Docker memory](https://docs.docker.com/config/containers/resource_constraints/#memory) in the Docker desktop before running the server.
 
-![The Docker desktop](https://assets.zilliz.com/The_Docker_desktop_a18626750c.png)
+## Milvus Deployment Options
 
-### Download Docker Compose Configuration
+We can choose from four deployment options to start using Milvus: **Milvus Lite, Milvus Standalone, Milvus Distributed, and Zilliz Cloud (managed Milvus).** Each deployment option is designed to suit various scenarios in our use case, such as the size of our data, the purpose of our application, and the scale of our application.
 
-You need three containers to run a Milvus standalone server: 
-- **[etcd](https://etcd.io/)** - a distributed key value store for metadata storage and access
-- **[minio](https://min.io/)** - AWS S3-compatible persistent storage for logs and index files
-- **milvus** - the database server
 
-Rather than configure and run each container individually, you'll use Docker Compose to connect and orchestrate them. 
+### Milvus Lite
 
-1. Create a directory to run the service. 
-2. Download the sample [Docker compose file](https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml) from Github and save it as **docker-compose.yml**. You can also download the file with **wget**. 
+[**Milvus Lite**](https://milvus.io/docs/quickstart.md) is a lightweight version of Milvus and the easiest way for us to get started. In the next section, we'll see how we can run Milvus Lite in action, and all we need to do to get started is to install the Pymilvus library with pip. After that, we can perform most of the core functionalities of Milvus as a vector database. 
 
-```
-$ mkdir milvus_compose
-$ cd milvus_compose
-$ wget https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
---2023-04-10 16:44:13-- https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml
-Resolving github.com (github.com)... 140.82.113.3
-Connecting to github.com (github.com)|140.82.113.3|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/208728772/c319ebef-7bcb-4cbf-82d8-dcd3c54cb3af?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230410%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230410T204413Z&X-Amz-Expires=300&X-Amz-Signature=b26b9b461fd3a92ab17e42e5a68b268b12a56cb07db57cf4db04e38a8e74525a&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=208728772&response-content-disposition=attachment%3B%20filename%3Dmilvus-standalone-docker-compose.yml&response-content-type=application%2Foctet-stream [following]
---2023-04-10 16:44:13-- https://objects.githubusercontent.com/github-production-release-asset-2e65be/208728772/c319ebef-7bcb-4cbf-82d8-dcd3c54cb3af?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230410%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230410T204413Z&X-Amz-Expires=300&X-Amz-Signature=b26b9b461fd3a92ab17e42e5a68b268b12a56cb07db57cf4db04e38a8e74525a&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=208728772&response-content-disposition=attachment%3B%20filename%3Dmilvus-standalone-docker-compose.yml&response-content-type=application%2Foctet-stream
-Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.109.133, ...
-Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.110.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 1356 (1.3K) [application/octet-stream]
-Saving to: ‘docker-compose.yml’
+Milvus Lite is perfect for quick prototyping or learning purposes and can be run in a Jupyter notebook without any complicated setup. In terms of vector storage, Milvus Lite is suitable for storing roughly up to a million vector embeddings. Due to its lightweight feature and storage capacity, Milvus Lite is a perfect deployment option for working with edge devices, such as private documents search engine, on-device object detection, etc.
 
-docker-compose.yml 100%[==========================================================>] 1.32K --.-KB/s in 0s
 
-2023-04-10 16:44:13 (94.2 MB/s) - ‘docker-compose.yml’ saved [1356/1356]
-```
+### Milvus Standalone
 
-Let's look at this configuration before running it. 
+Milvus Standalone is a single-machine server deployment packed in a Docker image. Therefore, all we need to do to get started is to install Milvus in Docker, and then start the Docker container. We'll also see the detailed implementation of Milvus Standalone in the next section.
 
-## Standalone Configuration
+Milvus Standalone is ideal for building and productionizing small to medium-scale applications, as it's able to store up to 10M vector embeddings. Additionally, Milvus Standalone offers high availability through a primary backup mode, making it highly dependable for use in production-ready applications. 
 
-This compose file defines the three services needed for Milvus: **etcd, minio**, and **milvus-standalone**. 
+We can also use Milvus Standalone, for example, after performing quick prototyping and learning Milvus functionalities with Milvus Lite, as both Milvus Standalone and Milvus Lite share the same client-side API.
 
-```
-version: '3.5'
 
-services:
-  etcd:
-    container_name: milvus-etcd
-    image: quay.io/coreos/etcd:v3.5.0
-    environment:
-      - ETCD_AUTO_COMPACTION_MODE=revision
-      - ETCD_AUTO_COMPACTION_RETENTION=1000
-      - ETCD_QUOTA_BACKEND_BYTES=4294967296
-      - ETCD_SNAPSHOT_COUNT=50000
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
-    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+### Milvus Distributed
 
-  minio:
-    container_name: milvus-minio
-    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
-    command: minio server /minio_data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+Milvus Distributed is a deployment option that leverages a cloud-based architecture, where data ingestion and retrieval are handled separately, allowing for a highly scalable and efficient application.
 
-  standalone:
-    container_name: milvus-standalone
-    image: milvusdb/milvus:v2.2.8
-    command: ["milvus", "run", "standalone"]
-    environment:
-      ETCD_ENDPOINTS: etcd:2379
-      MINIO_ADDRESS: minio:9000
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
-    ports:
-      - "19530:19530"
-      - "9091:9091"
-    depends_on:
-      - "etcd"
-      - "minio"
+To run Milvus Distributed, we typically need to use a Kubernetes cluster to allow the container to run on multiple machines and environments. The application of a Kubernetes cluster ensures the scalability and flexibility of Milvus Distributed in customizing the allocated resources depending on demand and workload. This also means that if one part fails, others can take over, ensuring the entire system remains uninterrupted.
 
-networks:
-  default:
-    name: milvus
-```
+Milvus Distributed is able to handle up to tens of billions of vector embeddings and is specially designed for use cases where the data are too big to be stored in a single server machine. Therefore, this deployment option is perfect for Enterprise clients that serve a large user base.
 
-This configuration assigns a volume to **etcd** for persistent data. It defines four environment variables and runs the service with a command line instructing it to listen for requests on port 2379.
+![](https://assets.zilliz.com/Figure_Vector_embedding_storage_capability_of_different_Milvus_deployment_options_e3959ccfcd.png)
 
-The configuration also provides **minio** with a volume and uses default access keys. However, you should create a new **minio** image with unique keys for production use. Also, the configuration includes a health check for **minio**, which restarts the service if it fails. Note that Minio uses port 9000 for client requests by default.
+_Figure: Vector embedding storage capability of different Milvus deployment options._
 
-Finally, there's the **standalone** service that runs Milvus. It also has a volume plus environment variables that direct it to the service ports for **etcd** and **minio**. The last section provides a name for the network the services to share. This makes it easier to identify with monitoring tools. 
+In this article, we're going to show you how to get started with both Milvus Lite and Milvus Standalone, as you can get started quickly with both methods without complicated setup. Milvus Distributed, however, is more complicated to set up. Once we set Milvus Distributed up, the code and logical process to create collections, ingest data, perform vector search, etc. are similar to Milvus Lite and Milvus Standalone, as they share the same client-side API.
 
-## Running Milvus
+In addition to the three deployment options mentioned above, you can also try the managed Milvus on [Zilliz Cloud](https://zilliz.com/cloud) for a hassle-free experience. We'll also talk about Zilliz Cloud later in this article.
 
-Start the service with **docker compose up -d**.
+
+## Getting Started with Milvus Lite
+
+Milvus Lite can be implemented straightaway with Python by importing a library called Pymilvus using pip. Before installing Pymilvus, ensure that your environment meets the following requirements:
+
+- Ubuntu >= 20.04 (x86_64 and arm64)
+
+- MacOS >= 11.0 (Apple Silicon M1/M2 and x86_64)
+
+- Python 3.7 or later
+
+Once these requirements are fulfilled, you can install Milvus Lite and the necessary dependencies for demonstration using the following command:
 
 ```
-$ docker compose up -d
-[*] Running 4/4
-✔ Network milvus               Created          .0s
-✔ Container milvus-minio       Started          .2s
-✔ Container milvus-etcd        Started          .3s
-✔ Container milvus-standalone  Started
+!pip install -U pymilvus
+!pip install "pymilvus[model]"
 ```
 
-Docker **ps** will show three containers running: 
+- `!pip install -U pymilvus`: This command installs or upgrades the `pymilvus` library, the Python SDK of Milvus. Milvus Lite is bunded with PyMilvus, so this single line of code is all you need to install Milvus Lite. 
+
+- `!pip install "pymilvus[model]"`: This command adds advanced features and extra tools pre-integrated with Milvus, including machine learning models like Hugging Face Transformers, Jina AI embedding models, and reranking models.
+
+Here are the steps we're going to follow with Milvus Lite:
+
+1. Transform text data into their embedding representation using an embedding model.
+
+2. Create a schema in our Milvus database to store our text data and their embedding representations.
+
+3. Store and index our data into our schema.
+
+4. Perform a simple vector search on the stored data.
+
+![](https://assets.zilliz.com/Figure_Workflow_of_vector_search_operation_3e38ccc1f4.png)
+
+_Figure: Workflow of vector search operation._
+
+To transform text data into vector embeddings, we'll use an [embedding model](https://zilliz.com/ai-models) from SentenceTransformers called 'all-MiniLM-L6-v2'. This embedding model transforms our text into a 384-dimensional vector embedding. Let's load the model, transform our text data, and pack everything together.
 
 ```
-$ docker ps -a
-CONTAINER ID   IMAGE                                      COMMAND                  CREATED          STATUS                             PORTS                                              NAMES
-eb1caca5d6a5   milvusdb/milvus:v2.2.8                     "/tini -- milvus run…"   21 seconds ago   Up 19 seconds                      0.0.0.0:9091->9091/tcp, 0.0.0.0:19530->19530/tcp   milvus-standalone
-ce19d90d89d0   quay.io/coreos/etcd:v3.5.0                 "etcd -advertise-cli…"   22 seconds ago   Up 20 seconds                      2379-2380/tcp                                      milvus-etcd
-e93e33a882d5   minio/minio:RELEASE.2023-03-20T20-16-18Z   "/usr/bin/docker-ent…"   22 seconds ago   Up 20 seconds (health: starting)   9000/tcp                                           milvus-minio
+from pymilvus import model
+
+docs = [
+    "Artificial intelligence was founded as an academic discipline in 1956.",
+    "Alan Turing was the first person to conduct substantial research in AI.",
+    "Born in Maida Vale, London, Turing was raised in southern England.",
+]
+
+sentence_transformer_ef = model.dense.SentenceTransformerEmbeddingFunction(
+    model_name='all-MiniLM-L6-v2', 
+    device='cpu' 
+)
+
+vectors  = sentence_transformer_ef.encode_documents(docs)
+data = [ {"id": i, "vector": vectors[i], "text": docs[i]} for i in range(len(vectors)) ]
 ```
 
-And, you can check on the Milvus server with **docker logs**: 
+
+Next, let’s create a schema to store all of the data above into Milvus. As you can see above, our data consists of three fields: ID, vector, and text. Therefore, we’re going to create a schema with these three fields.
 
 ```
-$ docker logs milvus-standalone
-2023/04/13 13:40:04 maxprocs: Leaving GOMAXPROCS=4: CPU quota undefined
-    __  _________ _   ____  ______    
-   /  |/  /  _/ /| | / / / / / __/    
-  / /|_/ // // /_| |/ / /_/ /\ \    
- /_/  /_/___/____/___/\____/___/     
+from pymilvus import MilvusClient, DataType, db, connections
 
-Welcome to use Milvus!
-Version:   v2.2.8
-Built:     Wed Mar 29 11:32:15 UTC 2023
-GitCommit: 47e28fbe
-GoVersion: go version go1.18.3 linux/amd64
+schema = MilvusClient.create_schema(
+    auto_id=False,
+    enable_dynamic_field=True,
+)
 
-open pid file: /run/milvus/standalone.pid
-lock pid file: /run/milvus/standalone.pid
-[2023/04/13 13:40:04.976 +00:00] [INFO] [roles/roles.go:192] ["starting running Milvus components"]
-(snipped)
+# Add fields to schema
+schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
+schema.add_field(field_name="vector", datatype=DataType.FLOAT_VECTOR, dim=384)
+schema.add_field(field_name="text", datatype=DataType.VARCHAR, max_length=512)
 ```
 
-Your server is up and running. Now, let's use Python to connect to it. 
 
-## How to Use Milvus
-### Using Milvus with Python
-
-Let's test your database with a Python example program. Start by installing **PyMilvus** with **pip3**: 
+With Milvus Lite, we can easily create a collection on a particular database based on the schema defined above, as well as inserting and indexing the data into the collection in just a few lines of code.
 
 ```
-$ pip3 install pymilvus
-Defaulting to user installation because normal site-packages is not writeable
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-Collecting pymilvus
-  Using cached pymilvus-2.2.6-py3-none-any.whl (133 kB)
-Collecting grpcio<=1.53.0,>=1.49.1
-  Using cached grpcio-1.53.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.9 MB)
-Requirement already satisfied: mmh3>=2.0 in /home/egoebelbecker/.local/lib/python3.11/site-packages (from pymilvus) (3.0.0)
-Requirement already satisfied: ujson>=2.0.0 in /home/egoebelbecker/.local/lib/python3.11/site-packages (from pymilvus) (5.4.0)
-Requirement already satisfied: pandas>=1.2.4 in /home/egoebelbecker/.local/lib/python3.11/site-packages (from pymilvus) (2.0.0)
-Requirement already satisfied: python-dateutil>=2.8.2 in /usr/lib/python3.11/site-packages (from pandas>=1.2.4->pymilvus) (2.8.2)
-Requirement already satisfied: pytz>=2020.1 in /home/egoebelbecker/.local/lib/python3.11/site-packages (from pandas>=1.2.4->pymilvus) (2023.3)
-Requirement already satisfied: tzdata>=2022.1 in /home/egoebelbecker/.local/lib/python3.11/site-packages (from pandas>=1.2.4->pymilvus) (2023.3)
-Requirement already satisfied: numpy>=1.21.0 in /home/egoebelbecker/.local/lib/python3.11/site-packages (from pandas>=1.2.4->pymilvus) (1.24.2)
-Requirement already satisfied: six>=1.5 in /usr/lib/python3.11/site-packages (from python-dateutil>=2.8.2->pandas>=1.2.4->pymilvus) (1.16.0)
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-Installing collected packages: grpcio, pymilvus
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-Successfully installed grpcio pymilvus-2.2.6
+client = MilvusClient("./milvus_demo.db")
+
+index_params = client.prepare_index_params()
+
+#  Add indexes
+index_params.add_index(
+    field_name="vector", 
+    index_type="AUTOINDEX",
+    metric_type="COSINE"
+)
+
+# Create collection
+client.create_collection(
+    collection_name="demo_collection",
+    schema=schema,
+    index_params=index_params
+)
+
+# Insert data into collection
+res = client.insert(
+    collection_name="demo_collection",
+    data=data
+)
 ```
 
-Then, download the [hello_milvus](https://raw.githubusercontent.com/milvus-io/pymilvus/v2.2.6/examples/hello_milvus.py) example program: 
+
+In the code above, we create a collection called "demo_collection" inside a Milvus database named "milvus_demo". Next, we index all of our data into the "demo_collection" that we just created.
+
+Now that we have our data inside the database, we can perform a vector search on them for any given query. Let's say we have a query: "_Who is Alan Turing?_". We can get the most appropriate answer to the query by implementing the following steps:
+
+1. Transform our query into a vector embedding using the same embedding model that we used to transform our data in the database into embeddings.
+
+2. Calculate the similarity between our query embedding and the embedding of each entry in the database using metrics like cosine similarity or Euclidean distance.
+
+3. Fetch the most similar entry as the appropriate answer to our query.
+
+Below is the implementation of the above steps with Milvus:
 
 ```
-$ wget https://raw.githubusercontent.com/milvus-io/pymilvus/v2.2.6/examples/hello_milvus.py
+query = ["Who is Alan Turing"]
+query_embedding = sentence_transformer_ef.encode_queries(query)
+
+# Load collection
+client.load_collection(
+    collection_name="demo_collection"
+)
+
+# Vector search
+res = client.search(
+    collection_name="demo_collection",
+    data=query_embedding,
+    limit=1,
+    output_fields=["text"],
+)
+print(res)
+"""
+Output:
+data: ["[{'id': 1, 'distance': 0.7199002504348755, 'entity': {'text': 'Alan Turing was the first person to conduct substantial research in AI.'}}]"] 
+"""
 ```
 
-This script will create a collection, add an index, and run some calculations. Run it. Depending on your processor and available memory, it will take a few minutes to complete. 
+
+And that's it! You can also learn more about other functionalities that Milvus offers, such as managing databases, inserting and deleting collections, choosing the right indexing method, and performing more advanced vector searches with metadata filtering and hybrid search in [Milvus documentation](https://milvus.io/docs/).
+
+
+## Getting Started with Milvus Standalone
+
+Milvus Standalone is a deployment option in which everything is packed in a Docker container. Therefore, we need to install Milvus in Docker and then start the Docker container to get started with Milvus Standalone.
+
+Before installing Milvus Standalone, make sure that both your hardware and software fulfill the requirements described on [this page](https://milvus.io/docs/prerequisite-docker.md). Also, ensure that you've installed Docker. To install Docker, refer to [this page](https://docs.docker.com/get-started/get-docker/).
+
+Once our system fulfills the requirements and we have installed Docker, we can proceed with Milvus installation in Docker using the following command:
 
 ```
-$ python3 ./hello_milvus.py 
+# Download the installation script
+$ curl -sfL <https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh> -o standalone_embed.sh
 
-=== start connecting to Milvus     ===
-
-Does collection hello_milvus exist in Milvus: False
-
-=== Create collection `hello_milvus` ===
-
-
-=== Start inserting entities       ===
-
-Number of entities in Milvus: 3000
-
-=== Start Creating index IVF_FLAT  ===
-
-
-=== Start loading                  ===
-
-
-=== Start searching based on vector similarity ===
-
-hit: (distance: 0.0, id: 2998), random field: 0.9728033590489911
-hit: (distance: 0.08883658051490784, id: 1262), random field: 0.2978858685751561
-hit: (distance: 0.09590047597885132, id: 1265), random field: 0.3042039939240304
-hit: (distance: 0.0, id: 2999), random field: 0.02316334456872482
-hit: (distance: 0.05628091096878052, id: 1580), random field: 0.3855988746044062
-hit: (distance: 0.08096685260534286, id: 2377), random field: 0.8745922204004368
-search latency = 0.3663s
-
-=== Start querying with `random > 0.5` ===
-
-query result:
--{'random': 0.6378742006852851, 'embeddings': [0.20963514, 0.39746657, 0.12019053, 0.6947492, 0.9535575, 0.5454552, 0.82360446, 0.21096309], 'pk': '0'}
-search latency = 0.4352s
-query pagination(limit=4):
-	[{'pk': '0', 'random': 0.6378742006852851}, {'pk': '100', 'random': 0.5763523024650556}, {'pk': '1000', 'random': 0.9425935891639464}, {'pk': '1001', 'random': 0.7893211256191387}]
-query pagination(offset=1, limit=3):
-	[{'random': 0.5763523024650556, 'pk': '100'}, {'random': 0.9425935891639464, 'pk': '1000'}, {'random': 0.7893211256191387, 'pk': '1001'}]
-
-=== Start hybrid searching with `random > 0.5` ===
-
-hit: (distance: 0.0, id: 2998), random field: 0.9728033590489911
-hit: (distance: 0.14606499671936035, id: 747), random field: 0.5648774800635661
-hit: (distance: 0.1530652642250061, id: 2527), random field: 0.8928974315571507
-hit: (distance: 0.08096685260534286, id: 2377), random field: 0.8745922204004368
-hit: (distance: 0.20354536175727844, id: 2034), random field: 0.5526117606328499
-hit: (distance: 0.21908017992973328, id: 958), random field: 0.6647383716417955
-search latency = 0.3732s
-
-=== Start deleting with expr `pk in ["0" , "1"]` ===
-
-query before delete by expr=`pk in ["0" , "1"]` -> result: 
--{'random': 0.6378742006852851, 'embeddings': [0.20963514, 0.39746657, 0.12019053, 0.6947492, 0.9535575, 0.5454552, 0.82360446, 0.21096309], 'pk': '0'}
--{'random': 0.43925103574669633, 'embeddings': [0.52323616, 0.8035404, 0.77824664, 0.80369574, 0.4914803, 0.8265614, 0.6145269, 0.80234545], 'pk': '1'}
-
-query after delete by expr=`pk in ["0" , "1"]` -> result: []
-
-=== Drop collection `hello_milvus` ===
+# Start the Docker container
+$ bash standalone_embed.sh start
 ```
 
-## Milvus CLI
 
-Let's wrap up by recreating the collection in the **hello_milvus** example and use the CLI to examine it. 
+In the above code, we also start the Docker container and once it’s started, you’ll get similar output as below:
 
-Start by editing **hello_milvus.py** and comment out the last two lines: 
+![](https://assets.zilliz.com/Figure_Message_after_successful_starting_of_the_Docker_container_5c60fa15dd.png)
 
-```
-###############################################################################
-# 7. drop collection
-# Finally, drop the hello_milvus collection
-#print(fmt.format("Drop collection `hello_milvus`"))
-#utility.drop_collection("hello_milvus")
-```
+_Figure: Message after successful starting of the Docker container._
 
-Next, install the [Milvus command line interface (CLI)](https://github.com/zilliztech/milvus_cli) for interacting with the database. You can install with Python, or download a binary for your system from the [releases page](https://github.com/zilliztech/milvus_cli/releases). Here is an example of downloading the binary for Linux: 
+After running the installation script “standalone_embed.sh” above, a Docker container named “milvus” is started at port 19530. Therefore, we can create a new database as well as access all the things related to the Milvus database by pointing to this port when creating connections. 
+
+Let’s say we want to create a database called “milvus_demo”, similar to what we have done in Milvus Lite above. We can do so as follows:
 
 ```
-$ wget https://github.com/zilliztech/milvus_cli/releases/download/v0.3.2/milvus_cli-v0.3.2-Linux
---2023-04-13 09:58:15--  https://github.com/zilliztech/milvus_cli/releases/download/v0.3.2/milvus_cli-v0.3.2-Linux
-Resolving github.com (github.com)... 140.82.113.3
-Connecting to github.com (github.com)|140.82.113.3|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/436910525/25c43a55-dd72-41f8-acfa-05598267a2cb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230413%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230413T135816Z&X-Amz-Expires=300&X-Amz-Signature=3697b3583bfa71a3e8b9773fa550f4d18e32110cfe6315035fd4fff01d694446&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=436910525&response-content-disposition=attachment%3B%20filename%3Dmilvus_cli-v0.3.2-Linux&response-content-type=application%2Foctet-stream [following]
---2023-04-13 09:58:16--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/436910525/25c43a55-dd72-41f8-acfa-05598267a2cb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230413%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230413T135816Z&X-Amz-Expires=300&X-Amz-Signature=3697b3583bfa71a3e8b9773fa550f4d18e32110cfe6315035fd4fff01d694446&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=436910525&response-content-disposition=attachment%3B%20filename%3Dmilvus_cli-v0.3.2-Linux&response-content-type=application%2Foctet-stream
-Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.111.133, 185.199.110.133, 185.199.108.133, ...
-Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.111.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 50254816 (48M) [application/octet-stream]
-Saving to: ‘milvus_cli-v0.3.2-Linux’
+conn = connections.connect(host="127.0.0.1", port=19530)
+database = db.create_database("milvus_demo")
 
-milvus_cli-v0.3.2-L 100%[===================>]  47.93M  62.7MB/s    in 0.8s    
-
-2023-04-13 09:58:16 (62.7 MB/s) - ‘milvus_cli-v0.3.2-Linux’ saved [50254816/50254816]
-
-$ chmod +x ./milvus_cli-v0.3.2-Linux 
+client = MilvusClient(
+    uri="<http://localhost:19530>",
+    token="root:Milvus",
+    db_name="milvus_demo"
+)
 ```
 
-Run the modified **hello_milvus.py** script and it will exit without dropping the collection. Now, run the CLI and connect to your database. **Connect** defaults to connecting to a Milvus instance on localhost and the default port: 
+
+Next, you can verify whether the newly created database called "milvus_demo" truly exists in your Milvus instance by accessing the [Milvus Web UI](https://milvus.io/docs/milvus-webui.md). As the name suggests, Milvus Web UI is a graphical user interface provided by Milvus to observe the statistics and metrics of the components, check the list and details of databases, collections, and configurations. You can access Milvus Web UI once you've started the Docker container above at http://127.0.0.1:9091/webui/.
+
+If you access the above link, you'll see a landing page like this:
+
+![](https://assets.zilliz.com/Landing_page_UI_187a40e935.png)
+
+Under the "Collections" tab, you'll see that our "milvus_demo" database has been successfully created. As you can see, you can also check other things such as the list of collections, configurations, the queries you've performed, etc., with this Web UI.
+
+![](https://assets.zilliz.com/Web_Ui_2_666eae57b1.png)
+
+Now we can perform everything exactly as we've seen in the Milvus Lite section above. Let's create a collection called "demo_collection" inside the "milvus_demo" database that consists of three fields, the same as what we had in the Milvus Lite section before. Then, we'll insert our data into the collection.
+
 
 ```
-$ ./milvus_cli-v0.3.2-Linux
+index_params = client.prepare_index_params()
 
-  __  __ _ _                    ____ _     ___
- |  \/  (_) |_   ___   _ ___   / ___| |   |_ _|
- | |\/| | | \ \ / / | | / __| | |   | |    | |
- | |  | | | |\ V /| |_| \__ \ | |___| |___ | |
- |_|  |_|_|_| \_/  \__,_|___/  \____|_____|___|
+#  Add indexes
+index_params.add_index(
+    field_name="vector", 
+    index_type="AUTOINDEX",
+    metric_type="COSINE"
+)
 
-Milvus cli version: 0.3.2
-Pymilvus version: 2.2.1
+# Create collection
+client.create_collection(
+    collection_name="demo_collection",
+    schema=schema,
+    index_params=index_params
+)
 
-Learn more: https://github.com/zilliztech/milvus_cli.
-
-
-milvus_cli > connect
-Connect Milvus successfully.
-+---------+-----------------+
-| Address | 127.0.0.1:19530 |
-|  User   |                 |
-|  Alias  |     default     |
-+---------+-----------------+
+# Insert data into collection
+res = client.insert(
+    collection_name="demo_collection",
+    data=data
+)
 ```
 
-List the current collections, then use **describe** to view **hello_milvus**. 
+The code to perform a vector search operation is also the same as Milvus Lite, as you can see in the below code:
 
 ```
-milvus_cli > list collections
-+----+-------------------+
-|    | Collection Name   |
-+====+===================+
-|  0 | hello_milvus      |
-+----+-------------------+
-milvus_cli > describe collection -c hello_milvus
-+---------------+----------------------------------------------------------------------+
-| Name          | hello_milvus                                                         |
-+---------------+----------------------------------------------------------------------+
-| Description   | hello_milvus is the simplest demo to introduce the APIs              |
-+---------------+----------------------------------------------------------------------+
-| Is Empty      | False                                                                |
-+---------------+----------------------------------------------------------------------+
-| Entities      | 3000                                                                 |
-+---------------+----------------------------------------------------------------------+
-| Primary Field | pk                                                                   |
-+---------------+----------------------------------------------------------------------+
-| Schema        | Description: hello_milvus is the simplest demo to introduce the APIs |
-|               |                                                                      |
-|               | Auto ID: False                                                       |
-|               |                                                                      |
-|               | Fields(* is the primary field):                                      |
-|               |  - *pk VARCHAR                                                       |
-|               |  - random DOUBLE                                                     |
-|               |  - embeddings FLOAT_VECTOR dim: 8                                    |
-+---------------+----------------------------------------------------------------------+
-| Partitions    | - _default                                                           |
-+---------------+----------------------------------------------------------------------+
-| Indexes       | - embeddings                                                         |
-+---------------+----------------------------------------------------------------------+
+query = ["Who is Alan Turing"]
+query_embedding = sentence_transformer_ef.encode_queries(query)
+
+# Load collection
+client.load_collection(
+    collection_name="demo_collection"
+)
+
+# Vector search
+res = client.search(
+    collection_name="demo_collection",
+    data=query_embedding,
+    limit=1,
+    output_fields=["text"],
+)
+print(res)
+"""
+Output:
+data: ["[{'id': 1, 'distance': 0.7199004292488098, 'entity': {'text': 'Alan Turing was the first person to conduct substantial research in AI.'}}]"] 
+"""
 ```
 
-The collection has three fields. Let's finish with a query to view all three inside a single entry. We'll query for an entry with an ID of 100.
+Aside from using Docker, you can also use Milvus Standalone with [Docker Compose](https://milvus.io/docs/install_standalone-docker-compose.md) (for Linux) and [Docker Desktop](https://milvus.io/docs/install_standalone-windows.md) (for Windows).
 
-The **query** command will prompt you for several options. To complete this, you need: 
-- Collection name: **hello_milvus**
-- Expression **pk == "100"**
-- Fields: **pk, random, embeddings**
-
-Accept the defaults for the other options. 
+When we’re not using our Milvus instance anymore, we can stop Milvus Standalone with the following command:
 
 ```
-milvus_cli > k
-Collection name (hello_milvus): hello_milvus
-The query expression: pk == "100"
-The names of partitions to search (split by "," if multiple) ['_default'] []: 
-Fields to return(split by "," if multiple) ['pk', 'random', 'embeddings'] []: pk, random, embeddings
-timeout []: 
-Guarantee timestamp. This instructs Milvus to see all operations performed before a provided timestamp. If no such timestamp is provided, then Milvus will search all operations performed to date. [0]: 
-Graceful time. Only used in bounded consistency level. If graceful_time is set, PyMilvus will use current timestamp minus the graceful_time as the guarantee_timestamp. This option is 5s by default if not set. [5]: 
-Travel timestamp. Users can specify a timestamp in a search to get results based on a data view at a specified point in time. [0]: 
-+----+------+----------+------------------------------------------------------------------------------------------------+
-|    |   pk |   random | embeddings                                                                                     |
-+====+======+==========+================================================================================================+
-|  0 |  100 | 0.576352 | [0.5860017, 0.24227226, 0.8318699, 0.0060517574, 0.27727962, 0.5513293, 0.47201252, 0.6331349] |
-+----+------+----------+------------------------------------------------------------------------------------------------+
+$ bash standalone_embed.sh stop
 ```
 
-There's the field and its random embeddings. Your values will differ. 
-
-## Wrapping Up
-In this tutorial, you installed Milvus with [Docker Compose](https://docs.docker.com/compose/) along with its Python API and CLI. After starting the server, you ran a sample program that seeded it with random data, then used the CLI to query the database. 
-
-Milvus is a powerful open-source [vector database](https://zilliz.com/blog/scalar-quantization-and-product-quantization) engine for storing and searching large datasets. Try it out today, and see how it can help you with your multimedia and AI projects.  If you are not ready to tackle the full version of Milvus, give [Milvus lite](https://github.com/milvus-io/bootcamp/tree/master/notebooks) a whirl.
 
 
-*This post was written by Eric Goebelbecker. [Eric](http://ericgoebelbecker.com/) has worked in the financial markets in New York City for 25 years, developing infrastructure for market data and financial information exchange (FIX) protocol networks. He loves to talk about what makes teams effective (or not so effective!).*
+## Fully Managed Milvus 
 
+An alternative way to get started with Milvus is through a native cloud-based infrastructure in [Zilliz Cloud](https://zilliz.com/cloud), where you can get a hassle-free, 10x faster experience. 
+
+Zilliz Cloud offers dedicated clusters with dedicated environments and resources to support your AI application. Since it is a cloud-based database built on Milvus, we do not need to set up and manage local infrastructure. Zilliz Cloud also provides more advanced features, such as separation between vector storage and computation, data backup to popular object storage systems like S3, and data caching to speed up vector search and retrieval operations.
+
+However, one thing to consider when considering cloud-based services is the operational cost. In most cases, we still need to pay even when the cluster is idle with no data ingestion or vector search activity. If you want to optimize your application's operational cost and performance further, Zilliz Cloud Serverless would be an excellent option.
+
+![](https://assets.zilliz.com/Figure_Key_benefits_of_using_Zilliz_Cloud_Serverless_20f68e0fff.png)
+
+_Figure: Key benefits of using Zilliz Cloud Serverless._
+
+Zilliz Cloud Serverless is available on major cloud providers such as AWS, Azure, and GCP. It offers features like pay-as-you-go pricing, meaning you only pay when you use the cluster. 
+
+Zilliz Cloud Serverless also implements advanced technologies such as logical clusters, auto-scaling, tiered storage, disaggregation of streaming and historical data, and hot-cold data separation. These features enable Zilliz Cloud Serverless to achieve up to 50x cost savings and approximately 10x faster vector search operations compared to in-memory Milvus.
+
+![](https://assets.zilliz.com/Figure_Illustration_of_tiered_storage_and_hot_cold_data_separation_c634dfd211.png)
+
+_Figure: Illustration of tiered storage and hot-cold data separation._
+
+If you'd like to get started with Zilliz Cloud Serverless, check out [this page](https://zilliz.com/serverless) for more information.
+
+
+## Conclusion
+
+Milvus stands out as a versatile and powerful vector database designed to meet the challenges of managing unstructured data and performing fast, efficient vector search operations in modern AI applications. With deployment options such as Milvus Lite for quick prototyping, Milvus Standalone for small to medium-scale applications, and Milvus Distributed for enterprise-level scalability, it offers flexibility to match any project's size and complexity.
+
+Additionally, Zilliz Cloud Serverless extends Milvus's capabilities into the cloud and provides a cost-effective, pay-as-you-go model that eliminates the need for local infrastructure. With advanced features like tiered storage and auto-scaling, Zilliz Cloud Serverless ensures faster vector search operations while optimizing costs.
