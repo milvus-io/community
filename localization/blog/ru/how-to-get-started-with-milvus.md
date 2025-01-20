@@ -1,23 +1,32 @@
 ---
 id: how-to-get-started-with-milvus.md
 title: Как начать работу с Milvus
-author: Eric Goebelbecker
-date: 2023-05-18T00:00:00.000Z
+author: Ruben Winastwan
+date: 2025-01-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png
 tag: Engineering
 tags: >-
   Milvus, Vector Database, Open Source, Data science, Artificial Intelligence,
   Vector Management
-recommend: true
+recommend: false
 canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 ---
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png" alt="How to get started with Milvus" class="doc-image" id="how-to-get-started-with-milvus" />
    </span> <span class="img-wrapper"> <span>Как начать работу с Milvus</span> </span></p>
-<p>С ростом объема и сложности информации растет и потребность в инструментах для хранения и поиска масштабных неструктурированных наборов данных. <a href="https://github.com/milvus-io/milvus">Milvus</a> - это векторная база данных с открытым исходным кодом, которая эффективно обрабатывает сложные неструктурированные данные, такие как изображения, аудио и текст. Это популярный выбор для приложений, которым нужен высокоскоростной и масштабируемый доступ к огромным коллекциям данных.</p>
-<p>В этом посте вы узнаете, как установить и запустить Milvus. Вы поймете, как запустить эту надежную <a href="https://zilliz.com/learn/what-is-vector-database">векторную базу данных</a>, что позволит вам использовать весь ее потенциал в своих проектах. Если вы разработчик, специалист по изучению данных или просто интересуетесь возможностями систем поиска векторных сходств, эта статья станет отличной отправной точкой в вашем путешествии с <a href="https://milvus.io/">Milvus</a>.</p>
+<p><strong><em>Последнее обновление - январь 2025 года</em></strong></p>
+<p>Развитие больших языковых моделей<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM</a>) и растущий объем данных требуют гибкой и масштабируемой инфраструктуры для хранения огромных объемов информации, такой как база данных. Однако <a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">традиционные базы данных</a> предназначены для хранения табличных и структурированных данных, в то время как информация, обычно полезная для использования возможностей сложных LLM и алгоритмов поиска информации, является <a href="https://zilliz.com/learn/introduction-to-unstructured-data">неструктурированной</a>, такой как текст, изображения, видео или аудио.</p>
+<p><a href="https://zilliz.com/learn/what-is-vector-database">Векторные базы данных</a> - это системы баз данных, специально разработанные для неструктурированных данных. Векторные базы данных позволяют не только хранить огромные объемы неструктурированных данных, но и выполнять в них <a href="https://zilliz.com/learn/vector-similarity-search">векторный поиск</a>. Векторные базы данных используют передовые методы индексирования, такие как Inverted File Index (IVFFlat) или Hierarchical Navigable Small World<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">(HNSW</a>), для быстрого и эффективного векторного поиска и извлечения информации.</p>
+<p><strong>Milvus</strong> - это векторная база данных с открытым исходным кодом, которую мы можем использовать, чтобы задействовать все полезные функции, которые может предложить векторная база данных. Вот что мы рассмотрим в этом посте:</p>
+<ul>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">Обзор Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Milvus-Deployment-Options">Варианты развертывания Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Lite">Начало работы с Milvus Lite</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Standalone">Начало работы с Milvus Standalone</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Fully-Managed-Milvus">Полностью управляемый Milvus </a></p></li>
+</ul>
 <h2 id="What-is-Milvus" class="common-anchor-header">Что такое Milvus?<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -33,15 +42,16 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/what-is-milvus">Milvus</a> - это векторная база данных с открытым исходным кодом, предназначенная для работы с крупными неструктурированными данными. Она работает на основе передовой системы индексирования и предоставляет различные алгоритмы поиска для эффективной работы с высокоразмерными данными, такими как изображения, аудио и текст.</p>
-<p>Некоторые из преимуществ, которые вы можете ожидать от использования Milvus, включают следующее:</p>
-<ol>
-<li>Повышенная эффективность поиска по высокоразмерным данным</li>
-<li>Масштабируемость для работы с большими массивами данных</li>
-<li>Широкая поддержка различных алгоритмов поиска и методов индексирования</li>
-<li>Широкий спектр приложений, включая поиск изображений, обработку естественного языка, рекомендательные системы, обнаружение аномалий, биоинформатику и аудиоанализ.</li>
-</ol>
-<h2 id="Prerequisites" class="common-anchor-header">Необходимые условия<button data-href="#Prerequisites" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong> - это </a>векторная база данных с открытым исходным кодом, которая позволяет нам хранить огромные объемы неструктурированных данных и выполнять быстрый и эффективный векторный поиск по ним. Milvus очень полезен для многих популярных приложений GenAI, таких как рекомендательные системы, персонализированные чат-боты, обнаружение аномалий, поиск изображений, обработка естественного языка и поиск с расширенной генерацией<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>).</p>
+<p>Использование Milvus в качестве векторной базы данных дает ряд преимуществ:</p>
+<ul>
+<li><p>Milvus предлагает несколько вариантов развертывания, которые вы можете выбрать в зависимости от вашего сценария использования и размера приложений, которые вы хотите создать.</p></li>
+<li><p>Milvus поддерживает разнообразные методы индексирования для удовлетворения различных потребностей в данных и производительности, включая варианты in-memory, такие как FLAT, IVFFlat, HNSW и <a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">SCANN</a>, квантованные варианты для эффективности использования памяти, <a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DiskANN</a> на диске для больших наборов данных и оптимизированные для GPU индексы, такие как GPU_CAGRA, GPU_IVF_FLAT и GPU_IVF_PQ для ускоренного поиска с экономией памяти.</p></li>
+<li><p>Milvus также предлагает гибридный поиск, в котором мы можем использовать комбинацию плотных вкраплений, разреженных вкраплений и фильтрации метаданных во время операций векторного поиска, что приводит к более точным результатам поиска. Кроме того, <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> теперь поддерживает гибрид <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">полнотекстового</a> и векторного поиска, что делает поиск еще более точным.</p></li>
+<li><p>Milvus можно полностью использовать в облаке через <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, где вы можете оптимизировать эксплуатационные расходы и скорость векторного поиска благодаря четырем передовым функциям: логические кластеры, дезагрегация потоковых и исторических данных, многоуровневое хранение, автомасштабирование и разделение горячей и холодной многопользовательской лицензии.</p></li>
+</ul>
+<p>При использовании Milvus в качестве векторной базы данных вы можете выбрать три варианта развертывания, каждый из которых имеет свои преимущества и достоинства. Мы поговорим о каждом из них в следующем разделе.</p>
+<h2 id="Milvus-Deployment-Options" class="common-anchor-header">Варианты развертывания Milvus<button data-href="#Milvus-Deployment-Options" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,61 +66,153 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Чтобы следовать этому руководству, вам понадобится система с установленной последней версией Docker. В этом руководстве используется <a href="https://docs.docker.com/compose/">Docker Compose</a>, который уже включен в последнюю версию среды выполнения Docker.</p>
-<p>Чтобы использовать Milvus, вам нужно загрузить библиотеки Milvus Python и интерфейс командной строки (CLI). Убедитесь, что у вас есть Python версии 3.9 или более поздней, и обратите внимание, что CLI совместим с Windows, macOS и Linux. Примеры команд командной оболочки, приведенные ниже, предназначены для системы Linux, но могут также использоваться в macOS или подсистеме Windows для Linux.</p>
-<p>В руководстве используется <strong>wget</strong> для загрузки файлов с GitHub. Для macOS вы можете установить <strong>wget</strong> с помощью <a href="https://brew.sh/">Homebrew</a> или загрузить файлы с помощью браузера. Для Windows вы найдете <strong>wget</strong> в подсистеме Windows для Linux (WSL).</p>
-<h2 id="Running-Milvus-Standalone" class="common-anchor-header">Запуск Milvus в автономном режиме<button data-href="#Running-Milvus-Standalone" class="anchor-icon" translate="no">
-      <svg translate="no"
-        aria-hidden="true"
-        focusable="false"
-        height="20"
-        version="1.1"
-        viewBox="0 0 16 16"
-        width="16"
-      >
-        <path
-          fill="#0092E4"
-          fill-rule="evenodd"
-          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
-        ></path>
-      </svg>
-    </button></h2><h3 id="Allocate-Additional-Memory-to-Docker" class="common-anchor-header">Выделение дополнительной памяти для Docker</h3><p>Для оптимальной производительности Milvus требуется не менее 8 ГБ свободной памяти. Однако по умолчанию Docker обычно выделяет только 2 ГБ. Чтобы исправить это, перейдите в раздел "Настройки" и нажмите "Ресурсы", чтобы <a href="https://docs.docker.com/config/containers/resource_constraints/#memory">увеличить объем памяти Docker</a> на рабочем столе Docker перед запуском сервера.</p>
+    </button></h2><p>Для начала использования Milvus мы можем выбрать один из четырех вариантов развертывания: <strong>Milvus Lite, Milvus Standalone, Milvus Distributed и Zilliz Cloud (управляемый Milvus).</strong> Каждый вариант развертывания разработан с учетом различных сценариев использования, таких как объем данных, цель приложения и масштаб приложения.</p>
+<h3 id="Milvus-Lite" class="common-anchor-header">Milvus Lite</h3><p><a href="https://milvus.io/docs/quickstart.md"><strong>Milvus Lite</strong></a> - это облегченная версия Milvus и самый простой способ начать работу. В следующем разделе мы увидим, как запустить Milvus Lite в действии, а для начала нам нужно лишь установить библиотеку Pymilvus с помощью pip. После этого мы сможем выполнять большинство основных функций Milvus как векторной базы данных.</p>
+<p>Milvus Lite идеально подходит для быстрого создания прототипов или обучения и может быть запущен в Jupyter-блокноте без каких-либо сложных настроек. Что касается хранения векторов, то Milvus Lite подходит для хранения примерно миллиона векторных вкраплений. Благодаря своей легкости и объему памяти Milvus Lite является идеальным вариантом развертывания для работы с пограничными устройствами, такими как система поиска частных документов, обнаружение объектов на устройстве и т. д.</p>
+<h3 id="Milvus-Standalone" class="common-anchor-header">Milvus Standalone</h3><p>Milvus Standalone - это развертывание сервера на одной машине, упакованное в образ Docker. Поэтому все, что нам нужно для начала работы, - это установить Milvus в Docker, а затем запустить Docker-контейнер. Подробную реализацию Milvus Standalone мы также рассмотрим в следующем разделе.</p>
+<p>Milvus Standalone идеально подходит для создания и производства приложений малого и среднего масштаба, поскольку он способен хранить до 10 миллионов векторных вкраплений. Кроме того, Milvus Standalone обеспечивает высокую доступность благодаря режиму основного резервного копирования, что делает его очень надежным для использования в готовых к производству приложениях.</p>
+<p>Мы также можем использовать Milvus Standalone, например, после быстрого прототипирования и изучения функциональности Milvus с помощью Milvus Lite, поскольку и Milvus Standalone, и Milvus Lite используют один и тот же клиентский API.</p>
+<h3 id="Milvus-Distributed" class="common-anchor-header">Milvus Distributed</h3><p>Milvus Distributed - это вариант развертывания, использующий облачную архитектуру, в которой забор и получение данных осуществляются отдельно, что позволяет создать высокомасштабируемое и эффективное приложение.</p>
+<p>Для запуска Milvus Distributed обычно используется кластер Kubernetes, позволяющий контейнеру работать на нескольких машинах и в разных средах. Использование кластера Kubernetes обеспечивает масштабируемость и гибкость Milvus Distributed, позволяя настраивать выделенные ресурсы в зависимости от спроса и рабочей нагрузки. Это также означает, что в случае сбоя одной части другие могут взять на себя ее функции, обеспечивая бесперебойную работу всей системы.</p>
+<p>Milvus Distributed способна обрабатывать до десятков миллиардов векторных вкраплений и специально разработана для случаев, когда данные слишком велики для хранения на одной серверной машине. Поэтому этот вариант развертывания идеально подходит для корпоративных клиентов, обслуживающих большую базу пользователей.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/The_Docker_desktop_a18626750c.png" alt="The Docker desktop" class="doc-image" id="the-docker-desktop" />
-   </span> <span class="img-wrapper"> <span>Рабочий стол Docker</span> </span></p>
-<h3 id="Download-Docker-Compose-Configuration" class="common-anchor-header">Загрузить конфигурацию Docker Compose</h3><p>Для запуска автономного сервера Milvus вам понадобятся три контейнера:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_Vector_embedding_storage_capability_of_different_Milvus_deployment_options_e3959ccfcd.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p><em>Рисунок: Возможности хранения векторного встраивания в различных вариантах развертывания Milvus.</em></p>
+<p>В этой статье мы покажем вам, как начать работу с Milvus Lite и Milvus Standalone, поскольку вы можете быстро приступить к работе с обоими методами без сложных настроек. Однако Milvus Distributed более сложен в настройке. Как только мы настроим Milvus Distributed, код и логический процесс создания коллекций, получения данных, выполнения векторного поиска и т. д. будут аналогичны Milvus Lite и Milvus Standalone, поскольку они используют один и тот же API на стороне клиента.</p>
+<p>Помимо трех вышеупомянутых вариантов развертывания, вы также можете попробовать управляемый Milvus в <a href="https://zilliz.com/cloud">облаке Zilliz Cloud</a>, что позволит вам без лишних хлопот использовать его. О Zilliz Cloud мы также расскажем далее в этой статье.</p>
+<h2 id="Getting-Started-with-Milvus-Lite" class="common-anchor-header">Начало работы с Milvus Lite<button data-href="#Getting-Started-with-Milvus-Lite" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus Lite можно сразу же реализовать на Python, импортировав библиотеку под названием Pymilvus с помощью pip. Перед установкой Pymilvus убедитесь, что ваше окружение соответствует следующим требованиям:</p>
 <ul>
-<li><strong><a href="https://etcd.io/">etcd</a></strong> - распределенное хранилище значений ключей для хранения метаданных и доступа к ним</li>
-<li><strong><a href="https://min.io/">minio</a></strong> - совместимое с AWS S3 постоянное хранилище для журналов и индексных файлов</li>
-<li><strong>milvus</strong> - сервер базы данных</li>
+<li><p>Ubuntu &gt;= 20.04 (x86_64 и arm64)</p></li>
+<li><p>MacOS &gt;= 11.0 (Apple Silicon M1/M2 и x86_64)</p></li>
+<li><p>Python 3.7 или более поздняя версия</p></li>
 </ul>
-<p>Вместо того чтобы настраивать и запускать каждый контейнер по отдельности, вы будете использовать Docker Compose для их подключения и оркестровки.</p>
+<p>После выполнения этих требований вы можете установить Milvus Lite и необходимые зависимости для демонстрации, используя следующую команду:</p>
+<pre><code translate="no">!pip install -U pymilvus
+!pip install <span class="hljs-string">&quot;pymilvus[model]&quot;</span>
+<button class="copy-code-btn"></button></code></pre>
+<ul>
+<li><p><code translate="no">!pip install -U pymilvus</code>: Эта команда устанавливает или обновляет библиотеку <code translate="no">pymilvus</code>, Python SDK для Milvus. Milvus Lite поставляется в комплекте с PyMilvus, поэтому для установки Milvus Lite достаточно одной строки кода.</p></li>
+<li><p><code translate="no">!pip install &quot;pymilvus[model]&quot;</code>: Эта команда добавляет расширенные возможности и дополнительные инструменты, предварительно интегрированные с Milvus, включая модели машинного обучения, такие как Hugging Face Transformers, модели встраивания Jina AI и модели повторного ранжирования.</p></li>
+</ul>
+<p>Вот шаги, которые мы будем выполнять с Milvus Lite:</p>
 <ol>
-<li>Создайте каталог для запуска службы.</li>
-<li>Загрузите пример <a href="https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml">файла Docker compose</a> с Github и сохраните его как <strong>docker-compose.yml</strong>. Вы также можете загрузить файл с помощью <strong>wget</strong>.</li>
+<li><p>Преобразуйте текстовые данные в их представление с помощью модели встраивания.</p></li>
+<li><p>Создайте схему в базе данных Milvus для хранения наших текстовых данных и их встраиваемых представлений.</p></li>
+<li><p>Храните и индексируйте наши данные в нашей схеме.</p></li>
+<li><p>Выполните простой векторный поиск по сохраненным данным.</p></li>
 </ol>
-<pre><code translate="no">$ <span class="hljs-built_in">mkdir</span> milvus_compose
-$ <span class="hljs-built_in">cd</span> milvus_compose
-$ wget https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
---2023-04-10 16:44:13-- https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml
-Resolving github.com (github.com)... 140.82.113.3
-Connecting to github.com (github.com)|140.82.113.3|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/208728772/c319ebef-7bcb-4cbf-82d8-dcd3c54cb3af?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230410%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230410T204413Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=b26b9b461fd3a92ab17e42e5a68b268b12a56cb07db57cf4db04e38a8e74525a&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=208728772&amp;response-content-disposition=attachment%3B%20filename%3Dmilvus-standalone-docker-compose.yml&amp;response-content-type=application%2Foctet-stream [following]
---2023-04-10 16:44:13-- https://objects.githubusercontent.com/github-production-release-asset-2e65be/208728772/c319ebef-7bcb-4cbf-82d8-dcd3c54cb3af?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230410%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230410T204413Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=b26b9b461fd3a92ab17e42e5a68b268b12a56cb07db57cf4db04e38a8e74525a&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=208728772&amp;response-content-disposition=attachment%3B%20filename%3Dmilvus-standalone-docker-compose.yml&amp;response-content-type=application%2Foctet-stream
-Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.109.133, ...
-Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.110.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 1356 (1.3K) [application/octet-stream]
-Saving to: ‘docker-compose.yml’
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_Workflow_of_vector_search_operation_3e38ccc1f4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p><em>Рисунок: Рабочий процесс операции векторного поиска.</em></p>
+<p>Для преобразования текстовых данных в векторные вкрапления мы будем использовать <a href="https://zilliz.com/ai-models">модель вкрапления</a> из SentenceTransformers под названием 'all-MiniLM-L6-v2'. Эта модель встраивания преобразует наш текст в 384-мерный векторный эмбеддинг. Давайте загрузим модель, преобразуем наши текстовые данные и упакуем все вместе.</p>
+<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
-docker-compose.yml 100%[==========================================================&gt;] 1.32K --.-KB/s <span class="hljs-keyword">in</span> 0s
+docs = [
+    <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
+    <span class="hljs-string">&quot;Alan Turing was the first person to conduct substantial research in AI.&quot;</span>,
+    <span class="hljs-string">&quot;Born in Maida Vale, London, Turing was raised in southern England.&quot;</span>,
+]
 
-2023-04-10 16:44:13 (94.2 MB/s) - ‘docker-compose.yml’ saved [1356/1356]
+sentence_transformer_ef = model.dense.SentenceTransformerEmbeddingFunction(
+    model_name=<span class="hljs-string">&#x27;all-MiniLM-L6-v2&#x27;</span>, 
+    device=<span class="hljs-string">&#x27;cpu&#x27;</span> 
+)
+
+vectors  = sentence_transformer_ef.encode_documents(docs)
+data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
-<p>Давайте рассмотрим эту конфигурацию перед запуском.</p>
-<h2 id="Standalone-Configuration" class="common-anchor-header">Автономная конфигурация<button data-href="#Standalone-Configuration" class="anchor-icon" translate="no">
+<p>Затем создадим схему для хранения всех вышеперечисленных данных в Milvus. Как вы можете видеть выше, наши данные состоят из трех полей: ID, вектор и текст. Поэтому мы создадим схему с этими тремя полями.</p>
+<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+
+schema = MilvusClient.create_schema(
+    auto_id=<span class="hljs-literal">False</span>,
+    enable_dynamic_field=<span class="hljs-literal">True</span>,
+)
+
+<span class="hljs-comment"># Add fields to schema</span>
+schema.add_field(field_name=<span class="hljs-string">&quot;id&quot;</span>, datatype=DataType.INT64, is_primary=<span class="hljs-literal">True</span>)
+schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>, datatype=DataType.FLOAT_VECTOR, dim=<span class="hljs-number">384</span>)
+schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
+<button class="copy-code-btn"></button></code></pre>
+<p>С помощью Milvus Lite мы можем легко создать коллекцию в определенной базе данных на основе схемы, определенной выше, а также вставить и проиндексировать данные в коллекцию всего за несколько строк кода.</p>
+<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+
+index_params = client.prepare_index_params()
+
+<span class="hljs-comment">#  Add indexes</span>
+index_params.add_index(
+    field_name=<span class="hljs-string">&quot;vector&quot;</span>, 
+    index_type=<span class="hljs-string">&quot;AUTOINDEX&quot;</span>,
+    metric_type=<span class="hljs-string">&quot;COSINE&quot;</span>
+)
+
+<span class="hljs-comment"># Create collection</span>
+client.create_collection(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>,
+    schema=schema,
+    index_params=index_params
+)
+
+<span class="hljs-comment"># Insert data into collection</span>
+res = client.insert(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>,
+    data=data
+)
+<button class="copy-code-btn"></button></code></pre>
+<p>В приведенном выше коде мы создаем коллекцию под названием &quot;demo_collection&quot; в базе данных Milvus под названием &quot;milvus_demo&quot;. Затем мы индексируем все наши данные в только что созданную коллекцию "demo_collection".</p>
+<p>Теперь, когда наши данные находятся в базе данных, мы можем выполнить векторный поиск по ним для любого запроса. Допустим, у нас есть запрос: &quot;<em>Кто такой Алан Тьюринг?</em>&quot;. Мы можем получить наиболее подходящий ответ на этот запрос, выполнив следующие шаги:</p>
+<ol>
+<li><p>Преобразуйте наш запрос в векторное вложение с помощью той же модели вложения, которую мы использовали для преобразования данных в базе данных в вложения.</p></li>
+<li><p>Вычислить сходство между вложением нашего запроса и вложением каждой записи в базе данных, используя такие метрики, как косинусоидальное сходство или евклидово расстояние.</p></li>
+<li><p>Выбираем наиболее похожую запись как подходящий ответ на наш запрос.</p></li>
+</ol>
+<p>Ниже приведена реализация вышеописанных шагов с помощью Milvus:</p>
+<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+query_embedding = sentence_transformer_ef.encode_queries(query)
+
+<span class="hljs-comment"># Load collection</span>
+client.load_collection(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>
+)
+
+<span class="hljs-comment"># Vector search</span>
+res = client.search(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>,
+    data=query_embedding,
+    limit=<span class="hljs-number">1</span>,
+    output_fields=[<span class="hljs-string">&quot;text&quot;</span>],
+)
+<span class="hljs-built_in">print</span>(res)
+<span class="hljs-string">&quot;&quot;&quot;
+Output:
+data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x27;entity&#x27;: {&#x27;text&#x27;: &#x27;Alan Turing was the first person to conduct substantial research in AI.&#x27;}}]&quot;] 
+&quot;&quot;&quot;</span>
+<button class="copy-code-btn"></button></code></pre>
+<p>Вот и все! Вы также можете узнать больше о других функциональных возможностях Milvus, таких как управление базами данных, вставка и удаление коллекций, выбор правильного метода индексирования и выполнение более сложных векторных поисков с фильтрацией метаданных и гибридным поиском в <a href="https://milvus.io/docs/">документации Milvus</a>.</p>
+<h2 id="Getting-Started-with-Milvus-Standalone" class="common-anchor-header">Начало работы с Milvus Standalone<button data-href="#Getting-Started-with-Milvus-Standalone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,61 +227,99 @@ docker-compose.yml 100%[========================================================
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Этот compose-файл определяет три службы, необходимые для Milvus: <strong>etcd, minio</strong> и <strong>milvus-standalone</strong>.</p>
-<pre><code translate="no">version: <span class="hljs-string">&#x27;3.5&#x27;</span>
+    </button></h2><p>Milvus Standalone - это вариант развертывания, при котором все упаковывается в контейнер Docker. Поэтому нам нужно установить Milvus в Docker, а затем запустить контейнер Docker, чтобы начать работу с Milvus Standalone.</p>
+<p>Перед установкой Milvus Standalone убедитесь, что ваше оборудование и программное обеспечение соответствуют требованиям, описанным на <a href="https://milvus.io/docs/prerequisite-docker.md">этой странице</a>. Кроме того, убедитесь, что вы установили Docker. Чтобы установить Docker, обратитесь к <a href="https://docs.docker.com/get-started/get-docker/">этой странице</a>.</p>
+<p>После того как наша система соответствует требованиям и мы установили Docker, мы можем приступить к установке Milvus в Docker с помощью следующей команды:</p>
+<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+$ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
-services:
-  etcd:
-    container_name: milvus-etcd
-    image: quay.io/coreos/etcd:v3.5.0
-    environment:
-      - ETCD_AUTO_COMPACTION_MODE=revision
-      - ETCD_AUTO_COMPACTION_RETENTION=1000
-      - ETCD_QUOTA_BACKEND_BYTES=4294967296
-      - ETCD_SNAPSHOT_COUNT=50000
-    volumes:
-      - <span class="hljs-variable">${DOCKER_VOLUME_DIRECTORY:-.}</span>/volumes/etcd:/etcd
-    <span class="hljs-built_in">command</span>: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
-
-  minio:
-    container_name: milvus-minio
-    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-    volumes:
-      - <span class="hljs-variable">${DOCKER_VOLUME_DIRECTORY:-.}</span>/volumes/minio:/minio_data
-    <span class="hljs-built_in">command</span>: minio server /minio_data
-    healthcheck:
-      <span class="hljs-built_in">test</span>: [<span class="hljs-string">&quot;CMD&quot;</span>, <span class="hljs-string">&quot;curl&quot;</span>, <span class="hljs-string">&quot;-f&quot;</span>, <span class="hljs-string">&quot;http://localhost:9000/minio/health/live&quot;</span>]
-      interval: 30s
-      <span class="hljs-built_in">timeout</span>: 20s
-      retries: 3
-
-  standalone:
-    container_name: milvus-standalone
-    image: milvusdb/milvus:v2.2.8
-    <span class="hljs-built_in">command</span>: [<span class="hljs-string">&quot;milvus&quot;</span>, <span class="hljs-string">&quot;run&quot;</span>, <span class="hljs-string">&quot;standalone&quot;</span>]
-    environment:
-      ETCD_ENDPOINTS: etcd:2379
-      MINIO_ADDRESS: minio:9000
-    volumes:
-      - <span class="hljs-variable">${DOCKER_VOLUME_DIRECTORY:-.}</span>/volumes/milvus:/var/lib/milvus
-    ports:
-      - <span class="hljs-string">&quot;19530:19530&quot;</span>
-      - <span class="hljs-string">&quot;9091:9091&quot;</span>
-    depends_on:
-      - <span class="hljs-string">&quot;etcd&quot;</span>
-      - <span class="hljs-string">&quot;minio&quot;</span>
-
-networks:
-  default:
-    name: milvus
+<span class="hljs-comment"># Start the Docker container</span>
+$ bash standalone_embed.sh start
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта конфигурация назначает том для <strong>etcd</strong> для постоянных данных. Она определяет четыре переменные окружения и запускает службу с помощью командной строки, указывающей ей прослушивать запросы на порту 2379.</p>
-<p>Конфигурация также предоставляет <strong>minio</strong> том и использует ключи доступа по умолчанию. Однако для использования в производстве следует создать новый образ <strong>minio</strong> с уникальными ключами. Кроме того, в конфигурацию включена проверка работоспособности <strong>minio</strong>, которая перезапускает службу в случае сбоя. Обратите внимание, что по умолчанию Minio использует порт 9000 для клиентских запросов.</p>
-<p>Наконец, есть <strong>автономная</strong> служба, которая запускает Milvus. Она также имеет том и переменные окружения, которые направляют ее к портам служб <strong>etcd</strong> и <strong>minio</strong>. В последнем разделе задается имя сети, которую разделяют службы. Это облегчает ее идентификацию с помощью инструментов мониторинга.</p>
-<h2 id="Running-Milvus" class="common-anchor-header">Запуск Milvus<button data-href="#Running-Milvus" class="anchor-icon" translate="no">
+<p>В приведенном выше коде мы также запускаем контейнер Docker, и после его запуска вы получите результат, аналогичный приведенному ниже:</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_Message_after_successful_starting_of_the_Docker_container_5c60fa15dd.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p><em>Рисунок: Сообщение после успешного запуска контейнера Docker.</em></p>
+<p>После выполнения приведенного выше сценария установки "standalone_embed.sh" Docker-контейнер с именем "milvus" запускается на порту 19530. Поэтому мы можем создать новую базу данных, а также получить доступ ко всему, что связано с базой данных Milvus, указав этот порт при создании соединений.</p>
+<p>Допустим, мы хотим создать базу данных под названием "milvus_demo", аналогично тому, что мы делали в Milvus Lite выше. Мы можем сделать это следующим образом:</p>
+<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
+database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+
+client = <span class="hljs-title class_">MilvusClient</span>(
+    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
+    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
+)
+<button class="copy-code-btn"></button></code></pre>
+<p>Далее вы можете проверить, действительно ли только что созданная база данных под названием "milvus_demo" существует в вашем экземпляре Milvus, обратившись к <a href="https://milvus.io/docs/milvus-webui.md">веб-интерфейсу Milvus</a>. Как следует из названия, Milvus Web UI - это графический пользовательский интерфейс, предоставляемый Milvus для наблюдения за статистикой и метриками компонентов, проверки списка и деталей баз данных, коллекций и конфигураций. Вы можете получить доступ к Milvus Web UI после запуска Docker-контейнера по ссылке http://127.0.0.1:9091/webui/.</p>
+<p>Если вы перейдете по указанной выше ссылке, то увидите вот такую целевую страницу:</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Landing_page_UI_187a40e935.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p>На вкладке "Коллекции" вы увидите, что наша база данных "milvus_demo" была успешно создана. Как видите, с помощью этого веб-интерфейса можно проверить и другие вещи, такие как список коллекций, конфигураций, выполненных запросов и т. д.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Web_Ui_2_666eae57b1.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p>Теперь мы можем выполнить все точно так же, как мы видели в разделе Milvus Lite выше. Создадим коллекцию под названием "demo_collection" в базе данных "milvus_demo", состоящую из трех полей, таких же, как в разделе Milvus Lite. Затем мы вставим наши данные в коллекцию.</p>
+<pre><code translate="no">index_params = client.prepare_index_params()
+
+<span class="hljs-comment">#  Add indexes</span>
+index_params.add_index(
+    field_name=<span class="hljs-string">&quot;vector&quot;</span>, 
+    index_type=<span class="hljs-string">&quot;AUTOINDEX&quot;</span>,
+    metric_type=<span class="hljs-string">&quot;COSINE&quot;</span>
+)
+
+<span class="hljs-comment"># Create collection</span>
+client.create_collection(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>,
+    schema=schema,
+    index_params=index_params
+)
+
+<span class="hljs-comment"># Insert data into collection</span>
+res = client.insert(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>,
+    data=data
+)
+<button class="copy-code-btn"></button></code></pre>
+<p>Код для выполнения операции векторного поиска также аналогичен Milvus Lite, как вы можете видеть в приведенном ниже коде:</p>
+<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+query_embedding = sentence_transformer_ef.encode_queries(query)
+
+<span class="hljs-comment"># Load collection</span>
+client.load_collection(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>
+)
+
+<span class="hljs-comment"># Vector search</span>
+res = client.search(
+    collection_name=<span class="hljs-string">&quot;demo_collection&quot;</span>,
+    data=query_embedding,
+    limit=<span class="hljs-number">1</span>,
+    output_fields=[<span class="hljs-string">&quot;text&quot;</span>],
+)
+<span class="hljs-built_in">print</span>(res)
+<span class="hljs-string">&quot;&quot;&quot;
+Output:
+data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x27;entity&#x27;: {&#x27;text&#x27;: &#x27;Alan Turing was the first person to conduct substantial research in AI.&#x27;}}]&quot;] 
+&quot;&quot;&quot;</span>
+<button class="copy-code-btn"></button></code></pre>
+<p>Помимо использования Docker, вы также можете использовать Milvus Standalone с помощью <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (для Linux) и <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (для Windows).</p>
+<p>Когда мы больше не используем наш экземпляр Milvus, мы можем остановить Milvus Standalone с помощью следующей команды:</p>
+<pre><code translate="no">$ bash standalone_embed.sh stop
+<button class="copy-code-btn"></button></code></pre>
+<h2 id="Fully-Managed-Milvus" class="common-anchor-header">Fully Managed Milvus<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -194,42 +334,27 @@ networks:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Запустите службу с помощью команды <strong>docker compose up -d</strong>.</p>
-<pre><code translate="no">$ docker compose up -d
-[*] Running 4/4
-✔ Network milvus               Created          .0s
-✔ Container milvus-minio       Started          .2s
-✔ Container milvus-etcd        Started          .3s
-✔ Container milvus-standalone  Started
-<button class="copy-code-btn"></button></code></pre>
-<p>Docker <strong>ps</strong> покажет три запущенных контейнера:</p>
-<pre><code translate="no">$ docker ps -a
-CONTAINER ID   IMAGE                                      COMMAND                  CREATED          STATUS                             PORTS                                              NAMES
-eb1caca5d6a5   milvusdb/milvus:v2.2.8                     <span class="hljs-string">&quot;/tini -- milvus run…&quot;</span>   21 seconds ago   Up 19 seconds                      0.0.0.0:9091-&gt;9091/tcp, 0.0.0.0:19530-&gt;19530/tcp   milvus-standalone
-ce19d90d89d0   quay.io/coreos/etcd:v3.5.0                 <span class="hljs-string">&quot;etcd -advertise-cli…&quot;</span>   22 seconds ago   Up 20 seconds                      2379-2380/tcp                                      milvus-etcd
-e93e33a882d5   minio/minio:RELEASE.2023-03-20T20-16-18Z   <span class="hljs-string">&quot;/usr/bin/docker-ent…&quot;</span>   22 seconds ago   Up 20 seconds (health: starting)   9000/tcp                                           milvus-minio
-<button class="copy-code-btn"></button></code></pre>
-<p>И вы можете проверить работу сервера Milvus с помощью <strong>журналов docker</strong>:</p>
-<pre><code translate="no">$ docker logs milvus-standalone
-<span class="hljs-number">2023</span>/<span class="hljs-number">04</span>/<span class="hljs-number">13</span> <span class="hljs-number">13</span>:<span class="hljs-number">40</span>:<span class="hljs-number">04</span> <span class="hljs-attr">maxprocs</span>: <span class="hljs-title class_">Leaving</span> <span class="hljs-variable constant_">GOMAXPROCS</span>=<span class="hljs-number">4</span>: <span class="hljs-variable constant_">CPU</span> quota <span class="hljs-literal">undefined</span>
-    __  _________ _   ____  ______    
-   /  |<span class="hljs-regexp">/  /</span>  _/ <span class="hljs-regexp">/| | /</span> <span class="hljs-regexp">/ /</span> <span class="hljs-regexp">/ /</span> __/    
-  <span class="hljs-regexp">/ /</span>|_/ <span class="hljs-comment">// // /_| |/ / /_/ /\ \    </span>
- <span class="hljs-regexp">/_/</span>  <span class="hljs-regexp">/_/</span>___/____/___/\____/___/     
-
-<span class="hljs-title class_">Welcome</span> to use <span class="hljs-title class_">Milvus</span>!
-<span class="hljs-title class_">Version</span>:   v2<span class="hljs-number">.2</span><span class="hljs-number">.8</span>
-<span class="hljs-title class_">Built</span>:     <span class="hljs-title class_">Wed</span> <span class="hljs-title class_">Mar</span> <span class="hljs-number">29</span> <span class="hljs-number">11</span>:<span class="hljs-number">32</span>:<span class="hljs-number">15</span> <span class="hljs-variable constant_">UTC</span> <span class="hljs-number">2023</span>
-<span class="hljs-title class_">GitCommit</span>: 47e28fbe
-<span class="hljs-title class_">GoVersion</span>: go version go1<span class="hljs-number">.18</span><span class="hljs-number">.3</span> linux/amd64
-
-open pid <span class="hljs-attr">file</span>: <span class="hljs-regexp">/run/mi</span>lvus/standalone.<span class="hljs-property">pid</span>
-lock pid <span class="hljs-attr">file</span>: <span class="hljs-regexp">/run/mi</span>lvus/standalone.<span class="hljs-property">pid</span>
-[<span class="hljs-number">2023</span>/<span class="hljs-number">04</span>/<span class="hljs-number">13</span> <span class="hljs-number">13</span>:<span class="hljs-number">40</span>:<span class="hljs-number">04</span><span class="hljs-number">.976</span> +<span class="hljs-number">00</span>:<span class="hljs-number">00</span>] [<span class="hljs-variable constant_">INFO</span>] [roles/roles.<span class="hljs-property">go</span>:<span class="hljs-number">192</span>] [<span class="hljs-string">&quot;starting running Milvus components&quot;</span>]
-(snipped)
-<button class="copy-code-btn"></button></code></pre>
-<p>Ваш сервер запущен и работает. Теперь давайте используем Python для подключения к нему.</p>
-<h2 id="How-to-Use-Milvus" class="common-anchor-header">Как использовать Milvus<button data-href="#How-to-Use-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Альтернативным способом начать работу с Milvus является использование собственной облачной инфраструктуры в <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, где вы сможете работать без лишних хлопот и в 10 раз быстрее.</p>
+<p>Zilliz Cloud предлагает выделенные кластеры со специальными средами и ресурсами для поддержки вашего приложения искусственного интеллекта. Поскольку это облачная база данных, построенная на Milvus, нам не нужно настраивать и управлять локальной инфраструктурой. Zilliz Cloud также предоставляет более продвинутые функции, такие как разделение векторного хранения и вычислений, резервное копирование данных в популярные системы хранения объектов, такие как S3, и кэширование данных для ускорения операций векторного поиска и извлечения.</p>
+<p>Однако при выборе облачных сервисов следует учитывать эксплуатационные расходы. В большинстве случаев нам приходится платить даже тогда, когда кластер простаивает, не принимая данных и не выполняя векторного поиска. Если вы хотите еще больше оптимизировать эксплуатационные расходы и производительность вашего приложения, Zilliz Cloud Serverless станет отличным вариантом.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_Key_benefits_of_using_Zilliz_Cloud_Serverless_20f68e0fff.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p><em>Рисунок: Основные преимущества использования Zilliz Cloud Serverless.</em></p>
+<p>Zilliz Cloud Serverless доступен у основных облачных провайдеров, таких как AWS, Azure и GCP. Он предлагает такие функции, как оплата по факту использования, то есть вы платите только тогда, когда используете кластер.</p>
+<p>В Zilliz Cloud Serverless также реализованы такие передовые технологии, как логические кластеры, автомасштабирование, многоуровневое хранение, дезагрегация потоковых и исторических данных, а также разделение данных по принципу "горячий-холодный". Эти функции позволяют Zilliz Cloud Serverless добиться 50-кратной экономии средств и примерно 10-кратного ускорения операций векторного поиска по сравнению с in-memory Milvus.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_Illustration_of_tiered_storage_and_hot_cold_data_separation_c634dfd211.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
+<p><em>Рисунок: Иллюстрация многоуровневого хранения и разделения данных "горячий-холодный".</em></p>
+<p>Если вы хотите начать работу с Zilliz Cloud Serverless, посетите <a href="https://zilliz.com/serverless">эту страницу</a> для получения дополнительной информации.</p>
+<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -244,229 +369,5 @@ lock pid <span class="hljs-attr">file</span>: <span class="hljs-regexp">/run/mi<
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Using-Milvus-with-Python" class="common-anchor-header">Использование Milvus с Python</h3><p>Давайте протестируем вашу базу данных на примере программы на Python. Начните с установки <strong>PyMilvus</strong> с помощью <strong>pip3</strong>:</p>
-<pre><code translate="no">$ pip3 install pymilvus
-Defaulting to user installation because normal site-packages is not writeable
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-Collecting pymilvus
-  Using cached pymilvus-2.2.6-py3-none-any.whl (133 kB)
-Collecting grpcio&lt;=1.53.0,&gt;=1.49.1
-  Using cached grpcio-1.53.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.9 MB)
-Requirement already satisfied: mmh3&gt;=2.0 <span class="hljs-keyword">in</span> /home/egoebelbecker/.local/lib/python3.11/site-packages (from pymilvus) (3.0.0)
-Requirement already satisfied: ujson&gt;=2.0.0 <span class="hljs-keyword">in</span> /home/egoebelbecker/.local/lib/python3.11/site-packages (from pymilvus) (5.4.0)
-Requirement already satisfied: pandas&gt;=1.2.4 <span class="hljs-keyword">in</span> /home/egoebelbecker/.local/lib/python3.11/site-packages (from pymilvus) (2.0.0)
-Requirement already satisfied: python-dateutil&gt;=2.8.2 <span class="hljs-keyword">in</span> /usr/lib/python3.11/site-packages (from pandas&gt;=1.2.4-&gt;pymilvus) (2.8.2)
-Requirement already satisfied: pytz&gt;=2020.1 <span class="hljs-keyword">in</span> /home/egoebelbecker/.local/lib/python3.11/site-packages (from pandas&gt;=1.2.4-&gt;pymilvus) (2023.3)
-Requirement already satisfied: tzdata&gt;=2022.1 <span class="hljs-keyword">in</span> /home/egoebelbecker/.local/lib/python3.11/site-packages (from pandas&gt;=1.2.4-&gt;pymilvus) (2023.3)
-Requirement already satisfied: numpy&gt;=1.21.0 <span class="hljs-keyword">in</span> /home/egoebelbecker/.local/lib/python3.11/site-packages (from pandas&gt;=1.2.4-&gt;pymilvus) (1.24.2)
-Requirement already satisfied: six&gt;=1.5 <span class="hljs-keyword">in</span> /usr/lib/python3.11/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=1.2.4-&gt;pymilvus) (1.16.0)
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-Installing collected packages: grpcio, pymilvus
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-WARNING: Ignoring invalid distribution ~rpcio (/home/egoebelbecker/.local/lib/python3.11/site-packages)
-Successfully installed grpcio pymilvus-2.2.6
-<button class="copy-code-btn"></button></code></pre>
-<p>Затем загрузите пример программы <a href="https://raw.githubusercontent.com/milvus-io/pymilvus/v2.2.6/examples/hello_milvus.py">hello_milvus</a>:</p>
-<pre><code translate="no">$ wget https://raw.githubusercontent.com/milvus-io/pymilvus/v2.2.6/examples/hello_milvus.py
-<button class="copy-code-btn"></button></code></pre>
-<p>Этот скрипт создаст коллекцию, добавит индекс и выполнит некоторые вычисления. Запустите его. В зависимости от вашего процессора и доступной памяти, на выполнение уйдет несколько минут.</p>
-<pre><code translate="no">$ python3 ./hello_milvus.py 
-
-=== start connecting to Milvus     ===
-
-Does collection hello_milvus exist <span class="hljs-keyword">in</span> Milvus: False
-
-=== Create collection `hello_milvus` ===
-
-
-=== Start inserting entities       ===
-
-Number of entities <span class="hljs-keyword">in</span> Milvus: 3000
-
-=== Start Creating index IVF_FLAT  ===
-
-
-=== Start loading                  ===
-
-
-=== Start searching based on vector similarity ===
-
-hit: (distance: 0.0, <span class="hljs-built_in">id</span>: 2998), random field: 0.9728033590489911
-hit: (distance: 0.08883658051490784, <span class="hljs-built_in">id</span>: 1262), random field: 0.2978858685751561
-hit: (distance: 0.09590047597885132, <span class="hljs-built_in">id</span>: 1265), random field: 0.3042039939240304
-hit: (distance: 0.0, <span class="hljs-built_in">id</span>: 2999), random field: 0.02316334456872482
-hit: (distance: 0.05628091096878052, <span class="hljs-built_in">id</span>: 1580), random field: 0.3855988746044062
-hit: (distance: 0.08096685260534286, <span class="hljs-built_in">id</span>: 2377), random field: 0.8745922204004368
-search latency = 0.3663s
-
-=== Start querying with `random &gt; 0.5` ===
-
-query result:
--{<span class="hljs-string">&#x27;random&#x27;</span>: 0.6378742006852851, <span class="hljs-string">&#x27;embeddings&#x27;</span>: [0.20963514, 0.39746657, 0.12019053, 0.6947492, 0.9535575, 0.5454552, 0.82360446, 0.21096309], <span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;0&#x27;</span>}
-search latency = 0.4352s
-query pagination(<span class="hljs-built_in">limit</span>=4):
-    [{<span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;0&#x27;</span>, <span class="hljs-string">&#x27;random&#x27;</span>: 0.6378742006852851}, {<span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;100&#x27;</span>, <span class="hljs-string">&#x27;random&#x27;</span>: 0.5763523024650556}, {<span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;1000&#x27;</span>, <span class="hljs-string">&#x27;random&#x27;</span>: 0.9425935891639464}, {<span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;1001&#x27;</span>, <span class="hljs-string">&#x27;random&#x27;</span>: 0.7893211256191387}]
-query pagination(offset=1, <span class="hljs-built_in">limit</span>=3):
-    [{<span class="hljs-string">&#x27;random&#x27;</span>: 0.5763523024650556, <span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;100&#x27;</span>}, {<span class="hljs-string">&#x27;random&#x27;</span>: 0.9425935891639464, <span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;1000&#x27;</span>}, {<span class="hljs-string">&#x27;random&#x27;</span>: 0.7893211256191387, <span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;1001&#x27;</span>}]
-
-=== Start hybrid searching with `random &gt; 0.5` ===
-
-hit: (distance: 0.0, <span class="hljs-built_in">id</span>: 2998), random field: 0.9728033590489911
-hit: (distance: 0.14606499671936035, <span class="hljs-built_in">id</span>: 747), random field: 0.5648774800635661
-hit: (distance: 0.1530652642250061, <span class="hljs-built_in">id</span>: 2527), random field: 0.8928974315571507
-hit: (distance: 0.08096685260534286, <span class="hljs-built_in">id</span>: 2377), random field: 0.8745922204004368
-hit: (distance: 0.20354536175727844, <span class="hljs-built_in">id</span>: 2034), random field: 0.5526117606328499
-hit: (distance: 0.21908017992973328, <span class="hljs-built_in">id</span>: 958), random field: 0.6647383716417955
-search latency = 0.3732s
-
-=== Start deleting with <span class="hljs-built_in">expr</span> `pk <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;0&quot;</span> , <span class="hljs-string">&quot;1&quot;</span>]` ===
-
-query before delete by <span class="hljs-built_in">expr</span>=`pk <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;0&quot;</span> , <span class="hljs-string">&quot;1&quot;</span>]` -&gt; result: 
--{<span class="hljs-string">&#x27;random&#x27;</span>: 0.6378742006852851, <span class="hljs-string">&#x27;embeddings&#x27;</span>: [0.20963514, 0.39746657, 0.12019053, 0.6947492, 0.9535575, 0.5454552, 0.82360446, 0.21096309], <span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;0&#x27;</span>}
--{<span class="hljs-string">&#x27;random&#x27;</span>: 0.43925103574669633, <span class="hljs-string">&#x27;embeddings&#x27;</span>: [0.52323616, 0.8035404, 0.77824664, 0.80369574, 0.4914803, 0.8265614, 0.6145269, 0.80234545], <span class="hljs-string">&#x27;pk&#x27;</span>: <span class="hljs-string">&#x27;1&#x27;</span>}
-
-query after delete by <span class="hljs-built_in">expr</span>=`pk <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;0&quot;</span> , <span class="hljs-string">&quot;1&quot;</span>]` -&gt; result: []
-
-=== Drop collection `hello_milvus` ===
-<button class="copy-code-btn"></button></code></pre>
-<h2 id="Milvus-CLI" class="common-anchor-header">Milvus CLI<button data-href="#Milvus-CLI" class="anchor-icon" translate="no">
-      <svg translate="no"
-        aria-hidden="true"
-        focusable="false"
-        height="20"
-        version="1.1"
-        viewBox="0 0 16 16"
-        width="16"
-      >
-        <path
-          fill="#0092E4"
-          fill-rule="evenodd"
-          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
-        ></path>
-      </svg>
-    </button></h2><p>В завершение давайте воссоздадим коллекцию из примера <strong>hello_milvus</strong> и воспользуемся CLI для ее изучения.</p>
-<p>Начните с редактирования <strong>hello_milvus.py</strong> и закомментируйте две последние строки:</p>
-<pre><code translate="no"><span class="hljs-comment">###############################################################################</span>
-<span class="hljs-comment"># 7. drop collection</span>
-<span class="hljs-comment"># Finally, drop the hello_milvus collection</span>
-<span class="hljs-comment">#print(fmt.format(&quot;Drop collection `hello_milvus`&quot;))</span>
-<span class="hljs-comment">#utility.drop_collection(&quot;hello_milvus&quot;)</span>
-<button class="copy-code-btn"></button></code></pre>
-<p>Затем установите <a href="https://github.com/zilliztech/milvus_cli">интерфейс командной строки (CLI) Milvus</a> для взаимодействия с базой данных. Вы можете установить его с помощью Python или загрузить двоичный файл для вашей системы со <a href="https://github.com/zilliztech/milvus_cli/releases">страницы релизов</a>. Здесь приведен пример загрузки бинарного файла для Linux:</p>
-<pre><code translate="no">$ wget https://github.com/zilliztech/milvus_cli/releases/download/v0.3.2/milvus_cli-v0.3.2-Linux
---2023-04-13 09:58:15--  https://github.com/zilliztech/milvus_cli/releases/download/v0.3.2/milvus_cli-v0.3.2-Linux
-Resolving github.com (github.com)... 140.82.113.3
-Connecting to github.com (github.com)|140.82.113.3|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/436910525/25c43a55-dd72-41f8-acfa-05598267a2cb?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230413%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230413T135816Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=3697b3583bfa71a3e8b9773fa550f4d18e32110cfe6315035fd4fff01d694446&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=436910525&amp;response-content-disposition=attachment%3B%20filename%3Dmilvus_cli-v0.3.2-Linux&amp;response-content-type=application%2Foctet-stream [following]
---2023-04-13 09:58:16--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/436910525/25c43a55-dd72-41f8-acfa-05598267a2cb?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230413%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20230413T135816Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=3697b3583bfa71a3e8b9773fa550f4d18e32110cfe6315035fd4fff01d694446&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;key_id=0&amp;repo_id=436910525&amp;response-content-disposition=attachment%3B%20filename%3Dmilvus_cli-v0.3.2-Linux&amp;response-content-type=application%2Foctet-stream
-Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.111.133, 185.199.110.133, 185.199.108.133, ...
-Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.111.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 50254816 (48M) [application/octet-stream]
-Saving to: ‘milvus_cli-v0.3.2-Linux’
-
-milvus_cli-v0.3.2-L 100%[===================&gt;]  47.93M  62.7MB/s    <span class="hljs-keyword">in</span> 0.8s    
-
-2023-04-13 09:58:16 (62.7 MB/s) - ‘milvus_cli-v0.3.2-Linux’ saved [50254816/50254816]
-
-$ <span class="hljs-built_in">chmod</span> +x ./milvus_cli-v0.3.2-Linux 
-<button class="copy-code-btn"></button></code></pre>
-<p>Запустите модифицированный скрипт <strong>hello_milvus.py</strong>, и он завершится без сброса коллекции. Теперь запустите CLI и подключитесь к вашей базе данных. По умолчанию <strong>подключение</strong> происходит к экземпляру Milvus на localhost и порту по умолчанию:</p>
-<pre><code translate="no">$ ./milvus_cli-v0<span class="hljs-number">.3</span><span class="hljs-number">.2</span>-<span class="hljs-title class_">Linux</span>
-
-  __  __ _ _                    ____ _     ___
- |  \/  (_) |_   ___   _ ___   / ___| |   |_ _|
- | |\/| | | \ \ / <span class="hljs-regexp">/ | | /</span> __| | |   | |    | |
- | |  | | | |\ V /| |_| \__ \ | |___| |___ | |
- |_|  |_|_|_| \_/  \__,_|___/  \____|_____|___|
-
-<span class="hljs-title class_">Milvus</span> cli <span class="hljs-attr">version</span>: <span class="hljs-number">0.3</span><span class="hljs-number">.2</span>
-<span class="hljs-title class_">Pymilvus</span> <span class="hljs-attr">version</span>: <span class="hljs-number">2.2</span><span class="hljs-number">.1</span>
-
-<span class="hljs-title class_">Learn</span> <span class="hljs-attr">more</span>: <span class="hljs-attr">https</span>:<span class="hljs-comment">//github.com/zilliztech/milvus_cli.</span>
-
-
-milvus_cli &gt; connect
-<span class="hljs-title class_">Connect</span> <span class="hljs-title class_">Milvus</span> successfully.
-+---------+-----------------+
-| <span class="hljs-title class_">Address</span> | <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">19530</span> |
-|  <span class="hljs-title class_">User</span>   |                 |
-|  <span class="hljs-title class_">Alias</span>  |     <span class="hljs-keyword">default</span>     |
-+---------+-----------------+
-<button class="copy-code-btn"></button></code></pre>
-<p>Выведите список текущих коллекций, затем используйте <strong>describe</strong> для просмотра <strong>hello_milvus</strong>.</p>
-<pre><code translate="no">milvus_cli &gt; <span class="hljs-built_in">list</span> collections
-+----+-------------------+
-|    | Collection Name   |
-+====+===================+
-|  <span class="hljs-number">0</span> | hello_milvus      |
-+----+-------------------+
-milvus_cli &gt; describe collection -c hello_milvus
-+---------------+----------------------------------------------------------------------+
-| Name          | hello_milvus                                                         |
-+---------------+----------------------------------------------------------------------+
-| Description   | hello_milvus <span class="hljs-keyword">is</span> the simplest demo to introduce the APIs              |
-+---------------+----------------------------------------------------------------------+
-| Is Empty      | <span class="hljs-literal">False</span>                                                                |
-+---------------+----------------------------------------------------------------------+
-| Entities      | <span class="hljs-number">3000</span>                                                                 |
-+---------------+----------------------------------------------------------------------+
-| Primary Field | pk                                                                   |
-+---------------+----------------------------------------------------------------------+
-| Schema        | Description: hello_milvus <span class="hljs-keyword">is</span> the simplest demo to introduce the APIs |
-|               |                                                                      |
-|               | Auto ID: <span class="hljs-literal">False</span>                                                       |
-|               |                                                                      |
-|               | Fields(* <span class="hljs-keyword">is</span> the primary field):                                      |
-|               |  - *pk VARCHAR                                                       |
-|               |  - random DOUBLE                                                     |
-|               |  - embeddings FLOAT_VECTOR dim: <span class="hljs-number">8</span>                                    |
-+---------------+----------------------------------------------------------------------+
-| Partitions    | - _default                                                           |
-+---------------+----------------------------------------------------------------------+
-| Indexes       | - embeddings                                                         |
-+---------------+----------------------------------------------------------------------+
-<button class="copy-code-btn"></button></code></pre>
-<p>Коллекция состоит из трех полей. Давайте выполним запрос, чтобы просмотреть все три поля в одной записи. Мы запросим запись с идентификатором 100.</p>
-<p>Команда <strong>запроса</strong> предложит вам несколько вариантов. Для выполнения запроса вам понадобятся:</p>
-<ul>
-<li>Имя коллекции: <strong>hello_milvus</strong></li>
-<li>Выражение <strong>pk == "100"</strong></li>
-<li>Поля: <strong>pk, random, embeddings</strong></li>
-</ul>
-<p>Примите значения по умолчанию для остальных параметров.</p>
-<pre><code translate="no">milvus_cli &gt; <span class="hljs-function">k
-Collection <span class="hljs-title">name</span> (<span class="hljs-params">hello_milvus</span>): hello_milvus
-The query expression: pk</span> == <span class="hljs-string">&quot;100&quot;</span>
-<span class="hljs-function">The names of partitions to <span class="hljs-title">search</span> (<span class="hljs-params">split <span class="hljs-keyword">by</span> <span class="hljs-string">&quot;,&quot;</span> <span class="hljs-keyword">if</span> multiple</span>) [&#x27;_default&#x27;] []: 
-Fields to <span class="hljs-title">return</span>(<span class="hljs-params">split <span class="hljs-keyword">by</span> <span class="hljs-string">&quot;,&quot;</span> <span class="hljs-keyword">if</span> multiple</span>) [&#x27;pk&#x27;, &#x27;random&#x27;, &#x27;embeddings&#x27;] []: pk, random, embeddings
-timeout []: 
-Guarantee timestamp. This instructs Milvus to see all operations performed before a provided timestamp. If no such timestamp <span class="hljs-keyword">is</span> provided, then Milvus will search all operations performed to date. [0]: 
-Graceful time. Only used <span class="hljs-keyword">in</span> bounded consistency level. If graceful_time <span class="hljs-keyword">is</span> <span class="hljs-keyword">set</span>, PyMilvus will use current timestamp minus the graceful_time <span class="hljs-keyword">as</span> the guarantee_timestamp. This option <span class="hljs-keyword">is</span> 5s <span class="hljs-keyword">by</span> <span class="hljs-literal">default</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">set</span>. [5]: 
-Travel timestamp. Users can specify a timestamp <span class="hljs-keyword">in</span> a search to <span class="hljs-keyword">get</span> results based <span class="hljs-keyword">on</span> a data view at a specified point <span class="hljs-keyword">in</span> time. [0]: 
-+----+------+----------+------------------------------------------------------------------------------------------------+
-|    |   pk |   random | embeddings                                                                                     |
-+</span>====+======+==========+================================================================================================+
-|  <span class="hljs-number">0</span> |  <span class="hljs-number">100</span> | <span class="hljs-number">0.576352</span> | [<span class="hljs-number">0.5860017</span>, <span class="hljs-number">0.24227226</span>, <span class="hljs-number">0.8318699</span>, <span class="hljs-number">0.0060517574</span>, <span class="hljs-number">0.27727962</span>, <span class="hljs-number">0.5513293</span>, <span class="hljs-number">0.47201252</span>, <span class="hljs-number">0.6331349</span>] |
-+----+------+----------+------------------------------------------------------------------------------------------------+
-<button class="copy-code-btn"></button></code></pre>
-<p>Есть поле и его случайные вкрапления. Ваши значения будут отличаться.</p>
-<h2 id="Wrapping-Up" class="common-anchor-header">Подведение итогов<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
-      <svg translate="no"
-        aria-hidden="true"
-        focusable="false"
-        height="20"
-        version="1.1"
-        viewBox="0 0 16 16"
-        width="16"
-      >
-        <path
-          fill="#0092E4"
-          fill-rule="evenodd"
-          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
-        ></path>
-      </svg>
-    </button></h2><p>В этом руководстве вы установили Milvus с помощью <a href="https://docs.docker.com/compose/">Docker Compose</a> вместе с его Python API и CLI. После запуска сервера вы запустили пример программы, которая засеяла его случайными данными, а затем использовали CLI для запроса к базе данных.</p>
-<p>Milvus - это мощный <a href="https://zilliz.com/blog/scalar-quantization-and-product-quantization">векторный</a> движок <a href="https://zilliz.com/blog/scalar-quantization-and-product-quantization">базы данных</a> с открытым исходным кодом для хранения и поиска больших наборов данных. Попробуйте его уже сегодня и узнайте, как он может помочь вам в ваших мультимедийных проектах и проектах по искусственному интеллекту.  Если вы не готовы к использованию полной версии Milvus, попробуйте <a href="https://github.com/milvus-io/bootcamp/tree/master/notebooks">Milvus lite</a>.</p>
-<p><em>Эту статью написал Эрик Гебельбекер. <a href="http://ericgoebelbecker.com/">Эрик</a> 25 лет проработал на финансовых рынках в Нью-Йорке, разрабатывая инфраструктуру для сетей обмена рыночными данными и финансовой информацией (FIX). Он любит говорить о том, что делает команды эффективными (или не очень эффективными!).</em></p>
+    </button></h2><p>Milvus - это универсальная и мощная векторная база данных, созданная для решения задач управления неструктурированными данными и выполнения быстрых и эффективных операций векторного поиска в современных приложениях искусственного интеллекта. Благодаря таким вариантам развертывания, как Milvus Lite для быстрого создания прототипов, Milvus Standalone для приложений малого и среднего масштаба и Milvus Distributed для масштабирования на уровне предприятия, он обеспечивает гибкость, соответствующую размеру и сложности любого проекта.</p>
+<p>Кроме того, Zilliz Cloud Serverless расширяет возможности Milvus в облако и обеспечивает экономически эффективную модель с оплатой по факту использования, которая устраняет необходимость в локальной инфраструктуре. Благодаря таким передовым функциям, как многоуровневое хранение и автоматическое масштабирование, Zilliz Cloud Serverless обеспечивает ускорение операций векторного поиска при оптимизации затрат.</p>
