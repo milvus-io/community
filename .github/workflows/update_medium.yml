@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "18"
 
       - uses: jitterbit/get-changed-files@v1
         id: added_files
