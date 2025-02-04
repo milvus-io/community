@@ -18,7 +18,7 @@ canonicalUrl: https://milvus.io/blog/multimodal-semantic-search-with-images-and-
 
 As humans, we interpret the world through our senses. We hear sounds, we see images, video, and text, often layered on top of each other. We understand the world through these multiple modalities and the relationship between them. For artificial intelligence to truly match or exceed human capabilities, it must develop this same ability to understand the world through multiple lenses simultaneously.
 
-In this post and accompanying video (coming soon) and notebook, we'll showcase recent breakthroughs in models that can process both text and images together. We'll demonstrate this by building a semantic search application that goes beyond simple keyword matching - it understands the relationship between what users are asking for and the visual content they're searching through.
+In this post and accompanying [video](https://www.youtube.com/watch?v=bxE0_QYX_sU) and [notebook](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb), we'll showcase recent breakthroughs in models that can process both text and images together. We'll demonstrate this by building a semantic search application that goes beyond simple keyword matching - it understands the relationship between what users are asking for and the visual content they're searching through.
 
 What makes this project particularly exciting is that it's built entirely with open-source tools: the Milvus vector database, HuggingFace's machine learning libraries, and a dataset of Amazon customer reviews. It's remarkable to think that just a decade ago, building something like this would have required significant proprietary resources. Today, these powerful components are freely available and can be combined in innovative ways by anyone with the curiosity to experiment.
 
@@ -77,7 +77,7 @@ Our LLVM re-ranker was able to perform understanding across images and text, and
 
 ## Summary
 
-In this post and the accompanying video (coming soon) and [notebook](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb), we have constructed an application for multimodal semantic search across text and images. The embedding model was able to embed text and images jointly or separately into the same space, and the foundation model was able to input text and image while generating text in response. _Importantly, the embedding model was able to relate the user’s intent of an open-ended instruction to the query image and in that way specify how the user wanted the results to relate to the input image._
+In this post and the accompanying [video](https://www.youtube.com/watch?v=bxE0_QYX_sU) and [notebook](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb), we have constructed an application for multimodal semantic search across text and images. The embedding model was able to embed text and images jointly or separately into the same space, and the foundation model was able to input text and image while generating text in response. _Importantly, the embedding model was able to relate the user’s intent of an open-ended instruction to the query image and in that way specify how the user wanted the results to relate to the input image._
 
 This is just a taste of what is to come in the near future. We will see many applications of multimodal search, multimodal understanding and reasoning, and so on across diverse modalities: image, video, audio, molecules, social networks, tabular data, time-series, the potential is boundless.
 
@@ -88,7 +88,7 @@ And at the core of these systems is a vector database holding the system’s ext
 
 - Notebook: [“Multimodal Search with Amazon Reviews and LLVM Reranking](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb)”
 
-- Youtube AWS Developers video (coming soon)
+- [Youtube AWS Developers video](https://www.youtube.com/watch?v=bxE0_QYX_sU)
 
 - [Milvus documentation](https://milvus.io/docs)
 
