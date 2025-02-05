@@ -4,7 +4,7 @@ title: Multimodal Semantic Search with Images and Text
 author: Stefan Webb
 date: 2025-02-3
 desc: Learn how to build a semantic search app using multimodal AI that understands text-image relationships, beyond basic keyword matching.
-cover: assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png 
+cover: assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png 
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI
 recommend: true
@@ -14,13 +14,14 @@ canonicalUrl: https://milvus.io/blog/multimodal-semantic-search-with-images-and-
 
 
 
-![](https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png)
+![](https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 As humans, we interpret the world through our senses. We hear sounds, we see images, video, and text, often layered on top of each other. We understand the world through these multiple modalities and the relationship between them. For artificial intelligence to truly match or exceed human capabilities, it must develop this same ability to understand the world through multiple lenses simultaneously.
 
-<iframe width="1280" height="720" src="https://www.youtube.com/embed/bxE0_QYX_sU" title="Building Multimodal Search with Milvus: Combining Images and Text for Better Search Results" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-In this post and accompanying [video](https://www.youtube.com/watch?v=bxE0_QYX_sU) and [notebook](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb), we'll showcase recent breakthroughs in models that can process both text and images together. We'll demonstrate this by building a semantic search application that goes beyond simple keyword matching - it understands the relationship between what users are asking for and the visual content they're searching through.
+In this post and accompanying video (above) and [notebook](https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb), we'll showcase recent breakthroughs in models that can process both text and images together. We'll demonstrate this by building a semantic search application that goes beyond simple keyword matching - it understands the relationship between what users are asking for and the visual content they're searching through.
 
 What makes this project particularly exciting is that it's built entirely with open-source tools: the Milvus vector database, HuggingFace's machine learning libraries, and a dataset of Amazon customer reviews. It's remarkable to think that just a decade ago, building something like this would have required significant proprietary resources. Today, these powerful components are freely available and can be combined in innovative ways by anyone with the curiosity to experiment.
 
