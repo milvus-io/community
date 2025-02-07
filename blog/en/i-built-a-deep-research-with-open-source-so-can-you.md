@@ -10,6 +10,8 @@ tags: Deep Research, open source AI, Milvus, LangChain, DeepSeek R1
 recommend: true
 canonicalUrl: https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md
 ---
+[](https://assets.zilliz.com/deep_research_blog_image_95225226eb.png)
+
 Well actually, a minimally scoped agent that can reason, plan, use tools, etc. to perform research using Wikipedia. Still, not bad for a few hours of work…
 
 Unless you reside under a rock, in a cave, or in a remote mountain monastery, you will have heard about OpenAI’s release of _Deep Research_ on Feb 2, 2025. This new product promises to revolutionize how we answer questions requiring the synthesis of large amounts of diverse information.
