@@ -82,10 +82,8 @@ Research starts by defining a question. We take the question to be the user’s 
 
 Here is an example reasoning trace as DeepSeek refines the question “How has the cast changed over time?”:
 
-```
-
+```bash
 <think>
-
 Alright, so I need to break down the question "How has the cast changed over time?" related to the evolution of The Simpsons. Let me think about what aspects are involved here.
 
 First, I know that the cast has changed a lot, but I need to figure out the intermediate questions to approach this. The main question is about changes in the cast over time, so I should consider different areas that contribute to this change.
@@ -97,11 +95,8 @@ Also, some original voice actors have left, so I should include a sub-question a
 The show has been popular for a long time, so recurring roles changing might be another aspect. Additionally, the role of the show in society might have influenced casting choices, so a sub-question about that.
 
 Lastly, the overall impact on the cast's careers could be another angle. So, I should list these as sub-questions to cover all aspects.
-
 </think>
-
 ```
-
 
 ### Search
 
@@ -110,43 +105,26 @@ Next, we conduct a “literature review” of Wikipedia articles. For now, we re
 Here is a code snippet showing how we store our Wikipedia page in Milvus using its LangChain integration:
 
 ```python
-
 wiki_wiki = wikipediaapi.Wikipedia(user_agent='MilvusDeepResearchBot (<insert your email>)', language='en')
-
 page_py = wiki_wiki.page(page_title)
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
-
 docs = text_splitter.create_documents([page_py.text])
 
 vectorstore = Milvus.from_documents(  # or Zilliz.from_documents
-
     documents=docs,
-
     embedding=embeddings,
-
     connection_args={
-
         "uri": "./milvus_demo.db",
-
     },
-
     drop_old=True, 
-
     index_params={
-
         "metric_type": "COSINE",
-
         "index_type": "FLAT",  
-
         "params": {},
-
     },
-
 )
-
 ```
-
 
 ### Analyze
 
@@ -155,51 +133,30 @@ The agent returns to its questions and answers them based on the relevant inform
 Here is a code snippet illustrating constructing a RAG with LangChain and answering our subquestions separately.
 
 ```python
-
 # Define the RAG chain for response generation
-
 rag_chain = (
-
     {"context": retriever | format_docs, "question": RunnablePassthrough()}
-
     | prompt
-
     | llm
-
     | StrOutputParser()
-
 )
 
 # Prompt the RAG for each question
-
 answers = {}
-
 total = len(leaves(breakdown))
 
 pbar = tqdm(total=total)
-
 for k, v in breakdown.items():
-
     if v == []:
-
         print(k)
-
         answers[k] = rag_chain.invoke(k).split('</think>')[-1].strip()
-
         pbar.update(1)
-
     else:
-
         for q in v:
-
             print(q)
-
             answers[q] = rag_chain.invoke(q).split('</think>')[-1].strip()
-
             pbar.update(1)
-
 ```
-
 
 ### Synthesize
 
