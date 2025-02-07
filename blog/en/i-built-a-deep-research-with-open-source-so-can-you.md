@@ -4,7 +4,7 @@ title: I Built a Deep Research with Open Source—and So Can You!
 author: Stefan Webb
 date: 2025-02-6
 desc: Learn how to create a Deep Research-style agent using open-source tools like Milvus, DeepSeek R1, and LangChain. A step-by-step guide to building AI research tools.
-cover: assets.zilliz.com/Build_Your_Own_Deep_Research_Tool_with_Open_Source_472ec1ddca.jpg
+cover: assets.zilliz.com/I_Built_a_Deep_Research_with_Open_Source_and_So_Can_You_7eb2a38078.png
 tag: Tutorials
 tags: Deep Research, open source AI, Milvus, LangChain, DeepSeek R1
 recommend: true
