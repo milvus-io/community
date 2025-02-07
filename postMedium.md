@@ -106,7 +106,7 @@ const readMdFiles = async (pathList = []) => {
   }
 
   if (failure.length > 0) {
-    const feishuMsg: IFeishuMsgType = {
+    const feishuMsg = {
       msg_type: 'post',
       content: {
         post: {
