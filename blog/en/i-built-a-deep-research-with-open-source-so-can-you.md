@@ -85,11 +85,9 @@ Research starts by defining a question. We take the question to be the user’s 
 
 Here is an example reasoning trace as DeepSeek refines the question “How has the cast changed over time?”:
 
-```bash
+```text
 <think>
-```
 
-```
 Alright, so I need to break down the question "How has the cast changed over time?" related to the evolution of The Simpsons. Let me think about what aspects are involved here.
 
 First, I know that the cast has changed a lot, but I need to figure out the intermediate questions to approach this. The main question is about changes in the cast over time, so I should consider different areas that contribute to this change.
@@ -101,9 +99,7 @@ Also, some original voice actors have left, so I should include a sub-question a
 The show has been popular for a long time, so recurring roles changing might be another aspect. Additionally, the role of the show in society might have influenced casting choices, so a sub-question about that.
 
 Lastly, the overall impact on the cast's careers could be another angle. So, I should list these as sub-questions to cover all aspects.
-```
 
-```
 </think>
 ```
 
