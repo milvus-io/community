@@ -5,20 +5,15 @@ author: Stefan Webb
 date: 2025-02-3
 desc: 기본적인 키워드 매칭을 넘어 텍스트와 이미지의 관계를 이해하는 멀티모달 AI를 사용하여 시맨틱 검색 앱을 구축하는 방법을 알아보세요.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>인간은 감각을 통해 세상을 해석합니다. 우리는 소리를 듣고, 이미지, 비디오, 텍스트를 보고, 종종 서로 겹쳐서 봅니다. 우리는 이러한 다양한 양식과 이들 간의 관계를 통해 세상을 이해합니다. 인공지능이 인간의 능력에 진정으로 부합하거나 이를 뛰어넘으려면 여러 렌즈를 통해 동시에 세상을 이해하는 능력을 개발해야 합니다.</p>
-<p>이 게시물과 함께 제공되는 동영상(곧 제공 예정) 및 노트북에서는 텍스트와 이미지를 함께 처리할 수 있는 최근의 획기적인 모델에 대해 소개합니다. 단순한 키워드 매칭을 넘어 사용자가 요구하는 내용과 검색하는 시각적 콘텐츠 사이의 관계를 이해하는 시맨틱 검색 애플리케이션을 구축하여 이를 시연해 보겠습니다.</p>
+<p>이 게시물과 함께 제공되는 동영상(위)과 <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">노트북에서는</a> 텍스트와 이미지를 함께 처리할 수 있는 최근의 획기적인 모델에 대해 소개합니다. 단순한 키워드 매칭을 넘어 사용자가 요구하는 내용과 검색하는 시각적 콘텐츠 사이의 관계를 이해하는 시맨틱 검색 애플리케이션을 구축하여 이를 시연해 보겠습니다.</p>
 <p>이 프로젝트가 특히 흥미로운 이유는 Milvus 벡터 데이터베이스, HuggingFace의 머신 러닝 라이브러리, Amazon 고객 리뷰 데이터 세트와 같은 오픈 소스 도구로만 구축되었다는 점입니다. 불과 10년 전만 해도 이와 같은 기능을 구축하려면 상당한 독점 리소스가 필요했을 것이라고 생각하면 놀랍습니다. 오늘날에는 이러한 강력한 구성 요소를 무료로 사용할 수 있으며 실험에 대한 호기심이 있는 사람이라면 누구나 혁신적인 방식으로 결합할 수 있습니다.</p>
 <custom-h1>개요</custom-h1><p>
   <span class="img-wrapper">
@@ -119,7 +114,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이 게시물과 함께 제공되는 동영상(곧 제공 예정)과 <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">노트북에서는</a> 텍스트와 이미지를 아우르는 멀티모달 시맨틱 검색을 위한 애플리케이션을 구축했습니다. 임베딩 모델은 텍스트와 이미지를 같은 공간에 공동으로 또는 개별적으로 임베드할 수 있었고, 기반 모델은 텍스트와 이미지를 입력하면서 그에 대한 응답으로 텍스트를 생성할 수 있었습니다. <em>중요한 점은 임베딩 모델이 사용자의 개방형 명령어 의도를 쿼리 이미지와 연관시켜 사용자가 원하는 결과를 입력 이미지와 어떻게 연관시킬지 지정할 수 있었다는 점입니다.</em></p>
+    </button></h2><p>이 게시물과 함께 첨부된 <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">동영상과</a> <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">노트북에서는</a> 텍스트와 이미지에 걸친 다중 모드 시맨틱 검색을 위한 애플리케이션을 구축했습니다. 임베딩 모델은 텍스트와 이미지를 같은 공간에 공동으로 또는 개별적으로 임베드할 수 있었고, 기반 모델은 텍스트와 이미지를 입력하면서 그에 대한 응답으로 텍스트를 생성할 수 있었습니다. <em>중요한 점은 임베딩 모델이 사용자의 개방형 명령어 의도를 쿼리 이미지와 연관시켜 사용자가 원하는 결과를 입력 이미지와 어떻게 연관시킬지 지정할 수 있었다는 점입니다.</em></p>
 <p>이것은 앞으로 다가올 미래의 모습 중 일부에 불과합니다. 이미지, 비디오, 오디오, 분자, 소셜 네트워크, 표 형식의 데이터, 시계열 등 다양한 양식에 걸쳐 멀티모달 검색, 멀티모달 이해 및 추론 등의 많은 애플리케이션을 보게 될 것이며 그 잠재력은 무궁무진합니다.</p>
 <p>그리고 이러한 시스템의 핵심에는 시스템의 외부 '메모리'를 보관하는 벡터 데이터베이스가 있습니다. Milvus는 이러한 목적을 위한 탁월한 선택입니다. 오픈 소스이며 모든 기능을 갖추고 있고( <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Milvus 2.5의 전체 텍스트 검색에 대한 이 문서</a> 참조) 웹 규모의 트래픽과 100ms 미만의 지연 시간으로 수십억 개의 벡터로 효율적으로 확장할 수 있습니다. <a href="https://milvus.io/docs">Milvus 문서에서</a> 자세히 알아보고, <a href="https://milvus.io/discord">Discord</a> 커뮤니티에 가입하고, 다음 <a href="https://lu.ma/unstructured-data-meetup">비정형 데이터 밋업에서</a> 만나 뵙기를 기대합니다. 그때까지!</p>
 <h2 id="Resources" class="common-anchor-header">리소스<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -139,10 +134,10 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>노트북: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Amazon 리뷰와 LLVM 리랭킹을 이용한 멀티모달 검색</a>"</p></li>
-<li><p>유튜브 AWS 개발자 동영상(곧 제공 예정)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">유튜브 AWS 개발자 비디오</a></p></li>
 <li><p><a href="https://milvus.io/docs">Milvus 문서</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">비정형 데이터 밋업</a></p></li>
-<li><p>모델 임베딩: <a href="https://huggingface.co/BAAI/bge-visualized">시각화된 BGE 모델 카드</a></p></li>
+<li><p>모델 임베딩 <a href="https://huggingface.co/BAAI/bge-visualized">시각화된 BGE 모델 카드</a></p></li>
 <li><p>대체 임베딩 모델: <a href="https://github.com/google-deepmind/magiclens">MagicLens 모델 저장소</a></p></li>
 <li><p>LLVM: <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision 모델 카드</a></p></li>
 <li><p>Paper: "<a href="https://arxiv.org/abs/2403.19651">MagicLens: 개방형 지침을 사용한 자체 감독 이미지 검색</a>"</p></li>

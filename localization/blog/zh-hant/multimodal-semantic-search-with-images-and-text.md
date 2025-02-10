@@ -5,20 +5,15 @@ author: Stefan Webb
 date: 2025-02-3
 desc: 瞭解如何使用多模態 AI 建立語意搜尋應用程式，除了基本的關鍵字比對之外，還能瞭解文字與影像之間的關係。
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>身為人類，我們透過感官來詮釋世界。我們聽到聲音、看見影像、視訊和文字，而且往往是層層相疊。我們透過這些多重模式以及它們之間的關係來理解世界。人工智慧若要真正媲美或超越人類的能力，就必須發展出這種同時透過多種鏡頭來理解世界的能力。</p>
-<p>在這篇文章以及隨附的影片（即將推出）和筆記型電腦中，我們將展示最近在能夠同時處理文字和影像的模型上所取得的突破。我們將透過建立一個語意搜尋應用程式來證明這一點，這個應用程式不只是簡單的關鍵字匹配，它還能理解使用者所要求的內容與他們正在搜尋的視覺內容之間的關係。</p>
+<p>在這篇文章以及隨附的影片（上圖）和<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">筆記</a>型電腦中，我們將展示最近在可同時處理文字和影像的模型上所取得的突破。我們將透過建立一個語意搜尋應用程式來證明這一點，這個應用程式不只是簡單的關鍵字匹配，它還能理解使用者所要求的內容與他們正在搜尋的視覺內容之間的關係。</p>
 <p>讓這個專案特別令人興奮的是，它完全是使用開源工具建立的：Milvus向量資料庫、HuggingFace的機器學習程式庫，以及亞馬遜客戶評論資料集。想想看，就在十年前，建立這樣的東西需要大量的專屬資源。如今，這些功能強大的元件都可以免費取得，任何有好奇心的人都可以用創新的方式將它們結合起來。</p>
 <custom-h1>概述</custom-h1><p>
   <span class="img-wrapper">
@@ -119,7 +114,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在這篇文章以及隨附的影片（即將推出）和<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">筆記</a>型電腦中，我們建構了一個跨文字和圖像的多模態語意搜尋應用程式。嵌入模型能夠將文字和圖像共同或單獨嵌入同一空間，而基礎模型則能夠輸入文字和圖像，同時產生文字回應。<em>重要的是，嵌入模型能夠將用戶開放式指令的意圖與查詢圖像聯繫起來，並以此方式指定用戶希望結果如何與輸入圖像聯繫起來。</em></p>
+    </button></h2><p>在這篇文章以及隨附的<a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">影片</a>和<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">筆記型</a>電腦中，我們建構了一個跨文字和圖像的多模態語意搜尋應用程式。嵌入模型能夠將文字和圖像共同或單獨嵌入同一空間，而基礎模型則能夠輸入文字和圖像，同時產生文字回應。<em>重要的是，嵌入模型能夠將用戶開放式指令的意圖與查詢圖像聯繫起來，並以此方式指定用戶希望結果如何與輸入圖像聯繫起來。</em></p>
 <p>這只是不久將來的趨勢。我們將會看到多模態搜尋、多模態理解與推理等多種不同模態的應用：圖像、視訊、音訊、分子、社群網路、表格資料、時間序列，潛力無窮。</p>
 <p>而這些系統的核心是一個向量資料庫，容納了系統的外部「記憶」。Milvus 是這方面的絕佳選擇。它開放原始碼、功能齊全 (請參閱<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">這篇文章關於 Milvus 2.5 的全文檢索</a>)，並能以網路規模的流量和低於 100 毫秒的延遲，有效地擴充至數十億向量。如需瞭解更多資訊，請參閱<a href="https://milvus.io/docs">Milvus 文件</a>、加入我們的<a href="https://milvus.io/discord">Discord</a>社群，並希望能在下一次的<a href="https://lu.ma/unstructured-data-meetup">非結構化資料聚會</a>中與您見面。在那之前</p>
 <h2 id="Resources" class="common-anchor-header">資源<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -138,8 +133,8 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>筆記本：<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"使用 Amazon Reviews 與 LLVM Reranking 進行多模式搜尋</a></p></li>
-<li><p>Youtube AWS 開發人員視訊 (即將推出)</p></li>
+<li><p>筆記本：<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"使用 Amazon Reviews 和 LLVM Reranking 進行多模式搜尋</a></p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Youtube AWS 開發人員視訊</a></p></li>
 <li><p><a href="https://milvus.io/docs">Milvus 文件</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">非結構化資料聚會</a></p></li>
 <li><p>嵌入模型：<a href="https://huggingface.co/BAAI/bge-visualized">可視化 BGE 模型卡</a></p></li>

@@ -8,20 +8,15 @@ desc: >-
   un'intelligenza artificiale multimodale che comprenda le relazioni
   testo-immagine, al di là della semplice corrispondenza delle parole chiave.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Come esseri umani, interpretiamo il mondo attraverso i nostri sensi. Sentiamo suoni, vediamo immagini, video e testi, spesso sovrapposti. Comprendiamo il mondo attraverso queste modalità multiple e la relazione tra di esse. Affinché l'intelligenza artificiale possa davvero eguagliare o superare le capacità umane, deve sviluppare la stessa capacità di comprendere il mondo attraverso più lenti contemporaneamente.</p>
-<p>In questo post e nel video che lo accompagna (in arrivo) e nel notebook, presenteremo le recenti scoperte di modelli in grado di elaborare insieme testo e immagini. Lo dimostreremo costruendo un'applicazione di ricerca semantica che va oltre la semplice corrispondenza delle parole chiave, comprendendo la relazione tra ciò che gli utenti chiedono e il contenuto visivo che stanno cercando.</p>
+<p>In questo post e nel video che lo accompagna (sopra) e nel <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">notebook</a>, presenteremo i recenti progressi dei modelli in grado di elaborare insieme testo e immagini. Lo dimostreremo costruendo un'applicazione di ricerca semantica che va oltre la semplice corrispondenza delle parole chiave: comprende la relazione tra ciò che gli utenti chiedono e il contenuto visivo che stanno cercando.</p>
 <p>Ciò che rende questo progetto particolarmente interessante è che è costruito interamente con strumenti open-source: il database vettoriale Milvus, le librerie di machine learning di HuggingFace e un set di dati di recensioni di clienti Amazon. È straordinario pensare che solo un decennio fa, costruire qualcosa di simile avrebbe richiesto notevoli risorse proprietarie. Oggi questi potenti componenti sono liberamente disponibili e possono essere combinati in modi innovativi da chiunque abbia la curiosità di sperimentare.</p>
 <custom-h1>Panoramica</custom-h1><p>
   <span class="img-wrapper">
@@ -122,9 +117,9 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In questo post, nel video (in arrivo) e nel <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">notebook</a> che lo accompagnano, abbiamo costruito un'applicazione per la ricerca semantica multimodale su testo e immagini. Il modello di embedding è stato in grado di incorporare testo e immagini congiuntamente o separatamente nello stesso spazio, mentre il modello di fondazione è stato in grado di inserire testo e immagini generando testo in risposta. <em>È importante notare che il modello di incorporazione è stato in grado di mettere in relazione l'intento dell'utente di un'istruzione aperta con l'immagine della query e di specificare in questo modo come l'utente voleva che i risultati si riferissero all'immagine inserita.</em></p>
+    </button></h2><p>In questo post e nei <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">video</a> e <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">quaderni</a> che lo accompagnano, abbiamo costruito un'applicazione per la ricerca semantica multimodale su testo e immagini. Il modello di embedding è stato in grado di incorporare testo e immagini congiuntamente o separatamente nello stesso spazio, mentre il modello di fondazione è stato in grado di inserire testo e immagini generando testo in risposta. <em>È importante notare che il modello di embedding è stato in grado di mettere in relazione l'intento dell'utente di un'istruzione aperta con l'immagine della query e di specificare in questo modo come l'utente voleva che i risultati si riferissero all'immagine inserita.</em></p>
 <p>Questo è solo un assaggio di ciò che avverrà nel prossimo futuro. Vedremo molte applicazioni di ricerca multimodale, comprensione e ragionamento multimodale e così via attraverso diverse modalità: immagini, video, audio, molecole, social network, dati tabellari, serie temporali, il potenziale è illimitato.</p>
-<p>Al centro di questi sistemi c'è un database vettoriale che costituisce la "memoria" esterna del sistema. Milvus è una scelta eccellente per questo scopo. È open-source, completo di tutte le funzionalità (si veda <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">questo articolo sulla ricerca full-text in Milvus 2.5</a>) e scala in modo efficiente fino a miliardi di vettori con un traffico su scala web e una latenza inferiore a 100ms. Per saperne di più consultate i <a href="https://milvus.io/docs">documenti di Milvus</a>, unitevi alla nostra comunità <a href="https://milvus.io/discord">Discord</a> e spero di vedervi al nostro prossimo <a href="https://lu.ma/unstructured-data-meetup">meetup sui dati non strutturati</a>. Fino ad allora!</p>
+<p>Al centro di questi sistemi c'è un database vettoriale che costituisce la "memoria" esterna del sistema. Milvus è una scelta eccellente per questo scopo. È open-source, completo di tutte le funzionalità (si veda <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">questo articolo sulla ricerca full-text in Milvus 2.5</a>) e scala in modo efficiente fino a miliardi di vettori con un traffico su scala web e una latenza inferiore a 100ms. Per saperne di più, consultate i <a href="https://milvus.io/docs">documenti di Milvus</a>, unitevi alla nostra comunità <a href="https://milvus.io/discord">Discord</a> e spero di vedervi al nostro prossimo <a href="https://lu.ma/unstructured-data-meetup">meetup sui dati non strutturati</a>. Fino ad allora!</p>
 <h2 id="Resources" class="common-anchor-header">Risorse<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -141,8 +136,8 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Appunti: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Ricerca multimodale con le recensioni di Amazon e LLVM Reranking</a>".</p></li>
-<li><p>Video Youtube AWS Developers (in arrivo)</p></li>
+<li><p>Appunti: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Ricerca multimodale con recensioni Amazon e LLVM Reranking</a>".</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Video di Youtube AWS Developers</a></p></li>
 <li><p><a href="https://milvus.io/docs">Documentazione di Milvus</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">Incontro sui dati non strutturati</a></p></li>
 <li><p>Modello di incorporazione: <a href="https://huggingface.co/BAAI/bge-visualized">Scheda modello BGE visualizzata</a></p></li>

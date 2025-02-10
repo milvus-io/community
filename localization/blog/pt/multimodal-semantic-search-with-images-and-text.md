@@ -8,21 +8,16 @@ desc: >-
   que compreende as relações texto-imagem, para além da correspondência básica
   de palavras-chave.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Como seres humanos, interpretamos o mundo através dos nossos sentidos. Ouvimos sons, vemos imagens, vídeos e textos, muitas vezes sobrepostos uns aos outros. Compreendemos o mundo através destas múltiplas modalidades e da relação entre elas. Para que a inteligência artificial possa realmente igualar ou exceder as capacidades humanas, tem de desenvolver esta mesma capacidade de compreender o mundo através de múltiplas lentes em simultâneo.</p>
-<p>Nesta publicação, no vídeo que a acompanha (brevemente) e no bloco de notas, apresentaremos as recentes descobertas em modelos que podem processar texto e imagens em conjunto. Vamos demonstrar isto construindo uma aplicação de pesquisa semântica que vai além da simples correspondência de palavras-chave - compreende a relação entre o que os utilizadores estão a pedir e o conteúdo visual que estão a pesquisar.</p>
-<p>O que torna este projeto particularmente excitante é o facto de ser construído inteiramente com ferramentas de código aberto: a base de dados de vectores Milvus, as bibliotecas de aprendizagem automática da HuggingFace e um conjunto de dados de críticas de clientes da Amazon. É extraordinário pensar que, há apenas uma década, construir algo deste género teria exigido recursos proprietários significativos. Atualmente, estes poderosos componentes estão disponíveis gratuitamente e podem ser combinados de formas inovadoras por qualquer pessoa com curiosidade para experimentar.</p>
+<p>Nesta publicação, no vídeo que a acompanha (acima) e no <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">bloco de notas</a>, apresentaremos os recentes avanços em modelos que podem processar texto e imagens em conjunto. Vamos demonstrar isto construindo uma aplicação de pesquisa semântica que vai além da simples correspondência de palavras-chave - compreende a relação entre o que os utilizadores estão a pedir e o conteúdo visual que estão a pesquisar.</p>
+<p>O que torna este projeto particularmente empolgante é o facto de ser construído inteiramente com ferramentas de código aberto: a base de dados de vectores Milvus, as bibliotecas de aprendizagem automática da HuggingFace e um conjunto de dados de críticas de clientes da Amazon. É extraordinário pensar que, há apenas uma década, construir algo deste género teria exigido recursos proprietários significativos. Atualmente, estes poderosos componentes estão disponíveis gratuitamente e podem ser combinados de formas inovadoras por qualquer pessoa com curiosidade para experimentar.</p>
 <custom-h1>Visão geral</custom-h1><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/overview_97a124bc9a.jpg" alt="" class="doc-image" id="" />
@@ -122,7 +117,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Neste post, no vídeo que o acompanha (em breve) e no <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">bloco de notas</a>, construímos uma aplicação para pesquisa semântica multimodal em texto e imagens. O modelo de incorporação foi capaz de incorporar texto e imagens conjunta ou separadamente no mesmo espaço, e o modelo de fundação foi capaz de introduzir texto e imagem enquanto gerava texto em resposta. <em>Mais importante ainda, o modelo de incorporação foi capaz de relacionar a intenção do utilizador de uma instrução aberta com a imagem de consulta e, dessa forma, especificar como o utilizador queria que os resultados se relacionassem com a imagem introduzida.</em></p>
+    </button></h2><p>Neste post e no <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">vídeo</a> e <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">bloco de</a> notas que o acompanham, construímos uma aplicação para pesquisa semântica multimodal em texto e imagens. O modelo de incorporação foi capaz de incorporar texto e imagens conjunta ou separadamente no mesmo espaço, e o modelo de fundação foi capaz de introduzir texto e imagem enquanto gerava texto em resposta. <em>Mais importante ainda, o modelo de incorporação foi capaz de relacionar a intenção do utilizador de uma instrução aberta com a imagem de consulta e, dessa forma, especificar como o utilizador queria que os resultados se relacionassem com a imagem introduzida.</em></p>
 <p>Isto é apenas uma amostra do que está para vir num futuro próximo. Veremos muitas aplicações de pesquisa multimodal, compreensão e raciocínio multimodais, etc., em diversas modalidades: imagem, vídeo, áudio, moléculas, redes sociais, dados tabulares, séries temporais, o potencial é ilimitado.</p>
 <p>E no centro destes sistemas está uma base de dados vetorial que contém a "memória" externa do sistema. O Milvus é uma excelente escolha para este fim. É de código aberto, tem todas as funcionalidades (ver <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">este artigo sobre a pesquisa de texto integral no Milvus 2.5</a>) e é escalável de forma eficiente para milhares de milhões de vectores com tráfego à escala da Web e latência inferior a 100 ms. Saiba mais na <a href="https://milvus.io/docs">documentação do Milvus</a>, junte-se à nossa comunidade <a href="https://milvus.io/discord">Discord</a> e esperamos vê-lo no nosso próximo <a href="https://lu.ma/unstructured-data-meetup">encontro de dados não estruturados</a>. Até lá!</p>
 <h2 id="Resources" class="common-anchor-header">Recursos<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -142,7 +137,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>Caderno de notas: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Pesquisa multimodal com comentários da Amazon e LLVM Reranking</a>"</p></li>
-<li><p>Vídeo do Youtube AWS Developers (em breve)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Vídeo do Youtube AWS Developers</a></p></li>
 <li><p><a href="https://milvus.io/docs">Documentação do Milvus</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">Encontro de dados não estruturados</a></p></li>
 <li><p>Modelo de incorporação: <a href="https://huggingface.co/BAAI/bge-visualized">Cartão de modelo BGE visualizado</a></p></li>

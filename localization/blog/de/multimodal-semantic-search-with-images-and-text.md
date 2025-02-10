@@ -8,20 +8,15 @@ desc: >-
   erstellen, die über den einfachen Abgleich von Schlüsselwörtern hinaus auch
   Text-Bild-Beziehungen versteht.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Als Menschen interpretieren wir die Welt mit unseren Sinnen. Wir hören Geräusche, sehen Bilder, Videos und Texte, die sich oft überlagern. Wir verstehen die Welt durch diese verschiedenen Modalitäten und die Beziehungen zwischen ihnen. Damit künstliche Intelligenz den menschlichen Fähigkeiten wirklich ebenbürtig ist oder sie sogar übertrifft, muss sie die gleiche Fähigkeit entwickeln, die Welt durch mehrere Linsen gleichzeitig zu verstehen.</p>
-<p>In diesem Beitrag, dem dazugehörigen Video (in Kürze) und dem Notebook werden wir die jüngsten Durchbrüche bei Modellen vorstellen, die sowohl Text als auch Bilder gleichzeitig verarbeiten können. Wir werden dies anhand einer semantischen Suchanwendung demonstrieren, die über den einfachen Abgleich von Schlüsselwörtern hinausgeht - sie versteht die Beziehung zwischen dem, wonach Benutzer fragen, und den visuellen Inhalten, die sie durchsuchen.</p>
+<p>In diesem Beitrag und dem dazugehörigen Video (oben) und <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">Notebook</a> stellen wir die jüngsten Durchbrüche bei Modellen vor, die sowohl Text als auch Bilder gleichzeitig verarbeiten können. Wir werden dies anhand einer semantischen Suchanwendung demonstrieren, die über den einfachen Abgleich von Schlüsselwörtern hinausgeht - sie versteht die Beziehung zwischen dem, wonach Benutzer fragen, und den visuellen Inhalten, die sie durchsuchen.</p>
 <p>Was dieses Projekt besonders aufregend macht, ist die Tatsache, dass es vollständig mit Open-Source-Tools erstellt wurde: die Vektordatenbank Milvus, die Bibliotheken für maschinelles Lernen von HuggingFace und ein Datensatz von Amazon-Kundenrezensionen. Es ist bemerkenswert, wenn man sich vorstellt, dass noch vor einem Jahrzehnt für die Entwicklung eines solchen Projekts erhebliche firmeneigene Ressourcen erforderlich gewesen wären. Heute sind diese leistungsstarken Komponenten frei verfügbar und können von jedem, der neugierig ist, auf innovative Weise kombiniert werden.</p>
 <custom-h1>Überblick</custom-h1><p>
   <span class="img-wrapper">
@@ -122,7 +117,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In diesem Beitrag und dem dazugehörigen Video (in Kürze) sowie dem <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">Notebook</a> haben wir eine Anwendung für die multimodale semantische Suche in Text und Bild entwickelt. Das Einbettungsmodell war in der Lage, Text und Bilder gemeinsam oder getrennt in denselben Raum einzubetten, und das Basismodell war in der Lage, Text und Bild einzugeben und gleichzeitig Text als Antwort zu generieren. <em>Wichtig ist, dass das Einbettungsmodell in der Lage war, die Absicht des Benutzers einer offenen Anweisung mit dem Abfragebild in Beziehung zu setzen und auf diese Weise zu spezifizieren, wie der Benutzer die Ergebnisse mit dem eingegebenen Bild in Beziehung setzen wollte.</em></p>
+    </button></h2><p>In diesem Beitrag und dem dazugehörigen <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Video</a> und <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">Notebook</a> haben wir eine Anwendung für die multimodale semantische Suche über Text und Bilder entwickelt. Das Einbettungsmodell war in der Lage, Text und Bilder gemeinsam oder getrennt in denselben Raum einzubetten, und das Basismodell war in der Lage, Text und Bild einzugeben und gleichzeitig Text als Antwort zu generieren. <em>Wichtig ist, dass das Einbettungsmodell in der Lage war, die Absicht des Benutzers einer offenen Anweisung mit dem Abfragebild in Beziehung zu setzen und auf diese Weise zu spezifizieren, wie der Benutzer die Ergebnisse mit dem eingegebenen Bild in Beziehung setzen wollte.</em></p>
 <p>Dies ist nur ein Vorgeschmack auf das, was uns in naher Zukunft erwarten wird. Wir werden viele Anwendungen der multimodalen Suche, des multimodalen Verstehens und Schlussfolgerns usw. in verschiedenen Modalitäten sehen: Bilder, Video, Audio, Moleküle, soziale Netzwerke, Tabellendaten, Zeitreihen - das Potenzial ist grenzenlos.</p>
 <p>Und das Herzstück dieser Systeme ist eine Vektordatenbank, die das externe "Gedächtnis" des Systems enthält. Milvus ist eine ausgezeichnete Wahl für diesen Zweck. Es ist quelloffen, voll funktionsfähig (siehe <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">diesen Artikel über die Volltextsuche in Milvus 2.5</a>) und skaliert effizient auf Milliarden von Vektoren mit Datenverkehr im Web und einer Latenzzeit von unter 100 ms. Erfahren Sie mehr in den <a href="https://milvus.io/docs">Milvus-Dokumenten</a>, treten Sie unserer <a href="https://milvus.io/discord">Discord-Community</a> bei, und wir hoffen, Sie bei unserem nächsten <a href="https://lu.ma/unstructured-data-meetup">Unstructured Data Meetup</a> zu sehen. Bis dahin!</p>
 <h2 id="Resources" class="common-anchor-header">Ressourcen<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -142,11 +137,11 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>Notizbuch: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Multimodale Suche mit Amazon-Rezensionen und LLVM-Reranking</a>"</p></li>
-<li><p>Youtube AWS Developers Video (bald verfügbar)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Youtube AWS-Entwickler-Video</a></p></li>
 <li><p><a href="https://milvus.io/docs">Milvus-Dokumentation</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">Treffen für unstrukturierte Daten</a></p></li>
 <li><p>Modell einbetten: <a href="https://huggingface.co/BAAI/bge-visualized">Visualisierte BGE-Modellkarte</a></p></li>
-<li><p>Alternatives Einbettungsmodell: <a href="https://github.com/google-deepmind/magiclens">MagicLens-Modell-Repositorium</a></p></li>
+<li><p>Alt. Einbettungsmodell: <a href="https://github.com/google-deepmind/magiclens">MagicLens-Modell-Repositorium</a></p></li>
 <li><p>LLVM: <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision Modellkarte</a></p></li>
 <li><p>Papier: "<a href="https://arxiv.org/abs/2403.19651">MagicLens: Self-Supervised Image Retrieval with Open-Ended Instructions</a>"</p></li>
 <li><p>Datensatz: <a href="https://amazon-reviews-2023.github.io/">Amazon Bewertungen 2023</a></p></li>

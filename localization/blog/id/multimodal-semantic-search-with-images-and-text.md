@@ -7,20 +7,15 @@ desc: >-
   Pelajari cara membuat aplikasi pencarian semantik menggunakan AI multimodal
   yang memahami hubungan teks-gambar, lebih dari sekadar pencocokan kata kunci.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Sebagai manusia, kita menafsirkan dunia melalui indera kita. Kita mendengar suara, melihat gambar, video, dan teks, yang sering kali saling bertumpuk satu sama lain. Kita memahami dunia melalui berbagai modalitas ini dan hubungan di antara mereka. Agar kecerdasan buatan benar-benar menyamai atau melampaui kemampuan manusia, kecerdasan buatan harus mengembangkan kemampuan yang sama untuk memahami dunia melalui berbagai lensa secara bersamaan.</p>
-<p>Dalam artikel ini dan video yang menyertainya (segera hadir) serta buku catatan, kami akan menunjukkan terobosan terbaru dalam model yang dapat memproses teks dan gambar secara bersamaan. Kami akan mendemonstrasikan hal ini dengan membangun aplikasi pencarian semantik yang lebih dari sekadar pencocokan kata kunci - aplikasi ini memahami hubungan antara apa yang diminta pengguna dan konten visual yang mereka cari.</p>
+<p>Dalam artikel ini dan video yang menyertainya (di atas) serta <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">buku catatan</a>, kami akan menampilkan terobosan terbaru dalam model yang dapat memproses teks dan gambar secara bersamaan. Kami akan mendemonstrasikan hal ini dengan membangun aplikasi pencarian semantik yang lebih dari sekadar pencocokan kata kunci - aplikasi ini memahami hubungan antara apa yang diminta pengguna dan konten visual yang mereka cari.</p>
 <p>Yang membuat proyek ini sangat menarik adalah bahwa proyek ini dibangun sepenuhnya dengan alat bantu sumber terbuka: basis data vektor Milvus, perpustakaan pembelajaran mesin HuggingFace, dan kumpulan data ulasan pelanggan Amazon. Sungguh luar biasa untuk berpikir bahwa hanya satu dekade yang lalu, membangun sesuatu seperti ini akan membutuhkan sumber daya eksklusif yang signifikan. Saat ini, komponen-komponen canggih ini tersedia secara gratis dan dapat dikombinasikan dengan cara yang inovatif oleh siapa saja yang memiliki rasa ingin tahu untuk bereksperimen.</p>
 <custom-h1>Gambaran Umum</custom-h1><p>
   <span class="img-wrapper">
@@ -121,7 +116,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam tulisan ini dan video yang menyertainya (segera hadir) serta <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">buku catatan</a>, kami telah membuat sebuah aplikasi untuk pencarian semantik multimodal pada teks dan gambar. Model penyematan dapat menyematkan teks dan gambar secara bersama-sama atau secara terpisah ke dalam ruang yang sama, dan model fondasi dapat memasukkan teks dan gambar sambil menghasilkan teks sebagai tanggapan. <em>Yang penting, model penyematan mampu menghubungkan maksud pengguna dari instruksi terbuka ke gambar kueri dan dengan cara itu menentukan bagaimana pengguna ingin hasilnya berhubungan dengan gambar input.</em></p>
+    </button></h2><p>Dalam tulisan ini dan <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">video</a> serta <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">buku catatan</a> yang menyertainya, kami telah membuat sebuah aplikasi untuk pencarian semantik multimodal pada teks dan gambar. Model penyematan mampu menyematkan teks dan gambar secara bersama-sama atau secara terpisah ke dalam ruang yang sama, dan model pondasi mampu memasukkan teks dan gambar sambil menghasilkan teks sebagai tanggapan. <em>Yang penting, model penyematan mampu menghubungkan maksud pengguna dari instruksi terbuka ke gambar kueri dan dengan cara itu menentukan bagaimana pengguna ingin hasilnya berhubungan dengan gambar input.</em></p>
 <p>Ini hanyalah gambaran dari apa yang akan datang dalam waktu dekat. Kita akan melihat banyak aplikasi pencarian multimodal, pemahaman dan penalaran multimodal, dan seterusnya di berbagai modalitas: gambar, video, audio, molekul, jejaring sosial, data tabular, deret waktu, potensinya tidak terbatas.</p>
 <p>Dan inti dari sistem ini adalah basis data vektor yang menyimpan "memori" eksternal sistem. Milvus adalah pilihan yang sangat baik untuk tujuan ini. <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Milvus</a> adalah sumber terbuka, berfitur lengkap (lihat <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">artikel ini tentang pencarian teks lengkap di Milvus 2.5</a>) dan berskala efisien untuk miliaran vektor dengan lalu lintas skala web dan latensi sub-100ms. Cari tahu lebih lanjut di <a href="https://milvus.io/docs">dokumen Milvus</a>, bergabunglah dengan komunitas <a href="https://milvus.io/discord">Discord</a> kami, dan sampai jumpa di <a href="https://lu.ma/unstructured-data-meetup">pertemuan Data Tidak Terstruktur</a> berikutnya. Sampai jumpa!</p>
 <h2 id="Resources" class="common-anchor-header">Sumber daya<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -141,7 +136,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>Buku catatan: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Pencarian Multimodal dengan Ulasan Amazon dan Pemeringkatan Ulang LLVM</a>"</p></li>
-<li><p>Video Youtube AWS Developers (segera hadir)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Video Youtube AWS Developers</a></p></li>
 <li><p><a href="https://milvus.io/docs">Dokumentasi Milvus</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">Pertemuan Data Tidak Terstruktur</a></p></li>
 <li><p>Model penyematan: <a href="https://huggingface.co/BAAI/bge-visualized">Kartu model BGE yang divisualisasikan</a></p></li>

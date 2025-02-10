@@ -8,20 +8,15 @@ desc: >-
   que comprenda las relaciones texto-imagen, más allá de la concordancia básica
   de palabras clave.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Como humanos, interpretamos el mundo a través de nuestros sentidos. Oímos sonidos, vemos imágenes, vídeos y textos, a menudo superpuestos. Entendemos el mundo a través de estas múltiples modalidades y de la relación entre ellas. Para que la inteligencia artificial iguale o supere realmente las capacidades humanas, debe desarrollar esta misma capacidad de entender el mundo a través de múltiples lentes simultáneamente.</p>
-<p>En este artículo, junto con el vídeo que lo acompaña (próximamente) y el cuaderno, mostraremos los últimos avances en modelos capaces de procesar texto e imágenes a la vez. Lo demostraremos construyendo una aplicación de búsqueda semántica que va más allá de la simple concordancia de palabras clave: entiende la relación entre lo que piden los usuarios y el contenido visual que buscan.</p>
+<p>En este artículo, junto con el vídeo (arriba) y el <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">cuaderno que</a> lo acompaña, mostraremos los últimos avances en modelos capaces de procesar texto e imágenes a la vez. Lo demostraremos construyendo una aplicación de búsqueda semántica que va más allá de la simple concordancia de palabras clave: entiende la relación entre lo que piden los usuarios y el contenido visual que buscan.</p>
 <p>Lo que hace que este proyecto sea especialmente interesante es que se ha construido íntegramente con herramientas de código abierto: la base de datos vectorial Milvus, las bibliotecas de aprendizaje automático de HuggingFace y un conjunto de datos de reseñas de clientes de Amazon. Resulta sorprendente pensar que hace tan solo una década, para construir algo así se habrían necesitado importantes recursos patentados. Hoy en día, estos potentes componentes están disponibles gratuitamente y pueden ser combinados de forma innovadora por cualquiera que tenga la curiosidad de experimentar.</p>
 <custom-h1>Visión general</custom-h1><p>
   <span class="img-wrapper">
@@ -46,14 +41,14 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
         ></path>
       </svg>
     </button></h2><p>Nuestra aplicación de búsqueda debe tener algo que buscar. En nuestro caso, utilizamos un pequeño subconjunto del conjunto de datos "Amazon Reviews 2023", que contiene texto e imágenes de opiniones de clientes de Amazon sobre todo tipo de productos. Se puede imaginar que una búsqueda semántica como la que estamos construyendo sería un complemento útil para un sitio web de comercio electrónico. Utilizamos 900 imágenes y descartamos el texto, aunque observamos que este cuaderno puede escalar a tamaño de producción con la base de datos y los despliegues de inferencia adecuados.</p>
-<p>El primer elemento "mágico" de nuestro proceso es la elección del modelo de incrustación. Utilizamos un modelo multimodal desarrollado recientemente, llamado <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a>, capaz de incrustar texto e imágenes conjuntamente, o por separado, en el mismo espacio con un único modelo en el que los puntos cercanos son semánticamente similares. Recientemente se han desarrollado otros modelos de este tipo, por ejemplo <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
+<p>El primer elemento "mágico" de nuestro proceso es la elección del modelo de incrustación. Utilizamos un modelo multimodal desarrollado recientemente, denominado <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a>, capaz de incrustar texto e imágenes conjuntamente, o por separado, en el mismo espacio con un único modelo en el que los puntos cercanos son semánticamente similares. Recientemente se han desarrollado otros modelos de este tipo, por ejemplo <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/indexing_1937241be5.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>La figura anterior lo ilustra: la incrustación para [una imagen de un león de perfil] más el texto "vista frontal de esto", se aproxima a una incrustación para [una imagen de un león de frente] sin texto. Se utiliza el mismo modelo para entradas de texto e imagen y para entradas de sólo imagen (así como para entradas de sólo texto). <em>De este modo, el modelo es capaz de comprender la intención del usuario en cuanto a la relación entre el texto y la imagen consultados.</em></p>
+<p>La figura anterior lo ilustra: la incrustación para [una imagen de un león de perfil] más el texto "vista frontal de esto", se aproxima a una incrustación para [una imagen de un león de frente] sin texto. El mismo modelo se utiliza tanto para entradas con texto e imagen como para entradas sólo con imagen (así como para entradas sólo con texto). <em>De este modo, el modelo es capaz de comprender la intención del usuario en cuanto a la relación entre el texto y la imagen consultados.</em></p>
 <p>Incrustamos nuestras 900 imágenes de productos sin el texto correspondiente y almacenamos las incrustaciones en una base de datos vectorial utilizando <a href="https://milvus.io/docs">Milvus</a>.</p>
 <h2 id="Retrieval" class="common-anchor-header">Recuperación<button data-href="#Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -122,7 +117,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En este post y en el vídeo (próximamente) y el <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">cuaderno</a> que lo acompañan, hemos construido una aplicación para la búsqueda semántica multimodal en texto e imágenes. El modelo de incrustación fue capaz de incrustar texto e imágenes conjunta o separadamente en el mismo espacio, y el modelo de fundamentación fue capaz de introducir texto e imagen mientras generaba texto como respuesta. <em>Y lo que es más importante, el modelo de incrustación fue capaz de relacionar la intención del usuario de una instrucción abierta con la imagen de la consulta y, de ese modo, especificar cómo quería el usuario que se relacionaran los resultados con la imagen introducida.</em></p>
+    </button></h2><p>En este post y en el <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">vídeo</a> y el <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">cuaderno</a> que lo acompañan, hemos construido una aplicación para la búsqueda semántica multimodal a través de texto e imágenes. El modelo de incrustación fue capaz de incrustar texto e imágenes conjunta o separadamente en el mismo espacio, y el modelo de fundamentación fue capaz de introducir texto e imagen mientras generaba texto como respuesta. <em>Y lo que es más importante, el modelo de incrustación fue capaz de relacionar la intención del usuario de una instrucción abierta con la imagen de la consulta y, de ese modo, especificar cómo quería el usuario que se relacionaran los resultados con la imagen introducida.</em></p>
 <p>Esto es sólo una muestra de lo que nos espera en un futuro próximo. Veremos muchas aplicaciones de búsqueda multimodal, comprensión y razonamiento multimodal, etc. en diversas modalidades: imagen, vídeo, audio, moléculas, redes sociales, datos tabulares, series temporales, el potencial es ilimitado.</p>
 <p>Y en el núcleo de estos sistemas se encuentra una base de datos vectorial que contiene la "memoria" externa del sistema. Milvus es una opción excelente para este fin. Es de código abierto, cuenta con todas las funciones (véase <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">este artículo sobre la búsqueda de texto completo en Milvus 2.5</a>) y se escala eficientemente a miles de millones de vectores con tráfico a escala web y latencia inferior a 100 ms. Obtenga más información en <a href="https://milvus.io/docs">la documentación de Milvus</a>, únase a nuestra comunidad de <a href="https://milvus.io/discord">Discord</a> y esperamos verle en nuestro próximo <a href="https://lu.ma/unstructured-data-meetup">encuentro sobre datos no estructurados</a>. Hasta entonces.</p>
 <h2 id="Resources" class="common-anchor-header">Recursos<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -142,7 +137,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>Cuaderno de notas: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Búsqueda multimodal con Amazon Reviews y LLVM Reranking</a>"</p></li>
-<li><p>Youtube AWS Developers video (próximamente)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Vídeo de Youtube AWS Developers</a></p></li>
 <li><p><a href="https://milvus.io/docs">Documentación de Milvus</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">Reunión sobre datos no estructurados</a></p></li>
 <li><p>Modelo de incrustación: <a href="https://huggingface.co/BAAI/bge-visualized">Tarjeta de modelo BGE visualizada</a></p></li>

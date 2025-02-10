@@ -5,20 +5,15 @@ author: Stefan Webb
 date: 2025-02-3
 desc: 了解如何使用多模态人工智能构建语义搜索应用程序，该应用程序不仅能理解基本的关键字匹配，还能理解文本与图像之间的关系。
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>作为人类，我们通过感官来解读世界。我们听到声音，看到图像、视频和文字，而且往往是层层叠加。我们通过这些多重模式以及它们之间的关系来理解世界。人工智能要想真正达到或超过人类的能力，就必须发展出这种同时通过多种视角理解世界的能力。</p>
-<p>在这篇文章和随附的视频（即将发布）和笔记本中，我们将展示最近在能够同时处理文本和图像的模型方面取得的突破。我们将通过构建一个语义搜索应用程序来展示这一点，该应用程序不仅仅是简单的关键词匹配，它还能理解用户的需求与他们正在搜索的可视化内容之间的关系。</p>
+<p>在这篇文章和随附的视频（上图）和<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">笔记本</a>中，我们将展示能够同时处理文本和图像的模型的最新突破。我们将通过构建一个语义搜索应用程序来展示这一点，该应用程序不仅仅是简单的关键词匹配，它还能理解用户的需求与他们正在搜索的可视化内容之间的关系。</p>
 <p>让这个项目特别令人兴奋的是，它完全由开源工具构建：Milvus 向量数据库、HuggingFace 的机器学习库和亚马逊客户评论数据集。想想看，仅仅在十年前，构建这样一个项目还需要大量的专有资源。如今，这些功能强大的组件都是免费提供的，任何有好奇心的人都可以用创新的方式将它们结合起来。</p>
 <custom-h1>概述</custom-h1><p>
   <span class="img-wrapper">
@@ -67,7 +62,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>数据库建立后，我们就可以为用户提供查询服务了。想象一下，一个用户带着这样的查询来了："有这个的手机壳 "加上[一张豹子的图片]。也就是说，他们在搜索带有豹纹图案的手机壳。</p>
+    </button></h2><p>数据库建立后，我们就可以为用户提供查询服务了。想象一下，一个用户带着这样的查询来了："有这个的手机壳 "加上[一张豹子的图片]。也就是说，他们正在搜索带有豹纹图案的手机壳。</p>
 <p>请注意，用户的查询文本说的是 "这个"，而不是 "豹皮"。我们的 Embeddings 模型必须能够将 "this "与它所指的内容联系起来，鉴于之前的迭代模型无法处理这种开放式指令，这是一项了不起的成就。<a href="https://arxiv.org/abs/2403.19651">MagicLens</a>的<a href="https://arxiv.org/abs/2403.19651">论文</a>给出了更多的例子。</p>
 <p>
   <span class="img-wrapper">
@@ -94,7 +89,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
     </button></h2><p>我们的搜索似乎失败了，因为最前面的结果不是最相关的。不过，我们可以通过 Rerankers 步骤来解决这个问题。您可能对检索项的重新排序并不陌生，这是许多 Rerankers 流程中的一个重要步骤。我们使用<a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision</a>作为重排模型。</p>
 <p>我们首先要求 LLVM 生成查询图片的标题。LLVM 输出</p>
 <p><em>"图片显示了一只豹子的脸部特写，重点是它的斑点皮毛和绿色眼睛"。</em></p>
-<p>然后，我们输入这个标题、一张包含九个结果和查询图像的图片，并构建一个文本提示，要求模型对结果重新排序，以列表的形式给出答案，并提供选择最匹配结果的理由。</p>
+<p>然后，我们输入这个标题、一张包含九个结果和查询图片的图片，并构建一个文本提示，要求模型对结果重新排序，以列表的形式给出答案，并提供选择最匹配结果的理由。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Generation_b016a6c26a.png" alt="" class="doc-image" id="" />
@@ -119,7 +114,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在这篇文章以及随附的视频（即将发布）和<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">笔记本</a>中，我们构建了一个跨文本和图像的多模态语义搜索应用程序。嵌入模型能够将文本和图像联合或单独嵌入同一空间，基础模型能够输入文本和图像，同时生成文本作为响应。<em>重要的是，Embeddings 模型能够将用户的开放式指令意图与查询图像联系起来，并以这种方式指定用户希望结果如何与输入图像相关联。</em></p>
+    </button></h2><p>在这篇文章以及随附的<a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">视频</a>和<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">笔记本</a>中，我们构建了一个跨文本和图像的多模态语义搜索应用程序。嵌入模型能够将文本和图像联合或单独嵌入同一空间，基础模型能够输入文本和图像，同时生成响应的文本。<em>重要的是，Embeddings 模型能够将用户的开放式指令意图与查询图像联系起来，并以这种方式指定用户希望结果如何与输入图像相关联。</em></p>
 <p>这只是不久的将来的一个缩影。我们将看到多模态搜索、多模态理解和推理等在不同模态中的大量应用：图像、视频、音频、分子、社交网络、表格数据、时间序列，潜力无穷。</p>
 <p>而这些系统的核心是一个向量数据库，它承载着系统的外部 "内存"。Milvus 就是一个很好的选择。它是开源的，功能齐全（请参阅<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">本文关于 Milvus 2.5 中全文搜索的内容</a>），并能以网络规模的流量和低于 100 毫秒的延迟高效地扩展到数十亿向量。如需了解更多信息，请访问<a href="https://milvus.io/docs">Milvus 文档</a>，加入我们的<a href="https://milvus.io/discord">Discord</a>社区，并希望在下一次<a href="https://lu.ma/unstructured-data-meetup">非结构化数据会议</a>上见到您。再见！</p>
 <h2 id="Resources" class="common-anchor-header">资源<button data-href="#Resources" class="anchor-icon" translate="no">
@@ -139,7 +134,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>笔记本：<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"使用亚马逊评论和 LLVM Rerankers 进行多模态搜索</a></p></li>
-<li><p>Youtube AWS 开发人员视频（即将发布）</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Youtube AWS 开发人员视频</a></p></li>
 <li><p><a href="https://milvus.io/docs">Milvus 文档</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">非结构化数据会议</a></p></li>
 <li><p>Embeddings 模型：<a href="https://huggingface.co/BAAI/bge-visualized">可视化 BGE 模型卡</a></p></li>

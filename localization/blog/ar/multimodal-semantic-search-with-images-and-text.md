@@ -8,20 +8,15 @@ desc: >-
   الذي يفهم العلاقات بين النص والصورة، بما يتجاوز مطابقة الكلمات المفتاحية
   الأساسية.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png
+  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_180d89d5aa.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
-<p>نحن كبشر، نفسر العالم من خلال حواسنا. فنحن نسمع الأصوات ونرى الصور والفيديو والنصوص، وغالباً ما تكون في طبقات فوق بعضها البعض. نحن نفهم العالم من خلال هذه الطرائق المتعددة والعلاقة بينها. ولكي يتمكن الذكاء الاصطناعي من مضاهاة القدرات البشرية أو تجاوزها حقًا، يجب أن يطور هذه القدرة نفسها لفهم العالم من خلال عدسات متعددة في وقت واحد.</p>
-<p>في هذا المنشور والفيديو المصاحب له (سيصدر قريباً) والمفكرة، سنعرض الإنجازات الأخيرة في النماذج التي يمكنها معالجة كل من النصوص والصور معاً. سنقوم بتوضيح ذلك من خلال بناء تطبيق بحث دلالي يتجاوز مجرد مطابقة الكلمات المفتاحية - فهو يفهم العلاقة بين ما يطلبه المستخدمون والمحتوى المرئي الذي يبحثون عنه.</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>نحن كبشر، نفسر العالم من خلال حواسنا. فنحن نسمع الأصوات ونرى الصور والفيديو والنصوص، وغالباً ما تكون في طبقات فوق بعضها البعض. نحن نفهم العالم من خلال هذه الطرائق المتعددة والعلاقة بينها. ولكي يضاهي الذكاء الاصطناعي القدرات البشرية أو يتجاوزها حقًا، يجب أن يطور هذه القدرة نفسها لفهم العالم من خلال عدسات متعددة في وقت واحد.</p>
+<p>في هذا المنشور والفيديو المصاحب له (أعلاه) <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">والمذكرة،</a> سنعرض الإنجازات الأخيرة في النماذج التي يمكنها معالجة كل من النصوص والصور معاً. سنقوم بتوضيح ذلك من خلال بناء تطبيق بحث دلالي يتجاوز مجرد مطابقة الكلمات المفتاحية - فهو يفهم العلاقة بين ما يطلبه المستخدمون والمحتوى المرئي الذي يبحثون عنه.</p>
 <p>ما يجعل هذا المشروع مثيرًا بشكل خاص هو أنه مبني بالكامل باستخدام أدوات مفتوحة المصدر: قاعدة بيانات Milvus vector، ومكتبات التعلم الآلي الخاصة ب HuggingFace، ومجموعة بيانات من مراجعات عملاء Amazon. من اللافت للنظر أنه قبل عقد من الزمان فقط، كان بناء شيء من هذا القبيل يتطلب موارد ملكية كبيرة. أما اليوم، فإن هذه المكونات القوية متاحة مجاناً ويمكن لأي شخص لديه فضول للتجربة أن يجمعها بطرق مبتكرة.</p>
 <custom-h1>نظرة عامة</custom-h1><p>
   <span class="img-wrapper">
@@ -46,7 +41,7 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
         ></path>
       </svg>
     </button></h2><p>يجب أن يحتوي تطبيق البحث لدينا على شيء للبحث. في حالتنا، نستخدم مجموعة فرعية صغيرة من مجموعة بيانات "مراجعات أمازون 2023"، والتي تحتوي على نصوص وصور من مراجعات عملاء أمازون في جميع أنواع المنتجات. يمكنك أن تتخيل أن بحثاً دلالياً كهذا الذي نقوم ببنائه سيكون إضافة مفيدة لموقع إلكتروني للتجارة الإلكترونية. نحن نستخدم 900 صورة ونتجاهل النص، على الرغم من ملاحظة أن هذا الدفتر يمكن أن يتوسع إلى حجم الإنتاج مع قاعدة البيانات الصحيحة وعمليات نشر الاستدلال.</p>
-<p>أول جزء من "السحر" في خط إنتاجنا هو اختيار نموذج التضمين. نحن نستخدم نموذجًا متعدد الوسائط تم تطويره مؤخرًا يسمى <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a> قادر على تضمين النص والصور معًا، أو كل منهما على حدة، في نفس المساحة بنموذج واحد حيث تكون النقاط المتقاربة متشابهة دلاليًا. تم تطوير نماذج أخرى من هذا القبيل مؤخرًا، على سبيل المثال <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
+<p>أول جزء من "السحر" في خط الأنابيب لدينا هو اختيار نموذج التضمين. نحن نستخدم نموذجًا متعدد الوسائط تم تطويره مؤخرًا يسمى <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a> قادر على تضمين النص والصور معًا، أو كل منهما على حدة، في نفس المساحة بنموذج واحد حيث تكون النقاط المتقاربة متشابهة دلاليًا. تم تطوير نماذج أخرى من هذا القبيل مؤخرًا، على سبيل المثال <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/indexing_1937241be5.jpg" alt="" class="doc-image" id="" />
@@ -122,9 +117,9 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في هذا المنشور والفيديو المصاحب له (سيصدر قريبًا) <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">والمذكرة،</a> قمنا ببناء تطبيق للبحث الدلالي متعدد الوسائط عبر النصوص والصور. كان نموذج التضمين قادرًا على تضمين النص والصور معًا أو بشكل منفصل في نفس المساحة، وكان نموذج الأساس قادرًا على إدخال النص والصورة أثناء توليد النص استجابةً لذلك. <em>والأهم من ذلك أن نموذج التضمين كان قادرًا على ربط قصد المستخدم من التعليمات المفتوحة بصورة الاستعلام، وبهذه الطريقة تحديد كيفية رغبة المستخدم في أن ترتبط النتائج بالصورة المدخلة.</em></p>
-<p>هذا مجرد لمحة عما سيأتي في المستقبل القريب. سنرى العديد من تطبيقات البحث متعدد الوسائط، والفهم والاستدلال متعدد الوسائط، وما إلى ذلك عبر طرائق متنوعة: الصورة، والفيديو، والصوت، والجزيئات، والشبكات الاجتماعية، والبيانات المجدولة، والسلاسل الزمنية، والإمكانات لا حدود لها.</p>
-<p>وفي صميم هذه الأنظمة توجد قاعدة بيانات متجهة تحمل "الذاكرة" الخارجية للنظام. يعد Milvus خيارًا ممتازًا لهذا الغرض. فهو مفتوح المصدر، ومميز بالكامل (انظر <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">هذه المقالة حول البحث عن النص الكامل في Milvus 2.5</a>) ويتوسع بكفاءة إلى مليارات المتجهات مع حركة مرور على نطاق الويب وزمن انتقال أقل من 100 مللي ثانية. تعرّف على المزيد في <a href="https://milvus.io/docs">مستندات Milvus،</a> وانضم إلى مجتمع <a href="https://milvus.io/discord">Discord</a> الخاص بنا، ونأمل أن نراك في <a href="https://lu.ma/unstructured-data-meetup">لقاء البيانات غير المهيكلة</a> القادم. حتى ذلك الحين!</p>
+    </button></h2><p>في هذا المنشور <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">والفيديو</a> <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">والمذكرة</a> المصاحبة له، قمنا ببناء تطبيق للبحث الدلالي متعدد الوسائط عبر النصوص والصور. كان نموذج التضمين قادرًا على تضمين النص والصور معًا أو بشكل منفصل في نفس المساحة، وكان نموذج الأساس قادرًا على إدخال النص والصورة أثناء توليد النص استجابةً لذلك. <em>والأهم من ذلك أن نموذج التضمين كان قادرًا على ربط قصد المستخدم من التعليمات المفتوحة بصورة الاستعلام، وبهذه الطريقة تحديد كيفية رغبة المستخدم في أن ترتبط النتائج بالصورة المدخلة.</em></p>
+<p>هذا مجرد لمحة عما سيأتي في المستقبل القريب. سوف نرى العديد من تطبيقات البحث متعدد الوسائط، والفهم والاستدلال متعدد الوسائط، وما إلى ذلك عبر طرائق متنوعة: الصورة، والفيديو، والصوت، والجزيئات، والشبكات الاجتماعية، والبيانات المجدولة، والسلاسل الزمنية، والإمكانات لا حدود لها.</p>
+<p>وفي صميم هذه الأنظمة توجد قاعدة بيانات متجهة تحمل "الذاكرة" الخارجية للنظام. يعد Milvus خيارًا ممتازًا لهذا الغرض. فهو مفتوح المصدر، ومميز بالكامل (انظر <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">هذه المقالة عن البحث عن النص الكامل في Milvus 2.5</a>) ويتوسع بكفاءة إلى مليارات المتجهات مع حركة مرور على نطاق الويب وزمن انتقال أقل من 100 مللي ثانية. تعرّف على المزيد في <a href="https://milvus.io/docs">مستندات Milvus،</a> وانضم إلى مجتمع <a href="https://milvus.io/discord">Discord</a> الخاص بنا، ونأمل أن نراك في <a href="https://lu.ma/unstructured-data-meetup">لقاء البيانات غير المهيكلة</a> القادم. حتى ذلك الحين!</p>
 <h2 id="Resources" class="common-anchor-header">المصادر<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -142,11 +137,11 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
       </svg>
     </button></h2><ul>
 <li><p>دفتر الملاحظات: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"بحث متعدد الوسائط مع مراجعات أمازون وإعادة ترتيب LLVM</a>"</p></li>
-<li><p>فيديو مطوري AWS على يوتيوب (قريبًا)</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">فيديو مطوري AWS على يوتيوب</a></p></li>
 <li><p><a href="https://milvus.io/docs">وثائق ميلفوس</a></p></li>
 <li><p><a href="https://lu.ma/unstructured-data-meetup">ملتقى البيانات غير المهيكلة</a></p></li>
 <li><p>نموذج التضمين: <a href="https://huggingface.co/BAAI/bge-visualized">بطاقة نموذج BGE المرئية</a></p></li>
-<li><p>نموذج التضمين البديل: <a href="https://github.com/google-deepmind/magiclens">ريبو نموذج MagicLens السحري</a></p></li>
+<li><p>نموذج التضمين البديل <a href="https://github.com/google-deepmind/magiclens">ريبو نموذج MagicLens السحري</a></p></li>
 <li><p>LLVM <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">بطاقة نموذج Phi-3 Vision</a></p></li>
 <li><p>ورقة: "<a href="https://arxiv.org/abs/2403.19651">MagicLens: استرجاع الصور بإشراف ذاتي بتعليمات مفتوحة النهاية</a>"</p></li>
 <li><p>مجموعة البيانات: <a href="https://amazon-reviews-2023.github.io/">مراجعات أمازون 2023</a></p></li>
