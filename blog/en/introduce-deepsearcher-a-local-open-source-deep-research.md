@@ -8,7 +8,7 @@ cover: assets.zilliz.com/Introducing_Deep_Searcher_A_Local_Open_Source_Deep_Rese
 tag: Announcements
 tags: DeepSearcher
 recommend: true
-canonicalUrl: https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md
+canonicalUrl: https://zilliz.com/blog/introduce-deepsearcher-a-local-open-source-deep-research
 ---
 
 
