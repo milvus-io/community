@@ -15,8 +15,13 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
-<p>Kami dengan senang hati memperkenalkan jam kerja mingguan bagi pengguna Milvus untuk mendapatkan dukungan langsung dengan proyek <a href="https://zilliz.com/learn/what-is-vector-database">database vektor</a> mereka! Bergabunglah dengan tim ahli kami untuk sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda. Baik Anda baru saja memulai atau membutuhkan bantuan untuk masalah tertentu, kami siap membantu Anda memaksimalkan penggunaan Milvus.</p>
-<p><strong>Pesan sesi jam kerja Anda di sini<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">:https://meetings.hubspot.com/chloe-williams1/milvus-office-hours</a></strong></p>
+<p>Dapatkan bantuan ahli dengan proyek <a href="https://zilliz.com/learn/what-is-vector-database">database vektor</a> Milvus Anda. Pesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda. Baik Anda baru saja memulai atau membutuhkan bantuan untuk masalah tertentu, kami siap membantu Anda memanfaatkan Milvus secara maksimal.</p>
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Why-Book-a-Session" class="common-anchor-header">Mengapa Memesan Sesi?<button data-href="#Why-Book-a-Session" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -39,7 +44,7 @@ canonicalUrl: >-
 <li><p><strong>Meningkatkan Skala Penerapan Milvus Anda:</strong> Dapatkan saran untuk mengelola dan menskalakan Milvus untuk volume data yang lebih besar.</p></li>
 <li><p><strong>Pemecahan Masalah Khusus:</strong> Terjebak pada kesalahan atau perilaku yang tidak biasa? Kami dapat membantu memecahkan masalah dan menyelesaikannya.</p></li>
 <li><p><strong>Bantuan Integrasi:</strong> Butuh panduan untuk menggunakan Milvus dengan framework terintegrasi lainnya seperti LangChain, LlamaIndex, Spark, atau pipeline pemrosesan data Anda?</p></li>
-<li><p><strong>Mempelajari tentang Fitur Baru:</strong> Tetap update dengan kemampuan Milvus terbaru dan bagaimana hal tersebut dapat menguntungkan proyek Anda.</p></li>
+<li><p><strong>Mempelajari Fitur Baru:</strong> Tetap update dengan kemampuan Milvus terbaru dan bagaimana hal tersebut dapat menguntungkan proyek Anda.</p></li>
 </ul>
 <p>Jangan lewatkan kesempatan ini untuk meningkatkan implementasi Milvus Anda dengan bimbingan para ahli.</p>
 <p>Jika Anda tidak dapat bergabung dengan kami secara langsung, jangan khawatir-masih ada banyak cara untuk mendapatkan dukungan! Komunitas Milvus aktif dan siap membantu di <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> dan<a href="https://github.com/search?q=milvus&amp;type=discussions"> Diskusi GitHub</a>. Apakah Anda lebih suka obrolan langsung atau diskusi asinkron, kedua platform ini adalah tempat yang tepat untuk mengajukan pertanyaan, berbagi pengetahuan, dan terhubung dengan pengguna dan kontributor Milvus lainnya.</p>

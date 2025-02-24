@@ -23,7 +23,7 @@ canonicalUrl: >-
 </blockquote>
 <p><a href="https://www.bigo.sg/">A BIGO Technology</a> (BIGO) é uma das empresas tecnológicas de Singapura com crescimento mais rápido. Alimentados por tecnologia de inteligência artificial, os produtos e serviços baseados em vídeo da BIGO ganharam imensa popularidade em todo o mundo, com mais de 400 milhões de utilizadores em mais de 150 países. Estes incluem o <a href="https://www.bigo.tv/bigo_intro/en.html?hk=true">Bigo Live</a> (transmissão em direto) e <a href="https://likee.video/">o Likee</a> (vídeo de curta duração).</p>
 <p>O Likee é uma plataforma global de criação de vídeos curtos onde os utilizadores podem partilhar os seus momentos, expressar-se e ligar-se ao mundo. Para melhorar a experiência do utilizador e recomendar-lhe conteúdos de maior qualidade, o Likee tem de eliminar os vídeos duplicados de uma enorme quantidade de vídeos gerados pelos utilizadores todos os dias, o que não é uma tarefa fácil.</p>
-<p>Este blogue apresenta a forma como o BIGO utiliza <a href="https://milvus.io">o Milvus</a>, uma base de dados vetorial de código aberto, para remover eficazmente vídeos duplicados.</p>
+<p>Este blogue apresenta a forma como o BIGO utiliza <a href="https://milvus.io">o Milvus</a>, uma base de dados vetorial de código aberto, para remover eficazmente os vídeos duplicados.</p>
 <p><strong>Saltar para:</strong></p>
 <ul>
 <li><a href="#Overview">Visão geral</a></li>
@@ -38,7 +38,7 @@ canonicalUrl: >-
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Likee_1_6f7ebcd8fc.png" alt="Architechure of Likee's video de-duplication system" class="doc-image" id="architechure-of-likee's-video-de-duplication-system" />
    </span> <span class="img-wrapper"> <span>Arquitetura do sistema de desduplicação de vídeo do Likee</span> </span></p>
-<p>Os vectores de caraterísticas extraídos serão indexados pelo Milvus e armazenados no Ceph, antes de serem <a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">carregados pelo nó de consulta do Milvus</a> para posterior pesquisa. Os IDs de vídeo correspondentes a estes vectores de caraterísticas também serão armazenados simultaneamente no TiDB ou no Pika, de acordo com as necessidades reais.</p>
+<p>Os vectores de caraterísticas extraídos serão indexados pelo Milvus e armazenados no Ceph, antes de serem <a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">carregados pelo nó de consulta do Milvus</a> para pesquisa posterior. Os IDs de vídeo correspondentes a estes vectores de caraterísticas também serão armazenados simultaneamente no TiDB ou no Pika, de acordo com as necessidades reais.</p>
 <h3 id="Using-Milvus-vector-database-to-power-similarity-search" class="common-anchor-header">Utilizar a base de dados de vectores Milvus para potenciar a pesquisa por semelhança</h3><p>Ao procurar vectores semelhantes, os milhares de milhões de dados existentes, juntamente com grandes quantidades de novos dados gerados todos os dias, colocam grandes desafios à funcionalidade do motor de pesquisa de vectores. Após uma análise exaustiva, o Likee acabou por escolher o Milvus, um motor de pesquisa vetorial distribuído de elevado desempenho e elevada taxa de recuperação, para efetuar a pesquisa de semelhanças vectoriais.</p>
 <p>Como se pode ver no diagrama abaixo, o procedimento de uma pesquisa por semelhança é o seguinte:</p>
 <ol>

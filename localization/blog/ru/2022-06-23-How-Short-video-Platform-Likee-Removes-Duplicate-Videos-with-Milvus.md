@@ -2,8 +2,8 @@
 id: >-
   2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md
 title: >-
-  Как платформа для создания коротких видеороликов Likee удаляет дубликаты видео
-  с помощью Milvus
+  Как платформа для коротких видеороликов Likee удаляет дубликаты видео с
+  помощью Milvus
 author: 'Xinyang Guo, Baoyu Han'
 date: 2022-06-23T00:00:00.000Z
 desc: >-

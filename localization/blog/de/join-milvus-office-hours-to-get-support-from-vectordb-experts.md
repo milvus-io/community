@@ -15,8 +15,13 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
-<p>Wir freuen uns, wöchentliche Sprechstunden für Milvus-Benutzer einführen zu können, um praktische Unterstützung bei ihren <a href="https://zilliz.com/learn/what-is-vector-database">Vektordatenbankprojekten</a> zu erhalten! Kommen Sie zu unserem Expertenteam für eine 20-minütige persönliche Sitzung, um Einblicke, Anleitung und Antworten auf Ihre Fragen zu erhalten. Ganz gleich, ob Sie gerade erst anfangen oder Hilfe bei einem bestimmten Problem benötigen, wir sind hier, um Ihnen zu helfen, das Beste aus Milvus herauszuholen.</p>
-<p><strong>Buchen Sie Ihre Sprechstunde hier:<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">https://meetings.hubspot.com/chloe-williams1/milvus-office-hours</a></strong></p>
+<p>Holen Sie sich fachkundige Hilfe für Ihre <a href="https://zilliz.com/learn/what-is-vector-database">Milvus-Vektordatenbankprojekte</a>. Buchen Sie ein 20-minütiges persönliches Gespräch, um Einblicke, Anleitung und Antworten auf Ihre Fragen zu erhalten. Ganz gleich, ob Sie gerade erst anfangen oder Hilfe bei einem bestimmten Problem benötigen, wir helfen Ihnen, das Beste aus Milvus herauszuholen.</p>
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Why-Book-a-Session" class="common-anchor-header">Warum eine Sitzung buchen?<button data-href="#Why-Book-a-Session" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -32,9 +37,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hier sind ein paar gute Gründe, eine Sitzung in unserer Sprechstunde zu buchen:</p>
+    </button></h2><p>Hier sind ein paar gute Gründe, eine Sitzung während unserer Sprechzeiten zu buchen:</p>
 <ul>
-<li><p><strong>Optimierung der Milvus-Leistung:</strong> Erhalten Sie Tipps zum Tuning von Konfigurationen zur Steigerung der Datenbankleistung.</p></li>
+<li><p><strong>Optimierung der Milvus-Leistung:</strong> Erhalten Sie Tipps zum Tuning von Konfigurationen, um die Leistung der Datenbank zu steigern.</p></li>
 <li><p><strong>Beratung zum Datenschema-Design:</strong> Lernen Sie Best Practices für Datenschemata und Indextypen, die am besten zu Ihrem Anwendungsfall passen.</p></li>
 <li><p><strong>Skalierung Ihrer Milvus-Implementierung:</strong> Erhalten Sie Ratschläge zur Verwaltung und Skalierung von Milvus für größere Datenmengen.</p></li>
 <li><p><strong>Fehlersuche bei spezifischen Problemen:</strong> Bleiben Sie bei einem Fehler oder ungewöhnlichen Verhalten hängen? Wir können Ihnen bei der Fehlersuche und -behebung helfen.</p></li>

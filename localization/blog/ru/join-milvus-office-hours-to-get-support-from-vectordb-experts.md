@@ -15,9 +15,14 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
-<p>Мы рады представить еженедельные офисные часы для пользователей Milvus, которые могут получить практическую поддержку в своих проектах по созданию <a href="https://zilliz.com/learn/what-is-vector-database">векторных баз данных</a>! Присоединяйтесь к нашей команде экспертов на 20-минутную индивидуальную сессию, чтобы получить знания, рекомендации и ответы на свои вопросы. Если вы только начинаете работать или вам нужна помощь в решении конкретной проблемы, мы готовы помочь вам извлечь максимум пользы из Milvus.</p>
-<p><strong>Забронировать сеанс в рабочее время можно здесь:<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">https://meetings.hubspot.com/chloe-williams1/milvus-office-hours.</a></strong></p>
-<h2 id="Why-Book-a-Session" class="common-anchor-header">Почему стоит заказать сеанс?<button data-href="#Why-Book-a-Session" class="anchor-icon" translate="no">
+<p>Получите экспертную помощь по проектам <a href="https://zilliz.com/learn/what-is-vector-database">векторных баз данных</a> Milvus. Запишитесь на 20-минутную индивидуальную сессию, чтобы получить знания, рекомендации и ответы на свои вопросы. Если вы только начинаете работать или вам нужна помощь в решении конкретной проблемы, мы готовы помочь вам извлечь максимум пользы из Milvus.</p>
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
+<h2 id="Why-Book-a-Session" class="common-anchor-header">Зачем заказывать сессию?<button data-href="#Why-Book-a-Session" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -32,7 +37,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Вот несколько веских причин, чтобы заказать время в наши офисные часы:</p>
+    </button></h2><p>Вот несколько веских причин, чтобы заказать время в наши рабочие часы:</p>
 <ul>
 <li><p><strong>Оптимизация производительности Milvus:</strong> Получите советы по настройке конфигураций для повышения производительности базы данных.</p></li>
 <li><p><strong>Советы по проектированию схем данных:</strong> Узнайте о лучших практиках разработки схем данных и типов индексов, которые наилучшим образом подойдут для вашего случая использования.</p></li>

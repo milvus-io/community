@@ -37,12 +37,12 @@ canonicalUrl: >-
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Likee_1_6f7ebcd8fc.png" alt="Architechure of Likee's video de-duplication system" class="doc-image" id="architechure-of-likee's-video-de-duplication-system" />
    </span> <span class="img-wrapper"> <span>Likee 視訊重複刪除系統架構圖</span> </span></p>
 <p>擷取的特徵向量將由 Milvus 編入索引並儲存在 Ceph 中，然後再<a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">由 Milvus 查詢節點載入</a>以進行進一步搜尋。這些特徵向量所對應的影片 ID 也會依據實際需求，同時儲存在 TiDB 或 Pika 中。</p>
-<h3 id="Using-Milvus-vector-database-to-power-similarity-search" class="common-anchor-header">使用 Milvus 向量資料庫強化相似性搜尋</h3><p>在搜尋相似向量時，數以十億計的現有資料，加上每天產生的大量新資料，對向量搜尋引擎的功能提出了極大的挑戰。經過深入分析，Likee 最終選擇了具有高性能、高召回率的分佈式向量搜索引擎 Milvus 來進行向量相似性搜索。</p>
+<h3 id="Using-Milvus-vector-database-to-power-similarity-search" class="common-anchor-header">使用 Milvus 向量資料庫強化相似性搜尋</h3><p>在搜尋相似向量時，數以十億計的現有資料，加上每天產生的大量新資料，對向量搜尋引擎的功能提出了極大的挑戰。經過周密的分析，Likee 最終選擇了具有高性能和高召回率的分佈式向量搜索引擎 Milvus 來進行向量相似性搜索。</p>
 <p>如下圖所示，相似度搜尋的流程如下：</p>
 <ol>
 <li><p>首先，Milvus 會執行批次搜尋，以召回從新視訊中萃取的多個特徵向量中，每個特徵向量的前 100 個相似向量。每個相似向量都與其對應的視訊 ID 綁定。</p></li>
 <li><p>其次，透過比較視訊 ID，Milvus 會移除重複的視訊，並從 TiDB 或 Pika 擷取剩餘視訊的特徵向量。</p></li>
-<li><p>最後，Milvus 會計算每組擷取的特徵向量與查詢視訊的特徵向量之間的相似度並進行評分。得分最高的視訊 ID 會作為結果傳回。如此一來，視訊相似性搜尋就完成了。</p></li>
+<li><p>最後，Milvus 會計算每組擷取的特徵向量與查詢視訊的特徵向量之間的相似度並進行評分。得分最高的視訊 ID 會作為結果傳回。如此一來，視訊類似性搜尋就完成了。</p></li>
 </ol>
 <p>
   

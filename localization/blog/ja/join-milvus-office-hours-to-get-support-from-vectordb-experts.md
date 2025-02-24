@@ -13,8 +13,13 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
-<p>Milvusユーザーの皆様に、<a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベースプロジェクトに関する</a>ハンズオンサポートをご提供するため、毎週オフィスアワーを開催しております！20分間の1対1のセッションで、専門家チームと一緒に洞察やガイダンス、質問への回答を得ることができます。Milvusを使い始めたばかりの方でも、特定の問題でお困りの方でも、Milvusを最大限に活用できるようお手伝いいたします。</p>
-<p><strong>オフィスアワーセッションのご予約はこちらから<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">:https://meetings.hubspot.com/chloe-williams1/milvus-office-hours</a></strong></p>
+<p>Milvus<a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベースの</a>プロジェクトで専門家の支援を受けましょう。20分間のマンツーマンセッションをご予約いただくと、洞察、ガイダンス、質問への回答を得ることができます。始めたばかりでも、特定の問題で助けが必要な場合でも、Milvusを最大限に活用できるようお手伝いいたします。</p>
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Why-Book-a-Session" class="common-anchor-header">セッションを予約する理由<button data-href="#Why-Book-a-Session" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -30,13 +35,13 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>オフィスアワーでのセッションをご予約いただく理由は以下の通りです：</p>
+    </button></h2><p>営業時間内にセッションをご予約いただく理由は以下の通りです：</p>
 <ul>
 <li><p><strong>Milvusパフォーマンスの最適化：</strong>データベースパフォーマンスを向上させるための設定チューニングのヒントを得ることができます。</p></li>
-<li><p><strong>データスキーマ設計のアドバイス</strong>お客様のユースケースに最適なデータスキーマとインデックスタイプのベストプラクティスを学びます。</p></li>
+<li><p><strong>データスキーマ設計のアドバイス：</strong>お客様のユースケースに最適なデータスキーマとインデックスタイプのベストプラクティスを学びます。</p></li>
 <li><p><strong>Milvusデプロイのスケーリング：</strong>Milvusを管理し、より大きなデータ量に拡張するためのアドバイスを得ることができます。</p></li>
 <li><p><strong>特定の問題のトラブルシューティング</strong>エラーや異常な動作でお困りですか?トラブルシューティングと解決のお手伝いをいたします。</p></li>
-<li><p><strong>統合支援：</strong>LangChain、LlamaIndex、Spark、データ処理パイプラインなどの他の統合フレームワークとMilvusを使用する際のガイダンスが必要ですか？</p></li>
+<li><p><strong>統合支援：</strong>LangChain、LlamaIndex、Spark、データ処理パイプラインなど、他の統合フレームワークとMilvusを使用する際のガイダンスが必要ですか？</p></li>
 <li><p><strong>新機能の学習：</strong>Milvusの最新機能と、それらがお客様のプロジェクトにどのようなメリットをもたらすかについての最新情報を得ることができます。</p></li>
 </ul>
 <p>専門家によるガイダンスでMilvusの導入をレベルアップするこの機会をお見逃しなく。</p>

@@ -13,8 +13,13 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
-<p>نحن متحمسون لتقديم ساعات عمل أسبوعية لمستخدمي Milvus للحصول على دعم عملي في مشاريع <a href="https://zilliz.com/learn/what-is-vector-database">قواعد البيانات المتجهة</a> الخاصة بهم! انضم إلى فريق الخبراء لدينا في جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات على أسئلتك. سواء كنت قد بدأت للتو أو تحتاج إلى مساعدة في مشكلة معينة، نحن هنا لمساعدتك في تحقيق أقصى استفادة من Milvus.</p>
-<p><strong>احجز جلسة ساعات العمل هنا<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">:https://meetings.hubspot.com/chloe-williams1/milvus-office-hours</a></strong></p>
+<p>احصل على مساعدة الخبراء في مشاريع <a href="https://zilliz.com/learn/what-is-vector-database">قاعدة بيانات</a> Milvus <a href="https://zilliz.com/learn/what-is-vector-database">vector</a> الخاصة بك. احجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك. سواء كنت قد بدأت للتو أو تحتاج إلى مساعدة في مشكلة معينة، نحن هنا لمساعدتك في تحقيق أقصى استفادة من Milvus.</p>
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Why-Book-a-Session" class="common-anchor-header">لماذا تحجز جلسة؟<button data-href="#Why-Book-a-Session" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -30,12 +35,12 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إليك بعض الأسباب الرائعة لحجز وقت خلال ساعات العمل لدينا:</p>
+    </button></h2><p>فيما يلي بعض الأسباب الرائعة لحجز وقت خلال ساعات عملنا:</p>
 <ul>
 <li><p><strong>تحسين أداء ميلفوس:</strong> احصل على نصائح حول ضبط التكوينات لتعزيز أداء قاعدة البيانات.</p></li>
 <li><p><strong>نصائح حول تصميم مخطط البيانات:</strong> تعرف على أفضل الممارسات لمخطط البيانات وأنواع الفهارس لتناسب حالة استخدامك على أفضل وجه.</p></li>
 <li><p><strong>توسيع نطاق نشر ميلفوس الخاص بك:</strong> احصل على نصائح حول إدارة وتوسيع نطاق ميلفوس لأحجام البيانات الكبيرة.</p></li>
-<li><p><strong>استكشاف مشاكل محددة وإصلاحها:</strong> هل أنت عالق في خطأ أو سلوك غير عادي؟ يمكننا المساعدة في استكشاف الأخطاء وإصلاحها وحلها.</p></li>
+<li><p><strong>استكشاف مشاكل محددة وإصلاحها:</strong> عالق في خطأ أو سلوك غير عادي؟ يمكننا المساعدة في استكشاف الأخطاء وإصلاحها وحلها.</p></li>
 <li><p><strong>المساعدة في التكامل:</strong> هل تحتاج إلى إرشادات حول استخدام Milvus مع أطر عمل متكاملة أخرى مثل LangChain أو LlamaIndex أو Spark أو خطوط أنابيب معالجة البيانات الخاصة بك؟</p></li>
 <li><p><strong>التعرف على الميزات الجديدة:</strong> اطلع على أحدث إمكانيات Milvus وكيف يمكن أن تفيد مشروعك.</p></li>
 </ul>

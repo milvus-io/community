@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2025-01-16T07:40:27.013Z",
+  "homepage/index.json": "2025-02-24T11:55:42.162Z",
   "blog/en/2019-11-08-data-management.md": "2025-01-16T07:41:17.762Z",
   "blog/en/2019-12-05-Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing.md": "2025-01-16T07:41:20.263Z",
   "blog/en/2019-12-18-datafile-cleanup.md": "2025-01-16T07:41:21.592Z",
@@ -75,7 +75,7 @@
   "blog/en/2022-02-28-how-milvus-balances-query-load-across-nodes.md": "2025-01-16T07:43:30.257Z",
   "blog/en/2022-03-10-manage-your-milvus-vector-database-with-one-click-simplicity.md": "2025-01-16T07:43:32.042Z",
   "blog/en/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md": "2025-01-16T07:43:33.965Z",
-  "blog/en/2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md": "2025-01-16T07:43:35.325Z",
+  "blog/en/2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md": "2025-02-24T11:56:23.912Z",
   "blog/en/2022-08-05-whats-new-in-milvus-2-1.md": "2025-01-16T07:43:37.198Z",
   "blog/en/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md": "2025-01-16T07:43:38.973Z",
   "blog/en/2022-08-16-Benchmark-Quick-Setup.md": "2025-01-16T07:43:40.402Z",
@@ -118,7 +118,7 @@
   "blog/en/introducing-milvus-lite-lightweight-version-of-milvus.md": "2025-01-16T07:44:51.343Z",
   "blog/en/introducing-milvus-lite.md": "2025-01-16T07:44:52.796Z",
   "blog/en/introducing-pymilvus-integrations-with-embedding-models.md": "2025-01-16T07:44:54.168Z",
-  "blog/en/join-milvus-office-hours-to-get-support-from-vectordb-experts.md": "2025-01-16T07:44:55.366Z",
+  "blog/en/join-milvus-office-hours-to-get-support-from-vectordb-experts.md": "2025-02-24T11:57:26.987Z",
   "blog/en/matryoshka-embeddings-detail-at-multiple-scales.md": "2025-01-16T07:44:57.518Z",
   "blog/en/milvus-2-2-12-easier-access-faster-vector-search-speeds-better-user-experience.md": "2025-01-16T07:44:58.740Z",
   "blog/en/milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md": "2025-01-16T07:45:00.039Z",
@@ -143,5 +143,7 @@
   "blog/en/what-milvus-version-to-start-with.md": "2025-01-16T07:45:37.142Z",
   "blog/en/why-and-when-you-need-a-purpose-built-vector-database.md": "2025-01-16T07:45:39.010Z",
   "blog/en/multimodal-semantic-search-with-images-and-text.md": "2025-02-10T06:17:48.548Z",
-  "blog/en/i-built-a-deep-research-with-open-source-so-can-you.md": "2025-02-10T06:17:28.457Z"
+  "blog/en/i-built-a-deep-research-with-open-source-so-can-you.md": "2025-02-10T06:17:28.457Z",
+  "blog/en/introduce-deepsearcher-a-local-open-source-deep-research.md": "2025-02-24T11:57:09.016Z",
+  "blog/en/what-milvus-taught-us-in-2024.md": "2025-02-24T11:57:49.512Z"
 }

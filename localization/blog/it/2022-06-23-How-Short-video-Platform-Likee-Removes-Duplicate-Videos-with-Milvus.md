@@ -49,5 +49,5 @@ canonicalUrl: >-
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/02_a24d251c8f.png" alt="Procedure of a similarity search" class="doc-image" id="procedure-of-a-similarity-search" />
-   </span> <span class="img-wrapper"> <span>Procedura di una ricerca di similarità</span> </span></p>
+   </span> <span class="img-wrapper"> <span>Procedura di una ricerca per similarità</span> </span></p>
 <p>Come motore di ricerca vettoriale ad alte prestazioni, Milvus ha svolto un lavoro straordinario nel sistema di de-duplicazione dei video di Likee, alimentando notevolmente la crescita del business dei video brevi di BIGO. In termini di attività video, Milvus può essere applicato a molti altri scenari, come il blocco dei contenuti illegali o la raccomandazione di video personalizzati. Sia BIGO che Milvus sono impazienti di collaborare in futuro in altri settori.</p>
