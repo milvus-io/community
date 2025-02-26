@@ -1,6 +1,6 @@
 ---
 id: ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
-title: AI for Smarter Browsing: Filtering Web Content with Pixtral, Milvus, and Browser Use
+title: "AI for Smarter Browsing: Filtering Web Content with Pixtral, Milvus, and Browser Use"
 author: Stephen Batifol
 date: 2025-02-25
 desc: Learn how to build an intelligent assistant that filters content by combining Pixtral for image analysis, Milvus vector database for storage, and Browser Use for web navigation.
@@ -9,6 +9,9 @@ tag: Engineering
 tags: Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser Use Web Navigation, Intelligent Agent Development
 recommend: true
 canonicalUrl: https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
+---
+
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 As a Developer Advocate for Milvus, I spend a lot of time on Socials, listening to what people have to say about us and if I can help as well. There is a slight clash of worlds though when you look for "Milvus". It is both a Vector DB and genus of bird, meaning that one moment I'm deep in a thread about vector similarity algorithms, the next I'm admiring stunning photographs of black birds flying through the sky.
 
@@ -34,7 +37,7 @@ Let's have a look at those 2 posts:
 
 ![](https://assets.zilliz.com/Langchian_tweet_1_with_Milvus_f2bd988503.png)![](https://assets.zilliz.com/Tweet_2_with_Bird_4b534efced.png)
 
-For the one on the left, Pixtral recognizes that this is a post about Milvus, the Vector DB. It mentioned some implementation details, but also an image showing a system diagram, indicating that this is indeed, about the Vector DB. We can see below that Pixtral also thinks the same :)
+For the one on the left, Pixtral recognizes that this is a post about Milvus, the Vector DB. It mentioned some implementation details, but also an image showing a system diagram, indicating that this is indeed, about the Vector DB. We can see below that Pixtral also thinks the same. 
 
 ```Shell
 INFO     [src.agent.custom_agent] 🧠 New Memory: 1. The post by LangChainAI discusses the 'GraphRAG Agent' which uses Neo4j and Milvus vector search to enhance RAG systems.
@@ -73,7 +76,7 @@ The post and comments primarily discuss photography and birds. No references to 
 
 Now that we have filtered out the posts we don't want, we can save the relevant ones in Milvus. Making it possible to query them later using either Vector Search or Full Text Search.
 
-This content is only supported in a Lark Docs
+![](https://assets.zilliz.com/Browser_use_milvus_pixtral_39bf320a9f.gif)
 
 
 ## Storing Data in Milvus
@@ -131,6 +134,3 @@ If you like this blog post, please consider:
 - 💬 Joining our [Milvus Discord community](https://discord.gg/FG6hMJStWu) to share your experiences or if you need help building Agents
 - 🔍 Exploring our [Bootcamp repository](https://github.com/milvus-io/bootcamp) for examples of applications using Milvus
 
-
-
----
