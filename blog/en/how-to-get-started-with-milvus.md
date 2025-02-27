@@ -123,7 +123,7 @@ _Figure: Workflow of vector search operation._
 
 To transform text data into vector embeddings, we'll use an [embedding model](https://zilliz.com/ai-models) from SentenceTransformers called 'all-MiniLM-L6-v2'. This embedding model transforms our text into a 384-dimensional vector embedding. Let's load the model, transform our text data, and pack everything together.
 
-```
+```python
 from pymilvus import model
 
 docs = [
@@ -144,8 +144,8 @@ data = [ {"id": i, "vector": vectors[i], "text": docs[i]} for i in range(len(vec
 
 Next, let’s create a schema to store all of the data above into Milvus. As you can see above, our data consists of three fields: ID, vector, and text. Therefore, we’re going to create a schema with these three fields.
 
-```
-from pymilvus import MilvusClient, DataType, db, connections
+```python
+from pymilvus import MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=False,
@@ -161,7 +161,7 @@ schema.add_field(field_name="text", datatype=DataType.VARCHAR, max_length=512)
 
 With Milvus Lite, we can easily create a collection on a particular database based on the schema defined above, as well as inserting and indexing the data into the collection in just a few lines of code.
 
-```
+```python
 client = MilvusClient("./milvus_demo.db")
 
 index_params = client.prepare_index_params()
@@ -200,7 +200,7 @@ Now that we have our data inside the database, we can perform a vector search on
 
 Below is the implementation of the above steps with Milvus:
 
-```
+```python
 query = ["Who is Alan Turing"]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
@@ -235,7 +235,7 @@ Before installing Milvus Standalone, make sure that both your hardware and softw
 
 Once our system fulfills the requirements and we have installed Docker, we can proceed with Milvus installation in Docker using the following command:
 
-```
+```shell
 # Download the installation script
 $ curl -sfL <https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh> -o standalone_embed.sh
 
@@ -250,19 +250,18 @@ In the above code, we also start the Docker container and once it’s started, y
 
 _Figure: Message after successful starting of the Docker container._
 
-After running the installation script “standalone_embed.sh” above, a Docker container named “milvus” is started at port 19530. Therefore, we can create a new database as well as access all the things related to the Milvus database by pointing to this port when creating connections. 
+After running the installation script “standalone_embed.sh” above, a Docker container named “milvus” is started at port 19530. Therefore, we can create a new database as well as access all the things related to the Milvus database by pointing to this port when initiating the client. 
 
 Let’s say we want to create a database called “milvus_demo”, similar to what we have done in Milvus Lite above. We can do so as follows:
 
-```
-conn = connections.connect(host="127.0.0.1", port=19530)
-database = db.create_database("milvus_demo")
+```python
+from pymilvus import MilvusClient
 
 client = MilvusClient(
-    uri="<http://localhost:19530>",
+    uri="http://localhost:19530",
     token="root:Milvus",
-    db_name="milvus_demo"
 )
+client.create_database("milvus_demo")
 ```
 
 
@@ -279,7 +278,7 @@ Under the "Collections" tab, you'll see that our "milvus_demo" database has been
 Now we can perform everything exactly as we've seen in the Milvus Lite section above. Let's create a collection called "demo_collection" inside the "milvus_demo" database that consists of three fields, the same as what we had in the Milvus Lite section before. Then, we'll insert our data into the collection.
 
 
-```
+```python
 index_params = client.prepare_index_params()
 
 #  Add indexes
@@ -305,7 +304,7 @@ res = client.insert(
 
 The code to perform a vector search operation is also the same as Milvus Lite, as you can see in the below code:
 
-```
+```python
 query = ["Who is Alan Turing"]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
@@ -332,7 +331,7 @@ Aside from using Docker, you can also use Milvus Standalone with [Docker Compose
 
 When we’re not using our Milvus instance anymore, we can stop Milvus Standalone with the following command:
 
-```
+```shell
 $ bash standalone_embed.sh stop
 ```
 
