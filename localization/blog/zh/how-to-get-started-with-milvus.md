@@ -18,7 +18,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
    </span> <span class="img-wrapper"> <span>如何开始使用 Milvus</span> </span></p>
 <p><strong><em>最后更新于 2025 年 1 月</em></strong></p>
 <p>随着大型语言模型<a href="https://zilliz.com/glossary/large-language-models-(llms)">（LLMs</a>）的进步和数据量的不断增加，有必要建立一个灵活且可扩展的基础设施来存储海量信息，例如数据库。然而，<a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">传统数据库</a>是为存储表格和结构化数据而设计的，而通常对利用复杂 LLMs 和信息检索算法的强大功能有用的信息都<a href="https://zilliz.com/learn/introduction-to-unstructured-data">是非结构化的</a>，如文本、图像、视频或音频。</p>
-<p><a href="https://zilliz.com/learn/what-is-vector-database">向量数据库</a>是专门为非结构化数据设计的数据库系统。我们不仅可以用向量数据库存储海量非结构化数据，还可以用<a href="https://zilliz.com/learn/vector-similarity-search">向量</a>数据库进行<a href="https://zilliz.com/learn/vector-similarity-search">向量搜索</a>。向量数据库拥有先进的索引方法，如反转文件索引（IVFFlat）或分层导航小世界<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">（HNSW</a>），可以执行快速高效的向量搜索和信息检索过程。</p>
+<p><a href="https://zilliz.com/learn/what-is-vector-database">向量数据库</a>是专门为非结构化数据设计的数据库系统。我们不仅可以用向量数据库存储海量非结构化数据，还可以用<a href="https://zilliz.com/learn/vector-similarity-search">向量</a>数据库进行<a href="https://zilliz.com/learn/vector-similarity-search">向量搜索</a>。向量数据库拥有先进的索引方法，如反转文件索引（IVFFlat）或层次导航小世界<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">（HNSW</a>），可以执行快速高效的向量搜索和信息检索过程。</p>
 <p><strong>Milvus</strong>是一个开源矢量数据库，我们可以利用它来发挥矢量数据库所能提供的所有有益功能。以下是我们将在本篇文章中介绍的内容：</p>
 <ul>
 <li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">Milvus 概述</a></p></li>
@@ -128,7 +128,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 </p>
 <p><em>图向量搜索操作符的工作流程。</em></p>
 <p>为了将文本数据转换为向量嵌入，我们将使用 SentenceTransformers 中名为 "all-MiniLM-L6-v2 "的<a href="https://zilliz.com/ai-models">嵌入模型</a>。该嵌入模型可将我们的文本转换为 384 维向量嵌入。让我们加载模型，转换文本数据，并将所有内容打包在一起。</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
     <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
@@ -145,7 +145,7 @@ vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
 <p>接下来，让我们创建一个 Schema，将上述所有数据存储到 Milvus 中。如上图所示，我们的数据由三个字段组成：ID、向量和文本。因此，我们要创建一个包含这三个字段的 Schema。</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=<span class="hljs-literal">False</span>,
@@ -158,7 +158,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>,
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>有了 Milvus Lite，我们只需几行代码，就能根据上面定义的 Schema 在特定数据库上轻松创建一个 Collections，还能将数据插入到 Collections 中并建立索引。</p>
-<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+<pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
 
@@ -190,7 +190,7 @@ res = client.insert(
 <li><p>获取最相似的条目作为我们查询的合适答案。</p></li>
 </ol>
 <p>下面是使用 Milvus 实现上述步骤的过程：</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -230,7 +230,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
     </button></h2><p>Milvus Standalone 是一种部署选项，其中的所有内容都打包在一个 Docker 容器中。因此，我们需要在 Docker 中安装 Milvus，然后启动 Docker 容器，才能开始使用 Milvus Standalone。</p>
 <p>在安装 Milvus Standalone 之前，请确保你的硬件和软件都满足<a href="https://milvus.io/docs/prerequisite-docker.md">本页</a>描述的要求。此外，确保已安装 Docker。要安装 Docker，请参阅<a href="https://docs.docker.com/get-started/get-docker/">本页</a>。</p>
 <p>一旦系统满足要求并安装了 Docker，我们就可以使用以下命令在 Docker 中继续安装 Milvus：</p>
-<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+<pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
@@ -244,16 +244,15 @@ $ bash standalone_embed.sh start
   </span>
 </p>
 <p><em>图成功启动 Docker 容器后的信息。</em></p>
-<p>运行上面的安装脚本 "standalone_embed.sh "后，一个名为 "milvus "的 Docker 容器就在 19530 端口启动了。因此，我们可以创建一个新数据库，也可以在创建连接时指向这个端口，访问与 Milvus 数据库相关的所有内容。</p>
-<p>比方说，我们想创建一个名为 "milvus_demo "的数据库，类似于上文 Milvus Lite 中的做法。我们可以按如下步骤创建：</p>
-<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
-database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+<p>运行上面的安装脚本 "standalone_embed.sh "后，一个名为 "milvus "的 Docker 容器就在 19530 端口启动了。因此，我们只要在启动客户端时指向这个端口，就能创建一个新数据库，也能访问与 Milvus 数据库相关的所有内容。</p>
+<p>比方说，我们想创建一个名为 "milvus_demo "的数据库，类似于上面在 Milvus Lite 中的做法。我们可以按如下步骤创建：</p>
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
-    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,
     token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
-    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
 )
+client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>接下来，你可以通过访问 Milvus<a href="https://milvus.io/docs/milvus-webui.md">Web UI</a> 来验证新创建的名为 "milvus_demo "的数据库是否真正存在于你的 Milvus 实例中。顾名思义，Milvus Web UI 是 Milvus 提供的图形用户界面，用于观察组件的统计和指标，检查数据库、Collection 和配置的列表和细节。启动上述 Docker 容器后，你就可以访问 Milvus Web UI，网址是 http://127.0.0.1:9091/webui/。</p>
 <p>访问上述链接后，你会看到这样一个登陆页面：</p>
@@ -271,7 +270,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
   </span>
 </p>
 <p>现在，我们可以完全按照上面 Milvus Lite 部分中的方法执行一切操作。让我们在 "milvus_demo "数据库中创建一个名为 "demo_collection "的 Collections，它由三个字段组成，与之前在 Milvus Lite 部分中的字段相同。然后，我们将把数据插入 Collections 中。</p>
-<pre><code translate="no">index_params = client.prepare_index_params()
+<pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
 index_params.add_index(
@@ -294,7 +293,7 @@ res = client.insert(
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>执行向量搜索操作的代码也与 Milvus Lite 相同，你可以从下面的代码中看到：</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -317,7 +316,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 <button class="copy-code-btn"></button></code></pre>
 <p>除了使用 Docker，你还可以通过<a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a>（适用于 Linux）和<a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a>（适用于 Windows）来使用 Milvus Standalone。</p>
 <p>当我们不再使用 Milvus 实例时，可以用下面的命令停止 Milvus Standalone：</p>
-<pre><code translate="no">$ bash standalone_embed.sh stop
+<pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
 <h2 id="Fully-Managed-Milvus" class="common-anchor-header">完全托管 Milvus<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"

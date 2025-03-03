@@ -17,7 +17,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png" alt="How to get started with Milvus" class="doc-image" id="how-to-get-started-with-milvus" />
    </span> <span class="img-wrapper"> <span>Milvusの始め方</span> </span></p>
 <p><strong><em>最終更新 2025年1月</em></strong></p>
-<p>大規模言語モデル<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM</a>)の進化とデータ量の増加により、データベースのような大量の情報を保存するための柔軟でスケーラブルなインフラが必要とされています。しかし、<a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">従来のデータベースは</a>表形式や構造化されたデータを保存するように設計されており、高度なLLMや情報検索アルゴリズムの能力を活用するために一般的に有用な情報は、テキスト、画像、動画、音声などの<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非構造化</a>データである。</p>
+<p>大規模言語モデル<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM</a>)の進化とデータ量の増加により、データベースのような大量の情報を保存するための柔軟でスケーラブルなインフラが必要とされています。しかし、<a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">従来のデータベースは</a>、表形式や構造化されたデータを保存するように設計されており、高度なLLMや情報検索アルゴリズムの能力を活用するために一般的に有用な情報は、テキスト、画像、動画、音声などの<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非構造化</a>データである。</p>
 <p><a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベースは</a>、非構造化データ用に特別に設計されたデータベースシステムです。ベクトルデータベースでは、大量の非構造化データを保存できるだけでなく、<a href="https://zilliz.com/learn/vector-similarity-search">ベクトル検索も</a>可能です。ベクターデータベースは、Inverted File Index (IVFFlat)やHierarchical Navigable Small World<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">(HNSW</a>)といった高度なインデックス作成方法を持ち、高速で効率的なベクター検索や情報検索処理を行うことができます。</p>
 <p><strong>Milvusは</strong>オープンソースのベクターデータベースであり、ベクターデータベースが提供できる有益な機能をすべて活用することができます。この投稿で取り上げる内容は以下の通りです：</p>
 <ul>
@@ -46,7 +46,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 <p>Milvusをベクトルデータベースとして使用することで得られる利点はいくつかあります：</p>
 <ul>
 <li><p>Milvusには複数の導入オプションがあり、ユースケースや構築するアプリケーションの規模に応じて選択することができます。</p></li>
-<li><p>Milvusは、FLAT、IVFFlat、HNSW、<a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">SCANNの</a>ようなインメモリオプション、メモリ効率のための量子化バリアント、大規模データセット用のオンディスク<a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DANN</a>、メモリ効率の高い高速検索用のGPU_CAGRA、GPU_IVF_FLAT、GPU_IVF_PQのようなGPU最適化インデックスなど、さまざまなデータやパフォーマンスニーズに対応する多様なインデックス作成方法をサポートしています。</p></li>
+<li><p>Milvusは、FLAT、IVFFlat、HNSW、<a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">SCANNの</a>ようなインメモリオプション、メモリ効率のための量子化バリアント、大規模データセット用のオンディスク<a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DANN</a>、メモリ効率の高い高速検索用のGPU_CAGRA、GPU_IVF_FLAT、GPU_IVF_PQのようなGPUに最適化されたインデックスなど、さまざまなデータとパフォーマンスのニーズに対応する多様なインデックス作成方法をサポートしています。</p></li>
 <li><p>また、Milvusはハイブリッド検索も提供しており、ベクトル検索操作中に密な埋め込み、疎な埋め込み、メタデータフィルタリングを組み合わせて使用することができ、より正確な検索結果につながります。さらに、<a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5では</a>、<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">全文検索と</a>ベクトル検索のハイブリッド検索に対応し、検索精度がさらに向上しました。</p></li>
 <li><p>Milvusは<a href="https://zilliz.com/cloud">Zilliz Cloudを通じて</a>クラウド上で利用することができ、論理クラスタ、ストリーミングデータと履歴データの分離、階層型ストレージ、オートスケール、マルチテナントのホットコールド分離という4つの先進機能により、運用コストとベクトル検索速度を最適化することができます。</p></li>
 </ul>
@@ -128,7 +128,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 </p>
 <p><em>図：ベクトル検索のワークフロー</em></p>
 <p>テキストデータをベクトル埋め込み表現に変換するために、SentenceTransformersの<a href="https://zilliz.com/ai-models">埋め込みモデル</a>'all-MiniLM-L6-v2'を使用する。この埋め込みモデルは、テキストを384次元のベクトル埋め込みに変換します。このモデルを読み込み、テキストデータを変換し、すべてをまとめてみましょう。</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
     <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
@@ -145,7 +145,7 @@ vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
 <p>次に、上記のデータをMilvusに格納するためのスキーマを作成します。上にあるように、データは3つのフィールドから構成されています：ID、ベクトル、テキストです。そこで、この3つのフィールドを持つスキーマを作成します。</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=<span class="hljs-literal">False</span>,
@@ -158,7 +158,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>,
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>Milvus Liteを使えば、上記で定義したスキーマに基づいて、特定のデータベース上にコレクションを作成し、コレクションにデータを挿入したり、インデックスを作成したりすることが、わずか数行のコードで簡単にできます。</p>
-<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+<pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
 
@@ -190,7 +190,7 @@ res = client.insert(
 <li><p>最も類似したエントリを、クエリに対する適切な回答として取り出す。</p></li>
 </ol>
 <p>以下は、Milvusを使った上記のステップの実装です：</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -230,7 +230,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
     </button></h2><p>Milvus Standaloneは、すべてがDockerコンテナにまとめられているデプロイオプションです。そのため、Milvus Standaloneを始めるには、DockerにMilvusをインストールし、Dockerコンテナを起動する必要がある。</p>
 <p>Milvus Standaloneをインストールする前に、ハードウェアとソフトウェアの両方が<a href="https://milvus.io/docs/prerequisite-docker.md">このページに</a>記載されている要件を満たしていることを確認してください。また、Dockerがインストールされていることを確認してください。Dockerのインストールについては、こちらの<a href="https://docs.docker.com/get-started/get-docker/">ページを</a>ご参照ください。</p>
 <p>システムが要件を満たし、Dockerがインストールできたら、以下のコマンドでDockerにMilvusをインストールします：</p>
-<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+<pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
@@ -244,16 +244,15 @@ $ bash standalone_embed.sh start
   </span>
 </p>
 <p><em>図：Dockerコンテナ起動成功後のメッセージ。</em></p>
-<p>上記のインストール・スクリプト "standalone_embed.sh "を実行すると、ポート19530で "milvus "という名前のDockerコンテナが起動する。そのため、接続を作成する際にこのポートを指定することで、新しいデータベースを作成したり、milvusデータベースに関連するすべてのものにアクセスしたりすることができる。</p>
-<p>例えば、上記のMilvus Liteで行ったような "milvus_demo "というデータベースを作成したいとします。以下のようにすればよい：</p>
-<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
-database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+<p>上記のインストール・スクリプト "standalone_embed.sh "を実行すると、ポート19530で "milvus "という名前のDockerコンテナが起動する。したがって、クライアントを起動する際にこのポートを指定することで、新しいデータベースを作成するだけでなく、milvusデータベースに関連するすべてのものにアクセスすることができる。</p>
+<p>例えば、"milvus_demo "というデータベースを作成するとしよう。以下のようにすればよい：</p>
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
-    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,
     token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
-    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
 )
+client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>次に、<a href="https://milvus.io/docs/milvus-webui.md">Milvus Web UIに</a>アクセスすることで、新しく作成した "milvus_demo "というデータベースが本当にMilvusインスタンスに存在するかどうかを確認することができます。Milvus Web UIは、その名の通り、Milvusが提供するグラフィカルユーザインタフェースで、コンポーネントの統計やメトリクスの確認、データベース、コレクション、設定の一覧や詳細の確認などを行うことができます。Milvus Web UIは、上記のDockerコンテナを起動した後、http://127.0.0.1:9091/webui/。</p>
 <p>上記リンクにアクセスすると、このようなランディングページが表示される：</p>
@@ -271,7 +270,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
   </span>
 </p>
 <p>これで、上記のMilvus Liteのセクションで見たのと全く同じようにすべてを実行することができる。milvus_demo "データベース内に "demo_collection "という3つのフィールドからなるコレクションを作成します。そして、このコレクションにデータを挿入する。</p>
-<pre><code translate="no">index_params = client.prepare_index_params()
+<pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
 index_params.add_index(
@@ -294,7 +293,7 @@ res = client.insert(
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>ベクトル検索を行うコードもMilvus Liteと同じだ：</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -317,7 +316,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 <button class="copy-code-btn"></button></code></pre>
 <p>Dockerを使う以外にも、<a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a>（Linux用）や<a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a>（Windows用）を使ってMilvus Standaloneを使うこともできます。</p>
 <p>Milvusインスタンスを使わなくなったら、以下のコマンドでMilvus Standaloneを停止することができる：</p>
-<pre><code translate="no">$ bash standalone_embed.sh stop
+<pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
 <h2 id="Fully-Managed-Milvus" class="common-anchor-header">Milvusのフルマネージド化<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"

@@ -72,7 +72,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 <h3 id="Milvus-Standalone" class="common-anchor-header">ميلفوس مستقل</h3><p>Milvus Standalone هو عبارة عن نشر خادم أحادي الجهاز معبأ في صورة Docker. لذلك، كل ما علينا فعله للبدء هو تثبيت Milvus في Docker، ثم بدء تشغيل حاوية Docker. سنرى أيضًا التنفيذ التفصيلي لـ Milvus Standalone في القسم التالي.</p>
 <p>يعتبر Milvus Standalone مثاليًا لبناء وإنتاج تطبيقات صغيرة إلى متوسطة الحجم، حيث أنه قادر على تخزين ما يصل إلى 10 ملايين من التضمينات المتجهة. بالإضافة إلى ذلك، يوفر Milvus Standalone توافرًا عاليًا من خلال وضع النسخ الاحتياطي الأساسي، مما يجعله موثوقًا للغاية للاستخدام في التطبيقات الجاهزة للإنتاج.</p>
 <p>يمكننا أيضًا استخدام Milvus Standalone، على سبيل المثال، بعد إجراء نماذج أولية سريعة وتعلم وظائف Milvus مع Milvus Lite، حيث يشترك كل من Milvus Standalone و Milvus Lite في نفس واجهة برمجة التطبيقات من جانب العميل.</p>
-<h3 id="Milvus-Distributed" class="common-anchor-header">ميلفوس الموزع</h3><p>Milvus Distributed هو خيار نشر يستفيد من بنية قائمة على السحابة، حيث يتم التعامل مع استيعاب البيانات واسترجاعها بشكل منفصل، مما يسمح بتطبيق فعال وقابل للتطوير بدرجة كبيرة.</p>
+<h3 id="Milvus-Distributed" class="common-anchor-header">ميلفوس الموزع</h3><p>Milvus Distributed هو خيار نشر يستفيد من بنية قائمة على السحابة، حيث يتم التعامل مع استيعاب البيانات واسترجاعها بشكل منفصل، مما يسمح بتطبيق عالي الكفاءة وقابل للتطوير.</p>
 <p>لتشغيل Milvus Distributed، نحتاج عادةً إلى استخدام مجموعة Kubernetes للسماح بتشغيل الحاوية على أجهزة وبيئات متعددة. يضمن تطبيق مجموعة Kubernetes العنقودية قابلية التوسع والمرونة في تطبيق Milvus Distributed في تخصيص الموارد المخصصة حسب الطلب وعبء العمل. وهذا يعني أيضًا أنه في حالة فشل أحد الأجزاء، يمكن أن يحل محله أجزاء أخرى، مما يضمن بقاء النظام بأكمله دون انقطاع.</p>
 <p>يستطيع نظام Milvus Distributed التعامل مع ما يصل إلى عشرات المليارات من التضمينات المتجهة وهو مصمم خصيصًا لحالات الاستخدام التي تكون فيها البيانات كبيرة جدًا بحيث لا يمكن تخزينها في جهاز خادم واحد. لذلك، فإن خيار النشر هذا مثالي لعملاء المؤسسات التي تخدم قاعدة مستخدمين كبيرة.</p>
 <p>
@@ -127,8 +127,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
   </span>
 </p>
 <p><em>الشكل: سير عمل عملية البحث المتجه.</em></p>
-<p>لتحويل البيانات النصية إلى تضمينات متجه، سنستخدم <a href="https://zilliz.com/ai-models">نموذج تضمين</a> من SentenceTransformers يسمى "all-MiniLM-L6-v2". يقوم نموذج التضمين هذا بتحويل نصنا إلى تضمين متجه ذي 384 بُعدًا. لنقم بتحميل النموذج وتحويل بياناتنا النصية وتجميع كل شيء معًا.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
+<p>لتحويل البيانات النصية إلى تضمينات متجهة، سنستخدم <a href="https://zilliz.com/ai-models">نموذج تضمين</a> من SentenceTransformers يسمى "all-MiniLM-L6-v2". يقوم نموذج التضمين هذا بتحويل نصنا إلى تضمين متجه ذي 384 بُعدًا. لنقم بتحميل النموذج وتحويل بياناتنا النصية وتجميع كل شيء معًا.</p>
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
     <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
@@ -145,7 +145,7 @@ vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
 <p>بعد ذلك، دعنا ننشئ مخططًا لتخزين جميع البيانات أعلاه في ميلفوس. كما ترى أعلاه، تتكون بياناتنا من ثلاثة حقول: المعرف والمتجه والنص. لذلك، سنقوم بإنشاء مخطط بهذه الحقول الثلاثة.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=<span class="hljs-literal">False</span>,
@@ -158,7 +158,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>,
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>باستخدام Milvus Lite، يمكننا بسهولة إنشاء مجموعة على قاعدة بيانات معينة استنادًا إلى المخطط المحدد أعلاه، بالإضافة إلى إدراج البيانات وفهرستها في المجموعة في بضعة أسطر من التعليمات البرمجية.</p>
-<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+<pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
 
@@ -190,7 +190,7 @@ res = client.insert(
 <li><p>جلب الإدخال الأكثر تشابهًا باعتباره الإجابة المناسبة لاستعلامنا.</p></li>
 </ol>
 <p>فيما يلي تنفيذ الخطوات المذكورة أعلاه باستخدام Milvus:</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -230,7 +230,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
     </button></h2><p>Milvus Standalone هو خيار نشر يتم فيه تعبئة كل شيء في حاوية Docker. لذلك، نحتاج إلى تثبيت Milvus في Docker ثم بدء تشغيل حاوية Docker لبدء استخدام Milvus Standalone.</p>
 <p>قبل تثبيت Milvus Standalone، تأكد من استيفاء كل من أجهزتك وبرامجك للمتطلبات الموضحة في <a href="https://milvus.io/docs/prerequisite-docker.md">هذه الصفحة</a>. تأكد أيضًا من تثبيت Docker. لتثبيت Docker، راجع <a href="https://docs.docker.com/get-started/get-docker/">هذه الصفحة</a>.</p>
 <p>بمجرد أن يستوفي نظامنا المتطلبات وقمنا بتثبيت Docker، يمكننا متابعة تثبيت Milvus في Docker باستخدام الأمر التالي:</p>
-<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+<pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
@@ -244,16 +244,15 @@ $ bash standalone_embed.sh start
   </span>
 </p>
 <p><em>الشكل: رسالة بعد بدء تشغيل حاوية Docker بنجاح.</em></p>
-<p>بعد تشغيل البرنامج النصي للتثبيت "standalone_embed.sh" أعلاه، يتم بدء تشغيل حاوية Docker المسماة "milvus" على المنفذ 19530. لذلك، يمكننا إنشاء قاعدة بيانات جديدة بالإضافة إلى الوصول إلى جميع الأشياء المتعلقة بقاعدة بيانات Milvus من خلال الإشارة إلى هذا المنفذ عند إنشاء الاتصالات.</p>
-<p>لنفترض أننا نريد إنشاء قاعدة بيانات تسمى "milvus_demo"، على غرار ما فعلناه في Milvus Lite أعلاه. يمكننا القيام بذلك على النحو التالي:</p>
-<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
-database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+<p>بعد تشغيل البرنامج النصي للتثبيت "standalone_embed.sh" أعلاه، يتم بدء تشغيل حاوية Docker المسماة "milvus" على المنفذ 19530. لذلك، يمكننا إنشاء قاعدة بيانات جديدة وكذلك الوصول إلى جميع الأشياء المتعلقة بقاعدة بيانات Milvus من خلال الإشارة إلى هذا المنفذ عند بدء تشغيل العميل.</p>
+<p>لنفترض أننا نريد إنشاء قاعدة بيانات تدعى "milvus_demo"، على غرار ما فعلناه في Milvus Lite أعلاه. يمكننا القيام بذلك على النحو التالي:</p>
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
-    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,
     token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
-    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
 )
+client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>بعد ذلك، يمكنك التحقق مما إذا كانت قاعدة البيانات التي تم إنشاؤها حديثًا باسم "milvus_demo" موجودة بالفعل في مثيل Milvus الخاص بك عن طريق الوصول إلى <a href="https://milvus.io/docs/milvus-webui.md">واجهة مستخدم Milvus Web UI</a>. كما يوحي الاسم، فإن واجهة مستخدم الويب Milvus Web UI هي واجهة مستخدم رسومية توفرها Milvus لمراقبة الإحصائيات والمقاييس الخاصة بالمكونات، والتحقق من قائمة وتفاصيل قواعد البيانات والمجموعات والتكوينات. يمكنك الوصول إلى واجهة مستخدم Milvus Web UI بمجرد بدء تشغيل حاوية Docker أعلاه على http://127.0.0.1:9091/webui/.</p>
 <p>إذا قمت بالوصول إلى الرابط أعلاه، سترى صفحة هبوط مثل هذه:</p>
@@ -271,7 +270,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
   </span>
 </p>
 <p>الآن يمكننا تنفيذ كل شيء تمامًا كما رأينا في قسم ميلفوس لايت أعلاه. لنقم بإنشاء مجموعة تسمى "demo_collection_collection" داخل قاعدة بيانات "milvus_demo" التي تتكون من ثلاثة حقول، وهي نفس ما كان لدينا في قسم Milvus Lite من قبل. بعد ذلك، سنقوم بإدخال بياناتنا في المجموعة.</p>
-<pre><code translate="no">index_params = client.prepare_index_params()
+<pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
 index_params.add_index(
@@ -294,7 +293,7 @@ res = client.insert(
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>الكود الخاص بإجراء عملية البحث المتجه هو نفسه الموجود في Milvus Lite، كما ترى في الكود أدناه:</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -317,7 +316,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 <button class="copy-code-btn"></button></code></pre>
 <p>بصرف النظر عن استخدام Docker، يمكنك أيضًا استخدام Milvus Standalone مع <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (لنظام لينكس) و <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (لنظام ويندوز).</p>
 <p>عندما لا نستخدم مثيل Milvus بعد الآن، يمكننا إيقاف Milvus Standalone باستخدام الأمر التالي:</p>
-<pre><code translate="no">$ bash standalone_embed.sh stop
+<pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
 <h2 id="Fully-Managed-Milvus" class="common-anchor-header">ميلفوس المدارة بالكامل<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"

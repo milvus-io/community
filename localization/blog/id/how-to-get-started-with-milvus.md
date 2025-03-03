@@ -82,7 +82,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
   </span>
 </p>
 <p><em>Gambar: Kemampuan penyimpanan penyematan vektor dari berbagai opsi penerapan Milvus.</em></p>
-<p>Pada artikel ini, kami akan menunjukkan kepada Anda cara memulai dengan Milvus Lite dan Milvus Standalone, karena Anda bisa memulai dengan cepat dengan kedua metode tersebut tanpa pengaturan yang rumit. Namun, Milvus Distributed lebih rumit untuk disiapkan. Setelah kita menyiapkan Milvus Distributed, kode dan proses logis untuk membuat koleksi, memasukkan data, melakukan pencarian vektor, dan lain-lain mirip dengan Milvus Lite dan Milvus Standalone, karena keduanya menggunakan API sisi klien yang sama.</p>
+<p>Dalam artikel ini, kami akan menunjukkan kepada Anda bagaimana cara memulai dengan Milvus Lite dan Milvus Standalone, karena Anda bisa memulai dengan cepat dengan kedua metode tersebut tanpa pengaturan yang rumit. Namun, Milvus Distributed lebih rumit untuk disiapkan. Setelah kita menyiapkan Milvus Distributed, kode dan proses logis untuk membuat koleksi, memasukkan data, melakukan pencarian vektor, dan lain-lain mirip dengan Milvus Lite dan Milvus Standalone, karena keduanya menggunakan API sisi klien yang sama.</p>
 <p>Selain tiga opsi penerapan yang disebutkan di atas, Anda juga dapat mencoba Milvus terkelola di <a href="https://zilliz.com/cloud">Zilliz Cloud</a> untuk pengalaman yang lebih mudah. Kami juga akan membahas tentang Zilliz Cloud nanti di artikel ini.</p>
 <h2 id="Getting-Started-with-Milvus-Lite" class="common-anchor-header">Memulai dengan Milvus Lite<button data-href="#Getting-Started-with-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -128,7 +128,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 </p>
 <p><em>Gambar: Alur kerja operasi pencarian vektor.</em></p>
 <p>Untuk mengubah data teks menjadi penyematan vektor, kita akan menggunakan <a href="https://zilliz.com/ai-models">model penyematan</a> dari SentenceTransformers yang disebut 'all-MiniLM-L6-v2'. Model penyematan ini mengubah teks kita menjadi penyematan vektor 384 dimensi. Mari muat model, ubah data teks kita, dan kemas semuanya menjadi satu.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
     <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
@@ -145,7 +145,7 @@ vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
 <p>Selanjutnya, mari kita buat skema untuk menyimpan semua data di atas ke dalam Milvus. Seperti yang dapat Anda lihat di atas, data kita terdiri dari tiga field: ID, vektor, dan teks. Oleh karena itu, kita akan membuat sebuah skema dengan tiga field tersebut.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=<span class="hljs-literal">False</span>,
@@ -158,7 +158,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>,
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>Dengan Milvus Lite, kita dapat dengan mudah membuat sebuah koleksi pada database tertentu berdasarkan skema yang didefinisikan di atas, serta memasukkan dan mengindeks data ke dalam koleksi tersebut hanya dalam beberapa baris kode.</p>
-<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+<pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
 
@@ -190,7 +190,7 @@ res = client.insert(
 <li><p>Ambil entri yang paling mirip sebagai jawaban yang sesuai untuk kueri kita.</p></li>
 </ol>
 <p>Di bawah ini adalah implementasi langkah-langkah di atas dengan Milvus:</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -230,7 +230,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
     </button></h2><p>Milvus Standalone adalah opsi penerapan di mana semuanya dikemas dalam kontainer Docker. Oleh karena itu, kita perlu menginstal Milvus di Docker dan kemudian memulai kontainer Docker untuk memulai dengan Milvus Standalone.</p>
 <p>Sebelum menginstal Milvus Standalone, pastikan perangkat keras dan perangkat lunak Anda memenuhi persyaratan yang dijelaskan di <a href="https://milvus.io/docs/prerequisite-docker.md">halaman ini</a>. Selain itu, pastikan Anda telah menginstal Docker. Untuk menginstal Docker, lihat <a href="https://docs.docker.com/get-started/get-docker/">halaman ini</a>.</p>
 <p>Setelah sistem kita memenuhi persyaratan dan kita telah menginstal Docker, kita dapat melanjutkan dengan instalasi Milvus di Docker menggunakan perintah berikut:</p>
-<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+<pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
@@ -244,16 +244,15 @@ $ bash standalone_embed.sh start
   </span>
 </p>
 <p><em>Gambar: Pesan setelah kontainer Docker berhasil dimulai.</em></p>
-<p>Setelah menjalankan skrip instalasi "standalone_embed.sh" di atas, kontainer Docker bernama "milvus" dimulai pada port 19530. Oleh karena itu, kita dapat membuat basis data baru serta mengakses semua hal yang berkaitan dengan basis data Milvus dengan menunjuk ke port ini saat membuat koneksi.</p>
+<p>Setelah menjalankan skrip instalasi "standalone_embed.sh" di atas, kontainer Docker bernama "milvus" dimulai pada port 19530. Oleh karena itu, kita dapat membuat basis data baru serta mengakses semua hal yang berkaitan dengan basis data Milvus dengan menunjuk ke port ini saat memulai klien.</p>
 <p>Katakanlah kita ingin membuat sebuah database bernama "milvus_demo", serupa dengan apa yang telah kita lakukan di Milvus Lite di atas. Kita dapat melakukannya sebagai berikut:</p>
-<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
-database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
-    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,
     token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
-    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
 )
+client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>Selanjutnya, Anda dapat memverifikasi apakah database yang baru dibuat bernama "milvus_demo" benar-benar ada di dalam instans Milvus Anda dengan mengakses <a href="https://milvus.io/docs/milvus-webui.md">Milvus Web UI</a>. Seperti namanya, Milvus Web UI adalah antarmuka pengguna grafis yang disediakan oleh Milvus untuk mengamati statistik dan metrik komponen, memeriksa daftar dan detail basis data, koleksi, dan konfigurasi. Anda dapat mengakses Milvus Web UI setelah Anda memulai kontainer Docker di atas di http://127.0.0.1:9091/webui/.</p>
 <p>Jika Anda mengakses tautan di atas, Anda akan melihat halaman arahan seperti ini:</p>
@@ -271,7 +270,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
   </span>
 </p>
 <p>Sekarang kita dapat melakukan segala sesuatu persis seperti yang telah kita lihat di bagian Milvus Lite di atas. Mari kita buat sebuah koleksi bernama "demo_collection" di dalam database "milvus_demo" yang terdiri dari tiga field, sama seperti apa yang telah kita lihat di bagian Milvus Lite sebelumnya. Kemudian, kita akan memasukkan data kita ke dalam koleksi tersebut.</p>
-<pre><code translate="no">index_params = client.prepare_index_params()
+<pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
 index_params.add_index(
@@ -294,7 +293,7 @@ res = client.insert(
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>Kode untuk melakukan operasi pencarian vektor juga sama dengan Milvus Lite, seperti yang dapat Anda lihat pada kode di bawah ini:</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -317,7 +316,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 <button class="copy-code-btn"></button></code></pre>
 <p>Selain menggunakan Docker, Anda juga dapat menggunakan Milvus Standalone dengan <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (untuk Linux) dan <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (untuk Windows).</p>
 <p>Ketika kita tidak menggunakan instans Milvus lagi, kita dapat menghentikan Milvus Standalone dengan perintah berikut:</p>
-<pre><code translate="no">$ bash standalone_embed.sh stop
+<pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
 <h2 id="Fully-Managed-Milvus" class="common-anchor-header">Milvus yang Dikelola Sepenuhnya<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"

@@ -18,7 +18,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
    </span> <span class="img-wrapper"> <span>Milvus를 시작하는 방법</span> </span></p>
 <p><strong><em>마지막 업데이트 2025년 1월</em></strong></p>
 <p>대규모 언어 모델<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM)</a>의 발전과 데이터의 양이 증가함에 따라 데이터베이스와 같이 방대한 양의 정보를 저장할 수 있는 유연하고 확장 가능한 인프라가 필요합니다. 그러나 <a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">기존 데이터베이스는</a> 표 형식의 정형 데이터를 저장하도록 설계된 반면, 정교한 LLM과 정보 검색 알고리즘을 활용하는 데 일반적으로 유용한 정보는 텍스트, 이미지, 동영상 또는 오디오와 같은 <a href="https://zilliz.com/learn/introduction-to-unstructured-data">비정형</a> 데이터입니다.</p>
-<p><a href="https://zilliz.com/learn/what-is-vector-database">벡터 데이터베이스는</a> 비정형 데이터를 위해 특별히 설계된 데이터베이스 시스템입니다. 벡터 데이터베이스를 사용하면 방대한 양의 비정형 데이터를 저장할 수 있을 뿐만 아니라 <a href="https://zilliz.com/learn/vector-similarity-search">벡터 검색도</a> 수행할 수 있습니다. 벡터 데이터베이스는 빠르고 효율적인 벡터 검색 및 정보 검색 프로세스를 수행하기 위해 IVFFlat(역파일 인덱스) 또는<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW(</a>계층적 탐색 가능한 작은 세계<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">)</a>와 같은 고급 인덱싱 방법을 사용합니다.</p>
+<p><a href="https://zilliz.com/learn/what-is-vector-database">벡터 데이터베이스는</a> 비정형 데이터를 위해 특별히 설계된 데이터베이스 시스템입니다. 벡터 데이터베이스를 사용하면 방대한 양의 비정형 데이터를 저장할 수 있을 뿐만 아니라 <a href="https://zilliz.com/learn/vector-similarity-search">벡터 검색도</a> 수행할 수 있습니다. 벡터 데이터베이스에는 빠르고 효율적인 벡터 검색 및 정보 검색 프로세스를 수행하기 위해 IVFFlat(역파일 인덱스) 또는<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW(</a>계층적 탐색 가능한 작은 세계<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">)</a>와 같은 고급 인덱싱 방법이 있습니다.</p>
 <p><strong>Milvus는</strong> 벡터 데이터베이스가 제공할 수 있는 모든 유용한 기능을 활용하는 데 사용할 수 있는 오픈 소스 벡터 데이터베이스입니다. 이 글에서 다룰 내용은 다음과 같습니다:</p>
 <ul>
 <li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">Milvus 개요</a></p></li>
@@ -128,7 +128,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 </p>
 <p><em>그림: 벡터 검색 작업의 워크플로.</em></p>
 <p>텍스트 데이터를 벡터 임베딩으로 변환하기 위해 'all-MiniLM-L6-v2'라는 SentenceTransformers의 임베딩 <a href="https://zilliz.com/ai-models">모델을</a> 사용합니다. 이 임베딩 모델은 텍스트를 384차원 벡터 임베딩으로 변환합니다. 모델을 로드하고 텍스트 데이터를 변환한 다음 모든 것을 함께 묶어 보겠습니다.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
     <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
@@ -145,7 +145,7 @@ vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
 <p>다음으로, 위의 모든 데이터를 Milvus에 저장하기 위한 스키마를 만들어 보겠습니다. 위에서 볼 수 있듯이 데이터는 세 개의 필드로 구성되어 있습니다: ID, 벡터, 텍스트입니다. 따라서 이 세 가지 필드로 스키마를 만들겠습니다.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=<span class="hljs-literal">False</span>,
@@ -158,7 +158,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>,
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>Milvus Lite를 사용하면 위에서 정의한 스키마를 기반으로 특정 데이터베이스에 컬렉션을 쉽게 생성할 수 있을 뿐만 아니라 몇 줄의 코드만으로 데이터를 컬렉션에 삽입하고 색인할 수 있습니다.</p>
-<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+<pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
 
@@ -190,7 +190,7 @@ res = client.insert(
 <li><p>쿼리에 대한 적절한 답변으로 가장 유사한 항목을 가져옵니다.</p></li>
 </ol>
 <p>아래는 위의 단계를 Milvus로 구현한 것입니다:</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -230,7 +230,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
     </button></h2><p>Milvus Standalone은 모든 것이 Docker 컨테이너에 패키징되는 배포 옵션입니다. 따라서 Milvus Standalone을 시작하려면 Docker에 Milvus를 설치한 다음 Docker 컨테이너를 시작해야 합니다.</p>
 <p>Milvus Standalone을 설치하기 전에 하드웨어와 소프트웨어가 <a href="https://milvus.io/docs/prerequisite-docker.md">이 페이지에</a> 설명된 요구 사항을 모두 충족하는지 확인하세요. 또한 Docker를 설치했는지 확인하세요. Docker를 설치하려면 <a href="https://docs.docker.com/get-started/get-docker/">이 페이지를</a> 참조하세요.</p>
 <p>시스템이 요구 사항을 충족하고 도커를 설치했다면 다음 명령을 사용하여 도커에서 Milvus 설치를 진행할 수 있습니다:</p>
-<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+<pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
@@ -244,16 +244,15 @@ $ bash standalone_embed.sh start
   </span>
 </p>
 <p><em>그림: Docker 컨테이너가 성공적으로 시작된 후의 메시지.</em></p>
-<p>위의 설치 스크립트 "standalone_embed.sh"를 실행하면 포트 19530에서 "milvus"라는 이름의 Docker 컨테이너가 시작됩니다. 따라서 연결을 생성할 때 이 포트를 가리키면 새 데이터베이스를 생성할 수 있을 뿐만 아니라 Milvus 데이터베이스와 관련된 모든 항목에 액세스할 수 있습니다.</p>
+<p>위의 설치 스크립트 "standalone_embed.sh"를 실행하면 포트 19530에서 "milvus"라는 이름의 Docker 컨테이너가 시작됩니다. 따라서 클라이언트를 시작할 때 이 포트를 가리키면 새 데이터베이스를 생성할 수 있을 뿐만 아니라 Milvus 데이터베이스와 관련된 모든 항목에 액세스할 수 있습니다.</p>
 <p>위의 Milvus Lite에서 했던 것과 유사하게 "milvus_demo"라는 데이터베이스를 만들고 싶다고 가정해 보겠습니다. 다음과 같이 할 수 있습니다:</p>
-<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
-database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
-    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,
     token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
-    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
 )
+client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>다음으로, Milvus <a href="https://milvus.io/docs/milvus-webui.md">웹 UI에</a> 액세스하여 새로 생성된 "milvus_demo"라는 데이터베이스가 Milvus 인스턴스에 실제로 존재하는지 확인할 수 있습니다. 이름에서 알 수 있듯이 Milvus Web UI는 구성 요소의 통계 및 메트릭을 관찰하고 데이터베이스, 컬렉션 및 구성의 목록과 세부 정보를 확인할 수 있도록 Milvus에서 제공하는 그래픽 사용자 인터페이스입니다. 위의 Docker 컨테이너를 시작하면 http://127.0.0.1:9091/webui/ 에서 Milvus 웹 UI에 액세스할 수 있습니다.</p>
 <p>위 링크에 접속하면 다음과 같은 랜딩 페이지가 표시됩니다:</p>
@@ -271,7 +270,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
   </span>
 </p>
 <p>이제 위의 Milvus Lite 섹션에서 보았던 것처럼 모든 작업을 정확하게 수행할 수 있습니다. "milvus_demo" 데이터베이스 내에 "demo_collection"이라는 컬렉션을 생성해 보겠습니다. 이 컬렉션은 앞서 Milvus Lite 섹션에서와 동일하게 세 개의 필드로 구성되어 있습니다. 그런 다음 데이터를 컬렉션에 삽입합니다.</p>
-<pre><code translate="no">index_params = client.prepare_index_params()
+<pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
 index_params.add_index(
@@ -294,7 +293,7 @@ res = client.insert(
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>벡터 검색 작업을 수행하는 코드도 아래 코드에서 볼 수 있듯이 Milvus Lite와 동일합니다:</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -317,7 +316,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 <button class="copy-code-btn"></button></code></pre>
 <p>Docker를 사용하는 것 외에도 <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (Linux용) 및 <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (Windows용)과 함께 Milvus Standalone을 사용할 수도 있습니다.</p>
 <p>Milvus 인스턴스를 더 이상 사용하지 않을 때는 다음 명령어로 Milvus Standalone을 중지할 수 있습니다:</p>
-<pre><code translate="no">$ bash standalone_embed.sh stop
+<pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
 <h2 id="Fully-Managed-Milvus" class="common-anchor-header">완전 관리형 Milvus<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -345,7 +344,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 </p>
 <p><em>그림: 질리즈 클라우드 서버리스 사용의 주요 이점.</em></p>
 <p>질리즈 클라우드 서버리스는 AWS, Azure, GCP 등 주요 클라우드 서비스에서 이용할 수 있습니다. 종량제 요금제와 같은 기능을 제공하므로 클러스터를 사용할 때만 비용을 지불하면 됩니다.</p>
-<p>또한 논리적 클러스터, 자동 확장, 계층형 스토리지, 스트리밍 및 기록 데이터 분리, 핫-콜드 데이터 분리와 같은 고급 기술을 구현합니다. 이러한 기능을 통해 질리즈 클라우드 서버리스는 인메모리 밀버스 대비 최대 50배의 비용 절감과 약 10배 빠른 벡터 검색 작업을 달성할 수 있습니다.</p>
+<p>또한 논리적 클러스터, 자동 확장, 계층형 스토리지, 스트리밍 및 기록 데이터 분리, 핫-콜드 데이터 분리와 같은 고급 기술을 구현합니다. 이러한 기능을 통해 질리즈 클라우드 서버리스는 인메모리 밀버스 대비 최대 50배의 비용 절감과 약 10배 빠른 벡터 검색 작업을 실현할 수 있습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Illustration_of_tiered_storage_and_hot_cold_data_separation_c634dfd211.png" alt="" class="doc-image" id="" />

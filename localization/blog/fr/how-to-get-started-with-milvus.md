@@ -128,7 +128,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 </p>
 <p><em>Figure : Déroulement de l'opération de recherche vectorielle.</em></p>
 <p>Pour transformer les données textuelles en embeddings vectoriels, nous utiliserons un <a href="https://zilliz.com/ai-models">modèle d'embedding</a> de SentenceTransformers appelé 'all-MiniLM-L6-v2'. Ce modèle d'intégration transforme notre texte en une intégration vectorielle à 384 dimensions. Chargeons le modèle, transformons nos données textuelles et rassemblons le tout.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
     <span class="hljs-string">&quot;Artificial intelligence was founded as an academic discipline in 1956.&quot;</span>,
@@ -145,7 +145,7 @@ vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
 <p>Ensuite, créons un schéma pour stocker toutes les données ci-dessus dans Milvus. Comme vous pouvez le voir ci-dessus, nos données se composent de trois champs : ID, vecteur et texte. Nous allons donc créer un schéma avec ces trois champs.</p>
-<pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, db, connections
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
     auto_id=<span class="hljs-literal">False</span>,
@@ -158,7 +158,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>,
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>Avec Milvus Lite, nous pouvons facilement créer une collection sur une base de données particulière basée sur le schéma défini ci-dessus, ainsi qu'insérer et indexer les données dans la collection en quelques lignes de code seulement.</p>
-<pre><code translate="no">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
+<pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
 
@@ -190,7 +190,7 @@ res = client.insert(
 <li><p>Récupérer l'entrée la plus similaire comme réponse appropriée à notre requête.</p></li>
 </ol>
 <p>Vous trouverez ci-dessous la mise en œuvre des étapes ci-dessus avec Milvus :</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -230,7 +230,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
     </button></h2><p>Milvus Standalone est une option de déploiement dans laquelle tout est emballé dans un conteneur Docker. Par conséquent, nous devons installer Milvus dans Docker, puis démarrer le conteneur Docker pour commencer à utiliser Milvus Standalone.</p>
 <p>Avant d'installer Milvus Standalone, assurez-vous que votre matériel et vos logiciels répondent aux exigences décrites sur <a href="https://milvus.io/docs/prerequisite-docker.md">cette page</a>. Assurez-vous également que vous avez installé Docker. Pour installer Docker, reportez-vous à <a href="https://docs.docker.com/get-started/get-docker/">cette page</a>.</p>
 <p>Une fois que notre système remplit les conditions requises et que nous avons installé Docker, nous pouvons procéder à l'installation de Milvus dans Docker à l'aide de la commande suivante :</p>
-<pre><code translate="no"><span class="hljs-comment"># Download the installation script</span>
+<pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
@@ -244,16 +244,15 @@ $ bash standalone_embed.sh start
   </span>
 </p>
 <p><em>Figure : Message après le démarrage réussi du conteneur Docker.</em></p>
-<p>Après avoir exécuté le script d'installation "standalone_embed.sh" ci-dessus, un conteneur Docker nommé "milvus" est démarré au port 19530. Par conséquent, nous pouvons créer une nouvelle base de données et accéder à tout ce qui est lié à la base de données Milvus en pointant vers ce port lors de la création de connexions.</p>
+<p>Après avoir exécuté le script d'installation "standalone_embed.sh" ci-dessus, un conteneur Docker nommé "milvus" est démarré au port 19530. Par conséquent, nous pouvons créer une nouvelle base de données et accéder à tout ce qui est lié à la base de données Milvus en pointant vers ce port lors de l'initialisation du client.</p>
 <p>Supposons que nous voulions créer une base de données appelée "milvus_demo", comme nous l'avons fait dans Milvus Lite ci-dessus. Nous pouvons le faire comme suit :</p>
-<pre><code translate="no">conn = connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19530</span>)
-database = db.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
-    uri=<span class="hljs-string">&quot;&lt;http://localhost:19530&gt;&quot;</span>,
+    uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,
     token=<span class="hljs-string">&quot;root:Milvus&quot;</span>,
-    db_name=<span class="hljs-string">&quot;milvus_demo&quot;</span>
 )
+client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>Ensuite, vous pouvez vérifier si la base de données nouvellement créée appelée "milvus_demo" existe réellement dans votre instance Milvus en accédant à l'<a href="https://milvus.io/docs/milvus-webui.md">interface Web Milvus</a>. Comme son nom l'indique, l'interface Web Milvus est une interface utilisateur graphique fournie par Milvus pour observer les statistiques et les mesures des composants, vérifier la liste et les détails des bases de données, des collections et des configurations. Vous pouvez accéder à Milvus Web UI une fois que vous avez démarré le conteneur Docker ci-dessus à l'adresse http://127.0.0.1:9091/webui/.</p>
 <p>Si vous accédez au lien ci-dessus, vous verrez une page d'accueil comme celle-ci :</p>
@@ -271,7 +270,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
   </span>
 </p>
 <p>Maintenant, nous pouvons tout faire exactement comme nous l'avons vu dans la section Milvus Lite ci-dessus. Créons une collection appelée "demo_collection" dans la base de données "milvus_demo" qui se compose de trois champs, les mêmes que ceux que nous avions dans la section Milvus Lite ci-dessus. Ensuite, nous allons insérer nos données dans la collection.</p>
-<pre><code translate="no">index_params = client.prepare_index_params()
+<pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
 index_params.add_index(
@@ -294,7 +293,7 @@ res = client.insert(
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>Le code permettant d'effectuer une opération de recherche vectorielle est également identique à celui de Milvus Lite, comme vous pouvez le voir dans le code ci-dessous :</p>
-<pre><code translate="no">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
+<pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
 <span class="hljs-comment"># Load collection</span>
@@ -317,7 +316,7 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
 <button class="copy-code-btn"></button></code></pre>
 <p>Outre l'utilisation de Docker, vous pouvez également utiliser Milvus Standalone avec <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (pour Linux) et <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (pour Windows).</p>
 <p>Lorsque nous n'utilisons plus notre instance Milvus, nous pouvons arrêter Milvus Standalone à l'aide de la commande suivante :</p>
-<pre><code translate="no">$ bash standalone_embed.sh stop
+<pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
 <h2 id="Fully-Managed-Milvus" class="common-anchor-header">Milvus entièrement géré<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
