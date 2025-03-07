@@ -4,7 +4,7 @@ title: "AI for Smarter Browsing: Filtering Web Content with Pixtral, Milvus, and
 author: Stephen Batifol
 date: 2025-02-25
 desc: Learn how to build an intelligent assistant that filters content by combining Pixtral for image analysis, Milvus vector database for storage, and Browser Use for web navigation.
-cover: assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+cover: assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png 
 tag: Engineering
 tags: Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser Use Web Navigation, Intelligent Agent Development
 recommend: true
