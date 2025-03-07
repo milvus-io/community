@@ -12,6 +12,10 @@ canonicalUrl: https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-
 
 In this article, we will show you how to quickly get up and running with the new full-text search feature and combine it with the conventional semantic search based on vector embeddings.
 
+
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/3bftbAjQF7Q" title="Beyond Keywords: Hybrid Search with Milvus 2.5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 ## Requirement
 
 First, ensure you have installed Milvus 2.5:
