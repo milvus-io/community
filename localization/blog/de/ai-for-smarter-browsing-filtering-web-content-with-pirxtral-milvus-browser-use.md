@@ -11,7 +11,7 @@ desc: >-
   filtert, indem Sie Pixtral für die Bildanalyse, die Vektordatenbank Milvus für
   die Speicherung und Browser Use für die Webnavigation kombinieren.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -99,7 +99,7 @@ INFO     [src.agent.custom_agent] 🧠 All Memory:
 <span class="hljs-number">3.</span> Specific mention of Milvus <span class="hljs-keyword">as</span> a key component <span class="hljs-keyword">in</span> innovative RAG systems.
 <span class="hljs-number">4.</span> No content related to birds <span class="hljs-keyword">or</span> photography was found.
 <button class="copy-code-btn"></button></code></pre>
-<p>Das Bild auf der rechten Seite hingegen ist es nicht. Wir können sehen, dass dieses Bild, so schön es auch ist, nichts mit einer Vektor-DB zu tun hat. Wir sehen einen Vogel, der am Himmel fliegt, daher wird Pixtral dieses Bild als irrelevant betrachten.</p>
+<p>Das Bild auf der rechten Seite hingegen ist es nicht. Wir können sehen, dass dieses Bild, so schön es auch ist, nicht von einer Vektor-DB handelt. Wir sehen einen Vogel, der am Himmel fliegt, daher wird Pixtral dieses Bild als irrelevant betrachten.</p>
 <pre><code translate="no" class="language-Shell">INFO     [src.agent.custom_agent] 🧠 New Memory: The post <span class="hljs-keyword">and</span> comments primarily discuss photography <span class="hljs-keyword">and</span> birds. No references to Milvus the Vector Database are found.
 INFO     [src.agent.custom_agent] ⏳ Task Progress:
 Navigated to the post. Analyzed the content <span class="hljs-keyword">for</span> relevance to Milvus, the Vector DB. No relevant information found.

@@ -8,7 +8,7 @@ desc: >-
   了解如何通过将用于图像分析的 Pixtral、用于存储的 Milvus 向量数据库和用于网页导航的 Browser Use
   结合起来，构建一个能过滤内容的智能助手。
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser

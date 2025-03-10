@@ -11,7 +11,7 @@ desc: >-
   Pixtral para el análisis de imágenes, la base de datos vectorial Milvus para
   el almacenamiento y Browser Use para la navegación web.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -43,7 +43,7 @@ canonicalUrl: >-
 <ul>
 <li><strong>Browser-Use:</strong> esta herramienta navega por varios sitios web (por ejemplo, Twitter) para buscar contenidos.</li>
 <li><strong>Pixtral</strong>: Un modelo de visión-lenguaje que analiza imágenes y contexto. En este ejemplo, distingue entre un diagrama técnico sobre nuestra base de datos vectorial y una impresionante fotografía de un pájaro.</li>
-<li><strong>Milvus</strong>: Una BD Vectorial de alto rendimiento y de código abierto. En ella almacenaremos las entradas relevantes para su posterior consulta.</li>
+<li><strong>Milvus</strong>: Una base de datos vectorial de alto rendimiento y de código abierto. En ella almacenaremos las entradas relevantes para su posterior consulta.</li>
 </ul>
 <p>
   <span class="img-wrapper">

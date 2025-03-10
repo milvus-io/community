@@ -11,7 +11,7 @@ desc: >-
   Pixtral para análise de imagens, a base de dados vetorial Milvus para
   armazenamento e o Browser Use para navegação na Web.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -42,7 +42,7 @@ canonicalUrl: >-
     </button></h2><p>Combinamos três tecnologias diferentes:</p>
 <ul>
 <li><strong>Browser-Use:</strong> Esta ferramenta navega em vários sítios Web (por exemplo, Twitter) para ir buscar conteúdo.</li>
-<li><strong>Pixtral</strong>: Um modelo de linguagem de visão que analisa imagens e contexto. Neste exemplo, distingue entre um diagrama técnico sobre a nossa base de dados vetorial e uma fotografia de uma ave deslumbrante.</li>
+<li><strong>Pixtral</strong>: Um modelo de visão-linguagem que analisa imagens e contexto. Neste exemplo, distingue entre um diagrama técnico sobre a nossa BD de vectores e uma fotografia de uma ave deslumbrante.</li>
 <li><strong>Milvus:</strong> Uma base de dados vetorial de alto desempenho e de código aberto. É aqui que armazenamos as mensagens relevantes para consulta posterior.</li>
 </ul>
 <p>
@@ -78,7 +78,7 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>Para o da esquerda, o Pixtral reconhece que este é um post sobre o Milvus, o Vetor DB. Mencionou alguns detalhes de implementação, mas também uma imagem mostrando um diagrama do sistema, indicando que se trata, de facto, da BD Vetorial. Podemos ver abaixo que o Pixtral também pensa o mesmo.</p>
+<p>Para o da esquerda, o Pixtral reconhece que este é um post sobre o Milvus, o Vetor DB. Ele mencionou alguns detalhes de implementação, mas também uma imagem mostrando um diagrama do sistema, indicando que se trata, de fato, do Vetor DB. Podemos ver abaixo que o Pixtral também pensa o mesmo.</p>
 <pre><code translate="no" class="language-Shell">INFO     [src.agent.custom_agent] 🧠 New Memory: <span class="hljs-number">1.</span> The post by LangChainAI discusses the <span class="hljs-string">&#x27;GraphRAG Agent&#x27;</span> which uses Neo4j <span class="hljs-keyword">and</span> Milvus vector search to enhance RAG systems.
 <span class="hljs-number">2.</span> Replies include praise <span class="hljs-keyword">for</span> the use of Milvus <span class="hljs-keyword">in</span> intelligent retrieval <span class="hljs-keyword">and</span> vector search.
 <span class="hljs-number">3.</span> Specific mention of Milvus <span class="hljs-keyword">as</span> a key component <span class="hljs-keyword">in</span> innovative RAG systems.
@@ -99,7 +99,7 @@ INFO     [src.agent.custom_agent] 🧠 All Memory:
 <span class="hljs-number">3.</span> Specific mention of Milvus <span class="hljs-keyword">as</span> a key component <span class="hljs-keyword">in</span> innovative RAG systems.
 <span class="hljs-number">4.</span> No content related to birds <span class="hljs-keyword">or</span> photography was found.
 <button class="copy-code-btn"></button></code></pre>
-<p>A da direita, por outro lado, não é, podemos ver que esta imagem, por muito bonita que seja, não é sobre uma BD Vetorial. Podemos ver um pássaro a voar no céu, pelo que Pixtral considerará esta imagem irrelevante.</p>
+<p>A da direita, por outro lado, não é, podemos ver que esta imagem, por mais bonita que seja, não é sobre uma BD Vetorial. Podemos ver um pássaro a voar no céu, pelo que Pixtral considerará esta imagem irrelevante.</p>
 <pre><code translate="no" class="language-Shell">INFO     [src.agent.custom_agent] 🧠 New Memory: The post <span class="hljs-keyword">and</span> comments primarily discuss photography <span class="hljs-keyword">and</span> birds. No references to Milvus the Vector Database are found.
 INFO     [src.agent.custom_agent] ⏳ Task Progress:
 Navigated to the post. Analyzed the content <span class="hljs-keyword">for</span> relevance to Milvus, the Vector DB. No relevant information found.

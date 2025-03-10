@@ -11,6 +11,7 @@ canonicalUrl: >-
   https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md
 ---
 <p>在本文中，我们将向您展示如何快速使用新的全文搜索功能，并将其与基于向量嵌入的传统语义搜索相结合。</p>
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/3bftbAjQF7Q" title="Beyond Keywords: Hybrid Search with Milvus 2.5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="Requirement" class="common-anchor-header">要求<button data-href="#Requirement" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

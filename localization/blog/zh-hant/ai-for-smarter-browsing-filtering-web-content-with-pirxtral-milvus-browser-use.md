@@ -4,9 +4,9 @@ id: >-
 title: 人工智慧瀏覽：使用 Pixtral、Milvus 和瀏覽器過濾網頁內容
 author: Stephen Batifol
 date: 2025-02-25T00:00:00.000Z
-desc: 學習如何結合用於圖像分析的 Pixtral、用於儲存的 Milvus 向量資料庫，以及用於網頁導覽的 Browser Use，建立可過濾內容的智慧型助理。
+desc: 學習如何結合用於影像分析的 Pixtral、用於儲存的 Milvus 向量資料庫，以及用於網頁導覽的 Browser Use，來建立可過濾內容的智慧型助理。
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -18,7 +18,7 @@ canonicalUrl: >-
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>身為 Milvus 的開發者代言人，我花了很多時間在社交網站，聆聽人們對我們的評價，以及我是否也能提供協助。當您尋找「Milvus」時，會有一點世界衝突。它既是向量 DB，也是鳥類的一種，這意味著前一刻我還在深入討論向量相似性演算法的主題，下一刻我就在欣賞黑色鳥類在天空中飛翔的絕美照片。</p>
 <p>雖然這兩個主題都很有趣，但把它們混在一起對我來說並不是真的有幫助，如果有一個智慧的方法可以解決這個問題，而不需要我手動檢查呢？</p>
-<p>讓我們來打造更聰明的東西 - 透過結合視覺理解與情境感知，我們可以打造一個助理，知道黑鳶的遷徙模式與我們的新文章之間的差異。</p>
+<p>讓我們來打造更聰明的東西 - 透過結合視覺理解與情境感知，我們可以打造一個助理，它知道黑鳶的遷徙模式與我們的新文章之間的差異。</p>
 <h2 id="The-tech-stack" class="common-anchor-header">技術堆疊<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -172,7 +172,7 @@ data = {
         ></path>
       </svg>
     </button></h2><p>透過結合 Browser Use 的網頁導覽、Pixtral 的視覺理解，以及 Milvus 的有效儲存，我們建立了一個能真正理解上下文的智慧型助理。現在我用它來區分鳥類和向量 DB，但同樣的方法也可以幫助解決你可能面臨的另一個問題。</p>
-<p>就我而言，我想要繼續研究能在日常工作中協助我的代理程式，以降低我的認知負荷 😌 。</p>
+<p>就我而言，我想要繼續研究能在日常工作中協助我的代理程式，以降低我的認知負荷 😌。</p>
 <h2 id="Wed-Love-to-Hear-What-You-Think" class="common-anchor-header">我們很樂意聽聽您的想法！<button data-href="#Wed-Love-to-Hear-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -191,6 +191,6 @@ data = {
     </button></h2><p>如果您喜歡這篇部落格文章，請考慮：</p>
 <ul>
 <li>在<a href="https://github.com/milvus-io/milvus">GitHub</a>上給我們一顆星</li>
-<li>💬 加入我們的<a href="https://discord.gg/FG6hMJStWu">Milvus Discord 社群</a>來分享您的經驗，或者如果您需要協助建立代理商</li>
+<li>💬 加入我們的<a href="https://discord.gg/FG6hMJStWu">Milvus Discord 社群</a>來分享您的經驗，或如果您需要協助建立代理程式</li>
 <li>🔍 探索我們的<a href="https://github.com/milvus-io/bootcamp">Bootcamp 套件庫</a>，以獲得使用 Milvus 的應用程式範例</li>
 </ul>

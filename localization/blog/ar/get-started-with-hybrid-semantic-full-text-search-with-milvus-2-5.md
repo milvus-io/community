@@ -11,6 +11,7 @@ canonicalUrl: >-
   https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md
 ---
 <p>في هذه المقالة، سنوضح لك كيفية بدء تشغيل ميزة البحث عن النص الكامل الجديدة بسرعة ودمجها مع البحث الدلالي التقليدي القائم على تضمينات المتجهات.</p>
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/3bftbAjQF7Q" title="Beyond Keywords: Hybrid Search with Milvus 2.5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="Requirement" class="common-anchor-header">المتطلبات<button data-href="#Requirement" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

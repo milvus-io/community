@@ -11,6 +11,7 @@ canonicalUrl: >-
   https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md
 ---
 <p>En este artículo, le mostraremos cómo poner en marcha rápidamente la nueva función de búsqueda de texto completo y combinarla con la búsqueda semántica convencional basada en incrustaciones vectoriales.</p>
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/3bftbAjQF7Q" title="Beyond Keywords: Hybrid Search with Milvus 2.5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="Requirement" class="common-anchor-header">Requisitos<button data-href="#Requirement" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -154,7 +155,7 @@ results = client.search(
     search_params=search_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>El parámetro de búsqueda <code translate="no">drop_ratio_search</code> se refiere a la proporción de documentos con puntuación más baja que deben descartarse durante el algoritmo de búsqueda.</p>
+<p>El parámetro de búsqueda <code translate="no">drop_ratio_search</code> se refiere a la proporción de documentos de puntuación más baja que deben descartarse durante el algoritmo de búsqueda.</p>
 <p>Veamos los resultados:</p>
 <pre><code translate="no"><span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> results[<span class="hljs-number">0</span>]:
     <span class="hljs-built_in">print</span>(hit)

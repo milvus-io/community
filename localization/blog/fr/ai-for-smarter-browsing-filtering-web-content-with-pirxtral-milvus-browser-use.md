@@ -11,7 +11,7 @@ desc: >-
   combinant Pixtral pour l'analyse d'images, la base de données vectorielles
   Milvus pour le stockage et Browser Use pour la navigation sur le web.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -21,8 +21,8 @@ canonicalUrl: >-
   https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>En tant que Developer Advocate pour Milvus, je passe beaucoup de temps sur les réseaux sociaux, à écouter ce que les gens ont à dire sur nous et à savoir si je peux les aider. Il y a un léger conflit entre les deux mondes lorsque vous cherchez &quot;Milvus&quot;. Il s'agit à la fois d'un DB vectoriel et d'un genre d'oiseau, ce qui signifie qu'à un moment donné, je suis plongé dans un fil de discussion sur les algorithmes de similarité vectorielle et qu'à l'instant suivant, j'admire de superbes photographies d'oiseaux noirs volant dans le ciel.</p>
-<p>Bien que les deux sujets soient intéressants, les mélanger n'est pas vraiment utile dans mon cas. Et s'il y avait un moyen intelligent de résoudre ce problème sans que je doive vérifier manuellement ?</p>
+<p>En tant que Developer Advocate pour Milvus, je passe beaucoup de temps sur les réseaux sociaux, à écouter ce que les gens ont à dire sur nous et à voir si je peux les aider. Il y a un léger conflit entre les deux mondes lorsque vous cherchez &quot;Milvus&quot;. Il s'agit à la fois d'un DB vectoriel et d'un genre d'oiseau, ce qui signifie qu'à un moment donné, je suis plongé dans un fil de discussion sur les algorithmes de similarité vectorielle et qu'à l'instant suivant, j'admire de superbes photographies d'oiseaux noirs volant dans le ciel.</p>
+<p>Bien que les deux sujets soient intéressants, les mélanger n'est pas vraiment utile dans mon cas. Et s'il existait un moyen intelligent de résoudre ce problème sans que je doive vérifier manuellement ?</p>
 <p>Construisons quelque chose de plus intelligent - en combinant la compréhension visuelle avec la connaissance du contexte, nous pouvons construire un assistant qui fait la différence entre les schémas de migration d'un milan noir et un nouvel article de notre part.</p>
 <h2 id="The-tech-stack" class="common-anchor-header">La pile technologique<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
       <svg translate="no"

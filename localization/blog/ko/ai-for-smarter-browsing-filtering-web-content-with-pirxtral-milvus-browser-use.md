@@ -8,7 +8,7 @@ desc: >-
   이미지 분석용 Pixtral, 저장용 Milvus 벡터 데이터베이스, 웹 탐색용 Browser Use를 결합하여 콘텐츠를 필터링하는 지능형
   어시스턴트를 구축하는 방법을 알아보세요.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -18,7 +18,7 @@ canonicalUrl: >-
   https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>밀버스의 개발자 옹호자로서 저는 소셜에서 많은 시간을 보내며 사람들이 밀버스에 대해 어떤 이야기를 하는지, 그리고 제가 도울 수 있는 부분이 있는지 경청합니다. 하지만 &quot;Milvus&quot;를 검색하면 약간 상반된 세계가 존재합니다. 밀버스는 벡터 DB이자 새의 한 속이기 때문에 한 순간에는 벡터 유사도 알고리즘에 대해 깊이 생각하다가도 다음 순간에는 하늘을 나는 검은 새의 멋진 사진에 감탄하게 되는 것이죠.</p>
+<p>밀버스의 개발자 옹호자로서 저는 소셜에서 많은 시간을 보내며 사람들이 밀버스에 대해 어떤 이야기를 하는지, 그리고 제가 도울 수 있는 부분이 있는지 경청합니다. 하지만 &quot;Milvus&quot;를 검색하면 약간 상반된 세계가 존재합니다. 밀버스는 벡터 DB이자 새의 한 속이기 때문에 한 순간에는 벡터 유사성 알고리즘에 대해 깊이 생각하다가도 다음 순간에는 하늘을 나는 검은 새의 멋진 사진에 감탄하게 되죠.</p>
 <p>두 주제 모두 흥미롭기는 하지만 제 경우에는 두 주제를 혼용하는 것이 별로 도움이 되지 않는데, 수동으로 확인할 필요 없이 이 문제를 해결할 수 있는 스마트한 방법이 있다면 어떨까요?</p>
 <p>시각적 이해와 문맥 인식을 결합하여 솔개의 이동 패턴과 우리의 새로운 기사 사이의 차이를 알아내는 어시스턴트를 만들면 더 똑똑한 무언가를 만들 수 있습니다.</p>
 <h2 id="The-tech-stack" class="common-anchor-header">기술 스택<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
@@ -174,7 +174,7 @@ data = {
         ></path>
       </svg>
     </button></h2><p>Browser Use의 웹 탐색, Pixtral의 시각적 이해, Milvus의 효율적인 스토리지를 결합하여 컨텍스트를 진정으로 이해하는 지능형 어시스턴트를 구축했습니다. 지금은 새와 벡터 DB를 구분하는 데 사용하고 있지만, 동일한 접근 방식이 여러분이 직면할 수 있는 다른 문제에도 도움이 될 수 있습니다.</p>
-<p>제 입장에서는 인지 부하를 줄이기 위해 일상 업무에 도움이 될 수 있는 에이전트를 계속 연구하고 싶습니다 😌.</p>
+<p>제 입장에서는 인지 부하를 줄이기 위해 일상 업무에 도움이 되는 에이전트를 계속 연구하고 싶습니다 😌.</p>
 <h2 id="Wed-Love-to-Hear-What-You-Think" class="common-anchor-header">여러분의 의견을 듣고 싶습니다!<button data-href="#Wed-Love-to-Hear-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

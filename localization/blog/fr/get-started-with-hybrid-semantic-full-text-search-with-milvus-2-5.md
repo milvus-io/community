@@ -11,6 +11,7 @@ canonicalUrl: >-
   https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md
 ---
 <p>Dans cet article, nous vous montrerons comment utiliser rapidement la nouvelle fonction de recherche en texte intégral et la combiner avec la recherche sémantique conventionnelle basée sur les vector embeddings.</p>
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/3bftbAjQF7Q" title="Beyond Keywords: Hybrid Search with Milvus 2.5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="Requirement" class="common-anchor-header">Conditions requises<button data-href="#Requirement" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

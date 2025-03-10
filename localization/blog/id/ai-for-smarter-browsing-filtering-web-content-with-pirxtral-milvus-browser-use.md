@@ -11,7 +11,7 @@ desc: >-
   menggabungkan Pixtral untuk analisis gambar, basis data vektor Milvus untuk
   penyimpanan, dan Penggunaan Browser untuk navigasi web.
 cover: >-
-  assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
+  assets.zilliz.com/AI_for_Smarter_Browsing_Filtering_Web_Content_with_Pixtral_Milvus_and_Browser_Use_56d0154bbd.png
 tag: Engineering
 tags: >-
   Vector Database Milvus, AI Content Filtering, Pixtral Image Analysis, Browser
@@ -21,7 +21,7 @@ canonicalUrl: >-
   https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>Sebagai Advokat Pengembang untuk Milvus, saya menghabiskan banyak waktu di Media Sosial, mendengarkan apa yang orang katakan tentang kami dan apakah saya bisa membantu juga. Ada sedikit benturan dunia ketika Anda mencari &quot;Milvus&quot;. Kata ini merupakan Vector DB dan genus burung, yang berarti bahwa pada suatu saat saya sedang membahas tentang algoritma kemiripan vektor, di saat yang lain saya mengagumi foto-foto burung hitam yang terbang melintasi langit.</p>
+<p>Sebagai Advokat Pengembang untuk Milvus, saya menghabiskan banyak waktu di Media Sosial, mendengarkan apa yang orang katakan tentang kami dan apakah saya bisa membantu juga. Ada sedikit benturan dunia ketika Anda mencari &quot;Milvus&quot;. Kata ini merupakan Vector DB dan genus burung, yang berarti bahwa pada satu saat saya sedang membahas tentang algoritma kemiripan vektor, di saat yang lain saya mengagumi foto-foto burung hitam yang terbang melintasi langit.</p>
 <p>Meskipun kedua topik tersebut menarik, namun menggabungkan keduanya tidak terlalu membantu dalam kasus saya, bagaimana jika ada cara cerdas untuk menyelesaikan masalah ini tanpa saya harus memeriksa secara manual?</p>
 <p>Mari kita buat sesuatu yang lebih cerdas - dengan menggabungkan pemahaman visual dengan kesadaran konteks, kita bisa membuat asisten yang mengetahui perbedaan antara pola migrasi layang-layang hitam dan artikel baru dari kita.</p>
 <h2 id="The-tech-stack" class="common-anchor-header">Tumpukan teknologi<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
