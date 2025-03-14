@@ -74,8 +74,6 @@ Milvus Standalone is a mode of operation for the Milvus vector database system w
 
 - **Data Processing**: Enables both batch (Apache Parquet, Arrays, Json) and stream processing, with seamless integration through connectors for Airbyte, Apache Kafka, and Apache Spark.
 
-- **Data Replication and Failover**: Built-in replication and failover/failback features ensure data integrity and application availability, even during disruptions or failures.
-
 - **Scalability**: Achieve dynamic scalability with component-level scaling, allowing for seamless scaling up and down based on demand. Milvus can autoscale at a component level, optimizing resource allocation for enhanced efficiency.
 
 - **Multi-Tenancy**: Supports multi-tenancy with the capability to manage up to 10,000 collections/partitions in a cluster, providing efficient resource utilization and isolation for different users or applications.
