@@ -45,15 +45,15 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>その名の通り、Milvus LiteはGoogle ColabやJupyter Notebookとシームレスに統合できる軽量版である。追加の依存関係を持たない単一のバイナリとしてパッケージ化されているため、マシンへのインストールや実行、Pythonアプリケーションへの組み込みが容易です。さらに、Milvus LiteにはCLIベースのMilvusスタンドアロンサーバーが含まれており、あなたのマシン上でMilvusを直接実行するための柔軟性を提供します。Pythonコードに組み込むか、スタンドアロンサーバーとして利用するかは、お客様の好みと特定のアプリケーション要件次第です。</p>
+    </button></h2><p>その名の通り、Milvus LiteはGoogle ColabやJupyter Notebookとシームレスに統合できる軽量版である。追加の依存関係を持たない単一のバイナリとしてパッケージ化されているため、あなたのマシンにインストールして実行したり、Pythonアプリケーションに組み込んだりすることが容易です。さらに、Milvus LiteにはCLIベースのMilvusスタンドアロンサーバーが含まれており、あなたのマシン上でMilvusを直接実行するための柔軟性を提供します。Pythonコードに組み込むか、スタンドアロンサーバーとして利用するかは、お客様の好みと特定のアプリケーション要件次第です。</p>
 <h3 id="Features-and-Capabilities" class="common-anchor-header">特徴と機能</h3><p>Milvus Liteには、Milvusのコアとなるベクトル検索機能が全て含まれています。</p>
 <ul>
 <li><p><strong>検索機能</strong>メタデータフィルタリングを含むトップk検索、範囲検索、ハイブリッド検索をサポートし、多様な検索要件に対応します。</p></li>
 <li><p><strong>インデックスタイプと類似度メトリック</strong>11種類のインデックスタイプと5種類の類似度メトリクスをサポートし、特定のユースケースに対応する柔軟性とカスタマイズオプションを提供します。</p></li>
-<li><p><strong>データ処理</strong>：バッチ処理（Apache Parquet、Arrays、JSON）およびストリーム処理が可能で、Airbyte、Apache Kafka、Apache Sparkのコネクターを通じてシームレスに統合できます。</p></li>
+<li><p><strong>データ処理</strong>：バッチ処理（Apache Parquet、Arrays、JSON）およびストリーム処理が可能で、Airbyte、Apache Kafka、Apache Spark用のコネクタを通じてシームレスに統合できます。</p></li>
 <li><p><strong>CRUDオペレーション</strong>：完全なCRUDサポート（create、read、update/upsert、delete）を提供し、包括的なデータ管理機能をユーザーに提供します。</p></li>
 </ul>
-<h3 id="Applications-and-limitations" class="common-anchor-header">用途と制限</h3><p>Milvus Liteは、迅速なプロトタイピングやローカル開発に理想的であり、小規模なデータセットの迅速なセットアップや実験が可能です。しかし、より大規模なデータセットや、より厳しいインフラ要件が要求される本番環境に移行する際には、その限界が明らかになります。そのため、Milvus Liteは初期の調査やテストには最適なツールですが、大量のアプリケーションや本番環境でのアプリケーションの展開には適していないかもしれません。</p>
+<h3 id="Applications-and-limitations" class="common-anchor-header">用途と制限</h3><p>Milvus Liteは、迅速なプロトタイピングやローカル開発に理想的であり、小規模なデータセットの迅速なセットアップや実験が可能です。しかしながら、より大規模なデータセットや、より厳しいインフラ要件が要求される本番環境に移行する際には、その限界が明らかになります。そのため、Milvus Liteは初期の調査やテストには最適なツールですが、大量のアプリケーションや本番環境でのアプリケーションの展開には適していないかもしれません。</p>
 <h3 id="Available-Resources" class="common-anchor-header">利用可能なリソース</h3><ul>
 <li><p><a href="https://milvus.io/docs/milvus_lite.md">ドキュメント</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-lite/">Githubリポジトリ</a></p></li>
@@ -82,8 +82,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>検索機能</strong>：メタデータのフィルタリングを含むトップk検索、範囲検索、ハイブリッド検索をサポートし、多様な検索要件に対応します。</p></li>
 <li><p><strong>インデックスタイプと類似度メトリクス</strong>：11種類のインデックスタイプと5種類の類似度メトリクスをサポートし、特定のユースケースに対応する柔軟性とカスタマイズオプションを提供します。</p></li>
 <li><p><strong>データ処理</strong>：バッチ処理（Apache Parquet、Arrays、Json）とストリーム処理の両方が可能で、Airbyte、Apache Kafka、Apache Sparkのコネクターを通じてシームレスに統合できます。</p></li>
-<li><p><strong>データのレプリケーションとフェイルオーバー</strong>：組み込みのレプリケーションとフェイルオーバー/フェイルバック機能により、中断や障害時でもデータの整合性とアプリケーションの可用性を確保します。</p></li>
-<li><p><strong>スケーラビリティ</strong>：コンポーネントレベルのスケーリングにより動的なスケーラビリティを実現し、需要に応じたシームレスなスケールアップとスケールダウンを可能にします。Milvusはコンポーネントレベルでオートスケールが可能で、リソース割り当てを最適化し、効率を高めます。</p></li>
+<li><p><strong>スケーラビリティ</strong>：コンポーネントレベルのスケーリングにより動的なスケーラビリティを実現し、需要に応じてシームレスにスケールアップ/ダウンできます。Milvusはコンポーネントレベルでオートスケールが可能で、リソース割り当てを最適化し、効率を高めます。</p></li>
 <li><p><strong>マルチテナンシー</strong>：クラスタ内で最大10,000のコレクション/パーティションを管理できるマルチテナンシーをサポートし、異なるユーザやアプリケーションに対して効率的なリソース利用と分離を提供します。</p></li>
 <li><p><strong>CRUDオペレーション</strong>：完全なCRUDサポート（作成、読み取り、更新/アップサート、削除）を提供し、ユーザーに包括的なデータ管理機能を提供します。</p></li>
 </ul>

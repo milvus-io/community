@@ -53,7 +53,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>数据处理</strong>：支持批处理（Apache Parquet、数组、JSON）和流处理，并通过 Airbyte、Apache Kafka 和 Apache Spark 连接器实现无缝集成。</p></li>
 <li><p><strong>CRUD 操作符</strong>：提供全面的 CRUD 支持（创建、读取、更新/上载、删除），赋予用户全面的数据管理能力。</p></li>
 </ul>
-<h3 id="Applications-and-limitations" class="common-anchor-header">应用和限制</h3><p>Milvus Lite 是快速原型开发和本地开发的理想选择，为在机器上快速设置和实验小规模数据集提供支持。然而，当过渡到具有更大数据集和更苛刻基础设施要求的生产环境时，它的局限性就显现出来了。因此，虽然 Milvus Lite 是初步探索和测试的绝佳工具，但它可能不适合在大容量或生产就绪的环境中部署应用程序。</p>
+<h3 id="Applications-and-limitations" class="common-anchor-header">应用和限制</h3><p>Milvus Lite 是快速原型开发和本地开发的理想选择，为在机器上快速设置和实验小规模数据集提供支持。然而，当过渡到具有较大数据集和更高基础设施要求的生产环境时，其局限性就显而易见了。因此，虽然 Milvus Lite 是初步探索和测试的绝佳工具，但它可能不适合在大容量或生产就绪的环境中部署应用程序。</p>
 <h3 id="Available-Resources" class="common-anchor-header">可用资源</h3><ul>
 <li><p><a href="https://milvus.io/docs/milvus_lite.md">文档</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-lite/">Github 存储库</a></p></li>
@@ -82,8 +82,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>搜索功能</strong>：支持 top-k、范围和混合搜索，包括元数据过滤，以满足不同的搜索要求。</p></li>
 <li><p><strong>索引类型和相似度指标</strong>：支持 11 种索引类型和 5 种相似度指标，为您的特定用例提供灵活性和定制选项。</p></li>
 <li><p><strong>数据处理</strong>：支持批处理（Apache Parquet、数组、Json）和流处理，并通过 Airbyte、Apache Kafka 和 Apache Spark 连接器实现无缝集成。</p></li>
-<li><p><strong>数据复制和故障切换</strong>：内置复制和故障转移/故障恢复功能可确保数据完整性和应用程序可用性，即使在中断或故障期间也是如此。</p></li>
-<li><p><strong>可扩展性</strong>：通过组件级扩展实现动态可扩展性，可根据需求进行无缝的上下扩展。Milvus 可在组件级自动扩展，优化资源分配，提高效率。</p></li>
+<li><p><strong>可扩展性</strong>：通过组件级扩展实现动态可扩展性，可根据需求进行无缝上下扩展。Milvus 可在组件级自动扩展，优化资源分配，提高效率。</p></li>
 <li><p><strong>多租户</strong>：支持多租户，能够在一个集群中管理多达 10,000 个 Collections/分区，为不同用户或应用提供高效的资源利用和隔离。</p></li>
 <li><p><strong>CRUD 操作符</strong>：提供全面的 CRUD 支持（创建、读取、更新/上载、删除），赋予用户全面的数据管理能力。</p></li>
 </ul>
@@ -122,7 +121,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Cluster 是 Milvus 向量数据库系统的一种操作模式，它在多个节点或服务器上操作和分布。在这种模式下，Milvus 实例集群在一起，形成一个统一的系统，与独立设置相比，可以处理更大的数据量和更高的流量负载。Milvus 集群具有可扩展性、容错性和负载平衡功能，适用于需要处理海量数据和高效服务多个并发查询的场景。</p>
+    </button></h2><p>Milvus Cluster 是 Milvus 向量数据库系统的一种操作模式，它在多个节点或服务器上操作和分布。在这种模式下，Milvus 实例集群在一起，形成一个统一的系统，与独立设置相比，可以处理更大的数据量和更高的流量负载。Milvus 集群具有可扩展性、容错性和负载平衡功能，适用于需要处理海量数据和高效服务众多并发查询的场景。</p>
 <h3 id="Features-and-Capabilities" class="common-anchor-header">特点和功能</h3><ul>
 <li><p>继承了 Milvus Standalone 的所有功能，包括高性能向量搜索、支持多种索引类型和相似度指标，以及与批处理和流处理框架的无缝集成。</p></li>
 <li><p>通过跨多个节点的分布式计算和负载平衡，提供无与伦比的可用性、性能和成本优化。</p></li>

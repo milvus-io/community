@@ -56,7 +56,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>Elaborazione dei dati</strong>: Consente l'elaborazione batch (Apache Parquet, Array, JSON) e in streaming, con una perfetta integrazione attraverso i connettori per Airbyte, Apache Kafka e Apache Spark.</p></li>
 <li><p><strong>Operazioni CRUD</strong>: Offre un supporto CRUD completo (creazione, lettura, aggiornamento/upert, cancellazione), consentendo agli utenti di disporre di funzionalità complete di gestione dei dati.</p></li>
 </ul>
-<h3 id="Applications-and-limitations" class="common-anchor-header">Applicazioni e limitazioni</h3><p>Milvus Lite è ideale per la prototipazione rapida e lo sviluppo locale, in quanto offre un supporto per la configurazione rapida e la sperimentazione di insiemi di dati su piccola scala sulla propria macchina. Tuttavia, i suoi limiti diventano evidenti quando si passa ad ambienti di produzione con set di dati più grandi e requisiti infrastrutturali più impegnativi. Per questo motivo, mentre Milvus Lite è uno strumento eccellente per l'esplorazione e il test iniziali, potrebbe non essere adatto per la distribuzione di applicazioni in ambienti ad alto volume o pronti per la produzione.</p>
+<h3 id="Applications-and-limitations" class="common-anchor-header">Applicazioni e limitazioni</h3><p>Milvus Lite è ideale per la prototipazione rapida e lo sviluppo locale, in quanto offre un supporto per la configurazione rapida e la sperimentazione di insiemi di dati su piccola scala sulla propria macchina. Tuttavia, i suoi limiti diventano evidenti quando si passa ad ambienti di produzione con set di dati più grandi e requisiti infrastrutturali più impegnativi. Per questo motivo, anche se Milvus Lite è uno strumento eccellente per l'esplorazione e il test iniziali, potrebbe non essere adatto per la distribuzione di applicazioni in ambienti ad alto volume o pronti per la produzione.</p>
 <h3 id="Available-Resources" class="common-anchor-header">Risorse disponibili</h3><ul>
 <li><p><a href="https://milvus.io/docs/milvus_lite.md">Documentazione</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-lite/">Repository Github</a></p></li>
@@ -85,8 +85,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>Capacità di ricerca</strong>: Supporta ricerche top-k, range e ibride, compreso il filtraggio dei metadati, per soddisfare le diverse esigenze di ricerca.</p></li>
 <li><p><strong>Tipi di indice e metriche di somiglianza</strong>: Offre il supporto per 11 tipi di indice e 5 metriche di somiglianza, garantendo flessibilità e opzioni di personalizzazione per i vostri casi d'uso specifici.</p></li>
 <li><p><strong>Elaborazione dei dati</strong>: Consente l'elaborazione sia in batch (Apache Parquet, Array, Json) che in streaming, con una perfetta integrazione attraverso i connettori per Airbyte, Apache Kafka e Apache Spark.</p></li>
-<li><p><strong>Replica e failover dei dati</strong>: Le funzioni di replica e failover/failback integrate garantiscono l'integrità dei dati e la disponibilità dell'applicazione, anche in caso di interruzioni o guasti.</p></li>
-<li><p><strong>Scalabilità</strong>: Scalabilità dinamica grazie alla scalabilità a livello di componente, che consente di aumentare o diminuire la scala in base alla domanda. Milvus può autoscalare a livello di componenti, ottimizzando l'allocazione delle risorse per una maggiore efficienza.</p></li>
+<li><p><strong>Scalabilità</strong>: Raggiungere la scalabilità dinamica con lo scaling a livello di componente, che consente di aumentare o diminuire la scala in base alla domanda. Milvus può autoscalare a livello di componenti, ottimizzando l'allocazione delle risorse per una maggiore efficienza.</p></li>
 <li><p><strong>Multi-tenancy</strong>: Supporta la multi-tenancy con la capacità di gestire fino a 10.000 collezioni/partizioni in un cluster, fornendo un utilizzo efficiente delle risorse e l'isolamento per diversi utenti o applicazioni.</p></li>
 <li><p><strong>Operazioni CRUD</strong>: Offre un supporto CRUD completo (creazione, lettura, aggiornamento/upert, cancellazione), consentendo agli utenti di disporre di funzionalità complete di gestione dei dati.</p></li>
 </ul>
@@ -106,7 +105,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p>Documentazione</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/prerequisite-docker.md">Lista di controllo dell'ambiente per Milvus con Docker Compose</a></p></li>
-<li><p><a href="https://milvus.io/docs/install_standalone-docker.md">Installare Milvus Standalone con Docker</a></p></li>
+<li><p><a href="https://milvus.io/docs/install_standalone-docker.md">Installazione di Milvus Standalone con Docker</a></p></li>
 </ul></li>
 <li><p><a href="https://github.com/milvus-io/milvus">Repository Github</a></p></li>
 </ul>
@@ -157,7 +156,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <h4 id="Available-Resources" class="common-anchor-header">Risorse disponibili</h4><ul>
 <li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Documentazione</a> | Come iniziare</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Installazione di Milvus Cluster con Milvus Operator</a></p></li>
+<li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Installare Milvus Cluster con Milvus Operator</a></p></li>
 <li><p><a href="https://milvus.io/docs/install_cluster-helm.md">Installare Milvus Cluster con Helm</a></p></li>
 <li><p><a href="https://milvus.io/docs/scaleout.md">Come scalare un cluster Milvus</a></p></li>
 </ul></li>

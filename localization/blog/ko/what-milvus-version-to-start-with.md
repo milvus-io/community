@@ -48,7 +48,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
     </button></h2><p>이름에서 알 수 있듯이 Milvus Lite는 Google Colab 및 Jupyter Notebook과 원활하게 통합되는 경량 버전입니다. 추가 종속성 없이 단일 바이너리로 패키징되어 있어 컴퓨터에 쉽게 설치 및 실행하거나 Python 애플리케이션에 임베드할 수 있습니다. 또한 Milvus Lite에는 CLI 기반 Milvus 독립형 서버가 포함되어 있어 머신에서 직접 실행할 수 있는 유연성을 제공합니다. Python 코드에 포함할지 아니면 독립형 서버로 활용할지는 전적으로 사용자의 선호도와 특정 애플리케이션 요구 사항에 따라 결정됩니다.</p>
 <h3 id="Features-and-Capabilities" class="common-anchor-header">특징 및 기능</h3><p>Milvus Lite에는 Milvus의 모든 핵심 벡터 검색 기능이 포함되어 있습니다.</p>
 <ul>
-<li><p><strong>검색 기능</strong>: 메타데이터 필터링을 포함한 상위-k, 범위 및 하이브리드 검색을 지원하여 다양한 검색 요구 사항을 충족합니다.</p></li>
+<li><p><strong>검색 기능</strong>: 메타데이터 필터링을 포함한 상위-k, 범위, 하이브리드 검색을 지원하여 다양한 검색 요구 사항을 충족합니다.</p></li>
 <li><p><strong>인덱스 유형 및 유사성 메트릭</strong>: 11가지 인덱스 유형과 5가지 유사성 지표를 지원하여 특정 사용 사례에 맞는 유연성과 사용자 정의 옵션을 제공합니다.</p></li>
 <li><p><strong>데이터 처리</strong>: 일괄 처리(Apache Parquet, Arrays, JSON) 및 스트림 처리를 지원하며, Airbyte, Apache Kafka, Apache Spark용 커넥터를 통해 원활하게 통합할 수 있습니다.</p></li>
 <li><p><strong>CRUD 운영</strong>: 완전한 CRUD 지원(생성, 읽기, 업데이트/삽입, 삭제)을 제공하여 사용자에게 포괄적인 데이터 관리 기능을 제공합니다.</p></li>
@@ -82,8 +82,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>검색 기능</strong>: 메타데이터 필터링을 포함한 상위-k, 범위, 하이브리드 검색을 지원하여 다양한 검색 요구사항을 충족합니다.</p></li>
 <li><p><strong>색인 유형 및 유사성 메트릭</strong>: 11가지 색인 유형과 5가지 유사성 지표를 지원하여 특정 사용 사례에 맞는 유연성과 사용자 지정 옵션을 제공합니다.</p></li>
 <li><p><strong>데이터 처리</strong>: 일괄 처리(Apache Parquet, Arrays, Json)와 스트림 처리를 모두 지원하며, Airbyte, Apache Kafka, Apache Spark용 커넥터를 통해 원활하게 통합할 수 있습니다.</p></li>
-<li><p><strong>데이터 복제 및 페일오버</strong>: 기본 제공되는 복제 및 장애 조치/장애 복구 기능은 중단이나 장애 발생 시에도 데이터 무결성과 애플리케이션 가용성을 보장합니다.</p></li>
-<li><p><strong>확장성</strong>: 구성 요소 수준 확장을 통해 동적 확장성을 달성하여 수요에 따라 원활하게 확장 및 축소할 수 있습니다. Milvus는 구성 요소 수준에서 자동 확장이 가능하므로 리소스 할당을 최적화하여 효율성을 높일 수 있습니다.</p></li>
+<li><p><strong>확장성</strong>: 컴포넌트 수준 확장을 통해 동적 확장성을 달성하여 수요에 따라 원활하게 확장 및 축소할 수 있습니다. Milvus는 컴포넌트 수준에서 자동 확장이 가능하므로 리소스 할당을 최적화하여 효율성을 높일 수 있습니다.</p></li>
 <li><p><strong>멀티 테넌시</strong>: 클러스터에서 최대 10,000개의 컬렉션/파티션을 관리할 수 있는 멀티 테넌시를 지원하여 다양한 사용자 또는 애플리케이션을 위한 효율적인 리소스 활용과 격리를 제공합니다.</p></li>
 <li><p><strong>CRUD 운영</strong>: 완전한 CRUD 지원(만들기, 읽기, 업데이트/삽입, 삭제)을 제공하여 사용자에게 포괄적인 데이터 관리 기능을 제공합니다.</p></li>
 </ul>
@@ -177,4 +176,4 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
       </svg>
     </button></h2><p>프로젝트에 사용할 Milvus 버전을 결정할 때는 데이터 세트 크기, 트래픽 볼륨, 확장성 요구 사항 및 프로덕션 환경 제약 조건과 같은 요소를 고려해야 합니다. Milvus Lite는 노트북에서 프로토타이핑하는 데 적합합니다. Milvus Standalone은 데이터 세트에서 벡터 검색을 수행할 수 있는 높은 성능과 유연성을 제공하므로 소규모 배포, CI/CD, Kubernetes를 지원하지 않는 오프라인 배포에 적합합니다. 마지막으로 Milvus Cluster는 엔터프라이즈급 워크로드를 위한 탁월한 가용성, 확장성, 비용 최적화를 제공하므로 대규모의 고가용성 운영 환경을 위한 선호되는 선택이 될 것입니다.</p>
 <p>번거로움이 없는 또 다른 버전이 있는데, 바로 <a href="https://cloud.zilliz.com/signup">Zilliz Cloud라는</a> Milvus의 관리형 버전입니다.</p>
-<p>궁극적으로 Milvus 버전은 특정 사용 사례, 인프라 요구 사항 및 장기적인 목표에 따라 달라집니다. 이러한 요소를 신중하게 평가하고 각 버전의 특징과 기능을 이해하면 프로젝트의 요구 사항과 목표에 맞는 정보에 입각한 결정을 내릴 수 있습니다. Milvus 스탠드얼론과 Milvus 클러스터 중 어떤 것을 선택하든 벡터 데이터베이스의 강력한 기능을 활용하여 AI 애플리케이션의 성능과 효율성을 향상시킬 수 있습니다.</p>
+<p>궁극적으로 Milvus 버전은 특정 사용 사례, 인프라 요구 사항 및 장기 목표에 따라 달라집니다. 이러한 요소를 신중하게 평가하고 각 버전의 특징과 기능을 이해하면 프로젝트의 요구 사항과 목표에 맞는 정보에 입각한 결정을 내릴 수 있습니다. Milvus 스탠드얼론과 Milvus 클러스터 중 어떤 것을 선택하든 벡터 데이터베이스의 강력한 기능을 활용하여 AI 애플리케이션의 성능과 효율성을 향상시킬 수 있습니다.</p>

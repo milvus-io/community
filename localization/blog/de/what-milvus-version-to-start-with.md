@@ -85,10 +85,9 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>Suchfähigkeiten</strong>: Unterstützt Top-K-, Bereichs- und hybride Suchen, einschließlich Metadatenfilterung, um verschiedenen Suchanforderungen gerecht zu werden.</p></li>
 <li><p><strong>Indexarten und Ähnlichkeitsmetriken</strong>: Bietet Unterstützung für 11 Indextypen und 5 Ähnlichkeitsmetriken und bietet damit Flexibilität und Anpassungsmöglichkeiten für Ihren spezifischen Anwendungsfall.</p></li>
 <li><p><strong>Datenverarbeitung</strong>: Ermöglicht sowohl Batch- (Apache Parquet, Arrays, Json) als auch Stream-Verarbeitung, mit nahtloser Integration durch Konnektoren für Airbyte, Apache Kafka und Apache Spark.</p></li>
-<li><p><strong>Datenreplikation und Ausfallsicherung</strong>: Integrierte Replikations- und Failover-/Failback-Funktionen sorgen für Datenintegrität und Anwendungsverfügbarkeit, selbst bei Störungen oder Ausfällen.</p></li>
-<li><p><strong>Skalierbarkeit</strong>: Erreichen Sie dynamische Skalierbarkeit mit Skalierung auf Komponentenebene, die eine nahtlose Skalierung nach oben und unten je nach Bedarf ermöglicht. Milvus kann eine automatische Skalierung auf Komponentenebene vornehmen und so die Ressourcenzuweisung für mehr Effizienz optimieren.</p></li>
+<li><p><strong>Skalierbarkeit</strong>: Erreichen Sie eine dynamische Skalierbarkeit mit Skalierung auf Komponentenebene, die eine nahtlose Skalierung nach oben und unten je nach Bedarf ermöglicht. Milvus kann auf Komponentenebene automatisch skalieren und so die Ressourcenzuweisung für eine verbesserte Effizienz optimieren.</p></li>
 <li><p><strong>Multi-Mandantenfähigkeit</strong>: Unterstützt Multi-Tenancy mit der Möglichkeit, bis zu 10.000 Sammlungen/Partitionen in einem Cluster zu verwalten, was eine effiziente Ressourcennutzung und Isolierung für verschiedene Benutzer oder Anwendungen ermöglicht.</p></li>
-<li><p><strong>CRUD-Vorgänge</strong>: Bietet vollständige CRUD-Unterstützung (Erstellen, Lesen, Aktualisieren/Uploaden, Löschen) und ermöglicht den Anwendern umfassende Datenverwaltungsfunktionen.</p></li>
+<li><p><strong>CRUD-Vorgänge</strong>: Bietet vollständige CRUD-Unterstützung (Erstellen, Lesen, Aktualisieren/Uploaden, Löschen) und ermöglicht den Benutzern umfassende Datenverwaltungsfunktionen.</p></li>
 </ul>
 <h3 id="Essential-components" class="common-anchor-header">Wesentliche Komponenten:</h3><ul>
 <li><p>Milvus: Die funktionale Kernkomponente.</p></li>

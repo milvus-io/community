@@ -85,8 +85,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <li><p><strong>Capacités de recherche</strong>: Prise en charge des recherches top-k, par plage et hybrides, y compris le filtrage des métadonnées, pour répondre à diverses exigences de recherche.</p></li>
 <li><p><strong>Types d'index et mesures de similarité</strong>: Prise en charge de 11 types d'index et de 5 mesures de similarité, offrant une grande souplesse et des options de personnalisation pour votre cas d'utilisation spécifique.</p></li>
 <li><p><strong>Traitement des données</strong>: Permet le traitement par lots (Apache Parquet, Arrays, Json) et par flux, avec une intégration transparente grâce à des connecteurs pour Airbyte, Apache Kafka et Apache Spark.</p></li>
-<li><p><strong>Réplication des données et basculement</strong>: Les fonctions intégrées de réplication et de basculement/failback garantissent l'intégrité des données et la disponibilité des applications, même en cas d'interruption ou de panne.</p></li>
-<li><p><strong>Évolutivité</strong>: Bénéficiez d'une évolutivité dynamique grâce à la mise à l'échelle au niveau des composants, ce qui permet une mise à l'échelle transparente vers le haut ou vers le bas en fonction de la demande. Milvus peut procéder à une mise à l'échelle automatique au niveau des composants, optimisant ainsi l'allocation des ressources pour une meilleure efficacité.</p></li>
+<li><p><strong>Évolutivité</strong>: Réalisez une évolutivité dynamique avec une mise à l'échelle au niveau des composants, ce qui permet une mise à l'échelle transparente vers le haut ou vers le bas en fonction de la demande. Milvus peut procéder à une mise à l'échelle automatique au niveau des composants, optimisant ainsi l'allocation des ressources pour une meilleure efficacité.</p></li>
 <li><p><strong>Multi-tenance</strong>: Prend en charge la multi-location avec la capacité de gérer jusqu'à 10 000 collections/partitions dans un cluster, ce qui permet une utilisation efficace des ressources et une isolation pour différents utilisateurs ou applications.</p></li>
 <li><p><strong>Opérations CRUD</strong>: Prise en charge complète des opérations CRUD (création, lecture, mise à jour/suppression, suppression), offrant aux utilisateurs des capacités complètes de gestion des données.</p></li>
 </ul>
@@ -125,11 +124,11 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Cluster est un mode de fonctionnement du système de base de données vectorielle Milvus dans lequel il fonctionne et est distribué sur plusieurs nœuds ou serveurs. Dans ce mode, les instances Milvus sont regroupées pour former un système unifié qui peut gérer de plus grands volumes de données et des charges de trafic plus élevées par rapport à une configuration autonome. Milvus Cluster offre des fonctions d'évolutivité, de tolérance aux pannes et d'équilibrage de charge, ce qui le rend adapté aux scénarios qui doivent traiter des données volumineuses et servir efficacement de nombreuses requêtes simultanées.</p>
+    </button></h2><p>Milvus Cluster est un mode de fonctionnement du système de base de données vectorielle Milvus dans lequel il fonctionne et est distribué sur plusieurs nœuds ou serveurs. Dans ce mode, les instances Milvus sont regroupées pour former un système unifié qui peut gérer des volumes de données plus importants et des charges de trafic plus élevées par rapport à une configuration autonome. Milvus Cluster offre des fonctions d'évolutivité, de tolérance aux pannes et d'équilibrage de charge, ce qui le rend adapté aux scénarios qui doivent traiter des données volumineuses et servir efficacement de nombreuses requêtes simultanées.</p>
 <h3 id="Features-and-Capabilities" class="common-anchor-header">Fonctionnalités et capacités</h3><ul>
 <li><p>Hérite de toutes les fonctionnalités disponibles dans Milvus Standalone, y compris la recherche vectorielle haute performance, la prise en charge de plusieurs types d'index et de métriques de similarité, et l'intégration transparente avec les frameworks de traitement par lots et par flux.</p></li>
 <li><p>Offre une disponibilité, des performances et une optimisation des coûts inégalées en tirant parti de l'informatique distribuée et de l'équilibrage des charges sur plusieurs nœuds.</p></li>
-<li><p>Permet de déployer et de mettre à l'échelle des charges de travail sécurisées de niveau professionnel avec des coûts totaux réduits en utilisant efficacement les ressources sur l'ensemble du cluster et en optimisant l'allocation des ressources en fonction des demandes de charge de travail.</p></li>
+<li><p>Permet de déployer et de mettre à l'échelle des charges de travail sécurisées de niveau professionnel avec des coûts totaux réduits en utilisant efficacement les ressources dans le cluster et en optimisant l'allocation des ressources en fonction des exigences de la charge de travail.</p></li>
 </ul>
 <h3 id="Essential-components" class="common-anchor-header">Composants essentiels :</h3><p>Milvus Cluster comprend huit composants microservices et trois dépendances tierces. Tous les microservices peuvent être déployés sur Kubernetes indépendamment les uns des autres.</p>
 <h4 id="Microservice-components" class="common-anchor-header">Composants de microservices</h4><ul>
@@ -145,7 +144,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 <h4 id="Third-party-dependencies" class="common-anchor-header">Dépendances tierces</h4><ul>
 <li><p>etcd : Stocke les métadonnées des différents composants du cluster.</p></li>
 <li><p>MinIO : Responsable de la persistance des données des fichiers volumineux dans le cluster, tels que les fichiers d'index et les fichiers journaux binaires.</p></li>
-<li><p>Pulsar : Gère les journaux des opérations de mutation récentes, produit des journaux en continu et fournit des services de publication et d'abonnement de journaux.</p></li>
+<li><p>Pulsar : Gère les journaux des opérations de mutation récentes, produit des journaux en continu et fournit des services de publication et d'abonnement aux journaux.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
