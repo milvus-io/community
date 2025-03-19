@@ -54,7 +54,7 @@ Simply put, **managing shards manually is bad for your business**. Instead of lo
 Many developers—from startups to enterprises—have recognized the significant overhead associated with manual database sharding. Milvus takes a fundamentally different approach, enabling seamless scaling from millions to billions of vectors without the complexity.
 
 
-### Automated Scaling Without the Engineering Tax
+### Automated Scaling Without the Tech Debt
 
 Milvus leverages Kubernetes and a disaggregated storage-compute architecture to support seamless expansion. This design enables:
 
@@ -67,7 +67,7 @@ Milvus leverages Kubernetes and a disaggregated storage-compute architecture to 
 - Consistent high performance, even during periods of rapid growth
 
 
-### How Milvus Scales: The Technical Foundation
+### Distributed Architecture Designed from the Ground Up
 
 Milvus achieves its scaling capabilities through two key innovations:
 
