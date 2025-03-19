@@ -9,6 +9,7 @@ tag: Engineering
 tags: Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding
 recommend: true
 canonicalUrl: https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
+---
 
 _"We initially built our semantic search on pgvector instead of Milvus because all our relational data was already in PostgreSQL,"_ recalls Alex, CTO of an enterprise AI SaaS startup. _"But as soon as we hit product-market fit, our growth ran into serious hurdles on the engineering side. It quickly became clear that pgvector wasn’t designed for scalability. Simple tasks such as rolling out schema updates across multiple shards turned into tedious, error-prone processes that consumed days of engineering effort. When we reached 100 million vector embeddings, query latency spiked to over a second, something far beyond what our customers would tolerate. After moving to Milvus, sharding manually felt like stepping into the stone age. It’s no fun juggling shard servers as if they were fragile artifacts. No company should have to endure that."_
 
@@ -111,5 +112,3 @@ _"When scalability is built into the database itself, all those headaches just..
 If you're grappling with the engineering burden of manual sharding, performance bottlenecks at scale, or the daunting prospect of database migrations, it's time to rethink your approach. Visit our [docs page](https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable) to learn more about Milvus architecture, or experience effortless scalability firsthand with fully-managed Milvus at [zilliz.com/cloud](https://zilliz.com/cloud).
 
 With the right vector database foundation, your innovation knows no limits.
-
----
