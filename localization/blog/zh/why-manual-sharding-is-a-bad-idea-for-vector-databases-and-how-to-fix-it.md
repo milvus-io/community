@@ -28,7 +28,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>对于 pgvector 用户来说，Alex 的经历并非独一无二。无论你使用的是 pgvector、Qdrant、Weaviate 还是其他依赖手动分片的向量数据库，扩展方面的挑战都是一样的。随着数据量的增长，最初的可管理解决方案很快就会变成技术债务。</p>
+    </button></h2><p>Alex 的经历并不是 pgvector 用户独有的。无论你使用的是 pgvector、Qdrant、Weaviate 还是其他依赖手动分片的向量数据库，扩展方面的挑战都是一样的。随着数据量的增长，最初的可管理解决方案很快就会变成技术债务。</p>
 <p>对于今天的初创企业来说，<strong>可扩展性不是可有可无的，而是至关重要的</strong>。对于由大型语言模型（LLM）和向量数据库驱动的人工智能产品来说尤其如此，从早期采用到指数级增长的飞跃可能在一夜之间发生。实现产品与市场的契合往往会引发用户激增、数据流入量过大以及查询需求激增。但是，如果数据库基础设施跟不上，缓慢的查询和低效的操作符就会阻碍发展势头，阻碍业务成功。</p>
 <p>一个短期的技术决策可能会导致长期的瓶颈，迫使工程团队不断解决紧急的性能问题、数据库崩溃和系统故障，而不是专注于创新。最坏的情况是什么？重新架构数据库，成本高昂，耗时漫长，而这恰恰是公司应该进行扩展的时候。</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">分片难道不是可扩展性的自然解决方案吗？<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
@@ -89,14 +89,14 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>许多开发人员--从初创企业到大型企业--都认识到了手动数据库分片带来的巨大开销。Milvus 从根本上采用了不同的方法，实现了从数百万到数十亿向量的无缝扩展，而没有复杂性。</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">无需工程税的自动扩展</h3><p>Milvus 利用 Kubernetes 和分解存储-计算架构支持无缝扩展。这种设计可实现</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">无需技术债务的自动扩展</h3><p>Milvus 利用 Kubernetes 和分解存储-计算架构支持无缝扩展。这种设计可实现</p>
 <ul>
 <li><p>快速扩展以应对不断变化的需求</p></li>
 <li><p>在所有可用节点上自动平衡负载</p></li>
 <li><p>独立的资源分配，让您可以分别调整计算、内存和存储</p></li>
 <li><p>即使在快速增长期间，也能保持稳定的高性能</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Milvus 如何扩展：技术基础</h3><p>Milvus 通过两项关键创新实现其扩展能力：</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">从头开始设计的分布式架构</h3><p>Milvus 通过两项关键创新实现其扩展能力：</p>
 <p><strong>基于网段的架构：</strong>Milvus 的核心是将数据组织成 &quot;段&quot;--数据管理的最小单位：</p>
 <ul>
 <li><p>增长段驻留在 StreamNodes 上，为实时查询优化数据新鲜度</p></li>
@@ -139,5 +139,5 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p><em>"当可扩展性内置于数据库本身时，所有这些令人头疼的问题都......消失了，"</em>亚历克斯在谈到他的团队向 Milvus 过渡时说。<em>"我的工程师们重新开始构建客户喜爱的功能，而不是照看数据库碎片。</em></p>
-<p>如果您正在为手动分片的工程负担、大规模性能瓶颈或令人生畏的数据库迁移前景而苦恼，那么是时候重新思考您的方法了。请访问我们的<a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">文档页面</a>，了解有关 Milvus 架构的更多信息，或访问<a href="https://zilliz.com/cloud">zilliz.com/cloud</a> 体验完全托管的 Milvus 带来的轻松扩展性。</p>
+<p>如果您正在为手动分片的工程负担、大规模性能瓶颈或令人生畏的数据库迁移前景而苦恼，那么是时候重新思考您的方法了。请访问我们的<a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">文档页面</a>，了解有关 Milvus 架构的更多信息，或访问<a href="https://zilliz.com/cloud">zilliz.com/cloud</a> 亲身体验完全托管的 Milvus 的轻松可扩展性。</p>
 <p>有了正确的向量数据库基础，您的创新将不再受限。</p>

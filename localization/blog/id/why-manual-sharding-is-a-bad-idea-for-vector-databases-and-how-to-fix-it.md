@@ -35,7 +35,7 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>Pengalaman Alex tidak hanya dialami oleh pengguna pgvector. Apakah Anda menggunakan pgvector, Qdrant, Weaviate, atau basis data vektor lainnya yang bergantung pada pemecahan manual, tantangan penskalaan tetap sama. Apa yang dimulai sebagai solusi yang mudah dikelola dengan cepat berubah menjadi utang teknologi seiring dengan bertambahnya volume data.</p>
 <p>Bagi perusahaan rintisan saat ini, <strong>skalabilitas bukanlah pilihan, melainkan sangat penting</strong>. Hal ini terutama berlaku untuk produk AI yang didukung oleh Large Language Models (LLM) dan basis data vektor, di mana lompatan dari adopsi awal ke pertumbuhan eksponensial dapat terjadi dalam semalam. Mencapai kesesuaian produk dengan pasar sering kali memicu lonjakan pertumbuhan pengguna, arus masuk data yang luar biasa, dan permintaan kueri yang meroket. Namun jika infrastruktur database tidak dapat mengimbanginya, permintaan yang lambat dan inefisiensi operasional dapat menghambat momentum dan menghalangi kesuksesan bisnis.</p>
-<p>Keputusan teknis jangka pendek dapat menyebabkan kemacetan jangka panjang, memaksa tim teknisi untuk terus-menerus mengatasi masalah kinerja yang mendesak, kerusakan basis data, dan kegagalan sistem alih-alih berfokus pada inovasi. Skenario terburuk? Arsitektur ulang basis data yang mahal dan memakan waktu - tepat ketika perusahaan harus melakukan penskalaan.</p>
+<p>Keputusan teknis jangka pendek dapat menyebabkan kemacetan jangka panjang, memaksa tim teknisi untuk terus-menerus mengatasi masalah kinerja yang mendesak, kerusakan basis data, dan kegagalan sistem alih-alih berfokus pada inovasi. Skenario terburuk? Arsitektur ulang basis data yang mahal dan memakan waktu - justru ketika perusahaan harus melakukan penskalaan.</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">Bukankah Sharding adalah Solusi Alami untuk Skalabilitas?<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -94,14 +94,14 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>Banyak pengembang - dari startup hingga perusahaan - telah menyadari biaya tambahan yang signifikan terkait dengan pecahan basis data manual. Milvus mengambil pendekatan yang berbeda secara fundamental, memungkinkan penskalaan yang mulus dari jutaan hingga miliaran vektor tanpa kerumitan.</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">Penskalaan Otomatis Tanpa Pajak Rekayasa</h3><p>Milvus memanfaatkan Kubernetes dan arsitektur komputasi penyimpanan terpilah untuk mendukung ekspansi tanpa hambatan. Desain ini memungkinkan:</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">Penskalaan Otomatis Tanpa Hutang Teknologi</h3><p>Milvus memanfaatkan Kubernetes dan arsitektur komputasi-penyimpanan yang terpilah untuk mendukung ekspansi tanpa batas. Desain ini memungkinkan:</p>
 <ul>
-<li><p>Penskalaan yang cepat sebagai respons terhadap perubahan permintaan</p></li>
+<li><p>Penskalaan yang cepat dalam menanggapi perubahan permintaan</p></li>
 <li><p>Penyeimbangan beban otomatis di semua node yang tersedia</p></li>
 <li><p>Alokasi sumber daya independen, memungkinkan Anda menyesuaikan komputasi, memori, dan penyimpanan secara terpisah</p></li>
 <li><p>Performa tinggi yang konsisten, bahkan selama periode pertumbuhan yang cepat</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Bagaimana Milvus Berskala: Fondasi Teknis</h3><p>Milvus mencapai kemampuan penskalaannya melalui dua inovasi utama:</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">Arsitektur Terdistribusi yang Dirancang dari Bawah ke Atas</h3><p>Milvus mencapai kemampuan penskalaannya melalui dua inovasi utama:</p>
 <p><strong>Arsitektur Berbasis Segmen:</strong> Pada intinya, Milvus mengatur data ke dalam &quot;segmen&quot; - unit terkecil dalam manajemen data:</p>
 <ul>
 <li><p>Segmen yang Berkembang berada di StreamNodes, mengoptimalkan kesegaran data untuk kueri waktu nyata</p></li>

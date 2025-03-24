@@ -12,7 +12,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>"一家企業級 AI SaaS 創業公司的 CTO Alex 回憶說：<em>「我們最初在 pgvector 上建立語意搜尋，而不是 Milvus，因為我們所有的關聯性資料都已經在 PostgreSQL 上</em>。<em>Alex 回憶說：「但當我們的產品與市場契合時，我們的成長在工程方面遇到了嚴重的障礙。我們很快就發現 pgvector 並不是為了擴充性而設計的。簡單的任務，例如在多個分塊中推出模式更新，變成了乏味、容易出錯的流程，耗費了數天的工程努力。當我們的向量嵌入量達到 1 億個時，查詢延遲時間飆升至超過一秒，遠遠超出客戶所能忍受的範圍。轉移到 Milvus 之後，手動分片的感覺就像踏入石器時代。把分片伺服器當成易碎的藝術品來玩弄，一點都不好玩。任何公司都不應該忍受這種情況。</em></p>
+<p>"一家企業級 AI SaaS 創業公司的 CTO Alex 回憶說：<em>「我們最初在 pgvector 上建立語意搜尋，而不是 Milvus，因為我們所有的關聯性資料都已經在 PostgreSQL 上</em>。<em>Alex 回憶說：「但當我們的產品與市場契合時，我們的成長在工程方面遇到了嚴重的障礙。我們很快就發現 pgvector 並不是為了擴充性而設計的。簡單的任務，例如在多個分塊中推出模式更新，變成了乏味、容易出錯的流程，耗費了數天的工程努力。當我們的向量嵌入量達到 1 億個時，查詢延遲時間飆升至一秒以上，遠遠超出我們客戶所能忍受的範圍。轉移到 Milvus 之後，手動分片的感覺就像踏入石器時代。把分片伺服器當成易碎的藝術品來玩弄，一點都不好玩。任何公司都不應該忍受這種情況。</em></p>
 <h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">AI 公司面臨的共同挑戰<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -29,7 +29,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>Alex 的經驗並不是 pgvector 使用者獨有的。無論您使用的是 pgvector、Qdrant、Weaviate 或其他依賴手動分片的向量資料庫，擴充的挑戰都是一樣的。一開始是可以管理的解決方案，但隨著資料量的增加，很快就變成了技術債務。</p>
-<p>對現今的新創公司而言，<strong>擴充性並非可有可无，而是關鍵任務</strong>。這對於由大型語言模型 (Large Language Models, LLM) 和向量資料庫所驅動的人工智慧產品來說尤其如此，從早期採用到指數級成長的躍進可能會在一夜之間發生。實現產品與市場的契合通常會引發使用者激增、資料流入量過大以及查詢需求暴增。但如果資料庫基礎架構跟不上，緩慢的查詢和低效率的作業就會阻礙動力，妨礙業務成功。</p>
+<p>對現今的新創公司而言，<strong>擴充性並非可有可无，而是關鍵任務</strong>。這對於由大型語言模型 (Large Language Models, LLM) 和向量資料庫所驅動的人工智慧產品而言尤其如此，從早期採用到指數級成長的躍進可能在一夜之間發生。實現產品與市場的契合通常會引發使用者激增、資料流入量過大以及查詢需求暴增。但如果資料庫基礎架構跟不上，緩慢的查詢和低效率的作業就會阻礙動力，妨礙業務成功。</p>
 <p>短期的技術決策可能會導致長期的瓶頸，迫使工程團隊不斷處理緊急的效能問題、資料庫崩潰和系統故障，而無法專注於創新。最糟糕的情況是什麼？昂貴且耗時的資料庫重新架構，而這正是公司應該擴充規模的時候。</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">Sharding 不正是擴充性的自然解決方案嗎？<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -89,15 +89,15 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>許多開發人員 - 從初創公司到企業 - 都已意識到手動資料庫分片所帶來的巨大開銷。Milvus 採用了根本不同的方法，能夠無縫擴充從數百萬到數十億的向量，而無需複雜性。</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">無需工程稅的自動擴充</h3><p>Milvus 利用 Kubernetes 和分散式儲存運算架構，支援無縫擴充。此設計可</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">自動化擴充，免除技術債務</h3><p>Milvus 利用 Kubernetes 和分散式儲存運算架構，支援無縫擴充。此設計可</p>
 <ul>
 <li><p>快速擴充以因應不斷變化的需求</p></li>
 <li><p>自動平衡所有可用節點的負載</p></li>
 <li><p>獨立的資源分配，讓您可以分別調整運算、記憶體和儲存設備</p></li>
 <li><p>即使在快速成長期間，也能維持穩定的高效能</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Milvus 如何擴充：技術基礎</h3><p>Milvus 透過兩大創新技術實現其擴充能力：</p>
-<p><strong>以區段為基礎的架構：</strong>Milvus 的核心是將資料組織為「區段」- 資料管理的最小單位：</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">分佈式架構從底層開始設計</h3><p>Milvus 透過兩項關鍵創新，實現其擴充能力：</p>
+<p><strong>以區段為基礎的架構：</strong>Milvus 的核心是將資料組織為「區段」 - 資料管理的最小單位：</p>
 <ul>
 <li><p>成長中的區段駐留在 StreamNodes 上，為即時查詢優化資料的新鮮度。</p></li>
 <li><p>封閉區段由 QueryNodes 管理，利用強大的索引加速搜尋</p></li>
@@ -115,7 +115,7 @@ canonicalUrl: >-
 <li><p>代理為要求的集合識別相關的分片</p></li>
 <li><p>代理從 StreamNodes 和 QueryNodes 收集資料</p></li>
 <li><p>StreamNodes 處理即時資料，QueryNodes 同時處理歷史資料</p></li>
-<li><p>彙總結果並傳回給使用者</p></li>
+<li><p>彙總結果並傳送給使用者</p></li>
 </ol>
 <p>
   <span class="img-wrapper">

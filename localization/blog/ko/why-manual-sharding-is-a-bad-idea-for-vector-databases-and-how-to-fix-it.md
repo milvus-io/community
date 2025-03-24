@@ -31,7 +31,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>알렉스의 경험은 비단 pgvector 사용자에게만 국한된 것이 아닙니다. pgvector, Qdrant, Weaviate 또는 수동 샤딩에 의존하는 다른 벡터 데이터베이스를 사용하든, 확장 문제는 동일하게 남아 있습니다. 관리하기 쉬운 솔루션으로 시작한 것이 데이터 볼륨이 증가하면 금세 기술 부채로 변합니다.</p>
-<p>오늘날 스타트업에게 <strong>확장성은 선택이 아니라</strong> 필수입니다. 특히 대규모 언어 모델(LLM)과 벡터 데이터베이스로 구동되는 AI 제품의 경우, 초기 도입에서 기하급수적인 성장으로 하룻밤 사이에 도약할 수 있습니다. 제품 시장 적합성을 달성하면 사용자 증가, 압도적인 데이터 유입, 쿼리 수요의 급증을 유발하는 경우가 많습니다. 그러나 데이터베이스 인프라가 이를 따라잡지 못하면 쿼리 속도가 느려지고 운영 비효율성으로 인해 추진력이 떨어지고 비즈니스 성공에 장애가 될 수 있습니다.</p>
+<p>오늘날 스타트업에게 <strong>확장성은 선택이 아니라</strong> 필수입니다. 특히 대규모 언어 모델(LLM)과 벡터 데이터베이스로 구동되는 AI 제품의 경우, 초기 도입에서 기하급수적인 성장으로 하룻밤 사이에 도약할 수 있습니다. 제품 시장 적합성을 달성하면 사용자 증가, 압도적인 데이터 유입, 쿼리 수요의 급증을 유발하는 경우가 많습니다. 하지만 데이터베이스 인프라가 이를 따라잡지 못하면 쿼리 속도 저하와 운영 비효율성으로 인해 추진력이 저하되고 비즈니스 성공이 저해될 수 있습니다.</p>
 <p>단기적인 기술적 결정이 장기적인 병목 현상으로 이어져 엔지니어링 팀이 혁신에 집중하는 대신 긴급한 성능 문제, 데이터베이스 충돌 및 시스템 장애를 지속적으로 해결해야 할 수도 있습니다. 최악의 시나리오는? 바로 기업이 확장해야 할 시기에 많은 비용과 시간이 소요되는 데이터베이스 재구축입니다.</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">샤딩은 확장성을 위한 자연스러운 해결책이 아닐까요?<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -91,14 +91,14 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>스타트업부터 대기업에 이르기까지 많은 개발자들이 수동 데이터베이스 샤딩과 관련된 상당한 오버헤드를 인식하고 있습니다. Milvus는 근본적으로 다른 접근 방식을 채택하여 복잡성 없이 수백만에서 수십억 개의 벡터를 원활하게 확장할 수 있습니다.</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">엔지니어링 비용 없이 자동화된 확장</h3><p>Milvus는 Kubernetes와 분리된 스토리지-컴퓨팅 아키텍처를 활용하여 원활한 확장을 지원합니다. 이러한 설계는 다음을 가능하게 합니다:</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">기술 부채 없이 자동화된 확장</h3><p>Milvus는 Kubernetes와 분리된 스토리지-컴퓨팅 아키텍처를 활용하여 원활한 확장을 지원합니다. 이러한 설계는 다음을 가능하게 합니다:</p>
 <ul>
 <li><p>변화하는 수요에 대응하는 신속한 확장</p></li>
 <li><p>사용 가능한 모든 노드에서 자동 로드 밸런싱</p></li>
 <li><p>독립적인 리소스 할당으로 컴퓨팅, 메모리, 스토리지를 개별적으로 조정할 수 있습니다.</p></li>
 <li><p>급격한 성장기에도 일관된 고성능 유지</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Milvus의 확장 방식: 기술 기반</h3><p>Milvus는 두 가지 주요 혁신을 통해 확장 기능을 달성합니다:</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">처음부터 설계된 분산 아키텍처</h3><p>Milvus는 두 가지 주요 혁신을 통해 확장 기능을 달성했습니다:</p>
 <p><strong>세그먼트 기반 아키텍처:</strong> Milvus의 핵심은 데이터를 가장 작은 데이터 관리 단위인 '세그먼트'로 구성하는 것입니다:</p>
 <ul>
 <li><p>성장하는 세그먼트는 스트림노드에 상주하며 실시간 쿼리를 위해 데이터 최신성을 최적화합니다.</p></li>
@@ -110,7 +110,7 @@ canonicalUrl: >-
 <li><p>각 샤드는 10억 개 이상의 데이터 포인트를 저장할 수 있습니다.</p></li>
 <li><p>각 샤드 내의 세그먼트는 머신 간에 자동으로 균형을 맞춥니다.</p></li>
 <li><p>컬렉션 확장은 샤드 수를 늘리는 것만큼이나 간단합니다.</p></li>
-<li><p>곧 출시될 Milvus 3.0에서는 동적 샤드 분할을 도입하여 이러한 최소한의 수동 단계마저 제거할 예정입니다.</p></li>
+<li><p>곧 출시될 Milvus 3.0은 동적 샤드 분할을 도입하여 이러한 최소한의 수동 단계마저 제거합니다.</p></li>
 </ul>
 <h3 id="Query-Processing-at-Scale" class="common-anchor-header">대규모 쿼리 처리</h3><p>쿼리를 실행할 때 Milvus는 효율적인 프로세스를 따릅니다:</p>
 <ol>
@@ -141,5 +141,5 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p><em>"확장성이 데이터베이스 자체에 내장되면 모든 골칫거리가 사라집니다</em>."라고 Alex는 Milvus로 전환한 자신의 팀을 회상하며 이렇게 말합니다. <em>"엔지니어들은 데이터베이스 샤드를 돌보는 대신 고객이 좋아하는 기능을 구축하는 데 집중할 수 있게 되었습니다."</em></p>
-<p>수동 샤딩의 엔지니어링 부담, 대규모 성능 병목 현상, 데이터베이스 마이그레이션의 막막한 전망으로 고민하고 계신다면, 접근 방식을 재고해 보셔야 할 때입니다. <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">문서 페이지를</a> 방문하여 Milvus 아키텍처에 대해 자세히 알아보거나 <a href="https://zilliz.com/cloud">zilliz.com/cloud에서</a> 완전 관리형 Milvus를 통해 간편한 확장성을 직접 경험해 보세요.</p>
-<p>올바른 벡터 데이터베이스 기반과 함께라면 혁신의 한계는 없습니다.</p>
+<p>수동 샤딩의 엔지니어링 부담, 대규모 성능 병목 현상, 데이터베이스 마이그레이션의 막막한 전망으로 고민하고 계신다면 접근 방식을 재고할 때입니다. <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">문서 페이지를</a> 방문하여 Milvus 아키텍처에 대해 자세히 알아보거나 <a href="https://zilliz.com/cloud">zilliz.com/cloud에서</a> 완전 관리형 Milvus를 통해 간편한 확장성을 직접 경험해 보세요.</p>
+<p>올바른 벡터 데이터베이스 기반이 있다면 혁신에는 한계가 없습니다.</p>

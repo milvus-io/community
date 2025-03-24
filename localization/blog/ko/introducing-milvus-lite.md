@@ -20,6 +20,7 @@ canonicalUrl: 'https://milvus.io/blog/introducing-milvus-lite.md'
 <p>Python 애플리케이션 내에서 로컬로 실행되는 경량 벡터 데이터베이스인 <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite를</a> 소개하게 되어 기쁘게 생각합니다. 인기 있는 오픈 소스 <a href="https://milvus.io/intro">Milvus</a> 벡터 데이터베이스를 기반으로 하는 Milvus Lite는 분산 시스템에서 높은 확장성을 위해 설계된 요소를 제거하면서 벡터 인덱싱과 쿼리 구문 분석을 위한 핵심 구성 요소를 재사용합니다. 이러한 설계 덕분에 작고 효율적인 솔루션은 노트북, Jupyter 노트북, 모바일 또는 엣지 장치와 같이 컴퓨팅 리소스가 제한된 환경에 이상적입니다.</p>
 <p>Milvus Lite는 LangChain, LlamaIndex와 같은 다양한 AI 개발 스택과 통합되어 서버 설정 없이도 검색 증강 생성(RAG) 파이프라인에서 벡터 저장소로 사용할 수 있습니다. <code translate="no">pip install pymilvus</code> (버전 2.4.3 이상)을 실행하기만 하면 AI 애플리케이션에 Python 라이브러리로 통합할 수 있습니다.</p>
 <p>Milvus Lite는 Milvus API를 공유하므로 클라이언트 측 코드가 소규모 로컬 배포와 수십억 개의 벡터가 있는 Docker 또는 Kubernetes에 배포된 Milvus 서버 모두에서 작동하도록 보장합니다.</p>
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/5bMcZgPgPVxSuoi1M2vn1p?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 <h2 id="Why-We-Built-Milvus-Lite" class="common-anchor-header">Milvus Lite를 구축한 이유<button data-href="#Why-We-Built-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -54,7 +55,7 @@ canonicalUrl: 'https://milvus.io/blog/introducing-milvus-lite.md'
         ></path>
       </svg>
     </button></h2><p>Milvus Lite는 컬렉션 생성, 벡터 삽입, 검색, 삭제 등 Milvus에서 사용할 수 있는 모든 기본 작업을 지원합니다. 곧 하이브리드 검색과 같은 고급 기능도 지원할 예정입니다. Milvus Lite는 효율적인 검색을 위해 데이터를 메모리에 로드하고 SQLite 파일로 유지합니다.</p>
-<p>Milvus Lite는 <a href="https://github.com/milvus-io/pymilvus">Milvus의 Python SDK에</a> 포함되어 있으며 간단한 <code translate="no">pip install pymilvus</code> 을 통해 배포할 수 있습니다. 다음 코드 스니펫은 로컬 파일 이름을 지정한 다음 새 컬렉션을 생성하여 Milvus Lite로 벡터 데이터베이스를 설정하는 방법을 보여줍니다. Milvus API에 익숙한 분들을 위해, <code translate="no">uri</code> 이 네트워크 엔드포인트 대신 로컬 파일 이름을 참조한다는 점(예: Milvus 서버의 경우 <code translate="no">&quot;http://localhost:19530&quot;</code> 대신 <code translate="no">&quot;milvus_demo.db&quot;</code> )만 다를 뿐입니다. 다른 모든 기능은 동일하게 유지됩니다. Milvus Lite는 아래와 같이 동적 또는 명시적으로 정의된 스키마를 사용하여 원시 텍스트 및 기타 레이블을 메타데이터로 저장하는 기능도 지원합니다.</p>
+<p>Milvus Lite는 <a href="https://github.com/milvus-io/pymilvus">Milvus의 Python SDK에</a> 포함되어 있으며 간단한 <code translate="no">pip install pymilvus</code> 을 통해 배포할 수 있습니다. 다음 코드 스니펫은 로컬 파일 이름을 지정한 다음 새 컬렉션을 생성하여 Milvus Lite로 벡터 데이터베이스를 설정하는 방법을 보여줍니다. Milvus API에 익숙한 분들을 위해 유일한 차이점은 <code translate="no">uri</code> 이 네트워크 엔드포인트 대신 로컬 파일 이름(예: Milvus 서버의 경우 <code translate="no">&quot;http://localhost:19530&quot;</code> 대신 <code translate="no">&quot;milvus_demo.db&quot;</code> )을 참조한다는 점입니다. 다른 모든 기능은 동일하게 유지됩니다. Milvus Lite는 아래와 같이 동적 또는 명시적으로 정의된 스키마를 사용하여 원시 텍스트 및 기타 레이블을 메타데이터로 저장하는 기능도 지원합니다.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 client = MilvusClient(<span class="hljs-string">&quot;milvus_demo.db&quot;</span>)

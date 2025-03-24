@@ -20,6 +20,7 @@ canonicalUrl: 'https://milvus.io/blog/introducing-milvus-lite.md'
 <p><a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> 是一种轻量级向量数据库，可在 Python 应用程序中本地运行。Milvus Lite 基于流行的开源<a href="https://milvus.io/intro">Milvus</a>向量数据库，重用了向量索引和查询解析的核心组件，同时删除了为分布式系统中高可扩展性而设计的元素。这种设计使得紧凑高效的解决方案非常适合计算资源有限的环境，如笔记本电脑、Jupyter 笔记本以及移动或边缘设备。</p>
 <p>Milvus Lite 与 LangChain 和 LlamaIndex 等各种人工智能开发堆栈集成，使其能够在检索增强生成（RAG）管道中用作向量存储，而无需进行服务器设置。只需运行<code translate="no">pip install pymilvus</code> （2.4.3 或更高版本），即可将其作为 Python 库纳入人工智能应用程序。</p>
 <p>Milvus Lite 共享 Milvus API，确保您的客户端代码既适用于小规模本地部署，也适用于部署在拥有数十亿向量的 Docker 或 Kubernetes 上的 Milvus 服务器。</p>
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/5bMcZgPgPVxSuoi1M2vn1p?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 <h2 id="Why-We-Built-Milvus-Lite" class="common-anchor-header">我们为什么构建 Milvus Lite<button data-href="#Why-We-Built-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -37,7 +38,7 @@ canonicalUrl: 'https://milvus.io/blog/introducing-milvus-lite.md'
       </svg>
     </button></h2><p>许多人工智能应用需要对非结构化数据（包括文本、图像、语音和视频）进行向量相似性搜索，用于聊天机器人和购物助手等应用。向量数据库是为存储和搜索向量 Embeddings 而精心设计的，是人工智能开发堆栈的重要组成部分，尤其适用于生成式人工智能用例，如<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">检索增强生成（RAG）</a>。</p>
 <p>尽管有众多的向量搜索解决方案，但仍缺少一种易于上手、同时适用于大规模生产部署的选择。作为 Milvus 的创建者，我们设计了 Milvus Lite，以帮助人工智能开发人员更快地构建应用程序，同时确保在各种部署选项中获得一致的体验，包括 Kubernetes、Docker 和托管云服务上的 Milvus。</p>
-<p>Milvus Lite 是我们在 Milvus 生态系统内提供的产品套件的重要补充。它为开发人员提供了一个多功能工具，支持他们开发过程中的每个阶段。从原型开发到生产环境，从边缘计算到大规模部署，Milvus 现在是唯一一款能覆盖任何规模的用例和所有开发阶段的向量数据库。</p>
+<p>Milvus Lite 是我们在 Milvus 生态系统中提供的产品套件的重要补充。它为开发人员提供了一个多功能工具，支持他们开发过程中的每个阶段。从原型开发到生产环境，从边缘计算到大规模部署，Milvus 现在是唯一一款能覆盖任何规模的用例和所有开发阶段的向量数据库。</p>
 <h2 id="How-Milvus-Lite-Works" class="common-anchor-header">Milvus Lite 如何工作<button data-href="#How-Milvus-Lite-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

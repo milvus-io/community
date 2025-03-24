@@ -17,9 +17,10 @@ canonicalUrl: 'https://milvus.io/blog/introducing-milvus-lite.md'
     <span></span>
   </span>
 </p>
-<p>Pythonアプリケーション内でローカルに動作する軽量なベクトルデータベース、<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteを</a>ご紹介いたします。オープンソースの<a href="https://milvus.io/intro">Milvus</a>ベクトルデータベースをベースにしたMilvus Liteは、ベクトルインデックス作成とクエリ解析のコアコンポーネントを再利用する一方で、分散システムにおける高いスケーラビリティを実現するために設計された要素を削除しています。この設計により、ラップトップ、Jupyter Notebooks、モバイルデバイスやエッジデバイスなど、コンピューティングリソースが限られた環境に理想的なコンパクトで効率的なソリューションを実現します。</p>
-<p>Milvus Liteは、LangChainやLlamaIndexのような様々なAI開発スタックと統合されており、サーバーをセットアップすることなく、RAG（Retrieval Augmented Generation）パイプラインのベクターストアとして使用することができます。PythonライブラリとしてAIアプリケーションに組み込むには、<code translate="no">pip install pymilvus</code> （バージョン2.4.3以上）を実行するだけです。</p>
-<p>Milvus LiteはMilvus APIを共有し、小規模なローカルデプロイメントと、数十億のベクターを持つDockerやKubernetes上にデプロイされたMilvusサーバーの両方でクライアントサイドコードが動作することを保証します。</p>
+<p>Pythonアプリケーション内でローカルに動作する軽量ベクトルデータベース、<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteを</a>ご紹介いたします。オープンソースの<a href="https://milvus.io/intro">Milvus</a>ベクトルデータベースをベースにしたMilvus Liteは、ベクトルインデックス作成とクエリ解析のコアコンポーネントを再利用する一方で、分散システムにおける高いスケーラビリティを実現するために設計された要素を削除しています。この設計により、ラップトップ、Jupyter Notebooks、モバイルデバイスやエッジデバイスなど、コンピューティングリソースが限られた環境に理想的なコンパクトで効率的なソリューションを実現します。</p>
+<p>Milvus Liteは、LangChainやLlamaIndexのような様々なAI開発スタックと統合されており、サーバーのセットアップなしでRAG（Retrieval Augmented Generation）パイプラインのベクターストアとして使用することができます。PythonライブラリとしてAIアプリケーションに組み込むには、<code translate="no">pip install pymilvus</code> （バージョン2.4.3以上）を実行するだけです。</p>
+<p>Milvus LiteはMilvus APIを共有するため、小規模なローカルデプロイメントでも、数十億のベクターを持つDockerやKubernetes上にデプロイされたMilvusサーバーでも、クライアントサイドのコードが動作することを保証します。</p>
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/5bMcZgPgPVxSuoi1M2vn1p?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 <h2 id="Why-We-Built-Milvus-Lite" class="common-anchor-header">Milvus Liteを構築した理由<button data-href="#Why-We-Built-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

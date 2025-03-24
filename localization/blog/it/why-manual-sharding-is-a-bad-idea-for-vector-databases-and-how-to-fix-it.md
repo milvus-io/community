@@ -17,7 +17,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>"<em>Inizialmente abbiamo costruito la nostra ricerca semantica su pgvector invece che su Milvus perché tutti i nostri dati relazionali erano già in PostgreSQL",</em> ricorda Alex, CTO di una startup SaaS di AI aziendale. <em>"Ma non appena abbiamo raggiunto l'idoneità del prodotto al mercato, la nostra crescita ha incontrato seri ostacoli dal punto di vista ingegneristico. È diventato subito chiaro che pgvector non era stato progettato per la scalabilità. Compiti semplici come l'aggiornamento dello schema su più shard si sono trasformati in processi noiosi e soggetti a errori, che hanno consumato giorni di lavoro per gli ingegneri. Quando abbiamo raggiunto i 100 milioni di embedding vettoriali, la latenza delle query è schizzata a oltre un secondo, ben oltre quanto tollerato dai nostri clienti. Dopo il passaggio a Milvus, lo sharding manuale è sembrato un ritorno all'età della pietra. Non è divertente destreggiarsi tra i server shard come se fossero fragili manufatti. Nessuna azienda dovrebbe sopportarlo".</em></p>
+<p>"<em>Inizialmente abbiamo costruito la nostra ricerca semantica su pgvector invece che su Milvus perché tutti i nostri dati relazionali erano già in PostgreSQL",</em> ricorda Alex, CTO di una startup SaaS di AI aziendale. <em>"Ma non appena abbiamo raggiunto l'idoneità del prodotto al mercato, la nostra crescita ha incontrato seri ostacoli dal punto di vista ingegneristico. È diventato subito chiaro che pgvector non era stato progettato per la scalabilità. Compiti semplici come l'aggiornamento dello schema su più shard si sono trasformati in processi noiosi e soggetti a errori, che hanno consumato giorni di lavoro per gli ingegneri. Quando abbiamo raggiunto i 100 milioni di incorporazioni vettoriali, la latenza delle query è schizzata a oltre un secondo, ben oltre quanto tollerato dai nostri clienti. Dopo il passaggio a Milvus, lo sharding manuale è sembrato un ritorno all'età della pietra. Non è divertente destreggiarsi tra i server shard come se fossero fragili manufatti. Nessuna azienda dovrebbe sopportarlo".</em></p>
 <h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">Una sfida comune per le aziende di intelligenza artificiale<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -69,8 +69,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>&quot;<em>Inizialmente avevamo stimato che l'implementazione dello sharding manuale per il nostro database pgvector avrebbe richiesto a due ingegneri circa sei mesi&quot;,</em> ricorda Alex, <em>&quot;</em> ma <em> non avevamo capito che quegli ingegneri sarebbero stati</em> <strong><em>sempre</em></strong> <em>necessari. Ogni modifica dello schema, operazione di ribilanciamento dei dati o decisione di scalare richiedeva le loro competenze specialistiche. In sostanza, ci stavamo impegnando a creare un 'team di sharding' permanente solo per mantenere in funzione il nostro database&quot;.</em></p>
-<p>Le sfide del mondo reale con i database vettoriali shardati includono:</p>
+    </button></h2><p>&quot;<em>Inizialmente avevamo stimato che l'implementazione dello sharding manuale per il nostro database pgvector avrebbe richiesto a due ingegneri circa sei mesi&quot;,</em> ricorda Alex, <em>&quot;</em> ma <em> non avevamo capito che quegli ingegneri sarebbero stati</em> <strong><em>sempre</em></strong> <em>necessari. Ogni modifica dello schema, operazione di riequilibrio dei dati o decisione di scalare richiedeva le loro competenze specialistiche. In sostanza, ci stavamo impegnando a creare un 'team di sharding' permanente solo per mantenere in funzione il nostro database&quot;.</em></p>
+<p>Le sfide del mondo reale con i database vettoriali shardati comprendono:</p>
 <ol>
 <li><p><strong>Squilibrio nella distribuzione dei dati (hotspot)</strong>: Nei casi di utilizzo multi-tenant, la distribuzione dei dati può variare da centinaia a miliardi di vettori per tenant. Questo squilibrio crea hotspot in cui alcuni shard diventano sovraccarichi mentre altri rimangono inattivi.</p></li>
 <li><p><strong>Il mal di testa da resharding</strong>: Scegliere il numero giusto di shard è quasi impossibile. Un numero troppo basso porta a frequenti e costose operazioni di resharding. Un numero eccessivo crea un inutile overhead di metadati, aumentando la complessità e riducendo le prestazioni.</p></li>
@@ -93,16 +93,16 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Molti sviluppatori, dalle startup alle aziende, hanno riconosciuto il notevole sovraccarico associato allo sharding manuale dei database. Milvus adotta un approccio fondamentalmente diverso, consentendo di scalare senza problemi da milioni a miliardi di vettori senza alcuna complessità.</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">Scalare in modo automatico senza le spese di ingegneria</h3><p>Milvus sfrutta Kubernetes e un'architettura storage-compute disaggregata per supportare un'espansione senza soluzione di continuità. Questo design consente:</p>
+    </button></h2><p>Molti sviluppatori, dalle startup alle aziende, hanno riconosciuto il notevole sovraccarico associato allo sharding manuale dei database. Milvus adotta un approccio fondamentalmente diverso, consentendo di scalare senza problemi da milioni a miliardi di vettori, senza alcuna complessità.</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">Scalabilità automatizzata senza debiti tecnici</h3><p>Milvus sfrutta Kubernetes e un'architettura storage-compute disaggregata per supportare un'espansione continua. Questo design consente:</p>
 <ul>
 <li><p>scalare rapidamente in risposta alle mutevoli esigenze</p></li>
 <li><p>Bilanciamento automatico del carico su tutti i nodi disponibili</p></li>
-<li><p>Allocazione indipendente delle risorse, che consente di regolare separatamente calcolo, memoria e archiviazione.</p></li>
+<li><p>allocazione indipendente delle risorse, che consente di regolare separatamente calcolo, memoria e storage</p></li>
 <li><p>Prestazioni elevate e costanti, anche durante i periodi di rapida crescita.</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Come Milvus scala: La base tecnica</h3><p>Milvus raggiunge le sue capacità di scalabilità attraverso due innovazioni chiave:</p>
-<p><strong>Architettura basata sui segmenti:</strong> Milvus organizza i dati in &quot;segmenti&quot;, le più piccole unità di gestione dei dati:</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">Architettura distribuita progettata da zero</h3><p>Milvus raggiunge le sue capacità di scalabilità grazie a due innovazioni chiave:</p>
+<p><strong>Architettura basata su segmenti:</strong> Milvus organizza i dati in &quot;segmenti&quot;, le più piccole unità di gestione dei dati:</p>
 <ul>
 <li><p>I segmenti in crescita risiedono sugli StreamNodes, ottimizzando la freschezza dei dati per le interrogazioni in tempo reale.</p></li>
 <li><p>I segmenti chiusi sono gestiti dai QueryNodes, che utilizzano potenti indici per accelerare la ricerca.</p></li>

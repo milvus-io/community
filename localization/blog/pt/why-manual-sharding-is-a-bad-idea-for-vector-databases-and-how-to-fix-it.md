@@ -1,8 +1,8 @@
 ---
 id: why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 title: >-
-  Por que a fragmentação manual é uma má ideia para o banco de dados vetorial e
-  como corrigi-la
+  Porque é que a fragmentação manual é uma má ideia para a base de dados de
+  vectores e como corrigi-la
 author: James Luan
 date: 2025-03-18T00:00:00.000Z
 desc: >-
@@ -94,14 +94,14 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>Muitos desenvolvedores - de startups a empresas - reconheceram a sobrecarga significativa associada à fragmentação manual do banco de dados. O Milvus adota uma abordagem fundamentalmente diferente, permitindo um escalonamento contínuo de milhões a bilhões de vetores sem a complexidade.</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">Escalonamento automatizado sem a taxa de engenharia</h3><p>O Milvus aproveita o Kubernetes e uma arquitetura desagregada de armazenamento e computação para oferecer suporte à expansão contínua. Este design permite:</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">Escalonamento automatizado sem a dívida técnica</h3><p>O Milvus aproveita o Kubernetes e uma arquitetura desagregada de armazenamento e computação para oferecer suporte à expansão contínua. Esse design permite:</p>
 <ul>
-<li><p>Escalonamento rápido em resposta a mudanças nas demandas</p></li>
+<li><p>Escalonamento rápido em resposta às mudanças nas demandas</p></li>
 <li><p>Balanceamento automático de carga em todos os nós disponíveis</p></li>
 <li><p>Alocação independente de recursos, permitindo-lhe ajustar a computação, a memória e o armazenamento separadamente</p></li>
 <li><p>Alto desempenho consistente, mesmo durante períodos de crescimento rápido</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Como o Milvus é dimensionado: A base técnica</h3><p>Milvus alcança suas capacidades de escalonamento através de duas inovações chave:</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">Arquitetura distribuída concebida desde o início</h3><p>O Milvus alcança as suas capacidades de escalonamento através de duas inovações chave:</p>
 <p><strong>Arquitetura baseada em segmentos:</strong> No seu núcleo, Milvus organiza os dados em &quot;segmentos&quot; - as unidades mais pequenas de gestão de dados:</p>
 <ul>
 <li><p>Segmentos crescentes residem em StreamNodes, otimizando a atualização de dados para consultas em tempo real</p></li>

@@ -19,7 +19,8 @@ canonicalUrl: 'https://milvus.io/blog/introducing-milvus-lite.md'
 </p>
 <p>我們很高興推出<a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>，這是一個輕量級的向量資料庫，可在您的 Python 應用程式中本機執行。Milvus Lite 以廣受歡迎的開放原始碼<a href="https://milvus.io/intro">Milvus</a>向量資料庫為基礎，重複使用向量索引和查詢解析的核心元件，同時移除專為分散式系統的高擴充性所設計的元件。這樣的設計讓精簡高效的解決方案成為運算資源有限的環境的理想選擇，例如筆記型電腦、Jupyter Notebook、行動裝置或邊緣裝置。</p>
 <p>Milvus Lite 可與 LangChain 和 LlamaIndex 等多種 AI 開發堆疊整合，使其能在無需伺服器設定的情況下，在 Retrieval Augmented Generation (RAG) pipelines 中作為向量儲存使用。只需執行<code translate="no">pip install pymilvus</code> (2.4.3 或以上版本)，即可將其作為 Python 函式庫納入您的 AI 應用程式。</p>
-<p>Milvus Lite 共用 Milvus API，確保您的用戶端程式碼可同時適用於小規模的本機部署，以及部署在 Docker 或 Kubernetes 上、擁有數以億計向量的 Milvus 伺服器。</p>
+<p>Milvus Lite 共用 Milvus API，可確保您的用戶端程式碼能同時適用於小規模的本機部署，以及部署在 Docker 或 Kubernetes 上、擁有數以億計向量的 Milvus 伺服器。</p>
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/5bMcZgPgPVxSuoi1M2vn1p?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 <h2 id="Why-We-Built-Milvus-Lite" class="common-anchor-header">為何我們要建立 Milvus Lite<button data-href="#Why-We-Built-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

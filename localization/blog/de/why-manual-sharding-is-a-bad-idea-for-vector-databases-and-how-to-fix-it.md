@@ -93,15 +93,15 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Viele Entwickler - von Startups bis hin zu Unternehmen - haben den erheblichen Aufwand erkannt, der mit dem manuellen Sharding von Datenbanken verbunden ist. Milvus verfolgt einen grundlegend anderen Ansatz und ermöglicht eine nahtlose Skalierung von Millionen bis Milliarden von Vektoren, ohne die Komplexität.</p>
-<h3 id="Automated-Scaling-Without-the-Engineering-Tax" class="common-anchor-header">Automatisierte Skalierung ohne Engineering-Aufwand</h3><p>Milvus nutzt Kubernetes und eine disaggregierte Storage-Compute-Architektur zur Unterstützung einer nahtlosen Erweiterung. Dieses Design ermöglicht:</p>
+    </button></h2><p>Viele Entwickler - von Startups bis hin zu Unternehmen - haben den erheblichen Aufwand erkannt, der mit dem manuellen Sharding von Datenbanken verbunden ist. Milvus verfolgt einen grundlegend anderen Ansatz und ermöglicht eine nahtlose Skalierung von Millionen bis Milliarden von Vektoren ohne die damit verbundene Komplexität.</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">Automatisierte Skalierung ohne Tech Debt</h3><p>Milvus nutzt Kubernetes und eine disaggregierte Storage-Compute-Architektur zur Unterstützung einer nahtlosen Erweiterung. Dieses Design ermöglicht:</p>
 <ul>
 <li><p>Schnelle Skalierung als Reaktion auf wechselnde Anforderungen</p></li>
 <li><p>Automatischer Lastausgleich über alle verfügbaren Knoten</p></li>
-<li><p>Unabhängige Ressourcenzuweisung, sodass Sie Rechenleistung, Arbeitsspeicher und Speicher separat anpassen können</p></li>
+<li><p>Unabhängige Ressourcenzuweisung, so dass Sie Rechenleistung, Arbeitsspeicher und Speicher separat anpassen können</p></li>
 <li><p>Gleichbleibend hohe Leistung, auch in Phasen schnellen Wachstums</p></li>
 </ul>
-<h3 id="How-Milvus-Scales-The-Technical-Foundation" class="common-anchor-header">Wie Milvus skaliert: Die technische Grundlage</h3><p>Milvus erreicht seine Skalierungsfähigkeiten durch zwei Schlüsselinnovationen:</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">Verteilte Architektur von Grund auf konzipiert</h3><p>Milvus erreicht seine Skalierungsfähigkeiten durch zwei wichtige Innovationen:</p>
 <p><strong>Segment-basierte Architektur:</strong> Im Kern organisiert Milvus die Daten in &quot;Segmenten&quot; - den kleinsten Einheiten der Datenverwaltung:</p>
 <ul>
 <li><p>Wachsende Segmente befinden sich auf StreamNodes, wodurch die Datenfrische für Echtzeitabfragen optimiert wird.</p></li>
@@ -143,6 +143,6 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>"<em>Wenn die Skalierbarkeit in die Datenbank selbst eingebaut ist, verschwinden all diese Kopfschmerzen einfach",</em> sagt Alex über den Wechsel seines Teams zu Milvus. <em>"Meine Ingenieure sind wieder damit beschäftigt, Funktionen zu entwickeln, die die Kunden lieben, anstatt sich um Datenbank-Splitter zu kümmern."</em></p>
+    </button></h2><p>"<em>Wenn die Skalierbarkeit in die Datenbank selbst eingebaut ist, verschwinden all diese Kopfschmerzen einfach",</em> sagt Alex über den Wechsel seines Teams zu Milvus. <em>"Meine Ingenieure sind wieder damit beschäftigt, Funktionen zu entwickeln, die die Kunden lieben, anstatt sich um Datenbank-Scherben zu kümmern."</em></p>
 <p>Wenn Sie mit der technischen Belastung durch manuelles Sharding, mit Leistungsengpässen bei der Skalierung oder mit der entmutigenden Aussicht auf Datenbankmigrationen zu kämpfen haben, ist es an der Zeit, Ihren Ansatz zu überdenken. Besuchen Sie unsere <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">Dokumentseite</a>, um mehr über die Milvus-Architektur zu erfahren, oder erleben Sie mühelose Skalierbarkeit aus erster Hand mit vollständig verwaltetem Milvus unter <a href="https://zilliz.com/cloud">zilliz.com/cloud</a>.</p>
 <p>Mit der richtigen Vektordatenbank als Grundlage sind Ihrer Innovation keine Grenzen gesetzt.</p>
