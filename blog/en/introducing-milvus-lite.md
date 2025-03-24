@@ -18,6 +18,8 @@ Milvus Lite integrates with various AI development stacks like LangChain and Lla
 
 Milvus Lite shares the Milvus API, ensuring that your client-side code works for both small-scale local deployments and Milvus servers deployed on Docker or Kubernetes with billions of vectors.
 
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/5bMcZgPgPVxSuoi1M2vn1p?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
 ## Why We Built Milvus Lite
 
 Many AI applications require vector similarity search for unstructured data, including text, images, voices, and videos, for applications such as chatbots and shopping assistants. Vector databases are crafted for storing and searching vector embeddings and are a crucial part of the AI development stack, particularly for generative AI use cases like [Retrieval Augmented Generation (RAG)](https://zilliz.com/learn/Retrieval-Augmented-Generation).
