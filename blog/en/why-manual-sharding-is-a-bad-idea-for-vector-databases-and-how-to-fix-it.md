@@ -4,7 +4,7 @@ title: Why Manual Sharding is a Bad Idea for Vector Database And How to Fix It
 author: James Luan
 date: 2025-03-18
 desc: Discover why manual vector database sharding creates bottlenecks and how Milvus's automated scaling eliminates engineering overhead for seamless growth.
-cover: assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+cover: assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding
 recommend: true
