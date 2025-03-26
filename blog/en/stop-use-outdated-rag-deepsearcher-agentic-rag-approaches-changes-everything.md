@@ -4,7 +4,7 @@ title: >
  Stop Using Outdated RAG: DeepSearcher's Agentic RAG Approach Changes Everything
 author: Cheney Zhang
 date: 2025-03-23
-cover: assets.zilliz.com/introducing_Milvus_Lite_76ed4baf75.jpeg
+cover: assets.zilliz.com/Stop_Using_Outdated_RAG_Deep_Searcher_s_Agentic_RAG_Approach_Changes_Everything_7e09dc7057.png
 tag: Engineering
 recommend: true
 canonicalUrl: https://milvus.io/blog/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
