@@ -10,6 +10,7 @@ tag: Engineering
 tags: DeepSeek V3-0324, DeepSeek V3, Milvus, RAG
 recommend: true
 canonicalUrl: https://milvus.io/blog/deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md
+---
 
 DeepSeek quietly dropped a bombshell last night. Their latest release,[ DeepSeek v3-0324](https://huggingface.co/deepseek-ai/DeepSeek-V3-0324), was downplayed in the official announcement as just a **"minor upgrade"** with no API changes. But our extensive testing at [Zilliz](https://zilliz.com/) has revealed something more significant: this update represents a quantum leap in performance, particularly in logic reasoning, programming, and mathematical problem-solving.
 
