@@ -9,7 +9,8 @@ desc: >-
   O DeepSeek v3-0324 é treinado com parâmetros maiores, tem uma janela de
   contexto mais longa e recursos aprimorados de Raciocínio, Codificação e
   Matemática.
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
@@ -105,7 +106,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Embedding dimension: <span class="hljs-subst">{embedding_dim}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;First 10 values: <span class="hljs-subst">{test_embedding[:<span class="hljs-number">10</span>]}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Creating-a-Milvus-Collection" class="common-anchor-header">Criando uma coleção do Milvus</h3><p>Agora vamos configurar a nossa base de dados de vectores utilizando o Milvus:</p>
+<h3 id="Creating-a-Milvus-Collection" class="common-anchor-header">Criando uma coleção Milvus</h3><p>Agora vamos configurar a nossa base de dados de vectores utilizando o Milvus:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 <span class="hljs-comment"># Initialize Milvus client (using Milvus Lite for simplicity)</span>
@@ -282,7 +283,7 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
       </svg>
     </button></h2><p>Nossa descoberta mais surpreendente veio ao comparar o DeepSeek v3-0324 com modelos de raciocínio especializados como o Claude 3.7 Sonnet e o GPT-4 Turbo em tarefas de raciocínio matemático, lógico e de código.</p>
 <p>Embora os modelos de raciocínio dedicados sejam excelentes na solução de problemas em várias etapas, eles geralmente fazem isso à custa da eficiência. Nossos benchmarks mostraram que os modelos de raciocínio pesado frequentemente analisam demais prompts simples, gerando 2-3x mais tokens do que o necessário e aumentando significativamente a latência e os custos da API.</p>
-<p>O DeepSeek v3-0324 adota uma abordagem diferente. Ele demonstra consistência lógica comparável, mas com concisão notavelmente maior - muitas vezes produzindo soluções corretas com 40-60% menos tokens. Essa eficiência não vem às custas da precisão; em nossos testes de geração de código, as soluções do DeepSeek corresponderam ou excederam a funcionalidade das soluções dos concorrentes focados em raciocínio.</p>
+<p>O DeepSeek v3-0324 adota uma abordagem diferente. Ele demonstra uma consistência lógica comparável, mas com uma concisão notavelmente maior - muitas vezes produzindo soluções corretas com 40-60% menos tokens. Essa eficiência não vem às custas da precisão; em nossos testes de geração de código, as soluções do DeepSeek corresponderam ou excederam a funcionalidade das soluções dos concorrentes focados em raciocínio.</p>
 <p>Para os desenvolvedores que equilibram o desempenho com restrições de orçamento, essa vantagem de eficiência se traduz diretamente em custos de API mais baixos e tempos de resposta mais rápidos - fatores cruciais para aplicativos de produção em que a experiência do usuário depende da velocidade percebida.</p>
 <h2 id="The-Future-of-AI-Models-Blurring-the-Reasoning-Divide" class="common-anchor-header">O futuro dos modelos de IA: Desfocando a divisão de raciocínio<button data-href="#The-Future-of-AI-Models-Blurring-the-Reasoning-Divide" class="anchor-icon" translate="no">
       <svg translate="no"

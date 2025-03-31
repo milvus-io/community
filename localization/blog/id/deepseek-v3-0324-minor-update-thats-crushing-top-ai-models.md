@@ -7,7 +7,8 @@ desc: >-
   DeepSeek v3-0324 dilatih dengan parameter yang lebih besar, memiliki jendela
   konteks yang lebih panjang, dan kemampuan Penalaran, Pengkodean, dan
   Matematika yang lebih baik.
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true

@@ -9,7 +9,8 @@ desc: >-
   DeepSeek v3-0324 est entraîné avec des paramètres plus importants, dispose
   d'une fenêtre contextuelle plus longue et de capacités de raisonnement, de
   codage et de mathématiques améliorées.
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
@@ -43,7 +44,7 @@ canonicalUrl: >-
 <p>Mais les chiffres bruts ne disent pas tout. Ce qui est vraiment impressionnant, c'est la façon dont DeepSeek a réussi à améliorer simultanément la capacité de raisonnement et l'efficacité de la génération, ce qui implique généralement des compromis en matière d'ingénierie.</p>
 <h3 id="The-Secret-Sauce-Architectural-Innovation" class="common-anchor-header">La sauce secrète : Innovation architecturale</h3><p>Sous le capot, DeepSeek v3-0324 conserve son architecture <a href="https://arxiv.org/abs/2502.07864">Multi-head Latent Attention (MLA </a>), un mécanisme efficace qui compresse les caches Key-Value (KV) en utilisant des vecteurs latents pour réduire l'utilisation de la mémoire et la charge de calcul pendant l'inférence. En outre, elle remplace les <a href="https://zilliz.com/glossary/feedforward-neural-networks-(fnn)">réseaux Feed-Forward (FFN)</a> traditionnels par des couches de mélange d'experts<a href="https://zilliz.com/learn/what-is-mixture-of-experts">(MoE)</a>, ce qui optimise l'efficacité du calcul en activant dynamiquement les experts les plus performants pour chaque jeton.</p>
 <p>Cependant, l'amélioration la plus intéressante est la <strong>prédiction multi-token (MTP</strong> ), qui permet à chaque token de prédire simultanément plusieurs tokens futurs. Cela permet de surmonter un goulot d'étranglement important dans les modèles autorégressifs traditionnels, en améliorant à la fois la précision et la vitesse d'inférence.</p>
-<p>Ensemble, ces innovations créent un modèle qui ne se contente pas de s'adapter - il s'adapte intelligemment, mettant les capacités d'IA de niveau professionnel à la portée d'un plus grand nombre d'équipes de développement.</p>
+<p>Ensemble, ces innovations créent un modèle qui ne se contente pas de s'adapter - il s'adapte intelligemment, mettant des capacités d'IA de niveau professionnel à la portée d'un plus grand nombre d'équipes de développement.</p>
 <h2 id="Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="common-anchor-header">Construire un système RAG avec Milvus et DeepSeek v3-0324 en 5 minutes<button data-href="#Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

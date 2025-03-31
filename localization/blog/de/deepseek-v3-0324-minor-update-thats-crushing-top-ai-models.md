@@ -7,7 +7,8 @@ desc: >-
   DeepSeek v3-0324 wird mit größeren Parametern trainiert, hat ein längeres
   Kontextfenster und verbesserte Reasoning-, Kodierungs- und
   Mathematikfunktionen.
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
@@ -254,7 +255,7 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
     <span></span>
   </span>
 </p>
-<p>Der Inhalt ist zwar optisch ansprechend, stützt sich aber stark auf allgemeine Beschreibungen und lässt viele der wichtigsten technischen Merkmale von Milvus außer Acht.</p>
+<p>Sie ist zwar optisch ansprechend, aber der Inhalt stützt sich stark auf allgemeine Beschreibungen und lässt viele der wichtigsten technischen Merkmale von Milvus vermissen.</p>
 <h3 id="Website-Built-with-Code-Generated-by-the-RAG-Enhanced-Version" class="common-anchor-header">Die Website wurde mit dem Code der RAG-Erweiterung erstellt</h3><p>Als wir Milvus als Wissensdatenbank integriert haben, waren die Ergebnisse völlig anders:</p>
 <p>
   <span class="img-wrapper">

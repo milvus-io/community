@@ -9,7 +9,8 @@ desc: >-
   DeepSeek v3-0324 se entrena con parámetros más amplios, tiene una ventana de
   contexto más larga y funciones mejoradas de razonamiento, codificación y
   matemáticas.
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
@@ -40,7 +41,7 @@ canonicalUrl: >-
 <li><p><strong>Una ventana de contexto masiva:</strong> Con una longitud de contexto mejorada de 128.000 tokens, DeepSeek v3-0324 puede retener y procesar mucha más información en una sola consulta, lo que lo hace ideal para conversaciones largas, análisis de documentos y aplicaciones de inteligencia artificial basadas en la recuperación.</p></li>
 <li><p><strong>Razonamiento, codificación y matemáticas mejorados:</strong> Esta actualización supone un notable aumento de las capacidades lógicas, de programación y matemáticas, lo que lo convierte en un fuerte competidor para la codificación asistida por IA, la investigación científica y la resolución de problemas a nivel empresarial.</p></li>
 </ul>
-<p>Pero las cifras en bruto no lo dicen todo. Lo realmente impresionante es cómo DeepSeek ha logrado mejorar simultáneamente la capacidad de razonamiento y la eficiencia de generación, algo que normalmente implica concesiones en ingeniería.</p>
+<p>Pero las cifras en bruto no lo dicen todo. Lo verdaderamente impresionante es cómo DeepSeek ha logrado mejorar simultáneamente la capacidad de razonamiento y la eficiencia de generación, algo que normalmente implica concesiones en ingeniería.</p>
 <h3 id="The-Secret-Sauce-Architectural-Innovation" class="common-anchor-header">La salsa secreta: Innovación arquitectónica</h3><p>DeepSeek v3-0324 mantiene su arquitectura <a href="https://arxiv.org/abs/2502.07864">de atención latente multicabezal (MLA </a>), un mecanismo eficaz que comprime cachés de valores clave (KV) mediante vectores latentes para reducir el uso de memoria y la carga computacional durante la inferencia. Además, sustituye las tradicionales <a href="https://zilliz.com/glossary/feedforward-neural-networks-(fnn)">redes de alimentación directa (FFN</a> ) por capas de mezcla de expertos<a href="https://zilliz.com/learn/what-is-mixture-of-experts">(MoE</a>), lo que optimiza la eficiencia computacional activando dinámicamente a los expertos con mejor rendimiento para cada token.</p>
 <p>Sin embargo, la mejora más interesante es la <strong>predicción multi-token (MTP),</strong> que permite a cada token predecir simultáneamente varios tokens futuros. De este modo se supera un importante cuello de botella de los modelos autorregresivos tradicionales, mejorando tanto la precisión como la velocidad de inferencia.</p>
 <p>Juntas, estas innovaciones crean un modelo que no sólo se escala bien, sino que se escala de forma inteligente, poniendo las capacidades de IA de nivel profesional al alcance de más equipos de desarrollo.</p>
@@ -299,6 +300,6 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El rendimiento de DeepSeek v3-0324 pone en tela de juicio un supuesto básico en el sector de la IA: que el razonamiento y la eficiencia representan un compromiso inevitable. Esto sugiere que nos estamos acercando a un punto de inflexión en el que la distinción entre modelos razonadores y no razonadores empieza a difuminarse.</p>
+    </button></h2><p>El rendimiento de DeepSeek v3-0324 pone en entredicho un supuesto básico en el sector de la IA: que el razonamiento y la eficiencia representan un compromiso inevitable. Esto sugiere que nos estamos acercando a un punto de inflexión en el que la distinción entre modelos razonadores y no razonadores empieza a difuminarse.</p>
 <p>Los principales proveedores de IA podrían acabar eliminando por completo esta distinción, desarrollando modelos que ajusten dinámicamente la profundidad de su razonamiento en función de la complejidad de la tarea. Este razonamiento adaptativo optimizaría tanto la eficiencia computacional como la calidad de la respuesta, revolucionando potencialmente la forma en que construimos e implantamos las aplicaciones de IA.</p>
 <p>Para los desarrolladores que construyen sistemas RAG, esta evolución promete soluciones más rentables que ofrecen la profundidad de razonamiento de los modelos premium sin su sobrecarga computacional, ampliando lo que es posible con la IA de código abierto.</p>

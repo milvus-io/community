@@ -4,14 +4,15 @@ title: DeepSeek V3-0324：碾壓頂級 AI 模型的「小更新
 author: Lumina Wang
 date: 2025-03-25T00:00:00.000Z
 desc: DeepSeek v3-0324 以更大的參數進行訓練，具有更長的上下文視窗，並增強了推理、編碼和數學能力。
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md
 ---
-<p>DeepSeek 昨晚悄悄地投下了一枚重磅炸彈。他們的最新版本<a href="https://huggingface.co/deepseek-ai/DeepSeek-V3-0324"> DeepSeek v3-0324</a> 在官方公告中被輕描淡寫地稱為只是一個沒有 API 變更的<strong>「小升級」</strong>。但我們在<a href="https://zilliz.com/">Zilliz</a>進行的廣泛測試卻發現了更重要的事情：這次更新代表著性能上的飛躍，尤其是在邏輯推理、程式設計和數學問題解決方面。</p>
+<p>DeepSeek 昨晚悄悄地投下了一枚重磅炸彈。他們的最新版本<a href="https://huggingface.co/deepseek-ai/DeepSeek-V3-0324"> DeepSeek v3-0324</a> 在官方公告中被輕描淡寫地說成只是一個沒有 API 變更的<strong>「小升級」</strong>。但我們在<a href="https://zilliz.com/">Zilliz</a>進行的大量測試卻發現了更重要的事情：這次升級代表著性能的飛躍，尤其是在邏輯推理、程式設計和數學問題解決方面。</p>
 <p>我們所看到的不僅僅是逐步的改進，而是根本性的轉變，讓 DeepSeek v3-0324 躋身語言模型的精英行列。而且它是開放原始碼的。</p>
 <p><strong>對於建置 AI 驅動應用程式的開發人員與企業而言，此版本值得您立即關注。</strong></p>
 <h2 id="Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="common-anchor-header">DeepSeek v3-0324 有哪些新功能？<button data-href="#Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="anchor-icon" translate="no">
@@ -122,7 +123,7 @@ milvus_client.create_collection(
 <p><strong>專業提示</strong>：針對不同的部署情境，您可以調整您的 Milvus 設定：</p>
 <ul>
 <li><p>用於本地開發：使用<code translate="no">uri=&quot;./milvus.db&quot;</code> 與<a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a></p></li>
-<li><p>對於較大的資料集：透過<a href="https://milvus.io/docs/quickstart.md">Docker/Kubernetes</a>設定 Milvus 伺服器並使用<code translate="no">uri=&quot;http://localhost:19530&quot;</code></p></li>
+<li><p>對於較大的資料集：透過<a href="https://milvus.io/docs/quickstart.md">Docker/Kubernetes</a>設定 Milvus 伺服器，並使用<code translate="no">uri=&quot;http://localhost:19530&quot;</code></p></li>
 <li><p>用於生產：使用<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>與您的雲端點和 API 金鑰。</p></li>
 </ul>
 <h3 id="Loading-Data-into-Milvus" class="common-anchor-header">將資料載入 Milvus</h3><p>讓我們把文字資料轉換成嵌入式資料，並儲存在 Milvus 中：</p>
@@ -294,6 +295,6 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DeepSeek v3-0324 的效能挑戰了人工智慧產業的核心假設：推理與效率是無法避免的取捨。這表明我們可能正在接近一個拐點，在這個拐點上，推理與非推理模型之間的區別開始變得模糊。</p>
+    </button></h2><p>DeepSeek v3-0324 的效能挑戰了 AI 產業的核心假設：推理與效率是不可避免的取捨。這表明我們可能正在接近一個拐點，在這個拐點上，推理與非推理模型之間的區別開始變得模糊。</p>
 <p>領先的人工智能供應商最終可能會完全消除這種區別，開發出可根據任務複雜性動態調整推理深度的模型。這樣的自適應性推理將同時優化計算效率與回應品質，有可能徹底改變我們建置與部署 AI 應用程式的方式。</p>
 <p>對於建置 RAG 系統的開發人員而言，此一演進有望提供更具成本效益的解決方案，可提供優質模型的推理深度，卻無需計算開銷 - 擴大了開放原始碼 AI 的可能性。</p>

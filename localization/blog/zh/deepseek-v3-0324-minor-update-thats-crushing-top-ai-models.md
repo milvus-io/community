@@ -4,7 +4,8 @@ title: DeepSeek V3-0324：碾压顶级人工智能模型的 "小更新
 author: Lumina Wang
 date: 2025-03-25T00:00:00.000Z
 desc: DeepSeek v3-0324 使用更大的参数进行训练，具有更长的上下文窗口，并增强了推理、编码和数学能力。
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
@@ -32,7 +33,7 @@ canonicalUrl: >-
     </button></h2><p>DeepSeek v3-0324与其前身<a href="https://zilliz.com/blog/why-deepseek-v3-is-taking-the-ai-world-by-storm">DeepSeek v3</a>相比有三大改进：</p>
 <ul>
 <li><p><strong>更大的模型，更强的能力：</strong>参数数从6710亿增加到6850亿，使模型能够处理更复杂的推理并生成更细微的响应。</p></li>
-<li><p><strong>海量上下文窗口：</strong>凭借升级后的 128K 标记上下文长度，DeepSeek v3-0324 可以在单次查询中保留和处理更多信息，非常适合长篇对话、文档分析和基于检索的人工智能应用。</p></li>
+<li><p><strong>海量上下文窗口：</strong>由于升级了 128K 标记上下文长度，DeepSeek v3-0324 可以在单次查询中保留和处理更多信息，非常适合长篇对话、文档分析和基于检索的人工智能应用。</p></li>
 <li><p><strong>增强的推理、编码和数学能力：</strong>这次更新明显提升了逻辑、编程和数学能力，使其成为人工智能辅助编码、科学研究和企业级问题解决的有力竞争者。</p></li>
 </ul>
 <p>但原始数据并不能说明一切。真正令人印象深刻的是，DeepSeek 是如何同时提高推理能力和生成效率的--这通常涉及工程上的权衡。</p>
@@ -68,7 +69,7 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;DE
 <pre><code translate="no">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>现在，让我们从标记符文件中加载并准备常见问题内容：</p>
+<p>现在，让我们从标记符文件中加载并准备常见问题解答内容：</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 
 <span class="hljs-comment"># Load all markdown files from the FAQ directory</span>
@@ -295,5 +296,5 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
         ></path>
       </svg>
     </button></h2><p>DeepSeek v3-0324的性能挑战了人工智能行业的一个核心假设：推理和效率是不可避免的权衡。这表明我们可能正在接近一个拐点，在这个拐点上，推理模型和非推理模型之间的区别开始变得模糊。</p>
-<p>领先的人工智能供应商最终可能会完全消除这种区别，开发出能根据任务复杂度动态调整推理深度的模型。这种自适应推理将优化计算效率和响应质量，有可能彻底改变我们构建和部署人工智能应用的方式。</p>
-<p>对于构建 RAG 系统的开发人员来说，这种演进有望带来更具成本效益的解决方案，既能提供高级模型的推理深度，又不会造成计算开销--扩大了开源人工智能的可能性。</p>
+<p>领先的人工智能供应商最终可能会完全消除这种区别，开发出能根据任务复杂性动态调整推理深度的模型。这种自适应推理将优化计算效率和响应质量，有可能彻底改变我们构建和部署人工智能应用的方式。</p>
+<p>对于构建 RAG 系统的开发人员来说，这种演变有望带来更具成本效益的解决方案，既能提供高级模型的推理深度，又不会造成计算开销--扩大了开源人工智能的可能性。</p>

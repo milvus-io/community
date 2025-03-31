@@ -6,7 +6,8 @@ date: 2025-03-25T00:00:00.000Z
 desc: >-
   DeepSeek
   v3-0324は、より大きなパラメータで学習され、より長いコンテキストウィンドウを持ち、推論、コーディング、および数学の機能が強化されています。
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
@@ -14,7 +15,7 @@ canonicalUrl: >-
   https://milvus.io/blog/deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md
 ---
 <p>DeepSeekは昨晩、ひっそりと爆弾発言をした。彼らの最新リリースである<a href="https://huggingface.co/deepseek-ai/DeepSeek-V3-0324"> DeepSeek v3-0324は</a>、公式発表ではAPIに変更のない単なる<strong>「マイナー・アップグレード」</strong>であると軽視されていた。このアップデートは、特に論理的推論、プログラミング、数学的問題解決におけるパフォーマンスの飛躍的な向上を意味する。</p>
-<p>このアップデートは、特に論理的推論、プログラミング、数学的問題解決におけるパフォーマンスの飛躍的な向上を意味します。私たちが目にしているのは、単なる漸進的な改善ではなく、DeepSeek v3-0324を言語モデルのエリート層に位置づける根本的な変化です。しかもオープンソースです。</p>
+<p>このアップデートは、特に論理的推論、プログラミング、数学的問題解決におけるパフォーマンスの飛躍的な向上を意味します。しかもオープンソースです。</p>
 <p><strong>このリリースは、AIを搭載したアプリケーションを構築する開発者や企業にとって、早急な注目に値するものです。</strong></p>
 <h2 id="Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="common-anchor-header">DeepSeek v3-0324の新機能とその実力は？<button data-href="#Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -34,11 +35,11 @@ canonicalUrl: >-
     </button></h2><p>DeepSeek v3-0324は、その前身である<a href="https://zilliz.com/blog/why-deepseek-v3-is-taking-the-ai-world-by-storm">DeepSeek v</a>3と比較して、3つの大きな改善を導入しています：</p>
 <ul>
 <li><p><strong>より大規模なモデル、より強力なパワー:</strong>パラメータ数が6710億から6850億に増加し、モデルがより複雑な推論を処理し、より微妙な応答を生成できるようになりました。</p></li>
-<li><p><strong>膨大なコンテキスト・ウィンドウ：</strong>128K トークンのコンテキスト長がアップグレードされた DeepSeek v3-0324 は、1 回のクエリで非常に多くの情報を保持および処理できるため、長文の会話、文書分析、検索ベースの AI アプリケーションに最適です。</p></li>
+<li><p><strong>膨大なコンテキスト・ウィンドウ：</strong>128K トークンのコンテキスト長がアップグレードされた DeepSeek v3-0324 は、1 回のクエリで大幅に多くの情報を保持および処理できるため、長文の会話、文書分析、検索ベースの AI アプリケーションに最適です。</p></li>
 <li><p><strong>推論、コーディング、数学の強化：</strong>今回のアップデートにより、ロジック、プログラミング、数学的能力が顕著に向上し、AIによるコーディング、科学研究、企業レベルの問題解決において強力な候補となる。</p></li>
 </ul>
-<p>しかし、生の数字がすべてを物語っているわけではない。本当に印象的なのは、ディープシークが推論能力と生成効率を同時に高めることに成功したことだ。</p>
-<h3 id="The-Secret-Sauce-Architectural-Innovation" class="common-anchor-header">秘密のソース：アーキテクチャーの革新</h3><p>DeepSeek v3-0324は、推論中のメモリ使用量と計算オーバーヘッドを削減するために、潜在ベクトルを使用してキー・バリュー（KV）キャッシュを圧縮する効率的なメカニズムである<a href="https://arxiv.org/abs/2502.07864">Multi-head Latent Attention（MLA） </a>アーキテクチャを維持しています。さらに、従来の<a href="https://zilliz.com/glossary/feedforward-neural-networks-(fnn)">Feed-Forward Networks（FFN</a>）をMixture of Experts<a href="https://zilliz.com/learn/what-is-mixture-of-experts">（MoE</a>）レイヤーに置き換え、各トークンに対して最適なエキスパートを動的にアクティブにすることで、計算効率を最適化している。</p>
+<p>しかし、生の数字がすべてを物語っているわけではない。真に印象的なのは、ディープシークが推論能力と生成効率を同時に高めることに成功したことである。</p>
+<h3 id="The-Secret-Sauce-Architectural-Innovation" class="common-anchor-header">秘密のソース：アーキテクチャの革新</h3><p>DeepSeek v3-0324は、推論中のメモリ使用量と計算オーバーヘッドを削減するために、潜在ベクトルを使用してキー・バリュー（KV）キャッシュを圧縮する効率的なメカニズムである<a href="https://arxiv.org/abs/2502.07864">Multi-head Latent Attention（MLA） </a>アーキテクチャを維持しています。さらに、従来の<a href="https://zilliz.com/glossary/feedforward-neural-networks-(fnn)">Feed-Forward Networks（FFN</a>）をMixture of Experts<a href="https://zilliz.com/learn/what-is-mixture-of-experts">（MoE</a>）レイヤーに置き換え、各トークンに対して最適なエキスパートを動的にアクティブにすることで、計算効率を最適化している。</p>
 <p>しかし、最もエキサイティングなアップグレードは<strong>マルチトークン予測（MTP）</strong>であり、各トークンが将来の複数のトークンを同時に予測できるようになりました。これは従来の自己回帰モデルにおける重要なボトルネックを克服し、精度と推論速度の両方を向上させる。</p>
 <p>これらの技術革新により、単に拡張性が高いだけでなく、インテリジェントに拡張できるモデルが生まれ、より多くの開発チームがプロ級のAI機能を利用できるようになりました。</p>
 <h2 id="Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="common-anchor-header">MilvusとDeepSeek v3-0324でRAGシステムを5分で構築<button data-href="#Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="anchor-icon" translate="no">
@@ -277,7 +278,7 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DeepSeek v3-0324を、Claude 3.7 SonnetやGPT-4 Turboのような専用の推論モデルと、数学的、論理的、およびコード推論タスクにわたって比較したとき、私たちの最も驚くべき発見がありました。</p>
+    </button></h2><p>DeepSeek v3-0324を、Claude 3.7 SonnetやGPT-4 Turboのような専用の推論モデルと、数学的、論理的、およびコード推論タスクにわたって比較したとき、私たちは最も驚くべき発見をしました。</p>
 <p>専用の推論モデルは、マルチステップの問題解決に優れていますが、多くの場合、効率を犠牲にしています。私たちのベンチマークは、推論を多用するモデルが単純なプロンプトを頻繁に過剰分析し、必要以上に2～3倍のトークンを生成し、レイテンシとAPIコストを大幅に増加させることを示しました。</p>
 <p>DeepSeek v3-0324 は異なるアプローチを採用しています。論理的な一貫性は同等ですが、簡潔性が著しく高く、多くの場合、40～60%少ないトークンで正しいソリューションを生成します。この効率性は、正確さを犠牲にするものではありません。コード生成テストでは、DeepSeek のソリューションは、推論に特化した競合他社のソリューションと同等またはそれ以上の機能を備えていました。</p>
 <p>パフォーマンスと予算制約のバランスを取る開発者にとって、この効率性の優位性は、APIコストの削減と応答時間の短縮に直接つながります。</p>

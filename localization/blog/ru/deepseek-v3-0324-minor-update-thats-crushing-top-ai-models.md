@@ -9,7 +9,8 @@ desc: >-
   DeepSeek v3-0324 обучается с большими параметрами, имеет более длинное
   контекстное окно и расширенные возможности рассуждений, кодирования и
   математики.
-cover: assets.zilliz.com/Deep_Seek_V3_0324_033f6ff001.png
+cover: >-
+  assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
 tags: 'DeepSeek V3-0324, DeepSeek V3, Milvus, RAG'
 recommend: true
