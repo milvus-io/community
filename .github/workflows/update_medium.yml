@@ -1,6 +1,12 @@
 name: Trigger medium publish if new post
 
 on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the workflow'
+        required: false
+        default: 'master'
   push:
     paths:
       - "blog/**"
