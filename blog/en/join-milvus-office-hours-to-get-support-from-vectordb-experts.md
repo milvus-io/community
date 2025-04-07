@@ -12,7 +12,7 @@ canonicalUrl: https://milvus.io/blog/join-milvus-office-hours-to-get-support-fro
 
 Get expert help with your Milvus [vector database](https://zilliz.com/learn/what-is-vector-database) projects. Book a 20-minute one-on-one session to get insights, guidance, and answers to your questions. Whether you’re just getting started or need help with a specific issue, we’re here to help you make the most out of Milvus.
 
-[![](https://assets.zilliz.com/milvus_office_hours_09848e076b.png)](https://meetings.hubspot.com/chloe-williams1/milvus-office-hours)
+[![](https://assets.zilliz.com/milvus_office_hours_09848e076b.png)](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour)
 
 
 ## Why Book a Session?
