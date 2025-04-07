@@ -112,3 +112,4 @@ _"When scalability is built into the database itself, all those headaches just..
 If you're grappling with the engineering burden of manual sharding, performance bottlenecks at scale, or the daunting prospect of database migrations, it's time to rethink your approach. Visit our [docs page](https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable) to learn more about Milvus architecture, or experience effortless scalability firsthand with fully-managed Milvus at [zilliz.com/cloud](https://zilliz.com/cloud).
 
 With the right vector database foundation, your innovation knows no limits.
+
