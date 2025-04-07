@@ -11,14 +11,14 @@ desc: >-
   Milvus élimine les frais généraux d'ingénierie pour une croissance
   transparente.
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>"<em>Au départ, nous avons construit notre recherche sémantique sur pgvector au lieu de Milvus parce que toutes nos données relationnelles étaient déjà dans PostgreSQL",</em> se souvient Alex, directeur technique d'une startup SaaS d'IA d'entreprise. <em>"Mais dès que nous avons atteint l'adéquation produit-marché, notre croissance s'est heurtée à de sérieux obstacles du côté de l'ingénierie. Il est rapidement apparu que pgvector n'était pas conçu pour l'évolutivité. Des tâches simples telles que le déploiement de mises à jour de schémas à travers de multiples shards se sont transformées en processus fastidieux et sujets aux erreurs qui ont consommé des jours d'efforts d'ingénierie. Lorsque nous avons atteint 100 millions d'incorporations vectorielles, la latence des requêtes est passée à plus d'une seconde, ce qui était bien au-delà de ce que nos clients pouvaient tolérer. Après le passage à Milvus, le sharding manuel nous a semblé revenir à l'âge de pierre. Il n'est pas agréable de jongler avec les serveurs de stockage comme s'il s'agissait d'artefacts fragiles. Aucune entreprise ne devrait avoir à subir cela".</em></p>
+<p>"<em>Au départ, nous avons construit notre recherche sémantique sur pgvector au lieu de Milvus parce que toutes nos données relationnelles se trouvaient déjà dans PostgreSQL",</em> se souvient Alex, directeur technique d'une startup SaaS d'IA d'entreprise. <em>"Mais dès que nous avons atteint l'adéquation produit-marché, notre croissance s'est heurtée à de sérieux obstacles du côté de l'ingénierie. Il est rapidement apparu que pgvector n'était pas conçu pour l'évolutivité. Des tâches simples telles que le déploiement de mises à jour de schémas à travers de multiples shards se sont transformées en processus fastidieux et sujets aux erreurs qui ont consommé des jours d'efforts d'ingénierie. Lorsque nous avons atteint 100 millions d'incorporations vectorielles, la latence des requêtes est passée à plus d'une seconde, ce qui était bien au-delà de ce que nos clients pouvaient tolérer. Après avoir migré vers Milvus, le sharding manuel a été considéré comme un retour à l'âge de pierre. Il n'est pas agréable de jongler avec les serveurs de stockage comme s'il s'agissait d'artefacts fragiles. Aucune entreprise ne devrait avoir à subir cela".</em></p>
 <h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">Un défi commun aux entreprises d'IA<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

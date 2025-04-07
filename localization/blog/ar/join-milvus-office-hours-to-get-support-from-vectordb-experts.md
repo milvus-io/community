@@ -14,7 +14,7 @@ canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
 <p>احصل على مساعدة الخبراء في مشاريع <a href="https://zilliz.com/learn/what-is-vector-database">قاعدة بيانات</a> Milvus <a href="https://zilliz.com/learn/what-is-vector-database">vector</a> الخاصة بك. احجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك. سواء كنت قد بدأت للتو أو تحتاج إلى مساعدة في مشكلة معينة، نحن هنا لمساعدتك في تحقيق أقصى استفادة من Milvus.</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
     <span></span>

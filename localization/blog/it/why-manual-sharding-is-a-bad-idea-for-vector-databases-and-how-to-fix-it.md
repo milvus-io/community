@@ -10,7 +10,7 @@ desc: >-
   bottiglia e come lo scaling automatico di Milvus elimina le spese di
   progettazione per una crescita continua.
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true
@@ -53,7 +53,7 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>La scalabilità può essere affrontata in diversi modi. L'approccio più semplice, lo <strong>scaling up</strong>, consiste nel potenziare le risorse di una singola macchina aggiungendo più CPU, memoria o storage per far fronte all'aumento dei volumi di dati. Pur essendo semplice, questo metodo presenta evidenti limitazioni. In un ambiente Kubernetes, ad esempio, i pod di grandi dimensioni sono inefficienti e il fatto di affidarsi a un singolo nodo aumenta il rischio di guasti, portando potenzialmente a tempi di inattività significativi.</p>
 <p>Quando lo Scaling Up non è più praticabile, le aziende ricorrono naturalmente allo <strong>Scaling Out</strong>, distribuendo i dati su più server. A prima vista, lo <strong>sharding</strong> sembra essere una soluzione semplice: dividere un database in database più piccoli e indipendenti per aumentare la capacità e consentire più nodi primari scrivibili.</p>
-<p>Tuttavia, anche se concettualmente semplice, lo sharding diventa rapidamente una sfida complessa nella pratica. La maggior parte delle applicazioni sono inizialmente progettate per funzionare con un unico database unificato. Nel momento in cui un database vettoriale viene suddiviso in più shard, ogni parte dell'applicazione che interagisce con i dati deve essere modificata o interamente riscritta, introducendo un significativo overhead di sviluppo. La progettazione di una strategia di sharding efficace diventa fondamentale, così come l'implementazione della logica di routing per garantire che i dati vengano indirizzati allo shard corretto. La gestione delle transazioni atomiche su più shard spesso richiede la ristrutturazione delle applicazioni per evitare operazioni cross-shard. Inoltre, gli scenari di guasto devono essere gestiti con grazia per evitare interruzioni quando alcuni shard diventano non disponibili.</p>
+<p>Tuttavia, anche se concettualmente semplice, lo sharding diventa rapidamente una sfida complessa nella pratica. La maggior parte delle applicazioni sono inizialmente progettate per funzionare con un unico database unificato. Nel momento in cui un database vettoriale viene suddiviso in più shard, ogni parte dell'applicazione che interagisce con i dati deve essere modificata o interamente riscritta, introducendo un significativo overhead di sviluppo. La progettazione di una strategia di sharding efficace diventa fondamentale, così come l'implementazione della logica di routing per garantire che i dati siano indirizzati allo shard corretto. La gestione delle transazioni atomiche su più shard spesso richiede la ristrutturazione delle applicazioni per evitare operazioni cross-shard. Inoltre, gli scenari di guasto devono essere gestiti con grazia per evitare interruzioni quando alcuni shard diventano non disponibili.</p>
 <h2 id="Why-Manual-Sharding-Becomes-a-Burden" class="common-anchor-header">Perché lo sharding manuale diventa un peso<button data-href="#Why-Manual-Sharding-Becomes-a-Burden" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -69,8 +69,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>&quot;<em>Inizialmente avevamo stimato che l'implementazione dello sharding manuale per il nostro database pgvector avrebbe richiesto a due ingegneri circa sei mesi&quot;,</em> ricorda Alex, <em>&quot;</em> ma <em> non avevamo capito che quegli ingegneri sarebbero stati</em> <strong><em>sempre</em></strong> <em>necessari. Ogni modifica dello schema, operazione di riequilibrio dei dati o decisione di scalare richiedeva le loro competenze specialistiche. In sostanza, ci stavamo impegnando a creare un 'team di sharding' permanente solo per mantenere in funzione il nostro database&quot;.</em></p>
-<p>Le sfide del mondo reale con i database vettoriali shardati comprendono:</p>
+    </button></h2><p>&quot;<em>Inizialmente avevamo stimato che l'implementazione dello sharding manuale per il nostro database pgvector avrebbe richiesto a due ingegneri circa sei mesi&quot;,</em> ricorda Alex, <em>&quot;</em> ma <em> non avevamo capito che quegli ingegneri sarebbero stati</em> <strong><em>sempre</em></strong> <em>necessari. Ogni modifica dello schema, operazione di ribilanciamento dei dati o decisione di scalare richiedeva le loro competenze specialistiche. In sostanza, ci stavamo impegnando a creare un 'team di sharding' permanente solo per mantenere in funzione il nostro database&quot;.</em></p>
+<p>Le sfide del mondo reale con i database vettoriali shardati includono:</p>
 <ol>
 <li><p><strong>Squilibrio nella distribuzione dei dati (hotspot)</strong>: Nei casi di utilizzo multi-tenant, la distribuzione dei dati può variare da centinaia a miliardi di vettori per tenant. Questo squilibrio crea hotspot in cui alcuni shard diventano sovraccarichi mentre altri rimangono inattivi.</p></li>
 <li><p><strong>Il mal di testa da resharding</strong>: Scegliere il numero giusto di shard è quasi impossibile. Un numero troppo basso porta a frequenti e costose operazioni di resharding. Un numero eccessivo crea un inutile overhead di metadati, aumentando la complessità e riducendo le prestazioni.</p></li>
@@ -111,7 +111,7 @@ canonicalUrl: >-
 <p><strong>Routing a due livelli</strong>: A differenza dei database tradizionali, dove ogni shard risiede su una singola macchina, Milvus distribuisce i dati di uno shard in modo dinamico su più nodi:</p>
 <ul>
 <li><p>Ogni shard può memorizzare più di 1 miliardo di punti di dati</p></li>
-<li><p>I segmenti all'interno di ogni shard vengono automaticamente bilanciati tra le macchine</p></li>
+<li><p>I segmenti all'interno di ogni shard sono automaticamente bilanciati tra le macchine</p></li>
 <li><p>Espandere le collezioni è semplice come aumentare il numero di shard</p></li>
 <li><p>L'imminente Milvus 3.0 introdurrà la suddivisione dinamica degli shard, eliminando anche questo minimo passaggio manuale.</p></li>
 </ul>
@@ -143,6 +143,6 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>"<em>Quando la scalabilità è integrata nel database stesso, tutti i problemi scompaiono",</em> afferma Alex, riflettendo sul passaggio del suo team a Milvus. <em>"I miei ingegneri sono tornati a costruire le funzionalità che i clienti amano, invece di badare ai frammenti di database".</em></p>
+    </button></h2><p>"<em>Quando la scalabilità è integrata nel database stesso, tutti i problemi scompaiono",</em> dice Alex, riflettendo sul passaggio del suo team a Milvus. <em>"I miei ingegneri sono tornati a costruire le funzionalità che i clienti amano, invece di badare ai frammenti di database".</em></p>
 <p>Se siete alle prese con l'onere ingegneristico dello sharding manuale, con i colli di bottiglia delle prestazioni su scala o con la scoraggiante prospettiva delle migrazioni di database, è ora di ripensare il vostro approccio. Visitate la nostra <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">pagina dei documenti</a> per saperne di più sull'architettura di Milvus, oppure provate in prima persona la scalabilità senza sforzo con Milvus completamente gestito su <a href="https://zilliz.com/cloud">zilliz.com/cloud</a>.</p>
 <p>Con la giusta base di database vettoriale, la vostra innovazione non conosce limiti.</p>

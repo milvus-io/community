@@ -10,7 +10,7 @@ desc: >-
   bagaimana penskalaan otomatis Milvus menghilangkan biaya teknik untuk
   pertumbuhan yang mulus.
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true
@@ -35,7 +35,7 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>Pengalaman Alex tidak hanya dialami oleh pengguna pgvector. Apakah Anda menggunakan pgvector, Qdrant, Weaviate, atau basis data vektor lainnya yang bergantung pada pemecahan manual, tantangan penskalaan tetap sama. Apa yang dimulai sebagai solusi yang mudah dikelola dengan cepat berubah menjadi utang teknologi seiring dengan bertambahnya volume data.</p>
 <p>Bagi perusahaan rintisan saat ini, <strong>skalabilitas bukanlah pilihan, melainkan sangat penting</strong>. Hal ini terutama berlaku untuk produk AI yang didukung oleh Large Language Models (LLM) dan basis data vektor, di mana lompatan dari adopsi awal ke pertumbuhan eksponensial dapat terjadi dalam semalam. Mencapai kesesuaian produk dengan pasar sering kali memicu lonjakan pertumbuhan pengguna, arus masuk data yang luar biasa, dan permintaan kueri yang meroket. Namun jika infrastruktur database tidak dapat mengimbanginya, permintaan yang lambat dan inefisiensi operasional dapat menghambat momentum dan menghalangi kesuksesan bisnis.</p>
-<p>Keputusan teknis jangka pendek dapat menyebabkan kemacetan jangka panjang, memaksa tim teknisi untuk terus-menerus mengatasi masalah kinerja yang mendesak, kerusakan basis data, dan kegagalan sistem alih-alih berfokus pada inovasi. Skenario terburuk? Arsitektur ulang basis data yang mahal dan memakan waktu - justru ketika perusahaan harus melakukan penskalaan.</p>
+<p>Keputusan teknis jangka pendek dapat menyebabkan kemacetan jangka panjang, memaksa tim teknisi untuk terus-menerus mengatasi masalah kinerja yang mendesak, kerusakan basis data, dan kegagalan sistem alih-alih berfokus pada inovasi. Skenario terburuk? Arsitektur ulang basis data yang mahal dan memakan waktu - tepat ketika perusahaan harus melakukan penskalaan.</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">Bukankah Sharding adalah Solusi Alami untuk Skalabilitas?<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

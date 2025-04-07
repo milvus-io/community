@@ -1,7 +1,7 @@
 ---
 id: join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 title: >-
-  Partecipate agli orari d'ufficio di Milvus per ottenere il supporto degli
+  Partecipate agli orari d'ufficio di Milvus per ricevere assistenza dagli
   esperti di Vector DB!
 author: Emily Kurze
 date: 2024-11-08T00:00:00.000Z
@@ -16,7 +16,7 @@ canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
 <p>Chiedete l'aiuto di un esperto per i vostri progetti di <a href="https://zilliz.com/learn/what-is-vector-database">database vettoriali</a> Milvus. Prenotate una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande. Che siate agli inizi o abbiate bisogno di aiuto per un problema specifico, siamo qui per aiutarvi a sfruttare al meglio Milvus.</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
     <span></span>

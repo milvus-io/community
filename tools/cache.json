@@ -118,7 +118,7 @@
   "blog/en/introducing-milvus-lite-lightweight-version-of-milvus.md": "2025-01-16T07:44:51.343Z",
   "blog/en/introducing-milvus-lite.md": "2025-03-24T10:21:02.623Z",
   "blog/en/introducing-pymilvus-integrations-with-embedding-models.md": "2025-01-16T07:44:54.168Z",
-  "blog/en/join-milvus-office-hours-to-get-support-from-vectordb-experts.md": "2025-02-24T11:57:26.987Z",
+  "blog/en/join-milvus-office-hours-to-get-support-from-vectordb-experts.md": "2025-04-07T10:22:23.486Z",
   "blog/en/matryoshka-embeddings-detail-at-multiple-scales.md": "2025-01-16T07:44:57.518Z",
   "blog/en/milvus-2-2-12-easier-access-faster-vector-search-speeds-better-user-experience.md": "2025-01-16T07:44:58.740Z",
   "blog/en/milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md": "2025-01-16T07:45:00.039Z",
@@ -148,8 +148,11 @@
   "blog/en/what-milvus-taught-us-in-2024.md": "2025-02-24T11:57:49.512Z",
   "blog/en/ai-for-smarter-browsing-filtering-web-content-with-pirxtral-milvus-browser-use.md": "2025-03-10T10:17:58.031Z",
   "blog/en/a-day-in-the-life-of-milvus-datum.md": "2025-03-17T10:21:10.941Z",
-  "blog/en/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md": "2025-03-24T10:21:21.071Z",
+  "blog/en/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md": "2025-04-07T10:23:52.181Z",
   "blog/en/deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md": "2025-03-31T11:25:34.816Z",
   "blog/en/milvus-2025-roadmap-tell-us-what-you-think.md": "2025-03-31T11:25:50.279Z",
-  "blog/en/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md": "2025-03-31T11:26:22.582Z"
+  "blog/en/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md": "2025-03-31T11:26:22.582Z",
+  "blog/en/generate-more-creative-and-curated-ghibli-style-images-with-gpt-4o-and-milvus.md": "2025-04-07T10:22:12.829Z",
+  "blog/en/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md": "2025-04-07T10:22:42.106Z",
+  "blog/en/what-is-a-vector-database.md": "2025-04-07T10:23:32.118Z"
 }

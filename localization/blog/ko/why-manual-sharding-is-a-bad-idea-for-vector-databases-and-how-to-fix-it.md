@@ -7,7 +7,7 @@ desc: >-
   수동 벡터 데이터베이스 샤딩이 병목 현상을 일으키는 이유와 Milvus의 자동 확장이 어떻게 엔지니어링 오버헤드를 제거하여 원활한 성장을
   지원하는지 알아보세요.
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true
@@ -141,5 +141,5 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p><em>"확장성이 데이터베이스 자체에 내장되면 모든 골칫거리가 사라집니다</em>."라고 Alex는 Milvus로 전환한 자신의 팀을 회상하며 이렇게 말합니다. <em>"엔지니어들은 데이터베이스 샤드를 돌보는 대신 고객이 좋아하는 기능을 구축하는 데 집중할 수 있게 되었습니다."</em></p>
-<p>수동 샤딩의 엔지니어링 부담, 대규모 성능 병목 현상, 데이터베이스 마이그레이션의 막막한 전망으로 고민하고 계신다면 접근 방식을 재고할 때입니다. <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">문서 페이지를</a> 방문하여 Milvus 아키텍처에 대해 자세히 알아보거나 <a href="https://zilliz.com/cloud">zilliz.com/cloud에서</a> 완전 관리형 Milvus를 통해 간편한 확장성을 직접 경험해 보세요.</p>
+<p>수동 샤딩의 엔지니어링 부담, 대규모 성능 병목 현상, 데이터베이스 마이그레이션의 막막한 전망으로 고민하고 계신다면, 접근 방식을 재고해 보셔야 할 때입니다. <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">문서 페이지를</a> 방문하여 Milvus 아키텍처에 대해 자세히 알아보거나 <a href="https://zilliz.com/cloud">zilliz.com/cloud에서</a> 완전 관리형 Milvus를 통해 간편한 확장성을 직접 경험해 보세요.</p>
 <p>올바른 벡터 데이터베이스 기반이 있다면 혁신에는 한계가 없습니다.</p>

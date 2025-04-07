@@ -14,7 +14,7 @@ canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
 <p>Obtenha ajuda especializada para os seus projectos de <a href="https://zilliz.com/learn/what-is-vector-database">bases de dados vectoriais</a> Milvus. Reserve uma sessão individual de 20 minutos para obter informações, orientação e respostas às suas perguntas. Quer esteja apenas a começar ou precise de ajuda com um problema específico, estamos aqui para o ajudar a tirar o máximo partido do Milvus.</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -41,8 +41,8 @@ canonicalUrl: >-
 <li><p><strong>Conselhos sobre o desenho do esquema de dados:</strong> Aprenda as melhores práticas para o esquema de dados e tipos de índice para melhor se adequar ao seu caso de uso.</p></li>
 <li><p><strong>Dimensionamento da implantação do Milvus:</strong> Obtenha conselhos sobre como gerenciar e dimensionar o Milvus para volumes de dados maiores.</p></li>
 <li><p><strong>Solução de problemas específicos:</strong> Está preso a um erro ou a um comportamento invulgar? Nós podemos ajudar a solucionar o problema.</p></li>
-<li><p><strong>Assistência à integração:</strong> Precisa de orientação sobre como usar o Milvus com outros frameworks integrados como LangChain, LlamaIndex, Spark ou seus pipelines de processamento de dados?</p></li>
+<li><p><strong>Assistência à integração:</strong> Precisa de orientação sobre como usar o Milvus com outros frameworks integrados como LangChain, LlamaIndex, Spark, ou seus pipelines de processamento de dados?</p></li>
 <li><p><strong>Aprendendo sobre novos recursos:</strong> Mantenha-se atualizado com os recursos mais recentes do Milvus e como eles podem beneficiar seu projeto.</p></li>
 </ul>
 <p>Não perca esta oportunidade de elevar o nível da sua implementação do Milvus com orientação especializada.</p>
-<p>Se não puder juntar-se a nós ao vivo, não se preocupe - ainda há muitas formas de obter apoio! A comunidade Milvus está ativa e pronta a ajudar tanto no <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> como nas<a href="https://github.com/search?q=milvus&amp;type=discussions"> Discussões GitHub</a>. Quer prefira um chat ao vivo ou discussões assíncronas, estas plataformas são um ótimo local para colocar questões, partilhar conhecimentos e ligar-se a outros utilizadores e colaboradores do Milvus.</p>
+<p>Se não puder juntar-se a nós ao vivo, não se preocupe - ainda há muitas formas de obter apoio! A comunidade Milvus está ativa e pronta a ajudar tanto no <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> como nas<a href="https://github.com/search?q=milvus&amp;type=discussions"> Discussões GitHub</a>. Quer prefira o chat ao vivo ou as discussões assíncronas, estas plataformas são um ótimo local para colocar questões, partilhar conhecimentos e ligar-se a outros utilizadores e colaboradores do Milvus.</p>

@@ -16,7 +16,7 @@ canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
 <p>Obtenga ayuda de expertos para sus proyectos de <a href="https://zilliz.com/learn/what-is-vector-database">bases de datos vectoriales</a> Milvus. Reserve una sesión individual de 20 minutos para obtener información, orientación y respuestas a sus preguntas. Tanto si está empezando como si necesita ayuda con un problema específico, estamos aquí para ayudarle a sacar el máximo partido de Milvus.</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -41,7 +41,7 @@ canonicalUrl: >-
 <ul>
 <li><p><strong>Optimización del rendimiento de Milvus:</strong> Obtenga consejos sobre cómo ajustar las configuraciones para aumentar el rendimiento de la base de datos.</p></li>
 <li><p><strong>Consejos para el diseño de esquemas de datos:</strong> Aprenda las mejores prácticas para el esquema de datos y los tipos de índice que mejor se adapten a su caso de uso.</p></li>
-<li><p><strong>Ampliación de la implementación de Milvus:</strong> Obtenga consejos sobre la gestión y el escalado de Milvus para volúmenes de datos mayores.</p></li>
+<li><p><strong>Ampliación de la implementación de Milvus:</strong> Obtenga consejos sobre cómo gestionar y escalar Milvus para volúmenes de datos mayores.</p></li>
 <li><p><strong>Resolución de problemas específicos:</strong> ¿Atascado en un error o comportamiento inusual? Podemos ayudarle a resolverlo.</p></li>
 <li><p><strong>Asistencia para la integración:</strong> ¿Necesita orientación sobre el uso de Milvus con otros marcos integrados como LangChain, LlamaIndex, Spark o sus tuberías de procesamiento de datos?</p></li>
 <li><p><strong>Conozca las nuevas características:</strong> Manténgase actualizado con las últimas capacidades de Milvus y cómo podrían beneficiar a su proyecto.</p></li>

@@ -5,14 +5,14 @@ author: James Luan
 date: 2025-03-18T00:00:00.000Z
 desc: 瞭解為何手動向量資料庫分片會產生瓶頸，以及 Milvus 的自動擴充如何消除工程開銷，實現無縫成長。
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>"一家企業級 AI SaaS 創業公司的 CTO Alex 回憶說：<em>「我們最初在 pgvector 上建立語意搜尋，而不是 Milvus，因為我們所有的關聯性資料都已經在 PostgreSQL 上</em>。<em>Alex 回憶說：「但當我們的產品與市場契合時，我們的成長在工程方面遇到了嚴重的障礙。我們很快就發現 pgvector 並不是為了擴充性而設計的。簡單的任務，例如在多個分塊中推出模式更新，變成了乏味、容易出錯的流程，耗費了數天的工程努力。當我們的向量嵌入量達到 1 億個時，查詢延遲時間飆升至一秒以上，遠遠超出我們客戶所能忍受的範圍。轉移到 Milvus 之後，手動分片的感覺就像踏入石器時代。把分片伺服器當成易碎的藝術品來玩弄，一點都不好玩。任何公司都不應該忍受這種情況。</em></p>
+<p>"一家企業級 AI SaaS 創業公司的 CTO Alex 回憶說：<em>「我們最初在 pgvector 上建立語意搜尋，而不是 Milvus，因為我們所有的關聯性資料都已經在 PostgreSQL 上</em>。<em>Alex 回憶說：「但當我們的產品與市場契合時，我們的成長在工程方面遇到了嚴重的障礙。我們很快就發現 pgvector 並不是為了擴充性而設計的。簡單的任務，例如在多個分塊中推出模式更新，變成了乏味、容易出錯的流程，耗費了數天的工程努力。當我們的向量嵌入量達到 1 億個時，查詢延遲時間飆升至超過一秒，遠遠超出客戶所能忍受的範圍。轉移到 Milvus 之後，手動分片的感覺就像踏入石器時代。把分片伺服器當成易碎的藝術品來玩弄，一點都不好玩。任何公司都不應該忍受這種情況。</em></p>
 <h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">AI 公司面臨的共同挑戰<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -29,7 +29,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>Alex 的經驗並不是 pgvector 使用者獨有的。無論您使用的是 pgvector、Qdrant、Weaviate 或其他依賴手動分片的向量資料庫，擴充的挑戰都是一樣的。一開始是可以管理的解決方案，但隨著資料量的增加，很快就變成了技術債務。</p>
-<p>對現今的新創公司而言，<strong>擴充性並非可有可无，而是關鍵任務</strong>。這對於由大型語言模型 (Large Language Models, LLM) 和向量資料庫所驅動的人工智慧產品而言尤其如此，從早期採用到指數級成長的躍進可能在一夜之間發生。實現產品與市場的契合通常會引發使用者激增、資料流入量過大以及查詢需求暴增。但如果資料庫基礎架構跟不上，緩慢的查詢和低效率的作業就會阻礙動力，妨礙業務成功。</p>
+<p>對現今的新創公司而言，<strong>擴充性並非可有可无，而是關鍵任務</strong>。這對於由大型語言模型 (Large Language Models, LLM) 和向量資料庫所驅動的人工智慧產品來說尤其如此，從早期採用到指數級成長的躍進可能會在一夜之間發生。實現產品與市場的契合通常會引發使用者激增、資料流入量過大以及查詢需求暴增。但如果資料庫基礎架構跟不上，緩慢的查詢和低效率的作業就會阻礙動力，妨礙業務成功。</p>
 <p>短期的技術決策可能會導致長期的瓶頸，迫使工程團隊不斷處理緊急的效能問題、資料庫崩潰和系統故障，而無法專注於創新。最糟糕的情況是什麼？昂貴且耗時的資料庫重新架構，而這正是公司應該擴充規模的時候。</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">Sharding 不正是擴充性的自然解決方案嗎？<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"

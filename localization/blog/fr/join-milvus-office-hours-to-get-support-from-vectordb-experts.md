@@ -16,7 +16,7 @@ canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
 <p>Obtenez l'aide d'un expert pour vos projets de <a href="https://zilliz.com/learn/what-is-vector-database">bases de données vectorielles</a> Milvus. Réservez une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions. Que vous débutiez ou que vous ayez besoin d'aide pour résoudre un problème spécifique, nous sommes là pour vous aider à tirer le meilleur parti de Milvus.</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -43,7 +43,7 @@ canonicalUrl: >-
 <li><p><strong>Conseils sur la conception des schémas de données :</strong> Apprenez les meilleures pratiques pour les schémas de données et les types d'index afin de répondre au mieux à votre cas d'utilisation.</p></li>
 <li><p><strong>Évolution de votre déploiement Milvus :</strong> Obtenez des conseils sur la gestion et la mise à l'échelle de Milvus pour des volumes de données plus importants.</p></li>
 <li><p><strong>Résolution de problèmes spécifiques :</strong> Vous êtes confronté à une erreur ou à un comportement inhabituel ? Nous pouvons vous aider à le dépanner et à le résoudre.</p></li>
-<li><p><strong>Assistance à l'intégration :</strong> Vous avez besoin de conseils sur l'utilisation de Milvus avec d'autres frameworks intégrés tels que LangChain, LlamaIndex, Spark ou vos pipelines de traitement de données ?</p></li>
+<li><p><strong>Assistance à l'intégration :</strong> Besoin de conseils sur l'utilisation de Milvus avec d'autres frameworks intégrés tels que LangChain, LlamaIndex, Spark ou vos pipelines de traitement de données ?</p></li>
 <li><p><strong>Apprentissage des nouvelles fonctionnalités :</strong> Restez informé des dernières fonctionnalités de Milvus et de la manière dont elles peuvent bénéficier à votre projet.</p></li>
 </ul>
 <p>Ne manquez pas cette occasion d'améliorer votre mise en œuvre de Milvus grâce aux conseils d'un expert.</p>

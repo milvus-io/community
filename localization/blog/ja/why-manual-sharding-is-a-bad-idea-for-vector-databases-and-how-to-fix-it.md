@@ -1,12 +1,12 @@
 ---
 id: why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
-title: ベクターデータベースで手動シャーディングが良くない理由とその修正方法
+title: ベクター・データベースで手動シャーディングが良くない理由と修正方法
 author: James Luan
 date: 2025-03-18T00:00:00.000Z
 desc: >-
   手作業によるベクターデータベースのシャーディングがなぜボトルネックを生むのか、Milvusの自動スケーリングがいかにエンジニアリングのオーバーヘッドを排除し、シームレスな成長を実現するかをご覧ください。
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true
@@ -30,7 +30,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>アレックスの経験はpgvectorユーザーだけのものではない。pgvector、Qdrant、Weaviateなど、手動シャーディングに依存するベクターデータベースを使用していても、スケーリングの課題は変わりません。管理可能なソリューションとしてスタートしても、データ量が増えるにつれて、すぐに技術的な負債に変わります。</p>
-<p>今日の新興企業にとって、<strong>スケーラビリティはオプションではなく、ミッションクリティカルだ</strong>。これは、大規模言語モデル（LLM）やベクトル・データベースを利用したAI製品に特に当てはまり、初期採用から指数関数的な成長への飛躍は一夜にして起こり得る。プロダクト・マーケット・フィットの達成は、多くの場合、ユーザー数の急増、圧倒的なデータ流入、クエリ要求の急増を引き起こします。しかし、データベース・インフラがそれについていけなければ、クエリの速度低下や運用の非効率性によって勢いが止まり、ビジネスの成功が妨げられる可能性がある。</p>
+<p>今日の新興企業にとって、<strong>スケーラビリティはオプションではなく、ミッションクリティカルだ</strong>。これは、大規模言語モデル（LLM）やベクトル・データベースを利用したAI製品に特に当てはまり、初期採用から指数関数的成長への飛躍は一夜にして起こりうる。プロダクト・マーケット・フィットの達成は、多くの場合、ユーザー数の急増、圧倒的なデータ流入、クエリ要求の急増を引き起こします。しかし、データベース・インフラがそれについていけなければ、クエリの速度低下や運用の非効率性によって勢いが止まり、ビジネスの成功が妨げられる可能性がある。</p>
 <p>短期的な技術的決断が長期的なボトルネックにつながる可能性もあり、エンジニアリングチームはイノベーションに集中する代わりに、緊急のパフォーマンス問題、データベースクラッシュ、システム障害に常に対処することを余儀なくされる。最悪のシナリオは？コストと時間のかかるデータベースの再構築が必要になる。</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">シャーディングはスケーラビリティに対する自然な解決策ではないのか？<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -90,7 +90,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>新興企業から企業まで、多くの開発者が手作業によるデータベースシャード化に伴う多大なオーバーヘッドを認識しています。Milvusは根本的に異なるアプローチをとり、複雑さを伴うことなく、数百万から数十億のベクターへのシームレスなスケーリングを可能にします。</p>
-<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">技術的負債なしにスケーリングを自動化</h3><p>Milvusは、シームレスな拡張をサポートするために、Kubernetesと分割されたストレージ-コンピュートアーキテクチャを活用しています。この設計は以下を可能にします：</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">技術的負債なしにスケーリングを自動化</h3><p>Milvusは、Kubernetesと、シームレスな拡張をサポートするために分離されたストレージ-コンピュートアーキテクチャを活用しています。この設計は以下を可能にします：</p>
 <ul>
 <li><p>需要の変化に対応した迅速なスケーリング</p></li>
 <li><p>利用可能なすべてのノードで自動ロードバランシング</p></li>

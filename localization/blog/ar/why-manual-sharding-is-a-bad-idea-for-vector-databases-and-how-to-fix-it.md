@@ -7,7 +7,7 @@ desc: >-
   اكتشف لماذا يؤدي التجزئة اليدوية لقاعدة بيانات المتجهات إلى حدوث اختناقات وكيف
   أن التوسيع الآلي من Milvus يزيل النفقات الهندسية الزائدة لتحقيق نمو سلس.
 cover: >-
-  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_300b84a4d9.png
+  assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Milvus, AI Infrastructure, Automated Sharding'
 recommend: true

@@ -14,7 +14,7 @@ canonicalUrl: >-
   https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md
 ---
 <p>获得 Milvus<a href="https://zilliz.com/learn/what-is-vector-database">向量数据库</a>项目的专家帮助。预订 20 分钟的一对一课程，获取见解、指导和问题解答。无论您是刚刚起步，还是需要特定问题的帮助，我们都会帮助您充分利用 Milvus。</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hours">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_office_hours_09848e076b.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -42,7 +42,7 @@ canonicalUrl: >-
 <li><p><strong>扩展 Milvus 部署：</strong>获取有关管理和扩展 Milvus 以适应更大数据量的建议。</p></li>
 <li><p><strong>排除特定问题：</strong>遇到错误或异常行为？我们可以帮助排查和解决。</p></li>
 <li><p><strong>集成协助：</strong>在使用 Milvus 与其他集成框架（如 LangChain、LlamaIndex、Spark 或您的数据处理管道）时需要指导？</p></li>
-<li><p><strong>了解新功能：</strong>了解 Milvus 的最新功能，以及它们如何使您的项目受益。</p></li>
+<li><p><strong>了解新功能：</strong>了解 Milvus 的最新功能，以及这些功能如何使您的项目受益。</p></li>
 </ul>
 <p>千万不要错过这个在专家指导下提升您的 Milvus 实施水平的机会。</p>
 <p>如果您无法参加我们的现场活动，请不要担心，您仍有很多途径获得支持！Milvus 社区在<a href="https://discord.com/invite/8uyFbECzPX">Discord</a>和<a href="https://github.com/search?q=milvus&amp;type=discussions"> GitHub Discussions</a> 上非常活跃，随时准备为您提供帮助。无论您喜欢即时聊天还是异步讨论，这些平台都是您提问、分享知识以及与 Milvus 其他用户和贡献者联系的好地方。</p>
