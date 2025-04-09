@@ -80,7 +80,7 @@ After selecting a model, now it is time to plan your integration approach.
 ![](https://assets.zilliz.com/model_integration_8c8f0410c7.png)
 
 
-### 6. End-to-End Testing
+## 6. End-to-End Testing
 
 Before full deployment, run end-to-end tests to ensure the model works as expected:
 
@@ -90,7 +90,7 @@ Before full deployment, run end-to-end tests to ensure the model works as expect
 ![](https://assets.zilliz.com/end_to_end_testing_7ae244a73b.png)
 
 
-### Summary
+## Summary
 
 As we've seen throughout this guide, selecting the right embedding model requires following these six critical steps:
 
