@@ -13,7 +13,7 @@ canonicalUrl: https://zilliz.com/blog/introduce-deepsearcher-a-local-open-source
 
 
 
-![deep researcher.gif](https://assets.zilliz.com/deep_researcher_a0170dadd0.gif)
+![DeepSearcher](https://assets.zilliz.com/deep_researcher_a0170dadd0.gif)
 
 In the previous post, [_“I Built a Deep Research with Open Source—and So Can You!”_](https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md), we explained some of the principles underlying research agents and constructed a simple prototype that generates detailed reports on a given topic or question. The article and corresponding notebook demonstrated the fundamental concepts of _tool use_, _query decomposition_, _reasoning_, and _reflection_. The example in our previous post, in contrast to OpenAI’s Deep Research, ran locally, using only open-source models and tools like [Milvus](https://milvus.io/docs) and LangChain. (I encourage you to read the [above article](https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md) before continuing.) 
 
@@ -25,7 +25,7 @@ Additionally, we explore the need for faster and more efficient inference servic
 
 SambaNova Cloud also provides inference-as-a-service for other open-source models including Llama 3.x, Qwen2.5, and QwQ. The inference service runs on SambaNova’s custom chip called the reconfigurable dataflow unit (RDU), which is specially designed for efficient inference on Generative AI models, lowering cost and increasing inference speed. [Find out more on their website.](https://sambanova.ai/technology/sn40l-rdu-ai-chip)
 
-![Output speed- deepseek r1.png](https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png)
+![Output Speed- DeepSeek R1](https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png)
 
 
 ## DeepSearcher Architecture
@@ -34,7 +34,7 @@ SambaNova Cloud also provides inference-as-a-service for other open-source model
 
 The architecture of [DeepSearcher](https://github.com/zilliztech/deep-searcher) follows our previous post by breaking the problem up into four steps - _define/refine the question_, _research_, _analyze_, _synthesize_ - although this time with some overlap. We go through each step, highlighting [DeepSearcher](https://github.com/zilliztech/deep-searcher)’s improvements.
 
-![deepsearcher architecture.png](https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png)
+![DeepSearcher Architecture](https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png)
 
 ### Define and Refine the Question
 
