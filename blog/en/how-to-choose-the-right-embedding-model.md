@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2025-04-09
 desc: Explore essential factors and best practices to choose the right embedding model for effective data representation and improved performance. 
-cover: assets.zilliz.com/How_to_Choose_the_Right_Embedding_Model_98ab24e872.png
+cover: assets.zilliz.com/Complete_Workflow_31b4ac825c.gif
 tag: Engineering
 tags: Embedding Model, RAG, Model Selection, Machine Learning, Performance Optimization
 canonicalUrl: https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
