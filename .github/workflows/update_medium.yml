@@ -45,16 +45,16 @@ jobs:
           echo "Added+Modified:"
           echo "${{ steps.added_files.outputs.added_modified }}"
 
-      - name: Post new blog to medium
-        if: ${{ steps.added_files.outputs.added }}
-        env:
-          MEDIUM_ID: ${{secrets.MEDIUM_ID}}
-          MEDIUM_PUBLICATION_ID: ${{secrets.MEDIUM_PUBLICATION_ID}}
-          MEDIUM_TOKEN: ${{secrets.MEDIUM_TOKEN}}
-          FILES: ${{ steps.added_files.outputs.added }}
-          REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN: ${{secrets.REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN}}
-          REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN: ${{secrets.REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN}}
-        run: |
-          mv postMedium.md postMedium.js
-          yarn
-          node postMedium.js $FILES
+      # - name: Post new blog to medium
+      #   if: ${{ steps.added_files.outputs.added }}
+      #   env:
+      #     MEDIUM_ID: ${{secrets.MEDIUM_ID}}
+      #     MEDIUM_PUBLICATION_ID: ${{secrets.MEDIUM_PUBLICATION_ID}}
+      #     MEDIUM_TOKEN: ${{secrets.MEDIUM_TOKEN}}
+      #     FILES: ${{ steps.added_files.outputs.added }}
+      #     REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN: ${{secrets.REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN}}
+      #     REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN: ${{secrets.REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN}}
+      #   run: |
+      #     mv postMedium.md postMedium.js
+      #     yarn
+      #     node postMedium.js $FILES
