@@ -16,17 +16,17 @@ canonicalUrl: >-
 ---
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="deep researcher.gif" class="doc-image" id="deep-researcher.gif" />
-   </span> <span class="img-wrapper"> <span>심층 연구자.gif</span> </span></p>
-<p>이전 게시물 <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>"오픈소스로 딥 리서치를 구축했습니다. 여러분도 할 수 있습니다!"</em></a>에서는 리서치 에이전트의 기본 원리 몇 가지를 설명하고 주어진 주제나 질문에 대한 자세한 보고서를 생성하는 간단한 프로토타입을 만들었습니다. 이 글과 해당 노트북에서는 <em>도구 사용</em>, <em>쿼리 분해</em>, <em>추론</em>, <em>성찰의</em> 기본 개념을 설명했습니다. 이전 포스팅의 예시는 OpenAI의 딥 리서치와는 달리 <a href="https://milvus.io/docs">Milvus와</a> LangChain 같은 오픈 소스 모델과 도구만을 사용해 로컬에서 실행되었습니다. (계속하기 전에 <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">위의 글을</a> 읽어보시기 바랍니다.)</p>
-<p>그 후 몇 주 동안 OpenAI의 딥 리서치를 이해하고 재현하는 데 대한 관심이 폭발적으로 증가했습니다. 예를 들어 <a href="https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research">퍼플렉시티 딥 리서치와</a> <a href="https://huggingface.co/blog/open-deep-research">허깅 페이스의 오픈 딥리서치를</a> 살펴보시기 바랍니다. 이러한 도구는 웹이나 내부 문서를 서핑하여 주제나 질문을 반복적으로 조사하고 상세하고 정보에 입각한 체계적인 보고서를 출력한다는 목표는 공유하지만 아키텍처와 방법론은 서로 다릅니다. 중요한 것은 기본 에이전트가 각 중간 단계에서 어떤 조치를 취해야 하는지에 대한 추론을 자동화한다는 점입니다.</p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="DeepSearcher" class="doc-image" id="deepsearcher" />
+   </span> <span class="img-wrapper"> <span>DeepSearcher</span> </span></p>
+<p>이전 게시물 <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>"오픈 소스로 딥 리서치를 구축했습니다. 여러분도 할 수 있습니다!"</em></a>에서는 리서치 에이전트의 기본 원리 몇 가지를 설명하고 주어진 주제나 질문에 대한 상세한 보고서를 생성하는 간단한 프로토타입을 만들었습니다. 이 글과 해당 노트북에서는 <em>도구 사용</em>, <em>쿼리 분해</em>, <em>추론</em>, <em>성찰의</em> 기본 개념을 설명했습니다. 이전 포스팅의 예시는 OpenAI의 딥 리서치와는 달리 <a href="https://milvus.io/docs">Milvus와</a> LangChain 같은 오픈 소스 모델과 도구만을 사용해 로컬에서 실행되었습니다. (계속하기 전에 <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">위의 글을</a> 읽어보시기 바랍니다.)</p>
+<p>그 후 몇 주 동안 OpenAI의 딥 리서치를 이해하고 재현하는 데 대한 관심이 폭발적으로 증가했습니다. 예를 들어, <a href="https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research">퍼플렉시티 딥 리서치와</a> <a href="https://huggingface.co/blog/open-deep-research">허깅 페이스의 오픈 딥리서치를</a> 살펴보시기 바랍니다. 이러한 도구는 웹이나 내부 문서를 서핑하여 주제나 질문을 반복적으로 조사하고 상세하고 정보에 입각한 체계적인 보고서를 출력한다는 목표는 공유하지만 아키텍처와 방법론은 서로 다릅니다. 중요한 것은 기본 에이전트가 각 중간 단계에서 어떤 조치를 취해야 하는지에 대한 추론을 자동화한다는 점입니다.</p>
 <p>이번 포스팅에서는 이전 포스팅을 기반으로 Zilliz의 <a href="https://github.com/zilliztech/deep-searcher">딥서처</a> 오픈소스 프로젝트를 소개합니다. 이 에이전트는 <em>쿼리 라우팅, 조건부 실행 흐름</em>, <em>도구로서의 웹 크롤링이라는</em> 추가 개념을 보여줍니다. Jupyter 노트북이 아닌 Python 라이브러리와 명령줄 도구로 제공되며 이전 게시물보다 더 완전한 기능을 갖추고 있습니다. 예를 들어, 여러 소스 문서를 입력할 수 있고 구성 파일을 통해 임베딩 모델과 벡터 데이터베이스를 설정할 수 있습니다. 아직은 비교적 단순하지만, DeepSearcher는 에이전트 RAG의 훌륭한 쇼케이스이며 최첨단 AI 애플리케이션을 향한 한 걸음 더 나아간 것입니다.</p>
 <p>또한 더 빠르고 효율적인 추론 서비스의 필요성에 대해서도 살펴봅니다. 추론 모델은 "추론 확장", 즉 추가 계산을 사용하여 결과를 개선하며, 단일 보고서에 수백 또는 수천 개의 LLM 호출이 필요할 수 있다는 사실과 결합하여 추론 대역폭이 주요 병목 현상이 됩니다. 저희는 <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">삼바노바의 맞춤형 하드웨어에서</a> 초당 출력 토큰 수가 가장 가까운 경쟁사보다 두 배 빠른 <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">DeepSeek-R1 추론 모델을</a> 사용합니다(아래 그림 참조).</p>
 <p>삼바노바 클라우드는 Llama 3.x, Qwen2.5, QwQ 등 다른 오픈 소스 모델에 대한 추론 서비스도 제공합니다. 추론 서비스는 재구성 가능한 데이터 흐름 장치(RDU)라는 SambaNova의 맞춤형 칩에서 실행되며, 이는 생성형 AI 모델에서 효율적인 추론을 위해 특별히 설계되어 비용을 낮추고 추론 속도를 높입니다. <a href="https://sambanova.ai/technology/sn40l-rdu-ai-chip">웹사이트에서 자세히 알아보세요.</a></p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output speed- deepseek r1.png" class="doc-image" id="output-speed--deepseek-r1.png" />
-   </span> <span class="img-wrapper"> <span>출력 속도 - deepseek r1.png</span> </span></p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output Speed- DeepSeek R1" class="doc-image" id="output-speed--deepseek-r1" />
+   </span> <span class="img-wrapper"> <span>출력 속도 - DeepSeek R1</span> </span></p>
 <h2 id="DeepSearcher-Architecture" class="common-anchor-header">딥서치 아키텍처<button data-href="#DeepSearcher-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -42,20 +42,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/deep-searcher">딥서치어의</a> 아키텍처는 이전 게시물과 마찬가지로 문제를 <em>정의/세분화</em>, <em>조사</em>, <em>분석</em>, <em>종합의</em> 네 단계로 나누고 있지만, 이번에는 일부 중복되는 부분이 있습니다. 각 단계를 살펴보면서 <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher의</a>개선 사항을 강조합니다.</p>
+    </button></h2><p><a href="https://github.com/zilliztech/deep-searcher">딥서처의</a> 아키텍처는 이전 게시물과 마찬가지로 문제를 <em>정의/세분화</em>, <em>조사</em>, <em>분석</em>, <em>종합의</em> 네 단계로 나누고 있지만, 이번에는 일부 중복되는 부분이 있습니다. 각 단계를 살펴보면서 <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher의</a>개선 사항을 중점적으로 살펴봅니다.</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="deepsearcher architecture.png" class="doc-image" id="deepsearcher-architecture.png" />
-   </span> <span class="img-wrapper"> <span>딥서치어 아키텍처.png</span> </span></p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="DeepSearcher Architecture" class="doc-image" id="deepsearcher-architecture" />
+   </span> <span class="img-wrapper"> <span>DeepSearcher 아키텍처</span> </span></p>
 <h3 id="Define-and-Refine-the-Question" class="common-anchor-header">질문 정의 및 구체화</h3><pre><code translate="no" class="language-txt">Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [
   <span class="hljs-string">&#x27;How has the cultural impact and societal relevance of The Simpsons evolved from its debut to the present?&#x27;</span>,
   <span class="hljs-string">&#x27;What changes in character development, humor, and storytelling styles have occurred across different seasons of The Simpsons?&#x27;</span>, 
   <span class="hljs-string">&#x27;How has the animation style and production technology of The Simpsons changed over time?&#x27;</span>,
   <span class="hljs-string">&#x27;How have audience demographics, reception, and ratings of The Simpsons shifted throughout its run?&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>딥서처의 설계에서는 질문을 조사하는 것과 구체화하는 것의 경계가 모호합니다. 초기 사용자 쿼리는 이전 게시물과 마찬가지로 하위 쿼리로 분해됩니다. "심슨 가족은 시간이 지남에 따라 어떻게 변했나요?"라는 쿼리에서 생성된 초기 하위 쿼리는 위를 참조하세요. 그러나 다음 연구 단계에서는 필요에 따라 질문을 계속 구체화할 것입니다.</p>
+<p>딥서처의 설계에서는 질문을 조사하는 것과 구체화하는 것 사이의 경계가 모호합니다. 초기 사용자 쿼리는 이전 게시물과 마찬가지로 하위 쿼리로 분해됩니다. "심슨 가족은 시간이 지남에 따라 어떻게 변했나요?"라는 쿼리에서 생성된 초기 하위 쿼리는 위를 참조하세요. 그러나 다음 연구 단계에서는 필요에 따라 질문을 계속 구체화할 것입니다.</p>
 <h3 id="Research-and-Analyze" class="common-anchor-header">조사 및 분석</h3><p>쿼리를 하위 쿼리로 세분화했으면 에이전트의 연구 부분이 시작됩니다. 크게 <em>라우팅</em>, <em>검색</em>, <em>반영, 조건부 반복의</em> 네 단계로 구성되어 있습니다.</p>
-<h4 id="Routing" class="common-anchor-header">라우팅</h4><p>데이터베이스에는 서로 다른 소스의 여러 테이블 또는 컬렉션이 포함되어 있습니다. 시맨틱 검색을 현재 쿼리와 관련된 소스로만 제한할 수 있다면 더 효율적일 것입니다. 쿼리 라우터는 어떤 컬렉션 정보에서 검색할지 결정하도록 LLM에 메시지를 표시합니다.</p>
+<h4 id="Routing" class="common-anchor-header">라우팅</h4><p>데이터베이스에는 서로 다른 소스의 여러 테이블 또는 컬렉션이 포함되어 있습니다. 시맨틱 검색을 현재 쿼리와 관련된 소스로만 제한할 수 있다면 더 효율적일 것입니다. 쿼리 라우터는 어떤 컬렉션 정보를 검색할지 결정하도록 LLM에 메시지를 표시합니다.</p>
 <p>다음은 쿼리 라우팅 프롬프트를 구성하는 방법입니다:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_vector_db_search_prompt</span>(<span class="hljs-params">
     question: <span class="hljs-built_in">str</span>,

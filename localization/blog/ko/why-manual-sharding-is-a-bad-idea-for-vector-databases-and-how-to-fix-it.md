@@ -110,7 +110,7 @@ canonicalUrl: >-
 <li><p>각 샤드는 10억 개 이상의 데이터 포인트를 저장할 수 있습니다.</p></li>
 <li><p>각 샤드 내의 세그먼트는 머신 간에 자동으로 균형을 맞춥니다.</p></li>
 <li><p>컬렉션 확장은 샤드 수를 늘리는 것만큼이나 간단합니다.</p></li>
-<li><p>곧 출시될 Milvus 3.0은 동적 샤드 분할을 도입하여 이러한 최소한의 수동 단계마저 제거합니다.</p></li>
+<li><p>곧 출시될 Milvus 3.0에서는 동적 샤드 분할을 도입하여 이러한 최소한의 수동 단계마저 제거할 예정입니다.</p></li>
 </ul>
 <h3 id="Query-Processing-at-Scale" class="common-anchor-header">대규모 쿼리 처리</h3><p>쿼리를 실행할 때 Milvus는 효율적인 프로세스를 따릅니다:</p>
 <ol>
@@ -141,5 +141,5 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p><em>"확장성이 데이터베이스 자체에 내장되면 모든 골칫거리가 사라집니다</em>."라고 Alex는 Milvus로 전환한 자신의 팀을 회상하며 이렇게 말합니다. <em>"엔지니어들은 데이터베이스 샤드를 돌보는 대신 고객이 좋아하는 기능을 구축하는 데 집중할 수 있게 되었습니다."</em></p>
-<p>수동 샤딩의 엔지니어링 부담, 대규모 성능 병목 현상, 데이터베이스 마이그레이션의 막막한 전망으로 고민하고 계신다면, 접근 방식을 재고해 보셔야 할 때입니다. <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">문서 페이지를</a> 방문하여 Milvus 아키텍처에 대해 자세히 알아보거나 <a href="https://zilliz.com/cloud">zilliz.com/cloud에서</a> 완전 관리형 Milvus를 통해 간편한 확장성을 직접 경험해 보세요.</p>
-<p>올바른 벡터 데이터베이스 기반이 있다면 혁신에는 한계가 없습니다.</p>
+<p>수동 샤딩의 엔지니어링 부담, 대규모 성능 병목 현상, 데이터베이스 마이그레이션의 막막한 전망으로 고민하고 계신다면, 이제 접근 방식을 재고해 보셔야 할 때입니다. <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">문서 페이지를</a> 방문하여 Milvus 아키텍처에 대해 자세히 알아보거나 <a href="https://zilliz.com/cloud">zilliz.com/cloud에서</a> 완전 관리형 Milvus를 통해 간편한 확장성을 직접 경험해 보세요.</p>
+<p>올바른 벡터 데이터베이스 기반과 함께라면 혁신의 한계는 없습니다.</p>

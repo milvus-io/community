@@ -112,7 +112,7 @@ canonicalUrl: >-
 <ul>
 <li><p>Jeder Shard kann über 1 Milliarde Datenpunkte speichern</p></li>
 <li><p>Segmente innerhalb jedes Shards werden automatisch auf die verschiedenen Rechner verteilt</p></li>
-<li><p>Das Erweitern von Sammlungen ist so einfach wie das Erhöhen der Anzahl von Shards</p></li>
+<li><p>Das Erweitern von Sammlungen ist so einfach wie das Erhöhen der Anzahl der Shards</p></li>
 <li><p>Das kommende Milvus 3.0 wird eine dynamische Aufteilung von Shards einführen, wodurch selbst dieser minimale manuelle Schritt entfällt.</p></li>
 </ul>
 <h3 id="Query-Processing-at-Scale" class="common-anchor-header">Anfragebearbeitung in großem Maßstab</h3><p>Bei der Ausführung einer Abfrage folgt Milvus einem effizienten Prozess:</p>

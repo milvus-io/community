@@ -16,17 +16,17 @@ canonicalUrl: >-
 ---
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="deep researcher.gif" class="doc-image" id="deep-researcher.gif" />
-   </span> <span class="img-wrapper"> <span>الباحث العميق.gif</span> </span></p>
-<p>في المقال السابق <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>"لقد بنيت بحثًا عميقًا باستخدام المصدر المفتوح - وكذلك أنت!"،</em></a> شرحنا بعض المبادئ التي يقوم عليها وكلاء البحث وأنشأنا نموذجًا أوليًا بسيطًا يولد تقارير مفصلة عن موضوع أو سؤال معين. أوضح المقال والمفكرة المقابلة المفاهيم الأساسية <em>لاستخدام الأداة،</em> <em>وتحلل الاستعلام،</em> <em>والاستدلال،</em> <em>والتفكير</em>. المثال في مقالنا السابق، على النقيض من OpenAI's Deep Research، تم تشغيله محليًا، باستخدام نماذج وأدوات مفتوحة المصدر فقط مثل <a href="https://milvus.io/docs">Milvus</a> وLangChain. (أشجعك على قراءة <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">المقال أعلاه</a> قبل المتابعة).</p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="DeepSearcher" class="doc-image" id="deepsearcher" />
+   </span> <span class="img-wrapper"> <span>DeepSearcher</span> </span></p>
+<p>في المقالة السابقة <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>"لقد بنيت بحثًا عميقًا باستخدام المصدر المفتوح - ويمكنك ذلك أيضًا!"،</em></a> شرحنا بعض المبادئ التي يقوم عليها وكلاء البحث وأنشأنا نموذجًا أوليًا بسيطًا يولد تقارير مفصلة عن موضوع أو سؤال معين. أوضح المقال والمفكرة المقابلة المفاهيم الأساسية <em>لاستخدام الأداة،</em> <em>وتحلل الاستعلام،</em> <em>والاستدلال،</em> <em>والتفكير</em>. المثال في مقالنا السابق، على النقيض من OpenAI's Deep Research، تم تشغيله محليًا، باستخدام نماذج وأدوات مفتوحة المصدر فقط مثل <a href="https://milvus.io/docs">Milvus</a> وLangChain. (أشجعك على قراءة <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">المقال أعلاه</a> قبل المتابعة).</p>
 <p>في الأسابيع التالية، كان هناك انفجار في الاهتمام بفهم وإعادة إنتاج OpenAI's Deep Research. انظر، على سبيل المثال، <a href="https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research">Perplexity Deep Research</a> <a href="https://huggingface.co/blog/open-deep-research">وHugging Face's OpenResearch DeepResearch</a>. تختلف هذه الأدوات من حيث البنية والمنهجية على الرغم من اشتراكها في الهدف: البحث التكراري عن موضوع أو سؤال من خلال تصفح الويب أو المستندات الداخلية وإخراج تقرير مفصل ومستنير ومنظم بشكل جيد. والأهم من ذلك، يقوم العامل الأساسي بأتمتة التفكير في الإجراء الذي يجب اتخاذه في كل خطوة وسيطة.</p>
 <p>في هذا المنشور، نبني على منشورنا السابق ونقدم مشروع Zilliz's <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> مفتوح المصدر. يوضح وكيلنا مفاهيم إضافية: <em>توجيه الاستعلام، وتدفق التنفيذ المشروط،</em> <em>والزحف على الويب كأداة</em>. يتم تقديمه كمكتبة بايثون وأداة سطر أوامر بدلاً من دفتر ملاحظات Jupyter، وهو أكثر اكتمالاً من منشورنا السابق. على سبيل المثال، يمكنه إدخال مستندات مصدر متعددة ويمكنه تعيين نموذج التضمين وقاعدة بيانات المتجهات المستخدمة عبر ملف تهيئة. على الرغم من أن DeepSearcher لا يزال بسيطًا نسبيًا، إلا أنه يعد عرضًا رائعًا لـ RAG العميل وخطوة أخرى نحو أحدث تطبيقات الذكاء الاصطناعي.</p>
 <p>بالإضافة إلى ذلك، نستكشف الحاجة إلى خدمات استدلال أسرع وأكثر كفاءة. تستفيد النماذج الاستدلالية من "توسيع نطاق الاستدلال"، أي العمليات الحسابية الإضافية، لتحسين مخرجاتها، وهذا بالإضافة إلى حقيقة أن تقريرًا واحدًا قد يتطلب مئات أو آلاف المكالمات من LLM ينتج عنه أن يكون عرض النطاق الترددي للاستدلال هو عنق الزجاجة الأساسي. نحن نستخدم <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">نموذج الاستدلال DeepSeek-R1 على أجهزة SambaNova المصممة خصيصاً</a> لهذا الغرض، والتي تبلغ سرعتها ضعف سرعة إخراج الرموز في الثانية مقارنةً بأقرب منافس (انظر الشكل أدناه).</p>
 <p>كما توفر SambaNova Cloud أيضاً خدمة الاستدلال كخدمة لنماذج أخرى مفتوحة المصدر بما في ذلك Llama 3.x و Qwen2.5 و QwQ. تعمل خدمة الاستدلال على شريحة مخصصة من SambaNova تسمى وحدة تدفق البيانات القابلة لإعادة التشكيل (RDU)، وهي مصممة خصيصًا للاستدلال الفعال على نماذج الذكاء الاصطناعي التوليدي، مما يقلل التكلفة ويزيد من سرعة الاستدلال. <a href="https://sambanova.ai/technology/sn40l-rdu-ai-chip">اكتشف المزيد على موقعهم الإلكتروني.</a></p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output speed- deepseek r1.png" class="doc-image" id="output-speed--deepseek-r1.png" />
-   </span> <span class="img-wrapper"> <span>سرعة الإخراج- deepseek r1.png</span> </span></p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output Speed- DeepSeek R1" class="doc-image" id="output-speed--deepseek-r1" />
+   </span> <span class="img-wrapper"> <span>سرعة الإخراج - DeepSeek R1</span> </span></p>
 <h2 id="DeepSearcher-Architecture" class="common-anchor-header">هندسة DeepSearcher المعمارية<button data-href="#DeepSearcher-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -45,15 +45,15 @@ canonicalUrl: >-
     </button></h2><p>تتبع هندسة <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> معمارية <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> ما نشرناه سابقًا من خلال تقسيم المشكلة إلى أربع خطوات - <em>تحديد/تحديد السؤال،</em> <em>البحث،</em> <em>التحليل،</em> <em>التوليف</em> - وإن كان هذه المرة مع بعض التداخل. نستعرض كل خطوة، مع تسليط الضوء على تحسينات <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>.</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="deepsearcher architecture.png" class="doc-image" id="deepsearcher-architecture.png" />
-   </span> <span class="img-wrapper"> <span>بنية Deepsearcher.png</span> </span></p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="DeepSearcher Architecture" class="doc-image" id="deepsearcher-architecture" />
+   </span> <span class="img-wrapper"> <span>بنية الباحث العميق</span> </span></p>
 <h3 id="Define-and-Refine-the-Question" class="common-anchor-header">تحديد السؤال وصقله</h3><pre><code translate="no" class="language-txt">Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [
   <span class="hljs-string">&#x27;How has the cultural impact and societal relevance of The Simpsons evolved from its debut to the present?&#x27;</span>,
   <span class="hljs-string">&#x27;What changes in character development, humor, and storytelling styles have occurred across different seasons of The Simpsons?&#x27;</span>, 
   <span class="hljs-string">&#x27;How has the animation style and production technology of The Simpsons changed over time?&#x27;</span>,
   <span class="hljs-string">&#x27;How have audience demographics, reception, and ratings of The Simpsons shifted throughout its run?&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>في تصميم DeepSearcher، تكون الحدود بين البحث عن السؤال وتنقيحه غير واضحة. يتحلل استفسار المستخدم الأولي إلى استفسارات فرعية، كما في المنشور السابق. انظر أعلاه للاطلاع على الاستفسارات الفرعية الأولية الناتجة عن الاستعلام "كيف تغيرت عائلة سمبسون مع مرور الوقت؟ ومع ذلك، ستستمر خطوة البحث التالية في تنقيح السؤال حسب الحاجة.</p>
+<p>في تصميم DeepSearcher، تكون الحدود بين البحث عن السؤال وصقله غير واضحة. يتحلل استعلام المستخدم الأولي إلى استعلامات فرعية، كما في المنشور السابق. انظر أعلاه للاطلاع على الاستفسارات الفرعية الأولية الناتجة عن الاستعلام "كيف تغيرت عائلة سمبسون مع مرور الوقت؟ ومع ذلك، ستستمر خطوة البحث التالية في تنقيح السؤال حسب الحاجة.</p>
 <h3 id="Research-and-Analyze" class="common-anchor-header">البحث والتحليل</h3><p>بعد تقسيم الاستفسار إلى استفسارات فرعية، يبدأ الجزء الخاص بالبحث من الوكيل. ويتضمن، بشكل تقريبي، أربع خطوات: <em>التوجيه،</em> <em>والبحث،</em> <em>والتفكير، والتكرار الشرطي</em>.</p>
 <h4 id="Routing" class="common-anchor-header">التوجيه</h4><p>تحتوي قاعدة بياناتنا على جداول أو مجموعات متعددة من مصادر مختلفة. سيكون الأمر أكثر كفاءة إذا تمكنا من حصر البحث الدلالي في تلك المصادر ذات الصلة بالاستعلام المطروح فقط. يطلب موجه الاستعلام من موجه الاستعلام تحديد المجموعات التي يجب استرجاع المعلومات منها.</p>
 <p>فيما يلي طريقة تشكيل موجه الاستعلام الموجه:</p>
@@ -219,7 +219,7 @@ If the original query is to write a report, then you prefer to generate some fur
     </button></h2><ul>
 <li><p><a href="https://github.com/zilliztech/deep-searcher"><strong>الباحث العميق لزيليز</strong></a></p></li>
 <li><p>معلومات أساسية للقراءة <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><strong><em>"لقد بنيت بحثًا عميقًا باستخدام المصدر المفتوح - ويمكنك ذلك أيضًا!"</em></strong></a></p></li>
-<li><p><a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency"><strong>"SambaNova "SambaNova" تطلق أسرع DeepSeek-R1 671B بأعلى كفاءة</strong></a><em>"</em></p></li>
+<li><p><a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency"><strong>"SambaNova "SambaNova" يطلق أسرع DeepSeek-R1 671B بأعلى كفاءة</strong></a><em>"</em></p></li>
 <li><p>"DeepSearcher <a href="https://drive.google.com/file/d/1GE3rvxFFTKqro67ctTkknryUf-ojhduN/view?usp=sharing">تقرير "DeepSeek-R1" عن عائلة سيمبسون</a></p></li>
 <li><p>DeepSearcher: <a href="https://drive.google.com/file/d/1EGd16sJDNFnssk9yTd5o9jzbizrY_NS_/view?usp=sharing">تقرير GPT-4o المصغر عن عائلة سيمبسون</a></p></li>
 <li><p><a href="https://milvus.io/docs">قاعدة بيانات ميلفوس مفتوحة المصدر للمتجهات</a></p></li>

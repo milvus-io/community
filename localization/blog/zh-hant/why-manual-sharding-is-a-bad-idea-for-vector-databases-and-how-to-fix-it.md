@@ -12,7 +12,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>"一家企業級 AI SaaS 創業公司的 CTO Alex 回憶說：<em>「我們最初在 pgvector 上建立語意搜尋，而不是 Milvus，因為我們所有的關聯性資料都已經在 PostgreSQL 上</em>。<em>Alex 回憶說：「但當我們的產品與市場契合時，我們的成長在工程方面遇到了嚴重的障礙。我們很快就發現 pgvector 並不是為了擴充性而設計的。簡單的任務，例如在多個分塊中推出模式更新，變成了乏味、容易出錯的流程，耗費了數天的工程努力。當我們的向量嵌入量達到 1 億個時，查詢延遲時間飆升至超過一秒，遠遠超出客戶所能忍受的範圍。轉移到 Milvus 之後，手動分片的感覺就像踏入石器時代。把分片伺服器當成易碎的藝術品來玩弄，一點都不好玩。任何公司都不應該忍受這種情況。</em></p>
+<p>"一家企業級 AI SaaS 創業公司的 CTO Alex 回憶說：<em>「我們最初在 pgvector 上建立語意搜尋，而不是 Milvus，因為我們所有的關聯性資料都已經在 PostgreSQL 上</em>。<em>Alex 回憶說：「但當我們的產品與市場契合時，我們的成長在工程方面遇到了嚴重的障礙。我們很快就發現 pgvector 並不是為了擴充性而設計的。簡單的任務，例如在多個分塊中推出模式更新，變成了乏味、容易出錯的流程，耗費了數天的工程努力。當我們的向量嵌入量達到 1 億個時，查詢延遲時間飆升至超過一秒，遠遠超出我們客戶所能忍受的範圍。轉移到 Milvus 之後，手動分片的感覺就像踏入石器時代。把分片伺服器當成易碎的藝術品來玩弄，一點都不好玩。任何公司都不應該忍受這種情況。</em></p>
 <h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">AI 公司面臨的共同挑戰<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -97,16 +97,16 @@ canonicalUrl: >-
 <li><p>即使在快速成長期間，也能維持穩定的高效能</p></li>
 </ul>
 <h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">分佈式架構從底層開始設計</h3><p>Milvus 透過兩項關鍵創新，實現其擴充能力：</p>
-<p><strong>以區段為基礎的架構：</strong>Milvus 的核心是將資料組織為「區段」 - 資料管理的最小單位：</p>
+<p><strong>以區段為基礎的架構：</strong>Milvus 的核心是將資料組織為「區段」- 資料管理的最小單位：</p>
 <ul>
 <li><p>成長中的區段駐留在 StreamNodes 上，為即時查詢優化資料的新鮮度。</p></li>
 <li><p>封閉區段由 QueryNodes 管理，利用強大的索引加速搜尋</p></li>
 <li><p>這些區段均勻地分佈在節點上，以優化並行處理</p></li>
 </ul>
-<p><strong>雙層路由</strong>：不同於傳統資料庫的每個分塊都存在於單一電腦上，Milvus 將一個分塊中的資料動態地分佈在多個節點上：</p>
+<p><strong>雙層路由</strong>：不同於傳統資料庫的每個分塊都存在於單一機器上，Milvus 將一個分塊中的資料動態地分佈在多個節點上：</p>
 <ul>
 <li><p>每個分片可儲存超過 10 億個資料點</p></li>
-<li><p>每個分片內的區段會自動在各台機器上達到平衡</p></li>
+<li><p>每個分塊內的區段會自動在各台機器上達到平衡</p></li>
 <li><p>擴充集合就像增加分片數量一樣簡單</p></li>
 <li><p>即將推出的 Milvus 3.0 將會引入動態分片功能，甚至連這個最基本的手動步驟都可以省去。</p></li>
 </ul>

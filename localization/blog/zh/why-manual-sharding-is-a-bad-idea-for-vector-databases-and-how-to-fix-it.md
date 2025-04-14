@@ -3,7 +3,7 @@ id: why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 title: 为什么手动分片对向量数据库来说是个坏主意，以及如何解决这个问题
 author: James Luan
 date: 2025-03-18T00:00:00.000Z
-desc: 了解手动向量数据库分片为何会造成瓶颈，以及 Milvus 的自动扩展如何消除工程开销，实现无缝增长。
+desc: 了解手动向量数据库分片为何会产生瓶颈，以及 Milvus 的自动扩展如何消除工程开销，实现无缝增长。
 cover: >-
   assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
@@ -12,7 +12,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>"一家企业级人工智能 SaaS 初创公司的首席技术官亚历克斯回忆说：<em>"我们最初是在 pgvector 而不是 Milvus 上构建语义搜索的，因为我们所有的关系型数据都已经在 PostgreSQL</em>中了。<em>"但是，当我们的产品与市场相匹配时，我们的发展就遇到了工程方面的严重障碍。我们很快就发现，pgvector 并不是为可扩展性而设计的。诸如在多个分片上推出 Schema 更新之类的简单任务变成了乏味、容易出错的流程，耗费了数天的工程精力。当我们的向量嵌入数达到 1 亿时，查询延迟飙升到了 1 秒以上，远远超出了客户的承受能力。搬到 Milvus 后，手动分片的感觉就像走进了石器时代。把分片服务器当作易碎品一样摆弄，这可不是件好玩的事。任何公司都不应该承受这种痛苦。</em></p>
+<p>"一家企业级人工智能 SaaS 初创公司的首席技术官亚历克斯回忆说：<em>"我们最初是在 pgvector 而不是 Milvus 上构建语义搜索的，因为我们所有的关系数据都已经在 PostgreSQL 中了</em>。<em>"但是，当我们的产品与市场相匹配时，我们的发展就遇到了工程方面的严重障碍。我们很快就发现，pgvector 并不是为可扩展性而设计的。诸如在多个分片上推出 Schema 更新之类的简单任务变成了乏味、容易出错的流程，耗费了数天的工程精力。当我们的向量嵌入数达到 1 亿时，查询延迟飙升到了 1 秒以上，远远超出了客户的承受能力。搬到 Milvus 后，手动分片的感觉就像走进了石器时代。把分片服务器当作易碎品一样摆弄，这可不是件好玩的事。任何公司都不应该承受这种痛苦。</em></p>
 <h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">人工智能公司面临的共同挑战<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -28,7 +28,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>对于 pgvector 用户来说，Alex 的经历并非独一无二。无论你使用的是 pgvector、Qdrant、Weaviate 还是其他依赖手动分片的向量数据库，扩展方面的挑战都是一样的。随着数据量的增长，最初的可管理解决方案很快就会变成技术债务。</p>
+    </button></h2><p>对于 pgvector 用户来说，Alex 的经历并非独一无二。无论你使用的是 pgvector、Qdrant、Weaviate 还是其他依赖手动分片的向量数据库，扩展挑战都是一样的。随着数据量的增长，最初的可管理解决方案很快就会变成技术债务。</p>
 <p>对于今天的初创企业来说，<strong>可扩展性不是可有可无的，而是至关重要的</strong>。对于由大型语言模型（LLM）和向量数据库驱动的人工智能产品来说尤其如此，从早期采用到指数级增长的飞跃可能在一夜之间发生。实现产品与市场的契合往往会引发用户激增、数据流入量过大以及查询需求激增。但是，如果数据库基础设施跟不上，缓慢的查询和低效的操作符就会阻碍发展势头，阻碍业务成功。</p>
 <p>一个短期的技术决策可能会导致长期的瓶颈，迫使工程团队不断解决紧急的性能问题、数据库崩溃和系统故障，而不是专注于创新。最坏的情况是什么？重新架构数据库，成本高昂，耗时漫长，而这恰恰是公司应该进行扩展的时候。</p>
 <h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">分片难道不是可扩展性的自然解决方案吗？<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
@@ -88,8 +88,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>许多开发人员--从初创企业到大型企业--都认识到了手动数据库分片带来的巨大开销。Milvus 从根本上采用了不同的方法，实现了从数百万到数十亿向量的无缝扩展，而没有复杂性。</p>
-<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">无技术债务的自动扩展</h3><p>Milvus 利用 Kubernetes 和分解存储-计算架构支持无缝扩展。这种设计实现了</p>
+    </button></h2><p>许多开发人员--从初创企业到大型企业--都认识到了手动数据库分片带来的巨大开销。Milvus 从根本上采用了不同的方法，实现了从数百万到数十亿向量的无缝扩展，而不存在复杂性。</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">无需技术债务的自动扩展</h3><p>Milvus 利用 Kubernetes 和分解存储-计算架构支持无缝扩展。这种设计可实现</p>
 <ul>
 <li><p>快速扩展以应对不断变化的需求</p></li>
 <li><p>在所有可用节点上自动平衡负载</p></li>

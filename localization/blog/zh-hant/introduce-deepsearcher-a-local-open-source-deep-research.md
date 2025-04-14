@@ -14,8 +14,8 @@ canonicalUrl: >-
 ---
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="deep researcher.gif" class="doc-image" id="deep-researcher.gif" />
-   </span> <span class="img-wrapper"> <span>深度研究者.gif</span> </span></p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="DeepSearcher" class="doc-image" id="deepsearcher" />
+   </span> <span class="img-wrapper"> <span>深度搜尋器</span> </span></p>
 <p>在上一篇文章<a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>「I Built a Deep Research with Open Source-and So Can You!」</em></a>中<a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>，</em></a>我們闡述了研究代理的一些基本原理，並建構了一個簡單的原型，可針對指定的主題或問題產生詳細的報告。這篇文章和相對應的筆記型電腦展示了<em>工具使用</em>、<em>查詢分解</em>、<em>推理</em>和<em>反省</em>的基本概念。我們上一篇文章中的範例，與 OpenAI 的 Deep Research 相反，是在本地執行，只使用<a href="https://milvus.io/docs">Milvus</a>和 LangChain 等開源模型和工具。(我鼓勵您先閱讀<a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">上面的文章</a>再繼續)。</p>
 <p>在接下來的幾個星期裡，人們對於理解和複製 OpenAI 的深度研究產生了爆炸性的興趣。例如，請參閱<a href="https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research">Perplexity Deep Research</a>和<a href="https://huggingface.co/blog/open-deep-research">Hugging Face 的 Open DeepResearch</a>。這些工具在架構和方法上有所不同，但目標相同：透過網路或內部文件迭代研究主題或問題，並輸出詳細、有資料且結構良好的報告。重要的是，底層代理程式會自動推理在每個中間步驟中應採取的行動。</p>
 <p>在本篇文章中，我們將在上一篇文章的基礎上，介紹 Zilliz 的<a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>開源專案。我們的代理程式展示了其他概念：<em>查詢路由、條件執行流程</em>，以及<em>作為工具的網路爬行</em>。它是以 Python 函式庫和命令列工具的形式呈現，而非 Jupyter 記事本，而且功能比我們之前的文章更齊全。舉例來說，它可以輸入多個來源文件，並可透過設定檔設定所使用的嵌入模型和向量資料庫。雖然 DeepSearcher 仍然相對簡單，但它是代理式 RAG 的絕佳展示，也是邁向最先進 AI 應用程式的一大步。</p>
@@ -23,8 +23,8 @@ canonicalUrl: >-
 <p>SambaNova Cloud 也提供其他開源模型的推論即服務，包括 Llama 3.x、Qwen2.5 和 QwQ。推論服務運行在 SambaNova 的客製晶片上，稱為可重構資料流程單元 (RDU)，專門設計用於 Generative AI 模型的高效推論，可降低成本並提高推論速度。<a href="https://sambanova.ai/technology/sn40l-rdu-ai-chip">請至其網站瞭解更多資訊。</a></p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output speed- deepseek r1.png" class="doc-image" id="output-speed--deepseek-r1.png" />
-   </span> <span class="img-wrapper"> <span>輸出速度- deepseek r1.png</span> </span></p>
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output Speed- DeepSeek R1" class="doc-image" id="output-speed--deepseek-r1" />
+   </span> <span class="img-wrapper"> <span>輸出速度- DeepSeek R1</span> </span></p>
 <h2 id="DeepSearcher-Architecture" class="common-anchor-header">DeepSearcher 架構<button data-href="#DeepSearcher-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -40,12 +40,12 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>的架構遵循我們之前的文章，將問題分成四個步驟 -<em>定義/提煉問題</em>、<em>研究</em>、<em>分析</em>、<em>綜合</em>- 不過這次有一些重疊。我們將逐一介紹每個步驟，並強調<a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>的改進之處。</p>
+    </button></h2><p><a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>的架構遵循我們之前的文章，將問題分成四個步驟 -<em>定義/提昇問題</em>、<em>研究</em>、<em>分析</em>、<em>綜合</em>- 不過這次有一些重疊。我們將逐一介紹每個步驟，並強調<a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>的改進之處。</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="deepsearcher architecture.png" class="doc-image" id="deepsearcher-architecture.png" />
-   </span> <span class="img-wrapper"> <span>Deepsearcher 架構.png</span> </span></p>
-<h3 id="Define-and-Refine-the-Question" class="common-anchor-header">定義並精煉問題</h3><pre><code translate="no" class="language-txt">Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="DeepSearcher Architecture" class="doc-image" id="deepsearcher-architecture" />
+   </span> <span class="img-wrapper"> <span>DeepSearcher 架構</span> </span></p>
+<h3 id="Define-and-Refine-the-Question" class="common-anchor-header">定義和提煉問題</h3><pre><code translate="no" class="language-txt">Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [
   <span class="hljs-string">&#x27;How has the cultural impact and societal relevance of The Simpsons evolved from its debut to the present?&#x27;</span>,
   <span class="hljs-string">&#x27;What changes in character development, humor, and storytelling styles have occurred across different seasons of The Simpsons?&#x27;</span>, 
   <span class="hljs-string">&#x27;How has the animation style and production technology of The Simpsons changed over time?&#x27;</span>,
@@ -156,7 +156,7 @@ If the original query is to write a report, then you prefer to generate some fur
     &quot;&quot;&quot;</span>
     <span class="hljs-keyword">return</span> summary_prompt
 <button class="copy-code-btn"></button></code></pre>
-<p>我們的原型是單獨分析每個問題，然後簡單地串接輸出，與此相比，這種方法的優點是製作的報告中所有部分都是一致的，即不包含重複或矛盾的資訊。一個更複雜的系統可以結合兩者的某些方面，使用條件執行流程來結構化報告、總結、重寫、反思和樞軸等等，這將留待未來的工作來進行。</p>
+<p>我們的原型是單獨分析每個問題，然後簡單地串接輸出，與此相比，這種方法的優點是製作的報告中所有部分都是一致的，即不包含重複或矛盾的資訊。一個更複雜的系統可以結合兩者的某些方面，使用條件執行流程來結構化報告、總結、重寫、反思及透視等，我們將此留待未來的工作。</p>
 <h2 id="Results" class="common-anchor-header">結果<button data-href="#Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -197,8 +197,8 @@ If the original query is to write a report, then you prefer to generate some fur
         ></path>
       </svg>
     </button></h2><p>我們介紹了<a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>，一個執行研究與撰寫報告的代理程式。我們的系統建立在前一篇文章的概念上，並加入了條件執行流程、查詢路由和改良介面等功能。我們從使用小型 4 位元量化推理模型的本機推理，改為使用大型 DeepSeek-R1 模型的線上推理服務，從質上改善了我們的輸出報告。DeepSearcher 可與大多數的推理服務搭配使用，例如 OpenAI、Gemini、DeepSeek 和 Grok 3（即將推出！）。</p>
-<p>推理模型，尤其是用在研究代理中的推理模型，是推理的重中之重，我們很幸運能使用 SambaNova 提供的最快的 DeepSeek-R1 在他們的客製化硬體上運行。在我們的示範查詢中，我們調用了 65 次 SambaNova 的 DeepSeek-R1 推理服務，輸入了約 25k token，輸出了 22k token，成本為 0.30 美元。由於模型包含 671 億個參數，而且有 3/4 TB 之大，推論的速度讓我們印象深刻。<a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">在此瞭解更多詳細資訊！</a></p>
-<p>我們將在未來的文章中繼續迭代這項工作，檢視更多的代理概念和研究代理的設計空間。與此同時，我們邀請大家嘗試使用<a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>，<a href="https://github.com/zilliztech/deep-searcher">在 GitHub 賦予我們星星</a>，並分享您的意見！</p>
+<p>推理模型，尤其是用在研究代理中的推理模型，都是重推理的，而我們很幸運能使用 SambaNova 在其客製化硬體上運行的 DeepSeek-R1 最快版本。在我們的示範查詢中，我們調用了 65 次 SambaNova 的 DeepSeek-R1 推理服務，輸入約 25k token，輸出 22k token，成本為 0.30 美元。鑑於模型包含 671 億個參數，而且有 3/4 TB 之大，推論的速度讓我們印象深刻。<a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">在此瞭解更多詳細資訊！</a></p>
+<p>我們將在未來的文章中繼續迭代這項工作，檢視更多的代理概念和研究代理的設計空間。與此同時，我們邀請大家試用<a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>，<a href="https://github.com/zilliztech/deep-searcher">在 GitHub 上給予我們星星</a>，並分享您的意見！</p>
 <h2 id="Resources" class="common-anchor-header">資源<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
