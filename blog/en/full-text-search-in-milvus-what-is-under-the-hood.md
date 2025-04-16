@@ -93,9 +93,8 @@ This will be our **query vector**.
 The Inner Product of the document vector and query vector is:
 
 $$
-IDF(i) \cdot 0 + IDF(who) \cdot 0 + IDF(love) \cdot f(TF(love)) + IDF(milvus) \cdot f(TF(milvus))
+0 \cdot f(\text{TF}(i)) + \text{IDF}(\text{who}) \cdot 0 + \text{IDF}(\text{love}) \cdot f(\text{TF}(\text{love})) + \text{IDF}(\text{milvus}) \cdot f(\text{TF}(\text{milvus}))
 $$
-
 
 Which is exactly the BM25 score of the query `Who loves Milvus?` and document `I love Milvus!`.
 
