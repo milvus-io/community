@@ -39,9 +39,9 @@ $$
 
 Keys:
 
-1. **Term Frequency** ($TF(t, D)$): number of occurrences of the term *t* in document *D*. $k_1$ is a saturation argument to **prevent words that occur too frequently from dominating the score**.
+1. **Term Frequency** ( $TF(t, D)$ ): number of occurrences of the term *t* in document *D*. $k_1$ is a saturation argument to **prevent words that occur too frequently from dominating the score**.
 
-2. **Inverse Document Frequency** ($IDF(t)$): measures the importance of a term. The fewer documents it appears in, the more important BM25 thinks it is. $N$ is the total number of documents in the corpus, $n(q_i)$ is the number of documents that contain the word $q_i$.
+2. **Inverse Document Frequency** ( $IDF(t)$ ): measures the importance of a term. The fewer documents it appears in, the more important BM25 thinks it is. $N$ is the total number of documents in the corpus, $n(q_i)$ is the number of documents that contain the word $q_i$.
 
 3. **Document Length Normalization:** TF-IDF tends to rank longer documents higher since they are more likely to contain query terms. BM25 reduces this bias by normalizing with average document length. $b$ can be used to tune normalization strength. $|D|$ is the length of the document (total number of terms), $avgdl$ is the average document length of all documents.
 
