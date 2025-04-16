@@ -6,6 +6,7 @@ title:
 author: Buqian Zheng
 date: 2025-04-15
 cover: assets.zilliz.com/full_text_search_in_Milvus_faf7261290.png
+desc: Discover how Milvus integrates Sparse-BM25 for full-text search, enhancing semantic retrieval with predictable performance and specialized terminology handling.
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, Vector Search
 recommend: false
@@ -17,12 +18,12 @@ canonicalUrl: https://milvus.io/blog/full-text-search-in-milvus-what-is-under-th
 
 While dense embedding retrieval excels at semantic search, full-text search algorithms like BM25 continue to play an important role in retrieval tasks, complementing dense embedding approaches with their predictability and ability to handle specialized terminology.
 
-Since version 2.5, Milvus introduced built-in support for full-text search with the Sparse-BM25 approach, allowing users to easily integrate this capability into their search pipelines without the need for a separate search engine. In this blog, we will unveil how Sparse-BM25 works in Milvus.
+Since [version 2.5](https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md), Milvus introduced built-in support for full-text search with the Sparse-BM25 approach, allowing users to easily integrate this capability into their search pipelines without the need for a separate search engine. In this blog, we will unveil how Sparse-BM25 works in Milvus.
 
 
 ## The Famous BM25 Ranking Algorithm
 
-BM25, short for Best Match 25, is a relevance ranking algorithm, designed to improve the TF-IDF (Term Frequency-Inverse Document Frequency) algorithm.
+[BM25](https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus), short for Best Match 25, is a relevance ranking algorithm, designed to improve the TF-IDF (Term Frequency-Inverse Document Frequency) algorithm.
 
 Given a set of documents, this is how we compute the BM25 relevance score between a query $Q$ and an arbitrary document $D$:
 
@@ -128,7 +129,7 @@ At insertion time, texts are tokenized and converted into sparse vectors by Milv
 With this new feature, performing full-text search in Milvus is straightforward. Let’s walk through an example using **PyMilvus**, the official Python client for Milvus.
 
 
-### **Step 1: Define a Collection Schema**
+### Step 1: Define a Collection Schema
 
 First, we need to create a collection and define fields for **the raw text data and the encoded document sparse vectors** (we only need to ingest raw text data, the sparse vector is computed by Milvus internally).
 
@@ -158,7 +159,7 @@ schema.add_function(bm25_function)
 > 💡 Make sure enable_analyzer=True is set for the text field to be searchable using BM25. You can also configure a custom analyzer if needed—see the [Analyzer documentation](https://milvus.io/docs/analyzers.md) for details.
 
 
-### **Step 2: Create an Index**
+### Step 2: Create an Index
 
 Just like dense vector fields, sparse vector fields also require an index. Here, we create an automatic index using the BM25 metric.
 
@@ -180,7 +181,7 @@ client.create_collection(
 ```
 
 
-### **Step 3: Insert Data (Raw Text Only)**
+### Step 3: Insert Data (Raw Text Only)
 
 With the schema and index ready, we can now insert raw text into the collection. There’s no need to provide the sparse vector—Milvus generates it automatically using the BM25 function.
 
@@ -195,7 +196,7 @@ client.insert("hello_bm25", entities)
 ```
 
 
-### **Step 4: Perform a Full-Text Search**
+### Step 4: Perform a Full-Text Search
 
 You can now search using natural language queries!
 
@@ -213,7 +214,7 @@ client.search(
 That's all, simple like that!
 
 
-## **Conclusion**
+## Conclusion
 
 With built-in BM25 support, Milvus brings full-text search and vector search together in one unified engine. By handling tokenization, sparse vector encoding, and dynamic stats internally, it removes the cumbersome manual BM25 sparse vector computation outside of vector database.
 
