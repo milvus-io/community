@@ -36,8 +36,7 @@ $$
 $$
 
 
-
-Keys:
+Here are some key points:
 
 1. **Term Frequency** ( $TF(t, D)$ ): number of occurrences of the term *t* in document *D*. $k_1$ is a saturation argument to **prevent words that occur too frequently from dominating the score**.
 
