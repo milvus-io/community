@@ -8,7 +8,7 @@ desc: Experience Milvus SDK v2, reimagined for developers! Enjoy a unified API, 
 cover: assets.zilliz.com/Introducing_Milvus_SDK_v2_05c9e5e8b2.png
 tag: Engineering
 tags: Milvus SDK v2, Async Support, Milvus vector database
-canonicalUrl: https://introducing-milvus-sdk-v2-native-async-support-unified-apis-and-superior-performance.md
+canonicalUrl: https://milvus.io/blog/introducing-milvus-sdk-v2-native-async-support-unified-apis-and-superior-performance.md
 ---
 
 
