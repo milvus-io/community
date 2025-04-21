@@ -156,5 +156,7 @@
   "blog/en/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md": "2025-04-07T10:22:42.106Z",
   "blog/en/what-is-a-vector-database.md": "2025-04-07T10:23:32.118Z",
   "blog/en/how-to-choose-the-right-embedding-model.md": "2025-04-14T10:22:24.891Z",
-  "blog/en/introducing-the-milvus-sizing-tool-calculating-and-optimizing-your-milvus-deployment-resources.md": "2025-04-14T10:23:07.270Z"
+  "blog/en/introducing-the-milvus-sizing-tool-calculating-and-optimizing-your-milvus-deployment-resources.md": "2025-04-14T10:23:07.270Z",
+  "blog/en/full-text-search-in-milvus-what-is-under-the-hood.md": "2025-04-21T10:20:40.387Z",
+  "blog/en/introducing-milvus-sdk-v2-native-async-support-unified-apis-and-superior-performance.md": "2025-04-21T10:21:00.170Z"
 }
