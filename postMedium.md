@@ -18,7 +18,7 @@ const post = async (url, data, opts = {}) => {
   });
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error.message);
+    throw new Error(error?.message);
   }
   return res.json();
 };
@@ -37,7 +37,7 @@ const post2Medium = async (userId, body) => {
     return res;
   } catch (error) {
     console.log("---- error ----", error);
-    throw new Error(`Failed to post to medium: ${error?.message}`);
+    throw new Error(`Failed to post to medium: ${error}`);
   }
 };
 
@@ -60,7 +60,7 @@ const readMdFiles = async (pathList = []) => {
   let skipList = [];
   let userId = '';
 
-  const me = await fetch(`${BASE_MEDIUM_POST_API}me`, {
+  const res = await fetch(`${BASE_MEDIUM_POST_API}me`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${MEDIUM_POST_TOKEN}`,
@@ -72,9 +72,11 @@ const readMdFiles = async (pathList = []) => {
 
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error.message);
+    throw new Error(error?.message);
   }
+  const me = await res.json();
   userId = me.data.id;
+  console.log('userId----',userId);
 
   for await (const filePath of pathList) {
     if (filePath.startsWith("blog/") && filePath.endsWith(".md")) {
@@ -121,7 +123,7 @@ const readMdFiles = async (pathList = []) => {
 
       } catch (error) {
         console.error(`---- error [${filePath}] ----`, error);
-        failureList.push({ title, error: JSON.stringify(error.message) });
+        failureList.push({ title, error: JSON.stringify(error) });
       }
     }
   }
