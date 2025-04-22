@@ -18,7 +18,7 @@ const post = async (url, data, opts = {}) => {
   });
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error?.message);
+    throw new Error(error?.errors?.[0]?.message);
   }
   return res.json();
 };
@@ -72,7 +72,7 @@ const readMdFiles = async (pathList = []) => {
 
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error?.message);
+    throw new Error(error?.errors?.[0]?.message);
   }
   const me = await res.json();
   userId = me.data.id;
