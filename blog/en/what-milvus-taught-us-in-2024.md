@@ -121,7 +121,7 @@ Having chosen a deployment type and got it running, users want to feel comfortab
 
 ### How do I measure performance?
 
-Users want to check metrics related to the performance of their deployment so they can understand and remedy bottlenecks. Metrics mentioned include average query latency, distribution of latencies, query volume, memory usage, disk storage, and so on. While obtaining these metrics with [the legacy monitoring system](https://milvus.io/docs/monitor_overview.md) has been challenging, Milvus 2.5 introduces a new system called [WebUI](https://milvus.io/docs/milvus-webui.md#Milvus-WebUI) (feedback welcome!), which allows you to access all this information from a user-friendly web interface.
+Users want to check metrics related to the performance of their deployment so they can understand and remedy bottlenecks. Metrics mentioned include average query latency, distribution of latencies, query volume, memory usage, disk storage, and so on. These metrics can be observed from the [monitoring system](https://milvus.io/docs/monitor_overview.md). In addition, Milvus 2.5 introduces a new tool called [WebUI](https://milvus.io/docs/milvus-webui.md#Milvus-WebUI) (feedback welcome!), which allows you to access more system internal information like segment compaction status, from a user-friendly web interface.
 
 
 ### What’s happening inside Milvus right now (i.e. observe state)?
