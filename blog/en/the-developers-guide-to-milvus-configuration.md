@@ -4,12 +4,13 @@ title: The Developer’s Guide to Milvus Configuration
 author: Jack Li
 date: 2025-04-23
 desc: Simplify your Milvus configuration with our focused guide. Discover key parameters to adjust for enhanced performance in your vector database applications. 
-cover: assets.zilliz.com/Introducing_Milvus_SDK_v2_05c9e5e8b2.png
+cover: assets.zilliz.com/The_Developer_s_Guide_to_Milvus_Configuration_1519241756.png
 tag: Tutorials
 recommend: true
 publishToMedium: true
-isPublish: true
-tags: Milvus, configurations, performance, scalability, stability 
+tags: Milvus, vector database, vector search
+meta_keywords: Milvus, configurations, performance, scalability, stability
+meta_title: The Developer’s Guide to Milvus Configuration
 origin: https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md
 ---
 
