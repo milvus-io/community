@@ -1,9 +1,7 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: >-
-  Berhenti Menggunakan RAG yang Sudah Usang: Pendekatan RAG Agentic DeepSearcher
-  Mengubah Segalanya
+title: 'Berhenti Membangun Vanilla RAG: Rangkullah Agentic RAG dengan DeepSearcher'
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -55,7 +53,7 @@ canonicalUrl: >-
   </span>
 </p>
 <p><em>Gambar 1:</em> <em>Sejarah bintang DeepSearcher (</em><a href="https://www.star-history.com/#zilliztech/deep-searcher&amp;Date"><em>Sumber</em></a><em>)</em></p>
-<p>Dalam artikel ini, kita akan mengeksplorasi evolusi dari RAG tradisional ke Agentic RAG, mengeksplorasi apa yang secara khusus membuat pendekatan ini berbeda pada tingkat teknis. Kemudian kita akan membahas implementasi DeepSearcher, menunjukkan bagaimana DeepSearcher memanfaatkan kemampuan agen cerdas untuk memungkinkan penalaran multi-turn yang dinamis - dan mengapa hal ini penting bagi para pengembang yang membangun solusi pencarian tingkat perusahaan.</p>
+<p>Dalam artikel ini, kita akan menjelajahi evolusi dari RAG tradisional ke Agentic RAG, mengeksplorasi apa yang secara khusus membuat pendekatan ini berbeda pada tingkat teknis. Kemudian kita akan membahas implementasi DeepSearcher, menunjukkan bagaimana DeepSearcher memanfaatkan kemampuan agen cerdas untuk memungkinkan penalaran multi-turn yang dinamis - dan mengapa hal ini penting bagi para pengembang yang membangun solusi pencarian tingkat perusahaan.</p>
 <h2 id="From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="common-anchor-header">Dari RAG Tradisional ke Agentic RAG: Kekuatan Penalaran Iteratif<button data-href="#From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -145,7 +143,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah diinstal dan dikonfigurasi, DeepSearcher mengindeks file lokal Anda melalui basis data vektor Milvus. Ketika Anda mengirimkan kueri, DeepSearcher melakukan pencarian yang komprehensif dan mendalam terhadap konten yang diindeks ini. Keuntungan utama bagi para pengembang adalah bahwa sistem mencatat setiap langkah proses pencarian dan penalarannya, memberikan transparansi tentang bagaimana sistem ini sampai pada kesimpulannya-fitur penting untuk melakukan debug dan mengoptimalkan sistem RAG.</p>
+    </button></h2><p>Setelah diinstal dan dikonfigurasi, DeepSearcher mengindeks file lokal Anda melalui basis data vektor Milvus. Ketika Anda mengirimkan kueri, DeepSearcher melakukan pencarian yang komprehensif dan mendalam terhadap konten yang diindeks ini. Keuntungan utama bagi para pengembang adalah bahwa sistem ini mencatat setiap langkah proses pencarian dan penalarannya, memberikan transparansi tentang bagaimana sistem ini sampai pada kesimpulannya-fitur penting untuk melakukan debug dan mengoptimalkan sistem RAG.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_3_Accelerated_Playback_of_Deep_Searcher_Iteration_0c36baea2f.png" alt="" class="doc-image" id="" />

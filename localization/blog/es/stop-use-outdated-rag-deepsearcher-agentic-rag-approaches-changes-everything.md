@@ -1,9 +1,7 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: >-
-  Deje de utilizar GAR anticuadas: el enfoque de GAR agenética de DeepSearcher
-  lo cambia todo
+title: 'Deje de construir RAG de vainilla: adopte el RAG agenético con DeepSearcher'
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -55,7 +53,7 @@ canonicalUrl: >-
   </span>
 </p>
 <p><em>Figura 1:</em> <em>Historia estelar de DeepSearcher (</em><a href="https://www.star-history.com/#zilliztech/deep-searcher&amp;Date"><em>Fuente</em></a><em>)</em></p>
-<p>En este artículo, exploraremos la evolución de la RAG tradicional a la RAG Agentic, explorando lo que específicamente hace que estos enfoques sean diferentes a nivel técnico. Luego discutiremos la implementación de DeepSearcher, mostrando cómo aprovecha las capacidades de los agentes inteligentes para permitir el razonamiento dinámico y multi-vuelta, y por qué esto es importante para los desarrolladores que construyen soluciones de búsqueda a nivel empresarial.</p>
+<p>En este artículo, exploraremos la evolución de la RAG tradicional a la RAG Agentic, explorando lo que hace específicamente que estos enfoques sean diferentes a nivel técnico. Luego discutiremos la implementación de DeepSearcher, mostrando cómo aprovecha las capacidades de los agentes inteligentes para permitir el razonamiento dinámico y multi-vuelta, y por qué esto es importante para los desarrolladores que construyen soluciones de búsqueda a nivel empresarial.</p>
 <h2 id="From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="common-anchor-header">De la RAG tradicional a la Agentic RAG: el poder del razonamiento iterativo<button data-href="#From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -129,7 +127,7 @@ canonicalUrl: >-
 <li><p>Gestión de metadatos para una recuperación eficiente</p></li>
 </ul>
 <h3 id="2-Online-Reasoning-and-Query-Module" class="common-anchor-header">2. Módulo de razonamiento y consulta en línea</h3><p>Este componente implementa diversas estrategias de agentes en el marco de la GAR para ofrecer respuestas precisas y perspicaces. Funciona en un bucle iterativo dinámico: después de cada recuperación de datos, el sistema reflexiona sobre si la información acumulada responde suficientemente a la consulta original. En caso negativo, se activa otra iteración; en caso afirmativo, se genera el informe final.</p>
-<p>Este ciclo continuo de "seguimiento" y "reflexión" representa una mejora fundamental respecto a otros planteamientos básicos de GAR. Mientras que el GAR tradicional realiza un proceso de recuperación y generación de datos de una sola vez, el enfoque iterativo de DeepSearcher refleja la forma de trabajar de los investigadores humanos: formulación de preguntas iniciales, evaluación de la información recibida, identificación de lagunas y búsqueda de nuevas líneas de investigación.</p>
+<p>Este ciclo continuo de "seguimiento" y "reflexión" representa una mejora fundamental respecto a otros planteamientos básicos de GAR. Mientras que el GAR tradicional realiza un proceso de recuperación y generación de datos de una sola vez, el enfoque iterativo de DeepSearcher refleja cómo trabajan los investigadores humanos: formulando preguntas iniciales, evaluando la información recibida, identificando lagunas y buscando nuevas líneas de investigación.</p>
 <h2 id="How-Effective-is-DeepSearcher-and-What-Use-Cases-is-It-Best-Suited-For" class="common-anchor-header">¿Cuál es la eficacia de DeepSearcher y para qué casos de uso es más adecuado?<button data-href="#How-Effective-is-DeepSearcher-and-What-Use-Cases-is-It-Best-Suited-For" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -275,7 +273,7 @@ By comparing their birth dates:
         ></path>
       </svg>
     </button></h2><p><a href="https://zilliz.com/blog/graphrag-explained-enhance-rag-with-knowledge-graphs">Graph RAG</a> también es capaz de gestionar consultas complejas, sobre todo consultas multisalto. Entonces, ¿cuál es la diferencia entre DeepSearcher (Agentic RAG) y Graph RAG?</p>
-<p>Graph RAG está diseñado para consultar documentos basándose en vínculos relacionales explícitos, lo que lo hace especialmente potente en consultas multisalto. Por ejemplo, al procesar una novela larga, Graph RAG puede extraer con precisión las intrincadas relaciones entre personajes. Sin embargo, este método requiere un uso considerable de tokens durante la importación de datos para trazar estas relaciones, y su modo de consulta tiende a ser rígido, por lo que normalmente sólo es eficaz para consultas de una única relación.</p>
+<p>Graph RAG está diseñado para consultar documentos basándose en enlaces relacionales explícitos, lo que lo hace especialmente potente en consultas multisalto. Por ejemplo, al procesar una novela larga, Graph RAG puede extraer con precisión las intrincadas relaciones entre personajes. Sin embargo, este método requiere un uso considerable de tokens durante la importación de datos para trazar estas relaciones, y su modo de consulta tiende a ser rígido, por lo que normalmente sólo es eficaz para consultas de una única relación.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_7_Graph_RAG_vs_Deep_Searcher_a5c7130374.png" alt="" class="doc-image" id="" />
@@ -306,7 +304,7 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A diferencia de Deep Research de OpenAI, DeepSearcher está específicamente diseñado para la recuperación y el análisis en profundidad de datos privados. Al aprovechar una base de datos vectorial, DeepSearcher puede ingerir diversas fuentes de datos, integrar varios tipos de datos y almacenarlos uniformemente en un repositorio de conocimiento basado en vectores. Sus sólidas capacidades de búsqueda semántica le permiten buscar eficientemente entre enormes cantidades de datos offline.</p>
+    </button></h2><p>A diferencia de Deep Research de OpenAI, DeepSearcher está específicamente diseñado para la recuperación y el análisis en profundidad de datos privados. Al aprovechar una base de datos vectorial, DeepSearcher puede ingerir diversas fuentes de datos, integrar varios tipos de datos y almacenarlos de manera uniforme en un repositorio de conocimiento basado en vectores. Sus sólidas capacidades de búsqueda semántica le permiten buscar eficientemente entre enormes cantidades de datos offline.</p>
 <p>Además, DeepSearcher es completamente de código abierto. Aunque Deep Research sigue siendo líder en calidad de generación de contenidos, tiene una cuota mensual y funciona como un producto de código cerrado, lo que significa que sus procesos internos están ocultos a los usuarios. En cambio, DeepSearcher ofrece total transparencia: los usuarios pueden examinar el código, personalizarlo para adaptarlo a sus necesidades o incluso implantarlo en sus propios entornos de producción.</p>
 <h2 id="Technical-Insights" class="common-anchor-header">Información técnica<button data-href="#Technical-Insights" class="anchor-icon" translate="no">
       <svg translate="no"

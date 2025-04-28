@@ -1,9 +1,7 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: >-
-  Deixe de utilizar RAG desactualizados: a abordagem RAG autêntica do
-  DeepSearcher muda tudo
+title: 'Deixar de criar um RAG simples: abraçar o RAG agêntico com o DeepSearcher'
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -29,7 +27,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>A evolução da tecnologia de pesquisa progrediu drasticamente ao longo das décadas - desde a recuperação baseada em palavras-chave nos anos anteriores a 2000 até às experiências de pesquisa personalizadas nos anos 2010. Estamos a testemunhar o surgimento de soluções alimentadas por IA capazes de lidar com consultas complexas que exigem uma análise profissional e aprofundada.</p>
-<p>O Deep Research da OpenAI exemplifica essa mudança, usando recursos de raciocínio para sintetizar grandes quantidades de informações e gerar relatórios de pesquisa em várias etapas. Por exemplo, quando perguntado sobre "Qual é a capitalização de mercado razoável da Tesla?" o Deep Research pode analisar de forma abrangente as finanças corporativas, as trajetórias de crescimento dos negócios e as estimativas de valor de mercado.</p>
+<p>O Deep Research da OpenAI exemplifica essa mudança, usando recursos de raciocínio para sintetizar grandes quantidades de informações e gerar relatórios de pesquisa em várias etapas. Por exemplo, quando perguntado sobre "Qual é a capitalização de mercado razoável da Tesla?" a Deep Research pode analisar de forma abrangente as finanças corporativas, as trajetórias de crescimento dos negócios e as estimativas de valor de mercado.</p>
 <p>O Deep Research implementa uma forma avançada da estrutura RAG (Retrieval-Augmented Generation) em seu núcleo. O RAG tradicional aprimora os resultados do modelo de linguagem recuperando e incorporando informações externas relevantes. A abordagem da OpenAI vai mais longe, implementando ciclos iterativos de recuperação e raciocínio. Em vez de uma única etapa de recuperação, o Deep Research gera dinamicamente várias consultas, avalia os resultados intermediários e refina sua estratégia de pesquisa - demonstrando como as técnicas RAG avançadas ou agênticas podem fornecer conteúdo de alta qualidade e de nível empresarial que se parece mais com pesquisa profissional do que com uma simples resposta a perguntas.</p>
 <h2 id="DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="common-anchor-header">DeepSearcher: Uma pesquisa profunda local trazendo RAG agêntico para todos<button data-href="#DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -248,9 +246,9 @@ By comparing their birth dates:
   </span>
 </p>
 <p><em>Figura 5: Iterações máximas vs. uso de token</em></p>
-<p>Os resultados mostram que o consumo de tokens aumenta linearmente com mais iterações. Por exemplo, com 4 iterações, o DeepSearcher consome cerca de 0,3 milhão de tokens. Usando uma estimativa aproximada com base no preço gpt-4o-mini da OpenAI de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,</mn><mi>60/1Moutputtokens</mi><mo separator="true">,</mo><mi>o que equivale a um custo</mi></mrow><annotation encoding="application/x-tex">médio</annotation><mrow><mi>de cerca de</mi><mi>0</mi></mrow><annotation encoding="application/x-tex">,60/1M de tokens de saída, isso equivale a um custo médio de cerca de</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord mathnormal">60/1Moutputtokens</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">o que equivale a um custo médio de cerca de</span><span class="mord mathnormal">0</span></span></span></span>,0036 por consulta (ou cerca de US$ 0,18 para 50 consultas).</p>
+<p>Os resultados mostram que o consumo de tokens aumenta linearmente com mais iterações. Por exemplo, com 4 iterações, o DeepSearcher consome cerca de 0,3 milhão de tokens. Usando uma estimativa aproximada com base no preço gpt-4o-mini da OpenAI de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,</mn><mi>60/1Moutputtokens</mi><mo separator="true">,</mo><mi>o que equivale a um custo</mi></mrow><annotation encoding="application/x-tex">médio</annotation><mrow><mi>de cerca de</mi><mi>0</mi></mrow><annotation encoding="application/x-tex">,60/1M de tokens de saída, isso equivale a um custo médio de cerca de</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord mathnormal">60/1Moutputtokens</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">o que equivale a um custo médio</span><span class="mord mathnormal">de</span><span class="mord mathnormal">cerca de 0</span></span></span></span>,0036 por consulta (ou cerca de US$ 0,18 para 50 consultas).</p>
 <p>Para modelos de inferência com recursos mais intensivos, os custos seriam várias vezes superiores devido ao preço mais elevado por token e a saídas de token maiores.</p>
-<h3 id="Model-Performance-Comparison" class="common-anchor-header">Comparação de desempenho do modelo</h3><p>Uma vantagem significativa do DeepSearcher é sua flexibilidade em alternar entre diferentes modelos. Testámos vários modelos de inferência e modelos de não-inferência (como o gpt-4o-mini). No geral, os modelos de inferência - especialmente o Claude 3.7 Sonnet - tenderam a ter o melhor desempenho, embora as diferenças não tenham sido dramáticas.</p>
+<h3 id="Model-Performance-Comparison" class="common-anchor-header">Comparação de desempenho do modelo</h3><p>Uma vantagem significativa do DeepSearcher é sua flexibilidade em alternar entre diferentes modelos. Testamos vários modelos de inferência e modelos de não-inferência (como gpt-4o-mini). No geral, os modelos de inferência - especialmente o Claude 3.7 Sonnet - tenderam a ter o melhor desempenho, embora as diferenças não tenham sido dramáticas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_6_Average_Recall_by_Model_153c93f616.png" alt="" class="doc-image" id="" />
@@ -258,7 +256,7 @@ By comparing their birth dates:
   </span>
 </p>
 <p><em>Figura 6: Recuperação média por modelo</em></p>
-<p>Notavelmente, alguns modelos menores de não inferência às vezes não conseguiam concluir o processo completo de consulta do agente devido à sua capacidade limitada de seguir instruções - um desafio comum para muitos desenvolvedores que trabalham com sistemas semelhantes.</p>
+<p>Notavelmente, alguns modelos menores de não-inferência às vezes não conseguiam concluir o processo completo de consulta do agente devido à sua capacidade limitada de seguir instruções - um desafio comum para muitos desenvolvedores que trabalham com sistemas semelhantes.</p>
 <h2 id="DeepSearcher-Agentic-RAG-vs-Graph-RAG" class="common-anchor-header">DeepSearcher (Agentic RAG) vs. Graph RAG<button data-href="#DeepSearcher-Agentic-RAG-vs-Graph-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -289,7 +287,7 @@ By comparing their birth dates:
 <li><p>Tratamento dinâmico de consultas: O sistema pode ajustar a sua estratégia de recuperação em tempo real com base em descobertas intermédias</p></li>
 <li><p>Custos mais altos por consulta: Cada consulta requer mais computação do que o Graph RAG, mas fornece resultados mais flexíveis</p></li>
 </ol>
-<p>Para os programadores, esta distinção é crucial na conceção de sistemas com diferentes padrões de utilização. O Graph RAG pode ser mais eficiente para aplicativos com padrões de consulta previsíveis e alto volume de consultas, enquanto a abordagem do DeepSearcher se destaca em cenários que exigem flexibilidade e lidam com consultas complexas e imprevisíveis.</p>
+<p>Para os programadores, esta distinção é crucial na conceção de sistemas com diferentes padrões de utilização. O Graph RAG pode ser mais eficiente para aplicativos com padrões de consulta previsíveis e alto volume de consultas, enquanto a abordagem do DeepSearcher se sobressai em cenários que exigem flexibilidade e lidam com consultas complexas e imprevisíveis.</p>
 <p>Olhando para o futuro, à medida que o custo dos LLMs diminui e o desempenho da inferência continua a melhorar, é provável que os sistemas Agentic RAG, como o DeepSearcher, se tornem mais predominantes. A desvantagem do custo computacional diminuirá, enquanto a vantagem da flexibilidade permanecerá.</p>
 <h2 id="DeepSearcher-vs-Deep-Research" class="common-anchor-header">DeepSearcher vs. Deep Research<button data-href="#DeepSearcher-vs-Deep-Research" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -362,7 +360,7 @@ By comparing their birth dates:
 <ol>
 <li><p>Raciocínio iterativo: A capacidade de dividir consultas complexas em subetapas lógicas e construir progressivamente respostas abrangentes</p></li>
 <li><p>Arquitetura flexível: Suporte para troca de modelos subjacentes e personalização do processo de raciocínio para atender às necessidades específicas da aplicação</p></li>
-<li><p>Integração da base de dados Vetor: Ligação perfeita a Milvus para um armazenamento e recuperação eficientes de incorporações vectoriais a partir de fontes de dados privadas</p></li>
+<li><p>Integração da base de dados Vetor: Ligação perfeita a Milvus para um armazenamento e recuperação eficientes de incorporação de vectores a partir de fontes de dados privadas</p></li>
 <li><p>Execução transparente: Registro detalhado de cada etapa de raciocínio, permitindo que os desenvolvedores depurem e otimizem o comportamento do sistema</p></li>
 </ol>
 <p>Nossos testes de desempenho confirmam que o DeepSearcher fornece resultados superiores para consultas complexas em comparação com as abordagens RAG tradicionais, embora com compensações claras na eficiência computacional. A configuração ideal (normalmente em torno de 3 iterações) equilibra precisão e consumo de recursos.</p>

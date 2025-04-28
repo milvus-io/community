@@ -2,8 +2,8 @@
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
 title: >-
-  Schluss mit veralteten RAG: Der agentische RAG-Ansatz von DeepSearcher ändert
-  alles
+  Hören Sie auf, Vanilla RAG zu bauen: Setzen Sie auf Agentic RAG mit
+  DeepSearcher
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -166,7 +166,7 @@ _<span class="hljs-string">&#x27;How has the animation style and production tech
 
 _<span class="hljs-string">&#x27;How have audience demographics, reception, and ratings of The Simpsons shifted throughout its run?&#x27;</span>]_
 <button class="copy-code-btn"></button></code></pre>
-<p>Er ruft relevante Informationen ab und verfeinert dann in Iterationen mit Feedback seine Suche, indem er die nächsten Unterabfragen generiert:</p>
+<p>Er ruft relevante Informationen ab und verfeinert dann mit Hilfe von Feedback seine Suche, indem er die nächsten Unterabfragen generiert:</p>
 <pre><code translate="no">_New search queries <span class="hljs-keyword">for</span> <span class="hljs-built_in">next</span> iteration: [_
 
 _<span class="hljs-string">&quot;How have changes in The Simpsons&#x27; voice cast and production team influenced the show&#x27;s evolution over different seasons?&quot;</span>,_
@@ -290,7 +290,7 @@ By comparing their birth dates:
 <li><p>Höhere Kosten pro Abfrage: Jede Abfrage erfordert mehr Berechnungen als Graph RAG, liefert aber flexiblere Ergebnisse.</p></li>
 </ol>
 <p>Für Entwickler ist diese Unterscheidung entscheidend, wenn sie Systeme mit unterschiedlichen Nutzungsmustern entwerfen. Graph RAG kann für Anwendungen mit vorhersehbaren Abfragemustern und hohem Abfragevolumen effizienter sein, während der Ansatz von DeepSearcher sich in Szenarien auszeichnet, die Flexibilität und den Umgang mit unvorhersehbaren, komplexen Abfragen erfordern.</p>
-<p>Da die Kosten für LLMs sinken und die Inferenzleistung sich weiter verbessert, werden sich agentenbasierte RAG-Systeme wie DeepSearcher in Zukunft wahrscheinlich stärker durchsetzen. Der Nachteil der Rechenkosten wird sich verringern, während der Vorteil der Flexibilität bestehen bleiben wird.</p>
+<p>Da die Kosten für LLMs sinken und sich die Inferenzleistung weiter verbessert, werden sich agentenbasierte RAG-Systeme wie DeepSearcher in Zukunft wahrscheinlich stärker durchsetzen. Der Nachteil der Rechenkosten wird sich verringern, während der Vorteil der Flexibilität bestehen bleiben wird.</p>
 <h2 id="DeepSearcher-vs-Deep-Research" class="common-anchor-header">DeepSearcher vs. Deep Research<button data-href="#DeepSearcher-vs-Deep-Research" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -324,10 +324,10 @@ By comparing their birth dates:
         ></path>
       </svg>
     </button></h2><p>Im Laufe der Entwicklung und der nachfolgenden Iterationen von DeepSearcher haben wir mehrere wichtige technische Erkenntnisse gewonnen:</p>
-<h3 id="Inference-Models-Effective-but-Not-Infallible" class="common-anchor-header">Inferenzmodelle: Effektiv, aber nicht unfehlbar</h3><p>Unsere Experimente zeigen, dass Inferenzmodelle zwar als Agenten gut funktionieren, aber manchmal einfache Anweisungen überanalysieren, was zu übermäßigem Token-Verbrauch und langsameren Antwortzeiten führt. Diese Beobachtung deckt sich mit dem Ansatz großer KI-Anbieter wie OpenAI, die nicht mehr zwischen Inferenz- und Nicht-Inferenz-Modellen unterscheiden. Stattdessen sollten Modelldienste automatisch die Notwendigkeit der Inferenz auf der Grundlage spezifischer Anforderungen bestimmen, um Token zu sparen.</p>
-<h3 id="The-Imminent-Rise-of-Agentic-RAG" class="common-anchor-header">Der bevorstehende Aufstieg von Agentic RAG</h3><p>Aus Nachfragesicht ist eine tiefgreifende Inhaltserstellung unerlässlich; technisch gesehen ist die Verbesserung der RAG-Effektivität ebenfalls von entscheidender Bedeutung. Langfristig sind die Kosten das Haupthindernis für die breite Einführung von agentenbasierten RAG. Mit dem Aufkommen kostengünstiger, qualitativ hochwertiger LLMs wie DeepSeek-R1 und den durch das Mooresche Gesetz bedingten Kostensenkungen dürften die mit Inferenzdiensten verbundenen Ausgaben jedoch sinken.</p>
-<h3 id="The-Hidden-Scaling-Limit-of-Agentic-RAG" class="common-anchor-header">Die verborgene Skalierungsgrenze von Agentic RAG</h3><p>Eine wichtige Erkenntnis unserer Forschung betrifft die Beziehung zwischen Leistung und Rechenressourcen. Ursprünglich gingen wir davon aus, dass eine einfache Erhöhung der Anzahl der Iterationen und der Token-Zuweisung die Ergebnisse bei komplexen Abfragen proportional verbessern würde.</p>
-<p>In unseren Experimenten zeigte sich jedoch eine differenziertere Realität: Zwar verbessert sich die Leistung mit zusätzlichen Iterationen, aber wir beobachteten einen deutlichen Rückgang der Erträge. Im Einzelnen:</p>
+<h3 id="Inference-Models-Effective-but-Not-Infallible" class="common-anchor-header">Inferenzmodelle: Effektiv, aber nicht unfehlbar</h3><p>Unsere Experimente haben gezeigt, dass Inferenzmodelle zwar als Agenten gut funktionieren, aber manchmal einfache Anweisungen überanalysieren, was zu einem übermäßigen Tokenverbrauch und langsameren Antwortzeiten führt. Diese Beobachtung deckt sich mit dem Ansatz großer KI-Anbieter wie OpenAI, die nicht mehr zwischen Inferenz- und Nicht-Inferenz-Modellen unterscheiden. Stattdessen sollten Modelldienste automatisch die Notwendigkeit der Inferenz auf der Grundlage spezifischer Anforderungen bestimmen, um Token zu sparen.</p>
+<h3 id="The-Imminent-Rise-of-Agentic-RAG" class="common-anchor-header">Der bevorstehende Aufstieg der agentenbasierten RAG</h3><p>Aus Nachfragesicht ist eine tiefgreifende Inhaltserstellung unerlässlich; technisch gesehen ist die Verbesserung der RAG-Effektivität ebenfalls von entscheidender Bedeutung. Langfristig sind die Kosten das Haupthindernis für die breite Einführung von agentenbasierten RAG. Mit dem Aufkommen kostengünstiger, qualitativ hochwertiger LLMs wie DeepSeek-R1 und den durch das Mooresche Gesetz bedingten Kostensenkungen dürften die mit Inferenzdiensten verbundenen Ausgaben jedoch sinken.</p>
+<h3 id="The-Hidden-Scaling-Limit-of-Agentic-RAG" class="common-anchor-header">Die verborgene Skalierungsgrenze von Agentic RAG</h3><p>Eine wichtige Erkenntnis aus unserer Forschung betrifft die Beziehung zwischen Leistung und Rechenressourcen. Ursprünglich gingen wir davon aus, dass eine einfache Erhöhung der Anzahl der Iterationen und der Token-Zuweisung die Ergebnisse bei komplexen Abfragen proportional verbessern würde.</p>
+<p>In unseren Experimenten zeigte sich jedoch eine differenziertere Realität: Zwar verbessert sich die Leistung mit zusätzlichen Iterationen, aber wir beobachteten einen deutlichen Rückgang der Erträge. Genauer gesagt:</p>
 <ul>
 <li><p>Die Leistung stieg von 1 bis 3 Iterationen stark an.</p></li>
 <li><p>Die Verbesserungen von 3 bis 5 Iterationen waren bescheiden</p></li>

@@ -1,7 +1,7 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: '오래된 RAG 사용 중단: 모든 것을 바꾸는 DeepSearcher의 에이전트 RAG 접근 방식'
+title: '바닐라 RAG 구축 중단: DeepSearcher로 에이전트 RAG 도입하기'
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -84,7 +84,7 @@ canonicalUrl: >-
 <tr><td>상호 작용 기능</td><td>전적으로 사용자 입력에 의존, 자율성 없음</td><td>능동적인 참여(예: 모호한 부분 명확히 하기, 세부 정보 요청)</td></tr>
 <tr><td>오류 수정 및 피드백</td><td>자체 수정 기능 없음; 초기 결과에 의해 제한됨</td><td>반복적인 유효성 검사 → 정확성을 위해 자체 트리거 재검색</td></tr>
 <tr><td>이상적인 사용 사례</td><td>간단한 Q&amp;A, 사실 조회</td><td>복잡한 추론, 다단계 문제 해결, 개방형 작업</td></tr>
-<tr><td>예시</td><td>사용자가 질문합니다: "양자 컴퓨팅이란 무엇인가요?" → 시스템에서 교과서적인 정의를 반환</td><td>사용자가 질문합니다: "양자 컴퓨팅이 물류를 어떻게 최적화할 수 있나요?" → 시스템에서 양자 원리를 검색하여 실행 가능한 인사이트를 종합합니다. → 시스템이 양자 원리와 물류 알고리즘을 검색한 후 실행 가능한 인사이트를 종합합니다.</td></tr>
+<tr><td>예시</td><td>사용자가 질문합니다: "양자 컴퓨팅이란 무엇인가요?" → 시스템에서 교과서적인 정의를 반환</td><td>사용자가 질문합니다: "양자 컴퓨팅이 물류를 어떻게 최적화할 수 있나요?" → 시스템에서 양자 원리와 알고리즘을 검색합니다. → 시스템이 양자 원리와 물류 알고리즘을 검색한 후 실행 가능한 인사이트를 종합합니다.</td></tr>
 </tbody>
 </table>
 <p>단일 쿼리 기반 검색에 의존하는 기존 RAG와 달리, 에이전틱 RAG는 쿼리를 여러 하위 질문으로 세분화하고 만족스러운 답변에 도달할 때까지 반복적으로 검색을 개선합니다. 이러한 진화는 세 가지 주요 이점을 제공합니다:</p>
@@ -211,7 +211,7 @@ By comparing their birth dates:
 - L. M. Steinberg: December <span class="hljs-number">19</span>, <span class="hljs-number">1905</span>
 **Conclusion**: L. M. Steinberg, the director of <span class="hljs-string">&quot;God&#x27;s Gift to Women,&quot;</span> <span class="hljs-keyword">is</span> older than Edith Carlmar, the director of <span class="hljs-string">&quot;Aldri annet enn bråk.&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>DeepSearcher는 가져온 로컬 데이터에 대해 심층적인 반복 검색을 수행한다는 점에서 돋보입니다. 추론 과정의 각 단계를 기록하고 궁극적으로 종합적이고 통합된 보고서를 제공합니다. 따라서 상세 보고서 생성이나 추세 요약과 같은 개요 유형의 쿼리와 질문을 더 작은 하위 질문으로 세분화하고 여러 피드백 루프를 통해 데이터를 집계해야 하는 복잡한 추론 쿼리에 특히 효과적입니다.</p>
+<p>DeepSearcher는 가져온 로컬 데이터에 대해 심층적이고 반복적인 검색을 수행한다는 점에서 돋보입니다. 추론 과정의 각 단계를 기록하고 궁극적으로 종합적이고 통합된 보고서를 제공합니다. 따라서 상세 보고서 생성이나 추세 요약과 같은 개요 유형의 쿼리와 질문을 더 작은 하위 질문으로 나누고 여러 피드백 루프를 통해 데이터를 집계해야 하는 복잡한 추론 쿼리에 특히 효과적입니다.</p>
 <p>다음 섹션에서는 반복적인 접근 방식과 유연한 모델 통합이 기존 방식과 어떻게 비교되는지 살펴보면서 DeepSearcher를 다른 RAG 시스템과 비교해 보겠습니다.</p>
 <h2 id="Quantitative-Comparison-DeepSearcher-vs-Traditional-RAG" class="common-anchor-header">정량적 비교: DeepSearcher와 기존 RAG 비교<button data-href="#Quantitative-Comparison-DeepSearcher-vs-Traditional-RAG" class="anchor-icon" translate="no">
       <svg translate="no"

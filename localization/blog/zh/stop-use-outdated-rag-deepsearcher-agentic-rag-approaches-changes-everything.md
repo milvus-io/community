@@ -1,7 +1,7 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: 停止使用过时的 RAG：DeepSearcher 的 Agents RAG 方法改变了一切
+title: 停止构建 Vanilla RAG：使用 DeepSearcher 拥抱 Agentsic RAG
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -69,7 +69,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agentic RAG 结合了智能代理功能，从而增强了传统 RAG 框架。DeepSearcher 就是代理 RAG 框架的一个典型例子。通过动态规划、多步骤推理和自主决策，它建立了一个检索、处理、验证和优化数据的闭环流程，以解决复杂问题。</p>
+    </button></h2><p>Agentic RAG 通过整合智能代理功能增强了传统 RAG 框架。DeepSearcher 就是代理 RAG 框架的一个典型例子。通过动态规划、多步骤推理和自主决策，它建立了一个检索、处理、验证和优化数据的闭环流程，以解决复杂问题。</p>
 <p>大型语言模型（LLM）推理能力的显著进步推动了 Agentic RAG 的日益普及，特别是其分解复杂问题和在多步骤中保持连贯思维链的能力得到了提高。</p>
 <table>
 <thead>
@@ -365,4 +365,4 @@ By comparing their birth dates:
 </ol>
 <p>我们的性能测试证实，与传统的 RAG 方法相比，DeepSearcher 能为复杂查询提供更优越的结果，但在计算效率方面有明显的折衷。最佳配置（通常约为 3 次迭代）在准确性和资源消耗之间取得了平衡。</p>
 <p>随着 LLM 成本的不断降低和推理能力的不断提高，DeepSearcher 中采用的 Agents RAG 方法在生产应用中将变得越来越实用。对于开发企业搜索、研究助手或知识管理系统的开发人员来说，DeepSearcher 提供了一个强大的开源基础，可以根据特定领域的要求进行定制。</p>
-<p>我们欢迎开发者社区的贡献，并邀请您访问我们的<a href="https://github.com/zilliztech/deep-searcher">GitHub 存储库</a>，探索 RAG 实现的新模式。</p>
+<p>我们欢迎开发人员社区的贡献，并邀请您访问我们的<a href="https://github.com/zilliztech/deep-searcher">GitHub 存储库</a>，探索 RAG 实现的新模式。</p>

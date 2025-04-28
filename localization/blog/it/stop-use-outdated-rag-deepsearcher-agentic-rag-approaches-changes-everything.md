@@ -1,9 +1,7 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: >-
-  Smettere di usare RAG obsoleti: l'approccio RAG agenziale di DeepSearcher
-  cambia le cose
+title: 'Smettere di costruire Vanilla RAG: abbracciare Agentic RAG con DeepSearcher'
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -30,8 +28,8 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>L'evoluzione della tecnologia di ricerca è progredita notevolmente nel corso dei decenni: dal recupero basato sulle parole chiave negli anni precedenti al 2000 alle esperienze di ricerca personalizzate nel 2010. Stiamo assistendo all'emergere di soluzioni basate sull'intelligenza artificiale in grado di gestire query complesse che richiedono un'analisi approfondita e professionale.</p>
 <p>Deep Research di OpenAI è un esempio di questo cambiamento, in quanto utilizza capacità di ragionamento per sintetizzare grandi quantità di informazioni e generare rapporti di ricerca in più fasi. Ad esempio, alla domanda "Qual è la ragionevole capitalizzazione di mercato di Tesla?". Deep Research è in grado di analizzare in modo completo le finanze aziendali, le traiettorie di crescita del business e le stime del valore di mercato.</p>
-<p>Deep Research implementa una forma avanzata del framework RAG (Retrieval-Augmented Generation). Il RAG tradizionale migliora i risultati dei modelli linguistici recuperando e incorporando informazioni esterne rilevanti. L'approccio di OpenAI va oltre, implementando cicli iterativi di recupero e ragionamento. Invece di una singola fase di recupero, Deep Research genera dinamicamente più interrogazioni, valuta i risultati intermedi e affina la strategia di ricerca, dimostrando come le tecniche di RAG avanzate o agenziali possano fornire contenuti di alta qualità e di livello aziendale che assomigliano più a ricerche professionali che a semplici risposte a domande.</p>
-<h2 id="DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="common-anchor-header">DeepSearcher: Una ricerca profonda locale che porta la RAG agenziale a tutti<button data-href="#DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="anchor-icon" translate="no">
+<p>Deep Research implementa una forma avanzata del framework RAG (Retrieval-Augmented Generation). Il RAG tradizionale migliora i risultati dei modelli linguistici recuperando e incorporando informazioni esterne rilevanti. L'approccio di OpenAI va oltre, implementando cicli iterativi di recupero e ragionamento. Invece di un'unica fase di recupero, Deep Research genera dinamicamente più interrogazioni, valuta i risultati intermedi e affina la strategia di ricerca, dimostrando come le tecniche di RAG avanzate o agenziali possano fornire contenuti di alta qualità e di livello aziendale che assomigliano più a ricerche professionali che a semplici risposte a domande.</p>
+<h2 id="DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="common-anchor-header">DeepSearcher: Una ricerca locale profonda che porta la RAG agenziale a tutti<button data-href="#DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,7 +94,7 @@ canonicalUrl: >-
 <li><p><strong>Applicabilità più ampia:</strong> Si estende oltre il fact-checking di base per gestire attività di ragionamento complesse e generare report completi.</p></li>
 </ul>
 <p>Sfruttando queste capacità, le applicazioni Agentic RAG come DeepSearcher funzionano come un esperto umano, fornendo non solo la risposta finale, ma anche un resoconto completo e trasparente del processo di ragionamento e dei dettagli di esecuzione.</p>
-<p>A lungo termine, l'Agentic RAG è destinato a superare i sistemi RAG di base. Gli approcci convenzionali spesso faticano ad affrontare la logica sottostante le interrogazioni degli utenti, che richiedono ragionamenti iterativi, riflessione e ottimizzazione continua.</p>
+<p>A lungo termine, l'Agentic RAG è destinato a superare i sistemi RAG di base. Gli approcci convenzionali spesso faticano ad affrontare la logica sottostante alle interrogazioni degli utenti, che richiedono ragionamenti iterativi, riflessione e ottimizzazione continua.</p>
 <h2 id="What-Does-an-Agentic-RAG-Architecture-Look-Like-DeepSearcher-as-an-Example" class="common-anchor-header">Come si presenta un'architettura RAG agenziale? DeepSearcher come esempio<button data-href="#What-Does-an-Agentic-RAG-Architecture-Look-Like-DeepSearcher-as-an-Example" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -230,7 +228,7 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nel repository GitHub di DeepSearcher abbiamo reso disponibile il codice per i test quantitativi. Per questa analisi abbiamo utilizzato il popolare dataset 2WikiMultiHopQA. (Nota: abbiamo valutato solo le prime 50 voci per gestire il consumo di token API, ma le tendenze generali rimangono chiare).</p>
+    </button></h2><p>Nel repository GitHub di DeepSearcher abbiamo reso disponibile il codice per i test quantitativi. Per questa analisi abbiamo utilizzato il popolare set di dati 2WikiMultiHopQA. (Nota: abbiamo valutato solo le prime 50 voci per gestire il consumo di token API, ma le tendenze generali rimangono chiare).</p>
 <h3 id="Recall-Rate-Comparison" class="common-anchor-header">Confronto del tasso di richiamo</h3><p>Come mostrato nella Figura 4, il tasso di richiamo migliora significativamente con l'aumento del numero di iterazioni massime:</p>
 <p>
   <span class="img-wrapper">
@@ -366,5 +364,5 @@ By comparing their birth dates:
 <li><p>Esecuzione trasparente: Registrazione dettagliata di ogni fase del ragionamento, che consente agli sviluppatori di eseguire il debug e ottimizzare il comportamento del sistema.</p></li>
 </ol>
 <p>I nostri test sulle prestazioni confermano che DeepSearcher fornisce risultati superiori per le query complesse rispetto agli approcci RAG tradizionali, anche se con evidenti compromessi in termini di efficienza computazionale. La configurazione ottimale (in genere circa 3 iterazioni) bilancia l'accuratezza con il consumo di risorse.</p>
-<p>Con la continua diminuzione dei costi dell'LLM e il miglioramento delle capacità di ragionamento, l'approccio Agentic RAG implementato in DeepSearcher diventerà sempre più pratico per le applicazioni di produzione. Per gli sviluppatori che lavorano alla ricerca aziendale, agli assistenti di ricerca o ai sistemi di gestione della conoscenza, DeepSearcher offre una potente base open-source che può essere personalizzata in base ai requisiti specifici del dominio.</p>
+<p>Con la continua diminuzione dei costi dell'LLM e il miglioramento delle capacità di ragionamento, l'approccio Agentic RAG implementato in DeepSearcher diventerà sempre più pratico per le applicazioni di produzione. Per gli sviluppatori che lavorano alla ricerca aziendale, agli assistenti alla ricerca o ai sistemi di gestione della conoscenza, DeepSearcher offre una potente base open-source che può essere personalizzata in base ai requisiti specifici del dominio.</p>
 <p>Accogliamo con favore i contributi della comunità degli sviluppatori e vi invitiamo a esplorare questo nuovo paradigma di implementazione delle RAG consultando il nostro <a href="https://github.com/zilliztech/deep-searcher">repository GitHub</a>.</p>
