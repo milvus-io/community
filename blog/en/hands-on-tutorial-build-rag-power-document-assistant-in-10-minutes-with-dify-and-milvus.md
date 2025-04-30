@@ -1,5 +1,5 @@
 ---
-id:  hands-on-tutorial-build-rag-power-document-assistant-in-10-minutes-with-dify-and-milvus.md
+id: hands-on-tutorial-build-rag-power-document-assistant-in-10-minutes-with-dify-and-milvus.md
 title: >
  Hands-on Tutorial: Build a RAG-Powered Document Assistant in 10 Minutes with Dify and Milvus
 author: Ruben Winastwan
