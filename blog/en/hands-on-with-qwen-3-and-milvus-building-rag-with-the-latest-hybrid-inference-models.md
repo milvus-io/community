@@ -16,6 +16,10 @@ meta_title: >
 origin: https://milvus.io/blog/hands-on-with-qwen-3-and-milvus-building-rag-with-the-latest-hybrid-inference-models.md
 ---
 
+
+![](https://assets.zilliz.com/build_RAG_with_qwen_3_and_milvus_64b9f2ad4d.jpeg)
+
+
 As a developer constantly seeking practical AI tools, I couldn't ignore the buzz surrounding Alibaba Cloud's latest release: the[ Qwen 3](https://qwenlm.github.io/blog/qwen3/) model family, a robust lineup of eight hybrid inference models designed to redefine the balance between intelligence and efficiency. In just 12 hours, the project garnered **over 17,000 GitHub stars** and reached a peak of **23,000 downloads** per hour on Hugging Face.
 
 So what's different this time? In short, Qwen 3 models combine both reasoning (slow, thoughtful responses) and non-reasoning (fast, efficient answers) in a single architecture, include diverse model options, enhanced training and performance, and deliver more enterprise-ready features.
