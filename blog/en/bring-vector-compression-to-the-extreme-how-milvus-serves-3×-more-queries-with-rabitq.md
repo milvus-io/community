@@ -17,9 +17,9 @@ origin: https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvu
 ---
 
 
-[Milvus](https://milvus.io/docs/overview.md) is an open-source, highly scalable vector database powering semantic search at a billion-vector scale. As users deploy RAG chatbots, AI customer service, and visual search at this magnitude, a common challenge emerges: **infrastructure costs.** While exponential business growth is exciting, skyrocketing cloud bills are not. Fast vector search typically requires storing vectors in memory, which is expensive. Naturally, you might ask: _can we compress vectors to save space without sacrificing search quality?_
+[Milvus](https://milvus.io/docs/overview.md) is an open-source, highly scalable vector database powering semantic search at a billion-vector scale. As users deploy RAG chatbots, AI customer service, and visual search at this magnitude, a common challenge emerges: **infrastructure costs.** In contrast, exponential business growth is exciting; skyrocketing cloud bills are not. Fast vector search typically requires storing vectors in memory, which is expensive. Naturally, you might ask: _Can we compress vectors to save space without sacrificing search quality?_
 
-The answer is **YES**, and in this blog, we'll show you how our implementation of a novel technique called [**RaBitQ**](https://dl.acm.org/doi/pdf/10.1145/3654970) enables Milvus to serve 3× more traffic with lower memory cost while still maintaining comparable accuracy. We’ll also share the practical lessons learned from integrating RaBitQ into both open-source Milvus and the fully-managed Milvus service on [Zilliz Cloud](https://zilliz.com/cloud).
+The answer is **YES**, and in this blog, we'll show you how implementing a novel technique called [**RaBitQ**](https://dl.acm.org/doi/pdf/10.1145/3654970) enables Milvus to serve 3× more traffic with lower memory cost while maintaining comparable accuracy. We’ll also share the practical lessons learned from integrating RaBitQ into open-source Milvus and the fully-managed Milvus service on [Zilliz Cloud](https://zilliz.com/cloud).
 
 ![](https://assets.zilliz.com/Bring_Vector_Compression_to_the_Extreme_How_Milvus_Serves_3_More_Queries_with_Ra_Bit_Q_12f5b4d932.jpg)
 
@@ -28,14 +28,13 @@ The answer is **YES**, and in this blog, we'll show you how our implementation o
 
 Before diving into RaBitQ, let's understand the challenge. 
 
-At the heart of a vector database are [**Approximate Nearest Neighbor (ANN)**](https://zilliz.com/glossary/anns) search algorithms—finding the top-k vectors closest to a given query. A vector is a coordinate in high-dimensional space, often comprising hundreds of floating-point numbers. As vector data scales up, so do storage and compute demands. For instance, running [HNSW](https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW) (an ANN search algorithm) with one billion 768-dimensional vectors in FP32 requires over 3TB of memory!
+[**Approximate Nearest Neighbor (ANN)**](https://zilliz.com/glossary/anns) search algorithms are at the heart of a vector database, finding the top-k vectors closest to a given query. A vector is a coordinate in high-dimensional space, often comprising hundreds of floating-point numbers. As vector data scales up, so do storage and compute demands. For instance, running [HNSW](https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW) (an ANN search algorithm) with one billion 768-dimensional vectors in FP32 requires over 3TB of memory!
 
-Just like MP3 compresses audio by discarding frequencies imperceptible to the human ear, vector data can be compressed with minimal impact on search accuracy. Research shows that full-precision FP32 is often unnecessary for ANN. [Scalar Quantization](https://zilliz.com/learn/scalar-quantization-and-product-quantization) (SQ), a popular compression technique, for example, maps floating-point values into discrete bins and stores only the bin indices using low-bit integers. By representing the same information with fewer bits, quantization methods significantly reduce memory usage. Research in this domain strives to achieve the most savings with the least loss in accuracy.
+Like MP3 compresses audio by discarding frequencies imperceptible to the human ear, vector data can be compressed with minimal impact on search accuracy. Research shows that full-precision FP32 is often unnecessary for ANN.[ Scalar Quantization](https://zilliz.com/learn/scalar-quantization-and-product-quantization) (SQ), a popular compression technique, maps floating-point values into discrete bins and stores only the bin indices using low-bit integers. Quantization methods significantly reduce memory usage by representing the same information with fewer bits. Research in this domain strives to achieve the most savings with the least loss in accuracy.
 
-The most extreme compression technique—1-bit Scalar Quantization, also known as [Binary Quantization](https://zilliz.com/learn/scalar-quantization-and-product-quantization)—represents each float with just a single bit. Compared to FP32 (32-bit encoding), this reduces memory usage by 32×. Since memory is often the main bottleneck in vector search, such compression can significantly boost performance. **The challenge, however, lies in preserving search accuracy.** Typically, 1-bit SQ reduces recall to below 70%, making it practically unusable.
+The most extreme compression technique—1-bit Scalar Quantization, also known as [Binary Quantization](https://zilliz.com/learn/scalar-quantization-and-product-quantization)—represents each float with a single bit. Compared to FP32 (32-bit encoding), this reduces memory usage by 32×. Since memory is often the main bottleneck in vector search, such compression can significantly boost performance. **The challenge, however, lies in preserving search accuracy.** Typically, 1-bit SQ reduces recall to below 70%, making it practically unusable.
 
-This is where **RaBitQ** stands out—an excellent compression technique that achieves 1-bit quantization while preserving high recall. Milvus now supports RaBitQ starting from version 2.6, enabling the vector database to serve 3× the QPS while maintaining a comparable level of accuracy. 
-
+This is where **RaBitQ** stands out—an excellent compression technique that achieves 1-bit quantization while preserving high recall. Milvus now supports RaBitQ starting from version 2.6, enabling the vector database to serve 3× the QPS while maintaining a comparable level of accuracy.
 
 ## A Brief Intro to RaBitQ
 
@@ -70,6 +69,9 @@ Let's look at how we brought this algorithm to life in Milvus.
 ### Implementation Tradeoffs 
 
 One important design decision involved handling **per-vector auxiliary data**. RaBitQ requires two floating-point values per vector pre-computed during indexing time, and a third value that can either be computed on-the-fly or pre-computed. In Knowhere, we chose to precompute this value at indexing time and store it to improve efficiency during search. In contrast, the FAISS implementation conserves memory by calculating it at query time, taking a different tradeoff between memory usage and query speed.
+
+
+One important design decision involved handling **per-vector auxiliary data**. RaBitQ requires two floating-point values per vector pre-computed during indexing time, and a third value that can either be computed on-the-fly or pre-computed. In Knowhere, we pre-computed this value at indexing time and stored it to improve efficiency during search. In contrast, the FAISS implementation conserves memory by calculating it at query time, taking a different tradeoff between memory usage and query speed.
 
 
 ### Hardware Acceleration
@@ -155,7 +157,7 @@ In short, `IVF_RABITQ` alone is great for maximizing throughput with acceptable 
 
 ## Conclusion
 
-RaBitQ marks a significant advancement in vector quantization technology. By combining binary quantization with smart encoding strategies, it achieves what seemed impossible: extreme compression with minimal accuracy loss.
+RaBitQ marks a significant advancement in vector quantization technology. Combining binary quantization with smart encoding strategies, it achieves what seemed impossible: extreme compression with minimal accuracy loss.
 
 Starting with the upcoming version 2.6, Milvus will introduce IVF_RABITQ, integrating this powerful compression technique with IVF clustering and refinement strategies to bring binary quantization to production. This combination creates a practical balance between accuracy, speed, and memory efficiency that can transform your vector search workloads.
 
