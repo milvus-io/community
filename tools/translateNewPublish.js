@@ -46,7 +46,7 @@ const bootstrap = async () => {
       console.log(`-> ${mdFiles[index]} already translated!`);
       continue;
     }
-    newFoundBlogs.push(mdFiles[index]); 
+    newFoundBlogs.push(mdFiles[index]);
   }
 
   console.log("detect new published blogs--", newFoundBlogs);
@@ -128,7 +128,6 @@ const bootstrap = async () => {
         targetFilePath
       );
     }
-    console.info(`【Progress: ${newFoundBlogs.length}/${updatedFiles.length}】`);
     cache[path] = new Date().toISOString();
   }
 
