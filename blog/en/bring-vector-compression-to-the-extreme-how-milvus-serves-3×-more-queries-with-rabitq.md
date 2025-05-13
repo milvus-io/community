@@ -44,9 +44,7 @@ At first glance, reducing each dimension of a vector to a single bit may seem to
 
 ![](https://assets.zilliz.com/Figure_The_counterintuitive_value_distribution_in_high_dimensional_geometry_fad6143bfd.png)
 
-Figure: The counterintuitive value distribution in high-dimensional geometry.
-
-Consider the value of the first dimension for a random unit vector uniformly sampled from the unit sphere; the values are uniformly spread in 3D space. However, for high-dimensional space (e.g., 1000D), the values concentrate around zero, an unintuitive property of high-dimensional geometry. (Image source: [Quantization in The Counterintuitive High-Dimensional Space](https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg)) 
+Figure: The counterintuitive value distribution in high-dimensional geometry. _Consider the value of the first dimension for a random unit vector uniformly sampled from the unit sphere; the values are uniformly spread in 3D space. However, for high-dimensional space (e.g., 1000D), the values concentrate around zero, an unintuitive property of high-dimensional geometry. (Image source: [Quantization in The Counterintuitive High-Dimensional Space](https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg))_ 
 
 Inspired by this property of high-dimensional space, **RaBitQ focuses on encoding angular information rather than exact spatial coordinates**. It does this by normalizing each data vector relative to a reference point such as the centroid of the dataset. Each vector is then mapped to its nearest vertex on the hypercube, allowing representation with just 1 bit per dimension. This approach naturally extends to `IVF_RABITQ`, where normalization is done relative to the closest cluster centroid, improving local encoding accuracy.
 
