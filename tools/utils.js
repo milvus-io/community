@@ -174,3 +174,5 @@ export const createDeepLGlossary = async (entries, targetLang) => {
   console.log(res.data);
   return res.data;
 };
+
+
