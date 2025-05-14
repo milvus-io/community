@@ -14,32 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set Node.js 20.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20.x
-
-      - name: Yarn install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install
-
-      - name: Translate new publish blogs
-        run: |
-          git config --global user.email "Milvus-doc-bot@zilliz.com"
-          git config --global user.name "Milvus-doc-bot"
-          touch .env
-          echo DEEPL_API_KEY=${{secrets.DEEPL_API_KEY}} >> .env
-          echo GITHUB_TOKEN=${{secrets.GH_TOKEN}} >> .env
-          yarn translateNew
-
-      - name: Commit and push
-        run: |
-          git add .
-          git commit -m "Translate new publish blogs"
-          git push -f origin master
-        continue-on-error: true
-
       - name: Trigger milvus.io
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}

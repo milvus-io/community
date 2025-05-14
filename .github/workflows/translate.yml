@@ -1,8 +1,11 @@
 name: Translate Milvus Blog Weekly Task
 
 on:
-  schedule:
-    - cron: "0 10 * * 1" # 10:00 every Monday
+  push:
+    paths:
+      - "blog/**"
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:

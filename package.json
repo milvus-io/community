@@ -1,7 +1,6 @@
 {
   "scripts": {
     "translate": "node tools/translate.js",
-    "translateNew": "node tools/translateNewPublish.js",
     "glossary": "node tools/glossary.js"
   },
   "type": "module",
