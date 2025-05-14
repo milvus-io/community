@@ -14,7 +14,6 @@ meta_keywords:  Vector database, vectordbbench, vector database benchmark, vecto
 meta_title: > 
  Benchmarks Lie — Vector DBs Deserve a Real Test
 origin: https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md 
-
 ---
 
 
