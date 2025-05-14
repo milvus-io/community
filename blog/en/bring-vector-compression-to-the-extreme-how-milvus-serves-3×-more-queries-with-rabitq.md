@@ -66,11 +66,7 @@ Let's look at how we brought this algorithm to life in Milvus.
 
 ### Implementation Tradeoffs 
 
-One important design decision involved handling **per-vector auxiliary data**. RaBitQ requires two floating-point values per vector pre-computed during indexing time, and a third value that can either be computed on-the-fly or pre-computed. In Knowhere, we chose to precompute this value at indexing time and store it to improve efficiency during search. In contrast, the FAISS implementation conserves memory by calculating it at query time, taking a different tradeoff between memory usage and query speed.
-
-
-One important design decision involved handling **per-vector auxiliary data**. RaBitQ requires two floating-point values per vector pre-computed during indexing time, and a third value that can either be computed on-the-fly or pre-computed. In Knowhere, we pre-computed this value at indexing time and stored it to improve efficiency during search. In contrast, the FAISS implementation conserves memory by calculating it at query time, taking a different tradeoff between memory usage and query speed.
-
+One important design decision involved handling per-vector auxiliary data. RaBitQ requires two floating-point values per vector pre-computed during indexing time, and a third value that can either be computed on-the-fly or pre-computed. In Knowhere, we pre-computed this value at indexing time and stored it to improve efficiency during search. In contrast, the FAISS implementation conserves memory by calculating it at query time, taking a different tradeoff between memory usage and query speed. 
 
 ### Hardware Acceleration
 
