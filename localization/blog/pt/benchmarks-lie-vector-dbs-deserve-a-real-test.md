@@ -43,9 +43,9 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
     <span></span>
   </span>
 </p>
-<p>A maioria dos benchmarks testa bases de dados vectoriais <strong>depois de</strong> todos os dados terem sido ingeridos e o índice estar totalmente construído. Mas na produção, os dados nunca param de fluir. Não é possível pausar o sistema por horas apenas para reconstruir um índice.</p>
-<p>Vimos a desconexão em primeira mão. Por exemplo, o Elasticsearch pode se gabar de ter velocidades de consulta de milissegundos, mas, nos bastidores, vimos ele levar <strong>mais de 20 horas</strong> apenas para otimizar seu índice. Esse é um tempo de inatividade que nenhum sistema de produção pode pagar, especialmente em cargas de trabalho de IA que exigem atualizações contínuas e respostas instantâneas.</p>
-<p>Na Milvus, depois de executar inúmeras avaliações de Prova de Conceito (PoC) com clientes corporativos, descobrimos um padrão preocupante: <strong>bancos de dados vetoriais que se destacam em ambientes de laboratório controlados frequentemente têm dificuldades sob cargas de produção reais.</strong> Essa lacuna crítica não frustra apenas os engenheiros de infraestrutura - ela pode inviabilizar iniciativas inteiras de IA criadas com base nessas promessas enganosas de desempenho.</p>
+<p>A maioria dos benchmarks testa bases de dados vectoriais <strong>depois de</strong> todos os dados terem sido ingeridos e o índice estar totalmente construído. Mas na produção, os dados nunca param de fluir. Não é possível pausar o sistema por horas para reconstruir um índice.</p>
+<p>Já vimos essa desconexão em primeira mão. Por exemplo, o Elasticsearch pode ostentar velocidades de consulta de milissegundos, mas, nos bastidores, vimos ele levar <strong>mais de 20 horas</strong> apenas para otimizar seu índice. Esse é um tempo de inatividade que nenhum sistema de produção pode pagar, especialmente em cargas de trabalho de IA que exigem atualizações contínuas e respostas instantâneas.</p>
+<p>Com o Milvus, depois de executar inúmeras avaliações de Prova de Conceito (PoC) com clientes corporativos, descobrimos um padrão preocupante: <strong>bancos de dados vetoriais que se destacam em ambientes de laboratório controlados frequentemente têm dificuldades sob cargas de produção reais.</strong> Essa lacuna crítica não frustra apenas os engenheiros de infraestrutura - ela pode inviabilizar iniciativas inteiras de IA criadas com base nessas promessas enganosas de desempenho.</p>
 <p>É por isso que criamos <a href="https://github.com/zilliztech/VectorDBBench">o VDBBench</a>: um benchmark de código aberto projetado desde o início para simular a realidade da produção. Ao contrário dos testes sintéticos que selecionam cenários, o VDBBench faz com que os bancos de dados passem por ingestão contínua, condições de filtragem rigorosas e diversos cenários, exatamente como suas cargas de trabalho de produção reais. Nossa missão é simples: fornecer aos engenheiros uma ferramenta que mostre como os bancos de dados vetoriais realmente funcionam em condições reais, para que você possa tomar decisões de infraestrutura com base em números confiáveis.</p>
 <h2 id="The-Gap-between-Benchmarks-and-Reality" class="common-anchor-header">A lacuna entre benchmarks e realidade<button data-href="#The-Gap-between-Benchmarks-and-Reality" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -84,7 +84,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
       </svg>
     </button></h2><p>O VDBBench não se limita a iterar filosofias de benchmarking desatualizadas - ele reconstrói o conceito a partir dos primeiros princípios com uma crença orientadora: <strong>um benchmark só é valioso se prever o comportamento real da produção</strong>.</p>
 <p>Projetamos o VDBBench para replicar fielmente as condições do mundo real em três dimensões críticas: autenticidade dos dados, padrões de carga de trabalho e medição de desempenho.</p>
-<h3 id="Modernizing-the-Dataset" class="common-anchor-header">Modernizando o conjunto de dados</h3><p>Nós reformulamos completamente os conjuntos de dados usados para o benchmarking do vectorDB. Em vez de conjuntos de teste herdados como SIFT e GloVe, o VDBBench usa vetores gerados a partir de modelos de incorporação de última geração que alimentam os aplicativos de IA atuais.</p>
+<h3 id="Modernizing-the-Dataset" class="common-anchor-header">Modernizando o conjunto de dados</h3><p>Nós reformulamos completamente os conjuntos de dados usados para o benchmarking do vectorDB. Em vez de conjuntos de teste herdados, como SIFT e GloVe, o VDBBench usa vetores gerados a partir de modelos de incorporação de última geração que alimentam os aplicativos de IA atuais.</p>
 <p>Para garantir a relevância, especialmente para casos de utilização como o Retrieval-Augmented Generation (RAG), selecionámos corpora que reflectem cenários reais de empresas e domínios específicos. Estes vão desde bases de conhecimento de uso geral a aplicações verticais como a resposta a perguntas biomédicas e a pesquisa na Web em grande escala.</p>
 <table>
 <thead>
@@ -147,7 +147,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Até onde sabemos, o VDBBench é a única ferramenta de benchmark que testa bancos de dados vetoriais em todo o espetro de cenários críticos de produção, incluindo casos de coleta estática, filtragem e streaming.</p>
+    </button></h2><p>Até onde sabemos, o VDBBench é a única ferramenta de benchmark que testa bancos de dados vetoriais em todo o espetro de cenários críticos de produção, incluindo coleta estática, filtragem e casos de streaming.</p>
 <h3 id="Static-Collection" class="common-anchor-header">Coleta estática</h3><p>Ao contrário de outros benchmarks que se apressam em testar, o VDBBench primeiro garante que cada banco de dados tenha otimizado totalmente seus índices - um pré-requisito crítico de produção que muitos benchmarks frequentemente negligenciam. Isso lhe dá uma visão completa:</p>
 <ul>
 <li><p>Tempo de ingestão de dados</p></li>
@@ -166,7 +166,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
     <span></span>
   </span>
 </p>
-<p><em>Figura: QPS e Recall de Milvus e OpenSearch em diferentes níveis de seletividade de filtro (teste Cohere 1M). O eixo X representa a percentagem de dados filtrados. Como se pode ver, o Milvus mantém uma recuperação consistentemente elevada em todos os níveis de seletividade do filtro, enquanto o OpenSearch apresenta um desempenho instável, com uma recuperação que flutua significativamente em diferentes condições de filtragem.</em></p>
+<p><em>Figura: QPS e Recall do Milvus e do OpenSearch em diferentes níveis de seletividade de filtro (teste Cohere 1M). O eixo X representa a percentagem de dados filtrados. Como se pode ver, o Milvus mantém uma recuperação consistentemente elevada em todos os níveis de seletividade do filtro, enquanto o OpenSearch apresenta um desempenho instável, com uma recuperação que flutua significativamente em diferentes condições de filtragem.</em></p>
 <h3 id="Streaming" class="common-anchor-header">Fluxo contínuo</h3><p>Os sistemas de produção raramente se dão ao luxo de ter dados estáticos. Novas informações fluem continuamente enquanto as pesquisas são executadas - um cenário onde muitos bancos de dados impressionantes entram em colapso.</p>
 <p>O caso de teste de streaming exclusivo do VDBBench examina o desempenho da pesquisa durante a inserção, medindo:</p>
 <ol>

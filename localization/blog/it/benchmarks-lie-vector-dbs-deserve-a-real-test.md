@@ -21,7 +21,7 @@ meta_title: |
   Benchmarks Lie — Vector DBs Deserve a Real Test
 origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md'
 ---
-<h2 id="The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="common-anchor-header">Il database vettoriale scelto in base ai benchmark potrebbe fallire in produzione<button data-href="#The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="anchor-icon" translate="no">
+<h2 id="The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="common-anchor-header">Il database vettoriale scelto sulla base dei benchmark potrebbe fallire in produzione<button data-href="#The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,9 +43,9 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
     <span></span>
   </span>
 </p>
-<p>La maggior parte dei benchmark testa i database vettoriali <strong>dopo che</strong> tutti i dati sono stati ingeriti e l'indice è stato completamente costruito. Ma in produzione i dati non smettono mai di fluire. Non è possibile mettere in pausa il sistema per ore solo per ricostruire un indice.</p>
-<p>Abbiamo visto la disconnessione in prima persona. Ad esempio, Elasticsearch può vantare una velocità di interrogazione di millisecondi, ma dietro le quinte abbiamo visto che impiega <strong>oltre 20 ore</strong> solo per ottimizzare il suo indice. Si tratta di tempi di inattività che nessun sistema di produzione può permettersi, soprattutto nei carichi di lavoro di intelligenza artificiale che richiedono aggiornamenti continui e risposte immediate.</p>
-<p>In Milvus, dopo aver eseguito innumerevoli valutazioni Proof of Concept (PoC) con clienti aziendali, abbiamo scoperto uno schema preoccupante: i <strong>database vettoriali che eccellono in ambienti di laboratorio controllati spesso faticano sotto i carichi di produzione reali.</strong> Questa lacuna critica non frustra solo gli ingegneri dell'infrastruttura, ma può far deragliare intere iniziative di AI costruite su queste promesse ingannevoli di prestazioni.</p>
+<p>La maggior parte dei benchmark testa i database vettoriali <strong>dopo che</strong> tutti i dati sono stati ingeriti e l'indice è stato completamente costruito. Ma in produzione i dati non smettono mai di fluire. Non è possibile mettere in pausa il sistema per ore per ricostruire un indice.</p>
+<p>Abbiamo visto la disconnessione in prima persona. Ad esempio, Elasticsearch può vantare una velocità di interrogazione di millisecondi, ma dietro le quinte abbiamo visto che impiega <strong>oltre 20 ore</strong> solo per ottimizzare il suo indice. È un tempo di inattività che nessun sistema di produzione può permettersi, soprattutto per i carichi di lavoro di intelligenza artificiale che richiedono aggiornamenti continui e risposte immediate.</p>
+<p>Con Milvus, dopo aver eseguito innumerevoli valutazioni Proof of Concept (PoC) con clienti aziendali, abbiamo scoperto uno schema preoccupante: i <strong>database vettoriali che eccellono in ambienti di laboratorio controllati spesso faticano sotto i carichi di produzione reali.</strong> Questa lacuna critica non frustra solo gli ingegneri dell'infrastruttura, ma può far deragliare intere iniziative di AI costruite su queste promesse ingannevoli di prestazioni.</p>
 <p>Ecco perché abbiamo creato <a href="https://github.com/zilliztech/VectorDBBench">VDBBench</a>: un benchmark open source progettato da zero per simulare la realtà produttiva. A differenza dei test sintetici che selezionano gli scenari, VDBBench sottopone i database a un'ingestione continua, a condizioni di filtraggio rigorose e a scenari diversi, proprio come i carichi di lavoro di produzione reali. La nostra missione è semplice: offrire agli ingegneri uno strumento che mostri le prestazioni effettive dei database vettoriali in condizioni reali, in modo da poter prendere decisioni sull'infrastruttura basate su numeri affidabili.</p>
 <h2 id="The-Gap-between-Benchmarks-and-Reality" class="common-anchor-header">Il divario tra benchmark e realtà<button data-href="#The-Gap-between-Benchmarks-and-Reality" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -84,7 +84,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
       </svg>
     </button></h2><p>VDBBench non si limita a riproporre filosofie di benchmarking ormai superate, ma ricostruisce il concetto di benchmarking da zero con un'unica convinzione: <strong>un benchmark ha valore solo se predice il comportamento effettivo in produzione</strong>.</p>
 <p>Abbiamo progettato VDBBench per replicare fedelmente le condizioni del mondo reale in tre dimensioni critiche: autenticità dei dati, modelli di carico di lavoro e misurazione delle prestazioni.</p>
-<h3 id="Modernizing-the-Dataset" class="common-anchor-header">Modernizzazione del dataset</h3><p>Abbiamo completamente rivisto i set di dati utilizzati per il benchmarking di vectorDB. Invece di set di test tradizionali come SIFT e GloVe, VDBBench utilizza vettori generati da modelli di incorporamento all'avanguardia che alimentano le applicazioni AI di oggi.</p>
+<h3 id="Modernizing-the-Dataset" class="common-anchor-header">Modernizzazione del dataset</h3><p>Abbiamo completamente rinnovato i set di dati utilizzati per il benchmarking di vectorDB. Invece di set di test tradizionali come SIFT e GloVe, VDBBench utilizza vettori generati da modelli di incorporamento all'avanguardia che alimentano le applicazioni AI di oggi.</p>
 <p>Per garantire la pertinenza, soprattutto per casi d'uso come la Retrieval-Augmented Generation (RAG), abbiamo selezionato corpora che riflettono scenari aziendali reali e specifici del dominio. Si va da basi di conoscenza generiche ad applicazioni verticali come la risposta a domande biomediche e la ricerca web su larga scala.</p>
 <table>
 <thead>
@@ -166,9 +166,9 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
     <span></span>
   </span>
 </p>
-<p><em>Figura: QPS e Recall di Milvus e OpenSearch attraverso diversi livelli di selettività dei filtri (test Cohere 1M). L'asse X rappresenta la percentuale di dati filtrati. Come si vede, Milvus mantiene un richiamo costantemente elevato a tutti i livelli di selettività dei filtri, mentre OpenSearch mostra prestazioni instabili, con un richiamo che fluttua significativamente in diverse condizioni di filtraggio.</em></p>
+<p><em>Figura: QPS e Recall di Milvus e OpenSearch attraverso diversi livelli di selettività dei filtri (test Cohere 1M). L'asse X rappresenta la percentuale di dati filtrati. Come si vede, Milvus mantiene un richiamo costantemente elevato su tutti i livelli di selettività dei filtri, mentre OpenSearch mostra prestazioni instabili, con un richiamo che fluttua significativamente in diverse condizioni di filtraggio.</em></p>
 <h3 id="Streaming" class="common-anchor-header">Streaming</h3><p>I sistemi di produzione raramente possono permettersi il lusso di avere dati statici. Durante l'esecuzione delle ricerche, le nuove informazioni affluiscono continuamente: uno scenario che fa crollare molti database altrimenti impressionanti.</p>
-<p>L'esclusivo caso di test di streaming di VDBBench esamina le prestazioni di ricerca durante l'inserimento, misurando:</p>
+<p>L'esclusivo caso di test di streaming di VDBBench esamina le prestazioni della ricerca durante l'inserimento, misurando:</p>
 <ol>
 <li><p><strong>Impatto dell'aumento del volume dei dati</strong>: Come le prestazioni di ricerca si adattano all'aumento delle dimensioni dei dati.</p></li>
 <li><p><strong>Impatto del carico di scrittura</strong>: come le scritture simultanee influenzano la latenza e il throughput della ricerca, dato che le scritture consumano anche risorse di CPU o di memoria nel sistema.</p></li>
@@ -183,7 +183,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
 <ul>
 <li><p>VDBBench avvia 5 processi produttori paralleli, ciascuno dei quali inserisce 100 righe al secondo.</p></li>
 <li><p>Dopo ogni 10% di dati ingeriti, VDBBench avvia un ciclo di test di ricerca in condizioni sia seriali che simultanee.</p></li>
-<li><p>Metriche come la latenza, il QPS e il richiamo vengono registrate dopo ogni fase.</p></li>
+<li><p>Metriche quali latenza, QPS e richiamo vengono registrate dopo ogni fase.</p></li>
 </ul>
 <p>Questa metodologia controllata rivela l'evoluzione delle prestazioni di ciascun sistema nel tempo e in condizioni di reale stress operativo, fornendo le informazioni necessarie per prendere decisioni sull'infrastruttura in grado di scalare.</p>
 <p>
@@ -201,7 +201,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
 </p>
 <p><em>Figura: QPS e Recall di Pinecone rispetto a Elasticsearch nel test di streaming Cohere 10M dopo l'ottimizzazione (velocità di ingestione di 500 righe/s)</em></p>
 <p>Come mostra il grafico, ElasticSearch ha superato Pinecone in QPS dopo l'ottimizzazione dell'indice. Un miracolo? Non proprio. Il grafico di destra racconta la storia completa: una volta che l'asse delle ascisse riflette il tempo effettivo trascorso, è chiaro che ElasticSearch ha impiegato molto più tempo per raggiungere quelle prestazioni. E in produzione, questo ritardo è importante. Questo confronto rivela un compromesso fondamentale: il throughput di picco rispetto al time-to-serve.</p>
-<h2 id="Choose-Your-Vector-Database-with-Confidence" class="common-anchor-header">Scegliete il vostro database vettoriale con fiducia<button data-href="#Choose-Your-Vector-Database-with-Confidence" class="anchor-icon" translate="no">
+<h2 id="Choose-Your-Vector-Database-with-Confidence" class="common-anchor-header">Scegliete con fiducia il vostro database vettoriale<button data-href="#Choose-Your-Vector-Database-with-Confidence" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

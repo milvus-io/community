@@ -39,9 +39,9 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
     <span></span>
   </span>
 </p>
-<p>大多数基准测试都是在所有数据摄取完毕、索引完全建立<strong>之后才</strong>对向量数据库进行测试。但在生产环境中，数据永远不会停止流动。你不可能为了重建索引而将系统暂停数小时。</p>
+<p>大多数基准测试都是在所有数据摄取完毕、索引完全建立<strong>之后才</strong>对向量数据库进行测试。但在生产环境中，数据永远不会停止流动。你不可能暂停系统数小时来重建索引。</p>
 <p>我们亲眼目睹了这种脱节。例如，Elasticsearch 可能标榜毫秒级的查询速度，但在幕后，我们看到它仅优化索引就花费了<strong>20 多个小时</strong>。这是任何生产系统都无法承受的停机时间，尤其是在需要持续更新和即时响应的人工智能工作负载中。</p>
-<p>在 Milvus，在与企业客户进行了无数次概念验证（PoC）评估后，我们发现了一个令人担忧的模式：<strong>在受控实验室环境中表现出色的向量数据库，在实际生产负载下却常常举步维艰。</strong>这一关键差距不仅让基础架构工程师感到沮丧，还可能破坏建立在这些误导性性能承诺基础上的整个人工智能计划。</p>
+<p>通过 Milvus，在与企业客户进行了无数次概念验证（PoC）评估后，我们发现了一个令人担忧的模式：<strong>在受控实验室环境中表现出色的向量数据库，在实际生产负载下却常常举步维艰。</strong>这一关键差距不仅让基础架构工程师感到沮丧，还可能破坏建立在这些误导性性能承诺基础上的整个人工智能计划。</p>
 <p>这就是我们建立<a href="https://github.com/zilliztech/VectorDBBench">VDBBench</a> 的原因：这是一个从头开始设计的开源基准，用于模拟生产实际情况。与挑选场景的合成测试不同，VDBBench 通过持续摄取、严格的过滤条件和各种场景来推动数据库，就像您的实际生产工作负载一样。我们的使命很简单：为工程师提供一种工具，显示向量数据库在实际条件下的实际性能，这样您就可以根据可信的数据做出基础架构决策。</p>
 <h2 id="The-Gap-between-Benchmarks-and-Reality" class="common-anchor-header">基准与现实之间的差距<button data-href="#The-Gap-between-Benchmarks-and-Reality" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -61,7 +61,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
     </button></h2><p>传统的基准测试方法存在三个关键缺陷，导致其结果对生产决策几乎毫无意义：</p>
 <h3 id="1-Outdated-Data" class="common-anchor-header">1.过时的数据</h3><p>许多基准仍依赖于 SIFT 或<a href="https://zilliz.com/glossary/glove"> GloVe</a> 等过时的数据集，这些数据集与当今人工智能模型生成的复杂、高维向量 Embeddings 几乎没有任何相似之处。考虑一下这个问题：SIFT 包含 128 维向量，而 OpenAI 的嵌入模型中流行的嵌入从 768 维到 3072 维不等。</p>
 <h3 id="2-Vanity-Metrics" class="common-anchor-header">2.虚荣指标</h3><p>许多基准仅关注平均延迟或峰值 QPS，这会造成图像失真。这些理想化的指标无法捕捉实际用户在生产环境中遇到的异常值和不一致性。例如，如果一个令人印象深刻的 QPS 数值需要无限制的计算资源，会让企业破产，那么这个数字又有什么用呢？</p>
-<h3 id="3-Oversimplified-Scenarios" class="common-anchor-header">3.过于简化的场景</h3><p>大多数基准测试只测试基本的静态工作负载--基本上就是向量搜索的 "Hello World"。例如，它们仅在整个数据集被摄取并编入索引后才发出搜索请求，而忽略了用户在新数据流中进行搜索的动态现实。这种简单化的设计忽略了定义实际生产系统的复杂模式，如并发查询、过滤搜索和连续数据摄取。</p>
+<h3 id="3-Oversimplified-Scenarios" class="common-anchor-header">3.过于简化的场景</h3><p>大多数基准测试只测试基本的静态工作负载--基本上就是向量搜索的 "Hello World"。例如，它们仅在整个数据集被摄取和编入索引后才发出搜索请求，而忽略了用户在新数据流中进行搜索的动态现实。这种简单化的设计忽略了定义实际生产系统的复杂模式，如并发查询、过滤搜索和连续数据摄取。</p>
 <p>认识到这些缺陷后，我们意识到业界需要<strong>彻底改变基准测试理念--</strong>以人工智能系统在实际应用中的行为方式为基础。这就是我们建立<a href="https://github.com/zilliztech/VectorDBBench">VDBBench</a> 的原因。</p>
 <h2 id="From-Lab-to-Production-How-VDBBench-Bridges-the-Gap" class="common-anchor-header">从实验室到生产：VDBBench 如何弥合差距<button data-href="#From-Lab-to-Production-How-VDBBench-Bridges-the-Gap" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -143,8 +143,8 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>据我们所知，VDBBench 是唯一一款能在所有生产关键场景（包括静态收集、过滤和流式处理）中测试向量数据库的基准测试工具。</p>
-<h3 id="Static-Collection" class="common-anchor-header">静态收集</h3><p>与其他匆忙进行测试的基准不同，VDBBench 会首先确保每个数据库已完全优化其索引--这是许多基准经常忽略的关键生产先决条件。这将为您提供完整的信息：</p>
+    </button></h2><p>据我们所知，VDBBench 是唯一一款能在完整的生产关键场景（包括静态收集、过滤和流情况）中测试向量数据库的基准工具。</p>
+<h3 id="Static-Collection" class="common-anchor-header">静态收集</h3><p>与其他匆忙进行测试的基准不同，VDBBench 会首先确保每个数据库已完全优化其索引--这是许多基准经常忽略的关键生产前提条件。这将为您提供完整的信息：</p>
 <ul>
 <li><p>数据摄取时间</p></li>
 <li><p>索引时间（用于建立优化索引的时间，这会极大地影响搜索性能）</p></li>
