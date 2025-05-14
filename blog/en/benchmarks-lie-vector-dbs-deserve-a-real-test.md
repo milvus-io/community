@@ -24,11 +24,11 @@ When selecting a [vector database](https://milvus.io/blog/what-is-a-vector-datab
 
 ![](https://assets.zilliz.com/Benchmarks_Lie_Vector_D_Bs_Deserve_a_Real_Test_9280c66efc.png)
 
-Most benchmarks test vector databases **after** all data has been ingested and the index is fully built. But in production, data never stops flowing. You don’t get to pause your system for hours just to rebuild an index.
+Most benchmarks test vector databases **after** all data has been ingested and the index is fully built. But in production, data never stops flowing. You don’t get to pause your system for hours to rebuild an index.
 
 We’ve seen the disconnect firsthand. For example, Elasticsearch might boast millisecond-level query speeds, but behind the scenes, we’ve watched it take **over 20 hours** just to optimize its index. That’s downtime no production system can afford, especially in AI workloads that demand continuous updates and instant responses.
 
-At Milvus, after running countless Proof of Concept (PoC) evaluations with enterprise clients, we've uncovered a troubling pattern: **vector databases that excel in controlled lab environments frequently struggle under actual production loads.** This critical gap doesn't just frustrate infrastructure engineers—it can derail entire AI initiatives built on these misleading performance promises.
+With Milvus, after running countless Proof of Concept (PoC) evaluations with enterprise clients, we've uncovered a troubling pattern: **vector databases that excel in controlled lab environments frequently struggle under actual production loads.** This critical gap doesn't just frustrate infrastructure engineers—it can derail entire AI initiatives built on these misleading performance promises.
 
 That's why we built [VDBBench](https://github.com/zilliztech/VectorDBBench): an open-source benchmark designed from the ground up to simulate production reality. Unlike synthetic tests that cherry-pick scenarios, VDBBench pushes databases through continuous ingestion, rigorous filtering conditions, and diverse scenarios, just like your actual production workloads. Our mission is simple: give engineers a tool that shows how vector databases actually perform under real-world conditions so you can make infrastructure decisions based on trustworthy numbers.
 
@@ -126,7 +126,7 @@ _Figure: QPS and Latency of Milvus-16c64g-standalone at Varying Concurrency Leve
 
 ## Beyond Searching Static Data: The Real Production Scenarios
 
-To the best of our knowledge, VDBBench is the only benchmark tool that tests vector databases across the complete spectrum of production-critical scenarios, including static colleciton, filtering, and streaming cases.
+To the best of our knowledge, VDBBench is the only benchmark tool that tests vector databases across the complete spectrum of production-critical scenarios, including static collection, filtering, and streaming cases.
 
 
 ### Static Collection
