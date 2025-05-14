@@ -206,4 +206,4 @@ If you're planning to deploy a vector database in production, it's worth underst
 
 Try VDBBench with your own workloads today and see how different systems hold up in practice: <https://github.com/zilliztech/VectorDBBench>. 
 
-Have questions or want to share your results? Join the conversation on[ GitHub](https://github.com/zilliztech/VectorDBBench) or connect with our community on [Discord](https://discord.gg/FG6hMJStWu). We’d love to hear your opinions. 
+Have questions or want to share your results? Join the conversation on[ GitHub](https://github.com/zilliztech/VectorDBBench) or connect with our community on [Discord](https://discord.com/invite/FG6hMJStWu). We’d love to hear your opinions. 
