@@ -44,7 +44,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Abbiamo amato e usato Kafka e Pulsar. Hanno funzionato finché non hanno smesso di funzionare. Con l'evoluzione di Milvus, il principale database vettoriale open-source, abbiamo scoperto che queste potenti code di messaggi non soddisfacevano più i nostri requisiti di scalabilità. Così abbiamo fatto una mossa coraggiosa: abbiamo riscritto la struttura portante dello streaming in Milvus 2.6 e abbiamo implementato il nostro WAL, <strong>Woodpecker</strong>.</p>
+    </button></h2><p>Abbiamo amato e usato Kafka e Pulsar. Hanno funzionato finché non hanno smesso di funzionare. Con l'evoluzione di Milvus, il principale database vettoriale open source, abbiamo scoperto che queste potenti code di messaggi non soddisfacevano più i nostri requisiti di scalabilità. Così abbiamo fatto una mossa coraggiosa: abbiamo riscritto la struttura portante dello streaming in Milvus 2.6 e abbiamo implementato il nostro WAL, <strong>Woodpecker</strong>.</p>
 <p>Vi illustro il nostro percorso e vi spiego perché abbiamo fatto questo cambiamento, che a prima vista potrebbe sembrare controintuitivo.</p>
 <h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">Cloud-nativo fin dal primo giorno<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -87,7 +87,7 @@ origin: >-
 <p>Questa architettura di log condivisa fornisce una base critica che separa i protocolli di consenso dalle funzionalità di base del database. Adottando questo approccio, Milvus elimina la necessità di gestire direttamente complessi protocolli di consenso, permettendoci di concentrarci sulla fornitura di eccezionali funzionalità di ricerca vettoriale.</p>
 <p>Non siamo i soli ad adottare questo modello architetturale: database come AWS Aurora, Azure Socrates e Neon sfruttano tutti un design simile. <strong>Tuttavia, rimane una lacuna significativa nell'ecosistema open-source: nonostante gli evidenti vantaggi di questo approccio, la comunità manca di un'implementazione distribuita del log write-ahead (WAL) a bassa latenza, scalabile ed economica.</strong></p>
 <p>Le soluzioni esistenti, come Bookie, si sono rivelate inadeguate per le nostre esigenze, a causa del design pesante del client e dell'assenza di SDK pronti per la produzione per Golang e C++. Questo gap tecnologico ci ha portato al nostro approccio iniziale con le code di messaggi.</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">La nostra soluzione iniziale: Code di messaggi come WAL e i suoi limiti<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">La nostra soluzione iniziale: Code di messaggi come WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,7 +102,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Per colmare questa lacuna, il nostro approccio iniziale utilizzava le code di messaggi (Kafka/Pulsar) come log di scrittura (WAL). L'architettura funzionava così:</p>
+    </button></h2><p>Per colmare questa lacuna, il nostro approccio iniziale ha utilizzato le code di messaggi (Kafka/Pulsar) come log di scrittura (WAL). L'architettura funzionava in questo modo:</p>
 <ul>
 <li><p>Tutti gli aggiornamenti in tempo reale in arrivo passano attraverso la coda di messaggi.</p></li>
 <li><p>I writer ricevono una conferma immediata una volta accettata dalla coda di messaggi.</p></li>
@@ -288,7 +288,7 @@ origin: >-
 <li><p>Include il <strong>servizio ManagerService</strong> per l'amministrazione del WAL e il reporting delle prestazioni.</p></li>
 <li><p>Include il <strong>servizio HandlerService</strong> che implementa meccanismi efficienti di publish-subscribe per le voci del WAL.</p></li>
 </ul>
-<p>Questa architettura a strati permette a Milvus di mantenere una netta separazione tra le funzionalità di streaming (sottoscrizione, elaborazione in tempo reale) e i meccanismi di archiviazione veri e propri. Woodpecker gestisce il "come" dell'archiviazione dei log, mentre StreamingService gestisce il "cosa" e il "quando" delle operazioni di log.</p>
+<p>Questa architettura a strati consente a Milvus di mantenere una netta separazione tra le funzionalità di streaming (sottoscrizione, elaborazione in tempo reale) e i meccanismi di archiviazione veri e propri. Woodpecker gestisce il "come" dell'archiviazione dei log, mentre StreamingService gestisce il "cosa" e il "quando" delle operazioni di log.</p>
 <p>Di conseguenza, lo Streaming Service migliora significativamente le capacità in tempo reale di Milvus introducendo il supporto nativo per le sottoscrizioni, eliminando la necessità di code di messaggi esterne. Riduce il consumo di memoria consolidando le cache precedentemente duplicate nei percorsi delle query e dei dati, riduce la latenza per le letture fortemente coerenti eliminando i ritardi di sincronizzazione asincrona e migliora la scalabilità e la velocità di recupero in tutto il sistema.</p>
 <h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">Conclusione - Streaming su un'architettura a zero dischi<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"

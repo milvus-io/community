@@ -6,9 +6,9 @@ title: >-
 author: James Luan
 date: 2025-05-15T00:00:00.000Z
 desc: >-
-  Kami membangun Woodpecker, sebuah sistem WAL cloud-native, untuk menggantikan
-  Kafka dan Pulsar di Milvus dengan kompleksitas dan biaya operasional yang
-  lebih rendah.
+  Kami membangun Woodpecker, sebuah sistem WAL yang berbasis cloud, untuk
+  menggantikan Kafka dan Pulsar di Milvus dengan kompleksitas dan biaya
+  operasional yang lebih rendah.
 cover: >-
   assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png
 tag: Engineering
@@ -88,7 +88,7 @@ origin: >-
 <p>Arsitektur log bersama ini menyediakan fondasi penting yang memisahkan protokol konsensus dari fungsionalitas basis data inti. Dengan mengadopsi pendekatan ini, Milvus menghilangkan kebutuhan untuk mengelola protokol konsensus yang kompleks secara langsung, sehingga kami dapat fokus untuk memberikan kemampuan pencarian vektor yang luar biasa.</p>
 <p>Kami tidak sendirian dalam pola arsitektur ini-database seperti AWS Aurora, Azure Socrates, dan Neon semuanya memanfaatkan desain yang serupa. <strong>Namun, kesenjangan yang signifikan masih ada dalam ekosistem open-source: terlepas dari keuntungan yang jelas dari pendekatan ini, komunitas tidak memiliki implementasi write-ahead log (WAL) terdistribusi dengan latensi rendah, dapat diskalakan, dan hemat biaya.</strong></p>
 <p>Solusi yang ada seperti Bookie terbukti tidak memadai untuk kebutuhan kami karena desain klien kelas berat mereka dan tidak adanya SDK yang siap produksi untuk Golang dan C++. Kesenjangan teknologi ini membawa kami ke pendekatan awal kami dengan antrian pesan.</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">Solusi Awal Kami: Antrian Pesan sebagai WAL dan Keterbatasannya<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">Solusi Awal Kami: Antrian Pesan sebagai WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -326,5 +326,5 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nantikan Milvus 2.6 yang akan datang dengan Woodpecker dan lebih banyak lagi fitur canggih lainnya. Siap untuk merasakan performa yang lebih baik dan pengoperasian yang disederhanakan? Lihat<a href="https://milvus.io/docs"> dokumentasi</a> kami untuk memulai! Anda juga dapat bergabung dengan komunitas Milvus di<a href="https://discord.gg/milvus"> Discord</a> atau <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> untuk mengajukan pertanyaan atau berbagi pengalaman.</p>
+    </button></h2><p>Nantikan Milvus 2.6 yang akan datang dengan Woodpecker dan lebih banyak lagi fitur-fitur canggih lainnya. Siap untuk merasakan performa yang lebih baik dan pengoperasian yang disederhanakan? Lihat<a href="https://milvus.io/docs"> dokumentasi</a> kami untuk memulai! Anda juga dapat bergabung dengan komunitas Milvus di<a href="https://discord.gg/milvus"> Discord</a> atau <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> untuk mengajukan pertanyaan atau berbagi pengalaman.</p>
 <p>Jika Anda mengalami tantangan dengan beban kerja pencarian vektor berskala besar, kami ingin membantu Anda.<a href="https://milvus.io/office-hours"> Pesan sesi Jam Kerja Milvus</a> untuk mendiskusikan kebutuhan spesifik Anda dengan tim teknisi kami.</p>

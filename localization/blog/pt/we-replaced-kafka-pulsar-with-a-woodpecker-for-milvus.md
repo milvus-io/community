@@ -85,7 +85,7 @@ origin: >-
 <p>Esta arquitetura de registo partilhado fornece uma base crítica que separa os protocolos de consenso da funcionalidade principal da base de dados. Ao adotar esta abordagem, a Milvus elimina a necessidade de gerir diretamente protocolos de consenso complexos, permitindo-nos concentrarmo-nos em fornecer capacidades de pesquisa vetorial excepcionais.</p>
 <p>Não estamos sozinhos neste padrão arquitetónico - bases de dados como a AWS Aurora, Azure Socrates e Neon utilizam um design semelhante. <strong>No entanto, continua a existir uma lacuna significativa no ecossistema de código aberto: apesar das claras vantagens desta abordagem, a comunidade carece de uma implementação de registo de escrita antecipada (WAL) distribuída de baixa latência, escalável e económica.</strong></p>
 <p>As soluções existentes, como Bookie, provaram ser inadequadas para as nossas necessidades devido ao seu design de cliente pesado e à ausência de SDKs prontos para produção para Golang e C++. Essa lacuna tecnológica nos levou à nossa abordagem inicial com filas de mensagens.</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">Nossa solução inicial: Filas de mensagens como WAL e suas limitações<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">Nossa solução inicial: Filas de mensagens como WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,7 +100,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para preencher essa lacuna, nossa abordagem inicial utilizou filas de mensagens (Kafka/Pulsar) como nosso log de write-ahead (WAL). A arquitetura funcionava da seguinte forma:</p>
+    </button></h2><p>Para preencher essa lacuna, nossa abordagem inicial utilizou filas de mensagens (Kafka/Pulsar) como nosso log de gravação antecipada (WAL). A arquitetura funcionava da seguinte forma:</p>
 <ul>
 <li><p>Todas as actualizações em tempo real que chegam fluem através da fila de mensagens.</p></li>
 <li><p>Os escritores recebem confirmação imediata quando são aceites pela fila de mensagens.</p></li>
@@ -130,9 +130,9 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Com o Milvus 2.6, decidimos eliminar gradualmente as filas de mensagens externas em favor do Woodpecker, nossa implementação de WAL nativa da nuvem criada especificamente. Esta não foi uma decisão que tomamos de ânimo leve. Afinal, usamos com sucesso o Kafka e o Pulsar por anos.</p>
-<p>O problema não era com essas tecnologias em si - ambas são excelentes sistemas com recursos poderosos. Em vez disso, o desafio veio da crescente complexidade e sobrecarga que esses sistemas externos introduziram à medida que a Milvus evoluiu. À medida que os nossos requisitos se tornavam mais especializados, o fosso entre o que as filas de mensagens de uso geral ofereciam e o que a nossa base de dados vetorial precisava continuava a aumentar.</p>
+<p>O problema não era com essas tecnologias em si - ambas são excelentes sistemas com recursos poderosos. Em vez disso, o desafio veio da crescente complexidade e sobrecarga que esses sistemas externos introduziram à medida que a Milvus evoluiu. À medida que os nossos requisitos se tornavam mais especializados, a diferença entre o que as filas de mensagens de uso geral ofereciam e o que a nossa base de dados vetorial precisava continuava a aumentar.</p>
 <p>Três factores específicos acabaram por determinar a nossa decisão de construir um substituto:</p>
-<h3 id="Operational-Complexity" class="common-anchor-header">Complexidade operacional</h3><p>Dependências externas como Kafka ou Pulsar exigem máquinas dedicadas com vários nós e gerenciamento cuidadoso de recursos. Isso cria vários desafios:</p>
+<h3 id="Operational-Complexity" class="common-anchor-header">Complexidade operacional</h3><p>Dependências externas, como Kafka ou Pulsar, exigem máquinas dedicadas com vários nós e gerenciamento cuidadoso de recursos. Isso cria vários desafios:</p>
 <ul>
 <li>Aumento da complexidade operacional</li>
 </ul>
@@ -231,7 +231,7 @@ origin: >-
 <p><em>Figura: O modo memoryBuffer</em></p>
 <p><strong>Modo QuorumBuffer - otimizado para implantações de baixa latência e alta durabilidade</strong></p>
 <p>O modo QuorumBuffer foi projetado para cargas de trabalho de leitura/gravação sensíveis à latência e de alta frequência que requerem capacidade de resposta em tempo real e forte tolerância a falhas. Nesse modo, o Woodpecker funciona como um buffer de gravação de alta velocidade com três réplicas de gravações de quorum, garantindo forte consistência e alta disponibilidade.</p>
-<p>Uma gravação é considerada bem-sucedida quando é replicada para pelo menos dois dos três nós, normalmente concluindo em milissegundos de um dígito, após o que os dados são descarregados de forma assíncrona no armazenamento de objetos na nuvem para durabilidade de longo prazo. Esta arquitetura minimiza o estado no nó, elimina a necessidade de grandes volumes de disco locais e evita reparações complexas de anti-entropia frequentemente necessárias nos sistemas tradicionais baseados em quorum.</p>
+<p>Uma gravação é considerada bem-sucedida quando é replicada para pelo menos dois dos três nós, normalmente concluindo em milissegundos de um dígito, após o que os dados são descarregados de forma assíncrona no armazenamento de objetos na nuvem para durabilidade de longo prazo. Esta arquitetura minimiza o estado no nó, elimina a necessidade de grandes volumes de disco locais e evita reparações complexas de anti-entropia frequentemente necessárias em sistemas tradicionais baseados em quorum.</p>
 <p>O resultado é uma camada WAL simplificada e robusta, ideal para ambientes de produção de missão crítica, onde consistência, disponibilidade e recuperação rápida são essenciais.</p>
 <p>
   <span class="img-wrapper">
@@ -287,7 +287,7 @@ origin: >-
 <li><p>Inclui o <strong>HandlerService</strong> que implementa mecanismos eficientes de publicação-subscrição para entradas WAL</p></li>
 </ul>
 <p>Esta arquitetura em camadas permite ao Milvus manter uma separação clara entre a funcionalidade de fluxo contínuo (subscrição, processamento em tempo real) e os mecanismos de armazenamento reais. O Woodpecker trata do "como" do armazenamento de registos, enquanto o StreamingService gere o "o quê" e o "quando" das operações de registo.</p>
-<p>Como resultado, o Streaming Service melhora significativamente as capacidades em tempo real do Milvus ao introduzir o suporte nativo de subscrição, eliminando a necessidade de filas de mensagens externas. Reduz o consumo de memória ao consolidar caches anteriormente duplicados nos caminhos de consulta e de dados, diminui a latência para leituras fortemente consistentes ao remover atrasos de sincronização assíncronos e melhora a escalabilidade e a velocidade de recuperação em todo o sistema.</p>
+<p>Como resultado, o Streaming Service melhora significativamente as capacidades em tempo real do Milvus, introduzindo o suporte nativo de subscrição, eliminando a necessidade de filas de mensagens externas. Reduz o consumo de memória ao consolidar caches anteriormente duplicados nos caminhos de consulta e de dados, diminui a latência para leituras fortemente consistentes ao remover atrasos de sincronização assíncronos e melhora a escalabilidade e a velocidade de recuperação em todo o sistema.</p>
 <h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">Conclusão - Streaming em uma arquitetura de disco zero<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

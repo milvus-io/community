@@ -87,7 +87,7 @@ origin: >-
 <p>Cette architecture de journal partagé constitue une base essentielle qui sépare les protocoles de consensus de la fonctionnalité principale de la base de données. En adoptant cette approche, Milvus élimine la nécessité de gérer directement des protocoles de consensus complexes, ce qui nous permet de nous concentrer sur la fourniture de capacités de recherche vectorielle exceptionnelles.</p>
 <p>Nous ne sommes pas les seuls à adopter ce modèle architectural : des bases de données telles que AWS Aurora, Azure Socrates et Neon s'appuient toutes sur une conception similaire. <strong>Cependant, une lacune importante subsiste dans l'écosystème open-source : malgré les avantages évidents de cette approche, la communauté manque d'une implémentation distribuée WAL (write-ahead log) à faible latence, évolutive et rentable.</strong></p>
 <p>Les solutions existantes comme Bookie se sont révélées inadaptées à nos besoins en raison de la lourdeur de leur conception client et de l'absence de SDK prêts à la production pour Golang et C++. Cette lacune technologique nous a conduits à notre approche initiale avec les files de messages.</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">Notre solution initiale : Les files de messages en tant que WAL et leurs limites<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">Notre solution initiale : Les files de messages en tant que WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,11 +102,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pour combler ce fossé, notre approche initiale utilisait les files de messages (Kafka/Pulsar) comme journal d'écriture (WAL). L'architecture fonctionnait comme suit :</p>
+    </button></h2><p>Pour combler cette lacune, notre approche initiale utilisait des files de messages (Kafka/Pulsar) comme journal d'écriture (WAL). L'architecture fonctionnait comme suit :</p>
 <ul>
 <li><p>Toutes les mises à jour entrantes en temps réel passent par la file d'attente de messages.</p></li>
 <li><p>Les rédacteurs reçoivent une confirmation immédiate une fois qu'elle est acceptée par la file de messages.</p></li>
-<li><p>QueryNode et DataNode traitent ces données de manière asynchrone, ce qui garantit un débit d'écriture élevé tout en préservant la fraîcheur des données.</p></li>
+<li><p>QueryNode et DataNode traitent ces données de manière asynchrone, ce qui garantit un débit d'écriture élevé tout en préservant la fraîcheur des données</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -206,7 +206,7 @@ origin: >-
 <li><p><strong>Mode de stockage dans le nuage (S3)</strong>: En écrivant directement sur S3, Woodpecker a atteint 750 Mo/s (environ 68 % de la limite théorique de S3), soit 5,8 fois plus que Kafka et 7 fois plus que Pulsar. Bien que la latence soit plus élevée (166 ms), cette configuration offre un débit exceptionnel pour les charges de travail par lots.</p></li>
 <li><p><strong>Mode de stockage d'objets (MinIO)</strong>: Même avec MinIO, Woodpecker a atteint 71 Mo/s, soit environ 65 % de la capacité de MinIO. Ces performances sont comparables à celles de Kafka et de Pulsar, mais avec des besoins en ressources nettement inférieurs.</p></li>
 </ol>
-<p>Woodpecker est particulièrement optimisé pour les écritures simultanées de gros volumes, pour lesquelles le maintien de l'ordre est essentiel. Et ces résultats ne reflètent que les premières étapes du développement - les optimisations en cours dans la fusion des E/S, la mise en mémoire tampon intelligente et le préchargement devraient permettre de pousser les performances encore plus loin que les limites théoriques.</p>
+<p>Woodpecker est particulièrement optimisé pour les écritures simultanées de gros volumes, pour lesquelles le maintien de l'ordre est essentiel. Et ces résultats ne reflètent que les premières étapes du développement - les optimisations en cours dans la fusion des E/S, la mise en mémoire tampon intelligente et l'extraction préalable devraient permettre de pousser les performances encore plus près des limites théoriques.</p>
 <h3 id="Design-Goals" class="common-anchor-header">Objectifs de conception</h3><p>Woodpecker répond aux exigences évolutives des charges de travail de recherche vectorielle en temps réel par le biais de ces exigences techniques clés :</p>
 <ul>
 <li><p>ingestion de données à haut débit avec persistance durable à travers la zone de disponibilité</p></li>
@@ -233,7 +233,7 @@ origin: >-
 <p><em>Figure 1 : Le mode memoryBuffer Le mode memoryBuffer</em></p>
 <p><strong>Mode QuorumBuffer - Optimisé pour les déploiements à faible latence et à haute durabilité</strong></p>
 <p>Le mode QuorumBuffer est conçu pour les charges de travail de lecture/écriture sensibles à la latence et à haute fréquence, qui nécessitent à la fois une réactivité en temps réel et une forte tolérance aux pannes. Dans ce mode, Woodpecker fonctionne comme un tampon d'écriture à grande vitesse avec des écritures quorum à trois répliques, assurant une forte cohérence et une haute disponibilité.</p>
-<p>Une écriture est considérée comme réussie lorsqu'elle est répliquée sur au moins deux des trois nœuds, généralement en l'espace de quelques millisecondes, après quoi les données sont évacuées de manière asynchrone vers le stockage d'objets dans le nuage pour une durabilité à long terme. Cette architecture minimise l'état sur le nœud, élimine le besoin de gros volumes de disques locaux et évite les réparations anti-entropie complexes souvent nécessaires dans les systèmes traditionnels basés sur le quorum.</p>
+<p>Une écriture est considérée comme réussie lorsqu'elle est répliquée sur au moins deux des trois nœuds, généralement dans un délai de quelques millisecondes, après quoi les données sont évacuées de manière asynchrone vers le stockage d'objets dans le nuage pour une durabilité à long terme. Cette architecture minimise l'état sur le nœud, élimine le besoin de gros volumes de disques locaux et évite les réparations anti-entropie complexes souvent nécessaires dans les systèmes traditionnels basés sur le quorum.</p>
 <p>Il en résulte une couche WAL rationalisée et robuste, idéale pour les environnements de production critiques où la cohérence, la disponibilité et la restauration rapide sont essentielles.</p>
 <p>
   <span class="img-wrapper">

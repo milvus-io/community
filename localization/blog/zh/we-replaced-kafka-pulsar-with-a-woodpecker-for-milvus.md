@@ -41,7 +41,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>我们喜欢并使用 Kafka 和 Pulsar。它们一直在发挥作用，直到它们不再适用。随着 Milvus（领先的开源向量数据库）的发展，我们发现这些强大的消息队列不再符合我们的可扩展性要求。于是，我们做出了一个大胆的举动：我们重写了 Milvus 2.6 中的流式骨干网，并实现了我们自己的 WAL -<strong>Woodpecker</strong>。</p>
-<p>让我带领大家回顾一下我们的历程，并解释一下我们为什么要做出这种乍看之下可能有悖直觉的改变。</p>
+<p>让我带领大家回顾一下我们的历程，并解释一下我们为什么要做出这种乍看之下可能有违直觉的改变。</p>
 <h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">从第一天起就是云原生的<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -57,7 +57,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 从一开始就是云原生向量数据库。我们利用 Kubernetes 进行弹性扩展和快速故障恢复，并利用亚马逊 S3 和 MinIO 等对象存储解决方案进行数据持久化。</p>
+    </button></h2><p>Milvus 从一开始就是一个云原生向量数据库。我们利用 Kubernetes 进行弹性扩展和快速故障恢复，并利用亚马逊 S3 和 MinIO 等对象存储解决方案进行数据持久化。</p>
 <p>这种云优先的方法具有巨大的优势，但也带来了一些挑战：</p>
 <ul>
 <li><p>S3 等云对象存储服务提供了几乎无限的吞吐量和可用性处理能力，但延迟往往超过 100 毫秒。</p></li>
@@ -83,7 +83,7 @@ origin: >-
 <p>这种共享日志架构提供了一个重要的基础，将共识协议与核心数据库功能分离开来。通过采用这种方法，Milvus 无需直接管理复杂的共识协议，从而使我们能够专注于提供卓越的向量搜索功能。</p>
 <p>我们并不是唯一采用这种架构模式的公司--AWS Aurora、Azure Socrates 和 Neon 等数据库都采用了类似的设计。<strong>然而，开源生态系统中仍存在一个重大空白：尽管这种方法具有明显的优势，但社区缺乏低延迟、可扩展和经济高效的分布式先写日志（WAL）实现。</strong></p>
 <p>事实证明，Bookie 等现有解决方案无法满足我们的需求，因为它们采用了重量级的客户端设计，而且没有适用于 Golang 和 C++ 的可用于生产的 SDK。这一技术差距导致我们最初采用了消息队列方法。</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">我们最初的解决方案：作为 WAL 的消息队列及其局限性<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">我们最初的解决方案：作为 WAL 的消息队列<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,7 +98,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>为了弥补这一差距，我们最初采用了消息队列（Kafka/Pulsar）作为前写日志（WAL）。该架构是这样工作的：</p>
+    </button></h2><p>为了弥补这一差距，我们最初的方法是利用消息队列（Kafka/Pulsar）作为前写日志（WAL）。该架构是这样工作的：</p>
 <ul>
 <li><p>所有传入的实时更新都流经消息队列。</p></li>
 <li><p>消息队列接受更新后，写入者会立即收到确认。</p></li>
@@ -179,7 +179,7 @@ origin: >-
   </span>
 </p>
 <p>图  啄木鸟架构概述</p>
-<p>这种方法大大降低了操作符开销，同时最大限度地提高了耐用性和云效率。通过消除本地磁盘依赖性，Woodpecker 与云原生原则完美契合，并大大减轻了系统管理员的操作负担。</p>
+<p>这种方法大大降低了操作符开销，同时最大限度地提高了耐用性和云效率。通过消除本地磁盘依赖性，Woodpecker 与云原生原则完美契合，大大减轻了系统管理员的操作负担。</p>
 <h3 id="Performance-Benchmarks-Exceeding-Expectations" class="common-anchor-header">性能基准：超出预期</h3><p>我们运行了全面的基准测试，以评估啄木鸟在单节点、单客户端、单日志流设置下的性能。与 Kafka 和 Pulsar 相比，结果令人印象深刻：</p>
 <table>
 <thead>
@@ -219,7 +219,7 @@ origin: >-
 </ul>
 <h3 id="Flexible-Deployments-to-Match-Your-Specific-Needs" class="common-anchor-header">灵活部署，满足您的特定需求</h3><p>啄木鸟提供两种部署模式，以满足您的特定需求：</p>
 <p><strong>MemoryBuffer 模式 - 轻便、免维护</strong></p>
-<p>MemoryBuffer 模式提供了一个简单、轻量级的部署选项，啄木鸟会在内存中临时缓冲写入的内容，并定期将它们刷新到云对象存储服务。元数据使用 etcd 管理，以确保一致性和协调性。这种模式最适合小规模部署或生产环境中批量繁重的工作负载，它们优先考虑的是简单性而不是性能，尤其是在低写入延迟并不重要的情况下。</p>
+<p>MemoryBuffer 模式提供了一个简单、轻量级的部署选项，啄木鸟会在内存中暂时缓冲写入的内容，并定期将它们刷新到云对象存储服务。元数据使用 etcd 管理，以确保一致性和协调性。这种模式最适合小规模部署或生产环境中批量繁重的工作负载，它们优先考虑的是简单性而不是性能，尤其是在低写入延迟并不重要的情况下。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_The_memory_Buffer_Mode_3429d693a1.png" alt="" class="doc-image" id="" />

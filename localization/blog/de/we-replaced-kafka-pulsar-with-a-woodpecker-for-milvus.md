@@ -43,7 +43,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wir haben Kafka und Pulsar geliebt und verwendet. Sie funktionierten, bis sie es nicht mehr taten. Als Milvus, die führende Open-Source-Vektordatenbank, weiterentwickelt wurde, stellten wir fest, dass diese leistungsstarken Nachrichtenwarteschlangen unsere Anforderungen an die Skalierbarkeit nicht mehr erfüllten. Also haben wir einen kühnen Schritt gewagt: Wir haben das Streaming-Backbone in Milvus 2.6 umgeschrieben und unsere eigene WAL implementiert - <strong>Woodpecker</strong>.</p>
+    </button></h2><p>Wir haben Kafka und Pulsar geliebt und verwendet. Sie funktionierten, bis sie es nicht mehr taten. Als Milvus, die führende Open-Source-Vektordatenbank, weiterentwickelt wurde, stellten wir fest, dass diese leistungsstarken Nachrichtenwarteschlangen unsere Anforderungen an die Skalierbarkeit nicht mehr erfüllten. Also haben wir einen mutigen Schritt gewagt: Wir haben das Streaming-Backbone in Milvus 2.6 neu geschrieben und unser eigenes WAL implementiert - <strong>Woodpecker</strong>.</p>
 <p>Ich möchte Sie auf unserem Weg begleiten und Ihnen erklären, warum wir diese Änderung vorgenommen haben, die auf den ersten Blick vielleicht kontraintuitiv erscheint.</p>
 <h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">Cloud-nativ vom ersten Tag an<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -67,7 +67,7 @@ origin: >-
 <li><p>Die Preismodelle dieser Dienste (basierend auf Zugriffsmustern und -häufigkeit) können bei Echtzeit-Datenbankoperationen unerwartete Kosten verursachen.</p></li>
 <li><p>Der Ausgleich zwischen Cloud-nativen Merkmalen und den Anforderungen der Echtzeit-Vektorsuche bringt erhebliche architektonische Herausforderungen mit sich.</p></li>
 </ul>
-<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">Die Shared Log Architektur: Unser Fundament<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
+<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">Die Shared Log Architektur: Unsere Grundlage<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,10 +83,10 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Viele Vektorsuchsysteme beschränken sich auf die Stapelverarbeitung, da der Aufbau eines Streaming-Systems in einer Cloud-nativen Umgebung eine noch größere Herausforderung darstellt. Im Gegensatz dazu legt Milvus den Schwerpunkt auf die Aktualität der Daten in Echtzeit und implementiert eine gemeinsam genutzte Protokollarchitektur - man kann sie sich wie eine Festplatte für ein Dateisystem vorstellen.</p>
-<p>Diese gemeinsam genutzte Protokollarchitektur bietet eine wichtige Grundlage, die Konsensprotokolle von den Kernfunktionen der Datenbank trennt. Durch diesen Ansatz entfällt bei Milvus die Notwendigkeit, komplexe Konsensprotokolle direkt zu verwalten, wodurch wir uns auf die Bereitstellung außergewöhnlicher Vektorsuchfunktionen konzentrieren können.</p>
+<p>Diese gemeinsam genutzte Protokollarchitektur bietet eine wichtige Grundlage, die Konsensprotokolle von den Kernfunktionen der Datenbank trennt. Durch diesen Ansatz entfällt bei Milvus die Notwendigkeit, komplexe Konsensprotokolle direkt zu verwalten, so dass wir uns auf die Bereitstellung außergewöhnlicher Vektorsuchfunktionen konzentrieren können.</p>
 <p>Mit diesem Architekturmuster sind wir nicht allein - Datenbanken wie AWS Aurora, Azure Socrates und Neon nutzen alle ein ähnliches Design. <strong>Im Open-Source-Ökosystem klafft jedoch noch eine erhebliche Lücke: Trotz der eindeutigen Vorteile dieses Ansatzes fehlt der Community eine skalierbare und kosteneffiziente verteilte WAL-Implementierung (Write-ahead Log) mit niedriger Latenz.</strong></p>
 <p>Bestehende Lösungen wie Bookie erwiesen sich aufgrund ihres schwergewichtigen Client-Designs und des Fehlens produktionsreifer SDKs für Golang und C++ als unzureichend für unsere Anforderungen. Diese technologische Lücke führte uns zu unserem ersten Ansatz mit Message Queues.</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">Unsere anfängliche Lösung: Message Queues als WAL und seine Grenzen<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">Unsere erste Lösung: Nachrichten-Warteschlangen als WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,7 +101,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um diese Lücke zu schließen, nutzten wir anfangs Nachrichten-Warteschlangen (Kafka/Pulsar) als unser Write-Ahead-Log (WAL). Die Architektur funktionierte folgendermaßen:</p>
+    </button></h2><p>Um diese Lücke zu schließen, nutzten wir anfangs Nachrichtenwarteschlangen (Kafka/Pulsar) als unser Write-Ahead-Log (WAL). Die Architektur funktionierte folgendermaßen:</p>
 <ul>
 <li><p>Alle eingehenden Echtzeit-Aktualisierungen fließen durch die Nachrichtenwarteschlange.</p></li>
 <li><p>Die Schreiber erhalten eine sofortige Bestätigung, sobald sie von der Nachrichtenwarteschlange akzeptiert wird.</p></li>
@@ -232,7 +232,7 @@ origin: >-
 <p><em>Abbildung: Der memoryBuffer-Modus</em></p>
 <p><strong>QuorumBuffer-Modus - Optimiert für Bereitstellungen mit niedriger Latenz und hoher Ausfallsicherheit</strong></p>
 <p>Der QuorumBuffer-Modus wurde für latenzempfindliche, hochfrequente Lese-/Schreib-Workloads entwickelt, die sowohl Echtzeit-Reaktionsfähigkeit als auch hohe Fehlertoleranz erfordern. In diesem Modus fungiert Woodpecker als Hochgeschwindigkeits-Schreibpuffer mit drei Quorum-Schreibvorgängen, die eine starke Konsistenz und hohe Verfügbarkeit gewährleisten.</p>
-<p>Ein Schreibvorgang gilt als erfolgreich, wenn er auf mindestens zwei der drei Knoten repliziert wurde, was in der Regel innerhalb eines einstelligen Millisekundenbereichs geschieht. Anschließend werden die Daten asynchron in den Cloud-Objektspeicher übertragen, um eine langfristige Haltbarkeit zu gewährleisten. Diese Architektur minimiert den Knotenzustand, macht große lokale Festplattenvolumina überflüssig und vermeidet komplexe Anti-Entropie-Reparaturen, wie sie in herkömmlichen Quorum-basierten Systemen häufig erforderlich sind.</p>
+<p>Ein Schreibvorgang gilt als erfolgreich, wenn er auf mindestens zwei der drei Knoten repliziert wurde, was in der Regel innerhalb eines einstelligen Millisekundenbereichs geschieht. Anschließend werden die Daten asynchron in den Cloud-Objektspeicher übertragen, um eine langfristige Haltbarkeit zu gewährleisten. Diese Architektur minimiert den Knotenstatus, macht große lokale Festplattenvolumina überflüssig und vermeidet komplexe Anti-Entropie-Reparaturen, wie sie in herkömmlichen Quorum-basierten Systemen häufig erforderlich sind.</p>
 <p>Das Ergebnis ist eine schlanke, robuste WAL-Schicht, die sich ideal für unternehmenskritische Produktionsumgebungen eignet, in denen Konsistenz, Verfügbarkeit und schnelle Wiederherstellung von entscheidender Bedeutung sind.</p>
 <p>
   <span class="img-wrapper">

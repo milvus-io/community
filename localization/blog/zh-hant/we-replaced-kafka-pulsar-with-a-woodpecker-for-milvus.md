@@ -83,7 +83,7 @@ origin: >-
 <p>這種共用日誌架構提供了一個重要的基礎，將共識協定與核心資料庫功能分開。透過採用此方法，Milvus 無需直接管理複雜的共識協定，讓我們得以專注於提供卓越的向量搜尋功能。</p>
 <p>我們並非唯一採用此架構模式的資料庫，例如 AWS Aurora、Azure Socrates 和 Neon 都採用類似的設計。<strong>然而，在開放原始碼生態系統中仍存在一個重大的缺口：儘管這種方式具有明顯的優勢，但社群仍缺乏低延遲、可擴充且具成本效益的分散式寫入日誌 (WAL) 實作。</strong></p>
 <p>現有的解決方案（例如 Bookie）因其重量級的用戶端設計，以及缺乏適用於 Golang 和 C++ 的生產就緒 SDK 而無法滿足我們的需求。這個技術缺口導致我們最初使用訊息佇列的方法。</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="common-anchor-header">我們最初的解決方案：訊息佇列作為 WAL 及其限制<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL-and-Its-Limitations" class="anchor-icon" translate="no">
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">我們最初的解決方案：訊息佇列作為 WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,7 +98,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>為了彌補這個差距，我們最初的方法是使用訊息佇列 (Kafka/Pulsar) 作為我們的前寫日誌 (WAL)。該架構是這樣運作的：</p>
+    </button></h2><p>為了彌補這個差距，我們最初的方法是使用訊息佇列 (Kafka/Pulsar) 作為我們的前寫日誌 (WAL)。這個架構是這樣運作的：</p>
 <ul>
 <li><p>所有傳入的即時更新都流經訊息佇列。</p></li>
 <li><p>一旦訊息佇列接受，寫入者會立即收到確認。</p></li>
@@ -111,7 +111,7 @@ origin: >-
   </span>
 </p>
 <p>圖表Milvus 2.0 架構概觀</p>
-<p>這個系統有效地提供即時寫入確認，同時啟用異步資料處理，這對於維持 Milvus 使用者所期望的吞吐量與資料新鮮度之間的平衡至關重要。</p>
+<p>這個系統有效地提供即時的寫入確認，同時啟用異步資料處理，這對於維持 Milvus 使用者所期望的吞吐量與資料新鮮度之間的平衡至關重要。</p>
 <h2 id="Why-We-Needed-Something-Different-for-WAL" class="common-anchor-header">為什麼我們需要不同的 WAL<button data-href="#Why-We-Needed-Something-Different-for-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -196,7 +196,7 @@ origin: >-
 <li><p><strong>本機檔案系統</strong>：600-750 MB/s</p></li>
 <li><p><strong>Amazon S3（單個 EC2 實例）</strong>：高達 1.1 GB/秒</p></li>
 </ul>
-<p>值得注意的是，Woodpecker 對於每個後端都持續達到最大可能吞吐量的 60-80%，對於中介軟體來說，這是一個非凡的效率水準。</p>
+<p>值得注意的是，Woodpecker 對每個後端都持續達到最大可能吞吐量的 60-80%，對於中介軟體來說，這是一個非凡的效率水準。</p>
 <h4 id="Key-Performance-Insights" class="common-anchor-header">關鍵性能洞察</h4><ol>
 <li><p><strong>本地檔案系統模式</strong>：Woodpecker 的速度達到 450 MB/s，比 Kafka 快 3.5 倍，比 Pulsar 快 4.2 倍，超低延遲僅為 1.8 ms，非常適合高性能單節點部署。</p></li>
 <li><p><strong>雲端儲存模式 (S3)：</strong>直接寫入 S3 時，Woodpecker 達到 750 MB/s（約為 S3 理論極限的 68%），比 Kafka 高 5.8 倍，比 Pulsar 高 7 倍。雖然延遲較高 (166 毫秒)，但此設定可為面向批次的工作負載提供優異的吞吐量。</p></li>
@@ -284,8 +284,8 @@ origin: >-
 <li><p>包含<strong>ManagerService</strong>，用於 WAL 管理和效能報告</p></li>
 <li><p>以<strong>HandlerService</strong>為特色，為 WAL 項目實作有效率的發佈-訂閱機制</p></li>
 </ul>
-<p>這種分層架構可讓 Milvus 在串流功能（訂閱、即時處理）與實際儲存機制之間維持清楚的區隔。Woodpecker 處理日誌儲存的「如何」，而 StreamingService 則管理日誌作業的「什麼」和「何時」。</p>
-<p>因此，Streaming Service 大幅增強了 Milvus 的即時功能，它引入了本機訂閱支援，省去了外部訊息佇列。它透過整合查詢和資料路徑中先前重複的快取記憶體，降低了記憶體消耗；透過移除異步同步延遲，降低了強度一致讀取的延遲，並改善了整個系統的可擴充性和復原速度。</p>
+<p>這種分層架構可讓 Milvus 在串流功能（訂閱、即時處理）與實際儲存機制之間維持清楚的區隔。Woodpecker 處理日誌儲存的「如何」，而 StreamingService 則管理日誌作業的「什麼」和「什麼時候」。</p>
+<p>因此，Streaming Service 大幅增強了 Milvus 的即時功能，因為它引入了本機訂閱支援，不再需要外部訊息佇列。它透過整合查詢和資料路徑中先前重複的快取記憶體，降低了記憶體消耗；透過移除異步同步延遲，降低了強度一致讀取的延遲，並改善了整個系統的可擴充性和復原速度。</p>
 <h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">結論 - 在零磁碟架構上進行串流處理<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -302,10 +302,10 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>管理狀態很困難。有狀態的系統通常會犧牲彈性和擴充性。在雲原生設計中，越來越多人接受的答案是將狀態與運算解耦，允許各自獨立擴充。</p>
-<p>與其重新發明輪子，我們不如將耐久、可擴充儲存的複雜性委託給 AWS S3、Google Cloud Storage 和 MinIO 等服務背後的世界級工程團隊。在這些服務中，S3 以其幾乎無限的容量、十一個九 (99.999999999%) 的耐用性、99.99% 的可用性以及高吞吐量讀/寫效能脫穎而出。</p>
+<p>與其重新發明輪子，我們不如將耐久、可擴充儲存的複雜性委託給 AWS S3、Google Cloud Storage 和 MinIO 等服務背後的世界級工程團隊。在這些服務中，S3 以其幾乎無限的容量、十一個九 (99.999999999%) 的耐用性、99.99% 的可用性以及高吞吐量的讀/寫效能脫穎而出。</p>
 <p>但是，即使是「零磁碟」架構也有權責取捨。物件儲存仍需面對高寫入延遲和小檔案低效率的問題，這些限制在許多即時工作負載中仍未解決。</p>
 <p>對於向量資料庫，尤其是那些支援關鍵任務 RAG、AI 代理和低延遲搜尋工作負載的資料庫，即時存取和快速寫入是不可或缺的。這就是我們圍繞 Woodpecker 和 Streaming Service 重新設計 Milvus 的原因。這種轉變簡化了整體系統（面對現實吧-沒有人想在向量資料庫內維護完整的 Pulsar 堆疊），確保資料更新鮮，提高成本效益，並加速故障復原。</p>
-<p>我們相信 Woodpecker 不只是 Milvus 的元件 - 它可以成為其他雲端原生系統的基礎建構區塊。隨著雲端基礎架構的演進，像 S3 Express 之類的創新可能會讓我們更接近理想：以個位數毫秒的寫入延遲達到跨 AZ 的耐用性。</p>
+<p>我們相信 Woodpecker 不只是 Milvus 的元件 - 它可以成為其他雲端原生系統的基礎建構區塊。隨著雲端基礎架構的演進，像 S3 Express 這樣的創新可能會讓我們更接近理想：以個位數毫秒的寫入延遲達到跨 AZ 的耐用性。</p>
 <h2 id="Whats-Next" class="common-anchor-header">下一步<button data-href="#Whats-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
