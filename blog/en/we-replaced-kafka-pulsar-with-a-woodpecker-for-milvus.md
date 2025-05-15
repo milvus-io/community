@@ -51,7 +51,7 @@ We're not alone in this architectural pattern—databases such as AWS Aurora, Az
 Existing solutions like Bookie proved inadequate for our needs due to their heavyweight client design and the absence of production-ready SDKs for Golang and C++. This technological gap led us to our initial approach with message queues.
 
 
-## Our Initial Solution: Message Queues as WAL and Its Limitations 
+## Our Initial Solution: Message Queues as WAL
 
 To bridge this gap, our initial approach utilized message queues (Kafka/Pulsar) as our write-ahead log (WAL). The architecture worked like this: 
 
