@@ -5,7 +5,7 @@ title: >-
   Anteprima di Milvus 2.6: Riduzione della memoria del 72% senza compromettere
   il richiamo e 4 volte più veloce di Elasticsearch
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -24,10 +24,10 @@ origin: >-
 ---
 <p>Nel corso di questa settimana, abbiamo condiviso una serie di interessanti innovazioni in Milvus che spingono i confini della tecnologia dei database vettoriali:</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza distruggere il richiamo </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">La ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza uccidere il richiamo </a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Portare la compressione vettoriale all'estremo: come Milvus serve 3 volte più query con RaBitQ</a></p></li>
 <li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">I benchmark mentono: i DB vettoriali meritano un test reale </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Abbiamo sostituito Kafka/Pulsar con un picchio per Milvus </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Abbiamo sostituito Kafka/Pulsar con un Woodpecker per Milvus </a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: l'arma segreta per combattere i duplicati nei dati di addestramento LLM </a></p></li>
 </ul>
 <p>Ora, mentre concludiamo la nostra serie di settimane Milvus, sono entusiasta di darvi un'anticipazione di ciò che arriverà in Milvus 2.6, una pietra miliare cruciale nella nostra roadmap di prodotti 2025, attualmente in fase di sviluppo, e di come questi miglioramenti trasformeranno la ricerca alimentata dall'intelligenza artificiale. La prossima release riunisce tutte queste innovazioni e altre ancora su tre fronti critici: <strong>ottimizzazione dell'efficienza dei costi</strong>, <strong>funzionalità di ricerca avanzate</strong> e <strong>una nuova architettura</strong> che spinge la ricerca vettoriale oltre la scala dei 10 miliardi di vettori.</p>

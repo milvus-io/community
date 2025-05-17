@@ -5,7 +5,7 @@ title: >-
   Prévia do Milvus 2.6: 72% de redução de memória sem comprometer a recuperação
   e 4x mais rápido que o Elasticsearch
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -55,7 +55,7 @@ origin: >-
       </svg>
     </button></h2><p>Depender de memória cara é um dos maiores obstáculos para escalar a pesquisa vetorial para bilhões de registros. O Milvus 2.6 introduzirá várias optimizações chave que reduzem drasticamente os custos da sua infraestrutura enquanto melhoram o desempenho.</p>
 <h3 id="RaBitQ-1-bit-Quantization-72-Memory-Reduction-with-4×-QPS-and-No-Recall-Loss" class="common-anchor-header">Quantização de 1 bit RaBitQ: 72% de redução de memória com 4× QPS e sem perda de recordação</h3><p>O consumo de memória tem sido o calcanhar de Aquiles dos bancos de dados vetoriais em grande escala. Embora a quantização de vectores não seja nova, a maioria das abordagens existentes sacrifica demasiada qualidade de pesquisa para poupar memória. O Milvus 2.6 enfrentará esse desafio de frente, introduzindo<a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md"> a quantização de 1 bit RaBitQ</a> em ambientes de produção.</p>
-<p>O que torna a nossa implementação especial é a capacidade de otimização Refine ajustável que estamos a construir. Ao implementar um índice primário com quantização RaBitQ e opções de refino SQ4/SQ6/SQ8, conseguimos um equilíbrio ideal entre o uso de memória e a qualidade da pesquisa (~95% de recuperação).</p>
+<p>O que torna a nossa implementação especial é a capacidade de otimização Refine ajustável que estamos a construir. Ao implementar um índice primário com quantização RaBitQ e opções de refinamento SQ4/SQ6/SQ8, alcançamos um equilíbrio ideal entre o uso de memória e a qualidade da pesquisa (~95% de recuperação).</p>
 <p>Os nossos benchmarks preliminares revelam resultados prometedores:</p>
 <table>
 <thead>
@@ -69,9 +69,9 @@ origin: >-
 </table>
 <p><em>Tabela: Avaliação do VectorDBBench com 1M de vectores de 768 dimensões, testado em AWS m6id.2xlarge</em></p>
 <p>O verdadeiro avanço aqui não é apenas a redução de memória, mas conseguir isso ao mesmo tempo em que oferece uma melhoria de rendimento de 4× sem comprometer a precisão. Isto significa que será capaz de servir a mesma carga de trabalho com menos 75% de servidores ou lidar com 4× mais tráfego na sua infraestrutura existente.</p>
-<p>Para utilizadores empresariais que utilizam o Milvus totalmente gerido no<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>, estamos a desenvolver perfis de configuração automatizados que ajustam dinamicamente os parâmetros do RaBitQ com base nas caraterísticas específicas da carga de trabalho e nos requisitos de precisão.</p>
+<p>Para utilizadores empresariais que utilizam o Milvus totalmente gerido no<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>, estamos a desenvolver perfis de configuração automatizados que ajustam dinamicamente os parâmetros do RaBitQ com base nas caraterísticas específicas da sua carga de trabalho e nos requisitos de precisão.</p>
 <h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">Pesquisa de texto completo 400% mais rápida do que o Elasticsearch</h3><p>Os recursos<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">de pesquisa de texto completo</a> em bancos de dados vetoriais se tornaram essenciais para a criação de sistemas de recuperação híbridos. Desde a introdução do BM25 no <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a>, recebemos um feedback entusiasmado - juntamente com pedidos de melhor desempenho em escala.</p>
-<p>O Milvus 2.6 proporcionará ganhos substanciais de desempenho no BM25. Nossos testes no conjunto de dados BEIR mostram uma taxa de transferência 3-4× maior do que a do Elasticsearch com taxas de recuperação equivalentes. Para algumas cargas de trabalho, a melhoria atinge até 7 vezes mais QPS.</p>
+<p>O Milvus 2.6 proporcionará ganhos substanciais de desempenho no BM25. Nossos testes no conjunto de dados BEIR mostram uma taxa de transferência de 3 a 4 vezes maior do que o Elasticsearch com taxas de recuperação equivalentes. Para algumas cargas de trabalho, a melhoria atinge até 7 vezes mais QPS.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_vs_Elasticsearch_on_throughput_140b7c1b06.png" alt="" class="doc-image" id="" />
@@ -103,7 +103,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>A pesquisa vetorial, por si só, não é suficiente para as aplicações modernas de IA. Os utilizadores exigem a precisão da recuperação de informação tradicional combinada com a compreensão semântica dos vectores. O Milvus 2.6 apresentará vários recursos avançados de pesquisa que preenchem essa lacuna.</p>
-<h3 id="Better-Full-text-Search-with-Multi-language-Analyzer" class="common-anchor-header">Melhor pesquisa de texto completo com analisador multilingue</h3><p>A pesquisa de texto completo é altamente dependente do idioma... O Milvus 2.6 introduzirá um pipeline de análise de texto completamente renovado com suporte a vários idiomas:</p>
+<h3 id="Better-Full-text-Search-with-Multi-language-Analyzer" class="common-anchor-header">Melhor pesquisa de texto completo com analisador multilingue</h3><p>A pesquisa de texto completo é altamente dependente do idioma... Milvus 2.6 introduzirá um pipeline de análise de texto completamente renovado com suporte multilíngue:</p>
 <ul>
 <li><p><code translate="no">RUN_ANALYZER</code> suporte de sintaxe para observabilidade de configuração de analisador/tokenização</p></li>
 <li><p>tokenizador Lindera para idiomas asiáticos como japonês e coreano</p></li>
@@ -134,11 +134,11 @@ origin: >-
 </p>
 <p>Poderá configurar:</p>
 <ul>
-<li><p><strong>Tipo de função</strong>: Exponencial (decadência rápida), Gaussiana (decadência gradual) ou Linear (decadência constante)</p></li>
+<li><p><strong>Tipo de função</strong>: Exponencial (decaimento rápido), Gaussiana (decaimento gradual) ou Linear (decaimento constante)</p></li>
 <li><p><strong>Taxa de decaimento</strong>: A rapidez com que a relevância diminui ao longo do tempo</p></li>
 <li><p><strong>Ponto de origem</strong>: O carimbo de data/hora de referência para medir as diferenças de tempo</p></li>
 </ul>
-<p>Esta reclassificação sensível ao tempo irá garantir que os resultados mais actualizados e contextualmente relevantes aparecem em primeiro lugar, o que é crucial para os sistemas de recomendação de notícias, plataformas de comércio eletrónico e feeds de redes sociais.</p>
+<p>Esta reclassificação sensível ao tempo garantirá que os resultados mais actualizados e contextualmente relevantes apareçam em primeiro lugar, o que é crucial para os sistemas de recomendação de notícias, plataformas de comércio eletrónico e feeds de redes sociais.</p>
 <h3 id="Data-in-Data-Out-From-Raw-Text-to-Vector-Search-in-One-Step" class="common-anchor-header">Entrada de dados, saída de dados: Do texto bruto à pesquisa de vectores num só passo</h3><p>Um dos maiores problemas dos desenvolvedores com bancos de dados vetoriais tem sido a desconexão entre dados brutos e embeddings vetoriais. O Milvus 2.6 simplificará drasticamente este fluxo de trabalho com uma nova interface <strong>Function</strong> que integra modelos de incorporação de terceiros diretamente no seu pipeline de dados. Isto simplifica o seu pipeline de pesquisa vetorial com uma única chamada.</p>
 <p>Em vez de pré-computar embeddings, será possível:</p>
 <ol>

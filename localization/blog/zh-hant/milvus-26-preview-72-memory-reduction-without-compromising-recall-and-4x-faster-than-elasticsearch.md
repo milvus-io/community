@@ -3,7 +3,7 @@ id: >-
   milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-faster-than-elasticsearch.md
 title: Milvus 2.6 預覽：記憶體減少 72% 但不影響調用，速度比 Elasticsearch 快 4 倍
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -51,7 +51,7 @@ origin: >-
       </svg>
     </button></h2><p>依賴昂貴的記憶體是將向量搜尋擴大至數十億筆記錄的最大障礙之一。Milvus 2.6 將引入多項關鍵優化功能，在提升效能的同時大幅降低基礎架構成本。</p>
 <h3 id="RaBitQ-1-bit-Quantization-72-Memory-Reduction-with-4×-QPS-and-No-Recall-Loss" class="common-anchor-header">RaBitQ 1 位量化：記憶體消耗降低 72%，QPS 提升 4 倍，且不會造成召回損失</h3><p>記憶體消耗一直是大型向量資料庫的致命傷。雖然向量量化並非新鮮事物，但大多數現有方法都為了節省記憶體而犧牲了太多的搜尋品質。Milvus 2.6 將在生產環境中引入<a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md"> RaBitQ 1 位元量化</a>，正面解決這個挑戰。</p>
-<p>我們的實作之所以特別，在於我們所建立的可調整 Refine 最佳化功能。透過實作具有 RaBitQ 量化功能的主索引以及 SQ4/SQ6/SQ8 Refine 選項，我們在記憶體使用量與搜尋品質 (~95% 召回率) 之間達到了最佳平衡。</p>
+<p>我們的實作之所以特別，在於我們所建立的可調整 Refine 最佳化功能。透過實施具有 RaBitQ 量化功能的主索引，再加上 SQ4/SQ6/SQ8 Refine 選項，我們在記憶體使用量與搜尋品質 (~95% 召回率) 之間達到了最佳平衡。</p>
 <p>我們的初步基準顯示出令人期待的結果：</p>
 <table>
 <thead>
@@ -78,7 +78,7 @@ origin: >-
 <p>現代的 AI 應用程式很少會單獨依賴向量相似性，它們幾乎都會結合向量搜尋與元資料篩選。當這些篩選條件變得越來越複雜 (尤其是巢狀 JSON 物件)，查詢效能可能會迅速惡化。</p>
 <p>Milvus 2.6 將為巢狀 JSON 路徑引入目標索引機制，允許您在 JSON 欄位內的特定路徑 (例如 $meta.<code translate="no">user_info.location</code>) 上建立索引。Milvus 不會掃描整個物件，而是直接從預先建立的索引中查找值。</p>
 <p>在我們使用 100 M+ 記錄進行的評估中，JSON 路徑索引將過濾延遲從<strong>140 毫秒</strong>(P99: 480 毫秒) 降低到僅<strong>1.5</strong>毫秒 (P99: 10 毫秒)--降低了 99%，將以前不切實際的查詢轉變為即時回應。</p>
-<p>此功能對於下列情況特別有價值</p>
+<p>這項功能對於下列情況特別有價值</p>
 <ul>
 <li><p>具有複雜使用者屬性篩選功能的推薦系統</p></li>
 <li><p>以各種標籤篩選文件的 RAG 應用程式</p></li>

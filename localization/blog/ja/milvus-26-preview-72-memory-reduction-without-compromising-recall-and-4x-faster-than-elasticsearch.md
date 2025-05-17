@@ -3,7 +3,7 @@ id: >-
   milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-faster-than-elasticsearch.md
 title: Milvus 2.6プレビュー：Elasticsearch よりも4倍高速で、リコールも損なわずにメモリを72%削減
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -75,7 +75,7 @@ origin: >-
   </span>
 </p>
 <p>図：MilvusとElasticsearchのスループット比較 JSON Path Index：複雑なフィルタリングのレイテンシーを99%削減</p>
-<p>最新のAIアプリケーションでは、ベクトルの類似性だけに依存することはほとんどなく、ほとんどの場合、ベクトル検索とメタデータのフィルタリングが組み合わされています。これらのフィルタリング条件がより複雑になるにつれて（特にネストされたJSONオブジェクトの場合）、クエリのパフォーマンスは急速に悪化する可能性があります。</p>
+<p>最新のAIアプリケーションでは、ベクトルの類似性だけに依存することはほとんどなく、ほとんどの場合、ベクトル検索とメタデータフィルタリングを組み合わせています。これらのフィルタリング条件がより複雑になるにつれて（特にネストされたJSONオブジェクトの場合）、クエリのパフォーマンスは急速に悪化する可能性があります。</p>
 <p>Milvus2.6では、JSONフィールド内の特定のパス($meta.<code translate="no">user_info.location</code> など)に対してインデックスを作成できる、ネストしたJSONパスに対するターゲットインデックスメカニズムを導入します。Milvusはオブジェクト全体をスキャンする代わりに、事前に作成されたインデックスから値を直接検索します。</p>
 <p>100M以上のレコードを使用した評価では、JSON Path Indexはフィルタの待ち時間を<strong>140ms</strong>（P99：480ms）からわずか<strong>1.5ms</strong>（P99：10ms）に短縮しました。</p>
 <p>この機能は、特に以下のような用途に役立ちます：</p>
@@ -142,7 +142,7 @@ origin: >-
 <li><p><strong>ベクトル化のための埋め込みプロバイダーの設定</strong>：Milvusは、OpenAI、AWS Bedrock、Google Vertex AI、Hugging Faceのような埋め込みモデルサービスに接続することができます。</p></li>
 <li><p><strong>自然言語によるクエリ</strong>：ベクトル埋め込みではなく、テキストクエリを使った検索。</p></li>
 </ol>
-<p>これにより、Milvusが内部でベクトル生成を処理する、合理化された "データイン、データアウト "エクスペリエンスが実現され、アプリケーションコードがより簡単になります。</p>
+<p>これにより、Milvusが内部でベクトル生成を処理する、合理化された "データイン、データアウト "エクスペリエンスが実現され、アプリケーションコードがよりわかりやすくなります。</p>
 <h2 id="Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="common-anchor-header">アーキテクチャの進化：数千億ベクトルへのスケーリング<button data-href="#Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -176,6 +176,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6は現在活発に開発が進められており、今年6月にリリースされる予定です。これらの画期的なパフォーマンスの最適化、高度な検索機能、そしてスケーラブルなAIアプリケーションを低コストで構築するための新しいアーキテクチャをお届けできることを楽しみにしています。</p>
-<p>また、今後の機能に関するご意見もお待ちしております。何が最もエキサイティングですか？あなたのアプリケーションに最も影響を与える機能はどれですか？<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルで</a>会話に参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubで</a>進捗をフォローしてください。</p>
+    </button></h2><p>Milvus 2.6は現在活発に開発が進められており、今年6月にリリースされる予定です。これらの画期的なパフォーマンスの最適化、高度な検索機能、そしてスケーラブルなAIアプリケーションを低コストで構築するための新しいアーキテクチャをお届けできることを大変嬉しく思います。</p>
+<p>また、今後の機能に関するご意見もお待ちしています。何が最もエキサイティングですか？あなたのアプリケーションに最も影響を与える機能はどれですか？<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルで</a>会話に参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubで</a>進捗をフォローしてください。</p>
 <p>Milvus 2.6のリリースをいち早く知りたいですか？<a href="https://www.linkedin.com/company/zilliz/"> LinkedIn</a>または<a href="https://twitter.com/milvusio"> Xで</a>最新情報をフォローしてください。</p>

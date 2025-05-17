@@ -5,7 +5,7 @@ title: >-
   Aperçu de Milvus 2.6 : 72% de réduction de la mémoire sans compromettre le
   rappel et 4x plus rapide qu'Elasticsearch
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -139,7 +139,7 @@ origin: >-
 <li><p><strong>Le taux de décroissance</strong>: La vitesse à laquelle la pertinence diminue au fil du temps</p></li>
 <li><p><strong>Point d'origine</strong>: L'heure de référence pour mesurer les différences de temps</p></li>
 </ul>
-<p>Ce reclassement en fonction du temps garantit que les résultats les plus récents et les plus pertinents sur le plan contextuel apparaissent en premier, ce qui est crucial pour les systèmes de recommandation d'actualités, les plateformes de commerce électronique et les flux de médias sociaux.</p>
+<p>Ce reclassement en fonction du temps garantit que les résultats les plus récents et les plus pertinents sur le plan contextuel apparaissent en premier, ce qui est essentiel pour les systèmes de recommandation d'actualités, les plateformes de commerce électronique et les flux de médias sociaux.</p>
 <h3 id="Data-in-Data-Out-From-Raw-Text-to-Vector-Search-in-One-Step" class="common-anchor-header">Données entrantes, données sortantes : Du texte brut à la recherche vectorielle en une seule étape</h3><p>L'un des plus gros problèmes rencontrés par les développeurs avec les bases de données vectorielles est la déconnexion entre les données brutes et les encastrements vectoriels. Milvus 2.6 simplifiera considérablement ce flux de travail grâce à une nouvelle interface de <strong>fonction</strong> qui intègre des modèles d'intégration tiers directement dans votre pipeline de données. Cela permet de rationaliser votre pipeline de recherche vectorielle en un seul appel.</p>
 <p>Au lieu de pré-calculer les embeddings, vous pourrez :</p>
 <ol>

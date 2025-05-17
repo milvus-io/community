@@ -5,7 +5,7 @@ title: >-
   Pratinjau Milvus 2.6: Pengurangan Memori 72% Tanpa Mengorbankan Pemanggilan
   Kembali dan 4x Lebih Cepat Dari Elasticsearch
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -31,7 +31,7 @@ origin: >-
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Kami Mengganti Kafka/Pulsar dengan Burung Pelatuk untuk Milvus </a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH di Milvus: Senjata Rahasia untuk Memerangi Duplikat dalam Data Pelatihan LLM </a></p></li>
 </ul>
-<p>Sekarang, setelah kita mengakhiri seri Milvus Week, saya sangat senang untuk memberi Anda sekilas tentang apa yang akan hadir di Milvus 2.6-sebuah tonggak penting dalam peta jalan produk 2025 yang saat ini sedang dikembangkan, dan bagaimana peningkatan ini akan mengubah pencarian yang didukung oleh AI. Rilis yang akan datang ini menyatukan semua inovasi ini dan lebih banyak lagi di tiga bidang penting: <strong>pengoptimalan efisiensi biaya</strong>, <strong>kemampuan pencarian tingkat lanjut</strong>, dan <strong>arsitektur baru</strong> yang mendorong pencarian vektor melampaui skala 10 miliar vektor.</p>
+<p>Sekarang, setelah kita mengakhiri seri Milvus Week, saya sangat senang memberi Anda sekilas tentang apa yang akan hadir di Milvus 2.6-sebuah tonggak penting dalam peta jalan produk 2025 yang saat ini sedang dikembangkan, dan bagaimana peningkatan ini akan mengubah pencarian yang didukung oleh AI. Rilis yang akan datang ini menyatukan semua inovasi ini dan lebih banyak lagi di tiga bidang penting: <strong>pengoptimalan efisiensi biaya</strong>, <strong>kemampuan pencarian tingkat lanjut</strong>, dan <strong>arsitektur baru</strong> yang mendorong pencarian vektor melampaui skala 10 miliar vektor.</p>
 <p>Mari kita bahas beberapa peningkatan utama yang dapat Anda harapkan saat Milvus 2.6 hadir pada bulan Juni ini, dimulai dari apa yang mungkin akan berdampak paling besar: pengurangan dramatis dalam penggunaan memori dan biaya, serta kinerja yang sangat cepat.</p>
 <p>
   <span class="img-wrapper">
@@ -55,7 +55,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Mengandalkan memori yang mahal menjadi salah satu hambatan terbesar untuk meningkatkan skala pencarian vektor hingga miliaran record. Milvus 2.6 akan memperkenalkan beberapa optimasi utama yang secara dramatis menurunkan biaya infrastruktur Anda sekaligus meningkatkan kinerja.</p>
-<h3 id="RaBitQ-1-bit-Quantization-72-Memory-Reduction-with-4×-QPS-and-No-Recall-Loss" class="common-anchor-header">Kuantisasi 1-bit RaBitQ: Pengurangan Memori 72% dengan 4× QPS dan Tidak Ada Recall Loss</h3><p>Konsumsi memori telah lama menjadi kelemahan utama database vektor berskala besar. Meskipun kuantisasi vektor bukanlah hal yang baru, sebagian besar pendekatan yang ada mengorbankan terlalu banyak kualitas pencarian untuk penghematan memori. Milvus 2.6 akan mengatasi tantangan ini secara langsung dengan memperkenalkan<a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md"> kuantisasi RaBitQ 1-bit</a> di lingkungan produksi.</p>
+<h3 id="RaBitQ-1-bit-Quantization-72-Memory-Reduction-with-4×-QPS-and-No-Recall-Loss" class="common-anchor-header">Kuantisasi 1-bit RaBitQ: Pengurangan Memori 72% dengan 4× QPS dan Tidak Ada Recall Loss</h3><p>Konsumsi memori telah lama menjadi kelemahan utama database vektor berskala besar. Meskipun kuantisasi vektor bukanlah hal yang baru, sebagian besar pendekatan yang ada mengorbankan terlalu banyak kualitas pencarian untuk penghematan memori. Milvus 2.6 akan mengatasi tantangan ini secara langsung dengan memperkenalkan<a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md"> kuantisasi RaBitQ 1-bit</a> dalam lingkungan produksi.</p>
 <p>Apa yang membuat implementasi kami istimewa adalah kemampuan optimisasi Refine yang dapat disesuaikan yang kami bangun. Dengan mengimplementasikan indeks utama dengan kuantisasi RaBitQ ditambah opsi Refine SQ4/SQ6/SQ8, kami telah mencapai keseimbangan optimal antara penggunaan memori dan kualitas pencarian (~95% recall).</p>
 <p>Tolok ukur awal kami menunjukkan hasil yang menjanjikan:</p>
 <table>

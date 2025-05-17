@@ -5,7 +5,7 @@ title: >-
   Milvus 2.6 Vorschau: 72% Speicherreduzierung ohne Kompromisse beim Abruf und
   4x schneller als Elasticsearch
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering

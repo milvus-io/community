@@ -3,7 +3,7 @@ id: >-
   milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-faster-than-elasticsearch.md
 title: Milvus 2.6 预览版：内存减少 72% 而不影响调用，速度比 Elasticsearch 快 4 倍
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
@@ -22,7 +22,7 @@ origin: >-
 <ul>
 <li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">现实世界中的向量搜索：如何高效过滤而不扼杀召回率 </a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">将向量压缩发挥到极致：Milvus如何利用RaBitQ提供多3倍的查询服务</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">基准会说谎--向量数据库需要经受真正的考验 </a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">基准会说谎--向量数据库需要真实测试 </a></p></li>
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">我们在 Milvus 中用啄木鸟取代了 Kafka/Pulsar </a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 中的 MinHash LSH：打击 LLM 训练数据中重复数据的秘密武器 </a></p></li>
 </ul>
@@ -66,7 +66,7 @@ origin: >-
 <p><em>表：VectorDBBench 评估，使用 768 维的 1M 向量，在 AWS m6id.2xlarge 上测试</em></p>
 <p>这里真正的突破不仅仅是内存的减少，而是在不影响准确性的情况下，同时实现了 4 倍的吞吐量提升。这意味着，您可以减少 75% 的服务器来处理相同的工作负载，或在现有基础架构上处理多 4 倍的流量。</p>
 <p>对于在<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> 上使用完全托管 Milvus 的企业用户，我们正在开发自动配置文件，它将根据您的特定工作负载特征和精度要求动态调整 RaBitQ 参数。</p>
-<h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">全文搜索速度比 Elasticsearch 快 400</h3><p>向量数据库中的<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">全文检索</a>功能已成为构建混合检索系统的关键。自从在<a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> 中引入 BM25 以来，我们收到了热烈的反馈--同时还收到了对更高性能的要求。</p>
+<h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">全文搜索速度比 Elasticsearch 快 400</h3><p>向量数据库中的<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">全文检索</a>功能已成为构建混合检索系统的关键。自从在<a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> 中引入 BM25 以来，我们收到了热烈的反馈，同时也收到了在规模上实现更高性能的请求。</p>
 <p>Milvus 2.6 将大幅提高 BM25 的性能。我们在 BEIR 数据集上进行的测试表明，在召回率相同的情况下，吞吐量比 Elasticsearch 高出 3-4 倍。在某些工作负载上，QPS 的提升高达 7 倍。</p>
 <p>
   <span class="img-wrapper">
@@ -142,7 +142,7 @@ origin: >-
 <li><p><strong>为向量化配置嵌入式提供商</strong>：Milvus 可以连接到嵌入模型服务，如 OpenAI、AWS Bedrock、Google Vertex AI 和 Hugging Face。</p></li>
 <li><p><strong>使用自然语言查询</strong>：使用文本查询而非向量嵌入进行搜索</p></li>
 </ol>
-<p>这将创造一种简化的 "数据输入、数据输出 "体验，Milvus 在内部处理向量生成，使您的应用代码更加简洁明了。</p>
+<p>这将创造一种简化的 "数据输入，数据输出 "体验，Milvus 在内部处理向量生成，使您的应用代码更加简洁明了。</p>
 <h2 id="Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="common-anchor-header">架构演变：扩展到数千亿向量<button data-href="#Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

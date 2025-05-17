@@ -5,7 +5,7 @@ title: >-
   Avance de Milvus 2.6: 72% de reducción de memoria sin comprometer la
   recuperación y 4 veces más rápido que Elasticsearch
 author: Ken Zhang
-date: 2025-05-16T00:00:00.000Z
+date: 2025-05-17T00:00:00.000Z
 cover: >-
   assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
