@@ -85,13 +85,13 @@ The key idea of LSH is to use hash functions that **intentionally cause collisio
 
 For MinHash, a popular LSH strategy is the **banding technique**:
 
-1. **Banding**: Split each MinHash signature (a vector of length _N_) into _b_ bands, each with _r_ rows (_N = b × r_).
+1. **Banding**: Split each MinHash signature (a vector of length _N_) into _b_ bands, each with _r_ dims (_N = b × r_).
 
 2. **Hashing Bands:** Hash each band (a sub-vector of _r_ values) into a bucket using a standard hash function.
 
 3. **Candidate Pairs:** If two documents share a bucket in **any** band, they are flagged as potential matches.
 
-By adjusting the number of bands (b) and the number of rows per band (r), you can control the trade-off between recall, precision, and search efficiency. 
+By adjusting the number of bands (b) and the number of dimensions per band (r), you can control the trade-off between recall, precision, and search efficiency. 
 
 The key idea is: highly similar documents will have many matching hash values in their MinHash signatures. When these signatures are split into bands, even one band with all matching values is enough to place two documents in the same bucket. The more similar the documents are, the higher the probability that this happens in at least one band, allowing LSH to efficiently surface candidate pairs without exhaustively comparing all signatures.
 
