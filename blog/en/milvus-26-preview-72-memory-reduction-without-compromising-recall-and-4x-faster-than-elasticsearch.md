@@ -3,7 +3,7 @@ id: milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-fas
 title: >
  Milvus 2.6 Preview: 72% Memory Reduction Without Compromising Recall and 4x Faster Than Elasticsearch
 author: Ken Zhang
-date: 2025-05-16
+date: 2025-05-17
 cover: assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png
 tag: Engineering
 recommend: true
