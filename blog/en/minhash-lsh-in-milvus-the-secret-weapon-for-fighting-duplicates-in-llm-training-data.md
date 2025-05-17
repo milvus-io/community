@@ -18,9 +18,10 @@ origin: https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fight
 
 Large Language Models (LLMs) have transformed the AI landscape with their ability to write code, create content, and solve complex problems. However, these powerful models require enormous amounts of high-quality data to fuel their training.
 
-The challenge is that raw training data often contains significant redundancy. It's like teaching a child by repeating the same lessons over and over while skipping other important topics. A large AI company approached us with exactly this problem - they were building an ambitious new language model but struggled with deduplicating tens of billions of documents. Traditional matching methods couldn't scale to this volume, and specialized deduplication tools required massive computational resources, making them economically unviable.
+The challenge is that raw training data often contains significant redundancy. It's like teaching a child by repeating the same lessons over and over while skipping other important topics. A large AI company approached us with precisely this problem - they were building an ambitious new language model but struggled with deduplicating tens of billions of documents. Traditional matching methods couldn't scale to this volume, and specialized deduplication tools required massive computational resources, making them economically unviable.
 
-To solve this problem, our solution is: MinHash LSH (Locality Sensitive Hashing) indexing, which will be available in Milvus 2.6. In this article, we'll explore how MinHash LSH efficiently solves the data deduplication problem for LLM training.
+To solve this problem, our solution is: MinHash LSH (Locality Sensitive Hashing) indexing, which will be available in Milvus 2.6. This article will explore how MinHash LSH efficiently solves the data deduplication problem for LLM training.
+
 
 ![](https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png)
 
@@ -45,7 +46,7 @@ There are three main approaches to finding and removing duplicates:
 
 - **Semantic Matching:** Identifies content with similar meaning using vector embeddings.
 
-With pre-training corpora reaching terabytes or even petabytes, traditional exact matching methods like pairwise comparisons are computationally infeasible. Semantic deduplication adds significant overhead by using embedding models to generate vectors. We need smarter approximate methods—like **MinHash LSH**—that balance recall and precision while keeping costs manageable, making large-scale deduplication practical.
+With pre-training corpora reaching terabytes or even petabytes, traditional exact matching methods like pairwise comparisons are computationally infeasible. Semantic deduplication adds significant overhead by using embedding models to generate vectors. We need more innovative approximate methods—like **MinHash LSH**—that balance recall and precision while keeping costs manageable, making large-scale deduplication practical.
 
 
 ## MinHash LSH: Efficiently Detecting Near-Duplicates in Massive Datasets
@@ -71,9 +72,9 @@ However, computing this directly for billions of document pairs is resource-inte
 
 ![](https://assets.zilliz.com/minhash_041003210a.png)
 
-When calculating similarity, the probability that hash values align at the same positions in the MinHash signatures of two documents (which corresponds to the Jaccard distance of these signatures) provides a close approximation of the Jaccard similarity of their original shingle sets. This allows us to effectively estimate document similarity without needing to compare the larger original texts directly; instead, we can analyze their compact MinHash signatures. 
+When calculating similarity, the probability that hash values align at the same positions in the MinHash signatures of two documents (which corresponds to the Jaccard distance of these signatures) provides a close approximation of the Jaccard similarity of their original shingle sets. This allows us to effectively estimate document similarity without directly comparing the larger original texts; instead, we can analyze their compact MinHash signatures.  
 
-The MinHash principle involves using the word with the smallest hash value to represent the entire document, enhancing accuracy by incorporating additional hash functions. Minor word changes are likely to be overlooked as they typically do not affect the minimum hash value, while more substantial changes tend to alter the hash value and are more easily detected. This method can be seen as a min-pooling of hash values across various words. In addition to MinHash, alternatives like SimHash are available for generating document signatures, but those will not be discussed here.
+The MinHash principle involves using the word with the smallest hash value to represent the entire document, enhancing accuracy by incorporating additional hash functions. Minor word changes are likely to be overlooked as they typically do not affect the minimum hash value. In contrast, more substantial changes tend to alter the hash value and are more easily detected. This method can be seen as a min-pooling of hash values across various words. In addition to MinHash, alternatives like SimHash are available for generating document signatures, but those will not be discussed here.
 
 
 ### Step 2: Identifying Similar Documents via LSH
@@ -99,9 +100,9 @@ In short, **MinHash + LSH** enables scalable approximate deduplication: MinHash 
 
 ## Integrating MinHash LSH in Milvus 2.6
 
-The integration of MinHash LSH into Milvus 2.6 was driven by a real-world need. As mentioned earlier, a Milvus user—one of the leading LLM companies—approached us with a challenge: efficiently deduplicating massive volumes of text data for LLM pre-training. 
+A real-world need drove the integration of MinHash LSH into Milvus 2.6. As mentioned earlier, a Milvus user—one of the leading LLM companies—approached us with a challenge: efficiently deduplicating massive volumes of text data for LLM pre-training. 
 
-Traditional deduplication pipelines typically rely on external tools that are decoupled from storage and retrieval systems, requiring costly data transfers between components. This fragmented workflow increases operational overhead and prevents full utilization of distributed computing resources.
+Traditional deduplication pipelines typically rely on external tools decoupled from storage and retrieval systems, requiring costly data transfers between components. This fragmented workflow increases operational overhead and prevents full utilization of distributed computing resources.
 
 Recognizing Milvus’s strengths in handling high-throughput vector data, a natural idea emerged: **_What if MinHash LSH were built into Milvus natively, making approximate deduplication a first-class database feature?_**
 
@@ -116,7 +117,7 @@ This approach enables a complete workflow from deduplication to semantic retriev
 
 - **Distributed and Scalable:** Built on Milvus’s cloud-native architecture, the feature supports horizontal scaling for large datasets and high-throughput processing.
 
-This integration delivered impressive results. By running MinHash LSH on fully-managed Milvus (Zilliz Cloud), we helped this user deduplicate **10 billion documents** efficiently. Compared to their previous MapReduce-based approach, the new solution **more than doubled processing speed** and achieved **3-5x cost savings**, thanks to Milvus’s optimized indexing and query execution.
+This integration delivered impressive results. By running MinHash LSH on fully-managed Milvus ([Zilliz Cloud](https://zilliz.com/cloud)), we helped this user deduplicate **10 billion documents** efficiently. Compared to their previous MapReduce-based approach, the new solution **more than doubled processing speed** and achieved **3-5x cost savings**, thanks to Milvus’s optimized indexing and query execution.
 
 
 ## Hands-On: Deduplicating LLM Datasets Using Milvus
@@ -279,4 +280,4 @@ The returned results are **candidate near-duplicates**. To form complete dedupli
 
 MinHash LSH in Milvus 2.6 is a leap forward in AI data processing. What started as a solution for LLM data deduplication now opens doors to broader use cases—web content cleanup, catalog management, plagiarism detection, and more.
 
-If you have a similar use case, please reach out to us on the Milvus Discord to sign up for an Office Hour meeting. 
+If you have a similar use case, please reach out to us on the [Milvus Discord](https://discord.com/invite/8uyFbECzPX) to sign up for an [Office Hour meeting](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour). 
