@@ -20,8 +20,8 @@ origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
 <p>大型語言模型 (LLM) 具備編寫程式碼、創建內容和解決複雜問題的能力，改變了人工智能的面貌。然而，這些強大的模型需要大量高品質的資料來進行訓練。</p>
-<p>問題在於原始訓練資料通常包含大量冗餘資料。這就像是在教導小孩時，不斷重複相同的課程，卻跳過其他重要的課題。一家大型人工智能公司正是為了這個問題與我們接洽 - 他們正在建立一個雄心勃勃的新語言模型，但卻苦於無法複製數百億份文件。傳統的比對方法無法擴充到這個數量，而專門的重複資料刪除工具需要大量的計算資源，因此在經濟上並不可行。</p>
-<p>為了解決這個問題，我們的解決方案是：MinHash LSH (Locality Sensitive Hashing) 索引，它將在 Milvus 2.6 中推出。在本文中，我們將探討 MinHash LSH 如何有效率地解決 LLM 訓練的重複資料刪除問題。</p>
+<p>挑戰在於原始訓練資料通常包含大量冗餘。這就像是在教導小孩時，不斷重複相同的課程，卻跳過其他重要的課題。一家大型人工智能公司正是為了這個問題與我們接洽 - 他們正在建立一個雄心勃勃的新語言模型，但卻苦於無法重複數百億的文件。傳統的比對方法無法擴充至如此大的數量，而專門的重複資料刪除工具需要大量的計算資源，因此在經濟上並不可行。</p>
+<p>為了解決這個問題，我們的解決方案是：MinHash LSH (Locality Sensitive Hashing) 索引，它將在 Milvus 2.6 中推出。本文將探討 MinHash LSH 如何有效率地解決 LLM 訓練的重複資料刪除問題。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -43,7 +43,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>高品質、多樣化的資料對於訓練強大的 LLM 是非常重要的。當重複的內容出現在訓練資料中時，會產生幾個重大的問題：</p>
+    </button></h2><p>高品質、多樣化的資料是訓練強大 LLM 的必要條件。當重複的內容出現在訓練資料中時，會產生幾個重大的問題：</p>
 <ul>
 <li><p><strong>浪費資源：</strong>重複資料會增加訓練時間、成本和能源消耗。</p></li>
 <li><p><strong>效能降低：</strong>模型可能會過度適應重複的內容，限制其歸納新資訊的能力。</p></li>
@@ -56,8 +56,8 @@ origin: >-
 <li><p><strong>近似匹配：</strong>使用 MinHash LSH 和 Jaccard 相似度等演算法找出接近重複的內容。</p></li>
 <li><p><strong>語義配對：</strong>使用向量嵌入識別具有相似涵義的內容。</p></li>
 </ul>
-<p>由於預先訓練的語料庫已經達到 TB 甚至 PB 級，傳統的精確比對方法 (例如成對比較) 在計算上並不可行。透過使用嵌入模型來產生向量，語意重複刪除會大幅增加開銷。我們需要更聰明的近似方法 (例如<strong>MinHash LSH)，以</strong>平衡召回率與精確度，同時保持成本可控，讓大規模的重複資料刪除實用化。</p>
-<h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH：有效偵測大規模資料集中的近似重複資料<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
+<p>由於預先訓練的語料庫已達 terabytes 甚至 petabytes，傳統的精確匹配方法 (例如成對比較) 在計算上並不可行。透過使用嵌入模型來產生向量，語意重複刪除會增加顯著的開銷。我們需要更創新的近似方法，就像<strong>MinHash LSH，</strong>既能平衡召回率與精確度，又能控制成本，讓大規模的重複資料刪除成為可能。</p>
+<h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH：有效偵測大量資料集中的近似重複資料<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -95,8 +95,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>在計算相似性時，哈希值在兩個文件的 MinHash 簽署中相同位置對齊的機率值（相當於這些簽署的 Jaccard 距離），提供了它們原始瓦片集 Jaccard 相似性的近似值。這樣我們就可以有效地估計文件相似性，而不需要直接比較較大的原始文字；取而代之的是，我們可以分析它們精簡的 MinHash 簽署。</p>
-<p>MinHash 原則是使用散列值最小的字來代表整個文件，藉由加入額外的散列函數來提高精確度。輕微的單字變更很可能會被忽略，因為它們通常不會影響最小切細值，而較大的變更則會傾向於改變切細值，並且較容易被偵測到。這種方法可以看成是各種字詞雜湊值的 Min-pooling。除了 MinHash 之外，還有其他方法可以用來產生文件簽章，例如 SimHash，但在此不做討論。</p>
+<p>在計算相似性時，哈希值在兩個文件的 MinHash 簽署中相同位置對齊的機率值（相當於這些簽署的 Jaccard 距離），提供了它們原始瓦片集 Jaccard 相似性的近似值。這讓我們可以有效地估計文件相似性，而不需要直接比較較大的原始文字；相反地，我們可以分析它們精簡的 MinHash 簽署。</p>
+<p>MinHash 原則是使用散列值最小的字來代表整個文件，藉由加入額外的散列函數來提高精確度。輕微的字詞變更很可能會被忽略，因為它們通常不會影響最小切細值。相反地，較大的變更則會改變切細值，而且較容易被偵測到。這種方法可以看成是各種字詞雜湊值的 Min-pooling。除了 MinHash 之外，也有其他方法可以用來產生文件簽章，例如 SimHash，但在此不做討論。</p>
 <h3 id="Step-2-Identifying-Similar-Documents-via-LSH" class="common-anchor-header">步驟 2：透過 LSH 識別相似文件</h3><p>即使使用精簡的 MinHash 簽署，比較數百萬或數十億個文件中的每一對，仍會造成高昂的計算費用。這就是<strong>Locality Sensitive Hashing (LSH)</strong>的用武之地。</p>
 <p>LSH 的關鍵概念是使用<strong>故意造成碰撞的</strong>散列函數<strong>- 相似的</strong>項目更有可能散列到相同的資料桶，而不相似的則不會。這與旨在避免碰撞的傳統散列正好相反。</p>
 <p>對於 MinHash，流行的 LSH 策略是<strong>Banding 技術</strong>：</p>
@@ -106,7 +106,7 @@ origin: >-
 <li><p><strong>候選對：</strong>如果兩個文件在<strong>任何</strong>區段中共用一個資料桶，它們就會被標記為潛在的匹配項目。</p></li>
 </ol>
 <p>透過調整頻帶數 (b) 和每個頻帶的行數 ®，您可以控制召回率、精確度和搜尋效率之間的權衡。</p>
-<p>關鍵的想法是：高度相似的文件在其 MinHash 簽署中會有許多匹配的雜湊值。當這些簽章被分割成不同的區段時，即使有一個區段包含所有的匹配值，也足以將兩個文件放在同一個資料桶中。文件越相似，至少有一個區段出現這種情況的機率就越高，這使得 LSH 可以有效率地浮現候選配對（而無需鉅細無遺地比較所有簽章）。</p>
+<p>關鍵的想法是：高度相似的文件在其 MinHash 簽署中會有許多匹配的雜湊值。當這些簽章被分割成不同的區段時，即使有一個區段包含所有的匹配值，也足以將兩個文件放在同一個資料桶中。文件越相似，至少有一個區段出現這種情況的機率就越高，這使得 LSH 可以有效率地浮現候選配對（而無需徹底比較所有簽章）。</p>
 <p>簡而言之，<strong>MinHash + LSH</strong>可實現可擴充的近似重複資料刪除：MinHash 將文件壓縮成精簡的簽名，而 LSH 則透過群組可能的匹配項目，有效地縮窄搜尋空間。這就像是在人群中找出雙胞胎一樣：首先，快速拍攝每個人的特徵快照 (MinHash)，將相似的人歸類 (LSH)，然後仔細檢查較小的群組，找出真正的重複。</p>
 <h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">在 Milvus 2.6 中整合 MinHash LSH<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -123,8 +123,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MinHash LSH 整合到 Milvus 2.6 是基於現實世界的需求。如前所述，Milvus 的使用者--一家領先的 LLM 公司--向我們提出了一項挑戰：為 LLM 預先訓練有效率地重複大量文字資料。</p>
-<p>傳統的重複資料刪除管道通常依賴外部工具，這些工具與儲存和檢索系統脫離，需要在元件之間進行成本高昂的資料傳輸。這種支離破碎的工作流程會增加作業開銷，並妨礙分佈式運算資源的充分利用。</p>
+    </button></h2><p>MinHash LSH 整合到 Milvus 2.6 是基於現實世界的需求。如前所述，Milvus 的用戶 (領先的 LLM 公司之一) 向我們提出一項挑戰：為 LLM 預先訓練有效率地重複大量文字資料。</p>
+<p>傳統的重複資料刪除管道通常依賴與儲存和檢索系統脫離的外部工具，需要在元件之間進行成本高昂的資料傳輸。這種支離破碎的工作流程增加了作業開銷，並妨礙分佈式運算資源的充分利用。</p>
 <p>意識到 Milvus 在處理高通量向量資料方面的優勢，一個自然而然的想法出現了：<strong><em>如果 MinHash LSH 原生內建至 Milvus，讓近似重複資料刪除成為一級資料庫功能，會如何？</em></strong></p>
 <p>此方法可在 Milvus 內實現從重複資料刪除到語意檢索的完整工作流程，簡化 MLOps，同時充分利用其可擴充性和統一 API。我們與合作夥伴一起針對 Milvus 的雲原生架構優化 MinHash LSH，為大規模重複資料刪除提供快速且可擴充的解決方案。</p>
 <h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Milvus 2.6 的核心功能包括</h3><ul>
@@ -132,7 +132,7 @@ origin: >-
 <li><p><strong>無縫 API 整合：</strong>使用者可以使用 Milvus 的標準 SDK 和宣告式 API 定義 MinHash 向量字段、建立<code translate="no">MINHASH_LSH</code> 索引、插入簽章資料，以及執行近似相似性搜尋。</p></li>
 <li><p><strong>分散式且可擴充：</strong>建立在 Milvus 的雲原生架構上，該功能支援大型資料集和高吞吐量處理的水平擴充。</p></li>
 </ul>
-<p>這種整合帶來了令人印象深刻的結果。透過在完全管理的 Milvus (Zilliz Cloud) 上執行 MinHash LSH，我們協助該使用者有效率地重複<strong>100 億份文件</strong>。與他們之前基於 MapReduce 的方法相比，新解決方案的<strong>處理速度提高了一倍以上</strong>，<strong>並節省了 3-5 倍的成本</strong>，這都要歸功於 Milvus 優化的索引和查詢執行。</p>
+<p>這種整合帶來了令人印象深刻的結果。透過在完全管理的 Milvus<a href="https://zilliz.com/cloud">(Zilliz Cloud</a>) 上執行 MinHash LSH，我們協助該使用者有效率地重複<strong>100 億份文件</strong>。與他們之前基於 MapReduce 的方法相比，新解決方案的<strong>處理速度提高了一倍以上</strong>，<strong>並節省了 3-5 倍的成本</strong>，這都要歸功於 Milvus 優化的索引和查詢執行。</p>
 <h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">上手操作：使用 Milvus 刪除 LLM 資料集<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -277,4 +277,4 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6 中的 MinHash LSH 是 AI 資料處理的一大躍進。一開始只是用於 LLM 資料重複刪除的解決方案，現在卻為更廣泛的使用個案打開了大門 - 網頁內容清理、目錄管理、剽竊偵測等。</p>
-<p>如果您有類似的使用個案，請透過 Milvus Discord 與我們聯繫，報名參加「辦公時間」會議。</p>
+<p>如果您有類似的使用個案，請透過<a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a>與我們聯繫，報名參加「<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">辦公時間」會議</a>。</p>

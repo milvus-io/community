@@ -20,8 +20,8 @@ origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
 <p>大型语言模型（LLMs）凭借其编写代码、创建内容和解决复杂问题的能力，改变了人工智能的格局。然而，这些功能强大的模型需要海量的高质量数据作为训练的基础。</p>
-<p>挑战在于，原始训练数据往往包含大量冗余。这就好比教孩子时，一遍又一遍地重复同样的课程，却跳过了其他重要的主题。一家大型人工智能公司正是带着这样的问题找到了我们--他们正在建立一个雄心勃勃的新语言模型，但在对数百亿份文档进行重复数据处理时却遇到了困难。传统的匹配方法无法扩展到如此大的容量，而专门的重复数据删除工具需要大量的计算资源，因此在经济上是不可行的。</p>
-<p>为了解决这个问题，我们的解决方案是：MinHash LSH（位置敏感散列）索引，它将在 Milvus 2.6 中推出。在本文中，我们将探讨 MinHash LSH 如何有效解决 LLM 训练中的重复数据删除问题。</p>
+<p>挑战在于，原始训练数据往往包含大量冗余。这就好比教孩子时，一遍又一遍地重复同样的课程，却跳过了其他重要的主题。一家大型人工智能公司正是带着这样的问题找到了我们--他们正在建立一个雄心勃勃的新语言模型，但在对数百亿份文档进行重复性处理时却遇到了困难。传统的匹配方法无法扩展到如此大的容量，而专门的重复数据删除工具需要大量的计算资源，因此在经济上是不可行的。</p>
+<p>为了解决这个问题，我们的解决方案是：MinHash LSH（位置敏感散列）索引，它将在 Milvus 2.6 中推出。本文将探讨 MinHash LSH 如何有效解决 LLM 训练中的重复数据删除问题。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -56,7 +56,7 @@ origin: >-
 <li><p><strong>近似匹配：</strong>使用 MinHash LSH 和 Jaccard 相似度等算法查找接近重复的内容。</p></li>
 <li><p><strong>语义匹配：</strong>使用向量嵌入识别含义相似的内容。</p></li>
 </ul>
-<p>由于预先训练的语料库达到 TB 甚至 PB 级，传统的精确匹配方法（如成对比较）在计算上不可行。通过使用嵌入模型生成向量，语义重复数据删除会增加大量开销。我们需要更智能的近似方法（如<strong>MinHash LSH）来</strong>平衡召回率和精确度，同时保持成本可控，使大规模重复数据删除切实可行。</p>
+<p>由于预先训练的语料库达到 TB 甚至 PB 级，传统的精确匹配方法（如成对比较）在计算上不可行。通过使用嵌入模型生成向量，语义重复数据删除增加了大量开销。我们需要更多创新的近似方法，如<strong>MinHash LSH--</strong>既能平衡召回率和精度，又能控制成本，使大规模重复数据删除切实可行。</p>
 <h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH：高效检测海量数据集中的近似重复数据<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -87,7 +87,7 @@ origin: >-
   </span>
 </p>
 <ol start="2">
-<li><strong>最小</strong>散列值<strong>：</strong>对每组字符串应用多个散列函数，并记录每个函数的最小散列值。这样就为每个文档生成了一个签名向量。</li>
+<li><strong>最小</strong>哈希值<strong>：</strong>对每组字符串应用多个哈希函数，并记录每个函数的最小哈希值。这样就为每个文档生成了一个签名向量。</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -96,7 +96,7 @@ origin: >-
   </span>
 </p>
 <p>在计算相似性时，哈希值在两个文档的 MinHash 签名的相同位置对齐的概率（对应于这些签名的 Jaccard 距离）提供了它们原始切分集的 Jaccard 相似性的近似值。这样，我们就可以有效地估计文档的相似性，而无需直接比较较大的原始文本；相反，我们可以分析它们紧凑的 MinHash 签名。</p>
-<p>MinHash 原理是使用哈希值最小的单词来代表整个文档，通过加入额外的哈希函数来提高准确性。轻微的单词变化很可能被忽略，因为它们通常不会影响最小哈希值，而较大的变化往往会改变哈希值，更容易被检测到。这种方法可以看作是对不同词的哈希值进行最小集合。除 MinHash 外，还有其他方法（如 SimHash）可用于生成文档签名，但在此不再讨论。</p>
+<p>MinHash 原理是使用哈希值最小的单词来代表整个文档，通过加入额外的哈希函数来提高准确性。轻微的单词变化很可能会被忽略，因为它们通常不会影响最小哈希值。相比之下，较大的变化往往会改变哈希值，也更容易被检测到。这种方法可以看作是对不同单词哈希值的最小集合。除 MinHash 外，还有其他方法（如 SimHash）可用于生成文档签名，但在此不做讨论。</p>
 <h3 id="Step-2-Identifying-Similar-Documents-via-LSH" class="common-anchor-header">步骤 2：通过 LSH 识别相似文档</h3><p>即使使用紧凑的 MinHash 签名，比较数百万或数十亿文档中的每一对仍然计算昂贵。这就是<strong>位置敏感散列（LSH）</strong>的用武之地。</p>
 <p>LSH 的关键理念是使用<strong>有意造成碰撞的</strong>散列函数<strong>--相似的</strong>项目更有可能散列到同一个桶中，而不相似的项目则不会。这与旨在避免碰撞的传统散列正好相反。</p>
 <p>对于 MinHash，一种流行的 LSH 策略是<strong>带状散列技术</strong>：</p>
@@ -124,15 +124,15 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>将 MinHash LSH 集成到 Milvus 2.6 是出于现实世界的需要。如前所述，Milvus 的用户--一家领先的 LLM 公司--向我们提出了一项挑战：为 LLM 预训练高效地重复数据删除大量文本数据。</p>
-<p>传统的重复数据删除管道通常依赖于与存储和检索系统脱钩的外部工具，需要在组件之间进行成本高昂的数据传输。这种支离破碎的工作流程增加了操作符，无法充分利用分布式计算资源。</p>
-<p>认识到 Milvus 在处理高通量向量数据方面的优势，一个自然而然的想法出现了：<strong><em>如果将 MinHash LSH 原生内置到 Milvus 中，使近似重复数据删除成为一流的数据库功能，会怎么样呢？</em></strong></p>
+<p>传统的重复数据删除管道通常依赖于与存储和检索系统分离的外部工具，需要在组件之间进行成本高昂的数据传输。这种支离破碎的工作流程增加了操作符，并妨碍了分布式计算资源的充分利用。</p>
+<p>认识到 Milvus 在处理高吞吐量向量数据方面的优势，一个自然而然的想法出现了：<strong><em>如果将 MinHash LSH 原生内置到 Milvus 中，使近似重复数据删除成为一流的数据库功能，会怎么样呢？</em></strong></p>
 <p>这种方法在 Milvus 中实现了从重复数据删除到语义检索的完整工作流程，在利用其可扩展性和统一 API 的同时简化了 MLOps。我们与合作伙伴一起，针对 Milvus 的云原生架构优化了 MinHash LSH，从而为大规模重复数据删除提供了快速、可扩展的解决方案。</p>
 <h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Milvus 2.6 的核心功能包括</h3><ul>
 <li><p><strong>本地 MinHash LSH 索引：</strong>执行 LSH 的标准分带技术，并支持可选的 Jaccard 重新排序，以提高召回率。提供基于内存和基于 mmap 的实现，可灵活应对不同的工作负载。</p></li>
 <li><p><strong>无缝 API 集成：</strong>用户可以使用 Milvus 的标准 SDK 和声明式 API 定义 MinHash 向量字段、构建<code translate="no">MINHASH_LSH</code> 索引、插入签名数据并执行近似相似性搜索。</p></li>
 <li><p><strong>分布式和可扩展性：</strong>该功能基于 Milvus 的云原生架构构建，支持针对大型数据集和高通量处理的水平扩展。</p></li>
 </ul>
-<p>这种集成带来了令人印象深刻的结果。通过在完全托管的 Milvus（Zilliz Cloud）上运行 MinHash LSH，我们帮助该用户高效地重复复制了<strong>100 亿个文档</strong>。与他们之前基于 MapReduce 的方法相比，由于 Milvus 优化了索引和查询执行，新解决方案的<strong>处理速度提高了一倍多</strong>，<strong>成本节约了 3-5 倍</strong>。</p>
+<p>这种集成带来了令人印象深刻的结果。通过在完全托管的 Milvus<a href="https://zilliz.com/cloud">（Zilliz Cloud</a>）上运行 MinHash LSH，我们帮助该用户高效地重复复制了<strong>100 亿个文档</strong>。与他们之前基于 MapReduce 的方法相比，由于 Milvus 优化了索引和查询执行，新解决方案的<strong>处理速度提高了一倍多</strong>，<strong>成本节约了 3-5 倍</strong>。</p>
 <h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">实际操作：使用 Milvus 重复处理 LLM 数据集<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -219,7 +219,7 @@ client.create_collection(
     index_params=index_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>关于参数调整的说明：MinHash LSH 的有效性在很大程度上取决于参数的选择。例如，在 MinHash 签名生成过程中使用的哈希函数数量（即<code translate="no">MINHASH_DIM</code> ）会影响签名的精度和大小。在 LSH 阶段，条带数 (<code translate="no">num_bands</code>) 和每条带的行数共同决定了相似性阈值的灵敏度范围以及召回率和精度之间的平衡。用户需要根据自己的数据集特征和重复数据删除要求进行试验和微调。这通常是一个反复的过程。</p>
+<p>关于参数调整的说明：MinHash LSH 的有效性在很大程度上取决于参数的选择。例如，在 MinHash 签名生成过程中使用的散列函数数量（即<code translate="no">MINHASH_DIM</code> ）会影响签名的精度和大小。在 LSH 阶段，条带数 (<code translate="no">num_bands</code>) 和每条带的行数共同决定了相似性阈值的灵敏度范围以及召回率和精度之间的平衡。用户需要根据自己的数据集特征和重复数据删除要求进行试验和微调。这通常是一个反复的过程。</p>
 <h3 id="Step-3-Insert-MinHash-Signatures" class="common-anchor-header"><strong>第 3 步：插入 MinHash 签名</strong></h3><p>假设您有一批文档及其相应的 MinHash 签名。</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert data in batches</span>
 batch_size = <span class="hljs-number">2000</span>
@@ -277,4 +277,4 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6 中的 MinHash LSH 是人工智能数据处理的一次飞跃。它最初是用于重复数据删除的 LLM 解决方案，现在则为更广泛的使用案例打开了大门--网络内容清理、目录管理、剽窃检测等。</p>
-<p>如果您有类似的使用案例，请在 Milvus Discord 上联系我们，报名参加办公时间会议。</p>
+<p>如果您有类似的使用案例，请在<a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a>上联系我们，报名参加<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">办公时间会议</a>。</p>

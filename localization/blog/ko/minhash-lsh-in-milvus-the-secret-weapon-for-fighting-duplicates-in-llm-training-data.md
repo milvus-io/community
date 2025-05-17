@@ -20,8 +20,8 @@ origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
 <p>대규모 언어 모델(LLM)은 코드를 작성하고, 콘텐츠를 만들고, 복잡한 문제를 해결하는 능력으로 AI 환경을 변화시켰습니다. 하지만 이러한 강력한 모델은 학습을 위해 엄청난 양의 고품질 데이터가 필요합니다.</p>
-<p>문제는 원시 학습 데이터에 상당한 중복성이 포함되어 있는 경우가 많다는 것입니다. 이는 마치 다른 중요한 주제는 건너뛰고 같은 수업을 반복해서 아이에게 가르치는 것과 같습니다. 한 대형 AI 회사가 바로 이 문제를 가지고 저희를 찾아왔습니다. 야심찬 새 언어 모델을 구축하고 있었지만 수백억 개의 문서를 중복 제거하는 데 어려움을 겪고 있었습니다. 기존의 매칭 방식은 이 정도 규모로는 확장할 수 없었고, 전문화된 중복 제거 도구는 막대한 계산 리소스를 필요로 했기 때문에 경제적으로 실행 가능하지 않았습니다.</p>
-<p>이 문제를 해결하기 위해 Milvus 2.6에서 사용할 수 있는 MinHash LSH(지역 민감 해싱) 인덱싱이 해결책이 될 것입니다. 이 글에서는 MinHash LSH가 LLM 학습을 위한 데이터 중복 제거 문제를 효율적으로 해결하는 방법을 살펴보겠습니다.</p>
+<p>문제는 원시 학습 데이터에 상당한 중복성이 포함되어 있는 경우가 많다는 것입니다. 이는 마치 다른 중요한 주제는 건너뛰고 같은 수업을 반복해서 아이에게 가르치는 것과 같습니다. 한 대형 AI 회사가 바로 이 문제를 가지고 저희를 찾아왔습니다. 야심찬 새 언어 모델을 구축하고 있었지만 수백억 개의 문서를 중복 제거하는 데 어려움을 겪고 있었습니다. 기존의 매칭 방식은 이 정도 규모로는 확장할 수 없었고, 전문화된 중복 제거 도구는 막대한 계산 리소스를 필요로 했기 때문에 경제적으로 실행할 수 없었습니다.</p>
+<p>이 문제를 해결하기 위해 저희는 Milvus 2.6에서 사용할 수 있는 MinHash LSH(지역 민감 해싱) 인덱싱을 해결책으로 제시했습니다. 이 글에서는 MinHash LSH가 LLM 학습을 위한 데이터 중복 제거 문제를 효율적으로 해결하는 방법을 살펴보겠습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -56,7 +56,7 @@ origin: >-
 <li><p><strong>근사 매칭:</strong> MinHash LSH 및 Jaccard 유사도와 같은 알고리즘을 사용하여 중복에 가까운 콘텐츠를 찾습니다.</p></li>
 <li><p>시맨틱<strong>매칭:</strong> 벡터 임베딩을 사용하여 유사한 의미를 가진 콘텐츠를 식별합니다.</p></li>
 </ul>
-<p>사전 학습 코퍼스가 테라바이트 또는 페타바이트에 달하기 때문에 쌍별 비교와 같은 기존의 정확한 매칭 방식은 계산적으로 불가능합니다. 시맨틱 중복 제거는 임베딩 모델을 사용해 벡터를 생성함으로써 상당한 오버헤드를 추가합니다. 따라서 대규모 중복 제거를 실용적으로 수행하기 위해서는 비용을 관리 가능한 수준으로 유지하면서 리콜률과 정확도의 균형을 맞추는 <strong>MinHash LSH와</strong>같은 보다 스마트한 근사 방법이 필요합니다.</p>
+<p>사전 학습 코퍼스가 테라바이트 또는 페타바이트에 달하기 때문에 쌍별 비교와 같은 기존의 정확한 매칭 방식은 계산적으로 불가능합니다. 시맨틱 중복 제거는 임베딩 모델을 사용해 벡터를 생성함으로써 상당한 오버헤드를 추가합니다. 따라서 대규모 중복 제거를 실용적으로 수행하기 위해서는 비용을 관리 가능한 수준으로 유지하면서 리콜과 정확도의 균형을 맞출 <strong>수 있는 MinHash LSH와</strong>같은 보다 혁신적인 근사 방법이 필요합니다.</p>
 <h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH: 대규모 데이터 세트에서 중복에 가까운 항목을 효율적으로 탐지하기<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -96,7 +96,7 @@ origin: >-
   </span>
 </p>
 <p>유사성을 계산할 때, 두 문서의 MinHash 서명에서 해시 값이 같은 위치에 정렬될 확률(이러한 서명의 Jaccard 거리에 해당)은 원래 싱글 세트의 Jaccard 유사성에 대한 근사치를 제공합니다. 이를 통해 더 큰 원본 텍스트를 직접 비교하지 않고도 문서 유사성을 효과적으로 추정할 수 있으며, 대신 압축된 MinHash 서명을 분석할 수 있습니다.</p>
-<p>MinHash 원칙은 해시 값이 가장 작은 단어를 사용해 전체 문서를 표현하는 것으로, 추가 해시 함수를 통합하여 정확도를 높입니다. 사소한 단어 변경은 일반적으로 최소 해시 값에 영향을 미치지 않기 때문에 간과되기 쉬운 반면, 더 큰 변경은 해시 값을 변경하는 경향이 있어 더 쉽게 감지할 수 있습니다. 이 방법은 다양한 단어에 걸쳐 해시값을 최소 풀링하는 것으로 볼 수 있습니다. MinHash 외에도 문서 서명을 생성하는 데 SimHash와 같은 대안을 사용할 수 있지만 여기서는 설명하지 않습니다.</p>
+<p>MinHash 원칙은 해시 값이 가장 작은 단어를 사용해 전체 문서를 표현하는 것으로, 추가 해시 함수를 통합하여 정확도를 높입니다. 사소한 단어 변경은 일반적으로 최소 해시 값에 영향을 미치지 않기 때문에 간과될 가능성이 높습니다. 반면에 더 큰 변경은 해시값을 변경하는 경향이 있으며 더 쉽게 감지할 수 있습니다. 이 방법은 다양한 단어에 걸쳐 해시값을 최소 풀링하는 것으로 볼 수 있습니다. MinHash 외에도 문서 서명을 생성하는 데 SimHash와 같은 대안을 사용할 수 있지만 여기서는 설명하지 않습니다.</p>
 <h3 id="Step-2-Identifying-Similar-Documents-via-LSH" class="common-anchor-header">2단계: LSH를 통해 유사한 문서 식별하기</h3><p>간결한 MinHash 서명을 사용하더라도 수백만 또는 수십억 개의 문서에서 모든 쌍을 비교하는 것은 여전히 계산 비용이 많이 듭니다. 그래서 <strong>지역 민감 해싱(LSH)이</strong> 등장했습니다.</p>
 <p>LSH의 핵심 아이디어는 <strong>의도적으로 충돌을 일으키는</strong>해시 함수를 사용해 <strong>유사한</strong>항목은 같은 버킷에 해시할 가능성이 높지만, 그렇지 않은 항목은 그렇지 않은 해시 함수를 사용하는 것입니다. 이는 충돌을 피하는 것을 목표로 하는 기존 해싱과는 정반대입니다.</p>
 <p>MinHash의 경우, 인기있는 LSH 전략은 <strong>밴딩 기법입니다</strong>:</p>
@@ -108,7 +108,7 @@ origin: >-
 <p>밴드 수(b)와 밴드당 행 수(®)를 조정하여 정확도, 정확도, 검색 효율성 간의 균형을 조절할 수 있습니다.</p>
 <p>핵심 아이디어는 매우 유사한 문서는 MinHash 서명에 일치하는 해시값이 많다는 것입니다. 이러한 서명이 밴드로 분할되면 모든 값이 일치하는 밴드가 하나만 있어도 두 개의 문서를 같은 버킷에 넣을 수 있습니다. 문서가 더 유사할수록 적어도 하나의 밴드에서 이러한 일이 발생할 확률이 높아지므로 LSH는 모든 서명을 철저하게 비교하지 않고도 후보 쌍을 효율적으로 표시할 수 있습니다.</p>
 <p>요컨대, <strong>MinHash + LSH는</strong> 확장 가능한 대략적인 중복 제거를 가능하게 합니다: MinHash는 문서를 압축 서명으로 압축하고, LSH는 일치할 가능성이 높은 서명을 그룹화하여 검색 공간을 효율적으로 좁힙니다. 군중 속에서 쌍둥이를 발견하는 것과 같습니다. 먼저 모든 사람의 빠른 기능 스냅샷을 찍고(MinHash), 유사 항목을 그룹화한 다음(LSH), 더 작은 그룹에서 실제 중복 여부를 면밀히 검사합니다.</p>
-<h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">Milvus 2.6의 MinHash LSH 통합<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
+<h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">Milvus 2.6에 MinHash LSH 통합<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,7 +123,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MinHash LSH를 Milvus 2.6에 통합한 것은 실제적인 필요성에 의해 추진되었습니다. 앞서 언급했듯이, 선도적인 LLM 회사 중 하나인 Milvus 사용자가 LLM 사전 학습을 위해 방대한 양의 텍스트 데이터를 효율적으로 중복 제거해야 한다는 과제를 가지고 저희에게 연락을 해왔습니다.</p>
+    </button></h2><p>실제적인 요구로 인해 MinHash LSH를 Milvus 2.6에 통합하게 되었습니다. 앞서 언급했듯이, 선도적인 LLM 회사 중 하나인 Milvus 사용자가 LLM 사전 학습을 위해 방대한 양의 텍스트 데이터를 효율적으로 중복 제거해야 한다는 과제를 가지고 저희에게 연락해왔습니다.</p>
 <p>기존의 중복 제거 파이프라인은 일반적으로 저장 및 검색 시스템과 분리된 외부 도구에 의존하기 때문에 구성 요소 간에 많은 비용이 드는 데이터 전송이 필요합니다. 이렇게 파편화된 워크플로는 운영 오버헤드를 증가시키고 분산된 컴퓨팅 리소스를 최대한 활용하지 못하게 합니다.</p>
 <p>처리량이 많은 벡터 데이터를 처리하는 Milvus의 강점을 인식하면서 자연스럽게 아이디어가 떠올랐습니다: <strong><em>MinHash LSH가 Milvus에 기본적으로 내장되어 근사치 중복 제거를 일류 데이터베이스 기능으로 만들면 어떨까요?</em></strong></p>
 <p>이 접근 방식은 Milvus 내에서 중복 제거부터 시맨틱 검색까지 완벽한 워크플로우를 가능하게 하며, 확장성과 통합 API를 활용하면서 MLOps를 간소화합니다. 파트너와 함께 Milvus의 클라우드 네이티브 아키텍처에 맞게 MinHash LSH를 최적화하여 대규모 중복 제거를 위한 빠르고 확장 가능한 솔루션이 탄생했습니다.</p>
@@ -132,7 +132,7 @@ origin: >-
 <li><p><strong>원활한 API 통합:</strong> 사용자는 Milvus의 표준 SDK와 선언적 API를 사용하여 MinHash 벡터 필드를 정의하고, <code translate="no">MINHASH_LSH</code> 인덱스를 구축하고, 서명 데이터를 삽입하고, 대략적인 유사성 검색을 수행할 수 있습니다.</p></li>
 <li><p><strong>분산 및 확장성:</strong> Milvus의 클라우드 네이티브 아키텍처를 기반으로 구축된 이 기능은 대규모 데이터 세트와 높은 처리량을 위한 수평적 확장을 지원합니다.</p></li>
 </ul>
-<p>이 통합은 인상적인 결과를 가져왔습니다. 완전 관리형 Milvus(Zilliz Cloud)에서 MinHash LSH를 실행하여 이 사용자가 <strong>100억 개의 문서를</strong> 효율적으로 중복 제거할 수 있도록 지원했습니다. 이 새로운 솔루션은 이전의 MapReduce 기반 접근 방식에 비해 <strong>처리 속도가 2배 이상</strong> 빨라졌고, Milvus의 최적화된 인덱싱과 쿼리 실행 덕분에 <strong>3~5배의 비용 절감을</strong> 달성했습니다.</p>
+<p>이 통합은 인상적인 결과를 가져왔습니다. 완전 관리형 Milvus<a href="https://zilliz.com/cloud">(Zilliz Cloud)</a>에서 MinHash LSH를 실행하여 이 사용자가 <strong>100억 개의 문서를</strong> 효율적으로 중복 제거할 수 있도록 지원했습니다. 이 새로운 솔루션은 이전의 MapReduce 기반 접근 방식에 비해 <strong>처리 속도가 2배 이상</strong> 빨라졌고, Milvus의 최적화된 인덱싱과 쿼리 실행 덕분에 <strong>3~5배의 비용 절감을</strong> 달성했습니다.</p>
 <h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">실습: Milvus를 사용해 LLM 데이터 세트 중복 제거하기<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -277,4 +277,4 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6의 MinHash LSH는 AI 데이터 처리의 비약적인 발전입니다. LLM 데이터 중복 제거를 위한 솔루션으로 시작한 것이 이제는 웹 콘텐츠 정리, 카탈로그 관리, 표절 탐지 등 더 광범위한 사용 사례로 확장되었습니다.</p>
-<p>비슷한 사용 사례가 있다면 Milvus Discord에 문의하여 오피스 아워 미팅에 등록해 주세요.</p>
+<p>비슷한 사용 사례가 있다면 <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord에</a> 문의하여 <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">오피스 아워 미팅에</a> 등록해 주세요.</p>
