@@ -166,5 +166,6 @@
   "blog/en/bring-vector-compression-to-the-extreme-how-milvus-serves-3×-more-queries-with-rabitq.md": "2025-05-14T13:12:04.183Z",
   "blog/en/benchmarks-lie-vector-dbs-deserve-a-real-test.md": "2025-05-14T15:45:47.812Z",
   "blog/en/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md": "2025-05-15T15:17:22.849Z",
-  "blog/en/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md": "2025-05-17T12:30:24.838Z"
+  "blog/en/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md": "2025-05-17T12:30:24.838Z",
+  "blog/en/milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-faster-than-elasticsearch.md": "2025-05-17T15:29:16.827Z"
 }
