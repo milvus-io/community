@@ -104,11 +104,11 @@ origin: >-
 <p>Der Kerngedanke von LSH ist die Verwendung von Hash-Funktionen, die <strong>absichtlich Kollisionen verursachen - ähnliche</strong>Elemente werden mit größerer Wahrscheinlichkeit in denselben Bucket gehasht, unähnliche hingegen nicht. Dies ist das Gegenteil von traditionellem Hashing, bei dem Kollisionen vermieden werden sollen.</p>
 <p>Eine beliebte LSH-Strategie für MinHash ist die <strong>Banding-Technik</strong>:</p>
 <ol>
-<li><p><strong>Banding</strong>: Jede MinHash-Signatur (ein Vektor der Länge <em>N</em>) wird in <em>b</em> Bänder mit jeweils <em>r</em> Zeilen<em>(N = b × r</em>) unterteilt.</p></li>
-<li><p><strong>Hashing der Bänder:</strong> Jedes Band (ein Untervektor mit <em>r</em> Werten) wird mit Hilfe einer Standard-Hash-Funktion in einen Bucket gehasht.</p></li>
-<li><p><strong>Kandidatenpaare:</strong> Wenn zwei Dokumente in einem <strong>beliebigen</strong> Band einen Bucket gemeinsam haben, werden sie als potenzielle Übereinstimmungen gekennzeichnet.</p></li>
+<li><p><strong>Banding</strong>: Jede MinHash-Signatur (ein Vektor der Länge <em>N</em>) wird in <em>b</em> Bänder mit jeweils <em>r</em> Dims<em>(N = b × r</em>) aufgeteilt.</p></li>
+<li><p><strong>Hashing der Bänder:</strong> Jedes Band (ein Untervektor von <em>r</em> Werten) wird mit Hilfe einer Standard-Hash-Funktion in einen Bucket gehasht.</p></li>
+<li><p><strong>Kandidatenpaare:</strong> Wenn zwei Dokumente in einem <strong>beliebigen</strong> Band einen Bucket gemeinsam haben, werden sie als potenzielle Übereinstimmungen markiert.</p></li>
 </ol>
-<p>Indem Sie die Anzahl der Bereiche (b) und die Anzahl der Zeilen pro Bereich ® anpassen, können Sie den Kompromiss zwischen Recall, Präzision und Sucheffizienz steuern.</p>
+<p>Indem Sie die Anzahl der Bereiche (b) und die Anzahl der Dimensionen pro Bereich ® anpassen, können Sie den Kompromiss zwischen Recall, Präzision und Sucheffizienz steuern.</p>
 <p>Der Grundgedanke ist folgender: Sehr ähnliche Dokumente haben viele übereinstimmende Hash-Werte in ihren MinHash-Signaturen. Wenn diese Signaturen in Bänder aufgeteilt werden, reicht bereits ein Band mit allen übereinstimmenden Werten aus, um zwei Dokumente in denselben Bucket zu legen. Je ähnlicher die Dokumente sind, desto höher ist die Wahrscheinlichkeit, dass dies in mindestens einem Band der Fall ist, so dass LSH effizient Kandidatenpaare aufdecken kann, ohne alle Signaturen erschöpfend zu vergleichen.</p>
 <p>Kurz gesagt, <strong>MinHash + LSH</strong> ermöglicht eine skalierbare approximative Deduplizierung: MinHash komprimiert Dokumente in kompakte Signaturen, und LSH grenzt den Suchraum durch Gruppierung wahrscheinlicher Übereinstimmungen effizient ein. Es ist so, als würde man Zwillinge in einer Menschenmenge entdecken: Zuerst macht man einen schnellen Schnappschuss von allen (MinHash), gruppiert die Ähnlichen (LSH) und untersucht dann die kleineren Gruppen genau auf tatsächliche Duplikate.</p>
 <h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">Integration von MinHash LSH in Milvus 2.6<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">

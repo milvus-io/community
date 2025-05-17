@@ -101,12 +101,12 @@ origin: >-
 <p>LSH 的关键理念是使用<strong>有意造成碰撞的</strong>散列函数<strong>--相似的</strong>项目更有可能散列到同一个桶中，而不相似的项目则不会。这与旨在避免碰撞的传统散列正好相反。</p>
 <p>对于 MinHash，一种流行的 LSH 策略是<strong>带状散列技术</strong>：</p>
 <ol>
-<li><p><strong>分带</strong>：将每个 MinHash 签名（长度为<em>N</em> 的向量）分成<em>b</em>个带，每个带有<em>r</em>行<em>（N = b × r</em>）。</p></li>
+<li><p><strong>分带</strong>：将每个 MinHash 签名（长度为<em>N</em> 的向量）拆分成<em>b</em>个带，每个带有<em>r</em>个 dims<em>（N = b × r</em>）。</p></li>
 <li><p><strong>散列带：</strong>使用标准散列函数将每个带（<em>r</em>个值的子向量）散列到一个桶中。</p></li>
-<li><p><strong>候选对：</strong>如果两个文档在<strong>任何</strong>条带中共享一个数据桶，它们就会被标记为潜在匹配。</p></li>
+<li><p><strong>候选对：</strong>如果两个文档在<strong>任何</strong>波段中共享一个数据桶，它们就会被标记为潜在匹配。</p></li>
 </ol>
-<p>通过调整波段数（b）和每个波段的行数®，可以控制召回率、精确度和搜索效率之间的权衡。</p>
-<p>关键在于：高度相似的文档在其 MinHash 签名中会有很多匹配的哈希值。当这些签名被分割成多个条带时，即使一个条带中的所有值都匹配，也足以将两个文档放入同一个邮筒中。文档的相似度越高，至少在一个频段中出现这种情况的概率就越高，这样 LSH 就能在不对所有签名进行穷举比较的情况下有效地找出候选配对。</p>
+<p>通过调整波段数（b）和每个波段的维数®，可以控制召回率、精确度和搜索效率之间的权衡。</p>
+<p>关键在于：高度相似的文档在其 MinHash 签名中会有许多匹配的哈希值。当这些签名被分成若干带时，即使一个带中的所有值都匹配，也足以将两个文档放入同一个桶中。文档的相似度越高，至少在一个频段中出现这种情况的概率就越高，这样 LSH 就能在不对所有签名进行穷举比较的情况下高效地找出候选配对。</p>
 <p>简而言之，<strong>MinHash + LSH</strong>可以实现可扩展的近似重复数据删除：MinHash 将文档压缩成紧凑的签名，而 LSH 则通过分组可能匹配的内容来有效缩小搜索空间。这就像在人群中发现双胞胎一样：首先，对每个人进行快速特征快照（MinHash），将相似的人分组（LSH），然后仔细检查较小的组，找出真正的重复。</p>
 <h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">在 Milvus 2.6 中集成 MinHash LSH<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -126,13 +126,13 @@ origin: >-
     </button></h2><p>将 MinHash LSH 集成到 Milvus 2.6 是出于现实世界的需要。如前所述，Milvus 的用户--一家领先的 LLM 公司--向我们提出了一项挑战：为 LLM 预训练高效地重复数据删除大量文本数据。</p>
 <p>传统的重复数据删除管道通常依赖于与存储和检索系统分离的外部工具，需要在组件之间进行成本高昂的数据传输。这种支离破碎的工作流程增加了操作符，并妨碍了分布式计算资源的充分利用。</p>
 <p>认识到 Milvus 在处理高吞吐量向量数据方面的优势，一个自然而然的想法出现了：<strong><em>如果将 MinHash LSH 原生内置到 Milvus 中，使近似重复数据删除成为一流的数据库功能，会怎么样呢？</em></strong></p>
-<p>这种方法在 Milvus 中实现了从重复数据删除到语义检索的完整工作流程，在利用其可扩展性和统一 API 的同时简化了 MLOps。我们与合作伙伴一起，针对 Milvus 的云原生架构优化了 MinHash LSH，从而为大规模重复数据删除提供了快速、可扩展的解决方案。</p>
+<p>这种方法可以在 Milvus 中实现从重复数据删除到语义检索的完整工作流程，简化 MLOps，同时利用其可扩展性和统一 API。我们与合作伙伴一起，针对 Milvus 的云原生架构优化了 MinHash LSH，从而为大规模重复数据删除提供了快速、可扩展的解决方案。</p>
 <h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Milvus 2.6 的核心功能包括</h3><ul>
-<li><p><strong>本地 MinHash LSH 索引：</strong>执行 LSH 的标准分带技术，并支持可选的 Jaccard 重新排序，以提高召回率。提供基于内存和基于 mmap 的实现，可灵活应对不同的工作负载。</p></li>
+<li><p><strong>本地 MinHash LSH 索引：</strong>执行 LSH 的标准分带技术，并支持可选的 Jaccard 重新排序，以提高召回率。提供基于内存和基于 mmap 的实现，可在不同的工作负载中灵活运用。</p></li>
 <li><p><strong>无缝 API 集成：</strong>用户可以使用 Milvus 的标准 SDK 和声明式 API 定义 MinHash 向量字段、构建<code translate="no">MINHASH_LSH</code> 索引、插入签名数据并执行近似相似性搜索。</p></li>
 <li><p><strong>分布式和可扩展性：</strong>该功能基于 Milvus 的云原生架构构建，支持针对大型数据集和高通量处理的水平扩展。</p></li>
 </ul>
-<p>这种集成带来了令人印象深刻的结果。通过在完全托管的 Milvus<a href="https://zilliz.com/cloud">（Zilliz Cloud</a>）上运行 MinHash LSH，我们帮助该用户高效地重复复制了<strong>100 亿个文档</strong>。与他们之前基于 MapReduce 的方法相比，由于 Milvus 优化了索引和查询执行，新解决方案的<strong>处理速度提高了一倍多</strong>，<strong>成本节约了 3-5 倍</strong>。</p>
+<p>这种集成带来了令人印象深刻的结果。通过在完全托管的 Milvus<a href="https://zilliz.com/cloud">（Zilliz Cloud</a>）上运行 MinHash LSH，我们帮助该用户高效地重复复制了<strong>100 亿个文档</strong>。与他们之前基于 MapReduce 的方法相比，由于 Milvus 优化了索引和查询执行，新解决方案的<strong>处理速度提高了一倍多</strong>，并<strong>节省了 3-5 倍的成本</strong>。</p>
 <h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">实际操作：使用 Milvus 重复处理 LLM 数据集<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -219,7 +219,7 @@ client.create_collection(
     index_params=index_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>关于参数调整的说明：MinHash LSH 的有效性在很大程度上取决于参数的选择。例如，在 MinHash 签名生成过程中使用的散列函数数量（即<code translate="no">MINHASH_DIM</code> ）会影响签名的精度和大小。在 LSH 阶段，条带数 (<code translate="no">num_bands</code>) 和每条带的行数共同决定了相似性阈值的灵敏度范围以及召回率和精度之间的平衡。用户需要根据自己的数据集特征和重复数据删除要求进行试验和微调。这通常是一个反复的过程。</p>
+<p>关于参数调整的说明：MinHash LSH 的有效性在很大程度上取决于参数的选择。例如，在 MinHash 签名生成过程中使用的哈希函数数量（即<code translate="no">MINHASH_DIM</code> ）会影响签名的精度和大小。在 LSH 阶段，条带数 (<code translate="no">num_bands</code>) 和每条带的行数共同决定了相似性阈值的灵敏度范围以及召回率和精度之间的平衡。用户需要根据自己的数据集特征和重复数据删除要求进行试验和微调。这通常是一个反复的过程。</p>
 <h3 id="Step-3-Insert-MinHash-Signatures" class="common-anchor-header"><strong>第 3 步：插入 MinHash 签名</strong></h3><p>假设您有一批文档及其相应的 MinHash 签名。</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert data in batches</span>
 batch_size = <span class="hljs-number">2000</span>

@@ -105,11 +105,11 @@ origin: >-
 <p>La idea clave de LSH es utilizar funciones hash que <strong>provoquen colisiones de forma intencionada: los</strong>elementos <strong>similares</strong>tienen más probabilidades de coincidir en el mismo cubo, mientras que los no similares no. Esto es lo contrario del hash tradicional, cuyo objetivo es evitar las colisiones.</p>
 <p>Para MinHash, una estrategia LSH popular es la <strong>técnica de bandas</strong>:</p>
 <ol>
-<li><p><strong>Banding</strong>: Dividir cada firma MinHash (un vector de longitud <em>N</em>) en <em>b</em> bandas, cada una con <em>r</em> filas<em>(N = b × r</em>).</p></li>
-<li><p><strong>Hashing de bandas:</strong> Convertir cada banda (un subvector de <em>r</em> valores) en un cubo mediante una función hash estándar.</p></li>
-<li><p><strong>Pares candidatos:</strong> Si dos documentos comparten un cubo en <strong>cualquier</strong> banda, se marcan como coincidencias potenciales.</p></li>
+<li><p><strong>Banding</strong>: Divide cada firma MinHash (un vector de longitud <em>N</em>) en <em>b</em> bandas, cada una con <em>r</em> dims<em>(N = b × r</em>).</p></li>
+<li><p><strong>Hashing de bandas:</strong> Convertir cada banda (un subvector de <em>r</em> valores) en un cubo utilizando una función hash estándar.</p></li>
+<li><p><strong>Pares candidatos:</strong> Si dos documentos comparten un cubo en <strong>cualquier</strong> banda, se marcan como posibles coincidencias.</p></li>
 </ol>
-<p>Ajustando el número de bandas (b) y el número de filas por banda ®, se puede controlar el equilibrio entre recuperación, precisión y eficacia de la búsqueda.</p>
+<p>Ajustando el número de bandas (b) y el número de dimensiones por banda ®, se puede controlar el equilibrio entre recuperación, precisión y eficacia de la búsqueda.</p>
 <p>La idea clave es la siguiente: los documentos muy similares tendrán muchos valores hash coincidentes en sus firmas MinHash. Cuando estas firmas se dividen en bandas, incluso una banda con todos los valores coincidentes es suficiente para colocar dos documentos en el mismo cubo. Cuanto más parecidos sean los documentos, mayor será la probabilidad de que esto ocurra en al menos una banda, lo que permite a LSH sacar a la superficie pares candidatos de forma eficiente sin comparar exhaustivamente todas las firmas.</p>
 <p>En resumen, <strong>MinHash + LSH</strong> permiten una deduplicación aproximada escalable: MinHash comprime los documentos en firmas compactas y LSH reduce eficazmente el espacio de búsqueda agrupando las coincidencias probables. Es como detectar gemelos en una multitud: primero, se toma una instantánea rápida de las características de todos (MinHash), se agrupan los parecidos (LSH) y, a continuación, se inspeccionan minuciosamente los grupos más pequeños en busca de duplicados reales.</p>
 <h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">Integración de MinHash LSH en Milvus 2.6<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
