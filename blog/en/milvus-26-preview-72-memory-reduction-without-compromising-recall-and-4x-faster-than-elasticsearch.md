@@ -168,7 +168,7 @@ This will create a streamlined "Data-In, Data-Out" experience where Milvus handl
 
 A good database doesn’t just have great features, it must also deliver those features at scale, battle-tested in production. 
 
-Milvus 2.6 will introduce a fundamental architectural change that enables cost-effective scaling to hundreds of billions of vectors. The highlight is a new hot-cold tiered storage architecture that intelligently manages data placement based on access patterns, automatically moving hot data to high-performance memory/SSD while placing cold data in more economical object storage. This approach can reduce costs by up to 50% while maintaining query performance where it matters most. 
+Milvus 2.6 will introduce a fundamental architectural change that enables cost-effective scaling to hundreds of billions of vectors. The highlight is a new hot-cold tiered storage architecture that intelligently manages data placement based on access patterns, automatically moving hot data to high-performance memory/SSD while placing cold data in more economical object storage. This approach can dramatically reduce costs while maintaining query performance where it matters most. 
 
 Additionally, a new [Streaming Node](https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow) will enable real-time vector processing with direct integration to streaming platforms like Kafka and Pulsar and the newly created [Woodpecker](https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md), making new data searchable immediately without batch delays.
 
