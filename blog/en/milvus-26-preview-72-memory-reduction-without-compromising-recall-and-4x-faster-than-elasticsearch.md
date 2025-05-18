@@ -69,11 +69,14 @@ Milvus 2.6 will deliver substantial performance gains on BM25. Our testing on th
 
 ![](https://assets.zilliz.com/Figure_Milvus_vs_Elasticsearch_on_throughput_140b7c1b06.png)
 
-Figure: Milvus vs. Elasticsearch on throughput JSON Path Index: 99% Lower Latency for Complex Filtering
+Figure: Milvus vs. Elasticsearch on throughput 
+
+
+### JSON Path Index: 99% Lower Latency for Complex Filtering
 
 Modern AI applications rarely rely on vector similarity alone—they almost always combine vector search with metadata filtering. As these filtering conditions become more complex (especially with nested JSON objects), query performance can deteriorate rapidly.
 
-Milvus 2.6 will introduce a targeted indexing mechanism for nested JSON paths that allows you to create indexes on specific paths (e.g., $meta. `user_info.location`) within JSON fields. Instead of scanning entire objects, Milvus will directly look up values from pre-built indexes.
+Milvus 2.6 will introduce a targeted indexing mechanism for nested JSON paths that allows you to create indexes on specific paths (e.g., `$meta user_info.location`) within JSON fields. Instead of scanning entire objects, Milvus will directly look up values from pre-built indexes.
 
 In our evaluation with 100 M+ records, JSON Path Index reduced filter latency from **140ms** (P99: 480ms) to just **1.5ms** (P99: 10ms)—a 99% reduction that will transform previously impractical queries into instant responses.
 
