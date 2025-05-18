@@ -79,10 +79,10 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Figura: Milvus frente a Elasticsearch en rendimiento Índice de rutas JSON: 99% menos de latencia para filtrado complejo</p>
-<p>Las aplicaciones modernas de IA rara vez dependen únicamente de la similitud vectorial; casi siempre combinan la búsqueda vectorial con el filtrado de metadatos. A medida que estas condiciones de filtrado se hacen más complejas (especialmente con objetos JSON anidados), el rendimiento de la consulta puede deteriorarse rápidamente.</p>
-<p>Milvus 2.6 introducirá un mecanismo de indexación dirigido para rutas JSON anidadas que le permitirá crear índices en rutas específicas (por ejemplo, $meta. <code translate="no">user_info.location</code>) dentro de campos JSON. En lugar de escanear objetos enteros, Milvus buscará directamente los valores de los índices preconstruidos.</p>
-<p>En nuestra evaluación con más de 100 M de registros, JSON Path Index redujo la latencia de filtrado de <strong>140 ms</strong> (P99: 480 ms) a sólo <strong>1,5 ms</strong> (P99: 10 ms), una reducción del 99% que transformará en respuestas instantáneas consultas que antes resultaban impracticables.</p>
+<p>Figura: Rendimiento de Milvus frente a Elasticsearch</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">Índice de rutas JSON: 99% menos de latencia para filtrado complejo</h3><p>Las aplicaciones modernas de IA rara vez se basan únicamente en la similitud vectorial: casi siempre combinan la búsqueda vectorial con el filtrado de metadatos. A medida que estas condiciones de filtrado se hacen más complejas (especialmente con objetos JSON anidados), el rendimiento de la consulta puede deteriorarse rápidamente.</p>
+<p>Milvus 2.6 introducirá un mecanismo de indexación dirigido para rutas JSON anidadas que le permitirá crear índices en rutas específicas (por ejemplo, <code translate="no">$meta user_info.location</code>) dentro de campos JSON. En lugar de escanear objetos enteros, Milvus buscará directamente los valores de los índices preconstruidos.</p>
+<p>En nuestra evaluación con más de 100 M de registros, JSON Path Index redujo la latencia de filtrado de <strong>140 ms</strong> (P99: 480 ms) a sólo <strong>1,5 ms</strong> (P99: 10 ms), una reducción del 99% que transformará consultas antes impracticables en respuestas instantáneas.</p>
 <p>Esta característica será especialmente valiosa para:</p>
 <ul>
 <li><p>Sistemas de recomendación con filtrado complejo de atributos de usuario</p></li>

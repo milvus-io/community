@@ -67,18 +67,18 @@ origin: >-
 <p>這裡真正的突破不只是記憶體的減少，而是在不影響精確度的情況下，同時達到 4 倍的吞吐量改善。這表示您將能夠使用減少 75% 的伺服器來服務相同的工作負載，或在現有基礎架構上處理多 4 倍的流量。</p>
 <p>對於在<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> 上使用完全管理式 Milvus 的企業用戶，我們正在開發自動化的設定檔，可根據您特定的工作負載特性和精確度需求，動態調整 RaBitQ 參數。</p>
 <h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">全文搜尋速度比 Elasticsearch 快 400</h3><p>向量資料庫的<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">全文</a>檢索功能已成為建立混合式檢索系統的必要條件。自從<a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> 推出 BM25 以來，我們收到了熱烈的反饋，並要求在規模上提供更好的效能。</p>
-<p>Milvus 2.6 將大幅提升 BM25 的效能。我們在 BEIR 資料集上的測試顯示，在召回率相等的情況下，吞吐量比 Elasticsearch 高出 3-4倍。對於某些工作負載，改善幅度可高達 7 倍的 QPS。</p>
+<p>Milvus 2.6 將大幅提升 BM25 的效能。我們在 BEIR 資料集上進行的測試顯示，在召回率相等的情況下，吞吐量比 Elasticsearch 高出 3-4 倍。對於某些工作負載，改善幅度可高達 7 倍的 QPS。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_vs_Elasticsearch_on_throughput_140b7c1b06.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>圖：Milvus 與 Elasticsearch 在 JSON Path Index 吞吐量上的比較：複雜篩選的延遲時間降低 99</p>
-<p>現代的 AI 應用程式很少會單獨依賴向量相似性，它們幾乎都會結合向量搜尋與元資料篩選。當這些篩選條件變得越來越複雜 (尤其是巢狀 JSON 物件)，查詢效能可能會迅速惡化。</p>
-<p>Milvus 2.6 將為巢狀 JSON 路徑引入目標索引機制，允許您在 JSON 欄位內的特定路徑 (例如 $meta.<code translate="no">user_info.location</code>) 上建立索引。Milvus 不會掃描整個物件，而是直接從預先建立的索引中查找值。</p>
+<p>圖：Milvus 與 Elasticsearch 的吞吐量比較</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">JSON 路徑索引：複雜篩選的延遲時間降低 99</h3><p>現代的 AI 應用程式很少會單獨依賴向量相似性，它們幾乎都會結合向量搜尋與元資料篩選。當這些篩選條件變得越來越複雜 (尤其是巢狀 JSON 物件)，查詢效能可能會迅速惡化。</p>
+<p>Milvus 2.6 將為巢狀 JSON 路徑引入目標索引機制，允許您在 JSON 欄位內的特定路徑 (例如<code translate="no">$meta user_info.location</code>) 上建立索引。Milvus 不會掃描整個物件，而是直接從預先建立的索引中查找值。</p>
 <p>在我們使用 100 M+ 記錄進行的評估中，JSON 路徑索引將過濾延遲從<strong>140 毫秒</strong>(P99: 480 毫秒) 降低到僅<strong>1.5</strong>毫秒 (P99: 10 毫秒)--降低了 99%，將以前不切實際的查詢轉變為即時回應。</p>
-<p>這項功能對於下列情況特別有價值</p>
+<p>此功能對於下列情況特別有價值</p>
 <ul>
 <li><p>具有複雜使用者屬性篩選功能的推薦系統</p></li>
 <li><p>以各種標籤篩選文件的 RAG 應用程式</p></li>
@@ -158,9 +158,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一個好的資料庫不僅要有好的功能，還必須在生產中經過實戰考驗，以大規模的方式提供這些功能。</p>
+    </button></h2><p>一個好的資料庫不僅要有優異的功能，還必須在規模上提供這些功能，並在生產中經過實戰考驗。</p>
 <p>Milvus 2.6 將會引進一個基本的架構變革，能夠以符合成本效益的方式擴充至數千億向量。最大的亮點是全新的冷熱分層儲存架構，可根據存取模式智慧地管理資料放置，自動將熱資料移至高效能記憶體/SSD，同時將冷資料放置在更經濟的物件儲存中。這種方法可以大幅降低成本，同時在最重要的地方維持查詢效能。</p>
-<p>此外，新的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow">串流節點 (Streaming Node</a>) 將可直接整合至 Kafka 和 Pulsar 等串流平台，以及新建立的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Woodpecker</a>，以實現即時向量處理，讓新資料可立即搜尋，而不會出現批次延遲。</p>
+<p>此外，新的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow">串流節點 (Streaming Node</a>) 將可直接整合至 Kafka 和 Pulsar 等串流平台以及新建立的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Woodpecker</a>，以實現即時向量處理，讓新資料可立即搜尋，而不會出現批次延遲。</p>
 <h2 id="Stay-tuned-for-Milvus-26" class="common-anchor-header">敬請期待 Milvus 2.6<button data-href="#Stay-tuned-for-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

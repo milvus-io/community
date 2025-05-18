@@ -65,7 +65,7 @@ origin: >-
 </table>
 <p><em>표: 768차원의 1M 벡터를 사용한 VectorDBBench 평가(AWS m6id.2xlarge에서 테스트)</em></p>
 <p>여기서 진정한 혁신은 단순한 메모리 감소가 아니라 정확도 저하 없이 처리량을 4배 개선하는 동시에 이를 달성한 것입니다. 즉, 기존 인프라에서 75% 더 적은 수의 서버로 동일한 워크로드를 처리하거나 4배 더 많은 트래픽을 처리할 수 있습니다.</p>
-<p><a href="https://zilliz.com/cloud"> Zilliz Cloud에서</a> 완전 관리형 Milvus를 사용하는 기업 사용자를 위해 특정 워크로드 특성 및 정확도 요구 사항에 따라 RaBitQ 매개변수를 동적으로 조정하는 자동화된 구성 프로필을 개발 중입니다.</p>
+<p><a href="https://zilliz.com/cloud"> Zilliz Cloud에서</a> 완전 관리형 Milvus를 사용하는 기업 사용자를 위해 특정 워크로드 특성 및 정밀도 요구 사항에 따라 RaBitQ 매개변수를 동적으로 조정하는 자동화된 구성 프로필을 개발 중입니다.</p>
 <h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">Elasticsearch보다 400% 더 빠른 전체 텍스트 검색</h3><p>벡터 데이터베이스의<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">전체 텍스트 검색</a> 기능은 하이브리드 검색 시스템을 구축하는 데 필수적인 요소가 되었습니다. <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5에</a> BM25를 도입한 이후, 우리는 열렬한 피드백과 함께 더 나은 대규모 성능에 대한 요청을 받았습니다.</p>
 <p>Milvus 2.6은 BM25에서 상당한 성능 향상을 제공할 것입니다. BEIR 데이터 세트에 대한 테스트 결과, 동일한 리콜률로 Elasticsearch보다 3~4배 더 높은 처리량을 보였습니다. 일부 워크로드의 경우, 최대 7배 더 높은 QPS까지 개선되었습니다.</p>
 <p>
@@ -74,9 +74,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>그림: 처리량 JSON 경로 인덱스에 대한 Milvus와 Elasticsearch 비교: 복잡한 필터링의 지연 시간 99% 감소</p>
-<p>최신 AI 애플리케이션은 벡터 유사성에만 의존하는 경우는 거의 없으며, 거의 항상 벡터 검색과 메타데이터 필터링을 결합합니다. 이러한 필터링 조건이 더 복잡해지면(특히 중첩된 JSON 객체의 경우) 쿼리 성능이 급격히 저하될 수 있습니다.</p>
-<p>Milvus 2.6에서는 중첩된 JSON 경로에 대한 표적 인덱싱 메커니즘을 도입하여 JSON 필드 내의 특정 경로(예: $meta. <code translate="no">user_info.location</code>)에 인덱스를 생성할 수 있습니다. 전체 개체를 스캔하는 대신 Milvus는 미리 구축된 인덱스에서 직접 값을 조회합니다.</p>
+<p>그림: 처리량에 대한 Milvus와 Elasticsearch 비교</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">JSON 경로 인덱스: 복잡한 필터링의 지연 시간 99% 감소</h3><p>최신 AI 애플리케이션은 벡터 유사성에만 의존하는 경우는 거의 없으며, 거의 항상 벡터 검색과 메타데이터 필터링을 결합합니다. 이러한 필터링 조건이 더 복잡해지면(특히 중첩된 JSON 객체의 경우) 쿼리 성능이 급격히 저하될 수 있습니다.</p>
+<p>Milvus 2.6에서는 중첩된 JSON 경로에 대한 표적 인덱싱 메커니즘이 도입되어 JSON 필드 내의 특정 경로(예: <code translate="no">$meta user_info.location</code>)에 인덱스를 생성할 수 있습니다. 전체 개체를 스캔하는 대신 Milvus는 미리 구축된 인덱스에서 직접 값을 조회합니다.</p>
 <p>100M 이상의 레코드로 평가한 결과, JSON 경로 인덱스는 필터 지연 시간을 <strong>140ms</strong> (P99: 480ms)에서 단 <strong>1.5ms</strong> (P99: 10ms)로 99% 단축하여 이전에는 비현실적인 쿼리를 즉각적인 응답으로 전환할 수 있게 해줍니다.</p>
 <p>이 기능은 특히 다음과 같은 경우에 유용합니다:</p>
 <ul>

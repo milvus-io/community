@@ -31,7 +31,7 @@ origin: >-
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Kami Mengganti Kafka/Pulsar dengan Burung Pelatuk untuk Milvus </a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH di Milvus: Senjata Rahasia untuk Memerangi Duplikat dalam Data Pelatihan LLM </a></p></li>
 </ul>
-<p>Sekarang, setelah kita mengakhiri seri Milvus Week, saya sangat senang memberi Anda sekilas tentang apa yang akan hadir di Milvus 2.6-sebuah tonggak penting dalam peta jalan produk 2025 yang saat ini sedang dikembangkan, dan bagaimana peningkatan ini akan mengubah pencarian yang didukung oleh AI. Rilis yang akan datang ini menyatukan semua inovasi ini dan lebih banyak lagi di tiga bidang penting: <strong>pengoptimalan efisiensi biaya</strong>, <strong>kemampuan pencarian tingkat lanjut</strong>, dan <strong>arsitektur baru</strong> yang mendorong pencarian vektor melampaui skala 10 miliar vektor.</p>
+<p>Sekarang, setelah kita mengakhiri seri Milvus Week, saya sangat senang untuk memberi Anda sekilas tentang apa yang akan hadir di Milvus 2.6-sebuah tonggak penting dalam peta jalan produk 2025 yang saat ini sedang dikembangkan, dan bagaimana peningkatan ini akan mengubah pencarian yang didukung oleh AI. Rilis yang akan datang ini menyatukan semua inovasi ini dan lebih banyak lagi di tiga bidang penting: <strong>pengoptimalan efisiensi biaya</strong>, <strong>kemampuan pencarian tingkat lanjut</strong>, dan <strong>arsitektur baru</strong> yang mendorong pencarian vektor melampaui skala 10 miliar vektor.</p>
 <p>Mari kita bahas beberapa peningkatan utama yang dapat Anda harapkan saat Milvus 2.6 hadir pada bulan Juni ini, dimulai dari apa yang mungkin akan berdampak paling besar: pengurangan dramatis dalam penggunaan memori dan biaya, serta kinerja yang sangat cepat.</p>
 <p>
   <span class="img-wrapper">
@@ -79,10 +79,10 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Gambar: Milvus vs Elasticsearch pada throughput JSON Path Index: 99% Latensi Lebih Rendah untuk Pemfilteran Kompleks</p>
-<p>Aplikasi AI modern jarang mengandalkan kesamaan vektor saja - mereka hampir selalu menggabungkan pencarian vektor dengan pemfilteran metadata. Ketika kondisi pemfilteran ini menjadi lebih kompleks (terutama dengan objek JSON bersarang), kinerja kueri dapat memburuk dengan cepat.</p>
-<p>Milvus 2.6 akan memperkenalkan mekanisme pengindeksan yang ditargetkan untuk jalur JSON bersarang yang memungkinkan Anda untuk membuat indeks pada jalur tertentu (mis., $meta. <code translate="no">user_info.location</code>) di dalam bidang JSON. Alih-alih memindai seluruh objek, Milvus akan secara langsung mencari nilai dari indeks yang telah dibuat sebelumnya.</p>
-<p>Dalam evaluasi kami dengan 100 M+ record, JSON Path Index mengurangi latensi filter dari <strong>140ms</strong> (P99: 480ms) menjadi hanya <strong>1,5ms</strong> (P99: 10ms) - pengurangan 99% yang akan mengubah kueri yang sebelumnya tidak praktis menjadi respons instan.</p>
+<p>Gambar: Milvus vs Elasticsearch dalam hal throughput</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">Indeks Jalur JSON: 99% Latensi Lebih Rendah untuk Pemfilteran Kompleks</h3><p>Aplikasi AI modern jarang mengandalkan kesamaan vektor saja - mereka hampir selalu menggabungkan pencarian vektor dengan pemfilteran metadata. Ketika kondisi pemfilteran ini menjadi lebih kompleks (terutama dengan objek JSON bersarang), kinerja kueri dapat memburuk dengan cepat.</p>
+<p>Milvus 2.6 akan memperkenalkan mekanisme pengindeksan yang ditargetkan untuk jalur JSON bersarang yang memungkinkan Anda untuk membuat indeks pada jalur tertentu (misalnya, <code translate="no">$meta user_info.location</code>) di dalam bidang JSON. Alih-alih memindai seluruh objek, Milvus akan secara langsung mencari nilai dari indeks yang telah dibuat sebelumnya.</p>
+<p>Dalam evaluasi kami dengan 100 M+ catatan, JSON Path Index mengurangi latensi filter dari <strong>140ms</strong> (P99: 480ms) menjadi hanya <strong>1,5ms</strong> (P99: 10ms) - pengurangan 99% yang akan mengubah kueri yang sebelumnya tidak praktis menjadi respons instan.</p>
 <p>Fitur ini akan sangat berharga untuk:</p>
 <ul>
 <li><p>Sistem rekomendasi dengan pemfilteran atribut pengguna yang kompleks</p></li>

@@ -24,10 +24,10 @@ origin: >-
 ---
 <p>Nel corso di questa settimana, abbiamo condiviso una serie di interessanti innovazioni in Milvus che spingono i confini della tecnologia dei database vettoriali:</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">La ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza uccidere il richiamo </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza distruggere il richiamo </a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Portare la compressione vettoriale all'estremo: come Milvus serve 3 volte più query con RaBitQ</a></p></li>
 <li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">I benchmark mentono: i DB vettoriali meritano un test reale </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Abbiamo sostituito Kafka/Pulsar con un Woodpecker per Milvus </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Abbiamo sostituito Kafka/Pulsar con un picchio per Milvus </a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: l'arma segreta per combattere i duplicati nei dati di addestramento LLM </a></p></li>
 </ul>
 <p>Ora, mentre concludiamo la nostra serie di settimane Milvus, sono entusiasta di darvi un'anticipazione di ciò che arriverà in Milvus 2.6, una pietra miliare cruciale nella nostra roadmap di prodotti 2025, attualmente in fase di sviluppo, e di come questi miglioramenti trasformeranno la ricerca alimentata dall'intelligenza artificiale. La prossima release riunisce tutte queste innovazioni e altre ancora su tre fronti critici: <strong>ottimizzazione dell'efficienza dei costi</strong>, <strong>funzionalità di ricerca avanzate</strong> e <strong>una nuova architettura</strong> che spinge la ricerca vettoriale oltre la scala dei 10 miliardi di vettori.</p>
@@ -78,9 +78,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Figura: Milvus vs. Elasticsearch sul throughput JSON Path Index: 99% di latenza in meno per filtri complessi</p>
-<p>Le moderne applicazioni di intelligenza artificiale raramente si affidano alla sola similarità vettoriale: quasi sempre combinano la ricerca vettoriale con il filtraggio dei metadati. Quando queste condizioni di filtraggio diventano più complesse (soprattutto con oggetti JSON annidati), le prestazioni delle query possono peggiorare rapidamente.</p>
-<p>Milvus 2.6 introdurrà un meccanismo di indicizzazione mirata per i percorsi JSON annidati che consente di creare indici su percorsi specifici (ad esempio, $meta. <code translate="no">user_info.location</code>) all'interno dei campi JSON. Invece di scansionare interi oggetti, Milvus cercherà direttamente i valori dagli indici precostituiti.</p>
+<p>Figura: Milvus vs. Elasticsearch sul throughput</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">Indice dei percorsi JSON: 99% di latenza in meno per filtri complessi</h3><p>Le moderne applicazioni di intelligenza artificiale raramente si affidano alla sola similarità vettoriale: quasi sempre combinano la ricerca vettoriale con il filtraggio dei metadati. Quando queste condizioni di filtraggio diventano più complesse (soprattutto con oggetti JSON annidati), le prestazioni delle query possono peggiorare rapidamente.</p>
+<p>Milvus 2.6 introdurrà un meccanismo di indicizzazione mirata per i percorsi JSON annidati che consente di creare indici su percorsi specifici (ad esempio, <code translate="no">$meta user_info.location</code>) all'interno dei campi JSON. Invece di scansionare interi oggetti, Milvus cercherà direttamente i valori dagli indici precostituiti.</p>
 <p>Nella nostra valutazione con oltre 100 M di record, JSON Path Index ha ridotto la latenza dei filtri da <strong>140 ms</strong> (P99: 480 ms) a soli <strong>1,5 ms</strong> (P99: 10 ms), una riduzione del 99% che trasformerà le query precedentemente impraticabili in risposte immediate.</p>
 <p>Questa caratteristica sarà particolarmente utile per:</p>
 <ul>
@@ -125,7 +125,7 @@ origin: >-
 <li><p>Database di brevetti in cui è necessario trovare una corrispondenza precisa a frasi tecniche specifiche.</p></li>
 </ul>
 <h3 id="Time-Aware-Decay-Functions-Automatically-Prioritize-Fresh-Content" class="common-anchor-header">Funzioni di decadimento consapevoli del tempo: Privilegiare automaticamente i contenuti freschi</h3><p>Il valore delle informazioni spesso diminuisce con il tempo. Gli articoli di cronaca, i comunicati stampa e i post sui social network diventano meno rilevanti man mano che invecchiano, ma gli algoritmi di ricerca tradizionali trattano tutti i contenuti allo stesso modo, indipendentemente dalla data di pubblicazione.</p>
-<p>Milvus 2.6 introdurrà le <strong>funzioni di decadimento</strong> per un ranking consapevole del tempo, che regolano automaticamente i punteggi di rilevanza in base all'età dei documenti.</p>
+<p>Milvus 2.6 introdurrà le <strong>funzioni di decadimento</strong> per una classificazione consapevole del tempo, che regolano automaticamente i punteggi di rilevanza in base all'età del documento.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/decay_function_210e65f9a0.png" alt="" class="doc-image" id="" />

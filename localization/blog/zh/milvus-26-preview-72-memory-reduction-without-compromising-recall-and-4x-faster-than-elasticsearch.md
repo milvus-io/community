@@ -64,7 +64,7 @@ origin: >-
 </tbody>
 </table>
 <p><em>表：VectorDBBench 评估，使用 768 维的 1M 向量，在 AWS m6id.2xlarge 上测试</em></p>
-<p>这里真正的突破不仅仅是内存的减少，而是在不影响准确性的情况下，同时实现了 4 倍的吞吐量提升。这意味着，您可以减少 75% 的服务器来处理相同的工作负载，或在现有基础架构上处理多 4 倍的流量。</p>
+<p>这里真正的突破不仅仅是内存的减少，而是在不影响准确性的情况下，同时实现了 4 倍的吞吐量提升。这意味着，您只需减少 75% 的服务器就能处理相同的工作负载，或在现有基础架构上处理多 4 倍的流量。</p>
 <p>对于在<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> 上使用完全托管 Milvus 的企业用户，我们正在开发自动配置文件，它将根据您的特定工作负载特征和精度要求动态调整 RaBitQ 参数。</p>
 <h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">全文搜索速度比 Elasticsearch 快 400</h3><p>向量数据库中的<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">全文检索</a>功能已成为构建混合检索系统的关键。自从在<a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> 中引入 BM25 以来，我们收到了热烈的反馈，同时也收到了在规模上实现更高性能的请求。</p>
 <p>Milvus 2.6 将大幅提高 BM25 的性能。我们在 BEIR 数据集上进行的测试表明，在召回率相同的情况下，吞吐量比 Elasticsearch 高出 3-4 倍。在某些工作负载上，QPS 的提升高达 7 倍。</p>
@@ -74,9 +74,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>图Milvus 与 Elasticsearch 在 JSON 路径索引吞吐量上的对比：复杂过滤的延迟降低 99</p>
-<p>现代人工智能应用很少单独依赖向量相似性，它们几乎总是将向量搜索与元数据过滤相结合。随着这些过滤条件变得越来越复杂（尤其是嵌套的 JSON 对象），查询性能会迅速下降。</p>
-<p>Milvus 2.6 将引入针对嵌套 JSON 路径的定向索引机制，允许您在 JSON 字段内的特定路径（如 $meta.<code translate="no">user_info.location</code> ）上创建索引。Milvus 将直接从预建索引中查找值，而不是扫描整个对象。</p>
+<p>图Milvus 与 Elasticsearch 的吞吐量对比</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">JSON 路径索引：复杂过滤的延迟降低 99</h3><p>现代人工智能应用很少单独依赖向量相似性，它们几乎总是将向量搜索与元数据过滤相结合。随着这些过滤条件变得越来越复杂（尤其是嵌套的 JSON 对象），查询性能会迅速下降。</p>
+<p>Milvus 2.6 将引入针对嵌套 JSON 路径的定向索引机制，允许您在 JSON 字段内的特定路径（如<code translate="no">$meta user_info.location</code> ）上创建索引。Milvus 将直接从预建索引中查找值，而不是扫描整个对象。</p>
 <p>在我们对 100 多万条记录进行的评估中，JSON 路径索引将过滤延迟从<strong>140 毫秒</strong>（P99：480 毫秒）减少到仅<strong>1.5</strong>毫秒（P99：10 毫秒）--减少了 99%，将以前不切实际的查询转变为即时响应。</p>
 <p>该功能对以下方面尤为重要</p>
 <ul>
@@ -160,7 +160,7 @@ origin: >-
       </svg>
     </button></h2><p>一个好的数据库不仅要有强大的功能，还必须大规模地提供这些功能，并在生产中经过实战检验。</p>
 <p>Milvus 2.6 将引入一项根本性的架构变革，实现经济高效地扩展到千亿向量。其亮点是全新的冷热分层存储架构，可根据访问模式智能管理数据放置，自动将热数据移至高性能内存/SSD，同时将冷数据放置在更经济的对象存储中。这种方法可以大幅降低成本，同时在最重要的地方保持查询性能。</p>
-<p>此外，新的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow">流节点（Streaming Node</a>）将通过与 Kafka 和 Pulsar 等流平台以及新创建的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">啄木鸟（Woodpecker</a>）的直接集成，实现实时向量处理，使新数据可立即搜索，而不会出现批处理延迟。</p>
+<p>此外，新的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow">流节点（Streaming Node</a>）将通过与 Kafka 和 Pulsar 等流平台以及新创建的<a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">啄木鸟（Woodpecker</a>）的直接集成，实现实时向量处理，使新数据可以立即搜索，而不会出现批处理延迟。</p>
 <h2 id="Stay-tuned-for-Milvus-26" class="common-anchor-header">敬请期待 Milvus 2.6<button data-href="#Stay-tuned-for-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

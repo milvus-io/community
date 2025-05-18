@@ -69,18 +69,18 @@ origin: >-
 </table>
 <p><em>Tabela: Avaliação do VectorDBBench com 1M de vectores de 768 dimensões, testado em AWS m6id.2xlarge</em></p>
 <p>O verdadeiro avanço aqui não é apenas a redução de memória, mas conseguir isso ao mesmo tempo em que oferece uma melhoria de rendimento de 4× sem comprometer a precisão. Isto significa que será capaz de servir a mesma carga de trabalho com menos 75% de servidores ou lidar com 4× mais tráfego na sua infraestrutura existente.</p>
-<p>Para utilizadores empresariais que utilizam o Milvus totalmente gerido no<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>, estamos a desenvolver perfis de configuração automatizados que ajustam dinamicamente os parâmetros do RaBitQ com base nas caraterísticas específicas da sua carga de trabalho e nos requisitos de precisão.</p>
+<p>Para utilizadores empresariais que utilizam o Milvus totalmente gerido no<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>, estamos a desenvolver perfis de configuração automatizados que ajustam dinamicamente os parâmetros do RaBitQ com base nas caraterísticas específicas da carga de trabalho e nos requisitos de precisão.</p>
 <h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">Pesquisa de texto completo 400% mais rápida do que o Elasticsearch</h3><p>Os recursos<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">de pesquisa de texto completo</a> em bancos de dados vetoriais se tornaram essenciais para a criação de sistemas de recuperação híbridos. Desde a introdução do BM25 no <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a>, recebemos um feedback entusiasmado - juntamente com pedidos de melhor desempenho em escala.</p>
-<p>O Milvus 2.6 proporcionará ganhos substanciais de desempenho no BM25. Nossos testes no conjunto de dados BEIR mostram uma taxa de transferência de 3 a 4 vezes maior do que o Elasticsearch com taxas de recuperação equivalentes. Para algumas cargas de trabalho, a melhoria atinge até 7 vezes mais QPS.</p>
+<p>O Milvus 2.6 proporcionará ganhos substanciais de desempenho no BM25. Nossos testes no conjunto de dados BEIR mostram uma taxa de transferência 3 a 4 vezes maior do que o Elasticsearch com taxas de recuperação equivalentes. Para algumas cargas de trabalho, a melhoria atinge até 7 vezes mais QPS.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_vs_Elasticsearch_on_throughput_140b7c1b06.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Figura: Milvus vs. Elasticsearch em taxa de transferência JSON Path Index: Latência 99% menor para filtragem complexa</p>
-<p>As aplicações modernas de IA raramente dependem apenas da similaridade vetorial - elas quase sempre combinam busca vetorial com filtragem de metadados. À medida que essas condições de filtragem se tornam mais complexas (especialmente com objetos JSON aninhados), o desempenho da consulta pode se deteriorar rapidamente.</p>
-<p>O Milvus 2.6 introduzirá um mecanismo de indexação direcionado para caminhos JSON aninhados que permite criar índices em caminhos específicos (por exemplo, $meta. <code translate="no">user_info.location</code>) dentro de campos JSON. Em vez de pesquisar objectos inteiros, o Milvus irá procurar diretamente valores de índices pré-construídos.</p>
+<p>Figura: Milvus vs. Elasticsearch em termos de taxa de transferência</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">Índice de caminho JSON: Latência 99% menor para filtragem complexa</h3><p>As aplicações modernas de IA raramente dependem apenas da similaridade vetorial - elas quase sempre combinam busca vetorial com filtragem de metadados. À medida que essas condições de filtragem se tornam mais complexas (especialmente com objetos JSON aninhados), o desempenho da consulta pode se deteriorar rapidamente.</p>
+<p>O Milvus 2.6 introduzirá um mecanismo de indexação direcionado para caminhos JSON aninhados que permite criar índices em caminhos específicos (por exemplo, <code translate="no">$meta user_info.location</code>) dentro de campos JSON. Em vez de procurar objectos inteiros, Milvus procurará diretamente valores de índices pré-construídos.</p>
 <p>Na nossa avaliação com mais de 100 milhões de registos, o JSON Path Index reduziu a latência do filtro de <strong>140 ms</strong> (P99: 480 ms) para apenas <strong>1,5 ms</strong> (P99: 10 ms) - uma redução de 99% que transformará consultas anteriormente impraticáveis em respostas instantâneas.</p>
 <p>Este recurso será particularmente valioso para:</p>
 <ul>

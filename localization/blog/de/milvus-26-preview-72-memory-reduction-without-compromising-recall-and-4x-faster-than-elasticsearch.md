@@ -79,9 +79,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Abbildung: Milvus vs. Elasticsearch beim Durchsatz JSON Path Index: 99 % geringere Latenz bei komplexer Filterung</p>
-<p>Moderne KI-Anwendungen verlassen sich selten allein auf die Vektorähnlichkeit - sie kombinieren fast immer die Vektorsuche mit der Filterung von Metadaten. Wenn diese Filterbedingungen komplexer werden (insbesondere bei verschachtelten JSON-Objekten), kann sich die Abfrageleistung schnell verschlechtern.</p>
-<p>Milvus 2.6 wird einen gezielten Indizierungsmechanismus für verschachtelte JSON-Pfade einführen, der es Ihnen ermöglicht, Indizes auf bestimmten Pfaden (z. B. $meta. <code translate="no">user_info.location</code>) innerhalb von JSON-Feldern zu erstellen. Anstatt ganze Objekte zu scannen, sucht Milvus direkt nach Werten aus vordefinierten Indizes.</p>
+<p>Abbildung: Milvus vs. Elasticsearch beim Durchsatz</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">JSON Path Index: 99 % geringere Latenz bei komplexer Filterung</h3><p>Moderne KI-Anwendungen verlassen sich selten allein auf die Vektorähnlichkeit - sie kombinieren fast immer die Vektorsuche mit der Filterung von Metadaten. Wenn diese Filterbedingungen komplexer werden (insbesondere bei verschachtelten JSON-Objekten), kann sich die Abfrageleistung schnell verschlechtern.</p>
+<p>Milvus 2.6 wird einen gezielten Indizierungsmechanismus für verschachtelte JSON-Pfade einführen, der es Ihnen ermöglicht, Indizes für bestimmte Pfade (z. B. <code translate="no">$meta user_info.location</code>) innerhalb von JSON-Feldern zu erstellen. Anstatt ganze Objekte zu scannen, sucht Milvus direkt nach Werten aus vordefinierten Indizes.</p>
 <p>In unserer Evaluierung mit mehr als 100 Millionen Datensätzen reduzierte JSON Path Index die Filterlatenz von <strong>140 ms</strong> (P99: 480 ms) auf nur <strong>1,5 ms</strong> (P99: 10 ms) - eine Reduzierung um 99 %, die bisher unpraktische Abfragen in sofortige Antworten verwandelt.</p>
 <p>Diese Funktion ist besonders wertvoll für:</p>
 <ul>

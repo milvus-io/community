@@ -79,9 +79,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Figure : Milvus vs. Elasticsearch sur le débit JSON Path Index : Une latence réduite de 99 % pour un filtrage complexe</p>
-<p>Les applications d'IA modernes reposent rarement sur la similarité vectorielle seule - elles combinent presque toujours la recherche vectorielle avec le filtrage des métadonnées. Lorsque ces conditions de filtrage deviennent plus complexes (notamment avec les objets JSON imbriqués), les performances des requêtes peuvent se détériorer rapidement.</p>
-<p>Milvus 2.6 introduira un mécanisme d'indexation ciblé pour les chemins JSON imbriqués qui vous permet de créer des index sur des chemins spécifiques (par exemple, $meta. <code translate="no">user_info.location</code>) dans les champs JSON. Au lieu d'analyser des objets entiers, Milvus recherchera directement les valeurs des index préconstruits.</p>
+<p>Figure : Milvus vs. Elasticsearch sur le débit</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">JSON Path Index : Une latence réduite de 99 % pour un filtrage complexe</h3><p>Les applications d'IA modernes reposent rarement sur la similarité vectorielle seule - elles combinent presque toujours la recherche vectorielle avec le filtrage des métadonnées. Lorsque ces conditions de filtrage deviennent plus complexes (notamment avec les objets JSON imbriqués), les performances des requêtes peuvent se détériorer rapidement.</p>
+<p>Milvus 2.6 introduira un mécanisme d'indexation ciblé pour les chemins JSON imbriqués qui vous permet de créer des index sur des chemins spécifiques (par exemple, <code translate="no">$meta user_info.location</code>) dans les champs JSON. Au lieu d'analyser des objets entiers, Milvus recherchera directement les valeurs des index préconstruits.</p>
 <p>Dans notre évaluation avec plus de 100 millions d'enregistrements, JSON Path Index a réduit la latence du filtre de <strong>140 ms</strong> (P99 : 480 ms) à seulement <strong>1,5 ms</strong> (P99 : 10 ms), soit une réduction de 99 % qui transformera des requêtes auparavant irréalisables en réponses instantanées.</p>
 <p>Cette fonctionnalité sera particulièrement utile pour</p>
 <ul>
@@ -140,7 +140,7 @@ origin: >-
 <li><p><strong>Point d'origine</strong>: L'heure de référence pour mesurer les différences de temps</p></li>
 </ul>
 <p>Ce reclassement en fonction du temps garantit que les résultats les plus récents et les plus pertinents sur le plan contextuel apparaissent en premier, ce qui est essentiel pour les systèmes de recommandation d'actualités, les plateformes de commerce électronique et les flux de médias sociaux.</p>
-<h3 id="Data-in-Data-Out-From-Raw-Text-to-Vector-Search-in-One-Step" class="common-anchor-header">Données entrantes, données sortantes : Du texte brut à la recherche vectorielle en une seule étape</h3><p>L'un des plus gros problèmes rencontrés par les développeurs avec les bases de données vectorielles est la déconnexion entre les données brutes et les encastrements vectoriels. Milvus 2.6 simplifiera considérablement ce flux de travail grâce à une nouvelle interface de <strong>fonction</strong> qui intègre des modèles d'intégration tiers directement dans votre pipeline de données. Cela permet de rationaliser votre pipeline de recherche vectorielle en un seul appel.</p>
+<h3 id="Data-in-Data-Out-From-Raw-Text-to-Vector-Search-in-One-Step" class="common-anchor-header">Données entrantes, données sortantes : Du texte brut à la recherche vectorielle en une seule étape</h3><p>L'un des principaux problèmes rencontrés par les développeurs avec les bases de données vectorielles est la déconnexion entre les données brutes et les encastrements vectoriels. Milvus 2.6 simplifiera considérablement ce flux de travail grâce à une nouvelle interface de <strong>fonction</strong> qui intègre des modèles d'intégration tiers directement dans votre pipeline de données. Cela permet de rationaliser votre pipeline de recherche vectorielle en un seul appel.</p>
 <p>Au lieu de pré-calculer les embeddings, vous pourrez :</p>
 <ol>
 <li><p><strong>Insérer directement des données brutes</strong>: Soumettre du texte, des images ou d'autres contenus à Milvus.</p></li>
