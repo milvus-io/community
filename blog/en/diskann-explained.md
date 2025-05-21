@@ -9,7 +9,7 @@ tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search
-meta_keywords: Milvus, DiskANN, vector similarity search, indexing, Vamana algorithm
+meta_keywords: Milvus, DiskANN, vector similarity search, indexing, Vamana algorithm, disk vector search
 meta_title: DiskANN Explained
 origin: https://milvus.io/blog/diskann-explained.md
 ---
