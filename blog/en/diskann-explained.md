@@ -3,9 +3,9 @@ id: diskann-explained.md
 title: DiskANN Explained
 author: Stefan Webb
 date: 2025-05-20
-desc: Simplify your Milvus configuration with our focused guide. Discover key parameters to adjust for enhanced performance in your vector database applications. 
+desc: Learn how DiskANN delivers billion-scale vector search using SSDs, balancing low memory usage, high accuracy, and scalable performance. 
 cover: assets.zilliz.com/Disk_ANN_Explained_35db4b3ef1.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search
