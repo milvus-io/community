@@ -154,7 +154,7 @@ Cohere
 
 OpenAI
 
-![](https://assets.zilliz.com/Voyage_AI_1ddec3dd4e.png)
+![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_3_5e0c8d890b.png)
 
 VoyageAI
 
