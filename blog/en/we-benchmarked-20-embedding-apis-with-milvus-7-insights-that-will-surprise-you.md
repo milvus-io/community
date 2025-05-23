@@ -151,7 +151,6 @@ We observed a general trend where larger models have higher latency than standar
 
 ![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_2_cf4d72d1ad.png)
 
-OpenAI
 
 ![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_3_5e0c8d890b.png)
 
