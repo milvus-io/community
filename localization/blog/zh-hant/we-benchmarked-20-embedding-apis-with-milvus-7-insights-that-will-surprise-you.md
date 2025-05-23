@@ -26,8 +26,8 @@ origin: >-
 <li><p>您為了「最佳精確度」而選擇的嵌入提供者成為您最大的瓶頸</p></li>
 </ul>
 <p>發生了什麼事？這就是沒有人設定基準的效能殺手：<strong>嵌入式 API 延遲</strong>。</p>
-<p>當 MTEB 排名著迷於召回分數和模型大小時，他們忽略了您的使用者實際感受的指標 - 他們在看到任何回應之前要等多久。我們在真實環境中測試了所有主要的嵌入式提供商，發現延遲的差異極大，讓您對整個提供商選擇策略產生懷疑。</p>
-<p><strong><em>劇透：最受歡迎的嵌入式 API 並不是最快的。地理位置比模型架構更重要。有時候，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>20</mi><mn>/月的</mn></mrow><annotation encoding="application/x-tex">CPU 勝過</annotation><mrow><mn>20/月的</mn></mrow><annotation encoding="application/x-tex">CPU 勝過</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">200</span><span class="mord">/月的</span></span></span></span>API 呼叫</em></strong><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><strong><em>。</em></strong></p>
+<p>當 MTEB 排名著迷於召回分數和模型大小時，他們卻忽略了使用者的感受度量 - 在看到任何回應之前，他們需要等待多久。我們在實際環境中測試了所有主要的嵌入式提供商，並發現了極大的延遲差異，這些差異會讓您對整個提供商選擇策略產生懷疑。</p>
+<p><strong><em>劇透：最受歡迎的嵌入式 API 並不是最快的。地理位置比模型架構更重要。有時候，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>20</mi><mn>/月</mn></mrow><annotation encoding="application/x-tex">CPU 勝過</annotation><mrow><mn>20/月 CPU</mn></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">勝過</span><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">20/月 CPU 勝過</span><span class="mord mathnormal">200</span><span class="mord">/月</span></span></span></span>API。</em></strong></p>
 <h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">為什麼嵌入式 API 延遲是 RAG 中隱藏的瓶頸<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -43,7 +43,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在建立 RAG 系統、電子商務搜尋或推薦引擎時，嵌入模型是將文字轉換為向量的核心元件，可讓機器了解語意並執行有效率的相似性搜尋。雖然我們通常會為文件庫預先計算嵌入，但使用者查詢仍需要即時的嵌入 API 呼叫，才能在檢索前將問題轉化成向量，而這種即時延遲往往會成為整個應用程式鏈的效能瓶頸。</p>
+    </button></h2><p>在建立 RAG 系統、電子商務搜尋或推薦引擎時，嵌入模型是將文字轉換為向量的核心元件，可讓機器了解語意並執行有效率的相似性搜尋。雖然我們通常會為文件庫預先計算嵌入，但使用者查詢仍需要即時呼叫嵌入 API，以便在擷取之前將問題轉換為向量，而這種即時延遲往往會成為整個應用程式鏈的效能瓶頸。</p>
 <p>流行的嵌入基準 (例如 MTEB) 著重於召回準確度或模型大小，往往忽略了關鍵的效能指標 - API 延遲。使用 Milvus 的<code translate="no">TextEmbedding</code> Function，我們對北美和亞洲的主要嵌入式服務供應商進行了全面的實際測試。</p>
 <p>嵌入延遲表現在兩個關鍵階段：</p>
 <h3 id="Query-Time-Impact" class="common-anchor-header">查詢時間的影響</h3><p>在典型的 RAG 工作流程中，當使用者提出問題時，系統必須</p>
@@ -51,10 +51,10 @@ origin: >-
 <li><p>透過嵌入式 API 呼叫將查詢轉換為向量</p></li>
 <li><p>在 Milvus 中搜尋類似的向量</p></li>
 <li><p>將結果和原始問題饋送至 LLM</p></li>
-<li><p>產生並傳回答案</p></li>
+<li><p>產生並傳送答案</p></li>
 </ul>
-<p>許多開發人員假設 LLM 的答案產生是最慢的部分。然而，許多 LLM 的串流輸出能力會造成一種速度的錯覺 - 您很快就會看到第一個標記。實際上，如果您的嵌入式 API 呼叫需要數百毫秒甚至數秒的時間，它就會成為您回應鏈中的第一個、也是最顯著的一個瓶頸。</p>
-<h3 id="Data-Ingestion-Impact" class="common-anchor-header">資料輸入的影響</h3><p>無論是從頭開始建立索引或執行例行更新，大量資料擷取都需要將數以千計或百萬計的文字區塊向量化。如果每次嵌入呼叫都經歷高延遲，您的整個資料管道就會顯著變慢，延遲產品發佈和知識庫更新。</p>
+<p>許多開發人員假設 LLM 的答案產生是最慢的部分。然而，許多 LLM 的串流輸出能力會造成速度的錯覺 - 您很快就會看到第一個標記。實際上，如果您的嵌入式 API 呼叫需要數百毫秒甚至數秒的時間，它就會成為您回應鏈中的第一個、也是最顯著的一個瓶頸。</p>
+<h3 id="Data-Ingestion-Impact" class="common-anchor-header">資料輸入的影響</h3><p>無論是從頭開始建立索引或執行例行更新，大量資料擷取都需要將數以千計或百萬計的文字區塊向量化。如果每次嵌入呼叫的延遲時間都很長，您的整個資料管道就會顯著變慢，延遲產品發佈和知識庫更新。</p>
 <p>這兩種情況都使得嵌入式 API 延遲成為生產 RAG 系統不可或缺的效能指標。</p>
 <h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">使用 Milvus 測量真實世界的嵌入式 API 延遲<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -71,8 +71,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 是開放原始碼的高效能向量資料庫，提供全新的<code translate="no">TextEmbedding</code> Function 介面。此功能可將 OpenAI、Cohere、AWS Bedrock、Google Vertex AI、Voyage AI 以及更多提供者的熱門嵌入模型直接整合至您的資料管道，只需一次呼叫即可簡化向量搜尋管道。</p>
-<p>使用這個全新的功能介面，我們測試了 OpenAI 和 Cohere 等美國模型供應商，以及 AliCloud 和 SiliconFlow 等亞洲供應商所提供的各種熱門嵌入 API，並對其進行基準測試，在實際部署情境中測量其端對端延遲。</p>
+    </button></h2><p>Milvus 是開放原始碼的高效能向量資料庫，提供全新的<code translate="no">TextEmbedding</code> Function 介面。此功能可直接將 OpenAI、Cohere、AWS Bedrock、Google Vertex AI、Voyage AI 等提供者的熱門嵌入模型整合至您的資料管道，只需一次呼叫即可簡化向量搜尋管道。</p>
+<p>使用這個新的功能介面，我們測試了來自 OpenAI 和 Cohere 等知名供應商，以及 AliCloud 和 SiliconFlow 等其他供應商的熱門嵌入 API，並對其進行了基準測試，測量它們在實際部署情境中的端對端延遲。</p>
 <p>我們的全面測試套件涵蓋各種模型配置：</p>
 <table>
 <thead>
@@ -119,8 +119,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我們在不同的批次大小、標記長度和網路條件下，測試了北美和亞洲的知名嵌入模型，測量了所有情況下的中位延遲。我們的研究結果揭示了重要的洞察力，這些洞察力將重塑您對嵌入式 API 選擇和最佳化的思考方式。讓我們來看看。</p>
-<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1.全球網路效應比您想像的更重要</h3><p>網路環境可能是影響嵌入式 API 效能的最關鍵因素。相同的嵌入式 API 服務供應商在不同的網路環境下，效能可能會有很大的差異。</p>
+    </button></h2><p>我們在不同的批次大小、標記長度和網路條件下測試了主要的嵌入模型，測量了所有情況下的中間延遲。結果揭露了關鍵的洞察力，可以重塑您選擇和優化嵌入式 API 的方式。讓我們來看看。</p>
+<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1.全球網路效應比您想像的更為顯著</h3><p>網路環境可能是影響嵌入式 API 效能的最關鍵因素。相同的嵌入式 API 服務供應商在不同的網路環境下，效能可能會有很大的差異。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/latency_in_Asia_vs_in_US_cb4b5a425a.png" alt="" class="doc-image" id="" />
@@ -132,8 +132,8 @@ origin: >-
 <p>這意味著您必須始終根據部署位置和用戶地理位置來選擇嵌入提供商--沒有網路背景的性能聲稱是毫無意義的。</p>
 <h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2.模型性能排名揭示了令人驚訝的結果</h3><p>我們全面的延遲測試顯示出明確的效能等級：</p>
 <ul>
-<li><p><strong>北美模型（延遲中值）</strong>：Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
-<li><p><strong>亞洲機型 (中位延遲)：</strong>SiliconFlow &gt; AliCloud Dashscope</p></li>
+<li><p><strong>基於北美的模型 (延遲中值)：</strong>Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
+<li><p><strong>基於亞洲的模型（中位延遲）</strong>：SiliconFlow &gt; AliCloud Dashscope</p></li>
 </ul>
 <p>這些排名挑戰了有關供應商選擇的傳統智慧。</p>
 <p>
@@ -160,7 +160,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>註：由於網路環境和伺服器地理區域對即時嵌入 API 延遲有顯著影響，我們分別比較了北美和亞洲模型的延遲。</p>
+<p>註：由於網路環境和伺服器地理區域對即時嵌入 API 延遲有顯著影響，我們分別比較了北美和基於亞洲的模型延遲。</p>
 <h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3.模型大小的影響因提供商而異</h3><p>我們觀察到一個普遍的趨勢，就是較大的模型比標準模型有較高的延遲，而標準模型比較小/精簡的模型有較高的延遲。但是，這種模式並不普遍，而且揭示了關於後端架構的重要啟示。舉例來說</p>
 <ul>
 <li><p><strong>Cohere 和 OpenAI</strong>在不同大小的模型之間表現出最小的效能差距</p></li>
@@ -185,10 +185,10 @@ origin: >-
   </span>
 </p>
 <p>這顯示 API 的回應時間取決於模型架構以外的多重因素，包括後端批次策略、請求處理最佳化，以及提供者特定的基礎架構。這個教訓很清楚：<em>不要相信模型大小或發行日期是可靠的效能指標，務必在您自己的部署環境中進行測試。</em></p>
-<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4.令牌長度與批次大小造成複雜的權衡問題</h3><p>根據後端實施，特別是批次策略，代幣長度可能不會顯著影響延遲，直到批次大小增加。我們的測試發現了明顯的模式：</p>
+<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4.令牌長度與批次大小產生複雜的權衡問題</h3><p>取決於您的後端實施，特別是您的批次策略。令牌長度可能對延遲影響不大，直到批次大小增加。我們的測試發現了一些明顯的模式：</p>
 <ul>
 <li><p><strong>OpenAI 的延遲</strong>在小批量和大批量之間保持相當一致，這顯示出後端批次處理能力很強。</p></li>
-<li><p><strong>VoyageAI</strong>顯示出明顯的代幣長度效應，意味著後端批次最佳化程度極低</p></li>
+<li><p><strong>VoyageAI</strong>顯示出明顯的代幣長度效應，意味著後端批次最佳化的程度極低</p></li>
 </ul>
 <p>較大的批次大小會增加絕對延遲，但會改善整體吞吐量。在我們的測試中，從 batch=1 到 batch=10，延遲增加了 2×-5×，但總吞吐量卻大幅提升。這代表著大量處理工作流程的重要優化機會，您可以用個別請求的延遲來換取整體系統吞吐量的大幅提升。</p>
 <p>
@@ -223,7 +223,7 @@ origin: >-
   </span>
 </p>
 <p>TEI 延遲</p>
-<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7.Milvus 開銷微不足道</h3><p>由於我們使用 Milvus 來測試嵌入 API 的延遲，因此我們驗證 Milvus 的 TextEmbedding Function 所帶來的額外開銷非常小，幾乎可以忽略不计。我們的測量結果顯示，Milvus 的作業總共只增加 20-40 毫秒，而嵌入式 API 的呼叫則需要數百毫秒至數秒，這表示<strong>Milvus</strong>在總作業時間上只<strong>增加不到 5% 的開銷</strong>。效能瓶頸主要在於網路傳輸和嵌入式 API 服務供應商本身的處理能力，而非 Milvus 伺服器層。</p>
+<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7.Milvus 開銷微不足道</h3><p>由於我們使用 Milvus 測試嵌入 API 的延遲時間，因此我們驗證 Milvus 的 TextEmbedding Function 所帶來的額外開銷極小，幾乎可以忽略不计。我們的測量結果顯示，Milvus 的操作總共只增加了 20-40 毫秒，而嵌入 API 的呼叫則需要數百毫秒至數秒，這意味著 Milvus 在總操作時間上只增加了不到 5% 的開銷。性能瓶頸主要在於網路傳輸和嵌入式 API 服務供應商的處理能力，而非 Milvus 伺服器層。</p>
 <h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">提示：如何優化您的 RAG 嵌入性能<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -239,8 +239,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>基於我們的綜合基準，我們推薦以下策略來優化您的 RAG 系統的嵌入性能：</p>
-<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1.始終進行本地化測試</h3><p>不要盲目相信任何通用的基準報告（包括本報告！）。您應該始終在您的實際部署環境中測試模型，而不是僅僅依賴已公佈的基準。網路條件、地理上的接近程度以及基礎架構的差異，都會大幅影響實際效能。</p>
+    </button></h2><p>基於我們的基準，我們推薦以下策略來優化您的 RAG 系統的嵌入性能：</p>
+<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1.始終進行本地化測試</h3><p>不要相信任何通用的基準報告（包括這份報告！）。您應該始終在您的實際部署環境中測試模型，而不是僅僅依賴已公佈的基準。網路條件、地理距離和基礎建設的差異會大幅影響實際效能。</p>
 <h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2.策略性地匹配您的供應商地區</h3><ul>
 <li><p><strong>針對北美的部署</strong>：考慮使用 Cohere、VoyageAI、OpenAI/Azure 或 GCP Vertex AI，並自行進行效能驗證。</p></li>
 <li><p><strong>亞洲部署</strong>：認真考慮亞洲模型供應商，如 AliCloud Dashscope 或 SiliconFlow，它們提供更好的區域性能</p></li>
@@ -250,8 +250,8 @@ origin: >-
 <h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4.優化批次和分塊組態</h3><p>一種配置並不適用於所有模型或使用個案。由於不同的後端架構和批次策略，不同提供商的最佳批次大小和分塊長度有很大差異。考慮特定應用程式需求的吞吐量與延遲的權衡，有系統地使用不同的配置進行實驗，找出最佳效能點。</p>
 <h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5.實施策略性快取</h3><p>對於高頻查詢，請同時快取查詢文字及其產生的嵌入（使用 Redis 等解決方案）。隨後的相同查詢可直接使用快取，將延遲時間縮短至幾毫秒。這是最具成本效益和影響力的查詢延遲最佳化技術之一。</p>
 <h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6.考慮本地推理部署</h3><p>如果您對資料擷取延遲、查詢延遲和資料隱私有極高的要求，或是 API 調用成本過高，請考慮在本機部署嵌入模型進行推論。標準 API 計劃通常會有 QPS 限制、不穩定的延遲，以及缺乏 SLA 保證 - 這些限制對於生產環境來說可能會造成問題。</p>
-<p>對於許多個人開發人員或小型團隊而言，缺乏企業級 GPU 似乎是本地部署高效能嵌入模型的障礙。然而，這並不表示要完全放棄本機推論。結合<a href="https://github.com/huggingface/text-embeddings-inference">Hugging Face 的 text-embeddings-inference</a> 等高效能推論引擎，即使在 CPU 上執行中小型的嵌入模型，也能達到相當不錯的效能，甚至可能優於高延遲的 API 呼叫，尤其是對於大規模的離線嵌入產生。</p>
-<p>這種方法需要仔細考慮成本、效能和維護複雜度之間的權衡。</p>
+<p>對於許多個人開發人員或小型團隊而言，缺乏企業級 GPU 是本地部署高效能嵌入模型的障礙。然而，這並不代表要完全放棄本機推論。透過<a href="https://github.com/huggingface/text-embeddings-inference">Hugging Face 的 text-embeddings-inference</a> 等高效能推論引擎，即使在 CPU 上執行中小型嵌入模型，也能達到相當不錯的效能，甚至可能優於高延遲的 API 呼叫，尤其是在大規模離線嵌入產生方面。</p>
+<p>這種方法需要仔細考慮成本、效能和維護複雜性之間的權衡。</p>
 <h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">Milvus 如何簡化嵌入式工作流程<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -293,6 +293,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAG 性能的隱形殺手並非大多數開發人員正在尋找的地方。當團隊傾注資源在提示工程和 LLM 最佳化時，嵌入 API 延遲會悄悄地破壞使用者體驗，其延遲可能比預期的還要嚴重 100 倍。我們的綜合基準揭露了殘酷的現實：受歡迎並不代表效能優異，在許多情況下，地理位置比演算法的選擇更重要，本地推論有時會勝過昂貴的雲 API。</p>
+    </button></h2><p>RAG 性能的隱形殺手並非大多數開發人員正在尋找的地方。當團隊傾注資源在提示工程和 LLM 最佳化時，嵌入 API 延遲會悄悄地破壞使用者體驗，其延遲可能比預期的還要嚴重 100 倍。我們的綜合基準揭露了殘酷的現實：受歡迎並不代表效能優異，在許多情況下，地理位置比演算法的選擇更重要，而且本地推論有時會勝過昂貴的雲 API。</p>
 <p>這些發現突顯了 RAG 最佳化的重要盲點。跨區域延遲懲罰、出乎意料的供應商效能排名，以及本地推論令人驚訝的競爭力，這些都不是邊緣案例，而是影響實際應用程式的生產現實。瞭解並衡量嵌入式 API 的效能，對於提供反應迅速的使用者體驗而言至關重要。</p>
 <p>嵌入式提供者的選擇是 RAG 效能拼圖的關鍵一環。透過在實際部署環境中進行測試、選擇適合地理位置的供應商，並考慮本地推論等替代方案，您可以消除面向使用者的延遲的主要來源，並建立真正反應迅速的 AI 應用程式。</p>
+<p>有關我們如何進行此基準測試的詳細資訊，請參閱<a href="https://github.com/zhuwenxing/text-embedding-bench">此筆記簿</a>。</p>
