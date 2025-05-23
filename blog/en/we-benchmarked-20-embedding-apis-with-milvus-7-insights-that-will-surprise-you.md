@@ -28,14 +28,14 @@ You've nailed the retrieval accuracy, optimized your vector database, and your d
 
 What happened? Here's the performance killer no one benchmarks: **embedding API latency**.
 
-While MTEB rankings obsess over recall scores and model sizes, they ignore the metric your users actually feel—how long they wait before seeing any response. We tested every major embedding provider across real-world conditions and discovered latency differences so extreme they'll make you question your entire provider selection strategy.
+While MTEB rankings obsess over recall scores and model sizes, they ignore the metric your users feel—how long they wait before seeing any response. We tested every major embedding provider across real-world conditions and discovered extreme latency differences they'll make you question your entire provider selection strategy.
 
 **_Spoiler: The most popular embedding APIs aren't the fastest. Geography matters more than model architecture. And sometimes a $20/month CPU beats a $200/month API call._**
 
 
 ## Why Embedding API Latency Is the Hidden Bottleneck in RAG
 
-When building RAG systems, e-commerce search, or recommendation engines, embedding models serve as the core component that transforms text into vectors, enabling machines to understand semantics and perform efficient similarity searches. While we typically pre-compute embeddings for document libraries, user queries still require real-time embedding API calls to convert questions into vectors before retrieval, and this real-time latency often becomes the performance bottleneck in the entire application chain.
+When building RAG systems, e-commerce search, or recommendation engines, embedding models are the core component that transforms text into vectors, enabling machines to understand semantics and perform efficient similarity searches. While we typically pre-compute embeddings for document libraries, user queries still require real-time embedding API calls to convert questions into vectors before retrieval, and this real-time latency often becomes the performance bottleneck in the entire application chain.
 
 Popular embedding benchmarks like MTEB focus on recall accuracy or model size, often overlooking the crucial performance metric—API latency. Using Milvus's `TextEmbedding` Function, we conducted comprehensive real-world tests on major embedding service providers in North America and Asia. 
 
@@ -50,7 +50,7 @@ In a typical RAG workflow, when a user asks a question, the system must:
 
 - Search for similar vectors in Milvus
 
-- Feed results and original question to an LLM
+- Feed results and the original question to an LLM
 
 - Generate and return the answer
 
@@ -61,16 +61,17 @@ Many developers assume the LLM's answer generation is the slowest part. However,
 
 Whether building an index from scratch or performing routine updates, bulk ingestion requires vectorizing thousands or millions of text chunks. If each embedding call experiences high latency, your entire data pipeline slows dramatically, delaying product releases and knowledge base updates.
 
-Both scenarios make embedding API latency a non-negotiable performance metric for production RAG systems.
+Both situations make embedding API latency a non-negotiable performance metric for production RAG systems.
 
 
 ## Measuring Real-World Embedding API Latency with Milvus
 
-Milvus is an open-source, high-performance vector database that offers a new `TextEmbedding` Function interface. This feature integrates popular embedding models from OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and many more providers directly into your data pipeline, streamlining your vector search pipeline with a single call. 
+Milvus is an open-source, high-performance vector database that offers a new `TextEmbedding` Function interface. This feature directly integrates popular embedding models from OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and many more providers into your data pipeline, streamlining your vector search pipeline with a single call.
 
-Using this new function interface, we tested and benchmarked various popular embedding APIs from American model providers like OpenAI and Cohere, as well as Asian providers like AliCloud and SiliconFlow, measuring their end-to-end latency in realistic deployment scenarios.
+Using this new function interface, we tested and benchmarked popular embedding APIs from well-known providers like OpenAI and Cohere, as well as others like AliCloud and SiliconFlow, measuring their end-to-end latency in realistic deployment scenarios.
 
 Our comprehensive test suite covered various model configurations:
+
 
 | **Provider**     | **Model**                             | **Dimensions** |                  
 | ---------------- | ------------------------------------- | -------------- |
@@ -101,18 +102,18 @@ Our comprehensive test suite covered various model configurations:
 
 ## 7 Key Findings from Our Benchmarking Results 
 
-We tested renowned embedding models from North America and Asia under different batch sizes, token lengths, and network conditions, measuring median latency across all scenarios. Our findings reveal critical insights that will reshape how you think about embedding API selection and optimization. Let’s take a look. 
+We tested leading embedding models under varying batch sizes, token lengths, and network conditions, measuring median latency across all scenarios. The results uncover key insights that could reshape how you choose and optimize embedding APIs. Let’s take a look.
 
 
 ### 1. Global Network Effects Are More Significant Than You Think
 
-Network environment is perhaps the most critical factor affecting embedding API performance. The same embedding API service provider can perform dramatically differently across network environments. 
+The network environment is perhaps the most critical factor affecting embedding API performance. The same embedding API service provider can perform dramatically differently across network environments. 
 
 ![](https://assets.zilliz.com/latency_in_Asia_vs_in_US_cb4b5a425a.png)
 
 When your application is deployed in Asia and accesses services like OpenAI, Cohere, or VoyageAI deployed in North America, network latency increases significantly. Our real-world tests show API call latency universally increased by **3 to 4 times**!
 
-Conversely, when your application is deployed North America and accesses Asian services like AliCloud Dashscope or SiliconFlow, performance degradation is even more severe. SiliconFlow, in particular, showed latency increases of **nearly 100 times** in cross-region scenarios!
+Conversely, when your application is deployed in North America and accesses Asian services like AliCloud Dashscope or SiliconFlow, performance degradation is even more severe. SiliconFlow, in particular, showed latency increases of **nearly 100 times** in cross-region scenarios!
 
 This means you must always select embedding providers based on your deployment location and user geography—performance claims without network context are meaningless.
 
@@ -121,9 +122,9 @@ This means you must always select embedding providers based on your deployment l
 
 Our comprehensive latency testing revealed clear performance hierarchies:
 
-- **North American Models (median latency)**: Cohere > Google Vertex AI > VoyageAI > OpenAI > AWS Bedrock
+- **North America-based Models (median latency)**: Cohere > Google Vertex AI > VoyageAI > OpenAI > AWS Bedrock
 
-- **Asian Models (median latency)**: SiliconFlow > AliCloud Dashscope
+- **Asia-based Models (median latency)**: SiliconFlow > AliCloud Dashscope
 
 These rankings challenge conventional wisdom about provider selection. 
 
@@ -135,7 +136,7 @@ These rankings challenge conventional wisdom about provider selection. 
 
 ![](https://assets.zilliz.com/all_model_latency_vstoken_lengthwhen_batch_size_is_10_4dcf0d549a.png)
 
-Note: Due to the significant impact of network environment and server geographic regions on real-time embedding API latency, we compared North American and Asian model latencies separately.
+Note: Due to the significant impact of network environment and server geographic regions on real-time embedding API latency, we compared North America and Asia-based model latencies separately.
 
 
 ### 3. Model Size Impact Varies Dramatically by Provider
@@ -160,7 +161,7 @@ This indicates that API response time depends on multiple factors beyond model a
 
 ### 4. Token Length and Batch Size Create Complex Trade-offs
 
-Depending on backend implementation, particularly batching strategies, token length might not significantly affect latency until batch sizes increase. Our testing revealed distinct patterns:
+Depending on your backend implementation, especially your batching strategy. Token length may have little impact on latency until batch sizes grow. Our testing revealed some clear patterns:
 
 - **OpenAI's latency** remained fairly consistent between small and large batches, suggesting generous backend batching capabilities
 
@@ -200,17 +201,16 @@ TEI Latency
 
 ### 7. Milvus Overhead Is Negligible
 
-Since we used Milvus to test embedding API latency, we validated that the additional overhead introduced by Milvus's TextEmbedding Function is extremely small and virtually negligible. Our measurements show Milvus operations add only 20-40ms total, while embedding API calls take hundreds of milliseconds to several seconds—meaning **Milvus adds less than 5% overhead** to the total operation time. The performance bottleneck primarily lies in network transmission and the embedding API service providers' own processing capabilities, not in the Milvus server layer.
-
+Since we used Milvus to test embedding API latency, we validated that the additional overhead introduced by Milvus's TextEmbedding Function is minimal and virtually negligible. Our measurements show Milvus operations add only 20-40ms in total while embedding API calls take hundreds of milliseconds to several seconds, meaning Milvus adds less than 5% overhead to the total operation time. The performance bottleneck primarily lies in network transmission and the embedding API service providers' processing capabilities, not in the Milvus server layer.
 
 ## Tips: How to Optimize Your RAG Embedding Performance
 
-Based on our comprehensive benchmarks, we recommend the following strategies to optimize your RAG system's embedding performance:
+Based on our benchmarks, we recommend the following strategies to optimize your RAG system's embedding performance:
 
 
 ### 1. Always Localize Your Testing
 
-Don't blindly trust any generic benchmark reports (including this one!). You should always test models within your actual deployment environment rather than relying solely on published benchmarks. Network conditions, geographic proximity, and infrastructure differences can dramatically impact real-world performance.
+Don't trust any generic benchmark reports (including this one!). You should always test models within your actual deployment environment rather than relying solely on published benchmarks. Network conditions, geographic proximity, and infrastructure differences can dramatically impact real-world performance.
 
 
 ### 2. Geo-Match Your Providers Strategically
@@ -234,14 +234,16 @@ One configuration doesn't fit all models or use cases. The optimal batch size an
 
 ### 5. Implement Strategic Caching
 
-For high-frequency queries, cache both the query text and its generated embeddings (using solutions like Redis). Subsequent identical queries can directly hit the cache, reducing latency to milliseconds. This represents one of the most cost-effective and impactful query latency optimization techniques available. 
+For high-frequency queries, cache both the query text and its generated embeddings (using solutions like Redis). Subsequent identical queries can directly hit the cache, reducing latency to milliseconds. This represents one of the most cost-effective and impactful query latency optimization techniques. 
 
 
 ### 6. Consider Local Inference Deployment
 
 If you have extremely high requirements for data ingestion latency, query latency, and data privacy, or if API call costs are prohibitive, consider deploying embedding models locally for inference. Standard API plans often come with QPS limitations, unstable latency, and lack of SLA guarantees—constraints that can be problematic for production environments.
 
-For many individual developers or small teams, the lack of enterprise-grade GPUs might seem like a barrier to local deployment of high-performance embedding models. However, this doesn't mean abandoning local inference entirely. Combined with high-performance inference engines like [Hugging Face's text-embeddings-inference](https://github.com/huggingface/text-embeddings-inference), even running small to medium-sized embedding models on CPU can achieve decent performance that may outperform high-latency API calls, especially for large-scale offline embedding generation. 
+
+For many individual developers or small teams, the lack of enterprise-grade GPUs is a barrier to local deployment of high-performance embedding models. However, this doesn't mean abandoning local inference entirely. With high-performance inference engines like [Hugging Face's text-embeddings-inference](https://github.com/huggingface/text-embeddings-inference), even running small to medium-sized embedding models on a CPU can achieve decent performance that may outperform high-latency API calls, especially for large-scale offline embedding generation. 
+
 
 This approach requires careful consideration of trade-offs between cost, performance, and maintenance complexity.
 
@@ -274,3 +276,5 @@ The silent killer of RAG performance isn't where most developers are looking. Wh
 These findings highlight a crucial blind spot in RAG optimization. Cross-region latency penalties, unexpected provider performance rankings, and the surprising competitiveness of local inference aren't edge cases—they're production realities affecting real applications. Understanding and measuring embedding API performance is essential for delivering responsive user experiences.
 
 Your embedding provider choice is one critical piece of your RAG performance puzzle. By testing in your actual deployment environment, selecting geographically appropriate providers, and considering alternatives like local inference, you can eliminate a major source of user-facing delays and build truly responsive AI applications.
+
+For more details on how we did this benchmarking, check [this notebook](https://github.com/zhuwenxing/text-embedding-bench).
