@@ -154,7 +154,6 @@ We observed a general trend where larger models have higher latency than standar
 
 ![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_3_5e0c8d890b.png)
 
-VoyageAI
 
 This indicates that API response time depends on multiple factors beyond model architecture, including backend batching strategies, request handling optimization, and provider-specific infrastructure. The lesson is clear: _don't trust model size or release date as reliable performance indicators—always test in your own deployment environment._
 
