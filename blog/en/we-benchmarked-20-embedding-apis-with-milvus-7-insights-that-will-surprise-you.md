@@ -146,7 +146,7 @@ We observed a general trend where larger models have higher latency than standar
 
 - **VoyageAI** exhibited clear performance differences based on model size
 
-![](https://assets.zilliz.com/Cohere_e2bfd86488.png)
+![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_1_f9eaf2be26.png)
 
 Cohere
 
