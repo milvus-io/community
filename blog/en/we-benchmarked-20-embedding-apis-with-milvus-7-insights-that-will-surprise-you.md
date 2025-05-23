@@ -148,7 +148,6 @@ We observed a general trend where larger models have higher latency than standar
 
 ![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_1_f9eaf2be26.png)
 
-Cohere
 
 ![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_2_cf4d72d1ad.png)
 
