@@ -150,7 +150,7 @@ We observed a general trend where larger models have higher latency than standar
 
 Cohere
 
-![](https://assets.zilliz.com/Open_AI_985257d63f.png)
+![](https://assets.zilliz.com/Model_Size_Impact_Varies_Dramatically_by_Provider_2_cf4d72d1ad.png)
 
 OpenAI
 
