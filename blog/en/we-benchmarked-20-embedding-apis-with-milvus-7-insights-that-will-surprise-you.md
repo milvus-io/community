@@ -4,7 +4,7 @@ title: >
  We Benchmarked 20+ Embedding APIs with Milvus: 7 Insights That Will Surprise You
 author: Jeremy Zhu
 date: 2025-05-23
-desc: Discover Milvus's benchmark revealing global embedding API latency impacts on RAG query responsiveness, network effects, and optimization insights. 
+desc:  The most popular embedding APIs aren't the fastest. Geography matters more than model architecture. And sometimes a $20/month CPU beats a $200/month API call.
 cover: assets.zilliz.com/We_Benchmarked_20_Embedding_AP_Is_with_Milvus_7_Insights_That_Will_Surprise_You_12268622f0.png
 tag: Engineering
 recommend: false
