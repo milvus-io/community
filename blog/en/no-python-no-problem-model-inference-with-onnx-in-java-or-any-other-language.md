@@ -1,282 +1,136 @@
 ---
-id: we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md
+id: no-python-no-problem-model-inference-with-onnx-in-java-or-any-other-language.md
 title: >
- We Replaced Kafka/Pulsar with a Woodpecker for Milvus—Here’s What Happened
-author: James Luan
-date: 2025-05-15
-desc: We built Woodpecker, a cloud-native WAL system, to replace Kafka and Pulsar in Milvus for lower operational complexity and cost. 
-cover: assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png
+ No Python, No Problem: Model Inference with ONNX in Java, or Any Other Language
+author: Stefan Webb
+date: 2025-05-30
+desc: ONNX (Open Neural Network Exchange) is a platform-agnostic ecosystem of tools for performing neural network model inference. 
+cover: assets.zilliz.com/ONNX_Java_Tech_Banner_Adjusted_1c325abc3f.png
 tag: Engineering
 recommend: true
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
-meta_keywords: Replace Kafka, replace Pulsar, messaging queues, Write-Ahead Logging (WAL), Milvus vector database 
+meta_keywords: build AI apps with Python, ONNX (Open Neural Network Exchange), Model inference, vector databases, Milvus 
 meta_title: > 
- We Replaced Kafka/Pulsar with a Woodpecker for Milvus
-origin: https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md 
+ No Python, No Problem: Model Inference with ONNX in Java, or Any Other Language
+origin: https://milvus.io/blog/no-python-no-problem-model-inference-with-onnx-in-java-or-any-other-language.md 
 ---
 
-**TL;DR:** We built Woodpecker, a cloud-native Write-Ahead Logging (WAL) system, to replace Kafka and Pulsar in Milvus 2.6. The result? Simplified operations, better performance, and lower costs for our Milvus vector database.
+It has never been easier to build Generative AI applications. A rich ecosystem of tools, AI models, and datasets allows even non-specialized software engineers to build impressive chatbots, image generators, and more. This tooling, for the most part, is made for Python and builds on top of PyTorch. But what about when you don’t have access to Python in production and need to use Java, Golang, Rust, C++, or another language?
 
-![](https://assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png)
+We will restrict ourselves to model inference, including both embedding models and foundation models; other tasks, such as model training and fine-tuning, are not typically completed at deployment time. What are our options for model inference without Python? The most obvious solution is to utilize an online service from providers like Anthropic or Mistral. They typically provide an SDK for languages other than Python, and if they didn’t, it would require only simple REST API calls. But what if our solution has to be entirely local due to, for example, compliance or privacy concerns?
 
-## The Starting Point: When Message Queues No Longer Fit
+Another solution is to run a Python server locally. The original problem was posed as being unable to run Python in production, so that rules out using a local Python server. Related local solutions will likely suffer similar legal, security-based, or technical restrictions. _We need a fully contained solution that allows us to call the model directly from Java or another non-Python language._
 
-We loved and used Kafka and Pulsar. They worked until they didn't. As Milvus, the leading open-source vector database, evolved, we found that these powerful message queues no longer met our scalability requirements. So we made a bold move: we rewrote the streaming backbone in Milvus 2.6 and implemented our own WAL — **Woodpecker**.
+![](https://assets.zilliz.com/A_Python_metamorphoses_into_an_Onyx_butterfly_a65c340c47.png)
 
-Let me walk you through our journey and explain why we made this change, which might seem counterintuitive at first glance.
+_Figure 1: A Python metamorphoses into an Onyx butterfly._
 
 
-## Cloud-Native From Day One
+## What is ONNX (Open Neural Network Exchange)? 
+[ONNX](https://github.com/onnx/onnx) (Open Neural Network Exchange) is a platform-agnostic ecosystem of tools for performing neural network model inference. It was initially developed by the PyTorch team at Meta (then Facebook), with further contributions from Microsoft, IBM, Huawei, Intel, AMD, Arm, and Qualcomm. Currently, it is an open-source project owned by the Linux Foundation for AI and Data. ONNX is the de facto method for distributing platform-agnostic neural network models.
 
-Milvus has been a cloud-native vector database from its inception. We leverage Kubernetes for elastic scaling and quick failure recovery, alongside object storage solutions like Amazon S3 and MinIO for data persistence.
+![](https://assets.zilliz.com/A_partial_ONNX_computational_graph_for_a_NN_transformer_11deebefe0.png)
 
-This cloud-first approach offers tremendous advantages, but it also presents some challenges:
+_Figure 2: A (partial) ONNX computational graph for a NN transformer_
 
-- Cloud object storage services like S3 provide virtually unlimited capability of handling throughputs and availability, but with latencies often exceeding 100ms.
+**We typically use “ONNX” in a narrower sense to refer to its file format.** An ONNX model file represents a computational graph, often including the weight values of a mathematical function, and the standard defines common operations for neural networks. You can think of it similarly to the computational graph created when you use autodiff with PyTorch. From another perspective, the ONNX file format serves as an _intermediate representation_ (IR) for neural networks, much like native code compilation, which also involves an IR step. See the illustration above visualizing an ONNX computational graph.
 
-- These services’ pricing models (based on access patterns and frequency) can add unexpected costs to real-time database operations.
+![](https://assets.zilliz.com/An_IR_allows_many_combinations_of_front_ends_and_back_ends_a05e259849.png)
 
-- Balancing cloud-native characteristics with the demands of real-time vector search introduces significant architectural challenges.
+_Figure 3: An IR allows many combinations of front-ends and back-ends_
 
+The ONNX file format is just one part of the ONNX ecosystem, which also includes libraries for manipulating computational graphs and libraries for loading and running ONNX model files. These libraries span languages and platforms. Since ONNX is just an IR (Intermediate Representation Language), optimizations specific to a given hardware platform can be applied before running it with native code. See the figure above illustrating combinations of front-ends and back-ends.
 
-## The Shared Log Architecture: Our Foundation
 
-Many vector search systems restrict themselves to batch processing because building a streaming system in a cloud-native environment presents even greater challenges. In contrast, Milvus prioritizes real-time data freshness and implements a shared log architecture—think of it as a hard drive for a filesystem.
+## ONNX Workflow
+For discussion purposes, we will investigate calling a text embedding model from Java, for example, in preparation for data ingestion to the open-source vector database [Milvus](https://milvus.io/). So, if we are to call our embedding or foundation model from Java, is it as simple as using the ONNX library on the corresponding model file? Yes, but we will need to procure files for both the model and the tokenizer encoder (and decoder for foundation models). We can produce these ourselves using Python offline, that is, before production, which we now explain.
 
-This shared log architecture provides a critical foundation that separates consensus protocols from core database functionality. By adopting this approach, Milvus eliminates the need to manage complex consensus protocols directly, allowing us to focus on delivering exceptional vector search capabilities.
 
-We're not alone in this architectural pattern—databases such as AWS Aurora, Azure Socrates, and Neon all leverage a similar design. **However, a significant gap remains in the open-source ecosystem: despite the clear advantages of this approach, the community lacks a low-latency, scalable, and cost-effective distributed write-ahead log (WAL) implementation.**
+## Exporting NN Models from Python
+Let’s open a common text embedding model, `all-MiniLM-L6-v2`, from Python using HuggingFace’s sentence-transformers library. We will use the HF library indirectly via .txtai’s util library since we need a wrapper around sentence-transformers that also exports the pooling and normalization layers after the transformer function. (These layers take the context-dependent token embeddings, that is, the output of the transformer, and transform it into a single text embedding.)
 
-Existing solutions like Bookie proved inadequate for our needs due to their heavyweight client design and the absence of production-ready SDKs for Golang and C++. This technological gap led us to our initial approach with message queues.
+```
+from txtai.pipeline import HFOnnx
 
+path = "sentence-transformers/all-MiniLM-L6-v2"
+onnx_model = HFOnnx()
+model = onnx_model(path, "pooling", "model.onnx", True)
+```
 
-## Our Initial Solution: Message Queues as WAL
+We instruct the library to export `sentence-transformers/all-MiniLM-L6-v2` from the HuggingFace model hub as ONNX, specifying the task as text embedding and enabling model quantization. Calling `onnx_model()` will download the model from the model hub if it does not already exist locally, convert the three layers to ONNX, and combine their computational graphs.
 
-To bridge this gap, our initial approach utilized message queues (Kafka/Pulsar) as our write-ahead log (WAL). The architecture worked like this: 
+Are we ready now to perform inference in Java? Not quite so fast. The model inputs a list of tokens (or a list of lists for more than one sample) corresponding to the tokenization of the text we wish to embed. Therefore, unless we can perform all tokenization before production time, we will need to run the tokenizer from within Java.
 
-- All incoming real-time updates flow through the message queue.
+There are a few options for this. One involves either implementing or finding an implementation of the tokenizer for the model in question in Java or another language, and calling it from Java as a static or dynamically linked library. An easier solution is to convert the tokenizer to an ONNX file and use it from Java, just as we use the model ONNX file.
 
-- Writers receive immediate confirmation once it is accepted by the message queue.
+Plain ONNX, however, does not contain the necessary operations to implement the computational graph of a tokenizer. For this reason, Microsoft created a library to augment ONNX called ONNXRuntime-Extensions. It defines useful operations for all manner of data pre- and postprocessing, not only text tokenizers.
 
-- QueryNode and DataNode process this data asynchronously, ensuring high write throughput while maintaining data freshness
+Here is how we export our tokenizer as an ONNX file:
 
-![](https://assets.zilliz.com/Figure_Milvus_2_0_Architecture_Overview_465f5ba27a.png)
+```
+from onnxruntime_extensions import gen_processing_models
+from sentence_transformers import SentenceTransformer
 
-Figure: Milvus 2.0 Architecture Overview
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+tok_encode, _ = gen_processing_models(embedding_model.tokenizer, pre_kwargs={})
 
-This system effectively provided immediate write confirmation while enabling asynchronous data processing, which was crucial for maintaining the balance between throughput and data freshness that Milvus users expect.
+onnx_tokenizer_path = "tokenizer.onnx"
+with open(tokenizer_path, "wb") as f:
+  f.write(tok_encode.SerializeToString())
+```
 
+We have discarded the decoder of the tokenizer, since embedding sentences doesn’t require it. Now, we have two files: `tokenizer.onnx` for tokenizing text, and `model.onnx` for embedding strings of tokens.
 
-## Why We Needed Something Different for WAL
 
-With Milvus 2.6, we've decided to phase out external message queues in favor of Woodpecker, our purpose-built, cloud-native WAL implementation. This wasn't a decision we made lightly. After all, we had successfully used Kafka and Pulsar for years.
+## Model Inference in Java
+Running our model from within Java is now trivial. Here are some of the important lines of code from the full example:
 
-The issue wasn't with these technologies themselves—both are excellent systems with powerful capabilities. Instead, the challenge came from the increasing complexity and overhead that these external systems introduced as Milvus evolved. As our requirements became more specialized, the gap between what general-purpose message queues offered and what our vector database needed continued to widen.
+```java
+// Imports required for Java/ONNX integration
+import ai.onnxruntime.*;
+import ai.onnxruntime.extensions.*;
 
-Three specific factors ultimately drove our decision to build a replacement:
+…
 
+// Set up inference sessions for tokenizer and model
+var env = OrtEnvironment.getEnvironment();
 
-### Operational Complexity
+var sess_opt = new OrtSession.SessionOptions();
+sess_opt.registerCustomOpLibrary(OrtxPackage.getLibraryPath());
 
-External dependencies like Kafka or Pulsar demand dedicated machines with multiple nodes and careful resource management. This creates several challenges:
+var tokenizer = env.createSession("app/tokenizer.onnx", sess_opt);
+var model = env.createSession("app/model.onnx", sess_opt);
 
-- Increased operational complexity
+…
 
-* Steeper learning curves for system administrators
+// Perform inference and extract text embeddings into native Java
+var results = session.run(inputs).get("embeddings");
+float[][] embeddings = (float[][]) results.get().getValue();
+```
 
-- Higher risks of configuration errors and security vulnerabilities
+A full working example can be found in the resources section.
 
 
-### Architectural Constraints
+## Summary 
+We have seen in this post how it is possible to export open-source models from HuggingFace’s model hub and use them directly from languages other than Python. We note, however, some caveats:
 
-Message queues like Kafka have inherent limitations on the number of supported topics. We developed VShard as a workaround for topic sharing across components, but this solution—while effectively addressing scaling needs—introduced significant architectural complexity.
+First, the ONNX libraries and runtime extensions have varying levels of feature support. It may not be possible to use all models across all languages until a future SDK update is released. The ONNX runtime libraries for Python, C++, Java, and JavaScript are the most comprehensive. 
 
-These external dependencies made it harder to implement critical features—such as log garbage collection—and increased integration friction with other system modules. Over time, the architectural mismatch between general-purpose message queues and the specific, high-performance demands of a vector database became increasingly clear, prompting us to reassess our design choices.
+Second, the HuggingFace hub contains pre-exported ONNX, but these models don’t include the final pooling and normalization layers. You should be aware of how `sentence-transformers` works if you intend to use `torch.onnx` directly.
 
+Nevertheless, ONNX has the backing of major industry leaders and is on a trajectory to become a frictionless means of cross-platform Generative AI.
 
-### Resource Inefficiency
 
-Ensuring high availability with systems like Kafka and Pulsar typically demands:
+## Resources
+- [Example onnx code in Python and Java](https://github.com/milvus-io/bootcamp/tree/master/tutorials/quickstart/onnx_example)
 
-- Distributed deployment across multiple nodes
+- <https://onnx.ai/>
 
-- Substantial resource allocation even for smaller workloads
+- <https://onnxruntime.ai/>
 
-- Storage for ephemeral signals (like Milvus's Timetick), which don’t actually require long-term retention
+- <https://onnxruntime.ai/docs/extensions/>
 
-However, these systems lack the flexibility to bypass persistence for such transient signals, leading to unnecessary I/O operations and storage usage. This leads to disproportionate resource overhead and increased cost—especially in smaller-scale or resource-constrained environments.
+- <https://milvus.io/blog> 
 
-
-## Introducing Woodpecker - A Cloud-Native, High-Performance WAL Engine
-
-In Milvus 2.6, we’ve replaced Kafka/Pulsar with **Woodpecker**, a purpose-built, cloud-native WAL system. Designed for object storage, Woodpecker simplifies operations while boosting performance and scalability.
-
-Woodpecker is built from the ground up to maximize the potential of cloud-native storage, with a focused goal: to become the highest-throughput WAL solution optimized for cloud environments while delivering the core capabilities needed for an append-only write-ahead log.
-
-
-### The Zero-Disk Architecture for Woodpecker 
-
-Woodpecker's core innovation is its **Zero-Disk architecture**:
-
-- All log data stored in cloud object storage (such as Amazon S3, Google Cloud Storage, or Alibaba OS)
-
-- Metadata managed through distributed key-value stores like etcd
-
-- No local disk dependencies for core operations
-
-![](https://assets.zilliz.com/Figure_Woodpecker_Architecture_cc31e15ed9.png)
-
-Figure:  Woodpecker Architecture Overview
-
-This approach dramatically reduces operational overhead while maximizing durability and cloud efficiency. By eliminating local disk dependencies, Woodpecker aligns perfectly with cloud-native principles and significantly reduces the operational burden on system administrators.
-
-
-### Performance Benchmarks: Exceeding Expectations
-
-We ran comprehensive benchmarks to evaluate Woodpecker's performance in a single-node, single-client, single-log-stream setup. The results were impressive when compared to Kafka and Pulsar:
-
-| **System** | **Kafka**   | **Pulsar** | **WP MinIO** | **WP Local** | **WP S3** |
-| ---------- | ----------- | ---------- | ------------ | ------------ | --------- |
-| Throughput | 129.96 MB/s | 107 MB/s   | 71 MB/s      | 450 MB/s     | 750 MB/s  |
-| Latency    | 58 ms       | 35 ms      | 184 ms       | 1.8 ms       | 166 ms    |
-
-For context, we measured the theoretical throughput limits of different storage backends on our test machine:
-
-- **MinIO**: ~110 MB/s
-
-- **Local file system**: 600–750 MB/s
-
-- **Amazon S3 (single EC2 instance)**: up to 1.1 GB/s
-
-Remarkably, Woodpecker consistently achieved 60-80% of the maximum possible throughput for each backend—an exceptional efficiency level for middleware.
-
-
-#### Key Performance Insights
-
-1. **Local File System Mode**: Woodpecker achieved 450 MB/s—3.5× faster than Kafka and 4.2× faster than Pulsar—with ultra-low latency at just 1.8 ms, making it ideal for high-performance single-node deployments.
-
-2. **Cloud Storage Mode (S3)**: When writing directly to S3, Woodpecker reached 750 MB/s (about 68% of S3's theoretical limit), 5.8× higher than Kafka and 7× higher than Pulsar. While latency is higher (166 ms), this setup provides exceptional throughput for batch-oriented workloads.
-
-3. **Object Storage Mode (MinIO)**: Even with MinIO, Woodpecker achieved 71 MB/s—around 65% of MinIO's capacity. This performance is comparable to Kafka and Pulsar but with significantly lower resource requirements.
-
-Woodpecker is particularly optimized for concurrent, high-volume writes where maintaining order is critical. And these results only reflect the early stages of development—ongoing optimizations in I/O merging, intelligent buffering, and prefetching are expected to push performance even closer to theoretical limits.
-
-
-### Design Goals
-
-Woodpecker addresses the evolving demands of real-time vector search workloads through these key technical requirements:
-
-- High-throughput data ingestion with durable persistence across availability zone
-
-- Low-latency tail reads for real-time subscriptions and high-throughput catch-up reads for failure recovery
-
-- Pluggable storage backends, including cloud object storage and file systems with NFS protocol support
-
-- Flexible deployment options, supporting both lightweight standalone setups and large-scale clusters for multi-tenant Milvus deployments
-
-
-### Architecture Components
-
-A standard Woodpecker deployment includes the following components. 
-
-- **Client** – Interface layer for issuing read and write requests
-
-- **LogStore** – Manages high-speed write buffering, asynchronous uploads to storage, and log compaction
-
-- **Storage Backend** – Supports scalable, low-cost storage services such as S3, GCS, and file systems like EFS
-
-- **ETCD** – Stores metadata and coordinates log state across distributed nodes
-
-
-### Flexible Deployments to Match Your Specific Needs 
-
-Woodpecker offers two deployment modes to match your specific needs:
-
-**MemoryBuffer Mode – Lightweight and Maintenance-Free**
-
-MemoryBuffer Mode provides a simple and lightweight deployment option where Woodpecker temporarily buffers incoming writes in memory and periodically flushes them to a cloud object storage service. Metadata is managed using etcd to ensure consistency and coordination. This mode is best suited for batch-heavy workloads in smaller-scale deployments or production environments that prioritize simplicity over performance, especially when low write latency is not critical.
-
-![](https://assets.zilliz.com/Figure_The_memory_Buffer_Mode_3429d693a1.png)
-
-_Figure: The memoryBuffer Mode_ 
-
-**QuorumBuffer Mode – Optimized for Low-Latency, High-Durability Deployments**
-
-QuorumBuffer Mode is designed for latency-sensitive, high-frequency read/write workloads requiring both real-time responsiveness and strong fault tolerance. In this mode, Woodpecker functions as a high-speed write buffer with three-replica quorum writes, ensuring strong consistency and high availability.
-
-A write is considered successful once it's replicated to at least two of the three nodes, typically completing within single-digit milliseconds, after which the data is asynchronously flushed to cloud object storage for long-term durability. This architecture minimizes on-node state, eliminates the need for large local disk volumes, and avoids complex anti-entropy repairs often required in traditional quorum-based systems.
-
-The result is a streamlined, robust WAL layer ideal for mission-critical production environments where consistency, availability, and fast recovery are essential.
-
-![](https://assets.zilliz.com/Figure_The_Quorum_Buffer_Mode_72573dc666.png)
-
-_Figure: The QuorumBuffer Mode_ 
-
-
-## StreamingService: Built for Real-Time Data Flow
-
-Beyond Woodpecker, Milvus 2.6 introduces the **StreamingService**—a specialized component designed for log management, log ingestion, and streaming data subscription.
-
-To understand how our new architecture works, it's important to clarify the relationship between these two components:
-
-- **Woodpecker** is the storage layer that handles the actual persistence of write-ahead logs, providing durability and reliability
-
-- **StreamingService** is the service layer that manages log operations and provides real-time data streaming capabilities
-
-Together, they form a complete replacement for external message queues. Woodpecker provides the durable storage foundation, while StreamingService delivers the high-level functionality that applications interact with directly. This separation of concerns allows each component to be optimized for its specific role while working seamlessly together as an integrated system. 
-
-
-### Adding Streaming Service to Milvus 2.6 
-
-![](https://assets.zilliz.com/Figure_Milvus_2_6_Architecture_Overview_238428c58f.png)
-
-Figure: Streaming Service Added in Milvus 2.6 Architecture
-
-The Streaming Service is composed of three core components: 
-
-**Streaming Coordinator**
-
-- Discovers available Streaming Nodes by monitoring Milvus ETCD sessions
-
-- Manages the status of WALs and collects load balancing metrics through the ManagerService
-
-**Streaming Client**
-
-- Queries the AssignmentService to determine WAL segment distribution across Streaming Nodes
-
-- Performs read/write operations via the HandlerService on the appropriate Streaming Node
-
-**Streaming Node**
-
-- Handles actual WAL operations and provides publish-subscribe capabilities for real-time data streaming
-
-- Includes the **ManagerService** for WAL administration and performance reporting
-
-- Features the **HandlerService** that implements efficient publish-subscribe mechanisms for WAL entries
-
-This layered architecture allows Milvus to maintain clear separation between the streaming functionality (subscription, real-time processing) and the actual storage mechanisms. Woodpecker handles the "how" of log storage, while StreamingService manages the "what" and "when" of log operations.
-
-As a result, the Streaming Service significantly enhances the real-time capabilities of Milvus by introducing native subscription support, eliminating the need for external message queues. It reduces memory consumption by consolidating previously duplicated caches in the query and data paths, lowers latency for strongly consistent reads by removing asynchronous synchronization delays, and improves both scalability and recovery speed across the system.
-
-
-## Conclusion - Streaming on a Zero-Disk Architecture
-
-Managing state is hard. Stateful systems often sacrifice elasticity and scalability. The increasingly accepted answer in cloud-native design is to decouple state from compute—allowing each to scale independently.
-
-Rather than reinventing the wheel, we delegate the complexity of durable, scalable storage to the world-class engineering teams behind services like AWS S3, Google Cloud Storage, and MinIO. Among them, S3 stands out for its virtually unlimited capacity, eleven nines (99.999999999%) of durability, 99.99% availability, and high-throughput read/write performance.
-
-But even "zero-disk" architectures have trade-offs. Object stores still struggle with high write latency and small-file inefficiencies—limitations that remain unresolved in many real-time workloads.
-
-For vector databases—especially those supporting mission-critical RAG, AI agents, and low-latency search workloads—real-time access and fast writes are non-negotiable. That's why we rearchitected Milvus around Woodpecker and the Streaming Service. This shift simplifies the overall system (let's face it—no one wants to maintain a full Pulsar stack inside a vector database), ensures fresher data, improves cost-efficiency, and speeds up failure recovery.
-
-We believe Woodpecker is more than just a Milvus component—it can serve as a foundational building block for other cloud-native systems. As cloud infrastructure evolves, innovations like S3 Express may bring us even closer to the ideal: cross-AZ durability with single-digit millisecond write latency.
-
-
-## What's Next
-
-Stay tuned for the upcoming Milvus 2.6 with Woodpecker and so many more powerful features. Ready to experience the improved performance and simplified operations? Check out our[ documentation](https://milvus.io/docs) to get started! You're also welcome to join the Milvus community on[ Discord](https://discord.gg/milvus) or [GitHub](https://github.com/milvus-io/milvus/discussions) to ask questions or share your experiences.
-
-If you're running into challenges with large-scale mission-critical vector search workloads, we'd love to help.[ Book an Milvus Office Hours session](https://milvus.io/office-hours) to discuss your specific needs with our engineering team.
-
- 
+- <https://github.com/milvus-io/bootcamp/tree/master> 
