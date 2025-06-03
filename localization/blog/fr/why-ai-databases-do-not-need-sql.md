@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: Pourquoi les bases de données d'IA n'ont pas besoin de SQL
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -18,10 +18,10 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 ---
 <p>Pendant des décennies, <code translate="no">SELECT * FROM WHERE</code> a été la règle d'or des requêtes de base de données. Qu'il s'agisse de systèmes de reporting, d'analyses financières ou de requêtes sur le comportement des utilisateurs, nous nous sommes habitués à utiliser un langage structuré pour manipuler les données avec précision. Même NoSQL, qui a proclamé une "révolution anti-SQL", a fini par céder et a introduit la prise en charge de SQL, reconnaissant ainsi sa position apparemment irremplaçable.</p>
 <p><em>Mais vous êtes-vous déjà demandé : nous avons passé plus de 50 ans à apprendre aux ordinateurs à parler le langage humain, alors pourquoi obligeons-nous encore les humains à parler &quot;informatique&quot; ?</em></p>
-<p><strong>Que cela vous plaise ou non, la vérité est là : le langage SQL est voué au déclin à l'ère de l'IA.</strong> Il peut encore être utilisé dans les systèmes existants, mais il devient de moins en moins pertinent pour les applications modernes de l'IA. La révolution de l'IA n'est pas seulement en train de changer la façon dont nous construisons les logiciels, elle est en train de rendre SQL obsolète, et la plupart des développeurs sont trop occupés à optimiser leurs JOINs pour s'en rendre compte.</p>
+<p><strong>Que cela vous plaise ou non, la vérité est là : le langage SQL est voué au déclin à l'ère de l'IA.</strong> Il peut encore être utilisé dans les systèmes existants, mais il devient de moins en moins pertinent pour les applications modernes de l'IA. La révolution de l'IA n'est pas seulement en train de changer la façon dont nous construisons les logiciels, elle est en train de rendre SQL obsolète, et la plupart des développeurs sont trop occupés à optimiser leurs JOIN pour s'en rendre compte.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -49,7 +49,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <li><p>Doit-il faire appel à des API externes pour enrichir les données ?</p></li>
 <li><p>Comment classer et filtrer les résultats ?</p></li>
 </ul>
-<p>Tout cela se fait automatiquement. Pas de syntaxe. Pas de débogage. Pas de recherche sur Stack Overflow pour savoir "comment faire une fonction window avec plusieurs CTE". Vous n'êtes plus un &quot;programmeur&quot; de base de données, vous discutez avec un système de données intelligent.</p>
+<p>Tout cela se fait automatiquement. Pas de syntaxe. Pas de débogage. Pas de recherche sur Stack Overflow pour savoir "comment faire une fonction de fenêtre avec plusieurs CTE". Vous n'êtes plus un &quot;programmeur&quot; de base de données, vous avez une conversation avec un système de données intelligent.</p>
 <p>Ce n'est pas de la science-fiction. Selon les prévisions de Gartner, d'ici 2026, la plupart des entreprises donneront la priorité au langage naturel en tant qu'interface de requête principale, le langage SQL passant d'une compétence "indispensable" à une compétence "facultative".</p>
 <p>La transformation est déjà en cours :</p>
 <p><strong>✅ Zéro barrière syntaxique :</strong> Les noms de champs, les relations entre les tables et l'optimisation des requêtes deviennent le problème du système, pas le vôtre.</p>

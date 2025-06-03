@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: AI 데이터베이스에 SQL이 필요 없는 이유
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -16,10 +16,10 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 ---
 <p>수십 년 동안 <code translate="no">SELECT * FROM WHERE</code> 은 데이터베이스 쿼리의 황금률로 통용되어 왔습니다. 보고 시스템, 재무 분석, 사용자 행동 쿼리 등, 우리는 구조화된 언어를 사용하여 데이터를 정밀하게 조작하는 데 익숙해져 왔습니다. 한때 'SQL 반대 혁명'을 선언했던 NoSQL조차도 결국 대체할 수 없는 위치를 인정하고 SQL 지원을 도입했습니다.</p>
 <p><em>하지만 50년 넘게 컴퓨터에게 인간의 언어를 가르쳤는데 왜 아직도 인간에게 '컴퓨터'라는 말을 강요하고 있는지 궁금한 적이 있으신가요?</em></p>
-<p><strong>좋든 싫든, 여기 진실이 있습니다. SQL은 AI 시대에 쇠퇴할 운명에 처해 있습니다.</strong> 레거시 시스템에서는 여전히 사용될 수 있지만, 최신 AI 애플리케이션에서는 점점 더 쓸모없어지고 있습니다. AI 혁명은 단순히 소프트웨어 구축 방식만 바꾸는 것이 아니라 SQL을 쓸모없게 만들고 있으며, 대부분의 개발자는 조인을 최적화하는 데 너무 바빠서 이를 알아차리지 못하고 있습니다.</p>
+<p><strong>좋든 싫든, 여기 진실이 있습니다. SQL은 AI 시대에 쇠퇴할 운명에 처해 있습니다.</strong> 레거시 시스템에서는 여전히 사용될 수 있지만, 최신 AI 애플리케이션에서는 점점 더 쓸모없어지고 있습니다. AI 혁명은 소프트웨어 구축 방식만 바꾸는 것이 아니라 SQL을 쓸모없게 만들고 있으며, 대부분의 개발자는 조인 최적화에 너무 바빠서 이를 알아차리지 못하고 있습니다.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -40,7 +40,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
       </svg>
     </button></h2><p>데이터베이스 상호 작용의 미래는 더 나은 SQL을 배우는 것이 아니라 <strong>구문을 완전히 버리는</strong> 것입니다.</p>
 <p>복잡한 SQL 쿼리와 씨름하는 대신 다음과 같이 간단히 말한다고 상상해 보세요:</p>
-<p><em>"최근 구매 행동이 지난 분기의 상위 고객과 가장 유사한 사용자를 찾도록 도와주세요."라고 말해보세요.</em></p>
+<p><em>"최근 구매 행동이 지난 분기의 상위 고객과 가장 유사한 사용자를 찾는 데 도움을 주세요."라고 말해보세요.</em></p>
 <p>시스템이 사용자의 의도를 이해하고 자동으로 결정합니다:</p>
 <ul>
 <li><p>구조화된 테이블을 쿼리해야 할까요, 아니면 사용자 임베딩에서 벡터 유사성 검색을 수행해야 할까요?</p></li>

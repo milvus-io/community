@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: 为什么人工智能数据库不需要 SQL？
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -19,7 +19,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p><strong>无论你喜欢与否，事实就是这样：在人工智能时代，SQL 注定要走向衰落。</strong>它可能仍被用于传统系统，但对于现代人工智能应用来说，它正变得越来越无关紧要。人工智能革命不仅改变了我们构建软件的方式，还让 SQL 变得过时，而大多数开发人员正忙于优化他们的 JOIN，根本没有注意到这一点。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -40,7 +40,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
       </svg>
     </button></h2><p>数据库交互的未来不是学习更好的 SQL，而是<strong>完全抛弃语法</strong>。</p>
 <p>与其与复杂的 SQL 查询搏斗，不如简单地说</p>
-<p><em>"帮我找到最近购买行为与我们上一季度顶级客户最相似的用户"。</em></p>
+<p><em>"帮我找到最近购买行为与我们上一季度的顶级客户最相似的用户"。</em></p>
 <p>系统会理解你的意图并自动做出决定：</p>
 <ul>
 <li><p>是查询结构化表格，还是在用户 Embeddings 之间执行向量相似性搜索？</p></li>
@@ -49,7 +49,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 </ul>
 <p>全部自动完成。无需语法。无需调试。无需在 Stack Overflow 上搜索 "如何使用多个 CTE 执行窗口函数"。你不再是数据库 &quot;程序员&quot;，而是在与智能数据系统对话。</p>
 <p>这可不是科幻小说。根据 Gartner 的预测，到 2026 年，大多数企业将把自然语言作为主要查询界面，SQL 将从 "必备 "技能变成 "可选 "技能。</p>
-<p>转变已经开始：</p>
+<p>这种转变已经开始：</p>
 <p><strong>✅ 零语法障碍：</strong>字段名称、表关系和查询优化成为系统的问题，而不是你的问题</p>
 <p><strong>非结构化数据友好：</strong>图像、音频和文本成为一流的查询对象</p>
 <p><strong>✅ 民主化访问：</strong>操作符、产品经理和分析师可以像高级工程师一样轻松地直接查询数据</p>
@@ -70,7 +70,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
       </svg>
     </button></h2><p>自然语言查询只是冰山一角。真正的突破在于<a href="https://zilliz.com/blog/what-exactly-are-ai-agents-why-openai-and-langchain-are-fighting-over-their-definition">人工智能 Agents</a>能够像人类一样对数据进行推理。</p>
 <p>理解人类语言是第一步。理解您的需求并高效执行，这才是神奇之处。</p>
-<p>人工智能代理充当数据库的 "大脑"，处理</p>
+<p>人工智能代理可以充当数据库的 "大脑"，处理数据：</p>
 <ul>
 <li><p><strong>🤔 理解意图：</strong>确定您实际需要哪些字段、数据库和索引</p></li>
 <li><p><strong>⚙️ 策略选择：</strong>在结构化过滤、向量相似性或混合方法之间做出选择</p></li>
@@ -149,7 +149,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
     </button></h2><p><a href="https://milvus.io/">Milvus</a>和<a href="https://zilliz.com/">Zilliz Cloud</a>等矢量数据库并非 &quot;具有矢量功能的 SQL 数据库&quot;--它们是专为人工智能原生应用而设计的智能数据系统。</p>
 <h3 id="1-Native-Multimodal-Support" class="common-anchor-header">1.原生多模态支持</h3><p>真正的人工智能应用不只是存储文本，它们还处理图像、音频、视频和复杂的嵌套文档。向量数据库可以处理多样化的数据类型和多向量结构，如<a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search">ColBERT</a>和<a href="https://zilliz.com/blog/colpali-milvus-redefine-document-retrieval-with-vision-language-models">ColPALI</a>，适应不同人工智能模型的丰富语义表示。</p>
 <h3 id="2-Agent-Friendly-Architecture" class="common-anchor-header">2.Agent友好型架构</h3><p>大型语言模型擅长函数调用，而非 SQL 生成。向量数据库提供 Python- first API，可与 AI Agents 无缝集成，在一次函数调用内即可完成向量检索、过滤、Rerankers 和语义高亮等复杂操作，无需查询语言翻译层。</p>
-<h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3.内置语义智能</h3><p>向量数据库不仅能执行命令，还能<strong>理解意图。</strong>与人工智能 Agents 和其他人工智能应用合作，它们摆脱了字面关键词匹配，实现了真正的语义检索。它们不仅知道 "如何查询"，还知道 "你真正想找到什么"。</p>
+<h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3.内置语义智能</h3><p>向量数据库不仅能执行命令，还能<strong>理解意图。</strong>它们与人工智能 Agents 和其他人工智能应用合作，摆脱了字面关键词匹配的束缚，实现了真正的语义检索。它们不仅知道 "如何查询"，还知道 "你真正想找到什么"。</p>
 <h3 id="4-Optimized-for-Relevance-Not-Just-Speed" class="common-anchor-header">4.优化相关性，而不仅仅是速度</h3><p>与大型语言模型一样，向量数据库在性能和召回率之间取得了平衡。通过元数据过滤、<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">混合向量和全文检索</a>以及重排算法，它们能不断提高结果质量和相关性，找到真正有价值的内容，而不仅仅是快速检索。</p>
 <h2 id="The-Future-of-Databases-is-Conversational" class="common-anchor-header">数据库的未来是对话式的<button data-href="#The-Future-of-Databases-is-Conversational" class="anchor-icon" translate="no">
       <svg translate="no"

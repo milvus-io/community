@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: 為什麼 AI 資料庫不需要 SQL？
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -19,7 +19,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p><strong>無論您喜歡與否，事實是這樣的：SQL 在 AI 時代注定會走向衰落。</strong>它也許還會用在傳統系統中，但對於現代的 AI 應用程式而言，它已經變得越來越不相干。AI 革命不僅改變了我們建立軟體的方式，也讓 SQL 變得過時，而大多數開發人員都忙著優化他們的 JOIN 而沒有注意到這一點。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -70,7 +70,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
       </svg>
     </button></h2><p>自然語言查詢只是冰山一角。真正的突破是能夠像人類一樣推理資料的<a href="https://zilliz.com/blog/what-exactly-are-ai-agents-why-openai-and-langchain-are-fighting-over-their-definition">AI 代理</a>。</p>
 <p>理解人類語音是第一步。了解您的需求並有效率地執行，這才是神奇之處。</p>
-<p>AI 代理就像資料庫的「大腦」，負責處理資料：</p>
+<p>AI 代理就像是資料庫的「大腦」，負責處理資料：</p>
 <ul>
 <li><p><strong>🤔 意圖理解：</strong>確定您實際需要哪些欄位、資料庫和索引</p></li>
 <li><p><strong>⚙️ 策略選擇：</strong>在結構化篩選、向量相似性或混合方法之間進行選擇</p></li>
@@ -99,7 +99,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
       </svg>
     </button></h2><p>SQL 是為結構化世界所設計的。然而，人工智能驅動的未來將以非結構化資料、語義理解和智慧檢索為主，而 SQL 從來就不是為了處理這些問題而設計的。</p>
 <p>現代應用程式充斥著大量非結構化資料，包括來自語言模型的文字嵌入、來自電腦視覺系統的影像向量、來自語音辨識的音頻指紋，以及結合文字、影像和元資料的多模態表示。</p>
-<p>這些資料無法整齊地排列成行和列，而是以向量嵌入的方式存在於高維語義空間中，而 SQL 完全不知道該如何處理這些資料。</p>
+<p>這些資料無法整齊地排列成行和列，而是以向量嵌入的形式存在於高維語義空間中，而 SQL 完全不知道該如何處理這些資料。</p>
 <h3 id="SQL-+-Vector-A-Beautiful-Idea-That-Executes-Poorly" class="common-anchor-header">SQL + 向量：美麗的想法卻執行不力</h3><p>傳統資料庫為了保持其相關性，紛紛在 SQL 中加入向量功能。PostgreSQL 加入了<code translate="no">&lt;-&gt;</code> 運算符，用於向量相似性搜尋：</p>
 <pre><code translate="no">SELECT *
   FROM items
@@ -146,9 +146,9 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a>和<a href="https://zilliz.com/">Zilliz Cloud</a>等向量資料庫並不是「具有向量功能的 SQL 資料庫」，而是專為 AI 原生應用程式從頭設計的智慧型資料系統。</p>
-<h3 id="1-Native-Multimodal-Support" class="common-anchor-header">1.原生多模式支援</h3><p>真正的 AI 應用程式不只是儲存文字，還要處理圖像、音訊、視訊和複雜的巢狀文件。向量資料庫可處理多樣化的資料類型和多向量結構，例如<a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search">ColBERT</a>和<a href="https://zilliz.com/blog/colpali-milvus-redefine-document-retrieval-with-vision-language-models">ColPALI</a>，可適應不同 AI 模型的豐富語意表示。</p>
-<h3 id="2-Agent-Friendly-Architecture" class="common-anchor-header">2.代理友好的架構</h3><p>大型語言模型最擅長的是函式呼叫，而非 SQL 產生。向量資料庫提供 Python-first API，可與 AI 代理無縫整合，讓向量擷取、過濾、重新排序和語意強調等複雜作業都能在單一函式呼叫中完成，而不需要查詢語言轉譯層。</p>
+    </button></h2><p><a href="https://milvus.io/">Milvus</a>和<a href="https://zilliz.com/">Zilliz Cloud</a>之類的向量資料庫並不是「具有向量功能的 SQL 資料庫」，它們是專為 AI 原生應用程式而設計的智慧型資料系統。</p>
+<h3 id="1-Native-Multimodal-Support" class="common-anchor-header">1.原生多模式支援</h3><p>真正的 AI 應用程式不只是儲存文字，還要處理圖像、音訊、視訊和複雜的巢狀文件。向量資料庫可處理多樣化的資料類型和多向量結構，例如<a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search">ColBERT</a>和<a href="https://zilliz.com/blog/colpali-milvus-redefine-document-retrieval-with-vision-language-models">ColPALI</a>，適應不同 AI 模型的豐富語意表示。</p>
+<h3 id="2-Agent-Friendly-Architecture" class="common-anchor-header">2.代理友好的架構</h3><p>大型語言模型最擅長的是函式呼叫，而非 SQL 產生。向量資料庫提供 Python-first API，可與 AI 代理無縫整合，讓複雜的作業，例如向量擷取、過濾、重新排序和語意強調，都能在單一函式呼叫中完成，而不需要查詢語言轉譯層。</p>
 <h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3.內建語意智慧</h3><p>向量資料庫不只是執行指令，<strong>還能理解意圖。</strong>透過與 AI 代理和其他 AI 應用程式合作，矢量資料庫可擺脫字面關鍵字匹配的束縛，達到真正的語意檢索。它們不僅知道「如何查詢」，還知道「您真正想要找到什麼」。</p>
 <h3 id="4-Optimized-for-Relevance-Not-Just-Speed" class="common-anchor-header">4.優化相關性，不只是速度</h3><p>與大型語言模型一樣，向量資料庫在效能與召回率之間取得平衡。透過元資料過濾、<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">混合向量與全文</a>檢索，以及重新排序演算法，這些資料庫能持續改善結果品質與相關性，找出真正有價值的內容，而不只是快速檢索。</p>
 <h2 id="The-Future-of-Databases-is-Conversational" class="common-anchor-header">資料庫的未來是對話式的<button data-href="#The-Future-of-Databases-is-Conversational" class="anchor-icon" translate="no">

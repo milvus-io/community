@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: Perché i database AI non hanno bisogno di SQL
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -18,10 +18,10 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 ---
 <p>Per decenni, <code translate="no">SELECT * FROM WHERE</code> è stata la regola d'oro delle interrogazioni ai database. Che si tratti di sistemi di reporting, analisi finanziarie o query sul comportamento degli utenti, ci siamo abituati a usare un linguaggio strutturato per manipolare con precisione i dati. Persino NoSQL, che un tempo proclamava una "rivoluzione anti-SQL", alla fine ha ceduto e ha introdotto il supporto per SQL, riconoscendo la sua posizione apparentemente insostituibile.</p>
 <p><em>Ma vi siete mai chiesti: abbiamo passato più di 50 anni a insegnare ai computer a parlare il linguaggio umano, quindi perché stiamo ancora costringendo gli uomini a parlare &quot;computer&quot;?</em></p>
-<p><strong>Che vi piaccia o no, la verità è che l'SQL è destinato al declino nell'era dell'intelligenza artificiale.</strong> Può essere ancora utilizzato nei sistemi legacy, ma sta diventando sempre più irrilevante per le moderne applicazioni di IA. La rivoluzione dell'intelligenza artificiale non sta solo cambiando il modo in cui costruiamo il software, ma sta rendendo obsoleto l'SQL e la maggior parte degli sviluppatori è troppo impegnata a ottimizzare le JOIN per accorgersene.</p>
+<p><strong>Che vi piaccia o no, la verità è che l'SQL è destinato al declino nell'era dell'intelligenza artificiale.</strong> Può essere ancora utilizzato nei sistemi legacy, ma sta diventando sempre più irrilevante per le moderne applicazioni di IA. La rivoluzione dell'intelligenza artificiale non sta solo cambiando il modo in cui costruiamo il software, ma sta rendendo obsoleto l'SQL, e la maggior parte degli sviluppatori è troppo impegnata a ottimizzare le JOIN per accorgersene.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

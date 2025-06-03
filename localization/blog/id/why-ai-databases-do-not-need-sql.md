@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: Mengapa Basis Data AI Tidak Membutuhkan SQL
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p><strong>Suka atau tidak suka, inilah kebenarannya: SQL ditakdirkan untuk menurun di era AI.</strong> SQL mungkin masih digunakan dalam sistem lama, tetapi menjadi semakin tidak relevan untuk aplikasi AI modern. Revolusi AI tidak hanya mengubah cara kita membangun perangkat lunak, tetapi juga membuat SQL menjadi usang, dan sebagian besar pengembang terlalu sibuk mengoptimalkan JOIN untuk menyadarinya.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -125,7 +125,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 </thead>
 <tbody>
 <tr><td>Model Data</td><td>Bidang terstruktur (angka, string) dalam baris dan kolom</td><td>Representasi vektor dimensi tinggi dari data tidak terstruktur (teks, gambar, audio)</td></tr>
-<tr><td>Logika Kueri</td><td>Pencocokan yang tepat + operasi boolean</td><td>Pencocokan kesamaan + pencarian semantik</td></tr>
+<tr><td>Logika Kueri</td><td>Pencocokan tepat + operasi boolean</td><td>Pencocokan kesamaan + pencarian semantik</td></tr>
 <tr><td>Antarmuka</td><td>SQL</td><td>Bahasa alami + API Python</td></tr>
 <tr><td>Filosofi</td><td>Kepatuhan ACID, konsistensi sempurna</td><td>Penemuan kembali yang dioptimalkan, relevansi semantik, kinerja waktu nyata</td></tr>
 <tr><td>Strategi Indeks</td><td>Pohon B+, indeks hash, dll.</td><td>HNSW, IVF, kuantisasi produk, dll.</td></tr>

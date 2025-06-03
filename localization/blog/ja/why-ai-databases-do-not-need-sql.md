@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: AIデータベースにSQLが不要な理由
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -19,7 +19,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p><strong>好むと好まざるとにかかわらず、これが真実だ。SQLはAIの時代には衰退する運命にある。</strong>SQLはレガシー・システムではまだ使われているかもしれないが、最新のAIアプリケーションにはますます無用になりつつある。AI革命はソフトウェアの構築方法を変えるだけでなく、SQLを時代遅れにしようとしているのだが、ほとんどの開発者はJOINを最適化するのに忙しくて気づいていない。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -44,7 +44,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p>システムはあなたの意図を理解し、自動的に判断する：</p>
 <ul>
 <li><p>システムはあなたの意図を理解し、自動的に次のことを決定する：構造化されたテーブルに問い合わせるべきか、それともユーザー埋め込みを横断するベクトル類似性検索を実行すべきか？</p></li>
-<li><p>データをリッチ化するために外部APIを呼び出すべきか？</p></li>
+<li><p>データを充実させるために外部APIを呼び出すべきか？</p></li>
 <li><p>結果をどのようにランク付けし、フィルタリングするか？</p></li>
 </ul>
 <p>すべて自動的に完了する。構文なし。デバッグなし。Stack Overflowで「複数のCTEでウィンドウ関数を実行する方法」を検索することもない。あなたはもはやデータベースの「プログラマー」ではなく、インテリジェントなデータ・システムと会話をしているのだ。</p>
@@ -149,7 +149,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
     </button></h2><p><a href="https://milvus.io/">Milvusや</a> <a href="https://zilliz.com/">Zilliz Cloudの</a>ようなベクター・データベースは、「ベクター機能を備えたSQLデータベース」ではなく、AIネイティブ・アプリケーションのためにゼロから設計されたインテリジェント・データ・システムである。</p>
 <h3 id="1-Native-Multimodal-Support" class="common-anchor-header">1.ネイティブなマルチモーダルサポート</h3><p>本物のAIアプリケーションはテキストを保存するだけでなく、画像、音声、ビデオ、複雑なネスト化されたドキュメントを扱う。ベクターデータベースは、<a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search">ColBERTや</a> <a href="https://zilliz.com/blog/colpali-milvus-redefine-document-retrieval-with-vision-language-models">ColPALIの</a>ような多様なデータタイプとマルチベクター構造を扱い、様々なAIモデルからのリッチなセマンティック表現に適応します。</p>
 <h3 id="2-Agent-Friendly-Architecture" class="common-anchor-header">2.エージェントフレンドリーなアーキテクチャ</h3><p>大規模な言語モデルは、SQL生成ではなく関数呼び出しが得意です。ベクターデータベースは、AIエージェントとシームレスに統合するPythonファーストのAPIを提供し、クエリ言語変換レイヤーを必要とせず、ベクター検索、フィルタリング、リランキング、セマンティックハイライトなどの複雑な操作を単一の関数呼び出し内で完了することを可能にします。</p>
-<h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3.セマンティックインテリジェンス内蔵</h3><p>ベクターデータベースは単にコマンドを実行するだけでなく、<strong>意図を理解します。</strong>AIエージェントやその他のAIアプリケーションと連携することで、文字通りのキーワードマッチングから解放され、真の意味的検索を実現します。ベクター・データベースは、「どのようにクエリを実行するか」だけでなく、「何を本当に探したいのか」を理解する。</p>
+<h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3.セマンティックインテリジェンス内蔵</h3><p>ベクターデータベースは単にコマンドを実行するだけでなく、<strong>意図を理解します。</strong>AIエージェントやその他のAIアプリケーションと連携することで、文字通りのキーワードマッチングから解放され、真の意味的検索を実現します。ベクターデータベースは、「どのようにクエリを実行するか」だけでなく、「何を本当に探したいのか」を理解する。</p>
 <h3 id="4-Optimized-for-Relevance-Not-Just-Speed" class="common-anchor-header">4.スピードだけでなく関連性の最適化</h3><p>大規模な言語モデルと同様、ベクトルデータベースはパフォーマンスと想起のバランスを取る。メタデータのフィルタリング、<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">ベクトル検索と全文検索のハイブリッド</a>、リランキングアルゴリズムにより、結果の品質と関連性を継続的に向上させ、単に検索が速いだけでなく、実際に価値のあるコンテンツを見つけることができる。</p>
 <h2 id="The-Future-of-Databases-is-Conversational" class="common-anchor-header">データベースの未来は会話型<button data-href="#The-Future-of-Databases-is-Conversational" class="anchor-icon" translate="no">
       <svg translate="no"

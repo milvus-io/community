@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: لماذا لا تحتاج قواعد بيانات الذكاء الاصطناعي إلى SQL
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p><strong>سواءً أعجبك ذلك أم لا، إليك الحقيقة: إن SQL مقدر لها أن تتراجع في عصر الذكاء الاصطناعي.</strong> ربما لا تزال تُستخدم في الأنظمة القديمة، ولكنها أصبحت غير ملائمة بشكل متزايد لتطبيقات الذكاء الاصطناعي الحديثة. إن ثورة الذكاء الاصطناعي لا تغير فقط كيفية بناء البرمجيات - بل إنها تجعل SQL عفا عليها الزمن، ومعظم المطورين مشغولون للغاية في تحسين عمليات الربط الخاصة بهم بحيث لا يلاحظون ذلك.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

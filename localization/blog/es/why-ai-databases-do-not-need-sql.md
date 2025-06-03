@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: Por qué las bases de datos de IA no necesitan SQL
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -17,11 +17,11 @@ desc: >-
 origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 ---
 <p>Durante décadas, <code translate="no">SELECT * FROM WHERE</code> ha sido la regla de oro de las consultas a bases de datos. Ya sea para sistemas de informes, análisis financieros o consultas sobre el comportamiento de los usuarios, nos hemos acostumbrado a utilizar un lenguaje estructurado para manipular los datos con precisión. Incluso NoSQL, que en su día proclamó una "revolución anti-SQL", acabó cediendo e introdujo la compatibilidad con SQL, reconociendo su posición aparentemente insustituible.</p>
-<p><em>Pero te has preguntado alguna vez: llevamos más de 50 años enseñando a los ordenadores a hablar lenguaje humano, así que ¿por qué seguimos obligando a los humanos a hablar &quot;informático&quot;?</em></p>
+<p><em>Pero alguna vez te has preguntado: llevamos más de 50 años enseñando a los ordenadores a hablar lenguaje humano, así que ¿por qué seguimos obligando a los humanos a hablar &quot;informático&quot;?</em></p>
 <p><strong>Le guste o no, esta es la verdad: SQL está destinado al declive en la era de la IA.</strong> Puede que aún se utilice en sistemas heredados, pero cada vez es más irrelevante para las aplicaciones modernas de IA. La revolución de la IA no sólo está cambiando nuestra forma de crear software, sino que está dejando obsoleto a SQL, y la mayoría de los desarrolladores están demasiado ocupados optimizando sus JOINs como para darse cuenta.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

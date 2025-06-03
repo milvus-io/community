@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: Porque é que as bases de dados de IA não precisam de SQL
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <p><strong>Quer queira quer não, a verdade é esta: a SQL está destinada ao declínio na era da IA.</strong> Pode ainda ser utilizado em sistemas antigos, mas está a tornar-se cada vez mais irrelevante para as aplicações modernas de IA. A revolução da IA não está apenas a mudar a forma como criamos software - está a tornar o SQL obsoleto, e a maioria dos programadores está demasiado ocupada a otimizar os seus JOINs para reparar nisso.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -127,7 +127,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 <tr><td>Modelo de dados</td><td>Campos estruturados (números, cadeias de caracteres) em linhas e colunas</td><td>Representações vectoriais de alta dimensão de dados não estruturados (texto, imagens, áudio)</td></tr>
 <tr><td>Lógica de consulta</td><td>Correspondência exacta + operações booleanas</td><td>Correspondência por semelhança + pesquisa semântica</td></tr>
 <tr><td>Interface</td><td>SQL</td><td>Linguagem natural + APIs Python</td></tr>
-<tr><td>Filosofia</td><td>Conformidade com ACID, consistência perfeita</td><td>Recuperação optimizada, relevância semântica, desempenho em tempo real</td></tr>
+<tr><td>Filosofia</td><td>Conformidade ACID, consistência perfeita</td><td>Recuperação optimizada, relevância semântica, desempenho em tempo real</td></tr>
 <tr><td>Estratégia de índices</td><td>Árvores B+, índices hash, etc.</td><td>HNSW, IVF, quantização de produtos, etc.</td></tr>
 <tr><td>Casos de utilização principais</td><td>Transacções, relatórios, análises</td><td>Pesquisa semântica, pesquisa multimodal, recomendações, sistemas RAG, agentes de IA</td></tr>
 </tbody>
@@ -151,7 +151,7 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
     </button></h2><p>As bases de dados vectoriais como <a href="https://milvus.io/">a Milvus</a> e <a href="https://zilliz.com/">a Zilliz Cloud</a> não são &quot;bases de dados SQL com funcionalidades vectoriais&quot; - são sistemas de dados inteligentes concebidos de raiz para aplicações nativas de IA.</p>
 <h3 id="1-Native-Multimodal-Support" class="common-anchor-header">1. Suporte multimodal nativo</h3><p>As verdadeiras aplicações de IA não armazenam apenas texto - trabalham com imagens, áudio, vídeo e documentos complexos aninhados. As bases de dados vectoriais lidam com diversos tipos de dados e estruturas multi-vectoriais como <a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search">ColBERT</a> e <a href="https://zilliz.com/blog/colpali-milvus-redefine-document-retrieval-with-vision-language-models">ColPALI</a>, adaptando-se a representações semânticas ricas de diferentes modelos de IA.</p>
 <h3 id="2-Agent-Friendly-Architecture" class="common-anchor-header">2. Arquitetura favorável ao agente</h3><p>Os modelos de linguagem de grande dimensão destacam-se na chamada de funções e não na geração de SQL. As bases de dados vectoriais oferecem APIs Python-first que se integram perfeitamente com os agentes de IA, permitindo a realização de operações complexas, como a recuperação de vectores, a filtragem, a reavaliação e o realce semântico, tudo numa única chamada de função, sem necessidade de uma camada de tradução da linguagem de consulta.</p>
-<h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3. Inteligência semântica incorporada</h3><p>As bases de dados vectoriais não se limitam a executar comandos - compreendem<strong>a intenção.</strong> Trabalhando com agentes de IA e outras aplicações de IA, libertam-se da correspondência literal de palavras-chave para obter uma verdadeira recuperação semântica. Sabem não só "como consultar", mas também "o que se pretende realmente encontrar".</p>
+<h3 id="3-Semantic-Intelligence-Built-In" class="common-anchor-header">3. Inteligência semântica incorporada</h3><p>As bases de dados vectoriais não se limitam a executar comandos - compreendem<strong>a intenção.</strong> Trabalhando com agentes de IA e outras aplicações de IA, libertam-se da correspondência literal de palavras-chave para obter uma verdadeira recuperação semântica. Sabem não só "como consultar", mas também "o que realmente se pretende encontrar".</p>
 <h3 id="4-Optimized-for-Relevance-Not-Just-Speed" class="common-anchor-header">4. Optimizadas para a relevância, não apenas para a velocidade</h3><p>Tal como os modelos de linguagem de grande dimensão, as bases de dados vectoriais atingem um equilíbrio entre o desempenho e a recuperação. Através da filtragem de metadados, da <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">pesquisa híbrida de vectores e de texto integral</a> e de algoritmos de reclassificação, melhoram continuamente a qualidade e a relevância dos resultados, encontrando conteúdos que são realmente valiosos e não apenas rápidos de recuperar.</p>
 <h2 id="The-Future-of-Databases-is-Conversational" class="common-anchor-header">O futuro das bases de dados é conversacional<button data-href="#The-Future-of-Databases-is-Conversational" class="anchor-icon" translate="no">
       <svg translate="no"

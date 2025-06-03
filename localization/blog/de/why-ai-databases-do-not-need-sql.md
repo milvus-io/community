@@ -3,7 +3,7 @@ id: why-ai-databases-do-not-need-sql.md
 title: Warum KI-Datenbanken kein SQL brauchen
 author: James Luan
 date: 2025-05-30T00:00:00.000Z
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -16,12 +16,12 @@ desc: >-
   KI dem Untergang geweiht ist.
 origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
 ---
-<p>Seit Jahrzehnten ist <code translate="no">SELECT * FROM WHERE</code> die goldene Regel für Datenbankabfragen. Ob für Berichtssysteme, Finanzanalysen oder Abfragen zum Benutzerverhalten - wir haben uns daran gewöhnt, strukturierte Sprache zu verwenden, um Daten präzise zu manipulieren. Sogar NoSQL, das einst eine "Anti-SQL-Revolution" ausrief, gab schließlich nach und führte SQL-Unterstützung ein und erkannte damit seine scheinbar unersetzliche Position an.</p>
+<p>Seit Jahrzehnten ist <code translate="no">SELECT * FROM WHERE</code> die goldene Regel für Datenbankabfragen. Ob für Berichtssysteme, Finanzanalysen oder Abfragen zum Benutzerverhalten - wir haben uns daran gewöhnt, strukturierte Sprache zu verwenden, um Daten präzise zu bearbeiten. Sogar NoSQL, das einst eine "Anti-SQL-Revolution" ausrief, gab schließlich nach und führte SQL-Unterstützung ein und erkannte damit seine scheinbar unersetzliche Position an.</p>
 <p><em>Aber haben Sie sich jemals gefragt: Wir haben mehr als 50 Jahre damit verbracht, Computern beizubringen, die menschliche Sprache zu sprechen, warum zwingen wir dann immer noch Menschen, &quot;Computer&quot; zu sprechen?</em></p>
-<p><strong>Ob es Ihnen nun gefällt oder nicht, hier ist die Wahrheit: SQL ist im Zeitalter der KI für den Niedergang bestimmt.</strong> Es wird vielleicht noch in Altsystemen verwendet, aber für moderne KI-Anwendungen wird es zunehmend irrelevant. Die KI-Revolution verändert nicht nur die Art und Weise, wie wir Software entwickeln - sie macht SQL obsolet, und die meisten Entwickler sind zu sehr mit der Optimierung ihrer JOINs beschäftigt, um das zu bemerken.</p>
+<p><strong>Ob es Ihnen nun gefällt oder nicht, hier ist die Wahrheit: SQL ist im Zeitalter der KI für den Niedergang bestimmt.</strong> Es wird vielleicht noch in Altsystemen verwendet, aber für moderne KI-Anwendungen wird es zunehmend irrelevant. Die KI-Revolution verändert nicht nur die Art und Weise, wie wir Software entwickeln - sie macht auch SQL überflüssig, und die meisten Entwickler sind zu sehr mit der Optimierung ihrer JOINs beschäftigt, um das zu bemerken.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -171,6 +171,6 @@ origin: 'https://milvus.io/blog/why-ai-databases-do-not-need-sql.md'
     </button></h2><p>Vektordatenbanken stellen einen grundlegenden Wandel in der Art und Weise dar, wie wir über Dateninteraktion denken. Sie ersetzen keine relationalen Datenbanken - sie sind speziell für KI-Workloads konzipiert und adressieren ganz andere Probleme in einer KI-zentrierten Welt.</p>
 <p>Genauso wie große Sprachmodelle die traditionellen Regelmaschinen nicht verbessert, sondern die Interaktion zwischen Mensch und Maschine völlig neu definiert haben, definieren Vektordatenbanken neu, wie wir Informationen finden und mit ihnen arbeiten.</p>
 <p>Wir wandeln uns von "Sprachen, die für Maschinen geschrieben wurden" zu "Systemen, die menschliche Absichten verstehen". Datenbanken entwickeln sich von starren Abfrageausführern zu intelligenten Datenagenten, die den Kontext verstehen und proaktiv Erkenntnisse liefern.</p>
-<p>Die Entwickler, die heute KI-Anwendungen erstellen, wollen kein SQL schreiben - sie wollen beschreiben, was sie brauchen, und intelligente Systeme herausfinden lassen, wie sie es bekommen.</p>
+<p>Die Entwickler, die heute KI-Anwendungen entwickeln, wollen kein SQL schreiben - sie wollen beschreiben, was sie brauchen, und intelligente Systeme herausfinden lassen, wie sie es bekommen.</p>
 <p>Wenn Sie also das nächste Mal etwas in Ihren Daten finden müssen, versuchen Sie einen anderen Ansatz. Schreiben Sie keine Abfrage, sondern sagen Sie einfach, wonach Sie suchen. Ihre Datenbank könnte Sie überraschen, indem sie tatsächlich versteht, was Sie meinen.</p>
 <p><em>Und wenn sie es nicht tut? Dann ist es vielleicht an der Zeit, Ihre Datenbank aufzurüsten, nicht Ihre SQL-Kenntnisse.</em></p>
