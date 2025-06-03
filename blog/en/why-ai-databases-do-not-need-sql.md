@@ -4,7 +4,7 @@ title: >
  Why AI Databases Don't Need SQL
 author: James Luan
 date: 2025-05-30
-cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png
+cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -25,7 +25,7 @@ _But have you ever wondered: we've spent over 50 years teaching computers to spe
 **Whether you like it or not, here's the truth: SQL is destined for decline in the era of AI.** It may still be used in legacy systems, but it's becoming increasingly irrelevant for modern AI applications. The AI revolution isn't just changing how we build software—it's making SQL obsolete, and most developers are too busy optimizing their JOINs to notice. 
 
 
-![](https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_840620515f.png)
+![](https://assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png)
 
 
 ## Natural Language: The New Interface for AI Databases 
