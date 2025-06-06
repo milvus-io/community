@@ -2,7 +2,7 @@
 id: how-to-set-up-opentelemetry-with-milvus-for-end-to-end-request-tracing.md
 title: How to Set Up OpenTelemetry with Milvus for End-to-End Request Tracing
 author: Yi Gong
-date: 2025-06-06
+date: 2025-06-05
 desc: Monitor Milvus vector database performance with OpenTelemetry tracing. Complete tutorial with Docker setup, Python client, Jaeger visualization, and debugging tips. 
 cover: assets.zilliz.com/How_to_Set_Up_Open_Telemetry_with_Milvus_for_End_to_End_Request_Tracing_f1842af82a.png
 tag: Tutorial
