@@ -44,7 +44,7 @@ Memory consumption presents one of the biggest challenges when scaling vector se
 
 ### RaBitQ 1-bit Quantization: 72% Memory Reduction with 4× Performance
 
-Traditional quantization methods force you to choose between memory savings and search quality. Milvus 2.6 changes this with RaBitQ 1-bit quantization combined with an intelligent refinement mechanism.
+Traditional quantization methods force you to choose between memory savings and search quality. Milvus 2.6 changes this with [RaBitQ 1-bit quantization](https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md) combined with an intelligent refinement mechanism.
 
 The new IVF_RABITQ index compresses the main index to 1/32 of its original size through 1-bit binarization, while an optional SQ8 refine component maintains search quality using only 25% of the original memory footprint.
 
@@ -196,7 +196,7 @@ Milvus 2.6 introduces fundamental architectural innovations that enable cost-eff
 
 Previous Milvus deployments relied on external message queues, such as Kafka or Pulsar, as the Write-Ahead Log (WAL) system. While these systems initially worked well, they introduced significant operational complexity and resource inefficiency as Milvus scaled.
 
-Milvus 2.6 introduces **Woodpecker**, a purpose-built, cloud-native WAL system that eliminates these external dependencies entirely through a revolutionary zero-disk design:
+Milvus 2.6 introduces [**Woodpecker**](https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md), a purpose-built, cloud-native WAL system that eliminates these external dependencies entirely through a revolutionary zero-disk design:
 
 - **Cloud object storage**: All log data stored in S3, Google Cloud Storage, or MinIO
 
