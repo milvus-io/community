@@ -19,9 +19,9 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
-<p>大型語言模型 (LLM) 具備編寫程式碼、創建內容和解決複雜問題的能力，改變了人工智能的面貌。然而，這些功能強大的模型需要大量高品質的資料來進行訓練。</p>
-<p>挑戰在於原始訓練資料通常包含大量冗餘。這就像是在教導小孩時，不斷重複相同的課程，卻跳過其他重要的課題。一家大型人工智能公司正是為了這個問題與我們接洽 - 他們正在建立一個雄心勃勃的新語言模型，但卻苦於無法重複數百億個文件。傳統的比對方法無法擴充至如此大的數量，而專門的重複資料刪除工具需要大量的計算資源，因此在經濟上並不可行。</p>
-<p>為了解決這個問題，我們的解決方案是：MinHash LSH (Locality Sensitive Hashing) 索引，它將在 Milvus 2.6 中推出。本文將探討 MinHash LSH 如何有效率地解決 LLM 訓練的重複資料刪除問題。</p>
+<p>大型語言模型 (LLM) 具備編寫程式碼、創建內容和解決複雜問題的能力，改變了人工智能的面貌。然而，這些強大的模型需要大量高品質的資料來進行訓練。</p>
+<p>挑戰在於原始訓練資料通常包含大量冗餘。這就像是在教導小孩時，不斷重複相同的課程，卻跳過其他重要的課題。一家大型人工智能公司正是為了這個問題與我們接洽 - 他們正在建立一個雄心勃勃的新語言模型，但卻苦於無法重複數百億的文件。傳統的比對方法無法擴充至如此大的數量，而專門的重複資料刪除工具需要大量的計算資源，因此在經濟上並不可行。</p>
+<p>為了解決這個問題，我們在 Milvus 2.6 中推出 MinHash LSH (Locality Sensitive Hashing) 索引。本文將探討 MinHash LSH 如何有效率地解決 LLM 訓練的重複資料刪除問題。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -56,7 +56,7 @@ origin: >-
 <li><p><strong>近似匹配：</strong>使用 MinHash LSH 和 Jaccard 相似度等演算法找出接近重複的內容。</p></li>
 <li><p><strong>語義配對：</strong>使用向量嵌入識別具有相似涵義的內容。</p></li>
 </ul>
-<p>由於預先訓練的語料庫已經達到 TB 甚至 PB 級，傳統的精確比對方法 (例如成對比較) 在計算上並不可行。透過使用嵌入模型來產生向量，語意重複刪除會增加顯著的開銷。我們需要更創新的近似方法，就像<strong>MinHash LSH，</strong>既能平衡召回率與精確度，又能控制成本，讓大規模的重複資料刪除成為可能。</p>
+<p>由於預先訓練的語料庫已達 terabytes 甚至 petabytes，傳統的精確匹配方法 (例如成對比較) 在計算上並不可行。透過使用嵌入模型來產生向量，語意重複刪除會增加顯著的開銷。我們需要更創新的近似方法，就像<strong>MinHash LSH，</strong>既能平衡召回率與精確度，又能控制成本，讓大規模的重複資料刪除成為可能。</p>
 <h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH：有效偵測大量資料集中的近似重複資料<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -75,7 +75,7 @@ origin: >-
     </button></h2><p>要在龐大的訓練資料中找出近乎重複的資料，我們需要一個既有效率又精確的近似比對演算法。MinHash LSH (Locality Sensitive Hashing) 是達成這個目標的絕佳工具。讓我們一步一步來分解這個看似複雜的名詞。</p>
 <h3 id="Step-1-Representing-Documents-with-MinHash" class="common-anchor-header">步驟 1：使用 MinHash 表示文件</h3><p>首先，我們需要測量文件相似性的方法。標準的方法是使用 Jaccard 相似度：</p>
 <p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi></mi></mrow></semantics></math></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span>J<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mfrac><mrow><mi mathvariant="normal">=∣A∩B∣∣A∪B∣J</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">(A,B) = \frac{||A\cap B|}{|A \cup B|}</annotation></semantics></math></span></span></span><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="katex-display"><span class="katex">J<span class="katex-html" aria-hidden="true"><span class="base"><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span></span></span>B<span class="katex-html" aria-hidden="true"><span class="base"><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span>=</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="katex-display"><span class="katex"></span></span><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span> <span class="katex-display"><span class="katex"></span></span><span class="mopen nulldelimiter"></span> <span class="katex-display"><span class="katex"></span></span><span class="pstrut" style="height:3em;"></span> <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="mord"><span class="mord mathnormal">∣A</span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">∪8</span></span></span></span></span></span></span></span></span></span>B∣</span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span class="katex-display"><span class="katex"></span></span><span class="pstrut" style="height:3em;"></span> <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-3.677em;"><span class="mord"><span class="mord mathnormal">∣A</span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-3.677em;"><span class="mord"><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span></span></span><span class="vlist-s">B∣</span></span></span></span></span></span></span></span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span><span class="mclose nulldelimiter"></span></p>
-<p>這個公式測量的是文件 A 和文件 B 之間的重疊程度 - 具體來說，是共用元素與總獨特元素的比率。值越高，表示文件越相似。</p>
+<p>此公式測量文件 A 與文件 B 之間的重疊程度 - 具體來說，是共用元素與總獨特元素的比率。值越高，表示文件越相似。</p>
 <p>然而，為數十億個文件對直接計算這個值會耗費大量資源，而且需要數年時間。MinHash 可以建立精簡的「指紋」（簽名），保留相似性關係，同時使比較速度更快。</p>
 <ol>
 <li><strong>串聯：</strong>將每個文件分割成重疊的文字或字元序列 (k-shingles)。例如，句子「我愛向量搜尋」，以 k=3 (按字) 產生：{「我愛向量」、「愛向量搜尋」}。</li>
@@ -124,7 +124,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>MinHash LSH 整合到 Milvus 2.6 是基於現實世界的需求。如前所述，Milvus 的用戶 (領先的 LLM 公司之一) 向我們提出一項挑戰：為 LLM 預先訓練有效率地重複大量文字資料。</p>
-<p>傳統的重複資料刪除管道通常依賴與儲存和檢索系統脫離的外部工具，需要在元件之間進行成本高昂的資料傳輸。這種支離破碎的工作流程增加了作業開銷，並妨礙分佈式運算資源的充分利用。</p>
+<p>傳統的重複資料刪除管道通常依賴與儲存和檢索系統脫離的外部工具，需要在元件之間進行成本高昂的資料傳輸。這種零散的工作流程增加了作業開銷，也無法充分利用分散式運算資源。</p>
 <p>意識到 Milvus 在處理高通量向量資料方面的優勢，一個自然而然的想法出現了：<strong><em>如果 MinHash LSH 原生內建至 Milvus，讓近似重複資料刪除成為一級資料庫功能，會如何？</em></strong></p>
 <p>此方法可在 Milvus 內實現從重複資料刪除到語意檢索的完整工作流程，簡化 MLOps，同時充分利用其可擴充性和統一 API。我們與合作夥伴一起針對 Milvus 的雲原生架構優化 MinHash LSH，為大規模重複資料刪除提供快速且可擴充的解決方案。</p>
 <h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Milvus 2.6 的核心功能包括</h3><ul>
@@ -276,5 +276,22 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 中的 MinHash LSH 是 AI 資料處理的一大躍進。一開始只是用於 LLM 資料重複刪除的解決方案，現在卻為更廣泛的使用個案打開了大門 - 網頁內容清理、目錄管理、剽竊偵測等。</p>
-<p>如果您有類似的使用個案，請透過<a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a>與我們聯繫，報名參加「<a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">辦公時間」會議</a>。</p>
+    </button></h2><p>Milvus 2.6 中的 MinHash LSH 是 AI 資料處理的一大躍進。一開始是用於 LLM 資料重複刪除的解決方案，現在則為更廣泛的使用個案打開了大門 - 網頁內容清理、目錄管理、剽竊偵測等。</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">開始使用 Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 現已上市。除了 MinHash LSH 之外，它還引進了數十項新功能和效能最佳化，例如分層儲存、RabbitQ 量化方法，以及增強的全文檢索和多租戶功能，直接解決當今向量檢索最迫切的挑戰：在有效擴充的同時控制成本。</p>
+<p>準備好探索 Milvus 所提供的一切了嗎？請深入閱讀我們的<a href="https://milvus.io/docs/release_notes.md"> 發行說明</a>、瀏覽<a href="https://milvus.io/docs"> 完整的說明文件</a>，或查看我們的<a href="https://milvus.io/blog"> 功能部落格</a>。</p>
+<p>如果您有任何問題或有類似的使用案例，請隨時透過<a href="https://discord.com/invite/8uyFbECzPX">Discord 社群</a>聯絡我們，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提出問題 - 我們隨時準備幫助您充分利用 Milvus 2.6。</p>

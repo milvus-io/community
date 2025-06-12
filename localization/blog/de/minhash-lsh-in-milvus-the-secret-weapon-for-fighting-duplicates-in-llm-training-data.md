@@ -23,8 +23,8 @@ origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
 <p>Große Sprachmodelle (Large Language Models, LLMs) haben die KI-Landschaft durch ihre Fähigkeit, Code zu schreiben, Inhalte zu erstellen und komplexe Probleme zu lösen, verändert. Diese leistungsstarken Modelle benötigen jedoch enorme Mengen an hochwertigen Daten für ihr Training.</p>
-<p>Die Herausforderung besteht darin, dass die Rohdaten für das Training oft erhebliche Redundanzen enthalten. Das ist so, als würde man ein Kind unterrichten, indem man die gleichen Lektionen immer wieder wiederholt und dabei andere wichtige Themen auslässt. Ein großes KI-Unternehmen trat mit genau diesem Problem an uns heran: Es wollte ein ehrgeiziges neues Sprachmodell entwickeln, hatte aber Probleme mit der Deduplizierung von mehreren Milliarden Dokumenten. Herkömmliche Abgleichsmethoden waren für dieses Volumen nicht geeignet, und spezialisierte Deduplizierungstools erforderten enorme Rechenressourcen, was sie wirtschaftlich unrentabel machte.</p>
-<p>Um dieses Problem zu lösen, haben wir eine Lösung entwickelt: MinHash LSH (Locality Sensitive Hashing) Indexierung, die in Milvus 2.6 verfügbar sein wird. In diesem Artikel wird untersucht, wie MinHash LSH das Problem der Datendeduplizierung für LLM-Training effizient löst.</p>
+<p>Die Herausforderung besteht darin, dass die Rohdaten für das Training oft erhebliche Redundanzen enthalten. Das ist so, als würde man ein Kind unterrichten, indem man die gleichen Lektionen immer wieder wiederholt und dabei andere wichtige Themen auslässt. Ein großes KI-Unternehmen trat mit genau diesem Problem an uns heran: Es wollte ein ehrgeiziges neues Sprachmodell entwickeln, hatte aber Probleme mit der Deduplizierung von mehreren Milliarden Dokumenten. Herkömmliche Matching-Methoden konnten diese Menge nicht bewältigen, und spezialisierte Deduplizierungs-Tools erforderten enorme Rechenressourcen, was sie wirtschaftlich unrentabel machte.</p>
+<p>Um dieses Problem zu lösen, haben wir in Milvus 2.6 die MinHash LSH (Locality Sensitive Hashing) Indizierung eingeführt. In diesem Artikel wird untersucht, wie MinHash LSH das Problem der Datendeduplizierung für LLM-Training effizient löst.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -59,7 +59,7 @@ origin: >-
 <li><p><strong>Approximate Matching:</strong> Findet Beinahe-Duplikate mit Algorithmen wie MinHash LSH und Jaccard-Ähnlichkeit.</p></li>
 <li><p><strong>Semantisches Matching:</strong> Identifiziert Inhalte mit ähnlicher Bedeutung mithilfe von Vektoreinbettungen.</p></li>
 </ul>
-<p>Bei Pre-Training-Korpora, die Terabytes oder sogar Petabytes umfassen, sind herkömmliche exakte Matching-Methoden wie paarweise Vergleiche rechnerisch nicht durchführbar. Die semantische Deduplizierung fügt durch die Verwendung von Einbettungsmodellen zur Erzeugung von Vektoren einen erheblichen Overhead hinzu. Wir brauchen innovativere Näherungsmethoden - wie <strong>MinHash LSH - die</strong>ein Gleichgewicht zwischen Recall und Präzision herstellen und gleichzeitig die Kosten überschaubar halten, so dass Deduplizierung in großem Maßstab praktikabel ist.</p>
+<p>Bei Pre-Training-Korpora, die Terabytes oder sogar Petabytes umfassen, sind herkömmliche exakte Matching-Methoden wie paarweise Vergleiche rechnerisch nicht durchführbar. Die semantische Deduplizierung fügt durch die Verwendung von Einbettungsmodellen zur Erzeugung von Vektoren einen erheblichen Overhead hinzu. Wir brauchen innovativere Näherungsmethoden - wie <strong>MinHash LSH -, die</strong>ein Gleichgewicht zwischen Recall und Präzision herstellen und gleichzeitig die Kosten überschaubar halten, so dass Deduplizierung in großem Maßstab praktikabel wird.</p>
 <h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH: Effiziente Erkennung von Beinahe-Duplikaten in riesigen Datensätzen<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -101,7 +101,7 @@ origin: >-
 <p>Bei der Berechnung der Ähnlichkeit liefert die Wahrscheinlichkeit, dass die Hash-Werte an denselben Positionen in den MinHash-Signaturen zweier Dokumente übereinstimmen (was dem Jaccard-Abstand dieser Signaturen entspricht), eine gute Annäherung an die Jaccard-Ähnlichkeit ihrer ursprünglichen Schindelsätze. Auf diese Weise können wir die Ähnlichkeit von Dokumenten effektiv schätzen, ohne die größeren Originaltexte direkt zu vergleichen; stattdessen können wir ihre kompakten MinHash-Signaturen analysieren.</p>
 <p>Beim MinHash-Prinzip wird das Wort mit dem kleinsten Hash-Wert verwendet, um das gesamte Dokument zu repräsentieren, wobei die Genauigkeit durch die Einbeziehung zusätzlicher Hash-Funktionen verbessert wird. Geringfügige Wortänderungen werden wahrscheinlich übersehen, da sie in der Regel keine Auswirkungen auf den minimalen Hash-Wert haben. Im Gegensatz dazu verändern größere Änderungen den Hashwert und werden leichter erkannt. Diese Methode kann als ein Min-Pooling von Hash-Werten über verschiedene Wörter hinweg betrachtet werden. Neben MinHash gibt es auch Alternativen wie SimHash zur Generierung von Dokumentensignaturen, die hier jedoch nicht behandelt werden.</p>
 <h3 id="Step-2-Identifying-Similar-Documents-via-LSH" class="common-anchor-header">Schritt 2: Identifizierung ähnlicher Dokumente über LSH</h3><p>Selbst mit kompakten MinHash-Signaturen bleibt der Vergleich jedes Paares über Millionen oder Milliarden von Dokumenten hinweg rechenintensiv. An dieser Stelle kommt <strong>Locality Sensitive Hashing (LSH)</strong> ins Spiel.</p>
-<p>Der Kerngedanke von LSH ist die Verwendung von Hash-Funktionen, die <strong>absichtlich Kollisionen verursachen - ähnliche</strong>Elemente werden mit größerer Wahrscheinlichkeit in denselben Bucket gehasht, unähnliche hingegen nicht. Dies ist das Gegenteil von traditionellem Hashing, bei dem Kollisionen vermieden werden sollen.</p>
+<p>Der Kerngedanke von LSH ist die Verwendung von Hash-Funktionen, die <strong>absichtlich Kollisionen verursachen - ähnliche</strong>Elemente werden mit größerer Wahrscheinlichkeit in denselben Bucket gehasht, während unähnliche Elemente nicht gehasht werden. Dies ist das Gegenteil von traditionellem Hashing, bei dem Kollisionen vermieden werden sollen.</p>
 <p>Eine beliebte LSH-Strategie für MinHash ist die <strong>Banding-Technik</strong>:</p>
 <ol>
 <li><p><strong>Banding</strong>: Jede MinHash-Signatur (ein Vektor der Länge <em>N</em>) wird in <em>b</em> Bänder mit jeweils <em>r</em> Dims<em>(N = b × r</em>) aufgeteilt.</p></li>
@@ -280,4 +280,21 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>MinHash LSH in Milvus 2.6 ist ein großer Schritt nach vorn in der KI-Datenverarbeitung. Was als Lösung für die Deduplizierung von LLM-Daten begann, öffnet nun die Türen zu breiteren Anwendungsfällen - Bereinigung von Webinhalten, Katalogmanagement, Plagiatserkennung und mehr.</p>
-<p>Wenn Sie einen ähnlichen Anwendungsfall haben, kontaktieren Sie uns bitte auf dem <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a>, um sich für eine <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">Sprechstunde</a> anzumelden.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Erste Schritte mit Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 ist jetzt verfügbar. Zusätzlich zu MinHash LSH werden Dutzende neuer Funktionen und Leistungsoptimierungen eingeführt, wie z. B. Tiered Storage, RabbitQ-Quantisierungsmethode und verbesserte Volltextsuche und Mandantenfähigkeit, die sich direkt mit den dringendsten Herausforderungen der heutigen Vektorsuche befassen: effiziente Skalierung bei kontrollierten Kosten.</p>
+<p>Sind Sie bereit, alles zu entdecken, was Milvus bietet? Schauen Sie sich unsere<a href="https://milvus.io/docs/release_notes.md"> Versionshinweise</a> an, lesen Sie die<a href="https://milvus.io/docs"> vollständige Dokumentation</a> oder lesen Sie unsere<a href="https://milvus.io/blog"> Feature-Blogs</a>.</p>
+<p>Wenn Sie Fragen haben oder einen ähnlichen Anwendungsfall, zögern Sie nicht, uns über unsere <a href="https://discord.com/invite/8uyFbECzPX">Discord-Community</a> zu kontaktieren oder ein Problem auf<a href="https://github.com/milvus-io/milvus"> GitHub</a> zu melden - wir sind hier, um Ihnen zu helfen, das Beste aus Milvus 2.6 zu machen.</p>

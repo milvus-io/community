@@ -24,8 +24,8 @@ origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
 <p>I modelli linguistici di grandi dimensioni (LLM) hanno trasformato il panorama dell'intelligenza artificiale grazie alla loro capacità di scrivere codice, creare contenuti e risolvere problemi complessi. Tuttavia, questi potenti modelli richiedono enormi quantità di dati di alta qualità per alimentare il loro addestramento.</p>
-<p>La sfida è che i dati di addestramento grezzi spesso contengono una notevole ridondanza. È come insegnare a un bambino ripetendo sempre le stesse lezioni e saltando altri argomenti importanti. Una grande azienda di intelligenza artificiale si è rivolta a noi proprio per questo problema: stava costruendo un nuovo modello linguistico ambizioso, ma aveva difficoltà a deduplicare decine di miliardi di documenti. I metodi di corrispondenza tradizionali non erano in grado di adattarsi a questo volume e gli strumenti di deduplicazione specializzati richiedevano enormi risorse computazionali, rendendoli economicamente non convenienti.</p>
-<p>Per risolvere questo problema, la nostra soluzione è: l'indicizzazione MinHash LSH (Locality Sensitive Hashing), che sarà disponibile con Milvus 2.6. In questo articolo verrà analizzato come MinHash LSH risolve in modo efficiente il problema della deduplicazione dei dati per la formazione LLM.</p>
+<p>La sfida è che i dati di addestramento grezzi spesso contengono una notevole ridondanza. È come insegnare a un bambino ripetendo sempre le stesse lezioni e saltando altri argomenti importanti. Una grande azienda di intelligenza artificiale si è rivolta a noi proprio per questo problema: stava costruendo un nuovo modello linguistico ambizioso, ma aveva difficoltà a deduplicare decine di miliardi di documenti. I metodi di corrispondenza tradizionali non erano in grado di gestire questo volume e gli strumenti di deduplicazione specializzati richiedevano enormi risorse computazionali, rendendoli economicamente non convenienti.</p>
+<p>Per risolvere questo problema, in Milvus 2.6 abbiamo introdotto l'indicizzazione MinHash LSH (Locality Sensitive Hashing). Questo articolo analizza come MinHash LSH risolve in modo efficiente il problema della deduplicazione dei dati per la formazione LLM.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -137,7 +137,7 @@ origin: >-
 <li><p><strong>Distribuito e scalabile:</strong> Costruita sull'architettura cloud-native di Milvus, la funzione supporta la scalabilità orizzontale per grandi insiemi di dati e l'elaborazione ad alto rendimento.</p></li>
 </ul>
 <p>Questa integrazione ha dato risultati impressionanti. Eseguendo MinHash LSH su Milvus<a href="https://zilliz.com/cloud">(Zilliz Cloud</a>) completamente gestito, abbiamo aiutato questo utente a deduplicare <strong>10 miliardi di documenti</strong> in modo efficiente. Rispetto al precedente approccio basato su MapReduce, la nuova soluzione ha <strong>più che raddoppiato la velocità di elaborazione</strong> e ha consentito un <strong>risparmio sui costi di 3-5 volte</strong>, grazie all'indicizzazione e all'esecuzione ottimizzata delle query di Milvus.</p>
-<h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">Operazioni pratiche: deduplicazione di insiemi di dati LLM con Milvus<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
+<h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">Operazioni pratiche: deduplicazione di set di dati LLM con Milvus<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -157,7 +157,7 @@ origin: >-
 <ol>
 <li><p>Leggere i documenti grezzi</p></li>
 <li><p>Scremare (tokenizzare o dividere in pezzi) ogni documento</p></li>
-<li><p>Applicare funzioni hash multiple per generare una firma MinHash (ad esempio, un array uint64 di dimensione 128).</p></li>
+<li><p>Applicare funzioni hash multiple per generare una firma MinHash (per esempio, un array uint64 di dimensione 128).</p></li>
 </ol>
 <pre><code translate="no"><span class="hljs-keyword">from</span> datasketch <span class="hljs-keyword">import</span> MinHash
 
@@ -280,5 +280,22 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MinHash LSH in Milvus 2.6 è un balzo in avanti nell'elaborazione dei dati AI. Quella che era nata come soluzione per la deduplicazione dei dati LLM ora apre le porte a casi d'uso più ampi: pulizia dei contenuti web, gestione dei cataloghi, rilevamento del plagio e altro ancora.</p>
-<p>Se avete un caso d'uso simile, contattateci su <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> per iscrivervi a un <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">incontro in orario d'ufficio</a>.</p>
+    </button></h2><p>MinHash LSH in Milvus 2.6 è un balzo in avanti nell'elaborazione dei dati AI. Quella che era nata come una soluzione per la deduplicazione dei dati LLM ora apre le porte a casi d'uso più ampi: pulizia dei contenuti web, gestione dei cataloghi, rilevamento del plagio e altro ancora.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Come iniziare con Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 è ora disponibile. Oltre a MinHash LSH, introduce decine di nuove funzionalità e ottimizzazioni delle prestazioni, come l'archiviazione a livelli, il metodo di quantizzazione RabbitQ, la ricerca full-text migliorata e la multitenancy, affrontando direttamente le sfide più urgenti della ricerca vettoriale di oggi: scalare in modo efficiente mantenendo i costi sotto controllo.</p>
+<p>Siete pronti a scoprire tutto ciò che Milvus offre? Consultate le nostre<a href="https://milvus.io/docs/release_notes.md"> note di rilascio</a>, la<a href="https://milvus.io/docs"> documentazione completa</a> o i nostri<a href="https://milvus.io/blog"> blog sulle funzionalità</a>.</p>
+<p>Se avete domande o un caso d'uso simile, non esitate a contattarci attraverso la nostra <a href="https://discord.com/invite/8uyFbECzPX">comunità Discord</a> o a segnalare un problema su<a href="https://github.com/milvus-io/milvus"> GitHub</a>: siamo qui per aiutarvi a sfruttare al massimo Milvus 2.6.</p>

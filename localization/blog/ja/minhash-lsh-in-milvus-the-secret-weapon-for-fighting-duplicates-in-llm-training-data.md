@@ -21,7 +21,7 @@ origin: >-
 ---
 <p>大規模言語モデル（LLM）は、コードを書き、コンテンツを作成し、複雑な問題を解決する能力によって、AIの状況を一変させた。しかし、このような強力なモデルの学習には、膨大な量の高品質データが必要です。</p>
 <p>課題は、生のトレーニング・データにはしばしば大きな冗長性が含まれることだ。それは、他の重要なトピックを飛ばして同じレッスンを何度も繰り返して子供に教えるようなものだ。ある大手AI企業がまさにこの問題を抱え、私たちに相談してきました。彼らは野心的な新しい言語モデルを構築していましたが、何百億ものドキュメントの重複排除に苦労していました。従来のマッチング手法ではこのボリュームに対応できず、専用の重複排除ツールには膨大な計算リソースが必要で、経済的に成り立たなかった。</p>
-<p>この問題を解決するために、我々のソリューションはMinHash LSH (Locality Sensitive Hashing)インデックス作成であり、Milvus 2.6で利用可能になる。この記事では、MinHash LSHがLLMトレーニングのデータ重複排除問題をどのように効率的に解決するのかを探る。</p>
+<p>この問題を解決するために、我々はMilvus 2.6でMinHash LSH (Locality Sensitive Hashing)インデックスを導入した。この記事では、MinHash LSHがLLMトレーニングのデータ重複排除問題をどのように効率的に解決するのかを探る。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -102,12 +102,12 @@ origin: >-
 <p>MinHashでは、一般的なLSH戦略は<strong>バンディング技術</strong>である：</p>
 <ol>
 <li><p><strong>バンディング</strong>：バンディング：各MinHash署名（長さ<em>Nの</em>ベクトル）を<em>b個の</em>バンドに分割し、それぞれを<em>r</em><em>dims（N = b × r</em>）とする。</p></li>
-<li><p><strong>バンドをハッシュする：</strong>標準的なハッシュ関数を使用して、各バンド（<em>r個の</em>値のサブベクトル）をバケツにハッシ ングする。</p></li>
+<li><p><strong>バンドをハッシュする：</strong>標準的なハッシュ関数を使用して、各バンド（<em>r個の</em>値のサブベクトル）をバケツにハッ シュする。</p></li>
 <li><p><strong>候補ペア：</strong>2つの文書が<strong>いずれかの</strong>バンドでバケットを共有している場合、それらはマッチの可能性があるものとしてフラグが立てられる。</p></li>
 </ol>
 <p>バンドの数(b)とバンドごとの次元数®を調整することで、想起、精度、検索効率のトレードオフを制御することができる。</p>
 <p>重要な考え方は、類似性の高いドキュメントは、MinHash署名に多くの一致するハッシュ値を持つということです。これらの署名がバンドに分割される場合、すべての一致する値を持つバンドが1 つでもあれば、2つのドキュメントを同じバケツに入れるのに十分です。文書が類似していればいるほど、少なくとも1つのバンドでこの現象が起こる確率が高くなり、LSHはすべての署名を網羅的に比較することなく、候補となるペアを効率的に浮かび上がらせることができる。</p>
-<p>つまり、<strong>MinHash + LSHは</strong>スケーラブルな近似重複排除を可能にする：MinHashはドキュメントをコンパクトな署名に圧縮し、LSHはマッチしそうなものをグループ化することで検索空間を効率的に狭める。これは、群衆の中から双子を見つけるようなものだ。まず、全員の特徴を素早くスナップショットし（MinHash）、似ているものをグループ化し（LSH）、次に小さなグループから実際の重複を精査する。</p>
+<p>つまり、<strong>MinHash + LSHは</strong>スケーラブルな近似重複排除を可能にする：MinHashはドキュメントをコンパクトな署名に圧縮し、LSHはマッチしそうなものをグループ化することで検索空間を効率的に狭める。これは、群衆の中から双子を見つけるようなものだ。まず、全員の特徴を素早くスナップショットし（MinHash）、似ているものをグループ化し（LSH）、次に、実際の重複がないかどうか、小さなグループを綿密に調べる。</p>
 <h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">Milvus 2.6でのMinHash LSHの統合<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -128,11 +128,11 @@ origin: >-
 <p>Milvusが高スループットのベクトルデータを処理できる強みを認識していたことから、自然なアイデアが浮かんだ：<strong><em>MilvusにMinHash LSHをネイティブに組み込み、近似重複排除をファーストクラスのデータベース機能にしたらどうだろうか？</em></strong></p>
 <p>このアプローチにより、Milvus内で重複排除からセマンティック検索までの完全なワークフローを実現し、Milvusのスケーラビリティと統一APIを活用しながらMLOpsを簡素化することができる。私たちはパートナーとともに、MinHash LSHをMilvusのクラウドネイティブアーキテクチャに最適化し、大規模重複排除のための高速でスケーラブルなソリューションを実現しました。</p>
 <h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Milvus 2.6のコア機能は以下の通りです：</h3><ul>
-<li><p><strong>ネイティブMinHash LSHインデキシング：</strong>LSHの標準的なバンディング技術を実装し、リコールを向上させるためにオプションでJaccard再順位をサポート。様々なワークロードに柔軟に対応できるよう、インメモリとmmapベースの両方の実装を提供します。</p></li>
+<li><p><strong>ネイティブMinHash LSHインデキシング：</strong>LSHの標準的なバンディング技術を実装し、リコールを向上させるためにオプションでJaccard再順位をサポート。様々なワークロードに柔軟に対応できるよう、インメモリベースとmmapベースの両方の実装を提供します。</p></li>
 <li><p><strong>シームレスなAPI統合：</strong>ユーザーは、Milvusの標準SDKと宣言型APIを使用して、MinHashベクトルフィールドの定義、<code translate="no">MINHASH_LSH</code> インデックスの構築、署名データの挿入、近似類似検索の実行が可能です。</p></li>
-<li><p><strong>分散性と拡張性：</strong>Milvusのクラウドネイティブアーキテクチャ上に構築されたこの機能は、大規模なデータセットや高スループット処理に対応する水平スケーリングをサポートします。</p></li>
+<li><p><strong>分散性と拡張性：</strong>Milvusのクラウドネイティブアーキテクチャ上に構築されたこの機能は、大規模なデータセットや高スループット処理のための水平スケーリングをサポートしています。</p></li>
 </ul>
-<p>この統合は素晴らしい結果をもたらした。フルマネージドMilvus<a href="https://zilliz.com/cloud">（Zilliz Cloud</a>）上でMinHash LSHを実行することで、このユーザーは<strong>100億のドキュメントを</strong>効率的に重複排除することができました。以前のMapReduceベースのアプローチと比較すると、Milvusの最適化されたインデックス作成とクエリ実行により、新しいソリューションは<strong>処理速度を2倍以上に向上さ</strong>せ、<strong>3～5倍のコスト削減を</strong>達成した。</p>
+<p>この統合は素晴らしい結果をもたらした。フルマネージドMilvus<a href="https://zilliz.com/cloud">（Zilliz Cloud</a>）上でMinHash LSHを実行することで、このユーザーは<strong>100億のドキュメントを</strong>効率的に重複排除することができました。以前のMapReduceベースのアプローチと比較すると、Milvusの最適化されたインデックス作成とクエリ実行により、新しいソリューションは<strong>処理速度を2倍以上に向上さ</strong>せ、<strong>3～5倍のコスト削減を</strong>達成しました。</p>
 <h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">ハンズオン：Milvusを使ったLLMデータセットの重複排除<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -149,11 +149,11 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6のMinHash LSHを使用して、スケールで近似的な重複排除を実行してみましょう。</p>
-<h3 id="Prerequisite-Generating-MinHash-Signatures" class="common-anchor-header">前提条件MinHashシグネチャの生成</h3><p>Milvusは、<strong>事前に生成された</strong>MinHash署名のインデックス作成と検索を行います。Pythonの<code translate="no">datasketch</code> 、またはカスタム実装のようなツールを使用して、前処理中にこれらを生成する必要があります。一般的な手順は以下のとおりです：</p>
+<h3 id="Prerequisite-Generating-MinHash-Signatures" class="common-anchor-header">前提条件MinHashシグネチャの生成</h3><p>Milvusは、<strong>事前に生成された</strong>MinHashシグネチャのインデックス作成と検索を行います。Pythonの<code translate="no">datasketch</code> 、またはカスタム実装のようなツールを使用して、前処理中にこれらを生成する必要があります。一般的な手順は以下のとおりです：</p>
 <ol>
 <li><p>生文書の読み取り</p></li>
 <li><p>各文書をシングル化（トークン化またはチャンク化）する。</p></li>
-<li><p>複数のハッシュ関数を適用して、MinHash署名（例えば、サイズ128のuint64配列）を生成する。</p></li>
+<li><p>複数のハッシュ関数を適用してMinHashシグネチャを生成する（例えば、サイズ128のuint64配列）。</p></li>
 </ol>
 <pre><code translate="no"><span class="hljs-keyword">from</span> datasketch <span class="hljs-keyword">import</span> MinHash
 
@@ -219,7 +219,7 @@ client.create_collection(
     index_params=index_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>パラメータのチューニングに関する注意事項：MinHash LSHの有効性は、パラメータの選択に大きく依存します。例えば、MinHash署名生成時に使用されるハッシュ関数の数（つまり、<code translate="no">MINHASH_DIM</code> ）は、署名の精度とサイズに影響します。LSHフェーズでは、バンドの数（<code translate="no">num_bands</code> ）とバンドごとの行数によって、類似性閾値の感度範囲と、再現率と精度のバランスが決定される。ユーザはデータセットの特性や重複排除の要件に基づき、実験と微調整を行う必要がある。これはしばしば反復プロセスである。</p>
+<p>パラメータのチューニングに関する注意事項：MinHash LSHの有効性は、パラメータの選択に大きく依存します。たとえば、MinHash署名生成時に使用されるハッシュ関数の数（つまり、<code translate="no">MINHASH_DIM</code> ）は、署名の精度とサイズに影響します。LSHフェーズでは、バンドの数（<code translate="no">num_bands</code> ）とバンドごとの行数によって、類似性閾値の感度範囲と、再現率と精度のバランスが決定される。ユーザはデータセットの特性や重複排除の要件に基づき、実験と微調整を行う必要がある。これはしばしば反復プロセスである。</p>
 <h3 id="Step-3-Insert-MinHash-Signatures" class="common-anchor-header"><strong>ステップ3：MinHashシグネチャの挿入</strong></h3><p>ドキュメントのバッチと、それに対応するMinHash署名があるとする。</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert data in batches</span>
 batch_size = <span class="hljs-number">2000</span>
@@ -277,4 +277,21 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6のMinHash LSHは、AIデータ処理における飛躍的な進歩である。LLMデータ重複排除のソリューションとして始まったMinHash LSHは、今やウェブコンテンツのクリーンアップ、カタログ管理、剽窃検出など、より広範なユースケースへの扉を開いている。</p>
-<p>同様のユースケースをお持ちの方は、<a href="https://discord.com/invite/8uyFbECzPX">Milvus Discordで</a> <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">オフィスアワー・ミーティングに</a>お申し込みください。</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Milvus 2.6を始めよう<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6は現在利用可能です。MinHash LSHに加え、階層型ストレージ、RabbitQ量子化メソッド、強化された全文検索とマルチテナンシーなど、多数の新機能とパフォーマンスの最適化が導入されており、今日のベクトル検索における最も差し迫った課題である、コストを抑えながら効率的にスケーリングするという課題に直接取り組んでいます。</p>
+<p>Milvusが提供するすべてのものをご覧になる準備はできましたか？<a href="https://milvus.io/docs/release_notes.md"> リリースノート</a>、<a href="https://milvus.io/docs"> 完全なドキュメントの</a>閲覧、または<a href="https://milvus.io/blog"> 機能ブログを</a>ご覧ください。</p>
+<p>ご質問がある場合、または類似のユースケースをお持ちの場合は、私たちの<a href="https://discord.com/invite/8uyFbECzPX">Discordコミュニティを通じて</a>、または<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題をご申請ください。</p>

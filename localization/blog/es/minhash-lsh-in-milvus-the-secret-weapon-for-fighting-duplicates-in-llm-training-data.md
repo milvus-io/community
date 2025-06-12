@@ -25,7 +25,7 @@ origin: >-
 ---
 <p>Los grandes modelos lingüísticos (LLM) han transformado el panorama de la IA gracias a su capacidad para escribir código, crear contenidos y resolver problemas complejos. Sin embargo, estos potentes modelos requieren enormes cantidades de datos de alta calidad para alimentar su entrenamiento.</p>
 <p>El reto es que los datos de entrenamiento en bruto a menudo contienen una redundancia significativa. Es como enseñar a un niño repitiendo las mismas lecciones una y otra vez mientras se saltan otros temas importantes. Una gran empresa de IA se puso en contacto con nosotros precisamente por este problema: estaban creando un nuevo y ambicioso modelo lingüístico, pero tenían dificultades para desduplicar decenas de miles de millones de documentos. Los métodos de comparación tradicionales no podían adaptarse a este volumen, y las herramientas de deduplicación especializadas requerían enormes recursos informáticos, lo que las hacía económicamente inviables.</p>
-<p>Para resolver este problema, nuestra solución es: la indexación MinHash LSH (Locality Sensitive Hashing), que estará disponible en Milvus 2.6. Este artículo explorará cómo MinHash LSH resuelve eficientemente el problema de la deduplicación de datos para la formación LLM.</p>
+<p>Para resolver este problema, en Milvus 2.6 introdujimos la indexación MinHash LSH (Locality Sensitive Hashing). Este artículo explorará cómo MinHash LSH resuelve eficazmente el problema de la deduplicación de datos para la formación LLM.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -280,5 +280,22 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MinHash LSH en Milvus 2.6 es un salto adelante en el procesamiento de datos de IA. Lo que comenzó como una solución para la deduplicación de datos LLM ahora abre las puertas a casos de uso más amplios: limpieza de contenido web, gestión de catálogos, detección de plagio y más.</p>
-<p>Si tiene un caso de uso similar, póngase en contacto con nosotros a través de <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> para concertar una <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">reunión en la hora de oficina</a>.</p>
+    </button></h2><p>MinHash LSH en Milvus 2.6 es un salto adelante en el procesamiento de datos de IA. Lo que comenzó como una solución para la deduplicación de datos LLM ahora abre las puertas a casos de uso más amplios: limpieza de contenido web, gestión de catálogos, detección de plagio, etc.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Primeros pasos con Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 ya está disponible. Además de MinHash LSH, introduce docenas de nuevas funciones y optimizaciones de rendimiento, como el almacenamiento por niveles, el método de cuantificación RabbitQ y la búsqueda de texto completo y multitenencia mejoradas, que abordan directamente los retos más apremiantes de la búsqueda vectorial actual: escalar de forma eficiente manteniendo los costes bajo control.</p>
+<p>¿Listo para explorar todo lo que ofrece Milvus? Sumérjase en nuestras<a href="https://milvus.io/docs/release_notes.md"> notas de la versión</a>, consulte la<a href="https://milvus.io/docs"> documentación completa</a> o eche un vistazo a nuestros<a href="https://milvus.io/blog"> blogs de funciones</a>.</p>
+<p>Si tiene alguna pregunta o tiene un caso de uso similar, no dude en ponerse en contacto con nosotros a través de nuestra <a href="https://discord.com/invite/8uyFbECzPX">comunidad Discord</a> o presentar una incidencia en<a href="https://github.com/milvus-io/milvus"> GitHub</a> - estamos aquí para ayudarle a sacar el máximo provecho de Milvus 2.6.</p>

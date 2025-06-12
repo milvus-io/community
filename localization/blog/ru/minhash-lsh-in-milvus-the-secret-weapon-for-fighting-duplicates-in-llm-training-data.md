@@ -9,8 +9,7 @@ date: 2025-05-16T00:00:00.000Z
 desc: >-
   MinHash LSH в Milvus 2.6 предлагает эффективное решение для дедупликации
   массивных обучающих наборов данных LLM, обеспечивая двукратную скорость
-  обработки и трех-пятикратную экономию средств по сравнению с традиционными
-  методами.
+  обработки и 3-кратную экономию средств по сравнению с традиционными методами.
 cover: assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png
 tag: Engineering
 recommend: true
@@ -25,7 +24,7 @@ origin: >-
 ---
 <p>Большие языковые модели (БЯМ) изменили ландшафт искусственного интеллекта благодаря своей способности писать код, создавать контент и решать сложные задачи. Однако для обучения этих мощных моделей требуются огромные объемы высококачественных данных.</p>
 <p>Проблема заключается в том, что необработанные данные для обучения часто содержат значительную избыточность. Это все равно что учить ребенка, повторяя одни и те же уроки снова и снова, пропуская другие важные темы. Крупная компания, занимающаяся разработкой искусственного интеллекта, обратилась к нам именно с этой проблемой - они создавали новую амбициозную языковую модель, но столкнулись с проблемой дедупликации десятков миллиардов документов. Традиционные методы сопоставления не могли справиться с таким объемом, а специализированные инструменты дедупликации требовали огромных вычислительных ресурсов, что делало их экономически нецелесообразными.</p>
-<p>Для решения этой проблемы мы разработали решение: индексирование MinHash LSH (Locality Sensitive Hashing), которое будет доступно в Milvus 2.6. В этой статье мы рассмотрим, как MinHash LSH эффективно решает проблему дедупликации данных для обучения LLM.</p>
+<p>Чтобы решить эту проблему, в Milvus 2.6 мы представили индексирование MinHash LSH (Locality Sensitive Hashing). В этой статье мы рассмотрим, как MinHash LSH эффективно решает проблему дедупликации данных для обучения LLM.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -49,7 +48,7 @@ origin: >-
       </svg>
     </button></h2><p>Качественные и разнообразные данные необходимы для обучения мощных LLM. Когда в обучающих данных появляется дублированный контент, это создает несколько серьезных проблем:</p>
 <ul>
-<li><p><strong>Нерациональное использование ресурсов:</strong> Избыточные данные увеличивают время обучения, затраты и потребление энергии.</p></li>
+<li><p><strong>Нерациональное использование ресурсов:</strong> Дублирование данных увеличивает время обучения, затраты и энергопотребление.</p></li>
 <li><p><strong>Снижение производительности:</strong> Модели могут чрезмерно подстраиваться под повторяющийся контент, что ограничивает их способность обобщать новую информацию.</p></li>
 <li><p><strong>Эффект запоминания:</strong> Дублирование контента повышает вероятность того, что модели запомнят и воспроизведут конкретный текст дословно. Это также может привести к утечке конфиденциальной информации или нарушению авторских прав.</p></li>
 <li><p><strong>Ошибочные оценки:</strong> Дубликаты между обучающими и тестовыми наборами могут случайно завысить показатели эффективности.</p></li>
@@ -79,7 +78,7 @@ origin: >-
     </button></h2><p>Чтобы найти близкие дубликаты в океане обучающих данных, нам нужен эффективный и точный алгоритм приближенного сопоставления. MinHash LSH (Locality Sensitive Hashing) - отличный инструмент для достижения этой цели. Давайте разберем это сложное на первый взгляд понятие пошагово.</p>
 <h3 id="Step-1-Representing-Documents-with-MinHash" class="common-anchor-header">Шаг 1: Представление документов с помощью MinHash</h3><p>Во-первых, нам нужен способ измерения сходства документов. Стандартный подход использует сходство по Жаккарду:</p>
 <p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo></mrow><annotation encoding="application/x-tex">∣A∩B∣∣A∪B∣J(A,B) = \frac{|A\cap B|}{|A \cup B|}</annotation></semantics></math></span></span></span><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="katex-display"><span class="katex">J<span class="katex-html" aria-hidden="true"><span class="base"><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span></span></span> B<span class="katex-html" aria-hidden="true"><span class="base"><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span> =</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="katex-display"><span class="katex"></span></span><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span> <span class="katex-display"><span class="katex"></span></span><span class="mopen nulldelimiter"></span> <span class="katex-display"><span class="katex"></span></span><span class="pstrut" style="height:3em;"></span> <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="mord"><span class="mord mathnormal">∣A</span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="mord"><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">B∣</span></span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span class="katex-display"><span class="katex"></span></span><span class="pstrut" style="height:3em;"></span> <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-3.677em;"><span class="mord"><span class="mord mathnormal">∣A</span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-3.677em;"><span class="mord"><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span></span></span><span class="vlist-s">B∣</span></span></span></span></span></span></span>.</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span><span class="mclose nulldelimiter"></span></p>
-<p>Эта формула измеряет степень совпадения между документом A и документом B - в частности, отношение общего количества элементов к общему количеству уникальных элементов. Более высокое значение означает, что документы более похожи.</p>
+<p>Эта формула измеряет степень дублирования документа A и документа B - в частности, отношение общего количества элементов к общему количеству уникальных элементов. Более высокое значение означает, что документы более похожи.</p>
 <p>Однако прямой расчет этого показателя для миллиардов пар документов требует значительных ресурсов и может занять годы. MinHash создает компактные "отпечатки пальцев" (подписи), которые сохраняют отношения сходства и делают сравнение гораздо быстрее.</p>
 <ol>
 <li><strong>Шингование:</strong> Разбиваем каждый документ на перекрывающиеся последовательности слов или символов (k-синглы). Например, предложение "Я люблю векторный поиск" с k=3 (по словам) дает: {"Я люблю вектор", "люблю векторный поиск"}.</li>
@@ -91,7 +90,7 @@ origin: >-
   </span>
 </p>
 <ol start="2">
-<li><strong>MinHashing:</strong> примените несколько хэш-функций к каждому набору шинглов и запишите минимальное значение хэша, полученное от каждой функции. В результате получается вектор подписи для каждого документа.</li>
+<li><strong>MinHashing:</strong> примените несколько хэш-функций к каждому набору шинглов и запишите минимальное значение хэша из каждой функции. В результате получается вектор подписи для каждого документа.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -280,5 +279,22 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MinHash LSH в Milvus 2.6 - это скачок вперед в области обработки данных ИИ. То, что начиналось как решение для дедупликации данных LLM, теперь открывает двери для более широких областей применения - очистка веб-контента, управление каталогами, обнаружение плагиата и многое другое.</p>
-<p>Если у вас есть похожий случай использования, пожалуйста, свяжитесь с нами в <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a>, чтобы записаться на <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">встречу Office Hour</a>.</p>
+    </button></h2><p>MinHash LSH в Milvus 2.6 - это скачок вперед в области обработки данных ИИ. То, что начиналось как решение для дедупликации данных LLM, теперь открывает двери к более широким областям применения - очистке веб-контента, управлению каталогами, обнаружению плагиата и многим другим.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Начало работы с Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 доступен уже сейчас. Помимо MinHash LSH, в нем представлены десятки новых функций и оптимизаций производительности, таких как многоуровневое хранилище, метод квантования RabbitQ, улучшенный полнотекстовый поиск и многопользовательская лицензия, что напрямую решает самые актуальные проблемы векторного поиска: эффективное масштабирование при сохранении контроля над затратами.</p>
+<p>Готовы изучить все, что предлагает Milvus? Погрузитесь в наши<a href="https://milvus.io/docs/release_notes.md"> заметки о выпуске</a>, просмотрите<a href="https://milvus.io/docs"> полную документацию</a> или ознакомьтесь с нашими<a href="https://milvus.io/blog"> тематическими блогами</a>.</p>
+<p>Если у вас возникли вопросы или у вас есть похожий сценарий использования, обращайтесь к нам через наше <a href="https://discord.com/invite/8uyFbECzPX">сообщество Discord</a> или создайте проблему на<a href="https://github.com/milvus-io/milvus"> GitHub</a> - мы готовы помочь вам извлечь максимум пользы из Milvus 2.6.</p>

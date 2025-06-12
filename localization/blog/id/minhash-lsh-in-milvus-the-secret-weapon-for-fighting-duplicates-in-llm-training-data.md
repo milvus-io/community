@@ -24,7 +24,7 @@ origin: >-
 ---
 <p>Model Bahasa Besar (LLM) telah mengubah lanskap AI dengan kemampuannya untuk menulis kode, membuat konten, dan memecahkan masalah yang kompleks. Namun, model-model canggih ini membutuhkan data berkualitas tinggi dalam jumlah yang sangat besar untuk memicu pelatihan mereka.</p>
 <p>Tantangannya adalah data pelatihan mentah sering kali mengandung redundansi yang signifikan. Ini seperti mengajari seorang anak dengan mengulang pelajaran yang sama berulang-ulang sambil melewatkan topik penting lainnya. Sebuah perusahaan AI besar mendekati kami dengan masalah ini - mereka sedang membangun model bahasa baru yang ambisius, tetapi kesulitan dalam menduplikasi puluhan miliar dokumen. Metode pencocokan tradisional tidak dapat menskalakan volume ini, dan alat deduplikasi khusus membutuhkan sumber daya komputasi yang sangat besar, sehingga secara ekonomi tidak dapat dijalankan.</p>
-<p>Untuk mengatasi masalah ini, solusi kami adalah: Pengindeksan MinHash LSH (Locality Sensitive Hashing), yang akan tersedia di Milvus 2.6. Artikel ini akan mengeksplorasi bagaimana MinHash LSH secara efisien memecahkan masalah deduplikasi data untuk pelatihan LLM.</p>
+<p>Untuk mengatasi masalah ini, kami memperkenalkan pengindeksan MinHash LSH (Locality Sensitive Hashing) di Milvus 2.6. Artikel ini akan mengeksplorasi bagaimana MinHash LSH secara efisien memecahkan masalah deduplikasi data untuk pelatihan LLM.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
@@ -280,4 +280,21 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>MinHash LSH di Milvus 2.6 merupakan sebuah lompatan maju dalam pemrosesan data AI. Apa yang dimulai sebagai solusi untuk deduplikasi data LLM sekarang membuka pintu untuk kasus penggunaan yang lebih luas-pembersihan konten web, manajemen katalog, deteksi plagiarisme, dan banyak lagi.</p>
-<p>Jika Anda memiliki kasus penggunaan yang serupa, silakan hubungi kami di <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> untuk mendaftar ke <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">pertemuan Office Hour</a>.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Memulai dengan Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 sudah tersedia sekarang. Selain MinHash LSH, Milvus 2.6 memperkenalkan lusinan fitur baru dan pengoptimalan kinerja seperti penyimpanan berjenjang, metode kuantisasi RabbitQ, dan pencarian teks lengkap yang disempurnakan serta multitenancy, yang secara langsung menjawab tantangan paling mendesak dalam pencarian vektor saat ini: penskalaan yang efisien sambil menjaga biaya tetap terkendali.</p>
+<p>Siap menjelajahi semua yang ditawarkan Milvus? Selami<a href="https://milvus.io/docs/release_notes.md"> catatan rilis</a> kami, telusuri<a href="https://milvus.io/docs"> dokumentasi lengkap</a>, atau lihat<a href="https://milvus.io/blog"> blog fitur</a> kami.</p>
+<p>Jika Anda memiliki pertanyaan atau memiliki kasus penggunaan yang serupa, jangan ragu untuk menghubungi kami melalui <a href="https://discord.com/invite/8uyFbECzPX">komunitas Discord</a> kami atau mengajukan masalah di<a href="https://github.com/milvus-io/milvus"> GitHub</a> - kami di sini untuk membantu Anda memaksimalkan Milvus 2.6.</p>
