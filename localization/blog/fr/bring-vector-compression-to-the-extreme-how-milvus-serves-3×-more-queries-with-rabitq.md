@@ -151,7 +151,7 @@ index_params.add_index(
 <p>Voici quelques détails de bas niveau sur les boutons de configuration pour IVF, RaBitQ et le processus de raffinement :</p>
 <ul>
 <li><p><code translate="no">nlist</code> et <code translate="no">nprobe</code> sont des paramètres standard pour toutes les méthodes basées sur <code translate="no">IVF</code></p></li>
-<li><p><code translate="no">nlist</code> est un nombre entier non négatif qui spécifie le nombre total de godets IVF pour l'ensemble de données.</p></li>
+<li><p><code translate="no">nlist</code> est un entier non négatif qui spécifie le nombre total de godets IVF pour l'ensemble de données.</p></li>
 <li><p><code translate="no">nprobe</code> est un nombre entier non négatif qui spécifie le nombre d'ensembles IVF visités pour un seul vecteur de données au cours du processus de recherche. Il s'agit d'un paramètre lié à la recherche.</p></li>
 <li><p><code translate="no">rbq_bits_query</code> spécifie le niveau de quantification d'un vecteur de requête. Utilisez les valeurs 1...8 pour les niveaux de quantification <code translate="no">SQ1</code>...<code translate="no">SQ8</code>. La valeur 0 désactive la quantification. Il s'agit d'un paramètre lié à la recherche.</p></li>
 <li><p><code translate="no">refine</code>Les paramètres <code translate="no">refine_type</code> et <code translate="no">refine_k</code> sont des paramètres standard pour le processus d'affinage.</p></li>
@@ -187,6 +187,23 @@ index_params.add_index(
         ></path>
       </svg>
     </button></h2><p>RaBitQ marque une avancée significative dans la technologie de quantification vectorielle. En combinant la quantification binaire avec des stratégies d'encodage intelligentes, il réalise ce qui semblait impossible : une compression extrême avec une perte de précision minimale.</p>
-<p>À partir de la prochaine version 2.6, Milvus introduira IVF_RABITQ, intégrant cette puissante technique de compression avec les stratégies de regroupement et de raffinement IVF pour amener la quantification binaire en production. Cette combinaison crée un équilibre pratique entre la précision, la vitesse et l'efficacité de la mémoire qui peut transformer vos charges de travail de recherche vectorielle.</p>
-<p>Nous nous engageons à apporter davantage d'innovations de ce type à Milvus en open-source et à son service entièrement géré sur Zilliz Cloud, afin de rendre la recherche vectorielle plus efficace et plus accessible à tous.</p>
-<p>Restez à l'écoute de la version 2.6 de Milvus, qui contient de nombreuses autres fonctionnalités puissantes, et rejoignez notre communauté sur<a href="https://milvus.io/discord"> milvus.io/discord</a> pour en savoir plus, partager vos expériences ou poser des questions.</p>
+<p>À partir de la version 2.6, Milvus introduira IVF_RABITQ, intégrant cette puissante technique de compression avec les stratégies de regroupement et de raffinement IVF pour amener la quantification binaire en production. Cette combinaison crée un équilibre pratique entre la précision, la vitesse et l'efficacité de la mémoire qui peut transformer vos charges de travail de recherche vectorielle.</p>
+<p>Nous nous engageons à apporter davantage d'innovations de ce type à Milvus open-source et à son service entièrement géré sur Zilliz Cloud, afin de rendre la recherche vectorielle plus efficace et accessible à tous.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Démarrer avec Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 est disponible dès maintenant. Outre RabitQ, elle introduit des dizaines de nouvelles fonctionnalités et d'optimisations des performances telles que le stockage hiérarchisé, Meanhash LSH, la recherche en texte intégral améliorée et la multilocation, répondant directement aux défis les plus pressants de la recherche vectorielle aujourd'hui : une mise à l'échelle efficace tout en gardant les coûts sous contrôle.</p>
+<p>Prêt à découvrir tout ce qu'offre Milvus 2.6 ? Plongez dans nos<a href="https://milvus.io/docs/release_notes.md"> notes de mise à jour</a>, parcourez la<a href="https://milvus.io/docs"> documentation complète</a> ou consultez nos<a href="https://milvus.io/blog"> blogs sur les fonctionnalités</a>.</p>
+<p>Si vous avez des questions ou un cas d'utilisation similaire, n'hésitez pas à nous contacter via notre <a href="https://discord.com/invite/8uyFbECzPX">communauté Discord</a> ou à déposer un problème sur<a href="https://github.com/milvus-io/milvus"> GitHub</a> - nous sommes là pour vous aider à tirer le meilleur parti de Milvus 2.6.</p>

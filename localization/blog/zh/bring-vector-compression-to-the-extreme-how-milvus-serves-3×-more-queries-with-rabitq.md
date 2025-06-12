@@ -43,7 +43,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在深入研究 RaBitQ 之前，让我们先了解一下面临的挑战。</p>
+    </button></h2><p>在深入了解 RaBitQ 之前，我们先来了解一下面临的挑战。</p>
 <p><a href="https://zilliz.com/glossary/anns"><strong>近似近邻（ANN）</strong></a>搜索算法是向量数据库的核心，它能找到与给定查询最接近的前 k 个向量。向量是高维空间中的坐标，通常由数百个浮点数组成。随着向量数据规模的扩大，存储和计算需求也随之增加。例如，在 FP32 中使用 10 亿个 768 维向量运行<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a>（一种 ANN 搜索算法）需要超过 3TB 的内存！</p>
 <p>就像 MP3 通过舍弃人耳无法感知的频率来压缩音频一样，向量数据也可以在对搜索精度影响最小的情况下进行压缩。研究表明，全精度 FP32 通常对 ANN 来说是不必要的。<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization"> 标量量化</a>（SQ）是一种流行的压缩技术，它将浮点数值映射到离散的分区中，并使用低位整数只存储分区索引。量化方法用更少的比特表示相同的信息，从而大大减少了内存使用量。该领域的研究致力于以最小的精度损失实现最大的节省。</p>
 <p>最极端的压缩技术--1 位标量量化，也称为<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization">二进制量化--</a>用一位<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization">表示</a>每个浮点数。与 FP32（32 位编码）相比，内存使用量减少了 32 倍。由于内存通常是向量搜索的主要瓶颈，这种压缩可以显著提高性能。<strong>不过，挑战在于如何保持搜索精度。</strong>通常情况下，1 位 SQ 会将召回率降低到 70% 以下，使其几乎无法使用。</p>
@@ -63,7 +63,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://dl.acm.org/doi/pdf/10.1145/3654970">RaBitQ</a>是一种设计巧妙的二进制量化方法，它利用高维空间的几何特性实现了高效、精确的向量压缩。</p>
+    </button></h2><p><a href="https://dl.acm.org/doi/pdf/10.1145/3654970">RaBitQ</a>是一种设计巧妙的二进制量化方法，它利用高维空间的几何特性来实现高效、精确的向量压缩。</p>
 <p>乍一看，将向量的每个维度减少到一个比特似乎过于激进，但在高维空间中，我们的直觉往往会失灵。正如 RaBitQ 的作者高建阳所<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg"> 说明的</a>，高维向量表现出一种特性，即单个坐标往往紧紧集中在零点附近，这是《<a href="https://en.wikipedia.org/wiki/Concentration_of_measure"> 度量的集中</a>》一书中解释的一种反直觉现象的结果。这使得在保留精确近邻搜索所需的相对结构的同时，放弃大部分原始精度成为可能。</p>
 <p>
   <span class="img-wrapper">
@@ -71,8 +71,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>图高维几何中的反直觉数值分布。<em>考虑从单位球中均匀采样的随机单位向量的一维值，其值在三维空间中均匀分布。然而，对于高维空间（如 1000D），数值集中在零附近，这是高维几何的一个非直观特性。(图片来源：<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg">反直觉的高维空间量化）</a></em></p>
-<p>受到高维空间这一特性的启发，<strong>RaBitQ 专注于编码角度信息，而不是精确的空间坐标</strong>。为此，它将每个数据向量相对于参考点（如数据集的中心点）进行归一化处理。然后将每个向量映射到超立方体上与其最近的顶点，这样每个维度只需 1 比特就能表示。这种方法自然可以扩展到<code translate="no">IVF_RABITQ</code> ，在这里，归一化是相对于最近的聚类中心点进行的，从而提高了局部编码的准确性。</p>
+<p>图高维几何中的反直觉数值分布。<em>考虑从单位球中均匀采样的随机单位向量的一维值；该值在三维空间中均匀分布。然而，对于高维空间（如 1000D），数值集中在零附近，这是高维几何的一个非直观特性。(图片来源：<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg">反直觉的高维空间量化）</a></em></p>
+<p>受到高维空间这一特性的启发，<strong>RaBitQ 专注于编码角度信息，而不是精确的空间坐标</strong>。为此，它将每个数据向量相对于参考点（如数据集的中心点）进行归一化处理。然后将每个向量映射到超立方体上与其最接近的顶点，这样每个维度只需 1 位即可表示。这种方法自然可以扩展到<code translate="no">IVF_RABITQ</code> ，在这里，归一化是相对于最近的聚类中心点进行的，从而提高了局部编码的准确性。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Compressing_a_vector_by_finding_its_closest_approximation_on_the_hypercube_so_that_each_dimension_can_be_represented_with_just_1_bit_cd0d50bb30.png" alt="" class="doc-image" id="" />
@@ -97,7 +97,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>虽然 RaBitQ 在概念上简单明了，并附有<a href="https://github.com/gaoj0017/RaBitQ"> 参考实现</a>，但要将其应用于 Milvus 这样的分布式生产级向量数据库，却面临着若干工程挑战。我们在 Knowhere（Milvus 的核心向量搜索引擎）中实现了 RaBitQ，并为开源 ANN 搜索库<a href="https://github.com/facebookresearch/faiss"> FAISS</a> 提供了优化版本。</p>
+    </button></h2><p>虽然 RaBitQ 在概念上简单明了，并附有<a href="https://github.com/gaoj0017/RaBitQ"> 参考实现</a>，但要将其应用到 Milvus 这样的分布式生产级向量数据库中，还面临着一些工程挑战。我们在 Knowhere（Milvus 的核心向量搜索引擎）中实现了 RaBitQ，并为开源 ANN 搜索库<a href="https://github.com/facebookresearch/faiss"> FAISS</a> 提供了优化版本。</p>
 <p>让我们来看看我们是如何在 Milvus 中实现这一算法的。</p>
 <h3 id="Implementation-Tradeoffs" class="common-anchor-header">实现上的权衡</h3><p>一个重要的设计决策涉及处理每个向量的辅助数据。RaBitQ 要求每个向量有两个浮点值需要在索引时预先计算，第三个值可以是动态配置计算的，也可以是预先计算的。在 Knowhere 中，我们在编制索引时预先计算了这个值，并将其存储起来，以提高搜索效率。相比之下，FAISS 实现在查询时计算该值，从而节省了内存，在内存使用和查询速度之间做出了不同的权衡。</p>
 <h3 id="Hardware-Acceleration" class="common-anchor-header">硬件加速</h3><p>现代 CPU 提供的专用指令可以显著加速二进制操作。我们定制了距离计算内核，以利用现代 CPU 指令的优势。由于 RaBitQ 依赖于 popcount 操作，我们在 Knowhere 中创建了一个专门的路径，在可用时使用 AVX512 的<code translate="no">VPOPCNTDQ</code> 指令。在支持的硬件（如英特尔冰湖或 AMD Zen 4）上，这可以将二进制距离计算的速度提高数倍。</p>
@@ -135,7 +135,7 @@ index_params.add_index(
 )
 <button class="copy-code-btn"></button></code></pre>
 <h3 id="Benchmarking-Numbers-Tell-the-Story" class="common-anchor-header">基准测试：数字说明问题</h3><p>我们使用<a href="https://github.com/zilliztech/vectordbbench"> vdb-bench</a> 对不同的配置进行了基准测试，这是一款用于评估向量数据库的开源基准测试工具。测试和控制环境都使用了部署在 AWS EC2<code translate="no">m6id.2xlarge</code> 实例上的 Milvus Standalone。这些机器具有 8 个 vCPU、32 GB 内存和基于冰湖架构的英特尔至强 8375C CPU，该 CPU 支持 VPOPCNTDQ AVX-512 指令集。</p>
-<p>我们使用 vdb-bench 中的搜索性能测试，数据集包含 100 万个向量，每个向量有 768 个维度。由于 Milvus 的默认分段大小为 1 GB，而原始数据集（768 维×100 万向量×每个浮点 4 字节）的总大小约为 3 GB，因此基准测试涉及每个数据库的多个分段。</p>
+<p>我们使用 vdb-bench 中的搜索性能测试，数据集包含 100 万个向量，每个向量有 768 个维度。由于 Milvus 的默认分段大小为 1 GB，而原始数据集（768 维×100 万向量×每个浮点 4 字节）总计约为 3 GB，因此基准测试涉及每个数据库的多个分段。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Example_test_configuration_in_vdb_bench_000142f634.png" alt="" class="doc-image" id="" />
@@ -151,7 +151,7 @@ index_params.add_index(
 <li><p><code translate="no">rbq_bits_query</code> 指定查询向量的量化程度。使用 1...8 值表示 ... 量化级别。使用 0 值可禁用量化。这是一个与搜索相关的参数。<code translate="no">SQ1</code><code translate="no">SQ8</code> </p></li>
 <li><p><code translate="no">refine</code>,<code translate="no">refine_type</code> 和<code translate="no">refine_k</code> 参数是细化过程的标准参数</p></li>
 <li><p><code translate="no">refine</code> 是一个布尔值，用于启用细化策略。</p></li>
-<li><p><code translate="no">refine_k</code> 是一个非负的 fp 值。细化过程使用更高质量的量化方法，从 倍的候选池中挑选出所需的近邻数量，这些候选池是使用 挑选出来的。这是一个与搜索相关的参数。<code translate="no">refine_k</code> <code translate="no">IVFRaBitQ</code></p></li>
+<li><p><code translate="no">refine_k</code> 是一个非负的 fp 值。细化过程使用更高质量的量化方法，从 倍的候选池中挑选出所需的近邻数量，这些候选池是通过 选取的。这是一个与搜索相关的参数。<code translate="no">refine_k</code> <code translate="no">IVFRaBitQ</code></p></li>
 <li><p><code translate="no">refine_type</code> 是一个字符串，用于指定细化索引的量化类型。可用选项为 , , , 和 / 。<code translate="no">SQ6</code> <code translate="no">SQ8</code> <code translate="no">FP16</code> <code translate="no">BF16</code> <code translate="no">FP32</code> <code translate="no">FLAT</code></p></li>
 </ul>
 <p>结果揭示了重要的启示：</p>
@@ -182,6 +182,23 @@ index_params.add_index(
         ></path>
       </svg>
     </button></h2><p>RaBitQ 标志着向量量化技术的重大进步。它将二进制量化与智能编码策略相结合，实现了看似不可能实现的目标：以最小的精度损失实现极致压缩。</p>
-<p>从即将推出的 2.6 版开始，Milvus 将引入 IVF_RABITQ，将这一强大的压缩技术与 IVF 聚类和细化策略整合在一起，将二进制量化技术引入到生产中。这种组合在准确性、速度和内存效率之间实现了实用的平衡，可以改变你的向量搜索工作负载。</p>
+<p>从 2.6 版开始，Milvus 将引入 IVF_RABITQ，将这一强大的压缩技术与 IVF 聚类和细化策略相结合，将二进制量化引入生产。这一组合在准确性、速度和内存效率之间实现了实用的平衡，可以改变你的向量搜索工作负载。</p>
 <p>我们致力于为开源 Milvus 及其在 Zilliz Cloud 上的全面托管服务带来更多类似的创新，使向量搜索更加高效，让每个人都能使用。</p>
-<p>敬请期待 Milvus 2.6 发布，它将提供更多强大功能，请加入我们的社区<a href="https://milvus.io/discord"> milvus.io/discord</a>，了解更多信息、分享经验或提出问题。</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">开始使用 Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6现已发布。除RabitQ外，它还引入了分层存储、Meanhash LSH、增强型全文搜索和多租户等数十项新功能和性能优化，直接解决了当今向量搜索领域最紧迫的挑战：在控制成本的同时实现高效扩展。</p>
+<p>准备好探索 Milvus 2.6 提供的一切了吗？深入了解我们的<a href="https://milvus.io/docs/release_notes.md"> 发布说明</a>，浏览<a href="https://milvus.io/docs"> 完整的文档</a>，或查看我们的<a href="https://milvus.io/blog"> 功能博客</a>。</p>
+<p>如果您有任何疑问或类似的使用案例，请随时通过我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社区</a>联系我们，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提交问题--我们将帮助您充分利用 Milvus 2.6。</p>

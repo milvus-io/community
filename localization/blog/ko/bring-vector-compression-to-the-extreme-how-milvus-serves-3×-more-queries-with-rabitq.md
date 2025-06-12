@@ -184,6 +184,23 @@ index_params.add_index(
         ></path>
       </svg>
     </button></h2><p>RaBitQ는 벡터 양자화 기술의 획기적인 발전을 의미합니다. 이진 양자화와 스마트 인코딩 전략을 결합하여 정확도 손실을 최소화하면서 극한의 압축이라는 불가능해 보였던 것을 달성했습니다.</p>
-<p>곧 출시될 버전 2.6부터는 이 강력한 압축 기술을 IVF 클러스터링 및 정제 전략과 통합하여 이진 양자화를 프로덕션에 적용하는 IVF_RABITQ를 도입할 예정입니다. 이 조합은 정확도, 속도, 메모리 효율성 사이에서 실질적인 균형을 이루며 벡터 검색 워크로드를 혁신할 수 있습니다.</p>
+<p>Milvus는 버전 2.6부터 이 강력한 압축 기술을 IVF 클러스터링 및 개선 전략과 통합하여 바이너리 양자화를 프로덕션에 적용하는 IVF_RABITQ를 도입할 예정입니다. 이 조합은 정확도, 속도, 메모리 효율성 사이에서 실질적인 균형을 이루며 벡터 검색 워크로드를 혁신할 수 있습니다.</p>
 <p>저희는 이와 같은 혁신을 오픈 소스 Milvus와 Zilliz Cloud의 완전 관리형 서비스 모두에 도입하여 누구나 벡터 검색을 보다 효율적이고 쉽게 이용할 수 있도록 하기 위해 최선을 다하고 있습니다.</p>
-<p>더 많은 강력한 기능이 포함된 Milvus 2.6 릴리스를 기대해 주시고,<a href="https://milvus.io/discord"> milvus.io/discord에서</a> 커뮤니티에 참여하여 자세히 알아보고, 경험을 공유하거나 질문해 주세요.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Milvus 2.6 시작하기<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6은 현재 사용 가능합니다. RabitQ 외에도 계층형 스토리지, Meanhash LSH, 향상된 전체 텍스트 검색 및 멀티테넌시 등 수십 가지의 새로운 기능과 성능 최적화를 도입하여 오늘날 벡터 검색에서 가장 시급한 과제인 효율적인 확장과 비용 관리를 직접 해결합니다.</p>
+<p>Milvus 2.6이 제공하는 모든 것을 살펴볼 준비가 되셨나요?<a href="https://milvus.io/docs/release_notes.md"> 릴리즈 노트를</a> 자세히 살펴보고,<a href="https://milvus.io/docs"> 전체 설명서를</a> 찾아보거나,<a href="https://milvus.io/blog"> 기능 블로그를</a> 확인해 보세요.</p>
+<p>궁금한 점이 있거나 유사한 사용 사례가 있는 경우, <a href="https://discord.com/invite/8uyFbECzPX">Discord 커뮤니티를</a> 통해 문의하거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출해 주세요. Milvus 2.6을 최대한 활용할 수 있도록 도와드리겠습니다.</p>

@@ -187,6 +187,23 @@ index_params.add_index(
         ></path>
       </svg>
     </button></h2><p>RaBitQ menandai kemajuan yang signifikan dalam teknologi kuantisasi vektor. Menggabungkan kuantisasi biner dengan strategi pengkodean yang cerdas, teknologi ini mencapai apa yang tampaknya mustahil: kompresi ekstrem dengan kehilangan akurasi minimal.</p>
-<p>Dimulai dengan versi 2.6 yang akan datang, Milvus akan memperkenalkan IVF_RABITQ, mengintegrasikan teknik kompresi yang kuat ini dengan pengelompokan IVF dan strategi penyempurnaan untuk menghadirkan kuantisasi biner ke dalam produksi. Kombinasi ini menciptakan keseimbangan praktis antara akurasi, kecepatan, dan efisiensi memori yang dapat mengubah beban kerja pencarian vektor Anda.</p>
-<p>Kami berkomitmen untuk membawa lebih banyak inovasi seperti ini ke Milvus open-source dan layanan yang dikelola sepenuhnya di Zilliz Cloud, membuat pencarian vektor lebih efisien dan dapat diakses oleh semua orang.</p>
-<p>Nantikan rilis Milvus 2.6 dengan lebih banyak fitur canggih lainnya, dan bergabunglah dengan komunitas kami di<a href="https://milvus.io/discord"> milvus.io/discord</a> untuk mempelajari lebih lanjut, berbagi pengalaman, atau bertanya.</p>
+<p>Dimulai dengan versi 2.6, Milvus akan memperkenalkan IVF_RABITQ, mengintegrasikan teknik kompresi yang kuat ini dengan pengelompokan IVF dan strategi penyempurnaan untuk menghadirkan kuantisasi biner ke dalam produksi. Kombinasi ini menciptakan keseimbangan praktis antara akurasi, kecepatan, dan efisiensi memori yang dapat mengubah beban kerja pencarian vektor Anda.</p>
+<p>Kami berkomitmen untuk menghadirkan lebih banyak inovasi seperti ini ke Milvus open-source dan layanan terkelola penuh di Zilliz Cloud, membuat pencarian vektor menjadi lebih efisien dan dapat diakses oleh semua orang.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Memulai dengan Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 sudah tersedia sekarang. Selain RabitQ, Milvus 2.6 memperkenalkan lusinan fitur baru dan pengoptimalan kinerja seperti penyimpanan berjenjang, Meanhash LSH, dan pencarian teks lengkap yang disempurnakan serta multitenancy, yang secara langsung menjawab tantangan paling mendesak dalam pencarian vektor saat ini: penskalaan secara efisien sambil menjaga biaya tetap terkendali.</p>
+<p>Siap menjelajahi semua yang ditawarkan Milvus 2.6? Selami<a href="https://milvus.io/docs/release_notes.md"> catatan rilis</a> kami, telusuri<a href="https://milvus.io/docs"> dokumentasi lengkapnya</a>, atau lihat<a href="https://milvus.io/blog"> blog fitur</a> kami.</p>
+<p>Jika Anda memiliki pertanyaan atau memiliki kasus penggunaan yang serupa, jangan ragu untuk menghubungi kami melalui <a href="https://discord.com/invite/8uyFbECzPX">komunitas Discord</a> kami atau mengajukan masalah di<a href="https://github.com/milvus-io/milvus"> GitHub</a> - kami di sini untuk membantu Anda memaksimalkan Milvus 2.6.</p>

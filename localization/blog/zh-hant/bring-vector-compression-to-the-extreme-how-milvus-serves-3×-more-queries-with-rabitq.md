@@ -72,7 +72,7 @@ origin: >-
   </span>
 </p>
 <p>圖：高維幾何中的反直覺數值分佈。<em>考慮從單位球體中均勻抽樣的隨機單位向量的第一維值；值在 3D 空間中是均勻分布的。然而，對於高維空間 (例如 1000D)，數值會集中在零附近，這是高維幾何的非直覺特性。(圖片來源:<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg">Quantization in The Counterintuitive High-Dimensional Space</a>)</em></p>
-<p>受到高維空間這個特性的啟發，<strong>RaBitQ 著重於編碼角度資訊，而非精確的空間坐標</strong>。它透過將相對於參考點（如資料集的中心點）的每個資料向量歸一化來達到此目的。然後，每個向量都會映射到超立方體上最接近的頂點，因此每個維度只需 1 位元就能呈現。此方法可自然延伸至<code translate="no">IVF_RABITQ</code> ，其中的歸一化是相對於最接近的群集中心點進行，以改善局部編碼的精確度。</p>
+<p>受到這種高維空間特性的啟發，<strong>RaBitQ 著重於編碼角度資訊，而非精確的空間坐標</strong>。它透過將相對於參考點（如資料集的中心點）的每個資料向量歸一化來達到此目的。然後，每個向量都會映射到超立方體上最接近的頂點，因此每個維度只需 1 位元就能呈現。此方法可自然延伸至<code translate="no">IVF_RABITQ</code> ，在 中，歸一化是相對於最接近的群集中心點進行，以改善局部編碼的精確度。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Compressing_a_vector_by_finding_its_closest_approximation_on_the_hypercube_so_that_each_dimension_can_be_represented_with_just_1_bit_cd0d50bb30.png" alt="" class="doc-image" id="" />
@@ -80,7 +80,7 @@ origin: >-
   </span>
 </p>
 <p><em>圖：透過在超立方體上尋找最接近的近似值來壓縮向量，因此每個維度只需 1 位元即可表示。(圖片來源:</em> <a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg"><em>Quantization in The Counterintuitive High-Dimensional Space</em></a><em>)</em></p>
-<p>為了確保搜尋即使在如此壓縮的<strong>表示法</strong>下仍然可靠，RaBitQ 為查詢向量與二進位量化的文件向量之間的距離，引進了一個<strong>有理論依據、無偏頗的估計器</strong>。這有助於最小化重構誤差並維持高召回率。</p>
+<p>為了確保搜尋即使在如此壓縮的<strong>表示法</strong>下仍然可靠，RaBitQ 為查詢向量與二進位量化的文件向量之間的距離，引進了一個<strong>有理論基礎的無偏估計器</strong>。這有助於最小化重構誤差並維持高召回率。</p>
 <p>RaBitQ 也與其他優化技術高度相容，例如<a href="https://www.vldb.org/pvldb/vol9/p288-andre.pdf"> FastScan</a>和<a href="https://github.com/facebookresearch/faiss/wiki/Pre--and-post-processing"> 隨機旋轉預處理</a>。此外，RaBitQ<strong>訓練輕巧，執行快速</strong>。訓練只需決定每個向量元件的符號，搜尋則透過現代 CPU 支援的快速位元運算來加速。這些優化共同使 RaBitQ 能夠在提供高速搜尋的同時，將準確性的損失降到最低。</p>
 <h2 id="Engineering-RaBitQ-in-Milvus-From-Academic-Research-to-Production" class="common-anchor-header">Milvus 中的 RaBitQ 工程：從學術研究到生產<button data-href="#Engineering-RaBitQ-in-Milvus-From-Academic-Research-to-Production" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -182,6 +182,23 @@ index_params.add_index(
         ></path>
       </svg>
     </button></h2><p>RaBitQ 標誌著向量量化技術的重大進步。結合二進位量化與智慧型編碼策略，它實現了看似不可能的目標：以最小的精確度損失達到極致壓縮。</p>
-<p>從即將推出的 2.6 版開始，Milvus 將引入 IVF_RABITQ，將這項強大的壓縮技術與 IVF 聚類和精煉策略相結合，將二進位量化技術帶入生產中。這一組合在精確度、速度和記憶體效率之間建立了實用的平衡，可以改變您的向量搜尋工作負載。</p>
-<p>我們致力於為開放原始碼的 Milvus 及其在 Zilliz Cloud 上的全面管理服務帶來更多類似的創新，讓向量搜尋更有效率，並讓每個人都能使用。</p>
-<p>敬請期待 Milvus 2.6 版本推出更多的強大功能，並加入我們的社群<a href="https://milvus.io/discord"> milvus.io/discord</a>，了解更多資訊、分享您的經驗或提出問題。</p>
+<p>從版本 2.6 開始，Milvus 將引入 IVF_RABITQ，將這項強大的壓縮技術與 IVF 聚類和精煉策略相結合，將二進位量化技術帶到生產中。這一組合在精確度、速度和記憶體效率之間建立了實用的平衡，可以改變您的向量搜尋工作負載。</p>
+<p>我們致力於為開放原始碼的 Milvus 及其在 Zilliz Cloud 上的完整管理服務帶來更多類似的創新，讓向量搜尋更有效率，並讓每個人都能使用。</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">開始使用 Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 現已上市。除RabitQ外，它還引進了分層存儲、Meanhash LSH以及增強的全文搜索和多租戶等數十項新功能和性能優化，直接解決了當今向量搜索最迫切的挑戰：在控制成本的同時進行高效擴展。</p>
+<p>準備好探索 Milvus 2.6 所提供的一切了嗎？請深入閱讀我們的<a href="https://milvus.io/docs/release_notes.md"> 發佈說明</a>、瀏覽<a href="https://milvus.io/docs"> 完整的說明文件</a>，或查看我們的<a href="https://milvus.io/blog"> 功能部落格</a>。</p>
+<p>如果您有任何問題或有類似的使用案例，請隨時透過<a href="https://discord.com/invite/8uyFbECzPX">Discord 社群</a>聯絡我們，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提出問題 - 我們隨時準備幫助您充分利用 Milvus 2.6。</p>

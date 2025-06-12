@@ -186,7 +186,24 @@ index_params.add_index(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RaBitQ supone un avance significativo en la tecnología de cuantificación vectorial. Combinando la cuantificación binaria con estrategias de codificación inteligentes, consigue lo que parecía imposible: una compresión extrema con una pérdida de precisión mínima.</p>
-<p>A partir de la próxima versión 2.6, Milvus introducirá IVF_RABITQ, integrando esta potente técnica de compresión con las estrategias de agrupación y refinamiento de IVF para llevar la cuantificación binaria a la producción. Esta combinación crea un equilibrio práctico entre precisión, velocidad y eficiencia de memoria que puede transformar sus cargas de trabajo de búsqueda vectorial.</p>
+    </button></h2><p>RaBitQ supone un avance significativo en la tecnología de cuantificación vectorial. Combinando la cuantización binaria con estrategias de codificación inteligentes, consigue lo que parecía imposible: una compresión extrema con una pérdida de precisión mínima.</p>
+<p>A partir de la versión 2.6, Milvus introducirá IVF_RABITQ, integrando esta potente técnica de compresión con las estrategias de agrupación y refinamiento de IVF para llevar la cuantificación binaria a la producción. Esta combinación crea un equilibrio práctico entre precisión, velocidad y eficiencia de memoria que puede transformar sus cargas de trabajo de búsqueda vectorial.</p>
 <p>Estamos comprometidos a traer más innovaciones como esta tanto a Milvus de código abierto como a su servicio totalmente gestionado en Zilliz Cloud, haciendo que la búsqueda vectorial sea más eficiente y accesible para todos.</p>
-<p>Esté atento al lanzamiento de Milvus 2.6 con muchas más características potentes, y únase a nuestra comunidad en<a href="https://milvus.io/discord"> milvus.io/discord</a> para obtener más información, compartir sus experiencias o hacer preguntas.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Primeros pasos con Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>Milvus 2.6 ya está disponible. Además de RabitQ, introduce docenas de nuevas características y optimizaciones de rendimiento como el almacenamiento por niveles, Meanhash LSH, y la búsqueda de texto completo y multitenancy mejoradas, abordando directamente los desafíos más apremiantes en la búsqueda vectorial de hoy: escalar de manera eficiente mientras se mantienen los costes bajo control.</p>
+<p>¿Listo para explorar todo lo que ofrece Milvus 2.6? Sumérjase en nuestras<a href="https://milvus.io/docs/release_notes.md"> notas de la versión</a>, consulte la<a href="https://milvus.io/docs"> documentación completa</a> o eche un vistazo a nuestros<a href="https://milvus.io/blog"> blogs de funciones</a>.</p>
+<p>Si tiene alguna pregunta o tiene un caso de uso similar, no dude en ponerse en contacto con nosotros a través de nuestra <a href="https://discord.com/invite/8uyFbECzPX">comunidad Discord</a> o presentar una incidencia en<a href="https://github.com/milvus-io/milvus"> GitHub</a> - estamos aquí para ayudarle a sacar el máximo provecho de Milvus 2.6.</p>
