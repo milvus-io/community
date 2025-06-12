@@ -153,11 +153,19 @@ In short, `IVF_RABITQ` alone is great for maximizing throughput with acceptable 
 
 RaBitQ marks a significant advancement in vector quantization technology. Combining binary quantization with smart encoding strategies, it achieves what seemed impossible: extreme compression with minimal accuracy loss.
 
-Starting with the upcoming version 2.6, Milvus will introduce IVF_RABITQ, integrating this powerful compression technique with IVF clustering and refinement strategies to bring binary quantization to production. This combination creates a practical balance between accuracy, speed, and memory efficiency that can transform your vector search workloads.
+Starting with version 2.6, Milvus will introduce IVF_RABITQ, integrating this powerful compression technique with IVF clustering and refinement strategies to bring binary quantization to production. This combination creates a practical balance between accuracy, speed, and memory efficiency that can transform your vector search workloads.
 
 We're committed to bringing more innovations like this to both open-source Milvus and its fully managed service on Zilliz Cloud, making vector search more efficient and accessible for everyone.
 
-Stay tuned for the Milvus 2.6 release with many more powerful features, and join our community at[ milvus.io/discord](https://milvus.io/discord) to learn more, share your experiences, or ask questions.
+
+## Getting Started with Milvus 2.6
+
+Milvus 2.6 is available now. In addition to RabitQ, it introduces dozens of new features and performance optimizations such as tiered storage, Meanhash LSH, and enhanced full-text search and multitenancy, directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.
+
+Ready to explore everything Milvus 2.6 offers? Dive into our[ release notes](https://milvus.io/docs/release_notes.md), browse the[ complete documentation](https://milvus.io/docs), or check out our[ feature blogs](https://milvus.io/blog). 
+
+If you have any questions or have a similar use case, feel free to reach out to us through our [Discord community](https://discord.com/invite/8uyFbECzPX) or file an issue on[ GitHub](https://github.com/milvus-io/milvus) — we're here to help you make the most of Milvus 2.6.
+
 
 
 
