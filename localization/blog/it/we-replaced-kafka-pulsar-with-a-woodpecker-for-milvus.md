@@ -22,7 +22,7 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md
 ---
-<p><strong>TL;DR:</strong> Abbiamo costruito Woodpecker, un sistema cloud-native di Write-Ahead Logging (WAL), per sostituire Kafka e Pulsar in Milvus 2.6. Il risultato? Operazioni semplificate, prestazioni migliori e costi inferiori per il nostro database vettoriale Milvus.</p>
+<p><strong>TL;DR:</strong> Abbiamo costruito Woodpecker, un sistema cloud-nativo di Write-Ahead Logging (WAL), per sostituire Kafka e Pulsar in Milvus 2.6. Il risultato? Operazioni semplificate, prestazioni migliori e costi inferiori per il nostro database vettoriale Milvus.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png" alt="" class="doc-image" id="" />
@@ -288,7 +288,7 @@ origin: >-
 <li><p>Include il <strong>servizio ManagerService</strong> per l'amministrazione del WAL e il reporting delle prestazioni.</p></li>
 <li><p>Include il <strong>servizio HandlerService</strong> che implementa meccanismi efficienti di publish-subscribe per le voci del WAL.</p></li>
 </ul>
-<p>Questa architettura a strati consente a Milvus di mantenere una netta separazione tra le funzionalità di streaming (sottoscrizione, elaborazione in tempo reale) e i meccanismi di archiviazione veri e propri. Woodpecker gestisce il "come" dell'archiviazione dei log, mentre StreamingService gestisce il "cosa" e il "quando" delle operazioni di log.</p>
+<p>Questa architettura a strati permette a Milvus di mantenere una netta separazione tra le funzionalità di streaming (sottoscrizione, elaborazione in tempo reale) e i meccanismi di archiviazione veri e propri. Woodpecker gestisce il "come" dell'archiviazione dei log, mentre StreamingService gestisce il "cosa" e il "quando" delle operazioni di log.</p>
 <p>Di conseguenza, lo Streaming Service migliora significativamente le capacità in tempo reale di Milvus introducendo il supporto nativo per le sottoscrizioni, eliminando la necessità di code di messaggi esterne. Riduce il consumo di memoria consolidando le cache precedentemente duplicate nei percorsi delle query e dei dati, riduce la latenza per le letture fortemente coerenti eliminando i ritardi di sincronizzazione asincrona e migliora la scalabilità e la velocità di recupero in tutto il sistema.</p>
 <h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">Conclusione - Streaming su un'architettura a zero dischi<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -310,7 +310,7 @@ origin: >-
 <p>Ma anche le architetture "zero-disk" hanno dei compromessi. I negozi di oggetti devono ancora fare i conti con un'elevata latenza di scrittura e con le inefficienze dei file di piccole dimensioni, limitazioni che rimangono irrisolte in molti carichi di lavoro in tempo reale.</p>
 <p>Per i database vettoriali, in particolare quelli che supportano i carichi di lavoro mission-critical di RAG, agenti AI e ricerca a bassa latenza, l'accesso in tempo reale e la velocità di scrittura non sono negoziabili. Ecco perché abbiamo riarchitettato Milvus attorno a Woodpecker e al servizio di streaming. Questo cambiamento semplifica l'intero sistema (nessuno vuole mantenere uno stack Pulsar completo all'interno di un database vettoriale), garantisce dati più freschi, migliora l'efficienza dei costi e accelera il ripristino dei guasti.</p>
 <p>Riteniamo che Woodpecker sia più di un semplice componente di Milvus: può servire come elemento fondante per altri sistemi cloud-nativi. Con l'evoluzione dell'infrastruttura cloud, innovazioni come S3 Express potrebbero avvicinarci ancora di più all'ideale: durabilità cross-AZ con latenza di scrittura a una cifra al millisecondo.</p>
-<h2 id="Whats-Next" class="common-anchor-header">Il prossimo passo<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Per iniziare con Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -325,5 +325,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Rimanete sintonizzati per l'imminente Milvus 2.6 con Woodpecker e tante altre potenti funzioni. Siete pronti a sperimentare il miglioramento delle prestazioni e la semplificazione delle operazioni? Date un'occhiata alla nostra<a href="https://milvus.io/docs"> documentazione</a> per iniziare! Siete inoltre invitati a unirvi alla comunità Milvus su<a href="https://discord.gg/milvus"> Discord</a> o <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> per porre domande o condividere le vostre esperienze.</p>
-<p>Se avete problemi con carichi di lavoro di ricerca vettoriale mission-critical su larga scala, saremo lieti di aiutarvi.<a href="https://milvus.io/office-hours"> Prenotate una sessione di Milvus Office Hours</a> per discutere le vostre esigenze specifiche con il nostro team di ingegneri.</p>
+    </button></h2><p>Milvus 2.6 è disponibile da subito. Oltre a Woodpecker, introduce decine di nuove funzionalità e ottimizzazioni delle prestazioni, come l'archiviazione a livelli, il metodo di quantizzazione RabbitQ, la ricerca full-text migliorata e la multitenancy, affrontando direttamente le sfide più urgenti della ricerca vettoriale di oggi: scalare in modo efficiente mantenendo i costi sotto controllo.</p>
+<p>Siete pronti a scoprire tutto ciò che Milvus offre? Consultate le nostre<a href="https://milvus.io/docs/release_notes.md"> note di rilascio</a>, la<a href="https://milvus.io/docs"> documentazione completa</a> o i nostri<a href="https://milvus.io/blog"> blog sulle funzionalità</a>.</p>
+<p>Siete inoltre invitati a unirvi alla nostra <a href="https://discord.com/invite/8uyFbECzPX">comunità Discord</a> o a segnalare un problema su<a href="https://github.com/milvus-io/milvus"> GitHub</a>: siamo qui per aiutarvi a sfruttare al meglio Milvus 2.6.</p>

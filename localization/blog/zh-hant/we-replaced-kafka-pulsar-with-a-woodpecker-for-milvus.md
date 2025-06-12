@@ -302,11 +302,11 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>管理狀態很困難。有狀態的系統通常會犧牲彈性和擴充性。在雲原生設計中，越來越多人接受的答案是將狀態與運算解耦，允許各自獨立擴充。</p>
-<p>與其重新發明輪子，我們不如將耐久、可擴充儲存的複雜性委託給 AWS S3、Google Cloud Storage 和 MinIO 等服務背後的世界級工程團隊。在這些服務中，S3 以其幾乎無限的容量、十一個九 (99.999999999%) 的耐用性、99.99% 的可用性以及高吞吐量的讀/寫效能脫穎而出。</p>
+<p>與其重新發明輪子，我們不如將耐久、可擴充儲存的複雜性委託給 AWS S3、Google Cloud Storage 和 MinIO 等服務背後的世界級工程團隊。在這些服務中，S3 以其幾乎無限的容量、十一個九 (99.999999999%) 的耐用性、99.99% 的可用性以及高吞吐量讀/寫效能脫穎而出。</p>
 <p>但是，即使是「零磁碟」架構也有權責取捨。物件儲存仍需面對高寫入延遲和小檔案低效率的問題，這些限制在許多即時工作負載中仍未解決。</p>
 <p>對於向量資料庫，尤其是那些支援關鍵任務 RAG、AI 代理和低延遲搜尋工作負載的資料庫，即時存取和快速寫入是不可或缺的。這就是我們圍繞 Woodpecker 和 Streaming Service 重新設計 Milvus 的原因。這種轉變簡化了整體系統（面對現實吧-沒有人想在向量資料庫內維護完整的 Pulsar 堆疊），確保資料更新鮮，提高成本效益，並加速故障復原。</p>
-<p>我們相信 Woodpecker 不只是 Milvus 的元件 - 它可以成為其他雲端原生系統的基礎建構區塊。隨著雲端基礎架構的演進，像 S3 Express 這樣的創新可能會讓我們更接近理想：以個位數毫秒的寫入延遲達到跨 AZ 的耐用性。</p>
-<h2 id="Whats-Next" class="common-anchor-header">下一步<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<p>我們相信 Woodpecker 不只是 Milvus 的元件 - 它可以成為其他雲端原生系統的基礎建構區塊。隨著雲端基礎架構的演進，S3 Express 等創新技術可能會讓我們更接近理想：以個位數毫秒的寫入延遲達到跨 AZ 的耐用性。</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">開始使用 Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -321,5 +321,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>請密切注意即將推出的 Milvus 2.6，其中包含 Woodpecker 以及更多強大的功能。準備好體驗改進的效能和簡化的操作了嗎？請查看我們的<a href="https://milvus.io/docs"> 說明文件</a>開始使用！也歡迎您加入<a href="https://discord.gg/milvus"> Discord</a>或<a href="https://github.com/milvus-io/milvus/discussions">GitHub</a>上的 Milvus 社群，提出問題或分享經驗。</p>
-<p>如果您在大型關鍵任務向量搜尋工作負載上遇到挑戰，我們樂意提供協助。<a href="https://milvus.io/office-hours"> 預約 Milvus Office Hours 會話</a>，與我們的工程團隊討論您的特定需求。</p>
+    </button></h2><p>Milvus 2.6 現已上市。除了 Woodpecker 之外，它還引進了數十項新功能和效能最佳化，例如分層儲存、RabbitQ 量化方法，以及增強的全文檢索和多租戶功能，直接解決當今向量檢索最迫切的挑戰：在有效擴充的同時控制成本。</p>
+<p>準備好探索 Milvus 所提供的一切了嗎？請仔細閱讀我們的<a href="https://milvus.io/docs/release_notes.md"> 發佈說明</a>、瀏覽<a href="https://milvus.io/docs"> 完整的說明文件</a>，或查看我們的<a href="https://milvus.io/blog"> 功能部落格</a>。</p>
+<p>我們也歡迎您加入我們的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社群</a>，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提交問題 - 我們在這裡幫助您充分利用 Milvus 2.6。</p>

@@ -67,7 +67,7 @@ origin: >-
 <li><p>Die Preismodelle dieser Dienste (basierend auf Zugriffsmustern und -häufigkeit) können bei Echtzeit-Datenbankoperationen unerwartete Kosten verursachen.</p></li>
 <li><p>Der Ausgleich zwischen Cloud-nativen Merkmalen und den Anforderungen der Echtzeit-Vektorsuche bringt erhebliche architektonische Herausforderungen mit sich.</p></li>
 </ul>
-<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">Die Shared Log Architektur: Unsere Grundlage<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
+<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">Die Shared Log Architektur: Unser Fundament<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,7 +101,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um diese Lücke zu schließen, nutzten wir anfangs Nachrichtenwarteschlangen (Kafka/Pulsar) als unser Write-Ahead-Log (WAL). Die Architektur funktionierte folgendermaßen:</p>
+    </button></h2><p>Um diese Lücke zu schließen, nutzten wir anfangs Nachrichten-Warteschlangen (Kafka/Pulsar) als unser Write-Ahead-Log (WAL). Die Architektur funktionierte folgendermaßen:</p>
 <ul>
 <li><p>Alle eingehenden Echtzeit-Aktualisierungen fließen durch die Nachrichtenwarteschlange.</p></li>
 <li><p>Die Schreiber erhalten eine sofortige Bestätigung, sobald sie von der Nachrichtenwarteschlange akzeptiert wird.</p></li>
@@ -114,7 +114,7 @@ origin: >-
   </span>
 </p>
 <p>Abbildung: Überblick über die Architektur von Milvus 2.0</p>
-<p>Dieses System bot eine sofortige Schreibbestätigung und ermöglichte gleichzeitig eine asynchrone Datenverarbeitung, was für die Aufrechterhaltung des Gleichgewichts zwischen Durchsatz und Datenfrische, das die Milvus-Benutzer erwarten, entscheidend war.</p>
+<p>Dieses System bot eine sofortige Schreibbestätigung und ermöglichte gleichzeitig eine asynchrone Datenverarbeitung, was für die Aufrechterhaltung des Gleichgewichts zwischen Durchsatz und Datenfrische, das Milvus-Benutzer erwarten, entscheidend war.</p>
 <h2 id="Why-We-Needed-Something-Different-for-WAL" class="common-anchor-header">Warum wir für WAL etwas anderes brauchten<button data-href="#Why-We-Needed-Something-Different-for-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -202,7 +202,7 @@ origin: >-
 <p>Bemerkenswerterweise erreichte Woodpecker durchgängig 60-80% des maximal möglichen Durchsatzes für jedes Backend - ein außergewöhnliches Effizienzniveau für Middleware.</p>
 <h4 id="Key-Performance-Insights" class="common-anchor-header">Wichtige Einblicke in die Leistung</h4><ol>
 <li><p><strong>Lokaler Dateisystem-Modus</strong>: Woodpecker erreichte 450 MB/s - 3,5× schneller als Kafka und 4,2× schneller als Pulsar - bei einer extrem niedrigen Latenz von nur 1,8 ms, was ihn ideal für hochleistungsfähige Single-Node-Implementierungen macht.</p></li>
-<li><p><strong>Cloud-Speicher-Modus (S3)</strong>: Beim direkten Schreiben auf S3 erreichte Woodpecker 750 MB/s (ca. 68 % der theoretischen Grenze von S3), 5,8× schneller als Kafka und 7× schneller als Pulsar. Obwohl die Latenzzeit höher ist (166 ms), bietet dieses Setup einen außergewöhnlichen Durchsatz für stapelorientierte Arbeitslasten.</p></li>
+<li><p><strong>Cloud-Speicher-Modus (S3)</strong>: Beim direkten Schreiben in S3 erreichte Woodpecker 750 MB/s (ca. 68 % der theoretischen Grenze von S3), 5,8× schneller als Kafka und 7× schneller als Pulsar. Obwohl die Latenzzeit höher ist (166 ms), bietet dieses Setup einen außergewöhnlichen Durchsatz für stapelorientierte Arbeitslasten.</p></li>
 <li><p><strong>Objektspeicher-Modus (MinIO)</strong>: Selbst mit MinIO erreichte Woodpecker 71 MB/s - etwa 65 % der Kapazität von MinIO. Diese Leistung ist mit der von Kafka und Pulsar vergleichbar, allerdings bei deutlich geringerem Ressourcenbedarf.</p></li>
 </ol>
 <p>Woodpecker ist besonders für gleichzeitige Schreibvorgänge mit hohem Volumen optimiert, bei denen die Aufrechterhaltung der Reihenfolge entscheidend ist. Und diese Ergebnisse spiegeln nur die frühen Stadien der Entwicklung wider - es wird erwartet, dass laufende Optimierungen bei der E/A-Zusammenführung, der intelligenten Pufferung und dem Prefetching die Leistung noch näher an die theoretischen Grenzen bringen werden.</p>
@@ -232,7 +232,7 @@ origin: >-
 <p><em>Abbildung: Der memoryBuffer-Modus</em></p>
 <p><strong>QuorumBuffer-Modus - Optimiert für Bereitstellungen mit niedriger Latenz und hoher Ausfallsicherheit</strong></p>
 <p>Der QuorumBuffer-Modus wurde für latenzempfindliche, hochfrequente Lese-/Schreib-Workloads entwickelt, die sowohl Echtzeit-Reaktionsfähigkeit als auch hohe Fehlertoleranz erfordern. In diesem Modus fungiert Woodpecker als Hochgeschwindigkeits-Schreibpuffer mit drei Quorum-Schreibvorgängen, die eine starke Konsistenz und hohe Verfügbarkeit gewährleisten.</p>
-<p>Ein Schreibvorgang gilt als erfolgreich, wenn er auf mindestens zwei der drei Knoten repliziert wurde, was in der Regel innerhalb eines einstelligen Millisekundenbereichs geschieht. Anschließend werden die Daten asynchron in den Cloud-Objektspeicher übertragen, um eine langfristige Haltbarkeit zu gewährleisten. Diese Architektur minimiert den Knotenstatus, macht große lokale Festplattenvolumina überflüssig und vermeidet komplexe Anti-Entropie-Reparaturen, wie sie in herkömmlichen Quorum-basierten Systemen häufig erforderlich sind.</p>
+<p>Ein Schreibvorgang gilt als erfolgreich, wenn er auf mindestens zwei der drei Knoten repliziert wurde, was in der Regel innerhalb eines einstelligen Millisekundenbereichs geschieht. Anschließend werden die Daten asynchron in den Cloud-Objektspeicher übertragen, um eine langfristige Haltbarkeit zu gewährleisten. Diese Architektur minimiert den Knotenzustand, macht große lokale Festplattenvolumina überflüssig und vermeidet komplexe Anti-Entropie-Reparaturen, wie sie in herkömmlichen Quorum-basierten Systemen häufig erforderlich sind.</p>
 <p>Das Ergebnis ist eine schlanke, robuste WAL-Schicht, die sich ideal für unternehmenskritische Produktionsumgebungen eignet, in denen Konsistenz, Verfügbarkeit und schnelle Wiederherstellung von entscheidender Bedeutung sind.</p>
 <p>
   <span class="img-wrapper">
@@ -308,8 +308,8 @@ origin: >-
 <p>Anstatt das Rad neu zu erfinden, delegieren wir die Komplexität der dauerhaften, skalierbaren Speicherung an die erstklassigen Entwicklungsteams, die hinter Diensten wie AWS S3, Google Cloud Storage und MinIO stehen. S3 zeichnet sich durch eine praktisch unbegrenzte Kapazität, eine Haltbarkeit von elf Neunen (99,999999999 %), eine Verfügbarkeit von 99,99 % und eine durchsatzstarke Lese-/Schreibleistung aus.</p>
 <p>Aber auch "Zero-Disk"-Architekturen haben ihre Tücken. Objektspeicher haben immer noch mit hohen Schreiblatenzen und Ineffizienzen bei kleinen Dateien zu kämpfen - Einschränkungen, die bei vielen Echtzeit-Workloads ungelöst bleiben.</p>
 <p>Für Vektordatenbanken - insbesondere solche, die geschäftskritische RAG-, KI-Agenten- und Sucharbeitslasten mit geringer Latenz unterstützen - sind Echtzeitzugriff und schnelle Schreibvorgänge nicht verhandelbar. Aus diesem Grund haben wir Milvus um Woodpecker und den Streaming Service herum neu aufgebaut. Diese Umstellung vereinfacht das Gesamtsystem (seien wir ehrlich - niemand möchte einen kompletten Pulsar-Stack in einer Vektordatenbank verwalten), sorgt für frischere Daten, verbessert die Kosteneffizienz und beschleunigt die Fehlerbehebung.</p>
-<p>Wir glauben, dass Woodpecker mehr als nur eine Milvus-Komponente ist - es kann als grundlegender Baustein für andere Cloud-native Systeme dienen. Im Zuge der Weiterentwicklung der Cloud-Infrastruktur können uns Innovationen wie S3 Express dem Ideal noch näher bringen: AZ-übergreifende Haltbarkeit mit einer Schreiblatenz im einstelligen Millisekundenbereich.</p>
-<h2 id="Whats-Next" class="common-anchor-header">Was kommt als Nächstes?<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<p>Wir glauben, dass Woodpecker mehr als nur eine Milvus-Komponente ist - es kann als grundlegender Baustein für andere Cloud-native Systeme dienen. Im Zuge der Weiterentwicklung von Cloud-Infrastrukturen können uns Innovationen wie S3 Express dem Ideal noch näher bringen: AZ-übergreifende Haltbarkeit mit einer Schreiblatenz im einstelligen Millisekundenbereich.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Erste Schritte mit Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -324,5 +324,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bleiben Sie dran für das kommende Milvus 2.6 mit Woodpecker und vielen weiteren leistungsstarken Funktionen. Sind Sie bereit, die verbesserte Leistung und die vereinfachten Abläufe zu erleben? Sehen Sie sich unsere<a href="https://milvus.io/docs"> Dokumentation</a> an, um loszulegen! Sie sind auch herzlich eingeladen, der Milvus-Community auf<a href="https://discord.gg/milvus"> Discord</a> oder <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> beizutreten, um Fragen zu stellen oder Ihre Erfahrungen zu teilen.</p>
-<p>Wenn Sie Probleme mit großen, geschäftskritischen Vektorsuch-Workloads haben, würden wir Ihnen gerne helfen.<a href="https://milvus.io/office-hours"> Buchen Sie eine Milvus-Sprechstunde</a>, um Ihre spezifischen Anforderungen mit unserem technischen Team zu besprechen.</p>
+    </button></h2><p>Milvus 2.6 ist jetzt verfügbar. Zusätzlich zu Woodpecker werden Dutzende neuer Funktionen und Leistungsoptimierungen eingeführt, wie z. B. Tiered Storage, RabbitQ-Quantisierungsmethode und verbesserte Volltextsuche und Mandantenfähigkeit, die sich direkt mit den dringendsten Herausforderungen der heutigen Vektorsuche befassen: effiziente Skalierung bei kontrollierten Kosten.</p>
+<p>Sind Sie bereit, alles zu entdecken, was Milvus bietet? Schauen Sie sich unsere<a href="https://milvus.io/docs/release_notes.md"> Versionshinweise</a> an, lesen Sie die<a href="https://milvus.io/docs"> vollständige Dokumentation</a>, oder werfen Sie einen Blick auf unsere<a href="https://milvus.io/blog"> Feature-Blogs</a>.</p>
+<p>Sie sind auch herzlich eingeladen, unserer <a href="https://discord.com/invite/8uyFbECzPX">Discord-Community</a> beizutreten oder ein Problem auf<a href="https://github.com/milvus-io/milvus"> GitHub</a> zu melden - wir sind hier, um Ihnen zu helfen, das Beste aus Milvus 2.6 zu machen.</p>

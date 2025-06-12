@@ -181,7 +181,7 @@ origin: >-
 </p>
 <p>図：  Woodpeckerアーキテクチャの概要</p>
 <p>このアプローチは、耐久性とクラウド効率を最大化しながら、運用のオーバーヘッドを劇的に削減します。ローカルディスクへの依存を排除することで、Woodpeckerはクラウドネイティブの原則に完全に合致し、システム管理者の運用負担を大幅に軽減します。</p>
-<h3 id="Performance-Benchmarks-Exceeding-Expectations" class="common-anchor-header">パフォーマンスベンチマーク期待を上回るパフォーマンス</h3><p>シングルノード、シングルクライアント、シングルログストリームのセットアップでWoodpeckerのパフォーマンスを評価するために包括的なベンチマークを実行しました。その結果は、KafkaやPulsarと比較した場合、素晴らしいものでした：</p>
+<h3 id="Performance-Benchmarks-Exceeding-Expectations" class="common-anchor-header">パフォーマンスベンチマーク期待を上回るパフォーマンス</h3><p>シングルノード、シングルクライアント、シングルログストリームのセットアップでWoodpeckerのパフォーマンスを評価するために包括的なベンチマークを実行しました。その結果は、KafkaやPulsarと比較した際に素晴らしいものでした：</p>
 <table>
 <thead>
 <tr><th><strong>システム</strong></th><th><strong>Kafka</strong></th><th><strong>Pulsar</strong></th><th><strong>WP MinIO</strong></th><th><strong>WPローカル</strong></th><th><strong>WP S3</strong></th></tr>
@@ -209,7 +209,7 @@ origin: >-
 <li><p>アベイラビリティゾーンをまたがる耐久性のある永続性を備えた高スループットのデータ取り込み</p></li>
 <li><p>リアルタイムのサブスクリプションのための低レイテンシのテールリードと、障害回復のための高スループットのキャッチアップリード</p></li>
 <li><p>NFSプロトコルをサポートするクラウドオブジェクトストレージやファイルシステムを含む、プラグイン可能なストレージバックエンド</p></li>
-<li><p>柔軟なデプロイメントオプションにより、軽量なスタンドアロンセットアップとマルチテナントMilvusデプロイメント用の大規模クラスタの両方をサポート</p></li>
+<li><p>柔軟なデプロイメントオプション。軽量なスタンドアロンセットアップとマルチテナント展開のための大規模クラスタの両方をサポート。</p></li>
 </ul>
 <h3 id="Architecture-Components" class="common-anchor-header">アーキテクチャコンポーネント</h3><p>標準的なWoodpeckerのデプロイメントには以下のコンポーネントが含まれます。</p>
 <ul>
@@ -306,8 +306,8 @@ origin: >-
 <p>車輪を再発明するのではなく、AWS S3、Google Cloud Storage、MinIOのようなサービスを支えるワールドクラスのエンジニアリングチームに、耐久性がありスケーラブルなストレージの複雑さを委ねるのだ。その中でもS3は、事実上無制限の容量、イレブンナイン（99.9999999％）の耐久性、99.99％の可用性、高スループットの読み書きパフォーマンスで際立っている。</p>
 <p>しかし、「ゼロディスク」アーキテクチャにもトレードオフがある。オブジェクトストアは依然として高い書き込みレイテンシとスモールファイルの非効率性に悩まされており、この限界は多くのリアルタイムワークロードで解決されていない。</p>
 <p>ベクターデータベース、特にミッションクリティカルなRAG、AIエージェント、低レイテンシの検索ワークロードをサポートするデータベースにとって、リアルタイムアクセスと高速書き込みは譲れません。そのため私たちは、Woodpeckerとストリーミングサービスを中心にMilvusを再構築しました。このシフトにより、システム全体が簡素化され（正直なところ、誰もベクター・データベース内に完全なPulsarスタックを維持したいとは思わないでしょう）、より新鮮なデータを確保し、コスト効率を改善し、障害回復をスピードアップします。</p>
-<p>私たちは、Woodpeckerが単なるMilvusコンポーネントではなく、他のクラウド・ネイティブ・システムの基盤となるビルディング・ブロックの役割を果たすことができると信じています。クラウドインフラストラクチャが進化するにつれ、S3 Expressのような技術革新は、1桁ミリ秒の書き込みレイテンシでAZを跨いだ耐久性という理想にさらに近づけるかもしれません。</p>
-<h2 id="Whats-Next" class="common-anchor-header">次のニュース<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<p>私たちは、Woodpeckerが単なるMilvusコンポーネントではなく、他のクラウド・ネイティブ・システムの基盤となるビルディング・ブロックの役割を果たすことができると信じています。クラウドインフラストラクチャが進化するにつれ、S3 Expressのような技術革新により、1桁ミリ秒の書き込みレイテンシでAZを跨いだ耐久性という理想にさらに近づけるかもしれません。</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Milvus 2.6を始めよう<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -322,5 +322,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Woodpeckerとさらに多くのパワフルな機能を搭載したMilvus 2.6にご期待ください。パフォーマンスの向上と操作の簡素化を体験してみませんか？まずは<a href="https://milvus.io/docs"> ドキュメントを</a>ご覧ください！また、<a href="https://discord.gg/milvus"> Discordや</a> <a href="https://github.com/milvus-io/milvus/discussions">GitHubで</a>Milvusコミュニティに参加し、質問や経験を共有することもできます。</p>
-<p>大規模なミッションクリティカルなベクトル検索ワークロードで課題に直面している場合、ぜひお手伝いさせてください。<a href="https://milvus.io/office-hours"> Milvusオフィスアワーをご予約の</a>上、エンジニアリングチームとご相談ください。</p>
+    </button></h2><p>Milvus 2.6は現在利用可能です。Woodpeckerに加え、階層型ストレージ、RabbitQ量子化メソッド、強化された全文検索とマルチテナンシーなど、多数の新機能とパフォーマンスの最適化が導入されており、今日のベクトル検索における最も差し迫った課題である、コストを抑えながら効率的にスケーリングするという課題に直接取り組んでいます。</p>
+<p>Milvusが提供するすべてのものをご覧になる準備はできましたか？<a href="https://milvus.io/docs/release_notes.md"> リリースノート</a>、<a href="https://milvus.io/docs"> 完全なドキュメントの</a>閲覧、または<a href="https://milvus.io/blog"> 機能ブログを</a>ご覧ください。</p>
+<p>Milvus2.6を最大限に活用するためのお手伝いをさせていただきます<a href="https://discord.com/invite/8uyFbECzPX">。</a></p>

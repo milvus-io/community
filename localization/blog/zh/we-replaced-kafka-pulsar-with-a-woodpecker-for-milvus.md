@@ -41,7 +41,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>我们喜欢并使用 Kafka 和 Pulsar。它们一直在发挥作用，直到它们不再适用。随着 Milvus（领先的开源向量数据库）的发展，我们发现这些强大的消息队列不再符合我们的可扩展性要求。于是，我们做出了一个大胆的举动：我们重写了 Milvus 2.6 中的流式骨干网，并实现了我们自己的 WAL -<strong>Woodpecker</strong>。</p>
-<p>让我带领大家回顾一下我们的历程，并解释一下我们为什么要做出这种乍看之下可能有违直觉的改变。</p>
+<p>让我带领大家回顾一下我们的历程，并解释一下我们为什么要做出这种乍看之下可能有悖直觉的改变。</p>
 <h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">从第一天起就是云原生的<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -57,10 +57,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 从一开始就是一个云原生向量数据库。我们利用 Kubernetes 进行弹性扩展和快速故障恢复，并利用亚马逊 S3 和 MinIO 等对象存储解决方案进行数据持久化。</p>
+    </button></h2><p>Milvus 从一开始就是云原生向量数据库。我们利用 Kubernetes 进行弹性扩展和快速故障恢复，并利用亚马逊 S3 和 MinIO 等对象存储解决方案进行数据持久化。</p>
 <p>这种云优先的方法具有巨大的优势，但也带来了一些挑战：</p>
 <ul>
-<li><p>S3 等云对象存储服务提供了几乎无限的吞吐量和可用性处理能力，但延迟往往超过 100 毫秒。</p></li>
+<li><p>S3 等云对象存储服务在处理吞吐量和可用性方面提供了几乎无限的能力，但延迟往往超过 100 毫秒。</p></li>
 <li><p>这些服务的定价模型（基于访问模式和频率）会给实时数据库操作增加意想不到的成本。</p></li>
 <li><p>要在云原生特性与实时向量搜索需求之间取得平衡，在架构上面临着巨大的挑战。</p></li>
 </ul>
@@ -179,7 +179,7 @@ origin: >-
   </span>
 </p>
 <p>图  啄木鸟架构概述</p>
-<p>这种方法大大降低了操作符开销，同时最大限度地提高了耐用性和云效率。通过消除本地磁盘依赖性，Woodpecker 与云原生原则完美契合，大大减轻了系统管理员的操作负担。</p>
+<p>这种方法大大降低了操作符开销，同时最大限度地提高了耐用性和云效率。通过消除本地磁盘依赖性，Woodpecker 与云原生原则完美契合，并大大减轻了系统管理员的操作负担。</p>
 <h3 id="Performance-Benchmarks-Exceeding-Expectations" class="common-anchor-header">性能基准：超出预期</h3><p>我们运行了全面的基准测试，以评估啄木鸟在单节点、单客户端、单日志流设置下的性能。与 Kafka 和 Pulsar 相比，结果令人印象深刻：</p>
 <table>
 <thead>
@@ -219,7 +219,7 @@ origin: >-
 </ul>
 <h3 id="Flexible-Deployments-to-Match-Your-Specific-Needs" class="common-anchor-header">灵活部署，满足您的特定需求</h3><p>啄木鸟提供两种部署模式，以满足您的特定需求：</p>
 <p><strong>MemoryBuffer 模式 - 轻便、免维护</strong></p>
-<p>MemoryBuffer 模式提供了一个简单、轻量级的部署选项，啄木鸟会在内存中暂时缓冲写入的内容，并定期将它们刷新到云对象存储服务。元数据使用 etcd 管理，以确保一致性和协调性。这种模式最适合小规模部署或生产环境中批量繁重的工作负载，它们优先考虑的是简单性而不是性能，尤其是在低写入延迟并不重要的情况下。</p>
+<p>MemoryBuffer 模式提供了一个简单、轻量级的部署选项，啄木鸟会在内存中临时缓冲写入的内容，并定期将它们刷新到云对象存储服务。元数据使用 etcd 管理，以确保一致性和协调性。这种模式最适合小规模部署或生产环境中批量繁重的工作负载，它们优先考虑的是简单性而不是性能，尤其是在低写入延迟并不重要的情况下。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_The_memory_Buffer_Mode_3429d693a1.png" alt="" class="doc-image" id="" />
@@ -306,7 +306,7 @@ origin: >-
 <p>但是，即使是 "零磁盘 "架构也有取舍。对象存储仍然存在写入延迟高和小文件效率低的问题，这些限制在许多实时工作负载中仍未得到解决。</p>
 <p>对于向量数据库来说，特别是那些支持关键任务 RAG、人工智能 Agents 和低延迟搜索工作负载的数据库，实时访问和快速写入是不可或缺的。这就是我们围绕啄木鸟和流服务重新架构 Milvus 的原因。这种转变简化了整个系统（面对现实吧--没有人愿意在向量数据库中维护一个完整的 Pulsar 堆栈），确保了数据的新鲜度，提高了成本效益，并加快了故障恢复速度。</p>
 <p>我们相信，啄木鸟不仅仅是 Milvus 的一个组件，它还可以作为其他云原生系统的基础构件。随着云基础设施的发展，像 S3 Express 这样的创新可能会让我们更加接近理想：具有个位数毫秒写延迟的跨 AZ 持久性。</p>
-<h2 id="Whats-Next" class="common-anchor-header">下一步<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">开始使用 Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -321,5 +321,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>敬请期待即将发布的 Milvus 2.6，它将提供啄木鸟和更多强大功能。准备好体验改进的性能和简化的操作符了吗？请查看我们的<a href="https://milvus.io/docs"> 文档</a>，开始使用！也欢迎您加入<a href="https://discord.gg/milvus"> Discord</a>或<a href="https://github.com/milvus-io/milvus/discussions">GitHub</a>上的 Milvus 社区，提出问题或分享经验。</p>
-<p>如果您在处理大规模关键任务向量搜索工作负载时遇到困难，我们很乐意为您提供帮助。<a href="https://milvus.io/office-hours"> 预约 Milvus Office Hours 会议</a>，与我们的工程团队讨论您的具体需求。</p>
+    </button></h2><p>Milvus 2.6 现已发布。除 Woodpecker 外，它还引入了分层存储、RabbitQ 量化方法、增强型全文搜索和多租户等数十项新功能和性能优化，直接解决了当今向量搜索领域最紧迫的挑战：在控制成本的同时实现高效扩展。</p>
+<p>准备好探索 Milvus 提供的一切了吗？深入了解我们的<a href="https://milvus.io/docs/release_notes.md"> 发布说明</a>，浏览<a href="https://milvus.io/docs"> 完整的文档</a>，或查看我们的<a href="https://milvus.io/blog"> 功能博客</a>。</p>
+<p>我们也欢迎您加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社区</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提交问题--我们将帮助您充分利用 Milvus 2.6。</p>

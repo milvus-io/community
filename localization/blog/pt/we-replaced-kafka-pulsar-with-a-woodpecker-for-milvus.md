@@ -130,7 +130,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Com o Milvus 2.6, decidimos eliminar gradualmente as filas de mensagens externas em favor do Woodpecker, nossa implementação de WAL nativa da nuvem criada especificamente. Esta não foi uma decisão que tomamos de ânimo leve. Afinal, usamos com sucesso o Kafka e o Pulsar por anos.</p>
-<p>O problema não era com essas tecnologias em si - ambas são excelentes sistemas com recursos poderosos. Em vez disso, o desafio veio da crescente complexidade e sobrecarga que esses sistemas externos introduziram à medida que a Milvus evoluiu. À medida que os nossos requisitos se tornavam mais especializados, a diferença entre o que as filas de mensagens de uso geral ofereciam e o que a nossa base de dados vetorial precisava continuava a aumentar.</p>
+<p>O problema não era com essas tecnologias em si - ambas são excelentes sistemas com recursos poderosos. Em vez disso, o desafio veio da crescente complexidade e sobrecarga que esses sistemas externos introduziram à medida que a Milvus evoluiu. À medida que os nossos requisitos se tornavam mais especializados, o fosso entre o que as filas de mensagens de uso geral ofereciam e o que a nossa base de dados vetorial precisava continuava a aumentar.</p>
 <p>Três factores específicos acabaram por determinar a nossa decisão de construir um substituto:</p>
 <h3 id="Operational-Complexity" class="common-anchor-header">Complexidade operacional</h3><p>Dependências externas, como Kafka ou Pulsar, exigem máquinas dedicadas com vários nós e gerenciamento cuidadoso de recursos. Isso cria vários desafios:</p>
 <ul>
@@ -198,7 +198,7 @@ origin: >-
 <li><p><strong>Sistema de ficheiros local</strong>: 600-750 MB/s</p></li>
 <li><p><strong>Amazon S3 (instância única do EC2)</strong>: até 1,1 GB/s</p></li>
 </ul>
-<p>Notavelmente, o Woodpecker atingiu consistentemente 60-80% da taxa de transferência máxima possível para cada backend - um nível de eficiência excecional para middleware.</p>
+<p>Notavelmente, o Woodpecker alcançou consistentemente 60-80% da taxa de transferência máxima possível para cada backend - um nível de eficiência excecional para middleware.</p>
 <h4 id="Key-Performance-Insights" class="common-anchor-header">Principais percepções de desempenho</h4><ol>
 <li><p><strong>Modo de sistema de arquivos local</strong>: O Woodpecker atingiu 450 MB/s - 3,5 vezes mais rápido que o Kafka e 4,2 vezes mais rápido que o Pulsar - com latência ultrabaixa de apenas 1,8 ms, tornando-o ideal para implantações de nó único de alto desempenho.</p></li>
 <li><p><strong>Modo de armazenamento em nuvem (S3)</strong>: Ao gravar diretamente no S3, o Woodpecker atingiu 750 MB/s (cerca de 68% do limite teórico do S3), 5,8 vezes mais rápido que o Kafka e 7 vezes mais rápido que o Pulsar. Embora a latência seja maior (166 ms), essa configuração fornece uma taxa de transferência excecional para cargas de trabalho orientadas por lote.</p></li>
@@ -287,7 +287,7 @@ origin: >-
 <li><p>Inclui o <strong>HandlerService</strong> que implementa mecanismos eficientes de publicação-subscrição para entradas WAL</p></li>
 </ul>
 <p>Esta arquitetura em camadas permite ao Milvus manter uma separação clara entre a funcionalidade de fluxo contínuo (subscrição, processamento em tempo real) e os mecanismos de armazenamento reais. O Woodpecker trata do "como" do armazenamento de registos, enquanto o StreamingService gere o "o quê" e o "quando" das operações de registo.</p>
-<p>Como resultado, o Streaming Service melhora significativamente as capacidades em tempo real do Milvus, introduzindo o suporte nativo de subscrição, eliminando a necessidade de filas de mensagens externas. Reduz o consumo de memória ao consolidar caches anteriormente duplicados nos caminhos de consulta e de dados, diminui a latência para leituras fortemente consistentes ao remover atrasos de sincronização assíncronos e melhora a escalabilidade e a velocidade de recuperação em todo o sistema.</p>
+<p>Como resultado, o Streaming Service melhora significativamente as capacidades em tempo real do Milvus ao introduzir o suporte nativo de subscrição, eliminando a necessidade de filas de mensagens externas. Reduz o consumo de memória ao consolidar caches anteriormente duplicados nos caminhos de consulta e de dados, diminui a latência para leituras fortemente consistentes ao remover atrasos de sincronização assíncronos e melhora a escalabilidade e a velocidade de recuperação em todo o sistema.</p>
 <h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">Conclusão - Streaming em uma arquitetura de disco zero<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -303,12 +303,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gerenciar o estado é difícil. Os sistemas com estado geralmente sacrificam a elasticidade e a escalabilidade. A resposta cada vez mais aceita no design nativo da nuvem é dissociar o estado da computação - permitindo que cada um seja escalado independentemente.</p>
+    </button></h2><p>Gerenciar o estado é difícil. Os sistemas com estado geralmente sacrificam a elasticidade e a escalabilidade. A resposta cada vez mais aceita no design nativo da nuvem é desacoplar o estado da computação - permitindo que cada um seja escalado independentemente.</p>
 <p>Em vez de reinventar a roda, delegamos a complexidade do armazenamento durável e escalável às equipas de engenharia de classe mundial por trás de serviços como o AWS S3, o Google Cloud Storage e o MinIO. Entre eles, o S3 destaca-se pela sua capacidade virtualmente ilimitada, onze noves (99,999999999%) de durabilidade, 99,99% de disponibilidade e desempenho de leitura/escrita de elevado débito.</p>
 <p>Mas mesmo as arquitecturas de "disco zero" têm compensações. Os armazenamentos de objectos ainda se debatem com uma elevada latência de escrita e ineficiências de ficheiros pequenos - limitações que continuam por resolver em muitas cargas de trabalho em tempo real.</p>
 <p>Para bases de dados vectoriais - especialmente as que suportam RAG de missão crítica, agentes de IA e cargas de trabalho de pesquisa de baixa latência - o acesso em tempo real e as escritas rápidas não são negociáveis. É por isso que rearquitetamos o Milvus em torno do Woodpecker e do Streaming Service. Essa mudança simplifica o sistema geral (convenhamos, ninguém quer manter uma pilha Pulsar completa dentro de um banco de dados vetorial), garante dados mais frescos, melhora a relação custo-benefício e acelera a recuperação de falhas.</p>
 <p>Acreditamos que o Woodpecker é mais do que apenas um componente do Milvus - ele pode servir como um bloco de construção fundamental para outros sistemas nativos da nuvem. À medida que a infraestrutura de nuvem evolui, inovações como o S3 Express podem nos aproximar ainda mais do ideal: durabilidade entre AZs com latência de gravação de um dígito de milissegundo.</p>
-<h2 id="Whats-Next" class="common-anchor-header">O que vem por aí<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Primeiros passos com o Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -323,5 +323,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Fique atento ao próximo Milvus 2.6 com o Woodpecker e muitos outros recursos poderosos. Pronto para experimentar o desempenho aprimorado e as operações simplificadas? Consulte a nossa<a href="https://milvus.io/docs"> documentação</a> para começar! Também é bem-vindo a juntar-se à comunidade Milvus no<a href="https://discord.gg/milvus"> Discord</a> ou no <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> para fazer perguntas ou partilhar as suas experiências.</p>
-<p>Se estiver a enfrentar desafios com cargas de trabalho de pesquisa vetorial de missão crítica em grande escala, gostaríamos de ajudar.<a href="https://milvus.io/office-hours"> Marque uma sessão do Milvus Office Hours</a> para discutir as suas necessidades específicas com a nossa equipa de engenharia.</p>
+    </button></h2><p>O Milvus 2.6 já está disponível. Para além do Woodpecker, apresenta dezenas de novas funcionalidades e optimizações de desempenho, como o armazenamento em camadas, o método de quantização RabbitQ e a pesquisa de texto completo melhorada e a multitenancy, abordando diretamente os desafios mais prementes da pesquisa vetorial atual: escalar de forma eficiente e manter os custos sob controlo.</p>
+<p>Pronto para explorar tudo o que o Milvus oferece? Mergulhe nas nossas<a href="https://milvus.io/docs/release_notes.md"> notas de versão</a>, navegue na<a href="https://milvus.io/docs"> documentação completa</a> ou consulte os nossos<a href="https://milvus.io/blog"> blogues de funcionalidades</a>.</p>
+<p>Também é bem-vindo a juntar-se à nossa <a href="https://discord.com/invite/8uyFbECzPX">comunidade Discord</a> ou a registar um problema no<a href="https://github.com/milvus-io/milvus"> GitHub</a> - estamos aqui para o ajudar a tirar o máximo partido do Milvus 2.6.</p>

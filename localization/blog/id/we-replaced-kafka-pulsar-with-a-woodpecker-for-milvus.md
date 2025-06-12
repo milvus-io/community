@@ -6,9 +6,9 @@ title: >-
 author: James Luan
 date: 2025-05-15T00:00:00.000Z
 desc: >-
-  Kami membangun Woodpecker, sebuah sistem WAL yang berbasis cloud, untuk
-  menggantikan Kafka dan Pulsar di Milvus dengan kompleksitas dan biaya
-  operasional yang lebih rendah.
+  Kami membangun Woodpecker, sebuah sistem WAL cloud-native, untuk menggantikan
+  Kafka dan Pulsar di Milvus dengan kompleksitas dan biaya operasional yang
+  lebih rendah.
 cover: >-
   assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png
 tag: Engineering
@@ -311,7 +311,7 @@ origin: >-
 <p>Namun, bahkan arsitektur "tanpa disk" pun memiliki kekurangan. Penyimpanan objek masih berjuang dengan latensi tulis yang tinggi dan inefisiensi file kecil - keterbatasan yang masih belum terselesaikan di banyak beban kerja waktu nyata.</p>
 <p>Untuk basis data vektor - terutama yang mendukung RAG yang sangat penting, agen AI, dan beban kerja pencarian dengan latensi rendah - akses waktu nyata dan penulisan cepat tidak dapat dinegosiasikan. Itulah mengapa kami meneliti ulang Milvus di sekitar Woodpecker dan Layanan Streaming. Pergeseran ini menyederhanakan sistem secara keseluruhan (mari kita hadapi itu - tidak ada yang ingin mempertahankan tumpukan Pulsar penuh di dalam basis data vektor), memastikan data yang lebih segar, meningkatkan efisiensi biaya, dan mempercepat pemulihan kegagalan.</p>
 <p>Kami percaya Woodpecker lebih dari sekadar komponen Milvus - Woodpecker dapat berfungsi sebagai blok bangunan dasar untuk sistem cloud-native lainnya. Seiring dengan perkembangan infrastruktur cloud, inovasi seperti S3 Express dapat membawa kita lebih dekat lagi pada kondisi ideal: daya tahan lintas-AZ dengan latensi tulis milidetik satu digit.</p>
-<h2 id="Whats-Next" class="common-anchor-header">Selanjutnya<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Memulai dengan Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -326,5 +326,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nantikan Milvus 2.6 yang akan datang dengan Woodpecker dan lebih banyak lagi fitur-fitur canggih lainnya. Siap untuk merasakan performa yang lebih baik dan pengoperasian yang disederhanakan? Lihat<a href="https://milvus.io/docs"> dokumentasi</a> kami untuk memulai! Anda juga dapat bergabung dengan komunitas Milvus di<a href="https://discord.gg/milvus"> Discord</a> atau <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> untuk mengajukan pertanyaan atau berbagi pengalaman.</p>
-<p>Jika Anda mengalami tantangan dengan beban kerja pencarian vektor berskala besar, kami ingin membantu Anda.<a href="https://milvus.io/office-hours"> Pesan sesi Jam Kerja Milvus</a> untuk mendiskusikan kebutuhan spesifik Anda dengan tim teknisi kami.</p>
+    </button></h2><p>Milvus 2.6 sudah tersedia sekarang. Selain Woodpecker, Milvus 2.6 memperkenalkan lusinan fitur baru dan pengoptimalan kinerja seperti penyimpanan berjenjang, metode kuantisasi RabbitQ, dan pencarian teks lengkap yang disempurnakan serta multitenancy, yang secara langsung menjawab tantangan paling mendesak dalam pencarian vektor saat ini: penskalaan secara efisien sambil menjaga biaya tetap terkendali.</p>
+<p>Siap menjelajahi semua yang ditawarkan Milvus? Selami<a href="https://milvus.io/docs/release_notes.md"> catatan rilis</a> kami, telusuri<a href="https://milvus.io/docs"> dokumentasi lengkapnya</a>, atau lihat<a href="https://milvus.io/blog"> blog fitur</a> kami.</p>
+<p>Anda juga dapat bergabung dengan <a href="https://discord.com/invite/8uyFbECzPX">komunitas Discord</a> kami atau mengajukan masalah di<a href="https://github.com/milvus-io/milvus"> GitHub</a> - kami di sini untuk membantu Anda memaksimalkan Milvus 2.6.</p>
