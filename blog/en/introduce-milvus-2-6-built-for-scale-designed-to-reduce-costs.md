@@ -4,7 +4,7 @@ title: >
  Introducing Milvus 2.6: Affordable Vector Search at Billion Scale
 author: Fendy Feng
 date: 2025-06-12
-desc: We're excited to announce that Milvus 2.6 is now available. This release introduces dozens of features directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.
+desc: We're excited to announce that Milvus 2.6 is now available. This release introduces dozens of features directly addressing the most pressing challenges in vector search today - scaling efficiently while keeping costs under control.
 cover: assets.zilliz.com/Introducing_Milvus_2_6_2593452384.png
 tag: Announcements
 recommend: true
