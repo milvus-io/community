@@ -272,11 +272,13 @@ For vector databases—especially those supporting mission-critical RAG, AI agen
 
 We believe Woodpecker is more than just a Milvus component—it can serve as a foundational building block for other cloud-native systems. As cloud infrastructure evolves, innovations like S3 Express may bring us even closer to the ideal: cross-AZ durability with single-digit millisecond write latency.
 
+## Getting Started with Milvus 2.6
 
-## What's Next
+Milvus 2.6 is available now. In addition to Woodpecker, it introduces dozens of new features and performance optimizations such as tiered storage, RabbitQ quantization method, and enhanced full-text search and multitenancy, directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.
 
-Stay tuned for the upcoming Milvus 2.6 with Woodpecker and so many more powerful features. Ready to experience the improved performance and simplified operations? Check out our[ documentation](https://milvus.io/docs) to get started! You're also welcome to join the Milvus community on[ Discord](https://discord.gg/milvus) or [GitHub](https://github.com/milvus-io/milvus/discussions) to ask questions or share your experiences.
+Ready to explore everything Milvus offers? Dive into our[ release notes](https://milvus.io/docs/release_notes.md), browse the[ complete documentation](https://milvus.io/docs), or check out our[ feature blogs](https://milvus.io/blog).
 
-If you're running into challenges with large-scale mission-critical vector search workloads, we'd love to help.[ Book an Milvus Office Hours session](https://milvus.io/office-hours) to discuss your specific needs with our engineering team.
+You're also welcome to join our [Discord community](https://discord.com/invite/8uyFbECzPX) or file an issue on[ GitHub](https://github.com/milvus-io/milvus) — we're here to help you make the most of Milvus 2.6.
+
 
  
