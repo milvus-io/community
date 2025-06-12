@@ -1,24 +1,24 @@
 ---
-id: introducing-milvus-2-6-affordable-vector-search-at-billion-scale.md
+id: introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md
 title: >
  Introducing Milvus 2.6: Affordable Vector Search at Billion Scale
 author: Fendy Feng
 date: 2025-06-12
-desc: Milvus 2.6 redefines vector search with 72% lower memory use, 100x faster filtering, and real-time scalability for AI applications. 
+desc: We're excited to announce that Milvus 2.6 is now available. This release introduces dozens of features directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.
 cover: assets.zilliz.com/Introducing_Milvus_2_6_2593452384.png
 tag: Announcements
-recommend: false
+recommend: true
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
-meta_keywords: Milvus, vector database, vector search, AI, scalable retrieval 
+meta_keywords: Milvus, vector database, vector search, AI search, Milvus 2.6
 meta_title:  >
  Introducing Milvus 2.6: Affordable Vector Search at Billion Scale
-origin: https://milvus.io/blog/introducing-milvus-2-6-affordable-vector-search-at-billion-scale.md 
+origin: https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md
 ---
 
 As AI-powered search has evolved from experimental projects to mission-critical infrastructure, the demands on [vector databases](https://milvus.io/blog/what-is-a-vector-database.md) have intensified. Organizations need to handle billions of vectors while managing infrastructure costs, supporting real-time data ingestion, and providing sophisticated retrieval beyond basic [similarity search](https://zilliz.com/learn/vector-similarity-search). To tackle these evolving challenges, we've been hard at work developing and refining Milvus. The community response has been incredibly encouraging, with valuable feedback helping shape our direction. 
 
-After months of intensive development, we're excited to announce that **Milvus 2.6 is now available**. This release directly addresses the most pressing challenges in vector search today: __**_scaling efficiently while keeping costs under control._**
+After months of intensive development, we're excited to announce that **Milvus 2.6 is now available**. This release directly addresses the most pressing challenges in vector search today: **_scaling efficiently while keeping costs under control._**
 
 Milvus 2.6 delivers breakthrough innovations across three critical areas: **cost reduction, advanced search capabilities, and architectural improvements for massive scale**. The results speak for themselves:
 
