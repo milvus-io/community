@@ -278,7 +278,7 @@ Milvus 2.6 is available now. In addition to Woodpecker, it introduces dozens of 
 
 Ready to explore everything Milvus offers? Dive into our[ release notes](https://milvus.io/docs/release_notes.md), browse the[ complete documentation](https://milvus.io/docs), or check out our[ feature blogs](https://milvus.io/blog).
 
-You're also welcome to join our [Discord community](https://discord.com/invite/8uyFbECzPX) or file an issue on[ GitHub](https://github.com/milvus-io/milvus) — we're here to help you make the most of Milvus 2.6.
+Have questions? You're also welcome to join our [Discord community](https://discord.com/invite/8uyFbECzPX) or file an issue on[ GitHub](https://github.com/milvus-io/milvus) — we're here to help you make the most of Milvus 2.6.
 
 
  
