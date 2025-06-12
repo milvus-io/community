@@ -40,7 +40,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我们喜欢并使用 Kafka 和 Pulsar。它们一直在发挥作用，直到它们不再适用。随着 Milvus（领先的开源向量数据库）的发展，我们发现这些强大的消息队列不再符合我们的可扩展性要求。于是，我们做出了一个大胆的举动：我们重写了 Milvus 2.6 中的流式骨干网，并实现了我们自己的 WAL -<strong>Woodpecker</strong>。</p>
+    </button></h2><p>我们喜欢并使用 Kafka 和 Pulsar。它们一直在发挥作用，直到它们不再适用。随着 Milvus（领先的开源向量数据库）的发展，我们发现这些强大的消息队列不再符合我们的可扩展性要求。于是，我们做出了一个大胆的举动：在 Milvus 2.6 中重写了流式骨干网，并实现了我们自己的 WAL -<strong>Woodpecker</strong>。</p>
 <p>让我带领大家回顾一下我们的历程，并解释一下我们为什么要做出这种乍看之下可能有悖直觉的改变。</p>
 <h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">从第一天起就是云原生的<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -202,7 +202,7 @@ origin: >-
 <li><p><strong>云存储模式（S3）</strong>：当直接写入 S3 时，啄木鸟的速度达到 750 MB/s（约为 S3 理论极限的 68%），比 Kafka 高 5.8 倍，比 Pulsar 高 7 倍。虽然延迟较高（166 毫秒），但这种设置为面向批处理的工作负载提供了出色的吞吐量。</p></li>
 <li><p><strong>对象存储模式（MinIO）</strong>：即使使用 MinIO，啄木鸟的吞吐量也达到了 71 MB/s，约为 MinIO 容量的 65%。这一性能可与 Kafka 和 Pulsar 相媲美，但对资源的要求要低得多。</p></li>
 </ol>
-<p>Woodpecker 特别针对并发、大容量写入进行了优化，在这种情况下，保持顺序至关重要。这些结果仅仅反映了开发的早期阶段--I/O 合并、智能缓冲和预取方面的持续优化有望使性能更接近理论极限。</p>
+<p>Woodpecker 特别针对并发、大容量写入进行了优化，在这种情况下，保持顺序至关重要。这些结果仅反映了开发的早期阶段--I/O 合并、智能缓冲和预取方面的持续优化有望使性能更接近理论极限。</p>
 <h3 id="Design-Goals" class="common-anchor-header">设计目标</h3><p>啄木鸟通过这些关键技术要求来满足实时向量搜索工作负载不断变化的需求：</p>
 <ul>
 <li><p>高吞吐量数据摄取和跨可用区的持久性</p></li>
@@ -323,4 +323,4 @@ origin: >-
       </svg>
     </button></h2><p>Milvus 2.6 现已发布。除 Woodpecker 外，它还引入了分层存储、RabbitQ 量化方法、增强型全文搜索和多租户等数十项新功能和性能优化，直接解决了当今向量搜索领域最紧迫的挑战：在控制成本的同时实现高效扩展。</p>
 <p>准备好探索 Milvus 提供的一切了吗？深入了解我们的<a href="https://milvus.io/docs/release_notes.md"> 发布说明</a>，浏览<a href="https://milvus.io/docs"> 完整的文档</a>，或查看我们的<a href="https://milvus.io/blog"> 功能博客</a>。</p>
-<p>我们也欢迎您加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社区</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提交问题--我们将帮助您充分利用 Milvus 2.6。</p>
+<p>有问题？欢迎加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社区</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提交问题 - 我们将帮助您充分利用 Milvus 2.6。</p>

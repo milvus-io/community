@@ -322,5 +322,5 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6 現已上市。除了 Woodpecker 之外，它還引進了數十項新功能和效能最佳化，例如分層儲存、RabbitQ 量化方法，以及增強的全文檢索和多租戶功能，直接解決當今向量檢索最迫切的挑戰：在有效擴充的同時控制成本。</p>
-<p>準備好探索 Milvus 所提供的一切了嗎？請仔細閱讀我們的<a href="https://milvus.io/docs/release_notes.md"> 發佈說明</a>、瀏覽<a href="https://milvus.io/docs"> 完整的說明文件</a>，或查看我們的<a href="https://milvus.io/blog"> 功能部落格</a>。</p>
-<p>我們也歡迎您加入我們的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社群</a>，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提交問題 - 我們在這裡幫助您充分利用 Milvus 2.6。</p>
+<p>準備好探索 Milvus 所提供的一切了嗎？請深入閱讀我們的<a href="https://milvus.io/docs/release_notes.md"> 發行說明</a>、瀏覽<a href="https://milvus.io/docs"> 完整的說明文件</a>，或查看我們的<a href="https://milvus.io/blog"> 功能部落格</a>。</p>
+<p>有問題嗎？我們也歡迎您加入我們的<a href="https://discord.com/invite/8uyFbECzPX">Discord 社群</a>，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提出問題 - 我們會幫助您充分利用 Milvus 2.6。</p>

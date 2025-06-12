@@ -67,7 +67,7 @@ origin: >-
 <li><p>Die Preismodelle dieser Dienste (basierend auf Zugriffsmustern und -häufigkeit) können bei Echtzeit-Datenbankoperationen unerwartete Kosten verursachen.</p></li>
 <li><p>Der Ausgleich zwischen Cloud-nativen Merkmalen und den Anforderungen der Echtzeit-Vektorsuche bringt erhebliche architektonische Herausforderungen mit sich.</p></li>
 </ul>
-<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">Die Shared Log Architektur: Unser Fundament<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
+<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">Die Shared Log Architektur: Unsere Grundlage<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,7 +101,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um diese Lücke zu schließen, nutzten wir anfangs Nachrichten-Warteschlangen (Kafka/Pulsar) als unser Write-Ahead-Log (WAL). Die Architektur funktionierte folgendermaßen:</p>
+    </button></h2><p>Um diese Lücke zu schließen, nutzten wir anfangs Nachrichtenwarteschlangen (Kafka/Pulsar) als unser Write-Ahead-Log (WAL). Die Architektur funktionierte folgendermaßen:</p>
 <ul>
 <li><p>Alle eingehenden Echtzeit-Aktualisierungen fließen durch die Nachrichtenwarteschlange.</p></li>
 <li><p>Die Schreiber erhalten eine sofortige Bestätigung, sobald sie von der Nachrichtenwarteschlange akzeptiert wird.</p></li>
@@ -202,7 +202,7 @@ origin: >-
 <p>Bemerkenswerterweise erreichte Woodpecker durchgängig 60-80% des maximal möglichen Durchsatzes für jedes Backend - ein außergewöhnliches Effizienzniveau für Middleware.</p>
 <h4 id="Key-Performance-Insights" class="common-anchor-header">Wichtige Einblicke in die Leistung</h4><ol>
 <li><p><strong>Lokaler Dateisystem-Modus</strong>: Woodpecker erreichte 450 MB/s - 3,5× schneller als Kafka und 4,2× schneller als Pulsar - bei einer extrem niedrigen Latenz von nur 1,8 ms, was ihn ideal für hochleistungsfähige Single-Node-Implementierungen macht.</p></li>
-<li><p><strong>Cloud-Speicher-Modus (S3)</strong>: Beim direkten Schreiben in S3 erreichte Woodpecker 750 MB/s (ca. 68 % der theoretischen Grenze von S3), 5,8× schneller als Kafka und 7× schneller als Pulsar. Obwohl die Latenzzeit höher ist (166 ms), bietet dieses Setup einen außergewöhnlichen Durchsatz für stapelorientierte Arbeitslasten.</p></li>
+<li><p><strong>Cloud-Speicher-Modus (S3)</strong>: Beim direkten Schreiben auf S3 erreichte Woodpecker 750 MB/s (ca. 68 % der theoretischen Grenze von S3), 5,8× schneller als Kafka und 7× schneller als Pulsar. Obwohl die Latenzzeit höher ist (166 ms), bietet dieses Setup einen außergewöhnlichen Durchsatz für stapelorientierte Arbeitslasten.</p></li>
 <li><p><strong>Objektspeicher-Modus (MinIO)</strong>: Selbst mit MinIO erreichte Woodpecker 71 MB/s - etwa 65 % der Kapazität von MinIO. Diese Leistung ist mit der von Kafka und Pulsar vergleichbar, allerdings bei deutlich geringerem Ressourcenbedarf.</p></li>
 </ol>
 <p>Woodpecker ist besonders für gleichzeitige Schreibvorgänge mit hohem Volumen optimiert, bei denen die Aufrechterhaltung der Reihenfolge entscheidend ist. Und diese Ergebnisse spiegeln nur die frühen Stadien der Entwicklung wider - es wird erwartet, dass laufende Optimierungen bei der E/A-Zusammenführung, der intelligenten Pufferung und dem Prefetching die Leistung noch näher an die theoretischen Grenzen bringen werden.</p>
@@ -325,5 +325,5 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6 ist jetzt verfügbar. Zusätzlich zu Woodpecker werden Dutzende neuer Funktionen und Leistungsoptimierungen eingeführt, wie z. B. Tiered Storage, RabbitQ-Quantisierungsmethode und verbesserte Volltextsuche und Mandantenfähigkeit, die sich direkt mit den dringendsten Herausforderungen der heutigen Vektorsuche befassen: effiziente Skalierung bei kontrollierten Kosten.</p>
-<p>Sind Sie bereit, alles zu entdecken, was Milvus bietet? Schauen Sie sich unsere<a href="https://milvus.io/docs/release_notes.md"> Versionshinweise</a> an, lesen Sie die<a href="https://milvus.io/docs"> vollständige Dokumentation</a>, oder werfen Sie einen Blick auf unsere<a href="https://milvus.io/blog"> Feature-Blogs</a>.</p>
-<p>Sie sind auch herzlich eingeladen, unserer <a href="https://discord.com/invite/8uyFbECzPX">Discord-Community</a> beizutreten oder ein Problem auf<a href="https://github.com/milvus-io/milvus"> GitHub</a> zu melden - wir sind hier, um Ihnen zu helfen, das Beste aus Milvus 2.6 zu machen.</p>
+<p>Sind Sie bereit, alles zu entdecken, was Milvus bietet? Schauen Sie sich unsere<a href="https://milvus.io/docs/release_notes.md"> Versionshinweise</a> an, lesen Sie die<a href="https://milvus.io/docs"> vollständige Dokumentation</a> oder lesen Sie unsere<a href="https://milvus.io/blog"> Feature-Blogs</a>.</p>
+<p>Haben Sie Fragen? Sie können auch gerne unserer <a href="https://discord.com/invite/8uyFbECzPX">Discord-Community</a> beitreten oder ein Problem auf<a href="https://github.com/milvus-io/milvus"> GitHub</a> melden - wir sind hier, um Ihnen zu helfen, das Beste aus Milvus 2.6 zu machen.</p>

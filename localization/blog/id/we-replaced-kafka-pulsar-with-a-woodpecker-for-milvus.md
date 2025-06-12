@@ -6,9 +6,9 @@ title: >-
 author: James Luan
 date: 2025-05-15T00:00:00.000Z
 desc: >-
-  Kami membangun Woodpecker, sebuah sistem WAL cloud-native, untuk menggantikan
-  Kafka dan Pulsar di Milvus dengan kompleksitas dan biaya operasional yang
-  lebih rendah.
+  Kami membangun Woodpecker, sebuah sistem WAL yang berbasis cloud, untuk
+  menggantikan Kafka dan Pulsar di Milvus dengan kompleksitas dan biaya
+  operasional yang lebih rendah.
 cover: >-
   assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png
 tag: Engineering
@@ -327,5 +327,5 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvus 2.6 sudah tersedia sekarang. Selain Woodpecker, Milvus 2.6 memperkenalkan lusinan fitur baru dan pengoptimalan kinerja seperti penyimpanan berjenjang, metode kuantisasi RabbitQ, dan pencarian teks lengkap yang disempurnakan serta multitenancy, yang secara langsung menjawab tantangan paling mendesak dalam pencarian vektor saat ini: penskalaan secara efisien sambil menjaga biaya tetap terkendali.</p>
-<p>Siap menjelajahi semua yang ditawarkan Milvus? Selami<a href="https://milvus.io/docs/release_notes.md"> catatan rilis</a> kami, telusuri<a href="https://milvus.io/docs"> dokumentasi lengkapnya</a>, atau lihat<a href="https://milvus.io/blog"> blog fitur</a> kami.</p>
-<p>Anda juga dapat bergabung dengan <a href="https://discord.com/invite/8uyFbECzPX">komunitas Discord</a> kami atau mengajukan masalah di<a href="https://github.com/milvus-io/milvus"> GitHub</a> - kami di sini untuk membantu Anda memaksimalkan Milvus 2.6.</p>
+<p>Siap menjelajahi semua yang ditawarkan Milvus? Selami<a href="https://milvus.io/docs/release_notes.md"> catatan rilis</a> kami, telusuri<a href="https://milvus.io/docs"> dokumentasi lengkap</a>, atau lihat<a href="https://milvus.io/blog"> blog fitur</a> kami.</p>
+<p>Punya pertanyaan? Anda juga dapat bergabung dengan <a href="https://discord.com/invite/8uyFbECzPX">komunitas Discord</a> kami atau mengajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a> - kami di sini untuk membantu Anda memaksimalkan Milvus 2.6.</p>

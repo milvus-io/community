@@ -324,5 +324,5 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>يتوفر Milvus 2.6 الآن. بالإضافة إلى Woodpecker، فإنه يقدم العشرات من الميزات الجديدة وتحسينات الأداء مثل التخزين المتدرج، وطريقة التكميم RabbitQ، والبحث المحسّن عن النص الكامل والتعددية المحسّنة، مما يعالج مباشرةً التحديات الأكثر إلحاحًا في البحث المتجه اليوم: التوسع بكفاءة مع الحفاظ على التكاليف تحت السيطرة.</p>
-<p>هل أنت مستعد لاستكشاف كل ما يقدمه Milvus؟ تعمق في<a href="https://milvus.io/docs/release_notes.md"> ملاحظات الإصدار</a> لدينا، أو تصفح<a href="https://milvus.io/docs"> الوثائق الكاملة،</a> أو اطلع على<a href="https://milvus.io/blog"> مدونات الميزات</a> الخاصة بنا.</p>
-<p>نرحب بك أيضًا للانضمام إلى <a href="https://discord.com/invite/8uyFbECzPX">مجتمع Discord</a> الخاص بنا أو تقديم مشكلة على<a href="https://github.com/milvus-io/milvus"> GitHub</a> - نحن هنا لمساعدتك في تحقيق أقصى استفادة من الإصدار Milvus 2.6.</p>
+<p>هل أنت مستعد لاستكشاف كل ما يقدمه Milvus؟ تعمق في<a href="https://milvus.io/docs/release_notes.md"> ملاحظات الإصدار،</a> أو تصفح<a href="https://milvus.io/docs"> الوثائق الكاملة،</a> أو اطلع على<a href="https://milvus.io/blog"> مدونات الميزات</a> الخاصة بنا.</p>
+<p>هل لديك أسئلة؟ نرحب بك أيضًا للانضمام إلى <a href="https://discord.com/invite/8uyFbECzPX">مجتمع Discord</a> الخاص بنا أو تقديم مشكلة على<a href="https://github.com/milvus-io/milvus"> GitHub</a> - نحن هنا لمساعدتك في تحقيق أقصى استفادة من الإصدار Milvus 2.6.</p>

@@ -6,8 +6,8 @@ title: >-
 author: James Luan
 date: 2025-05-15T00:00:00.000Z
 desc: >-
-  Creamos Woodpecker, un sistema WAL nativo de la nube, para sustituir a Kafka y
-  Pulsar en Milvus y reducir la complejidad y los costes operativos.
+  Hemos creado Woodpecker, un sistema de WAL nativo de la nube, para sustituir a
+  Kafka y Pulsar en Milvus y reducir la complejidad operativa y los costes.
 cover: >-
   assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png
 tag: Engineering
@@ -131,7 +131,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con Milvus 2.6, hemos decidido eliminar gradualmente las colas de mensajes externas en favor de Woodpecker, nuestra implementación de WAL nativa de la nube y creada específicamente. No fue una decisión que tomamos a la ligera. Después de todo, habíamos utilizado con éxito Kafka y Pulsar durante años.</p>
+    </button></h2><p>Con Milvus 2.6, hemos decidido eliminar gradualmente las colas de mensajes externas en favor de Woodpecker, nuestra implementación de WAL nativa en la nube y creada específicamente. No fue una decisión que tomamos a la ligera. Después de todo, habíamos utilizado con éxito Kafka y Pulsar durante años.</p>
 <p>El problema no radicaba en estas tecnologías en sí, ya que ambos son sistemas excelentes con potentes funciones. En cambio, el desafío provenía de la creciente complejidad y sobrecarga que estos sistemas externos introducían a medida que Milvus evolucionaba. A medida que nuestros requisitos se hacían más especializados, la brecha entre lo que ofrecían las colas de mensajes de uso general y lo que necesitaba nuestra base de datos vectorial seguía ampliándose.</p>
 <p>Tres factores específicos impulsaron en última instancia nuestra decisión de construir un sustituto:</p>
 <h3 id="Operational-Complexity" class="common-anchor-header">Complejidad operativa</h3><p>Las dependencias externas como Kafka o Pulsar exigen máquinas dedicadas con múltiples nodos y una gestión cuidadosa de los recursos. Esto crea varios retos:</p>
@@ -202,7 +202,7 @@ origin: >-
 </ul>
 <p>Sorprendentemente, Woodpecker alcanzó sistemáticamente el 60-80% del rendimiento máximo posible para cada backend, un nivel de eficiencia excepcional para el middleware.</p>
 <h4 id="Key-Performance-Insights" class="common-anchor-header">Principales datos de rendimiento</h4><ol>
-<li><p><strong>Modo de sistema de archivos local</strong>: Woodpecker alcanzó 450 MB/s -3,5 veces más rápido que Kafka y 4,2 veces más rápido que Pulsar- con una latencia ultrabaja de tan solo 1,8 ms, lo que lo hace ideal para implementaciones de nodo único de alto rendimiento.</p></li>
+<li><p><strong>Modo de sistema de archivos local</strong>: Woodpecker alcanzó 450 MB/s -3,5 veces más rápido que Kafka y 4,2 veces más rápido que Pulsar- con una latencia ultrabaja de tan solo 1,8 ms, lo que lo hace ideal para implantaciones de un solo nodo de alto rendimiento.</p></li>
 <li><p><strong>Modo de almacenamiento en la nube (S3)</strong>: Al escribir directamente en S3, Woodpecker alcanzó 750 MB/s (alrededor del 68% del límite teórico de S3), 5,8 veces más que Kafka y 7 veces más que Pulsar. Aunque la latencia es mayor (166 ms), esta configuración proporciona un rendimiento excepcional para cargas de trabajo por lotes.</p></li>
 <li><p><strong>Modo de almacenamiento de objetos (MinIO)</strong>: Incluso con MinIO, Woodpecker alcanzó 71 MB/s, alrededor del 65% de la capacidad de MinIO. Este rendimiento es comparable al de Kafka y Pulsar, pero con unos requisitos de recursos significativamente menores.</p></li>
 </ol>
@@ -308,7 +308,7 @@ origin: >-
     </button></h2><p>Gestionar el estado es difícil. Los sistemas con estado a menudo sacrifican la elasticidad y la escalabilidad. La respuesta cada vez más aceptada en el diseño nativo de la nube es desacoplar el estado del cálculo, permitiendo que cada uno escale de forma independiente.</p>
 <p>En lugar de reinventar la rueda, delegamos la complejidad del almacenamiento duradero y escalable en los equipos de ingeniería de primer nivel que están detrás de servicios como AWS S3, Google Cloud Storage y MinIO. Entre ellos, S3 destaca por su capacidad prácticamente ilimitada, once nueves (99,999999999%) de durabilidad, 99,99% de disponibilidad y rendimiento de lectura/escritura de alto rendimiento.</p>
 <p>Pero incluso las arquitecturas de "disco cero" tienen ventajas y desventajas. Los almacenes de objetos siguen luchando contra la alta latencia de escritura y la ineficacia de los archivos pequeños, limitaciones que siguen sin resolverse en muchas cargas de trabajo en tiempo real.</p>
-<p>Para las bases de datos vectoriales, especialmente las que soportan cargas de trabajo de misión crítica como RAG, agentes de inteligencia artificial y búsquedas de baja latencia, el acceso en tiempo real y las escrituras rápidas no son negociables. Por eso hemos rediseñado Milvus en torno a Woodpecker y Streaming Service. Este cambio simplifica el sistema en general (seamos realistas: nadie quiere mantener una pila Pulsar completa dentro de una base de datos vectorial), garantiza datos más frescos, mejora la rentabilidad y acelera la recuperación ante fallos.</p>
+<p>Para las bases de datos vectoriales, especialmente las que soportan cargas de trabajo de misión crítica como RAG, agentes de inteligencia artificial y búsquedas de baja latencia, el acceso en tiempo real y las escrituras rápidas no son negociables. Por eso hemos rediseñado Milvus en torno a Woodpecker y Streaming Service. Este cambio simplifica el sistema en general (seamos realistas: nadie quiere mantener una pila Pulsar completa dentro de una base de datos vectorial), garantiza datos más frescos, mejora la rentabilidad y acelera la recuperación en caso de fallo.</p>
 <p>Creemos que Woodpecker es algo más que un componente de Milvus: puede servir de base para otros sistemas nativos de la nube. A medida que evoluciona la infraestructura de la nube, innovaciones como S3 Express pueden acercarnos aún más al ideal: durabilidad entre zonas geográficas con latencia de escritura de un milisegundo.</p>
 <h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Primeros pasos con Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -327,4 +327,4 @@ origin: >-
       </svg>
     </button></h2><p>Milvus 2.6 ya está disponible. Además de Woodpecker, introduce docenas de nuevas funciones y optimizaciones de rendimiento, como el almacenamiento por niveles, el método de cuantificación RabbitQ y la búsqueda de texto completo y multitenencia mejoradas, que abordan directamente los retos más acuciantes de la búsqueda vectorial actual: escalar de forma eficiente manteniendo los costes bajo control.</p>
 <p>¿Listo para explorar todo lo que ofrece Milvus? Sumérjase en nuestras<a href="https://milvus.io/docs/release_notes.md"> notas de la versión</a>, consulte la<a href="https://milvus.io/docs"> documentación completa</a> o eche un vistazo a nuestros<a href="https://milvus.io/blog"> blogs de funciones</a>.</p>
-<p>También le invitamos a unirse a nuestra <a href="https://discord.com/invite/8uyFbECzPX">comunidad Discord</a> o a presentar una incidencia en<a href="https://github.com/milvus-io/milvus"> GitHub</a>: estamos aquí para ayudarle a sacar el máximo partido de Milvus 2.6.</p>
+<p>¿Tiene alguna pregunta? También le invitamos a unirse a nuestra <a href="https://discord.com/invite/8uyFbECzPX">comunidad Discord</a> o a presentar una incidencia en<a href="https://github.com/milvus-io/milvus"> GitHub</a>: estamos aquí para ayudarle a sacar el máximo partido de Milvus 2.6.</p>

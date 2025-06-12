@@ -1,6 +1,6 @@
 ---
 id: we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md
-title: Substituímos o Kafka/Pulsar por um pica-pau para Milvus - eis o que aconteceu
+title: Substituímos o Kafka/Pulsar por um Pica-pau para Milvus - eis o que aconteceu
 author: James Luan
 date: 2025-05-15T00:00:00.000Z
 desc: >-
@@ -132,7 +132,7 @@ origin: >-
     </button></h2><p>Com o Milvus 2.6, decidimos eliminar gradualmente as filas de mensagens externas em favor do Woodpecker, nossa implementação de WAL nativa da nuvem criada especificamente. Esta não foi uma decisão que tomamos de ânimo leve. Afinal, usamos com sucesso o Kafka e o Pulsar por anos.</p>
 <p>O problema não era com essas tecnologias em si - ambas são excelentes sistemas com recursos poderosos. Em vez disso, o desafio veio da crescente complexidade e sobrecarga que esses sistemas externos introduziram à medida que a Milvus evoluiu. À medida que os nossos requisitos se tornavam mais especializados, o fosso entre o que as filas de mensagens de uso geral ofereciam e o que a nossa base de dados vetorial precisava continuava a aumentar.</p>
 <p>Três factores específicos acabaram por determinar a nossa decisão de construir um substituto:</p>
-<h3 id="Operational-Complexity" class="common-anchor-header">Complexidade operacional</h3><p>Dependências externas, como Kafka ou Pulsar, exigem máquinas dedicadas com vários nós e gerenciamento cuidadoso de recursos. Isso cria vários desafios:</p>
+<h3 id="Operational-Complexity" class="common-anchor-header">Complexidade operacional</h3><p>Dependências externas como Kafka ou Pulsar exigem máquinas dedicadas com vários nós e gerenciamento cuidadoso de recursos. Isso cria vários desafios:</p>
 <ul>
 <li>Aumento da complexidade operacional</li>
 </ul>
@@ -198,7 +198,7 @@ origin: >-
 <li><p><strong>Sistema de ficheiros local</strong>: 600-750 MB/s</p></li>
 <li><p><strong>Amazon S3 (instância única do EC2)</strong>: até 1,1 GB/s</p></li>
 </ul>
-<p>Notavelmente, o Woodpecker alcançou consistentemente 60-80% da taxa de transferência máxima possível para cada backend - um nível de eficiência excecional para middleware.</p>
+<p>Notavelmente, o Woodpecker atingiu consistentemente 60-80% da taxa de transferência máxima possível para cada backend - um nível de eficiência excecional para middleware.</p>
 <h4 id="Key-Performance-Insights" class="common-anchor-header">Principais percepções de desempenho</h4><ol>
 <li><p><strong>Modo de sistema de arquivos local</strong>: O Woodpecker atingiu 450 MB/s - 3,5 vezes mais rápido que o Kafka e 4,2 vezes mais rápido que o Pulsar - com latência ultrabaixa de apenas 1,8 ms, tornando-o ideal para implantações de nó único de alto desempenho.</p></li>
 <li><p><strong>Modo de armazenamento em nuvem (S3)</strong>: Ao gravar diretamente no S3, o Woodpecker atingiu 750 MB/s (cerca de 68% do limite teórico do S3), 5,8 vezes mais rápido que o Kafka e 7 vezes mais rápido que o Pulsar. Embora a latência seja maior (166 ms), essa configuração fornece uma taxa de transferência excecional para cargas de trabalho orientadas por lote.</p></li>
@@ -231,7 +231,7 @@ origin: >-
 <p><em>Figura: O modo memoryBuffer</em></p>
 <p><strong>Modo QuorumBuffer - otimizado para implantações de baixa latência e alta durabilidade</strong></p>
 <p>O modo QuorumBuffer foi projetado para cargas de trabalho de leitura/gravação sensíveis à latência e de alta frequência que requerem capacidade de resposta em tempo real e forte tolerância a falhas. Nesse modo, o Woodpecker funciona como um buffer de gravação de alta velocidade com três réplicas de gravações de quorum, garantindo forte consistência e alta disponibilidade.</p>
-<p>Uma gravação é considerada bem-sucedida quando é replicada para pelo menos dois dos três nós, normalmente concluindo em milissegundos de um dígito, após o que os dados são descarregados de forma assíncrona no armazenamento de objetos na nuvem para durabilidade de longo prazo. Esta arquitetura minimiza o estado no nó, elimina a necessidade de grandes volumes de disco locais e evita reparações complexas de anti-entropia frequentemente necessárias em sistemas tradicionais baseados em quorum.</p>
+<p>Uma gravação é considerada bem-sucedida quando é replicada para pelo menos dois dos três nós, normalmente concluindo em milissegundos de um dígito, após o que os dados são descarregados de forma assíncrona no armazenamento de objetos na nuvem para durabilidade de longo prazo. Esta arquitetura minimiza o estado no nó, elimina a necessidade de grandes volumes de disco locais e evita reparações complexas de anti-entropia frequentemente necessárias nos sistemas tradicionais baseados em quorum.</p>
 <p>O resultado é uma camada WAL simplificada e robusta, ideal para ambientes de produção de missão crítica, onde consistência, disponibilidade e recuperação rápida são essenciais.</p>
 <p>
   <span class="img-wrapper">
@@ -303,7 +303,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gerenciar o estado é difícil. Os sistemas com estado geralmente sacrificam a elasticidade e a escalabilidade. A resposta cada vez mais aceita no design nativo da nuvem é desacoplar o estado da computação - permitindo que cada um seja escalado independentemente.</p>
+    </button></h2><p>Gerenciar o estado é difícil. Os sistemas com estado geralmente sacrificam a elasticidade e a escalabilidade. A resposta cada vez mais aceita no design nativo da nuvem é dissociar o estado da computação - permitindo que cada um seja escalado independentemente.</p>
 <p>Em vez de reinventar a roda, delegamos a complexidade do armazenamento durável e escalável às equipas de engenharia de classe mundial por trás de serviços como o AWS S3, o Google Cloud Storage e o MinIO. Entre eles, o S3 destaca-se pela sua capacidade virtualmente ilimitada, onze noves (99,999999999%) de durabilidade, 99,99% de disponibilidade e desempenho de leitura/escrita de elevado débito.</p>
 <p>Mas mesmo as arquitecturas de "disco zero" têm compensações. Os armazenamentos de objectos ainda se debatem com uma elevada latência de escrita e ineficiências de ficheiros pequenos - limitações que continuam por resolver em muitas cargas de trabalho em tempo real.</p>
 <p>Para bases de dados vectoriais - especialmente as que suportam RAG de missão crítica, agentes de IA e cargas de trabalho de pesquisa de baixa latência - o acesso em tempo real e as escritas rápidas não são negociáveis. É por isso que rearquitetamos o Milvus em torno do Woodpecker e do Streaming Service. Essa mudança simplifica o sistema geral (convenhamos, ninguém quer manter uma pilha Pulsar completa dentro de um banco de dados vetorial), garante dados mais frescos, melhora a relação custo-benefício e acelera a recuperação de falhas.</p>
@@ -325,4 +325,4 @@ origin: >-
       </svg>
     </button></h2><p>O Milvus 2.6 já está disponível. Para além do Woodpecker, apresenta dezenas de novas funcionalidades e optimizações de desempenho, como o armazenamento em camadas, o método de quantização RabbitQ e a pesquisa de texto completo melhorada e a multitenancy, abordando diretamente os desafios mais prementes da pesquisa vetorial atual: escalar de forma eficiente e manter os custos sob controlo.</p>
 <p>Pronto para explorar tudo o que o Milvus oferece? Mergulhe nas nossas<a href="https://milvus.io/docs/release_notes.md"> notas de versão</a>, navegue na<a href="https://milvus.io/docs"> documentação completa</a> ou consulte os nossos<a href="https://milvus.io/blog"> blogues de funcionalidades</a>.</p>
-<p>Também é bem-vindo a juntar-se à nossa <a href="https://discord.com/invite/8uyFbECzPX">comunidade Discord</a> ou a registar um problema no<a href="https://github.com/milvus-io/milvus"> GitHub</a> - estamos aqui para o ajudar a tirar o máximo partido do Milvus 2.6.</p>
+<p>Tem dúvidas? Também é bem-vindo a juntar-se à nossa <a href="https://discord.com/invite/8uyFbECzPX">comunidade Discord</a> ou a registar um problema no<a href="https://github.com/milvus-io/milvus"> GitHub</a> - estamos aqui para o ajudar a tirar o máximo partido do Milvus 2.6.</p>

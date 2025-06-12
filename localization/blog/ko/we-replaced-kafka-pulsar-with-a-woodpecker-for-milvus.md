@@ -325,4 +325,4 @@ origin: >-
       </svg>
     </button></h2><p>Milvus 2.6은 지금 사용 가능합니다. Woodpecker 외에도 계층형 스토리지, RabbitQ 정량화 방법, 향상된 전체 텍스트 검색 및 멀티테넌시 등 수십 가지의 새로운 기능과 성능 최적화를 도입하여 오늘날 벡터 검색에서 가장 시급한 과제인 효율적인 확장과 비용 관리를 직접 해결합니다.</p>
 <p>Milvus가 제공하는 모든 것을 살펴볼 준비가 되셨나요?<a href="https://milvus.io/docs/release_notes.md"> 릴리즈 노트를</a> 자세히 살펴보고,<a href="https://milvus.io/docs"> 전체 설명서를</a> 찾아보거나,<a href="https://milvus.io/blog"> 기능 블로그를</a> 확인해 보세요.</p>
-<p>또한 <a href="https://discord.com/invite/8uyFbECzPX">Discord 커뮤니티에</a> 가입하거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출해 주시면 Milvus 2.6을 최대한 활용할 수 있도록 도와드리겠습니다.</p>
+<p>질문이 있으신가요? <a href="https://discord.com/invite/8uyFbECzPX">Discord 커뮤니티에</a> 참여하시거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출해 주시면 Milvus 2.6을 최대한 활용할 수 있도록 도와드리겠습니다.</p>

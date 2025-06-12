@@ -45,7 +45,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Nous aimions et utilisions Kafka et Pulsar. Ils ont fonctionné jusqu'à ce qu'ils ne fonctionnent plus. Au fur et à mesure de l'évolution de Milvus, la principale base de données vectorielle open-source, nous avons constaté que ces puissantes files d'attente de messages ne répondaient plus à nos exigences en matière d'évolutivité. Nous avons donc pris une décision audacieuse : nous avons réécrit l'épine dorsale du streaming dans Milvus 2.6 et mis en œuvre notre propre WAL - <strong>Woodpecker</strong>.</p>
-<p>Permettez-moi de vous accompagner tout au long de notre parcours et de vous expliquer pourquoi nous avons opéré ce changement, qui peut sembler contre-intuitif à première vue.</p>
+<p>Permettez-moi de vous accompagner tout au long de notre parcours et d'expliquer pourquoi nous avons opéré ce changement, qui peut sembler contre-intuitif à première vue.</p>
 <h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">Cloud-Native dès le premier jour<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -174,7 +174,7 @@ origin: >-
 <ul>
 <li><p>Toutes les données du journal sont stockées dans un système de stockage d'objets dans le nuage (comme Amazon S3, Google Cloud Storage ou Alibaba OS).</p></li>
 <li><p>Les métadonnées sont gérées par des magasins de clés-valeurs distribués comme etcd.</p></li>
-<li><p>Pas de dépendance à l'égard des disques locaux pour les opérations principales</p></li>
+<li><p>Aucune dépendance à l'égard des disques locaux pour les opérations de base</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -327,4 +327,4 @@ origin: >-
       </svg>
     </button></h2><p>Milvus 2.6 est disponible dès maintenant. Outre Woodpecker, elle introduit des dizaines de nouvelles fonctionnalités et d'optimisations des performances, telles que le stockage hiérarchisé, la méthode de quantification RabbitQ, la recherche en texte intégral améliorée et la multilocation, répondant directement aux défis les plus urgents de la recherche vectorielle aujourd'hui : une mise à l'échelle efficace tout en gardant les coûts sous contrôle.</p>
 <p>Prêt à découvrir tout ce qu'offre Milvus ? Plongez dans nos<a href="https://milvus.io/docs/release_notes.md"> notes de version</a>, parcourez la<a href="https://milvus.io/docs"> documentation complète</a> ou consultez nos<a href="https://milvus.io/blog"> blogs sur les fonctionnalités</a>.</p>
-<p>Vous pouvez également rejoindre notre <a href="https://discord.com/invite/8uyFbECzPX">communauté Discord</a> ou déposer un problème sur<a href="https://github.com/milvus-io/milvus"> GitHub</a> - nous sommes là pour vous aider à tirer le meilleur parti de Milvus 2.6.</p>
+<p>Vous avez des questions ? N'hésitez pas à rejoindre notre <a href="https://discord.com/invite/8uyFbECzPX">communauté Discord</a> ou à déposer un problème sur<a href="https://github.com/milvus-io/milvus"> GitHub</a> - nous sommes là pour vous aider à tirer le meilleur parti de Milvus 2.6.</p>
