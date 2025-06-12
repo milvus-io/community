@@ -20,7 +20,7 @@ Large Language Models (LLMs) have transformed the AI landscape with their abilit
 
 The challenge is that raw training data often contains significant redundancy. It's like teaching a child by repeating the same lessons over and over while skipping other important topics. A large AI company approached us with precisely this problem - they were building an ambitious new language model but struggled with deduplicating tens of billions of documents. Traditional matching methods couldn't scale to this volume, and specialized deduplication tools required massive computational resources, making them economically unviable.
 
-To solve this problem, our solution is: MinHash LSH (Locality Sensitive Hashing) indexing, which will be available in Milvus 2.6. This article will explore how MinHash LSH efficiently solves the data deduplication problem for LLM training.
+To solve this problem, we introduced MinHash LSH (Locality Sensitive Hashing) indexing in Milvus 2.6. This article will explore how MinHash LSH efficiently solves the data deduplication problem for LLM training.
 
 
 ![](https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png)
@@ -280,4 +280,14 @@ The returned results are **candidate near-duplicates**. To form complete dedupli
 
 MinHash LSH in Milvus 2.6 is a leap forward in AI data processing. What started as a solution for LLM data deduplication now opens doors to broader use cases—web content cleanup, catalog management, plagiarism detection, and more.
 
-If you have a similar use case, please reach out to us on the [Milvus Discord](https://discord.com/invite/8uyFbECzPX) to sign up for an [Office Hour meeting](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour). 
+## Getting Started with Milvus 2.6
+
+Milvus 2.6 is available now. In addition to MinHash LSH, it introduces dozens of new features and performance optimizations such as tiered storage, RabbitQ quantization method, and enhanced full-text search and multitenancy, directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.
+
+Ready to explore everything Milvus offers? Dive into our[ release notes](https://milvus.io/docs/release_notes.md), browse the[ complete documentation](https://milvus.io/docs), or check out our[ feature blogs](https://milvus.io/blog). 
+
+If you have any questions or have a similar use case, feel free to reach out to us through our [Discord community](https://discord.com/invite/8uyFbECzPX) or file an issue on[ GitHub](https://github.com/milvus-io/milvus) — we're here to help you make the most of Milvus 2.6.
+
+
+
+
