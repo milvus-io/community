@@ -5,7 +5,7 @@ title: >
 author: Gong Yi
 date: 2025-06-23
 cover: assets.zilliz.com/From_Docs_to_Dialogue_Building_an_AI_Assistant_with_Spring_and_Milvus_b8a470549a.png
-tag: Announcements
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
