@@ -4,7 +4,7 @@ title: >
  Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch
 author: Zilliz
 date: 2025-06-27
-cover: assets.zilliz.com/Github_star_30_K_4a12583068.png
+cover: assets.zilliz.com/Github_star_30_K_2_f329467096.png
 tag: Announcements
 recommend: true
 publishToMedium: true
