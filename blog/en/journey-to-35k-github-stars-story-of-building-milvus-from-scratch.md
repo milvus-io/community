@@ -94,7 +94,7 @@ Many people think open source is just a "toolbox," but it's actually an "evoluti
 
 The use cases for Milvus have grown beyond what we initially imagined. We're powering AI infrastructure for some of the world's most demanding enterprises across every industry.
 
-![zilliz customers.png](https://assets.zilliz.com/zilliz_customers_66d3adfe97.png)
+![zilliz customers.png](https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png)
 
 
 [**Bosch**](https://zilliz.com/customers/bosch), the global automotive technology leader and pioneer in autonomous driving, revolutionized their data analysis with Milvus achieving 80% reduction in data collection costs and $1.4M annual savings while searching billions of driving scenarios in milliseconds for critical edge cases.
