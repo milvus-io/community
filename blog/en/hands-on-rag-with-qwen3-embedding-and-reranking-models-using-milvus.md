@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
 meta_keywords: Milvus, RAG, Embedding
 meta_title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
-origin: https://mp.weixin.qq.com/s/abz-7JcAjcwulgU1MUW5_A
+origin: https://milvus.io/blog/hands-on-rag-with-qwen3-embedding-and-reranking-models-using-milvus.md
 ---
 
 If you've been keeping an eye on the embedding model space, you've probably noticed Alibaba just dropped their [Qwen3 Embedding series](https://qwenlm.github.io/blog/qwen3-embedding/). They released both embedding and reranking models in three sizes each (0.6B, 4B, 8B), all built on the Qwen3 foundation models and designed specifically for retrieval tasks. 
