@@ -8,6 +8,7 @@ cover: assets.zilliz.com/Chat_GPT_Image_Jun_30_2025_06_29_29_PM_4441123f0b.png
 tag: Tutorials
 recommend: false 
 publishToMedium: true
+tags: Milvus, vector database, vector search, AI Agents, LLM
 meta_keywords: Milvus, RAG, Embedding
 meta_title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
 origin: https://mp.weixin.qq.com/s/abz-7JcAjcwulgU1MUW5_A
