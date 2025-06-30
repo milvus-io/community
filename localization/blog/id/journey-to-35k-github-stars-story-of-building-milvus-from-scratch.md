@@ -142,7 +142,7 @@ origin: >-
     </button></h2><p>Kasus penggunaan Milvus telah berkembang melampaui apa yang kami bayangkan sebelumnya. Kami memberdayakan infrastruktur AI untuk beberapa perusahaan paling menuntut di dunia di setiap industri.</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_66d3adfe97.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
    </span> <span class="img-wrapper"> <span>pelanggan zilliz.png</span> </span></p>
 <p><a href="https://zilliz.com/customers/bosch"><strong>Bosch</strong></a>, pemimpin teknologi otomotif global dan pelopor dalam pengemudian otonom, merevolusi analisis data mereka dengan Milvus yang berhasil mengurangi 80% biaya pengumpulan data dan penghematan tahunan sebesar $1,4 juta saat mencari miliaran skenario mengemudi dalam hitungan milidetik untuk kasus-kasus yang sangat penting.</p>
 <p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a>, salah satu perusahaan AI dengan pertumbuhan produktivitas tercepat yang melayani jutaan pengguna aktif bulanan, menggunakan Milvus untuk mencapai latensi pengambilan sub-20-50ms di miliaran catatan dan 5 kali lebih cepat dalam pencarian agen. CTO mereka mengatakan, "Milvus berfungsi sebagai repositori pusat dan mendukung pencarian informasi kami di antara miliaran catatan."</p>
@@ -225,7 +225,7 @@ origin: >-
 <li><p><strong>Kepada</strong> para<strong>pengguna kami:</strong> terima kasih telah mempercayai kami dengan beban kerja produksi Anda dan atas umpan balik yang membuat kami tetap jujur.</p></li>
 <li><p><strong>Kepada komunitas kami:</strong> terima kasih telah menjawab pertanyaan, menyelenggarakan acara, dan membantu para pengguna baru untuk memulai.</p></li>
 </ul>
-<p>Jika Anda baru mengenal basis data vektor, kami ingin membantu Anda memulai. Jika Anda sudah menggunakan Milvus atau Zilliz Cloud, kami ingin <a href="https://zilliz.com/share-your-story">mendengar pengalaman Anda</a>. Dan jika Anda hanya ingin tahu tentang apa yang kami bangun, saluran komunitas kami selalu terbuka.</p>
+<p>Jika Anda baru mengenal basis data vektor, kami ingin membantu Anda memulai. Jika Anda sudah menggunakan Milvus atau Zilliz Cloud, kami ingin <a href="https://zilliz.com/share-your-story">mendengar pengalaman Anda</a>. Dan jika Anda hanya ingin tahu tentang apa yang sedang kami bangun, saluran komunitas kami selalu terbuka.</p>
 <p>Mari kita terus membangun infrastruktur yang memungkinkan aplikasi AI - bersama-sama.</p>
 <hr>
 <p>Temukan kami di sini: <a href="https://github.com/milvus-io/milvus">Milvus di GitHub</a> |<a href="https://zilliz.com/"> Zilliz Cloud</a> |<a href="https://discuss.milvus.io/"> Discord</a> | <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> | <a href="https://x.com/zilliz_universe">X</a> | <a href="https://www.youtube.com/@MilvusVectorDatabase/featured">YouTube</a></p>

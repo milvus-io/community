@@ -15,7 +15,7 @@ desc: 与我们一起庆祝向量数据库 Milvus 在 GitHub 上获得 35.5K颗�
 origin: >-
   https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md
 ---
-<p>在过去的几年里，我们一直专注于一件事：为人工智能时代构建企业级向量数据库。最难的部分并不是建立<em>一个</em>数据库，而是建立一个可扩展、易于使用并能真正解决生产中实际问题的数据库。</p>
+<p>在过去的几年里，我们一直专注于一件事：为人工智能时代构建企业级向量数据库。建立数据库并不难，难的是建立<em>一个</em>可扩展、易于使用，并能真正解决生产中实际问题的数据库。</p>
 <p>今年六月，我们达到了一个新的里程碑：Milvus<a href="https://github.com/milvus-io/milvus">在 GitHub 上的星级数</a>达到<a href="https://github.com/milvus-io/milvus">35,000 个</a>（截至发稿时，星级数已超过 35.5K）。我们不会假装这只是一个数字，它对我们意义重大。</p>
 <p>每一颗星都代表着一位开发者花时间查看了我们的构建，觉得它非常有用，于是将其加入书签，并在很多情况下决定使用它。你们中的一些人走得更远：提交问题、贡献代码、在我们的论坛上回答问题，以及在其他开发人员遇到困难时提供帮助。</p>
 <p>我们希望花一点时间分享我们的故事--真实的故事，包括所有混乱的部分。</p>
@@ -55,9 +55,9 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>2019 年 11 月，我们决定开源 Milvus 0.10 版本。</p>
-<p>开源意味着向全世界暴露自己的所有缺陷。每一个黑客攻击、每一个 TODO 注释、每一个你不完全确定的设计决策。但我们相信，如果向量数据库要成为人工智能的关键基础设施，就必须向所有人开放和开放。</p>
+<p>开源意味着向全世界暴露自己的所有缺陷。每一个黑客攻击、每一条 TODO 注释、每一个你不完全确定的设计决策。但我们相信，如果向量数据库要成为人工智能的关键基础设施，就必须向所有人开放和开放。</p>
 <p>反响非常热烈。开发人员不仅使用了 Milvus，还对它进行了改进。他们发现了我们遗漏的错误，提出了我们没有考虑到的功能，还提出了一些问题，让我们对自己的设计选择进行了更深入的思考。</p>
-<p>2020 年，我们加入了<a href="https://lfaidata.foundation/">LF 人工智能与数据基金会</a>。这不仅仅是为了信誉，它还教会了我们如何维护一个可持续的开源项目。如何处理管理、向后兼容性，以及如何构建可持续数年而非数月的软件。</p>
+<p>2020 年，我们加入了<a href="https://lfaidata.foundation/">LF 人工智能与数据基金会</a>。这不仅仅是为了信誉，它还教会了我们如何维护一个可持续的开源项目。如何处理管理、向后兼容性以及构建可持续数年而非数月的软件。</p>
 <p>到 2021 年，我们发布了 Milvus 1.0，并<a href="https://lfaidata.foundation/projects/milvus/">从 LF AI &amp; Data Foundation 毕业</a>。同年，我们赢得了<a href="https://big-ann-benchmarks.com/neurips21.html">BigANN 全球</a>十亿规模向量搜索<a href="https://big-ann-benchmarks.com/neurips21.html">挑战赛</a>。这次胜利让我们感觉良好，但更重要的是，它证明了我们正在以正确的方式解决实际问题。</p>
 <h2 id="The-Hardest-Decision-Starting-Over" class="common-anchor-header">最艰难的决定重新开始<button data-href="#The-Hardest-Decision-Starting-Over" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -113,7 +113,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>有趣的是：很多人都知道 Milvus，却不知道 Zilliz。事实上，我们对此很满意。<a href="https://zilliz.com/"><strong>Zilliz</strong></a> <strong>是 Milvus 背后的团队，我们负责构建、维护和支持。</strong></p>
+    </button></h2><p>有趣的是：很多人都知道 Milvus，却不知道 Zilliz。事实上，我们对此很满意。<a href="https://zilliz.com/"><strong>Zilliz</strong></a> <strong>是 Milvus 的幕后团队，我们负责构建、维护和支持。</strong></p>
 <p>我们最关心的是那些不显眼的东西，这些东西决定了很酷的演示与生产就绪的基础架构之间的区别：性能优化、安全补丁、对初学者有实际帮助的文档，以及对 GitHub 问题的周到响应。</p>
 <p>我们在美国、欧洲和亚洲建立了全天候的全球支持团队，因为开发人员需要的是在他们的时区而不是我们的时区提供的帮助。我们拥有被称为<a href="https://docs.google.com/forms/d/e/1FAIpQLSfkVTYObayOaND8M1ci9eF_YWvoKDb-xQjLJYZ-LhbCdLAt2Q/viewform">&quot;Milvus 大使</a>&quot;的社区贡献者，他们组织活动、回答论坛问题，而且经常比我们更好地解释概念。</p>
 <p>我们也欢迎与 AWS、GCP 和其他云提供商集成--即使他们提供自己管理版本的 Milvus。更多的部署选项对用户有好处。我们注意到，当团队遇到复杂的技术挑战时，他们往往会直接联系我们，因为我们对系统有最深入的了解。</p>
@@ -137,7 +137,7 @@ origin: >-
     </button></h2><p>Milvus 的用例已经超出了我们最初的想象。我们正在为全球各行各业一些要求最苛刻的企业提供人工智能基础设施。</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_66d3adfe97.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
    </span> <span class="img-wrapper"> <span>zilliz 客户.png</span> </span></p>
 <p><a href="https://zilliz.com/customers/bosch"><strong>博世</strong></a>，全球汽车技术领导者和自动驾驶领域的先驱，使用 Milvus 彻底改变了他们的数据分析，实现了数据收集成本降低 80%，每年节省 140 万美元，同时在毫秒级时间内搜索数十亿个驾驶场景，以寻找关键边缘案例。</p>
 <p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a> 是增长最快的生产力人工智能公司之一，为数百万月活跃用户提供服务，该公司使用 Milvus 实现了数十亿条记录的检索延迟低于 20-50 毫秒，代理搜索速度提高了 5 倍。他们的首席技术官说："Milvus 作为中央存储库，为我们在数十亿条记录中进行信息检索提供了动力。"</p>

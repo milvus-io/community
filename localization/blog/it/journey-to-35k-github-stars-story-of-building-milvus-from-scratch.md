@@ -142,7 +142,7 @@ origin: >-
     </button></h2><p>I casi d'uso di Milvus sono cresciuti oltre le nostre aspettative iniziali. Stiamo alimentando le infrastrutture di intelligenza artificiale di alcune delle aziende più esigenti del mondo, in tutti i settori.</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_66d3adfe97.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
    </span> <span class="img-wrapper"> <span>clienti di zilliz.png</span> </span></p>
 <p><a href="https://zilliz.com/customers/bosch"><strong>Bosch</strong></a>, leader mondiale della tecnologia automobilistica e pioniere della guida autonoma, ha rivoluzionato l'analisi dei dati con Milvus, ottenendo una riduzione dell'80% dei costi di raccolta dei dati e un risparmio annuo di 1,4 milioni di dollari, ricercando miliardi di scenari di guida in millisecondi per individuare casi critici.</p>
 <p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a>, una delle aziende di AI per la produttività in più rapida crescita che serve milioni di utenti attivi mensilmente, utilizza Milvus per ottenere una latenza di recupero inferiore a 20-50 ms su miliardi di record e una velocità di 5 volte superiore nella ricerca agenziale. Il loro CTO afferma: "Milvus funge da repository centrale e alimenta il nostro reperimento di informazioni tra miliardi di record".</p>
@@ -165,7 +165,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus è open-source e gratuito. Ma per far funzionare bene Milvus su scala aziendale sono necessarie competenze approfondite e risorse significative. Selezione degli indici, gestione della memoria, strategie di scalabilità, configurazioni di sicurezza: non sono decisioni banali. Molti team vogliono la potenza di Milvus senza la complessità operativa e con un supporto aziendale, garanzie di SLA, ecc.</p>
+    </button></h2><p>Milvus è open-source e gratuito. Ma il buon funzionamento di Milvus su scala aziendale richiede competenze approfondite e risorse significative. Selezione degli indici, gestione della memoria, strategie di scalabilità, configurazioni di sicurezza: non sono decisioni banali. Molti team vogliono la potenza di Milvus senza la complessità operativa e con un supporto aziendale, garanzie SLA, ecc.</p>
 <p>Ecco perché abbiamo creato <a href="https://zilliz.com/cloud">Zilliz Cloud, una</a>versione completamente gestita di Milvus distribuita in 25 regioni globali e in 5 cloud principali, tra cui AWS, GCP e Azure, progettata specificamente per carichi di lavoro AI su scala aziendale che richiedono prestazioni, sicurezza e affidabilità.</p>
 <p>Ecco cosa rende Zilliz Cloud diverso:</p>
 <ul>
@@ -191,7 +191,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Abbiamo coniato il termine &quot;<a href="https://zilliz.com/learn/what-is-vector-database">database vettoriale</a>&quot; e siamo stati i primi a costruirne uno, ma non ci fermiamo qui. Ora stiamo costruendo la prossima evoluzione: <strong>Vector Data Lake.</strong></p>
-<p><strong>Ecco il problema che stiamo risolvendo: non tutte le ricerche vettoriali hanno bisogno di una latenza di millisecondi.</strong> Molte aziende dispongono di enormi set di dati che vengono interrogati occasionalmente, tra cui l'analisi storica dei documenti, i calcoli di similarità in batch e l'analisi delle tendenze a lungo termine. Per questi casi d'uso, un database vettoriale tradizionale in tempo reale è eccessivo e costoso.</p>
+<p><strong>Ecco il problema che stiamo risolvendo: non tutte le ricerche vettoriali hanno bisogno di una latenza di millisecondi.</strong> Molte aziende dispongono di enormi set di dati che vengono interrogati occasionalmente, ad esempio per l'analisi storica dei documenti, per i calcoli di similarità in batch e per l'analisi delle tendenze a lungo termine. Per questi casi d'uso, un database vettoriale tradizionale in tempo reale è eccessivo e costoso.</p>
 <p>Vector Data Lake utilizza un'architettura separata storage-compute ottimizzata specificamente per vettori su larga scala e ad accesso non frequente, mantenendo i costi nettamente inferiori rispetto ai sistemi in tempo reale.</p>
 <p><strong>Le funzionalità principali includono:</strong></p>
 <ul>
@@ -201,8 +201,8 @@ origin: >-
 </ul>
 <p>Non si tratta di sostituire i database vettoriali, ma di fornire alle aziende lo strumento giusto per ogni carico di lavoro. Ricerca in tempo reale per le applicazioni rivolte all'utente, data lake vettoriali convenienti per l'analisi e l'elaborazione storica.</p>
 <p>Crediamo ancora nella logica della Legge di Moore e del Paradosso di Jevons: quando il costo unitario dell'informatica diminuisce, l'adozione cresce. Lo stesso vale per l'infrastruttura vettoriale.</p>
-<p>Migliorando gli indici, le strutture di archiviazione, il caching e i modelli di distribuzione, giorno dopo giorno, speriamo di rendere l'infrastruttura dell'IA più accessibile e conveniente per tutti e di contribuire a portare i dati non strutturati nel futuro dell'IA.</p>
-<h2 id="A-Big-Thanks-to-You-All" class="common-anchor-header">Un grande grazie a tutti voi!<button data-href="#A-Big-Thanks-to-You-All" class="anchor-icon" translate="no">
+<p>Migliorando gli indici, le strutture di archiviazione, il caching e i modelli di implementazione, giorno dopo giorno, speriamo di rendere l'infrastruttura di IA più accessibile e conveniente per tutti e di contribuire a portare i dati non strutturati nel futuro dell'IA.</p>
+<h2 id="A-Big-Thanks-to-You-All" class="common-anchor-header">Un grande ringraziamento a tutti voi!<button data-href="#A-Big-Thanks-to-You-All" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

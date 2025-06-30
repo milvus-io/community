@@ -117,7 +117,7 @@ origin: >-
       </svg>
     </button></h2><p>흥미로운 점은 많은 사람들이 Milvus는 알지만 Zilliz는 모른다는 것입니다. 사실 저희는 괜찮습니다. <strong>밀버스를 구축하고, 유지 관리하고, 지원하는 팀은 바로</strong> <a href="https://zilliz.com/"><strong>Zilliz입니다</strong></a> <strong>.</strong></p>
 <p>저희가 가장 중요하게 생각하는 것은 성능 최적화, 보안 패치, 초보자에게 실제로 도움이 되는 문서화, GitHub 문제에 대한 신중한 대응 등 멋진 데모와 프로덕션 지원 인프라의 차이를 만드는 화려하지 않은 것들입니다.</p>
-<p>미국, 유럽, 아시아 전역에 연중무휴 24시간 글로벌 지원팀을 구축한 이유는 개발자는 우리가 아닌 자신의 시간대에 도움이 필요하기 때문입니다. 이벤트를 조직하고, 포럼 질문에 답변하며, 종종 우리보다 더 잘 개념을 설명하는 '<a href="https://docs.google.com/forms/d/e/1FAIpQLSfkVTYObayOaND8M1ci9eF_YWvoKDb-xQjLJYZ-LhbCdLAt2Q/viewform">Milvus 앰배서더</a>'라고 부르는 커뮤니티 기여자가 있습니다.</p>
+<p>미국, 유럽, 아시아 전역에 연중무휴 24시간 글로벌 지원팀을 구축한 이유는 개발자는 우리가 아닌 자신의 시간대에 도움이 필요하기 때문입니다. 이벤트를 조직하고, 포럼 질문에 답변하며, 종종 우리보다 더 잘 개념을 설명해 주는 커뮤니티 기여자 '<a href="https://docs.google.com/forms/d/e/1FAIpQLSfkVTYObayOaND8M1ci9eF_YWvoKDb-xQjLJYZ-LhbCdLAt2Q/viewform">Milvus 앰배서더</a>'가 있습니다.</p>
 <p>또한 AWS, GCP 및 기타 클라우드 제공업체가 자체적으로 Milvus의 관리형 버전을 제공하는 경우에도 통합을 환영합니다. 더 많은 배포 옵션은 사용자에게 좋습니다. 팀에서 복잡한 기술적 문제에 부딪혔을 때 저희가 시스템을 가장 깊이 이해하고 있기 때문에 저희에게 직접 연락하는 경우가 많다는 사실을 알게 되었습니다.</p>
 <p>많은 사람들이 오픈소스를 단순한 '도구 상자'라고 생각하지만, 실제로는 오픈소스를 사랑하고 믿는 수많은 사람들의 집단적 노력으로 이루어진 '진화 과정'입니다. 아키텍처를 진정으로 이해하는 사람만이 버그 수정, 성능 병목 현상 분석, 데이터 시스템 통합 및 아키텍처 조정의 '이유'를 제공할 수 있습니다.</p>
 <p><strong>따라서 오픈 소스 Milvus를 사용 중이거나 AI 시스템의 핵심 구성 요소로 벡터 데이터베이스를 고려하고 있다면, 가장 전문적이고 시기적절한 지원을 위해 유니티에 직접 문의하는 것이 좋습니다.</strong></p>
@@ -136,10 +136,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus의 사용 사례는 처음에 상상했던 것 이상으로 성장했습니다. 전 세계 모든 산업 분야에서 가장 까다로운 기업들을 위한 AI 인프라를 지원하고 있습니다.</p>
+    </button></h2><p>Milvus의 사용 사례는 처음에 상상했던 것 이상으로 성장했습니다. 모든 산업 분야에서 전 세계에서 가장 까다로운 기업의 AI 인프라를 지원하고 있습니다.</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_66d3adfe97.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
    </span> <span class="img-wrapper"> <span>질리즈 고객사.png</span> </span></p>
 <p>글로벌 자동차 기술 리더이자 자율 주행 분야의 선구자인<a href="https://zilliz.com/customers/bosch"><strong>Bosch는</strong></a> Milvus를 통해 데이터 분석에 혁신을 일으켜 데이터 수집 비용을 80% 절감하고 연간 140만 달러를 절감하는 동시에 수십억 개의 주행 시나리오를 밀리초 단위로 검색하여 중요한 엣지 사례를 찾아냈습니다.</p>
 <p>수백만 명의 월간 활성 사용자에게 서비스를 제공하며 가장 빠르게 성장하고 있는 생산성 AI 회사 중 하나인<a href="https://zilliz.com/customers/read-ai"><strong>Read AI는</strong></a> Milvus를 사용하여 수십억 개의 레코드에서 검색 지연 시간을 20~50ms 미만으로 줄이고 에이전트 검색 속도를 5배 향상시켰습니다. "Milvus는 중앙 저장소 역할을 하며 수십억 개의 레코드에서 정보 검색을 강화합니다."라고 CTO는 말합니다.</p>

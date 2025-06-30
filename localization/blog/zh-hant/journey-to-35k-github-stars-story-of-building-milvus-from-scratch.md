@@ -11,7 +11,7 @@ tags: 'Milvus, vector database, vector search, AI Agents, LLM'
 meta_keywords: 'Milvus, vector database, vector search, AI search, Zilliz Cloud'
 meta_title: |
   Our Journey to 35K+ GitHub Stars: Building Milvus from Scratch
-desc: 與我們一起慶祝向量資料庫 Milvus 在 GitHub 上獲得 35.5K 顆星。探索我們的故事，以及我們如何讓開發人員更輕鬆地使用 AI 解決方案。
+desc: 與我們一起慶祝向量資料庫 Milvus 在 GitHub 上獲得 35.5K 顆星。了解我們的故事，以及我們如何讓開發人員更輕鬆地使用 AI 解決方案。
 origin: >-
   https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md
 ---
@@ -137,7 +137,7 @@ origin: >-
     </button></h2><p>Milvus 的用例已超越我們最初的想像。我們正在為全球各行各業中一些要求最嚴格的企業提供人工智能基礎設施。</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_66d3adfe97.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
    </span> <span class="img-wrapper"> <span>zilliz 客戶.png</span> </span></p>
 <p><a href="https://zilliz.com/customers/bosch"><strong>博世</strong></a>，全球汽車技術的領導者和自動駕駛的先驅，使用 Milvus 徹底改變了他們的數據分析，實現了數據收集成本降低 80% 和每年節省 140 萬美元，同時在毫秒鐘內搜索數十億個駕駛場景以尋找關鍵邊緣案例。</p>
 <p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a> 是成長最快的生產力 AI 公司之一，每月服務數百萬的活躍用戶，他們使用 Milvus 在數十億筆記錄中實現了低於 20-50 毫秒的檢索延遲，並在代理搜索中實現了 5 倍的速度提升。他們的 CTO 表示：「Milvus 可作為中央儲存庫，為我們在數十億筆記錄中進行資訊檢索提供動力。</p>

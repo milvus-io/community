@@ -98,7 +98,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>2023 war das Jahr der <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> (Retrieval-augmented Generation). Plötzlich wurde die semantische Suche von einer interessanten KI-Technik zu einer unverzichtbaren Infrastruktur für Chatbots, Dokumenten-Q&amp;A-Systeme und KI-Agenten.</p>
+    </button></h2><p>2023 war das Jahr der <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> (Retrieval-augmented Generation). Plötzlich wurde die semantische Suche von einer interessanten KI-Technik zu einer unverzichtbaren Infrastruktur für Chatbots, Dokument-Fragen und KI-Agenten.</p>
 <p>Die GitHub-Sterne von Milvus schossen in die Höhe. Die Supportanfragen vervielfachten sich. Entwickler, die noch nie etwas von Vektordatenbanken gehört hatten, stellten plötzlich anspruchsvolle Fragen zu Indizierungsstrategien und Abfrageoptimierung.</p>
 <p>Dieses Wachstum war aufregend, aber auch überwältigend. Wir erkannten, dass wir nicht nur unsere Technologie, sondern auch unseren gesamten Ansatz zur Unterstützung der Community erweitern mussten. Wir stellten mehr Entwicklervertreter ein, schrieben unsere Dokumentation komplett neu und begannen mit der Erstellung von Schulungsinhalten für Entwickler, die neu im Bereich Vektordatenbanken sind.</p>
 <p>Außerdem haben wir <a href="https://zilliz.com/cloud">Zilliz Cloud eingeführt - unsere</a>vollständig verwaltete Version von Milvus. Einige Leute fragten uns, warum wir unser Open-Source-Projekt "kommerzialisieren" würden. Die ehrliche Antwort ist, dass die Aufrechterhaltung einer Infrastruktur auf Unternehmensniveau teuer und komplex ist. Zilliz Cloud ermöglicht es uns, die Entwicklung von Milvus aufrechtzuerhalten und zu beschleunigen, während das Kernprojekt vollständig quelloffen bleibt.</p>
@@ -142,7 +142,7 @@ origin: >-
     </button></h2><p>Die Anwendungsfälle für Milvus sind größer geworden, als wir es uns ursprünglich vorgestellt haben. Wir betreiben KI-Infrastrukturen für einige der weltweit anspruchsvollsten Unternehmen in allen Branchen.</p>
 <p>
   
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_66d3adfe97.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
    </span> <span class="img-wrapper"> <span>zilliz kunden.png</span> </span></p>
 <p><a href="https://zilliz.com/customers/bosch"><strong>Bosch</strong></a>, weltweiter Marktführer in der Automobiltechnologie und Pionier im Bereich des autonomen Fahrens, hat seine Datenanalyse mit Milvus revolutioniert und dabei die Kosten für die Datenerfassung um 80 % gesenkt und jährliche Einsparungen in Höhe von 1,4 Mio. USD erzielt, während Milliarden von Fahrszenarien in Millisekunden nach kritischen Grenzfällen durchsucht wurden.</p>
 <p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a>, eines der am schnellsten wachsenden Unternehmen für Produktivitäts-KI mit Millionen von monatlich aktiven Nutzern, nutzt Milvus, um eine Abruflatenz von unter 20-50 ms bei Milliarden von Datensätzen und eine 5fache Beschleunigung der agentenbasierten Suche zu erreichen. Ihr CTO sagt: "Milvus dient als zentrales Repository und treibt unsere Informationsabfrage in Milliarden von Datensätzen voran."</p>
@@ -150,7 +150,7 @@ origin: >-
 <p><a href="https://zilliz.com/customers/filevine"><strong>Filevine</strong></a>, die führende Plattform für juristische Arbeit, auf die Tausende von Anwaltskanzleien in den USA vertrauen, verwaltet 3 Milliarden Vektoren in Millionen von juristischen Dokumenten, spart Anwälten 60-80 % der Zeit bei der Dokumentenanalyse und erreicht ein "echtes Datenbewusstsein" für das juristische Fallmanagement.</p>
 <p>Wir unterstützen auch <strong>NVIDIA, OpenAI, Microsoft, Salesforce, Walmart</strong> und viele andere in fast allen Branchen. Über 10.000 Organisationen haben Milvus oder Zilliz Cloud zu ihrer bevorzugten Vektordatenbank gemacht.</p>
 <p>Dies sind nicht nur technische Erfolgsgeschichten - sie sind Beispiele dafür, wie Vektordatenbanken still und leise zu einer kritischen Infrastruktur werden, die die KI-Anwendungen unterstützt, die Menschen täglich nutzen.</p>
-<h2 id="Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="common-anchor-header">Warum wir Zilliz Cloud entwickelt haben: Vektordatenbank der Enterprise-Klasse als Service<button data-href="#Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="anchor-icon" translate="no">
+<h2 id="Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="common-anchor-header">Warum wir Zilliz Cloud gebaut haben: Vektordatenbank der Enterprise-Klasse als Service<button data-href="#Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -225,7 +225,7 @@ origin: >-
 <li><p><strong>An unsere Benutzer:</strong> Danke, dass Sie uns Ihre Arbeitslasten anvertrauen und für Ihr Feedback, das uns ehrlich macht.</p></li>
 <li><p><strong>An unsere Community:</strong> Vielen Dank für die Beantwortung von Fragen, die Organisation von Veranstaltungen und die Unterstützung von Neueinsteigern beim Einstieg.</p></li>
 </ul>
-<p>Wenn Sie neu im Bereich der Vektordatenbanken sind, helfen wir Ihnen gerne bei Ihren ersten Schritten. Wenn Sie bereits Milvus oder Zilliz Cloud verwenden, würden wir uns freuen, <a href="https://zilliz.com/share-your-story">von Ihren Erfahrungen zu hören</a>. Und wenn Sie einfach nur neugierig sind, was wir aufbauen, sind unsere Community-Kanäle immer offen.</p>
+<p>Wenn Sie neu im Bereich der Vektordatenbanken sind, helfen wir Ihnen gerne bei Ihren ersten Schritten. Wenn Sie bereits Milvus oder Zilliz Cloud verwenden, würden wir uns freuen, <a href="https://zilliz.com/share-your-story">von Ihren Erfahrungen zu hören</a>. Und wenn Sie einfach nur neugierig sind, was wir bauen, sind unsere Community-Kanäle immer offen.</p>
 <p>Lassen Sie uns gemeinsam die Infrastruktur aufbauen, die KI-Anwendungen möglich macht.</p>
 <hr>
 <p>Finden Sie uns hier: <a href="https://github.com/milvus-io/milvus">Milvus auf GitHub</a> |<a href="https://zilliz.com/"> Zilliz Cloud</a> |<a href="https://discuss.milvus.io/"> Discord</a> | <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> | <a href="https://x.com/zilliz_universe">X</a> | <a href="https://www.youtube.com/@MilvusVectorDatabase/featured">YouTube</a></p>
