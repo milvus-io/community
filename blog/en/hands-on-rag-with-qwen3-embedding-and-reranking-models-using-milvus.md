@@ -4,7 +4,7 @@ title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
 author: Lumina
 date: 2025-6-30
 desc: A tutorial to build an RAG system with the newly-released Qwen3 embedding and reranking models.
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_30_2025_06_29_29_PM_4441123f0b.png
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_30_2025_07_41_03_PM_e049bf71fb.png
 tag: Tutorials
 recommend: false 
 publishToMedium: true
