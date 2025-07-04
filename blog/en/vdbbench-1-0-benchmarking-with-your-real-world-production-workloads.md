@@ -102,7 +102,7 @@ This controlled, incremental load testing reveals how well systems maintain stab
 Figure: QPS and Recall of Pinecone vs. Elasticsearch in the Cohere 10M Streaming Test (500 rows/s Ingestion Rate). 
 
 VDBBench goes even further by supporting an optional optimization step, allowing users to compare streaming search performance before and after index optimization. It also tracks and reports the actual time spent on each stage, offering deeper insights into system efficiency and behavior under production-like conditions.
-![vdb4.png](https://assets.zilliz.com/vdb4_0caee3b201.png)
+![](https://assets.zilliz.com/vdb4_0caee3b201.png)
 
 _Figure: QPS and Recall of Pinecone vs. Elasticsearch in the Cohere 10M Streaming Test After Optimization (500 rows/s Ingestion Rate)_
 
