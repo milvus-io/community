@@ -97,7 +97,7 @@ To ensure fair comparisons across different systems, VDBBench uses a structured 
 This controlled, incremental load testing reveals how well systems maintain stability and accuracy under ongoing ingestion—something traditional benchmarks rarely capture.
 
 **Example**: In Cohere 10M streaming tests, Pinecone maintained higher QPS and recall throughout the write cycle compared to Elasticsearch. Notably, Pinecone's performance significantly improved after ingestion completion, demonstrating strong stability under sustained load, while Elasticsearch showed more erratic behavior during active ingestion phases.
-![vdb3.png](https://assets.zilliz.com/vdb3_9d2a5298b0.png)
+![](https://assets.zilliz.com/vdb3_9d2a5298b0.png)
 
 Figure: QPS and Recall of Pinecone vs. Elasticsearch in the Cohere 10M Streaming Test (500 rows/s Ingestion Rate). 
 
