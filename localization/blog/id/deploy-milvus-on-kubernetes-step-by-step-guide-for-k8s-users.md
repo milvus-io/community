@@ -156,8 +156,7 @@ $ kubectl cluster-info
   </span>
 </p>
 <p>Untuk menyesuaikan pengaturan Milvus, Anda perlu mengganti berkas YAML dengan berkas YAML konfigurasi Anda sendiri. Selain mengedit atau membuat file secara manual, Anda dapat menggunakan Milvus Sizing Tool untuk menyesuaikan konfigurasi dan kemudian mengunduh file YAML yang sesuai.</p>
-<p>Untuk menyesuaikan pengaturan Milvus, Anda harus mengganti file YAML default dengan konfigurasi Anda sendiri. Anda dapat mengedit atau membuat file ini secara manual, menyesuaikannya dengan kebutuhan spesifik Anda.</p>
-<p>Atau, Anda dapat menggunakan <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> untuk pendekatan yang lebih ramping. Alat ini memungkinkan Anda untuk menyesuaikan berbagai pengaturan, seperti alokasi sumber daya dan opsi penyimpanan, dan kemudian mengunduh file YAML yang sesuai dengan konfigurasi yang Anda inginkan. Hal ini memastikan bahwa penerapan Milvus Anda dioptimalkan untuk kasus penggunaan spesifik Anda.</p>
+<p>Atau, Anda dapat menggunakan <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> untuk pendekatan yang lebih ramping. Alat ini memungkinkan Anda untuk menyesuaikan berbagai pengaturan, seperti alokasi sumber daya dan opsi penyimpanan, lalu mengunduh file YAML yang sesuai dengan konfigurasi yang Anda inginkan. Hal ini memastikan bahwa penerapan Milvus Anda dioptimalkan untuk kasus penggunaan spesifik Anda.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />

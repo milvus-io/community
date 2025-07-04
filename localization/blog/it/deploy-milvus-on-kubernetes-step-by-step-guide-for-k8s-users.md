@@ -16,7 +16,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/deploy-milvus-on-kubernetes-step-by-step-guide-for-k8s-users.md
 ---
-<p><a href="https://zilliz.com/what-is-milvus"><strong>Milvus</strong></a> è un <a href="https://zilliz.com/learn/what-is-vector-database">database vettoriale</a> open source progettato per archiviare, indicizzare e ricercare enormi quantità di <a href="https://zilliz.com/learn/introduction-to-unstructured-data">dati non strutturati</a> attraverso rappresentazioni vettoriali, il che lo rende perfetto per le applicazioni orientate all'intelligenza artificiale, come la ricerca per similarità, la <a href="https://zilliz.com/glossary/semantic-search">ricerca semantica</a>, la retrieval augmented generation<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>), i motori di raccomandazione e altre attività di apprendimento automatico.</p>
+<p><a href="https://zilliz.com/what-is-milvus"><strong>Milvus</strong></a> è un <a href="https://zilliz.com/learn/what-is-vector-database">database vettoriale</a> open-source progettato per memorizzare, indicizzare e ricercare enormi quantità di <a href="https://zilliz.com/learn/introduction-to-unstructured-data">dati non strutturati</a> attraverso rappresentazioni vettoriali, che lo rendono perfetto per le applicazioni orientate all'intelligenza artificiale, come la ricerca per similarità, la <a href="https://zilliz.com/glossary/semantic-search">ricerca semantica</a>, la retrieval augmented generation<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>), i motori di raccomandazione e altre attività di apprendimento automatico.</p>
 <p>Ma ciò che rende Milvus ancora più potente è la sua perfetta integrazione con Kubernetes. Se siete appassionati di Kubernetes, sapete che la piattaforma è perfetta per l'orchestrazione di sistemi scalabili e distribuiti. Milvus sfrutta appieno le capacità di Kubernetes, consentendo di distribuire, scalare e gestire facilmente cluster Milvus distribuiti. Questa guida fornisce una guida chiara e passo passo per configurare Milvus su Kubernetes utilizzando Milvus Operator.</p>
 <h2 id="Prerequisites" class="common-anchor-header">Prerequisiti<button data-href="#Prerequisites" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -64,7 +64,7 @@ $ <span class="hljs-built_in">sudo</span> install minikube-linux-amd64 /usr/loca
 <h3 id="3-Interact-with-Cluster" class="common-anchor-header">3. Interagire con il cluster</h3><p>Ora è possibile interagire con i cluster con kubectl all'interno di minikube. Se non avete installato kubectl, minikube scaricherà la versione appropriata per impostazione predefinita.</p>
 <pre><code translate="no">$ minikube kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<p>In alternativa, si può creare un collegamento simbolico al binario di minikube, chiamato <code translate="no">kubectl</code>, per facilitarne l'uso.</p>
+<p>In alternativa, è possibile creare un collegamento simbolico al binario di minikube, chiamato <code translate="no">kubectl</code>, per facilitarne l'uso.</p>
 <pre><code translate="no">$ <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s $(<span class="hljs-built_in">which</span> minikube) /usr/local/bin/kubectl
 $ kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
@@ -155,9 +155,8 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Per personalizzare le impostazioni di Milvus, è necessario sostituire il file YAML con il proprio file YAML di configurazione. Oltre a modificare o creare manualmente il file, è possibile utilizzare Milvus Sizing Tool per regolare le configurazioni e scaricare il file YAML corrispondente.</p>
-<p>Per personalizzare le impostazioni di Milvus, è necessario sostituire il file YAML predefinito con la propria configurazione. È possibile modificare o creare manualmente questo file, adattandolo alle proprie esigenze specifiche.</p>
-<p>In alternativa, è possibile utilizzare lo <a href="https://milvus.io/tools/sizing"><strong>strumento di dimensionamento di Milvus</strong></a> per un approccio più semplice. Questo strumento consente di regolare varie impostazioni, come l'allocazione delle risorse e le opzioni di archiviazione, per poi scaricare il file YAML corrispondente con le configurazioni desiderate. In questo modo si garantisce che la distribuzione di Milvus sia ottimizzata per il caso d'uso specifico.</p>
+<p>Per personalizzare le impostazioni di Milvus, è necessario sostituire il file YAML con il proprio file YAML di configurazione. Oltre a modificare o creare manualmente il file, si può usare Milvus Sizing Tool per regolare le configurazioni e poi scaricare il file YAML corrispondente.</p>
+<p>In alternativa, è possibile utilizzare <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> per un approccio più semplice. Questo strumento consente di regolare varie impostazioni, come l'allocazione delle risorse e le opzioni di archiviazione, e quindi di scaricare il file YAML corrispondente con le configurazioni desiderate. In questo modo si garantisce che la distribuzione di Milvus sia ottimizzata per il caso d'uso specifico.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />

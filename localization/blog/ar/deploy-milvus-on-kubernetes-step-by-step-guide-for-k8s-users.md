@@ -154,8 +154,7 @@ $ kubectl cluster-info
   </span>
 </p>
 <p>لتخصيص إعدادات Milvus، ستحتاج إلى استبدال ملف YAML بملف YAML الخاص بالتكوين الخاص بك. بالإضافة إلى تحرير الملف أو إنشائه يدويًا، يمكنك استخدام أداة تحجيم Milvus لضبط التكوينات ثم تنزيل ملف YAML المقابل.</p>
-<p>لتخصيص إعدادات Milvus، يجب عليك استبدال ملف YAML الافتراضي بتكوينك الخاص. يمكنك إما تحرير هذا الملف يدويًا أو إنشاء هذا الملف، وتخصيصه وفقًا لمتطلباتك الخاصة.</p>
-<p>وبدلاً من ذلك، يمكنك استخدام <a href="https://milvus.io/tools/sizing"><strong>أداة تحجيم Milvus Sizing Tool</strong></a> للحصول على نهج أكثر انسيابية. تسمح لك هذه الأداة بضبط الإعدادات المختلفة، مثل تخصيص الموارد وخيارات التخزين، ثم تنزيل ملف YAML المقابل مع التكوينات التي تريدها. يضمن ذلك تحسين نشر ميلفوس الخاص بك لحالة الاستخدام الخاصة بك.</p>
+<p>بدلاً من ذلك، يمكنك استخدام <a href="https://milvus.io/tools/sizing"><strong>أداة تحجيم Milvus Sizing Tool</strong></a> للحصول على نهج أكثر انسيابية. تسمح لك هذه الأداة بضبط الإعدادات المختلفة، مثل تخصيص الموارد وخيارات التخزين، ثم تنزيل ملف YAML المقابل مع التكوينات التي تريدها. يضمن ذلك تحسين نشر ميلفوس الخاص بك لحالة الاستخدام الخاصة بك.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />
@@ -215,7 +214,7 @@ $ kubectl cluster-info
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>مع تشغيل مجموعة Milvus الخاصة بك، يمكنك الآن التفاعل معها باستخدام أي من أدوات تطوير البرمجيات الخاصة ب Milvus. في هذا المثال، سنستخدم في هذا المثال <a href="https://zilliz.com/blog/what-is-pymilvus">PyMilvus،</a> وهي مجموعة <strong>أدوات تطوير البرمجيات</strong> الخاصة ب Milvus <strong>Python SDK،</strong> للاتصال بالمجموعة وإجراء العمليات الأساسية.</p>
+    </button></h2><p>مع تشغيل مجموعة Milvus الخاصة بك، يمكنك الآن التفاعل معها باستخدام أي من أدوات تطوير البرمجيات Milvus SDK. في هذا المثال، سنستخدم في هذا المثال <a href="https://zilliz.com/blog/what-is-pymilvus">PyMilvus،</a> وهي مجموعة <strong>أدوات تطوير البرمجيات</strong> الخاصة ب Milvus <strong>Python SDK،</strong> للاتصال بالمجموعة وإجراء العمليات الأساسية.</p>
 <h3 id="1-Install-PyMilvus" class="common-anchor-header">1. تثبيت PyMilvus</h3><p>للتفاعل مع Milvus عبر Python، تحتاج إلى تثبيت الحزمة <code translate="no">pymilvus</code>:</p>
 <pre><code translate="no">$ pip install pymilvus
 <button class="copy-code-btn"></button></code></pre>

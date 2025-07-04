@@ -155,8 +155,7 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Pour personnaliser les paramètres Milvus, vous devrez remplacer le fichier YAML par votre propre fichier YAML de configuration. Outre la modification ou la création manuelle du fichier, vous pouvez utiliser l'outil de dimensionnement Milvus pour ajuster les configurations, puis télécharger le fichier YAML correspondant.</p>
-<p>Pour personnaliser les paramètres de Milvus, vous devez remplacer le fichier YAML par défaut par votre propre configuration. Vous pouvez modifier ou créer ce fichier manuellement, en l'adaptant à vos besoins spécifiques.</p>
+<p>Pour personnaliser les paramètres Milvus, vous devrez remplacer le fichier YAML par votre propre fichier YAML de configuration. Outre la modification ou la création manuelle du fichier, vous pouvez utiliser l'outil de dimensionnement Milvus pour ajuster les configurations et télécharger ensuite le fichier YAML correspondant.</p>
 <p>Vous pouvez également utiliser l'<a href="https://milvus.io/tools/sizing"><strong>outil de dimensionnement Milvus</strong></a> pour une approche plus rationnelle. Cet outil vous permet d'ajuster divers paramètres, tels que l'allocation des ressources et les options de stockage, puis de télécharger le fichier YAML correspondant avec les configurations souhaitées. Cela garantit que votre déploiement Milvus est optimisé pour votre cas d'utilisation spécifique.</p>
 <p>
   <span class="img-wrapper">
@@ -277,7 +276,7 @@ client.create_collection(
     </button></h2><ul>
 <li><p><a href="https://milvus.io/docs/overview.md">Documentation Milvus</a></p></li>
 <li><p><a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">Milvus Lite vs. Standalone vs. Distributed : Quel mode vous convient le mieux ? </a></p></li>
-<li><p><a href="https://zilliz.com/blog/milvus-on-gpu-with-nvidia-rapids-cuvs">La recherche vectorielle au service de la performance : Milvus sur GPU avec NVIDIA RAPIDS cuVS</a></p></li>
+<li><p><a href="https://zilliz.com/blog/milvus-on-gpu-with-nvidia-rapids-cuvs">La recherche vectorielle à son maximum : Milvus sur GPU avec NVIDIA RAPIDS cuVS</a></p></li>
 <li><p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Qu'est-ce que RAG ? </a></p></li>
 <li><p><a href="https://zilliz.com/learn/generative-ai">Centre de ressources pour l'IA générative | Zilliz</a></p></li>
 <li><p><a href="https://zilliz.com/ai-models">Modèles d'IA les plus performants pour vos applications GenAI | Zilliz</a></p></li>

@@ -152,8 +152,7 @@ $ kubectl cluster-info
   </span>
 </p>
 <p>Milvus 설정을 사용자 정의하려면 YAML 파일을 자체 구성 YAML 파일로 대체해야 합니다. 파일을 수동으로 편집하거나 생성하는 것 외에도 Milvus 크기 조정 도구를 사용하여 구성을 조정한 다음 해당 YAML 파일을 다운로드할 수 있습니다.</p>
-<p>Milvus 설정을 사용자 지정하려면 기본 YAML 파일을 사용자 지정 구성으로 바꿔야 합니다. 이 파일을 수동으로 편집하거나 생성하여 특정 요구 사항에 맞게 조정할 수 있습니다.</p>
-<p>또는 보다 간소화된 접근 방식을 위해 <a href="https://milvus.io/tools/sizing"><strong>Milvus 크기 조정 도구를</strong></a> 사용할 수 있습니다. 이 도구를 사용하면 리소스 할당 및 스토리지 옵션과 같은 다양한 설정을 조정한 다음 원하는 구성으로 해당 YAML 파일을 다운로드할 수 있습니다. 이렇게 하면 Milvus 배포가 특정 사용 사례에 맞게 최적화됩니다.</p>
+<p>또는 보다 간소화된 접근 방식을 위해 <a href="https://milvus.io/tools/sizing"><strong>밀버스 사이징 도구를</strong></a> 사용할 수도 있습니다. 이 도구를 사용하면 리소스 할당 및 스토리지 옵션과 같은 다양한 설정을 조정한 다음 원하는 구성으로 해당 YAML 파일을 다운로드할 수 있습니다. 이렇게 하면 Milvus 배포가 특정 사용 사례에 맞게 최적화됩니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />

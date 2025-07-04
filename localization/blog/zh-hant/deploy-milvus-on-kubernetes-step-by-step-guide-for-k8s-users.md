@@ -121,7 +121,7 @@ $ kubectl cluster-info
 <h3 id="1-Install-cert-manager" class="common-anchor-header">1.安裝 cert-manager</h3><p>Milvus Operator 需要<a href="https://cert-manager.io/docs/installation/supported-releases/">cert-manager</a>來管理安全通訊的憑證。確保您安裝了<strong>1.1.3</strong>或更新<strong>版本</strong>的<strong>cert</strong>-<strong>manager</strong>。要安裝它，請執行以下指令：</p>
 <pre><code translate="no">$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>安裝完成後，執行以下指令以驗證 cert-manager pods 是否正在執行：</p>
+<p>安裝完成後，執行以下指令，確認 cert-manager pods 正在執行：</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pods -n cert-manager
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -142,7 +142,7 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<h3 id="3-Deploy-Milvus-Cluster" class="common-anchor-header">3.部署 Milvus 集群</h3><p>一旦 Milvus Operator pod 運行，您就可以使用 Operator 部署 Milvus 集群。以下指令會使用預設組態，將 Milvus 叢集及其元件和相依性分別部署在不同的 Pod 中：</p>
+<h3 id="3-Deploy-Milvus-Cluster" class="common-anchor-header">3.部署 Milvus 集群</h3><p>一旦 Milvus Operator pod 運行，您就可以使用 Operator 部署 Milvus 集群。以下指令會使用預設組態，在獨立的 Pod 中部署 Milvus 叢集及其元件和相依性：</p>
 <pre><code translate="no">$ kubectl apply -f <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/zilliztech/milvus-operator/main/config/samples/milvus_cluster_default.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -151,9 +151,8 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>若要自訂 Milvus 設定，您需要用自己的組態 YAML 檔案取代 YAML 檔案。除了手動編輯或建立檔案外，您也可以使用 Milvus Sizing Tool 調整設定，然後下載相對應的 YAML 檔案。</p>
-<p>若要自訂 Milvus 設定，您必須以自己的配置取代預設 YAML 檔案。您可以手動編輯或建立此檔案，根據您的特定需求量身打造。</p>
-<p>另外，您也可以使用<a href="https://milvus.io/tools/sizing"><strong>Milvus 大小工具</strong></a>，以獲得更簡化的方法。此工具可讓您調整各種設定，例如資源分配和儲存選項，然後下載相應的 YAML 檔案與您所需的配置。這可確保您的 Milvus 部署能針對您的特定使用情況進行最佳化。</p>
+<p>若要自訂 Milvus 設定，您需要用自己的組態 YAML 檔案取代 YAML 檔案。除了手動編輯或建立檔案外，您可以使用 Milvus Sizing Tool 調整組態，然後下載相對應的 YAML 檔案。</p>
+<p>另外，您也可以使用<a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a>以更簡化的方式。此工具可讓您調整各種設定，例如資源分配和儲存選項，然後下載相應的 YAML 檔案與您所需的配置。這可確保您的 Milvus 部署能針對您的特定使用情況進行最佳化。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />
@@ -188,7 +187,7 @@ $ kubectl cluster-info
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一旦您的 Milvus 叢集部署完成，您需要透過將本機連接埠轉寄到 Milvus 服務連接埠來存取它。按照以下步驟擷取服務連接埠並設定連接埠轉送。</p>
+    </button></h2><p>一旦您的 Milvus 叢集部署完成，您需要透過將本機連接埠轉寄到 Milvus 服務連接埠來存取它。按照以下步驟擷取服務連接埠並設定連接埠轉址。</p>
 <h4 id="1-Get-the-Service-Port" class="common-anchor-header"><strong>1.取得服務連接埠</strong></h4><p>首先，使用下列指令找出服務連接埠。將<code translate="no">&lt;YOUR_MILVUS_PROXY_POD&gt;</code> 改為您的 Milvus 代理 pod 的名稱，通常以<code translate="no">my-release-milvus-proxy-</code> 開頭：</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pod &lt;YOUR_MILVUS_PROXY_POD&gt; --template =<span class="hljs-string">&#x27;{{(index (index .spec.containers 0).ports 0).containerPort}}{{&quot;\n&quot;}}&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>

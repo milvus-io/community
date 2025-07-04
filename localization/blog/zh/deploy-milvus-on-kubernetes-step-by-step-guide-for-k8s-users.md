@@ -29,7 +29,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>开始之前，请确保具备以下先决条件：</p>
+    </button></h2><p>在开始之前，请确保具备以下先决条件：</p>
 <ul>
 <li><p>已启动并运行的 Kubernetes 集群。如果是本地测试，<code translate="no">minikube</code> 是个不错的选择。</p></li>
 <li><p><code translate="no">kubectl</code> 安装并配置好与 Kubernetes 集群交互。</p></li>
@@ -151,9 +151,8 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>要自定义 Milvus 设置，需要用自己的配置 YAML 文件替换 YAML 文件。除了手动编辑或创建文件外，还可以使用 Milvus 大小工具调整配置，然后下载相应的 YAML 文件。</p>
-<p>要自定义 Milvus 设置，必须用自己的配置替换默认 YAML 文件。您可以手动编辑或创建该文件，使其符合您的具体要求。</p>
-<p>或者，你也可以使用<a href="https://milvus.io/tools/sizing"><strong>Milvus 大小工具</strong></a>，以获得更简化的方法。通过该工具，你可以调整各种设置，如资源分配和存储选项，然后下载相应的 YAML 文件和你所需的配置。这可确保您的 Milvus 部署针对特定用例进行了优化。</p>
+<p>要自定义 Milvus 设置，需要用自己的配置 YAML 文件替换 YAML 文件。除了手动编辑或创建文件外，你还可以使用 Milvus 大小工具调整配置，然后下载相应的 YAML 文件。</p>
+<p>或者，你也可以使用<a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing 工具</strong></a>，以获得更简化的方法。该工具允许你调整各种设置，如资源分配和存储选项，然后下载包含所需配置的相应 YAML 文件。这可确保您的 Milvus 部署针对特定用例进行了优化。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />

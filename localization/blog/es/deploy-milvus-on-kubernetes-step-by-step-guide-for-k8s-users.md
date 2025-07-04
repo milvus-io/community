@@ -17,7 +17,7 @@ canonicalUrl: >-
   https://milvus.io/blog/deploy-milvus-on-kubernetes-step-by-step-guide-for-k8s-users.md
 ---
 <p><a href="https://zilliz.com/what-is-milvus"><strong>Milvus</strong></a> es una <a href="https://zilliz.com/learn/what-is-vector-database">base de datos vectorial</a> de código abierto diseñada para almacenar, indexar y buscar cantidades masivas de <a href="https://zilliz.com/learn/introduction-to-unstructured-data">datos no estructurados</a> a través de representaciones vectoriales, lo que la hace perfecta para aplicaciones impulsadas por IA, como la búsqueda por similitud, la <a href="https://zilliz.com/glossary/semantic-search">búsqueda semántica</a>, la generación aumentada de recuperación<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>), los motores de recomendación y otras tareas de aprendizaje automático.</p>
-<p>Pero lo que hace que Milvus sea aún más potente es su perfecta integración con Kubernetes. Si es aficionado a Kubernetes, sabrá que la plataforma es perfecta para orquestar sistemas escalables y distribuidos. Milvus aprovecha al máximo las capacidades de Kubernetes, permitiéndole desplegar, escalar y gestionar fácilmente los clústeres distribuidos de Milvus. Esta guía le proporcionará una guía clara, paso a paso para configurar Milvus en Kubernetes utilizando el Operador Milvus.</p>
+<p>Pero lo que hace que Milvus sea aún más potente es su perfecta integración con Kubernetes. Si es aficionado a Kubernetes, sabrá que la plataforma es perfecta para orquestar sistemas escalables y distribuidos. Milvus aprovecha al máximo las capacidades de Kubernetes, permitiéndole desplegar, escalar y gestionar fácilmente los clústeres distribuidos de Milvus. Esta guía le proporcionará un recorrido claro y paso a paso para configurar Milvus en Kubernetes utilizando el Operador Milvus.</p>
 <h2 id="Prerequisites" class="common-anchor-header">Requisitos previos<button data-href="#Prerequisites" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -155,9 +155,8 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Para personalizar la configuración de Milvus, tendrá que sustituir el archivo YAML por su propio archivo YAML de configuración. Además de editar o crear manualmente el archivo, puede utilizar la Herramienta de dimensionamiento de Milvus para ajustar las configuraciones y luego descargar el archivo YAML correspondiente.</p>
-<p>Para personalizar las configuraciones de Milvus, debe reemplazar el archivo YAML predeterminado por su propia configuración. Puede editar o crear manualmente este archivo, adaptándolo a sus requisitos específicos.</p>
-<p>Alternativamente, puede utilizar la <a href="https://milvus.io/tools/sizing"><strong>Herramienta de dimensionamiento de</strong></a> Milvus para un enfoque más racionalizado. Esta herramienta le permite ajustar varias configuraciones, como la asignación de recursos y las opciones de almacenamiento, y luego descargar el archivo YAML correspondiente con sus configuraciones deseadas. Esto garantiza que su despliegue de Milvus esté optimizado para su caso de uso específico.</p>
+<p>Para personalizar la configuración de Milvus, tendrá que sustituir el archivo YAML por su propio archivo YAML de configuración. Además de editar o crear manualmente el archivo, puede utilizar Milvus Sizing Tool para ajustar las configuraciones y luego descargar el archivo YAML correspondiente.</p>
+<p>Alternativamente, puede utilizar la <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing</strong></a> Tool para un enfoque más racionalizado. Esta herramienta le permite ajustar varias configuraciones, como la asignación de recursos y las opciones de almacenamiento, y luego descargar el archivo YAML correspondiente con las configuraciones deseadas. Esto garantiza que su despliegue de Milvus esté optimizado para su caso de uso específico.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />

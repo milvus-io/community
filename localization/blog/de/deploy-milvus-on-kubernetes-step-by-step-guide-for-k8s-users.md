@@ -64,7 +64,7 @@ $ <span class="hljs-built_in">sudo</span> install minikube-linux-amd64 /usr/loca
 <h3 id="3-Interact-with-Cluster" class="common-anchor-header">3. Mit Cluster interagieren</h3><p>Nun können Sie mit kubectl innerhalb von minikube mit Ihren Clustern interagieren. Wenn Sie kubectl nicht installiert haben, wird minikube die entsprechende Version standardmäßig herunterladen.</p>
 <pre><code translate="no">$ minikube kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<p>Alternativ können Sie auch einen symbolischen Link auf die Minikube-Binärdatei mit dem Namen <code translate="no">kubectl</code> erstellen, um die Verwendung zu erleichtern.</p>
+<p>Alternativ können Sie einen symbolischen Link zu minikube's Binary mit dem Namen <code translate="no">kubectl</code> erstellen, um die Benutzung zu erleichtern.</p>
 <pre><code translate="no">$ <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s $(<span class="hljs-built_in">which</span> minikube) /usr/local/bin/kubectl
 $ kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
@@ -155,9 +155,8 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Um die Milvus-Einstellungen anzupassen, müssen Sie die YAML-Datei durch Ihre eigene Konfigurations-YAML-Datei ersetzen. Neben der manuellen Bearbeitung oder Erstellung der Datei können Sie auch das Milvus Sizing Tool verwenden, um die Konfigurationen anzupassen und dann die entsprechende YAML-Datei herunterladen.</p>
-<p>Um die Milvus-Einstellungen anzupassen, müssen Sie die Standard-YAML-Datei durch Ihre eigene Konfiguration ersetzen. Sie können diese Datei entweder manuell bearbeiten oder erstellen, um sie an Ihre speziellen Anforderungen anzupassen.</p>
-<p>Alternativ können Sie auch das <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> verwenden, um einen effizienteren Ansatz zu verfolgen. Mit diesem Tool können Sie verschiedene Einstellungen, wie z. B. die Ressourcenzuweisung und Speicheroptionen, anpassen und anschließend die entsprechende YAML-Datei mit Ihren gewünschten Konfigurationen herunterladen. Dadurch wird sichergestellt, dass Ihre Milvus-Bereitstellung für Ihren spezifischen Anwendungsfall optimiert ist.</p>
+<p>Um die Milvus-Einstellungen anzupassen, müssen Sie die YAML-Datei durch Ihre eigene Konfigurations-YAML-Datei ersetzen. Neben der manuellen Bearbeitung oder Erstellung der Datei können Sie auch das Milvus Sizing Tool verwenden, um die Konfigurationen anzupassen und anschließend die entsprechende YAML-Datei herunterzuladen.</p>
+<p>Alternativ können Sie auch das <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> verwenden, um den Vorgang zu beschleunigen. Mit diesem Tool können Sie verschiedene Einstellungen, wie z.B. Ressourcenzuweisung und Speicheroptionen, anpassen und anschließend die entsprechende YAML-Datei mit Ihren gewünschten Konfigurationen herunterladen. Dadurch wird sichergestellt, dass Ihre Milvus-Bereitstellung für Ihren spezifischen Anwendungsfall optimiert ist.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />
@@ -197,7 +196,7 @@ $ kubectl cluster-info
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pod &lt;YOUR_MILVUS_PROXY_POD&gt; --template =<span class="hljs-string">&#x27;{{(index (index .spec.containers 0).ports 0).containerPort}}{{&quot;\n&quot;}}&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>Dieser Befehl gibt die Portnummer zurück, die Ihr Milvus-Dienst verwendet.</p>
-<h4 id="2-Forward-the-Port" class="common-anchor-header"><strong>2. Leiten Sie den Port weiter</strong></h4><p>Um lokal auf Ihren Milvus-Cluster zuzugreifen, leiten Sie mit dem folgenden Befehl einen lokalen Port an den Port des Dienstes weiter. Ersetzen Sie <code translate="no">&lt;YOUR_LOCAL_PORT&gt;</code> durch den lokalen Port, den Sie verwenden möchten, und <code translate="no">&lt;YOUR_SERVICE_PORT&gt;</code> durch den im vorherigen Schritt abgerufenen Service-Port:</p>
+<h4 id="2-Forward-the-Port" class="common-anchor-header"><strong>2. Weiterleitung des Ports</strong></h4><p>Um lokal auf Ihren Milvus-Cluster zuzugreifen, leiten Sie mit dem folgenden Befehl einen lokalen Port an den Port des Dienstes weiter. Ersetzen Sie <code translate="no">&lt;YOUR_LOCAL_PORT&gt;</code> durch den lokalen Port, den Sie verwenden möchten, und <code translate="no">&lt;YOUR_SERVICE_PORT&gt;</code> durch den im vorherigen Schritt abgerufenen Service-Port:</p>
 <pre><code translate="no">$ kubectl port-forward --address 0.0.0.0 service/my-release-milvus &lt;YOUR_LOCAL_PORT&gt;:&lt;YOUR_SERVICE_PORT&gt;
 <button class="copy-code-btn"></button></code></pre>
 <p>Mit diesem Befehl kann die Port-Weiterleitung alle IP-Adressen des Host-Rechners abhören. Wenn der Dienst nur <code translate="no">localhost</code> abhören soll, können Sie die Option <code translate="no">--address 0.0.0.0</code> weglassen.</p>
@@ -221,7 +220,7 @@ $ kubectl cluster-info
 <h3 id="1-Install-PyMilvus" class="common-anchor-header">1. PyMilvus installieren</h3><p>Um mit Milvus über Python zu interagieren, müssen Sie das Paket <code translate="no">pymilvus</code> installieren:</p>
 <pre><code translate="no">$ pip install pymilvus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Connect-to-Milvus" class="common-anchor-header">2. Verbindung zu Milvus herstellen</h3><p>Im Folgenden finden Sie ein Beispiel für ein Python-Skript, das eine Verbindung zu Ihrem Milvus-Cluster herstellt und die Durchführung grundlegender Operationen wie die Erstellung einer Sammlung demonstriert.</p>
+<h3 id="2-Connect-to-Milvus" class="common-anchor-header">2. Verbindung zu Milvus herstellen</h3><p>Im Folgenden finden Sie ein Beispiel für ein Python-Skript, das eine Verbindung zu Ihrem Milvus-Cluster herstellt und die Durchführung grundlegender Operationen wie das Erstellen einer Sammlung demonstriert.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-comment"># Connect to the Milvus server</span>
@@ -238,7 +237,7 @@ client.create_collection(
 <button class="copy-code-btn"></button></code></pre>
 <h4 id="Explanation" class="common-anchor-header">Erläuterung:</h4><ul>
 <li><p>Verbindung zu Milvus herstellen: Das Skript stellt eine Verbindung zum Milvus-Server her, der auf <code translate="no">localhost</code> läuft, wobei der lokale Port verwendet wird, den Sie in Schritt 4 eingerichtet haben.</p></li>
-<li><p>Erstellen Sie eine Sammlung: Das Skript prüft, ob eine Sammlung mit dem Namen <code translate="no">example_collection</code> bereits existiert, löscht sie, wenn dies der Fall ist, und erstellt dann eine neue Sammlung mit Vektoren der Dimension 768.</p></li>
+<li><p>Erstellen Sie eine Sammlung: Es prüft, ob eine Sammlung mit dem Namen <code translate="no">example_collection</code> bereits existiert, löscht sie, wenn dies der Fall ist, und erstellt dann eine neue Sammlung mit Vektoren der Dimension 768.</p></li>
 </ul>
 <p>Dieses Skript stellt eine Verbindung zum Milvus-Cluster her und erstellt eine Sammlung, die als Ausgangspunkt für komplexere Operationen wie das Einfügen von Vektoren und die Durchführung von Ähnlichkeitssuchen dient.</p>
 <h2 id="Conclusion" class="common-anchor-header">Schlussfolgerung<button data-href="#Conclusion" class="anchor-icon" translate="no">
@@ -256,7 +255,7 @@ client.create_collection(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Einsatz von Milvus in einem verteilten Setup auf Kubernetes erschließt leistungsstarke Funktionen für die Verwaltung großer Vektordaten und ermöglicht nahtlose Skalierbarkeit und leistungsstarke KI-gesteuerte Anwendungen. In diesem Leitfaden haben Sie gelernt, wie Sie Milvus mit dem Milvus Operator einrichten und so den Prozess rationalisieren und effizient gestalten können.</p>
+    </button></h2><p>Der Einsatz von Milvus in einem verteilten Setup auf Kubernetes erschließt leistungsstarke Funktionen für die Verwaltung umfangreicher Vektordaten und ermöglicht nahtlose Skalierbarkeit und leistungsstarke KI-gesteuerte Anwendungen. In diesem Leitfaden haben Sie gelernt, wie Sie Milvus mit dem Milvus Operator einrichten und so den Prozess rationalisieren und effizient gestalten können.</p>
 <p>Wenn Sie Milvus weiter erkunden, sollten Sie in Erwägung ziehen, Ihren Cluster zu skalieren, um wachsenden Anforderungen gerecht zu werden, oder ihn auf Cloud-Plattformen wie Amazon EKS, Google Cloud oder Microsoft Azure bereitzustellen. Für eine verbesserte Verwaltung und Überwachung bieten Tools wie <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a>, <a href="https://milvus.io/docs/birdwatcher_overview.md"><strong>Birdwatcher</strong></a> und <a href="https://github.com/zilliztech/attu"><strong>Attu</strong></a> wertvolle Unterstützung bei der Aufrechterhaltung des Zustands und der Leistung Ihrer Bereitstellungen.</p>
 <p>Sie sind nun bereit, das volle Potenzial von Milvus auf Kubernetes zu nutzen - viel Spaß beim Deployment! 🚀</p>
 <h2 id="Further-Resources" class="common-anchor-header">Weitere Ressourcen<button data-href="#Further-Resources" class="anchor-icon" translate="no">

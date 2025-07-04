@@ -94,7 +94,7 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<h3 id="2-Configure-a-Default-StorageClass-if-necessary" class="common-anchor-header">2. Configurar uma StorageClass padrão (se necessário)</h3><p>Se nenhuma StorageClass padrão estiver configurada, é possível criar uma definindo-a em um arquivo YAML. Use o exemplo a seguir para criar uma StorageClass padrão:</p>
+<h3 id="2-Configure-a-Default-StorageClass-if-necessary" class="common-anchor-header">2. Configurar uma StorageClass padrão (se necessário)</h3><p>Se nenhuma StorageClass padrão estiver definida, é possível criar uma definindo-a em um arquivo YAML. Use o exemplo a seguir para criar uma StorageClass padrão:</p>
 <pre><code translate="no"><span class="hljs-attr">apiVersion</span>: storage.<span class="hljs-property">k8s</span>.<span class="hljs-property">io</span>/v1
 <span class="hljs-attr">kind</span>: <span class="hljs-title class_">StorageClass</span>
 <span class="hljs-attr">metadata</span>:
@@ -134,7 +134,7 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<h3 id="2-Install-the-Milvus-Operator" class="common-anchor-header">2. Instalar o Operador Milvus</h3><p>Assim que o cert-manager estiver a funcionar, pode instalar o Milvus Operator. Execute o seguinte comando para o implementar utilizando <code translate="no">kubectl</code>:</p>
+<h3 id="2-Install-the-Milvus-Operator" class="common-anchor-header">2. Instalar o Operador Milvus</h3><p>Quando o cert-manager estiver a funcionar, pode instalar o Milvus Operator. Execute o seguinte comando para o implementar utilizando <code translate="no">kubectl</code>:</p>
 <pre><code translate="no">$ kubectl apply -f <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/zilliztech/milvus-operator/main/deploy/manifests/deployment.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>Pode verificar se o pod do Milvus Operator está a funcionar utilizando o seguinte comando:</p>
@@ -156,7 +156,6 @@ $ kubectl cluster-info
   </span>
 </p>
 <p>Para personalizar as definições do Milvus, terá de substituir o ficheiro YAML pelo seu próprio ficheiro YAML de configuração. Além de editar ou criar manualmente o ficheiro, pode utilizar a Milvus Sizing Tool para ajustar as configurações e, em seguida, transferir o ficheiro YAML correspondente.</p>
-<p>Para personalizar as definições do Milvus, é necessário substituir o ficheiro YAML predefinido pela sua própria configuração. Pode editar ou criar manualmente este ficheiro, adaptando-o às suas necessidades específicas.</p>
 <p>Em alternativa, pode utilizar a <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> para uma abordagem mais simplificada. Esta ferramenta permite-lhe ajustar várias definições, como a atribuição de recursos e as opções de armazenamento, e depois descarregar o ficheiro YAML correspondente com as configurações pretendidas. Isso garante que a implantação do Milvus seja otimizada para o seu caso de uso específico.</p>
 <p>
   <span class="img-wrapper">

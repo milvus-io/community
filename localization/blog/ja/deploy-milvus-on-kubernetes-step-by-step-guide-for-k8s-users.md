@@ -14,8 +14,8 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/deploy-milvus-on-kubernetes-step-by-step-guide-for-k8s-users.md
 ---
-<p><a href="https://zilliz.com/what-is-milvus"><strong>Milvusは</strong></a>、ベクトル表現を通じて大量の<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非構造化データを</a>保存、インデックス化、検索するために設計されたオープンソースの<a href="https://zilliz.com/learn/what-is-vector-database">ベクトルデータベース</a>であり、類似検索、<a href="https://zilliz.com/glossary/semantic-search">意味検索</a>、検索拡張世代<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">（RAG）</a>、レコメンデーションエンジン、その他の機械学習タスクなどのAI駆動型アプリケーションに最適である。</p>
-<p>しかし、Milvusをさらに強力にしているのは、Kubernetesとのシームレスな統合だ。Kubernetesに詳しい方なら、このプラットフォームがスケーラブルな分散システムのオーケストレーションに最適であることを知っているだろう。MilvusはKubernetesの機能を最大限に活用し、分散Milvusクラスタを容易にデプロイ、スケール、管理することができます。本ガイドでは、Milvus Operatorを使用してKubernetes上でMilvusをセットアップするための明確なステップバイステップのウォークスルーを提供します。</p>
+<p><a href="https://zilliz.com/what-is-milvus"><strong>Milvusは</strong></a>、ベクトル表現を通じて大量の<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非構造化データを</a>保存、インデックス、検索するために設計されたオープンソースの<a href="https://zilliz.com/learn/what-is-vector-database">ベクトルデータベース</a>であり、類似検索、<a href="https://zilliz.com/glossary/semantic-search">意味検索</a>、検索拡張世代<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">（RAG）</a>、レコメンデーションエンジン、その他の機械学習タスクなどのAI駆動型アプリケーションに最適である。</p>
+<p>しかし、Milvusをさらに強力にしているのは、Kubernetesとのシームレスな統合だ。Kubernetesに詳しい人なら、このプラットフォームがスケーラブルな分散システムのオーケストレーションに最適であることを知っているだろう。MilvusはKubernetesの機能を最大限に活用し、分散Milvusクラスタを容易にデプロイ、スケール、管理することができます。本ガイドでは、Milvus Operatorを使用してKubernetes上でMilvusをセットアップするための明確なステップバイステップのウォークスルーを提供します。</p>
 <h2 id="Prerequisites" class="common-anchor-header">前提条件<button data-href="#Prerequisites" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -85,7 +85,7 @@ $ kubectl cluster-info
 <h3 id="1-Check-Installed-StorageClasses" class="common-anchor-header">1.インストールされているStorageClassの確認</h3><p>Kubernetesクラスタで利用可能なStorageClassを確認するには、以下のコマンドを実行する：</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> sc
 <button class="copy-code-btn"></button></code></pre>
-<p>クラスタにインストールされているストレージクラスの一覧が表示されます。デフォルトのStorageClassがすでに構成されている場合は、<code translate="no">(default)</code> でマークされます。</p>
+<p>クラスタにインストールされているストレージクラスの一覧が表示されます。デフォルトのStorageClassがすでに設定されている場合は、<code translate="no">(default)</code> が表示されます。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/storage_classes_installed_in_your_cluster_21d36d6ac8.png" alt="" class="doc-image" id="" />
@@ -123,7 +123,7 @@ $ kubectl cluster-info
 <h3 id="1-Install-cert-manager" class="common-anchor-header">1.cert-manager のインストール</h3><p>Milvus Operatorでは、安全な通信のための証明書を管理するために<a href="https://cert-manager.io/docs/installation/supported-releases/">cert-managerが</a>必要です。必ず<strong>cert-managerバージョン1.1.3</strong>以降をインストールしてください。インストールするには、以下のコマンドを実行してください：</p>
 <pre><code translate="no">$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>インストール後、cert-manager ポッドが実行されていることを確認してください：</p>
+<p>インストール後、cert-managerポッドが実行されていることを確認してください：</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pods -n cert-manager
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -153,9 +153,8 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Milvusの設定をカスタマイズするには、YAMLファイルを独自の設定YAMLファイルに置き換える必要があります。ファイルを手動で編集または作成するだけでなく、Milvus Sizing Toolを使用して設定を調整し、対応するYAMLファイルをダウンロードすることもできます。</p>
-<p>Milvusの設定をカスタマイズするには、デフォルトのYAMLファイルを独自の設定で置き換える必要があります。このファイルを手動で編集または作成し、特定の要件に合わせることができます。</p>
-<p>また、<a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Toolを</strong></a>使用して、より合理的なアプローチを行うこともできます。このツールを使用すると、リソースの割り当てやストレージのオプションなど、さまざまな設定を調整し、希望する設定の対応するYAMLファイルをダウンロードすることができます。これにより、Milvusの導入が特定のユースケースに最適化されます。</p>
+<p>Milvusの設定をカスタマイズするには、YAMLファイルを独自の設定YAMLファイルに置き換える必要があります。ファイルを手動で編集または作成するだけでなく、Milvus Sizing Tool を使用して設定を調整し、対応する YAML ファイルをダウンロードすることもできます。</p>
+<p>また、<a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Toolを</strong></a>使用して、より合理的なアプローチを行うこともできます。このツールを使用すると、リソースの割り当てやストレージオプションなどのさまざまな設定を調整し、希望する設定の対応するYAMLファイルをダウンロードすることができます。これにより、Milvusの導入が特定のユースケースに最適化されます。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />
@@ -219,7 +218,7 @@ $ kubectl cluster-info
 <h3 id="1-Install-PyMilvus" class="common-anchor-header">1.PyMilvusのインストール</h3><p>Python経由でMilvusとやりとりするには、<code translate="no">pymilvus</code> パッケージをインストールする必要があります：</p>
 <pre><code translate="no">$ pip install pymilvus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Connect-to-Milvus" class="common-anchor-header">2.Milvusへの接続</h3><p>以下は、Milvusクラスタに接続し、コレクションの作成などの基本的な操作を実行するPythonスクリプトのサンプルです。</p>
+<h3 id="2-Connect-to-Milvus" class="common-anchor-header">2.Milvusへの接続</h3><p>以下は、Milvusクラスタに接続し、コレクションの作成などの基本的な操作を行うPythonスクリプトのサンプルです。</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-comment"># Connect to the Milvus server</span>
