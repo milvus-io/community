@@ -164,8 +164,6 @@ $ kubectl apply -f https://raw.githubusercontent.com/zilliztech/milvus-operator/
 
 To customize the Milvus settings, you will need to replace the YAML file with your own configuration YAML file. In addition to manually editing or creating the file, you can use the Milvus Sizing Tool to adjust the configurations and then download the corresponding YAML file.
 
-To customize Milvus settings, you must replace the default YAML file with your own configuration. You can either manually edit or create this file, tailoring it to your specific requirements. 
-
 Alternatively, you can use the [**Milvus Sizing Tool**](https://milvus.io/tools/sizing) for a more streamlined approach. This tool allows you to adjust various settings, such as resource allocation and storage options, and then download the corresponding YAML file with your desired configurations. This ensures that your Milvus deployment is optimized for your specific use case.
 
 ![](https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png)
