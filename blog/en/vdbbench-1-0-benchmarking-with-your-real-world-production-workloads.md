@@ -54,7 +54,7 @@ Let’s take a closer look at what new features are brought to the table.
 Most benchmarks focus only on raw data output, but what matters is how engineers interpret and act on those results. We redesigned the UI to prioritize clarity and interactivity—enabling you to spot performance gaps between systems and make fast infrastructure decisions.
 
 The new dashboard visualizes not just performance numbers, but the relationships between them: how QPS degrades under different filter selectivity levels, how recall fluctuates during streaming ingestion, and how latency distributions reveal system stability characteristics.
-![vdb图1.png](https://assets.zilliz.com/vdb_1_df593dea0b.png)
+![](https://assets.zilliz.com/vdb_1_df593dea0b.png)
 
 We've retested major vector database platforms including **Milvus, Zilliz Cloud, Elastic Cloud, Qdrant Cloud, Pinecone, and OpenSearch** with their latest configurations and recommended settings, ensuring all benchmark data reflects current capabilities. All testing results are available at the[ VDBBench Leaderboard](https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch).
 
