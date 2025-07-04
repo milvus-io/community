@@ -72,7 +72,8 @@ Filtered searches introduce complexity in two critical areas:
 VDBBench systematically tests various filtering selectivity levels (from 50% to 99.9%), providing a comprehensive performance profile under this critical production pattern. The results often reveal dramatic performance cliffs that would never show up in traditional benchmarks.
 
 **Example**: In Cohere 1M tests, Milvus maintained consistently high recall across all filter selectivity levels, while OpenSearch exhibited unstable performance with recall fluctuating significantly under different filtering conditions—falling below 0.8 recall in many cases, which is unacceptable for most production environments.
-![vdb图2.png](https://assets.zilliz.com/vdb_2_0ef89463e5.png)
+
+![](https://assets.zilliz.com/vdb_2_0ef89463e5.png)
 
 _Figure: QPS and Recall of Milvus and OpenSearch Across Different Filter Selectivity Levels (Cohere 1M Test)._ 
 
