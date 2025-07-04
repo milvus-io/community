@@ -9,7 +9,7 @@ cover: assets.zilliz.com/milvus_vdb_e0e8146c90.jpeg
 tag: Announcements
 recommend: false
 publishToMedium: true
-tags: VDBBench, vector database, Milvus, Zilliz Cloud, benchmarking
+tags: vector database, Milvus, vectordb benchmarking, vector search
 meta_keywords: VDBBench, vector database, Milvus, Zilliz Cloud, benchmarking
 meta_title: >
  VDBBench 1.0: Real-World Benchmarking for Vector Databases
