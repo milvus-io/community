@@ -1,7 +1,7 @@
 ---
 id: vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md
 title: >
-Announcing VDBBench 1.0: Open-Source Vector Database Benchmarking with Your Real-World Production Workloads
+ Announcing VDBBench 1.0: Open-Source Vector Database Benchmarking with Your Real-World Production Workloads
 author: Tian Min
 date: 2025-07-04
 desc:  Discover VDBBench 1.0, an open-source tool for benchmarking vector databases with real-world data, streaming ingestion, and concurrent workloads.
