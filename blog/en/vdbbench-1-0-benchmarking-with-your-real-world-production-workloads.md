@@ -17,7 +17,6 @@ origin: https://zilliz.com/blog/vdbbench-1-0-benchmarking-with-your-real-world-p
 ---
 
 
-By Min Tian
 
 Most vector database benchmarks test with static data and pre-built indexes. But production systems don't work that way—data flows continuously while users run queries, filters fragment indexes, and performance characteristics shift dramatically under concurrent read/write loads.
 
