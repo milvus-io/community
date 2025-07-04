@@ -16,7 +16,6 @@ meta_title: >
 origin: https://zilliz.com/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads
 ---
 
-## Announcing VDBBench 1.0: Open-Source Vector Database Benchmarking with Your Real-World Production Workloads ##
 
 By Min Tian
 
