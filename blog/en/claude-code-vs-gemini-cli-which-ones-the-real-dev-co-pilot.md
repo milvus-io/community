@@ -13,7 +13,7 @@ tags: Milvus, vector database, vector search
 meta_keywords: Claude Code, Gemini CLI, Natural Language Coding, Vibe Coding, AI Coding Assistants 
 meta_title: >
  Claude Code vs Gemini CLI: Who’s the Real Dev Co-Pilot?
-origin: claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md
+origin: milvus.io/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md
 ---
 
 
@@ -150,24 +150,19 @@ Now that we have a basic understanding of the capabilities of these two terminal
 **Installation:** Claude Code requires npm and Node.js version 18 or higher.
 
 ```
-
 # Install Claude Code on your system
-
 npm install -g @anthropic-ai/claude-code
 
 # Set up API key
-
-claude config set api-key YOUR\_API\_KEY
+claude config set api-key YOUR_API_KEY
 
 # Verify installation was successful
-
 claude --version
 
 # Launch Claude Code
-
 Claude
-
 ```
+
 
 ****![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcCMkH-YpJAkmKt_f6Crw9H7uVUlR6di4JokTlXjReygW6_8L0GQq3-xHckKRHbNznb57822v5KHgXRC9LNR7hVHz-EZgSPPCin4xzXgZNPTi3rodov6TbK10dzzdClGzWPzQ3E?key=6LcI6MfTDQQ7drjMVXX9kw)****
 
@@ -177,51 +172,39 @@ Claude
 
 ```
 # Let Claude analyze project architecture
-
 > Analyze the main architectural components of this project
 
 # Understand security mechanisms
-
 > What security measures does this system have?
 
 # Get code overview
-
 > Give me an overview of this codebase
 ```
 
 2. **Be specific and provide context:** The more context you give, the more accurate Claude Code's suggestions will be.
 
 ```
-
 # Implement specific features
-
 > Implement an initial version for GitHub issue #123
 
 # Code migration
-
 > Help me migrate this codebase to the latest Java version, first create a plan
 
 # Code refactoring
-
 > Refactor this function to make it more readable and maintainable
 ```
 
 3. **Use it for debugging and optimization:**
 
 ```
-
 # Error analysis
-
 > What caused this error? How can we fix it?
 
 # Performance optimization
-
 > Analyze the performance bottlenecks in this code
 
 # Code review
-
 > Review this pull request and point out potential issues
-
 ```
 
 **Summary:**
@@ -230,7 +213,7 @@ Claude
 
 - Maintain conversation context since Claude Code remembers earlier discussions
 
-- Provide feedback using the \``` /bug` `` command to report issues and help improve the tool
+- Provide feedback using the ``` bug``` command to report issues and help improve the tool
 
 - Stay security-conscious by reviewing data collection policies and exercising caution with sensitive code
 
@@ -240,89 +223,68 @@ Claude
 **Installation:** Like Claude Code, Gemini CLI requires npm and Node.js version 18 or higher.
 
 ```
-
 # Install Gemini CLI
-
 npm install -g @google/gemini-cli
 
 # Login to your Google account
-
 gemini auth login
 
 # Verify installation
-
 gemini --version
 
 # Launch Gemini CLI
-
 Gemini
-
 ```
+
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeKNm-h_QqPq7scDIA945B6HxJNp772Wx3LSAich8lWGIvDgE-qIozJ5LZqcvQP_zNRft8oQzz08kE7ZUynF3u555oRaH6FtwN4V4XxBqwA1wngCqk12akE9VeO9ePHEkASTZRKsA?key=6LcI6MfTDQQ7drjMVXX9kw)
 
 If you have a personal account, log in with your Google account for immediate access, with a limit of 60 requests per minute. For higher limits, configure your API key:
 
 ```
-
-export GEMINI\_API\_KEY="YOUR\_API\_KEY"
-
+export GEMINI_API_KEY="YOUR_API_KEY"
 ```
+
 
 **Best Practices for Gemini CLI:**
 
 1. **Start with architecture understanding:** Like Claude Code, when approaching a new project, have Gemini CLI help you understand the overall structure first using natural language. Note that Gemini CLI supports a 1 million token context window, making it highly effective for large-scale codebase analysis.
 
 ```
-
 # Analyze project architecture
-
 > Analyze the main architectural components of this project
 
 # Understand security mechanisms
-
 > What security measures does this system have?
 
 # Get code overview
-
 > Give me an overview of this codebase
-
 ```
 
 2. **Leverage its multimodal capabilities:** This is where Gemini CLI truly shines.
 
 ```
-
 # Generate app from PDF
-
 > Create a new app based on this PDF design document
 
 # Generate code from sketch
-
 > Generate frontend code based on this UI sketch
 
 # Image processing tasks
-
 > Convert all images in this directory to PNG format and rename using EXIF data
-
 ```
 
 3. **Explore tool integrations:** Gemini CLI can integrate with multiple tools and MCP servers for enhanced functionality.
 
 ```
-
 # Connect external tools
-
 > Use MCP server to connect my local system tools
 
 # Media generation
-
 > Use Imagen to generate project logo
 
 # Search integration
-
 > Use Google search tool to find related technical documentation
-
 ```
 
 **Summary:**
@@ -347,9 +309,7 @@ _The reality? Most models generate outdated patterns straight out of the box. Th
 Ask Cursor how to connect to Milvus, and you might get this:
 
 ```
-
 connections.connect("default", host="localhost", port="19530")
-
 ```
 
 Looks fine, except that method’s now deprecated. The recommended approach is to use  `MilvusClient` but most assistants don’t know that yet. 
