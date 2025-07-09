@@ -17,7 +17,6 @@ origin: https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev
 ---
 
 
-By Min Yin
 
 Your IDE is bloated. Your coding assistant is outdated. And you're still stuck right-clicking to refactor? Welcome to the CLI renaissance.
 
