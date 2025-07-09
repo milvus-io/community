@@ -163,7 +163,7 @@ Claude
 ```
 
 
-****![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcCMkH-YpJAkmKt_f6Crw9H7uVUlR6di4JokTlXjReygW6_8L0GQq3-xHckKRHbNznb57822v5KHgXRC9LNR7hVHz-EZgSPPCin4xzXgZNPTi3rodov6TbK10dzzdClGzWPzQ3E?key=6LcI6MfTDQQ7drjMVXX9kw)****
+****![](https://assets.zilliz.com/1_c413bbf950.png)****
 
 **Best Practices for Claude Code:**
 
@@ -236,7 +236,7 @@ Gemini
 ```
 
 
-![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeKNm-h_QqPq7scDIA945B6HxJNp772Wx3LSAich8lWGIvDgE-qIozJ5LZqcvQP_zNRft8oQzz08kE7ZUynF3u555oRaH6FtwN4V4XxBqwA1wngCqk12akE9VeO9ePHEkASTZRKsA?key=6LcI6MfTDQQ7drjMVXX9kw)
+![](https://assets.zilliz.com/2_bec1984bb0.png)
 
 If you have a personal account, log in with your Google account for immediate access, with a limit of 60 requests per minute. For higher limits, configure your API key:
 
@@ -315,9 +315,9 @@ Looks fine, except that method’s now deprecated. The recommended approach is t
 
 Or take OpenAI’s own API. Many tools still suggest `gpt-3.5-turbo` via `openai.ChatCompletion`, a method deprecated in March 2024. It’s slower, costs more, and delivers worse results. But the LLM doesn’t know that. 
 
-![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcpIC1e9J-9xlFw3OAmfdU9dUwSlYlIQ5KfOInVQ143yXBr10N4ktpBXzj0Lg0_l8doli3hEr_ZQKeNv2fbWHUbquv8VO5-iXrAWuybADVuRgmEHPtqCDhJOTXDYwUNGX1rqNg3?key=6LcI6MfTDQQ7drjMVXX9kw)
+![](https://assets.zilliz.com/3_8f0d1a42b6.png)
 
-![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfXmUZ8V3rA0xwMjtsl8bqaZUwz7gYJIBPTdkCXOO1M79AeDoVTFy2HmgdDi4qFvES_WWbxHiihVNaOj7VhRu1SBGlekMcbM_FlhodraUnYN923LEQeHqTqx9d4dShly4ELzAAxcg?key=6LcI6MfTDQQ7drjMVXX9kw)
+![](https://assets.zilliz.com/3_5_3f4c4a0d4c.png)
 
 
 ### The Fix: Real-Time Intelligence with Milvus MCP + RAG
@@ -330,7 +330,7 @@ To solve this, we combined two powerful ideas:
 
 Together, they make your assistant smarter and current.
 
-![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfz_fAtAMd0Lr6mJvmUN4RnnxGfYKqMRMCBYvWQpvXQir8k4LrseJkC1q9aV6JXwYjFbcy11fcG9KrK_6X4pOMBOFp92-3vAP9kn6kzaLwcHppINCGSDPVw47Z3dWO5k7fgr0G3-g?key=6LcI6MfTDQQ7drjMVXX9kw)
+![](https://assets.zilliz.com/4_e6bc6cacd6.png)
 
 **Here’s how it works:**
 
