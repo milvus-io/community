@@ -9,7 +9,7 @@ cover: assets.zilliz.com/Claude_Code_vs_Gemini_CLI_e3a04a49cf.jpeg
 tag: Engineering
 recommend: false
 publishToMedium: true
-tags: Milvus, vector database, vector search
+tags: Milvus, vector database, vector search, Gemini, Claude
 meta_keywords: Claude Code, Gemini CLI, Natural Language Coding, Vibe Coding, AI Coding Assistants 
 meta_title: >
  Claude Code vs Gemini CLI: Who’s the Real Dev Co-Pilot?
