@@ -212,7 +212,7 @@ Claude
 
 - Maintain conversation context since Claude Code remembers earlier discussions
 
-- Provide feedback using the ``` bug``` command to report issues and help improve the tool
+- Provide feedback using the `bug` command to report issues and help improve the tool
 
 - Stay security-conscious by reviewing data collection policies and exercising caution with sensitive code
 
