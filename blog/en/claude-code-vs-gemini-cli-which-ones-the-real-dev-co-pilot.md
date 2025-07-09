@@ -343,7 +343,8 @@ Together, they make your assistant smarter and current.
    - Runs a **semantic search**
 
    - Retrieves the most relevant docs and examples
-     Injects them into the assistant’s prompt context
+
+     - Injects them into the assistant’s prompt context
 
 4. Result: code suggestions that reflect **exactly what’s true right now**
 
