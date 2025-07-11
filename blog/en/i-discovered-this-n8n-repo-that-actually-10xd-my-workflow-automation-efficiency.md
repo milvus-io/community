@@ -63,11 +63,11 @@ The workflow tool market is pretty crowded, so why did N8N catch my attention? I
 
 N8N lets you build workflows by connecting nodes on a visual canvas. Each node represents a step in your process, and the lines between them show how data flows through your system. This isn't just eye candy—it's a fundamentally better way to handle complex, branching automation logic.
 
-![n8n1.png](https://assets.zilliz.com/n8n1_3bcae91c82.png)
+![](https://assets.zilliz.com/n8n1_3bcae91c82.png)
 
 N8N brings enterprise-grade capabilities to the table with integrations for over 400 services, complete local deployment options for when you need to keep data in-house, and robust error handling with real-time monitoring that actually helps you debug issues instead of just telling you something broke.
 
-![n8n2.png](https://assets.zilliz.com/n8n2_248855922d.png)
+![](https://assets.zilliz.com/n8n2_248855922d.png)
 
 ### N8N Has 2000+ Ready-Made Templates
 
@@ -83,15 +83,15 @@ Now let’s walk through how to use N8N. It is pretty easy.
 
 I assume most of you have a basic environment setup. If not, check the official resources:
 
-- Docker website: https\://www\.docker.com/
+- Docker website: https://www.docker.com/
 
-- Milvus website: https\://milvus.io/docs/prerequisite-docker.md
+- Milvus website: https://milvus.io/docs/prerequisite-docker.md
 
-- N8N website: https\://n8n.io/
+- N8N website: https://n8n.io/
 
-- Python3 website: https\://www\.python.org/
+- Python3 website: https://www.python.org/
 
-- N8n-workflows: https\://github.com/Zie619/n8n-workflows
+- N8n-workflows: https://github.com/Zie619/n8n-workflows
 
 
 ### Clone and Run the Template Browser
@@ -103,44 +103,44 @@ python run.py
 http://localhost:8000
 ```
 
-![n8n3.png](https://assets.zilliz.com/n8n3_0db8e22872.png)
+![](https://assets.zilliz.com/n8n3_0db8e22872.png)
 
 
-![n8n4.png](https://assets.zilliz.com/n8n4_b6b9ba6635.png)
+![](https://assets.zilliz.com/n8n4_b6b9ba6635.png)
 
 ### Deploy N8N
 
 ```
-docker run -d -it --rm --name n8n -p 5678:5678 -v n8n\_data:/home/node/.n8n -e N8N\_SECURE\_COOKIE=false -e N8N\_HOST=192.168.4.48 -e N8N\_LISTEN\_ADDRESS=0.0.0.0  n8nio/n8n:latest
+docker run -d -it --rm --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n -e N8N_SECURE_COOKIE=false -e N8N_HOST=192.168.4.48 -e N8N_LISTEN_ADDRESS=0.0.0.0  n8nio/n8n:latest
 ```
 
-**⚠️ Important:** Replace N8N\_HOST with your actual IP address
+**⚠️ Important:** Replace N8N_HOST with your actual IP address
 
-![n8n5.png](https://assets.zilliz.com/n8n5_6384caa548.png)
+![](https://assets.zilliz.com/n8n5_6384caa548.png)
 
 ### Importing Templates 
 
 Once you find a template you want to try, getting it into your N8N instance is straightforward:
 
-![n8n6.png](https://assets.zilliz.com/n8n6_2ea8b14bd9.png)
+![](https://assets.zilliz.com/n8n6_2ea8b14bd9.png)
 
 #### **1. Download the JSON File**
 
 Each template is stored as a JSON file that contains the complete workflow definition.
 
-![n8n7.png](https://assets.zilliz.com/n8n7_d58242d81a.png)
+![](https://assets.zilliz.com/n8n7_d58242d81a.png)
 
 #### **2. Open N8N Editor**
 
 Navigate to Menu → Import Workflow
 
-![n8n8.png](https://assets.zilliz.com/n8n8_9961929091.png)
+![](https://assets.zilliz.com/n8n8_9961929091.png)
 
 #### **3. Import the JSON**
 
 Select your downloaded file and click Import
 
-![n8n9.png](https://assets.zilliz.com/n8n9_3882b6ade6.png)
+![](https://assets.zilliz.com/n8n9_3882b6ade6.png)
 
 From there, you just need to adjust the parameters to match your specific use case. You'll have a professional-grade automation system running in minutes instead of hours.
 
