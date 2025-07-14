@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2025-07-10
 desc:  Learn how to automate workflows with N8N. This step-by-step tutorial covers setup, 2000+ templates, and integrations to boost productivity and streamline tasks.
-cover: https://assets.zilliz.com/n8_7ff76400fb.png
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
