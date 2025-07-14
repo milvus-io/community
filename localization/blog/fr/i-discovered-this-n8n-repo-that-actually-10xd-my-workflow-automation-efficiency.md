@@ -10,7 +10,7 @@ desc: >-
   Apprenez à automatiser les flux de travail avec N8N. Ce tutoriel étape par
   étape couvre la configuration, plus de 2000 modèles, et les intégrations pour
   stimuler la productivité et rationaliser les tâches.
-cover: 'https://assets.zilliz.com/n8_7ff76400fb.png'
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true

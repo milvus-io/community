@@ -10,7 +10,7 @@ desc: >-
   Saiba como automatizar fluxos de trabalho com o N8N. Este tutorial
   passo-a-passo abrange a configuração, mais de 2000 modelos e integrações para
   aumentar a produtividade e simplificar as tarefas.
-cover: 'https://assets.zilliz.com/n8_7ff76400fb.png'
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -25,7 +25,7 @@ origin: >-
 <p>Todas estas operações aparentemente "avançadas" partilham o mesmo segredo: <strong>ferramentas de automatização do fluxo de trabalho.</strong></p>
 <p>Pense nisso. Um pedido pull é fundido e o sistema desencadeia automaticamente testes, implementa a fase de preparação, actualiza o bilhete Jira correspondente e notifica a equipa de produto no Slack. Um alerta de monitoramento é disparado e, em vez de enviar spam para todos, ele encaminha de forma inteligente para o proprietário do serviço, escalona com base na gravidade e cria automaticamente a documentação do incidente. Um novo membro da equipa junta-se à equipa e o seu ambiente de desenvolvimento, permissões e tarefas de integração são provisionados automaticamente.</p>
 <p>Estas integrações, que antes exigiam scripts personalizados e manutenção constante, agora funcionam sozinhas 24 horas por dia, 7 dias por semana, depois de configuradas corretamente.</p>
-<p>Recentemente, descobri <a href="https://github.com/Zie619/n8n-workflows">o N8N</a>, uma ferramenta visual de automatização do fluxo de trabalho e, mais importante ainda, deparei-me com um repositório de código aberto que contém mais de 2000 modelos de fluxo de trabalho prontos a utilizar. Esta publicação irá explicar-lhe o que aprendi sobre a automatização do fluxo de trabalho, porque é que o N8N chamou a minha atenção e como pode aproveitar estes modelos pré-construídos para configurar uma automatização sofisticada em minutos, em vez de construir tudo de raiz.</p>
+<p>Recentemente, descobri <a href="https://github.com/Zie619/n8n-workflows">o N8N</a>, uma ferramenta visual de automatização do fluxo de trabalho e, mais importante, deparei-me com um repositório de código aberto que contém mais de 2000 modelos de fluxo de trabalho prontos a utilizar. Esta publicação irá explicar-lhe o que aprendi sobre a automatização do fluxo de trabalho, porque é que o N8N chamou a minha atenção e como pode aproveitar estes modelos pré-construídos para configurar uma automatização sofisticada em minutos, em vez de construir tudo de raiz.</p>
 <h2 id="Workflow-Let-Machines-Handle-the-Grunt-Work" class="common-anchor-header">Fluxo de trabalho: Deixar as máquinas tratarem do trabalho pesado<button data-href="#Workflow-Let-Machines-Handle-the-Grunt-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -41,7 +41,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="What-is-workflow" class="common-anchor-header">O que é fluxo de trabalho?</h3><p>Na sua essência, o fluxo de trabalho é apenas um conjunto de sequências de tarefas automatizadas. Imagine o seguinte: pega num processo complexo e divide-o em partes mais pequenas e geríveis. Cada pedaço se torna um "nó" que lida com um trabalho específico - talvez chamar uma API, processar alguns dados ou enviar uma notificação. Junte estes nós com alguma lógica, adicione um acionador e tem um fluxo de trabalho que se executa a si próprio.</p>
+    </button></h2><h3 id="What-is-workflow" class="common-anchor-header">O que é fluxo de trabalho?</h3><p>Na sua essência, o fluxo de trabalho é apenas um conjunto de sequências de tarefas automatizadas. Imagine o seguinte: pega num processo complexo e divide-o em partes mais pequenas e geríveis. Cada pedaço se torna um "nó" que lida com um trabalho específico - talvez chamar uma API, processar alguns dados ou enviar uma notificação. Junte estes nós com alguma lógica, adicione um acionador e tem um fluxo de trabalho que se executa sozinho.</p>
 <p>É aqui que se torna prático. Pode configurar fluxos de trabalho para guardar automaticamente anexos de correio eletrónico no Google Drive quando estes chegam, extrair dados de sítios Web de acordo com um horário e colocá-los na sua base de dados ou encaminhar bilhetes de clientes para os membros certos da equipa com base em palavras-chave ou níveis de prioridade.</p>
 <h3 id="Workflow-vs-AI-Agent-Different-Tools-for-Different-Jobs" class="common-anchor-header">Fluxo de trabalho vs Agente de IA: Ferramentas diferentes para tarefas diferentes</h3><p>Antes de avançarmos, vamos esclarecer algumas confusões. Muitos programadores confundem fluxos de trabalho com agentes de IA e, embora ambos possam automatizar tarefas, estão a resolver problemas completamente diferentes.</p>
 <ul>
@@ -59,7 +59,7 @@ origin: >-
 <tr><td>Exemplos do mundo real</td><td>Sincronização de dados, notificações automáticas</td><td>Chatbots, sistemas de negociação automatizados</td></tr>
 </tbody>
 </table>
-<p>Para a maior parte das dores de cabeça de automatização que enfrenta diariamente, os fluxos de trabalho irão lidar com cerca de 80% das suas necessidades sem a complexidade.</p>
+<p>Para a maioria das dores de cabeça de automação que enfrenta diariamente, os fluxos de trabalho irão lidar com cerca de 80% das suas necessidades sem a complexidade.</p>
 <h2 id="Why-N8N-Caught-My-Attention" class="common-anchor-header">Porque é que o N8N chamou a minha atenção<button data-href="#Why-N8N-Caught-My-Attention" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -83,7 +83,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>A N8N oferece capacidades de nível empresarial com integrações para mais de 400 serviços, opções completas de implementação local para quando precisa de manter os dados internamente e um tratamento de erros robusto com monitorização em tempo real que o ajuda a depurar problemas em vez de apenas lhe dizer que algo está estragado.</p>
+<p>O N8N oferece capacidades de nível empresarial com integrações para mais de 400 serviços, opções completas de implementação local para quando precisa de manter os dados internamente e um tratamento de erros robusto com monitorização em tempo real que o ajuda a depurar problemas em vez de apenas lhe dizer que algo está estragado.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/n8n2_248855922d.png" alt="" class="doc-image" id="" />

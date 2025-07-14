@@ -10,7 +10,7 @@ desc: >-
   Pelajari cara mengotomatiskan alur kerja dengan N8N. Tutorial langkah demi
   langkah ini mencakup penyiapan, 2000+ templat, dan integrasi untuk
   meningkatkan produktivitas dan merampingkan tugas.
-cover: 'https://assets.zilliz.com/n8_7ff76400fb.png'
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -23,7 +23,7 @@ origin: >-
 ---
 <p>Setiap hari di teknologi "X" (sebelumnya Twitter), Anda melihat para pengembang memamerkan pengaturan mereka - jalur penyebaran otomatis yang menangani rilis multi-lingkungan yang kompleks tanpa hambatan; sistem pemantauan yang secara cerdas mengarahkan peringatan ke anggota tim yang tepat berdasarkan kepemilikan layanan; alur kerja pengembangan yang secara otomatis menyinkronkan masalah GitHub dengan alat bantu manajemen proyek dan memberi tahu para pemangku kepentingan pada saat yang tepat.</p>
 <p>Operasi yang tampaknya "canggih" ini memiliki rahasia yang sama: <strong>alat otomatisasi alur kerja</strong>.</p>
-<p>Pikirkanlah. Sebuah pull request digabungkan, dan sistem secara otomatis memicu pengujian, menyebarkan ke pementasan, memperbarui tiket Jira yang sesuai, dan memberi tahu tim produk di Slack. Peringatan pemantauan menyala, dan alih-alih mengirim spam ke semua orang, peringatan ini secara cerdas mengarahkan ke pemilik layanan, meningkatkan berdasarkan tingkat keparahan, dan secara otomatis membuat dokumentasi insiden. Anggota tim baru bergabung, dan lingkungan pengembangan, izin, dan tugas orientasi mereka disediakan secara otomatis.</p>
+<p>Coba pikirkan. Sebuah pull request digabungkan, dan sistem secara otomatis memicu pengujian, menyebarkan ke pementasan, memperbarui tiket Jira yang sesuai, dan memberi tahu tim produk di Slack. Peringatan pemantauan menyala, dan alih-alih mengirim spam ke semua orang, peringatan ini secara cerdas mengarahkan rute ke pemilik layanan, melakukan eskalasi berdasarkan tingkat keparahan, dan secara otomatis membuat dokumentasi insiden. Anggota tim baru bergabung, dan lingkungan pengembangan, izin, dan tugas orientasi mereka disediakan secara otomatis.</p>
 <p>Integrasi ini yang dulunya membutuhkan skrip khusus dan pemeliharaan konstan sekarang berjalan sendiri 24/7 setelah Anda mengaturnya dengan benar.</p>
 <p>Baru-baru ini, saya menemukan <a href="https://github.com/Zie619/n8n-workflows">N8N</a>, alat otomatisasi alur kerja visual, dan yang lebih penting lagi, menemukan repositori sumber terbuka yang berisi lebih dari 2000 templat alur kerja yang siap pakai. Artikel ini akan memandu Anda melalui apa yang saya pelajari tentang otomatisasi alur kerja, mengapa N8N menarik perhatian saya, dan bagaimana Anda bisa memanfaatkan templat siap pakai ini untuk menyiapkan otomatisasi yang canggih dalam hitungan menit, bukannya membuat semuanya dari awal.</p>
 <h2 id="Workflow-Let-Machines-Handle-the-Grunt-Work" class="common-anchor-header">Alur kerja: Biarkan Mesin Menangani Pekerjaan yang Membebani<button data-href="#Workflow-Let-Machines-Handle-the-Grunt-Work" class="anchor-icon" translate="no">
@@ -213,6 +213,6 @@ http://localhost:8000
         ></path>
       </svg>
     </button></h2><p>Otomatisasi alur kerja bukanlah ilmu roket-ini adalah tentang membuat proses yang kompleks menjadi sederhana dan tugas yang berulang menjadi otomatis. Nilainya ada pada waktu yang Anda dapatkan kembali dan kesalahan yang Anda hindari.</p>
-<p>Dibandingkan dengan solusi perusahaan yang berharga puluhan ribu dolar, N8N sumber terbuka menawarkan jalan yang lebih praktis. Versi open-source ini gratis, dan antarmuka seret dan lepaskan berarti Anda tidak perlu menulis kode untuk membangun otomatisasi yang canggih.</p>
+<p>Dibandingkan dengan solusi perusahaan yang berharga puluhan ribu dolar, N8N sumber terbuka menawarkan jalan yang praktis. Versi open-source ini gratis, dan antarmuka seret dan lepaskan berarti Anda tidak perlu menulis kode untuk membangun otomatisasi yang canggih.</p>
 <p>Bersama dengan Milvus untuk kemampuan pencarian cerdas, alat otomatisasi alur kerja seperti N8N meningkatkan alur kerja Anda dari pemrosesan data sederhana menjadi layanan pengetahuan cerdas yang memecahkan masalah nyata dalam manajemen dan pengambilan informasi.</p>
 <p>Lain kali jika Anda menemukan diri Anda melakukan tugas yang sama untuk ketiga kalinya dalam minggu ini, ingatlah: mungkin ada template untuk itu. Mulailah dari yang kecil, otomatiskan satu proses, dan lihatlah produktivitas Anda berlipat ganda dan rasa frustasi Anda menghilang.</p>

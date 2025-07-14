@@ -10,7 +10,7 @@ desc: >-
   Aprenda a automatizar flujos de trabajo con N8N. Este tutorial paso a paso
   cubre la configuración, más de 2000 plantillas e integraciones para aumentar
   la productividad y agilizar las tareas.
-cover: 'https://assets.zilliz.com/n8_7ff76400fb.png'
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/i-discovered-this-n8n-repo-that-actually-10xd-my-workflow-automation-efficiency.md
 ---
-<p>Todos los días, en la plataforma tecnológica "X" (antes Twitter), vemos a desarrolladores presumiendo de sus configuraciones: canalizaciones de despliegue automatizadas que gestionan complejas versiones multientorno sin problemas; sistemas de supervisión que envían alertas de forma inteligente a los miembros adecuados del equipo en función de la propiedad del servicio; flujos de trabajo de desarrollo que sincronizan automáticamente los problemas de GitHub con las herramientas de gestión de proyectos y notifican a las partes interesadas exactamente en el momento adecuado.</p>
+<p>Todos los días en "X" tecnología (antes Twitter), ves a desarrolladores mostrando sus configuraciones: canalizaciones de despliegue automatizadas que gestionan lanzamientos complejos de múltiples entornos sin problemas; sistemas de supervisión que dirigen alertas de forma inteligente a los miembros del equipo adecuados en función de la propiedad del servicio; flujos de trabajo de desarrollo que sincronizan automáticamente los problemas de GitHub con las herramientas de gestión de proyectos y notifican a las partes interesadas exactamente en los momentos adecuados.</p>
 <p>Todas estas operaciones aparentemente "avanzadas" comparten el mismo secreto: <strong>las herramientas de automatización de flujos de trabajo.</strong></p>
 <p>Piénsalo. Se fusiona un pull request y el sistema activa automáticamente las pruebas, lo despliega en el staging, actualiza el ticket de Jira correspondiente y lo notifica al equipo de producto en Slack. Se dispara una alerta de supervisión y, en lugar de enviar spam a todo el mundo, se dirige de forma inteligente al propietario del servicio, se escala en función de la gravedad y se crea automáticamente la documentación del incidente. Un nuevo miembro del equipo se une, y su entorno de desarrollo, permisos y tareas de incorporación se aprovisionan automáticamente.</p>
 <p>Estas integraciones, que antes requerían scripts personalizados y un mantenimiento constante, ahora funcionan por sí solas 24 horas al día, 7 días a la semana, una vez que se han configurado correctamente.</p>
@@ -46,7 +46,7 @@ origin: >-
 <h3 id="Workflow-vs-AI-Agent-Different-Tools-for-Different-Jobs" class="common-anchor-header">Flujo de trabajo frente a agente de IA: Diferentes herramientas para diferentes tareas</h3><p>Antes de continuar, aclaremos algunas confusiones. Muchos desarrolladores confunden los flujos de trabajo con los agentes de IA, y aunque ambos pueden automatizar tareas, resuelven problemas completamente diferentes.</p>
 <ul>
 <li><p>Los<strong>flujos de trabajo</strong> siguen pasos predefinidos sin sorpresas. Se activan por eventos o programas específicos y son perfectos para tareas repetitivas con pasos claros, como la sincronización de datos y las notificaciones automáticas.</p></li>
-<li><p><strong>Los agentes de IA</strong> toman decisiones sobre la marcha y se adaptan a las situaciones. Realizan un seguimiento continuo y deciden cuándo actuar, por lo que son ideales para escenarios complejos que requieren tomar decisiones, como los chatbots o los sistemas de comercio automatizados.</p></li>
+<li><p><strong>Los agentes de IA</strong> toman decisiones sobre la marcha y se adaptan a las situaciones. Realizan un seguimiento continuo y deciden cuándo actuar, lo que los hace ideales para escenarios complejos que requieren tomar decisiones, como los chatbots o los sistemas de comercio automatizados.</p></li>
 </ul>
 <table>
 <thead>
@@ -196,7 +196,7 @@ http://localhost:8000
 <li><p><strong>Rendimiento de búsqueda a nivel de milisegundos</strong> que no ralentizará su automatización</p></li>
 <li><p><strong>Escalado elástico</strong> que crece con sus datos sin necesidad de una reconstrucción completa</p></li>
 </ul>
-<p>La combinación transforma sus flujos de trabajo de un simple procesamiento de datos a servicios de conocimiento inteligentes que pueden resolver realmente problemas reales de gestión y recuperación de la información.</p>
+<p>La combinación transforma sus flujos de trabajo de simple procesamiento de datos a servicios de conocimiento inteligentes que pueden resolver realmente problemas reales de gestión y recuperación de información.</p>
 <h2 id="What-This-Actually-Means-for-Your-Development-Work" class="common-anchor-header">Lo que esto significa realmente para su trabajo de desarrollo<button data-href="#What-This-Actually-Means-for-Your-Development-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

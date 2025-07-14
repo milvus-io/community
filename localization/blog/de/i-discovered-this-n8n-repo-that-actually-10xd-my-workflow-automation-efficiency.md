@@ -11,7 +11,7 @@ desc: >-
   schrittweise Tutorial behandelt die Einrichtung, mehr als 2000 Vorlagen und
   Integrationen zur Steigerung der Produktivität und Rationalisierung von
   Aufgaben.
-cover: 'https://assets.zilliz.com/n8_7ff76400fb.png'
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true

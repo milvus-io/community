@@ -7,7 +7,7 @@ date: 2025-07-10T00:00:00.000Z
 desc: >-
   N8N으로 워크플로를 자동화하는 방법을 알아보세요. 이 단계별 튜토리얼에서는 생산성을 높이고 작업을 간소화하기 위한 설정, 2000개 이상의
   템플릿 및 통합에 대해 설명합니다.
-cover: 'https://assets.zilliz.com/n8_7ff76400fb.png'
+cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -18,7 +18,7 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/i-discovered-this-n8n-repo-that-actually-10xd-my-workflow-automation-efficiency.md
 ---
-<p>복잡한 다중 환경 릴리스를 차질 없이 처리하는 자동화된 배포 파이프라인, 서비스 소유권에 따라 적절한 팀원에게 알림을 지능적으로 전달하는 모니터링 시스템, 프로젝트 관리 도구와 GitHub 이슈를 자동으로 동기화하고 이해 관계자에게 적시에 알리는 개발 워크플로 등 개발자들이 자신의 설정을 뽐내는 모습을 매일 기술 'X'(이전 트위터)에서 볼 수 있습니다.</p>
+<p>복잡한 다중 환경 릴리스를 차질 없이 처리하는 자동화된 배포 파이프라인, 서비스 소유권에 따라 적절한 팀원에게 알림을 지능적으로 전달하는 모니터링 시스템, 프로젝트 관리 도구와 GitHub 이슈를 자동으로 동기화하고 이해 관계자에게 적시에 알리는 개발 워크플로 등 개발자들이 매일 기술 'X'(이전의 트위터)에서 자신의 설정을 뽐내는 것을 볼 수 있습니다.</p>
 <p>겉보기에 '고급'으로 보이는 이러한 작업은 모두 <strong>워크플로 자동화 도구라는</strong> 동일한 비밀을 공유합니다.</p>
 <p>생각해 보세요. 풀 리퀘스트가 병합되면 시스템이 자동으로 테스트를 트리거하고, 스테이징에 배포하고, 해당 Jira 티켓을 업데이트하고, Slack에서 제품 팀에 알립니다. 모니터링 알림이 발생하면 모든 사람에게 스팸을 보내는 대신 지능적으로 서비스 소유자에게 라우팅되고 심각도에 따라 에스컬레이션되며 자동으로 인시던트 문서가 만들어집니다. 새 팀원이 합류하면 개발 환경, 권한 및 온보딩 작업이 자동으로 프로비저닝됩니다.</p>
 <p>사용자 지정 스크립트와 지속적인 유지 관리가 필요했던 이러한 통합은 이제 제대로 설정하기만 하면 연중무휴 24시간 자체적으로 실행됩니다.</p>
@@ -56,7 +56,7 @@ origin: >-
 <tr><td>실제 사례</td><td>데이터 동기화, 자동화된 알림</td><td>챗봇, 자동화된 트레이딩 시스템</td></tr>
 </tbody>
 </table>
-<p>매일 직면하는 대부분의 자동화 골칫거리의 경우, 워크플로우가 복잡함 없이 요구 사항의 약 80%를 처리합니다.</p>
+<p>매일 직면하는 대부분의 자동화 골칫거리의 경우, 워크플로우가 복잡함 없이 요구사항의 약 80%를 처리할 수 있습니다.</p>
 <h2 id="Why-N8N-Caught-My-Attention" class="common-anchor-header">N8N이 주목받은 이유<button data-href="#Why-N8N-Caught-My-Attention" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -167,7 +167,7 @@ http://localhost:8000
   </span>
 </p>
 <p>여기에서 특정 사용 사례에 맞게 매개변수를 조정하기만 하면 됩니다. 몇 시간이 아닌 몇 분 안에 전문가 수준의 자동화 시스템을 실행할 수 있습니다.</p>
-<p>기본적인 워크플로우 시스템을 가동하고 나면 단순한 정형 데이터 처리가 아닌 콘텐츠 이해와 관련된 더 복잡한 시나리오를 처리하는 방법이 궁금할 수 있습니다. 바로 이때 벡터 데이터베이스가 유용합니다.</p>
+<p>기본적인 워크플로우 시스템을 가동하고 나면 단순한 정형 데이터 처리가 아닌 콘텐츠 이해와 관련된 더 복잡한 시나리오를 처리하는 방법이 궁금할 수 있습니다. 바로 이때 벡터 데이터베이스가 등장합니다.</p>
 <h2 id="Vector-Databases-Making-Workflows-Smart-with-Memory" class="common-anchor-header">벡터 데이터베이스: 메모리로 스마트한 워크플로우 만들기<button data-href="#Vector-Databases-Making-Workflows-Smart-with-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
