@@ -1,4 +1,11 @@
 {
   "label": "Il nostro viaggio verso le oltre 35.000 stelle di GitHub: La vera storia della costruzione di Milvus da zero",
-  "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md"
+  "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
+  "headlines": [
+    {
+      "tag": "News",
+      "label": "Introducing DeepSearcher: A Local Open Source Deep Research",
+      "link": "https://milvus.io/blog/introduce-deepsearcher-a-local-open-source-deep-research.md"
+    }
+  ]
 }

@@ -1,4 +1,11 @@
 {
   "label": "35,000개 이상의 깃허브 스타를 향한 여정: 처음부터 Milvus를 구축한 실제 이야기",
-  "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md"
+  "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
+  "headlines": [
+    {
+      "tag": "News",
+      "label": "Introducing DeepSearcher: A Local Open Source Deep Research",
+      "link": "https://milvus.io/blog/introduce-deepsearcher-a-local-open-source-deep-research.md"
+    }
+  ]
 }
