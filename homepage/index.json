@@ -4,8 +4,13 @@
   "headlines": [
     {
       "tag": "News",
-      "label": "Introducing DeepSearcher: A Local Open Source Deep Research",
-      "link": "https://milvus.io/blog/introduce-deepsearcher-a-local-open-source-deep-research.md"
+      "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
+      "link": "/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md"
+    },
+    {
+      "tag": "Announcement",
+      "label": "Announcing VDBBench 1.0: Open-Source Vector Database Benchmarking with Your Real-World Production Workloads",
+      "link": "/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"
     }
   ]
 }
