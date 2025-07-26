@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: Construire un Chatbot de niveau production avec Kimi K2 et Milvus
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -61,7 +61,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 </ol>
 <p>L'ensemble du système s'articule autour de deux classes principales, ce qui le rend facile à comprendre, à modifier et à étendre :</p>
 <ul>
-<li><p><strong>La classe VectorDatabase</strong>: Il s'agit de votre cheval de bataille en matière de traitement des données. Elle gère tout ce qui a trait à la base de données vectorielles Milvus, depuis la connexion et la création de collections jusqu'au regroupement de fichiers et à l'exécution de recherches de similarité.</p></li>
+<li><p><strong>La classe VectorDatabase</strong>: Il s'agit de votre cheval de bataille en matière de traitement des données. Elle gère tout ce qui a trait à la base de données vectorielles Milvus, depuis la connexion et la création de collections jusqu'au regroupement de fichiers et à l'exécution de recherches de similarités.</p></li>
 <li><p><strong>Classe SmartAssistant</strong>: Il s'agit du cerveau du système. Elle comprend ce que veulent les utilisateurs et détermine les outils à utiliser pour accomplir le travail.</p></li>
 </ul>
 <p>Voici comment cela fonctionne en pratique : les utilisateurs discutent avec le SmartAssistant en utilisant le langage naturel. L'assistant exploite les capacités de raisonnement de Kimi K2 pour décomposer les demandes, puis orchestre 7 fonctions d'outils spécialisés pour interagir avec la base de données vectorielles Milvus. C'est comme avoir un coordinateur intelligent qui sait exactement quelles opérations de base de données exécuter en fonction de ce que vous demandez.</p>
@@ -122,7 +122,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ici, pymilvus est la bibliothèque pour les opérations de base de données vectorielles de Milvus, et openai est utilisé pour appeler les API de Kimi et OpenAI (l'avantage de la compatibilité de l'API de Kimi K2 avec OpenAI et Anthropic est évident ici).</p>
+    </button></h2><p>Ici, pymilvus est la bibliothèque pour les opérations de la base de données vectorielle Milvus, et openai est utilisé pour appeler les API Kimi et OpenAI (l'avantage de la compatibilité de l'API Kimi K2 avec OpenAI et Anthropic est évident ici).</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>, <span class="hljs-type">Dict</span>
@@ -967,5 +967,5 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
     </button></h2><p>En connectant <strong>Kimi K2</strong> à <strong>Milvus</strong>, nous sommes allés au-delà des chatbots traditionnels ou de la recherche sémantique de base. Nous avons construit un véritable agent de production, capable d'interpréter des instructions complexes, de les décomposer en flux de travail basés sur des outils et d'exécuter des tâches de bout en bout telles que le traitement de fichiers, la recherche sémantique et les questions-réponses intelligentes avec un minimum de frais généraux.</p>
 <p>Cette architecture reflète un changement plus large dans le développement de l'IA, passant de modèles isolés à des systèmes composables, où le raisonnement, la mémoire et l'action fonctionnent en tandem. Les LLM comme Kimi K2 fournissent un raisonnement flexible, tandis que les bases de données vectorielles comme Milvus offrent une mémoire structurée à long terme et que l'appel d'outils permet une exécution dans le monde réel.</p>
 <p>Pour les développeurs, la question n'est plus de savoir <em>si</em> ces composants peuvent fonctionner ensemble, mais <em>à quel point</em> ils peuvent se généraliser à travers les domaines, s'adapter aux données et répondre aux besoins de plus en plus complexes des utilisateurs.</p>
-<p><strong><em>En regardant vers l'avenir, un modèle devient clair : LLM (raisonnement) + Vector DB (connaissance) + Tools (action) = De vrais agents d'intelligence artificielle.</em></strong></p>
+<p><strong><em>En regardant vers l'avenir, un modèle devient clair : LLM (raisonnement) + Vector DB (connaissance) + Tools (action) = Real AI agents.</em></strong></p>
 <p>Le système que nous avons construit n'est qu'un exemple, mais les principes s'appliquent largement. Alors que les LLM continuent de s'améliorer et que les écosystèmes d'outils arrivent à maturité, Milvus est positionné pour rester un élément central de la pile d'IA de production, en alimentant des systèmes intelligents capables de raisonner sur les données, et pas seulement de les récupérer.</p>

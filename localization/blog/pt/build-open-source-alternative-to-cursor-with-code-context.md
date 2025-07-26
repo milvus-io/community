@@ -2,7 +2,7 @@
 id: build-open-source-alternative-to-cursor-with-code-context.md
 title: Criar uma alternativa de código aberto ao Cursor com Contexto de Código
 author: Cheney Zhang
-date: 2025-06-24T00:00:00.000Z
+date: 2025-07-24T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
 tag: Engineering
 recommend: false
@@ -53,7 +53,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>O Cursor</strong> aborda isso de frente. Em vez de pesquisa por palavras-chave, ele constrói um mapa semântico da sua base de código usando árvores de sintaxe, embeddings vetoriais e pesquisa com reconhecimento de código. Pergunte-lhe "onde está a lógica de validação de correio eletrónico?" e ele devolve <code translate="no">isValidEmailFormat()</code> - não porque o nome corresponde, mas porque compreende o que esse código <em>faz</em>.</p>
+    </button></h2><p><strong>O Cursor</strong> aborda isso de frente. Em vez de pesquisa por palavra-chave, ele constrói um mapa semântico da sua base de código usando árvores de sintaxe, embeddings vetoriais e pesquisa com reconhecimento de código. Pergunte-lhe "onde está a lógica de validação de correio eletrónico?" e ele devolve <code translate="no">isValidEmailFormat()</code> - não porque o nome corresponde, mas porque compreende o que esse código <em>faz</em>.</p>
 <p>Embora o Cursor seja poderoso, pode não ser adequado para todos. <strong><em>O Cursor é de código fechado, hospedado na nuvem e baseado em assinatura.</em></strong> Isso coloca-o fora do alcance de equipas que trabalham com código sensível, organizações preocupadas com a segurança, programadores independentes, estudantes e qualquer pessoa que prefira sistemas abertos.</p>
 <h2 id="What-if-You-Could-Build-Your-Own-Cursor" class="common-anchor-header">E se pudesse construir o seu próprio cursor?<button data-href="#What-if-You-Could-Build-Your-Own-Cursor" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -114,13 +114,13 @@ origin: >-
 <ul>
 <li><p><strong>O módulo de processamento de texto</strong> divide e analisa o código utilizando o Tree-sitter para uma análise AST sensível à linguagem.</p></li>
 <li><p><strong>A interface de incorporação</strong> suporta backends conectáveis - atualmente OpenAI e VoyageAI - convertendo pedaços de código em incorporação de vectores que captam o seu significado semântico e relações contextuais.</p></li>
-<li><p><strong>A Vetor Database Interface</strong> armazena estes embeddings numa instância auto-hospedada <a href="https://milvus.io/">do Milvus</a> (por defeito) ou no <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, a versão gerida do Milvus.</p></li>
+<li><p><strong>A Interface de Base de Dados Vetorial</strong> armazena estes embeddings numa instância auto-hospedada <a href="https://milvus.io/">do Milvus</a> (por defeito) ou no <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, a versão gerida do Milvus.</p></li>
 </ul>
 <p>Tudo isto é sincronizado com o seu sistema de ficheiros numa base programada, garantindo que o índice se mantém atualizado sem necessidade de intervenção manual.</p>
 <h3 id="Extension-Modules-on-top-of-Code-Context-Core" class="common-anchor-header">Módulos de extensão no topo do Code Context Core</h3><ul>
 <li><p><strong>Extensão VSCode</strong>: Integração perfeita com o IDE para pesquisa semântica rápida no editor e salto para definição.</p></li>
 <li><p><strong>Extensão para Chrome</strong>: Pesquisa de código semântico em linha enquanto navega nos repositórios do GitHub - sem necessidade de mudar de separador.</p></li>
-<li><p><strong>Servidor MCP</strong>: Expõe o Code Context a qualquer assistente de codificação de IA por meio do protocolo MCP, permitindo assistência em tempo real e com reconhecimento de contexto.</p></li>
+<li><p><strong>Servidor MCP</strong>: Expõe o Contexto de código a qualquer assistente de codificação de IA por meio do protocolo MCP, permitindo assistência em tempo real e com reconhecimento de contexto.</p></li>
 </ul>
 <h2 id="Getting-Started-with-Code-Context" class="common-anchor-header">Introdução ao Contexto de Código<button data-href="#Getting-Started-with-Code-Context" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -137,7 +137,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O Contexto de Código pode ser conectado a ferramentas de codificação que você já usa ou para criar um assistente de codificação de IA personalizado a partir do zero. Nesta secção, vamos analisar os dois cenários:</p>
+    </button></h2><p>O Contexto de código pode ser conectado a ferramentas de codificação que você já usa ou para criar um assistente de codificação de IA personalizado do zero. Nesta secção, vamos analisar os dois cenários:</p>
 <ul>
 <li><p>Como integrar o Contexto de código às ferramentas existentes</p></li>
 <li><p>Como configurar o Core Module para pesquisa de código semântico independente ao criar seu próprio assistente de codificação de IA</p></li>

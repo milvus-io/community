@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: Costruire un chatbot di livello produttivo con Kimi K2 e Milvus
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -27,7 +27,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 <p><strong>Due vantaggi rivoluzionari distinguono Kimi K2:</strong></p>
 <ul>
 <li><p><strong>Prestazioni all'avanguardia</strong>: K2 ottiene i migliori risultati su benchmark chiave, come AIME2025, e supera costantemente modelli come Grok-4 nella maggior parte delle dimensioni.</p></li>
-<li><p><strong>Robuste funzionalità di agente</strong>: K2 non si limita a chiamare gli strumenti, ma sa quando usarli, come passare da uno all'altro a metà attività e quando smettere di usarli. Questo apre la strada a casi d'uso reali.</p></li>
+<li><p><strong>Robuste funzionalità di agente</strong>: K2 non si limita a chiamare gli strumenti, ma sa quando usarli, come passare da uno all'altro durante l'attività e quando smettere di usarli. Questo apre la strada a casi d'uso reali.</p></li>
 </ul>
 <p>I test effettuati dagli utenti dimostrano che le capacità di codifica di Kimi K2 sono già paragonabili a quelle di Claude 4, ma a un costo inferiore di circa il 20%. Ma soprattutto, supporta la <strong>pianificazione autonoma dei compiti e l'utilizzo degli strumenti</strong>. L'utente definisce gli strumenti disponibili e K2 gestisce quando e come utilizzarli, senza bisogno di una messa a punto o di un livello di orchestrazione.</p>
 <p>
@@ -56,7 +56,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
     </button></h2><p>Stiamo costruendo un chatbot intelligente combinando le capacità di ragionamento di Kimi K2 con le prestazioni del database vettoriale di Milvus. Il sistema gestisce tre flussi di lavoro fondamentali di cui gli ingegneri hanno bisogno:</p>
 <ol>
 <li><p><strong>Elaborazione e suddivisione automatica dei file</strong> - Carica documenti in vari formati e lascia che il sistema li suddivida in modo intelligente in parti ricercabili.</p></li>
-<li><p><strong>Ricerca semantica</strong> - Trova le informazioni pertinenti utilizzando query in linguaggio naturale, non la corrispondenza di parole chiave.</p></li>
+<li><p><strong>Ricerca semantica</strong> - Trova le informazioni pertinenti utilizzando query in linguaggio naturale, non la corrispondenza delle parole chiave.</p></li>
 <li><p><strong>Processo decisionale intelligente</strong>: l'assistente comprende il contesto e sceglie automaticamente gli strumenti giusti per ogni attività.</p></li>
 </ol>
 <p>L'intero sistema è costruito attorno a due sole classi principali, che lo rendono facile da comprendere, modificare ed estendere:</p>
@@ -269,7 +269,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to add documents: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Search-Similar-Documents" class="common-anchor-header"><strong>Ricerca di documenti simili</strong></h4><p>Converte le domande dell'utente in vettori a 1536 dimensioni, utilizza il coseno per calcolare la somiglianza semantica e restituisce i documenti più rilevanti in ordine decrescente di somiglianza.</p>
+<h4 id="Search-Similar-Documents" class="common-anchor-header"><strong>Ricerca di documenti simili</strong></h4><p>Converte le domande dell'utente in vettori a 1536 dimensioni, utilizza il coseno per calcolare la similarità semantica e restituisce i documenti più rilevanti in ordine decrescente di similarità.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">search_documents</span>(<span class="hljs-params">self, collection_name: <span class="hljs-built_in">str</span>, query: <span class="hljs-built_in">str</span>, limit: <span class="hljs-built_in">int</span> = <span class="hljs-number">5</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Search similar documents&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -313,7 +313,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Search failed: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Query-Collections" class="common-anchor-header"><strong>Interrogare le raccolte</strong></h4><p>Ottiene il nome della raccolta, il numero di documenti e le informazioni sulla descrizione.</p>
+<h4 id="Query-Collections" class="common-anchor-header"><strong>Interrogazione delle raccolte</strong></h4><p>Ottiene il nome della raccolta, il numero di documenti e le informazioni sulla descrizione.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">list_all_collections</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Query all collections in database&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -966,6 +966,6 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
       </svg>
     </button></h2><p>Collegando <strong>Kimi K2</strong> a <strong>Milvus</strong>, siamo andati oltre i tradizionali chatbot o la ricerca semantica di base. Abbiamo costruito un vero e proprio agente di produzione, in grado di interpretare istruzioni complesse, scomporle in flussi di lavoro basati su strumenti ed eseguire attività end-to-end come la gestione dei file, la ricerca semantica e le domande e risposte intelligenti con un overhead minimo.</p>
 <p>Questa architettura riflette un cambiamento più ampio nello sviluppo dell'intelligenza artificiale, che passa da modelli isolati a sistemi componibili, in cui ragionamento, memoria e azione lavorano in tandem. Gli LLM come Kimi K2 forniscono un ragionamento flessibile, mentre i database vettoriali come Milvus offrono una memoria strutturata a lungo termine e la chiamata agli strumenti consente l'esecuzione nel mondo reale.</p>
-<p>Per gli sviluppatori, la questione non è più <em>se</em> questi componenti possono lavorare insieme, ma quanto sono <em>in grado di</em> generalizzarsi tra i vari domini, di scalare con i dati e di rispondere alle esigenze sempre più complesse degli utenti.</p>
+<p>Per gli sviluppatori, la questione non è più <em>se</em> questi componenti possano funzionare insieme, ma quanto siano <em>in grado di</em> generalizzarsi tra i vari domini, di scalare con i dati e di rispondere alle esigenze sempre più complesse degli utenti.</p>
 <p><strong><em>Guardando al futuro, un modello sta diventando chiaro: LLM (ragionamento) + Vector DB (conoscenza) + Tools (azione) = agenti AI reali.</em></strong></p>
 <p>Questo sistema che abbiamo costruito è solo un esempio, ma i principi si applicano in generale. Mentre gli LLM continuano a migliorare e gli ecosistemi di strumenti maturano, Milvus è posizionato per rimanere una parte fondamentale dello stack dell'IA di produzione, alimentando sistemi intelligenti in grado di ragionare sui dati, non solo di recuperarli.</p>

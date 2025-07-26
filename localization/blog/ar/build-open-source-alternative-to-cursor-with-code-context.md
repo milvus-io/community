@@ -2,7 +2,7 @@
 id: build-open-source-alternative-to-cursor-with-code-context.md
 title: بناء بديل مفتوح المصدر لـ Cursor مع سياق الكود
 author: Cheney Zhang
-date: 2025-06-24T00:00:00.000Z
+date: 2025-07-24T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
 tag: Engineering
 recommend: false

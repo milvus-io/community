@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: 使用 Kimi K2 和 Milvus 建立生產級聊天機器人
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -53,7 +53,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
     </button></h2><p>我們將結合 Kimi K2 的推理能力與 Milvus 的向量資料庫效能，打造智慧型聊天機器人。該系統可處理工程師實際需要的三個核心工作流程：</p>
 <ol>
 <li><p><strong>自動檔案處理與分塊</strong>- 上傳各種格式的文件，並讓系統智慧地將其分割成可搜尋的分塊</p></li>
-<li><p><strong>語意搜尋</strong>- 使用自然語言查詢來尋找相關資訊，而非關鍵字匹配</p></li>
+<li><p><strong>語意搜尋</strong>- 使用自然語言查詢來尋找相關資訊，而非關鍵字比對</p></li>
 <li><p><strong>智慧型決策</strong>- 助理可瞭解上下文，並自動為每項任務選擇正確的工具</p></li>
 </ol>
 <p>整個系統只圍繞兩個主要的類別建立，因此很容易理解、修改和擴充：</p>
@@ -229,7 +229,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to create collection: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Add-Documents-to-Collection" class="common-anchor-header"><strong>將文件新增至收藏集</strong></h4><p>為所有文件產生向量表示，將其組合成 Milvus 所需的詞典格式，然後執行批次資料插入，最後傳回插入計數和狀態資訊。</p>
+<h4 id="Add-Documents-to-Collection" class="common-anchor-header"><strong>將文件新增至收藏集</strong></h4><p>為所有文件產生向量表示，將其組合為 Milvus 所需的詞典格式，然後執行批次資料插入，最後傳回插入計數和狀態資訊。</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_documents</span>(<span class="hljs-params">self, collection_name: <span class="hljs-built_in">str</span>, documents: <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Add documents to collection&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -365,7 +365,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
 <ul>
 <li><p><strong>段落優先</strong>：先以雙換行分割，以維持段落完整性</p></li>
 <li><p><strong>長段落處理</strong>：以句點、問號、感嘆號分割過長的段落</p></li>
-<li><p><strong>大小控制</strong>：確保每個分塊不超過限制，最大分塊大小為 500 個字元，重疊部分為 50 個字元，以避免在分割邊界處遺失重要資訊</p></li>
+<li><p><strong>大小控制</strong>：確保每個分塊不超過限制，最大分塊大小為 500 個字元，重疊部分為 50 個字元，以避免在分割邊界遺失重要資訊</p></li>
 <li><p><strong>保留語意</strong>：避免中斷句子</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">split_text_into_chunks</span>(<span class="hljs-params">self, text: <span class="hljs-built_in">str</span>, chunk_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">500</span>, overlap: <span class="hljs-built_in">int</span> = <span class="hljs-number">50</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>]:
@@ -962,7 +962,7 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
         ></path>
       </svg>
     </button></h2><p>透過連接<strong>Kimi K2</strong>與<strong>Milvus</strong>，我們已經超越了傳統的聊天機器人或基本語意搜尋。我們所建立的是一個真正的生產型代理程式，它可以解讀複雜的指令，將其分解為以工具為基礎的工作流程，並以最低的開銷執行端對端任務，例如檔案處理、語義搜尋和智慧型問答。</p>
-<p>此架構反映了人工智慧發展的廣泛轉變，從孤立的模型轉向可組合的系統，在此系統中，推理、記憶與行動同步運作。像 Kimi K2 之類的 LLM 可提供彈性的推理，而像 Milvus 之類的向量資料庫則可提供長期、結構化的記憶體；而工具呼叫則可實現真實世界的執行。</p>
+<p>此架構反映出人工智慧發展的廣泛轉變，從孤立的模型轉向可組合的系統，在此系統中，推理、記憶與行動同步運作。像 Kimi K2 之類的 LLM 可提供彈性的推理，而像 Milvus 之類的向量資料庫則可提供長期、結構化的記憶體；而工具呼叫則可實現真實世界的執行。</p>
 <p>對開發人員來說，問題不再是這些元件<em>是否</em>能一起運作，而是它們在跨領域、隨資料擴充，以及回應日益複雜的使用者需求方面的<em>能力</em>。</p>
 <p><strong><em>展望未來，有一種模式逐漸明朗：LLM (推理) + Vector DB (知識) + Tools (行動) = 真正的 AI 代理。</em></strong></p>
-<p>我們所建立的這個系統只是其中一個例子，但這些原則適用範圍很廣。隨著 LLM 的持續改進和工具生態系統的成熟，Milvus 將繼續成為生產型 AI 堆疊的核心部分，為能夠推理資料而不僅是擷取資料的智慧型系統提供動力。</p>
+<p>我們所建立的這個系統只是其中一個例子，但這些原則適用範圍很廣。隨著 LLM 的持續改進和工具生態系統的成熟，Milvus 將繼續成為生產型 AI 堆疊的核心部分，為能夠推理資料而不只是擷取資料的智慧型系統提供動力。</p>

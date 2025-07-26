@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: Kimi K2 및 Milvus로 프로덕션급 챗봇 구축하기
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -61,7 +61,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 <p>전체 시스템은 단 두 개의 주요 클래스를 중심으로 구축되어 있어 이해, 수정, 확장이 쉽습니다:</p>
 <ul>
 <li><p><strong>VectorDatabase 클래스</strong>: 이 클래스는 데이터 처리의 핵심입니다. 컬렉션 연결 및 생성부터 파일 청킹, 유사도 검색 실행에 이르기까지 Milvus 벡터 데이터베이스와 관련된 모든 작업을 처리합니다.</p></li>
-<li><p><strong>스마트 어시스턴트 클래스</strong>: 이 클래스는 시스템의 두뇌라고 생각하세요. 사용자가 원하는 것을 이해하고 작업을 완료하기 위해 어떤 도구를 사용할지 결정합니다.</p></li>
+<li><p><strong>스마트 어시스턴트 클래스</strong>: 이 클래스는 시스템의 두뇌라고 생각하세요. 사용자가 무엇을 원하는지 이해하고 작업을 완료하기 위해 어떤 도구를 사용할지 결정합니다.</p></li>
 </ul>
 <p>실제 작동 방식은 다음과 같습니다. 사용자는 자연어를 사용하여 스마트 어시스턴트와 채팅합니다. 이 어시스턴트는 키미 K2의 추론 기능을 활용하여 요청을 분류한 다음 7가지 특수 도구 기능을 조율하여 Milvus 벡터 데이터베이스와 상호 작용합니다. 마치 요청에 따라 어떤 데이터베이스 작업을 실행할지 정확히 알고 있는 스마트한 코디네이터가 있는 것과 같습니다.</p>
 <p>
@@ -884,7 +884,7 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
 <pre><code translate="no">User Input: Upload ./The Adventures of Sherlock Holmes.txt to the database
 <button class="copy-code-btn"></button></code></pre>
 <p>여기서 주목할 만한 점은 도구 콜 체인에서 Kimi K2가 명령을 파싱하여 먼저 데이터베이스에 연결(connect_database 함수)한 다음 파일을 컬렉션에 업로드(upload_file_to_collection 함수)하는 것을 알 수 있다는 것입니다.</p>
-<p>또한 오류가 발생하면 Kimi K2는 오류 메시지를 기반으로 즉시 오류를 수정하고, 먼저 컬렉션을 생성(create_collection)한 다음 파일을 컬렉션에 업로드(upload_file_to_collection)해야 한다는 것을 알고 있습니다. 이러한 자율적인 오류 복구는 기존의 스크립트 방식에 비해 큰 장점입니다.</p>
+<p>또한 오류가 발생하면 Kimi K2는 오류 메시지를 기반으로 오류를 즉시 수정하고, 먼저 컬렉션을 생성(create_collection)한 다음 파일을 컬렉션에 업로드(upload_file_to_collection)해야 한다는 것을 알고 있습니다. 이러한 자율적인 오류 복구는 기존의 스크립트 방식에 비해 큰 장점입니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/usage_example_1_a4c0b2a006.png" alt="" class="doc-image" id="" />
@@ -965,6 +965,6 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
       </svg>
     </button></h2><p><strong>Kimi K2와</strong> <strong>Milvus를</strong> 연결함으로써 기존의 챗봇이나 기본적인 시맨틱 검색을 뛰어넘었습니다. 우리가 구축한 것은 복잡한 지침을 해석하고, 이를 도구 기반 워크플로로 분류하며, 파일 처리, 시맨틱 검색, 지능형 Q&amp;A와 같은 엔드투엔드 작업을 최소한의 오버헤드로 실행할 수 있는 실제 프로덕션 에이전트입니다.</p>
 <p>이 아키텍처는 고립된 모델에서 추론, 기억, 행동이 함께 작동하는 컴포저블 시스템으로 이동하는 AI 개발의 광범위한 변화를 반영합니다. Kimi K2와 같은 LLM은 유연한 추론을 제공하고, Milvus와 같은 벡터 데이터베이스는 장기적이고 구조화된 메모리를 제공하며, 도구 호출을 통해 실제 실행을 가능하게 합니다.</p>
-<p>이제 개발자에게 중요한 것은 이러한 구성 요소가 함께 작동할 수 <em>있는지 여부가</em> 아니라, 여러 도메인에서 <em>얼마나 잘</em> 일반화하고 데이터에 따라 확장하며 점점 더 복잡해지는 사용자 요구에 대응할 수 있는지에 대한 문제입니다.</p>
+<p>이제 개발자에게 중요한 것은 이러한 구성 요소가 함께 작동할 수 <em>있는지 여부가</em> 아니라, 여러 도메인에서 <em>얼마나 잘</em> 일반화하고 데이터에 따라 확장하며 점점 더 복잡해지는 사용자 요구에 대응할 수 있는지 여부입니다.</p>
 <p><strong><em>미래를 내다보면 LLM(추론) + 벡터 DB(지식) + 도구(액션) = 실제 AI 에이전트라는 한 가지 패턴이 명확해지고 있습니다.</em></strong></p>
-<p>우리가 구축한 이 시스템은 하나의 예일 뿐이지만, 이 원칙은 광범위하게 적용됩니다. LLM이 계속 개선되고 도구 생태계가 성숙해짐에 따라 Milvus는 단순히 데이터를 검색하는 것이 아니라 데이터를 추론할 수 있는 지능형 시스템을 구동하는 프로덕션 AI 스택의 핵심 부분으로 자리매김할 것입니다.</p>
+<p>우리가 구축한 이 시스템은 하나의 예일 뿐이지만, 이 원칙은 광범위하게 적용됩니다. LLM이 계속 개선되고 도구 생태계가 성숙해짐에 따라 Milvus는 단순히 데이터를 검색하는 것이 아니라 데이터를 추론할 수 있는 지능형 시스템을 지원하는 프로덕션 AI 스택의 핵심 부분으로 자리 잡을 것입니다.</p>

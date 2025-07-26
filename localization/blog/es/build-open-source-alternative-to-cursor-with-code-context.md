@@ -2,7 +2,7 @@
 id: build-open-source-alternative-to-cursor-with-code-context.md
 title: Construir una alternativa de código abierto a Cursor con Code Context
 author: Cheney Zhang
-date: 2025-06-24T00:00:00.000Z
+date: 2025-07-24T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
 tag: Engineering
 recommend: false
@@ -52,7 +52,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Cursor</strong> aborda esto de frente. En lugar de buscar por palabras clave, construye un mapa semántico de tu código base utilizando árboles sintácticos, incrustaciones vectoriales y búsqueda consciente del código. Pregúntale "¿dónde está la lógica de validación del correo electrónico?" y te devolverá <code translate="no">isValidEmailFormat()</code>, no porque el nombre coincida, sino porque entiende lo que <em>hace</em> ese código.</p>
+    </button></h2><p><strong>Cursor</strong> aborda esto de frente. En lugar de buscar palabras clave, construye un mapa semántico de tu código base utilizando árboles de sintaxis, incrustaciones vectoriales y búsqueda consciente del código. Pregúntale "¿dónde está la lógica de validación del correo electrónico?" y te devolverá <code translate="no">isValidEmailFormat()</code>, no porque el nombre coincida, sino porque entiende lo que <em>hace</em> ese código.</p>
 <p>Aunque Cursor es potente, puede que no sea adecuado para todo el mundo. <strong><em>Cursor es de código cerrado, alojado en la nube y basado en suscripción.</em></strong> Eso lo pone fuera del alcance de equipos que trabajan con código sensible, organizaciones preocupadas por la seguridad, desarrolladores independientes, estudiantes y cualquiera que prefiera sistemas abiertos.</p>
 <h2 id="What-if-You-Could-Build-Your-Own-Cursor" class="common-anchor-header">¿Y si pudieras construir tu propio cursor?<button data-href="#What-if-You-Could-Build-Your-Own-Cursor" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -93,7 +93,7 @@ origin: >-
 <p>Se ejecuta localmente, se integra con sus herramientas y entornos favoritos, como VS Code y los navegadores Chrome, y ofrece una sólida comprensión del código sin depender de plataformas de código cerrado que sólo funcionan en la nube.</p>
 <p><strong>Entre sus funciones principales se incluyen:</strong></p>
 <ul>
-<li><p><strong>Búsqueda semántica de código mediante lenguaje natural:</strong> Encuentre código utilizando un lenguaje sencillo. Busque conceptos como "verificación de inicio de sesión de usuario" o "lógica de procesamiento de pagos", y Code Context localizará las funciones relevantes, incluso si no coinciden exactamente con las palabras clave.</p></li>
+<li><p><strong>Búsqueda semántica de código mediante lenguaje natural:</strong> Encuentre código utilizando un lenguaje sencillo. Busque conceptos como "verificación de inicio de sesión de usuario" o "lógica de procesamiento de pagos" y Code Context localizará las funciones relevantes, aunque no coincidan exactamente con las palabras clave.</p></li>
 <li><p><strong>Soporte multilingüe:</strong> Busque sin problemas en más de 15 lenguajes de programación, incluidos JavaScript, Python, Java y Go, con una comprensión semántica coherente en todos ellos.</p></li>
 <li><p><strong>Troceado de código basado en AST:</strong> El código se divide automáticamente en unidades lógicas, como funciones y clases, mediante el análisis sintáctico AST, lo que garantiza que los resultados de la búsqueda sean completos, significativos y nunca se interrumpan a mitad de la función.</p></li>
 <li><p><strong>Indexación incremental en tiempo real:</strong> Los cambios en el código se indexan en tiempo real. A medida que se editan los archivos, el índice de búsqueda se mantiene actualizado, sin necesidad de actualizaciones manuales o reindexación.</p></li>

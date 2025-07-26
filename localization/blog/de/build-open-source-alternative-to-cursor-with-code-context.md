@@ -2,7 +2,7 @@
 id: build-open-source-alternative-to-cursor-with-code-context.md
 title: Aufbau einer Open-Source-Alternative zu Cursor mit Code Context
 author: Cheney Zhang
-date: 2025-06-24T00:00:00.000Z
+date: 2025-07-24T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
 tag: Engineering
 recommend: false
@@ -111,7 +111,7 @@ origin: >-
 <p>Code Context verwendet eine modulare Architektur mit einem Kern-Orchestrator und spezialisierten Komponenten zum Einbetten, Parsen, Speichern und Abrufen.</p>
 <h3 id="The-Core-Module-Code-Context-Core" class="common-anchor-header">Das Kernmodul: Code Context-Kern</h3><p>Das Herzstück von Code Context ist der <strong>Code Context Core</strong>, der das Parsen, Einbetten, Speichern und semantische Abrufen von Code koordiniert:</p>
 <ul>
-<li><p><strong>Das Textverarbeitungsmodul</strong> zerlegt und parst den Code mit Hilfe von Tree-sitter für eine sprachbewusste AST-Analyse.</p></li>
+<li><p><strong>Das Textverarbeitungsmodul</strong> zerlegt und parst den Code mit Hilfe von Tree-sitter für eine sprachabhängige AST-Analyse.</p></li>
 <li><p><strong>Die Einbettungsschnittstelle</strong> unterstützt steckbare Backends - derzeit OpenAI und VoyageAI - und konvertiert Code-Blöcke in Vektoreinbettungen, die ihre semantische Bedeutung und kontextuellen Beziehungen erfassen.</p></li>
 <li><p><strong>Das Vector Database Interface</strong> speichert diese Einbettungen in einer selbst gehosteten <a href="https://milvus.io/">Milvus-Instanz</a> (standardmäßig) oder in <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, der verwalteten Version von Milvus.</p></li>
 </ul>

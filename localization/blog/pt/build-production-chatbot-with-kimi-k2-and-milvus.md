@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: Criar um chatbot de nível de produção com o Kimi K2 e o Milvus
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -64,7 +64,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 <li><p><strong>Classe VectorDatabase</strong>: Este é o seu cavalo de batalha de processamento de dados. Trata de tudo o que está relacionado com a base de dados vetorial Milvus - desde a ligação e criação de colecções até à divisão de ficheiros em pedaços e execução de pesquisas de semelhança.</p></li>
 <li><p><strong>Classe SmartAssistant</strong>: Pense nisto como o cérebro do sistema. Compreende o que os utilizadores pretendem e determina quais as ferramentas a utilizar para realizar a tarefa.</p></li>
 </ul>
-<p>Eis como funciona na prática: os utilizadores conversam com o SmartAssistant utilizando linguagem natural. O assistente utiliza as capacidades de raciocínio do Kimi K2 para decompor os pedidos e, em seguida, orquestra 7 funções de ferramentas especializadas para interagir com a base de dados de vectores Milvus. É como ter um coordenador inteligente que sabe exatamente quais as operações da base de dados a executar com base no que está a ser pedido.</p>
+<p>Eis como funciona na prática: os utilizadores conversam com o SmartAssistant utilizando linguagem natural. O assistente utiliza as capacidades de raciocínio do Kimi K2 para decompor os pedidos e, em seguida, orquestra 7 funções de ferramentas especializadas para interagir com a base de dados de vectores Milvus. É como ter um coordenador inteligente que sabe exatamente que operações da base de dados devem ser executadas com base no que está a ser pedido.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/chatbot_architecture_ea73cac6ca.png" alt="" class="doc-image" id="" />
@@ -95,7 +95,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 </ul>
 <p><strong>Chaves de API necessárias:</strong></p>
 <ul>
-<li><p>Chave da API Kimi da <a href="https://platform.moonshot.cn/">Moonshot AI</a></p></li>
+<li><p>Chave de API Kimi da <a href="https://platform.moonshot.cn/">Moonshot AI</a></p></li>
 <li><p>Chave da API OpenAI para embeddings de texto (usaremos o modelo text-embedding-3-small)</p></li>
 </ul>
 <p><strong>Instalação rápida:</strong></p>
@@ -184,7 +184,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Connection failed: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
 <h4 id="Create-Collection" class="common-anchor-header"><strong>Criar coleção</strong></h4><ul>
-<li><p><strong>Verificação de Duplicatas</strong>: Evita a criação de colecções com o mesmo nome</p></li>
+<li><p><strong>Verificação de duplicatas</strong>: Evita a criação de colecções com o mesmo nome</p></li>
 <li><p><strong>Definir estrutura</strong>: Três campos: id (chave primária), texto (texto), vetor (vetor)</p></li>
 <li><p><strong>Criar índice</strong>: Utiliza o algoritmo <code translate="no">IVF_FLAT</code> e a semelhança de cosseno para melhorar a eficiência da pesquisa</p></li>
 <li><p><strong>Identificação automática</strong>: O sistema gera automaticamente identificadores únicos</p></li>

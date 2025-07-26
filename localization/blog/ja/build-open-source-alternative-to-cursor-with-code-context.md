@@ -2,7 +2,7 @@
 id: build-open-source-alternative-to-cursor-with-code-context.md
 title: コードコンテクストでカーソルに代わるオープンソースを構築する
 author: Cheney Zhang
-date: 2025-06-24T00:00:00.000Z
+date: 2025-07-24T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
 tag: Engineering
 recommend: false
@@ -35,7 +35,7 @@ origin: >-
     </button></h2><p>AIコーディング・ツールは至る所で見かけるが、流行にはそれなりの理由がある。<a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code、Gemini CLIから</a>オープンソースのCursorに代わるものまで、これらのエージェントは関数を書いたり、コードの依存関係を説明したり、ファイル全体を1回のプロンプトでリファクタリングしたりすることができる。開発者たちは競ってこれらをワークフローに統合しようとしており、多くの点で、これらは誇大広告を実現している。</p>
 <p><strong>しかし、<em>コードベースを理解</em>するとなると、ほとんどのAIツールは壁にぶつかる。</strong></p>
 <p>Claude Codeに "このプロジェクトはどこでユーザー認証を扱っているか "を探すように頼むと、<code translate="no">grep -r &quot;auth&quot;</code>。コメント、変数名、ファイル名に渡って87の緩く関連したマッチを吐き出し、認証ロジックを持つが "auth "と呼ばれていない多くの関数を見逃している可能性が高い。Gemini CLIを試してみると、"login "や "password "のようなキーワードを探し、<code translate="no">verifyCredentials()</code> のような関数を完全に見逃してしまう。これらのツールは、コードを生成するのには優れているが、ナビゲートしたり、デバッグしたり、不慣れなシステムを探索したりするときには、バラバラになってしまう。コードベース全体をLLMに送信して、トークンと時間を燃やしながらコンテキストを確認しない限り、意味のある答えを出すのに苦労する。</p>
-<p><em>これが今日のAIツールの真のギャップである、</em> <strong><em>コード・コンテキストなのだ。</em></strong></p>
+<p><em>これが、今日のAIツールの真のギャップである</em> <strong><em>コード・コンテキストだ。</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">Cursorはそれに釘付けになったが、誰にでも使えるわけではない<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -52,7 +52,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><strong>Cursorは</strong>この問題に正面から取り組んでいる。キーワード検索の代わりに、構文木、ベクトル埋め込み、コード認識検索を使ってコードベースのセマンティック・マップを構築する。メール検証ロジックはどこですか」と尋ねると、<code translate="no">isValidEmailFormat()</code> 。名前が一致したからではなく、そのコードが何を<em>する</em>のかを理解しているからです。</p>
-<p>Cursorはパワフルだが、すべての人に適しているとは限らない。<strong><em>Cursorはクローズドソースで、クラウドホスティングで、サブスクリプションベースだ。</em></strong>そのため、機密性の高いコードを扱うチーム、セキュリティ意識の高い組織、インディーズ開発者、学生、オープンなシステムを好む人には手が届かない。</p>
+<p>Cursorはパワフルだが、すべての人に適しているとは限らない。<strong><em>Cursorはクローズドソースで、クラウドホスティングで、サブスクリプションベースだ。</em></strong>そのため、機密性の高いコードを扱うチーム、セキュリティを重視する組織、インディーズ開発者、学生、オープンなシステムを好む人には手が届かない。</p>
 <h2 id="What-if-You-Could-Build-Your-Own-Cursor" class="common-anchor-header">カーソルを自作できるとしたら？<button data-href="#What-if-You-Could-Build-Your-Own-Cursor" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -94,7 +94,7 @@ origin: >-
 <ul>
 <li><p><strong>自然言語によるセマンティックコード検索：</strong>平易な英語を使用してコードを検索します。ユーザーログイン確認」や「支払い処理ロジック」などの概念を検索すると、Code Contextは関連する関数を特定します。</p></li>
 <li><p><strong>多言語サポート：</strong>JavaScript、Python、Java、Goなど、15以上のプログラミング言語をシームレスに検索し、すべての言語で一貫した意味理解を実現します。</p></li>
-<li><p><strong>ASTベースのコードチャンキング：</strong>AST解析により、コードは自動的に関数やクラスなどの論理的な単位に分割され、検索結果が完全で意味のあるものになり、関数の途中で切断されることがありません。</p></li>
+<li><p><strong>ASTベースのコードチャンキング：</strong>AST解析により、コードは自動的に関数やクラスなどの論理的な単位に分割され、検索結果が完全で意味のあるものとなり、関数の途中で切断されることはありません。</p></li>
 <li><p><strong>ライブ、インクリメンタルインデクシング：</strong>コードの変更はリアルタイムでインデックス化されます。ファイルを編集しても、検索インデックスは常に最新の状態に保たれるため、手作業による更新やインデックスの再作成は不要です。</p></li>
 <li><p><strong>完全にローカルで安全なデプロイメント：</strong>すべてを独自のインフラストラクチャ上で実行できます。Code Contextは、Ollama経由のローカルモデルと<a href="https://milvus.io/">Milvus</a>経由のインデックスをサポートしているため、あなたのコードがあなたの環境を離れることはありません。</p></li>
 <li><p><strong>ファーストクラスのIDE統合：</strong>VSCode 拡張機能により、エディタからコンテキストを切り替えることなく、即座に検索し、結果にジャンプすることができます。</p></li>
@@ -112,7 +112,7 @@ origin: >-
 <ul>
 <li><p><strong>テキスト処理モジュールは</strong>、言語を意識したAST解析のためにTree-sitterを使ってコードを分割し、解析します。</p></li>
 <li><p><strong>埋め込みインターフェースは</strong>、プラグイン可能なバックエンド（現在はOpenAIとVoyageAI）をサポートし、コードチャンクを意味的な意味と文脈的な関係をキャプチャするベクトル埋め込みに変換します。</p></li>
-<li><p><strong>ベクターデータベースインターフェイスは</strong>、これらの埋め込みを（デフォルトでは）セルフホストされた<a href="https://milvus.io/">Milvus</a>インスタンス、またはMilvusのマネージドバージョンである<a href="https://zilliz.com/cloud">Zilliz Cloudに</a>保存します。</p></li>
+<li><p><strong>ベクターデータベースインターフェイスは</strong>、これらの埋め込みをセルフホスティングの<a href="https://milvus.io/">Milvus</a>インスタンス（デフォルト）またはマネージドバージョンのMilvusである<a href="https://zilliz.com/cloud">Zilliz Cloudに</a>保存します。</p></li>
 </ul>
 <p>これらすべてがスケジュールに基づいてお客様のファイルシステムと同期されるため、手動で操作することなくインデックスを最新の状態に保つことができます。</p>
 <h3 id="Extension-Modules-on-top-of-Code-Context-Core" class="common-anchor-header">Code Contextコア上の拡張モジュール</h3><ul>
@@ -260,10 +260,10 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <p>JavaScript/TypeScript、Python、Java、C/C++、Go、Rustなどの主要なプログラミング言語をサポートしており、正確なチャンキングを行うための言語固有の戦略を持っています。サポートされていない言語については、ルールベースの構文解析にフォールバックし、クラッシュや空の結果のない優雅な処理を保証します。</p>
 <p>これらの構造化されたコードユニットは、より正確なセマンティック検索のためのメタデータにもフィードされます。</p>
 <h3 id="Open-Source-and-Extensible-by-Design" class="common-anchor-header">オープンソースと設計による拡張性</h3><p>Code ContextはMITライセンスの下で完全にオープンソースです。すべてのコアモジュールはGitHubで公開されています。</p>
-<p>私たちは、オープンなインフラストラクチャーこそが、強力で信頼できる開発者ツールを構築する鍵であると考えており、開発者が新しいモデル、言語、ユースケースのために拡張することを歓迎しています。</p>
-<h3 id="Solving-the-Context-Window-Problem-for-AI-Assistants" class="common-anchor-header">AIアシスタントのためのコンテキストウィンドウ問題の解決</h3><p>大規模な言語モデル（LLM）には、コンテキストウィンドウという厳しい制限があります。これはコードベース全体を見ることを制限し、補完、修正、提案の精度を低下させます。</p>
+<p>私たちは、オープンなインフラストラクチャーこそが、パワフルで信頼できる開発者ツールを構築する鍵であると信じており、開発者が新しいモデル、言語、ユースケースのために拡張することを歓迎しています。</p>
+<h3 id="Solving-the-Context-Window-Problem-for-AI-Assistants" class="common-anchor-header">AIアシスタントのためのコンテキストウィンドウ問題の解決</h3><p>大規模言語モデル（LLM）には、コンテキスト・ウィンドウという厳しい限界があります。これはコードベース全体を見ることを制限し、補完、修正、提案の精度を低下させます。</p>
 <p>Code Contextはそのギャップを埋めるのに役立ちます。そのセマンティックコード検索は、<em>適切な</em>コード部分を検索し、AIアシスタントに、推論するための焦点を絞った適切なコンテキストを与えます。モデルが実際に重要なものに「ズームイン」することで、AIが生成するアウトプットの質を向上させます。</p>
-<p>Claude CodeやGemini CLIなどの一般的なAIコーディングツールには、ネイティブのセマンティックコード検索がありません。Code Contextは、<strong>MCPを介して</strong>統合されることで、これらのツールに脳のアップグレードを与える。</p>
+<p>Claude CodeやGemini CLIのような一般的なAIコーディングツールには、ネイティブのセマンティックコード検索がありません。Code Contextは、<strong>MCPを介して</strong>統合されることで、これらのツールに脳のアップグレードを与える。</p>
 <h3 id="Built-for-Developers-by-Developers" class="common-anchor-header">開発者による開発者のためのビルド</h3><p>Code Contextはモジュール方式で再利用できるようにパッケージ化されており、各コンポーネントは独立した<strong>npm</strong>パッケージとして利用できます。各コンポーネントは独立した npm パッケージとして提供されます。プロジェクトに応じて、組み合わせたり、拡張したりすることができます。</p>
 <ul>
 <li><p>セマンティックなコード検索だけが必要ですか？利用する<code translate="no">@zilliz/code-context-core</code></p></li>

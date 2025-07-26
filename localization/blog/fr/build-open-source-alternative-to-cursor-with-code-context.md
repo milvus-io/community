@@ -2,7 +2,7 @@
 id: build-open-source-alternative-to-cursor-with-code-context.md
 title: Construire une alternative Open-Source au curseur avec Code Context
 author: Cheney Zhang
-date: 2025-06-24T00:00:00.000Z
+date: 2025-07-24T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
 tag: Engineering
 recommend: false
@@ -36,7 +36,7 @@ origin: >-
       </svg>
     </button></h2><p>Les outils de codage de l'IA sont omniprésents, et c'est pour une bonne raison qu'ils sont en train de faire des ravages. Qu'il s'agisse de <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code, de Gemini CLI</a> ou des alternatives open-source de Cursor, ces agents peuvent écrire des fonctions, expliquer les dépendances du code et remanier des fichiers entiers à l'aide d'une simple invite. Les développeurs s'empressent de les intégrer dans leurs flux de travail et, à bien des égards, ils sont à la hauteur de l'engouement suscité.</p>
 <p><strong>Mais lorsqu'il s'agit de <em>comprendre votre base de code</em>, la plupart des outils d'IA se heurtent à un mur.</strong></p>
-<p>Demandez à Claude Code de trouver "où ce projet gère l'authentification des utilisateurs", et il se rabat sur <code translate="no">grep -r &quot;auth&quot;</code>- crachant 87 correspondances vaguement liées à travers les commentaires, les noms de variables et les noms de fichiers, manquant probablement de nombreuses fonctions avec une logique d'authentification mais qui ne sont pas appelées "auth". Essayez Gemini CLI, et il cherchera des mots-clés comme "login" ou "password", manquant complètement des fonctions comme <code translate="no">verifyCredentials()</code>. Ces outils sont excellents pour générer du code, mais lorsqu'il s'agit de naviguer, de déboguer ou d'explorer des systèmes peu familiers, ils s'effondrent. À moins d'envoyer l'ensemble du code au LLM pour obtenir un contexte - en brûlant des jetons et du temps - ils peinent à fournir des réponses significatives.</p>
+<p>Demandez à Claude Code de trouver "où ce projet gère l'authentification des utilisateurs", et il se rabat sur <code translate="no">grep -r &quot;auth&quot;</code>- crachant 87 correspondances vaguement liées à travers les commentaires, les noms de variables et les noms de fichiers, manquant probablement de nombreuses fonctions avec une logique d'authentification mais qui ne sont pas appelées "auth". Essayez Gemini CLI, et il cherchera des mots-clés comme "login" ou "password", manquant complètement des fonctions comme <code translate="no">verifyCredentials()</code>. Ces outils sont excellents pour générer du code, mais lorsqu'il s'agit de naviguer, de déboguer ou d'explorer des systèmes peu familiers, ils s'effondrent. À moins qu'ils n'envoient l'ensemble de la base de code au LLM pour obtenir un contexte - en brûlant des jetons et du temps - ils peinent à fournir des réponses significatives.</p>
 <p><em>C'est la véritable lacune des outils d'IA d'aujourd'hui : le</em> <strong><em>contexte du code.</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">Cursor a réussi, mais pas pour tout le monde<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -95,7 +95,7 @@ origin: >-
 <p><strong>Ses principales fonctionnalités sont les suivantes</strong></p>
 <ul>
 <li><p><strong>Recherche sémantique de code en langage naturel :</strong> Recherche de code en langage naturel. Recherchez des concepts tels que "vérification de la connexion de l'utilisateur" ou "logique de traitement des paiements", et Code Context localisera les fonctions pertinentes, même si elles ne correspondent pas exactement aux mots-clés.</p></li>
-<li><p><strong>Prise en charge multilingue :</strong> Effectuez des recherches en toute transparence dans plus de 15 langages de programmation, dont JavaScript, Python, Java et Go, et bénéficiez d'une compréhension sémantique cohérente dans tous ces langages.</p></li>
+<li><p><strong>Prise en charge multilingue :</strong> Effectuez des recherches en toute transparence dans plus de 15 langages de programmation, dont JavaScript, Python, Java et Go, et bénéficiez d'une compréhension sémantique cohérente dans chacun d'entre eux.</p></li>
 <li><p><strong>Découpage du code basé sur l'AST :</strong> Le code est automatiquement divisé en unités logiques, telles que les fonctions et les classes, à l'aide de l'analyse AST, ce qui garantit que les résultats de la recherche sont complets, significatifs et ne sont jamais interrompus au milieu d'une fonction.</p></li>
 <li><p><strong>Indexation incrémentale en direct :</strong> Les modifications apportées au code sont indexées en temps réel. Au fur et à mesure que vous modifiez des fichiers, l'index de recherche reste à jour, sans qu'il soit nécessaire de procéder à des actualisations ou à des réindexations manuelles.</p></li>
 <li><p><strong>Déploiement entièrement local et sécurisé :</strong> Exécutez tout sur votre propre infrastructure. Code Context prend en charge les modèles locaux via Ollama et l'indexation via <a href="https://milvus.io/">Milvus</a>, de sorte que votre code ne quitte jamais votre environnement.</p></li>
@@ -195,7 +195,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`score: <span class="hljs-subst">${(result.score * <span class="hljs-number">100</span>).toFixed(<span class="hljs-number">2</span>)}</span>%`</span>);
 });
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="VSCode-Extension" class="common-anchor-header">Extension VSCode</h3><p>Code Context est disponible sous la forme d'une extension VSCode nommée <strong>"Semantic Code Search",</strong> qui apporte une recherche intelligente de code en langage naturel directement dans votre éditeur.</p>
+<h3 id="VSCode-Extension" class="common-anchor-header">Extension VSCode</h3><p>Code Context est disponible sous la forme d'une extension VSCode nommée <strong>"Semantic Code Search",</strong> qui apporte une recherche de code intelligente, basée sur le langage naturel, directement dans votre éditeur.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/VS_Code_Extension_e358f36464.png" alt="" class="doc-image" id="" />

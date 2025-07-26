@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: Erstellen eines produktionsreifen Chatbots mit Kimi K2 und Milvus
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -37,7 +37,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
   </span>
 </p>
 <p>Es unterstützt auch OpenAI- und Anthropic-kompatible APIs, so dass alles, was für diese Ökosysteme entwickelt wurde - wie z. B. Claude Code - direkt in Kimi K2 integriert werden kann. Es ist klar, dass Moonshot AI auf Agenten-Workloads ausgerichtet ist.</p>
-<p>In diesem Tutorial zeige ich, wie man einen <strong>produktionsreifen Chatbot mit Kimi K2 und Milvus</strong> erstellt <strong>.</strong> Der Chatbot wird in der Lage sein, Dateien hochzuladen, intelligente Fragen und Antworten auszuführen und Daten über die Vektorsuche zu verwalten, so dass kein manuelles Chunking, keine Einbettung von Skripten und keine Feinabstimmung mehr erforderlich sind.</p>
+<p>In diesem Tutorial zeige ich, wie man einen <strong>produktionsreifen Chatbot mit Kimi K2 und Milvus</strong> erstellt <strong>.</strong> Der Chatbot wird in der Lage sein, Dateien hochzuladen, intelligente Fragen und Antworten auszuführen und Daten über die Vektorsuche zu verwalten, so dass eine manuelle Aufteilung, Einbettung von Skripten oder Feinabstimmung nicht mehr erforderlich ist.</p>
 <h2 id="What-We’ll-Build" class="common-anchor-header">Was wir bauen werden<button data-href="#What-We’ll-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -96,7 +96,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 <p><strong>Erforderliche API-Schlüssel:</strong></p>
 <ul>
 <li><p>Kimi-API-Schlüssel von <a href="https://platform.moonshot.cn/">Moonshot AI</a></p></li>
-<li><p>OpenAI API-Schlüssel für Texteinbettungen (wir verwenden das text-embedding-3-small-Modell)</p></li>
+<li><p>OpenAI-API-Schlüssel für Texteinbettungen (wir verwenden das Modell text-embedding-3-small)</p></li>
 </ul>
 <p><strong>Schnelle Installation:</strong></p>
 <pre><code translate="no">pip install pymilvus openai numpy
@@ -967,5 +967,5 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
     </button></h2><p>Durch die Verbindung von <strong>Kimi K2</strong> mit <strong>Milvus</strong> sind wir über herkömmliche Chatbots oder eine einfache semantische Suche hinausgegangen. Was wir geschaffen haben, ist ein echter Produktionsagent - einer, der komplexe Anweisungen interpretieren, sie in toolbasierte Workflows zerlegen und End-to-End-Aufgaben wie Dateiverarbeitung, semantische Suche und intelligente Fragen und Antworten mit minimalem Overhead ausführen kann.</p>
 <p>Diese Architektur spiegelt einen breiteren Wandel in der KI-Entwicklung wider: weg von isolierten Modellen hin zu zusammensetzbaren Systemen, in denen Denken, Speichern und Handeln Hand in Hand gehen. LLMs wie Kimi K2 ermöglichen flexible Schlussfolgerungen, während Vektordatenbanken wie Milvus einen strukturierten Langzeitspeicher bieten und der Aufruf von Werkzeugen die Ausführung in der realen Welt ermöglicht.</p>
 <p>Für Entwickler stellt sich nicht mehr die Frage <em>, ob</em> diese Komponenten zusammenarbeiten können, sondern <em>wie gut</em> sie sich über verschiedene Bereiche hinweg verallgemeinern, mit Daten skalieren und auf immer komplexere Benutzeranforderungen reagieren können.</p>
-<p><strong><em>Mit Blick auf die Zukunft zeichnet sich ein Muster ab: LLM (Denken) + Vector DB (Wissen) + Tools (Handeln) = echte KI-Agenten.</em></strong></p>
-<p>Dieses System, das wir gebaut haben, ist nur ein Beispiel, aber die Prinzipien gelten im Allgemeinen. Da LLMs weiter verbessert werden und Tool-Ökosysteme reifen, ist Milvus in der Lage, ein Kernstück des KI-Produktionsstapels zu bleiben und intelligente Systeme zu betreiben, die Daten nicht nur abrufen, sondern auch verarbeiten können.</p>
+<p><strong><em>Mit Blick auf die Zukunft zeichnet sich ein Muster ab: LLM (Denken) + Vector DB (Wissen) + Tools (Handeln) = Echte KI-Agenten.</em></strong></p>
+<p>Dieses System, das wir gebaut haben, ist nur ein Beispiel, aber die Prinzipien gelten im Allgemeinen. Da LLMs weiter verbessert werden und Tool-Ökosysteme reifen, ist Milvus in der Lage, ein Kernbestandteil des KI-Produktionsstapels zu bleiben und intelligente Systeme zu betreiben, die Daten nicht nur abrufen, sondern auch verarbeiten können.</p>

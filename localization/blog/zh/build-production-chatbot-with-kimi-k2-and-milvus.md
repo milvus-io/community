@@ -2,7 +2,7 @@
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: 利用 Kimi K2 和 Milvus 构建生产级聊天机器人
 author: Lumina Wang
-date: 2025-06-25T00:00:00.000Z
+date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
@@ -14,7 +14,7 @@ meta_title: |
 desc: 探索 Kimi K2 和 Milvus 如何创建一个生产型人工智能代理，用于实际任务中的文件自动处理、语义搜索和智能问答。
 origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus.md'
 ---
-<p><a href="https://moonshotai.github.io/Kimi-K2/">Kimi K2</a>最近引起了不小的波澜--这是有原因的。Hugging Face 的联合创始人和其他行业领袖都称赞它是一款开源模型，在很多方面的表现都不输给 GPT-4 和 Claude 等顶级封闭模型。</p>
+<p><a href="https://moonshotai.github.io/Kimi-K2/">Kimi K2</a>最近掀起了一阵波澜--这是有原因的。Hugging Face 的联合创始人和其他行业领袖都称赞它是一款开源模型，在很多方面的表现都能与 GPT-4 和 Claude 等顶级封闭模型相媲美。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/huggingface_leader_twitter_b96c9d3f21.png" alt="" class="doc-image" id="" />
@@ -24,7 +24,7 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
 <p><strong>两个突破性优势让 Kimi K2 脱颖而出：</strong></p>
 <ul>
 <li><p><strong>最先进的性能</strong>：K2 在 AIME2025 等关键基准测试中取得了优异成绩，并在大多数维度上持续优于 Grok-4 等模型。</p></li>
-<li><p><strong>强大的 Agents 功能</strong>：K2 不仅能调用工具，还知道何时使用工具、如何在任务中期切换工具以及何时停止使用工具。这开辟了重要的实际应用案例。</p></li>
+<li><p><strong>强大的 Agents 功能</strong>：K2 不只是调用工具，它还知道何时使用工具、如何在任务中期切换工具以及何时停止使用工具。这开辟了重要的实际应用案例。</p></li>
 </ul>
 <p>用户测试表明，Kimi K2 的编码能力已经可以与 Claude 4 相媲美，而成本仅为 Claude 4 的 20%。更重要的是，它支持<strong>自主任务规划和工具使用</strong>。您只需定义可用工具，K2 就会处理何时以及如何使用这些工具--无需微调或协调层。</p>
 <p>
@@ -564,7 +564,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
         ></path>
       </svg>
     </button></h2><p>这是系统的大脑，也称为智能决策中心。这是 Kimi K2 自主推理能力的真正闪光点--它不只是执行预定义的工作流程，而是真正理解用户意图，并就何时使用哪些工具做出智能决策。</p>
-<p>这里的设计理念是创建一个自然语言界面，让人感觉是在与一个知识渊博的助手交谈，而不是通过语音命令操作数据库。</p>
+<p>这里的设计理念是创建一个自然语言界面，感觉就像在与一个知识渊博的助手交谈，而不是通过语音命令操作数据库。</p>
 <h3 id="Initialization-and-Tool-Definition" class="common-anchor-header"><strong>初始化和工具定义</strong></h3><p>工具定义结构遵循 OpenAI 的函数调用格式，Kimi K2 原生支持这种格式。这样就能实现无缝集成，无需自定义解析逻辑即可进行复杂的工具协调。</p>
 <p>基本工具 (4)：</p>
 <p><code translate="no">connect_database</code> - 数据库连接管理 - Collections 创建 - 批量添加文档 - Collections 管理<code translate="no">create_collection</code><code translate="no">add_documents</code><code translate="no">list_all_collections</code> </p>
@@ -898,7 +898,7 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
 <li><p>数据插入</p></li>
 <li><p>状态报告</p></li>
 </ol>
-<h3 id="Question-answer-example" class="common-anchor-header">问答示例</h3><p>本节展示了系统在决定何时使用工具和何时依赖现有知识方面的智能。</p>
+<h3 id="Question-answer-example" class="common-anchor-header">问答示例</h3><p>本节展示了系统在决定何时使用工具和何时依靠现有知识方面的智能。</p>
 <pre><code translate="no">User Input: List five advantages of the Milvus vector database
 <button class="copy-code-btn"></button></code></pre>
 <p>从图中我们可以看到，Kimi K2 直接回答了用户的问题，而没有调用任何函数。这体现了系统的效率--对于它能从训练数据中回答的问题，它不会执行不必要的数据库操作符。</p>
