@@ -10,7 +10,7 @@ desc: >-
   Aprenda a automatizar flujos de trabajo con N8N. Este tutorial paso a paso
   cubre la configuración, más de 2000 plantillas e integraciones para aumentar
   la productividad y agilizar las tareas.
-cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
+cover: assets.zilliz.com/Group_1321314772_c2b444f708.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -23,7 +23,7 @@ origin: >-
 ---
 <p>Todos los días en "X" tecnología (antes Twitter), ves a desarrolladores mostrando sus configuraciones: canalizaciones de despliegue automatizadas que gestionan lanzamientos complejos de múltiples entornos sin problemas; sistemas de supervisión que dirigen alertas de forma inteligente a los miembros del equipo adecuados en función de la propiedad del servicio; flujos de trabajo de desarrollo que sincronizan automáticamente los problemas de GitHub con las herramientas de gestión de proyectos y notifican a las partes interesadas exactamente en los momentos adecuados.</p>
 <p>Todas estas operaciones aparentemente "avanzadas" comparten el mismo secreto: <strong>las herramientas de automatización de flujos de trabajo.</strong></p>
-<p>Piénsalo. Se fusiona un pull request y el sistema activa automáticamente las pruebas, lo despliega en el staging, actualiza el ticket de Jira correspondiente y lo notifica al equipo de producto en Slack. Se dispara una alerta de supervisión y, en lugar de enviar spam a todo el mundo, se dirige de forma inteligente al propietario del servicio, se escala en función de la gravedad y se crea automáticamente la documentación del incidente. Un nuevo miembro del equipo se une, y su entorno de desarrollo, permisos y tareas de incorporación se aprovisionan automáticamente.</p>
+<p>Piénsalo. Se fusiona un pull request y el sistema activa automáticamente las pruebas, lo despliega en la fase de preparación, actualiza el ticket de Jira correspondiente y lo notifica al equipo de producto en Slack. Se dispara una alerta de supervisión y, en lugar de enviar spam a todo el mundo, se dirige de forma inteligente al propietario del servicio, se escala en función de la gravedad y se crea automáticamente la documentación del incidente. Un nuevo miembro del equipo se une, y su entorno de desarrollo, permisos y tareas de incorporación se aprovisionan automáticamente.</p>
 <p>Estas integraciones, que antes requerían scripts personalizados y un mantenimiento constante, ahora funcionan por sí solas 24 horas al día, 7 días a la semana, una vez que se han configurado correctamente.</p>
 <p>Hace poco descubrí <a href="https://github.com/Zie619/n8n-workflows">N8N</a>, una herramienta visual de automatización de flujos de trabajo y, lo que es más importante, me topé con un repositorio de código abierto que contiene más de 2000 plantillas de flujos de trabajo listas para usar. Este post le guiará a través de lo que he aprendido acerca de la automatización del flujo de trabajo, por qué N8N me llamó la atención, y cómo se puede aprovechar estas plantillas pre-construidos para configurar la automatización sofisticada en cuestión de minutos en lugar de construir todo desde cero.</p>
 <h2 id="Workflow-Let-Machines-Handle-the-Grunt-Work" class="common-anchor-header">Flujo de trabajo: Deje que las máquinas se encarguen del trabajo pesado<button data-href="#Workflow-Let-Machines-Handle-the-Grunt-Work" class="anchor-icon" translate="no">
@@ -186,7 +186,7 @@ http://localhost:8000
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Los flujos de trabajo modernos necesitan hacer algo más que barajar datos. Se trata de contenido no estructurado -documentación, registros de chat, bases de conocimiento- y necesita que su automatización comprenda realmente con qué está trabajando, no sólo que coincida con palabras clave exactas.</p>
+    </button></h2><p>Los flujos de trabajo modernos necesitan hacer algo más que barajar datos. Se trata de contenido no estructurado -documentación, registros de chat, bases de conocimientos- y necesita que su automatización comprenda realmente con qué está trabajando, no sólo que coincida con palabras clave exactas.</p>
 <h3 id="Why-Your-Workflow-Needs-Vector-Search" class="common-anchor-header">Por qué su flujo de trabajo necesita la búsqueda vectorial</h3><p>Los flujos de trabajo tradicionales son básicamente concordancia de patrones con esteroides. Pueden encontrar coincidencias exactas, pero no pueden entender el contexto o el significado.</p>
 <p>Cuando alguien hace una pregunta, usted quiere que aparezca toda la información relevante, no sólo los documentos que contienen las palabras exactas que han utilizado.</p>
 <p>Aquí es donde entran en juego<a href="https://zilliz.com/learn/what-is-vector-database"> las bases de datos vectoriales</a> como <a href="https://milvus.io/"><strong>Milvus</strong></a> y <a href="https://zilliz.com/cloud">Zilliz Cloud</a>. Milvus ofrece a sus flujos de trabajo la capacidad de comprender la similitud semántica, lo que significa que pueden encontrar contenido relacionado incluso cuando la redacción es completamente diferente.</p>
@@ -196,7 +196,7 @@ http://localhost:8000
 <li><p><strong>Rendimiento de búsqueda a nivel de milisegundos</strong> que no ralentizará su automatización</p></li>
 <li><p><strong>Escalado elástico</strong> que crece con sus datos sin necesidad de una reconstrucción completa</p></li>
 </ul>
-<p>La combinación transforma sus flujos de trabajo de simple procesamiento de datos a servicios de conocimiento inteligentes que pueden resolver realmente problemas reales de gestión y recuperación de información.</p>
+<p>La combinación transforma sus flujos de trabajo de un simple procesamiento de datos a servicios de conocimiento inteligentes que pueden resolver realmente problemas reales de gestión y recuperación de la información.</p>
 <h2 id="What-This-Actually-Means-for-Your-Development-Work" class="common-anchor-header">Lo que esto significa realmente para su trabajo de desarrollo<button data-href="#What-This-Actually-Means-for-Your-Development-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

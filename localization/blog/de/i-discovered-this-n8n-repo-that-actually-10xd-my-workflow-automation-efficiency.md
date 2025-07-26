@@ -11,7 +11,7 @@ desc: >-
   schrittweise Tutorial behandelt die Einrichtung, mehr als 2000 Vorlagen und
   Integrationen zur Steigerung der Produktivität und Rationalisierung von
   Aufgaben.
-cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
+cover: assets.zilliz.com/Group_1321314772_c2b444f708.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -84,7 +84,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>N8N bietet Funktionen auf Unternehmensniveau mit Integrationen für mehr als 400 Dienste, vollständige lokale Bereitstellungsoptionen für den Fall, dass Sie Daten im Haus behalten müssen, und eine robuste Fehlerbehandlung mit Echtzeitüberwachung, die Ihnen bei der Fehlerbehebung hilft, anstatt Ihnen nur mitzuteilen, dass etwas nicht funktioniert.</p>
+<p>N8N bietet Funktionen auf Unternehmensniveau mit Integrationen für über 400 Dienste, vollständige lokale Bereitstellungsoptionen für den Fall, dass Sie die Daten im Haus behalten müssen, und eine robuste Fehlerbehandlung mit Echtzeitüberwachung, die Ihnen bei der Fehlerbehebung hilft, anstatt Ihnen nur mitzuteilen, dass etwas nicht funktioniert.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/n8n2_248855922d.png" alt="" class="doc-image" id="" />
@@ -187,7 +187,7 @@ http://localhost:8000
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Moderne Workflows müssen mehr leisten, als nur Daten umherzuschieben. Sie haben es mit unstrukturierten Inhalten zu tun - Dokumentationen, Chat-Protokolle, Wissensdatenbanken - und Ihre Automatisierung muss tatsächlich verstehen, womit sie arbeitet, und nicht nur exakte Schlüsselwörter abgleichen.</p>
+    </button></h2><p>Moderne Workflows müssen mehr leisten, als nur Daten umherzuschieben. Sie haben es mit unstrukturierten Inhalten zu tun - Dokumentationen, Chatprotokolle, Wissensdatenbanken - und Ihre Automatisierung muss tatsächlich verstehen, womit sie arbeitet, und nicht nur exakte Schlüsselwörter finden.</p>
 <h3 id="Why-Your-Workflow-Needs-Vector-Search" class="common-anchor-header">Warum Ihr Workflow eine Vektorsuche benötigt</h3><p>Herkömmliche Workflows sind im Grunde genommen ein Musterabgleich auf Steroiden. Sie können exakte Übereinstimmungen finden, aber sie können den Kontext oder die Bedeutung nicht verstehen.</p>
 <p>Wenn jemand eine Frage stellt, möchten Sie alle relevanten Informationen anzeigen, nicht nur die Dokumente, die zufällig genau die verwendeten Wörter enthalten.</p>
 <p>An dieser Stelle kommen<a href="https://zilliz.com/learn/what-is-vector-database"> Vektordatenbanken</a> wie <a href="https://milvus.io/"><strong>Milvus</strong></a> und <a href="https://zilliz.com/cloud">Zilliz Cloud</a> ins Spiel. Milvus gibt Ihren Workflows die Fähigkeit, semantische Ähnlichkeit zu verstehen, was bedeutet, dass sie verwandte Inhalte finden können, selbst wenn der Wortlaut völlig unterschiedlich ist.</p>
@@ -214,6 +214,6 @@ http://localhost:8000
         ></path>
       </svg>
     </button></h2><p>Workflow-Automatisierung ist keine Raketenwissenschaft - es geht darum, komplexe Prozesse zu vereinfachen und sich wiederholende Aufgaben zu automatisieren. Der Wert liegt in der Zeit, die Sie zurückgewinnen, und in den Fehlern, die Sie vermeiden.</p>
-<p>Im Vergleich zu Unternehmenslösungen, die Zehntausende von Dollar kosten, bietet Open-Source N8N einen praktischen Weg nach vorne. Die Open-Source-Version ist kostenlos, und die Drag-and-Drop-Schnittstelle bedeutet, dass Sie keinen Code schreiben müssen, um anspruchsvolle Automatisierungen zu erstellen.</p>
+<p>Im Vergleich zu Unternehmenslösungen, die Zehntausende von Dollar kosten, bietet Open-Source N8N einen praktischen Weg nach vorne. Die Open-Source-Version ist kostenlos, und die Drag-and-Drop-Oberfläche bedeutet, dass Sie keinen Code schreiben müssen, um anspruchsvolle Automatisierungen zu erstellen.</p>
 <p>Zusammen mit Milvus für intelligente Suchfunktionen erweitern Workflow-Automatisierungstools wie N8N Ihre Arbeitsabläufe von der einfachen Datenverarbeitung zu intelligenten Wissensdiensten, die echte Probleme bei der Informationsverwaltung und -suche lösen.</p>
 <p>Wenn Sie sich das nächste Mal dabei ertappen, wie Sie dieselbe Aufgabe zum dritten Mal in dieser Woche erledigen, denken Sie daran: Es gibt wahrscheinlich eine Vorlage dafür. Fangen Sie klein an, automatisieren Sie einen Prozess, und beobachten Sie, wie sich Ihre Produktivität vervielfacht und Ihre Frustration verschwindet.</p>

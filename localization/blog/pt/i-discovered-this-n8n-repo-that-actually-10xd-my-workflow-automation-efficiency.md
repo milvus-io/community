@@ -10,7 +10,7 @@ desc: >-
   Saiba como automatizar fluxos de trabalho com o N8N. Este tutorial
   passo-a-passo abrange a configuração, mais de 2000 modelos e integrações para
   aumentar a produtividade e simplificar as tarefas.
-cover: assets.zilliz.com/n8n_blog_cover_e395ab0b87.jpg
+cover: assets.zilliz.com/Group_1321314772_c2b444f708.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -59,7 +59,7 @@ origin: >-
 <tr><td>Exemplos do mundo real</td><td>Sincronização de dados, notificações automáticas</td><td>Chatbots, sistemas de negociação automatizados</td></tr>
 </tbody>
 </table>
-<p>Para a maioria das dores de cabeça de automação que enfrenta diariamente, os fluxos de trabalho irão lidar com cerca de 80% das suas necessidades sem a complexidade.</p>
+<p>Para a maior parte das dores de cabeça de automatização que enfrenta diariamente, os fluxos de trabalho irão lidar com cerca de 80% das suas necessidades sem a complexidade.</p>
 <h2 id="Why-N8N-Caught-My-Attention" class="common-anchor-header">Porque é que o N8N chamou a minha atenção<button data-href="#Why-N8N-Caught-My-Attention" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -83,7 +83,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>O N8N oferece capacidades de nível empresarial com integrações para mais de 400 serviços, opções completas de implementação local para quando precisa de manter os dados internamente e um tratamento de erros robusto com monitorização em tempo real que o ajuda a depurar problemas em vez de apenas lhe dizer que algo está estragado.</p>
+<p>A N8N oferece capacidades de nível empresarial com integrações para mais de 400 serviços, opções completas de implementação local para quando precisa de manter os dados internamente e um tratamento de erros robusto com monitorização em tempo real que o ajuda a depurar problemas em vez de apenas lhe dizer que algo está estragado.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/n8n2_248855922d.png" alt="" class="doc-image" id="" />
