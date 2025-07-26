@@ -3,7 +3,7 @@ id: build-production-chatbot-with-kimi-k2-and-milvus.md
 title: >
  Build a Production-Grade Chatbot with Kimi K2 and Milvus
 author: Lumina Wang
-date: 2025-06-25
+date: 2025-07-25
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
 tag: Engineering
 recommend: false
