@@ -223,7 +223,7 @@ This architecture is ideal for industries with strict compliance requirements—
 
 Keeping your code index up to date shouldn’t be slow or manual. Code Context includes a **Merkle Tree–based file monitoring system** that detects changes instantly and performs incremental updates in real time.
 
-![](https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png)
+![](https://assets.zilliz.com/workflow_0fd958fe81.jpeg)
 
 By only re-indexing modified files, it reduces update times for large repositories from minutes to seconds. This ensures the code you just wrote is already searchable, without needing to click “refresh.”
 
