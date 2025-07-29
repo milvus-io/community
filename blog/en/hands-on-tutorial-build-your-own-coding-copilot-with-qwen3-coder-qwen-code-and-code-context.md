@@ -2,7 +2,7 @@
 id: hands-on-tutorial-build-your-own-coding-copilot-with-qwen3-coder-qwen-code-and-code-context.md
 title: >
  Hands-on Tutorial: Build Your Own Coding Copilot with Qwen3-Coder, Qwen Code, and Code Context
-author: Lumina
+author: Lumina Wang
 date: 2025-07-29
 desc: Learn to create your own AI coding copilot using Qwen3-Coder, Qwen Code CLI, and the Code Context plugin for deep semantic code understanding.
 cover: assets.zilliz.com/_9dfadf5877.png
@@ -32,7 +32,7 @@ The flagship model, **Qwen3-Coder-480B-A35B-Instruct**, delivers impressive capa
 
 While Qwen3-Coder is powerful, I am more interested in its coding assistant: **Qwen Code**. Here's what I found interesting. Despite all the innovation, Qwen Code shares the exact same limitation as Claude Code and Gemini CLI: **_they're great at generating fresh code but struggle with understanding existing codebases._**
 
-Take this example: you ask Gemini CLI or Qwen Code to "find where this project handles user authentication." The tool starts hunting for obvious keywords like "login" or "password" but completely misses that critical ``` verifyCredentials()` `` function. Unless you're willing to burn through tokens by feeding your entire codebase as context—which is both expensive and time-consuming—these tools hit a wall pretty quickly.
+Take this example: you ask Gemini CLI or Qwen Code to "find where this project handles user authentication." The tool starts hunting for obvious keywords like "login" or "password" but completely misses that critical `verifyCredentials()` function. Unless you're willing to burn through tokens by feeding your entire codebase as context—which is both expensive and time-consuming—these tools hit a wall pretty quickly.
 
 **_This is the real gap in today's AI tooling: intelligent code context understanding._**
 
@@ -103,13 +103,13 @@ Then, you’ll see a page like below. 
 
 - API Key: Obtain from[ Alibaba Cloud Model Studio](https://modelstudio.console.alibabacloud.com/)
 
-- Base URL: ``` https://dashscope.aliyuncs.com/compatible-mode/v1```
+- Base URL: `https://dashscope.aliyuncs.com/compatible-mode/v1`
 
 - Model Selection:
 
-  - ```qwen3-coder-plus``` (commercial version, most capable)
+  - `qwen3-coder-plus` (commercial version, most capable)
 
-  - ```qwen3-coder-480b-a35b-instruct``` (open-source version)
+  - `qwen3-coder-480b-a35b-instruct` (open-source version)
 
 ![](https://assets.zilliz.com/3_5ed0c54084.png)
 
@@ -131,8 +131,6 @@ Qwen3-Coder-Plus nailed the summary—describing the project as a technical tuto
 **Test 2: Code Generation**
 
 Prompt: "Please create a small game of Tetris"
-
-![](https://assets.zilliz.com/5_aae3ea4cad.png)
 
 In under a minute, Qwen3-coder-plus:
 
@@ -170,7 +168,7 @@ We’ll use [Zilliz Cloud](https://zilliz.com/cloud) as our vector database in t
 
 ### Step 6: Configure Code Context Integration
 
-Create ``` ~/.qwen/settings.json```:
+Create `~/.qwen/settings.json`:
 
 ```
 {
@@ -237,7 +235,7 @@ Finally, it discovered 4 issues using Code Context, including functions, imports
 
 ![](https://assets.zilliz.com/15_a529905b28.png)
 
-With the addition of Code Context, ``` qwen3-coder-plus``` now offers smarter code search and better understanding of coding environments. 
+With the addition of Code Context, `qwen3-coder-plus` now offers smarter code search and better understanding of coding environments. 
 
 
 ### What You've Built
