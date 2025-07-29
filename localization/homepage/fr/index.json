@@ -4,12 +4,12 @@
   "headlines": [
     {
       "tag": "Blog",
-      "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
+      "label": "Our Journey to 35K+ Stars: The Story of Building Milvus from Scratch",
       "link": "/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md"
     },
     {
       "tag": "Product",
-      "label": "Announcing VDBBench 1.0: Open-Source Vector Database Benchmarking with Your Real-World Production Workloads",
+      "label": "VDBBench 1.0: Open-Source VectorDB Benchmarking with Production Workloads",
       "link": "/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"
     }
   ]
