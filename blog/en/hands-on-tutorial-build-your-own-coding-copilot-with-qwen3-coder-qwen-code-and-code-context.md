@@ -1,7 +1,7 @@
 ---
 id: hands-on-tutorial-build-your-own-coding-copilot-with-qwen3-coder-qwen-code-and-code-context.md
 title: >
-Hands-on Tutorial: Build Your Own Coding Copilot with Qwen3-Coder, Qwen Code, and Code Context
+ Hands-on Tutorial: Build Your Own Coding Copilot with Qwen3-Coder, Qwen Code, and Code Context
 author: Lumina
 date: 2025-07-29
 desc: Learn to create your own AI coding copilot using Qwen3-Coder, Qwen Code CLI, and the Code Context plugin for deep semantic code understanding.
