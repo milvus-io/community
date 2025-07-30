@@ -101,7 +101,7 @@ origin: >-
 <li><p><strong>Полностью локальное, безопасное развертывание:</strong> Запускайте все на своей собственной инфраструктуре. Code Context поддерживает локальные модели через Ollama и индексацию через <a href="https://milvus.io/">Milvus</a>, поэтому ваш код никогда не покинет пределы вашей среды.</p></li>
 <li><p><strong>Первоклассная интеграция с IDE:</strong> Расширение VSCode позволяет осуществлять поиск и мгновенно переходить к результатам прямо из редактора, без переключения контекста.</p></li>
 <li><p><strong>Поддержка протокола MCP:</strong> Code Context говорит на языке MCP, что упрощает интеграцию с помощниками по кодированию AI и позволяет внедрить семантический поиск непосредственно в их рабочие процессы.</p></li>
-<li><p><strong>Поддержка плагинов для браузеров:</strong> Поиск в репозиториях непосредственно из GitHub в браузере - никаких вкладок, никакого копирования-вставки, только мгновенный контекст, где бы вы ни работали.</p></li>
+<li><p><strong>Поддержка плагинов для браузеров:</strong> Поиск в репозиториях непосредственно с GitHub в браузере - никаких вкладок, никакого копирования-вставки, только мгновенный контекст, где бы вы ни работали.</p></li>
 </ul>
 <h3 id="How-Code-Context-Works" class="common-anchor-header">Принцип работы Code Context</h3><p>
   <span class="img-wrapper">
@@ -245,7 +245,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Индексирование в режиме реального времени с интеллектуальной синхронизацией файлов</h3><p>Поддержание актуальности индекса кода не должно быть медленным или ручным. Code Context включает <strong>систему мониторинга файлов на основе дерева Меркла</strong>, которая мгновенно обнаруживает изменения и выполняет инкрементные обновления в режиме реального времени.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

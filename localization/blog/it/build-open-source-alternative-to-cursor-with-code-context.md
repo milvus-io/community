@@ -35,7 +35,7 @@ origin: >-
       </svg>
     </button></h2><p>Gli strumenti di codifica AI sono ovunque e stanno diventando virali per una buona ragione. Da <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code a Gemini CLI</a>, fino alle alternative open-source di Cursor, questi agenti sono in grado di scrivere funzioni, spiegare le dipendenze del codice e rifattorizzare interi file con un solo prompt. Gli sviluppatori stanno facendo a gara per integrarli nei loro flussi di lavoro e, per molti versi, stanno mantenendo l'entusiasmo.</p>
 <p><strong>Ma quando si tratta di <em>comprendere la vostra base di codice</em>, la maggior parte degli strumenti di intelligenza artificiale si scontra con un muro.</strong></p>
-<p>Se chiedete a Claude Code di trovare "dove questo progetto gestisce l'autenticazione dell'utente", il risultato è <code translate="no">grep -r &quot;auth&quot;</code>, con 87 corrispondenze vagamente correlate tra commenti, nomi di variabili e nomi di file, senza probabilmente trovare molte funzioni con logica di autenticazione ma non chiamate "auth". Provate Gemini CLI, e cercherà parole chiave come "login" o "password", mancando del tutto funzioni come <code translate="no">verifyCredentials()</code>. Questi strumenti sono ottimi per generare codice, ma quando è il momento di navigare, eseguire il debug o esplorare sistemi sconosciuti, cadono a pezzi. A meno che non inviino l'intera base di codice all'LLM per contestualizzarla - bruciando token e tempo - fanno fatica a fornire risposte significative.</p>
+<p>Se chiedete a Claude Code di trovare "dove questo progetto gestisce l'autenticazione dell'utente", il risultato è <code translate="no">grep -r &quot;auth&quot;</code>, con 87 corrispondenze vagamente correlate tra commenti, nomi di variabili e nomi di file, senza probabilmente trovare molte funzioni con logica di autenticazione ma non chiamate "auth". Provate Gemini CLI, e cercherà parole chiave come "login" o "password", mancando del tutto funzioni come <code translate="no">verifyCredentials()</code>. Questi strumenti sono ottimi per generare codice, ma quando è il momento di navigare, eseguire il debug o esplorare sistemi sconosciuti, cadono a pezzi. A meno che non inviino l'intera base di codice al LLM per contestualizzarla - bruciando token e tempo - fanno fatica a fornire risposte significative.</p>
 <p><em>Questa è la vera lacuna degli attuali strumenti di intelligenza artificiale: il</em> <strong><em>contesto del codice.</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">Cursor l'ha colmata, ma non per tutti<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -52,7 +52,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Cursor</strong> affronta questo problema di petto. Invece di una ricerca per parole chiave, costruisce una mappa semantica della base di codice utilizzando alberi di sintassi, embeddings vettoriali e ricerca code-aware. Se gli chiedete "dov'è la logica di convalida delle e-mail?", vi restituirà <code translate="no">isValidEmailFormat()</code>, non perché il nome corrisponda, ma perché capisce cosa <em>fa</em> quel codice.</p>
+    </button></h2><p><strong>Cursor</strong> affronta questo problema di petto. Invece di una ricerca per parole chiave, costruisce una mappa semantica della vostra base di codice utilizzando alberi di sintassi, embeddings vettoriali e ricerca code-aware. Se gli chiedete "dov'è la logica di convalida delle e-mail?", vi restituirà <code translate="no">isValidEmailFormat()</code>, non perché il nome corrisponda, ma perché capisce cosa <em>fa</em> quel codice.</p>
 <p>Pur essendo potente, Cursor potrebbe non essere adatto a tutti. <strong><em>Cursor è closed-source, ospitato nel cloud e basato su abbonamento.</em></strong> Questo lo rende irraggiungibile per i team che lavorano con codice sensibile, per le organizzazioni attente alla sicurezza, per gli sviluppatori indipendenti, per gli studenti e per tutti coloro che preferiscono i sistemi aperti.</p>
 <h2 id="What-if-You-Could-Build-Your-Own-Cursor" class="common-anchor-header">E se si potesse costruire il proprio cursore?<button data-href="#What-if-You-Could-Build-Your-Own-Cursor" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -69,7 +69,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ecco il punto: la tecnologia di base di Cursor non è proprietaria. È costruita su basi open-source collaudate, come i database vettoriali di <a href="https://milvus.io/">Milvus</a>, i <a href="https://zilliz.com/ai-models">modelli di embedding</a>, i parser di sintassi con Tree-sitter, tutti disponibili per chiunque voglia unire i puntini.</p>
+    </button></h2><p>Ecco il punto: la tecnologia di base di Cursor non è proprietaria. È costruita su basi open source collaudate, come i database vettoriali di <a href="https://milvus.io/">Milvus</a>, i <a href="https://zilliz.com/ai-models">modelli di embedding</a>, i parser di sintassi con Tree-sitter, tutti disponibili per chiunque voglia unire i puntini.</p>
 <p><em>Così ci siamo chiesti:</em> <strong><em>E se chiunque potesse costruire il proprio Cursor?</em></strong> Funziona sulla vostra infrastruttura. Nessun costo di abbonamento. Completamente personalizzabile. Controllo completo su codice e dati.</p>
 <p>Ecco perché abbiamo creato <a href="https://github.com/zilliztech/code-context"><strong>Code Context, un</strong></a>plugin open-source compatibile con MCP che porta una potente ricerca semantica del codice in qualsiasi agente di codifica AI, come Claude Code e Gemini CLI, IDE come VSCode e persino ambienti come Google Chrome. Inoltre, vi dà la possibilità di costruire da zero il vostro agente di codifica come Cursor, sbloccando la navigazione intelligente in tempo reale della vostra base di codice.</p>
 <p><strong><em>Nessun abbonamento. Nessuna scatola nera. Solo intelligenza del codice alle vostre condizioni.</em></strong></p>
@@ -112,10 +112,10 @@ origin: >-
 <h3 id="The-Core-Module-Code-Context-Core" class="common-anchor-header">Il modulo centrale: Code Context Core</h3><p>Il cuore di Code Context è il <strong>Code Context Core</strong>, che coordina il parsing, l'embedding, l'archiviazione e il recupero semantico del codice:</p>
 <ul>
 <li><p>Il<strong>modulo di elaborazione del testo</strong> divide e analizza il codice utilizzando Tree-sitter per l'analisi AST consapevole della lingua.</p></li>
-<li><p>L<strong>'interfaccia di incorporazione</strong> supporta backend collegabili - attualmente OpenAI e VoyageAI - che convertono i pezzi di codice in embeddings vettoriali che catturano il loro significato semantico e le relazioni contestuali.</p></li>
+<li><p>L<strong>'interfaccia Embedding</strong> supporta backend collegabili - attualmente OpenAI e VoyageAI - che convertono i pezzi di codice in embeddings vettoriali che catturano il loro significato semantico e le relazioni contestuali.</p></li>
 <li><p><strong>La Vector Database Interface</strong> memorizza questi embeddings in un'istanza <a href="https://milvus.io/">Milvus</a> self-hosted (per impostazione predefinita) o in <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, la versione gestita di Milvus.</p></li>
 </ul>
-<p>Tutto questo viene sincronizzato con il vostro file system su base programmata, assicurando che l'indice rimanga aggiornato senza richiedere un intervento manuale.</p>
+<p>Il tutto viene sincronizzato con il vostro file system su base programmata, assicurando che l'indice rimanga aggiornato senza richiedere un intervento manuale.</p>
 <h3 id="Extension-Modules-on-top-of-Code-Context-Core" class="common-anchor-header">Moduli di estensione in aggiunta al Code Context Core</h3><ul>
 <li><p><strong>Estensione VSCode</strong>: Integrazione perfetta con l'IDE per una rapida ricerca semantica in editor e per il salto alla definizione.</p></li>
 <li><p><strong>Estensione per Chrome</strong>: Ricerca semantica in linea del codice durante la navigazione nei repository GitHub, senza bisogno di cambiare scheda.</p></li>
@@ -159,7 +159,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Building-Your-Own-AI-Coding-Assistant-with-Code-Context" class="common-anchor-header">Creare il proprio assistente di codifica AI con Code Context</h3><p>Per creare un assistente AI personalizzato con Code Context, è necessario configurare il modulo principale per la ricerca semantica del codice in soli tre passaggi:</p>
+<h3 id="Building-Your-Own-AI-Coding-Assistant-with-Code-Context" class="common-anchor-header">Creare un assistente AI personalizzato con Code Context</h3><p>Per creare un assistente AI personalizzato con Code Context, è necessario configurare il modulo principale per la ricerca semantica del codice in soli tre passaggi:</p>
 <ol>
 <li><p>Configurare il modello di incorporamento</p></li>
 <li><p>Connettersi al proprio database vettoriale</p></li>
@@ -215,7 +215,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
   </span>
 </p>
 <p>In questo modo l'esplorazione semantica diventa parte integrante del vostro flusso di lavoro di codifica, senza bisogno di un terminale o di un browser.</p>
-<h3 id="Chrome-Extension-Coming-Soon" class="common-anchor-header">Estensione per Chrome (in arrivo)</h3><p>La nostra prossima <strong>estensione per Chrome</strong> porta Code Context nelle pagine web di GitHub, permettendovi di eseguire ricerche semantiche sul codice direttamente all'interno di qualsiasi repository pubblico, senza dover cambiare contesto o scheda.</p>
+<h3 id="Chrome-Extension-Coming-Soon" class="common-anchor-header">Estensione per Chrome (in arrivo)</h3><p>La nostra prossima <strong>estensione per Chrome</strong> porta Code Context nelle pagine web di GitHub, consentendovi di eseguire ricerche semantiche sul codice direttamente all'interno di qualsiasi repository pubblico, senza dover cambiare contesto o scheda.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/chrome_4e67b683d7.gif" alt="" class="doc-image" id="" />
@@ -244,7 +244,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Indicizzazione in tempo reale con sincronizzazione intelligente dei file</h3><p>Mantenere aggiornato l'indice del codice non deve essere lento o manuale. Code Context include un <strong>sistema di monitoraggio dei file basato su Merkle Tree</strong> che rileva istantaneamente le modifiche ed esegue aggiornamenti incrementali in tempo reale.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -304,7 +304,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 </ul>
 <p>Trovateci qui:</p>
 <ul>
-<li><p><a href="https://github.com/zilliztech/code-context">Code Context su GitHub</a> | <a href="https://www.npmjs.com/package/@zilliz/code-context-mcp"><strong>Pacchetto npm MCP</strong></a> | <a href="https://marketplace.visualstudio.com/items?itemName=zilliz.semanticcodesearch"><strong>Mercato VSCode</strong></a></p></li>
+<li><p><a href="https://github.com/zilliztech/code-context">Code Context su GitHub</a> | <a href="https://www.npmjs.com/package/@zilliz/code-context-mcp"><strong>Pacchetto MCP npm</strong></a> | <a href="https://marketplace.visualstudio.com/items?itemName=zilliz.semanticcodesearch"><strong>Mercato VSCode</strong></a></p></li>
 <li><p><a href="https://discuss.milvus.io/">Discord</a> | <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> | <a href="https://x.com/zilliz_universe">X</a> | <a href="https://www.youtube.com/@MilvusVectorDatabase/featured">YouTube</a></p></li>
 </ul>
 <p>Insieme, possiamo costruire l'infrastruttura per la prossima generazione di strumenti di sviluppo dell'intelligenza artificiale: trasparenti, potenti e orientati agli sviluppatori.</p>

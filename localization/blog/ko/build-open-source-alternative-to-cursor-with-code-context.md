@@ -34,7 +34,7 @@ origin: >-
       </svg>
     </button></h2><p>AI 코딩 도구는 어디에나 존재하며, 그럴 만한 이유가 있어 입소문을 타고 있습니다. <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code, Gemini CLI부터</a> 오픈 소스 커서 대체 도구까지, 이러한 에이전트는 함수를 작성하고 코드 종속성을 설명하며 전체 파일을 단 한 번의 프롬프트만으로 리팩터링할 수 있습니다. 개발자들은 이러한 에이전트를 워크플로에 통합하기 위해 경쟁적으로 도입하고 있으며, 여러 가지 면에서 그 기대에 부응하고 있습니다.</p>
 <p><strong>하지만 <em>코드베이스를 이해하는</em> 데 있어서는 대부분의 AI 도구가 벽에 부딪힙니다.</strong></p>
-<p>Claude Code에 "이 프로젝트에서 사용자 인증을 처리하는 위치"를 찾으라고 요청하면 <code translate="no">grep -r &quot;auth&quot;</code>- 주석, 변수 이름, 파일 이름에 걸쳐 87개의 느슨하게 연관된 일치 항목을 뱉어내며 인증 로직이 있지만 "auth"라고 부르지 않는 많은 함수가 누락되었을 가능성이 높습니다. Gemini CLI를 사용해 보면 '로그인' 또는 '비밀번호'와 같은 키워드를 찾지만 <code translate="no">verifyCredentials()</code> 같은 함수는 완전히 누락되어 있습니다. 이러한 도구는 코드를 생성하는 데는 훌륭하지만 익숙하지 않은 시스템을 탐색, 디버그 또는 탐색해야 할 때 무너지게 됩니다. 토큰과 시간을 들여 컨텍스트 연소를 위해 전체 코드베이스를 LLM으로 보내지 않는 한 의미 있는 답변을 제공하기가 어렵습니다.</p>
+<p>Claude Code에 "이 프로젝트에서 사용자 인증을 처리하는 위치"를 찾으라고 요청하면 <code translate="no">grep -r &quot;auth&quot;</code>으로 돌아와 주석, 변수 이름, 파일 이름에 걸쳐 87개의 느슨하게 연관된 일치 항목을 뱉어내며 인증 로직이 있지만 "auth"라고 부르지 않는 많은 함수가 누락되어 있을 가능성이 높습니다. Gemini CLI를 사용해 보면 <code translate="no">verifyCredentials()</code> 같은 함수가 완전히 누락된 '로그인' 또는 '비밀번호' 같은 키워드를 찾아냅니다. 이러한 도구는 코드를 생성하는 데는 훌륭하지만 익숙하지 않은 시스템을 탐색, 디버그 또는 탐색해야 할 때는 제대로 작동하지 않습니다. 토큰과 시간을 들여 컨텍스트 연소를 위해 전체 코드베이스를 LLM으로 보내지 않는 한 의미 있는 답변을 제공하기가 어렵습니다.</p>
 <p><em>이것이 바로 오늘날 AI 툴링의 진정한 격차, 즉</em> <strong><em>코드 컨텍스트입니다.</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">하지만 모든 사람에게 적합한 것은 아닙니다.<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -51,7 +51,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Cursor는</strong> 이 문제를 정면으로 해결합니다. 키워드 검색 대신 구문 트리, 벡터 임베딩, 코드 인식 검색을 사용하여 코드베이스의 시맨틱 맵을 구축합니다. "이메일 유효성 검사 로직이 어디에 있나요?"라고 질문하면 이름이 일치해서가 아니라 해당 코드의 <em>기능을</em> 이해하기 때문에 <code translate="no">isValidEmailFormat()</code> 을 반환합니다.</p>
+    </button></h2><p><strong>Cursor는</strong> 이 문제를 정면으로 해결합니다. 키워드 검색 대신 구문 트리, 벡터 임베딩, 코드 인식 검색을 사용하여 코드베이스의 시맨틱 맵을 구축합니다. "이메일 유효성 검사 로직이 어디에 있나요?"라고 질문하면 이름이 일치해서가 아니라 해당 코드가 <em>수행하는 작업을</em> 이해하기 때문에 <code translate="no">isValidEmailFormat()</code> 을 반환합니다.</p>
 <p>Cursor는 강력하지만 모든 사람에게 적합하지 않을 수도 있습니다. <strong><em>Cursor는 비공개 소스, 클라우드 호스팅, 구독 기반입니다.</em></strong> 따라서 민감한 코드를 다루는 팀, 보안에 민감한 조직, 인디 개발자, 학생, 개방형 시스템을 선호하는 사람에게는 적합하지 않을 수 있습니다.</p>
 <h2 id="What-if-You-Could-Build-Your-Own-Cursor" class="common-anchor-header">커서를 직접 만들 수 있다면 어떨까요?<button data-href="#What-if-You-Could-Build-Your-Own-Cursor" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -68,9 +68,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Cursor의 핵심 기술은 독점적인 것이 아닙니다. <a href="https://milvus.io/">Milvus와</a> 같은 벡터 데이터베이스, <a href="https://zilliz.com/ai-models">임베딩 모델</a>, Tree-sitter가 포함된 구문 분석기 등 검증된 오픈 소스 기반에 구축되어 있으며, 점들을 연결하고자 하는 사람이라면 누구나 사용할 수 있습니다.</p>
+    </button></h2><p>Cursor의 핵심 기술은 독점적인 것이 아닙니다. <a href="https://milvus.io/">Milvus와</a> 같은 벡터 데이터베이스, <a href="https://zilliz.com/ai-models">임베딩 모델</a>, Tree-sitter가 포함된 구문 분석기 등 검증된 오픈 소스 기반에 구축되어 있으며, 점들을 연결하고자 하는 모든 사람이 사용할 수 있습니다.</p>
 <p><em>그래서 저희는 이렇게 물었습니다:</em> <strong><em>누구나 자신만의 커서를 만들 수 있다면 어떨까요?</em></strong> 여러분의 인프라에서 실행됩니다. 구독료가 없습니다. 완전히 사용자 정의할 수 있습니다. 코드와 데이터를 완벽하게 제어할 수 있습니다.</p>
-<p>이것이 바로 Claude Code, Gemini CLI와 같은 모든 AI 코딩 에이전트, VSCode와 같은 IDE, 심지어 Google Chrome과 같은 환경에 강력한 시맨틱 코드 검색 기능을 제공하는 오픈 소스, MCP 호환 플러그인인 <a href="https://github.com/zilliztech/code-context"><strong>Code Context를</strong></a>구축한 이유입니다. 또한 Cursor와 같은 코딩 에이전트를 처음부터 직접 구축하여 코드베이스를 실시간으로 지능적으로 탐색할 수 있는 기능을 제공합니다.</p>
+<p>이것이 바로 Claude Code, Gemini CLI와 같은 모든 AI 코딩 에이전트, VSCode와 같은 IDE, 심지어 Google Chrome과 같은 환경에 강력한 시맨틱 코드 검색을 제공하는 오픈 소스, MCP 호환 플러그인인 <a href="https://github.com/zilliztech/code-context"><strong>Code Context를</strong></a>구축한 이유입니다. 또한 Cursor와 같은 코딩 에이전트를 처음부터 직접 구축하여 코드베이스를 실시간으로 지능적으로 탐색할 수 있는 기능을 제공합니다.</p>
 <p><strong><em>구독이 필요 없습니다. 블랙박스도 없습니다. 원하는 대로 코딩 인텔리전스만 있으면 됩니다.</em></strong></p>
 <p>이 글의 나머지 부분에서는 코드 컨텍스트의 작동 방식과 지금 바로 사용할 수 있는 방법을 살펴보겠습니다.</p>
 <h2 id="Code-Context-Open-Source-Alternative-to-Cursors-Intelligence" class="common-anchor-header">코드 컨텍스트: 커서의 인텔리전스를 대체하는 오픈 소스 대안<button data-href="#Code-Context-Open-Source-Alternative-to-Cursors-Intelligence" class="anchor-icon" translate="no">
@@ -88,14 +88,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/code-context"><strong>Code Context는</strong></a> MCP와 호환되는 오픈 소스 시맨틱 코드 검색 엔진입니다. 맞춤형 AI 코딩 어시스턴트를 처음부터 새로 구축하든, Claude Code 및 Gemini CLI와 같은 AI 코딩 에이전트에 시맨틱 인식을 추가하든, Code Context는 이를 가능하게 하는 엔진입니다.</p>
+    </button></h2><p><a href="https://github.com/zilliztech/code-context"><strong>Code Context는</strong></a> MCP와 호환되는 오픈 소스 시맨틱 코드 검색 엔진입니다. 맞춤형 AI 코딩 어시스턴트를 처음부터 구축하든, Claude Code 및 Gemini CLI와 같은 AI 코딩 에이전트에 시맨틱 인식을 추가하든, Code Context는 이를 가능하게 하는 엔진입니다.</p>
 <p>이 엔진은 로컬에서 실행되고 VS Code 및 Chrome 브라우저와 같이 자주 사용하는 도구 및 환경과 통합되며 클라우드 전용의 비공개 소스 플랫폼에 의존하지 않고도 강력한 코드 이해 기능을 제공합니다.</p>
 <p><strong>핵심 기능은 다음과 같습니다:</strong></p>
 <ul>
 <li><p><strong>자연어를 통한 시맨틱 코드 검색:</strong> 일반 영어를 사용해 코드를 찾습니다. '사용자 로그인 확인' 또는 '결제 처리 로직'과 같은 개념을 검색하면 코드 컨텍스트가 키워드와 정확히 일치하지 않더라도 관련 기능을 찾아줍니다.</p></li>
 <li><p><strong>다국어 지원:</strong> JavaScript, Python, Java, Go 등 15개 이상의 프로그래밍 언어에서 일관된 의미 이해로 원활하게 검색할 수 있습니다.</p></li>
 <li><p><strong>AST 기반 코드 청킹:</strong> AST 구문 분석을 사용해 코드가 함수나 클래스 같은 논리적 단위로 자동 분할되어 검색 결과가 완전하고 의미 있으며, 함수 중간에 끊어지지 않도록 보장합니다.</p></li>
-<li><p><strong>실시간 증분 인덱싱:</strong> 코드 변경 사항은 실시간으로 색인됩니다. 파일을 편집할 때 검색 색인은 최신 상태로 유지되므로 수동으로 새로 고치거나 색인을 다시 생성할 필요가 없습니다.</p></li>
+<li><p><strong>실시간 증분 인덱싱:</strong> 코드 변경 사항은 실시간으로 색인됩니다. 파일을 편집해도 검색 색인은 최신 상태로 유지되므로 수동으로 새로 고치거나 색인을 다시 생성할 필요가 없습니다.</p></li>
 <li><p><strong>완전 로컬, 안전한 배포:</strong> 자체 인프라에서 모든 것을 실행하세요. Code Context는 Ollama를 통한 로컬 모델과 <a href="https://milvus.io/">Milvus를</a> 통한 인덱싱을 지원하므로 코드가 사용자 환경을 벗어나지 않습니다.</p></li>
 <li><p><strong>최고 수준의 IDE 통합:</strong> VSCode 확장 기능을 사용하면 컨텍스트 전환 없이 에디터에서 바로 검색하고 결과로 바로 이동할 수 있습니다.</p></li>
 <li><p><strong>MCP 프로토콜 지원:</strong> 코드 컨텍스트는 MCP를 지원하므로 AI 코딩 어시스턴트와 쉽게 통합하고 시맨틱 검색을 워크플로에 바로 도입할 수 있습니다.</p></li>
@@ -110,9 +110,9 @@ origin: >-
 <p>Code Context는 임베딩, 구문 분석, 저장 및 검색을 위한 핵심 오케스트레이터와 특수 구성 요소가 포함된 모듈식 아키텍처를 사용합니다.</p>
 <h3 id="The-Core-Module-Code-Context-Core" class="common-anchor-header">핵심 모듈: 코드 컨텍스트 코어</h3><p>코드 컨텍스트의 핵심은 코드 구문 분석, 임베딩, 저장 및 시맨틱 검색을 조정하는 <strong>코드 컨텍스트 코어입니다</strong>:</p>
 <ul>
-<li><p><strong>텍스트 처리 모듈은</strong> 언어 인식 AST 분석을 위해 트리 시터를 사용하여 코드를 분할하고 구문 분석합니다.</p></li>
+<li><p><strong>텍스트 처리 모듈은</strong> 언어 인식 AST 분석을 위해 트리시터를 사용하여 코드를 분할하고 구문 분석합니다.</p></li>
 <li><p><strong>임베딩 인터페이스는</strong> 플러그형 백엔드(현재 OpenAI 및 VoyageAI)를 지원하여 코드 청크를 의미론적 의미와 문맥적 관계를 파악하는 벡터 임베딩으로 변환합니다.</p></li>
-<li><p><strong>벡터 데이터베이스 인터페이스는</strong> 이러한 임베딩을 자체 호스팅 <a href="https://milvus.io/">Milvus</a> 인스턴스(기본값) 또는 관리형 Milvus 버전인 <a href="https://zilliz.com/cloud">Zilliz Cloud에</a> 저장합니다.</p></li>
+<li><p><strong>벡터 데이터베이스 인터페이스는</strong> 이러한 임베딩을 자체 호스팅 <a href="https://milvus.io/">Milvus</a> 인스턴스(기본값) 또는 Milvus의 관리형 버전인 <a href="https://zilliz.com/cloud">Zilliz Cloud에</a> 저장합니다.</p></li>
 </ul>
 <p>이 모든 것이 예약된 방식으로 파일 시스템과 동기화되므로 수동 개입 없이도 인덱스가 최신 상태로 유지됩니다.</p>
 <h3 id="Extension-Modules-on-top-of-Code-Context-Core" class="common-anchor-header">코드 컨텍스트 코어를 기반으로 하는 확장 모듈</h3><ul>
@@ -243,7 +243,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">지능형 파일 동기화를 통한 실시간 인덱싱</h3><p>코드 색인을 최신 상태로 유지하는 작업이 느리거나 수동으로 이루어져서는 안 됩니다. Code Context에는 변경 사항을 즉시 감지하고 실시간으로 증분 업데이트를 수행하는 <strong>머클 트리 기반 파일 모니터링 시스템이</strong> 포함되어 있습니다.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

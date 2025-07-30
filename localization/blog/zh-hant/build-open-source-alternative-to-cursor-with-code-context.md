@@ -32,9 +32,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AI 編碼工具無處不在，而且有其流行的理由。從<a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code、Gemini CLI</a>到開放原始碼的 Cursor 替代品，這些代理程式可以撰寫函式、解釋程式碼相依存性，並透過單一提示重構整個檔案。開發人員正爭分奪秒地將它們整合到工作流程中，而且在許多方面，它們都能達到預期的效果。</p>
+    </button></h2><p>AI 編碼工具無處不在，而且有其流行的理由。從<a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code、Gemini CLI</a>到開放原始碼的 Cursor 替代品，這些代理程式可以撰寫函式、解釋程式碼相依存性，並透過單一提示重構整個檔案。開發人員正爭分奪秒地將它們整合到工作流程中，而且在很多方面，它們都實現了炒作的效果。</p>
 <p><strong>但是當要<em>了解您的程式碼庫</em>時，大多數的 AI 工具都會碰壁。</strong></p>
-<p>請 Claude Code 尋找「此專案在何處處理使用者驗證」，它會回落到<code translate="no">grep -r &quot;auth&quot;</code>- 在註解、變數名稱和檔名中吐出 87 個鬆散相關的配對，很可能遺漏了許多具有驗證邏輯但不稱為「auth」的函式。試試 Gemini CLI，它會尋找「login」或「password」這些關鍵字，但完全遺漏了<code translate="no">verifyCredentials()</code> 之類的函式。這些工具在產生程式碼方面非常出色，但當需要瀏覽、除錯或探索不熟悉的系統時，它們就會崩潰。除非它們將整個程式碼庫傳送至 LLM 以取得上下文，否則它們很難提供有意義的答案。</p>
+<p>請 Claude Code 尋找「此專案在何處處理使用者驗證」，它會回落到<code translate="no">grep -r &quot;auth&quot;</code>- 在註解、變數名稱和檔名中吐出 87 個鬆散的相關配對，很可能遺漏了許多具有驗證邏輯但不稱為「auth」的函式。試試 Gemini CLI，它會尋找「login」或「password」這些關鍵字，但完全遺漏了<code translate="no">verifyCredentials()</code> 之類的函式。這些工具在產生程式碼方面非常出色，但當需要瀏覽、除錯或探索不熟悉的系統時，它們就會崩潰。除非它們將整個程式碼庫傳送至 LLM 以取得上下文，否則它們很難提供有意義的答案。</p>
 <p><em>這就是當今 AI 工具的真正缺口：</em> <strong><em>程式碼上下文。</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">Cursor 成功解決了這個問題，但並非人人適用<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -89,15 +89,15 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><a href="https://github.com/zilliztech/code-context"><strong>Code Context</strong></a>是一個開放原始碼、與 MCP 相容的語意程式碼搜尋引擎。無論您是從頭開始建立自訂的 AI 編碼助理，或是將語義意識加入 Claude Code 和 Gemini CLI 等 AI 編碼代理，Code Context 都是讓一切成為可能的引擎。</p>
-<p>它可在本機執行，與您最喜愛的工具和環境 (例如 VS Code 和 Chrome 瀏覽器) 整合，並提供強大的程式碼理解能力，而無需仰賴僅限於雲端的封閉原始碼平台。</p>
+<p>它可在本機執行，與您最喜愛的工具和環境 (例如 VS Code 和 Chrome 瀏覽器) 整合，並提供強大的程式碼理解能力，而無需依賴僅在雲端運作的封閉原始碼平台。</p>
 <p><strong>核心功能包括</strong></p>
 <ul>
 <li><p><strong>透過自然語言進行語意程式碼搜尋：</strong>使用純英文搜尋程式碼。搜尋「使用者登入驗證」或「付款處理邏輯」等概念，Code Context 即會找出相關的功能 - 即使這些功能與關鍵字不完全符合。</p></li>
 <li><p><strong>多語言支援：</strong>跨 15 種以上的程式語言進行無縫搜尋，包括 JavaScript、Python、Java 和 Go，並對所有語言進行一致的語義理解。</p></li>
-<li><p><strong>以 AST 為基礎的程式碼分割：</strong>使用 AST 解析將程式碼自動分割為邏輯單元，例如函式與類別，確保搜尋結果完整、有意義，且不會在功能執行中斷。</p></li>
+<li><p><strong>以 AST 為基礎的程式碼分割：</strong>使用 AST 解析將程式碼自動分割為邏輯單位，例如函式與類別，確保搜尋結果完整、有意義，且不會在功能執行中斷。</p></li>
 <li><p><strong>即時、遞增式索引：</strong>程式碼變更會即時編入索引。當您編輯檔案時，搜尋索引會保持更新，不需要手動刷新或重新編制索引。</p></li>
 <li><p><strong>完全本機、安全的部署：</strong>在您自己的基礎架構上執行一切。Code Context 透過 Ollama 支援本機模型，並透過<a href="https://milvus.io/">Milvus</a> 支援索引，因此您的程式碼永遠不會離開您的環境。</p></li>
-<li><p><strong>一流的 IDE 整合：</strong>VSCode 延伸功能可讓您從編輯器即時搜尋並跳轉至結果，無須切換上下文。</p></li>
+<li><p><strong>一流的 IDE 整合：</strong>VSCode 延伸功能可讓您從編輯器立即搜尋並跳轉至結果，而無須切換上下文。</p></li>
 <li><p><strong>MCP 通訊協定支援：</strong>Code Context 會說 MCP，讓您輕鬆與 AI 編碼助手整合，並將語意搜尋直接帶入他們的工作流程。</p></li>
 <li><p><strong>瀏覽器外掛支援：</strong>在瀏覽器中直接從 GitHub 搜尋儲存庫 - 無需標籤、無需複製貼上，無論您在何處工作，都能即時取得上下文。</p></li>
 </ul>
@@ -243,7 +243,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">智慧型檔案同步即時索引</h3><p>保持程式碼索引更新不應該是緩慢或手動的。Code Context 包含一個<strong>以 Merkle Tree 為基礎的檔案監控系統</strong>，可立即偵測變更，並即時執行增量更新。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

@@ -95,7 +95,7 @@ origin: >-
 <p><strong>Ses principales fonctionnalités sont les suivantes</strong></p>
 <ul>
 <li><p><strong>Recherche sémantique de code en langage naturel :</strong> Recherche de code en langage naturel. Recherchez des concepts tels que "vérification de la connexion de l'utilisateur" ou "logique de traitement des paiements", et Code Context localisera les fonctions pertinentes, même si elles ne correspondent pas exactement aux mots-clés.</p></li>
-<li><p><strong>Prise en charge multilingue :</strong> Effectuez des recherches en toute transparence dans plus de 15 langages de programmation, dont JavaScript, Python, Java et Go, et bénéficiez d'une compréhension sémantique cohérente dans chacun d'entre eux.</p></li>
+<li><p><strong>Prise en charge multilingue :</strong> Effectuez des recherches en toute transparence dans plus de 15 langages de programmation, dont JavaScript, Python, Java et Go, et bénéficiez d'une compréhension sémantique cohérente dans tous ces langages.</p></li>
 <li><p><strong>Découpage du code basé sur l'AST :</strong> Le code est automatiquement divisé en unités logiques, telles que les fonctions et les classes, à l'aide de l'analyse AST, ce qui garantit que les résultats de la recherche sont complets, significatifs et ne sont jamais interrompus au milieu d'une fonction.</p></li>
 <li><p><strong>Indexation incrémentale en direct :</strong> Les modifications apportées au code sont indexées en temps réel. Au fur et à mesure que vous modifiez des fichiers, l'index de recherche reste à jour, sans qu'il soit nécessaire de procéder à des actualisations ou à des réindexations manuelles.</p></li>
 <li><p><strong>Déploiement entièrement local et sécurisé :</strong> Exécutez tout sur votre propre infrastructure. Code Context prend en charge les modèles locaux via Ollama et l'indexation via <a href="https://milvus.io/">Milvus</a>, de sorte que votre code ne quitte jamais votre environnement.</p></li>
@@ -245,7 +245,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Indexation en temps réel avec synchronisation intelligente des fichiers</h3><p>La mise à jour de votre index de code ne doit pas être lente ou manuelle. Code Context inclut un <strong>système de surveillance des fichiers basé sur l'arbre de Merkle</strong> qui détecte instantanément les changements et effectue des mises à jour incrémentielles en temps réel.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

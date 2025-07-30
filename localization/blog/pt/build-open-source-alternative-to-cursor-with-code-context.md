@@ -75,7 +75,7 @@ origin: >-
 <p>É por isso que criámos <a href="https://github.com/zilliztech/code-context"><strong>o Code Context - um</strong></a>plug-in de código aberto e compatível com MCP que traz uma poderosa pesquisa de código semântico para qualquer agente de codificação de IA, como o Claude Code e o Gemini CLI, IDEs como o VSCode e até ambientes como o Google Chrome. Também lhe dá o poder de construir o seu próprio agente de codificação como o Cursor a partir do zero, desbloqueando a navegação inteligente e em tempo real da sua base de código.</p>
 <p><strong><em>Sem subscrições. Sem caixas pretas. Apenas inteligência de código - nos seus termos.</em></strong></p>
 <p>No restante deste post, veremos como o Contexto de código funciona e como você pode começar a usá-lo hoje mesmo.</p>
-<h2 id="Code-Context-Open-Source-Alternative-to-Cursors-Intelligence" class="common-anchor-header">Contexto de código: Alternativa de código aberto para a inteligência do Cursor<button data-href="#Code-Context-Open-Source-Alternative-to-Cursors-Intelligence" class="anchor-icon" translate="no">
+<h2 id="Code-Context-Open-Source-Alternative-to-Cursors-Intelligence" class="common-anchor-header">Contexto de código: Alternativa de código aberto à inteligência do Cursor<button data-href="#Code-Context-Open-Source-Alternative-to-Cursors-Intelligence" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,7 +114,7 @@ origin: >-
 <ul>
 <li><p><strong>O módulo de processamento de texto</strong> divide e analisa o código utilizando o Tree-sitter para uma análise AST sensível à linguagem.</p></li>
 <li><p><strong>A interface de incorporação</strong> suporta backends conectáveis - atualmente OpenAI e VoyageAI - convertendo pedaços de código em incorporação de vectores que captam o seu significado semântico e relações contextuais.</p></li>
-<li><p><strong>A Interface de Base de Dados Vetorial</strong> armazena estes embeddings numa instância auto-hospedada <a href="https://milvus.io/">do Milvus</a> (por defeito) ou no <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, a versão gerida do Milvus.</p></li>
+<li><p><strong>A Vetor Database Interface</strong> armazena estes embeddings numa instância auto-hospedada <a href="https://milvus.io/">do Milvus</a> (por defeito) ou no <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, a versão gerida do Milvus.</p></li>
 </ul>
 <p>Tudo isto é sincronizado com o seu sistema de ficheiros numa base programada, garantindo que o índice se mantém atualizado sem necessidade de intervenção manual.</p>
 <h3 id="Extension-Modules-on-top-of-Code-Context-Core" class="common-anchor-header">Módulos de extensão no topo do Code Context Core</h3><ul>
@@ -137,7 +137,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O Contexto de código pode ser conectado a ferramentas de codificação que você já usa ou para criar um assistente de codificação de IA personalizado do zero. Nesta secção, vamos analisar os dois cenários:</p>
+    </button></h2><p>O Contexto de Código pode ser conectado a ferramentas de codificação que você já usa ou para criar um assistente de codificação de IA personalizado a partir do zero. Nesta secção, vamos analisar os dois cenários:</p>
 <ul>
 <li><p>Como integrar o Contexto de código às ferramentas existentes</p></li>
 <li><p>Como configurar o Core Module para pesquisa de código semântico independente ao criar seu próprio assistente de codificação de IA</p></li>
@@ -245,7 +245,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Indexação em tempo real com sincronização inteligente de arquivos</h3><p>Manter o seu índice de código atualizado não deve ser lento ou manual. O Code Context inclui um <strong>sistema de monitorização de ficheiros baseado na árvore Merkle</strong> que detecta alterações instantaneamente e efectua actualizações incrementais em tempo real.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -276,7 +276,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <ul>
 <li><p><strong>Plug-ins de preenchimento automático com reconhecimento de contexto</strong> que extraem trechos relevantes para melhores conclusões de LLM</p></li>
 <li><p><strong>Detectores inteligentes de erros</strong> que reúnem o código circundante para melhorar as sugestões de correção</p></li>
-<li><p><strong>Ferramentas seguras de refacção de código</strong> que encontram automaticamente locais semanticamente relacionados</p></li>
+<li><p><strong>Ferramentas de refacção de código seguro</strong> que encontram automaticamente locais semanticamente relacionados</p></li>
 <li><p><strong>Visualizadores de arquitetura</strong> que constroem diagramas a partir de relações semânticas de código</p></li>
 <li><p><strong>Assistentes de revisão de código mais inteligentes</strong> que apresentam implementações históricas durante as revisões de PR</p></li>
 </ul>

@@ -34,7 +34,7 @@ origin: >-
       </svg>
     </button></h2><p>人工智能编码工具无处不在--它们的流行是有原因的。从<a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code、Gemini CLI</a>到开源的 Cursor 替代品，这些 Agents 只需一个提示就能编写函数、解释代码依赖性并重构整个文件。开发人员正争先恐后地将它们集成到自己的工作流程中，而且在很多方面，它们都达到了预期的效果。</p>
 <p><strong>但在<em>理解代码库时</em>，大多数人工智能工具都会遇到障碍。</strong></p>
-<p>如果让克劳德代码查找 "这个项目在哪些地方处理用户身份验证"，它就会退回到<code translate="no">grep -r &quot;auth&quot;</code>- 在注释、变量名和文件名中找出 87 个松散相关的匹配项，而且很可能漏掉许多具有身份验证逻辑但不叫 "auth "的函数。试试 Gemini CLI，它会查找 "login "或 "password "这样的关键字，而完全忽略<code translate="no">verifyCredentials()</code> 这样的函数。这些工具在生成代码方面非常出色，但当需要浏览、调试或探索陌生系统时，它们就会溃不成军。除非它们将整个代码库发送给 LLM 以获取上下文--烧掉令牌和时间--否则它们很难提供有意义的答案。</p>
+<p>如果让克劳德代码查找 "这个项目在哪些地方处理用户身份验证"，它就会退回到<code translate="no">grep -r &quot;auth&quot;</code>- 在注释、变量名和文件名中找出 87 个松散相关的匹配项，而且很可能漏掉许多具有身份验证逻辑但不叫 "auth "的函数。试试 Gemini CLI，它会查找 "login "或 "password "这样的关键字，而完全忽略<code translate="no">verifyCredentials()</code> 这样的函数。这些工具在生成代码方面非常出色，但当需要导航、调试或探索陌生系统时，它们就会溃不成军。除非它们将整个代码库发送给 LLM 以获取上下文--烧掉令牌和时间--否则它们很难提供有意义的答案。</p>
 <p><em>这就是当今人工智能工具的真正差距：</em> <strong><em>代码上下文。</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">光标做到了--但并非人人都能做到<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -221,7 +221,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
     <span></span>
   </span>
 </p>
-<p>您将能使用与本地相同的深度搜索功能探索陌生的代码库。敬请期待--扩展正在开发中，即将推出。</p>
+<p>您将能使用与本地相同的深度搜索功能探索陌生的代码库。敬请期待，扩展正在开发中，很快就会推出。</p>
 <h2 id="Why-Use-Code-Context" class="common-anchor-header">为什么使用代码上下文？<button data-href="#Why-Use-Code-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -243,7 +243,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">智能文件同步实时索引</h3><p>保持代码索引的更新不应是缓慢或手动的。Code Context 包含一个<strong>基于 Merkle Tree 的文件监控系统</strong>，可即时检测更改并实时执行增量更新。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -257,7 +257,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
   </span>
 </p>
 <p>Code Context 做得更好。它利用 Tree-sitter AST 解析来理解实际代码结构。它能识别完整的函数、类、接口和模块，提供简洁、语义完整的结果。</p>
-<p>它支持包括 JavaScript/TypeScript、Python、Java、C/C++、Go 和 Rust 在内的主要编程语言，并采用特定语言策略进行精确分块。对于不支持的语言，它会退回到基于规则的解析，确保处理得当，不会出现崩溃或空结果。</p>
+<p>它支持 JavaScript/TypeScript、Python、Java、C/C++、Go 和 Rust 等主要编程语言，并采用特定语言策略进行精确分块。对于不支持的语言，它会退回到基于规则的解析，确保处理得当，不会出现崩溃或空结果。</p>
 <p>这些结构化的代码单元还可输入元数据，以实现更准确的语义搜索。</p>
 <h3 id="Open-Source-and-Extensible-by-Design" class="common-anchor-header">开源和可扩展设计</h3><p>Code Context 在 MIT 许可下完全开源。所有核心模块均可在 GitHub 上公开获取。</p>
 <p>我们相信开放的基础架构是构建强大、值得信赖的开发者工具的关键，并邀请开发者针对新的模型、语言或使用案例对其进行扩展。</p>

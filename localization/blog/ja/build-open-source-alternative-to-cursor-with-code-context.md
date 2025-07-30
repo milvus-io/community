@@ -35,7 +35,7 @@ origin: >-
     </button></h2><p>AIコーディング・ツールは至る所で見かけるが、流行にはそれなりの理由がある。<a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude Code、Gemini CLIから</a>オープンソースのCursorに代わるものまで、これらのエージェントは関数を書いたり、コードの依存関係を説明したり、ファイル全体を1回のプロンプトでリファクタリングしたりすることができる。開発者たちは競ってこれらをワークフローに統合しようとしており、多くの点で、これらは誇大広告を実現している。</p>
 <p><strong>しかし、<em>コードベースを理解</em>するとなると、ほとんどのAIツールは壁にぶつかる。</strong></p>
 <p>Claude Codeに "このプロジェクトはどこでユーザー認証を扱っているか "を探すように頼むと、<code translate="no">grep -r &quot;auth&quot;</code>。コメント、変数名、ファイル名に渡って87の緩く関連したマッチを吐き出し、認証ロジックを持つが "auth "と呼ばれていない多くの関数を見逃している可能性が高い。Gemini CLIを試してみると、"login "や "password "のようなキーワードを探し、<code translate="no">verifyCredentials()</code> のような関数を完全に見逃してしまう。これらのツールは、コードを生成するのには優れているが、ナビゲートしたり、デバッグしたり、不慣れなシステムを探索したりするときには、バラバラになってしまう。コードベース全体をLLMに送信して、トークンと時間を燃やしながらコンテキストを確認しない限り、意味のある答えを出すのに苦労する。</p>
-<p><em>これが、今日のAIツールの真のギャップである</em> <strong><em>コード・コンテキストだ。</em></strong></p>
+<p><em>これが今日のAIツールの真のギャップである、</em> <strong><em>コード・コンテキストなのだ。</em></strong></p>
 <h2 id="Cursor-Nailed-ItBut-Not-for-Everyone" class="common-anchor-header">Cursorはそれに釘付けになったが、誰にでも使えるわけではない<button data-href="#Cursor-Nailed-ItBut-Not-for-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -52,7 +52,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><strong>Cursorは</strong>この問題に正面から取り組んでいる。キーワード検索の代わりに、構文木、ベクトル埋め込み、コード認識検索を使ってコードベースのセマンティック・マップを構築する。メール検証ロジックはどこですか」と尋ねると、<code translate="no">isValidEmailFormat()</code> 。名前が一致したからではなく、そのコードが何を<em>する</em>のかを理解しているからです。</p>
-<p>Cursorはパワフルだが、すべての人に適しているとは限らない。<strong><em>Cursorはクローズドソースで、クラウドホスティングで、サブスクリプションベースだ。</em></strong>そのため、機密性の高いコードを扱うチーム、セキュリティを重視する組織、インディーズ開発者、学生、オープンなシステムを好む人には手が届かない。</p>
+<p>Cursorはパワフルだが、すべての人に適しているとは限らない。<strong><em>Cursorはクローズドソースで、クラウドホスティングで、サブスクリプションベースだ。</em></strong>そのため、機密性の高いコードを扱うチーム、セキュリティ意識の高い組織、インディーズ開発者、学生、オープンなシステムを好む人には手が届かない。</p>
 <h2 id="What-if-You-Could-Build-Your-Own-Cursor" class="common-anchor-header">カーソルを自作できるとしたら？<button data-href="#What-if-You-Could-Build-Your-Own-Cursor" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -94,7 +94,7 @@ origin: >-
 <ul>
 <li><p><strong>自然言語によるセマンティックコード検索：</strong>平易な英語を使用してコードを検索します。ユーザーログイン確認」や「支払い処理ロジック」などの概念を検索すると、Code Contextは関連する関数を特定します。</p></li>
 <li><p><strong>多言語サポート：</strong>JavaScript、Python、Java、Goなど、15以上のプログラミング言語をシームレスに検索し、すべての言語で一貫した意味理解を実現します。</p></li>
-<li><p><strong>ASTベースのコードチャンキング：</strong>AST解析により、コードは自動的に関数やクラスなどの論理的な単位に分割され、検索結果が完全で意味のあるものとなり、関数の途中で切断されることはありません。</p></li>
+<li><p><strong>ASTベースのコードチャンキング：</strong>AST解析により、コードは自動的に関数やクラスなどの論理的な単位に分割され、検索結果が完全で意味のあるものになり、関数の途中で切断されることがありません。</p></li>
 <li><p><strong>ライブ、インクリメンタルインデクシング：</strong>コードの変更はリアルタイムでインデックス化されます。ファイルを編集しても、検索インデックスは常に最新の状態に保たれるため、手作業による更新やインデックスの再作成は不要です。</p></li>
 <li><p><strong>完全にローカルで安全なデプロイメント：</strong>すべてを独自のインフラストラクチャ上で実行できます。Code Contextは、Ollama経由のローカルモデルと<a href="https://milvus.io/">Milvus</a>経由のインデックスをサポートしているため、あなたのコードがあなたの環境を離れることはありません。</p></li>
 <li><p><strong>ファーストクラスのIDE統合：</strong>VSCode 拡張機能により、エディタからコンテキストを切り替えることなく、即座に検索し、結果にジャンプすることができます。</p></li>
@@ -243,7 +243,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">インテリジェントなファイル同期によるリアルタイムのインデックス作成</h3><p>コードインデックスを常に最新の状態に保つことは、時間がかかったり手作業であったりすることではありません。Code Contextには、<strong>Merkle Treeベースのファイル監視システムが</strong>搭載されており、変更を即座に検出し、リアルタイムで増分更新を実行します。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

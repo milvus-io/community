@@ -165,7 +165,7 @@ origin: >-
 <li><p>Hubungkan ke basis data vektor Anda</p></li>
 <li><p>Mengindeks proyek Anda dan mulai mencari</p></li>
 </ol>
-<p>Berikut ini contoh menggunakan <strong>OpenAI Embeddings</strong> dan <strong>basis data vektor</strong> <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a> sebagai backend vektor:</p>
+<p>Berikut ini adalah contoh menggunakan <strong>OpenAI Embeddings</strong> dan <strong>basis data vektor</strong> <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a> sebagai backend vektor:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">CodeContext</span>, <span class="hljs-title class_">MilvusVectorDatabase</span>, <span class="hljs-title class_">OpenAIEmbedding</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@zilliz/code-context-core&#x27;</span>;
 
 <span class="hljs-comment">// Initialize embedding model</span>
@@ -194,7 +194,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`score: <span class="hljs-subst">${(result.score * <span class="hljs-number">100</span>).toFixed(<span class="hljs-number">2</span>)}</span>%`</span>);
 });
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="VSCode-Extension" class="common-anchor-header">Ekstensi VSCode</h3><p>Code Context tersedia sebagai ekstensi VSCode bernama <strong>"Pencarian Kode Semantik",</strong> yang menghadirkan pencarian kode berbasis bahasa alami yang cerdas langsung ke editor Anda.</p>
+<h3 id="VSCode-Extension" class="common-anchor-header">Ekstensi VSCode</h3><p>Code Context tersedia sebagai ekstensi VSCode bernama <strong>"Pencarian Kode Semantik",</strong> yang menghadirkan pencarian kode berbasis bahasa alami yang cerdas langsung ke dalam editor Anda.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/VS_Code_Extension_e358f36464.png" alt="" class="doc-image" id="" />
@@ -244,7 +244,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Pengindeksan Waktu Nyata dengan Sinkronisasi File Cerdas</h3><p>Menjaga indeks kode Anda tetap mutakhir tidak seharusnya lambat atau manual. Code Context mencakup <strong>sistem pemantauan file berbasis Merkle Tree</strong> yang mendeteksi perubahan secara instan dan melakukan pembaruan bertahap secara real time.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

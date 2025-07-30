@@ -111,7 +111,7 @@ origin: >-
 <p>Code Context verwendet eine modulare Architektur mit einem Kern-Orchestrator und spezialisierten Komponenten zum Einbetten, Parsen, Speichern und Abrufen.</p>
 <h3 id="The-Core-Module-Code-Context-Core" class="common-anchor-header">Das Kernmodul: Code Context-Kern</h3><p>Das Herzstück von Code Context ist der <strong>Code Context Core</strong>, der das Parsen, Einbetten, Speichern und semantische Abrufen von Code koordiniert:</p>
 <ul>
-<li><p><strong>Das Textverarbeitungsmodul</strong> zerlegt und parst den Code mit Hilfe von Tree-sitter für eine sprachabhängige AST-Analyse.</p></li>
+<li><p><strong>Das Textverarbeitungsmodul</strong> zerlegt und parst den Code mit Hilfe von Tree-sitter für eine sprachbewusste AST-Analyse.</p></li>
 <li><p><strong>Die Einbettungsschnittstelle</strong> unterstützt steckbare Backends - derzeit OpenAI und VoyageAI - und konvertiert Code-Blöcke in Vektoreinbettungen, die ihre semantische Bedeutung und kontextuellen Beziehungen erfassen.</p></li>
 <li><p><strong>Das Vector Database Interface</strong> speichert diese Einbettungen in einer selbst gehosteten <a href="https://milvus.io/">Milvus-Instanz</a> (standardmäßig) oder in <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, der verwalteten Version von Milvus.</p></li>
 </ul>
@@ -244,7 +244,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Indexierung in Echtzeit mit intelligenter Dateisynchronisierung</h3><p>Ihren Code-Index auf dem neuesten Stand zu halten, sollte nicht langsam oder manuell sein. Code Context enthält ein <strong>Merkle Tree-basiertes Datei-Überwachungssystem</strong>, das Änderungen sofort erkennt und inkrementelle Aktualisierungen in Echtzeit durchführt.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -264,7 +264,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <p>Wir sind davon überzeugt, dass eine offene Infrastruktur der Schlüssel zum Aufbau leistungsfähiger, vertrauenswürdiger Entwickler-Tools ist, und laden Entwickler ein, sie für neue Modelle, Sprachen oder Anwendungsfälle zu erweitern.</p>
 <h3 id="Solving-the-Context-Window-Problem-for-AI-Assistants" class="common-anchor-header">Lösung des Kontextfensterproblems für KI-Assistenten</h3><p>Große Sprachmodelle (LLMs) haben eine harte Grenze: ihr Kontextfenster. Dadurch können sie nicht die gesamte Codebasis sehen, was die Genauigkeit von Vervollständigungen, Korrekturen und Vorschlägen verringert.</p>
 <p>Code Context hilft, diese Lücke zu schließen. Die semantische Codesuche findet die <em>richtigen</em> Codeteile und liefert Ihrem KI-Assistenten einen gezielten, relevanten Kontext, auf den er sich stützen kann. Es verbessert die Qualität der von der KI erzeugten Ergebnisse, indem es das Modell auf die wirklich wichtigen Dinge "einzoomen" lässt.</p>
-<p>Beliebte KI-Coding-Tools wie Claude Code und Gemini CLI verfügen nicht über eine native semantische Codesuche - sie verlassen sich auf oberflächliche, schlagwortbasierte Heuristiken. Durch die Integration von Code Context über <strong>MCP</strong> erhalten sie ein Upgrade für das Gehirn.</p>
+<p>Beliebte KI-Coding-Tools wie Claude Code und Gemini CLI verfügen nicht über eine native semantische Codesuche - sie verlassen sich auf oberflächliche, schlagwortbasierte Heuristiken. Durch die Integration von Code Context über <strong>MCP</strong> erhalten sie ein Brain-Upgrade.</p>
 <h3 id="Built-for-Developers-by-Developers" class="common-anchor-header">Für Entwickler, von Entwicklern entwickelt</h3><p>Code Context ist für die modulare Wiederverwendung verpackt: Jede Komponente ist als unabhängiges <strong>npm-Paket</strong> verfügbar. Sie können sie je nach Bedarf für Ihr Projekt mischen, anpassen und erweitern.</p>
 <ul>
 <li><p>Sie benötigen nur eine semantische Codesuche? Verwenden Sie<code translate="no">@zilliz/code-context-core</code></p></li>

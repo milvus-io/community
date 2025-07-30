@@ -93,7 +93,7 @@ origin: >-
 <p>Se ejecuta localmente, se integra con sus herramientas y entornos favoritos, como VS Code y los navegadores Chrome, y ofrece una sólida comprensión del código sin depender de plataformas de código cerrado que sólo funcionan en la nube.</p>
 <p><strong>Entre sus funciones principales se incluyen:</strong></p>
 <ul>
-<li><p><strong>Búsqueda semántica de código mediante lenguaje natural:</strong> Encuentre código utilizando un lenguaje sencillo. Busque conceptos como "verificación de inicio de sesión de usuario" o "lógica de procesamiento de pagos" y Code Context localizará las funciones relevantes, aunque no coincidan exactamente con las palabras clave.</p></li>
+<li><p><strong>Búsqueda semántica de código mediante lenguaje natural:</strong> Encuentre código utilizando un lenguaje sencillo. Busque conceptos como "verificación de inicio de sesión de usuario" o "lógica de procesamiento de pagos", y Code Context localizará las funciones relevantes, incluso si no coinciden exactamente con las palabras clave.</p></li>
 <li><p><strong>Soporte multilingüe:</strong> Busque sin problemas en más de 15 lenguajes de programación, incluidos JavaScript, Python, Java y Go, con una comprensión semántica coherente en todos ellos.</p></li>
 <li><p><strong>Troceado de código basado en AST:</strong> El código se divide automáticamente en unidades lógicas, como funciones y clases, mediante el análisis sintáctico AST, lo que garantiza que los resultados de la búsqueda sean completos, significativos y nunca se interrumpan a mitad de la función.</p></li>
 <li><p><strong>Indexación incremental en tiempo real:</strong> Los cambios en el código se indexan en tiempo real. A medida que se editan los archivos, el índice de búsqueda se mantiene actualizado, sin necesidad de actualizaciones manuales o reindexación.</p></li>
@@ -244,7 +244,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <h3 id="Real-Time-Indexing-with-Intelligent-File-Sync" class="common-anchor-header">Indexación en tiempo real con sincronización inteligente de archivos</h3><p>Mantener actualizado su índice de código no debería ser lento ni manual. Code Context incluye un <strong>sistema de supervisión de archivos basado en Merkle Tree</strong> que detecta los cambios al instante y realiza actualizaciones incrementales en tiempo real.</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Real_Time_Indexing_with_Intelligent_File_Sync_49c303a38f.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/workflow_0fd958fe81.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
