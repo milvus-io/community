@@ -6,7 +6,8 @@ date: 2025-07-30T00:00:00.000Z
 desc: >-
   Milvus 2.6 introduce un proceso de análisis de texto completamente revisado
   con soporte multilingüe completo para la búsqueda de texto completo.
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -105,7 +106,7 @@ origin: >-
 <h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2. Identificador de idioma Tokenizer: Detección automática de idiomas</h3><p>Sabemos que etiquetar manualmente cada contenido no siempre es práctico. El <a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>tokenizador</strong></a> de <a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>identificadores lingü</strong></a> ísticos introduce la detección automática de idiomas directamente en el proceso de análisis de textos.</p>
 <p><strong>Funciona de la siguiente manera:</strong> Este tokenizador inteligente analiza el texto entrante, detecta su idioma mediante sofisticados algoritmos de detección y aplica automáticamente las reglas de procesamiento específicas del idioma. Puede configurarlo con varias definiciones de analizador: una para cada idioma que desee admitir, además de un analizador de reserva por defecto.</p>
 <p>Admite dos motores de detección: <code translate="no">whatlang</code> para un procesamiento más rápido y <code translate="no">lingua</code> para una mayor precisión. El sistema admite entre 71 y 75 idiomas, en función del detector elegido. Tanto durante la indexación como durante la búsqueda, el tokenizador selecciona automáticamente el analizador adecuado en función del idioma detectado, volviendo a la configuración predeterminada cuando la detección es incierta.</p>
-<p><strong>Perfecto para:</strong> Entornos dinámicos con mezcla de idiomas impredecible, plataformas de contenido generado por el usuario o aplicaciones en las que el etiquetado manual de idiomas no es factible.</p>
+<p><strong>Perfecto para:</strong> Entornos dinámicos con mezcla impredecible de idiomas, plataformas de contenido generado por el usuario o aplicaciones en las que el etiquetado manual de idiomas no es factible.</p>
 <p><strong>La contrapartida:</strong> La detección automática añade latencia de procesamiento y puede tener problemas con textos muy cortos o contenidos en varios idiomas. Pero para la mayoría de las aplicaciones del mundo real, la comodidad supera con creces estas limitaciones.</p>
 <h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3. Tokenizador ICU: Base universal</h3><p>Si las dos primeras opciones le parecen excesivas, tenemos algo más sencillo para usted. Hemos integrado recientemente el<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> tokenizador ICU (Componentes Internacionales para Unicode)</a> en Milvus 2.6. ICU ha existido desde siempre - es un conjunto maduro y ampliamente utilizado de bibliotecas que maneja el procesamiento de texto para toneladas de idiomas y scripts. Lo bueno es que puede manejar varios lenguajes complejos y simples a la vez.</p>
 <p>El tokenizador ICU es honestamente una gran opción por defecto. Utiliza reglas estándar Unicode para dividir las palabras, lo que lo hace fiable para docenas de idiomas que no tienen sus propios tokenizadores especializados. Si sólo necesita algo potente y de uso general que funcione bien en varios idiomas, ICU hace el trabajo.</p>
@@ -165,7 +166,7 @@ analyzers = {
 }
 <button class="copy-code-btn"></button></code></pre>
 <h3 id="Option-A-Using-The-Multi-Language-Analyzer" class="common-anchor-header">Opción A: Utilizar el analizador multilingüe</h3><p>Este método es mejor cuando <strong>se conoce de antemano el idioma de cada documento</strong>. Pasará esa información a través de un campo dedicado de <code translate="no">language</code> durante la inserción de datos.</p>
-<h4 id="Create-a-Collection-with-Multi-Language-Analyzer" class="common-anchor-header">Crear una colección con el analizador multilingüe</h4><p>Crearemos una colección en la que el campo <code translate="no">&quot;text&quot;</code> utilice distintos analizadores en función del valor del campo <code translate="no">language</code>.</p>
+<h4 id="Create-a-Collection-with-Multi-Language-Analyzer" class="common-anchor-header">Crear una colección con el analizador multilingüe</h4><p>Crearemos una colección en la que el campo <code translate="no">&quot;text&quot;</code> utilice diferentes analizadores en función del valor del campo <code translate="no">language</code>.</p>
 <pre><code translate="no"><span class="hljs-comment"># --- Option A: Using Multi-Language Analyzer ---</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n--- Demonstrating Multi-Language Analyzer ---&quot;</span>)
 

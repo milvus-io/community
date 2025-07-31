@@ -4,7 +4,8 @@ title: Milvus 2.6 如何在規模上升級多語言全文搜尋
 author: Zayne Yue
 date: 2025-07-30T00:00:00.000Z
 desc: Milvus 2.6 引進了全面改良的文字分析管道，並支援多國語言的全文檢索。
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -31,8 +32,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>現代的 AI 應用程式越來越複雜。您不可能只用一種搜尋方法就能解決問題。</p>
-<p>以推薦系統為例，它們需要<strong>向量搜尋來</strong>理解文字和圖像的意義，需要<strong>元資料篩選來</strong>依價格、類別或地點縮窄搜尋結果，還需要<strong>關鍵字搜尋來</strong>直接查詢，例如「Nike Air Max」。每種方法都能解決問題的不同部分，而真實世界的系統需要所有這些方法一起運作。</p>
-<p>搜索的未來不是在向量和關鍵字之間做選擇。而是將向量、關鍵字、篩選以及其他搜尋類型結合在一起。這就是我們一年前開始在 Milvus 2.5 中建立<a href="https://milvus.io/docs/hybrid_search_with_milvus.md">混合搜尋的</a>原因。</p>
+<p>以推薦系統為例，它們需要<strong>向量搜尋來</strong>理解文字和影像的意義，需要<strong>元資料篩選來</strong>縮小價格、類別或地點的搜尋結果，還需要<strong>關鍵字搜尋來</strong>直接查詢，例如「Nike Air Max」。每種方法都能解決問題的不同部分，而真實世界的系統需要所有這些方法一起運作。</p>
+<p>搜尋的未來不是在向量和關鍵字之間做選擇。而是將向量、關鍵字、篩選以及其他搜尋類型結合在一起。這就是我們一年前開始在 Milvus 2.5 中建立<a href="https://milvus.io/docs/hybrid_search_with_milvus.md">混合搜尋的</a>原因。</p>
 <h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">但全文搜索的工作方式有所不同<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -72,7 +73,7 @@ origin: >-
     </button></h2><p>多語言全文搜尋帶來了一系列的挑戰：</p>
 <ul>
 <li><p><strong>複雜的語言需要特別處理</strong>：中文、日文和韓文等語言的字與字之間不使用空格。它們需要先進的標記器來將字符分割成有意義的字詞。這些工具對於單一語言可能運作良好，但很少能同時支援多種複雜語言。</p></li>
-<li><p><strong>即使是相似的語言也會有衝突</strong>：英文和法文可能都會使用空白來分隔字詞，但一旦您套用特定語言的處理方式，例如词幹化或詞彙化，一種語言的規則就會干擾另一種語言的規則。對英文來說，提高準確度的方法可能會扭曲法文查詢，反之亦然。</p></li>
+<li><p><strong>即使是相似的語言也會有衝突</strong>：英文和法文可能都會使用空白來分隔字詞，但一旦您套用特定語言的處理方式，例如詞幹化或詞彙化，一種語言的規則可能會干擾另一種語言的規則。對英文來說，提高準確度的方法可能會扭曲法文查詢，反之亦然。</p></li>
 </ul>
 <p>簡而言之，<strong>不同的語言需要不同的分析器</strong>。嘗試使用英文分析器處理中文文字會導致失敗 - 因為沒有空格可以分割，而且英文的字根規則可能會損壞中文字元。</p>
 <p>底線是什麼？依賴單一的標記器和分析器來處理多語言資料集，幾乎不可能確保所有語言都能進行一致且高品質的標記化。這會直接導致搜尋效能下降。</p>
@@ -96,7 +97,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>經過廣泛的研究與開發，我們建立了一整套功能，以解決不同的多語言情況。每種方法都以各自的方式解決語言依賴問題。</p>
-<h3 id="1-Multi-Language-Analyzer-Precision-Through-Control" class="common-anchor-header">1.多語言分析器：透過控制達到精確度</h3><p><a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers"><strong>Multi-Language Analyzer</strong></a>允許您在同一個資料集中為不同語言定義不同的文字處理規則，而不是強迫所有語言都使用相同的分析管道。</p>
+<h3 id="1-Multi-Language-Analyzer-Precision-Through-Control" class="common-anchor-header">1.多語言分析器：透過控制達到精確度</h3><p><a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers"><strong>Multi-Language Analyzer</strong></a>可讓您針對同一個資料集中的不同語言，定義不同的文字處理規則，而不是強迫所有語言都使用相同的分析管道。</p>
 <p><strong>其運作方式如下：</strong>您可設定特定語言的分析器，並在插入時為每份文件加上語言標籤。在執行 BM25 搜尋時，您可以指定使用哪一種語言分析器來處理查詢。這可確保您的索引內容和搜尋查詢都是以各自語言的最佳規則來處理。</p>
 <p><strong>最適合</strong>您知道內容的語言，並希望獲得最高搜尋精確度的應用程式。例如：跨國知識庫、本地化產品目錄或特定區域的內容管理系統。</p>
 <p><strong>需求：</strong>您需要為每個文件提供語言元資料。目前僅適用於 BM25 搜尋作業。</p>
@@ -374,8 +375,8 @@ client.drop_collection(collection_name=COLLECTION_NAME)
 <ul>
 <li><p><strong>更好的查詢匹配</strong>- 使用<code translate="no">phrase_match</code> 和<code translate="no">multi_match</code> 進行更精確的搜尋</p></li>
 <li><p><strong>更快的 JSON 篩選</strong>- 感謝新的 JSON 欄位專用索引</p></li>
-<li><p><strong>以標量為基礎的排序</strong>-<strong>依</strong>任何數值欄位來排序結果</p></li>
+<li><p><strong>以標量為基礎的排序</strong>-<strong>依據</strong>任何數值欄位對結果進行排序</p></li>
 <li><p><strong>進階重新排序</strong>- 使用模型或自訂評分邏輯重新排序結果</p></li>
 </ul>
 <p>想要了解 Milvus 2.6 的完整細節嗎？請查看我們的最新文章：<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>介紹 Milvus 2.6：十億規模的經濟實惠向量搜尋</strong></a><strong>。</strong></p>
-<p>有任何問題或想要深入了解任何功能？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。</p>
+<p>有問題或想深入了解任何功能？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。</p>

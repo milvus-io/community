@@ -4,7 +4,8 @@ title: Milvus 2.6が多言語全文検索をスケールアップする方法
 author: Zayne Yue
 date: 2025-07-30T00:00:00.000Z
 desc: Milvus 2.6では、テキスト分析パイプラインが全面的に刷新され、全文検索のための包括的な多言語サポートが導入されました。
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -33,7 +34,7 @@ origin: >-
     </button></h2><p>現代のAIアプリケーションはますます複雑になっている。ある問題に対して、ただ一つの検索方法を投げかけて終わりというわけにはいかない。</p>
 <p>テキストや画像の意味を理解するための<strong>ベクトル検索</strong>、価格やカテゴリー、場所によって結果を絞り込むための<strong>メタデータフィルタリング</strong>、そして "Nike Air Max "のような直接的なクエリのための<strong>キーワード検索が</strong>必要だ。それぞれの方法は問題の異なる部分を解決するものであり、現実のシステムにはそれらすべてが連携する必要がある。</p>
 <p>検索の未来は、ベクトルとキーワードのどちらかを選ぶことではない。ベクトル、キーワード、フィルタリング、そして他の検索タイプをすべて1つの場所で組み合わせることなのだ。だからこそ、私たちは1年前にMilvus 2.5をリリースし、Milvusに<a href="https://milvus.io/docs/hybrid_search_with_milvus.md">ハイブリッド検索を</a>組み込み始めたのです。</p>
-<h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">しかし、フルテキスト検索は異なる働きをする<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
+<h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">しかし、全文検索は異なる働きをする<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,7 +55,7 @@ origin: >-
 <p>これを正しく処理するには、分割、ステミング、フィルタリングなどを処理する、堅牢な<strong>言語解析</strong>器が必要です。</p>
 <p>Milvus2.5で<a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">BM25全文検索を</a>導入した際、カスタマイズ可能なアナライザーを搭載しました。トークナイザー、トークン・フィルター、文字フィルターを使用してパイプラインを定義し、テキストをインデックス作成と検索に備えることができます。</p>
 <p>英語の場合、この設定は比較的簡単だった。しかし、多言語を扱うとなると、事態はより複雑になる。</p>
-<h2 id="The-Challenge-of-Multilingual-Full-Text-Search" class="common-anchor-header">多言語フルテキスト検索の課題<button data-href="#The-Challenge-of-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
+<h2 id="The-Challenge-of-Multilingual-Full-Text-Search" class="common-anchor-header">多言語全文検索の課題<button data-href="#The-Challenge-of-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,7 +72,7 @@ origin: >-
       </svg>
     </button></h2><p>多言語フルテキスト検索には、さまざまな課題がある：</p>
 <ul>
-<li><p><strong>複雑な言語は特別な扱いが必要です</strong>：中国語、日本語、韓国語などの言語では、単語と単語の間にスペースを使いません。これらの言語では、文字を意味のある単語に分割するための高度なトークナイザーが必要です。このようなツールは、単一言語には有効でも、複数の複雑な言語を同時にサポートすることはほとんどありません。</p></li>
+<li><p><strong>複雑な言語は特別な扱いが必要です</strong>：中国語、日本語、韓国語などの言語は、単語と単語の間にスペースを使いません。これらの言語では、文字を意味のある単語に分割するための高度なトークナイザーが必要です。このようなツールは、単一言語ではうまく機能しても、複数の複雑な言語を同時にサポートすることはほとんどありません。</p></li>
 <li><p><strong>似たような言語でも衝突することがある</strong>：英語とフランス語はどちらも単語を区切るのに空白を使うかもしれないが、ステミングやレマタイゼーションといった言語固有の処理を適用すると、一方の言語のルールが他方の言語のルールを妨害する可能性がある。英語のクエリの精度を向上させるものが、フランス語のクエリを歪めるかもしれません。</p></li>
 </ul>
 <p>要するに、<strong>言語が異なれば、異なる解析ツールが必要になる</strong>のです。英語のアナライザーで中国語のテキストを処理しようとすると、分割するスペースがないために失敗し、英語のステミングルールは中国語の文字を破損する可能性があります。</p>
@@ -103,9 +104,9 @@ origin: >-
 <h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2.言語識別子トーケナイザー：自動言語検出</h3><p>すべてのコンテンツに手作業でタグ付けすることは、必ずしも現実的ではありません。<a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>Language Identifier Tokenizer</strong></a>は、自動言語検出をテキスト分析パイプラインに直接取り込みます。</p>
 <p><strong>その仕組みは次のとおりです：</strong>このインテリジェントなトークナイザーは、入力されたテキストを分析し、高度な検出アルゴリズムを使用して言語を検出し、適切な言語固有の処理ルールを自動的に適用します。サポートしたい言語ごとに1つ、さらにデフォルトのフォールバックアナライザを加えた複数のアナライザ定義で設定します。</p>
 <p>検出エンジンは、高速処理の<code translate="no">whatlang</code> と高精度の<code translate="no">lingua</code> の2種類をサポートしています。システムは、選択した検出器に応じて、71～75の言語をサポートします。インデックス作成と検索の両方において、トークナイザーは検出された言語に基づいて適切なアナライザーを自動的に選択し、検出が不確かな場合はデフォルト設定にフォールバックします。</p>
-<p><strong>次のような場合に最適です：</strong>予測不可能な言語の混在が発生するダイナミックな環境、ユーザー作成コンテンツ・プラットフォーム、手動での言語タグ付けが不可能なアプリケーション。</p>
+<p><strong>次のような場合に最適です：</strong>予測不可能な言語の混在が発生するダイナミックな環境、ユーザー生成コンテンツ・プラットフォーム、手動での言語タグ付けが不可能なアプリケーション。</p>
 <p><strong>トレードオフ：</strong>自動検出は処理待ち時間を増やし、非常に短いテキストや言語が混在するコンテンツでは苦労するかもしれません。しかし、ほとんどの実世界のアプリケーションでは、利便性がこれらの制限を大幅に上回ります。</p>
-<h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3.ICUトークナイザー：ユニバーサル・ファウンデーション</h3><p>最初の2つの選択肢がやりすぎのように感じられるなら、もっとシンプルなものがあります。Milvus 2.6に<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> ICU (International Components for Unicode)トークナイザーを</a>新たに統合しました。ICUの歴史は古く、多くの言語やスクリプトのテキスト処理を行う、成熟した広く使われているライブラリ群です。ICUの素晴らしいところは、複雑な言語から単純な言語まで一度に扱えることです。</p>
+<h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3.ICUトークナイザー：ユニバーサル・ファウンデーション</h3><p>最初の2つの選択肢がやり過ぎのように感じられるなら、もっとシンプルなものがあります。Milvus 2.6に<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> ICU (International Components for Unicode)トークナイザーを</a>新たに統合しました。ICUの歴史は古く、多くの言語やスクリプトのテキスト処理を行う、成熟した広く使われているライブラリ群です。ICUの素晴らしいところは、複雑な言語から単純な言語まで一度に扱えることです。</p>
 <p>ICUトークナイザーは、正直なところ、デフォルトの選択肢として最適です。単語の分割にUnicode標準のルールを使用しているため、独自の特殊なトークナイザを持たない数十の言語でも信頼できます。複数の言語でうまく動作する強力で汎用的なものが必要な場合は、ICUがその役割を果たします。</p>
 <p><strong>制限</strong>ICUは単一のアナライザーで動作するため、すべての言語が同じフィルターを共有することになります。ステミングやレマタイゼーションのような言語固有の処理を行いたい場合は、ICUを使用してください。先ほどお話ししたような矛盾にぶつかります。</p>
 <p><strong>ICUが本当に優れている点</strong>ICUは、多言語または言語識別セットアップのデフォルトアナライザーとして動作するように構築されています。基本的には、明示的に設定されていない言語を処理するための、インテリジェントなセーフティネットです。</p>

@@ -8,7 +8,8 @@ date: 2025-07-30T00:00:00.000Z
 desc: >-
   Milvus 2.6 introduit un pipeline d'analyse de texte entièrement remanié avec
   une prise en charge multilingue complète pour la recherche en texte intégral.
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -110,7 +111,7 @@ origin: >-
 <p><strong>Parfait pour :</strong> Les environnements dynamiques avec des mélanges de langues imprévisibles, les plateformes de contenu généré par l'utilisateur ou les applications où le marquage manuel de la langue n'est pas possible.</p>
 <p><strong>Le compromis :</strong> la détection automatique ajoute une latence de traitement et peut s'avérer difficile avec des textes très courts ou des contenus multilingues. Mais pour la plupart des applications réelles, le côté pratique l'emporte largement sur ces limitations.</p>
 <h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3. ICU Tokenizer : Fondation universelle</h3><p>Si les deux premières options vous semblent excessives, nous avons quelque chose de plus simple pour vous. Nous avons récemment intégré le<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> tokenizer ICU (International Components for Unicode)</a> dans Milvus 2.6. ICU existe depuis toujours - c'est un ensemble de bibliothèques mature et largement utilisé qui gère le traitement de texte pour des tonnes de langues et d'écritures. Ce qui est génial, c'est qu'il peut traiter des langages simples et complexes à la fois.</p>
-<p>Le tokenizer ICU est honnêtement un excellent choix par défaut. Il utilise les règles Unicode pour découper les mots, ce qui le rend fiable pour des dizaines de langues qui n'ont pas leurs propres tokenizers spécialisés. Si vous avez juste besoin de quelque chose de puissant et d'universel qui fonctionne bien dans plusieurs langues, ICU fait l'affaire.</p>
+<p>Le tokenizer ICU est honnêtement un excellent choix par défaut. Il utilise les règles Unicode pour découper les mots, ce qui le rend fiable pour des douzaines de langues qui n'ont pas leurs propres tokenizers spécialisés. Si vous avez juste besoin de quelque chose de puissant et d'universel qui fonctionne bien dans plusieurs langues, ICU fait l'affaire.</p>
 <p><strong>Limitation :</strong> ICU fonctionne toujours au sein d'un seul analyseur, de sorte que toutes vos langues finissent par partager les mêmes filtres. Vous voulez faire des choses spécifiques à une langue comme le stemming ou la lemmatisation ? Vous rencontrerez les mêmes problèmes que ceux évoqués précédemment.</p>
 <p><strong>Les points forts de l'ICU :</strong> Nous avons conçu ICU pour qu'il fonctionne comme analyseur par défaut dans les configurations multi-langues ou avec identifiant de langue. C'est en fait votre filet de sécurité intelligent pour gérer les langues que vous n'avez pas explicitement configurées.</p>
 <h2 id="See-It-in-Action-Hands-On-Demo" class="common-anchor-header">Voyez-le en action : Démonstration pratique<button data-href="#See-It-in-Action-Hands-On-Demo" class="anchor-icon" translate="no">

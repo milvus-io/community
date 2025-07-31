@@ -6,7 +6,8 @@ date: 2025-07-30T00:00:00.000Z
 desc: >-
   Milvus 2.6 introduce una pipeline di analisi del testo completamente rinnovata
   con un supporto multilingue completo per la ricerca full text.
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -82,7 +83,7 @@ origin: >-
 <p><em>"È perfetto per le nostre ricerche in inglese, ma che dire dei nostri biglietti di assistenza clienti multilingue?". "Ci piace avere sia la ricerca vettoriale che quella BM25, ma il nostro set di dati comprende contenuti in cinese, giapponese e inglese". "Possiamo ottenere la stessa precisione di ricerca in tutte le nostre lingue?".</em></p>
 <p>Queste domande hanno confermato ciò che avevamo già visto nella pratica: la ricerca full-text è fondamentalmente diversa dalla ricerca vettoriale. La somiglianza semantica funziona bene in tutte le lingue, ma una ricerca testuale accurata richiede una profonda comprensione della struttura di ciascuna lingua.</p>
 <p>Ecco perché <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6</a> introduce una pipeline di analisi del testo completamente rinnovata con un supporto multilingue completo. Questo nuovo sistema applica automaticamente l'analizzatore corretto per ogni lingua, consentendo una ricerca full-text accurata e scalabile su set di dati multilingue, senza configurazione manuale o compromessi sulla qualità.</p>
-<h2 id="How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="common-anchor-header">Come Milvus 2.6 consente una robusta ricerca multilingue a tutto testo<button data-href="#How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
+<h2 id="How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="common-anchor-header">Come Milvus 2.6 consente una robusta ricerca full text multilingue<button data-href="#How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -379,5 +380,5 @@ client.drop_collection(collection_name=COLLECTION_NAME)
 <li><p><strong>Ordinamento basato su scalari</strong> - Ordina i risultati in base a qualsiasi campo numerico</p></li>
 <li><p><strong>Reranking avanzato</strong> - Riordina i risultati utilizzando modelli o una logica di punteggio personalizzata</p></li>
 </ul>
-<p>Volete la descrizione completa di Milvus 2.6? Consultate il nostro ultimo post: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Presentazione di Milvus 2.6: Ricerca vettoriale accessibile su scala miliardaria</strong></a><strong>.</strong></p>
+<p>Volete il resoconto completo di Milvus 2.6? Consultate il nostro ultimo post: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Presentazione di Milvus 2.6: Ricerca vettoriale accessibile su scala miliardaria</strong></a><strong>.</strong></p>
 <p>Avete domande o volete un approfondimento su una qualsiasi funzionalità? Unitevi al nostro<a href="https://discord.com/invite/8uyFbECzPX"> canale Discord</a> o inviate problemi su<a href="https://github.com/milvus-io/milvus"> GitHub</a>.</p>

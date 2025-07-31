@@ -8,7 +8,8 @@ date: 2025-07-30T00:00:00.000Z
 desc: >-
   Milvus 2.6 memperkenalkan pipeline analisis teks yang dirombak total dengan
   dukungan multi-bahasa yang komprehensif untuk pencarian teks lengkap.
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true

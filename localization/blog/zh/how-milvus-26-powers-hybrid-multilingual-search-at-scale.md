@@ -4,7 +4,8 @@ title: Milvus 2.6 如何大规模升级多语种全文搜索功能
 author: Zayne Yue
 date: 2025-07-30T00:00:00.000Z
 desc: Milvus 2.6 引入了全面革新的文本分析管道，为全文搜索提供全面的多语言支持。
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -69,7 +70,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>多语种全文搜索带来了一系列挑战：</p>
+    </button></h2><p>多语言全文搜索带来了一系列挑战：</p>
 <ul>
 <li><p><strong>复杂语言需要特殊处理</strong>：中文、日文和韩文等语言的单词之间不使用空格。它们需要高级标记器将字符分割成有意义的单词。这些工具可能对单一语言很有效，但很少能同时支持多种复杂语言。</p></li>
 <li><p><strong>即使是相似的语言也会发生冲突</strong>：英语和法语可能都使用空格来分隔单词，但一旦应用了特定语言的处理方法，如词干化或词素化，一种语言的规则就会干扰其他语言的规则。提高英语准确性的方法可能会扭曲法语查询，反之亦然。</p></li>
@@ -102,7 +103,7 @@ origin: >-
 <p><strong>需求：</strong>您需要为每个文档提供语言元数据。目前仅适用于 BM25 搜索操作符。</p>
 <h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2.语言标识符标记器：自动语言检测</h3><p>我们知道，手动标记每篇内容并不总是切实可行的。<a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>语言识别标记器</strong></a>将自动语言检测直接引入文本分析管道。</p>
 <p><strong>工作原理如下：</strong>这个智能标记器会分析输入的文本，使用复杂的检测算法检测其语言，并自动应用适当的特定语言处理规则。您可以使用多个分析器定义对其进行配置--每种语言一个，外加一个默认的备用分析器。</p>
-<p>我们支持两种检测引擎：<code translate="no">whatlang</code> ，处理速度更快；<code translate="no">lingua</code> ，准确度更高。系统支持 71-75 种语言，具体取决于您选择的检测器。在索引和搜索过程中，标记符号生成器会根据检测到的语言自动选择正确的分析器，在检测不确定时，会返回到您的默认配置。</p>
+<p>我们支持两种检测引擎：<code translate="no">whatlang</code> ，处理速度更快；<code translate="no">lingua</code> ，准确度更高。系统支持 71-75 种语言，具体取决于您选择的检测器。在索引和搜索过程中，标记符号生成器会根据检测到的语言自动选择正确的分析器，在检测不确定时会返回到默认配置。</p>
 <p><strong>非常适合</strong>具有不可预测语言混合的动态环境、用户生成内容平台，或无法进行手动语言标记的应用。</p>
 <p><strong>权衡：</strong>自动检测会增加处理延迟，在处理非常短的文本或混合语言内容时可能会遇到困难。但对于大多数实际应用而言，其便利性远远超过了这些限制。</p>
 <h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3.ICU 标记器通用基础</h3><p>如果觉得前两个选项过于繁琐，我们还有更简单的选择。我们在 Milvus 2.6 中新集成了<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> ICU（International Components for Unicode）令牌器</a>。ICU 已经存在了很长时间--它是一套成熟、广泛使用的库，可以处理大量语言和脚本的文本处理。最酷的是，它可以同时处理各种复杂和简单的语言。</p>

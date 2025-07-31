@@ -8,7 +8,8 @@ date: 2025-07-30T00:00:00.000Z
 desc: >-
   O Milvus 2.6 apresenta um pipeline de análise de texto completamente revisto
   com suporte multilingue abrangente para pesquisa de texto completo.
-cover: assets.zilliz.com/Frame_385dc22973.png
+cover: >-
+  assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -112,7 +113,7 @@ origin: >-
 <h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3. Tokenizador ICU: Fundação universal</h3><p>Se as duas primeiras opções parecerem um exagero, temos algo mais simples para si. Nós integramos recentemente o<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> tokenizador ICU (International Components for Unicode)</a> no Milvus 2.6. O ICU existe desde sempre - é um conjunto de bibliotecas maduro e amplamente usado que lida com o processamento de texto para toneladas de idiomas e scripts. O legal é que ele pode lidar com várias linguagens complexas e simples ao mesmo tempo.</p>
 <p>O tokenizador ICU é honestamente uma ótima escolha padrão. Ele usa regras padrão Unicode para quebrar palavras, o que o torna confiável para dezenas de idiomas que não têm seus próprios tokenizadores especializados. Se você só precisa de algo poderoso e de uso geral que funcione bem em vários idiomas, o ICU faz o trabalho.</p>
 <p><strong>Limitações:</strong> O ICU ainda funciona dentro de um único analisador, por isso todas as suas línguas acabam por partilhar os mesmos filtros. Quer fazer coisas específicas para cada língua, como stemming ou lematização? Vai deparar-se com os mesmos conflitos de que falámos anteriormente.</p>
-<p><strong>Onde ele realmente brilha:</strong> Criámos o ICU para funcionar como o analisador predefinido nas configurações de vários idiomas ou identificadores de idiomas. É basicamente a sua rede de segurança inteligente para lidar com idiomas que não tenha configurado explicitamente.</p>
+<p><strong>Onde ele realmente brilha:</strong> Construímos o ICU para funcionar como o analisador padrão dentro das configurações multilíngües ou de identificador de idioma. É basicamente a sua rede de segurança inteligente para lidar com idiomas que não tenha configurado explicitamente.</p>
 <h2 id="See-It-in-Action-Hands-On-Demo" class="common-anchor-header">Veja-o em ação: Demonstração prática<button data-href="#See-It-in-Action-Hands-On-Demo" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
