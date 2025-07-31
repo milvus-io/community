@@ -32,7 +32,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>現代的 AI 應用程式越來越複雜。您不可能只用一種搜尋方法就能解決問題。</p>
-<p>以推薦系統為例，它們需要<strong>向量搜尋來</strong>理解文字和影像的意義，需要<strong>元資料篩選來</strong>縮小價格、類別或地點的搜尋結果，還需要<strong>關鍵字搜尋來</strong>直接查詢，例如「Nike Air Max」。每種方法都能解決問題的不同部分，而真實世界的系統需要所有這些方法一起運作。</p>
+<p>以推薦系統為例，它們需要<strong>向量搜尋來</strong>理解文字和圖像的意義，需要<strong>元資料篩選來</strong>依價格、類別或地點縮窄搜尋結果，還需要<strong>關鍵字搜尋來</strong>直接查詢，例如「Nike Air Max」。每種方法都能解決問題的不同部分，而真實世界的系統需要所有這些方法一起運作。</p>
 <p>搜尋的未來不是在向量和關鍵字之間做選擇。而是將向量、關鍵字、篩選以及其他搜尋類型結合在一起。這就是我們一年前開始在 Milvus 2.5 中建立<a href="https://milvus.io/docs/hybrid_search_with_milvus.md">混合搜尋的</a>原因。</p>
 <h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">但全文搜索的工作方式有所不同<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -50,10 +50,10 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>將全文檢索帶入向量原生系統並不容易。全文搜尋有其本身的挑戰。</p>
-<p>向量搜尋能捕捉文字的<em>語意</em>- 將文字轉換成高維向量 - 而全文搜尋則取決於對<strong>語言結構的</strong>了解：字詞是如何形成、從哪裡開始、在哪裡結束，以及它們之間的關係。例如，當使用者以英文搜尋「跑步鞋」時，文字會經過幾個處理步驟：</p>
+<p>向量搜尋能捕捉文字的<em>語意</em>- 將文字轉換成高維向量 - 而全文搜尋則取決於對<strong>語言結構的</strong>瞭解：字詞是如何形成、從哪裡開始、在哪裡結束，以及它們之間的關係。例如，當使用者以英文搜尋「跑步鞋」時，文字會經過幾個處理步驟：</p>
 <p><em>分割空白 → 小寫 → 移除停止字 → 將「running」轉為「run」。</em></p>
 <p>為了正確處理這個問題，我們需要一個強大的<strong>語言分析器--</strong>可以處理分割、詞幹、過濾等問題。</p>
-<p>當我們在 Milvus 2.5 中引入<a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">BM25 全文搜尋時</a>，我們包含了一個可自訂的分析器，而且它在設計上的功能運作良好。您可以使用標記化器、標記過濾器和字元過濾器來定義管道，以便為索引和搜尋準備文字。</p>
+<p>當我們在 Milvus 2.5 中推出<a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">BM25 全文搜尋時</a>，我們包含了一個可自訂的分析器，而且它在設計上的功能運作良好。您可以使用標記化器、標記過濾器和字元過濾器來定義管道，以便為索引和搜尋準備文字。</p>
 <p>對英文來說，這個設定相對簡單。但當您要處理多國語言時，事情就變得複雜了。</p>
 <h2 id="The-Challenge-of-Multilingual-Full-Text-Search" class="common-anchor-header">多語言全文檢索的挑戰<button data-href="#The-Challenge-of-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -97,7 +97,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>經過廣泛的研究與開發，我們建立了一整套功能，以解決不同的多語言情況。每種方法都以各自的方式解決語言依賴問題。</p>
-<h3 id="1-Multi-Language-Analyzer-Precision-Through-Control" class="common-anchor-header">1.多語言分析器：透過控制達到精確度</h3><p><a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers"><strong>Multi-Language Analyzer</strong></a>可讓您針對同一個資料集中的不同語言，定義不同的文字處理規則，而不是強迫所有語言都使用相同的分析管道。</p>
+<h3 id="1-Multi-Language-Analyzer-Precision-Through-Control" class="common-anchor-header">1.多語言分析器：透過控制達到精確度</h3><p><a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers"><strong>Multi-Language Analyzer</strong></a>允許您在同一個資料集中為不同語言定義不同的文字處理規則，而不是強迫所有語言都使用相同的分析管道。</p>
 <p><strong>其運作方式如下：</strong>您可設定特定語言的分析器，並在插入時為每份文件加上語言標籤。在執行 BM25 搜尋時，您可以指定使用哪一種語言分析器來處理查詢。這可確保您的索引內容和搜尋查詢都是以各自語言的最佳規則來處理。</p>
 <p><strong>最適合</strong>您知道內容的語言，並希望獲得最高搜尋精確度的應用程式。例如：跨國知識庫、本地化產品目錄或特定區域的內容管理系統。</p>
 <p><strong>需求：</strong>您需要為每個文件提供語言元資料。目前僅適用於 BM25 搜尋作業。</p>
@@ -131,7 +131,8 @@ origin: >-
 <li><p>使用<strong>多語言分析器</strong></p></li>
 <li><p>使用<strong>語言識別符標記器</strong></p></li>
 </ul>
-<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">步驟 1：設定 Milvus 用戶端</h3><p><em>首先，我們連線到 Milvus，設定一個集合名稱，並清理任何現有的集合，從新開始。</em></p>
+<p>如需完整的示範程式碼，請參閱<a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">此 GitHub 頁面</a>。</p>
+<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">步驟 1：設定 Milvus Client</h3><p><em>首先，我們連線到 Milvus，設定一個集合名稱，並清理任何現有的集合，從新開始。</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 <span class="hljs-comment"># 1. Setup Milvus Client</span>
@@ -375,8 +376,8 @@ client.drop_collection(collection_name=COLLECTION_NAME)
 <ul>
 <li><p><strong>更好的查詢匹配</strong>- 使用<code translate="no">phrase_match</code> 和<code translate="no">multi_match</code> 進行更精確的搜尋</p></li>
 <li><p><strong>更快的 JSON 篩選</strong>- 感謝新的 JSON 欄位專用索引</p></li>
-<li><p><strong>以標量為基礎的排序</strong>-<strong>依據</strong>任何數值欄位對結果進行排序</p></li>
+<li><p><strong>以標量為基礎的排序</strong>-<strong>依</strong>任何數值欄位來排序結果</p></li>
 <li><p><strong>進階重新排序</strong>- 使用模型或自訂評分邏輯重新排序結果</p></li>
 </ul>
 <p>想要了解 Milvus 2.6 的完整細節嗎？請查看我們的最新文章：<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>介紹 Milvus 2.6：十億規模的經濟實惠向量搜尋</strong></a><strong>。</strong></p>
-<p>有問題或想深入了解任何功能？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。</p>
+<p>有任何問題或想要深入了解任何功能？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。</p>

@@ -56,7 +56,7 @@ origin: >-
     </button></h2><p>Il n'est pas facile d'intégrer la recherche en texte intégral dans un système vectoriel natif. La recherche en texte intégral présente son propre ensemble de défis.</p>
 <p>Alors que la recherche vectorielle capture le sens <em>sémantique</em> du texte - en le transformant en vecteurs à haute dimension - la recherche en texte intégral dépend de la compréhension de la <strong>structure du langage</strong>: comment les mots sont formés, où ils commencent et où ils finissent, et comment ils sont liés les uns aux autres. Par exemple, lorsqu'un utilisateur recherche "running shoes" en anglais, le texte passe par plusieurs étapes de traitement :</p>
 <p><em>séparation des espaces blancs → minuscules → suppression des mots vides → transformation de &quot;running&quot; en &quot;run&quot;.</em></p>
-<p>Pour traiter cela correctement, nous avons besoin d'un <strong>analyseur de langue</strong>robuste <strong>,</strong>capable de gérer le fractionnement, le tronconnage, le filtrage et bien plus encore.</p>
+<p>Pour traiter cela correctement, nous avons besoin d'un <strong>analyseur de langue</strong>robuste <strong>,</strong>capable de gérer le découpage, l'abréviation, le filtrage et bien plus encore.</p>
 <p>Lorsque nous avons introduit la <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">recherche plein texte BM25</a> dans Milvus 2.5, nous avons inclus un analyseur personnalisable, qui a bien fonctionné pour ce pour quoi il avait été conçu. Vous pouviez définir un pipeline utilisant des tokenizers, des filtres de token et des filtres de caractères pour préparer le texte à l'indexation et à la recherche.</p>
 <p>Pour l'anglais, cette configuration était relativement simple. Mais les choses deviennent plus complexes lorsqu'il s'agit de langues multiples.</p>
 <h2 id="The-Challenge-of-Multilingual-Full-Text-Search" class="common-anchor-header">Le défi de la recherche multilingue en texte intégral<button data-href="#The-Challenge-of-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
@@ -135,7 +135,8 @@ origin: >-
 <li><p>Utilisation de l'<strong>analyseur multilingue</strong></p></li>
 <li><p>Utilisation du <strong>tokenizer d'identifiant de langue</strong></p></li>
 </ul>
-<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Étape 1 : configuration du client Milvus</h3><p><em>Tout d'abord, nous nous connectons à Milvus, définissons un nom de collection et nettoyons toutes les collections existantes pour repartir à zéro.</em></p>
+<p>👉 Pour obtenir le code de démonstration complet, consultez <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">cette page GitHub</a>.</p>
+<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Étape 1 : Configuration du client Milvus</h3><p><em>Tout d'abord, nous nous connectons à Milvus, définissons un nom de collection et nettoyons toutes les collections existantes pour repartir sur de nouvelles bases.</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 <span class="hljs-comment"># 1. Setup Milvus Client</span>
@@ -144,7 +145,7 @@ COLLECTION_NAME = <span class="hljs-string">&quot;multilingual_test&quot;</span>
 <span class="hljs-keyword">if</span> client.has_collection(collection_name=COLLECTION_NAME):
     client.drop_collection(collection_name=COLLECTION_NAME)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Étape 2 : Définition d'analyseurs pour plusieurs langues</h3><p>Ensuite, nous définissons un dictionnaire <code translate="no">analyzers</code> avec des configurations spécifiques à chaque langue. Celles-ci seront utilisées dans les deux méthodes de recherche multilingue présentées plus loin.</p>
+<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Étape 2 : Définir des analyseurs pour plusieurs langues</h3><p>Ensuite, nous définissons un dictionnaire <code translate="no">analyzers</code> avec des configurations spécifiques à chaque langue. Celles-ci seront utilisées dans les deux méthodes de recherche multilingue présentées plus loin.</p>
 <pre><code translate="no"><span class="hljs-comment"># 2. Define analyzers for multiple languages</span>
 <span class="hljs-comment"># These individual analyzer definitions will be reused by both methods.</span>
 analyzers = {
@@ -306,7 +307,7 @@ client.create_collection(
 )
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection &#x27;<span class="hljs-subst">{COLLECTION_NAME}</span>&#x27; created successfully with Language Identifier Tokenizer.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Insert-Data-and-Load-Collection" class="common-anchor-header">Insérer des données et charger une collection</h4><p>Insérez du texte dans différentes langues, sans avoir à les étiqueter. Milvus détecte et applique automatiquement l'analyseur correct.</p>
+<h4 id="Insert-Data-and-Load-Collection" class="common-anchor-header">Insérer des données et charger la collection</h4><p>Insérez du texte dans différentes langues, sans avoir à les étiqueter. Milvus détecte et applique automatiquement l'analyseur correct.</p>
 <pre><code translate="no"><span class="hljs-comment"># 4B. Insert Data for Language Identifier Tokenizer and Load Collection</span>
 <span class="hljs-comment"># Insert English and Japanese movie titles. The language_identifier will detect the language.</span>
 client.insert(

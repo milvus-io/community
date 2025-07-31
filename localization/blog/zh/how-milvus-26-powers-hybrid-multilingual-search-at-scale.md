@@ -103,7 +103,7 @@ origin: >-
 <p><strong>需求：</strong>您需要为每个文档提供语言元数据。目前仅适用于 BM25 搜索操作符。</p>
 <h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2.语言标识符标记器：自动语言检测</h3><p>我们知道，手动标记每篇内容并不总是切实可行的。<a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>语言识别标记器</strong></a>将自动语言检测直接引入文本分析管道。</p>
 <p><strong>工作原理如下：</strong>这个智能标记器会分析输入的文本，使用复杂的检测算法检测其语言，并自动应用适当的特定语言处理规则。您可以使用多个分析器定义对其进行配置--每种语言一个，外加一个默认的备用分析器。</p>
-<p>我们支持两种检测引擎：<code translate="no">whatlang</code> ，处理速度更快；<code translate="no">lingua</code> ，准确度更高。系统支持 71-75 种语言，具体取决于您选择的检测器。在索引和搜索过程中，标记符号生成器会根据检测到的语言自动选择正确的分析器，在检测不确定时会返回到默认配置。</p>
+<p>我们支持两种检测引擎：<code translate="no">whatlang</code> ，处理速度更快；<code translate="no">lingua</code> ，准确度更高。系统支持 71-75 种语言，具体取决于您选择的检测器。在索引和搜索过程中，标记符号生成器会根据检测到的语言自动选择正确的分析器，在检测不确定时，会返回到您的默认配置。</p>
 <p><strong>非常适合</strong>具有不可预测语言混合的动态环境、用户生成内容平台，或无法进行手动语言标记的应用。</p>
 <p><strong>权衡：</strong>自动检测会增加处理延迟，在处理非常短的文本或混合语言内容时可能会遇到困难。但对于大多数实际应用而言，其便利性远远超过了这些限制。</p>
 <h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3.ICU 标记器通用基础</h3><p>如果觉得前两个选项过于繁琐，我们还有更简单的选择。我们在 Milvus 2.6 中新集成了<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> ICU（International Components for Unicode）令牌器</a>。ICU 已经存在了很长时间--它是一套成熟、广泛使用的库，可以处理大量语言和脚本的文本处理。最酷的是，它可以同时处理各种复杂和简单的语言。</p>
@@ -131,6 +131,7 @@ origin: >-
 <li><p>使用<strong>多语言分析器</strong></p></li>
 <li><p>使用<strong>语言标识符标记器</strong></p></li>
 </ul>
+<p>有关完整的演示代码，请访问<a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">GitHub 页面</a>。</p>
 <h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">步骤 1：设置 Milvus 客户端</h3><p><em>首先，我们连接到 Milvus，设置一个 Collections 名称，并清理任何现有的 Collections 以重新开始。</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
@@ -378,5 +379,5 @@ client.drop_collection(collection_name=COLLECTION_NAME)
 <li><p><strong>基于标量的排序</strong>--通过任何数值字段对结果进行排序</p></li>
 <li><p><strong>高级 Rerankers</strong>- 使用模型或自定义评分逻辑对结果重新排序</p></li>
 </ul>
-<p>想了解 Milvus 2.6 的全部细节吗？请查看我们的最新文章：<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>介绍 Milvus 2.6：十亿规模的经济型向量搜索</strong></a><strong>。</strong></p>
+<p>想全面了解 Milvus 2.6？请查看我们的最新文章：<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>介绍 Milvus 2.6：十亿规模的经济型向量搜索</strong></a><strong>。</strong></p>
 <p>有问题或想深入了解任何功能？加入我们的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 频道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提交问题。</p>

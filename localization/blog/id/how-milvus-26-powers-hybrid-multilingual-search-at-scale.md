@@ -135,7 +135,8 @@ origin: >-
 <li><p>Menggunakan <strong>Penganalisis Multi-Bahasa</strong></p></li>
 <li><p>Menggunakan <strong>Tokenizer Pengenal Bahasa</strong></p></li>
 </ul>
-<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Langkah 1: Menyiapkan Klien Milvus</h3><p><em>Pertama, kita terhubung ke Milvus, menetapkan nama koleksi, dan membersihkan koleksi yang ada untuk memulai dari awal.</em></p>
+<p>👉 Untuk kode demo lengkap, lihat <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">halaman GitHub ini</a>.</p>
+<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Langkah 1: Menyiapkan Klien Milvus</h3><p><em>Pertama, kita terhubung ke Milvus, mengatur nama koleksi, dan membersihkan koleksi yang ada untuk memulai dari awal.</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 <span class="hljs-comment"># 1. Setup Milvus Client</span>
@@ -144,7 +145,7 @@ COLLECTION_NAME = <span class="hljs-string">&quot;multilingual_test&quot;</span>
 <span class="hljs-keyword">if</span> client.has_collection(collection_name=COLLECTION_NAME):
     client.drop_collection(collection_name=COLLECTION_NAME)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Langkah 2: Mendefinisikan Penganalisis untuk Beberapa Bahasa</h3><p>Selanjutnya, kita mendefinisikan kamus <code translate="no">analyzers</code> dengan konfigurasi khusus bahasa. Ini akan digunakan dalam kedua metode pencarian multibahasa yang akan ditunjukkan nanti.</p>
+<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Langkah 2: Tentukan Penganalisis untuk Beberapa Bahasa</h3><p>Selanjutnya, kita mendefinisikan kamus <code translate="no">analyzers</code> dengan konfigurasi khusus bahasa. Ini akan digunakan dalam kedua metode pencarian multibahasa yang akan ditunjukkan nanti.</p>
 <pre><code translate="no"><span class="hljs-comment"># 2. Define analyzers for multiple languages</span>
 <span class="hljs-comment"># These individual analyzer definitions will be reused by both methods.</span>
 analyzers = {

@@ -34,7 +34,7 @@ origin: >-
     </button></h2><p>現代のAIアプリケーションはますます複雑になっている。ある問題に対して、ただ一つの検索方法を投げかけて終わりというわけにはいかない。</p>
 <p>テキストや画像の意味を理解するための<strong>ベクトル検索</strong>、価格やカテゴリー、場所によって結果を絞り込むための<strong>メタデータフィルタリング</strong>、そして "Nike Air Max "のような直接的なクエリのための<strong>キーワード検索が</strong>必要だ。それぞれの方法は問題の異なる部分を解決するものであり、現実のシステムにはそれらすべてが連携する必要がある。</p>
 <p>検索の未来は、ベクトルとキーワードのどちらかを選ぶことではない。ベクトル、キーワード、フィルタリング、そして他の検索タイプをすべて1つの場所で組み合わせることなのだ。だからこそ、私たちは1年前にMilvus 2.5をリリースし、Milvusに<a href="https://milvus.io/docs/hybrid_search_with_milvus.md">ハイブリッド検索を</a>組み込み始めたのです。</p>
-<h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">しかし、全文検索は異なる働きをする<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
+<h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">しかし、フルテキスト検索は異なる働きをする<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,13 +72,13 @@ origin: >-
       </svg>
     </button></h2><p>多言語フルテキスト検索には、さまざまな課題がある：</p>
 <ul>
-<li><p><strong>複雑な言語は特別な扱いが必要です</strong>：中国語、日本語、韓国語などの言語は、単語と単語の間にスペースを使いません。これらの言語では、文字を意味のある単語に分割するための高度なトークナイザーが必要です。このようなツールは、単一言語ではうまく機能しても、複数の複雑な言語を同時にサポートすることはほとんどありません。</p></li>
+<li><p><strong>複雑な言語は特別な扱いが必要です</strong>：中国語、日本語、韓国語などの言語では、単語と単語の間にスペースを使いません。これらの言語では、文字を意味のある単語に分割するための高度なトークナイザーが必要です。このようなツールは、単一言語ではうまく機能しても、複数の複雑な言語を同時にサポートすることはほとんどありません。</p></li>
 <li><p><strong>似たような言語でも衝突することがある</strong>：英語とフランス語はどちらも単語を区切るのに空白を使うかもしれないが、ステミングやレマタイゼーションといった言語固有の処理を適用すると、一方の言語のルールが他方の言語のルールを妨害する可能性がある。英語のクエリの精度を向上させるものが、フランス語のクエリを歪めるかもしれません。</p></li>
 </ul>
-<p>要するに、<strong>言語が異なれば、異なる解析ツールが必要になる</strong>のです。英語のアナライザーで中国語のテキストを処理しようとすると、分割するスペースがないために失敗し、英語のステミングルールは中国語の文字を破損する可能性があります。</p>
+<p>要するに、<strong>言語が異なれば、異なる解析ツールが必要になる</strong>のです。英語のアナライザーで中国語のテキストを処理しようとすると、分割するスペースがなく、英語のステミングルールは中国語の文字を破損する可能性があります。</p>
 <p>要するに多言語データセットを単一のトークナイザーとアナライザーに依存すると、すべての言語で一貫性のある高品質のトークン化を行うことはほぼ不可能になります。そしてそれは、検索パフォーマンスの低下に直結します。</p>
 <p>Milvus 2.5で全文検索を採用し始めたチームから、同じようなフィードバックを聞くようになりました：</p>
-<p><em>"英語での検索には最適ですが、多言語でのカスタマーサポートチケットにはどうでしょうか？""ベクトル検索とBM25検索の両方が使えるのは嬉しいが、我々のデータセットには中国語、日本語、英語のコンテンツが含まれている。""すべての言語で同じ検索精度を得ることができますか？"</em></p>
+<p><em>"英語での検索には最適ですが、多言語のカスタマーサポートチケットについてはどうでしょうか？""ベクトル検索とBM25検索の両方が使えるのは嬉しいが、我々のデータセットには中国語、日本語、英語のコンテンツが含まれている。""すべての言語で同じ検索精度を得ることができますか？"</em></p>
 <p>これらの質問は、私たちがすでに実際に見てきたことを裏付けるものだった。意味的類似性は言語間でうまく機能しますが、正確なテキスト検索には各言語の構造を深く理解する必要があります。</p>
 <p>そのため、<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6では</a>、包括的な多言語サポートを備えた、完全にオーバーホールされたテキスト分析パイプラインを導入しました。この新システムでは、各言語に適した解析ツールが自動的に適用されるため、手作業による設定や品質の低下を招くことなく、多言語データセットに対して正確でスケーラブルな全文検索が可能になります。</p>
 <h2 id="How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="common-anchor-header">どのようにMilvus 2.6は、堅牢な多言語全文検索を可能にするか？<button data-href="#How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
@@ -131,6 +131,7 @@ origin: >-
 <li><p><strong>多言語アナライザーの</strong>使用</p></li>
 <li><p><strong>言語識別トーケナイザーの</strong>使用</p></li>
 </ul>
+<p>👉 完全なデモコードについては、<a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">こちらのGitHubページを</a>ご覧ください。</p>
 <h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">ステップ1: Milvusクライアントのセットアップ</h3><p><em>まず、Milvusに接続し、コレクション名を設定し、既存のコレクションをクリーンアップして新しく始めます。</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 

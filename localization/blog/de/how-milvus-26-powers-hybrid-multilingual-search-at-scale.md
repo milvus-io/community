@@ -103,7 +103,7 @@ origin: >-
 <p>Und<strong>so funktioniert es:</strong> Sie konfigurieren sprachspezifische Analyzer und kennzeichnen jedes Dokument beim Einfügen mit der jeweiligen Sprache. Wenn Sie eine BM25-Suche durchführen, geben Sie an, welcher Sprachanalysator für die Abfrageverarbeitung verwendet werden soll. Dadurch wird sichergestellt, dass sowohl Ihre indizierten Inhalte als auch Ihre Suchanfragen mit den optimalen Regeln für die jeweilige Sprache verarbeitet werden.</p>
 <p><strong>Perfekt für:</strong> Anwendungen, bei denen Sie die Sprache Ihrer Inhalte kennen und maximale Suchpräzision wünschen. Denken Sie an multinationale Wissensdatenbanken, lokalisierte Produktkataloge oder regionalspezifische Content-Management-Systeme.</p>
 <p><strong>Die Anforderung:</strong> Sie müssen für jedes Dokument sprachliche Metadaten bereitstellen. Derzeit nur für BM25-Suchvorgänge verfügbar.</p>
-<h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2. Sprachidentifikator Tokenizer: Automatische Erkennung der Sprache</h3><p>Wir wissen, dass es nicht immer praktikabel ist, jeden Inhalt manuell zu taggen. Mit dem <a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>Language Identifier Tokenizer</strong></a> wird die automatische Spracherkennung direkt in die Textanalyse-Pipeline integriert.</p>
+<h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2. Sprachidentifikator Tokenizer: Automatische Erkennung der Sprache</h3><p>Wir wissen, dass es nicht immer praktisch ist, jeden Inhalt manuell zu taggen. Mit dem <a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>Language Identifier Tokenizer</strong></a> wird die automatische Spracherkennung direkt in die Textanalyse-Pipeline integriert.</p>
 <p><strong>Und so funktioniert's:</strong> Dieser intelligente Tokenizer analysiert den eingehenden Text, erkennt die Sprache mithilfe hochentwickelter Erkennungsalgorithmen und wendet automatisch die entsprechenden sprachspezifischen Verarbeitungsregeln an. Sie konfigurieren ihn mit mehreren Analysatordefinitionen - eine für jede Sprache, die Sie unterstützen möchten, sowie einen Standard-Fallback-Analysator.</p>
 <p>Wir unterstützen zwei Erkennungsmodule: <code translate="no">whatlang</code> für eine schnellere Verarbeitung und <code translate="no">lingua</code> für eine höhere Genauigkeit. Das System unterstützt 71-75 Sprachen, je nach dem von Ihnen gewählten Detektor. Sowohl bei der Indizierung als auch bei der Suche wählt der Tokenizer automatisch den richtigen Analysator auf der Grundlage der erkannten Sprache aus und greift auf Ihre Standardkonfiguration zurück, wenn die Erkennung unsicher ist.</p>
 <p><strong>Perfekt für:</strong> Dynamische Umgebungen mit unvorhersehbaren Sprachmischungen, Plattformen mit benutzergenerierten Inhalten oder Anwendungen, bei denen eine manuelle Sprachkennzeichnung nicht möglich ist.</p>
@@ -127,12 +127,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Genug der Theorie - jetzt geht es an den Code! Im Folgenden erfahren Sie, wie Sie die neuen mehrsprachigen Funktionen in <strong>pymilvus</strong> nutzen können, um eine mehrsprachige Suchkollektion zu erstellen.</p>
+    </button></h2><p>Genug der Theorie - jetzt geht es an den Code! Hier erfahren Sie, wie Sie die neuen mehrsprachigen Funktionen in <strong>pymilvus</strong> nutzen können, um eine mehrsprachige Suchkollektion zu erstellen.</p>
 <p>Wir beginnen mit der Definition einiger wiederverwendbarer Analyzer-Konfigurationen und gehen dann durch <strong>zwei vollständige Beispiele</strong>:</p>
 <ul>
 <li><p>Verwendung des <strong>Multi-Language Analyzers</strong></p></li>
-<li><p>Verwendung des <strong>Language Identifier Tokenizers</strong></p></li>
+<li><p>Verwendung des <strong>Sprachidentifikators Tokenizer</strong></p></li>
 </ul>
+<p>👉 Den vollständigen Demo-Code finden Sie auf <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">dieser GitHub-Seite</a>.</p>
 <h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Schritt 1: Einrichten des Milvus-Clients</h3><p><em>Zunächst stellen wir eine Verbindung zu Milvus her, legen einen Sammlungsnamen fest und bereinigen alle vorhandenen Sammlungen, um neu zu beginnen.</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
@@ -142,7 +143,7 @@ COLLECTION_NAME = <span class="hljs-string">&quot;multilingual_test&quot;</span>
 <span class="hljs-keyword">if</span> client.has_collection(collection_name=COLLECTION_NAME):
     client.drop_collection(collection_name=COLLECTION_NAME)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Schritt 2: Definieren von Analysatoren für mehrere Sprachen</h3><p>Als nächstes definieren wir ein <code translate="no">analyzers</code> Wörterbuch mit sprachspezifischen Konfigurationen. Diese werden in den beiden später vorgestellten mehrsprachigen Suchmethoden verwendet.</p>
+<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Schritt 2: Definieren von Analyzern für mehrere Sprachen</h3><p>Als nächstes definieren wir ein <code translate="no">analyzers</code> Wörterbuch mit sprachspezifischen Konfigurationen. Diese werden in den beiden später vorgestellten mehrsprachigen Suchmethoden verwendet.</p>
 <pre><code translate="no"><span class="hljs-comment"># 2. Define analyzers for multiple languages</span>
 <span class="hljs-comment"># These individual analyzer definitions will be reused by both methods.</span>
 analyzers = {
@@ -165,7 +166,7 @@ analyzers = {
     }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Option-A-Using-The-Multi-Language-Analyzer" class="common-anchor-header">Option A: Verwendung des Multi-Language Analyzers</h3><p>Dieser Ansatz ist am besten geeignet, wenn Sie <strong>die Sprache jedes Dokuments bereits im Voraus kennen</strong>. Sie übergeben diese Informationen während des Einfügens der Daten über ein spezielles <code translate="no">language</code> Feld.</p>
+<h3 id="Option-A-Using-The-Multi-Language-Analyzer" class="common-anchor-header">Option A: Verwendung des Multi-Language Analyzers</h3><p>Dieser Ansatz ist am besten geeignet, wenn Sie <strong>die Sprache jedes Dokuments bereits im Voraus kennen</strong>. Sie übergeben diese Informationen beim Einfügen der Daten über ein spezielles Feld <code translate="no">language</code>.</p>
 <h4 id="Create-a-Collection-with-Multi-Language-Analyzer" class="common-anchor-header">Erstellen einer Sammlung mit dem Multi-Language Analyzer</h4><p>Wir erstellen eine Sammlung, in der das Feld <code translate="no">&quot;text&quot;</code> je nach dem Wert des Feldes <code translate="no">language</code> verschiedene Analysatoren verwendet.</p>
 <pre><code translate="no"><span class="hljs-comment"># --- Option A: Using Multi-Language Analyzer ---</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n--- Demonstrating Multi-Language Analyzer ---&quot;</span>)

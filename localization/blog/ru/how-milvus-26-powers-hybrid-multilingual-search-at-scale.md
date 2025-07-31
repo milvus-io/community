@@ -133,6 +133,7 @@ origin: >-
 <li><p>Использование <strong>многоязычного анализатора</strong></p></li>
 <li><p>Использование <strong>токенизатора языковых идентификаторов</strong></p></li>
 </ul>
+<p>👉 Полный код демоверсии можно найти на <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">этой странице GitHub</a>.</p>
 <h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Шаг 1: Настройка клиента Milvus</h3><p><em>Сначала мы подключаемся к Milvus, задаем имя коллекции и очищаем все существующие коллекции, чтобы начать с чистого листа.</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 

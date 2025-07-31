@@ -131,8 +131,9 @@ origin: >-
 <p>Inizieremo con la definizione di alcune configurazioni riutilizzabili dell'analizzatore, per poi passare a <strong>due esempi completi</strong>:</p>
 <ul>
 <li><p>Uso dell'<strong>analizzatore multilingue</strong></p></li>
-<li><p>Uso del <strong>Tokenizzatore di identificatori di lingua</strong></p></li>
+<li><p>Uso del <strong>Tokenizer dell'identificatore di lingua</strong></p></li>
 </ul>
+<p>👉 Per il codice demo completo, consultare <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">questa pagina GitHub</a>.</p>
 <h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Passo 1: Configurare il client Milvus</h3><p><em>Per prima cosa, ci connettiamo a Milvus, impostiamo il nome di una raccolta e puliamo le raccolte esistenti per iniziare da capo.</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
