@@ -115,7 +115,6 @@ We’ll start by defining some reusable analyzer configurations, then walk throu
 
 👉 For the complete demo code, check out this link.
 
-<https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search>
 
 
 ### Step 1: Set up the Milvus Client
