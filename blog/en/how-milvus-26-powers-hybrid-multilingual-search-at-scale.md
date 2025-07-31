@@ -113,7 +113,7 @@ We’ll start by defining some reusable analyzer configurations, then walk throu
 
 - Using the **Language Identifier Tokenizer**
 
-👉 For the complete demo code, check out this link.
+👉 For the complete demo code, check out [this link](https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search).
 
 
 
