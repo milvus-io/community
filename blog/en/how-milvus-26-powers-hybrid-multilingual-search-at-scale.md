@@ -5,7 +5,7 @@ title: >
 author: Zayne Yue
 date: 2025-07-30
 desc: Milvus 2.6 introduces a completely overhauled text analysis pipeline with comprehensive multi-language support for full text search.
-cover: assets.zilliz.com/How_Milvus_2_6_Powers_Hybrid_Multilingual_Search_at_Scale_cover_7feb4814dd.png
+cover: assets.zilliz.com/Frame_385dc22973.png
 tag: Engineering
 recommend: false
 publishToMedium: true
