@@ -1,62 +1,69 @@
 ---
 id: how-milvus-26-upgrades-multilingual-full-text-search-at-scale.md
 title: >
- How Milvus 2.6 Powers Hybrid Multilingual Search at Scale
+ How Milvus 2.6 Upgrades Multilingual Full-Text Search at Scale
 author: Zayne Yue
-date: 2025-07-31
-desc: Milvus 2.6 introduces multilingual text analysis with 3 new solutions: Multi-Language Analyzer, Language Identifier, and ICU Tokenizer.
+date: 2025-07-30
+desc: Milvus 2.6 introduces a completely overhauled text analysis pipeline with comprehensive multi-language support for full text search.
 cover: assets.zilliz.com/How_Milvus_2_6_Powers_Hybrid_Multilingual_Search_at_Scale_cover_7feb4814dd.png
 tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
-meta_keywords: Milvus, multilingual search, hybrid search, vector search
+meta_keywords: Milvus, multilingual search, hybrid search, vector search, full text search
 meta_title: > 
- How Milvus 2.6 Powers Hybrid Multilingual Search at Scale
-origin: https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md
+ How Milvus How Milvus 2.6 Upgrades Multilingual Full-Text Search at Scale
+origin: https://milvus.io/blog/how-milvus-26-upgrades-multilingual-full-text-search-at-scale.md
 ---
 
-# How Milvus 2.6 Powers Hybrid Multilingual Search at Scale
+## Introduction 
 
-Modern AI apps are becoming increasingly complex. You can't just throw one search method at a problem and call it done.
+Modern AI applications are becoming increasingly complex. You can't just throw one search method at a problem and call it done.
 
-Consider recommendation systems - they require vector search to understand text and images, metadata filtering for details like price and category, and keyword search for queries like "Nike Air Max." Each piece does something different, and you’ll need all of them working together.
+Take recommendation systems, for example—they require **vector search** to understand the meaning of text and images, **metadata filtering** to narrow results by price, category, or location, and **keyword search** for direct queries like "Nike Air Max." Each method solves a different part of the problem, and real-world systems need all of them working together.
 
-That's why we've been building hybrid search into Milvus. The future isn't vector OR keyword search - it's vector AND keyword AND filtering AND many more searches, all in one place.
-
-When we shipped [BM25 full-text search](https://milvus.io/docs/full-text-search.md#Full-Text-Search) in Milvus 2.5, we wanted to give you that keyword piece alongside our robust vector capabilities. The customizable analyzer worked well for what it was designed to do.
+The future of search isn’t about choosing between vector and keyword. It’s about combining vector AND keyword AND filtering, along with other search types—all in one place. That’s why we started building [hybrid search](https://milvus.io/docs/hybrid_search_with_milvus.md) into Milvus a year ago, with the release of Milvus 2.5.
 
 
-## When One Analyzer Isn't Enough
+## But Full-Text Search Works Differently
 
-The analyzer in Milvus 2.5 was a solid starting point. You could define a pipeline of tokenizers, token filters, and char filters to process text for indexing and searching. For English, setting up a standard tokenizer that splits text by whitespace and applies filters for lowercasing and stopword removal was straightforward. But what happens when your data spans multiple languages?
+Bringing full-text search into a vector-native system isn’t easy. Full-text search has its own set of challenges.
 
-The challenges in multilingual scenarios are more complex than they first appear:
+While vector search captures the _semantic_ meaning of text—turning it into high-dimensional vectors—full-text search depends on understanding **the structure of language**: how words are formed, where they begin and end, and how they relate to one another. For instance, when a user searches for "running shoes" in English, the text goes through several processing steps: 
 
-- **Complex Languages Need Special Treatment:** Languages like Chinese, Japanese, and Korean require specialized tokenizers that can intelligently segment strings of characters into meaningful words. While these specialized tokenizers often handle simpler languages adequately, they typically can't process multiple complex languages simultaneously.
+_Split on whitespace → lowercase → remove stopwords → stem "running" to "run"._
 
-- **Even Simple Languages Fight Each Other:** Languages like English and French might share a basic whitespace tokenizer, but further processing introduces conflicts. Apply language-specific filters like stemming or lemmatization, and the rules optimized for one language will likely break or cause errors for another.
+To handle this correctly, we need a robust **language analyzer**—one that handles splitting, stemming, filtering, and more.
 
-The bottom line: relying on a single tokenizer and analyzer for multilingual datasets makes it extremely difficult to guarantee accurate tokenization across all languages, inevitably leading to degraded search quality.
+When we introduced [BM25 full-text search](https://milvus.io/docs/full-text-search.md#Full-Text-Search) in Milvus 2.5, we included a customizable analyzer, and it worked well for what it was designed to do. You could define a pipeline using tokenizers, token filters, and character filters to prepare text for indexing and search.
 
-That's when we started hearing from you about exactly these issues.
+For English, this setup was relatively straightforward. But things become more complex when you deal with multiple languages.
+
+
+## The Challenge of Multilingual Full-Text Search
+
+Multilingual full-text search introduces a range of challenges:
+
+- **Complex languages need special treatment**: Languages like Chinese, Japanese, and Korean don’t use spaces between words. They need advanced tokenizers to segment characters into meaningful words. These tools may work well for a single language but rarely support multiple complex languages simultaneously.
+
+- **Even similar languages can conflict**: English and French might both use whitespace to separate words, but once you apply language-specific processing like stemming or lemmatization, one language’s rules can interfere with the other’s. What improves accuracy for English might distort French queries—and vice versa.
+
+In short, **different languages require different analyzers**. Trying to process Chinese text with an English analyzer leads to failure—there are no spaces to split on, and English stemming rules can corrupt Chinese characters.
+
+The bottom line? Relying on a single tokenizer and analyzer for multilingual datasets makes it nearly impossible to ensure consistent, high-quality tokenization across all languages. And that leads directly to degraded search performance.
+
+As teams began adopting full-text search in Milvus 2.5, we started hearing the same feedback:
 
 _"This is perfect for our searches in English, but what about our multilingual customer support tickets?" "We love having both vector and BM25 search, but our dataset includes Chinese, Japanese, and English content." "Can we get the same search precision across all our languages?"_
 
-These conversations confirmed what we'd discovered technically - that full-text search operates fundamentally differently from vector search. While vector search captures semantic meaning in high-dimensional space, full-text search relies on understanding language structure - how words are formed, where they begin and end, and how they relate to each other.
+These questions confirmed what we had already seen in practice: full-text search fundamentally differs from vector search. Semantic similarity works well across languages, but accurate text search requires a deep understanding of each language’s structure.
 
-Consider searching for "running shoes" in English versus "跑步鞋" in Chinese. Both mean the same thing semantically (which vector search handles beautifully), but the text analysis requirements are completely different:
-
-- **English:** Split on whitespace → lowercase → remove stopwords → stem "running" to "run"
-
-- **Chinese:** Segment characters into words → identify "跑步" (running) and "鞋" (shoes) as separate concepts
-
-Using an English analyzer on Chinese text fails catastrophically - there are no spaces to split on, and English stemming rules will corrupt Chinese characters.
-
-[**Milvus 2.6**](https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md) introduces our solution: a completely revamped text analysis pipeline with comprehensive multi-language support.
+That’s why [Milvus 2.6](https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md) introduces a completely overhauled text analysis pipeline with comprehensive multi-language support. This new system automatically applies the correct analyzer for each language, enabling accurate and scalable full-text search across multilingual datasets, without manual configuration or compromise in quality.
 
 
-## Revamped Text Analysis in Milvus 2.6: Three Multi-Language Solutions
+
+
+## How Milvus 2.6 Enables Robust Multilingual Full-Text Search
 
 After extensive research and development, we've built a suite of features that address different multilingual scenarios. Each approach solves the language-dependency problem in its own way.
 
@@ -106,9 +113,6 @@ We’ll start by defining some reusable analyzer configurations, then walk throu
 
 - Using the **Language Identifier Tokenizer**
 
-👉 For the complete demo code, check out this link.
-
-
 ### Step 1: Set up the Milvus Client
 
 _First, we connect to Milvus, set a collection name, and clean up any existing collections to start fresh._
@@ -153,12 +157,12 @@ analyzers = {
 ```
 
 
-## Option A: Using The Multi-Language Analyzer
+### Option A: Using The Multi-Language Analyzer
 
 This approach is best when you **know the language of each document ahead of time**. You'll pass that information through a dedicated ` language` field during data insertion.
 
 
-### Create a Collection with Multi-Language Analyzer
+#### Create a Collection with Multi-Language Analyzer
 
 We’ll create a collection where the ` "text"` field uses different analyzers depending on the `language` field value.
 
@@ -207,7 +211,7 @@ print(f"Collection '{COLLECTION_NAME}' created successfully.")
 ```
 
 
-### Insert Multilingual Data and Load Collection
+#### Insert Multilingual Data and Load Collection
 
 Now insert documents in English and Japanese. The `language` field tells Milvus which analyzer to use.
 
@@ -229,7 +233,7 @@ client.load_collection(collection_name=COLLECTION_NAME)
 ```
 
 
-### Run Full-Text Search
+#### Run Full-Text Search
 
 To search, specify which analyzer to use for the query based on its language.
 
@@ -265,17 +269,17 @@ print(f"Collection '{COLLECTION_NAME}' dropped.")
 ```
 
 
-### Results: 
+#### Results: 
 
 ![](https://assets.zilliz.com/1_results_561f628de3.png)
 
 
-## Option B: Using the Language Identifier Tokenizer
+### Option B: Using the Language Identifier Tokenizer
 
 This approach takes the manual language handling out of your hands. The **Language Identifier Tokenizer** automatically detects the language of each document and applies the correct analyzer—no need to specify a `language` field.
 
 
-### Create a Collection with Language Identifier Tokenizer
+#### Create a Collection with Language Identifier Tokenizer
 
 Here, we create a collection where the `"text"` field uses automatic language detection to choose the right analyzer.
 
@@ -323,7 +327,7 @@ print(f"Collection '{COLLECTION_NAME}' created successfully with Language Identi
 ```
 
 
-### Insert Data and Load Collection
+#### Insert Data and Load Collection
 
 Insert text in different languages—no need to label them. Milvus detects and applies the correct analyzer automatically.
 
@@ -346,7 +350,7 @@ client.load_collection(collection_name=COLLECTION_NAME)
 ```
 
 
-### Run Full-Text Search
+#### Run Full-Text Search
 
 Here’s the best part: **no need to specify an analyzer** when searching. The tokenizer automatically detects the query language and applies the right logic.
 
@@ -382,7 +386,7 @@ print(f"Collection '{COLLECTION_NAME}' dropped.")
 ```
 
 
-### Results
+#### Results
 
 ![](https://assets.zilliz.com/2_results_486712c3f6.png)
 
