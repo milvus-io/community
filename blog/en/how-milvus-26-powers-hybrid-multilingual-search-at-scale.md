@@ -1,5 +1,5 @@
 ---
-id: how-milvus-26-powers-hybrid-multilingual-search-at-scale.md
+id: how-milvus-26-upgrades-multilingual-full-text-search-at-scale.md
 title: >
  How Milvus 2.6 Powers Hybrid Multilingual Search at Scale
 author: Zayne Yue
