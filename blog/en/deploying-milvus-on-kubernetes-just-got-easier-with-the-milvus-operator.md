@@ -5,9 +5,9 @@ title: >
 author: Min Yin
 date: 2025-08-04
 desc: Milvus Operator is a Kubernetes-native management tool that automates the complete lifecycle of Milvus vector database deployments. 
-cover: assets.zilliz.com/
-tag: Engineering
-recommend: true
+cover: https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+tag: Tutorials
+recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
 meta_keywords: Milvus Operator, Kubernetes, How to deploy Milvus on Kubernetes 
@@ -115,7 +115,7 @@ This visual structure, with distinct colored blocks and directional arrows, effe
 
 This walkthrough shows you how to deploy Milvus using the Operator. We'll use these versions in thi s guide. 
 
-- **Operating System**: openEuler 22.03 LTS SP3 x86\_64
+- **Operating System**: openEuler 22.03 LTS SP3 x86_64
 
 - **Kubernetes**: v1.28.8
 
@@ -440,7 +440,7 @@ milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-2  
 
 #### Verifying Milvus Resource Limits
 
-For example, to verify that the resource limits for the \``` mixcoord` `` component have been applied correctly, run:
+For example, to verify that the resource limits for the `mixcoord` component have been applied correctly, run:
 
 ```
 kubectl get deployment milvus-release-v25-milvus-mixcoord -o jsonpath='{.spec.template.spec.containers[*].resources.limits}' | jq
@@ -465,7 +465,7 @@ registry.milvus-mirror.cn/milvusdb/milvus:v2.5.4
 
 A common question is: How can you access Milvus services from outside your Kubernetes cluster?
 
-By default, the Milvus service deployed by the Operator is of type \``` ClusterIP` ``, meaning it is only accessible within the cluster. To expose it externally, you must define an external access method. This guide opts for the simplest approach: using a NodePort.
+By default, the Milvus service deployed by the Operator is of type `ClusterIP`, meaning it is only accessible within the cluster. To expose it externally, you must define an external access method. This guide opts for the simplest approach: using a NodePort.
 
 Create and edit the service manifest for external access:
 
