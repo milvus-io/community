@@ -4,7 +4,7 @@ title: ベクターデータベースに話しかける：自然言語によるm
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'vector database, mcp, LLM, claude, gemini'
@@ -180,7 +180,7 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 <p><strong>オプション B: カーソル IDE</strong></p>
 <ol>
 <li><p>カーソル設定を開く → 機能 → MCP</p></li>
-<li><p>新しいグローバルMCPサーバーを追加する (<code translate="no">.cursor/mcp.json</code> を作成します)</p></li>
+<li><p>新しいグローバルMCPサーバーを追加する (<code translate="no">.cursor/mcp.json</code> が作成されます)</p></li>
 <li><p>この設定を追加します：</p></li>
 </ol>
 <p>注意: 実際のファイル構造に合わせてパスを調整してください。</p>
@@ -216,7 +216,7 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 <li>カーソルを再起動するか、ウィンドウをリロードします。</li>
 </ol>
 <p><code translate="no">uv</code> P<strong>ro tip:</strong>macOS/Linuxでは<code translate="no">which uv</code> 、Windowsでは<code translate="no">where uv</code> 。</p>
-<h3 id="Step-5-See-It-in-Action" class="common-anchor-header">ステップ 5: 実際に操作してみる</h3><p>設定したら、以下の自然言語コマンドを試してみてください：</p>
+<h3 id="Step-5-See-It-in-Action" class="common-anchor-header">ステップ 5: 実際に操作してみる</h3><p>設定が完了したら、以下の自然言語コマンドを試してみてください：</p>
 <ul>
 <li><p><strong>データベースを調べる：</strong>"Milvusデータベースにどんなコレクションがありますか？"</p></li>
 <li><p><strong>新しいコレクションを作成する：</strong>"タイトル(文字列)、コンテンツ(文字列)、埋め込み用の768次元ベクトルフィールドを持つ'articles'というコレクションを作成する"</p></li>

@@ -6,7 +6,7 @@ title: >-
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'vector database, mcp, LLM, claude, gemini'
@@ -20,7 +20,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/talk-to-your-vector-database-managing-milvus-via-natural-language.md
 ---
-<p>Вы когда-нибудь хотели, чтобы ваш помощник по искусственному интеллекту мог просто сказать: <em>"Покажите мне все коллекции в моей векторной базе данных"</em> или <em>"Найдите документы, похожие на этот текст"</em>, и чтобы он действительно работал?</p>
+<p>Вы когда-нибудь мечтали о том, чтобы просто сказать своему помощнику по искусственному интеллекту: <em>"Покажите мне все коллекции в моей векторной базе данных"</em> или <em>"Найдите документы, похожие на этот текст"</em>, и чтобы он действительно сработал?</p>
 <p><a href="http://github.com/zilliztech/mcp-server-milvus"><strong>Milvus MCP Server</strong></a> делает это возможным, подключая вашу векторную базу данных Milvus непосредственно к помощникам по кодированию ИИ, таким как Claude Desktop и Cursor IDE, через протокол Model Context Protocol (MCP). Вместо того чтобы писать код <code translate="no">pymilvus</code>, вы можете управлять всем Milvus с помощью разговоров на естественном языке.</p>
 <ul>
 <li><p>Без Milvus MCP Server: Написание скриптов Python с помощью pymilvus SDK для поиска векторов</p></li>

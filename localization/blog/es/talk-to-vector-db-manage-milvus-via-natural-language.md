@@ -6,7 +6,7 @@ title: >-
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'vector database, mcp, LLM, claude, gemini'
@@ -112,7 +112,7 @@ uvx --version
   </span>
 </p>
 <h3 id="Step-2-Set-Up-Milvus" class="common-anchor-header">Paso 2: Configurar Milvus</h3><p><a href="https://milvus.io/">Milvus</a> es una base de datos vectorial de código abierto nativa para cargas de trabajo de IA, creada por <a href="https://zilliz.com/">Zilliz</a>. Diseñada para gestionar entre millones y miles de millones de registros vectoriales, cuenta con más de 36.000 estrellas en GitHub. Sobre esta base, Zilliz también ofrece <a href="https://zilliz.com/cloud">Zilliz Cloud, un</a>servicio totalmente gestionado de Milvus diseñado para ofrecer facilidad de uso, rentabilidad y seguridad con una arquitectura nativa en la nube.</p>
-<p>Para conocer los requisitos de despliegue de Milvus, visite <a href="https://milvus.io/docs/prerequisite-docker.md">esta guía en el sitio de documentación</a>.</p>
+<p>Para conocer los requisitos de despliegue de Milvus, visite <a href="https://milvus.io/docs/prerequisite-docker.md">esta guía en el sitio doc.</a></p>
 <p><strong>Requisitos mínimos:</strong></p>
 <ul>
 <li><p><strong>Software:</strong> Docker, Docker Compose</p></li>
@@ -261,7 +261,7 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El <strong>Servidor MCP de Milvus</strong> de código abierto es una gran solución para despliegues locales o autoalojados de Milvus. Pero si está utilizando <a href="https://zilliz.com/cloud">Zilliz Cloud, el</a>servicio totalmente gestionado y de nivel empresarial creado por los creadores de Milvus, existe una alternativa especialmente diseñada: <a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Zilliz MCP</strong></a> Server.</p>
+    </button></h2><p>El <strong>Servidor MCP de Milvus</strong> de código abierto es una gran solución para despliegues locales o autoalojados de Milvus. Pero si está utilizando <a href="https://zilliz.com/cloud">Zilliz Cloud, el</a>servicio totalmente gestionado y de nivel empresarial creado por los creadores de Milvus, existe una alternativa especialmente diseñada: el <a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Servidor MCP</strong></a> de <a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Zilliz</strong></a>.</p>
 <p><a href="https://zilliz.com/cloud">Zilliz Cloud</a> elimina la sobrecarga de gestionar su propia instancia de Milvus ofreciendo una base de datos vectorial nativa de la nube escalable, de alto rendimiento y segura. Zilliz <strong>MCP Server</strong> se integra directamente con Zilliz Cloud y expone sus capacidades como herramientas compatibles con MCP. Esto significa que su asistente de IA, ya sea en Claude, Cursor u otro entorno compatible con MCP, ahora puede consultar, gestionar y organizar su espacio de trabajo de Zilliz Cloud utilizando lenguaje natural.</p>
 <p>
   <span class="img-wrapper">
@@ -292,7 +292,7 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Y eso es todo - acaba de aprender cómo convertir Milvus en una base de datos vectorial amigable con el lenguaje natural <em>con la</em> que literalmente puede <em>hablar</em>. Ya no tendrá que rebuscar en los documentos del SDK ni escribir código repetitivo para crear una colección o ejecutar una búsqueda.</p>
+    </button></h2><p>Y eso es todo - usted acaba de aprender cómo convertir Milvus en una base de datos vectorial amigable con el lenguaje natural <em>con la</em> que literalmente puede <em>hablar</em>. Ya no tendrá que rebuscar en los documentos del SDK ni escribir código repetitivo para crear una colección o ejecutar una búsqueda.</p>
 <p>Tanto si ejecuta Milvus localmente como si utiliza Zilliz Cloud, el servidor MCP proporciona a su asistente de IA una caja de herramientas para gestionar sus datos vectoriales como un profesional. Sólo tienes que escribir lo que quieres hacer, y dejar que Claude o Cursor se encarguen del resto.</p>
 <p>Así que adelante, encienda su herramienta de desarrollo de IA, pregunte "¿qué colecciones tengo?" y véalo en acción. Nunca querrás volver a escribir consultas vectoriales a mano.</p>
 <ul>

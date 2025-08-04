@@ -4,7 +4,7 @@ title: 'Parlare con il database vettoriale: Gestire Milvus con il linguaggio nat
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'vector database, mcp, LLM, claude, gemini'
@@ -21,7 +21,7 @@ origin: >-
 <p>Avete mai desiderato di poter dire al vostro assistente AI: <em>"Mostrami tutte le collezioni del mio database vettoriale"</em> o <em>"Trova documenti simili a questo testo"</em> e farlo funzionare davvero?</p>
 <p>Il <a href="http://github.com/zilliztech/mcp-server-milvus"><strong>Milvus MCP Server</strong></a> lo rende possibile collegando il vostro database vettoriale Milvus direttamente agli assistenti di codifica AI come Claude Desktop e Cursor IDE attraverso il Model Context Protocol (MCP). Invece di scrivere codice <code translate="no">pymilvus</code>, potete gestire l'intero Milvus attraverso conversazioni in linguaggio naturale.</p>
 <ul>
-<li><p>Senza Milvus MCP Server: Scrittura di script Python con pymilvus SDK per la ricerca di vettori</p></li>
+<li><p>Senza Milvus MCP Server: Scrittura di script Python con l'SDK pymilvus per la ricerca di vettori</p></li>
 <li><p>Con Milvus MCP Server: "Trova documenti simili a questo testo nella mia collezione".</p></li>
 </ul>
 <p>👉 <strong>Repository GitHub:</strong><a href="https://github.com/zilliztech/mcp-server-milvus"> github.com/zilliztech/mcp-server-milvus</a></p>

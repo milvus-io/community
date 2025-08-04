@@ -6,7 +6,7 @@ title: >-
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'vector database, mcp, LLM, claude, gemini'
@@ -27,7 +27,7 @@ origin: >-
 <li><p>Com o Milvus MCP Server: "Encontrar documentos semelhantes a este texto na minha coleção."</p></li>
 </ul>
 <p>👉 <strong>Repositório GitHub:</strong><a href="https://github.com/zilliztech/mcp-server-milvus"> github.com/zilliztech/mcp-server-milvus</a></p>
-<p>E se estiver a utilizar <a href="https://zilliz.com/cloud">o Zilliz Cloud</a> (Milvus gerido), também o temos coberto. No final deste blogue, apresentaremos também o <strong>Zilliz MCP Server</strong>, uma opção gerida que funciona perfeitamente com o Zilliz Cloud. Vamos lá.</p>
+<p>E se estiver a utilizar <a href="https://zilliz.com/cloud">o Zilliz Cloud</a> (Milvus gerido), também o ajudamos. No final deste blogue, apresentaremos também o <strong>Zilliz MCP Server</strong>, uma opção gerida que funciona perfeitamente com o Zilliz Cloud. Vamos lá.</p>
 <h2 id="What-Youll-Get-with-Milvus-MCP-Server" class="common-anchor-header">O que obterá com o Servidor MCP Milvus<button data-href="#What-Youll-Get-with-Milvus-MCP-Server" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -277,7 +277,7 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 <li><p><strong>Configure o seu assistente compatível com o MCP</strong> (Claude, Cursor, etc.) para se ligar à sua instância do Zilliz Cloud.</p></li>
 </ol>
 <p>Isto dá-lhe o melhor dos dois mundos: pesquisa vetorial poderosa com uma infraestrutura de nível de produção, agora acessível através do inglês simples.</p>
-<h2 id="Wrapping-Up" class="common-anchor-header">Conclusão<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
+<h2 id="Wrapping-Up" class="common-anchor-header">Concluindo<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
