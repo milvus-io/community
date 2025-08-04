@@ -5,7 +5,7 @@ title: >
 author: Lawrence Luo
 date: 2025-08-01
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: vector database, mcp, LLM, claude, gemini
