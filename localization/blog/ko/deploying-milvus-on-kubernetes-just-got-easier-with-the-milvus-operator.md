@@ -7,7 +7,7 @@ desc: >-
   Milvus Operator는 Milvus 벡터 데이터베이스 배포의 전체 라이프사이클을 자동화하는 Kubernetes 네이티브 관리
   도구입니다.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -19,7 +19,7 @@ origin: >-
   https://milvus.io/blog/deploying-milvus-on-kubernetes-just-got-easier-with-the-milvus-operator.md
 ---
 <p>프로덕션 준비가 완료된 Milvus 클러스터를 설정하는 것은 폭탄을 해체하는 것처럼 느껴지지 않아야 합니다. 하지만 벡터 데이터베이스를 위해 Kubernetes 배포를 수동으로 구성해본 사람이라면 수십 개의 YAML 파일, 복잡한 종속성 관리, 새벽 2시에 무언가 고장 났는데 47개의 구성 파일 중 어떤 것이 원인인지 모를 때 느끼는 허탈감을 잘 알고 있을 것입니다.</p>
-<p>Milvus를 배포하는 전통적인 접근 방식은 메타데이터 저장소를 위한 etcd, 메시지 큐를 위한 Pulsar, 개체 저장소를 위한 MinIO, 그리고 다양한 Milvus 구성 요소 자체 등 여러 서비스를 오케스트레이션하는 것을 포함합니다. 각 서비스에는 신중한 구성, 적절한 시작 순서, 지속적인 유지 관리가 필요합니다. 이를 여러 환경이나 클러스터에 걸쳐 확장하면 운영 복잡성이 압도적으로 증가합니다.</p>
+<p>Milvus를 배포하는 전통적인 접근 방식은 메타데이터 저장소를 위한 etcd, 메시지 큐를 위한 Pulsar, 개체 저장소를 위한 MinIO, 그리고 다양한 Milvus 구성 요소 자체 등 여러 서비스를 오케스트레이션하는 것을 포함합니다. 각 서비스에는 신중한 구성, 적절한 시작 순서, 지속적인 유지 관리가 필요합니다. 이를 여러 환경 또는 클러스터로 확장하면 운영 복잡성이 압도적으로 증가합니다.</p>
 <p>바로 이 부분에서 <a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator가</strong></a> 근본적으로 판도를 바꿉니다. 인프라를 수동으로 관리하는 대신 사용자가 원하는 것을 설명하면 운영자가 그 방법을 처리합니다.</p>
 <h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">밀버스 오퍼레이터란 무엇인가요?<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -37,8 +37,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvus<a href="https://milvus.io/docs/install_cluster-milvusoperator.md"><strong>Operator는</strong></a> Milvus 벡터 데이터베이스 배포의 전체 라이프사이클을 자동화하는 Kubernetes 네이티브 관리 도구입니다. Kubernetes Operator 패턴을 기반으로 구축된 이 도구는 프로덕션 환경에서 Milvus를 실행하는 데 대한 수년간의 운영 지식을 요약하고 해당 전문 지식을 클러스터와 함께 실행되는 소프트웨어로 코드화합니다.</p>
-<p>잠도 자지 않고, 오타도 내지 않으며, 모든 구성 세부 사항을 완벽하게 기억하는 전문 Milvus 관리자가 있다고 생각하면 됩니다. 오퍼레이터는 클러스터의 상태를 지속적으로 모니터링하고, 확장 결정을 자동으로 처리하며, 다운타임 없이 업그레이드를 관리하고, 사람보다 더 빠르게 장애를 복구합니다.</p>
-<p>Operator는 기본적으로 네 가지 필수 기능을 제공합니다.</p>
+<p>잠을 자지 않고, 오타를 내지 않으며, 모든 구성 세부 사항을 완벽하게 기억하는 전문 Milvus 관리자가 있다고 생각하면 됩니다. 오퍼레이터는 클러스터의 상태를 지속적으로 모니터링하고, 확장 결정을 자동으로 처리하며, 다운타임 없이 업그레이드를 관리하고, 사람보다 더 빠르게 장애를 복구합니다.</p>
+<p>Operator의 핵심은 네 가지 필수 기능을 제공합니다.</p>
 <ul>
 <li><p><strong>자동화된 배포</strong>: 단일 매니페스트로 모든 기능을 갖춘 Milvus 클러스터를 설정하세요.</p></li>
 <li><p><strong>수명 주기 관리</strong>: 정의된 안전한 순서에 따라 업그레이드, 수평적 확장, 리소스 해체를 자동화합니다.</p></li>

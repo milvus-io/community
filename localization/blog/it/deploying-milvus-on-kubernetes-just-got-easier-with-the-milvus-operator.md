@@ -10,7 +10,7 @@ desc: >-
   automatizza il ciclo di vita completo delle distribuzioni di database
   vettoriali Milvus.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -21,8 +21,8 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/deploying-milvus-on-kubernetes-just-got-easier-with-the-milvus-operator.md
 ---
-<p>Configurare un cluster Milvus pronto per la produzione non dovrebbe sembrare di disinnescare una bomba. Chiunque abbia configurato manualmente Kubernetes per i database vettoriali conosce la procedura: decine di file YAML, una gestione intricata delle dipendenze e quella sensazione di sprofondamento quando qualcosa si rompe alle 2 del mattino e non si sa quale dei 47 file di configurazione sia il colpevole.</p>
-<p>L'approccio tradizionale alla distribuzione di Milvus prevede l'orchestrazione di più servizi: Etcd per l'archiviazione dei metadati, Pulsar per l'accodamento dei messaggi, MinIO per l'archiviazione degli oggetti e i vari componenti di Milvus. Ogni servizio richiede un'attenta configurazione, una corretta sequenza di avvio e una manutenzione continua. Se si estende il tutto a più ambienti o cluster, la complessità operativa diventa schiacciante.</p>
+<p>Configurare un cluster Milvus pronto per la produzione non dovrebbe sembrare di disinnescare una bomba. Chiunque abbia configurato manualmente Kubernetes per i database vettoriali conosce la procedura: decine di file YAML, una gestione intricata delle dipendenze e quella sensazione di sconforto quando qualcosa si rompe alle 2 del mattino e non si sa quale dei 47 file di configurazione sia il colpevole.</p>
+<p>L'approccio tradizionale alla distribuzione di Milvus prevede l'orchestrazione di più servizi: Etcd per l'archiviazione dei metadati, Pulsar per l'accodamento dei messaggi, MinIO per l'archiviazione degli oggetti e i vari componenti di Milvus. Ogni servizio richiede un'attenta configurazione, una corretta sequenza di avvio e una manutenzione continua. Se poi si estende il tutto a più ambienti o cluster, la complessità operativa diventa schiacciante.</p>
 <p>È qui che <a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a> cambia radicalmente le carte in tavola. Invece di gestire manualmente l'infrastruttura, si descrive ciò che si vuole e l'Operatore si occupa del come.</p>
 <h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">Che cos'è Milvus Operator?<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -438,7 +438,7 @@ milvus-release-v25-pulsar-zookeeper   ClusterIP   <span class="hljs-literal">Non
 <ol start="3">
 <li>Accesso alla WebUI di Milvus</li>
 </ol>
-<p>Milvus offre una GUI integrata, la Milvus WebUI, che migliora l'osservabilità con un'interfaccia intuitiva. La si può utilizzare per monitorare le metriche dei componenti Milvus e delle loro dipendenze, per esaminare informazioni dettagliate su database e collezioni e per controllare i dettagli completi della configurazione. Per ulteriori dettagli, consultare la <a href="https://milvus.io/docs/milvus-webui.md">documentazione ufficiale di Milvus WebUI</a>.</p>
+<p>Milvus offre una GUI integrata, la Milvus WebUI, che migliora l'osservabilità con un'interfaccia intuitiva. La si può usare per monitorare le metriche dei componenti Milvus e delle loro dipendenze, per esaminare informazioni dettagliate su database e collezioni e per controllare i dettagli completi della configurazione. Per ulteriori dettagli, consultare la <a href="https://milvus.io/docs/milvus-webui.md">documentazione ufficiale di Milvus WebUI</a>.</p>
 <p>Dopo la distribuzione, aprire il seguente URL nel browser (sostituire <code translate="no">&lt;any_k8s_node_IP&gt;</code> con l'indirizzo IP di qualsiasi nodo Kubernetes):</p>
 <p><code translate="no">http://&lt;any_k8s_node_IP&gt;:31531/webui/</code></p>
 <p>In questo modo si avvia l'interfaccia WebUI.</p>
@@ -459,7 +459,7 @@ milvus-release-v25-pulsar-zookeeper   ClusterIP   <span class="hljs-literal">Non
       </svg>
     </button></h2><p><strong>Milvus Operator</strong> è più di uno strumento di distribuzione: è un investimento strategico nell'eccellenza operativa dell'infrastruttura di database vettoriali. Automatizzando le attività di routine e incorporando le best practice nell'ambiente Kubernetes, libera i team di concentrarsi su ciò che conta di più: costruire e migliorare le applicazioni AI.</p>
 <p>L'adozione di una gestione basata sugli operatori richiede un certo sforzo iniziale, comprese le modifiche ai flussi di lavoro e ai processi dei team. Ma per le organizzazioni che operano su scala, o che hanno in programma di farlo, i vantaggi a lungo termine sono significativi: maggiore affidabilità, riduzione dei costi operativi e cicli di distribuzione più rapidi e coerenti.</p>
-<p>Man mano che l'intelligenza artificiale diventa il fulcro delle moderne operazioni aziendali, la necessità di un'infrastruttura di database vettoriale robusta e scalabile non fa che crescere. Milvus Operator supporta questa evoluzione offrendo un approccio maturo e orientato all'automazione che si adatta al carico di lavoro e alle esigenze specifiche.</p>
+<p>Man mano che l'IA diventa fondamentale per le moderne operazioni aziendali, la necessità di un'infrastruttura di database vettoriale robusta e scalabile non fa che crescere. Milvus Operator supporta questa evoluzione offrendo un approccio maturo e orientato all'automazione che si adatta al carico di lavoro e alle esigenze specifiche.</p>
 <p>Se il vostro team si trova ad affrontare una complessità operativa, a prevedere una crescita o semplicemente a voler ridurre la gestione manuale dell'infrastruttura, l'adozione tempestiva di Milvus Operator può contribuire a evitare futuri debiti tecnici e a migliorare la resilienza complessiva del sistema.</p>
 <p>Il futuro dell'infrastruttura è intelligente, automatizzato e facile da sviluppare. <strong>Milvus Operator porta questo futuro nel vostro livello di database, oggi.</strong></p>
 <hr>

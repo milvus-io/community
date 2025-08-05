@@ -5,7 +5,7 @@ author: Min Yin
 date: 2025-08-04T00:00:00.000Z
 desc: Milvus Operator 是 Kubernetes 原生管理工具，可將 Milvus 向量資料庫部署的完整生命週期自動化。
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -35,7 +35,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md"><strong>Milvus Operator</strong></a>是 Kubernetes 原生管理工具，可將 Milvus 向量資料庫部署的完整生命週期自動化。它以 Kubernetes Operator 模式為基礎，將多年來有關在生產中運行 Milvus 的作業知識濃縮，並將這些專業知識編成軟體，與您的叢集一起運行。</p>
-<p>您可以將它想像成是一位專業的 Milvus 管理員，他從不睡覺、從不打錯字，並且對每個組態細節都有完美的記憶。Operator 會持續監控您的集群健康狀況、自動處理擴充決定、管理升級而不會造成停機時間，並比任何人為操作員更快地從故障中恢復。</p>
+<p>您可以把它想像成是一位專業的 Milvus 管理員，他從不睡覺、從不打錯字，並且對每個組態細節都有完美的記憶。Operator 會持續監控您的集群健康狀況、自動處理擴充決定、管理升級而不會造成停機時間，並比任何人為操作員更快地從故障中恢復。</p>
 <p>操作員的核心功能有四個。</p>
 <ul>
 <li><p><strong>自動部署</strong>：使用單一艙單建立功能完整的 Milvus 叢集。</p></li>
@@ -70,7 +70,7 @@ origin: >-
 <ol>
 <li><p><strong>自訂資源 (CR)：</strong>使用者使用 CR 定義 Milvus 部署 (例如：kind:<code translate="no">Milvus</code>)。此檔案包括群集模式、映像版本、資源需求和依賴性等設定。</p></li>
 <li><p><strong>控制器邏輯：</strong>操作員控制器會觀察新的或更新的 CR。一旦偵測到變更，它就會協調建立所需的元件 - Milvus 服務和依賴項目，例如 etcd、Pulsar 和 MinIO。</p></li>
-<li><p><strong>自動化生命週期管理：</strong>當發生變更（例如更新版本或修改儲存）時，Operator 會執行滾動更新或重新配置元件，而不會中斷群集。</p></li>
+<li><p><strong>自動化生命週期管理：</strong>當發生變更（例如更新版本或修改儲存空間）時，Operator 會執行滾動更新或重新配置元件，而不會中斷群集。</p></li>
 <li><p><strong>自我修復：</strong>控制器會持續檢查每個元件的健康狀況。如果有任何元件當機，它會自動替換 pod 或還原服務狀態，以確保正常運作時間。</p></li>
 </ol>
 <p>這種方法比傳統的 YAML 或 Helm 部署更強大，因為它提供持續管理，而不只是初始設定。</p>
@@ -89,7 +89,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>部署 Milvus 時，您可以選擇手動 YAML 檔案、Helm 圖表或 Milvus Operator。每種方法都有它的用武之地，但操作員為持續操作提供了顯著的優勢。</p>
+    </button></h2><p>部署 Milvus 時，您可以選擇手動 YAML 檔案、Helm 圖表或 Milvus Operator。每種方式都有它的用武之地，但操作員為持續操作提供了顯著的優勢。</p>
 <h3 id="Operation-Automation" class="common-anchor-header">操作自動化</h3><p>傳統方法需要手動執行例行性工作。擴充意味著更新數個組態檔案，並協調變更。升級需要仔細規劃，以避免服務中斷。Operator 會自動處理這些工作。它可以偵測需要調整的時間，並安全地執行變更。升級變成簡單的組態更新，Operator 會根據需要執行適當的順序和回退功能。</p>
 <h3 id="Better-State-Visibility" class="common-anchor-header">更好的狀態可視性</h3><p>YAML 檔案會告訴 Kubernetes 您想要什麼，但卻無法顯示系統目前的健康狀況。Helm 有助於組態管理，但無法監控應用程式的執行時狀態。Operator 會持續監控您的整個群集。它可以偵測資源問題或回應緩慢等問題，並在問題變得嚴重之前採取行動。這種主動的監控方式可大幅提升可靠性。</p>
 <h3 id="Easier-Long-term-Management" class="common-anchor-header">更輕鬆的長期管理</h3><p>使用 YAML 檔案管理多個環境意味著要保持許多組態檔案同步。即使有 Helm 範本，複雜的作業仍需要大量的手動協調。</p>
@@ -364,7 +364,7 @@ milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-<sp
 milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-<span class="hljs-number">1</span>   <span class="hljs-title class_">Bound</span>    pvc-<span class="hljs-number">75904229</span>-3bbf-458e-b0e3-3982e430621b   5Gi        <span class="hljs-variable constant_">RWO</span>            nfs-sc         36m
 milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-<span class="hljs-number">2</span>   <span class="hljs-title class_">Bound</span>    pvc-2e068b79-75ac-4aa9-<span class="hljs-number">9e90</span>-423ff399bad0   5Gi        <span class="hljs-variable constant_">RWO</span>            nfs-sc         36m
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Verifying-Milvus-Resource-Limits" class="common-anchor-header">驗證 Milvus 資源限制</h4><p>例如，要驗證<code translate="no">mixcoord</code> 元件的資源限制是否已正確套用，請執行：</p>
+<h4 id="Verifying-Milvus-Resource-Limits" class="common-anchor-header">驗證 Milvus 資源限制</h4><p>例如，若要驗證<code translate="no">mixcoord</code> 元件的資源限制已正確套用，請執行：</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment milvus-release-v25-milvus-mixcoord -o jsonpath=<span class="hljs-string">&#x27;{.spec.template.spec.containers[*].resources.limits}&#x27;</span> | jq
 {
   <span class="hljs-string">&quot;cpu&quot;</span>: <span class="hljs-string">&quot;2&quot;</span>,

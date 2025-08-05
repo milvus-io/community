@@ -5,7 +5,7 @@ author: Min Yin
 date: 2025-08-04T00:00:00.000Z
 desc: Milvus OperatorはKubernetesネイティブの管理ツールで、Milvusベクターデータベースのデプロイのライフサイクル全体を自動化します。
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -101,7 +101,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>図は、Kubernetesクラスタ内でのMilvus Operatorのデプロイ構造を明確に表しています：</p>
+<p>図は、Kubernetesクラスタ内でのMilvus Operatorのデプロイ構造を明確に示しています：</p>
 <ul>
 <li><p>左（青い領域）：コントローラやMilvus-CRDを含むOperatorのコアコンポーネント。</p></li>
 <li><p>右（緑のエリア）：Proxy、Coordinator、Nodeなど、Milvusクラスタのさまざまなコンポーネント。</p></li>

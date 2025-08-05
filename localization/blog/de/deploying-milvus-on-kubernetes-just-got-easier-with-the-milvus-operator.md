@@ -9,7 +9,7 @@ desc: >-
   Milvus Operator ist ein Kubernetes-natives Verwaltungstool, das den gesamten
   Lebenszyklus von Milvus-Vektor-Datenbankimplementierungen automatisiert.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -39,7 +39,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md"><strong>Milvus Operator</strong></a> ist ein Kubernetes-natives Management-Tool, das den gesamten Lebenszyklus von Milvus-Vektordatenbank-Implementierungen automatisiert. Es basiert auf dem Kubernetes Operator-Muster und bündelt jahrelanges operatives Wissen über den Betrieb von Milvus in der Produktion und kodifiziert dieses Wissen in einer Software, die neben Ihrem Cluster läuft.</p>
-<p>Stellen Sie sich einen erfahrenen Milvus-Administrator vor, der niemals schläft, keine Tippfehler macht und sich jedes Konfigurationsdetail perfekt merken kann. Der Operator überwacht kontinuierlich den Zustand Ihres Clusters, trifft automatisch Skalierungsentscheidungen, verwaltet Upgrades ohne Ausfallzeiten und erholt sich von Ausfällen schneller als jeder menschliche Operator es könnte.</p>
+<p>Stellen Sie sich vor, Sie hätten einen erfahrenen Milvus-Administrator, der niemals schläft, keine Tippfehler macht und sich jedes Konfigurationsdetail perfekt merken kann. Der Operator überwacht kontinuierlich den Zustand Ihres Clusters, trifft automatisch Skalierungsentscheidungen, verwaltet Upgrades ohne Ausfallzeiten und erholt sich von Ausfällen schneller als jeder menschliche Operator es könnte.</p>
 <p>Im Kern bietet der Operator vier wesentliche Funktionen.</p>
 <ul>
 <li><p><strong>Automatisierte Bereitstellung</strong>: Richten Sie einen voll funktionsfähigen Milvus-Cluster mit einem einzigen Manifest ein.</p></li>
@@ -52,7 +52,7 @@ origin: >-
 <ul>
 <li><p>Mithilfe<strong>von benutzerdefinierten Ressourcendefinitionen</strong> können Sie Ihre Anwendung mit Konfigurationsdateien im Kubernetes-Stil beschreiben.</p></li>
 <li><p><strong>Ein Controller</strong> überwacht diese Konfigurationen und nimmt die erforderlichen Änderungen an Ihrem Cluster vor.</p></li>
-<li><p><strong>Die Zustandsverwaltung</strong> stellt sicher, dass Ihr Cluster mit dem übereinstimmt, was Sie angefordert haben, und behebt etwaige Abweichungen.</p></li>
+<li><p><strong>Die Zustandsverwaltung</strong> stellt sicher, dass Ihr Cluster mit dem übereinstimmt, was Sie angefordert haben, und behebt etwaige Unterschiede.</p></li>
 </ul>
 <p>Das bedeutet, dass Sie Ihre Milvus-Bereitstellung auf eine vertraute Art und Weise beschreiben können und der Operator die gesamte Detailarbeit der Erstellung von Pods, der Einrichtung von Netzwerken und der Verwaltung des Lebenszyklus übernimmt...</p>
 <h2 id="How-the-Milvus-Operator-Works" class="common-anchor-header">Wie der Milvus Operator funktioniert<button data-href="#How-the-Milvus-Operator-Works" class="anchor-icon" translate="no">
@@ -94,7 +94,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Bei der Bereitstellung von Milvus haben Sie die Wahl zwischen manuellen YAML-Dateien, Helm-Diagrammen oder dem Milvus Operator. Jedes hat seine Berechtigung, aber der Operator bietet erhebliche Vorteile für den laufenden Betrieb.</p>
-<h3 id="Operation-Automation" class="common-anchor-header">Automatisierung des Betriebs</h3><p>Traditionelle Methoden erfordern manuelle Arbeit für Routineaufgaben. Skalierung bedeutet, dass mehrere Konfigurationsdateien aktualisiert und die Änderungen koordiniert werden müssen. Upgrades müssen sorgfältig geplant werden, um Serviceunterbrechungen zu vermeiden. Der Operator erledigt diese Aufgaben automatisch. Er kann erkennen, wann eine Skalierung erforderlich ist, und die Änderungen sicher durchführen. Upgrades werden zu einfachen Konfigurationsaktualisierungen, die der Operator in der richtigen Reihenfolge und bei Bedarf mit Rollback-Funktionen ausführt.</p>
+<h3 id="Operation-Automation" class="common-anchor-header">Automatisierung des Betriebs</h3><p>Traditionelle Methoden erfordern manuelle Arbeit für Routineaufgaben. Skalierung bedeutet, mehrere Konfigurationsdateien zu aktualisieren und die Änderungen zu koordinieren. Upgrades müssen sorgfältig geplant werden, um Serviceunterbrechungen zu vermeiden. Der Operator erledigt diese Aufgaben automatisch. Er kann erkennen, wann eine Skalierung erforderlich ist, und die Änderungen sicher durchführen. Upgrades werden zu einfachen Konfigurationsaktualisierungen, die der Operator in der richtigen Reihenfolge und bei Bedarf mit Rollback-Funktionen ausführt.</p>
 <h3 id="Better-State-Visibility" class="common-anchor-header">Bessere Statustransparenz</h3><p>YAML-Dateien sagen Kubernetes, was Sie wollen, aber sie zeigen Ihnen nicht den aktuellen Zustand Ihres Systems. Helm hilft bei der Konfigurationsverwaltung, überwacht aber nicht den Laufzeitzustand Ihrer Anwendung. Der Operator überwacht kontinuierlich Ihren gesamten Cluster. Er kann Probleme wie Ressourcenprobleme oder langsame Antworten erkennen und Maßnahmen ergreifen, bevor sie zu ernsthaften Problemen werden. Diese proaktive Überwachung verbessert die Zuverlässigkeit erheblich.</p>
 <h3 id="Easier-Long-term-Management" class="common-anchor-header">Leichtere langfristige Verwaltung</h3><p>Die Verwaltung mehrerer Umgebungen mit YAML-Dateien bedeutet, dass viele Konfigurationsdateien synchronisiert werden müssen. Selbst mit Helm-Vorlagen erfordern komplexe Vorgänge immer noch einen erheblichen manuellen Koordinierungsaufwand.</p>
 <p>Der Operator kapselt das Milvus-Verwaltungswissen in seinem Code. Das bedeutet, dass Teams Cluster effektiv verwalten können, ohne Experten für jede Komponente zu werden. Die Betriebsschnittstelle bleibt bei der Skalierung Ihrer Infrastruktur konsistent.</p>
@@ -457,8 +457,8 @@ milvus-release-v25-pulsar-zookeeper   ClusterIP   <span class="hljs-literal">Non
         ></path>
       </svg>
     </button></h2><p><strong>Milvus Operator</strong> ist mehr als nur ein Bereitstellungstool - es ist eine strategische Investition in die operative Exzellenz der Vector-Datenbankinfrastruktur. Durch die Automatisierung von Routineaufgaben und die Einbettung von Best Practices in Ihre Kubernetes-Umgebung können sich die Teams auf das Wesentliche konzentrieren: die Entwicklung und Verbesserung von KI-gesteuerten Anwendungen.</p>
-<p>Die Einführung des Operator-basierten Managements erfordert einige Vorleistungen, einschließlich Änderungen an Workflows und Teamprozessen. Aber für Unternehmen, die in großem Maßstab arbeiten oder dies planen, sind die langfristigen Vorteile beträchtlich: höhere Zuverlässigkeit, geringerer betrieblicher Aufwand und schnellere, konsistentere Bereitstellungszyklen.</p>
-<p>Da KI zum Kernstück moderner Geschäftsabläufe wird, steigt der Bedarf an einer robusten, skalierbaren Vektordatenbankinfrastruktur. Der Milvus Operator unterstützt diese Entwicklung, indem er einen ausgereiften, automatisierungsorientierten Ansatz bietet, der mit Ihrer Arbeitslast skaliert und sich an Ihre spezifischen Anforderungen anpasst.</p>
+<p>Die Einführung des Operator-basierten Managements erfordert einige Vorleistungen, einschließlich Änderungen an Workflows und Teamprozessen. Für Unternehmen, die in großem Maßstab arbeiten oder dies planen, sind die langfristigen Vorteile jedoch beträchtlich: höhere Zuverlässigkeit, geringerer betrieblicher Aufwand und schnellere, konsistentere Bereitstellungszyklen.</p>
+<p>Da KI zum Kernstück moderner Geschäftsabläufe wird, steigt der Bedarf an einer robusten, skalierbaren Vektordatenbankinfrastruktur. Der Milvus Operator unterstützt diese Entwicklung, indem er einen ausgereiften, auf Automatisierung ausgerichteten Ansatz bietet, der mit Ihrer Arbeitslast skaliert und sich an Ihre spezifischen Anforderungen anpasst.</p>
 <p>Wenn Ihr Team mit betrieblicher Komplexität konfrontiert ist, mit Wachstum rechnet oder einfach die manuelle Verwaltung der Infrastruktur reduzieren möchte, kann die frühzeitige Einführung des Milvus Operator dazu beitragen, zukünftige technische Schulden zu vermeiden und die allgemeine Systemstabilität zu verbessern.</p>
 <p>Die Zukunft der Infrastruktur ist intelligent, automatisiert und entwicklerfreundlich. <strong>Milvus Operator bringt diese Zukunft in Ihre Datenbankschicht - und das schon heute.</strong></p>
 <hr>

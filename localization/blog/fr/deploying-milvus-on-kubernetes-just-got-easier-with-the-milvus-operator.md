@@ -9,7 +9,7 @@ desc: >-
   Milvus Operator est un outil de gestion natif de Kubernetes qui automatise le
   cycle de vie complet des déploiements de bases de données vectorielles Milvus.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -39,7 +39,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md"><strong>Milvus Operator</strong></a> est un outil de gestion natif de Kubernetes qui automatise le cycle de vie complet des déploiements de bases de données vectorielles Milvus. Construit sur le modèle Kubernetes Operator, il encapsule des années de connaissances opérationnelles sur l'exécution de Milvus en production et codifie cette expertise dans un logiciel qui s'exécute aux côtés de votre cluster.</p>
-<p>Cela revient à disposer d'un administrateur Milvus expert qui ne dort jamais, ne fait jamais de fautes de frappe et se souvient parfaitement de tous les détails de la configuration. L'Opérateur surveille en permanence l'état de santé de votre cluster, gère automatiquement les décisions de mise à l'échelle, gère les mises à niveau sans interruption de service et récupère les pannes plus rapidement qu'un opérateur humain ne pourrait le faire.</p>
+<p>Cela revient à disposer d'un administrateur Milvus expert qui ne dort jamais, ne fait jamais de fautes de frappe et se souvient parfaitement de tous les détails de la configuration. L'Opérateur surveille en permanence la santé de votre cluster, gère automatiquement les décisions de mise à l'échelle, gère les mises à niveau sans interruption de service et récupère les pannes plus rapidement qu'un opérateur humain ne pourrait le faire.</p>
 <p>À la base, l'opérateur offre quatre fonctionnalités essentielles.</p>
 <ul>
 <li><p><strong>Déploiement automatisé</strong>: Configurez un cluster Milvus entièrement fonctionnel à l'aide d'un seul manifeste.</p></li>

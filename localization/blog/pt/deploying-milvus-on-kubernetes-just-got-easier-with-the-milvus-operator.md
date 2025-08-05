@@ -8,7 +8,7 @@ desc: >-
   automatiza o ciclo de vida completo das implantações de banco de dados
   vetorial do Milvus.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -71,7 +71,7 @@ origin: >-
       </svg>
     </button></h2><p>O Milvus Operator segue um processo simples que torna a gestão da base de dados muito mais simples. Vamos analisar o modelo operacional principal do Milvus Operator:</p>
 <ol>
-<li><p><strong>Recurso Personalizado (CR):</strong> Os utilizadores definem uma implementação Milvus usando um CR (por exemplo, tipo: <code translate="no">Milvus</code>). Este ficheiro inclui configurações como o modo de cluster, versão da imagem, requisitos de recursos e dependências.</p></li>
+<li><p><strong>Recurso Personalizado (CR):</strong> Os utilizadores definem uma implementação Milvus usando um CR (por exemplo, kind: <code translate="no">Milvus</code>). Este ficheiro inclui configurações como o modo de cluster, versão da imagem, requisitos de recursos e dependências.</p></li>
 <li><p><strong>Lógica do Controlador:</strong> O controlador do Operador observa se há CRs novos ou atualizados. Assim que detecta uma mudança, ele orquestra a criação dos componentes necessários - serviços Milvus e dependências como etcd, Pulsar e MinIO.</p></li>
 <li><p><strong>Gerenciamento automatizado do ciclo de vida:</strong> Quando ocorrem alterações - como atualizar a versão ou modificar o armazenamento - o Operator executa atualizações contínuas ou reconfigura componentes sem interromper o cluster.</p></li>
 <li><p><strong>Auto-cura:</strong> O controlador verifica continuamente a saúde de cada componente. Se algo falhar, ele substitui automaticamente o pod ou restaura o estado do serviço para garantir o tempo de atividade.</p></li>
@@ -93,10 +93,10 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Ao implementar o Milvus, pode escolher entre ficheiros YAML manuais, gráficos Helm, ou o Milvus Operator. Cada um tem o seu lugar, mas o Operator oferece vantagens significativas para as operações em curso.</p>
-<h3 id="Operation-Automation" class="common-anchor-header">Automatização da operação</h3><p>Os métodos tradicionais requerem trabalho manual para tarefas de rotina. Escalar significa atualizar vários ficheiros de configuração e coordenar as alterações. As actualizações necessitam de um planeamento cuidadoso para evitar interrupções de serviço. O Operator lida com estas tarefas automaticamente. Pode detetar quando o escalonamento é necessário e efetuar as alterações de forma segura. As actualizações tornam-se simples actualizações de configuração que o Operator executa com sequenciação adequada e capacidades de reversão, se necessário.</p>
+<h3 id="Operation-Automation" class="common-anchor-header">Automatização da operação</h3><p>Os métodos tradicionais requerem trabalho manual para tarefas de rotina. Escalar significa atualizar vários ficheiros de configuração e coordenar as alterações. As actualizações necessitam de um planeamento cuidadoso para evitar interrupções de serviço. O Operator lida com estas tarefas automaticamente. Pode detetar quando o escalonamento é necessário e efetuar as alterações de forma segura. Os upgrades tornam-se simples actualizações de configuração que o Operator executa com sequenciação adequada e capacidades de reversão, se necessário.</p>
 <h3 id="Better-State-Visibility" class="common-anchor-header">Melhor visibilidade do estado</h3><p>Os arquivos YAML dizem ao Kubernetes o que você quer, mas eles não mostram a saúde atual do seu sistema. O Helm ajuda na gestão da configuração, mas não monitoriza o estado da sua aplicação em tempo de execução. O Operator observa continuamente todo o seu cluster. Ele pode detetar problemas como problemas de recursos ou respostas lentas e tomar medidas antes que eles se tornem problemas sérios. Esta monitorização proactiva melhora significativamente a fiabilidade.</p>
-<h3 id="Easier-Long-term-Management" class="common-anchor-header">Gestão mais fácil a longo prazo</h3><p>Gerir vários ambientes com ficheiros YAML significa manter muitos ficheiros de configuração sincronizados. Mesmo com modelos Helm, operações complexas ainda requerem uma coordenação manual significativa.</p>
-<p>O Operator encapsula o conhecimento de gestão do Milvus no seu código. Isto significa que as equipas podem gerir clusters de forma eficaz sem se tornarem especialistas em cada componente. A interface operacional mantém-se consistente à medida que a sua infraestrutura aumenta.</p>
+<h3 id="Easier-Long-term-Management" class="common-anchor-header">Gestão mais fácil a longo prazo</h3><p>Gerir vários ambientes com ficheiros YAML significa manter muitos ficheiros de configuração sincronizados. Mesmo com modelos Helm, operações complexas ainda exigem uma coordenação manual significativa.</p>
+<p>O Operator encapsula o conhecimento de gestão do Milvus no seu código. Isto significa que as equipas podem gerir clusters de forma eficaz sem se tornarem especialistas em cada componente. A interface operacional mantém-se consistente à medida que a sua infraestrutura se expande.</p>
 <p>Utilizar o Operator significa escolher uma abordagem mais automatizada para a gestão do Milvus. Reduz o trabalho manual ao mesmo tempo que melhora a fiabilidade através da experiência incorporada - benefícios valiosos à medida que as bases de dados vectoriais se tornam mais críticas para as aplicações.</p>
 <h3 id="The-Architecture-of-Milvus-Operation" class="common-anchor-header">A arquitetura do Milvus Operation</h3><p>
   <span class="img-wrapper">

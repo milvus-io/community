@@ -8,7 +8,7 @@ desc: >-
   automatiza el ciclo de vida completo de las implementaciones de bases de datos
   vectoriales de Milvus.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -44,7 +44,7 @@ origin: >-
 <li><p><strong>Despliegue automatizado</strong>: Configure un clúster Milvus totalmente funcional con un único manifiesto.</p></li>
 <li><p><strong>Gestión del ciclo de vida</strong>: Automatice las actualizaciones, el escalado horizontal y el desmantelamiento de recursos en un orden definido y seguro.</p></li>
 <li><p><strong>Supervisión y comprobaciones de estado integradas</strong>: Supervise continuamente el estado de los componentes de Milvus y sus dependencias relacionadas, incluidos etcd, Pulsar y MinIO.</p></li>
-<li><p><strong>Mejores prácticas operativas por defecto</strong>: Aplique patrones nativos de Kubernetes que garanticen la fiabilidad sin necesidad de profundos conocimientos de la plataforma.</p></li>
+<li><p><strong>Mejores prácticas operativas por defecto</strong>: Aplique patrones nativos de Kubernetes que garanticen la confiabilidad sin requerir un profundo conocimiento de la plataforma.</p></li>
 </ul>
 <h3 id="Understanding-the-Kubernetes-Operator-Pattern" class="common-anchor-header">Comprender el patrón de operador de Kubernetes</h3><p>Antes de explorar las ventajas de Milvus Operator, entendamos primero la base sobre la que se construye: el <strong>patrón Kubernetes Operator.</strong></p>
 <p>El patrón Kubernetes Operator ayuda a gestionar aplicaciones complejas que necesitan algo más que las funciones básicas de Kubernetes. Un Operador tiene tres partes principales:</p>
@@ -97,7 +97,7 @@ origin: >-
 <h3 id="Better-State-Visibility" class="common-anchor-header">Mejor visibilidad del estado</h3><p>Los archivos YAML le dicen a Kubernetes lo que usted quiere, pero no le muestran el estado actual de su sistema. Helm ayuda con la gestión de la configuración, pero no supervisa el estado de ejecución de su aplicación. El Operador vigila continuamente todo su clúster. Puede detectar problemas como problemas de recursos o respuestas lentas y tomar medidas antes de que se conviertan en problemas graves. Esta supervisión proactiva mejora significativamente la fiabilidad.</p>
 <h3 id="Easier-Long-term-Management" class="common-anchor-header">Gestión a largo plazo más sencilla</h3><p>Gestionar múltiples entornos con archivos YAML significa mantener sincronizados muchos archivos de configuración. Incluso con plantillas Helm, las operaciones complejas siguen requiriendo una importante coordinación manual.</p>
 <p>The Operator encapsula el conocimiento de gestión de Milvus en su código. Esto significa que los equipos pueden gestionar clusters de forma efectiva sin convertirse en expertos en cada componente. La interfaz operativa se mantiene consistente a medida que su infraestructura escala.</p>
-<p>Utilizar Operator significa optar por un enfoque más automatizado de la gestión de Milvus. Reduce el trabajo manual a la vez que mejora la fiabilidad a través de la experiencia incorporada, ventajas valiosas a medida que las bases de datos vectoriales se vuelven más críticas para las aplicaciones.</p>
+<p>Utilizar Operator significa optar por un enfoque más automatizado de la gestión de Milvus. Reduce el trabajo manual a la vez que mejora la fiabilidad a través de la experiencia integrada, ventajas valiosas a medida que las bases de datos vectoriales se vuelven más críticas para las aplicaciones.</p>
 <h3 id="The-Architecture-of-Milvus-Operation" class="common-anchor-header">La arquitectura de Milvus Operation</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_operator_deployment_architecture_3ff8570480.png" alt="" class="doc-image" id="" />

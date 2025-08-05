@@ -7,7 +7,7 @@ desc: >-
   Milvus Operator adalah alat manajemen asli Kubernetes yang mengotomatiskan
   siklus hidup lengkap penerapan basis data vektor Milvus.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -18,8 +18,8 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/deploying-milvus-on-kubernetes-just-got-easier-with-the-milvus-operator.md
 ---
-<p>Menyiapkan cluster Milvus yang siap produksi seharusnya tidak terasa seperti menjinakkan bom. Namun, siapa pun yang pernah mengonfigurasi penerapan Kubernetes secara manual untuk basis data vektor pasti tahu masalahnya: lusinan berkas YAML, manajemen ketergantungan yang rumit, dan perasaan yang tidak menentu saat ada yang rusak pada pukul 2 dini hari dan Anda tidak tahu pasti berkas konfigurasi mana yang menjadi biang keladinya.</p>
-<p>Pendekatan tradisional untuk menerapkan Milvus melibatkan pengaturan beberapa layanan - etcd untuk penyimpanan metadata, Pulsar untuk antrian pesan, MinIO untuk penyimpanan objek, dan berbagai komponen Milvus itu sendiri. Setiap layanan membutuhkan konfigurasi yang cermat, urutan startup yang tepat, dan pemeliharaan yang berkelanjutan. Skala ini di beberapa lingkungan atau cluster, dan kompleksitas operasional menjadi luar biasa.</p>
+<p>Menyiapkan cluster Milvus yang siap produksi seharusnya tidak terasa seperti menjinakkan bom. Namun, siapa pun yang pernah mengonfigurasi penerapan Kubernetes secara manual untuk basis data vektor pasti tahu masalahnya: lusinan berkas YAML, manajemen ketergantungan yang rumit, dan perasaan yang tidak menentu saat ada yang rusak pada pukul 2 dini hari dan Anda tidak tahu pasti yang mana di antara 47 berkas konfigurasi itu yang menjadi biang keladinya.</p>
+<p>Pendekatan tradisional untuk menerapkan Milvus melibatkan pengaturan beberapa layanan - etcd untuk penyimpanan metadata, Pulsar untuk antrian pesan, MinIO untuk penyimpanan objek, dan berbagai komponen Milvus itu sendiri. Setiap layanan membutuhkan konfigurasi yang cermat, urutan startup yang tepat, dan pemeliharaan yang berkelanjutan. Skala ini di berbagai lingkungan atau cluster, dan kompleksitas operasional menjadi luar biasa.</p>
 <p>Di sinilah <a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a> secara fundamental mengubah permainan. Alih-alih mengelola infrastruktur secara manual, Anda mendeskripsikan apa yang Anda inginkan, dan Operator menangani caranya.</p>
 <h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">Apa yang dimaksud dengan Milvus Operator?<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -295,7 +295,7 @@ spec:
 <p>Menyebarkan cluster Milvus:</p>
 <pre><code translate="no">kubectl apply -f milvus_cluster_default.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Verifying-Milvus-Cluster-Status" class="common-anchor-header">Memverifikasi Status Cluster Milvus</h4><p>Operator Milvus pertama-tama menyiapkan dependensi middleware untuk Milvus-seperti etcd, Zookeeper, Pulsar, dan MinIO-sebelum men-deploy komponen Milvus (mis., proksi, koordinator, dan node).</p>
+<h4 id="Verifying-Milvus-Cluster-Status" class="common-anchor-header">Memverifikasi Status Cluster Milvus</h4><p>Operator Milvus pertama-tama menyiapkan dependensi middleware untuk Milvus-seperti etcd, Zookeeper, Pulsar, dan MinIO-sebelum men-deploy komponen Milvus (mis., proxy, koordinator, dan node).</p>
 <p>Lihat Penyebaran:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment
 <button class="copy-code-btn"></button></code></pre>

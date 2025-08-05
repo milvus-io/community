@@ -5,7 +5,7 @@ author: Min Yin
 date: 2025-08-04T00:00:00.000Z
 desc: Milvus Operator 是一个 Kubernetes 原生管理工具，可自动执行 Milvus 向量数据库部署的整个生命周期。
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -18,7 +18,7 @@ origin: >-
 ---
 <p>建立一个生产就绪的 Milvus 集群不应该像拆除炸弹一样。然而，为向量数据库手动配置过 Kubernetes 部署的人都知道其中的艰辛：几十个 YAML 文件、错综复杂的依赖关系管理，以及凌晨两点出现故障时的那种沉甸甸的感觉，而你却不确定 47 个配置文件中哪个是罪魁祸首。</p>
 <p>部署 Milvus 的传统方法涉及协调多个服务--用于元数据存储的 etcd、用于消息队列的 Pulsar、用于对象存储的 MinIO 以及 Milvus 各个组件本身。每项服务都需要精心配置、正确的启动顺序和持续维护。将其扩展到多个环境或集群，操作的复杂性就会变得难以承受。</p>
-<p>这就是<a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a>从根本上改变游戏规则的地方。您只需描述自己想要什么，操作符就会处理如何操作，而无需手动管理基础设施。</p>
+<p>这就是<a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a>从根本上改变游戏规则的地方。您无需手动管理基础设施，只需描述您想要什么，操作符就会处理如何操作。</p>
 <h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">什么是 Milvus 操作符？<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -46,7 +46,7 @@ origin: >-
 <h3 id="Understanding-the-Kubernetes-Operator-Pattern" class="common-anchor-header">了解 Kubernetes 操作符模式</h3><p>在探索 Milvus 操作符的优势之前，我们先来了解一下它的基础：<strong>Kubernetes 操作符模式。</strong></p>
 <p>Kubernetes 操作符模式有助于管理需要比 Kubernetes 基本功能更多的复杂应用。操作符有三个主要部分：</p>
 <ul>
-<li><p><strong>自定义资源定义（Custom Resource Definitions</strong>）让你使用 Kubernetes 风格的配置文件来描述你的应用。</p></li>
+<li><p><strong>自定义资源定义（Custom Resource Definitions</strong>）可以让你使用 Kubernetes 风格的配置文件来描述你的应用。</p></li>
 <li><p><strong>控制器</strong>会监控这些配置，并对集群进行必要的更改。</p></li>
 <li><p><strong>状态管理</strong>确保你的集群符合你的要求，并修复任何差异。</p></li>
 </ul>
@@ -454,7 +454,7 @@ milvus-release-v25-pulsar-zookeeper   ClusterIP   <span class="hljs-literal">Non
       </svg>
     </button></h2><p><strong>Milvus Operator</strong>不仅仅是一个部署工具，它还是对向量数据库基础架构卓越操作的战略性投资。通过将常规任务自动化并将最佳实践嵌入 Kubernetes 环境，它可以让团队专注于最重要的事情：构建和改进人工智能驱动的应用。</p>
 <p>采用基于操作符的管理确实需要一些前期努力，包括改变工作流程和团队流程。但对于大规模运营或计划大规模运营的企业来说，长期收益是显著的：可靠性提高、操作开销降低，以及部署周期更快、更一致。</p>
-<p>随着人工智能成为现代业务操作的核心，对强大、可扩展的向量数据库基础架构的需求与日俱增。Milvus 操作符通过提供一种成熟的、自动化优先的方法来支持这种演进，这种方法可随着您的工作负载进行扩展，并适应您的特定需求。</p>
+<p>随着人工智能成为现代业务操作的核心，对强大、可扩展的向量数据库基础架构的需求与日俱增。Milvus 操作符通过提供一种成熟的、自动化优先的方法来支持这种演进，这种方法可以随着您的工作负载进行扩展，并适应您的特定需求。</p>
 <p>如果您的团队正面临操作复杂性、预期增长或只是想减少手动基础架构管理，尽早采用 Milvus Operator 将有助于避免未来的技术债务，并提高整体系统的弹性。</p>
 <p>基础设施的未来是智能化、自动化和对开发人员友好的。<strong>Milvus Operator 将这种未来带到了您的数据库层--就在今天。</strong></p>
 <hr>

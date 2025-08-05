@@ -8,7 +8,7 @@ desc: >-
   автоматизирует полный жизненный цикл развертывания векторных баз данных
   Milvus.
 cover: >-
-  https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+  assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -20,7 +20,7 @@ origin: >-
   https://milvus.io/blog/deploying-milvus-on-kubernetes-just-got-easier-with-the-milvus-operator.md
 ---
 <p>Настройка готового к производству кластера Milvus не должна быть похожа на обезвреживание бомбы. Однако каждый, кто вручную настраивал развертывание Kubernetes для векторных баз данных, знает, что это такое: десятки YAML-файлов, сложное управление зависимостями и то чувство замирания, когда что-то ломается в два часа ночи, а вы не уверены, какой из 47 конфигурационных файлов является виновником.</p>
-<p>Традиционный подход к развертыванию Milvus предполагает оркестровку множества сервисов -etcd для хранения метаданных, Pulsar для очереди сообщений, MinIO для хранения объектов и самих различных компонентов Milvus. Каждая служба требует тщательной настройки, правильной последовательности запуска и постоянного обслуживания. Если масштабировать это на несколько сред или кластеров, то сложность эксплуатации станет непомерной.</p>
+<p>Традиционный подход к развертыванию Milvus включает в себя оркестровку множества сервисов -etcd для хранения метаданных, Pulsar для очереди сообщений, MinIO для хранения объектов, а также самих компонентов Milvus. Каждая служба требует тщательной настройки, правильной последовательности запуска и постоянного обслуживания. Если масштабировать это на несколько сред или кластеров, то сложность эксплуатации станет непомерной.</p>
 <p>Именно здесь <a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a> кардинально меняет ситуацию. Вместо того чтобы управлять инфраструктурой вручную, вы описываете, что вам нужно, а Оператор решает, как это сделать.</p>
 <h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">Что такое Milvus Operator?<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
