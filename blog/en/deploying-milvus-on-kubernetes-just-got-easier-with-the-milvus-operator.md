@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2025-08-04
 desc: Milvus Operator is a Kubernetes-native management tool that automates the complete lifecycle of Milvus vector database deployments. 
-cover: https://assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
+cover: assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
