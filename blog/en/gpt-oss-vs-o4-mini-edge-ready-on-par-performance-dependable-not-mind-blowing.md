@@ -1,6 +1,7 @@
 ---
 id: gpt-oss-vs-o4-mini-edge-ready-on-par-performance-dependable-not-mind-blowing.md
-title: GPT-oss vs o4-mini: Edge-Ready, On-Par Performance — Dependable, Not Mind-Blowing
+title: >
+ GPT-oss vs o4-mini: Edge-Ready, On-Par Performance — Dependable, Not Mind-Blowing
 author: Lumina Wang
 date: 2025-8-7
 desc: OpenAI steals the spotlight by open-sourcing two reasoning models: gpt-oss-120b and gpt-oss-20b, permissively licensed under Apache 2.0.
@@ -10,7 +11,8 @@ recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM
 meta_keywords: gpt-oss, OpenAI open source models, o4-mini, vector databases, deepseek 
-meta_title: GPT-oss vs o4-mini: Edge-Ready, Solid, But Not Disruptive
+meta_title: >
+ GPT-oss vs o4-mini: Edge-Ready, Solid, But Not Disruptive
 origin: https://milvus.io/blog/gpt-oss-vs-o4-mini-edge-ready-on-par-performance-dependable-not-mind-blowing.md
 ---
 
@@ -26,7 +28,7 @@ In this post, we'll explore what makes GPT-oss different, how it compares to lea
 GPT-oss isn't just another weight drop. It delivers in five key areas that matter to developers:
 
 
-### #1: Built for Edge Deployment
+### 1: Built for Edge Deployment
 
 GPT-oss comes in two strategically sized variants:
 
@@ -43,7 +45,7 @@ Using Mixture-of-Experts (MoE) architecture, only a subset of parameters is acti
 According to OpenAI's tests, gpt-oss-20b is the fastest OpenAI model for inference—ideal for low-latency deployments or offline reasoning agents.
 
 
-### #2: Strong Benchmark Performance
+### 2: Strong Benchmark Performance
 
 According to OpenAI's evaluations:
 
@@ -52,7 +54,7 @@ According to OpenAI's evaluations:
 - **gpt-oss-20b** competes with o3-mini, and even outperforms it in math and healthcare reasoning
 
 
-### #3: Cost-Efficient Training
+### 3: Cost-Efficient Training
 
 OpenAI claims performance equivalent to o3-mini and o4-mini, but with dramatically lower training costs:
 
@@ -63,7 +65,7 @@ OpenAI claims performance equivalent to o3-mini and o4-mini, but with dramatical
 Compare that to the multi-hundred-million-dollar budgets behind models like GPT-4. GPT-oss proves that efficient scaling and architecture choices can deliver competitive performance without a massive carbon footprint.
 
 
-### #4: True Open-Source Freedom
+### 4: True Open-Source Freedom
 
 GPT-oss uses Apache 2.0 licensing, which means:
 
@@ -76,7 +78,7 @@ GPT-oss uses Apache 2.0 licensing, which means:
 This is really open source, not a research-only release. You can fine-tune for domain-specific use, deploy in production with full control, and build commercial products around it. Key features include configurable reasoning depth (low/medium/high), full chain-of-thought visibility, and native tool calling with structured output support.
 
 
-### #5: Potential GPT-5 Preview
+### 5: Potential GPT-5 Preview
 
 OpenAI hasn’t disclosed everything—but architecture details suggest this may preview the direction of **GPT-5**:
 
@@ -137,8 +139,7 @@ In the following sections, we'll walk through a hands-on tutorial for building a
 ! pip install --upgrade "pymilvus[model]" openai requests tqdm
 ```
 
-
-### **Dataset Preparation**
+### Dataset Preparation
 
 We'll use Milvus documentation as our knowledge base:
 
@@ -146,7 +147,6 @@ We'll use Milvus documentation as our knowledge base:
 # Download and prepare Milvus docs
 ! wget https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip
 ! unzip -q milvus_docs_2.4.x_en.zip -d milvus_docs
-
 
 from glob import glob
 text_lines = []
@@ -156,8 +156,7 @@ for file_path in glob("milvus_docs/en/faq/*.md", recursive=True):
     text_lines += file_text.split("# ")
 ```
 
-
-### **Model Setup**
+### Model Setup
 
 Access GPT-oss through [OpenRouter](https://openrouter.ai/openai/gpt-oss-20b:free) (or run locally). [**OpenRouter**](https://openrouter.ai/openai/gpt-oss-20b:free) is a platform that lets developers access and switch between multiple AI models (like GPT-4, Claude, Mistral) through a single, unified API. It's useful for comparing models or building apps that work with different AI providers. Now GPT-oss series have been available on OpenRouter now. 
 
@@ -166,18 +165,15 @@ Access GPT-oss through [OpenRouter](https://openrouter.ai/openai/gpt-oss-20b:fre
 ```
 from openai import OpenAI
 
-
 # Using OpenRouter for cloud access
 openai_client = OpenAI(
     api_key="<OPENROUTER_API_KEY>",
     base_url="https://openrouter.ai/api/v1",
 )
 
-
 # Set up embedding model
 from pymilvus import model as milvus_model
 embedding_model = milvus_model.DefaultEmbeddingFunction()
-
 
 # Test embedding dimensions
 test_embedding = embedding_model.encode_queries(["This is a test"])[0]
@@ -186,29 +182,23 @@ print(embedding_dim)
 print(test_embedding[:10])
 ```
 
-
 ```
 768
 [-0.04836066  0.07163023 -0.01130064 -0.03789345 -0.03320649 -0.01318448
  -0.03041712 -0.02269499 -0.02317863 -0.00426028]
 ```
 
-
 ### Set up Milvus vector database 
-
 ```
 from pymilvus import MilvusClient
-
 
 # Initialize Milvus client
 milvus_client = MilvusClient(uri="http://localhost:19530", token="root:Milvus")
 collection_name = "gpt_oss_rag_collection"
 
-
 # Clean up existing collection
 if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
-
 
 # Create new collection
 milvus_client.create_collection(
@@ -235,27 +225,23 @@ Now we’ll create embeddings for our text chunks and add them to Milvus:
 ```
 from tqdm import tqdm
 
-
 data = []
 doc_embeddings = embedding_model.encode_documents(text_lines)
-
 
 for i, line in enumerate(tqdm(text_lines, desc="Creating embeddings")):
     data.append({"id": i, "vector": doc_embeddings[i], "text": line})
 
-
 milvus_client.insert(collection_name=collection_name, data=data)
 ```
 
-
 Output:
+
 ```
 Creating embeddings: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 72/72 [00:00<00:00, 1222631.13it/s]
 {'insert_count': 72, 'ids': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], 'cost': 0}
 ```
 
-
-### **RAG Query Pipeline**
+### RAG Query Pipeline
 
 Now for the exciting part - let’s set up our RAG system to answer questions.
 
@@ -264,9 +250,7 @@ Let’s specify a common question about Milvus:
 question = "How is data stored in milvus?"
 ```
 
-
 Search for this question in the collection and retrieve the top 3 semantically matching results:
-
 
 ```
 search_res = milvus_client.search(
@@ -280,18 +264,15 @@ search_res = milvus_client.search(
 )
 ```
 
-
 Let’s look at the search results for this query:
 ```
 import json
-
 
 retrieved_lines_with_distances = [
     (res["entity"]["text"], res["distance"]) for res in search_res[0]
 ]
 print(json.dumps(retrieved_lines_with_distances, indent=4))
 ```
-
 
 ```
 [
@@ -309,8 +290,6 @@ print(json.dumps(retrieved_lines_with_distances, indent=4))
     ]
 ]
 ```
-
-
 
 ### Using the GPT-oss to Build a RAG Response
 
@@ -348,16 +327,13 @@ response = openai_client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-
 ```
 Milvus stores its data in two distinct layers:
-
 
 | Type of data | Where it is stored | How it is stored |
 |-------------|-------------------|-----------------|
 | **Inserted data** (vector data, scalar fields, collection‑specific schema) | In the **persistent object storage** configured for the cluster. The data are written as **incremental logs** (append‑only logs) that are persisted by the DataNode. | The DataNode reads from the message‑queue and writes the incoming data into the storage backend (MinIO, AWS S3, GCS, Azure Blob, Alibaba OSS, Tencent COS, etc.). When a `flush()` call is issued, the DataNode forces all queued data to be written to the persistent storage immediately. |
 | **Metadata** (information about collections, partitions, indexes, etc.) | In **etcd**. Each Milvus module (catalog, index, etc.) keeps its own metadata. | The metadata is generated and managed by Milvus and persisted in the distributed key‑value store **etcd**. |
-
 
 **Summary:**  
 - **Inserted data** = incremental logs stored in the chosen object‑storage backend.  
@@ -366,8 +342,6 @@ Milvus stores its data in two distinct layers:
 
 Together, these two storage mechanisms (object storage for the actual data and etcd for metadata) make up Milvus’s data‑storage architecture.
 ```
-
-
 
 ## Final Thoughts on GPT-oss
 
