@@ -4,7 +4,8 @@ title: >
  GPT-oss vs o4-mini: Edge-Ready, On-Par Performance — Dependable, Not Mind-Blowing
 author: Lumina Wang
 date: 2025-08-07
-desc: OpenAI steals the spotlight by open-sourcing two reasoning models: gpt-oss-120b and gpt-oss-20b, permissively licensed under Apache 2.0.
+desc: >
+ OpenAI steals the spotlight by open-sourcing two reasoning models: gpt-oss-120b and gpt-oss-20b, permissively licensed under Apache 2.0.
 cover: assets.zilliz.com/gpt_oss_vs_o4_mini_edge_ready_on_par_performance_dependable_not_mind_blowing_2bd27838c1.png
 tag: Engineering
 recommend: false 
