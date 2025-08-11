@@ -10,7 +10,7 @@ tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search
-meta_keywords: Milvus, Embedding API, RAG, latency, vector search
+meta_keywords: Milvus, AI Agent, workflow, Refly, vector database
 meta_title: >
  AI Agents or Workflows? Why Skip Agents for 80% of Automation
 origin: https://milvus.io/blog/ai-agents-vs-workflows-why-80-need-simple-automation.md
