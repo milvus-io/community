@@ -4,7 +4,8 @@ title: >
  A Practical Guide for Choosing the Right Vector Database for Your AI Applications
 author: Jack Li
 date: 2025-08-22
-desc: We’ll walk through a practical decision framework across three critical dimensions: functionality, performance, and ecosystem. 
+desc: >
+ We’ll walk through a practical decision framework across three critical dimensions: functionality, performance, and ecosystem. 
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_22_2025_07_43_23_PM_1_bf66fec908.png
 tag: Tutorials
 recommend: false
