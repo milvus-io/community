@@ -296,7 +296,7 @@ claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e MILVUS_TO
 
 Once my codebase was indexed, I gave Claude Code the same bug description that had previously sent it on a **five-minute grep-powered goose chase**. This time, through `claude-context` MCP calls, it **immediately pinpointed the exact file and line number**, complete with an explanation of the issue.
 
-![](https://assets.zilliz.com/10_8ab57acba4.png)
+![](https://assets.zilliz.com/claude_context_gif_e04d07cd00.gif)
 
 The difference wasn’t subtle—it was night and day.
 
