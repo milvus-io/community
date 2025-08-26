@@ -2,7 +2,7 @@
 id: why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md
 title: Why I’m Against Claude Code’s Grep-Only Retrieval? It Just Burns Too Many Tokens
 author: Cheney Zhang
-date: 2025-08-26
+date: 2025-08-25
 desc: Learn how vector-based code retrieval cuts Claude Code token consumption by 40%. Open-source solution with easy MCP integration. Try claude-context today.
 cover: assets.zilliz.com/why_im_against_claude_codes_grep_only_retrieval_it_just_burns_too_many_tokens_milvus_cover_2928b4b72d.png
 tag: Engineering
@@ -10,7 +10,7 @@ recommend: false
 tags: Milvus, vector database, vector search
 meta_keywords: Claude Code, vector search, AI IDE, code retrieval, token optimization
 meta_title: >
- Cut Token Waste by 40% with Claude Context
+ Why I’m Against Claude Code’s Grep-Only Retrieval? It Just Burns Too Many Tokens
 origin: >
  https://milvus.io/blog/why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md
 ---
