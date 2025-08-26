@@ -10,7 +10,7 @@ recommend: false
 tags: Milvus, vector database, vector search
 meta_keywords: Claude Code, vector search, AI IDE, code retrieval, token optimization
 meta_title: >
- Cut Token Waste by 40% with Claude Context
+ Why I’m Against Claude Code’s Grep-Only Retrieval? It Just Burns Too Many Tokens
 origin: >
  https://milvus.io/blog/why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md
 ---
