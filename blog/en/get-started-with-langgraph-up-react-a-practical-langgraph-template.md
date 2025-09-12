@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2025-09-11
 desc:  introducing langgraph-up-react, a ready-to-use LangGraph + ReAct template for ReAct agents.
-cover: assets.zilliz.com/build_RAG_with_qwen_3_and_milvus_64b9f2ad4d.jpeg
+cover: assets.zilliz.com/Chat_GPT_Image_Sep_12_2025_12_09_04_PM_804305620a.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
