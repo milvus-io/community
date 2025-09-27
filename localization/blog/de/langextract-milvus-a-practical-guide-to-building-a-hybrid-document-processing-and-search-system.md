@@ -16,7 +16,7 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
@@ -88,7 +88,7 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;GE
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>, <span class="hljs-title class_">DataType</span>
 <span class="hljs-keyword">import</span> uuid
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Configuration-and-Setup" class="common-anchor-header"><strong>Konfiguration und Einrichtung</strong></h3><p>Jetzt werden wir die globalen Parameter für unsere Integration konfigurieren. Wir verwenden das Einbettungsmodell von Gemini, um Vektordarstellungen für unsere Dokumente zu erzeugen.</p>
+<h3 id="Configuration-and-Setup" class="common-anchor-header"><strong>Konfiguration und Einrichtung</strong></h3><p>Nun werden wir die globalen Parameter für unsere Integration konfigurieren. Wir verwenden das Einbettungsmodell von Gemini, um Vektordarstellungen für unsere Dokumente zu erzeugen.</p>
 <pre><code translate="no">genai_client = genai.Client()
 COLLECTION_NAME = <span class="hljs-string">&quot;document_extractions&quot;</span>
 EMBEDDING_MODEL = <span class="hljs-string">&quot;gemini-embedding-001&quot;</span>
@@ -100,7 +100,7 @@ EMBEDDING_DIM = <span class="hljs-number">3072</span>  <span class="hljs-comment
 <p><strong>Über <code translate="no">MilvusClient</code> Parameter:</strong></p>
 <p>Die Einstellung von <code translate="no">uri</code> als lokale Datei (wie <code translate="no">./milvus.db</code>) ist die bequemste Methode, da sie automatisch<a href="https://milvus.io/docs/milvus_lite.md"> Milvus Lite</a> verwendet, um alle Daten in dieser Datei zu speichern.</p>
 <p>Für große Datenmengen können Sie einen leistungsfähigeren Milvus-Server auf<a href="https://milvus.io/docs/quickstart.md"> Docker oder Kubernetes</a> einrichten. Verwenden Sie bei dieser Einrichtung stattdessen die Server-URI (wie[ <code translate="no">http://localhost:19530](http://localhost:19530)</code>).</p>
-<p>Wenn Sie<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> (den vollständig verwalteten Cloud-Dienst für Milvus) bevorzugen, passen Sie <code translate="no">uri</code> und <code translate="no">token</code> so an, dass sie mit Ihrem<a href="https://docs.zilliz.com/docs/on-zilliz-cloud-console#free-cluster-details"> öffentlichen Endpunkt und API-Schlüssel</a> von Zilliz Cloud übereinstimmen.</p>
+<p>Wenn Sie<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> (den vollständig verwalteten Cloud-Dienst für Milvus) bevorzugen, passen Sie <code translate="no">uri</code> und <code translate="no">token</code> an Ihren<a href="https://docs.zilliz.com/docs/on-zilliz-cloud-console#free-cluster-details"> öffentlichen Endpunkt und API-Schlüssel</a> von Zilliz Cloud an.</p>
 <h3 id="Preparing-Sample-Data" class="common-anchor-header"><strong>Vorbereiten der Beispieldaten</strong></h3><p>Für diese Demo werden wir Filmbeschreibungen als Beispieldokumente verwenden. Dies zeigt, wie LangExtract strukturierte Informationen wie Genres, Charaktere und Themen aus unstrukturiertem Text extrahieren kann.</p>
 <pre><code translate="no">sample_documents = [
     <span class="hljs-string">&quot;John McClane fights terrorists in a Los Angeles skyscraper during Christmas Eve. The action-packed thriller features intense gunfights and explosive scenes.&quot;</span>,
@@ -276,7 +276,7 @@ extraction_results = []
     <span></span>
   </span>
 </p>
-<h3 id="Processing-and-Vectorizing-Results" class="common-anchor-header"><strong>Verarbeitung und Vektorisierung der Ergebnisse</strong></h3><p>Nun müssen wir unsere Extraktionsergebnisse verarbeiten und Vektoreinbettungen für jedes Dokument erzeugen. Außerdem werden wir die extrahierten Attribute in separate Felder umwandeln, damit sie in Milvus leicht durchsuchbar sind.</p>
+<h3 id="Processing-and-Vectorizing-Results" class="common-anchor-header"><strong>Verarbeitung und Vektorisierung der Ergebnisse</strong></h3><p>Nun müssen wir unsere Extraktionsergebnisse verarbeiten und Vektoreinbettungen für jedes Dokument erzeugen. Außerdem werden wir die extrahierten Attribute in separate Felder umwandeln, um sie in Milvus leicht durchsuchbar zu machen.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n3. Processing extraction results and generating vectors...&quot;</span>)
 
 processed_data = []

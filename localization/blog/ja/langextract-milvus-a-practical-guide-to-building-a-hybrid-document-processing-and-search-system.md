@@ -12,7 +12,7 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
@@ -21,7 +21,7 @@ origin: >-
 <li><p><strong>ベクトル検索を利用したRAG（セマンティック検索）</strong>- Cursorのようなツールで利用されている。</p></li>
 <li><p><code translate="no">grep</code> <strong> （リテラル文字列マッチング</strong><strong>）によるキーワード検索</strong>- Claude CodeやGeminiで使用されています。</p></li>
 </ul>
-<p>この投稿は多くのフィードバックを呼び起こした。<code translate="no">grep</code> 、しばしば無関係なマッチが含まれ、コンテキストが肥大化することを指摘し、RAGを主張する開発者もいた。また、精度がすべてであり、エンベッディングを信頼するにはまだあいまいすぎると、キーワード検索を擁護する人もいた。</p>
+<p>この投稿は多くのフィードバックを呼び起こした。<code translate="no">grep</code> 、しばしば無関係なマッチが含まれ、文脈が肥大化することを指摘し、RAGを主張する開発者もいた。また、精度がすべてであり、エンベッディングを信頼するにはまだあいまいすぎると、キーワード検索を擁護する人もいた。</p>
 <p>どちらの意見にも一理ある。現実には、完璧で万能なソリューションは存在しない。</p>
 <ul>
 <li><p>エンベッディングだけに頼れば、厳密なルールや完全一致を見逃すことになる。</p></li>

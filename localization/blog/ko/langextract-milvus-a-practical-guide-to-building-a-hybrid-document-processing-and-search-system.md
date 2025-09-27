@@ -13,7 +13,7 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
@@ -357,7 +357,7 @@ Completed data processing, ready to insert 10 records
 Successfully inserted <span class="hljs-number">10</span> documents <span class="hljs-keyword">into</span> Milvus
 Insert result: {<span class="hljs-string">&#x27;insert_count&#x27;</span>: <span class="hljs-number">10</span>, <span class="hljs-string">&#x27;ids&#x27;</span>: [<span class="hljs-string">&#x27;doc_f8797155&#x27;</span>, <span class="hljs-string">&#x27;doc_78c7e586&#x27;</span>, <span class="hljs-string">&#x27;doc_fa3a3ab5&#x27;</span>, <span class="hljs-string">&#x27;doc_64981815&#x27;</span>, <span class="hljs-string">&#x27;doc_3ab18cb2&#x27;</span>, <span class="hljs-string">&#x27;doc_1ea42b18&#x27;</span>, <span class="hljs-string">&#x27;doc_f0779243&#x27;</span>, <span class="hljs-string">&#x27;doc_386590b7&#x27;</span>, <span class="hljs-string">&#x27;doc_3b3ae1ab&#x27;</span>, <span class="hljs-string">&#x27;doc_851089d6&#x27;</span>]}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Demonstrating-Metadata-Filtering" class="common-anchor-header"><strong>메타데이터 필터링 데모</strong></h3><p>LangExtract와 Milvus를 결합하면 얻을 수 있는 주요 이점 중 하나는 추출된 메타데이터를 기반으로 정밀한 필터링을 수행할 수 있다는 점입니다. 몇 가지 필터 표현식 검색을 통해 실제로 어떻게 작동하는지 살펴봅시다.</p>
+<h3 id="Demonstrating-Metadata-Filtering" class="common-anchor-header"><strong>메타데이터 필터링 데모</strong></h3><p>LangExtract와 Milvus를 결합하면 얻을 수 있는 주요 이점 중 하나는 추출된 메타데이터를 기반으로 정밀한 필터링을 수행할 수 있다는 점입니다. 몇 가지 필터 표현식 검색을 통해 이 기능이 실제로 어떻게 작동하는지 확인해 보겠습니다.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n=== Filter Expression Search Examples ===&quot;</span>)
 
 <span class="hljs-comment"># Load collection into memory for querying</span>

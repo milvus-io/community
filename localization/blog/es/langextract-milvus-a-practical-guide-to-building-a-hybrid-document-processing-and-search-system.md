@@ -16,7 +16,7 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
@@ -29,7 +29,7 @@ origin: >-
 <p>Ambas partes tienen razón. La realidad es que no existe una solución perfecta que sirva para todo.</p>
 <ul>
 <li><p>Si sólo se confía en las incrustaciones, se pasarán por alto las reglas estrictas o las coincidencias exactas.</p></li>
-<li><p>Si te basas sólo en las palabras clave, perderás la comprensión semántica de lo que el código (o el texto) significa en realidad.</p></li>
+<li><p>Si te basas sólo en palabras clave, perderás la comprensión semántica de lo que el código (o el texto) significa en realidad.</p></li>
 </ul>
 <p>Este tutorial muestra un método para <strong>combinar ambos enfoques de forma inteligente</strong>. Le mostraremos cómo utilizar <a href="https://github.com/google/langextract">LangExtract (una</a>biblioteca de Python que utiliza LLM para convertir texto desordenado en datos estructurados con una atribución precisa de la fuente) junto con <a href="https://milvus.io/">Milvus</a>, una base de datos vectorial de alto rendimiento de código abierto, para crear un sistema de recuperación y procesamiento de documentos más inteligente y de alta calidad.</p>
 <h3 id="Key-Technologies-We’ll-Use" class="common-anchor-header">Tecnologías clave que utilizaremos</h3><p>Antes de empezar a construir este sistema de procesamiento y recuperación de documentos, echemos un vistazo a las tecnologías clave que utilizaremos en este tutorial.</p>
@@ -51,7 +51,7 @@ Sus principales características son</p>
     <span></span>
   </span>
 </p>
-<p>LangExtract es especialmente útil en ámbitos como el jurídico, el sanitario y el forense, donde la precisión es crucial. Por ejemplo, en lugar de recuperar un bloque gigante de texto con RAG, LangExtract puede extraer sólo las fechas, cláusulas o datos demográficos del paciente que le interesan, conservando el contexto semántico.</p>
+<p>LangExtract es especialmente útil en ámbitos como el jurídico, el sanitario y el forense, donde la precisión es crucial. Por ejemplo, en lugar de recuperar un bloque gigante de texto con RAG, LangExtract puede extraer sólo las fechas, las cláusulas o los datos demográficos del paciente que le interesan, conservando el contexto semántico.</p>
 <h3 id="What’s-Milvus" class="common-anchor-header">¿Qué es Milvus?</h3><p><a href="https://milvus.io/">Milvus</a> es una base de datos vectorial de código abierto con más de 36K+estrellas en Github y ha sido adoptada por más de 10K usos empresariales en varias industrias. Milvus se utiliza ampliamente en sistemas RAG, agentes de IA, motores de recomendación, detección de anomalías y búsqueda semántica, lo que la convierte en un elemento básico para las aplicaciones impulsadas por IA.</p>
 <h2 id="Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="common-anchor-header">Creación de un sistema de procesamiento de documentos de alta calidad con LangExtract + Milvus<button data-href="#Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -70,7 +70,7 @@ Sus principales características son</p>
       </svg>
     </button></h2><p>Esta guía le guía a través del proceso de combinar <a href="https://github.com/google/langextract">LangExtract</a> y<a href="https://milvus.io/"> Milvus</a> para construir un sistema inteligente de procesamiento y recuperación de documentos.</p>
 <ul>
-<li><p>LangExtract genera metadatos limpios y estructurados, y luego los almacena y busca eficientemente con Milvus, dándonos lo mejor de ambos mundos: filtrado preciso y recuperación semántica.</p></li>
+<li><p>LangExtract genera metadatos limpios y estructurados, y luego los almacena + busca eficientemente con Milvus, dándonos lo mejor de ambos mundos: filtrado preciso más recuperación semántica.</p></li>
 <li><p>Milvus actuará como columna vertebral de la recuperación, almacenando tanto las incrustaciones (para la búsqueda semántica) como los metadatos estructurados extraídos por LangExtract, lo que nos permitirá ejecutar consultas híbridas precisas e inteligentes a escala.</p></li>
 </ul>
 <h3 id="Prerequisites" class="common-anchor-header">Requisitos previos</h3><p>Antes de empezar, asegúrate de tener instaladas las siguientes dependencias:</p>

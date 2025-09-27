@@ -16,7 +16,7 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
@@ -25,13 +25,13 @@ origin: >-
 <li><p><strong>RAG (recuperação semântica) alimentada por pesquisa vetorial</strong> - utilizada por ferramentas como o Cursor</p></li>
 <li><p><strong>Pesquisa de palavras-chave com</strong> <code translate="no">grep</code> <strong>(correspondência de cadeia literal)</strong> - usada pelo Claude Code e Gemini</p></li>
 </ul>
-<p>Esta publicação suscitou muitos comentários. Alguns programadores defenderam o RAG, referindo que o <code translate="no">grep</code> inclui frequentemente correspondências irrelevantes e incha o contexto. Outros defenderam a pesquisa por palavras-chave, dizendo que a precisão é tudo e que os embeddings ainda são demasiado confusos para se poder confiar.</p>
+<p>Esta publicação suscitou muitos comentários. Alguns programadores defenderam o RAG, referindo que o <code translate="no">grep</code> inclui frequentemente correspondências irrelevantes e incha o contexto. Outros defenderam a pesquisa por palavra-chave, dizendo que a precisão é tudo e que os embeddings ainda são demasiado confusos para se poder confiar.</p>
 <p>Ambos os lados têm razão. A realidade é que não existe uma solução perfeita e única para todos os casos.</p>
 <ul>
 <li><p>Se confiar apenas nas incorporações, não conseguirá encontrar regras rigorosas ou correspondências exactas.</p></li>
 <li><p>Confie apenas em palavras-chave e perderá a compreensão semântica do que o código (ou texto) realmente significa.</p></li>
 </ul>
-<p>Este tutorial demonstra um método para <strong>combinar ambas as abordagens de forma inteligente</strong>. Mostraremos como usar <a href="https://github.com/google/langextract">o LangExtract - uma</a>biblioteca Python que usa LLMs para transformar texto confuso em dados estruturados com atribuição precisa da fonte - juntamente com o <a href="https://milvus.io/">Milvus</a>, um banco de dados vetorial de alto desempenho de código aberto, para criar um sistema de processamento e recuperação de documentos mais inteligente e de alta qualidade.</p>
+<p>Este tutorial demonstra um método para <strong>combinar ambas as abordagens de forma inteligente</strong>. Mostraremos como usar o <a href="https://github.com/google/langextract">LangExtract - uma</a>biblioteca Python que usa LLMs para transformar texto confuso em dados estruturados com atribuição precisa da fonte - juntamente com o <a href="https://milvus.io/">Milvus</a>, um banco de dados vetorial de alto desempenho de código aberto, para criar um sistema de processamento e recuperação de documentos mais inteligente e de alta qualidade.</p>
 <h3 id="Key-Technologies-We’ll-Use" class="common-anchor-header">Tecnologias chave que iremos utilizar</h3><p>Antes de começarmos a construir este sistema de processamento e recuperação de documentos, vamos dar uma vista de olhos às principais tecnologias que iremos utilizar neste tutorial.</p>
 <h3 id="What-is-LangExtract" class="common-anchor-header">O que é o LangExtract?</h3><p><a href="https://github.com/langextract/langextract">LangExtract</a> é uma nova biblioteca Python, de código aberto pelo Google, que utiliza LLMs para transformar texto confuso e não estruturado em dados estruturados com atribuição de fonte. Já é popular (13K+ estrelas no GitHub) porque torna tarefas como a extração de informação muito simples.</p>
 <p>
@@ -100,7 +100,7 @@ EMBEDDING_DIM = <span class="hljs-number">3072</span>  <span class="hljs-comment
 <p><strong>Sobre os parâmetros <code translate="no">MilvusClient</code>:</strong></p>
 <p>Definir o <code translate="no">uri</code> como um ficheiro local (como <code translate="no">./milvus.db</code>) é o método mais conveniente, uma vez que utiliza automaticamente<a href="https://milvus.io/docs/milvus_lite.md"> o Milvus Lite</a> para armazenar todos os dados neste ficheiro.</p>
 <p>Para dados em grande escala, você pode configurar um servidor Milvus de maior desempenho no<a href="https://milvus.io/docs/quickstart.md"> Docker ou Kubernetes</a>. Nesta configuração, use o uri do servidor (como[ <code translate="no">http://localhost:19530](http://localhost:19530)</code>) em vez disso.</p>
-<p>Se preferir o<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> (o serviço de nuvem totalmente gerido para o Milvus), ajuste o <code translate="no">uri</code> e <code translate="no">token</code> para corresponder ao seu<a href="https://docs.zilliz.com/docs/on-zilliz-cloud-console#free-cluster-details"> Ponto Final Público e chave API</a> do Zilliz Cloud.</p>
+<p>Se preferir<a href="https://zilliz.com/cloud"> o Zilliz Cloud</a> (o serviço de nuvem totalmente gerido para o Milvus), ajuste o <code translate="no">uri</code> e <code translate="no">token</code> para corresponder ao seu<a href="https://docs.zilliz.com/docs/on-zilliz-cloud-console#free-cluster-details"> Ponto Final Público e chave API</a> do Zilliz Cloud.</p>
 <h3 id="Preparing-Sample-Data" class="common-anchor-header"><strong>Preparação de dados de amostra</strong></h3><p>Para esta demonstração, usaremos descrições de filmes como nossos documentos de amostra. Isto mostra como o LangExtract pode extrair informações estruturadas como géneros, personagens e temas de texto não estruturado.</p>
 <pre><code translate="no">sample_documents = [
     <span class="hljs-string">&quot;John McClane fights terrorists in a Los Angeles skyscraper during Christmas Eve. The action-packed thriller features intense gunfights and explosive scenes.&quot;</span>,
@@ -529,7 +529,7 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Tem agora um sistema de processamento de documentos híbrido que combina extração estruturada com pesquisa semântica - sem ter de escolher entre precisão e flexibilidade. Esta abordagem maximiza o valor dos dados não estruturados, ao mesmo tempo que garante fiabilidade, tornando-o ideal para cenários de alto risco nos domínios financeiro, da saúde e jurídico.</p>
+    </button></h2><p>Agora tem um sistema de processamento de documentos híbrido que combina extração estruturada com pesquisa semântica - não é necessário escolher entre precisão e flexibilidade. Esta abordagem maximiza o valor dos dados não estruturados, ao mesmo tempo que garante fiabilidade, tornando-o ideal para cenários de alto risco nos domínios financeiro, da saúde e jurídico.</p>
 <p>Os mesmos princípios podem ser aplicados em todos os sectores: combine a análise de imagens estruturadas com a pesquisa semântica para obter melhores recomendações de comércio eletrónico ou aplique-a ao conteúdo de vídeo para uma melhor exploração de dados de condução autónoma.</p>
 <p>Para implementações em grande escala que gerem conjuntos de dados multimodais maciços, o nosso futuro <strong>lago de dados vectoriais</strong> oferecerá um armazenamento a frio muito mais económico, suporte de tabelas amplas e processamento ETL simplificado - a evolução natural para sistemas de pesquisa híbrida em escala de produção. Fique ligado.</p>
 <p>Tem dúvidas ou deseja compartilhar seus resultados? Participe da conversa no<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> ou conecte-se com nossa comunidade no <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>

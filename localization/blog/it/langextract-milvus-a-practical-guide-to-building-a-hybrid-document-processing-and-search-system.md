@@ -16,14 +16,14 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
 <p>In un <a href="https://milvus.io/blog/why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md">blog precedente</a>, abbiamo confrontato due approcci popolari alla ricerca del codice in molti agenti di codifica:</p>
 <ul>
 <li><p><strong>Ricerca vettoriale con RAG (recupero semantico)</strong>, utilizzata da strumenti come Cursor.</p></li>
-<li><p><strong>Ricerca per parole chiave con</strong> <code translate="no">grep</code> <strong>(letteral string matching)</strong> - utilizzata da Claude Code e Gemini.</p></li>
+<li><p><strong>Ricerca per parole chiave con</strong> <code translate="no">grep</code> <strong>(literal string matching)</strong> - utilizzata da Claude Code e Gemini.</p></li>
 </ul>
 <p>Questo post ha suscitato molti commenti. Alcuni sviluppatori si sono espressi a favore di RAG, sottolineando che <code translate="no">grep</code> spesso include corrispondenze irrilevanti e gonfia il contesto. Altri hanno difeso la ricerca per parole chiave, affermando che la precisione è tutto e che gli embeddings sono ancora troppo confusi per fidarsi.</p>
 <p>Entrambe le parti hanno ragione. La realtà è che non esiste una soluzione unica e perfetta.</p>
@@ -53,7 +53,7 @@ Le caratteristiche principali includono:</p>
 </p>
 <p>LangExtract è particolarmente utile in settori come quello legale, sanitario e forense, dove la precisione è fondamentale. Ad esempio, invece di recuperare un enorme blocco di testo con RAG, LangExtract può estrarre solo le date, le clausole o i dati demografici dei pazienti che vi interessano, pur conservando il contesto semantico.</p>
 <h3 id="What’s-Milvus" class="common-anchor-header">Cos'è Milvus?</h3><p><a href="https://milvus.io/">Milvus</a> è un database vettoriale open-source con più di 36K stelle su Github ed è stato adottato da più di 10K aziende in diversi settori. Milvus è ampiamente utilizzato nei sistemi RAG, negli agenti di intelligenza artificiale, nei motori di raccomandazione, nel rilevamento delle anomalie e nella ricerca semantica, diventando così un elemento fondamentale per le applicazioni basate sull'intelligenza artificiale.</p>
-<h2 id="Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="common-anchor-header">Costruire un sistema di elaborazione dei documenti di alta qualità con LangExtract + Milvus<button data-href="#Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="anchor-icon" translate="no">
+<h2 id="Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="common-anchor-header">Creare un sistema di elaborazione dei documenti di alta qualità con LangExtract + Milvus<button data-href="#Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,7 +94,7 @@ COLLECTION_NAME = <span class="hljs-string">&quot;document_extractions&quot;</sp
 EMBEDDING_MODEL = <span class="hljs-string">&quot;gemini-embedding-001&quot;</span>
 EMBEDDING_DIM = <span class="hljs-number">3072</span>  <span class="hljs-comment"># Default dimension for gemini-embedding-001</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Initializing-the-Milvus-Client" class="common-anchor-header"><strong>Inizializzazione del client Milvus</strong></h3><p>Inizializziamo il nostro client Milvus. Per semplicità, useremo un file di database locale, anche se questo approccio è facilmente scalabile per le distribuzioni complete del server Milvus.</p>
+<h3 id="Initializing-the-Milvus-Client" class="common-anchor-header"><strong>Inizializzazione del client Milvus</strong></h3><p>Inizializziamo il nostro client Milvus. Per semplicità, useremo un file di database locale, anche se questo approccio è facilmente scalabile per implementare un server Milvus completo.</p>
 <pre><code translate="no">client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p><strong>Informazioni sui parametri di <code translate="no">MilvusClient</code>:</strong></p>
@@ -529,7 +529,7 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ora disponete di un sistema ibrido di elaborazione dei documenti che combina l'estrazione strutturata con la ricerca semantica, senza più dover scegliere tra precisione e flessibilità. Questo approccio massimizza il valore dei dati non strutturati garantendo al tempo stesso l'affidabilità, rendendolo ideale per gli scenari ad alto rischio nei settori finanziario, sanitario e legale.</p>
-<p>Gli stessi principi sono applicabili a tutti i settori: combinate l'analisi strutturata delle immagini con la ricerca semantica per ottenere migliori raccomandazioni per l'e-commerce, oppure applicatela ai contenuti video per migliorare l'estrazione dei dati sulla guida autonoma.</p>
+    </button></h2><p>Ora avete un sistema ibrido di elaborazione dei documenti che combina l'estrazione strutturata con la ricerca semantica, senza più dover scegliere tra precisione e flessibilità. Questo approccio massimizza il valore dei dati non strutturati garantendo al tempo stesso l'affidabilità, rendendolo ideale per gli scenari ad alto rischio nei settori finanziario, sanitario e legale.</p>
+<p>Gli stessi principi sono applicabili a tutti i settori: combinate l'analisi strutturata delle immagini con la ricerca semantica per migliorare le raccomandazioni del commercio elettronico, oppure applicatela ai contenuti video per migliorare l'estrazione dei dati sulla guida autonoma.</p>
 <p>Per le implementazioni su larga scala che gestiscono enormi insiemi di dati multimodali, il nostro prossimo <strong>vector data lake</strong> offrirà un cold storage molto più conveniente, un ampio supporto per le tabelle e un'elaborazione ETL semplificata: la naturale evoluzione dei sistemi di ricerca ibrida su scala di produzione. Restate sintonizzati.</p>
 <p>Avete domande o volete condividere i vostri risultati? Unitevi alla conversazione su<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> o connettetevi con la nostra comunità su <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>

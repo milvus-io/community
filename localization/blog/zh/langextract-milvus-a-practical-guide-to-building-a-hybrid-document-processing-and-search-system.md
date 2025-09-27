@@ -11,7 +11,7 @@ recommend: false
 tags: 'Milvus, vector database, vector search'
 meta_keywords: 'LangExtract, Milvus, hybrid search, code search, semantic retrieval'
 meta_title: |
-  Hybrid Code Search with LangExtract and Milvus
+  Hybrid Document Retrieval System with LangExtract + Milvus
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
@@ -65,7 +65,7 @@ origin: >-
       </svg>
     </button></h2><p>本指南将引导您了解如何结合<a href="https://github.com/google/langextract">LangExtract</a>和<a href="https://milvus.io/"> Milvus</a>来构建智能文档处理和检索系统。</p>
 <ul>
-<li><p>LangExtract 生成简洁、结构化的元数据，然后通过 Milvus 进行高效存储和搜索，从而为我们提供两全其美的解决方案：精确过滤和语义检索。</p></li>
+<li><p>LangExtract 生成简洁、结构化的元数据，然后通过 Milvus 有效地存储和搜索这些元数据，从而为我们提供两全其美的解决方案：精确过滤和语义检索。</p></li>
 <li><p>Milvus 将作为检索骨干，同时存储嵌入（用于语义搜索）和 LangExtract 提取的结构化元数据，使我们能够大规模运行精确和智能的混合查询。</p></li>
 </ul>
 <h3 id="Prerequisites" class="common-anchor-header">先决条件</h3><p>在开始使用之前，请确保您已经安装了以下依赖项：</p>
@@ -524,7 +524,7 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>您现在拥有了一个将结构化提取与语义搜索相结合的混合文档处理系统，不再需要在准确性和灵活性之间做出选择。这种方法能最大限度地提高非结构化数据的价值，同时确保可靠性，非常适合金融、医疗保健和法律领域的高风险场景。</p>
+    </button></h2><p>您现在拥有了一个将结构化提取与语义搜索相结合的混合文档处理系统，不再需要在准确性和灵活性之间做出选择。这种方法可以最大限度地提高非结构化数据的价值，同时确保可靠性，非常适合金融、医疗保健和法律领域的高风险场景。</p>
 <p>同样的原则也适用于各行各业：将结构化图像分析与语义搜索相结合，可获得更好的电子商务推荐，或将其应用于视频内容，以增强自动驾驶数据挖掘。</p>
 <p>对于管理大规模多模态数据集的大规模部署，我们即将推出的<strong>向量数据湖将</strong>提供更具成本效益的冷存储、宽表支持和简化的 ETL 处理--这是生产规模混合搜索系统的自然演进。敬请期待。</p>
 <p>有问题或想分享您的成果？加入<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a>上的对话，或在<a href="https://discord.com/invite/FG6hMJStWu">Discord</a> 上与我们的社区联系。</p>
