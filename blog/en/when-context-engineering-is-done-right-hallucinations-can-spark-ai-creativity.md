@@ -5,7 +5,7 @@ title: >
 author: James Luan
 date: 2025-09-30
 desc:  Discover why AI hallucinations aren’t just errors but sparks of creativity—and how context engineering turns them into reliable, real-world outcomes.
-cover: assets.zilliz.com/Chat_GPT_Image_Sep_12_2025_12_09_04_PM_804305620a.png
+cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
