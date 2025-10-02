@@ -136,7 +136,7 @@ origin: >-
       </svg>
     </button></h2><p>應對長上下文挑戰的答案不是放棄這項能力，而是要有紀律地設計它。以下是我們在實踐中見過的六種有效策略：</p>
 <h3 id="Context-Isolation" class="common-anchor-header">情境隔離</h3><p>將複雜的工作流程分割成具有隔離情境的專門代理程式。每個代理程式都專注於自己的領域，互不干擾，降低錯誤擴散的風險。這不僅能提高精確度，還能實現平行執行，就像結構良好的工程團隊一樣。</p>
-<h3 id="Context-Pruning" class="common-anchor-header">情境修剪</h3><p>定期審核和修剪上下文。移除多餘的細節、陳舊的資訊以及不相關的痕跡。就像重組一樣：清除死的程式碼和依賴關係，只留下最重要的部分。有效的修剪需要明確的標準來判斷哪些是該做的，哪些是不該做的。</p>
+<h3 id="Context-Pruning" class="common-anchor-header">情境修剪</h3><p>定期審核和修剪上下文。刪除多餘的細節、陳舊的資訊以及不相關的痕跡。就像重組一樣：清除死的程式碼和依賴關係，只留下最重要的部分。有效的修剪需要明確的標準來判斷哪些是該做的，哪些是不該做的。</p>
 <h3 id="Context-Summarization" class="common-anchor-header">上下文總結</h3><p>冗長的歷史不需要全部帶在身上。取而代之的是，將它們濃縮成簡潔的摘要，只捕捉下一步所需的重要內容。好的摘要能保留重要的事實、決策和限制，同時消除重複和不必要的細節。這就像是將長達 200 頁的規格書，換成只有一頁的設計摘要，但仍能提供您前進所需的一切。</p>
 <h3 id="Context-Offloading" class="common-anchor-header">情境卸載</h3><p>並非每個細節都需要成為即時上下文的一部分。將非關鍵資料儲存在外部系統中，例如知識庫、文件儲存庫或向量資料庫 (如 Milvus)，並只在需要時才取得。這樣可以減輕模型的認知負荷，同時保持背景資訊的可存取性。</p>
 <h3 id="Strategic-RAG" class="common-anchor-header">策略性 RAG</h3><p>資訊檢索只有在有選擇性的情況下才會強大。透過嚴格的篩選和品質控制來引進外部知識，確保模型使用相關且精確的輸入。就像任何資料管道一樣：垃圾進、垃圾出，但有了高品質的擷取，背景資訊就會成為資產，而不是負債。</p>
@@ -180,6 +180,12 @@ origin: >-
 <li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>：最廣泛採用的開源向量資料庫，已針對高效能向量擷取與儲存進行最佳化。</p></li>
 <li><p><strong>Loon</strong>：我們即將推出的雲端原生多式樣資料湖服務，專門用於在資料到達資料庫之前處理和組織大規模的多式樣資料。敬請期待。</p></li>
 </ul>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <h3 id="Lightning-Fast-Vector-Search" class="common-anchor-header">快如閃電的矢量搜尋</h3><p><strong>Milvus</strong>專為向量工作負載而打造。作為服務層，它可以在 10 毫秒以下的時間內，對數以億計，甚至數十億計的向量進行檢索，無論這些向量是來自文字、圖像、音訊或視訊。對於人工智慧 (AI) 應用程式而言，擷取速度並不是一個「很好的條件」。它決定了代理是否感覺反應迅速或緩慢，搜尋結果是否感覺相關或脫節。這方面的效能直接體現在終端使用者的體驗上。</p>
 <h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">規模化的多模式資料湖服務</h3><p><strong>Loon</strong>是我們即將推出的多模態資料湖服務，專為大規模離線處理和分析非結構化資料而設計。它與 Milvus 在管道方面相輔相成，可在資料到達資料庫之前進行準備。現實世界中的多模態資料集橫跨文字、影像、音訊和視訊，往往雜亂無章，存在重複、雜訊和格式不一致等問題。Loon 使用 Ray 和 Daft 等分散式框架來處理這些繁重的工作，在直接將資料串流至 Milvus 之前，先將資料壓縮、重複和聚類。結果很簡單：沒有暫存瓶頸、沒有痛苦的格式轉換 - 只有模型可以立即使用的乾淨、結構化資料。</p>
 <h3 id="Cloud-Native-Elasticity" class="common-anchor-header">雲端原生彈性</h3><p>這兩個系統都是以雲端原生方式建立，儲存與運算可獨立擴充。這意味著當工作負載從數千兆位元組成長到數百億位元組時，您可以在即時服務與離線訓練之間平衡資源，而無需為其中一方過度配置或削減另一方的資源。</p>

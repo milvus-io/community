@@ -17,9 +17,9 @@ origin: >-
   https://milvus.io/blog/when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md
 ---
 <p>长期以来，包括我在内的许多人都把 LLM 幻觉视为缺陷。我们围绕消除幻觉建立了一整套工具链：检索系统、防护栏、微调等等。这些保障措施仍然很有价值。但是，当我越多地研究模型究竟是如何产生反应的，以及<a href="https://milvus.io/"><strong>Milvus</strong></a>这样的系统是如何融入更广泛的人工智能管道时，我就越不相信幻觉只是简单的故障。事实上，它们也可以成为人工智能创造力的 Spark。</p>
-<p>如果我们看看人类的创造力，就会发现相同的模式。每一次突破都依赖于想象力的飞跃。但这些飞跃从来不是凭空而来的。诗人在打破常规之前，首先要掌握节奏和韵律。科学家在涉足未经检验的领域之前，首先要依靠既定的理论。进步有赖于这些飞跃，只要这些飞跃是以扎实的知识和理解为基础的。</p>
+<p>如果我们看看人类的创造力，就会发现相同的模式。每一次突破都依赖于想象力的飞跃。但这些飞跃从来不是凭空而来的。诗人在打破常规之前，首先要掌握节奏和韵律。科学家在涉足未经检验的领域之前，首先依靠的是已有的理论。进步有赖于这些飞跃，只要这些飞跃是以扎实的知识和理解为基础的。</p>
 <p>LLMs 的操作符大致相同。他们所谓的 "幻觉 "或 "跃迁"--类比、联想和推断--产生于相同的生成过程，这一过程使模型能够建立联系、扩展知识，并浮现出超出他们所接受的明确训练的想法。并非每次飞跃都能成功，但一旦成功，结果就会令人信服。</p>
-<p>这就是为什么我认为 "<strong>情境工程 "</strong>是关键的下一步。与其试图消除每一个幻觉，我们不如专注于<em>引导</em>它们。通过设计正确的情境，我们可以取得平衡--让模型保持足够的想象力去探索新的领域，同时确保它们足够可靠。</p>
+<p>这就是为什么我认为 "<strong>情境工程 "</strong>是关键的下一步。与其试图消除每一个幻觉，我们不如专注于<em>引导</em>它们。通过设计正确的情境，我们可以取得平衡--让模型保持足够的想象力去探索新的领域，同时确保它们保持足够的稳固性以值得信赖。</p>
 <h2 id="What-is-Context-Engineering" class="common-anchor-header">什么是情境工程？<button data-href="#What-is-Context-Engineering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -102,7 +102,7 @@ origin: >-
   </span>
 </p>
 <p><em>图 3：GPT、Claude、Llama、Mistral 和 DBRX 模型在 4 个 RAG 数据集（Databricks DocsQA、FinanceBench、HotPotQA 和 Natural Questions）上的长语境性能 [来源：</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em><em>。</em></p>
-<h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">上下文混淆--厨房里的工具太多了</h3><p>添加更多工具并不一定有帮助。<a href="https://gorilla.cs.berkeley.edu/leaderboard.html">伯克利函数调用排行榜（Berkeley Function-Calling Leaderboard</a>）显示，当上下文显示大量工具菜单（通常包含许多无关选项）时，模型的可靠性就会降低，甚至在不需要工具时也会调用。一个明显的例子是：量化的 Llama 3.1-8B 在有 46 个工具可用的情况下失败了，但当工具集减少到 19 个时却成功了。这就是人工智能系统的选择悖论--选择太多，决策更糟糕。</p>
+<h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">上下文混淆--厨房里的工具太多了</h3><p>添加更多工具并不一定有帮助。<a href="https://gorilla.cs.berkeley.edu/leaderboard.html">伯克利函数调用排行榜（Berkeley Function-Calling Leaderboard</a>）显示，当上下文显示大量工具菜单（通常包含许多不相关的选项）时，模型的可靠性就会降低，甚至在不需要工具时也会调用。一个明显的例子是：量化的 Llama 3.1-8B 在有 46 个工具可用的情况下失败了，但当工具集减少到 19 个时却成功了。这就是人工智能系统的选择悖论--选择太多，决策更糟糕。</p>
 <h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">情境冲突--当信息发生冲突时</h3><p>多轮交互增加了一种独特的失败模式：早期的误解会随着对话的分支而加剧。在<a href="https://arxiv.org/pdf/2505.06120v1">微软和 Salesforce 的实验</a>中，开放权重和封闭权重的 LLMs 在多轮互动与单轮互动中的表现都明显不如单轮互动--在六个生成任务中平均下降了 39%。一旦一个错误的假设进入对话状态，后续回合就会继承它并扩大错误。</p>
 <p>
   <span class="img-wrapper">
@@ -180,6 +180,12 @@ origin: >-
 <li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>：最广泛采用的开源向量数据库，针对高性能向量检索和存储进行了优化。</p></li>
 <li><p><strong>Loon</strong>：我们即将推出的云原生多模态数据湖服务，用于在大规模多模态数据到达数据库之前对其进行处理和组织。敬请期待。</p></li>
 </ul>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <h3 id="Lightning-Fast-Vector-Search" class="common-anchor-header">快如闪电的向量搜索</h3><p><strong>Milvus</strong>从一开始就是为向量工作负载而构建的。作为服务层，它能在 10 毫秒内完成数亿甚至数十亿向量的检索，无论这些向量来自文本、图像、音频还是视频。对于人工智能应用来说，检索速度并不是一个 "很好的条件"。它决定了 Agents 是否感觉反应灵敏或迟缓，搜索结果是否感觉相关或脱节。性能直接体现在最终用户体验上。</p>
 <h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">规模化多模式数据湖服务</h3><p><strong>Loon</strong>是我们即将推出的多模态数据湖服务，旨在对非结构化数据进行大规模离线处理和分析。它是 Milvus 在管道方面的补充，可在数据到达数据库之前对其进行准备。现实世界中的多模态数据集涵盖文本、图像、音频和视频，往往杂乱无章，存在重复、噪音和格式不一致等问题。Loon 使用 Ray 和 Daft 等分布式框架来处理这些繁重的工作，对数据进行压缩、复制和聚类，然后将其直接流式传输到 Milvus。结果很简单：没有暂存瓶颈，没有痛苦的格式转换，只有模型可以立即使用的干净、结构化数据。</p>
 <h3 id="Cloud-Native-Elasticity" class="common-anchor-header">云原生弹性</h3><p>这两个系统都是云原生构建的，存储和计算可独立扩展。这意味着，当工作负载从千兆字节增长到 PB 级时，您可以在实时服务和离线培训之间平衡资源，而不是为其中一个过度配置或削弱其他资源。</p>

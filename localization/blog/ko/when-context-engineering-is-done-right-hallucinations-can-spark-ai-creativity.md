@@ -5,7 +5,7 @@ title: 컨텍스트 엔지니어링을 제대로 수행하면 환각은 AI 창�
 author: James Luan
 date: 2025-09-30T00:00:00.000Z
 desc: >-
-  AI 환각이 단순한 오류가 아니라 창의성의 불꽃인 이유와 컨텍스트 엔지니어링을 통해 신뢰할 수 있는 실제 결과물로 전환하는 방법을
+  AI 환각이 단순한 오류가 아니라 창의력의 불꽃인 이유와 컨텍스트 엔지니어링을 통해 신뢰할 수 있는 실제 결과물로 전환하는 방법을
   알아보세요.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
@@ -182,6 +182,12 @@ origin: >-
 <li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: 고성능 벡터 검색 및 저장에 최적화된 가장 널리 채택된 오픈 소스 벡터 데이터베이스입니다.</p></li>
 <li><p><strong>Loon</strong>: 곧 출시될 클라우드 네이티브 멀티모달 데이터 레이크 서비스로, 대규모 멀티모달 데이터가 데이터베이스에 도달하기 전에 처리하고 정리하도록 설계되었습니다. 계속 지켜봐 주세요.</p></li>
 </ul>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <h3 id="Lightning-Fast-Vector-Search" class="common-anchor-header">초고속 벡터 검색</h3><p><strong>Milvus는</strong> 처음부터 벡터 워크로드를 위해 구축되었습니다. 서빙 레이어로서 텍스트, 이미지, 오디오, 비디오에서 파생된 수억 개 또는 수십억 개의 벡터에 대해 10ms 미만의 검색을 제공합니다. AI 애플리케이션에서 검색 속도는 "있으면 좋은 것"이 아닙니다. 검색 속도는 에이전트의 반응이 빠른지 느린지, 검색 결과가 관련성이 있는지 없는지를 결정짓는 요소입니다. 여기서 성능은 최종 사용자 경험에서 직접 확인할 수 있습니다.</p>
 <h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">대규모 멀티모달 데이터 레이크 서비스</h3><p><strong>Loon은</strong> 곧 출시될 멀티모달 데이터 레이크 서비스로, 비정형 데이터의 대규모 오프라인 처리 및 분석을 위해 설계되었습니다. 이 서비스는 데이터가 데이터베이스에 도달하기 전에 데이터를 준비하여 파이프라인 측면에서 Milvus를 보완합니다. 텍스트, 이미지, 오디오, 비디오를 아우르는 실제 멀티모달 데이터 세트는 중복, 노이즈, 일관되지 않은 형식 등으로 인해 지저분한 경우가 많습니다. Loon은 데이터를 압축, 중복 제거, 클러스터링한 후 Milvus로 직접 스트리밍하기 전에 Ray 및 Daft와 같은 분산 프레임워크를 사용하여 이러한 무거운 작업을 처리합니다. 그 결과, 스테이징 병목 현상이나 번거로운 형식 변환 없이 모델이 즉시 사용할 수 있는 깔끔하고 구조화된 데이터만 얻을 수 있습니다.</p>
 <h3 id="Cloud-Native-Elasticity" class="common-anchor-header">클라우드 네이티브 탄력성</h3><p>두 시스템 모두 클라우드 네이티브로 구축되어 스토리지와 컴퓨팅을 독립적으로 확장할 수 있습니다. 즉, 워크로드가 기가바이트에서 페타바이트로 증가하더라도 어느 한 쪽을 과도하게 프로비저닝하거나 다른 쪽을 축소하지 않고 실시간 제공과 오프라인 교육 간에 리소스 균형을 맞출 수 있습니다.</p>
