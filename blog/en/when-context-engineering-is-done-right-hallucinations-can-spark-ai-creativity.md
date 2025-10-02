@@ -124,8 +124,7 @@ Information retrieval is powerful only if it’s selective. Introduce external k
 
 More tools don’t equal better performance. Studies show reliability drops sharply beyond ~30 available tools. Load only the functions a given task requires, and gate access to the rest. A lean toolbox fosters precision and reduces the noise that can overwhelm decision-making.
 
-The Infrastructure Challenge of Context Engineering
----------------------------------------------------
+## The Infrastructure Challenge of Context Engineering
 
 Context engineering is only as effective as the infrastructure it runs on. And today’s enterprises are hitting a perfect storm of data challenges:
 
@@ -141,8 +140,7 @@ AI agents don’t just query data; they generate, transform, and consume it cont
 
 AI workloads blend text, images, audio, video, and high-dimensional embeddings, each with rich metadata attached. Managing this heterogeneity is the crux of practical context engineering. The challenge isn’t just storing diverse objects; it’s indexing them, retrieving them efficiently, and keeping semantic consistency across modalities. A truly AI-ready infrastructure must treat multimodality as a first-class design principle, not a bolt-on feature.
 
-Milvus + Loon: Purpose-Built Data Infrastructure for AI 
---------------------------------------------------------
+## Milvus + Loon: Purpose-Built Data Infrastructure for AI 
 
 The challenges of scale, consumption, and multimodality can’t be solved with theory alone—they demand infrastructure that is purpose-built for AI. That’s why we at [Zilliz](https://zilliz.com/) designed **Milvus** and **Loon** to work together, addressing both sides of the problem: high-performance retrieval at runtime and large-scale data processing upstream.
 
@@ -150,6 +148,8 @@ The challenges of scale, consumption, and multimodality can’t be solved with t
     
 *   **Loon**: our upcoming cloud-native multimodal data lake service designed to process and organize massive-scale multimodal data before it ever reaches the database. Stay tuned. 
     
+![](https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png)
+
 
 ### Lightning-Fast Vector Search
 
@@ -169,8 +169,7 @@ Most importantly, this architecture is designed to grow with you. Context engine
 
 With Milvus and Loon, that transition doesn’t require ripping out your foundation. The same stack that supports today’s use cases can extend naturally into tomorrow’s. You add new capabilities without starting over, which means less risk, lower cost, and a smoother path as AI workloads become more complex.
 
-Your Next Move
---------------
+## Your Next Move
 
 Context engineering isn’t just another technical discipline—it’s how we unlock AI’s creative potential while keeping it grounded and reliable. If you’re ready to put these ideas into practice, start where it matters most. 
 
