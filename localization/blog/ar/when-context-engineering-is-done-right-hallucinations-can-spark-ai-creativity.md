@@ -186,7 +186,7 @@ origin: >-
 </ul>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/loon_milvus_min_76aaa39b4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

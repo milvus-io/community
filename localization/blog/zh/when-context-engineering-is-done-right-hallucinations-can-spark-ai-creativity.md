@@ -102,7 +102,7 @@ origin: >-
   </span>
 </p>
 <p><em>图 3：GPT、Claude、Llama、Mistral 和 DBRX 模型在 4 个 RAG 数据集（Databricks DocsQA、FinanceBench、HotPotQA 和 Natural Questions）上的长语境性能 [来源：</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em><em>。</em></p>
-<h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">上下文混淆--厨房里的工具太多了</h3><p>添加更多工具并不一定有帮助。<a href="https://gorilla.cs.berkeley.edu/leaderboard.html">伯克利函数调用排行榜（Berkeley Function-Calling Leaderboard</a>）显示，当上下文显示大量工具菜单（通常包含许多不相关的选项）时，模型的可靠性就会降低，甚至在不需要工具时也会调用。一个明显的例子是：量化的 Llama 3.1-8B 在有 46 个工具可用的情况下失败了，但当工具集减少到 19 个时却成功了。这就是人工智能系统的选择悖论--选择太多，决策更糟糕。</p>
+<h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">上下文混淆--厨房里的工具太多了</h3><p>添加更多工具并不一定有帮助。<a href="https://gorilla.cs.berkeley.edu/leaderboard.html">伯克利函数调用排行榜（Berkeley Function-Calling Leaderboard</a>）显示，当上下文显示大量工具菜单（通常包含许多无关选项）时，模型的可靠性就会降低，甚至在不需要工具时也会调用。一个明显的例子是：量化的 Llama 3.1-8B 在有 46 个工具可用的情况下失败了，但当工具集减少到 19 个时却成功了。这就是人工智能系统的选择悖论--选择太多，决策更糟糕。</p>
 <h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">情境冲突--当信息发生冲突时</h3><p>多轮交互增加了一种独特的失败模式：早期的误解会随着对话的分支而加剧。在<a href="https://arxiv.org/pdf/2505.06120v1">微软和 Salesforce 的实验</a>中，开放权重和封闭权重的 LLMs 在多轮互动与单轮互动中的表现都明显不如单轮互动--在六个生成任务中平均下降了 39%。一旦一个错误的假设进入对话状态，后续回合就会继承它并扩大错误。</p>
 <p>
   <span class="img-wrapper">
@@ -139,7 +139,7 @@ origin: >-
 <h3 id="Context-Pruning" class="common-anchor-header">上下文剪枝</h3><p>定期审核和修剪上下文。删除多余的细节、陈旧的信息和不相关的痕迹。就像重构一样：清除死代码和依赖关系，只留下精华部分。有效的修剪需要明确的标准来确定哪些属于哪些不属于。</p>
 <h3 id="Context-Summarization" class="common-anchor-header">上下文汇总</h3><p>冗长的历史不需要完整地随身携带。相反，应将其浓缩为简明的摘要，只记录下一步所需的重要内容。好的总结可以保留关键事实、决策和限制因素，同时消除重复和不必要的细节。这就好比用一页纸的设计概要取代了 200 页的规格说明书，但仍能为你提供前进所需的一切。</p>
 <h3 id="Context-Offloading" class="common-anchor-header">语境卸载</h3><p>并非每个细节都需要成为实时上下文的一部分。将非关键数据保存在外部系统（知识库、文档存储或 Milvus 等向量数据库）中，只有在需要时才提取。这样既能减轻模型的认知负荷，又能保持背景信息的可访问性。</p>
-<h3 id="Strategic-RAG" class="common-anchor-header">战略性 RAG</h3><p>信息检索只有在有选择的情况下才会强大。通过严格的过滤和质量控制引入外部知识，确保模型使用相关且准确的输入。与任何数据管道一样：垃圾进，垃圾出--但有了高质量的检索，背景信息就会成为一种资产，而不是负债。</p>
+<h3 id="Strategic-RAG" class="common-anchor-header">战略性 RAG</h3><p>信息检索只有在有选择的情况下才会强大。通过严格的过滤和质量控制引入外部知识，确保模型使用相关且准确的输入。就像任何数据管道一样：垃圾进，垃圾出--但有了高质量的检索，背景信息就会成为一种资产，而不是负债。</p>
 <h3 id="Optimized-Tool-Loading" class="common-anchor-header">优化工具加载</h3><p>工具越多并不等于性能越好。研究表明，可用工具超过 30 个，可靠性就会急剧下降。只加载特定任务所需的功能，并对其他功能进行访问控制。精简的工具箱有助于提高精确度，减少可能影响决策的噪音。</p>
 <h2 id="The-Infrastructure-Challenge-of-Context-Engineering" class="common-anchor-header">情境工程的基础设施挑战<button data-href="#The-Infrastructure-Challenge-of-Context-Engineering" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -159,7 +159,7 @@ origin: >-
     </button></h2><p>情境工程的有效性取决于其运行的基础设施。当今的企业正面临着数据挑战的完美风暴：</p>
 <h3 id="Scale-Explosion--From-Terabytes-to-Petabytes" class="common-anchor-header">规模爆炸--从 TB 到 PB</h3><p>如今，数据增长重新定义了基线。曾经可以轻松容纳在单个数据库中的工作负载，现在已经跨越了 PB 级，需要分布式存储和计算。过去只需单行 SQL 更新即可完成的 Schema 更改，现在可能需要跨集群、管道和服务的全面协调工作。扩展不是简单地增加硬件，而是在每一个假设都要经过压力测试的情况下，对协调性、复原力和弹性进行工程设计。</p>
 <h3 id="Consumption-Revolution--Systems-That-Speak-AI" class="common-anchor-header">消费革命--会说人工智能的系统</h3><p>人工智能 Agents 不只是查询数据，它们还能以机器速度持续生成、转换和消费数据。专为面向人类的应用而设计的基础设施无法跟上。为了支持 Agents，系统必须提供低延迟检索、流式更新和不中断的重写工作负载。换句话说，基础架构堆栈必须将人工智能作为其原生工作负载来构建，而不是事后才考虑。</p>
-<h3 id="Multimodal-Complexity--Many-Data-Types-One-System" class="common-anchor-header">多模态复杂性--多种数据类型，一个系统</h3><p>人工智能工作负载融合了文本、图像、音频、视频和高维嵌入，每种数据都附带丰富的元数据。管理这种异质性是实用上下文工程的关键所在。所面临的挑战不仅仅是存储不同的对象，还包括为它们建立索引、高效检索它们以及在不同模式之间保持语义一致性。真正的人工智能就绪基础设施必须将多模态性视为一流的设计原则，而不是附加功能。</p>
+<h3 id="Multimodal-Complexity--Many-Data-Types-One-System" class="common-anchor-header">多模态复杂性--多种数据类型，一个系统</h3><p>人工智能工作负载融合了文本、图像、音频、视频和高维嵌入，每种数据都附带丰富的元数据。管理这种异质性是实用上下文工程的关键所在。所面临的挑战不仅仅是存储不同的对象，还包括为它们编制索引、高效检索它们以及在不同模式之间保持语义一致性。真正的人工智能就绪基础设施必须将多模态性视为一流的设计原则，而不是附加功能。</p>
 <h2 id="Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="common-anchor-header">Milvus + Loon：为人工智能量身打造的数据基础设施<button data-href="#Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -182,7 +182,7 @@ origin: >-
 </ul>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/loon_milvus_min_76aaa39b4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

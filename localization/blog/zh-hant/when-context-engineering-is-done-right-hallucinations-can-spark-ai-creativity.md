@@ -136,7 +136,7 @@ origin: >-
       </svg>
     </button></h2><p>應對長上下文挑戰的答案不是放棄這項能力，而是要有紀律地設計它。以下是我們在實踐中見過的六種有效策略：</p>
 <h3 id="Context-Isolation" class="common-anchor-header">情境隔離</h3><p>將複雜的工作流程分割成具有隔離情境的專門代理程式。每個代理程式都專注於自己的領域，互不干擾，降低錯誤擴散的風險。這不僅能提高精確度，還能實現平行執行，就像結構良好的工程團隊一樣。</p>
-<h3 id="Context-Pruning" class="common-anchor-header">情境修剪</h3><p>定期審核和修剪上下文。刪除多餘的細節、陳舊的資訊以及不相關的痕跡。就像重組一樣：清除死的程式碼和依賴關係，只留下最重要的部分。有效的修剪需要明確的標準來判斷哪些是該做的，哪些是不該做的。</p>
+<h3 id="Context-Pruning" class="common-anchor-header">情境修剪</h3><p>定期審核和修剪上下文。移除多餘的細節、陳舊的資訊以及不相關的痕跡。就像重組一樣：清除死的程式碼和依賴關係，只留下最重要的部分。有效的修剪需要明確的標準來判斷哪些是該做的，哪些是不該做的。</p>
 <h3 id="Context-Summarization" class="common-anchor-header">上下文總結</h3><p>冗長的歷史不需要全部帶在身上。取而代之的是，將它們濃縮成簡潔的摘要，只捕捉下一步所需的重要內容。好的摘要能保留重要的事實、決策和限制，同時消除重複和不必要的細節。這就像是將長達 200 頁的規格書，換成只有一頁的設計摘要，但仍能提供您前進所需的一切。</p>
 <h3 id="Context-Offloading" class="common-anchor-header">情境卸載</h3><p>並非每個細節都需要成為即時上下文的一部分。將非關鍵資料儲存在外部系統中，例如知識庫、文件儲存庫或向量資料庫 (如 Milvus)，並只在需要時才取得。這樣可以減輕模型的認知負荷，同時保持背景資訊的可存取性。</p>
 <h3 id="Strategic-RAG" class="common-anchor-header">策略性 RAG</h3><p>資訊檢索只有在有選擇性的情況下才會強大。透過嚴格的篩選和品質控制來引進外部知識，確保模型使用相關且精確的輸入。就像任何資料管道一樣：垃圾進、垃圾出，但有了高品質的擷取，背景資訊就會成為資產，而不是負債。</p>
@@ -182,7 +182,7 @@ origin: >-
 </ul>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/loon_milvus_min_76aaa39b4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

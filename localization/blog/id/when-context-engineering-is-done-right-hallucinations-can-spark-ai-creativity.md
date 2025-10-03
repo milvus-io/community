@@ -83,8 +83,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Banyak model AI sekarang mengiklankan jendela jutaan token-cukup untuk ~75.000 baris kode atau dokumen 750.000 kata. Namun, konteks yang lebih banyak tidak secara otomatis memberikan hasil yang lebih baik. Dalam praktiknya, konteks yang sangat panjang memperkenalkan mode kegagalan yang berbeda yang dapat menurunkan penalaran dan keandalan.</p>
-<h3 id="Context-Poisoning--When-Bad-Information-Spreads" class="common-anchor-header">Keracunan Konteks - Ketika Informasi Buruk Menyebar</h3><p>Ketika informasi yang salah memasuki konteks kerja-baik dalam tujuan, rangkuman, atau kondisi antara-itu dapat menggagalkan seluruh proses penalaran. <a href="https://arxiv.org/pdf/2507.06261">Laporan Gemini 2.5 dari DeepMind</a> memberikan contoh yang jelas. Seorang agen LLM yang bermain Pokémon salah membaca status permainan dan memutuskan misinya adalah untuk "menangkap legendaris yang tidak bisa ditangkap." Tujuan yang salah tersebut dicatat sebagai fakta, sehingga membuat agen tersebut membuat strategi yang rumit namun mustahil.</p>
-<p>Seperti yang ditunjukkan dalam kutipan di bawah ini, konteks yang diracuni menjebak model dalam perulangan kesalahan, mengabaikan akal sehat, dan memperkuat kesalahan yang sama hingga seluruh proses penalaran runtuh.</p>
+<h3 id="Context-Poisoning--When-Bad-Information-Spreads" class="common-anchor-header">Keracunan Konteks - Ketika Informasi Buruk Menyebar</h3><p>Ketika informasi yang salah memasuki konteks kerja-baik dalam tujuan, ringkasan, atau kondisi antara-itu dapat menggagalkan seluruh proses penalaran. <a href="https://arxiv.org/pdf/2507.06261">Laporan Gemini 2.5 dari DeepMind</a> memberikan contoh yang jelas. Seorang agen LLM yang bermain Pokémon salah membaca status permainan dan memutuskan misinya adalah untuk "menangkap legendaris yang tidak bisa ditangkap." Tujuan yang salah tersebut dicatat sebagai fakta, sehingga membuat agen tersebut membuat strategi yang rumit namun mustahil.</p>
+<p>Seperti yang ditunjukkan dalam kutipan di bawah ini, konteks yang diracuni menjebak model dalam sebuah lingkaran-kesalahan yang berulang, mengabaikan akal sehat, dan memperkuat kesalahan yang sama hingga seluruh proses penalaran runtuh.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_1_Excerpt_from_Gemini_2_5_Tech_Paper_e89adf9eed.png" alt="" class="doc-image" id="" />
@@ -108,7 +108,7 @@ origin: >-
 </p>
 <p><em>Gambar 3: Performa konteks panjang model GPT, Claude, Llama, Mistral, dan DBRX pada 4 set data RAG yang telah dikurasi (Databricks DocsQA, FinanceBench, HotPotQA, dan Natural Questions) [Sumber:</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em></p>
 <h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">Kebingungan Konteks - Terlalu Banyak Alat di Dapur</h3><p>Menambahkan lebih banyak alat tidak selalu membantu. <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">Berkeley Function-Calling Leaderboard</a> menunjukkan bahwa ketika konteks menampilkan menu alat yang ekstensif - sering kali dengan banyak pilihan yang tidak relevan - keandalan model menurun, dan alat dipanggil bahkan ketika tidak ada yang diperlukan. Salah satu contoh yang jelas: Llama 3.1-8B yang terkuantisasi gagal dengan 46 alat yang tersedia, tetapi berhasil ketika set dikurangi menjadi 19. Ini adalah paradoks pilihan untuk sistem AI - terlalu banyak pilihan, keputusan yang lebih buruk.</p>
-<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">Benturan Konteks - Ketika Informasi Bertentangan</h3><p>Interaksi multi-bergiliran menambahkan mode kegagalan yang berbeda: kesalahpahaman di awal bertambah seiring dengan bertambahnya cabang dialog. Dalam <a href="https://arxiv.org/pdf/2505.06120v1">percobaan Microsoft dan Salesforce</a>, baik LLM dengan bobot terbuka maupun tertutup berkinerja jauh lebih buruk dalam pengaturan multi-bergiliran dibandingkan dengan pengaturan giliran tunggal - penurunan rata-rata 39% di enam tugas generasi. Begitu asumsi yang salah memasuki kondisi percakapan, giliran berikutnya akan mewarisinya dan memperbesar kesalahan tersebut.</p>
+<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">Benturan Konteks - Ketika Informasi Bertentangan</h3><p>Interaksi multi-bergiliran menambahkan mode kegagalan yang berbeda: kesalahpahaman di awal bertambah seiring dengan bertambahnya cabang dialog. Dalam <a href="https://arxiv.org/pdf/2505.06120v1">eksperimen Microsoft dan Salesforce</a>, baik LLM dengan bobot terbuka maupun tertutup berkinerja jauh lebih buruk dalam pengaturan multi-bergiliran dibandingkan dengan pengaturan giliran tunggal - penurunan rata-rata 39% di enam tugas generasi. Begitu asumsi yang salah memasuki kondisi percakapan, giliran berikutnya akan mewarisinya dan memperbesar kesalahan tersebut.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_4_LL_Ms_get_lost_in_multi_turn_conversations_in_experiments_21f194b02d.png" alt="" class="doc-image" id="" />
@@ -183,11 +183,11 @@ origin: >-
     </button></h2><p>Tantangan skala, konsumsi, dan multimodalitas tidak dapat diselesaikan dengan teori saja - mereka menuntut infrastruktur yang dibangun khusus untuk AI. Itulah mengapa kami di <a href="https://zilliz.com/">Zilliz</a> merancang <strong>Milvus</strong> dan <strong>Loon</strong> untuk bekerja sama, mengatasi kedua sisi masalah: pengambilan data berkinerja tinggi pada saat proses dan pemrosesan data berskala besar di bagian hulu.</p>
 <ul>
 <li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: basis data vektor sumber terbuka yang paling banyak diadopsi yang dioptimalkan untuk pengambilan dan penyimpanan vektor berkinerja tinggi.</p></li>
-<li><p><strong>Loon</strong>: layanan data lake multimodal cloud-native kami yang akan datang, yang dirancang untuk memproses dan mengatur data multimodal berskala masif sebelum data tersebut masuk ke dalam basis data. Pantau terus perkembangannya.</p></li>
+<li><p><strong>Loon</strong>: layanan cloud-native multimodal data lake kami yang akan datang, yang dirancang untuk memproses dan mengatur data multimodal berskala masif sebelum data tersebut masuk ke dalam basis data. Pantau terus perkembangannya.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/loon_milvus_min_76aaa39b4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

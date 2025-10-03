@@ -105,7 +105,7 @@ origin: >-
 </p>
 <p><em>그림 3: 4개의 선별된 RAG 데이터 세트(Databricks DocsQA, FinanceBench, HotPotQA 및 Natural Questions)에서의 GPT, Claude, Llama, Mistral 및 DBRX 모델의 긴 컨텍스트 성능 [출처:</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em></p>
 <h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">컨텍스트 혼동 - 너무 많은 도구들</h3><p>도구를 더 추가한다고 해서 항상 도움이 되는 것은 아닙니다. <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">버클리 함수 호출 리더보드에</a> 따르면 컨텍스트에 관련 없는 옵션이 많은 광범위한 도구 메뉴가 표시되면 모델 신뢰성이 떨어지고 도구가 필요하지 않은 경우에도 도구가 호출되는 것으로 나타났습니다. 한 가지 분명한 예로, 정량화된 라마 3.1-8B는 46개의 도구를 사용할 때는 실패했지만 도구 세트를 19개로 줄였을 때는 성공했습니다. 선택의 역설, 즉 선택지가 너무 많을수록 더 나쁜 결정을 내릴 수 있다는 것이 바로 AI 시스템의 역설입니다.</p>
-<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">컨텍스트 충돌 - 정보가 충돌할 때</h3><p>여러 차례에 걸친 상호 작용은 대화가 분기되면서 초기 오해가 복잡해지는 뚜렷한 실패 모드를 추가합니다. <a href="https://arxiv.org/pdf/2505.06120v1">Microsoft와 Salesforce의 실험에서</a> 개방형 및 폐쇄형 LLM은 모두 단일 턴 설정에 비해 멀티 턴 설정에서 현저하게 성능이 저하되었으며, 6세대 작업에서 평균 39%의 성능 저하를 보였습니다. 잘못된 가정이 대화 상태에 들어가면 후속 턴이 이를 상속하여 오류를 증폭시킵니다.</p>
+<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">컨텍스트 충돌 - 정보가 충돌할 때</h3><p>여러 차례에 걸친 상호 작용은 뚜렷한 실패 모드를 추가합니다. 대화가 분기되면서 초기 오해가 복잡해집니다. <a href="https://arxiv.org/pdf/2505.06120v1">Microsoft와 Salesforce의 실험에서</a> 개방형 및 폐쇄형 LLM은 모두 단일 턴 설정에 비해 멀티 턴 설정에서 현저하게 성능이 저하되었으며, 6세대 작업에서 평균 39%의 성능 저하를 보였습니다. 잘못된 가정이 대화 상태에 들어가면 후속 턴이 이를 상속하여 오류를 증폭시킵니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_4_LL_Ms_get_lost_in_multi_turn_conversations_in_experiments_21f194b02d.png" alt="" class="doc-image" id="" />
@@ -184,7 +184,7 @@ origin: >-
 </ul>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/loon_milvus_min_76aaa39b4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
