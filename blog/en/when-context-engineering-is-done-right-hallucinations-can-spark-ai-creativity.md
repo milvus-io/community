@@ -148,7 +148,7 @@ The challenges of scale, consumption, and multimodality can’t be solved with t
     
 *   **Loon**: our upcoming cloud-native multimodal data lake service designed to process and organize massive-scale multimodal data before it ever reaches the database. Stay tuned. 
     
-![](https://assets.zilliz.com/multimodal_data_lake_min_ddc3de6ea4.png)
+![](https://assets.zilliz.com/loon_milvus_min_76aaa39b4e.png)
 
 
 ### Lightning-Fast Vector Search
