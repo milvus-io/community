@@ -76,6 +76,7 @@ A model’s **vocabulary size** refers to the number of unique tokens its tokeni
 The requirements vary by use case. Multilingual scenarios generally need larger vocabularies—on the order of 50k+ tokens, as in the case of [_BGE-M3_](https://zilliz.com/ai-models/bge-m3). For domain-specific applications, coverage of specialized terms is most important. For example, a legal model should natively support terms like _"statute of limitations"_ or _"bona fide acquisition_," while a Chinese model must account for thousands of characters and unique punctuation. Without sufficient vocabulary coverage, embedding accuracy quickly breaks down.
 
 
+
 ### # 5 Training Data
 
 The **training data** defines the boundaries of what an embedding model “knows.” Models trained on broad, general-purpose data—such as _text-embedding-ada-002_, which utilizes a mix of web pages, books, and Wikipedia—tend to perform well across various domains. But when you need precision in specialized fields, domain-trained models often win. For example, _LegalBERT_ and _BioBERT_ outperform general models on legal and biomedical texts, though they lose some generalization ability.
