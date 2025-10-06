@@ -40,7 +40,7 @@ Key panels include:
     
 *   **Service Quality → Search Latency**: Shows overall latency distribution. If this looks normal, but end users still see delays, the problem is likely outside Milvus—in the network or application layer.
     
-*   **Query Node → Search Latency by Phase**: Breaks latency into queue, query, and reduce stages. For deeper attribution, panels such as _Scalar_ _Filter Latency_, _Vector Search Latency_, and _Wait Safe Latency_ reveal which stage dominates.
+*   **Query Node → Search Latency by Phase**: Breaks latency into queue, query, and reduce stages. For deeper attribution, panels such as _Scalar_ _Filter Latency_, _Vector Search Latency_, and _Wait tSafe Latency_ reveal which stage dominates.
     
 
 ### Milvus Logs
@@ -74,7 +74,7 @@ A common cause of slow requests is an excessive workload. When a request has a v
 
 *   All queries show unexpectedly high latency.
     
-*   Query Node metrics report rising **in-queue latency**.
+*   Query Node metrics report high **in-queue latency**.
     
 *   Logs show a request with a large NQ and a long total duration, but a relatively small durationPerNQ—indicating that one oversized request is dominating resources.
     
@@ -88,7 +88,7 @@ A common cause of slow requests is an excessive workload. When a request has a v
 
 ### Inefficient Filtering
 
-Another common bottleneck comes from inefficient filters. If filter expressions are poorly structured or fields lack scalar indexes, Milvus may fall back to a **full scan** instead of scanning a small, targeted subset. JSON filters and strict consistency settings can further increase overhead.
+Another common bottleneck comes from inefficient filters. If filter expressions are poorly conducted or fields lack scalar indexes, Milvus may fall back to a **full scan** instead of scanning a small, targeted subset. JSON filters and strict consistency settings can further increase overhead.
 
 ![ ](https://assets.zilliz.com/inefficient_filtering_e524615d63.png)
 
@@ -112,13 +112,13 @@ tag = {"tag": ["A", "B", "C", "D"]}
 filter_expr = "tag IN {tag}"
 ```
 
-Milvus also introduces a filter expression templating mechanism designed to improve efficiency by reducing the time spent parsing complex expressions. See [this document](https://milvus.io/docs/filtering-templating.md) for more details.
+*   Milvus also introduces a filter expression templating mechanism designed to improve efficiency by reducing the time spent parsing complex expressions. See [this document](https://milvus.io/docs/filtering-templating.md) for more details.
 
-*   **Add proper indexes**: Avoid full scans by creating scalar indexes on fields used in filters.
-    
-*   **Handle JSON efficiently**: Milvus 2.6 introduced path and flat indexes for JSON fields, enabling efficient handling of JSON data. JSON shredding is also on [the roadmap](https://milvus.io/docs/roadmap.md) to further improve performance. Refer to [the JSON field document](https://milvus.io/docs/use-json-fields.md#JSON-Field) for additional information.  
-    
-*   **Tune consistency level**: Use `_Bounded`_ or `_Eventually`_ consistent reads when strict guarantees are not required, reducing `tSafe` wait time.
+ *   **Add proper indexes**: Avoid full scans by creating scalar indexes on fields used in filters.
+     
+ *   **Handle JSON efficiently**: Milvus 2.6 introduced path and flat indexes for JSON fields, enabling efficient handling of JSON data. JSON shredding is also on [the roadmap](https://milvus.io/docs/roadmap.md) to further improve performance. Refer to [the JSON field document](https://milvus.io/docs/use-json-fields.md#JSON-Field) for additional information.  
+     
+ *   **Tune consistency level**: Use *Bounded* or *Eventually* consistent reads when strict guarantees are not required, reducing *tSafe* wait time.
     
 
 ### Improper Choice of Vector Index
