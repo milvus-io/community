@@ -15,7 +15,7 @@ meta_title: |
 origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.md'
 ---
 <p>大型語言模型功能強大，但也有眾所皆知的弱點：幻覺。<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval-Augmented Generation (RAG)</a>是解決這個問題最有效的方法之一。RAG 並非完全依賴模型的記憶，而是從外部來源擷取相關知識，並將其納入提示中，以確保答案以真實資料為基礎。</p>
-<p>RAG 系統通常由三個主要部分組成：LLM 本身、<a href="https://zilliz.com/learn/what-is-vector-database">向量資料庫</a>(例如用於儲存和搜尋資訊的<a href="https://milvus.io/">Milvus</a>) 以及嵌入模型。嵌入模型將人類語言轉換為機器可讀取的向量。將它視為自然語言與資料庫之間的翻譯器。這個翻譯器的品質決定了擷取內容的相關性。做對了，使用者就能看到精確、有用的答案。如果做錯，即使是最好的基礎架構也會產生雜訊、錯誤和浪費運算。</p>
+<p>RAG 系統通常由三個主要部分組成：LLM 本身、<a href="https://zilliz.com/learn/what-is-vector-database">向量資料庫</a>(例如用於儲存和搜尋資訊的<a href="https://milvus.io/">Milvus</a>) 以及嵌入模型。嵌入模型將人類語言轉換為機器可讀取的向量。將它視為自然語言與資料庫之間的翻譯器。這個翻譯器的品質決定了擷取內容的相關性。如果處理得當，使用者就能看到精確且有用的答案。如果做錯，即使是最好的基礎架構也會產生雜訊、錯誤和浪費運算。</p>
 <p>這就是了解嵌入模型如此重要的原因。有許多模型可供選擇，從早期的 Word2Vec 到現代基於 LLM 的模型，例如 OpenAI 的文字嵌入系列。每種方法都有自己的優缺點。本指南將為您釐清雜亂的資訊，並教您如何在實務中評估嵌入，讓您可以選擇最適合您的 RAG 系統。</p>
 <h2 id="What-Are-Embeddings-and-Why-Do-They-Matter" class="common-anchor-header">嵌入式是什麼，為什麼重要？<button data-href="#What-Are-Embeddings-and-Why-Do-They-Matter" class="anchor-icon" translate="no">
       <svg translate="no"

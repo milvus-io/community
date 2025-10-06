@@ -74,7 +74,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <h3 id="-5-Training-Data" class="common-anchor-header"># 5 Données de formation</h3><p>Les <strong>données d'entraînement</strong> définissent les limites de ce qu'un modèle d'intégration "sait". Les modèles formés sur des données générales, telles que <em>text-embedding-ada-002</em>, qui utilise un mélange de pages Web, de livres et de Wikipédia, ont tendance à donner de bons résultats dans divers domaines. En revanche, lorsque vous avez besoin de précision dans des domaines spécialisés, les modèles formés par domaine sont souvent plus performants. Par exemple, <em>LegalBERT</em> et <em>BioBERT</em> sont plus performants que les modèles généraux sur les textes juridiques et biomédicaux, même s'ils perdent un peu de leur capacité de généralisation.</p>
 <p>La règle d'or :</p>
 <ul>
-<li><p><strong>Scénarios généraux</strong> → utiliser des modèles formés sur de vastes ensembles de données, mais s'assurer qu'ils couvrent la ou les langues cibles. Par exemple, les applications chinoises ont besoin de modèles formés sur de riches corpus chinois.</p></li>
+<li><p><strong>Scénarios généraux</strong> → utiliser des modèles formés sur de vastes ensembles de données, mais s'assurer qu'ils couvrent la ou les langue(s) cible(s). Par exemple, les applications chinoises ont besoin de modèles formés sur de riches corpus chinois.</p></li>
 <li><p><strong>Domaines verticaux</strong> → choisissez des modèles spécifiques à un domaine pour une meilleure précision.</p></li>
 <li><p><strong>Le meilleur des deux mondes</strong> → des modèles plus récents comme <strong>NV-Embed</strong>, formés en deux étapes avec des données générales et spécifiques à un domaine, montrent des gains prometteurs en termes de généralisation <em>et de</em> précision du domaine.</p></li>
 </ul>
@@ -90,7 +90,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <li><p><strong>Multilingue :</strong> <em>BGE-M3</em> prend en charge plus de 100 langues, ce qui le rend bien adapté aux applications internationales qui nécessitent de faire le lien entre l'anglais, le chinois et d'autres langues.</p></li>
 <li><p><strong>Recherche de code :</strong> <em>Qwen3-Embedding</em> obtient des scores de premier ordre (81.0+) sur <em>MTEB-Code</em>, optimisé pour les requêtes liées à la programmation.</p></li>
 </ul>
-<p>Si votre cas d'utilisation relève de l'un de ces domaines, les modèles optimisés par domaine peuvent améliorer de manière significative la précision de la recherche. Mais pour des applications plus larges, il convient de s'en tenir à des modèles d'usage général, sauf si vos tests démontrent le contraire.</p>
+<p>Si votre cas d'utilisation relève de l'un de ces domaines, les modèles optimisés par domaine peuvent améliorer de manière significative la précision de la recherche. Mais pour des applications plus larges, il convient de s'en tenir à des modèles généraux, à moins que vos tests ne montrent le contraire.</p>
 <h2 id="Additional-Perspectives-for-Evaluating-Embeddings" class="common-anchor-header">Perspectives supplémentaires pour l'évaluation des emboîtements<button data-href="#Additional-Perspectives-for-Evaluating-Embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

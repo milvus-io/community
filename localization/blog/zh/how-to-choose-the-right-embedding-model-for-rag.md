@@ -60,7 +60,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <p>启示：如果您的使用案例涉及长篇文档，如法律文件或学术论文，请选择具有 8K+ 标记窗口的模型。对于较短的文本，如客户支持聊天，2K 标记窗口可能就足够了。</p>
 <h3 id="2-Tokenization-Unit" class="common-anchor-header"><strong>#2</strong>标记化单元</h3><p>在生成 Embeddings 之前，必须将文本分解成称为<strong>标记的</strong>小块。如何进行标记化会影响模型处理罕见词、专业术语和专业领域的能力。</p>
 <ul>
-<li><p><strong>子词标记化（BPE）：</strong>将单词分割成更小的部分（例如，"unhappiness" → "un" + "happiness"）。这是现代 LLMs（如 GPT 和 LLaMA）的默认设置，它能很好地处理词汇量不足的单词。</p></li>
+<li><p><strong>子词标记化（BPE）：</strong>将单词分割成更小的部分（例如，"unhappiness" → "un" + "happiness"）。这是现代 LLMs（如 GPT 和 LLaMA）的默认设置，它能很好地处理词汇表之外的单词。</p></li>
 <li><p><strong>WordPiece：</strong>BERT 使用的 BPE 的改进版，旨在更好地平衡词汇覆盖率和效率。</p></li>
 <li><p><strong>词级标记化：</strong>只按整词分割。这种方法很简单，但在处理罕见或复杂的术语时很吃力，因此不适合技术领域。</p></li>
 </ul>
@@ -68,7 +68,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <h3 id="3-Dimensionality" class="common-anchor-header">#3 维度</h3><p><a href="https://zilliz.com/glossary/dimensionality-reduction"><strong>向量维度</strong></a>指的是嵌入向量的长度，它决定了模型能捕捉多少语义细节。维度越高（例如 1536 或更高），概念之间的区分就越精细，但代价是存储量增加、查询速度变慢以及计算要求提高。低维度（如 768）速度更快、成本更低，但有可能失去微妙的含义。</p>
 <p>关键在于平衡。对于大多数通用应用来说，768-1,536 维度是效率和精度的最佳组合。对于精度要求较高的任务，如学术或科学搜索，超过 2000 维可能是值得的。另一方面，资源有限的系统（如边缘部署）可以有效地使用 512 维，前提是检索质量得到验证。在一些轻量级推荐或个性化系统中，甚至更小的维度也可能足够。</p>
 <h3 id="4-Vocabulary-Size" class="common-anchor-header">#4 词汇量大小</h3><p>一个模型的<strong>词汇量大小</strong>指的是其标记器能够识别的唯一标记的数量。这直接影响到模型处理不同语言和特定领域术语的能力。如果一个词或字符不在词汇表中，它就会被标记为<code translate="no">[UNK]</code> ，这可能会导致意义丢失。</p>
-<p>不同的使用场景有不同的要求。多语种应用通常需要更大的词汇量--如<a href="https://zilliz.com/ai-models/bge-m3"><em>BGE-M3</em></a> 的情况，词汇量在 50k 以上。对于特定领域的应用，专业术语的覆盖范围最为重要。例如，法律模型应支持<em>&quot;诉讼时效 &quot;</em>或<em>&quot;善意取得</em>&quot;等术语，而中文模型则必须考虑到成千上万的字符和独特的标点符号。如果没有足够的词汇覆盖范围，Embeddings 的准确性很快就会下降。</p>
+<p>不同的使用场景有不同的要求。多语言场景通常需要更大的词汇量--如<a href="https://zilliz.com/ai-models/bge-m3"><em>BGE-M3</em></a> 的情况，词汇量在 50k 以上。对于特定领域的应用，专业术语的覆盖范围最为重要。例如，法律模型应支持<em>&quot;诉讼时效 &quot;</em>或<em>&quot;善意取得</em>&quot;等术语，而中文模型则必须考虑到成千上万的字符和独特的标点符号。如果没有足够的词汇覆盖范围，Embeddings 的准确性很快就会下降。</p>
 <h3 id="-5-Training-Data" class="common-anchor-header"># 5 训练数据</h3><p><strong>训练数据</strong>定义了嵌入模型 "知道 "什么的界限。在广泛的通用数据上训练出来的模型--比如<em>文本嵌入-ada-002</em>，它混合使用了网页、书籍和维基百科--往往在各个领域都表现出色。但是，当你需要专业领域的精确度时，领域训练的模型往往会胜出。例如，<em>LegalBERT</em>和<em>BioBERT</em>在法律和生物医学文本上的表现就优于普通模型，尽管它们会损失一些泛化能力。</p>
 <p>经验法则</p>
 <ul>
@@ -76,7 +76,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <li><p><strong>垂直领域</strong>→ 选择特定领域的模型，以获得最佳准确性。</p></li>
 <li><p><strong>两全其美</strong>→ 较新的模型（如<strong>NV-Embed</strong>）使用通用数据和特定领域数据分两个阶段进行训练，在通用化<em>和</em>领域精确度方面都有可喜的进步。</p></li>
 </ul>
-<h3 id="-6-Cost" class="common-anchor-header"># 6 成本</h3><p>成本不仅仅是 API 的定价，还包括<strong>经济成本</strong>和<strong>计算成本</strong>。托管 API 模型，如 OpenAI 的模型，是基于使用量的：每次调用都要付费，但不用担心基础设施。因此，它们非常适合快速原型开发、试点项目或中小型工作负载。</p>
+<h3 id="-6-Cost" class="common-anchor-header"># 6 成本</h3><p>成本不仅仅是 API 的定价，还包括<strong>经济成本</strong>和<strong>计算成本</strong>。托管 API 模型，如 OpenAI 的模型，是基于使用量的：每次调用都要付费，但不用担心基础设施。这使它们成为快速原型开发、试点项目或中小型工作负载的完美选择。</p>
 <p><em>BGE</em>或<em>Sentence-BERT</em> 等开源方案可免费使用，但需要自行管理基础设施，通常是 GPU 或 TPU 集群。它们更适合大规模生产，因为长期的节约和灵活性可以抵消一次性的设置和维护成本。</p>
 <p>实用启示<strong>API 模型是快速迭代的理想选择</strong>，而<strong>开源模型</strong>一旦考虑到总拥有成本（TCO），<strong>往往能在大规模生产中胜出</strong>。选择正确的途径取决于您是需要快速上市还是需要长期控制。</p>
 <h3 id="-7-MTEB-Score" class="common-anchor-header"># 7 MTEB 分数</h3><p><a href="https://zilliz.com/glossary/massive-text-embedding-benchmark-(mteb)"><strong>大规模文本嵌入基准（MTEB）</strong></a>是比较嵌入模型最广泛使用的标准。它评估各种任务的性能，包括语义搜索、分类、聚类和其他任务。得分越高，通常意味着模型在不同类型的任务中具有更强的通用性。</p>
@@ -192,7 +192,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <li><p><strong>使用 MTEB 子集进行筛选。</strong>使用基准，尤其是检索任务，建立候选者的初步名单。</p></li>
 <li><p><strong>使用真实业务数据进行测试。</strong>从自己的文档中创建评估集，在实际条件下测量召回率、精确度和延迟。</p></li>
 <li><p><strong>检查数据库兼容性。</strong>稀疏向量需要反向索引支持，而高维密集向量则需要更多存储和计算。确保你的向量数据库能满足你的选择。</p></li>
-<li><p><strong>巧妙处理长文档。</strong>利用滑动窗口等分割策略来提高效率，并将其与大型上下文窗口模型搭配使用，以保留意义。</p></li>
+<li><p><strong>巧妙处理长文档。</strong>利用分割策略（如滑动窗口）提高效率，并将其与大型上下文窗口模型搭配使用，以保留意义。</p></li>
 </ul>
 <p>从 Word2Vec 的简单静态向量到具有 32K 上下文的 LLM 驱动型 Embeddings，我们看到机器在理解语言方面取得了巨大进步。但是，每个开发人员最终都会学到这样的教训：<em>得分最高的</em>模型并不总是<em>最</em>适合您的用例的模型。</p>
 <p>说到底，用户并不关心 MTEB 排行榜或基准图表，他们只想快速找到正确的信息。选择兼顾准确性、成本和与系统兼容性的模型，您就能打造出不仅在理论上令人印象深刻，而且在现实世界中真正有效的产品。</p>

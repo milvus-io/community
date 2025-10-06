@@ -39,7 +39,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
     </button></h2><p>Ao nível mais simples, os embeddings transformam a linguagem humana em números que as máquinas podem compreender. Cada palavra, frase ou documento é mapeado num espaço vetorial de elevada dimensão, onde a distância entre vectores capta as relações entre eles. Os textos com significados semelhantes tendem a agrupar-se, enquanto os conteúdos não relacionados tendem a afastar-se. É isto que torna possível a pesquisa semântica - encontrar significado e não apenas palavras-chave correspondentes.</p>
 <p>Os modelos de incorporação não funcionam todos da mesma forma. Geralmente, dividem-se em três categorias, cada uma com pontos fortes e desvantagens:</p>
 <ul>
-<li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Os vectores esparsos</strong></a> (como o BM25) concentram-se na frequência das palavras-chave e no comprimento dos documentos. São óptimos para correspondências explícitas, mas não têm em conta os sinónimos e o contexto - "IA" e "inteligência artificial" não teriam qualquer relação.</p></li>
+<li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Os vectores esparsos</strong></a> (como o BM25) centram-se na frequência das palavras-chave e no comprimento dos documentos. São óptimos para correspondências explícitas, mas não têm em conta os sinónimos e o contexto - "IA" e "inteligência artificial" não teriam qualquer relação.</p></li>
 <li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Os vectores densos</strong></a> (como os produzidos pelo BERT) captam uma semântica mais profunda. Conseguem ver que "Apple lança novo telemóvel" está relacionado com "lançamento do produto iPhone", mesmo sem palavras-chave partilhadas. A desvantagem é um custo computacional mais elevado e uma menor capacidade de interpretação.</p></li>
 <li><p><strong>Os modelos híbridos</strong> (como o BGE-M3) combinam as duas coisas. Podem gerar representações esparsas, densas ou multi-vectoriais em simultâneo - preservando a precisão da pesquisa por palavra-chave e captando simultaneamente as nuances semânticas.</p></li>
 </ul>
@@ -166,7 +166,7 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
 <p><strong>O LLM2Vec</strong> adapta LLMs só de descodificador com três alterações fundamentais:</p>
 <ul>
 <li><p><strong>Conversão da atenção bidirecional</strong>: substituição das máscaras causais para que cada token possa atender à sequência completa.</p></li>
-<li><p><strong>Previsão do próximo token com máscara (MNTP):</strong> um novo objetivo de formação que incentiva a compreensão bidirecional.</p></li>
+<li><p><strong>Previsão do próximo token com máscara (MNTP):</strong> um novo objetivo de treino que incentiva a compreensão bidirecional.</p></li>
 <li><p><strong>Aprendizagem contrastiva não supervisionada:</strong> inspirada no SimCSE, aproxima frases semanticamente semelhantes no espaço vetorial.</p></li>
 </ul>
 <p><strong>O NV-Embed</strong>, por sua vez, adopta uma abordagem mais simplificada:</p>
