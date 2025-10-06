@@ -52,7 +52,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>서비스 품질 → 느린 쿼리</strong>: proxy.slowQuerySpanInSeconds(기본값: 5초)를 초과하는 모든 요청에 플래그를 지정합니다. Prometheus에도 표시됩니다.</p></li>
 <li><p><strong>서비스 품질 → 검색 지연 시간</strong>: 전체 지연 시간 분포를 표시합니다. 정상으로 보이지만 최종 사용자가 여전히 지연을 경험하는 경우 네트워크 또는 애플리케이션 레이어와 같은 Milvus 외부에 문제가 있을 수 있습니다.</p></li>
-<li><p><strong>쿼리 노드 → 단계별 검색 대기 시간</strong>: 대기 시간, 쿼리, 단축 단계로 지연 시간을 세분화합니다. 보다 심층적인 어트리뷰션의 경우 <em>스칼라</em> <em>필터 지연 시간</em>, <em>벡터 검색 지연 시간</em>, <em>대기 안전 지연 시간과</em> 같은 패널을 통해 어떤 단계가 지배적인지 알 수 있습니다.</p></li>
+<li><p><strong>쿼리 노드 → 단계별 검색 대기 시간</strong>: 대기 시간, 쿼리, 단축 단계로 지연 시간을 세분화합니다. 보다 심층적인 어트리뷰션을 위해 <em>Scalar</em> <em>필터 지연 시간</em>, <em>벡터 검색 지연 시간</em>, <em>Wait tSafe 지연 시간과</em> 같은 패널을 통해 어떤 단계가 지배적인지 확인할 수 있습니다.</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Milvus 로그</h3><p>Milvus는 또한 1초 이상 지속되는 모든 요청을 [느린 검색]과 같은 마커로 태그하여 로그를 기록합니다. 이러한 로그는 <em>어떤</em> 쿼리가 느린지 보여주며, 메트릭의 <em>위치</em> 인사이트를 보완합니다. 경험상</p>
 <ul>
@@ -89,7 +89,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>주의해야 할 신호:</strong></p>
 <ul>
 <li><p>모든 쿼리가 예기치 않게 높은 지연 시간을 보입니다.</p></li>
-<li><p>쿼리 노드 메트릭이 <strong>대기열 내 지연 시간</strong> 증가를 보고합니다.</p></li>
+<li><p>쿼리 노드 메트릭이 높은 <strong>대기열 내 지연 시간을</strong> 보고합니다.</p></li>
 <li><p>로그에는 NQ가 크고 총 지속 시간이 긴 요청이 표시되지만 NQ당 지속 시간은 상대적으로 짧아 하나의 대형 요청이 리소스를 지배하고 있음을 나타냅니다.</p></li>
 </ul>
 <p><strong>해결 방법</strong></p>
@@ -97,7 +97,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>쿼리를 일괄 처리하세요</strong>: 단일 요청에 과부하가 걸리지 않도록 NQ를 적당히 유지하세요.</p></li>
 <li><p><strong>쿼리 노드를 스케일아웃합니다</strong>: 워크로드에 높은 동시성이 정기적으로 발생하는 경우 쿼리 노드를 추가하여 부하를 분산하고 지연 시간을 낮게 유지하세요.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">비효율적인 필터링</h3><p>또 다른 일반적인 병목 현상은 비효율적인 필터에서 비롯됩니다. 필터 표현식이 제대로 구조화되지 않았거나 필드에 스칼라 인덱스가 없는 경우, Milvus는 작은 대상 하위 집합을 스캔하는 대신 <strong>전체 스캔으로</strong> 돌아갈 수 있습니다. JSON 필터와 엄격한 일관성 설정은 오버헤드를 더욱 증가시킬 수 있습니다.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">비효율적인 필터링</h3><p>또 다른 일반적인 병목 현상은 비효율적인 필터에서 비롯됩니다. 필터 표현식이 제대로 수행되지 않거나 필드에 스칼라 인덱스가 부족한 경우, Milvus는 작은 대상 하위 집합을 스캔하는 대신 <strong>전체 스캔으로</strong> 돌아갈 수 있습니다. JSON 필터와 엄격한 일관성 설정은 오버헤드를 더욱 증가시킬 수 있습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -118,13 +118,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus는 또한 복잡한 표현식을 구문 분석하는 데 소요되는 시간을 줄여 효율성을 개선하기 위해 설계된 필터 표현식 템플릿 메커니즘을 도입했습니다. 자세한 내용은 <a href="https://milvus.io/docs/filtering-templating.md">이 문서를</a> 참조하세요.</p>
 <ul>
+<li><p>Milvus는 또한 복잡한 표현식을 구문 분석하는 데 소요되는 시간을 줄여 효율성을 개선하기 위해 설계된 필터 표현식 템플릿 메커니즘을 도입했습니다. 자세한 내용은 <a href="https://milvus.io/docs/filtering-templating.md">이 문서를</a> 참조하세요.</p></li>
 <li><p><strong>적절한 인덱스를 추가하세요</strong>: 필터에 사용되는 필드에 스칼라 인덱스를 생성하여 전체 스캔을 피하세요.</p></li>
 <li><p><strong>JSON을 효율적으로 처리하세요</strong>: Milvus 2.6에서는 JSON 필드에 대한 경로 및 플랫 인덱스를 도입하여 JSON 데이터를 효율적으로 처리할 수 있게 되었습니다. 또한 성능을 더욱 개선하기 위해 JSON 파쇄 기능도 <a href="https://milvus.io/docs/roadmap.md">로드맵에</a> 포함되어 있습니다. 자세한 내용은 <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSON 필드 문서를</a> 참조하세요.</p></li>
-<li><p><strong>일관성 수준 조정</strong>: 엄격한 보장이 필요하지 않은 경우 <code translate="no">_Bounded</code>_ 또는 <code translate="no">_Eventually</code>_ 일관된 읽기를 사용하여 <code translate="no">tSafe</code> 대기 시간을 줄이세요.</p></li>
+<li><p><strong>일관성 수준 조정</strong>: 엄격한 보장이 필요하지 않은 경우 <em>바운드</em> 또는 <em>최종적으로</em> 일관된 읽기를 사용하여 <em>tSafe</em> 대기 시간을 줄이세요.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">부적절한 벡터 인덱스 선택</h3><p><a href="https://milvus.io/docs/index-explained.md">벡터 인덱스는</a> 만능이 아닙니다. 잘못된 인덱스를 선택하면 지연 시간에 큰 영향을 미칠 수 있습니다. 인메모리 인덱스는 가장 빠른 성능을 제공하지만 더 많은 메모리를 소비하는 반면, 온디스크 인덱스는 속도를 희생하는 대신 메모리를 절약합니다. 바이너리 벡터는 또한 특화된 인덱싱 전략이 필요합니다.</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">부적절한 벡터 인덱스 선택</h3><p><a href="https://milvus.io/docs/index-explained.md">벡터 인덱스는</a> 만능이 아닙니다. 잘못된 인덱스를 선택하면 지연 시간에 큰 영향을 미칠 수 있습니다. 인메모리 인덱스는 가장 빠른 성능을 제공하지만 더 많은 메모리를 소비하는 반면, 온디스크 인덱스는 속도를 희생하면서 메모리를 절약합니다. 바이너리 벡터는 또한 특화된 인덱싱 전략이 필요합니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />

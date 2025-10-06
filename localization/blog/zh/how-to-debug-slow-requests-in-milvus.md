@@ -11,7 +11,7 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, vector database, slow requests, debug Milvus'
 meta_title: |
   How to Debug Slow Search Requests in Milvus
-desc: 在这篇文章中，我们将分享如何在 Milvus 中分流慢速请求，并分享您可以采取的实际步骤，以保持延迟的可预测性、稳定性和持续低延迟。
+desc: 在这篇文章中，我们将分享如何在 Milvus 中分流缓慢的请求，并分享您可以采取的实际步骤，以保持延迟的可预测性、稳定性和持续低延迟。
 origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
 <p>性能是 Milvus 的核心。在正常情况下，Milvus 的搜索请求只需几毫秒即可完成。但如果集群速度减慢，搜索延迟延长到整秒，会发生什么情况？</p>
@@ -50,7 +50,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>服务质量 → 查询速度慢</strong>：标记任何超过 proxy.slowQuerySpanInSeconds （默认：5 秒）的请求。这些也会在 Prometheus 中标记。</p></li>
 <li><p><strong>服务质量 → 搜索延迟</strong>：显示总体延迟分布。如果看起来正常，但最终用户仍看到延迟，则问题可能出在 Milvus 外部--网络或应用层。</p></li>
-<li><p><strong>查询节点 → 按阶段搜索延迟</strong>：将延迟分为队列、查询和缩减阶段。为了更深入地归因，<em>标量</em> <em>过滤延迟</em>、<em>向量搜索延迟</em>和<em>安全等待延迟等</em>面板可显示哪个阶段占主导地位。</p></li>
+<li><p><strong>查询节点 → 按阶段搜索延迟</strong>：将延迟分为队列、查询和缩减阶段。对于更深入的归因，<em>标量</em> <em>过滤延迟</em>、<em>向量搜索延迟</em>和<em>等待安全延迟等</em>面板可显示哪个阶段占主导地位。</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Milvus 日志</h3><p>Milvus 还记录任何持续时间超过 1 秒的请求，并标注[搜索速度慢]等标记。这些日志显示了<em>哪些</em>查询速度较慢，补充了度量指标的洞察力。经验法则是</p>
 <ul>
@@ -86,8 +86,8 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 </p>
 <p><strong>需要注意的信号：</strong></p>
 <ul>
-<li><p>所有查询都出现意外的高延迟。</p></li>
-<li><p>查询节点指标报告<strong>队列中延迟</strong>上升。</p></li>
+<li><p>所有查询都显示意外的高延迟。</p></li>
+<li><p>查询节点指标报告高<strong>队列延迟</strong>。</p></li>
 <li><p>日志显示一个请求的 NQ 较大，总持续时间较长，但每个 NQ 的持续时间相对较小，这表明一个超大请求正在支配资源。</p></li>
 </ul>
 <p><strong>如何解决</strong></p>
@@ -95,7 +95,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>批量查询</strong>：保持适度的 NQ，避免单个请求超载。</p></li>
 <li><p><strong>缩小查询节点的规模</strong>：如果高并发是工作负载的常规组成部分，则应增加查询节点，以分散负载并保持低延迟。</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">低效过滤</h3><p>另一个常见瓶颈来自效率低下的过滤器。如果过滤器表达式结构不佳或字段缺乏标量索引，Milvus 可能会退回到<strong>全扫描</strong>，而不是扫描一个目标明确的小子集。JSON 过滤器和严格的一致性设置会进一步增加开销。</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">低效过滤</h3><p>另一个常见瓶颈来自效率低下的过滤器。如果过滤器表达式不佳或字段缺乏标量索引，Milvus 可能会退回到<strong>全扫描</strong>，而不是扫描目标明确的小范围子集。JSON 过滤器和严格的一致性设置会进一步增加开销。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -116,13 +116,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus 还引入了过滤器表达式模板化机制，旨在通过减少解析复杂表达式的时间来提高效率。详情请参见<a href="https://milvus.io/docs/filtering-templating.md">本文档</a>。</p>
 <ul>
+<li><p>Milvus 还引入了过滤器表达式模板化机制，旨在通过减少解析复杂表达式的时间来提高效率。详情请参见<a href="https://milvus.io/docs/filtering-templating.md">本文档</a>。</p></li>
 <li><p><strong>添加适当的索引</strong>：通过为过滤器中使用的字段创建标量索引来避免全扫描。</p></li>
 <li><p><strong>高效处理 JSON</strong>：Milvus 2.6 为 JSON 字段引入了路径和平面索引，从而实现了对 JSON 数据的高效处理。为了进一步提高性能，我们还<a href="https://milvus.io/docs/roadmap.md">将</a>对 JSON 进行粉碎处理。有关更多信息，请参阅<a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSON 字段文档</a>。</p></li>
-<li><p><strong>调整一致性级别</strong>：在不需要严格保证时，使用<code translate="no">_Bounded</code>_ 或<code translate="no">_Eventually</code>_ 一致性读取，以减少<code translate="no">tSafe</code> 等待时间。</p></li>
+<li><p><strong>调整一致性级别</strong>：在不需要严格保证时，使用 "<em>有界</em> <em>"</em>或<em>"最终</em>"一致性读取，减少<em>tSafe</em>等待时间。</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">向量索引选择不当</h3><p><a href="https://milvus.io/docs/index-explained.md">向量索引</a>不是万能的。选择错误的索引会严重影响延迟。内存中的索引能提供最快的性能，但会消耗更多内存，而磁盘上的索引则以速度为代价来节省内存。二进制向量也需要专门的索引策略。</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">向量索引选择不当</h3><p><a href="https://milvus.io/docs/index-explained.md">向量索引</a>不是万能的。选择错误的索引会严重影响延迟。内存索引能提供最快的性能，但会消耗更多内存，而磁盘索引则以速度为代价节省内存。二进制向量也需要专门的索引策略。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />
@@ -215,5 +215,5 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
       </svg>
     </button></h2><ul>
 <li><p>加入<a href="https://discord.com/invite/8uyFbECzPX"><strong>Milvus Discord</strong></a>，提问、分享经验并向社区学习。</p></li>
-<li><p>注册参加我们的<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus 办公时间</strong></a>，直接与团队交流，并在工作负载方面获得实际帮助。</p></li>
+<li><p>注册参加我们的<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus 办公时间</strong></a>，与团队直接对话，在工作负载方面获得实际帮助。</p></li>
 </ul>

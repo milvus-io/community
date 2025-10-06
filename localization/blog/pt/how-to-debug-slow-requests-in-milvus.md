@@ -18,7 +18,7 @@ desc: >-
 origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
 <p>O desempenho está no centro de Milvus. Em condições normais, um pedido de pesquisa no Milvus é concluído em apenas milissegundos. Mas o que acontece quando o cluster fica mais lento - quando a latência da pesquisa chega a segundos inteiros?</p>
-<p>Pesquisas lentas não acontecem com frequência, mas podem surgir em escala ou em cargas de trabalho complexas. E quando acontecem, são importantes: perturbam a experiência do utilizador, distorcem o desempenho da aplicação e expõem frequentemente ineficiências ocultas na sua configuração.</p>
+<p>Pesquisas lentas não acontecem com frequência, mas podem surgir em escala ou sob cargas de trabalho complexas. E quando acontecem, são importantes: perturbam a experiência do utilizador, distorcem o desempenho da aplicação e expõem frequentemente ineficiências ocultas na sua configuração.</p>
 <p>Neste post, mostraremos como fazer a triagem de solicitações lentas no Milvus e compartilharemos etapas práticas que podem ser tomadas para manter a latência previsível, estável e consistentemente baixa.</p>
 <h2 id="Identifying-Slow-Searches" class="common-anchor-header">Identificando pesquisas lentas<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -51,9 +51,9 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 </p>
 <p>Os painéis principais incluem:</p>
 <ul>
-<li><p><strong>Qualidade do serviço → Consulta lenta</strong>: Sinaliza qualquer solicitação que exceda proxy.slowQuerySpanInSeconds (padrão: 5s). Elas também são marcadas no Prometheus.</p></li>
-<li><p><strong>Qualidade do serviço → Latência de pesquisa</strong>: Mostra a distribuição geral da latência. Se isto parece normal, mas os utilizadores finais ainda vêem atrasos, o problema é provavelmente fora do Milvus - na camada de rede ou de aplicação.</p></li>
-<li><p><strong>Query Node → Search Latency by Phase</strong>: Divide a latência em estágios de fila, consulta e redução. Para uma atribuição mais profunda, painéis como <em>Scalar</em> <em>Filter Latency</em>, <em>Vetor Search Latency</em> e <em>Wait Safe Latency</em> revelam qual estágio domina.</p></li>
+<li><p><strong>Qualidade do serviço → Consulta lenta</strong>: Sinaliza qualquer solicitação que exceda o proxy.slowQuerySpanInSeconds (padrão: 5s). Elas também são marcadas no Prometheus.</p></li>
+<li><p><strong>Qualidade do serviço → Latência da pesquisa</strong>: Mostra a distribuição geral da latência. Se isto parece normal, mas os utilizadores finais ainda vêem atrasos, o problema é provavelmente fora do Milvus - na camada de rede ou de aplicação.</p></li>
+<li><p><strong>Query Node → Search Latency by Phase</strong>: Divide a latência em estágios de fila, consulta e redução. Para uma atribuição mais profunda, painéis como <em>Scalar</em> <em>Filter Latency</em>, <em>Vetor Search Latency</em> e <em>Wait tSafe Latency</em> revelam qual estágio domina.</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Registos do Milvus</h3><p>O Milvus também regista qualquer pedido que dure mais de um segundo, etiquetado com marcadores como [Search slow]. Esses logs mostram <em>quais</em> consultas são lentas, complementando os <em>insights</em> das métricas. Como regra geral:</p>
 <ul>
@@ -90,7 +90,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>Sinais a serem observados:</strong></p>
 <ul>
 <li><p>Todas as consultas mostram uma latência inesperadamente alta.</p></li>
-<li><p>As métricas do nó de consulta relatam o aumento <strong>da latência na fila</strong>.</p></li>
+<li><p>As métricas do nó de consulta relatam alta <strong>latência na fila</strong>.</p></li>
 <li><p>Os logs mostram uma solicitação com um NQ grande e uma duração total longa, mas uma duração relativamente pequenaPorNQ-indicando que uma solicitação superdimensionada está dominando os recursos.</p></li>
 </ul>
 <p><strong>Como corrigir isso:</strong></p>
@@ -98,7 +98,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>Consultas em lote</strong>: Mantenha o NQ modesto para evitar a sobrecarga de uma única solicitação.</p></li>
 <li><p><strong>Dimensione os nós de consulta</strong>: Se a alta simultaneidade for uma parte regular da sua carga de trabalho, adicione nós de consulta para distribuir a carga e manter a baixa latência.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtragem ineficiente</h3><p>Outro gargalo comum vem de filtros ineficientes. Se as expressões de filtro forem mal estruturadas ou os campos não tiverem índices escalares, o Milvus pode voltar para uma <strong>varredura completa</strong> em vez de varrer um subconjunto pequeno e direcionado. Filtros JSON e configurações de consistência rígidas podem aumentar ainda mais a sobrecarga.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtragem ineficiente</h3><p>Outro gargalo comum vem de filtros ineficientes. Se as expressões de filtro forem mal conduzidas ou os campos não tiverem índices escalares, o Milvus pode voltar para uma <strong>varredura completa</strong> em vez de varrer um subconjunto pequeno e direcionado. Filtros JSON e configurações de consistência rígidas podem aumentar ainda mais a sobrecarga.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -119,11 +119,11 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>O Milvus também introduz um mecanismo de modelagem de expressão de filtro projetado para melhorar a eficiência, reduzindo o tempo gasto na análise de expressões complexas. Consulte <a href="https://milvus.io/docs/filtering-templating.md">este documento</a> para obter mais detalhes.</p>
 <ul>
+<li><p>O Milvus também introduz um mecanismo de modelagem de expressão de filtro projetado para melhorar a eficiência, reduzindo o tempo gasto na análise de expressões complexas. Consulte <a href="https://milvus.io/docs/filtering-templating.md">este documento</a> para obter mais detalhes.</p></li>
 <li><p><strong>Adicione índices adequados</strong>: Evite varreduras completas criando índices escalares nos campos usados nos filtros.</p></li>
 <li><p><strong>Lidar com JSON de forma eficiente</strong>: O Milvus 2.6 introduziu índices path e flat para campos JSON, permitindo o manuseio eficiente de dados JSON. A fragmentação de JSON também está no <a href="https://milvus.io/docs/roadmap.md">roteiro</a> para melhorar ainda mais o desempenho. Consulte <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">o documento do campo JSON</a> para obter informações adicionais.</p></li>
-<li><p><strong>Ajuste o nível de consistência</strong>: Use <code translate="no">_Bounded</code>_ ou <code translate="no">_Eventually</code>_ leituras consistentes quando não forem necessárias garantias estritas, reduzindo o tempo de espera de <code translate="no">tSafe</code>.</p></li>
+<li><p><strong>Ajuste o nível de consistência</strong>: Use as leituras <em>Bounded</em> ou <em>Eventually</em> consistent quando não forem necessárias garantias estritas, reduzindo o tempo de espera <em>do tSafe</em>.</p></li>
 </ul>
 <h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Escolha inadequada do índice de vetor</h3><p><a href="https://milvus.io/docs/index-explained.md">Os índices vetoriais</a> não são únicos. A seleção do índice errado pode afetar significativamente a latência. Os índices na memória oferecem o desempenho mais rápido, mas consomem mais memória, enquanto os índices no disco economizam memória ao custo da velocidade. Os vetores binários também exigem estratégias de indexação especializadas.</p>
 <p>
@@ -134,7 +134,7 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 </p>
 <p><strong>Sinais a serem observados:</strong></p>
 <ul>
-<li><p>Alta latência de pesquisa de vetores nas métricas do nó de consulta.</p></li>
+<li><p>Alta latência de pesquisa de vetor nas métricas do nó de consulta.</p></li>
 <li><p>Saturação de E/S de disco ao usar DiskANN ou MMAP.</p></li>
 <li><p>Consultas mais lentas imediatamente após a reinicialização devido à inicialização a frio do cache.</p></li>
 </ul>

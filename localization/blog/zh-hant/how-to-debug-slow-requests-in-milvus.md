@@ -15,7 +15,7 @@ desc: 在這篇文章中，我們將分享如何在 Milvus 中分流緩慢的請
 origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
 <p>性能是 Milvus 的核心。在正常情況下，Milvus 的搜尋要求只需幾毫秒即可完成。但是，當您的集群變慢時，搜尋延遲延長到幾秒鐘時，會發生什麼情況？</p>
-<p>搜尋速度慢的情況並不常發生，但在規模較大或工作負載較複雜的情況下，搜尋速度慢的問題就會浮現。一旦發生，就很重要了：它們會破壞使用者體驗、影響應用程式效能，並經常暴露您設定中隱藏的低效率。</p>
+<p>搜尋速度慢的情況並不常發生，但在規模較大或工作負載較複雜的情況下，搜尋速度慢的問題就會浮現。一旦發生，就很重要：它們會破壞使用者體驗、影響應用程式效能，並經常暴露您設定中隱藏的低效率。</p>
 <p>在這篇文章中，我們將介紹如何在 Milvus 中分流緩慢的請求，並分享您可以採取的實用步驟，以保持可預測、穩定和持續的低延遲。</p>
 <h2 id="Identifying-Slow-Searches" class="common-anchor-header">識別緩慢的搜尋<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -50,7 +50,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>服務品質 → 慢速查詢</strong>：標記任何超過 proxy.slowQuerySpanInSeconds (預設：5s) 的要求。這些也會在 Prometheus 中標記。</p></li>
 <li><p><strong>服務品質 → 搜尋延遲</strong>：顯示整體延遲分佈。如果這看起來正常，但終端使用者仍看到延遲，則問題很可能出在 Milvus 外部 - 網路或應用程式層。</p></li>
-<li><p><strong>查詢節點 → 搜尋階段延遲</strong>：將延遲分成佇列、查詢和減少階段。為了更深入的歸因，<em>Scalar</em> <em>Filter Latency</em>、<em>Vector Search Latency</em> 和<em>Wait Safe Latency 等</em>面板揭示了哪個階段佔主導地位。</p></li>
+<li><p><strong>查詢節點 → 搜尋階段延遲</strong>：將延遲分成佇列、查詢和減少階段。若要深入歸因，<em>Scalar</em> <em>Filter Latency</em>、<em>Vector Search Latency</em> 和<em>Wait tSafe Latency 等</em>面板可揭示哪個階段佔優。</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Milvus 日誌</h3><p>Milvus 也會記錄任何持續超過一秒的要求，並標示 [Search slow] 等標記。這些日誌顯示<em>哪些</em>查詢速度較慢，補充度量指標的洞察力。作為經驗法則：</p>
 <ul>
@@ -87,7 +87,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>需要注意的信號</strong></p>
 <ul>
 <li><p>所有查詢都顯示出乎意料的高延遲。</p></li>
-<li><p>查詢節點指標報告<strong>等待中延遲</strong>上升。</p></li>
+<li><p>查詢節點指標報告高<strong>等待中延遲</strong>。</p></li>
 <li><p>日誌顯示請求的 NQ 較大、總持續時間較長，但每 NQ 持續時間相對較小，表示一個過大的請求正在支配資源。</p></li>
 </ul>
 <p><strong>如何解決：</strong></p>
@@ -95,7 +95,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>批次查詢</strong>：保持適度的 NQ 以避免單一要求負荷過重。</p></li>
 <li><p><strong>縮小查詢節點的規模</strong>：如果高併發是您工作負載的常規部分，請增加查詢節點以分散負載並維持低延遲。</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">過濾效率低</h3><p>另一個常見的瓶頸來自於低效率的篩選器。如果篩選表達式結構不佳或欄位缺乏標量索引，Milvus 可能會退回到<strong>完整掃描</strong>，而不是掃描一個小的、有目標的子集。JSON 過濾器和嚴格的一致性設定會進一步增加開銷。</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">過濾效率低</h3><p>另一個常見的瓶頸來自於低效率的篩選器。如果篩選表達方式不佳或欄位缺乏標量索引，Milvus 可能會退回到<strong>完整掃描</strong>，而不是掃描一個小的、有目標的子集。JSON 過濾器和嚴格的一致性設定會進一步增加開銷。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -116,13 +116,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus 還引入了篩選表達式模板化機制，旨在通過減少解析複雜表達式所花的時間來提高效率。詳情請參閱<a href="https://milvus.io/docs/filtering-templating.md">本文件</a>。</p>
 <ul>
+<li><p>Milvus 還引入了篩選表達式模板化機制，旨在通過減少解析複雜表達式所花的時間來提高效率。詳情請參閱<a href="https://milvus.io/docs/filtering-templating.md">本文件</a>。</p></li>
 <li><p><strong>加入適當的索引</strong>：在篩選器使用的欄位上建立標量索引，避免完全掃描。</p></li>
 <li><p><strong>有效率地處理 JSON</strong>：Milvus 2.6 為 JSON 欄位引入了路徑索引和平面索引，使 JSON 資料的處理更有效率。JSON 切碎也在進一步改善效能的<a href="https://milvus.io/docs/roadmap.md">路線圖上</a>。如需其他資訊，請參閱<a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSON 欄位文件</a>。</p></li>
-<li><p><strong>調整一致性層級</strong>：不需要嚴格保證時，使用<code translate="no">_Bounded</code>_ 或<code translate="no">_Eventually</code>_ 一致性讀取，減少<code translate="no">tSafe</code> 等待時間。</p></li>
+<li><p><strong>調整一致性層級</strong>：當不需要嚴格保證時，使用<em>Bounded</em>或<em>Eventually</em>一致性讀取，減少<em>tSafe</em>等待時間。</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">向量索引選擇不當</h3><p><a href="https://milvus.io/docs/index-explained.md">向量索引</a>並非萬應靈丹。選擇錯誤的索引會嚴重影響延遲。記憶體內索引可提供最快的效能，但會消耗較多記憶體，而磁碟上索引則會以速度為代價來節省記憶體。二進位向量也需要專門的索引策略。</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">向量索引選擇不當</h3><p><a href="https://milvus.io/docs/index-explained.md">向量索引</a>並非萬應靈丹。選擇錯誤的索引會嚴重影響延遲。記憶體索引可提供最快的效能，但會消耗較多記憶體，而磁碟索引則會以速度為代價來節省記憶體。二進位向量也需要專門的索引策略。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />

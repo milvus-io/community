@@ -48,11 +48,11 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 </p>
 <p>主なパネルは以下の通りです：</p>
 <ul>
-<li><p><strong>サービス品質 → 低速クエリ</strong>：proxy.slowQuerySpanInSeconds（デフォルト：5秒）を超えるリクエストにフラグを立てます。これらはPrometheusでもマークされる。</p></li>
-<li><p><strong>サービス品質 → 検索待ち時間</strong>：全体的な待ち時間の分布を表示します。これが正常に見えてもエンドユーザが遅延を感じる場合、問題はMilvus外のネットワークまたはアプリケーション層にある可能性が高い。</p></li>
-<li><p><strong>クエリノード → フェーズ別検索レイテンシ</strong>：待ち時間をキュー、クエリ、リデュースの各段階に分けます。より詳細な原因については、<em>Scalar</em> <em>Filter Latency</em>、<em>Vector Search Latency</em>、<em>Wait Safe Latencyなどの</em>パネルで、どの段階が支配的であるかを明らかにします。</p></li>
+<li><p><strong>サービス品質→遅いクエリ</strong>：proxy.slowQuerySpanInSeconds（デフォルト：5秒）を超えるリクエストにフラグを立てます。これらはPrometheusでもマークされる。</p></li>
+<li><p><strong>サービス品質 → 検索レイテンシ</strong>：全体的な待ち時間の分布を表示します。これが正常に見えてもエンドユーザが遅延を感じる場合、問題はMilvus外のネットワークまたはアプリケーション層にある可能性が高い。</p></li>
+<li><p><strong>クエリノード → フェーズ別検索レイテンシ</strong>：待ち時間をキュー、クエリ、リデュースの各段階に分けます。より詳細な原因については、<em>Scalar</em> <em>Filter Latency</em>、<em>Vector Search Latency</em>、<em>Wait tSafe Latencyなどの</em>パネルで、どの段階が支配的であるかを明らかにします。</p></li>
 </ul>
-<h3 id="Milvus-Logs" class="common-anchor-header">Milvusのログ</h3><p>Milvusはまた、1秒以上続くリクエストを[Search slow]のようなマーカーでタグ付けしてログに記録します。これらのログは、<em>どの</em>クエリが<em>遅いかを</em>示し、メトリクスからの洞察を補完します。目安として</p>
+<h3 id="Milvus-Logs" class="common-anchor-header">Milvusログ</h3><p>Milvusはまた、1秒以上続くリクエストを[Search slow]のようなマーカーでタグ付けしてログに記録します。これらのログは、<em>どの</em>クエリが<em>遅いかを</em>示し、メトリクスからの洞察を補完します。目安として</p>
 <ul>
 <li><p><strong>&lt; 30 ms</strong>→ ほとんどのシナリオで健全な検索レイテンシ</p></li>
 <li><p><strong>&gt; 100ミリ秒以上</strong>→ 調査する価値がある</p></li>
@@ -87,7 +87,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>注意すべきシグナル</strong></p>
 <ul>
 <li><p>すべてのクエリが予想外に高い待ち時間を示す。</p></li>
-<li><p>クエリ・ノード・メトリクスが<strong>キュー内待ち時間の</strong>上昇を報告する。</p></li>
+<li><p>クエリ・ノード・メトリクスが高い<strong>キュー内待ち時間を</strong>報告する。</p></li>
 <li><p>ログに、NQが大きく、総所要時間が長いリクエストが表示されるが、DurationPerNQは比較的小さい。</p></li>
 </ul>
 <p><strong>修正方法</strong></p>
@@ -95,7 +95,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>バッチクエリにする</strong>：NQを控えめにして、1つのリクエストに負荷がかかりすぎないようにします。</p></li>
 <li><p><strong>クエリーノードをスケールアウトする</strong>：高い同時実行が常態化している場合は、クエリーノードを追加して負荷を分散し、低レイテンシーを維持します。</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">非効率なフィルタリング</h3><p>もう一つの一般的なボトルネックは、非効率的なフィルターに起因します。フィルター式の構造が悪かったり、フィールドにスカラーインデックスがなかったりすると、milvusは小さなサブセットをスキャンするのではなく、<strong>フルスキャンに戻って</strong>しまうことがあります。JSONフィルターや厳格な一貫性設定は、オーバーヘッドをさらに増加させる可能性があります。</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">非効率なフィルタリング</h3><p>もう一つの一般的なボトルネックは、非効率的なフィルターに起因します。フィルタの表現が不十分であったり、フィールドにスカラーインデックスがない場合、milvusは小さなサブセットをスキャンするのではなく、<strong>フルスキャンに</strong>フォールバックすることがあります。JSONフィルターや厳格な一貫性設定は、オーバーヘッドをさらに増大させる可能性がある。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -116,13 +116,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvusはまた、複雑な式の解析に費やす時間を削減することで効率を改善するように設計されたフィルタ式のテンプレート化機構を導入しています。詳細は<a href="https://milvus.io/docs/filtering-templating.md">このドキュメントを</a>参照してください。</p>
 <ul>
+<li><p>Milvusはまた、複雑な式の解析に費やす時間を削減することで効率を改善するように設計されたフィルタ式のテンプレート化機構を導入しています。詳細は<a href="https://milvus.io/docs/filtering-templating.md">このドキュメントを</a>参照してください。</p></li>
 <li><p><strong>適切なインデックスを追加</strong>する：フィルターで使用されるフィールドにスカラーインデックスを作成することで、フルスキャンを回避します。</p></li>
 <li><p><strong>JSONを効率的に扱う</strong>：Milvus 2.6では、JSONフィールドにパスインデックスとフラットインデックスを導入し、JSONデータの効率的な取り扱いを可能にしました。また、JSONのシュレッダーも<a href="https://milvus.io/docs/roadmap.md">ロードマップに</a>あり、パフォーマンスをさらに向上させます。詳細については<a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSONフィールドのドキュメントを</a>参照してください。</p></li>
-<li><p><strong>一貫性レベルを調整する</strong>：厳密な保証が不要な場合は、<code translate="no">_Bounded</code>_ または<code translate="no">_Eventually</code>_ 一貫性読み取りを使用し、<code translate="no">tSafe</code> 待ち時間を短縮します。</p></li>
+<li><p><strong>一貫性レベルの調整</strong>：厳密な保証が必要ない場合は、<em>Bounded</em>または<em>Eventually</em>consistent readを使用し、<em>tSafeの</em>待ち時間を短縮します。</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">ベクターインデックスの不適切な選択</h3><p><a href="https://milvus.io/docs/index-explained.md">ベクター・インデックスは</a>万能ではありません。間違ったインデックスを選択すると、レイテンシに大きな影響を与えます。インメモリインデックスは最速のパフォーマンスを提供しますが、より多くのメモリを消費します。一方、オンディスクインデックスは速度の代償としてメモリを節約します。バイナリーベクターもまた、特殊なインデックス戦略を必要とする。</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">ベクターインデックスの不適切な選択</h3><p><a href="https://milvus.io/docs/index-explained.md">ベクターインデックスは</a>万能ではありません。インデックスの選択を誤ると、レイテンシに大きな影響を与えます。インメモリインデックスは最速のパフォーマンスを提供しますが、より多くのメモリを消費します。一方、オンディスクインデックスは速度の代償としてメモリを節約します。バイナリーベクターもまた、特殊なインデックス戦略を必要とする。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />
@@ -158,7 +158,7 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <p><strong>注意すべきシグナル</strong></p>
 <ul>
 <li><p>バックグラウンドジョブ（コンパクション、マイグレーション、インデックス構築）中のCPU使用率の急上昇。</p></li>
-<li><p>ディスクI/Oの飽和がクエリーパフォーマンスに影響する。</p></li>
+<li><p>クエリーパフォーマンスに影響を与えるディスクI/Oの飽和。</p></li>
 <li><p>再起動後のキャッシュのウォームアップが非常に遅い。</p></li>
 <li><p>インデックスのない小さなセグメントが大量にある（頻繁なアップサートによる）。</p></li>
 <li><p>特定のmilvusバージョンに関連したレイテンシの後退。</p></li>
@@ -170,9 +170,9 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <li><p>再起動後の<strong>ウォームアップ時間を考慮し</strong>、必要であればキャッシュを事前にウォームアップする。</p></li>
 <li><p>小さなセグメントの作成を減らし、コンパクションを維持させるために、<strong>アップサートをバッチ化</strong>する。</p></li>
 <li><p><strong>最新の状態に保つ</strong>：Milvusの新しいバージョンにアップグレードし、バグフィックスと最適化を行う。</p></li>
-<li><p><strong>リソースの提供</strong>：レイテンシに敏感なワークロードにCPU/メモリを割り当てます。</p></li>
+<li><p><strong>リソースの確保</strong>：レイテンシに敏感なワークロードにCPUやメモリを割り当てます。</p></li>
 </ul>
-<p>各シグナルを適切なアクションにマッチさせることで、ほとんどの遅いクエリは迅速かつ予測可能に解決することができます。</p>
+<p>各シグナルを適切なアクションにマッチさせることで、ほとんどの遅いクエリを迅速かつ予測可能に解決することができます。</p>
 <h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">遅い検索を防ぐベストプラクティス<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -191,7 +191,7 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
     </button></h2><p>最良のデバッグセッションは、実行する必要のないセッションです。Milvusの経験では、いくつかの簡単な習慣が遅いクエリを防ぐのに大いに役立ちます：</p>
 <ul>
 <li><p>CPUとディスクの競合を避けるために<strong>リソースの割り当てを計画</strong>する。</p></li>
-<li><p>障害とレイテンシ急増の両方に対して<strong>プロアクティブアラートを設定する</strong>。</p></li>
+<li><p>障害とレイテンシ急増の両方に対して<strong>プロアクティブなアラートを設定</strong>する。</p></li>
 <li><p><strong>フィルタ式を</strong>短く、シンプルに、効率的に保つ。</p></li>
 <li><p><strong>アップサートをバッチ化</strong>し、NQ/QPSを持続可能なレベルに保つ。</p></li>
 <li><p>フィルターで使用される<strong>全てのフィールドにインデックスを付ける</strong>。</p></li>

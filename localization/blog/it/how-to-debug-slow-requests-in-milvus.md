@@ -53,7 +53,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>Qualità del servizio → Query lenta</strong>: Contrassegna qualsiasi richiesta che superi il valore proxy.slowQuerySpanInSeconds (default: 5s). Queste sono contrassegnate anche in Prometheus.</p></li>
 <li><p><strong>Qualità del servizio → Latenza di ricerca</strong>: Mostra la distribuzione complessiva della latenza. Se sembra normale, ma gli utenti finali notano comunque dei ritardi, il problema è probabilmente esterno a Milvus, a livello di rete o di applicazione.</p></li>
-<li><p><strong>Nodo di interrogazione → Latenza di ricerca per fase</strong>: Suddivide la latenza in fasi di coda, interrogazione e riduzione. Per un'attribuzione più approfondita, pannelli come <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> e <em>Wait Safe Latency</em> rivelano quale fase domina.</p></li>
+<li><p><strong>Nodo di interrogazione → Latenza di ricerca per fase</strong>: Suddivide la latenza in fasi di coda, interrogazione e riduzione. Per un'attribuzione più approfondita, pannelli come <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> e <em>Wait tSafe Latency</em> rivelano quale fase domina.</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Registri Milvus</h3><p>Milvus registra anche tutte le richieste che durano più di un secondo, etichettate con marcatori come [Search slow]. Questi registri mostrano <em>quali sono le</em> query lente, integrando <em>le</em> informazioni ricavate dalle metriche. Come regola generale:</p>
 <ul>
@@ -90,7 +90,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>Segnali da tenere d'occhio:</strong></p>
 <ul>
 <li><p>Tutte le query mostrano una latenza inaspettatamente elevata.</p></li>
-<li><p>Le metriche dei nodi di query segnalano un aumento della <strong>latenza in coda</strong>.</p></li>
+<li><p>Le metriche dei nodi di query segnalano un'elevata <strong>latenza in coda</strong>.</p></li>
 <li><p>I registri mostrano una richiesta con un grande NQ e una lunga durata totale, ma una durata relativamente piccola per NQ, il che indica che una richiesta sovradimensionata sta dominando le risorse.</p></li>
 </ul>
 <p><strong>Come risolvere il problema:</strong></p>
@@ -98,7 +98,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p>Eseguire<strong>query in batch</strong>: Mantenere NQ modesto per evitare di sovraccaricare una singola richiesta.</p></li>
 <li><p><strong>Ridimensionare i nodi di query</strong>: Se il carico di lavoro è caratterizzato da un'alta frequenza, aggiungere nodi di query per distribuire il carico e mantenere una bassa latenza.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtro inefficiente</h3><p>Un altro collo di bottiglia comune deriva da filtri inefficienti. Se le espressioni dei filtri sono mal strutturate o i campi non hanno indici scalari, Milvus può ricadere in una <strong>scansione completa</strong> invece di scansionare un piccolo sottoinsieme mirato. I filtri JSON e le impostazioni di coerenza rigide possono aumentare ulteriormente il sovraccarico.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtro inefficiente</h3><p>Un altro collo di bottiglia comune deriva da filtri inefficienti. Se le espressioni dei filtri sono mal condotte o se i campi non hanno indici scalari, Milvus può ricadere in una <strong>scansione completa</strong> invece di scansionare un piccolo sottoinsieme mirato. I filtri JSON e le impostazioni di coerenza rigide possono aumentare ulteriormente il sovraccarico.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -119,11 +119,11 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus introduce anche un meccanismo di template delle espressioni di filtro, progettato per migliorare l'efficienza riducendo il tempo di analisi di espressioni complesse. Per maggiori dettagli, consultare <a href="https://milvus.io/docs/filtering-templating.md">questo documento</a>.</p>
 <ul>
+<li><p>Milvus introduce anche un meccanismo di template delle espressioni di filtro, progettato per migliorare l'efficienza riducendo il tempo di analisi di espressioni complesse. Per maggiori dettagli, consultare <a href="https://milvus.io/docs/filtering-templating.md">questo documento</a>.</p></li>
 <li><p><strong>Aggiungere indici adeguati</strong>: Evitare scansioni complete creando indici scalari sui campi utilizzati nei filtri.</p></li>
 <li><p><strong>Gestire JSON in modo efficiente</strong>: Milvus 2.6 ha introdotto indici di percorso e indici piatti per i campi JSON, consentendo una gestione efficiente dei dati JSON. Per migliorare ulteriormente le prestazioni, è in <a href="https://milvus.io/docs/roadmap.md">programma</a> anche la triturazione di JSON. Per ulteriori informazioni, consultare <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">il documento sui campi JSON</a>.</p></li>
-<li><p><strong>Regolare il livello di coerenza</strong>: Utilizzare le letture coerenti <code translate="no">_Bounded</code>_ o <code translate="no">_Eventually</code>_ quando non sono richieste garanzie rigorose, riducendo i tempi di attesa di <code translate="no">tSafe</code>.</p></li>
+<li><p><strong>Regolazione del livello di coerenza</strong>: Utilizzare le letture <em>Bounded</em> o <em>Eventually</em> consistent quando non sono richieste garanzie rigorose, riducendo i tempi di attesa <em>di tSafe</em>.</p></li>
 </ul>
 <h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Scelta errata dell'indice vettoriale</h3><p><a href="https://milvus.io/docs/index-explained.md">Gli indici vettoriali</a> non sono adatti a tutti. La scelta dell'indice sbagliato può avere un impatto significativo sulla latenza. Gli indici in memoria offrono le prestazioni più veloci ma consumano più memoria, mentre gli indici su disco risparmiano memoria a scapito della velocità. Anche i vettori binari richiedono strategie di indicizzazione specifiche.</p>
 <p>

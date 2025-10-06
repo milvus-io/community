@@ -20,7 +20,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
 <p>Kinerja adalah inti dari Milvus. Dalam kondisi normal, permintaan pencarian dalam Milvus selesai hanya dalam hitungan milidetik. Namun, apa yang terjadi jika cluster Anda melambat-ketika latensi pencarian menjadi beberapa detik penuh?</p>
 <p>Pencarian yang lambat tidak sering terjadi, tetapi bisa muncul dalam skala besar atau dalam beban kerja yang kompleks. Dan ketika terjadi, hal ini menjadi penting: mengganggu pengalaman pengguna, menurunkan performa aplikasi, dan sering kali mengungkap inefisiensi tersembunyi dalam pengaturan Anda.</p>
-<p>Dalam artikel ini, kami akan menjelaskan cara melakukan triase permintaan lambat di Milvus dan membagikan langkah-langkah praktis yang dapat Anda lakukan untuk menjaga latensi agar tetap dapat diprediksi, stabil, dan rendah secara konsisten.</p>
+<p>Dalam artikel ini, kami akan membahas cara melakukan triase permintaan lambat di Milvus dan membagikan langkah-langkah praktis yang dapat Anda lakukan untuk menjaga latensi agar tetap dapat diprediksi, stabil, dan rendah secara konsisten.</p>
 <h2 id="Identifying-Slow-Searches" class="common-anchor-header">Mengidentifikasi Penelusuran yang Lambat<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -54,7 +54,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>Kualitas Layanan → Kueri Lambat</strong>: Menandai permintaan apa pun yang melebihi proxy.slowQuerySpanInSeconds (default: 5 detik). Ini juga ditandai di Prometheus.</p></li>
 <li><p><strong>Kualitas Layanan → Latensi Pencarian</strong>: Menunjukkan distribusi latensi secara keseluruhan. Jika ini terlihat normal, tetapi pengguna akhir masih mengalami penundaan, masalahnya kemungkinan besar berada di luar Milvus - di lapisan jaringan atau aplikasi.</p></li>
-<li><p><strong>Query Node → Cari Latensi berdasarkan Fase</strong>: Memecah latensi menjadi antrian, kueri, dan mengurangi tahapan. Untuk atribusi yang lebih dalam, panel seperti <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em>, dan <em>Wait Safe Latency</em> mengungkapkan tahap mana yang mendominasi.</p></li>
+<li><p><strong>Query Node → Cari Latensi berdasarkan Fase</strong>: Memecah latensi menjadi antrian, kueri, dan mengurangi tahapan. Untuk atribusi yang lebih dalam, panel seperti <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em>, dan <em>Wait tSafe Latency</em> mengungkapkan tahap mana yang mendominasi.</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Catatan Milvus</h3><p>Milvus juga mencatat setiap permintaan yang berlangsung lebih dari satu detik, ditandai dengan penanda seperti [Pencarian lambat]. Log ini menunjukkan kueri <em>mana</em> yang lambat, melengkapi wawasan <em>di mana</em> dari metrik. Sebagai patokan:</p>
 <ul>
@@ -91,7 +91,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>Sinyal yang harus diperhatikan:</strong></p>
 <ul>
 <li><p>Semua kueri menunjukkan latensi yang sangat tinggi.</p></li>
-<li><p>Metrik Query Node melaporkan peningkatan <strong>latensi dalam antrean</strong>.</p></li>
+<li><p>Metrik Query Node melaporkan <strong>latensi antrean</strong> yang tinggi.</p></li>
 <li><p>Log menunjukkan permintaan dengan NQ besar dan durasi total yang panjang, tetapi durasiPerNQ yang relatif kecil-menunjukkan bahwa satu permintaan yang sangat besar mendominasi sumber daya.</p></li>
 </ul>
 <p><strong>Cara memperbaikinya:</strong></p>
@@ -99,7 +99,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>Kueri batch</strong>: Jaga agar NQ tetap sederhana untuk menghindari kelebihan beban pada satu permintaan.</p></li>
 <li><p><strong>Kurangi node kueri</strong>: Jika konkurensi tinggi merupakan bagian reguler dari beban kerja Anda, tambahkan node kueri untuk menyebarkan beban dan mempertahankan latensi yang rendah.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Pemfilteran yang Tidak Efisien</h3><p>Hambatan umum lainnya berasal dari filter yang tidak efisien. Jika ekspresi filter tidak terstruktur dengan baik atau field tidak memiliki indeks skalar, Milvus mungkin akan kembali ke pemindaian <strong>penuh</strong> alih-alih memindai subset kecil yang ditargetkan. Filter JSON dan pengaturan konsistensi yang ketat dapat meningkatkan overhead.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Pemfilteran yang Tidak Efisien</h3><p>Hambatan umum lainnya berasal dari filter yang tidak efisien. Jika ekspresi filter dilakukan dengan buruk atau field tidak memiliki indeks skalar, Milvus mungkin akan kembali ke pemindaian <strong>penuh</strong> alih-alih memindai subset kecil yang ditargetkan. Filter JSON dan pengaturan konsistensi yang ketat dapat meningkatkan overhead.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -120,13 +120,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus juga memperkenalkan mekanisme templating ekspresi filter yang dirancang untuk meningkatkan efisiensi dengan mengurangi waktu yang dihabiskan untuk mengurai ekspresi yang kompleks. Lihat <a href="https://milvus.io/docs/filtering-templating.md">dokumen ini</a> untuk lebih jelasnya.</p>
 <ul>
+<li><p>Milvus juga memperkenalkan mekanisme templating ekspresi filter yang dirancang untuk meningkatkan efisiensi dengan mengurangi waktu yang dihabiskan untuk mengurai ekspresi yang kompleks. Lihat <a href="https://milvus.io/docs/filtering-templating.md">dokumen ini</a> untuk lebih jelasnya.</p></li>
 <li><p><strong>Tambahkan indeks yang tepat</strong>: Hindari pemindaian penuh dengan membuat indeks skalar pada bidang yang digunakan dalam filter.</p></li>
 <li><p><strong>Menangani JSON secara efisien</strong>: Milvus 2.6 memperkenalkan indeks jalur dan indeks datar untuk bidang JSON, yang memungkinkan penanganan data JSON secara efisien. Penghancuran JSON juga ada di <a href="https://milvus.io/docs/roadmap.md">peta jalan</a> untuk lebih meningkatkan kinerja. Lihat <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">dokumen bidang JSON</a> untuk informasi tambahan.</p></li>
-<li><p><strong>Menyesuaikan tingkat konsistensi</strong>: Gunakan <code translate="no">_Bounded</code>_ atau <code translate="no">_Eventually</code>_ pembacaan yang konsisten ketika jaminan yang ketat tidak diperlukan, sehingga mengurangi waktu tunggu <code translate="no">tSafe</code>.</p></li>
+<li><p><strong>Menyesuaikan tingkat konsistensi</strong>: Gunakan pembacaan yang konsisten <em>Bounded</em> atau <em>Eventually</em> ketika jaminan yang ketat tidak diperlukan, sehingga mengurangi waktu tunggu <em>tSafe</em>.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Pilihan Indeks Vektor yang Tidak Tepat</h3><p><a href="https://milvus.io/docs/index-explained.md">Indeks vektor</a> tidak cocok untuk semua. Memilih indeks yang salah dapat berdampak signifikan terhadap latensi. Indeks dalam memori memberikan kinerja tercepat tetapi menghabiskan lebih banyak memori, sementara indeks pada disk menghemat memori dengan mengorbankan kecepatan. Vektor biner juga memerlukan strategi pengindeksan khusus.</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Pilihan Indeks Vektor yang Tidak Tepat</h3><p><a href="https://milvus.io/docs/index-explained.md">Indeks vektor</a> tidak cocok untuk semua. Memilih indeks yang salah dapat berdampak signifikan pada latensi. Indeks dalam memori memberikan kinerja tercepat tetapi menghabiskan lebih banyak memori, sedangkan indeks pada disk menghemat memori dengan mengorbankan kecepatan. Vektor biner juga memerlukan strategi pengindeksan khusus.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />

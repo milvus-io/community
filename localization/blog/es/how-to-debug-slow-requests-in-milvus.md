@@ -53,9 +53,9 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>Calidad del servicio → Consulta lenta</strong>: Marca cualquier solicitud que exceda proxy.slowQuerySpanInSeconds (por defecto: 5s). Estas también se marcan en Prometheus.</p></li>
 <li><p><strong>Calidad del servicio</strong> →<strong>Latencia</strong> de<strong>búsqueda</strong>: Muestra la distribución general de la latencia. Si parece normal, pero los usuarios finales siguen viendo retrasos, es probable que el problema esté fuera de Milvus, en la red o en la capa de aplicación.</p></li>
-<li><p><strong>Nodo de consulta → Latencia de búsqueda por fase</strong>: Desglosa la latencia en las fases de cola, consulta y reducción. Para una atribución más profunda, paneles como <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> y <em>Wait Safe Latency</em> revelan qué etapa domina.</p></li>
+<li><p><strong>Nodo de consulta → Latencia de búsqueda por fase</strong>: Desglosa la latencia en las fases de cola, consulta y reducción. Para una atribución más profunda, paneles como <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> y <em>Wait tSafe Lat</em> ency revelan qué etapa domina.</p></li>
 </ul>
-<h3 id="Milvus-Logs" class="common-anchor-header">Registros de Milvus</h3><p>Milvus también registra cualquier petición que dure más de un segundo, etiquetada con marcadores como [Búsqueda lenta]. Estos registros muestran <em>qué</em> consultas son lentas, complementando la información <em>de</em> las métricas. Como regla general</p>
+<h3 id="Milvus-Logs" class="common-anchor-header">Registros de Milvus</h3><p>Milvus también registra cualquier solicitud que dure más de un segundo, etiquetada con marcadores como [Búsqueda lenta]. Estos registros muestran <em>qué</em> consultas son lentas, complementando la información <em>obtenida</em> de las métricas. Como regla general</p>
 <ul>
 <li><p><strong>&lt; 30 ms</strong> → latencia de búsqueda saludable en la mayoría de los escenarios</p></li>
 <li><p><strong>&gt; 100 ms</strong> → merece la pena investigar</p></li>
@@ -90,15 +90,15 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>Señales a tener en cuenta:</strong></p>
 <ul>
 <li><p>Todas las consultas muestran una latencia inesperadamente alta.</p></li>
-<li><p>Las métricas del Nodo de Consulta informan de un aumento de la <strong>latencia en cola</strong>.</p></li>
-<li><p>Los registros muestran una solicitud con un NQ grande y una duración total larga, pero una duraciónPerNQ relativamente pequeña, lo que indica que una solicitud sobredimensionada está dominando los recursos.</p></li>
+<li><p>Las métricas del Nodo de Consulta informan de una alta <strong>latencia en cola</strong>.</p></li>
+<li><p>Los registros muestran una petición con un NQ grande y una duración total larga, pero una duraciónPerNQ relativamente pequeña, lo que indica que una petición sobredimensionada está dominando los recursos.</p></li>
 </ul>
 <p><strong>Cómo solucionarlo:</strong></p>
 <ul>
 <li><p><strong>Consultas por lotes</strong>: Mantenga un NQ modesto para evitar sobrecargar una única petición.</p></li>
 <li><p><strong>Reduzca los nodos de consulta</strong>: Si la alta concurrencia es una parte habitual de su carga de trabajo, añada nodos de consulta para repartir la carga y mantener una latencia baja.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtrado ineficiente</h3><p>Otro cuello de botella común proviene de los filtros ineficientes. Si las expresiones del filtro están mal estructuradas o los campos carecen de índices escalares, Milvus puede volver a un <strong>escaneo completo</strong> en lugar de escanear un subconjunto pequeño y específico. Los filtros JSON y los ajustes de consistencia estrictos pueden aumentar aún más la sobrecarga.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtrado ineficiente</h3><p>Otro cuello de botella común proviene de los filtros ineficientes. Si las expresiones de filtrado están mal realizadas o los campos carecen de índices escalares, Milvus puede volver a un <strong>escaneo completo</strong> en lugar de escanear un subconjunto pequeño y específico. Los filtros JSON y los ajustes de consistencia estrictos pueden aumentar aún más la sobrecarga.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -119,13 +119,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus también introduce un mecanismo de plantillas de expresiones de filtro diseñado para mejorar la eficiencia reduciendo el tiempo empleado en analizar expresiones complejas. Consulte <a href="https://milvus.io/docs/filtering-templating.md">este documento</a> para obtener más detalles.</p>
 <ul>
+<li><p>Milvus también introduce un mecanismo de plantillas de expresiones de filtro diseñado para mejorar la eficiencia reduciendo el tiempo empleado en analizar expresiones complejas. Consulte <a href="https://milvus.io/docs/filtering-templating.md">este documento</a> para obtener más detalles.</p></li>
 <li><p><strong>Añada índices adecuados</strong>: Evite las exploraciones completas creando índices escalares en los campos utilizados en los filtros.</p></li>
 <li><p><strong>Maneje JSON eficientemente</strong>: Milvus 2.6 introdujo índices de ruta y planos para los campos JSON, lo que permite un manejo eficiente de los datos JSON. La trituración de JSON también está en <a href="https://milvus.io/docs/roadmap.md">la hoja de ruta</a> para mejorar aún más el rendimiento. Consulte <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">el documento sobre campos JSON</a> para obtener más información.</p></li>
-<li><p><strong>Ajuste del nivel de coherencia</strong>: Utilice <code translate="no">_Bounded</code>_ o <code translate="no">_Eventually</code>_ lecturas consistentes cuando no se requieran garantías estrictas, reduciendo el tiempo de espera de <code translate="no">tSafe</code>.</p></li>
+<li><p><strong>Ajuste del nivel de consistencia</strong>: Utilice lecturas consistentes <em>limitadas</em> o <em>eventuales</em> cuando no se requieran garantías estrictas, reduciendo el tiempo de espera <em>de tSafe</em>.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Elección incorrecta del índice vectorial</h3><p><a href="https://milvus.io/docs/index-explained.md">Los índices vectoriales</a> no son universales. Seleccionar el índice incorrecto puede afectar significativamente a la latencia. Los índices en memoria ofrecen el mayor rendimiento, pero consumen más memoria, mientras que los índices en disco ahorran memoria a costa de la velocidad. Los vectores binarios también requieren estrategias de indexación especializadas.</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Elección incorrecta del índice vectorial</h3><p><a href="https://milvus.io/docs/index-explained.md">Los índices vectoriales</a> no son universales. Seleccionar el índice incorrecto puede afectar significativamente a la latencia. Los índices en memoria ofrecen el rendimiento más rápido pero consumen más memoria, mientras que los índices en disco ahorran memoria a costa de la velocidad. Los vectores binarios también requieren estrategias de indexación especializadas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />

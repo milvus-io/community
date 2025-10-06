@@ -53,7 +53,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>Qualité de service → Requête lente</strong>: Marque toute demande dépassant proxy.slowQuerySpanInSeconds (par défaut : 5s). Ces requêtes sont également marquées dans Prometheus.</p></li>
 <li><p><strong>Qualité de service → Latence de recherche</strong>: Montre la distribution globale de la latence. Si celle-ci semble normale, mais que les utilisateurs finaux constatent toujours des retards, le problème se situe probablement en dehors de Milvus, au niveau du réseau ou de la couche d'application.</p></li>
-<li><p><strong>Nœud de requête → Latence de recherche par phase</strong>: Répartit la latence entre les étapes de mise en file d'attente, de requête et de réduction. Pour une attribution plus approfondie, des panneaux tels que <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> et <em>Wait Safe Latency</em> révèlent l'étape dominante.</p></li>
+<li><p><strong>Nœud de requête → Latence de recherche par phase</strong>: Répartit la latence entre les étapes de mise en file d'attente, de requête et de réduction. Pour une attribution plus approfondie, des panneaux tels que <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> et <em>Wait tSafe Latency</em> révèlent l'étape dominante.</p></li>
 </ul>
 <h3 id="Milvus-Logs" class="common-anchor-header">Journaux Milvus</h3><p>Milvus consigne également toutes les requêtes qui durent plus d'une seconde, avec des marqueurs tels que [Search slow]. Ces journaux indiquent <em>quelles</em> requêtes sont lentes, complétant ainsi les informations fournies par les métriques. En règle générale :</p>
 <ul>
@@ -90,7 +90,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>Signaux à surveiller :</strong></p>
 <ul>
 <li><p>Toutes les requêtes présentent une latence élevée inattendue.</p></li>
-<li><p>Les métriques du nœud de requête signalent une augmentation de la <strong>latence dans la file d'attente</strong>.</p></li>
+<li><p>Les métriques du nœud de requête indiquent une <strong>latence</strong> élevée <strong>dans la file d'attente</strong>.</p></li>
 <li><p>Les journaux montrent une requête avec un NQ important et une longue durée totale, mais une duréePerNQ relativement faible, ce qui indique qu'une requête surdimensionnée domine les ressources.</p></li>
 </ul>
 <p><strong>Comment y remédier ?</strong></p>
@@ -98,7 +98,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <li><p><strong>Effectuez des requêtes par lots</strong>: Veillez à ce que le NQ reste modeste afin d'éviter de surcharger une seule requête.</p></li>
 <li><p><strong>Réduire la taille des nœuds de requête</strong>: Si une forte concurrence fait régulièrement partie de votre charge de travail, ajoutez des nœuds de requête pour répartir la charge et maintenir une faible latence.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtrage inefficace</h3><p>Les filtres inefficaces constituent un autre goulot d'étranglement courant. Si les expressions de filtre sont mal structurées ou si les champs manquent d'index scalaires, Milvus peut se rabattre sur une <strong>analyse complète</strong> au lieu d'analyser un petit sous-ensemble ciblé. Les filtres JSON et les paramètres de cohérence stricts peuvent encore augmenter la charge de travail.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtrage inefficace</h3><p>Les filtres inefficaces constituent un autre goulot d'étranglement courant. Si les expressions de filtre sont mal conduites ou si les champs manquent d'index scalaires, Milvus peut se rabattre sur une <strong>analyse complète</strong> au lieu d'analyser un petit sous-ensemble ciblé. Les filtres JSON et les paramètres de cohérence stricts peuvent encore augmenter la charge de travail.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -119,11 +119,11 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus introduit également un mécanisme de modélisation des expressions de filtre conçu pour améliorer l'efficacité en réduisant le temps passé à analyser des expressions complexes. Voir <a href="https://milvus.io/docs/filtering-templating.md">ce document</a> pour plus de détails.</p>
 <ul>
+<li><p>Milvus introduit également un mécanisme de modélisation des expressions de filtre conçu pour améliorer l'efficacité en réduisant le temps passé à analyser des expressions complexes. Voir <a href="https://milvus.io/docs/filtering-templating.md">ce document</a> pour plus de détails.</p></li>
 <li><p><strong>Ajouter des index appropriés</strong>: Évitez les balayages complets en créant des index scalaires sur les champs utilisés dans les filtres.</p></li>
 <li><p><strong>Traiter efficacement le JSON</strong>: Milvus 2.6 a introduit des index de chemin et des index plats pour les champs JSON, permettant un traitement efficace des données JSON. Le déchiquetage JSON est également <a href="https://milvus.io/docs/roadmap.md">prévu</a> pour améliorer encore les performances. Reportez-vous au <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">document sur les champs JSON</a> pour plus d'informations.</p></li>
-<li><p><strong>Ajustez le niveau de cohérence</strong>: Utilisez les lectures cohérentes <code translate="no">_Bounded</code>_ ou <code translate="no">_Eventually</code>_ lorsque des garanties strictes ne sont pas nécessaires, ce qui réduit le temps d'attente de <code translate="no">tSafe</code>.</p></li>
+<li><p><strong>Ajustez le niveau de cohérence</strong>: Utilisez <em>Bounded</em> ou <em>Eventually</em> consistent reads lorsque des garanties strictes ne sont pas nécessaires, réduisant ainsi le temps d'attente de <em>tSafe</em>.</p></li>
 </ul>
 <h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Mauvais choix de l'index vectoriel</h3><p>Les<a href="https://milvus.io/docs/index-explained.md">index vectoriels</a> ne sont pas universels. Le choix d'un mauvais index peut avoir un impact significatif sur la latence. Les index en mémoire offrent les performances les plus rapides mais consomment plus de mémoire, tandis que les index sur disque économisent de la mémoire au détriment de la vitesse. Les vecteurs binaires nécessitent également des stratégies d'indexation spécialisées.</p>
 <p>
@@ -160,7 +160,7 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 </p>
 <p><strong>Signaux à surveiller :</strong></p>
 <ul>
-<li><p>Pics d'utilisation de l'unité centrale pendant les tâches d'arrière-plan (compaction, migration, construction d'index).</p></li>
+<li><p>Des pics d'utilisation de l'unité centrale pendant les tâches d'arrière-plan (compaction, migration, construction d'index).</p></li>
 <li><p>Saturation des E/S disque affectant les performances des requêtes.</p></li>
 <li><p>Réchauffement très lent du cache après un redémarrage.</p></li>
 <li><p>Nombre important de petits segments non indexés (suite à des insertions fréquentes).</p></li>

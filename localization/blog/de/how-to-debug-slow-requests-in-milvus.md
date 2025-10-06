@@ -19,7 +19,7 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
 <p>Die Leistung ist das Herzstück von Milvus. Unter normalen Bedingungen wird eine Suchanfrage in Milvus in nur wenigen Millisekunden abgeschlossen. Aber was passiert, wenn Ihr Cluster langsamer wird - wenn sich die Suchlatenz stattdessen auf ganze Sekunden ausdehnt?</p>
 <p>Langsame Suchvorgänge kommen nicht oft vor, aber sie können in großem Umfang oder bei komplexen Workloads auftreten. Und wenn dies der Fall ist, sind sie von Bedeutung: Sie stören die Benutzererfahrung, beeinträchtigen die Anwendungsleistung und offenbaren oft versteckte Ineffizienzen in Ihrer Einrichtung.</p>
-<p>In diesem Beitrag zeigen wir Ihnen, wie Sie langsame Anfragen in Milvus identifizieren können und welche praktischen Schritte Sie unternehmen können, um die Latenzzeit vorhersehbar, stabil und konstant niedrig zu halten.</p>
+<p>In diesem Beitrag zeigen wir Ihnen, wie Sie langsame Anfragen in Milvus einordnen und welche praktischen Schritte Sie unternehmen können, um die Latenzzeit vorhersehbar, stabil und konstant niedrig zu halten.</p>
 <h2 id="Identifying-Slow-Searches" class="common-anchor-header">Identifizierung langsamer Suchanfragen<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -53,9 +53,9 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <ul>
 <li><p><strong>Service Quality → Slow Query</strong>: Markiert jede Anfrage, die proxy.slowQuerySpanInSeconds überschreitet (Standard: 5s). Diese werden auch in Prometheus markiert.</p></li>
 <li><p><strong>Servicequalität → Suchlatenz</strong>: Zeigt die Gesamtverteilung der Latenz an. Wenn dies normal aussieht, aber Endbenutzer trotzdem Verzögerungen feststellen, liegt das Problem wahrscheinlich außerhalb von Milvus - im Netzwerk oder in der Anwendungsschicht.</p></li>
-<li><p><strong>Abfrageknoten → Suchlatenz nach Phase</strong>: Unterteilt die Latenz in Warteschlangen-, Abfrage- und Reduzierungsphasen. Für eine genauere Zuordnung zeigen Panels wie <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> und <em>Wait Safe Latency</em> an, welche Phase dominiert.</p></li>
+<li><p><strong>Abfrageknoten → Suchlatenz nach Phase</strong>: Unterteilt die Latenz in Warteschlangen-, Abfrage- und Reduzierungsphasen. Für eine genauere Zuordnung zeigen Panels wie <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em> und <em>Wait tSafe Latency</em>, welche Phase dominiert.</p></li>
 </ul>
-<h3 id="Milvus-Logs" class="common-anchor-header">Milvus-Protokolle</h3><p>Milvus protokolliert auch jede Anfrage, die länger als eine Sekunde dauert, mit Markierungen wie [Search slow]. Diese Protokolle zeigen, <em>welche</em> Abfragen langsam sind und ergänzen die Erkenntnisse aus den Metriken <em>.</em> Als Faustregel gilt:</p>
+<h3 id="Milvus-Logs" class="common-anchor-header">Milvus-Protokolle</h3><p>Milvus protokolliert auch jede Anfrage, die länger als eine Sekunde dauert, und versieht sie mit Markierungen wie [Search slow]. Diese Protokolle zeigen, <em>welche</em> Abfragen langsam sind und ergänzen die Erkenntnisse aus den Metriken <em>.</em> Als Faustregel gilt:</p>
 <ul>
 <li><p><strong>&lt; 30 ms</strong> → gesunde Suchlatenz in den meisten Szenarien</p></li>
 <li><p><strong>&gt; 100 ms</strong> → eine Untersuchung wert</p></li>
@@ -90,15 +90,15 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 <p><strong>Signale, auf die man achten sollte:</strong></p>
 <ul>
 <li><p>Alle Abfragen zeigen unerwartet hohe Latenzzeiten.</p></li>
-<li><p>Abfrageknoten-Metriken melden steigende <strong>Latenzzeiten in der Warteschlange</strong>.</p></li>
+<li><p>Abfrageknoten-Metriken melden eine hohe <strong>Latenz in der Warteschlange</strong>.</p></li>
 <li><p>Die Protokolle zeigen eine Anfrage mit einer großen NQ und einer langen Gesamtdauer, aber einer relativ kleinen DauerPerNQ, was darauf hinweist, dass eine übergroße Anfrage die Ressourcen dominiert.</p></li>
 </ul>
 <p><strong>Behebung des Problems:</strong></p>
 <ul>
 <li><p><strong>Stapelabfragen</strong>: Halten Sie die NQ bescheiden, um eine Überlastung einer einzelnen Anfrage zu vermeiden.</p></li>
-<li><p><strong>Verkleinern Sie Abfrageknoten</strong>: Wenn hohe Gleichzeitigkeit ein regelmäßiger Bestandteil Ihrer Arbeitslast ist, fügen Sie Abfrageknoten hinzu, um die Last zu verteilen und eine niedrige Latenz aufrechtzuerhalten.</p></li>
+<li><p><strong>Verkleinern Sie Abfrageknoten</strong>: Wenn hohe Gleichzeitigkeit ein regelmäßiger Teil Ihrer Arbeitslast ist, fügen Sie Abfrageknoten hinzu, um die Last zu verteilen und eine niedrige Latenz aufrechtzuerhalten.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Ineffiziente Filterung</h3><p>Ein weiterer häufiger Engpass entsteht durch ineffiziente Filter. Wenn Filterausdrücke schlecht strukturiert sind oder Feldern skalare Indizes fehlen, greift Milvus möglicherweise auf einen <strong>vollständigen Scan</strong> zurück, anstatt eine kleine, gezielte Teilmenge zu scannen. JSON-Filter und strenge Konsistenzeinstellungen können den Overhead weiter erhöhen.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Ineffiziente Filterung</h3><p>Ein weiterer häufiger Engpass entsteht durch ineffiziente Filter. Wenn Filterausdrücke schlecht ausgeführt werden oder Feldern skalare Indizes fehlen, greift Milvus möglicherweise auf einen <strong>vollständigen Scan</strong> zurück, anstatt eine kleine, gezielte Teilmenge zu scannen. JSON-Filter und strenge Konsistenzeinstellungen können den Overhead weiter erhöhen.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
@@ -119,13 +119,13 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus führt auch einen Mechanismus zur Erstellung von Vorlagen für Filterausdrücke ein, der die Effizienz verbessern soll, indem er die Zeit für das Parsen komplexer Ausdrücke reduziert. Siehe <a href="https://milvus.io/docs/filtering-templating.md">dieses Dokument</a> für weitere Details.</p>
 <ul>
+<li><p>Milvus führt auch einen Mechanismus zur Erstellung von Vorlagen für Filterausdrücke ein, der die Effizienz verbessern soll, indem er die Zeit für das Parsen komplexer Ausdrücke reduziert. Siehe <a href="https://milvus.io/docs/filtering-templating.md">dieses Dokument</a> für weitere Details.</p></li>
 <li><p><strong>Hinzufügen geeigneter Indizes</strong>: Vermeiden Sie vollständige Scans, indem Sie skalare Indizes für in Filtern verwendete Felder erstellen.</p></li>
 <li><p><strong>Effizienter Umgang mit JSON</strong>: Mit Milvus 2.6 wurden Pfad- und flache Indizes für JSON-Felder eingeführt, die eine effiziente Verarbeitung von JSON-Daten ermöglichen. JSON Shredding ist ebenfalls auf der <a href="https://milvus.io/docs/roadmap.md">Roadmap</a>, um die Leistung weiter zu verbessern. Weitere Informationen finden Sie im <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSON-Feld-Dokument</a>.</p></li>
-<li><p><strong>Abstimmen der Konsistenzstufe</strong>: Verwenden Sie <code translate="no">_Bounded</code>_ oder <code translate="no">_Eventually</code>_ konsistente Lesevorgänge, wenn keine strengen Garantien erforderlich sind, um die Wartezeit auf <code translate="no">tSafe</code> zu reduzieren.</p></li>
+<li><p><strong>Abstimmen der Konsistenzstufe</strong>: Verwenden Sie <em>Bounded</em> oder <em>Eventually</em> Consistent Reads, wenn keine strengen Garantien erforderlich sind, um die Wartezeit <em>von tSafe</em> zu reduzieren.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Falsche Wahl des Vektorindexes</h3><p><a href="https://milvus.io/docs/index-explained.md">Vektorindizes</a> sind keine Einheitsgröße. Die Wahl des falschen Index kann die Latenzzeit erheblich beeinflussen. In-Memory-Indizes liefern die schnellste Leistung, verbrauchen aber mehr Speicher, während On-Disk-Indizes auf Kosten der Geschwindigkeit Speicherplatz sparen. Binäre Vektoren erfordern ebenfalls spezielle Indizierungsstrategien.</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Falsche Wahl des Vektorindexes</h3><p><a href="https://milvus.io/docs/index-explained.md">Vektorindizes</a> sind keine Einheitsgröße. Die Auswahl des falschen Index kann die Latenzzeit erheblich beeinflussen. In-Memory-Indizes liefern die schnellste Leistung, verbrauchen aber mehr Speicher, während On-Disk-Indizes auf Kosten der Geschwindigkeit Speicherplatz sparen. Binäre Vektoren erfordern ebenfalls spezielle Indizierungsstrategien.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />
@@ -176,7 +176,7 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <li><p><strong>Ressourcen bereitstellen</strong>: zusätzliche CPU-/Speicherressourcen für latenzanfällige Arbeitslasten bereitstellen.</p></li>
 </ul>
 <p>Indem Sie jedem Signal die richtige Aktion zuordnen, können die meisten langsamen Abfragen schnell und vorhersehbar gelöst werden.</p>
-<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">Best Practices zur Verhinderung langsamer Suchvorgänge<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
+<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">Best Practices zur Vermeidung langsamer Suchvorgänge<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
