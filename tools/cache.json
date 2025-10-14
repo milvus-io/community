@@ -201,5 +201,6 @@
   "blog/en/get-started-with-langgraph-up-react-a-practical-langgraph-template.md": "2025-09-12T19:11:50.701Z",
   "blog/en/when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md": "2025-10-03T17:22:03.310Z",
   "blog/en/how-to-debug-slow-requests-in-milvus.md": "2025-10-06T20:11:43.743Z",
-  "blog/en/how-to-choose-the-right-embedding-model-for-rag.md": "2025-10-06T20:15:06.654Z"
+  "blog/en/how-to-choose-the-right-embedding-model-for-rag.md": "2025-10-06T20:15:06.654Z",
+  "blog/en/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md": "2025-10-14T19:02:19.713Z"
 }
