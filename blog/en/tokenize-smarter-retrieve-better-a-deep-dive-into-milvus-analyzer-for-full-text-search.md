@@ -3,14 +3,16 @@ id: tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-t
 title: >
  Tokenize Smarter, Retrieve Better: A Deep Dive into Milvus Analyzer for Full-Text Search
 author: Jack Li
-date: 2025-10-17
+date: 2025-10-16
 desc: Explore how Milvus Analyzer powers hybrid AI retrieval with efficient tokenization and filtering, enabling faster, smarter full-text search.
 cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
 tag: Tutorials
 tags: Milvus, Vector Database, Open Source, Vector Embeddings
-recommend: true
+recommend: false
+meta_title: >
+ A Deep Dive into Milvus Analyzer for Full-Text Search
 meta_keywords: Milvus Analyzer, RAG, full-text search, vector database, tokenization
-canonicalUrl: https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
+origin: https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
 ---
 
 Modern AI applications are complex and rarely one-dimensional. In many cases, a single search method can’t solve real-world problems on its own. Take a recommendation system, for example. It requires **vector search** to comprehend the meaning behind text or images, **metadata filtering** to refine results by price, category, or location, and[ **full-text search**](https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md) to handle direct queries like “Nike Air Max.” Each method solves a different part of the puzzle—and practical systems depend on all of them working together seamlessly.
@@ -26,14 +28,17 @@ To power efficient full-text search—whether for keyword matching or semantic r
 
 The **Milvus Analyzer** handles this step. It’s a built-in text preprocessing and tokenization component that breaks input text into discrete tokens, then normalizes, cleans, and standardizes them to ensure consistent matching across queries and documents. This process lays the foundation for accurate, high-performance full-text search and hybrid retrieval.
 
-Here’s an overview of the Milvus Analyzer architecture:![](https://assets.zilliz.com/milvus_analyzer_architecture_73f1b170e2.png)
+Here’s an overview of the Milvus Analyzer architecture:
+
+![](https://assets.zilliz.com/image_5_8e0ec1dbdf.png)
 
 As the diagram shows, Analyzer has two core components: the **Tokenizer** and the **Filter**. Together, they convert input text into tokens and optimize them for efficient indexing and retrieval.
 
 - **Tokenizer**: Splits text into basic tokens using methods like whitespace splitting (Whitespace), Chinese word segmentation (Jieba), or multilingual segmentation (ICU).
 
-- **Filter**: Processes tokens through specific transformations. Milvus includes a rich set of built-in filters for operations like case normalization (Lowercase), punctuation removal (Removepunct), stop word filtering (Stop), stemming (Stemmer), and pattern matching (Regex). You can chain multiple filters to handle complex processing needs. 
-![](https://assets.zilliz.com/the_Tokenizer_and_the_Filter_4b22219e99.png)
+- **Filter**: Processes tokens through specific transformations. Milvus includes a rich set of built-in filters for operations like case normalization (Lowercase), punctuation removal (Removepunct), stop word filtering (Stop), stemming (Stemmer), and pattern matching (Regex). You can chain multiple filters to handle complex processing needs.
+  
+![](https://assets.zilliz.com/tokenizer_70a57e893c.png)
 
 Milvus offers several Analyzer types: three built-in options (Standard, English, and Chinese), Custom Analyzers where you define your own Tokenizer and Filter combinations, and the Multi-language Analyzer for handling multilingual documents. The processing flow is straightforward: Raw text → Tokenizer → Filter → Tokens.
 
