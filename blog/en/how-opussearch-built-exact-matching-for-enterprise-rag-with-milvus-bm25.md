@@ -2,17 +2,19 @@
 id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
 title: How OpusSearch Built Exact Matching for Enterprise RAG with Milvus BM25
 author: Chronos Kou
-date: 2025-10-17
-desc: Learn how OpusSearch uses Milvus BM25 to power exact matching in enterprise RAG systems—combining semantic search with precise keyword retrieval.
-cover: assets.zilliz.com/opussearch_78ee649088.png
+date: 2025-10-18
+cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
 tag: Tutorials
-tags: Milvus, Vector Database, Open Source, Vector Embeddings
-recommend: true
+recommend: false
+publishToMedium: true
+tags: Milvus, vector database
 meta_keywords: Milvus, enterprise RAG, vector database, semantic search
-canonicalUrl: https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b
+meta_title: How to Built Exact Matching for Enterprise RAG with Milvus
+desc: Learn how OpusSearch uses Milvus BM25 to power exact matching in enterprise RAG systems—combining semantic search with precise keyword retrieval.
+origin: https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b
 ---
 
-This post was originally published on Medium and is reposted here with permission.
+This post was originally published on [Medium](https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b) and is reposted here with permission.
 
 ## The Semantic Search Blind Spot
 
@@ -36,7 +38,9 @@ We built an [enterprise search function](https://www.opus.pro/opussearch) becaus
 
 ## Why We Doubled Down on Milvus (Instead of Adding Another Database)
 
-The obvious solution was to add Elasticsearch or MongoDB for exact matching. However, as a startup, maintaining multiple search systems introduces significant operational overhead and complexity.![](https://assets.zilliz.com/Strong_community_adoption_with_35k_Git_Hub_stars_b4b8abc2b8.png)
+The obvious solution was to add Elasticsearch or MongoDB for exact matching. However, as a startup, maintaining multiple search systems introduces significant operational overhead and complexity.
+
+![](https://assets.zilliz.com/Strong_community_adoption_with_35k_Git_Hub_stars_fbf773dcdb.webp)
 
 Milvus had recently shipped their full-text search feature, and an evaluation with our own dataset **without any tuning** showed compelling advantages:
 
@@ -45,7 +49,7 @@ Milvus had recently shipped their full-text search feature, and an evaluation wi
 - Milvus **returns longer, more comprehensive results** than other databases when queries are general, which is naturally more ideal for our use case.
 
 ## Architecture from 5000 feet
-![](https://assets.zilliz.com/Milvus_is_the_foundational_vector_database_for_our_Enterprise_RAG_architecture_4f0b24a18c.png)
+![](https://assets.zilliz.com/Milvus_is_the_foundational_vector_database_for_our_Enterprise_RAG_architecture_b3c8ebf39c.webp)
 ## BM25 + Filtering = Exact Match Magic
 
 Milvus’s full-text search isn’t really about exact matching, but it’s about relevance scoring using BM25 ([Best Matching 25](https://en.wikipedia.org/wiki/Okapi_BM25)), which calculates how relevant a document is to your query. It’s great for “find me something close,” but terrible for “find me exactly this.”
