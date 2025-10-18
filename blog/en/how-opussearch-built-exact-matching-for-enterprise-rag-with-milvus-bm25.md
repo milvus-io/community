@@ -9,7 +9,7 @@ recommend: false
 publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Milvus, enterprise RAG, vector database, semantic search
-meta_title: How to Built Exact Matching for Enterprise RAG with Milvus
+meta_title: How OpusSearch Built Exact Matching for Enterprise RAG with Milvus
 desc: Learn how OpusSearch uses Milvus BM25 to power exact matching in enterprise RAG systems—combining semantic search with precise keyword retrieval.
 origin: https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b
 ---
