@@ -83,7 +83,7 @@ Under the hood, the **Semantic Router + Milvus** pipeline is implemented in **Go
 
 ## How to Quickly Test the Semantic Caching in the Semantic Router
 
-Before deploying semantic caching at scale, it’s useful to validate how it behaves in a controlled setup. In this section, we’ll walk through a quick local test that shows how the Semantic Router uses Milvus as its semantic cache. You’ll see how similar queries hit the cache instantly while new or distinct ones trigger model generation—proving the caching logic in action.
+Before deploying semantic caching at scale, it’s useful to validate how it behaves in a controlled setup. In this section, we’ll walk through a quick local test that shows how the Semantic Router uses **Milvus** as its semantic cache. You’ll see how similar queries hit the cache instantly while new or distinct ones trigger model generation—proving the caching logic in action.
 
 ### Prerequisites
 
@@ -253,7 +253,8 @@ This test demonstrates Semantic Router's semantic caching in action. By leveragi
 
 ## Conclusion
 
-As AI workloads grow and cost optimization becomes essential, the combination of vLLM Semantic Router and Milvus provides a practical way to scale intelligently. By routing each query to the right model and caching semantically similar results with a distributed vector database, this setup cuts compute overhead while keeping responses fast and consistent across use cases.
+As AI workloads grow and cost optimization becomes essential, the combination of vLLM Semantic Router and [Milvus](https://milvus.io/) provides a practical way to scale intelligently. By routing each query to the right model and caching semantically similar results with a distributed vector database, this setup cuts compute overhead while keeping responses fast and consistent across use cases.
+
 In short, you get smarter scaling—less brute force, more brains.
 
-If you’d like to explore this further, join the conversation in our Milvus Discord or open an issue on GitHub. You can also book a 20-minute Milvus Office Hours session for one-on-one guidance, insights, and technical deep dives from the team behind Milvus.
+If you’d like to explore this further, join the conversation in our [Milvus Discord](https://discord.com/invite/8uyFbECzPX) or open an issue on[ GitHub](https://github.com/milvus-io/milvus). You can also book a 20-minute[ Milvus Office Hours session](https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md) for one-on-one guidance, insights, and technical deep dives from the team behind Milvus.
