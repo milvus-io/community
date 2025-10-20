@@ -3,7 +3,7 @@ id: vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-system
 title: >
  vLLM Semantic Router + Milvus: How Semantic Routing and Caching Build Scalable AI Systems the Smart Way
 author: Min Yin
-date: 2025-10-20
+date: 2025-10-17
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_19_2025_04_30_18_PM_af7fda1170.png
 tag: Tutorials
 recommend: false
