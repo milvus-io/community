@@ -7,7 +7,7 @@ date: 2025-09-30
 desc:  Discover why AI hallucinations aren’t just errors but sparks of creativity—and how context engineering turns them into reliable, real-world outcomes.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
-recommend: false
+recommend: True
 publishToMedium: true
 tags: Milvus, vector database, AI Agents, Context Engineering
 meta_keywords: Milvus, vector database, AI Agents, Context Engineering
