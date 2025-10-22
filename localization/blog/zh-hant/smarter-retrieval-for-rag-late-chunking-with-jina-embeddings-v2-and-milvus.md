@@ -8,7 +8,7 @@ cover: >-
   assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
-recommend: true
+recommend: false
 meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document embeddings'
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
@@ -21,7 +21,7 @@ canonicalUrl: >-
 <li><p><strong>遞歸分塊</strong>（分層分割）</p></li>
 <li><p><strong>語意分塊</strong>（依主題分類）</p></li>
 </ul>
-<p>雖然這些方法都有其優點，但它們往往會破壞長距離的上下文。為了解決這個難題，Jina AI 創造了一種 Late Chunking 方法：先嵌入整個文件，然後再分割出您的分塊。</p>
+<p>雖然這些方法都有其優點，但它們往往會破壞長距離的上下文。為了解決這個挑戰，Jina AI 創造了一種 Late Chunking 方法：先嵌入整個文件，然後再分割出您的分塊。</p>
 <p>在這篇文章中，我們將探討 Late Chunking 如何運作，並示範如何將它與<a href="https://milvus.io/">Milvus</a>結合<a href="https://milvus.io/">（Milvus 是</a>專為相似性搜尋建立的高效能開放原始碼向量資料庫），以大幅改善您的 RAG 管道。無論您是要建立企業知識庫、AI 驅動的客戶支援，或是進階的搜尋應用程式，這篇演練都會告訴您如何更有效地管理嵌入式規模。</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">什麼是後期分塊？<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"

@@ -8,7 +8,7 @@ cover: >-
   assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
-recommend: true
+recommend: false
 meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document embeddings'
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
@@ -22,7 +22,7 @@ canonicalUrl: >-
 <li><p><strong>语义分块</strong>（按主题分组）</p></li>
 </ul>
 <p>虽然这些方法各有优点，但它们往往会破坏远距离语境。为了应对这一挑战，Jina AI 创造了一种晚期分块方法：先嵌入整个文档，然后再分割出分块。</p>
-<p>在本文中，我们将探讨晚期分块法的工作原理，并演示如何将其与<a href="https://milvus.io/">Milvus（</a>为相似性搜索而构建的高性能开源向量数据库）相结合，从而显著改善 RAG 管道。无论您是在构建企业知识库、人工智能驱动的客户支持，还是在构建高级搜索应用，本教程都将向您展示如何更有效地大规模管理嵌入式数据。</p>
+<p>在本文中，我们将探讨晚期分块法的工作原理，并演示如何将其与<a href="https://milvus.io/">Milvus（</a>为相似性搜索而构建的高性能开源向量数据库）相结合，从而显著改善 RAG 管道。无论您是在构建企业知识库、人工智能驱动的客户支持，还是在构建高级搜索应用，本攻略都将向您展示如何更有效地大规模管理嵌入式数据。</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">什么是后期分块？<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -131,7 +131,7 @@ canonicalUrl: >-
     model_output = torch.cat(outputs, dim=<span class="hljs-number">1</span>)
     <span class="hljs-keyword">return</span> model_output
 <button class="copy-code-btn"></button></code></pre>
-<p>函数<code translate="no">late_chunking</code> 接收文档的标记嵌入和原始的分块注释信息<code translate="no">span_annotations</code> ，然后生成最终的分块嵌入。</p>
+<p>函数<code translate="no">late_chunking</code> 会获取文档的标记嵌入和原始分块注释信息<code translate="no">span_annotations</code> ，然后生成最终的分块嵌入。</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">late_chunking</span>(<span class="hljs-params">token_embeddings, span_annotation, max_length=<span class="hljs-literal">None</span></span>):
     outputs = []
     <span class="hljs-keyword">for</span> embeddings, annotations <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(token_embeddings, span_annotation):
@@ -276,6 +276,6 @@ res = client.insert(
 <p>后期分块嵌入提供了一种<strong>上下文优先的</strong>嵌入方法--非常适合上下文最为重要的长篇复杂文档。通过预先嵌入整个文本，然后再进行切分，您可以获得以下好处：</p>
 <ul>
 <li><p><strong>更高的检索准确性</strong></p></li>
-<li><p><strong>精简、集中的 LLM 提示</strong></p></li>
+<li><p><strong>精简、重点突出的 LLM 提示</strong></p></li>
 <li><p>🛠️ 与任何长语境模型的<strong>简单集成</strong></p></li>
 </ul>

@@ -8,12 +8,12 @@ cover: >-
   assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
-recommend: true
+recommend: false
 meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document embeddings'
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
 ---
-<p>강력한 RAG 시스템 구축은 일반적으로 <strong>문서</strong> <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>청크(</strong></a>큰 텍스트를 관리하기 쉬운 조각으로 <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>분할하여</strong></a>임베딩 및 검색할 수 있도록 하는 작업)에서 시작됩니다. 일반적인 전략은 다음과 같습니다:</p>
+<p>강력한 RAG 시스템 구축은 일반적으로 <strong>문서</strong> <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>청크(</strong></a>큰 텍스트를 관리하기 쉬운 조각으로 <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>분할하여</strong></a>임베딩 및 검색할 수 있도록 하는 작업)로 시작됩니다. 일반적인 전략은 다음과 같습니다:</p>
 <ul>
 <li><p><strong>고정 크기 청크</strong> (예: 512토큰마다)</p></li>
 <li><p><strong>가변 크기 청크</strong> (예: 단락 또는 문장 경계)</p></li>
@@ -22,7 +22,7 @@ canonicalUrl: >-
 <li><p><strong>의미적 청크</strong> (주제별 그룹화)</p></li>
 </ul>
 <p>이러한 방법에는 장점이 있지만, 종종 긴 범위의 문맥이 단절되는 경우가 있습니다. 이 문제를 해결하기 위해 Jina AI는 전체 문서를 먼저 임베드한 다음 청크를 분할하는 후기 청킹 접근 방식을 사용합니다.</p>
-<p>이 글에서는 후기 청킹이 어떻게 작동하는지 살펴보고, 유사성 검색을 위해 구축된 고성능 오픈 소스 벡터 <a href="https://milvus.io/">데이터베이스인 Milvus와</a>결합하여 RAG 파이프라인을 획기적으로 개선할 수 있는 방법을 보여드립니다. 엔터프라이즈 지식 베이스, AI 기반 고객 지원, 고급 검색 애플리케이션을 구축하는 경우, 이 워크스루를 통해 대규모로 임베딩을 보다 효과적으로 관리하는 방법을 알아보세요.</p>
+<p>이 글에서는 후기 청킹이 어떻게 작동하는지 살펴보고, 유사도 검색을 위해 구축된 고성능 오픈 소스 벡터 <a href="https://milvus.io/">데이터베이스인 Milvus와</a>결합하여 RAG 파이프라인을 획기적으로 개선할 수 있는 방법을 보여드립니다. 엔터프라이즈 지식 베이스, AI 기반 고객 지원, 고급 검색 애플리케이션을 구축하는 경우, 이 워크스루를 통해 대규모로 임베딩을 보다 효과적으로 관리하는 방법을 알아보세요.</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">후기 청킹이란 무엇인가요?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

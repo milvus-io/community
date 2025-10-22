@@ -12,7 +12,7 @@ desc: >-
   resultados fiáveis e reais.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database, AI Agents, Context Engineering'
 meta_keywords: 'Milvus, vector database, AI Agents, Context Engineering'
@@ -163,7 +163,7 @@ origin: >-
       </svg>
     </button></h2><p>A engenharia de contexto só é tão eficaz quanto a infraestrutura em que é executada. E as empresas de hoje estão a enfrentar uma tempestade perfeita de desafios de dados:</p>
 <h3 id="Scale-Explosion--From-Terabytes-to-Petabytes" class="common-anchor-header">Explosão de escala - de Terabytes a Petabytes</h3><p>Atualmente, o crescimento dos dados redefiniu a linha de base. Cargas de trabalho que antes cabiam confortavelmente em um único banco de dados agora abrangem petabytes, exigindo armazenamento e computação distribuídos. Uma mudança de esquema que costumava ser uma atualização SQL de uma linha pode se transformar em um esforço de orquestração completo em clusters, pipelines e serviços. O escalonamento não se trata apenas de adicionar hardware - trata-se de engenharia para coordenação, resiliência e elasticidade em uma escala em que cada suposição é testada.</p>
-<h3 id="Consumption-Revolution--Systems-That-Speak-AI" class="common-anchor-header">Revolução do consumo - Sistemas que falam IA</h3><p>Os agentes de IA não se limitam a consultar dados; geram, transformam e consomem-nos continuamente à velocidade da máquina. A infraestrutura concebida apenas para aplicações dirigidas ao ser humano não consegue acompanhar este ritmo. Para dar suporte aos agentes, os sistemas devem fornecer recuperação de baixa latência, atualizações de streaming e cargas de trabalho pesadas de gravação sem quebras. Por outras palavras, a pilha de infra-estruturas deve ser criada para "falar de IA" como a sua carga de trabalho nativa e não como uma reflexão posterior.</p>
+<h3 id="Consumption-Revolution--Systems-That-Speak-AI" class="common-anchor-header">Revolução do consumo - Sistemas que falam IA</h3><p>Os agentes de IA não se limitam a consultar dados; eles os geram, transformam e consomem continuamente em velocidades de máquina. A infraestrutura concebida apenas para aplicações dirigidas ao ser humano não consegue acompanhar este ritmo. Para dar suporte aos agentes, os sistemas devem fornecer recuperação de baixa latência, atualizações de streaming e cargas de trabalho pesadas de gravação sem quebras. Por outras palavras, a pilha de infra-estruturas deve ser criada para "falar de IA" como a sua carga de trabalho nativa e não como uma reflexão posterior.</p>
 <h3 id="Multimodal-Complexity--Many-Data-Types-One-System" class="common-anchor-header">Complexidade multimodal - muitos tipos de dados, um sistema</h3><p>As cargas de trabalho de IA misturam texto, imagens, áudio, vídeo e embeddings de alta dimensão, cada um com metadados ricos anexados. Gerir esta heterogeneidade é o ponto crucial da engenharia de contexto prática. O desafio não é apenas armazenar diversos objectos; é indexá-los, recuperá-los eficientemente e manter a consistência semântica entre modalidades. Uma infraestrutura verdadeiramente preparada para a IA tem de tratar a multimodalidade como um princípio de conceção de primeira classe, e não como uma funcionalidade adicional.</p>
 <h2 id="Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="common-anchor-header">Milvus + Loon: Infraestrutura de dados criada para fins específicos para IA<button data-href="#Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -182,7 +182,7 @@ origin: >-
       </svg>
     </button></h2><p>Os desafios de escala, consumo e multimodalidade não podem ser resolvidos apenas com teoria - eles exigem uma infraestrutura criada especificamente para IA. É por isso que nós da <a href="https://zilliz.com/">Zilliz</a> projetamos <strong>o Milvus</strong> e <strong>o Loon</strong> para trabalharem juntos, abordando os dois lados do problema: recuperação de alto desempenho em tempo de execução e processamento de dados em grande escala a montante.</p>
 <ul>
-<li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: o banco de dados vetorial de código aberto mais amplamente adotado, otimizado para recuperação e armazenamento de vetores de alto desempenho.</p></li>
+<li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: a base de dados vetorial de código aberto mais amplamente adoptada, optimizada para recuperação e armazenamento vetorial de elevado desempenho.</p></li>
 <li><p><strong>Loon</strong>: nosso próximo serviço de data lake multimodal nativo da nuvem, projetado para processar e organizar dados multimodais em grande escala antes que eles cheguem ao banco de dados. Fique atento.</p></li>
 </ul>
 <p>

@@ -13,7 +13,7 @@ cover: >-
   assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
-recommend: true
+recommend: false
 meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document embeddings'
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
@@ -26,7 +26,7 @@ canonicalUrl: >-
 <li><p><strong>Chunking recursivo</strong> (división jerárquica)</p></li>
 <li><p><strong>Chunking semántico</strong> (agrupación por temas)</p></li>
 </ul>
-<p>Aunque estos métodos tienen sus ventajas, a menudo no tienen en cuenta el contexto a largo plazo. Para hacer frente a este reto, Jina AI crea un método de chunking tardío: primero se incrusta todo el documento y luego se esculpen los trozos.</p>
+<p>Aunque estos métodos tienen sus ventajas, a menudo rompen el contexto de largo alcance. Para hacer frente a este reto, Jina AI crea un método de chunking tardío: primero se incrusta todo el documento y luego se esculpen los trozos.</p>
 <p>En este artículo, exploraremos cómo funciona Late Chunking y demostraremos cómo su combinación con <a href="https://milvus.io/">Milvus (una</a>base de datos vectorial de código abierto de alto rendimiento creada para la búsqueda de similitudes) puede mejorar drásticamente sus procesos RAG. Tanto si está creando bases de conocimientos empresariales, como si está creando un servicio de atención al cliente basado en IA o aplicaciones de búsqueda avanzada, este tutorial le mostrará cómo gestionar las incrustaciones de forma más eficaz a gran escala.</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">¿Qué es la fragmentación tardía?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -52,13 +52,13 @@ canonicalUrl: >-
   </span>
 </p>
 <p><em>Figura 1. Fragmentación de las notas de publicación de Milvus 2.4.13</em></p>
-<p>Si pregunta: "¿Cuáles son las nuevas características de Milvus 2.4.13?", un modelo de incrustación estándar puede fallar a la hora de vincular "Milvus 2.4.13" (en el fragmento 1) con sus características (en el fragmento 2). ¿Cuál es el resultado? Vectores más débiles y menor precisión de recuperación.</p>
+<p>Si pregunta: "¿Cuáles son las nuevas características de Milvus 2.4.13?", un modelo de incrustación estándar puede fallar a la hora de vincular "Milvus 2.4.13" (en el trozo 1) con sus características (en el trozo 2). ¿Cuál es el resultado? Vectores más débiles y menor precisión de recuperación.</p>
 <p>Las soluciones heurísticas, como las ventanas deslizantes, los contextos superpuestos y las exploraciones repetidas, proporcionan un alivio parcial, pero no garantías.</p>
 <p><strong>El chunking tradicional</strong> sigue este proceso:</p>
 <ol>
 <li><p><strong>Clasificación previa</strong> del texto (por frases, párrafos o longitud máxima de los tokens).</p></li>
 <li><p><strong>Incrustar</strong> cada fragmento por separado.</p></li>
-<li><p><strong>Agregar</strong> las incrustaciones de tokens (por ejemplo, mediante la agrupación de promedios) en un único vector de trozos.</p></li>
+<li><p><strong>Se agregan</strong> las incrustaciones de tokens (por ejemplo, mediante la agrupación de promedios) en un único vector de trozos.</p></li>
 </ol>
 <p><strong>La fragmentación tardía</strong> invierte el proceso:</p>
 <ol>

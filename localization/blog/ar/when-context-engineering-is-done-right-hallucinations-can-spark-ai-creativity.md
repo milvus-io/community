@@ -11,7 +11,7 @@ desc: >-
   - وكيف تحولها هندسة السياق إلى نتائج موثوقة وواقعية.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database, AI Agents, Context Engineering'
 meta_keywords: 'Milvus, vector database, AI Agents, Context Engineering'

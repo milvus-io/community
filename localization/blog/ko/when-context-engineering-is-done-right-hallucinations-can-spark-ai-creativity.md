@@ -9,7 +9,7 @@ desc: >-
   알아보세요.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database, AI Agents, Context Engineering'
 meta_keywords: 'Milvus, vector database, AI Agents, Context Engineering'
@@ -62,8 +62,8 @@ origin: >-
 </p>
 <h3 id="1-The-Instructions-Layer--Defining-Direction" class="common-anchor-header">1. 지침 계층 - 방향 정의</h3><p>이 계층에는 프롬프트, 짧은 예시 및 데모가 포함됩니다. 막연한 "북쪽으로 가세요"가 아니라 웨이포인트가 있는 명확한 경로를 제시하는 모델의 내비게이션 시스템과도 같습니다. 잘 구조화된 지침은 경계를 설정하고 목표를 정의하며 모델 동작의 모호성을 줄여줍니다.</p>
 <h3 id="2-The-Knowledge-Layer--Supplying-Ground-Truth" class="common-anchor-header">2. 지식 레이어 - 사실 기반 정보 제공</h3><p>여기에는 모델이 효과적으로 추론하는 데 필요한 사실, 코드, 문서 및 상태를 배치합니다. 이 계층이 없으면 시스템은 불완전한 메모리에서 즉흥적으로 추론합니다. 이 계층이 있으면 모델은 도메인별 데이터에 근거하여 결과를 산출할 수 있습니다. 지식이 정확하고 관련성이 높을수록 추론의 신뢰도가 높아집니다.</p>
-<h3 id="3-The-Tools-Layer--Enabling-Action-and-Feedback" class="common-anchor-header">3. 도구 레이어 - 실행 및 피드백 활성화</h3><p>이 계층은 API, 함수 호출 및 외부 통합을 다룹니다. 이를 통해 시스템은 추론을 넘어 데이터 검색, 계산 수행, 워크플로우 트리거 등 실행 단계로 나아갈 수 있습니다. 마찬가지로 중요한 것은 이러한 도구가 모델의 추론에 다시 반복될 수 있는 실시간 피드백을 제공한다는 점입니다. 이러한 피드백을 통해 수정, 조정 및 지속적인 개선이 가능합니다. 실제로 이러한 피드백은 LLM을 수동적인 응답자에서 시스템의 능동적인 참여자로 변화시킵니다.</p>
-<p>이러한 계층은 사일로가 아니라 서로를 강화합니다. 지침은 목표를 설정하고, 지식은 작업할 정보를 제공하며, 도구는 결정을 실행으로 전환하고 결과를 다시 루프에 피드백합니다. 이러한 요소들이 잘 조율되면 모델이 창의적이면서도 신뢰할 수 있는 환경을 조성할 수 있습니다.</p>
+<h3 id="3-The-Tools-Layer--Enabling-Action-and-Feedback" class="common-anchor-header">3. 도구 레이어 - 실행 및 피드백 활성화</h3><p>이 계층은 API, 함수 호출 및 외부 통합을 다룹니다. 이를 통해 시스템은 추론을 넘어 데이터 검색, 계산 수행, 워크플로우 트리거와 같은 실행 단계로 나아갈 수 있습니다. 또한 이러한 도구는 모델의 추론에 다시 반영할 수 있는 실시간 피드백을 제공한다는 점도 중요합니다. 이러한 피드백을 통해 수정, 조정 및 지속적인 개선이 가능합니다. 실제로 이러한 피드백은 LLM을 수동적인 응답자에서 시스템의 능동적인 참여자로 변화시킵니다.</p>
+<p>이러한 계층은 사일로가 아니라 서로를 강화합니다. 지침은 목표를 설정하고, 지식은 작업할 정보를 제공하며, 도구는 결정을 실행으로 옮기고 결과를 다시 루프에 피드백합니다. 이러한 요소들이 잘 조율되면 모델이 창의적이고 신뢰할 수 있는 환경을 조성할 수 있습니다.</p>
 <h2 id="The-Long-Context-Challenges-When-More-Becomes-Less" class="common-anchor-header">긴 컨텍스트의 도전: 더 많은 것이 더 적은 것이 될 때<button data-href="#The-Long-Context-Challenges-When-More-Becomes-Less" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -89,7 +89,7 @@ origin: >-
   </span>
 </p>
 <p>그림 1: <a href="https://arxiv.org/pdf/2507.06261">Gemini 2.5 기술 문서</a>에서 발췌한 내용</p>
-<h3 id="Context-Distraction--Lost-in-the-Details" class="common-anchor-header">컨텍스트 산만 - 디테일에 집중하지 못함</h3><p>컨텍스트 창이 확장됨에 따라 모델은 훈련 중에 학습한 내용을 과도하게 강조하고 과소평가하기 시작할 수 있습니다. 예를 들어, 딥마인드의 Gemini 2.5 Pro는 백만 개의 토큰 창을 지원하지만 새로운 전략을 생성하는 대신 과거의 행동을 <a href="https://arxiv.org/pdf/2507.06261">재활용하는 약 10만 개의 토큰에서 표류하기 시작합니다</a>. <a href="https://www.databricks.com/blog/long-context-rag-performance-llms">데이터브릭스 연구에</a> 따르면 라마 3.1-405B와 같은 더 작은 모델은 약 32,000개 토큰에서 훨씬 더 빨리 한계에 도달합니다. 이는 인간에게 익숙한 효과입니다. 너무 많은 배경 지식을 읽으면 줄거리를 놓치게 됩니다.</p>
+<h3 id="Context-Distraction--Lost-in-the-Details" class="common-anchor-header">컨텍스트 산만 - 디테일에 집중하지 못함</h3><p>컨텍스트 창이 확장됨에 따라 모델은 훈련 중에 학습한 내용을 과도하게 강조하고 과소평가하기 시작할 수 있습니다. 예를 들어, 딥마인드의 Gemini 2.5 Pro는 백만 개의 토큰 창을 지원하지만 새로운 전략을 생성하는 대신 과거의 행동을 <a href="https://arxiv.org/pdf/2507.06261">재활용하는 약 10만 개의 토큰에서 표류하기 시작합니다</a>. <a href="https://www.databricks.com/blog/long-context-rag-performance-llms">데이터브릭스 연구에</a> 따르면 라마 3.1-405B와 같은 더 작은 모델은 약 32,000개의 토큰에서 훨씬 더 빨리 한계에 도달합니다. 이는 인간에게 익숙한 효과입니다. 너무 많은 배경 지식을 읽으면 줄거리를 놓치게 됩니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_2_Excerpt_from_Gemini_2_5_Tech_Paper_56d775c59d.png" alt="" class="doc-image" id="" />
@@ -105,7 +105,7 @@ origin: >-
 </p>
 <p><em>그림 3: 4개의 선별된 RAG 데이터 세트(Databricks DocsQA, FinanceBench, HotPotQA 및 Natural Questions)에서의 GPT, Claude, Llama, Mistral 및 DBRX 모델의 긴 컨텍스트 성능 [출처:</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em></p>
 <h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">컨텍스트 혼동 - 너무 많은 도구들</h3><p>도구를 더 추가한다고 해서 항상 도움이 되는 것은 아닙니다. <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">버클리 함수 호출 리더보드에</a> 따르면 컨텍스트에 관련 없는 옵션이 많은 광범위한 도구 메뉴가 표시되면 모델 신뢰성이 떨어지고 도구가 필요하지 않은 경우에도 도구가 호출되는 것으로 나타났습니다. 한 가지 분명한 예로, 정량화된 라마 3.1-8B는 46개의 도구를 사용할 때는 실패했지만 도구 세트를 19개로 줄였을 때는 성공했습니다. 선택의 역설, 즉 선택지가 너무 많을수록 더 나쁜 결정을 내릴 수 있다는 것이 바로 AI 시스템의 역설입니다.</p>
-<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">컨텍스트 충돌 - 정보가 충돌할 때</h3><p>여러 차례에 걸친 상호 작용은 뚜렷한 실패 모드를 추가합니다. 대화가 분기되면서 초기 오해가 복잡해집니다. <a href="https://arxiv.org/pdf/2505.06120v1">Microsoft와 Salesforce의 실험에서</a> 개방형 및 폐쇄형 LLM은 모두 단일 턴 설정에 비해 멀티 턴 설정에서 현저하게 성능이 저하되었으며, 6세대 작업에서 평균 39%의 성능 저하를 보였습니다. 잘못된 가정이 대화 상태에 들어가면 후속 턴이 이를 상속하여 오류를 증폭시킵니다.</p>
+<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">컨텍스트 충돌 - 정보가 충돌할 때</h3><p>여러 차례에 걸친 상호 작용은 대화가 분기되면서 초기 오해가 복잡해지는 뚜렷한 실패 모드를 추가합니다. <a href="https://arxiv.org/pdf/2505.06120v1">Microsoft와 Salesforce의 실험에서</a> 개방형 및 폐쇄형 LLM은 모두 단일 턴 설정에 비해 멀티 턴 설정에서 현저하게 성능이 저하되었으며, 6세대 작업에서 평균 39%의 성능 저하를 보였습니다. 잘못된 가정이 대화 상태에 들어가면 후속 턴이 이를 상속하여 오류를 증폭시킵니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_4_LL_Ms_get_lost_in_multi_turn_conversations_in_experiments_21f194b02d.png" alt="" class="doc-image" id="" />
@@ -180,7 +180,7 @@ origin: >-
     </button></h2><p>규모, 소비, 멀티모달리티의 과제는 이론만으로는 해결할 수 없으며, AI를 위해 특별히 구축된 인프라가 필요합니다. 이것이 바로 <a href="https://zilliz.com/">질리즈가</a> <strong>Milvus와</strong> <strong>Loon이</strong> 함께 작동하도록 설계한 이유이며, 런타임에서의 고성능 검색과 업스트림에서의 대규모 데이터 처리라는 두 가지 문제를 모두 해결합니다.</p>
 <ul>
 <li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: 고성능 벡터 검색 및 저장에 최적화된 가장 널리 채택된 오픈 소스 벡터 데이터베이스입니다.</p></li>
-<li><p><strong>Loon</strong>: 곧 출시될 클라우드 네이티브 멀티모달 데이터 레이크 서비스로, 대규모 멀티모달 데이터가 데이터베이스에 도달하기 전에 처리하고 정리하도록 설계되었습니다. 계속 지켜봐 주세요.</p></li>
+<li><p><strong>Loon</strong>: 곧 출시될 클라우드 네이티브 멀티모달 데이터 레이크 서비스로, 대규모 멀티모달 데이터가 데이터베이스에 도달하기 전에 처리 및 정리할 수 있도록 설계되었습니다. 계속 지켜봐 주세요.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">

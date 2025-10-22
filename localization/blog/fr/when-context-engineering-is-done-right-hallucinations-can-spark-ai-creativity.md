@@ -12,7 +12,7 @@ desc: >-
   transforme en résultats fiables et concrets.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database, AI Agents, Context Engineering'
 meta_keywords: 'Milvus, vector database, AI Agents, Context Engineering'
@@ -21,7 +21,7 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md
 ---
-<p>Pendant longtemps, beaucoup d'entre nous - moi y compris - ont traité les hallucinations LLM comme de simples défauts. Toute une chaîne d'outils a été construite pour les éliminer : systèmes de récupération, garde-fous, mise au point, etc. Ces mesures de protection sont toujours précieuses. Mais plus j'étudie la manière dont les modèles génèrent réellement des réponses - et comment des systèmes comme <a href="https://milvus.io/"><strong>Milvus</strong></a> s'intègrent dans des pipelines d'IA plus larges - moins je crois que les hallucinations ne sont que des échecs. En fait, elles peuvent aussi être l'étincelle de la créativité de l'IA.</p>
+<p>Pendant longtemps, beaucoup d'entre nous - moi y compris - ont traité les hallucinations du LLM comme rien de plus que des défauts. Toute une chaîne d'outils a été construite pour les éliminer : systèmes de récupération, garde-fous, mise au point, etc. Ces mesures de protection sont toujours précieuses. Mais plus j'étudie la manière dont les modèles génèrent réellement des réponses - et comment des systèmes comme <a href="https://milvus.io/"><strong>Milvus</strong></a> s'intègrent dans des pipelines d'IA plus larges - moins je crois que les hallucinations ne sont que des échecs. En fait, elles peuvent aussi être l'étincelle de la créativité de l'IA.</p>
 <p>Si nous examinons la créativité humaine, nous constatons le même schéma. Chaque percée repose sur des sauts d'imagination. Mais ces sauts ne viennent jamais de nulle part. Les poètes maîtrisent d'abord le rythme et le mètre avant de briser les règles. Les scientifiques s'appuient sur des théories établies avant de s'aventurer en terrain inconnu. Le progrès dépend de ces sauts, à condition qu'ils soient fondés sur des connaissances et une compréhension solides.</p>
 <p>Les LLM fonctionnent à peu près de la même manière. Leurs "hallucinations" ou "sauts" - analogies, associations et extrapolations - émergent du même processus génératif qui permet aux modèles d'établir des connexions, d'étendre leurs connaissances et de faire émerger des idées au-delà de ce à quoi ils ont été explicitement formés. Tous les sauts ne sont pas couronnés de succès, mais lorsqu'ils le sont, les résultats peuvent être convaincants.</p>
 <p>C'est pourquoi je considère l'<strong>ingénierie contextuelle</strong> comme la prochaine étape cruciale. Plutôt que d'essayer d'éliminer toutes les hallucinations, nous devrions nous concentrer sur leur <em>orientation</em>. En concevant le bon contexte, nous pouvons trouver un équilibre - en gardant les modèles suffisamment imaginatifs pour explorer de nouveaux terrains, tout en veillant à ce qu'ils restent suffisamment ancrés pour que l'on puisse leur faire confiance.</p>

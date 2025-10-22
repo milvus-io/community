@@ -7,7 +7,7 @@ date: 2025-09-30T00:00:00.000Z
 desc: AIの幻覚が単なるエラーではなく、創造性の火花である理由と、コンテキスト・エンジニアリングがそれらを信頼できる現実世界の成果に変える方法を発見してください。
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database, AI Agents, Context Engineering'
 meta_keywords: 'Milvus, vector database, AI Agents, Context Engineering'
@@ -60,8 +60,8 @@ origin: >-
 </p>
 <h3 id="1-The-Instructions-Layer--Defining-Direction" class="common-anchor-header">1.指示層 - 方向性の定義</h3><p>この層には、プロンプト、数少ない例、デモンストレーションが含まれる。これはモデルのナビゲーションシステムであり、ただ漠然と「北へ行け」ではなく、ウェイポイントのある明確なルートを示す。うまく構成された指示は、境界線を設定し、目標を定義し、モデルの動作のあいまいさを減らします。</p>
 <h3 id="2-The-Knowledge-Layer--Supplying-Ground-Truth" class="common-anchor-header">2.知識層 - グラウンド・トゥルースの提供</h3><p>ここでは、モデルが効果的に推論するために必要な事実、コード、文書、状態を配置します。このレイヤーがないと、システムは不完全な記憶から即興的に推論します。この層があれば、モデルはその出力をドメイン固有のデータに基づかせることができる。より正確で関連性の高い知識であればあるほど、推論の信頼性は高まります。</p>
-<h3 id="3-The-Tools-Layer--Enabling-Action-and-Feedback" class="common-anchor-header">3.ツール層 - アクションとフィードバックを可能にする</h3><p>このレイヤーはAPI、関数呼び出し、外部統合をカバーする。これは、システムが推論を越えて実行に移ること、つまりデータを検索したり、計算を実行したり、ワークフローをトリガーしたりすることを可能にするものである。同様に重要なこととして、これらのツールは、モデルの推論にループバックできるリアルタイムのフィードバックを提供する。このフィードバックこそが、修正、適応、継続的改善を可能にする。実際には、これこそがLLMを受動的な応答者から、システムにおける能動的な参加者に変えるものである。</p>
-<p>これらのレイヤーはサイロではない。指示は目的地を設定し、知識は作業するための情報を提供し、ツールは決定を行動に移し、結果をループにフィードバックする。そしてツールは決断を行動に移し、結果をループにフィードバックする。うまく編成されたこれらのレイヤーは、モデルが創造的であると同時に信頼できる環境を作り出す。</p>
+<h3 id="3-The-Tools-Layer--Enabling-Action-and-Feedback" class="common-anchor-header">3.ツール層 - アクションとフィードバックを可能にする</h3><p>このレイヤーはAPI、関数呼び出し、外部統合をカバーする。これは、システムが推論から実行に移行することを可能にするもので、データを検索したり、計算を実行したり、ワークフローをトリガーしたりします。同様に重要なこととして、これらのツールは、モデルの推論にループバックできるリアルタイムのフィードバックを提供する。このフィードバックこそが、修正、適応、継続的改善を可能にする。実際には、これこそがLLMを受動的な応答者から、システムにおける能動的な参加者に変えるものなのだ。</p>
+<p>これらのレイヤーはサイロではない。指示は目的地を設定し、知識は作業するための情報を提供し、ツールは決定を行動に移し、結果をループにフィードバックする。これらの層がうまく調和することで、モデルが創造的であると同時に信頼できる環境を作り出すことができるのだ。</p>
 <h2 id="The-Long-Context-Challenges-When-More-Becomes-Less" class="common-anchor-header">長いコンテクストへの挑戦より多くがより少なくなるとき<button data-href="#The-Long-Context-Challenges-When-More-Becomes-Less" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -78,7 +78,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>多くのAIモデルは現在、100万トークンのウィンドウを宣伝している。しかし、コンテキストが多ければ自動的に良い結果が得られるわけではない。実際には、非常に長いコンテキストは、推論と信頼性を低下させる可能性のある明確な失敗モードをもたらす。</p>
-<h3 id="Context-Poisoning--When-Bad-Information-Spreads" class="common-anchor-header">コンテキスト・ポイズニング - 悪い情報が広まるとき</h3><p>いったん誤った情報が作業コンテキストに入ると、それがゴールであれ、要約であれ、中間状態であれ、推論プロセス全体を脱線させる可能性がある。<a href="https://arxiv.org/pdf/2507.06261">DeepMindのGemini 2.5レポートが</a>明確な例を示している。ポケモンをプレイしているLLMエージェントが、ゲームの状態を読み間違えて、"捕まえられない伝説のポケモンを捕まえる "ことを使命と決めた。その間違ったゴールは事実として記録され、エージェントは精巧だが不可能な戦略を生み出すことになった。</p>
+<h3 id="Context-Poisoning--When-Bad-Information-Spreads" class="common-anchor-header">コンテキスト・ポイズニング - 悪い情報が広まるとき</h3><p>いったん誤った情報が作業コンテキストに入ると、それがゴールであれ、要約であれ、中間状態であれ、推論プロセス全体を脱線させる可能性がある。<a href="https://arxiv.org/pdf/2507.06261">DeepMindのGemini 2.5レポートが</a>明確な例を示している。ポケモンをプレイしているLLMエージェントが、ゲームの状態を読み間違えて、"捕まえられない伝説のポケモンを捕まえる "ことを使命と判断した。その間違ったゴールは事実として記録され、エージェントは精巧だが不可能な戦略を生み出すことになった。</p>
 <p>下の抜粋に示すように、毒されたコンテキストはモデルをループに閉じ込め、推論プロセス全体が崩壊するまで、エラーを繰り返し、常識を無視し、同じ間違いを強化した。</p>
 <p>
   <span class="img-wrapper">
@@ -101,7 +101,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><em>図3：4つのRAGデータセット（Databricks DocsQA、FinanceBench、HotPotQA、Natural Questions）に対するGPT、Claude、Llama、Mistral、DBRXモデルのロングコンテキストパフォーマンス [出典：</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em><em>.</em></p>
+<p><em>図3: 4つのRAGデータセット（Databricks DocsQA、FinanceBench、HotPotQA、Natural Questions）に対するGPT、Claude、Llama、Mistral、DBRXモデルのロングコンテキストパフォーマンス [出典:</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks］</em></a></p>
 <h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">コンテキストの混乱 - キッチンにツールが多すぎる</h3><p>ツールを増やしても、必ずしも役立つとは限らない。<a href="https://gorilla.cs.berkeley.edu/leaderboard.html">Berkeley Function-Calling Leaderboardは</a>、コンテキストに多くのツールメニューが表示され、多くの場合無関係なオプションがある場合、モデルの信頼性が低下し、必要でない場合でもツールが呼び出されることを示しています。明確な例として、量子化されたLlama 3.1-8Bは、46個のツールが利用可能な状態では失敗したが、19個に減らすと成功した。これはAIシステムにとっての選択のパラドックスであり、選択肢が多すぎると判断が悪くなる。</p>
 <h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">文脈の衝突 - 情報が衝突するとき</h3><p>対話が分岐するにつれて、初期の誤解が複雑化する。<a href="https://arxiv.org/pdf/2505.06120v1">マイクロソフトとセールスフォースの実験では</a>、オープンウェイトLLMとクローズドウェイトLLMの両方が、マルチターン設定とシングルターン設定とで著しくパフォーマンスが低下した。一旦間違った仮定が会話状態に入ると、後続のターンでもその仮定が継承され、エラーが増幅される。</p>
 <p>
@@ -140,7 +140,7 @@ origin: >-
 <h3 id="Context-Summarization" class="common-anchor-header">コンテキストの要約</h3><p>長い歴史を全部持ち運ぶ必要はない。その代わり、次のステップに必要なことだけを簡潔に要約する。優れた要約は、重要な事実、決定、制約を保持する一方で、繰り返しや不必要な詳細を排除する。それは、200ページの仕様書を1ページの設計概要書に置き換えるようなもので、それでも前進するために必要なものはすべて得られる。</p>
 <h3 id="Context-Offloading" class="common-anchor-header">コンテキストのオフロード</h3><p>すべての詳細がライブコンテキストの一部である必要はない。重要でないデータは、外部システム（ナレッジベース、ドキュメントストア、Milvusのようなベクターデータベース）に保持し、必要なときだけ取り出す。これにより、モデルの認識負荷が軽減される一方で、背景情報へのアクセスが維持される。</p>
 <h3 id="Strategic-RAG" class="common-anchor-header">戦略的RAG</h3><p>情報検索は、選択的であってこそ力を発揮する。厳格なフィルタリングと品質管理を通じて外部知識を導入し、モデルが適切かつ正確な入力を消費するようにします。どのようなデータ・パイプラインでもそうであるように、ガベージ・イン、ガベージ・アウトであるが、高品質の検索によって、コンテキストは負債ではなく資産となる。</p>
-<h3 id="Optimized-Tool-Loading" class="common-anchor-header">最適化されたツールロード</h3><p>ツールの数が多ければ多いほどパフォーマンスが向上するわけではありません。研究によれば、利用可能なツールが30を超えると信頼性は急激に低下する。与えられたタスクに必要な機能だけをロードし、残りの機能にはアクセスできないようにする。無駄のないツールボックスは精度を高め、意思決定を圧倒するノイズを減らす。</p>
+<h3 id="Optimized-Tool-Loading" class="common-anchor-header">最適化されたツールロード</h3><p>ツールの数が多ければ多いほどパフォーマンスが向上するわけではありません。研究によれば、利用可能なツールが30を超えると信頼性が急激に低下する。与えられたタスクに必要な機能だけをロードし、残りの機能にはアクセスできないようにする。無駄のないツールボックスは精度を高め、意思決定を圧倒するノイズを減らす。</p>
 <h2 id="The-Infrastructure-Challenge-of-Context-Engineering" class="common-anchor-header">コンテキスト・エンジニアリングのインフラへの挑戦<button data-href="#The-Infrastructure-Challenge-of-Context-Engineering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -187,8 +187,8 @@ origin: >-
   </span>
 </p>
 <h3 id="Lightning-Fast-Vector-Search" class="common-anchor-header">高速ベクトル検索</h3><p><strong>Milvusは</strong>ベクターワークロードのためにゼロから構築されています。サービングレイヤーとして、テキスト、画像、音声、動画のいずれに由来するものであっても、数億、あるいは数十億のベクトルに対して10ms以下の検索を実現します。AIアプリケーションにとって、検索速度は「あればいい」ものではない。エージェントが反応するのか鈍いのか、検索結果が適切なのかズレているのかを決定するものだ。ここでのパフォーマンスは、エンドユーザー・エクスペリエンスに直接現れます。</p>
-<h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">大規模なマルチモーダルデータレイクサービス</h3><p><strong>Loonは</strong>、非構造化データの大規模なオフライン処理と分析のために設計された、私たちの今後のマルチモーダルデータレイクサービスです。Milvusをパイプライン面で補完し、データベースに到達する前にデータを準備します。テキスト、画像、音声、動画にまたがる実世界のマルチモーダルデータセットは、重複、ノイズ、一貫性のないフォーマットなど、しばしば乱雑になりがちだ。Loonは、RayやDaftのような分散フレームワークを使って、データを圧縮、重複排除、クラスタリングしてから、Milvusに直接ストリーミングします。その結果、ステージングのボトルネックもなく、フォーマット変換の手間もかかりません。</p>
-<h3 id="Cloud-Native-Elasticity" class="common-anchor-header">クラウドネイティブの柔軟性</h3><p>どちらのシステムもクラウドネイティブに構築されており、ストレージとコンピュートは独立してスケーリングされます。つまり、ワークロードがギガバイトからペタバイトに増大しても、どちらか一方を過剰にプロビジョニングしたり、もう一方を過小評価したりすることなく、リアルタイム配信とオフライン・トレーニングの間でリソースのバランスを取ることができます。</p>
+<h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">大規模なマルチモーダルデータレイクサービス</h3><p><strong>Loonは</strong>、非構造化データの大規模なオフライン処理と分析のために設計された、私たちの今後のマルチモーダルデータレイクサービスです。Milvusをパイプライン面で補完し、データベースに到達する前にデータを準備します。テキスト、画像、音声、動画にまたがる実世界のマルチモーダルデータセットは、重複、ノイズ、一貫性のないフォーマットなど、しばしば乱雑になりがちだ。Loonは、RayやDaftのような分散フレームワークを使ってこのような重い作業を行い、データを圧縮、重複排除、クラスタリングしてから、Milvusに直接ストリーミングします。その結果、ステージングのボトルネックもなく、フォーマット変換の手間もかかりません。</p>
+<h3 id="Cloud-Native-Elasticity" class="common-anchor-header">クラウドネイティブの柔軟性</h3><p>どちらのシステムもクラウドネイティブに構築されており、ストレージとコンピュートは独立してスケーリングされます。つまり、ワークロードがギガバイトからペタバイトに増大しても、どちらか一方を過剰にプロビジョニングしたり、もう一方を過小評価したりすることなく、リアルタイムの配信とオフラインのトレーニングの間でリソースのバランスを取ることができます。</p>
 <h3 id="Future-Proof-Architecture" class="common-anchor-header">将来性のあるアーキテクチャ</h3><p>最も重要なことは、このアーキテクチャがお客様とともに成長するように設計されていることです。コンテキスト・エンジニアリングはまだ進化を続けている。現在、ほとんどのチームはセマンティック検索とRAGパイプラインに集中している。しかし、次の波は、複数のデータタイプを統合し、それらを横断して推論し、エージェント駆動型のワークフローをパワーアップする、より多くのことを要求するようになるだろう。</p>
 <p>MilvusとLoonを使えば、その移行に基盤を取り払う必要はない。今日のユースケースをサポートする同じスタックは、明日のユースケースにも自然に拡張できる。最初からやり直すことなく新たな機能を追加できるため、リスクやコストが軽減され、AIワークロードが複雑化してもスムーズに移行できます。</p>
 <h2 id="Your-Next-Move" class="common-anchor-header">次の一手<button data-href="#Your-Next-Move" class="anchor-icon" translate="no">
@@ -212,4 +212,4 @@ origin: >-
 <li><p><a href="https://www.linkedin.com/company/the-milvus-project/"><strong>Milvusをフォローして</strong></a>、Loonのリリースの最新情報や大規模なマルチモーダルデータの管理に関する洞察を得ましょう。</p></li>
 <li><p><a href="https://discord.com/invite/8uyFbECzPX"><strong>DiscordのZillizコミュニティに</strong></a>参加して、戦略を共有し、アーキテクチャを比較し、ベストプラクティスを形成する手助けをしましょう。</p></li>
 </ul>
-<p>今日、コンテキスト・エンジニアリングをマスターした企業が、明日のAIの展望を形作るだろう。インフラを制約にせず、AIの創造性にふさわしい基盤を構築しましょう。</p>
+<p>今日、コンテキスト・エンジニアリングをマスターした企業が、明日のAIの展望を形作るだろう。インフラを制約にすることなく、AIの創造性にふさわしい基盤を構築しましょう。</p>

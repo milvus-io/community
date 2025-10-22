@@ -13,7 +13,7 @@ cover: >-
   assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
-recommend: true
+recommend: false
 meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document embeddings'
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
@@ -26,7 +26,7 @@ canonicalUrl: >-
 <li><p><strong>Chunking ricorsivo</strong> (suddivisione gerarchica)</p></li>
 <li><p><strong>Chunking semantico</strong> (raggruppamento per argomento)</p></li>
 </ul>
-<p>Sebbene questi metodi abbiano i loro meriti, spesso non riescono ad analizzare il contesto a lungo termine. Per affrontare questa sfida, Jina AI ha creato un approccio di late chunking: incorporare prima l'intero documento e poi ritagliare i pezzi.</p>
+<p>Sebbene questi metodi abbiano i loro meriti, spesso non riescono ad analizzare il contesto a lungo termine. Per affrontare questa sfida, Jina AI ha creato un approccio di late chunking: incorporare prima l'intero documento, quindi ritagliare i pezzi.</p>
 <p>In questo articolo esploreremo il funzionamento del Late Chunking e dimostreremo come la sua combinazione con <a href="https://milvus.io/">Milvus, un</a>database vettoriale open-source ad alte prestazioni costruito per la ricerca di similarità, possa migliorare notevolmente le vostre pipeline RAG. Sia che stiate costruendo basi di conoscenza aziendali, assistenza clienti basata sull'intelligenza artificiale o applicazioni di ricerca avanzate, questa guida vi mostrerà come gestire gli embeddings in modo più efficace su scala.</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">Che cos'è il chunking tardivo?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -211,7 +211,7 @@ milvus_embedding = model.encode(<span class="hljs-string">&#x27;milvus 2.4.13&#x
 <span class="hljs-attr">traditional_chunking</span>: <span class="hljs-number">0.71859795</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>Si può notare che l'incorporazione dell'intero paragrafo per primo garantisce che ogni chunk abbia il contesto "<code translate="no">Milvus 2.4.13</code>", aumentando i punteggi di somiglianza e la qualità del recupero.</p>
-<h3 id="Testing-Late-Chunking-in-Milvus" class="common-anchor-header"><strong>Test del chunking tardivo in Milvus</strong></h3><p>Una volta generati i chunk embeddings, possiamo memorizzarli in Milvus ed eseguire le query. Il codice seguente inserisce i vettori chunk nella collezione.</p>
+<h3 id="Testing-Late-Chunking-in-Milvus" class="common-anchor-header"><strong>Test di chunking tardivo in Milvus</strong></h3><p>Una volta generati i chunk embeddings, possiamo memorizzarli in Milvus ed eseguire le query. Il codice seguente inserisce i vettori chunk nella collezione.</p>
 <h4 id="Importing-Embeddings-into-Milvus" class="common-anchor-header"><strong>Importare le incorporazioni in Milvus</strong></h4><pre><code translate="no">batch_data=[]
 <span class="hljs-keyword">for</span> i in <span class="hljs-keyword">range</span>(<span class="hljs-built_in">len</span>(chunks)):
     data = {

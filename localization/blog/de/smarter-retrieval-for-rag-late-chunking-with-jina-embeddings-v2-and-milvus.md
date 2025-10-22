@@ -11,12 +11,12 @@ cover: >-
   assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
-recommend: true
+recommend: false
 meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document embeddings'
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
 ---
-<p>Der Aufbau eines robusten RAG-Systems beginnt in der Regel mit dem <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>Chunking von</strong></a> <strong>Dokumenten</strong> <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>- dem Aufteilen</strong></a>großer Texte in handhabbare Teile für die Einbettung und das Abrufen. Gängige Strategien sind:</p>
+<p>Der Aufbau eines robusten RAG-Systems beginnt in der Regel mit dem <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>Chunking von</strong></a> <strong>Dokumenten</strong> <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>- der Aufteilung</strong></a>großer Texte in handhabbare Teile für die Einbettung und das Abrufen. Gängige Strategien sind:</p>
 <ul>
 <li><p><strong>Stücke fester Größe</strong> (z. B. alle 512 Token)</p></li>
 <li><p><strong>Chunks mit variabler Größe</strong> (z. B. an Absatz- oder Satzgrenzen)</p></li>
@@ -25,7 +25,7 @@ canonicalUrl: >-
 <li><p><strong>Semantisches Chunking</strong> (Gruppierung nach Themen)</p></li>
 </ul>
 <p>Diese Methoden haben zwar ihre Vorzüge, doch fehlt ihnen oft der weitreichende Kontext. Um dieser Herausforderung zu begegnen, hat Jina AI einen Late Chunking-Ansatz entwickelt: Zuerst wird das gesamte Dokument eingebettet, dann werden die Chunks herausgeschnitten.</p>
-<p>In diesem Artikel erfahren Sie, wie Late Chunking funktioniert und wie die Kombination mit <a href="https://milvus.io/">Milvus - einer</a>leistungsstarken Open-Source-Vektordatenbank, die für die Ähnlichkeitssuche entwickelt wurde - Ihre RAG-Pipelines drastisch verbessern kann. Ganz gleich, ob Sie Wissensdatenbanken für Unternehmen, KI-gesteuerten Kundensupport oder fortgeschrittene Suchanwendungen erstellen, dieser Exkurs zeigt Ihnen, wie Sie Einbettungen im großen Maßstab effektiver verwalten können.</p>
+<p>In diesem Artikel erfahren Sie, wie Late Chunking funktioniert und wie die Kombination mit <a href="https://milvus.io/">Milvus - einer</a>leistungsstarken Open-Source-Vektordatenbank, die für die Ähnlichkeitssuche entwickelt wurde - Ihre RAG-Pipelines drastisch verbessern kann. Ganz gleich, ob Sie unternehmensweite Wissensdatenbanken, KI-gesteuerten Kundensupport oder fortschrittliche Suchanwendungen erstellen, dieser Exkurs zeigt Ihnen, wie Sie Einbettungen im großen Maßstab effektiver verwalten können.</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">Was ist Late Chunking?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
