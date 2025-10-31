@@ -48,13 +48,13 @@ In this demo, we’ll use Langflow’s Vector Store RAG template to demonstrate 
 
 ### Prerequisites：
 
-1. Python 3.11 (or Conda)
+1.Python 3.11 (or Conda)
 
-2. uv
+2.uv
 
-3. Docker & Docker Compose
+3.Docker & Docker Compose
 
-4. OpenAI key
+4.OpenAI key
 
 
 ### Step 1. Deploy Milvus Vector Database
