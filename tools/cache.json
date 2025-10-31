@@ -205,5 +205,6 @@
   "blog/en/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md": "2025-10-22T05:36:08.079Z",
   "blog/en/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md": "2025-10-17T16:48:01.907Z",
   "blog/en/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md": "2025-10-18T03:25:30.729Z",
-  "blog/en/vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-systems-the-smart-way.md": "2025-10-20T04:01:57.537Z"
+  "blog/en/vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-systems-the-smart-way.md": "2025-10-20T04:01:57.537Z",
+  "blog/en/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md": "2025-10-31T16:46:31.189Z"
 }
