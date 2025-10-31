@@ -11,7 +11,7 @@ tags: Milvus, vector database
 meta_keywords: Langflow, Milvus, RAG, AI workflow
 meta_title: Drag, Drop, and Deploy RAG Workflows with Langflow & Milvus
 desc: Learn how to build visual RAG workflows using Langflow and Milvus. Drag, drop, and deploy context-aware AI apps in minutes—no coding required.
-origin: https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus
+origin: https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
 
 Building an AI workflow often feels harder than it should. Between writing glue code, debugging API calls, and managing data pipelines, the process can eat up hours before you even see results. [**Langflow**](https://www.langflow.org/) and [**Milvus**](https://milvus.io/) simplify this dramatically — giving you a code-light way to design, test, and deploy retrieval-augmented generation (RAG) workflows in minutes, not days.
