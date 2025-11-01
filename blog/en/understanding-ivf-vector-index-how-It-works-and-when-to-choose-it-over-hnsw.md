@@ -28,9 +28,9 @@ Think of it like organizing a massive library. If you dumped every book (vector)
 
 When a query comes in, the search happens in two steps:
 
-1.**Find the nearest clusters.** The system looks for the few buckets whose centroids are closest to the query vector—just like heading straight to the two or three library sections most likely to have your book.
+**1. Find the nearest clusters.** The system looks for the few buckets whose centroids are closest to the query vector—just like heading straight to the two or three library sections most likely to have your book.
 
-2.**Search within those clusters.** Once you’re in the right sections, you only need to look through a small set of books instead of the entire library.
+**2. Search within those clusters.** Once you’re in the right sections, you only need to look through a small set of books instead of the entire library.
 
 This approach cuts down the amount of computation by orders of magnitude. You still get highly accurate results—but much faster. 
 
