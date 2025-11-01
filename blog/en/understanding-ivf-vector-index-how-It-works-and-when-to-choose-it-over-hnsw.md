@@ -4,7 +4,7 @@ title: >
  Understanding IVF Vector Index: How It Works and When to Choose It Over HNSW
 author: Jack Li
 date: 2025-10-27
-cover: assets.zilliz.com/IVF_cover_99f0abf22f.png
+cover: assets.zilliz.com/ivf_cover_157df122bc.png
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
