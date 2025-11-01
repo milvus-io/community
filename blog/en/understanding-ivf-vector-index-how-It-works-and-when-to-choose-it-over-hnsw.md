@@ -28,9 +28,9 @@ Think of it like organizing a massive library. If you dumped every book (vector)
 
 When a query comes in, the search happens in two steps:
 
-1. **Find the nearest clusters.** The system looks for the few buckets whose centroids are closest to the query vector—just like heading straight to the two or three library sections most likely to have your book.
+1.**Find the nearest clusters.** The system looks for the few buckets whose centroids are closest to the query vector—just like heading straight to the two or three library sections most likely to have your book.
 
-2. **Search within those clusters.** Once you’re in the right sections, you only need to look through a small set of books instead of the entire library.
+2.**Search within those clusters.** Once you’re in the right sections, you only need to look through a small set of books instead of the entire library.
 
 This approach cuts down the amount of computation by orders of magnitude. You still get highly accurate results—but much faster. 
 
@@ -65,7 +65,7 @@ Think back to the library analogy: training centroids is like deciding how to gr
 
 ### Step 2: Vector Assignment
 
-Next, each vector is assigned to the cluster whose centroid it’s closest to, forming inverted lists (List\_i). Each inverted list stores the IDs and storage information of all vectors that belong to that cluster. 
+Next, each vector is assigned to the cluster whose centroid it’s closest to, forming inverted lists (List_i). Each inverted list stores the IDs and storage information of all vectors that belong to that cluster. 
 
 You can think of this step like shelving the books into their respective sections. When you’re looking for a title later, you only need to check the few sections that are most likely to have it, instead of wandering the whole library.
 
@@ -75,7 +75,7 @@ To save memory and speed up computation, vectors within each cluster can go thro
 
 - **SQ8 (Scalar Quantization):** This method quantizes each dimension of a vector into 8 bits. For a standard `float32` vector, each dimension typically takes up 4 bytes. With SQ8, it’s reduced to just 1 byte—achieving a 4:1 compression ratio while keeping the vector’s geometry largely intact.
 
-- **PQ (Product Quantization):** It ****splits a high-dimensional vector into several subspaces. For example, a 128-dimensional vector can be divided into 8 sub-vectors of 16 dimensions each. In each subspace, a small codebook (typically with 256 entries) is pre-trained, and each sub-vector is represented by an 8-bit index pointing to its nearest codebook entry. This means the original 128-D `float32` vector (which requires 512 bytes) can be represented using only 8 bytes (8 subspaces × 1 byte each), achieving a 64:1 compression ratio.
+- **PQ (Product Quantization):** It splits a high-dimensional vector into several subspaces. For example, a 128-dimensional vector can be divided into 8 sub-vectors of 16 dimensions each. In each subspace, a small codebook (typically with 256 entries) is pre-trained, and each sub-vector is represented by an 8-bit index pointing to its nearest codebook entry. This means the original 128-D `float32` vector (which requires 512 bytes) can be represented using only 8 bytes (8 subspaces × 1 byte each), achieving a 64:1 compression ratio.
 
 ## How to Use the IVF Vector Index for Search
 
@@ -125,13 +125,9 @@ Once you understand how IVF vector indexes are **built** and **searched**, the n
 
 As mentioned earlier, the parameter nlist determines the number of clusters into which the dataset is divided when building an IVF index. 
 
-- **Larger nlist** :
+- **Larger nlist**: Creates finer-grained clusters, meaning each cluster contains fewer vectors. This reduces the number of vectors scanned during search and generally results in faster queries. But building the index takes longer, and the centroid table consumes more memory.
 
-Creates finer-grained clusters, meaning each cluster contains fewer vectors. This reduces the number of vectors scanned during search and generally results in faster queries. But building the index takes longer, and the centroid table consumes more memory.
-
-- **Smaller nlist**: 
-
-Speeds up index construction and reduces memory usage, but each cluster becomes more “crowded.” Each query must scan more vectors within a cluster, which can lead to performance bottlenecks.
+- **Smaller nlist**: Speeds up index construction and reduces memory usage, but each cluster becomes more “crowded.” Each query must scan more vectors within a cluster, which can lead to performance bottlenecks.
 
 Based on these trade-offs, here’s a practical rule of thumb: 
 
