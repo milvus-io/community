@@ -5,6 +5,7 @@ title: >
 author: Jack Li
 date: 2025-10-27
 cover: assets.zilliz.com/ivf_cover_157df122bc.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

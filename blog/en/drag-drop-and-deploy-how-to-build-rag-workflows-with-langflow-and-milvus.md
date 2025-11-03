@@ -5,6 +5,7 @@ title: >
 author: Min Yin
 date: 2025-10-30
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
