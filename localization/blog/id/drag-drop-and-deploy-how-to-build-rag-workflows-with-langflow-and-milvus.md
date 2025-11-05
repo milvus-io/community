@@ -6,6 +6,7 @@ title: >-
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -159,7 +160,7 @@ conda activate langflow
     <span></span>
   </span>
 </p>
-<h3 id="Step-6-Prepare-Test-Data" class="common-anchor-header">Langkah 6. Menyiapkan Data Uji</h3><p>Catatan: Gunakan FAQ resmi untuk Milvus 2.6 sebagai data uji.</p>
+<h3 id="Step-6-Prepare-Test-Data" class="common-anchor-header">Langkah 6. Siapkan Data Uji</h3><p>Catatan: Gunakan FAQ resmi untuk Milvus 2.6 sebagai data uji.</p>
 <pre><code translate="no">https://github.com/milvus-io/milvus-docs/blob/v2.6.x/site/en/faq/product_faq.md
 <button class="copy-code-btn"></button></code></pre>
 <h3 id="Step-7-Phase-One-Testing" class="common-anchor-header">Langkah 7. Pengujian Tahap Pertama</h3><p>Unggah dataset Anda dan masukkan ke dalam Milvus. Catatan: Langflow akan mengubah teks Anda menjadi representasi vektor. Anda harus mengunggah setidaknya dua dataset, atau proses penyematan akan gagal. Ini adalah bug yang diketahui dalam implementasi node Langflow saat ini.</p>

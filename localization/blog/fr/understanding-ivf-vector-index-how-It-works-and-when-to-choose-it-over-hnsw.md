@@ -6,6 +6,7 @@ title: >-
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_cover_157df122bc.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -38,7 +39,7 @@ origin: >-
       </svg>
     </button></h2><p>Le<strong>FVI (fichier inversé)</strong> est l'un des algorithmes les plus largement utilisés pour le RNA. Il emprunte son idée principale à l'"index inversé" utilisé dans les systèmes de recherche de texte - sauf que cette fois, au lieu de mots et de documents, nous avons affaire à des vecteurs dans un espace à haute dimension.</p>
 <p>Imaginez l'organisation d'une immense bibliothèque. Si vous déposez tous les livres (vecteurs) dans une pile géante, il vous faudra une éternité pour trouver ce dont vous avez besoin. La FIV résout ce problème en commençant par <strong>regrouper</strong> tous les vecteurs en groupes, ou <em>godets</em>. Chaque groupe représente une "catégorie" de vecteurs similaires, définie par un <strong>centroïde - une</strong>sorte de résumé ou d'"étiquette" pour tout ce qui se trouve à l'intérieur de ce groupe.</p>
-<p>Lorsqu'une requête est envoyée, la recherche s'effectue en deux étapes :</p>
+<p>Lorsqu'une requête arrive, la recherche s'effectue en deux étapes :</p>
 <p><strong>1. Trouver les grappes les plus proches.</strong> Le système recherche les quelques groupes dont les centroïdes sont les plus proches du vecteur de la requête, comme s'il se dirigeait directement vers les deux ou trois sections de la bibliothèque les plus susceptibles de contenir votre livre.</p>
 <p><strong>2. Effectuez une recherche au sein de ces groupes.</strong> Une fois que vous êtes dans les bonnes sections, vous n'avez plus qu'à parcourir un petit ensemble de livres au lieu de l'ensemble de la bibliothèque.</p>
 <p>Cette approche permet de réduire la quantité de calculs de plusieurs ordres de grandeur. Vous obtenez toujours des résultats très précis, mais beaucoup plus rapidement.</p>
@@ -146,7 +147,7 @@ origin: >-
 <p>Sur la base de ces compromis, voici une règle pratique :</p>
 <p>Pour les ensembles de données à l <strong>'échelle du million</strong>, un bon point de départ est <strong>nlist ≈ √n</strong> (n est le nombre de vecteurs dans le nuage de données indexé).</p>
 <p>Par exemple, si vous avez 1 million de vecteurs, essayez nlist = 1 000. Pour les ensembles de données plus importants - des dizaines ou des centaines de millions - la plupart des bases de données vectorielles divisent les données de sorte que chaque groupe contienne environ un million de vecteurs, ce qui rend cette règle pratique.</p>
-<p>Comme nlist est fixé lors de la création de l'index, sa modification ultérieure implique la reconstruction de l'index entier. Il est donc préférable d'expérimenter dès le début. Testez plusieurs valeurs - idéalement en puissances de deux (par exemple, 1024, 2048) - pour trouver le bon équilibre entre la vitesse, la précision et la mémoire pour votre charge de travail.</p>
+<p>Comme nlist est fixé lors de la création de l'index, sa modification ultérieure implique la reconstruction de l'index entier. Il est donc préférable d'expérimenter dès le début. Testez plusieurs valeurs - idéalement en puissances de deux (par exemple, 1024, 2048) - pour trouver le juste milieu entre la vitesse, la précision et la mémoire pour votre charge de travail.</p>
 <h3 id="How-to-Tune-nprobe" class="common-anchor-header">Comment régler nprobe</h3><p>Le paramètre nprobe contrôle le nombre de clusters recherchés pendant la durée de la requête. Il affecte directement le compromis entre le rappel et la latence.</p>
 <ul>
 <li><p><strong>Un nprobe plus grand</strong>: couvre plus de grappes, ce qui entraîne un rappel plus élevé, mais aussi un temps de latence plus important. Le délai augmente généralement de façon linéaire avec le nombre de grappes recherchées.</p></li>

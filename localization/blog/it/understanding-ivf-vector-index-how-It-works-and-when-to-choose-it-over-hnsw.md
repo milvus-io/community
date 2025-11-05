@@ -6,6 +6,7 @@ title: >-
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_cover_157df122bc.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -36,7 +37,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L<strong>'IVF (Inverted File)</strong> è uno degli algoritmi più utilizzati per la RNA. Prende in prestito la sua idea di base dall'"indice invertito" utilizzato nei sistemi di recupero dei testi, solo che questa volta, invece di parole e documenti, abbiamo a che fare con vettori in uno spazio ad alta dimensione.</p>
+    </button></h2><p>L<strong>'IVF (Inverted File)</strong> è uno degli algoritmi più utilizzati per la RNA. Prende in prestito la sua idea di base dall'"indice invertito" utilizzato nei sistemi di recupero dei testi, solo che questa volta, invece di parole e documenti, abbiamo a che fare con vettori in uno spazio ad alta dimensionalità.</p>
 <p>Pensate all'organizzazione di un'enorme biblioteca. Se si scaricasse ogni libro (vettore) in un'unica pila gigante, trovare ciò che serve richiederebbe un'eternità. La FIV risolve questo problema <strong>raggruppando</strong> tutti i vettori in gruppi, o <em>bucket</em>. Ogni bucket rappresenta una "categoria" di vettori simili, definita da un <strong>centroide, una</strong>sorta di riassunto o "etichetta" per tutto ciò che si trova all'interno del cluster.</p>
 <p>Quando arriva una richiesta, la ricerca avviene in due fasi:</p>
 <p><strong>1. Trovare i cluster più vicini.</strong> Il sistema cerca i pochi cluster i cui centroidi sono più vicini al vettore della query, proprio come se ci si dirigesse direttamente verso le due o tre sezioni della biblioteca in cui è più probabile che si trovi il libro.</p>
@@ -80,10 +81,10 @@ origin: >-
 </ul>
 <h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Fase 2: Assegnazione dei vettori</h3><p>Successivamente, ogni vettore viene assegnato al cluster al cui centroide è più vicino, formando liste invertite (List_i). Ogni lista invertita memorizza gli ID e le informazioni di memorizzazione di tutti i vettori che appartengono a quel cluster.</p>
 <p>Si può pensare a questa fase come a una sistemazione dei libri nelle rispettive sezioni. Quando si cerca un titolo in un secondo momento, è sufficiente controllare le poche sezioni in cui è più probabile che sia presente, invece di girare per l'intera biblioteca.</p>
-<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Fase 3: Codifica di compressione (opzionale)</h3><p>Per risparmiare memoria e velocizzare il calcolo, i vettori di ciascun cluster possono essere sottoposti a una codifica di compressione. Esistono due approcci comuni:</p>
+<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Fase 3: Codifica di compressione (opzionale)</h3><p>Per risparmiare memoria e accelerare i calcoli, i vettori di ciascun cluster possono essere sottoposti a una codifica di compressione. Esistono due approcci comuni:</p>
 <ul>
 <li><p><strong>SQ8 (Quantizzazione scalare):</strong> Questo metodo quantizza ogni dimensione di un vettore in 8 bit. Per un vettore standard <code translate="no">float32</code>, ogni dimensione occupa in genere 4 byte. Con SQ8, viene ridotta a un solo byte, ottenendo un rapporto di compressione di 4:1 e mantenendo la geometria del vettore sostanzialmente intatta.</p></li>
-<li><p><strong>PQ (Product Quantization):</strong> Suddivide un vettore ad alta dimensione in diversi sottospazi. Ad esempio, un vettore di 128 dimensioni può essere suddiviso in 8 sottovettori di 16 dimensioni ciascuno. In ogni sottospazio viene preaddestrato un piccolo codebook (in genere con 256 voci) e ogni sottovettore è rappresentato da un indice a 8 bit che punta alla voce del codebook più vicina. Ciò significa che il vettore originale 128-D <code translate="no">float32</code> (che richiede 512 byte) può essere rappresentato utilizzando solo 8 byte (8 sottospazi × 1 byte ciascuno), ottenendo un rapporto di compressione 64:1.</p></li>
+<li><p><strong>PQ (Product Quantization):</strong> Suddivide un vettore ad alta dimensione in diversi sottospazi. Ad esempio, un vettore di 128 dimensioni può essere suddiviso in 8 sottovettori di 16 dimensioni ciascuno. In ogni sottospazio, viene preaddestrato un piccolo codebook (in genere con 256 voci) e ogni sottovettore è rappresentato da un indice a 8 bit che punta alla voce del codebook più vicina. Ciò significa che il vettore originale 128-D <code translate="no">float32</code> (che richiede 512 byte) può essere rappresentato utilizzando solo 8 byte (8 sottospazi × 1 byte ciascuno), ottenendo un rapporto di compressione 64:1.</p></li>
 </ul>
 <h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">Come utilizzare l'indice del vettore FIV per la ricerca<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -107,19 +108,19 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Fase 1: Calcolo delle distanze tra il vettore di interrogazione e tutti i centroidi</h3><p>Quando arriva un vettore di query q, il sistema determina innanzitutto a quali cluster è più probabile che appartenga. Quindi, calcola la distanza tra q e ogni centroide nella tabella dei centroidi C, solitamente utilizzando la distanza euclidea o il prodotto interno come metrica di somiglianza. I centroidi vengono quindi ordinati in base alla loro distanza dal vettore dell'interrogazione, producendo un elenco ordinato dal più vicino al più lontano.</p>
+<h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Fase 1: Calcolo delle distanze tra il vettore di interrogazione e tutti i centroidi</h3><p>Quando arriva un vettore di query q, il sistema determina innanzitutto a quali cluster è più probabile che appartenga. Quindi, calcola la distanza tra q e ogni centroide nella tabella dei centroidi C, solitamente utilizzando la distanza euclidea o il prodotto interno come metrica di similarità. I centroidi vengono quindi ordinati in base alla loro distanza dal vettore dell'interrogazione, producendo un elenco ordinato dal più vicino al più lontano.</p>
 <p>Ad esempio, come mostrato nell'illustrazione, l'ordine è: C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5.</p>
-<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Passo 2: Selezionare i cluster nprobe più vicini</h3><p>Per evitare la scansione dell'intero set di dati, IVF cerca solo i cluster <em>nprobe</em> più vicini al vettore di interrogazione.</p>
+<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Fase 2: Selezione dei cluster nprobe più vicini</h3><p>Per evitare la scansione dell'intero set di dati, IVF cerca solo i cluster <em>nprobe</em> più vicini al vettore di interrogazione.</p>
 <p>Il parametro nprobe definisce l'ambito di ricerca e influisce direttamente sull'equilibrio tra velocità e richiamo:</p>
 <ul>
 <li><p>Un nprobe più piccolo porta a query più veloci ma può ridurre il richiamo.</p></li>
 <li><p>Un nprobe più grande migliora il richiamo ma aumenta la latenza.</p></li>
 </ul>
-<p>Nei sistemi reali, nprobe può essere regolato dinamicamente in base al budget di latenza o ai requisiti di accuratezza. Nell'esempio precedente, se nprobe = 2, il sistema cercherà solo all'interno del cluster 2 e del cluster 4, i due cluster più vicini.</p>
+<p>Nei sistemi reali, nprobe può essere regolato dinamicamente in base al budget di latenza o ai requisiti di precisione. Nell'esempio precedente, se nprobe = 2, il sistema cercherà solo all'interno del cluster 2 e del cluster 4, i due cluster più vicini.</p>
 <h3 id="Step-3-Search-the-nearest-neighbor-in-the-selected-clusters" class="common-anchor-header">Fase 3: Ricerca del vicino più prossimo nei cluster selezionati</h3><p>Una volta selezionati i cluster candidati, il sistema confronta il vettore query q con i vettori memorizzati al loro interno. Esistono due modalità principali di confronto:</p>
 <ul>
 <li><p><strong>Confronto esatto (IVF_FLAT)</strong>: Il sistema recupera i vettori originali dai cluster selezionati e calcola direttamente le loro distanze da q, restituendo i risultati più accurati.</p></li>
-<li><p><strong>Confronto approssimativo (IVF_PQ / IVF_SQ8)</strong>: Quando si utilizza la compressione PQ o SQ8, il sistema impiega un <strong>metodo di tabella di ricerca</strong> per accelerare il calcolo della distanza. Prima di iniziare la ricerca, calcola le distanze tra il vettore di interrogazione e ogni voce del codebook. Poi, per ogni vettore, può semplicemente "cercare e sommare" queste distanze precompilate per stimare la somiglianza.</p></li>
+<li><p><strong>Confronto approssimativo (IVF_PQ / IVF_SQ8)</strong>: Quando si utilizza la compressione PQ o SQ8, il sistema impiega un <strong>metodo di tabella di ricerca</strong> per accelerare il calcolo della distanza. Prima di iniziare la ricerca, calcola le distanze tra il vettore di interrogazione e ogni voce del codebook. Poi, per ogni vettore, può semplicemente "cercare e sommare" queste distanze precalcolate per stimare la somiglianza.</p></li>
 </ul>
 <p>Infine, i risultati candidati di tutti i cluster ricercati vengono uniti e riordinati, producendo i vettori Top-k più simili come output finale.</p>
 <h2 id="IVF-In-Practice" class="common-anchor-header">La FIV in pratica<button data-href="#IVF-In-Practice" class="anchor-icon" translate="no">
@@ -152,7 +153,7 @@ origin: >-
 <li><p><strong>Un nprobe più grande</strong>: Copre un maggior numero di cluster, il che comporta un richiamo più elevato, ma anche una maggiore latenza. Il ritardo aumenta generalmente in modo lineare con il numero di cluster cercati.</p></li>
 <li><p><strong>Nprobe più piccolo</strong>: Esamina un numero inferiore di cluster, con conseguente riduzione della latenza e velocità delle query. Tuttavia, potrebbe mancare qualche vero vicino, riducendo leggermente il richiamo e l'accuratezza dei risultati.</p></li>
 </ul>
-<p>Se l'applicazione non è estremamente sensibile alla latenza, è una buona idea sperimentare nprobe in modo dinamico, ad esempio provando valori da 1 a 16 per osservare come cambiano il richiamo e la latenza. L'obiettivo è trovare il punto in cui il richiamo è accettabile e la latenza rimane all'interno dell'intervallo desiderato.</p>
+<p>Se l'applicazione non è estremamente sensibile alla latenza, è una buona idea sperimentare nprobe in modo dinamico, ad esempio provando valori da 1 a 16 per osservare come cambiano il richiamo e la latenza. L'obiettivo è quello di trovare il punto in cui il richiamo è accettabile e la latenza rimane all'interno dell'intervallo desiderato.</p>
 <p>Poiché nprobe è un parametro di ricerca runtime, può essere regolato al volo senza richiedere la ricostruzione dell'indice. Ciò consente una messa a punto rapida, a basso costo e altamente flessibile su diversi carichi di lavoro o scenari di query.</p>
 <h3 id="Common-Variants-of-the-IVF-Index" class="common-anchor-header">Varianti comuni dell'indice FIV</h3><p>Quando si costruisce un indice IVF, è necessario decidere se utilizzare la codifica di compressione per i vettori in ogni cluster e, in caso affermativo, quale metodo utilizzare.</p>
 <p>Ne derivano tre varianti comuni dell'indice FIV:</p>
@@ -191,7 +192,7 @@ origin: >-
 <tr><td><strong>Utilizzo della memoria</strong></td><td>Relativamente basso</td><td>Relativamente alto</td></tr>
 <tr><td><strong>Velocità di creazione dell'indice</strong></td><td>Veloce (richiede solo il clustering)</td><td>Lenta (richiede la costruzione di un grafo multistrato)</td></tr>
 <tr><td><strong>Velocità di interrogazione (senza filtro)</strong></td><td>Veloce, dipende da <em>nprobe</em></td><td>Estremamente veloce, ma con complessità logaritmica</td></tr>
-<tr><td><strong>Velocità di interrogazione (con filtraggio)</strong></td><td>Stabile - esegue un filtraggio grossolano a livello del centroide per restringere i candidati</td><td>Instabile - soprattutto quando il rapporto di filtraggio è elevato (90%+), il grafo diventa frammentato e può degradare fino a una traversata quasi completa del grafo, persino più lenta della ricerca bruta.</td></tr>
+<tr><td><strong>Velocità di interrogazione (con filtraggio)</strong></td><td>Stabile - esegue un filtraggio grossolano a livello di centroide per restringere i candidati</td><td>Instabile - soprattutto quando il rapporto di filtraggio è elevato (90%+), il grafo diventa frammentato e può degradare fino a una traversata quasi completa del grafo, persino più lenta della ricerca bruta.</td></tr>
 <tr><td><strong>Tasso di richiamo</strong></td><td>Dipende dall'uso della compressione; senza quantizzazione, il richiamo può raggiungere il <strong>95%+.</strong></td><td>Di solito è più alto, intorno al <strong>98%+</strong></td></tr>
 <tr><td><strong>Parametri chiave</strong></td><td><em>nlist</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_construction</em>, <em>ef_search</em></td></tr>
 <tr><td><strong>Casi d'uso</strong></td><td>Quando la memoria è limitata, ma sono richieste elevate prestazioni di interrogazione e richiamo; adatto per ricerche con condizioni di filtraggio.</td><td>Quando la memoria è sufficiente e l'obiettivo è un richiamo e prestazioni di interrogazione estremamente elevati, ma il filtraggio non è necessario o il rapporto di filtraggio è basso.</td></tr>

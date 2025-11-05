@@ -6,6 +6,7 @@ title: >-
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -19,9 +20,9 @@ origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
 <p>L'élaboration d'un flux de travail d'IA semble souvent plus difficile qu'elle ne devrait l'être. Entre l'écriture du code glue, le débogage des appels API et la gestion des pipelines de données, le processus peut prendre des heures avant même que vous ne voyiez des résultats. <a href="https://www.langflow.org/"><strong>Langflow</strong></a> et <a href="https://milvus.io/"><strong>Milvus</strong></a> simplifient considérablement ce processus en vous permettant de concevoir, de tester et de déployer des workflows de génération augmentée par récupération (RAG) en quelques minutes et non en quelques jours.</p>
-<p><strong>Langflow</strong> offre une interface propre, basée sur le principe du glisser-déposer, qui ressemble plus à un croquis sur un tableau blanc qu'à du codage. Vous pouvez relier visuellement des modèles linguistiques, des sources de données et des outils externes pour définir la logique de votre flux de travail, le tout sans toucher à une ligne de code standard.</p>
+<p><strong>Langflow</strong> offre une interface propre, basée sur le principe du glisser-déposer, qui ressemble plus à un croquis sur un tableau blanc qu'à du codage. Vous pouvez connecter visuellement des modèles linguistiques, des sources de données et des outils externes pour définir la logique de votre flux de travail, le tout sans toucher à une ligne de code standard.</p>
 <p>Associés à <strong>Milvus</strong>, la base de données vectorielle open-source qui confère aux LLM une mémoire à long terme et une compréhension contextuelle, les deux éléments forment un environnement complet pour un RAG de niveau production. Milvus stocke et récupère efficacement les embeddings à partir de votre entreprise ou de données spécifiques à un domaine, ce qui permet aux LLM de générer des réponses fondées, précises et contextuelles.</p>
-<p>Dans ce guide, nous allons voir comment combiner Langflow et Milvus pour construire un flux de travail RAG avancé, le tout grâce à quelques glisser-déposer et clics.</p>
+<p>Dans ce guide, nous allons voir comment combiner Langflow et Milvus pour construire un flux de travail RAG avancé, le tout en quelques glisser-déposer et clics.</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">Qu'est-ce que Langflow ?<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

@@ -4,6 +4,7 @@ title: ドラッグ、ドロップ、デプロイ：LangflowとmilvusでRAGワ�
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -16,7 +17,7 @@ origin: >-
 ---
 <p>AIワークフローの構築は、必要以上に難しく感じることが多い。グルーコードの記述、APIコールのデバッグ、データパイプラインの管理など、そのプロセスは結果が出るまでに何時間も費やすことになります。<a href="https://www.langflow.org/"><strong>Langflowと</strong></a> <a href="https://milvus.io/"><strong>Milvusは</strong></a>、これを劇的に簡素化します。コードライトな方法で、数日ではなく数分で検索支援生成（RAG）ワークフローを設計、テスト、導入することができます。</p>
 <p><strong>Langflowは</strong>、コーディングというよりもホワイトボードにアイデアをスケッチするような感覚で、ドラッグ＆ドロップのクリーンなインターフェイスを提供します。言語モデル、データソース、外部ツールを視覚的に接続し、ワークフローロジックを定義することができます。</p>
-<p>LLMに長期記憶と文脈理解を与えるオープンソースのベクトル・データベースである<strong>Milvusと</strong>組み合わせることで、この2つはプロダクション・グレードのRAGのための完全な環境を形成します。Milvusは、企業やドメイン固有のデータから埋め込みを効率的に保存・取得し、LLMが根拠があり、正確で、コンテキストを意識した回答を生成できるようにします。</p>
+<p>LLMに長期記憶と文脈理解を与えるオープンソースのベクトル・データベースである<strong>Milvusと</strong>組み合わせることで、この2つはプロダクション・グレードのRAGのための完全な環境を形成します。Milvusは、企業やドメイン固有のデータからの埋め込みを効率的に保存・取得し、LLMが根拠があり、正確で、コンテキストを意識した回答を生成できるようにします。</p>
 <p>このガイドでは、LangflowとMilvusを組み合わせて高度なRAGワークフローを構築する方法を説明します。</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">Langflowとは？<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -35,7 +36,7 @@ origin: >-
       </svg>
     </button></h2><p>RAGのデモを見る前に、Langflowとは何か、何ができるかを学びましょう。</p>
 <p>LangflowはオープンソースのPythonベースのフレームワークで、AIアプリケーションの構築と実験を容易にします。エージェントやモデル・コンテキスト・プロトコル（MCP）などの主要なAI機能をサポートしており、開発者にも非開発者にも、インテリジェント・システムを作成するための柔軟な基盤を提供します。</p>
-<p>Langflowの中核はビジュアル・エディタです。様々なリソースをドラッグ、ドロップ、接続することで、モデル、ツール、データソースを組み合わせた完全なアプリケーションを設計することができます。ワークフローをエクスポートすると、Langflow は自動的に<code translate="no">FLOW_NAME.json</code> という名前のファイルをローカル マシンに生成します。このファイルにはフローを記述するすべてのノード、エッジ、メタデータが記録されるため、チーム間でプロジェクトを簡単にバージョン管理、共有、再現することができます。</p>
+<p>Langflowの中核はビジュアル・エディタです。様々なリソースをドラッグ、ドロップ、接続することで、モデル、ツール、データソースを組み合わせた完全なアプリケーションを設計することができます。ワークフローをエクスポートすると、Langflow は自動的に<code translate="no">FLOW_NAME.json</code> という名前のファイルをローカル マシンに生成します。このファイルには、フローを記述するすべてのノード、エッジ、メタデータが記録されるため、チーム間でプロジェクトを簡単にバージョン管理、共有、再現することができます。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Langflow_s_visual_editor_cd553ad4ad.png" alt="" class="doc-image" id="" />
@@ -60,7 +61,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Langflowのアーキテクチャをベースに、Milvusはエンベッディングを管理し、プライベートな企業データやドメイン固有のナレッジを取得するベクターデータベースとして機能します。</p>
-<p>このデモでは、LangflowのベクターストアRAGテンプレートを使用して、Milvusを統合し、ローカルデータからベクターインデックスを構築する方法をデモします。</p>
+<p>このデモでは、LangflowのベクターストアRAGテンプレートを使用して、Milvusを統合し、ローカルデータからベクターインデックスを構築する方法を実演します。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/data_processing_flow_289a9376c9.webp" alt="" class="doc-image" id="" />
@@ -212,6 +213,6 @@ conda activate langflow
         ></path>
       </svg>
     </button></h2><p>AIワークフローの構築は複雑である必要はありません。Langflow + Milvusは、高速で、視覚的で、コードが軽く、エンジニアリングの労力を必要とせずにRAGを強化するシンプルな方法を提供します。</p>
-<p>Langflowのドラッグアンドドロップ・インターフェイスは、AIシステムがどのように機能するかを明確かつインタラクティブに示す必要がある教育、ワークショップ、ライブデモに適しています。直感的なワークフロー設計とエンタープライズグレードのベクトル検索を統合したいチームにとって、LangflowのシンプルさとMilvusの高性能検索を組み合わせることで、柔軟性とパワーの両方を実現できます。</p>
+<p>Langflowのドラッグアンドドロップ・インターフェイスは、AIシステムがどのように機能するかを明確かつインタラクティブに示す必要がある教育、ワークショップ、ライブデモに適しています。直感的なワークフロー設計とエンタープライズグレードのベクトル検索を統合したいチームには、LangflowのシンプルさとMilvusの高性能検索を組み合わせることで、柔軟性とパワーの両方を実現します。</p>
 <p>今すぐ<a href="https://milvus.io/">Milvusで</a>スマートなRAGワークフローを構築してください。</p>
 <p>ご質問がある場合、または機能について詳しく知りたい場合は、Discordチャンネルにご参加ください。私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察、ガイダンス、質問への回答を得ることもできます。</p>

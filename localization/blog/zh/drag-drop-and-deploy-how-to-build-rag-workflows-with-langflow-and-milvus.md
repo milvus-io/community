@@ -4,6 +4,7 @@ title: 拖放和部署：如何使用 Langflow 和 Milvus 构建 RAG 工作流
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -13,7 +14,7 @@ desc: 了解如何使用 Langflow 和 Milvus 构建可视化 RAG 工作流。在
 origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
-<p>构建人工智能工作流程往往会让人感觉困难重重。在编写胶水代码、调试 API 调用和管理数据管道之间，这个过程可能要耗费数小时才能看到结果。<a href="https://www.langflow.org/"><strong>Langflow</strong></a>和<a href="https://milvus.io/"><strong>Milvus</strong></a>则大大简化了这一过程--为您提供了一种轻代码方式，让您可以在几分钟内而不是几天内设计、测试和部署检索增强生成（RAG）工作流。</p>
+<p>构建人工智能工作流程往往让人感觉难上加难。在编写胶水代码、调试 API 调用和管理数据管道之间，这个过程可能要耗费数小时才能看到结果。<a href="https://www.langflow.org/"><strong>Langflow</strong></a>和<a href="https://milvus.io/"><strong>Milvus</strong></a>则大大简化了这一过程--为您提供了一种轻代码方式，让您可以在几分钟内而不是几天内设计、测试和部署检索增强生成（RAG）工作流。</p>
 <p><strong>Langflow</strong>提供了一个简洁的拖放界面，感觉更像是在白板上勾画想法，而不是编码。您可以直观地将语言模型、数据源和外部工具连接起来，定义工作流程逻辑，而无需接触任何模板代码。</p>
 <p><strong>Milvus</strong> 是一个开源向量数据库，可为 LLMs 提供长期记忆和上下文理解能力，与<strong>Milvus</strong> 搭配使用，二者构成了生产级 RAG 的完整环境。Milvus 可以高效地存储和检索企业数据或特定领域数据中的 Embeddings，让 LLMs 生成有依据、准确和上下文感知的答案。</p>
 <p>在本指南中，我们将介绍如何结合 Langflow 和 Milvus 来构建高级 RAG 工作流程--所有这一切都只需通过几次拖放和点击即可完成。</p>
@@ -42,7 +43,7 @@ origin: >-
   </span>
 </p>
 <p>在幕后，一个基于 Python 的运行时引擎会执行流程。它协调 LLMs、工具、检索模块和路由逻辑，管理数据流、状态和错误处理，确保从开始到结束都能顺利执行。</p>
-<p>Langflow 还包含一个丰富的组件库，其中有用于流行的 LLMs 和向量数据库（包括<a href="https://milvus.io/">Milvus</a>）的预制适配器。您还可以为专门的用例创建自定义 Python 组件，从而进一步扩展这些组件。在测试和优化方面，Langflow 提供了分步执行、用于快速测试的 Playground 以及与 LangSmith 和 Langfuse 的集成，用于监控、调试和端到端重放工作流。</p>
+<p>Langflow 还包含一个丰富的组件库，其中有用于流行的 LLMs 和向量数据库（包括<a href="https://milvus.io/">Milvus</a>）的预置适配器。您还可以为专门的用例创建自定义 Python 组件，从而进一步扩展这些组件。在测试和优化方面，Langflow 提供了逐步执行功能、用于快速测试的 Playground 以及与 LangSmith 和 Langfuse 的集成，用于监控、调试和端到端重放工作流。</p>
 <h2 id="Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="common-anchor-header">实践演示：如何使用 Langflow 和 Milvus 构建 RAG 工作流<button data-href="#Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

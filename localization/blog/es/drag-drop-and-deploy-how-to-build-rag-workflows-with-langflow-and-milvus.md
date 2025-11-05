@@ -6,6 +6,7 @@ title: >-
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -64,7 +65,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Basándose en la arquitectura de Langflow, Milvus puede servir como base de datos vectorial que gestiona las incrustaciones y recupera datos privados de la empresa o conocimientos específicos del dominio.</p>
-<p>En esta demostración, utilizaremos la plantilla Vector Store RAG de Langflow para demostrar cómo integrar Milvus y construir un índice vectorial a partir de datos locales, permitiendo una respuesta a preguntas eficiente y mejorada por el contexto.</p>
+<p>En esta demostración, utilizaremos la plantilla Vector Store RAG de Langflow para mostrar cómo integrar Milvus y construir un índice vectorial a partir de datos locales, permitiendo una respuesta a preguntas eficiente y mejorada por el contexto.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/data_processing_flow_289a9376c9.webp" alt="" class="doc-image" id="" />

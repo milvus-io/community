@@ -6,6 +6,7 @@ title: >-
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_cover_157df122bc.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -64,7 +65,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Etapa 1: Agrupamento K-means</h3><p>Em primeiro lugar, execute o agrupamento K-means no conjunto de dados X para dividir o espaço vetorial de alta dimensão em n grupos de listas. Cada cluster é representado por um centróide, que é armazenado na tabela de centróides C. O número de centróides, nlist, é um hiperparâmetro chave que determina o grau de precisão do agrupamento.</p>
+<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Etapa 1: Agrupamento K-means</h3><p>Em primeiro lugar, execute o agrupamento K-means no conjunto de dados X para dividir o espaço vetorial de elevada dimensão em n grupos de listas. Cada cluster é representado por um centróide, que é armazenado na tabela de centróides C. O número de centróides, nlist, é um hiperparâmetro chave que determina o grau de precisão do agrupamento.</p>
 <p>Eis como o k-means funciona nos bastidores:</p>
 <ul>
 <li><p><strong>Inicialização:</strong> Selecionar aleatoriamente os vectores <em>nlist</em> como centróides iniciais.</p></li>
@@ -109,7 +110,7 @@ origin: >-
 </p>
 <h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Passo 1: Calcular as distâncias do vetor de consulta a todos os centróides</h3><p>Quando chega um vetor de consulta q, o sistema começa por determinar a que clusters é mais provável que pertença. Depois, calcula a distância entre q e cada centróide na tabela de centróides C - normalmente utilizando a distância euclidiana ou o produto interno como métrica de semelhança. Os centróides são então ordenados pela sua distância ao vetor de consulta, produzindo uma lista ordenada do mais próximo para o mais distante.</p>
 <p>Por exemplo, como mostrado na ilustração, a ordem é: C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5.</p>
-<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Etapa 2: selecionar os clusters nprobe mais próximos</h3><p>Para evitar a varredura de todo o conjunto de dados, o IVF pesquisa apenas dentro dos <em>nagrupamentos de sonda</em> superiores que estão mais próximos do vetor de consulta.</p>
+<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Etapa 2: selecionar os clusters nprobe mais próximos</h3><p>Para evitar a varredura de todo o conjunto de dados, o IVF pesquisa apenas dentro dos principais <em>nagrupamentos de sonda</em> que estão mais próximos do vetor de consulta.</p>
 <p>O parâmetro nprobe define o âmbito da pesquisa e afecta diretamente o equilíbrio entre a velocidade e a recuperação:</p>
 <ul>
 <li><p>Um nprobe mais pequeno conduz a consultas mais rápidas, mas pode reduzir a recuperação.</p></li>
@@ -137,7 +138,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Depois de entender como os índices vetoriais IVF são <strong>criados</strong> e <strong>pesquisados</strong>, a próxima etapa é aplicá-los em cargas de trabalho reais. Na prática, muitas vezes é necessário equilibrar <strong>desempenho</strong>, <strong>precisão</strong> e <strong>uso de memória</strong>. Abaixo estão algumas diretrizes práticas extraídas da experiência de engenharia.</p>
+    </button></h2><p>Depois de entender como os índices vetoriais IVF são <strong>criados</strong> e <strong>pesquisados</strong>, a próxima etapa é aplicá-los a cargas de trabalho reais. Na prática, muitas vezes é necessário equilibrar <strong>desempenho</strong>, <strong>precisão</strong> e <strong>uso de memória</strong>. Abaixo estão algumas diretrizes práticas extraídas da experiência de engenharia.</p>
 <h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">Como escolher a nlist correta</h3><p>Como mencionado anteriormente, o parâmetro nlist determina o número de clusters em que o conjunto de dados é dividido ao criar um índice IVF.</p>
 <ul>
 <li><p><strong>Uma lista parcial maior</strong>: Cria clusters mais refinados, o que significa que cada cluster contém menos vetores. Isto reduz o número de vectores analisados durante a pesquisa e geralmente resulta em consultas mais rápidas. Mas a criação do índice leva mais tempo e a tabela de centroides consome mais memória.</p></li>
@@ -149,7 +150,7 @@ origin: >-
 <p>Como a nlist é fixada na criação do índice, alterá-la posteriormente significa reconstruir todo o índice. Portanto, é melhor fazer experiências logo no início. Teste vários valores - idealmente em potências de dois (por exemplo, 1024, 2048) - para encontrar o ponto ideal que equilibre velocidade, precisão e memória para sua carga de trabalho.</p>
 <h3 id="How-to-Tune-nprobe" class="common-anchor-header">Como ajustar o nprobe</h3><p>O parâmetro nprobe controla o número de clusters pesquisados durante o tempo de consulta. Ele afeta diretamente o equilíbrio entre a recuperação e a latência.</p>
 <ul>
-<li><p><strong>Maior nprobe</strong>: Abrange mais clusters, levando a uma maior recuperação, mas também a uma maior latência. O atraso geralmente aumenta linearmente com o número de clusters pesquisados.</p></li>
+<li><p><strong>Maior nprobe</strong>: Cobre mais clusters, levando a uma maior recuperação, mas também a uma maior latência. O atraso geralmente aumenta linearmente com o número de clusters pesquisados.</p></li>
 <li><p><strong>Nprobe mais pequeno</strong>: Pesquisa menos clusters, resultando em menor latência e consultas mais rápidas. No entanto, pode falhar alguns vizinhos mais próximos verdadeiros, diminuindo ligeiramente a recuperação e a precisão dos resultados.</p></li>
 </ul>
 <p>Se a sua aplicação não for extremamente sensível à latência, é uma boa ideia experimentar o nprobe dinamicamente - por exemplo, testando valores de 1 a 16 para observar como a recuperação e a latência mudam. O objetivo é encontrar o ponto ideal em que a recuperação seja aceitável e a latência permaneça dentro do intervalo desejado.</p>
@@ -162,7 +163,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td><strong>IVF_FLAT</strong></td><td>Armazena vectores brutos em cada cluster sem compressão. Oferece a maior precisão, mas também consome mais memória.</td><td>Ideal para conjuntos de dados de média escala (até centenas de milhões de vectores) em que é necessária uma elevada recuperação (95%+).</td></tr>
-<tr><td><strong>IVF_PQ</strong></td><td>Aplica a Quantização do produto (PQ) para comprimir vectores dentro de clusters. Ao ajustar o rácio de compressão, a utilização de memória pode ser significativamente reduzida.</td><td>Adequado para pesquisa de vectores em grande escala (centenas de milhões ou mais) onde é aceitável alguma perda de precisão. Com um rácio de compressão de 64:1, a recuperação é tipicamente de cerca de 70%, mas pode atingir 90% ou mais ao reduzir o rácio de compressão.</td></tr>
+<tr><td><strong>IVF_PQ</strong></td><td>Aplica a Quantização de Produtos (PQ) para comprimir vectores dentro de clusters. Ao ajustar o rácio de compressão, a utilização de memória pode ser significativamente reduzida.</td><td>Adequado para pesquisa de vectores em grande escala (centenas de milhões ou mais) onde é aceitável alguma perda de precisão. Com um rácio de compressão de 64:1, a recuperação é tipicamente de cerca de 70%, mas pode atingir 90% ou mais ao reduzir o rácio de compressão.</td></tr>
 <tr><td><strong>IVF_SQ8</strong></td><td>Utiliza a Quantização escalar (SQ8) para quantizar vectores. A utilização de memória situa-se entre IVF_FLAT e IVF_PQ.</td><td>Ideal para pesquisa de vectores em grande escala, onde é necessário manter uma recuperação relativamente elevada (90%+) enquanto se melhora a eficiência.</td></tr>
 </tbody>
 </table>
@@ -189,7 +190,7 @@ origin: >-
 <tbody>
 <tr><td><strong>Algoritmo Conceito</strong></td><td>Agrupamento e classificação</td><td>Navegação gráfica multi-camada</td></tr>
 <tr><td><strong>Utilização de memória</strong></td><td>Relativamente baixa</td><td>Relativamente alta</td></tr>
-<tr><td><strong>Velocidade de construção do índice</strong></td><td>Rápida (apenas requer clustering)</td><td>Lenta (necessita de construção de gráficos multi-camadas)</td></tr>
+<tr><td><strong>Velocidade de construção do índice</strong></td><td>Rápida (requer apenas clustering)</td><td>Lenta (necessita de construção de gráficos multi-camadas)</td></tr>
 <tr><td><strong>Velocidade de consulta (sem filtragem)</strong></td><td>Rápida, depende do <em>nprobe</em></td><td>Extremamente rápida, mas com complexidade logarítmica</td></tr>
 <tr><td><strong>Velocidade da consulta (com filtragem)</strong></td><td>Estável - efectua uma filtragem grosseira ao nível do centróide para reduzir os candidatos</td><td>Instável - especialmente quando o rácio de filtragem é elevado (90%+), o grafo fica fragmentado e pode degradar-se para uma travessia quase total do grafo, ainda mais lenta do que a pesquisa de força bruta</td></tr>
 <tr><td><strong>Taxa de recuperação</strong></td><td>Depende da utilização de compressão; sem quantização, a recuperação pode atingir <strong>95%+</strong></td><td>Normalmente mais alta, cerca de <strong>98%+</strong></td></tr>
@@ -221,6 +222,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para escolher o índice certo, tudo se resume ao seu caso de utilização específico. Se estiver a trabalhar com conjuntos de dados de grande escala ou precisar de suportar pesquisas filtradas, o IVF pode ser a melhor opção. Em comparação com índices baseados em gráficos, como o HNSW, o IVF oferece compilações de índices mais rápidas, menor uso de memória e um forte equilíbrio entre velocidade e precisão.</p>
+    </button></h2><p>Para escolher o índice certo, tudo se resume ao seu caso de utilização específico. Se estiver a trabalhar com conjuntos de dados em grande escala ou precisar de suportar pesquisas filtradas, o IVF pode ser a melhor opção. Em comparação com índices baseados em gráficos, como o HNSW, o IVF oferece compilações de índices mais rápidas, menor uso de memória e um forte equilíbrio entre velocidade e precisão.</p>
 <p><a href="https://milvus.io/">Milvus</a>, o banco de dados vetorial de código aberto mais popular, fornece suporte completo para toda a família IVF, incluindo IVF_FLAT, IVF_PQ e IVF_SQ8. Pode experimentar facilmente estes tipos de índices e encontrar a configuração que melhor se adapta às suas necessidades de desempenho e memória. Para obter uma lista completa dos índices que o Milvus suporta, consulte esta <a href="https://milvus.io/docs/index-explained.md">página do documento Milvus Index</a>.</p>
 <p>Se estiver a construir pesquisa de imagens, sistemas de recomendação ou bases de conhecimento RAG, experimente a indexação IVF no Milvus - e veja como a pesquisa vetorial eficiente e em grande escala se sente em ação.</p>

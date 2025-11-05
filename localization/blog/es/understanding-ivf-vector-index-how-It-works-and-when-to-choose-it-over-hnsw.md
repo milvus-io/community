@@ -6,6 +6,7 @@ title: >-
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_cover_157df122bc.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -79,7 +80,7 @@ origin: >-
 </ul>
 <h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Paso 2: Asignación de vectores</h3><p>A continuación, cada vector se asigna al cluster cuyo centroide está más próximo, formando listas invertidas (Lista_i). Cada lista invertida almacena los ID y la información de almacenamiento de todos los vectores que pertenecen a ese cluster.</p>
 <p>Este paso es similar a la clasificación de los libros en sus respectivas secciones. Cuando busque un título más adelante, sólo tendrá que comprobar las pocas secciones que tienen más probabilidades de tenerlo, en lugar de recorrer toda la biblioteca.</p>
-<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Paso 3: Codificación de compresión (opcional)</h3><p>Para ahorrar memoria y acelerar el cálculo, los vectores de cada clúster pueden someterse a una codificación de compresión. Existen dos enfoques comunes:</p>
+<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Paso 3: Codificación de compresión (opcional)</h3><p>Para ahorrar memoria y acelerar el cálculo, los vectores de cada agrupación pueden someterse a una codificación de compresión. Existen dos enfoques comunes:</p>
 <ul>
 <li><p><strong>SQ8 (Cuantización escalar):</strong> Este método cuantiza cada dimensión de un vector en 8 bits. Para un vector estándar de <code translate="no">float32</code>, cada dimensión suele ocupar 4 bytes. Con SQ8, se reduce a sólo 1 byte, con lo que se consigue una relación de compresión de 4:1 y se mantiene prácticamente intacta la geometría del vector.</p></li>
 <li><p><strong>PQ (cuantificación del producto):</strong> Divide un vector de alta dimensión en varios subespacios. Por ejemplo, un vector de 128 dimensiones puede dividirse en 8 subvectores de 16 dimensiones cada uno. En cada subespacio, se preentrena un pequeño libro de códigos (normalmente con 256 entradas) y cada subvector se representa mediante un índice de 8 bits que apunta a la entrada del libro de códigos más cercana. Esto significa que el vector original de 128-D <code translate="no">float32</code> (que requiere 512 bytes) puede representarse utilizando sólo 8 bytes (8 subespacios × 1 byte cada uno), con lo que se consigue una relación de compresión de 64:1.</p></li>
@@ -197,7 +198,7 @@ origin: >-
 </tbody>
 </table>
 <p>En las aplicaciones del mundo real, es muy común incluir condiciones de filtrado; por ejemplo, "buscar sólo vectores de un usuario específico" o "limitar los resultados a un determinado intervalo de tiempo". Debido a las diferencias en sus algoritmos subyacentes, IVF suele gestionar las búsquedas filtradas de forma más eficiente que HNSW.</p>
-<p>La fuerza de IVF reside en su proceso de filtrado a dos niveles. En primer lugar, puede realizar un filtro de grano grueso a nivel de centroide (conglomerado) para reducir rápidamente el conjunto de candidatos y, a continuación, realizar cálculos de distancia de grano fino dentro de los conglomerados seleccionados. De este modo se mantiene un rendimiento estable y predecible, incluso cuando se filtra una gran parte de los datos.</p>
+<p>La fuerza de IVF reside en su proceso de filtrado a dos niveles. En primer lugar, puede realizar un filtro de grano grueso a nivel de centroide (conglomerado) para reducir rápidamente el conjunto de candidatos y, a continuación, realizar cálculos de distancia de grano fino dentro de los conglomerados seleccionados. Esto mantiene un rendimiento estable y predecible, incluso cuando se filtra una gran parte de los datos.</p>
 <p>En cambio, HNSW se basa en el recorrido de grafos. Debido a su estructura, no puede aprovechar directamente las condiciones de filtrado durante el recorrido. Cuando la proporción de filtrado es baja, esto no causa grandes problemas. Sin embargo, cuando la proporción de filtrado es alta (por ejemplo, se filtra más del 90% de los datos), el grafo restante suele fragmentarse, formando muchos "nodos aislados". En tales casos, la búsqueda puede degradarse hasta convertirse en un recorrido casi completo del grafo, a veces incluso peor que una búsqueda por fuerza bruta.</p>
 <p>En la práctica, los índices IVF ya están impulsando muchos casos de uso de gran impacto en distintos ámbitos:</p>
 <ul>
@@ -220,6 +221,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para elegir el índice adecuado, todo se reduce a su caso de uso específico. Si trabaja con conjuntos de datos a gran escala o necesita realizar búsquedas filtradas, IVF puede ser la mejor opción. En comparación con los índices basados en gráficos como HNSW, IVF ofrece una construcción de índices más rápida, un menor uso de memoria y un sólido equilibrio entre velocidad y precisión.</p>
+    </button></h2><p>Para elegir el índice adecuado, todo se reduce a su caso de uso específico. Si trabaja con conjuntos de datos a gran escala o necesita realizar búsquedas filtradas, IVF puede ser la mejor opción. En comparación con los índices basados en gráficos como HNSW, IVF ofrece una creación de índices más rápida, un menor uso de memoria y un mayor equilibrio entre velocidad y precisión.</p>
 <p><a href="https://milvus.io/">Milvus</a>, la base de datos vectorial de código abierto más popular, proporciona soporte completo para toda la familia IVF, incluyendo IVF_FLAT, IVF_PQ e IVF_SQ8. Puede experimentar fácilmente con estos tipos de índices y encontrar la configuración que mejor se adapte a sus necesidades de rendimiento y memoria. Para obtener una lista completa de los índices que soporta Milvus, consulte esta <a href="https://milvus.io/docs/index-explained.md">página Milvus Index doc page</a>.</p>
 <p>Si está construyendo una búsqueda de imágenes, sistemas de recomendación o bases de conocimiento RAG, pruebe la indexación IVF en Milvus y vea cómo se siente la búsqueda vectorial eficiente a gran escala en acción.</p>

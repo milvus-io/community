@@ -6,6 +6,7 @@ title: >-
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -113,7 +114,7 @@ conda activate langflow
     <span></span>
   </span>
 </p>
-<p>Escolha Milvus como a sua base de dados de vectores por defeito.</p>
+<p>Escolha Milvus como a sua base de dados de vectores predefinida.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vdb_milvus_925c6ce846.webp" alt="" class="doc-image" id="" />

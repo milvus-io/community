@@ -4,6 +4,7 @@ title: 了解试管婴儿向量指数：它的工作原理以及何时选择它�
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_cover_157df122bc.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -59,7 +60,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">步骤 1：K 均值聚类</h3><p>首先，在数据集 X 上运行 K-means 聚类，将高维向量空间划分为 nlist 簇。每个聚类都有一个中心点，存储在中心点表 C 中。中心点的数量 nlist 是一个关键的超参数，决定了聚类的精细程度。</p>
+<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">步骤 1：均值聚类</h3><p>首先，在数据集 X 上运行 K-means 聚类，将高维向量空间划分为 nlist 簇。每个聚类都有一个中心点，存储在中心点表 C 中。中心点的数量 nlist 是一个关键的超参数，决定了聚类的精细程度。</p>
 <p>以下是 k-means 的工作原理：</p>
 <ul>
 <li><p><strong>初始化：</strong>随机选择<em>nlist</em>向量作为初始中心点。</p></li>
@@ -75,7 +76,7 @@ origin: >-
 </ul>
 <h3 id="Step-2-Vector-Assignment" class="common-anchor-header">第二步：向量分配</h3><p>接下来，每个向量被分配到其中心点最接近的聚类，形成倒列表（List_i）。每个倒列表都存储了属于该聚类的所有向量的 ID 和存储信息。</p>
 <p>你可以把这一步想象成把书架分成各自的区域。当你以后要查找某个书目时，只需查看最有可能有该书的几个分区，而不用逛遍整个图书馆。</p>
-<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">步骤 3：压缩编码（可选）</h3><p>为了节省内存和加快计算速度，每个簇内的向量都可以进行压缩编码。有两种常见的方法：</p>
+<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">步骤 3：压缩编码（可选）</h3><p>为了节省内存和加快计算速度，每个簇内的向量都可以进行压缩编码。常见的方法有两种：</p>
 <ul>
 <li><p><strong>SQ8（标量量化）：</strong>这种方法将向量的每个维度量化为 8 位。对于一个标准的<code translate="no">float32</code> 向量，每个维度通常占用 4 个字节。使用 SQ8，则可将其减少到 1 个字节--实现 4:1 的压缩比，同时保持向量的几何形状基本不变。</p></li>
 <li><p><strong>PQ（乘积量化）：</strong>它将高维向量分割成多个子空间。例如，一个 128 维的向量可以分成 8 个子向量，每个子向量 16 维。在每个子空间中，都预先训练了一个小的编码本（通常有 256 个条目），每个子向量都由一个指向与其最近的编码本条目的 8 位索引来表示。这意味着原始的 128-D<code translate="no">float32</code> 向量（需要 512 个字节）只需使用 8 个字节（8 个子空间 × 每个子空间 1 个字节）即可表示，实现了 64:1 的压缩比。</p></li>

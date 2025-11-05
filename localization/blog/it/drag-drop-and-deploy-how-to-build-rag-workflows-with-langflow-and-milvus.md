@@ -6,6 +6,7 @@ title: >-
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -48,7 +49,7 @@ origin: >-
   </span>
 </p>
 <p>Dietro le quinte, un motore di runtime basato su Python esegue il flusso. Esso orchestra gli LLM, gli strumenti, i moduli di recupero e la logica di routing, gestendo il flusso dei dati, lo stato e la gestione degli errori per assicurare un'esecuzione fluida dall'inizio alla fine.</p>
-<p>Langflow include anche una ricca libreria di componenti con adattatori precostituiti per i più diffusi LLM e database vettoriali, compreso <a href="https://milvus.io/">Milvus</a>. È possibile estendere ulteriormente questa libreria creando componenti Python personalizzati per casi d'uso particolari. Per i test e l'ottimizzazione, Langflow offre l'esecuzione passo-passo, un Playground per i test rapidi e le integrazioni con LangSmith e Langfuse per il monitoraggio, il debug e la riproduzione dei flussi di lavoro end-to-end.</p>
+<p>Langflow include anche una ricca libreria di componenti con adattatori precostituiti per i più diffusi LLM e database vettoriali, compreso <a href="https://milvus.io/">Milvus</a>. È possibile estendere ulteriormente questa libreria creando componenti Python personalizzati per casi d'uso particolari. Per i test e l'ottimizzazione, Langflow offre un'esecuzione passo-passo, un Playground per test rapidi e integrazioni con LangSmith e Langfuse per il monitoraggio, il debug e la riproduzione dei flussi di lavoro end-to-end.</p>
 <h2 id="Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="common-anchor-header">Dimostrazione pratica: Come costruire un flusso di lavoro RAG con Langflow e Milvus<button data-href="#Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

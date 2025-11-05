@@ -6,6 +6,7 @@ title: >-
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
 cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
@@ -19,7 +20,7 @@ origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
 <p>Der Aufbau eines KI-Workflows fühlt sich oft schwieriger an, als er sein sollte. Zwischen dem Schreiben von Glue-Code, dem Debuggen von API-Aufrufen und dem Verwalten von Datenpipelines kann der Prozess Stunden verschlingen, bevor Sie überhaupt Ergebnisse sehen. <a href="https://www.langflow.org/"><strong>Langflow</strong></a> und <a href="https://milvus.io/"><strong>Milvus</strong></a> vereinfachen diesen Prozess dramatisch - sie bieten Ihnen eine Code-leichte Möglichkeit, RAG-Workflows (Retrieval-Augmented Generation) innerhalb von Minuten und nicht Tagen zu entwerfen, zu testen und einzusetzen.</p>
-<p><strong>Langflow</strong> bietet eine übersichtliche Drag-and-Drop-Benutzeroberfläche, die sich eher wie eine Ideenskizze auf einem Whiteboard anfühlt als wie Programmierung. Sie können Sprachmodelle, Datenquellen und externe Tools visuell miteinander verbinden, um Ihre Workflow-Logik zu definieren - und das alles, ohne eine einzige Zeile Code zu schreiben.</p>
+<p><strong>Langflow</strong> bietet eine übersichtliche Drag-and-Drop-Benutzeroberfläche, die sich eher wie eine Ideenskizze auf einem Whiteboard anfühlt als wie ein Code. Sie können Sprachmodelle, Datenquellen und externe Tools visuell miteinander verbinden, um Ihre Workflow-Logik zu definieren - und das alles, ohne eine einzige Zeile Code zu schreiben.</p>
 <p>Zusammen mit <strong>Milvus</strong>, der Open-Source-Vektordatenbank, die LLMs ein Langzeitgedächtnis und ein kontextuelles Verständnis verleiht, bilden die beiden eine vollständige Umgebung für produktionsreife RAG. Milvus speichert und ruft effizient Einbettungen aus Ihren unternehmens- oder domänenspezifischen Daten ab und ermöglicht es LLMs, Antworten zu generieren, die fundiert, genau und kontextbezogen sind.</p>
 <p>In diesem Leitfaden zeigen wir Ihnen, wie Sie Langflow und Milvus kombinieren können, um einen fortschrittlichen RAG-Workflow zu erstellen - und das alles mit ein paar Klicks und Drag &amp; Drop.</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">Was ist Langflow?<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
