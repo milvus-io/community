@@ -71,11 +71,11 @@ Every time a user interacts with the agent, Parlant runs a lightweight matching 
 
 To further maintain accuracy and consistency, Parlant introduces a **supervising mechanism** that acts as a second layer of quality control. The process unfolds in three steps:
 
-1. **Generate a candidate response** – The agent creates an initial reply based on the matched guidelines and the current conversation context.
+**1. Generate a candidate response** – The agent creates an initial reply based on the matched guidelines and the current conversation context.
 
-2. **Check for compliance** – The response is compared against the active guidelines to verify that every instruction has been followed correctly.
+**2. Check for compliance** – The response is compared against the active guidelines to verify that every instruction has been followed correctly.
 
-3. **Revise or confirm** – If any issues are found, the system corrects the output; if everything checks out, the reply is approved and sent to the user.
+**3. Revise or confirm** – If any issues are found, the system corrects the output; if everything checks out, the reply is approved and sent to the user.
 
 This supervising mechanism ensures that the agent not only understands the rules but actually adheres to them before replying—improving both reliability and control.
 
