@@ -208,5 +208,6 @@
   "blog/en/vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-systems-the-smart-way.md": "2025-10-20T04:01:57.537Z",
   "blog/en/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md": "2025-11-05T06:24:42.221Z",
   "blog/en/understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md": "2025-11-05T06:25:03.693Z",
-  "blog/en/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md": "2025-11-07T07:44:33.153Z"
+  "blog/en/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md": "2025-11-07T07:44:33.153Z",
+  "blog/en/power-high-performance-rag-for-genai-with-hpe-alletra-storag-mp-milvus.md": "2025-11-10T06:43:37.169Z"
 }
