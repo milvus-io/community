@@ -16,7 +16,8 @@ desc: >-
 origin: >-
   https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369
 ---
-<p>يعمل كل من HPE Alletra Storage MP X10000 وMilvus على تشغيل RAG القابل للتطوير ومنخفض الكمون مما يتيح لآلات LLM تقديم استجابات دقيقة وغنية بالسياق مع بحث متجه عالي الأداء لأعباء عمل GenAI.</p>
+<p><em>نُشرت هذه التدوينة في الأصل على <a href="https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369">مجتمع HPE</a> وأعيد نشرها هنا بإذن.</em></p>
+<p>يعمل كل من HPE Alletra Storage MP X10000 وMilvus على تشغيل RAG القابل للتطوير ومنخفض الكمون مما يتيح لـ LLMs تقديم استجابات دقيقة وغنية بالسياق مع بحث متجه عالي الأداء لأعباء عمل GenAI.</p>
 <h2 id="In-generative-AI-RAG-needs-more-than-just-an-LLM" class="common-anchor-header">في الذكاء الاصطناعي التوليدي، يحتاج RAG إلى أكثر من مجرد LLM<button data-href="#In-generative-AI-RAG-needs-more-than-just-an-LLM" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

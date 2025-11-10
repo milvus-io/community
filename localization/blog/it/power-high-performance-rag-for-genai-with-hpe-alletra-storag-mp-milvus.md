@@ -1,7 +1,7 @@
 ---
 id: power-high-performance-rag-for-genai-with-hpe-alletra-storag-mp-milvus.md
 title: >-
-  Alimentate il RAG ad alte prestazioni per GenAI con HPE Alletra Storage MP +
+  Alimentare la RAG ad alte prestazioni per GenAI con HPE Alletra Storage MP +
   Milvus
 author: Denise Ochoa-Mendoza
 date: 2025-11-10T00:00:00.000Z
@@ -19,6 +19,7 @@ desc: >-
 origin: >-
   https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369
 ---
+<p><em>Questo post è stato pubblicato originariamente su <a href="https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369">HPE Community</a> e viene riproposto qui con l'autorizzazione.</em></p>
 <p>HPE Alletra Storage MP X10000 e Milvus alimentano RAG scalabili e a bassa latenza, consentendo agli LLM di fornire risposte accurate e ricche di contesto con una ricerca vettoriale ad alte prestazioni per i carichi di lavoro GenAI.</p>
 <h2 id="In-generative-AI-RAG-needs-more-than-just-an-LLM" class="common-anchor-header">Nell'IA generativa, RAG ha bisogno di qualcosa di più di un semplice LLM<button data-href="#In-generative-AI-RAG-needs-more-than-just-an-LLM" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -110,7 +111,7 @@ origin: >-
   </span>
 </p>
 <p>Milvus separa in modo netto l'elaborazione dallo storage, mentre HPE Alletra Storage MP X10000 fornisce un accesso agli oggetti ad alta velocità e bassa latenza che tiene il passo con i carichi di lavoro vettoriali. Insieme, consentono prestazioni di scale-out prevedibili: Milvus distribuisce le query tra gli shard e lo scaling frazionario e multidimensionale di HPE Alletra Storage MP X10000 mantiene la latenza costante all'aumentare dei dati e dei QPS. In parole povere, si aggiunge esattamente la capacità o le prestazioni necessarie, quando servono. La semplicità operativa è un altro vantaggio: HPE Alletra Storage MP X10000 sostiene le massime prestazioni da un singolo bucket, eliminando il complesso tiering, mentre le funzionalità aziendali (crittografia, RBAC, immutabilità, robusta durabilità) supportano le implementazioni on-premise o ibride con una forte sovranità dei dati e obiettivi di livello di servizio (SLO) coerenti.</p>
-<p>Quando la ricerca vettoriale scala, lo storage viene spesso accusato di lentezza nell'ingestione, nella compattazione o nel recupero. Con Milvus su HPE Alletra Storage MP X10000, questa storia cambia. L'architettura interamente NVMe e strutturata in log della piattaforma e l'opzione RDMA GPUDirect garantiscono un accesso agli oggetti coerente e a bassissima latenza, anche in presenza di una forte concurrency e durante le operazioni del ciclo di vita come la creazione e il ricaricamento degli indici. In pratica, le pipeline RAG rimangono legate al calcolo, non allo storage. Quando le collezioni crescono e i volumi di query aumentano, Milvus rimane reattivo mentre HPE Alletra Storage MP X10000 preserva lo spazio di I/O, consentendo una scalabilità prevedibile e lineare senza riarchitettura dello storage. Questo aspetto diventa particolarmente importante quando le implementazioni RAG superano le fasi iniziali di proof-of-concept e passano alla piena produzione.</p>
+<p>Quando la ricerca vettoriale scala, lo storage viene spesso accusato di lentezza nell'ingestione, nella compattazione o nel recupero. Con Milvus su HPE Alletra Storage MP X10000, questa storia cambia. L'architettura interamente NVMe e strutturata in log della piattaforma e l'opzione RDMA GPUDirect garantiscono un accesso agli oggetti coerente e a bassissima latenza, anche in presenza di una forte concurrency e durante le operazioni del ciclo di vita come la creazione e il ricaricamento degli indici. In pratica, le pipeline RAG rimangono legate al calcolo, non allo storage. Quando le collezioni crescono e i volumi di query aumentano, Milvus rimane reattivo mentre HPE Alletra Storage MP X10000 conserva lo spazio di I/O, consentendo una scalabilità prevedibile e lineare senza dover riarchitettare lo storage. Questo aspetto diventa particolarmente importante quando le implementazioni RAG superano le fasi iniziali di proof-of-concept e passano alla piena produzione.</p>
 <h2 id="Enterprise-ready-RAG-Scalable-predictable-and-built-for-GenAI" class="common-anchor-header">RAG pronto per le aziende: scalabile, prevedibile e costruito per GenAI<button data-href="#Enterprise-ready-RAG-Scalable-predictable-and-built-for-GenAI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

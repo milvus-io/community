@@ -16,7 +16,8 @@ desc: >-
 origin: >-
   https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369
 ---
-<p>HPE Alletra Storage MP X10000 與 Milvus 可為可擴充、低延遲的 RAG 提供動力，讓 LLM 可針對 GenAI 工作負載，以高效能向量搜尋提供精確、內容豐富的回應。</p>
+<p><em>本文章最初發表於<a href="https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369">HPE Community</a>，並經允許在此轉載。</em></p>
+<p>HPE Alletra Storage MP X10000 和 Milvus 為可擴充、低延遲的 RAG 提供動力，讓 LLM 能夠以高效能向量搜尋為 GenAI 工作負載提供精確、內容豐富的回應。</p>
 <h2 id="In-generative-AI-RAG-needs-more-than-just-an-LLM" class="common-anchor-header">在生成式人工智能中，RAG 需要的不僅僅是 LLM<button data-href="#In-generative-AI-RAG-needs-more-than-just-an-LLM" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

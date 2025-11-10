@@ -17,7 +17,8 @@ desc: >-
 origin: >-
   https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369
 ---
-<p>HPE Alletra Storage MP X10000 dan Milvus memiliki daya yang dapat diskalakan, RAG dengan latensi rendah, yang memungkinkan LLM memberikan respons yang akurat dan kaya konteks dengan pencarian vektor berkinerja tinggi untuk beban kerja GenAI.</p>
+<p><em>Artikel ini awalnya dipublikasikan di <a href="https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369">HPE Community</a> dan diposting ulang di sini dengan izin.</em></p>
+<p>HPE Alletra Storage MP X10000 dan Milvus memiliki daya yang dapat diskalakan, RAG dengan latensi rendah, yang memungkinkan LLM memberikan respons yang akurat dan kaya akan konteks dengan pencarian vektor berkinerja tinggi untuk beban kerja GenAI.</p>
 <h2 id="In-generative-AI-RAG-needs-more-than-just-an-LLM" class="common-anchor-header">Dalam AI generatif, RAG membutuhkan lebih dari sekadar LLM<button data-href="#In-generative-AI-RAG-needs-more-than-just-an-LLM" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
