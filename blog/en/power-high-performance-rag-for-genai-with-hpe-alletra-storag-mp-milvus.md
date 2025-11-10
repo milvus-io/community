@@ -15,7 +15,7 @@ desc: Boost GenAI with HPE Alletra Storage MP X10000 and Milvus. Get scalable, l
 origin: https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369
 ---
 
-This post was originally published on [HPE Community](https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369) and is reposted here with permission.
+*This post was originally published on [HPE Community](https://community.hpe.com/t5/around-the-storage-block/power-high-performance-rag-for-genai-with-hpe-alletra-storage-mp/ba-p/7257369) and is reposted here with permission.*
 
 HPE Alletra Storage MP X10000 and Milvus power scalable, low-latency RAG, enabling LLMs to deliver accurate, context-rich responses with high-performance vector search for GenAI workloads.
 
