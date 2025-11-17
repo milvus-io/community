@@ -1,5 +1,5 @@
 ---
-id: cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance.md
+id: unlocking-8×-milvus-performance-with-cloudian-hyperstore-and-nvidia-rdma-for-s3-storage.md
 title: >
  Unlocking 8× Milvus Performance with Cloudian HyperStore and NVIDIA RDMA for S3 Storage
 author: Jon Toor
