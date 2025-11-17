@@ -15,7 +15,7 @@ desc: Cloudian and NVIDIA introduce RDMA for S3-compatible storage, accelerating
 origin: https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/
 ---
 
-This post was originally published on [Cloudian](https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/) and is reposted here with permission. 
+*This post was originally published on [Cloudian](https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/) and is reposted here with permission.*
 
 Cloudian has collaborated with NVIDIA to add support for RDMA for S3-compatible storage to its HyperStore® solution, drawing on its 13+ years of experience in S3 API implementation. As an S3-API based platform with parallel processing architecture, Cloudian is uniquely suited to both contribute to and capitalize on the development of this technology. This collaboration leverages Cloudian’s deep expertise in object storage protocols and NVIDIA’s leadership in compute and network acceleration to create a solution that seamlessly integrates high-performance computing with enterprise-scale storage.
 
