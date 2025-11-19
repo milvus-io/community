@@ -16,7 +16,7 @@ canonicalUrl: https://milvus.io/blog/raft-or-not.md
 
 Consensus-based replication is a widely-adopted strategy in many cloud-native, distributed databases. However, it has certain shortcomings and is definitely not the silver bullet.
 
-This post aims to first explain the concepts of replication, consistency, and consensus in a cloud-native and distributed database, then clarify why consensus-based algorithms like Paxos and Raft are not the silver bullet, and finally propose a [solution to consensus-based replication](#a-log-replication-strategy-for-cloud-native-and-distributed-database).
+This post aims to explain the concepts of replication, consistency, and consensus in a cloud-native and distributed database, then clarify why consensus-based algorithms like Paxos and Raft are not the silver bullet, and finally propose a [solution to consensus-based replication](#a-log-replication-strategy-for-cloud-native-and-distributed-database).
 
 **Jump to:**
 - [Understanding replication, consistency, and consensus](#Understanding-replication-consistency-and-consensus)
