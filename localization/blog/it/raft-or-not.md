@@ -21,7 +21,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <p>Questo articolo è stato scritto da <a href="https://github.com/xiaofan-luan">Xiaofan Luan</a> e trascritto da <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
 <p>La replica basata sul consenso è una strategia ampiamente adottata in molti database distribuiti cloud-native. Tuttavia, presenta alcune carenze e non è sicuramente la soluzione migliore.</p>
-<p>Questo post si propone di spiegare innanzitutto i concetti di replica, consistenza e consenso in un database cloud-nativo e distribuito, quindi di chiarire perché gli algoritmi basati sul consenso come Paxos e Raft non sono la soluzione ideale e infine di proporre una <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">soluzione alla replica basata sul consenso</a>.</p>
+<p>Questo post si propone di spiegare i concetti di replica, consistenza e consenso in un database cloud-nativo e distribuito, quindi di chiarire perché gli algoritmi basati sul consenso come Paxos e Raft non sono la soluzione ideale e infine di proporre una <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">soluzione alla replica basata sul consenso</a>.</p>
 <p><strong>Vai a:</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">Capire la replica, la consistenza e il consenso</a></li>
@@ -29,7 +29,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <li><a href="#A-log-replication-strategy-for-cloud-native-and-distributed-database">Una strategia di replica dei log per database cloud-nativi e distribuiti</a></li>
 <li><a href="#Summary">Sommario</a></li>
 </ul>
-<h2 id="Understanding-replication-consistency-and-consensus" class="common-anchor-header">Capire la replica, la coerenza e il consenso<button data-href="#Understanding-replication-consistency-and-consensus" class="anchor-icon" translate="no">
+<h2 id="Understanding-replication-consistency-and-consensus" class="common-anchor-header">Capire la replica, la consistenza e il consenso<button data-href="#Understanding-replication-consistency-and-consensus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

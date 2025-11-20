@@ -22,7 +22,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <p>Cet article a été rédigé par <a href="https://github.com/xiaofan-luan">Xiaofan Luan</a> et transcréé par <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni.</a></p>
 </blockquote>
 <p>La réplication basée sur le consensus est une stratégie largement adoptée dans de nombreuses bases de données distribuées natives du cloud. Cependant, elle présente certaines lacunes et n'est certainement pas la solution miracle.</p>
-<p>Cet article a pour but d'expliquer les concepts de réplication, de cohérence et de consensus dans une base de données distribuée et native pour le cloud, puis de préciser pourquoi les algorithmes basés sur le consensus tels que Paxos et Raft ne sont pas la solution miracle, et enfin de proposer une <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solution à la réplication basée sur le consensus</a>.</p>
+<p>Cet article vise à expliquer les concepts de réplication, de cohérence et de consensus dans une base de données distribuée et native pour le cloud, puis à clarifier pourquoi les algorithmes basés sur le consensus tels que Paxos et Raft ne sont pas la solution miracle, et enfin à proposer une <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solution à la réplication basée sur le consensus</a>.</p>
 <p><strong>Aller à :</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">Comprendre la réplication, la cohérence et le consensus</a></li>
@@ -85,7 +85,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926429-69b5144c-f3ba-4819-87c3-ab7e04a7e22e.png" alt="Raft replication state machine" class="doc-image" id="raft-replication-state-machine" />
-   </span> <span class="img-wrapper"> <span>Machine d'état de réplication Raft</span> </span></p>
+   </span> <span class="img-wrapper"> <span>Machine à états de réplication Raft</span> </span></p>
 <h3 id="Pros-and-cons" class="common-anchor-header">Avantages et inconvénients</h3><p>En effet, Raft, ZAB et le <a href="https://aws.amazon.com/blogs/database/amazon-aurora-under-the-hood-quorum-and-correlated-failure/">protocole de journalisation basé sur le quorum</a> dans Aurora sont tous des variantes de Paxos. La réplication basée sur le consensus présente les avantages suivants :</p>
 <ol>
 <li>Bien que la réplication basée sur le consensus se concentre davantage sur la cohérence et la partition du réseau dans le théorème CAP, elle fournit une disponibilité relativement meilleure par rapport à la réplication traditionnelle leader-suiveur.</li>

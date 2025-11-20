@@ -1,6 +1,6 @@
 ---
 id: raft-or-not.md
-title: 筏か否か？クラウドネイティブデータベースにおけるデータ一貫性の最適解
+title: 筏か否か？クラウドネイティブデータベースにおけるデータ一貫性のベストソリューション
 author: Xiaofan Luan
 date: 2022-05-16T00:00:00.000Z
 desc: なぜコンセンサスに基づくレプリケーション・アルゴリズムは、分散データベースでデータの一貫性を実現するための特効薬ではないのか？
@@ -16,13 +16,13 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <blockquote>
 <p>この記事は<a href="https://github.com/xiaofan-luan">Xiaofan Luanが</a>執筆し、<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Niが</a>翻訳した。</p>
 </blockquote>
-<p>コンセンサス・ベースのレプリケーションは、多くのクラウド・ネイティブな分散データベースで広く採用されている戦略だ。しかし、これにはいくつかの欠点があり、決して特効薬ではない。</p>
-<p>この投稿の目的は、まずクラウドネイティブな分散データベースにおけるレプリケーション、一貫性、コンセンサスの概念を説明し、次にPaxosやRaftのようなコンセンサスベースのアルゴリズムがなぜ特効薬ではないのかを明らかにし、最後に<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">コンセンサスベースのレプリケーションに対する解決</a>策を提案することである。</p>
+<p>コンセンサス・ベースのレプリケーションは、多くのクラウド・ネイティブな分散データベースで広く採用されている戦略だ。しかし、レプリケーションにはいくつかの欠点があり、銀の弾丸ではありません。</p>
+<p>この投稿の目的は、クラウドネイティブな分散データベースにおけるレプリケーション、一貫性、コンセンサスの概念を説明し、PaxosやRaftのようなコンセンサスベースのアルゴリズムがなぜ特効薬ではないのかを明らかにし、最後に<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">コンセンサスベースのレプリケーションに対する解決</a>策を提案することである。</p>
 <p><strong>戻る</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">レプリケーション、一貫性、コンセンサスを理解する</a></li>
 <li><a href="#Consensus-based-replication">コンセンサスベースのレプリケーション</a></li>
-<li><a href="#A-log-replication-strategy-for-cloud-native-and-distributed-database">クラウド・ネイティブ・分散データベースのためのログ・レプリケーション戦略</a></li>
+<li><a href="#A-log-replication-strategy-for-cloud-native-and-distributed-database">クラウド・ネイティブ・分散データベースのログ・レプリケーション戦略</a></li>
 <li><a href="#Summary">要約</a></li>
 </ul>
 <h2 id="Understanding-replication-consistency-and-consensus" class="common-anchor-header">レプリケーション、一貫性、コンセンサスを理解する<button data-href="#Understanding-replication-consistency-and-consensus" class="anchor-icon" translate="no">
@@ -51,7 +51,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <li>各読み出しは、挿入された最新のデータにアクセスできる。</li>
 <li>読み取り後に新しい値が返された場合、同じクライアントであろうと異なるクライアントであろうと、それに続くすべての読み取りは新しい値を返さなければならない。</li>
 </ul>
-<p>リニアライザビリティの本質は、複数のデータレプリカの再利用性を保証することである。一旦新しい値が書き込まれるか読み込まれると、その値が後で上書きされるまで、後続のすべての読み取りは新しい値を見ることができる。線形化可能性を提供する分散システムは、ユーザーが複数のレプリカを監視する手間を省くことができ、各操作の原子性と順序を保証することができる。</p>
+<p>リニアライザビリティの本質は、複数のデータレプリカの再帰性を保証することである。一旦新しい値が書き込まれるか読み込まれると、その値が後で上書きされるまで、後続のすべての読み取りは新しい値を見ることができる。線形化可能性を提供する分散システムは、ユーザーが複数のレプリカを監視する手間を省くことができ、各操作の原子性と順序を保証することができる。</p>
 <h3 id="Consensus" class="common-anchor-header">コンセンサス</h3><p>コンセンサスという概念が分散システムに導入されたのは、分散システムがスタンドアロンシステムと同じように動作することをユーザーが切望しているからである。</p>
 <p>簡単に言うと、コンセンサスとは価値に対する一般的な合意である。例えば、SteveとFrankが何か食べに行こうとした。スティーブはサンドイッチを食べることを提案した。フランクはスティーブの提案に同意し、二人ともサンドイッチを食べた。彼らはコンセンサスに達した。より具体的には、どちらかが提案した価値（サンドイッチ）が両者によって合意され、その価値に基づいて両者が行動を起こす。同様に、分散システムにおけるコンセンサスとは、あるプロセスがある値を提案すると、システム内の残りのすべてのプロセスがその値に同意し、その値に基づいて行動することを意味する。</p>
 <p>
@@ -123,16 +123,16 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_6d1182b6f1.png" alt="Socrates XLog service" class="doc-image" id="socrates-xlog-service" />
    </span> <span class="img-wrapper"> <span>Socrates XLogサービス</span> </span></p>
 <p>リーダーノードはログを非同期にログブローカーに配信し、Xstoreにデータをフラッシュします。ローカルSSDキャッシュはデータの読み込みを高速化することができます。データのフラッシュが成功すると、ランディングゾーンのバッファをクリーニングすることができます。明らかに、すべてのログデータは、ランディングゾーン、ローカルSSD、XStoreの3つのレイヤーに分割されます。</p>
-<h3 id="2-Russian-doll-principle" class="common-anchor-header">2.ロシア人形の原理</h3><p>システムを設計する1つの方法は、ロシア人形の原則に従うことである。各レイヤーは完全であり、そのレイヤーが行うことに完全に適しているため、他のレイヤーをそのレイヤーの上または周りに構築することができる。</p>
+<h3 id="2-Russian-doll-principle" class="common-anchor-header">2.ロシア人形の原理</h3><p>システムを設計する1つの方法は、ロシア人形の原則に従うことである。各レイヤーは完全であり、そのレイヤーが行うことに完全に適しているため、他のレイヤーをそのレイヤーの上や周りに構築することができる。</p>
 <p>クラウドネイティブ・データベースを設計する際には、システム・アーキテクチャの複雑さを軽減するために、他のサードパーティ・サービスを巧みに活用する必要がある。</p>
-<p>単一障害点を回避するためにPaxosを利用することはできないようだ。しかし、リーダー選出をRaftや、<a href="https://research.google.com/archive/chubby-osdi06.pdf">Chubby</a>、<a href="https://github.com/bloomreach/zk-replicator">Zk</a>、<a href="https://etcd.io/">etcdを</a>ベースにしたPaxosサービスに任せることで、ログのレプリケーションを大幅に簡素化することはできる。</p>
+<p>単一障害点を回避するためにPaxosを利用することはできないようだ。しかし、リーダー選出をRaftや<a href="https://research.google.com/archive/chubby-osdi06.pdf">Chubby</a>、<a href="https://github.com/bloomreach/zk-replicator">Zk</a>、<a href="https://etcd.io/">etcdを</a>ベースとしたPaxosサービスに委ねることで、ログのレプリケーションを大幅に簡素化することができる。</p>
 <p>例えば、<a href="https://rockset.com/">Rockset</a>アーキテクチャはロシア人形の原理に従い、分散ログにKafka/Kineses、ストレージにS3、クエリパフォーマンス向上のためにローカルSSDキャッシュを使用している。</p>
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926697-c8b380dc-d71a-41a9-a76d-a261b77f0b5d.png" alt="Rockset architecture" class="doc-image" id="rockset-architecture" />
    </span> <span class="img-wrapper"> <span>Rocksetアーキテクチャ</span> </span></p>
 <h3 id="The-Milvus-approach" class="common-anchor-header">Milvusのアプローチ</h3><p>Milvusの調整可能な一貫性は、実はコンセンサスベースのレプリケーションにおけるフォロワーリードに似ている。フォロワーリードとは、フォロワーレプリカを使って、強い一貫性を前提にデータの読み込みを行うことである。その目的は、クラスタのスループットを向上させ、リーダーの負荷を軽減することである。フォロワリード機能の仕組みは、最新のログのコミットインデックスを取得し、コミットインデックスにある全てのデータがステートマシンに適用されるまでクエリサービスを提供する。</p>
-<p>しかし、Milvusの設計では、フォロワー戦略を採用していない。すなわち、Milvusは、問い合わせ要求を受け取るたびにコミットインデックスを問い合わせるわけではない。その代わりに、Milvusは<a href="https://flink.apache.org/">Flinkの</a>透かしのような機構を採用し、一定間隔でコミットインデックスの位置を問い合わせノードに通知する。このような機構を採用した理由は、Milvusのユーザは通常データの一貫性を強く要求することはなく、システムの性能向上のためならデータの可視性の妥協を受け入れることができるからである。</p>
+<p>しかし、Milvusの設計では、フォロワー戦略を採用していない。つまり、Milvusは、問い合わせ要求を受け取るたびにコミットインデックスを問い合わせるわけではない。その代わりに、Milvusは<a href="https://flink.apache.org/">Flinkの</a>透かしのような機構を採用し、一定間隔でコミットインデックスの位置を問い合わせノードに通知する。このような機構を採用した理由は、Milvusのユーザは通常データの一貫性を強く要求することはなく、システムの性能向上のためならデータの可視性の妥協を受け入れることができるからである。</p>
 <p>さらに、Milvusは複数のマイクロサービスを採用し、ストレージとコンピューティングを分離している。<a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">Milvusアーキテクチャでは</a>、S3、MinIo、Azure Blobがストレージとして使用されている。</p>
 <p>
   

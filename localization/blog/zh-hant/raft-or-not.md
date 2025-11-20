@@ -14,10 +14,10 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Tech_Modify_5_e18025ffbc.png" alt="Cover image" class="doc-image" id="cover-image" />
    </span> <span class="img-wrapper"> <span>封面圖片</span> </span></p>
 <blockquote>
-<p>本文作者：<a href="https://github.com/xiaofan-luan">栾小凡</a>，轉載：<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>。</p>
+<p>本文由<a href="https://github.com/xiaofan-luan">栾小凡</a>撰寫，<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">倪安琪</a>轉載。</p>
 </blockquote>
 <p>基於共識的複製是許多雲原生分散式資料庫廣泛採用的策略。然而，它也有一定的缺點，絕非萬靈丹。</p>
-<p>這篇文章的目的是首先解釋雲原生和分散式資料庫中複製、一致性和共識的概念，然後澄清為什麼 Paxos 和 Raft 等基於共識的演算法不是萬靈藥，最後針<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">對基於共識的複製</a>提出<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">解決方案</a>。</p>
+<p>本文旨在解釋雲原生和分散式資料庫中複製、一致性和共識的概念，然後澄清為什麼 Paxos 和 Raft 等基於共識的演算法不是靈丹妙藥，最後針<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">對基於共識的複製</a>提出<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">解決方案</a>。</p>
 <p><strong>跳到</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">瞭解複製、一致性與共識</a></li>
@@ -131,7 +131,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
   
    <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926697-c8b380dc-d71a-41a9-a76d-a261b77f0b5d.png" alt="Rockset architecture" class="doc-image" id="rockset-architecture" />
    </span> <span class="img-wrapper"> <span>Rockset 架構</span> </span></p>
-<h3 id="The-Milvus-approach" class="common-anchor-header">Milvus 方法</h3><p>Milvus 中的可調式一致性實際上與共識式複製中的跟讀類似。從者讀取功能是指在強一致性的前提下，使用從者複製器承擔資料讀取任務。其目的是提高集群吞吐量，降低 leader 的負載。從者讀取功能的機制是查詢最新日誌的 commit 索引，並提供查詢服務，直到 commit 索引中的所有資料都套用到狀態機上。</p>
+<h3 id="The-Milvus-approach" class="common-anchor-header">Milvus 方法</h3><p>Milvus 中的可調式一致性實際上與共識式複製中的跟讀類似。從者讀取功能是指在強一致性的前提下，使用從者複製器承擔資料讀取任務。其目的是提高集群吞吐量並減少 leader 的負載。從者讀取功能的機制是查詢最新日誌的 commit 索引，並提供查詢服務，直到 commit 索引中的所有資料都套用到狀態機上。</p>
 <p>然而，Milvus 的設計並未採用 follower 策略。換句話說，Milvus 並不是在每次收到查詢請求時都查詢提交索引。相反地，Milvus 採用了類似<a href="https://flink.apache.org/">Flink</a> 中的水印機制，每隔一段固定時間通知查詢節點 commit index 的位置。之所以採用這樣的機制，是因為 Milvus 的使用者通常對資料一致性的要求不高，他們可以接受資料可視性的折衷，以獲得更好的系統效能。</p>
 <p>此外，Milvus 也採用多重微服務，並將儲存與運算分離。在<a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">Milvus 架構</a>中，儲存使用 S3、MinIo 和 Azure Blob。</p>
 <p>
@@ -153,7 +153,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>如今，越來越多的雲原生資料庫將日誌複製變成單獨的服務。這樣可以降低新增唯讀複製和異質複製的成本。使用多個微服務可快速利用成熟的雲端基礎架構，這是傳統資料庫無法做到的。單獨的日誌服務可以仰賴共識式複製，但也可以遵循俄羅斯娃娃策略，採用各種一致性協定，再搭配 Paxos 或 Raft 來達成可線性化。</p>
+    </button></h2><p>如今，越來越多的雲原生資料庫將日誌複製變成單獨的服務。如此一來，新增唯讀複製和異質複製的成本就能降低。使用多個微服務可快速利用成熟的雲端基礎架構，這是傳統資料庫無法做到的。單獨的日誌服務可以仰賴共識式複製，但也可以遵循俄羅斯娃娃策略，採用各種一致性協定，再搭配 Paxos 或 Raft 來達成可線性化。</p>
 <h2 id="References" class="common-anchor-header">參考文獻<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

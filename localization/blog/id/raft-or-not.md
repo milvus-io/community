@@ -21,7 +21,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <p>Artikel ini ditulis oleh <a href="https://github.com/xiaofan-luan">Xiaofan Luan</a> dan disadur oleh <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
 <p>Replikasi berbasis konsensus adalah strategi yang diadopsi secara luas di banyak basis data terdistribusi yang berasal dari cloud. Namun, strategi ini memiliki beberapa kekurangan dan jelas bukan solusi yang tepat.</p>
-<p>Tulisan ini bertujuan untuk pertama-tama menjelaskan konsep replikasi, konsistensi, dan konsensus dalam basis data cloud-native dan terdistribusi, kemudian mengklarifikasi mengapa algoritme berbasis konsensus seperti Paxos dan Raft bukanlah peluru perak, dan akhirnya mengusulkan <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solusi untuk replikasi berbasis konsensus</a>.</p>
+<p>Tulisan ini bertujuan untuk menjelaskan konsep replikasi, konsistensi, dan konsensus dalam basis data cloud-native dan terdistribusi, kemudian mengklarifikasi mengapa algoritme berbasis konsensus seperti Paxos dan Raft bukanlah peluru perak, dan akhirnya mengusulkan <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solusi untuk replikasi berbasis konsensus</a>.</p>
 <p><strong>Langsung ke:</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">Memahami replikasi, konsistensi, dan konsensus</a></li>

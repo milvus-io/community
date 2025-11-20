@@ -17,7 +17,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <p>이 글은 <a href="https://github.com/xiaofan-luan">샤오판 루안이</a> 작성하고 <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">안젤라 니가</a> 번역했습니다.</p>
 </blockquote>
 <p>합의 기반 복제는 많은 클라우드 네이티브 분산 데이터베이스에서 널리 채택되고 있는 전략입니다. 하지만 몇 가지 단점도 있고 만병통치약도 아닙니다.</p>
-<p>이 글에서는 먼저 클라우드 네이티브 분산 데이터베이스에서 복제, 일관성, 합의의 개념을 설명한 다음, Paxos와 Raft와 같은 합의 기반 알고리즘이 왜 만병통치약이 아닌지 명확히 하고, 마지막으로 <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">합의 기반 복제에 대한 해결책을</a> 제안하고자 합니다.</p>
+<p>이 글에서는 클라우드 네이티브 분산 데이터베이스에서 복제, 일관성, 합의의 개념을 설명한 다음, Paxos나 Raft와 같은 합의 기반 알고리즘이 왜 만병통치약이 아닌지 명확히 하고, 마지막으로 <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">합의 기반 복제에 대한 해결책을</a> 제안하고자 합니다.</p>
 <p><strong>건너뛰기:</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">복제, 일관성 및 합의에 대한 이해</a></li>
@@ -91,7 +91,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <ol>
 <li><p>가용성 저하 최적화된 Paxos 또는 Raft 알고리즘은 리더 복제본에 대한 의존도가 높기 때문에 회색 장애에 대한 대처 능력이 약합니다. 합의 기반 복제에서는 리더 노드가 오랫동안 응답하지 않을 때까지 리더 복제본의 새로운 선출이 이루어지지 않습니다. 따라서 합의 기반 복제는 리더 노드가 느리거나 쓰래싱이 발생하는 상황을 처리할 수 없습니다.</p></li>
 <li><p>높은 복잡성 이미 Paxos와 Raft를 기반으로 하는 확장된 알고리즘이 많이 있지만, <a href="http://www.vldb.org/pvldb/vol13/p3072-huang.pdf">Multi-Raft와</a> <a href="https://www.vldb.org/pvldb/vol11/p1849-cao.pdf">Parallel Raft의</a> 등장으로 로그와 상태 머신 간의 동기화에 대해 더 많은 고려와 테스트가 필요합니다.</p></li>
-<li><p>성능 저하 클라우드 네이티브 시대에는 데이터 안정성과 일관성을 보장하기 위해 로컬 스토리지를 EBS나 S3와 같은 공유 스토리지 솔루션으로 대체합니다. 그 결과, 합의 기반 복제는 더 이상 분산 시스템에서 필수 사항이 아닙니다. 또한, 합의 기반 복제는 솔루션과 EBS 모두 복수의 복제본을 가지고 있기 때문에 데이터 중복성 문제가 발생합니다.</p></li>
+<li><p>성능 저하 클라우드 네이티브 시대에는 데이터 안정성과 일관성을 보장하기 위해 로컬 스토리지를 EBS 및 S3와 같은 공유 스토리지 솔루션으로 대체합니다. 그 결과, 합의 기반 복제는 더 이상 분산 시스템에서 필수 사항이 아닙니다. 또한, 합의 기반 복제는 솔루션과 EBS 모두 복수의 복제본을 가지고 있기 때문에 데이터 중복성 문제가 발생합니다.</p></li>
 </ol>
 <p>멀티 데이터센터 및 멀티 클라우드 복제의 경우, 일관성을 추구하면 가용성뿐만 아니라 <a href="https://en.wikipedia.org/wiki/PACELC_theorem">지연</a> 시간도 저하되어 성능이 저하됩니다. 따라서 대부분의 애플리케이션에서 다중 데이터센터 재해 내성을 위해서는 선형화 기능이 반드시 필요한 것은 아닙니다.</p>
 <h2 id="A-log-replication-strategy-for-cloud-native-and-distributed-database" class="common-anchor-header">클라우드 네이티브 및 분산 데이터베이스를 위한 로그 복제 전략<button data-href="#A-log-replication-strategy-for-cloud-native-and-distributed-database" class="anchor-icon" translate="no">
@@ -131,7 +131,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
   
    <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926697-c8b380dc-d71a-41a9-a76d-a261b77f0b5d.png" alt="Rockset architecture" class="doc-image" id="rockset-architecture" />
    </span> <span class="img-wrapper"> <span>Rockset 아키텍처</span> </span></p>
-<h3 id="The-Milvus-approach" class="common-anchor-header">Milvus 접근 방식</h3><p>Milvus의 조정 가능한 일관성은 사실 합의 기반 복제의 팔로워 읽기와 유사합니다. 팔로워 읽기 기능은 강력한 일관성을 전제로 팔로워 복제본을 사용하여 데이터 읽기 작업을 수행하는 것을 말합니다. 그 목적은 클러스터 처리량을 향상시키고 리더의 부하를 줄이는 것입니다. 팔로워 읽기 기능의 메커니즘은 최신 로그의 커밋 인덱스를 조회하고, 커밋 인덱스의 모든 데이터가 스테이트 머신에 적용될 때까지 쿼리 서비스를 제공하는 것입니다.</p>
+<h3 id="The-Milvus-approach" class="common-anchor-header">Milvus 접근 방식</h3><p>Milvus의 조정 가능한 일관성은 사실 합의 기반 복제의 팔로워 읽기와 유사합니다. 팔로워 읽기 기능은 강력한 일관성을 전제로 팔로워 복제본을 사용하여 데이터 읽기 작업을 수행하는 것을 말합니다. 그 목적은 클러스터 처리량을 향상시키고 리더의 부하를 줄이는 것입니다. 팔로워 읽기 기능의 메커니즘은 최신 로그의 커밋 인덱스를 조회하고 커밋 인덱스의 모든 데이터가 스테이트 머신에 적용될 때까지 쿼리 서비스를 제공하는 것입니다.</p>
 <p>하지만 Milvus의 설계는 팔로워 전략을 채택하지 않았습니다. 즉, Milvus는 쿼리 요청을 받을 때마다 커밋 인덱스를 조회하지 않습니다. 대신, Milvus는 <a href="https://flink.apache.org/">Flink의</a> 워터마크와 같은 메커니즘을 채택하여 쿼리 노드에 커밋 인덱스의 위치를 일정한 간격으로 알려줍니다. 이러한 메커니즘을 채택하는 이유는 Milvus 사용자는 일반적으로 데이터 일관성에 대한 요구가 높지 않으며, 더 나은 시스템 성능을 위해 데이터 가시성의 타협을 받아들일 수 있기 때문입니다.</p>
 <p>또한 Milvus는 다중 마이크로서비스를 채택하고 스토리지와 컴퓨팅을 분리합니다. <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">Milvus 아키텍처에서는</a> S3, MinIo 및 Azure Blob이 스토리지에 사용됩니다.</p>
 <p>

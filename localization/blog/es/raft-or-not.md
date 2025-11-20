@@ -21,7 +21,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <p>Este artículo ha sido escrito por <a href="https://github.com/xiaofan-luan">Xiaofan Luan</a> y transcrito por <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
 <p>La replicación basada en el consenso es una estrategia ampliamente adoptada en muchas bases de datos distribuidas nativas de la nube. Sin embargo, tiene ciertas deficiencias y definitivamente no es la bala de plata.</p>
-<p>Este artículo pretende explicar en primer lugar los conceptos de replicación, consistencia y consenso en una base de datos distribuida y nativa de la nube, después aclarar por qué los algoritmos basados en el consenso como Paxos y Raft no son la panacea y, por último, proponer una <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solución a la replicación basada en el consenso</a>.</p>
+<p>El objetivo de este artículo es explicar los conceptos de replicación, consistencia y consenso en una base de datos distribuida y nativa de la nube, aclarar por qué los algoritmos basados en el consenso como Paxos y Raft no son la panacea y, por último, proponer una <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solución a la replicación basada en el consenso</a>.</p>
 <p><strong>Ir a:</strong></p>
 <ul>
 <li><a href="#Understanding-replication-consistency-and-consensus">Comprender la replicación, la consistencia y el consenso</a></li>
@@ -55,7 +55,7 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 <li>Cada lectura pueda acceder a los últimos datos insertados.</li>
 <li>Si se devuelve un nuevo valor después de una lectura, todas las lecturas siguientes, independientemente de que se realicen en el mismo cliente o en clientes diferentes, deben devolver el nuevo valor.</li>
 </ul>
-<p>La esencia de la linealidad es garantizar la recencia de múltiples réplicas de datos: una vez que se escribe o se lee un nuevo valor, todas las lecturas posteriores pueden ver el nuevo valor hasta que éste se sobrescriba posteriormente. Un sistema distribuido que ofrezca linealidad puede ahorrar a los usuarios la molestia de vigilar múltiples réplicas y puede garantizar la atomicidad y el orden de cada operación.</p>
+<p>La esencia de la linearizabilidad es garantizar la recencia de múltiples réplicas de datos - una vez que un nuevo valor es escrito o leído, todas las lecturas posteriores pueden ver el nuevo valor hasta que el valor sea sobrescrito posteriormente. Un sistema distribuido que ofrezca linealidad puede ahorrar a los usuarios la molestia de vigilar múltiples réplicas y puede garantizar la atomicidad y el orden de cada operación.</p>
 <h3 id="Consensus" class="common-anchor-header">Consenso</h3><p>El concepto de consenso se introduce en los sistemas distribuidos porque los usuarios desean que los sistemas distribuidos funcionen del mismo modo que los sistemas autónomos.</p>
 <p>Para simplificarlo, el consenso es un acuerdo general sobre un valor. Por ejemplo, Steve y Frank querían comer algo. Steve sugirió comer sándwiches. Frank acepta la sugerencia de Steve y ambos comen sándwiches. Han llegado a un consenso. Más concretamente, un valor (sándwiches) propuesto por uno de ellos es acordado por ambos, y ambos realizan acciones basadas en el valor. Del mismo modo, el consenso en un sistema distribuido significa que cuando un proceso propone un valor, todos los demás procesos del sistema lo aceptan y actúan en consecuencia.</p>
 <p>
