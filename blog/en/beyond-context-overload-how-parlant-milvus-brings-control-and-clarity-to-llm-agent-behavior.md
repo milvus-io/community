@@ -4,7 +4,7 @@ title: >
  Beyond Context Overload: How Parlant × Milvus Brings Control and Clarity to LLM Agent Behavior
 author: Min Yin
 date: 2025-11-05
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

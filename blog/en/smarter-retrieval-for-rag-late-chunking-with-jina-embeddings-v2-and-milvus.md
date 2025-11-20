@@ -5,7 +5,7 @@ title: >
 author: Wei Zang
 date: 2025-10-11
 desc: Boost RAG accuracy using Late Chunking and Milvus for efficient, context‑aware document embeddings and faster, smarter vector search.
-cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: Milvus, Vector Database, Open Source, Vector Embeddings
 recommend: False

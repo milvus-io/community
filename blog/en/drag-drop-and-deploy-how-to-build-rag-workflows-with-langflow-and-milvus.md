@@ -4,7 +4,7 @@ title: >
  Drag, Drop, and Deploy: How to Build RAG Workflows with Langflow and Milvus
 author: Min Yin
 date: 2025-10-30
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
