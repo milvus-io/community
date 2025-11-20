@@ -4,7 +4,7 @@ title: >
  Unlocking 8× Milvus Performance with Cloudian HyperStore and NVIDIA RDMA for S3 Storage
 author: Jon Toor
 date: 2025-11-17
-cover: assets.zilliz.com/cloudian_b7531febff.png
+cover: assets.zilliz.com/cloudian_931ffc8646.png
 tag: Engineering
 recommend: false
 publishToMedium: true

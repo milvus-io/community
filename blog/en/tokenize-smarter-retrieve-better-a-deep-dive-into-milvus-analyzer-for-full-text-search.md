@@ -5,7 +5,7 @@ title: >
 author: Jack Li
 date: 2025-10-16
 desc: Explore how Milvus Analyzer powers hybrid AI retrieval with efficient tokenization and filtering, enabling faster, smarter full-text search.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: Milvus, Vector Database, Open Source, Vector Embeddings
 recommend: false

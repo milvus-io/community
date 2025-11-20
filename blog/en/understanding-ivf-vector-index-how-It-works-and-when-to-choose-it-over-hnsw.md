@@ -4,7 +4,7 @@ title: >
  Understanding IVF Vector Index: How It Works and When to Choose It Over HNSW
 author: Jack Li
 date: 2025-10-27
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
