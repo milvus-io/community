@@ -6,7 +6,7 @@ title: >-
   Penyimpanan S3
 author: Jon Toor
 date: 2025-11-17T00:00:00.000Z
-cover: assets.zilliz.com/cloudian_b7531febff.png
+cover: assets.zilliz.com/cloudian_931ffc8646.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -100,7 +100,7 @@ origin: >-
 <p><strong>Skalabilitas Exabyte untuk Ledakan Data AI:</strong> Beban kerja AI, terutama yang melibatkan data sintetis dan multi-modal, mendorong kebutuhan penyimpanan ke dalam kisaran 100 petabyte dan seterusnya. Ruang alamat datar penyimpanan objek berskala mulus dari petabyte hingga exabyte, mengakomodasi pertumbuhan eksponensial dalam kumpulan data pelatihan AI tanpa batasan hierarki yang membatasi sistem berbasis file.</p>
 <p><strong>Platform Terpadu untuk Alur Kerja AI yang Lengkap:</strong> Operasi AI modern mencakup pemasukan data, pembersihan, pelatihan, pemeriksaan, dan kesimpulan - masing-masing dengan persyaratan kinerja dan kapasitas yang berbeda. Penyimpanan objek yang kompatibel dengan S3 mendukung seluruh spektrum ini melalui akses API yang konsisten, sehingga menghilangkan kerumitan dan biaya untuk mengelola berbagai tingkatan penyimpanan. Data pelatihan, model, file pos pemeriksaan, dan kumpulan data inferensi semuanya dapat berada dalam satu data lake berkinerja tinggi.</p>
 <p><strong>Metadata yang Kaya untuk Operasi AI:</strong> Operasi AI yang penting seperti pencarian dan pencacahan pada dasarnya digerakkan oleh metadata. Kemampuan metadata yang kaya dan dapat disesuaikan dari penyimpanan objek memungkinkan penandaan, pencarian, dan manajemen data yang efisien - penting untuk mengatur dan mengambil data dalam pelatihan model AI yang kompleks dan alur kerja kesimpulan.</p>
-<p><strong>Keuntungan Ekonomi dan Operasional:</strong> Penyimpanan objek yang kompatibel dengan S3 memberikan total biaya kepemilikan yang lebih rendah hingga 80% dibandingkan dengan alternatif penyimpanan file, dengan memanfaatkan perangkat keras standar industri dan penskalaan kapasitas dan kinerja yang independen. Efisiensi ekonomi ini menjadi sangat penting saat dataset AI mencapai skala perusahaan.</p>
+<p><strong>Keuntungan Ekonomi dan Operasional:</strong> Penyimpanan objek yang kompatibel dengan S3 memberikan total biaya kepemilikan yang lebih rendah hingga 80% dibandingkan dengan alternatif penyimpanan file, dengan memanfaatkan perangkat keras standar industri dan penskalaan kapasitas dan kinerja yang independen. Efisiensi ekonomi ini menjadi sangat penting ketika dataset AI mencapai skala perusahaan.</p>
 <p><strong>Keamanan dan Tata Kelola Perusahaan:</strong> Tidak seperti implementasi GPUDirect yang membutuhkan modifikasi tingkat kernel, RDMA untuk penyimpanan yang kompatibel dengan S3 tidak memerlukan perubahan kernel khusus vendor, sehingga menjaga keamanan sistem dan kepatuhan terhadap peraturan. Pendekatan ini sangat berharga di sektor-sektor seperti perawatan kesehatan dan keuangan di mana keamanan data dan kepatuhan terhadap peraturan sangat penting.</p>
 <h2 id="The-Road-Ahead" class="common-anchor-header">Jalan di Depan<button data-href="#The-Road-Ahead" class="anchor-icon" translate="no">
       <svg translate="no"

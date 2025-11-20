@@ -5,7 +5,7 @@ title: >-
   Langflow и Milvus
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -14,7 +14,7 @@ meta_keywords: 'Langflow, Milvus, RAG, AI workflow'
 meta_title: 'Drag, Drop, and Deploy RAG Workflows with Langflow & Milvus'
 desc: >-
   Узнайте, как создавать визуальные рабочие процессы RAG с помощью Langflow и
-  Milvus. Перетаскивайте и развертывайте контекстно-зависимые приложения
+  Milvus. Перетаскивайте и развертывайте контекстно-ориентированные приложения
   искусственного интеллекта за считанные минуты - кодирование не требуется.
 origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
@@ -65,7 +65,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Опираясь на архитектуру Langflow, Milvus может служить векторной базой данных, которая управляет вкраплениями и извлекает частные данные предприятия или специфические знания домена.</p>
-<p>В этой демонстрации мы используем шаблон Langflow Vector Store RAG, чтобы показать, как интегрировать Milvus и построить векторный индекс из локальных данных, что позволит эффективно отвечать на вопросы с учетом контекста.</p>
+<p>В этой демонстрации мы используем шаблон Langflow Vector Store RAG, чтобы показать, как интегрировать Milvus и создать векторный индекс из локальных данных, что позволит эффективно отвечать на вопросы с учетом контекста.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/data_processing_flow_289a9376c9.webp" alt="" class="doc-image" id="" />

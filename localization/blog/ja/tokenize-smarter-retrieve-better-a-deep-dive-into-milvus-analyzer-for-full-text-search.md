@@ -7,7 +7,7 @@ date: 2025-10-16T00:00:00.000Z
 desc: >-
   効率的なトークン化とフィルタリングにより、Milvus
   AnalyzerがハイブリッドAI検索を強化し、より高速でスマートな全文検索を可能にする方法をご覧ください。
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -627,5 +627,5 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Analyzerは、従来は単純な前処理ステップであったものを、テキストを扱うための明確に定義されたモジュラーシステムに変えました。トークン化とフィルタリングを中心に構築された設計により、開発者は言語をどのように解釈し、クリーニングし、インデックスを作成するかを細かく制御することができます。単一言語のアプリケーションを構築する場合でも、複数の言語にまたがるグローバルなRAGシステムを構築する場合でも、Analyzerは全文検索のための一貫した基盤を提供します。Milvusの一部であり、他のすべての機能を静かに向上させます。</p>
+    </button></h2><p>Milvus Analyzerは、従来は単純な前処理ステップであったものを、テキストを処理するための明確に定義されたモジュラーシステムに変えました。トークン化とフィルタリングを中心に構築された設計により、開発者は言語をどのように解釈し、クリーニングし、インデックスを作成するかを細かく制御することができます。単一言語のアプリケーションを構築する場合でも、複数の言語にまたがるグローバルなRAGシステムを構築する場合でも、Analyzerは全文検索のための一貫した基盤を提供します。Milvusの一部であり、他のすべての機能を静かに向上させます。</p>
 <p>ご質問がある場合、または機能について詳しく知りたい場合は、Discordチャンネルにご参加ください。私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察やガイダンス、質問への回答を得ることもできます。</p>

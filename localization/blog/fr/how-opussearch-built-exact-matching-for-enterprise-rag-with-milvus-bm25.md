@@ -5,7 +5,7 @@ title: >-
   Milvus BM25
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -37,7 +37,7 @@ origin: >-
       </svg>
     </button></h2><p>Imaginez la situation : Vous êtes un monteur vidéo qui doit respecter un délai. Vous avez besoin d'extraits de l'"épisode 281" de votre podcast. Vous le tapez dans notre moteur de recherche. Notre recherche sémantique alimentée par l'IA, fière de son intelligence, renvoie des extraits des épisodes 280, 282 et suggère même l'épisode 218 parce que les numéros sont similaires, n'est-ce pas ?</p>
 <p><strong>C</strong>'<strong>est faux</strong>.</p>
-<p>Lorsque nous avons lancé <a href="https://www.opus.pro/opussearch">OpusSearch</a> pour les entreprises en janvier 2025, nous pensions que la recherche sémantique suffirait. Les requêtes en langage naturel telles que "trouver des moments drôles sur les rencontres" fonctionnaient à merveille. Notre système RAG <a href="https://milvus.io/">, alimenté par Milvus,</a> était en train d'écraser tout le monde.</p>
+<p>Lorsque nous avons lancé <a href="https://www.opus.pro/opussearch">OpusSearch</a> pour les entreprises en janvier 2025, nous pensions que la recherche sémantique suffirait. Les requêtes en langage naturel telles que "trouver des moments drôles sur les rencontres" fonctionnaient à merveille. Notre système RAG <a href="https://milvus.io/">, alimenté par Milvus,</a> était en train de l'écraser.</p>
 <p><strong>Mais la réalité nous a frappés de plein fouet avec les commentaires des utilisateurs :</strong></p>
 <p>"Je veux juste des extraits de l'épisode 281. Pourquoi est-ce si difficile ?"</p>
 <p>Lorsque je cherche "C'est ce qu'elle a dit", je veux EXACTEMENT cette phrase, pas "c'est ce qu'il voulait dire".</p>

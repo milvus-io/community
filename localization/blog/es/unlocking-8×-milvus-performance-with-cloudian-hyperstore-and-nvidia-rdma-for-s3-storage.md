@@ -6,7 +6,7 @@ title: >-
   almacenamiento S3
 author: Jon Toor
 date: 2025-11-17T00:00:00.000Z
-cover: assets.zilliz.com/cloudian_b7531febff.png
+cover: assets.zilliz.com/cloudian_931ffc8646.png
 tag: Engineering
 recommend: false
 publishToMedium: true

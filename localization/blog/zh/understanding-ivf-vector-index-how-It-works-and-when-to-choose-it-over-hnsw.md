@@ -3,7 +3,7 @@ id: understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.
 title: 了解试管婴儿向量指数：它的工作原理以及何时选择它而不是 HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -146,7 +146,7 @@ origin: >-
 <h3 id="How-to-Tune-nprobe" class="common-anchor-header">如何调整 nprobe</h3><p>参数 nprobe 控制着查询期间搜索的集群数量。它直接影响召回率和延迟之间的权衡。</p>
 <ul>
 <li><p><strong>nprobe 越大</strong>：覆盖更多的群集，导致更高的召回率，但延迟也更高。一般来说，延迟与搜索的集群数呈线性增长。</p></li>
-<li><p><strong>较小的 nprobe</strong>：搜索较少的群集，因此延迟较低，查询速度较快。不过，它可能会错过一些真正的近邻，从而略微降低召回率和结果准确率。</p></li>
+<li><p><strong>较小的 nprobe</strong>：搜索较少的群集，延迟较低，查询速度较快。不过，它可能会错过一些真正的近邻，从而略微降低召回率和结果准确率。</p></li>
 </ul>
 <p>如果您的应用程序对延迟不是非常敏感，那么最好对 nprobe 进行动态试验，例如测试 1 到 16 的值，观察召回率和延迟的变化情况。这样做的目的是找到一个最佳点，在这个点上，召回率是可以接受的，而延迟则保持在目标范围内。</p>
 <p>由于 nprobe 是一个运行时搜索参数，因此可以动态配置调整，而无需重建索引。这样就能在不同的工作负载或查询场景中实现快速、低成本和高度灵活的调整。</p>
@@ -157,7 +157,7 @@ origin: >-
 <tr><th><strong>IVF 变体</strong></th><th><strong>主要特征</strong></th><th><strong>使用案例</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>IVF_FLAT</strong></td><td>在每个簇内存储原始向量，无需压缩。精度最高，但内存消耗也最大。</td><td>适用于需要高召回率（95% 以上）的中等规模数据集（多达数亿向量）。</td></tr>
+<tr><td><strong>IVF_FLAT</strong></td><td>在每个簇内存储原始向量，不进行压缩。精度最高，但内存消耗也最大。</td><td>适用于需要高召回率（95% 以上）的中等规模数据集（多达数亿向量）。</td></tr>
 <tr><td><strong>IVF_PQ</strong></td><td>应用乘积量化（PQ）来压缩簇内的向量。通过调整压缩率，可以大大减少内存使用量。</td><td>适用于大规模向量搜索（数亿或更多），在这种情况下可以接受一定的精度损失。在压缩比为 64:1 的情况下，召回率通常在 70% 左右，但通过降低压缩比，召回率可以达到 90% 或更高。</td></tr>
 <tr><td><strong>IVF_SQ8</strong></td><td>使用标量量化 (SQ8) 对向量进行量化。内存使用量介于 IVF_FLAT 和 IVF_PQ 之间。</td><td>非常适合需要在提高效率的同时保持较高召回率（90% 以上）的大规模向量搜索。</td></tr>
 </tbody>
@@ -187,7 +187,7 @@ origin: >-
 <tr><td><strong>内存使用</strong></td><td>相对较低</td><td>相对较高</td></tr>
 <tr><td><strong>索引建立速度</strong></td><td>快（只需聚类）</td><td>慢（需要构建多层图）</td></tr>
 <tr><td><strong>查询速度（无过滤）</strong></td><td>快，取决于<em>nprobe</em></td><td>极快，但复杂度为对数</td></tr>
-<tr><td><strong>查询速度（有过滤）</strong></td><td>稳定 - 在中心点级别执行粗过滤，缩小候选范围</td><td>不稳定--尤其是当过滤率很高（90% 以上）时，图会变得支离破碎，可能会退化为近乎全图遍历，甚至比暴力搜索还要慢</td></tr>
+<tr><td><strong>查询速度（有过滤）</strong></td><td>稳定 - 在中心点级别执行粗过滤，缩小候选范围</td><td>不稳定--尤其是当过滤率很高（90% 以上）时，图会变得支离破碎，可能会退化到接近全图遍历，甚至比暴力搜索还要慢</td></tr>
 <tr><td><strong>召回率</strong></td><td>取决于是否使用了压缩；如果没有量化，召回率可达<strong>95% 以上</strong></td><td>通常更高，约为<strong>98%+</strong></td></tr>
 <tr><td><strong>关键参数</strong></td><td><em>nlist</em>、<em>nprobe</em></td><td><em>m</em>、<em>ef_construction</em>、<em>ef_search</em></td></tr>
 <tr><td><strong>使用案例</strong></td><td>内存有限，但要求高查询性能和召回率；非常适合有过滤条件的搜索</td><td>内存充足，目标是极高的召回率和查询性能，但不需要过滤或过滤率很低时</td></tr>

@@ -6,7 +6,7 @@ title: >-
   S3-Speicher freisetzen
 author: Jon Toor
 date: 2025-11-17T00:00:00.000Z
-cover: assets.zilliz.com/cloudian_b7531febff.png
+cover: assets.zilliz.com/cloudian_931ffc8646.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -45,7 +45,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Im Kern eliminiert diese Technologie Zwischenschritte mit einem direkten Pfad, der die Latenzzeit reduziert, die CPU-Verarbeitungsanforderungen drastisch senkt und den Stromverbrauch erheblich verringert. Das Ergebnis sind Speichersysteme, die Daten mit der Geschwindigkeit liefern können, die moderne GPUs für anspruchsvolle KI-Anwendungen benötigen.</p>
+<p>Im Kern eliminiert diese Technologie Zwischenschritte durch einen direkten Pfad, der die Latenzzeit reduziert, die CPU-Verarbeitungsanforderungen drastisch senkt und den Stromverbrauch erheblich verringert. Das Ergebnis sind Speichersysteme, die Daten mit der Geschwindigkeit liefern können, die moderne GPUs für anspruchsvolle KI-Anwendungen benötigen.</p>
 <p>Die Technologie behält die Kompatibilität mit den allgegenwärtigen S3-APIs bei und fügt gleichzeitig diesen Hochleistungsdatenpfad hinzu. Befehle werden nach wie vor über standardmäßige S3-API-basierte Speicherprotokolle erteilt, aber die eigentliche Datenübertragung erfolgt über RDMA direkt an den GPU-Speicher, wodurch die CPU vollständig umgangen wird und der Overhead der TCP-Protokollverarbeitung entfällt.</p>
 <h2 id="Breakthrough-Performance-Results" class="common-anchor-header">Bahnbrechende Leistungsergebnisse<button data-href="#Breakthrough-Performance-Results" class="anchor-icon" translate="no">
       <svg translate="no"

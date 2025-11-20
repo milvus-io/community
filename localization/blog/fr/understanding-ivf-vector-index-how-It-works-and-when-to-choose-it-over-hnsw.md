@@ -5,7 +5,7 @@ title: >-
   choisir plutôt que le HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -147,7 +147,7 @@ origin: >-
 <p>Sur la base de ces compromis, voici une règle pratique :</p>
 <p>Pour les ensembles de données à l <strong>'échelle du million</strong>, un bon point de départ est <strong>nlist ≈ √n</strong> (n est le nombre de vecteurs dans le nuage de données indexé).</p>
 <p>Par exemple, si vous avez 1 million de vecteurs, essayez nlist = 1 000. Pour les ensembles de données plus importants - des dizaines ou des centaines de millions - la plupart des bases de données vectorielles divisent les données de sorte que chaque groupe contienne environ un million de vecteurs, ce qui rend cette règle pratique.</p>
-<p>Comme nlist est fixé lors de la création de l'index, sa modification ultérieure implique la reconstruction de l'index entier. Il est donc préférable d'expérimenter dès le début. Testez plusieurs valeurs - idéalement en puissances de deux (par exemple, 1024, 2048) - pour trouver le juste milieu entre la vitesse, la précision et la mémoire pour votre charge de travail.</p>
+<p>Comme nlist est fixé lors de la création de l'index, sa modification ultérieure implique la reconstruction de l'index entier. Il est donc préférable d'expérimenter dès le début. Testez plusieurs valeurs - idéalement en puissances de deux (par exemple, 1024, 2048) - pour trouver le bon équilibre entre la vitesse, la précision et la mémoire pour votre charge de travail.</p>
 <h3 id="How-to-Tune-nprobe" class="common-anchor-header">Comment régler nprobe</h3><p>Le paramètre nprobe contrôle le nombre de clusters recherchés pendant la durée de la requête. Il affecte directement le compromis entre le rappel et la latence.</p>
 <ul>
 <li><p><strong>Un nprobe plus grand</strong>: couvre plus de grappes, ce qui entraîne un rappel plus élevé, mais aussi un temps de latence plus important. Le délai augmente généralement de façon linéaire avec le nombre de grappes recherchées.</p></li>

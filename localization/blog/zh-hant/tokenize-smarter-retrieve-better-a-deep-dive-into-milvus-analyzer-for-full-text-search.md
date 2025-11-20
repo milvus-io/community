@@ -5,7 +5,7 @@ title: 更聰明的標記化，更好的檢索：深入了解用於全文檢索�
 author: Jack Li
 date: 2025-10-16T00:00:00.000Z
 desc: 探索 Milvus Analyzer 如何透過高效的標記化和過濾功能，強化混合式 AI 檢索，實現更快速、更智慧的全文檢索。
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -15,8 +15,8 @@ meta_keywords: 'Milvus Analyzer, RAG, full-text search, vector database, tokeniz
 origin: >-
   https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
 ---
-<p>現代的 AI 應用非常複雜，而且很少是單一維度的。在許多情況下，單一的搜尋方法無法獨立解決現實世界的問題。以推薦系統為例。它需要<strong>向量搜尋來</strong>理解文字或圖片背後的意義，需要<strong>元資料過濾來</strong>依價格、類別或地點精細搜尋結果，還需要<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>全文檢索來</strong></a>處理直接查詢，例如「Nike Air Max」。每種方法都能解決謎題的不同部分，而實用的系統有賴於所有這些方法的完美配合。</p>
-<p>Milvus 擅長於向量搜尋和元資料篩選，並從 2.5 版開始，推出以最佳化 BM25 演算法為基礎的全文搜尋。這項升級讓 AI 搜尋更聰明、更精準，結合語意理解與精確的關鍵字意圖。在<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a> 中，全文搜尋的速度變得更快，比<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Elasticsearch 的效能高出 4 倍</a>。</p>
+<p>現代的 AI 應用非常複雜，而且很少是單一維度的。在許多情況下，單一的搜尋方法無法獨立解決現實世界的問題。以推薦系統為例。它需要<strong>向量搜尋來</strong>理解文字或圖片背後的意義，需要<strong>元資料過濾來</strong>依價格、類別或地點精細搜尋結果，還需要<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>全文檢索來</strong></a>處理直接查詢，例如「Nike Air Max」。每種方法都能解決謎題的不同部分，而實用的系統有賴於所有這些方法的無縫配合。</p>
+<p>Milvus 擅長於向量搜尋和元資料篩選，並從 2.5 版開始，推出以最佳化 BM25 演算法為基礎的全文搜尋。這項升級讓 AI 搜尋更聰明、更精準，結合語意理解與精確的關鍵字意圖。在<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a> 中，全文搜尋的速度變得更快，達到<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Elasticsearch 性能的 4 倍</a>。</p>
 <p><strong>Milvus Analyzer</strong> 是這項功能的核心，它是將原始文字轉換為可搜尋字元的元件。正是它讓 Milvus 能夠有效率地解釋語言，並大規模地執行關鍵字匹配。在這篇文章的其餘部分，我們將探討 Milvus Analyzer 如何運作，以及為什麼它是發揮 Milvus 混合搜尋全部潛力的關鍵。</p>
 <h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">什麼是 Milvus Analyzer？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -68,7 +68,7 @@ origin: >-
 <tr><td>ICU（多語言）</td><td>複雜語言，如阿拉伯語，以及多語言情境</td><td>以 ICU 函式庫為基礎，支援跨 Unicode 的多國語言標記化。</td></tr>
 </tbody>
 </table>
-<p>您可以在建立 Collection 的 Schema 時設定 Tokenizer，特別是透過<code translate="no">analyzer_params</code> 參數定義<code translate="no">VARCHAR</code> 欄位時。換句話說，Tokenizer 不是獨立的物件，而是欄位層級的設定。當插入資料時，Milvus 會自動執行標記化與預處理。</p>
+<p>您可以在建立 Collection 的 Schema 時設定 Tokenizer，特別是透過<code translate="no">analyzer_params</code> 參數定義<code translate="no">VARCHAR</code> 欄位時。換句話說，Tokenizer 不是獨立的物件，而是欄位層級的設定。Milvus 會在插入資料時自動執行標記化與預處理。</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -609,7 +609,7 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
 
 <span class="hljs-title class_">Complete</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>此外，Milvus 也支援 language_identifier tokenizer 搜尋。它會自動偵測指定文字的語言，這表示語言欄位是可選的。如需詳細資訊，請參閱<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> Milvus 2.6 如何在規模上升級多語言全文搜尋</a>。</p>
+<p>此外，Milvus 也支援 language_identifier tokenizer 搜尋。它會自動偵測指定文字的語言，這表示語言欄位是可選的。如需詳細資訊，請參閱<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> Milvus 2.6 如何在規模上升級多語言全文檢索</a>。</p>
 <h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -625,5 +625,5 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Analyzer 將過去簡單的預處理步驟變成定義明確、模組化的文字處理系統。它以標記化和過濾為基礎的設計，讓開發人員可以精細地控制語言的詮釋、清理和索引方式。無論您是建立單一語言的應用程式，或是跨多國語言的全球 RAG 系統，Analyzer 都能為全文搜尋提供一致的基礎。它是 Milvus 的一部分，默默地讓其他一切運作得更好。</p>
+    </button></h2><p>Milvus Analyzer 將過去簡單的預處理步驟變成定義明確、模組化的文字處理系統。它以標記化和過濾為基礎的設計，讓開發人員可以精細地控制語言的詮釋、清理和索引方式。無論您是建立單一語言的應用程式，或是跨多種語言的全球 RAG 系統，Analyzer 都能為全文搜尋提供一致的基礎。它是 Milvus 的一部分，默默地讓其他一切運作得更好。</p>
 <p>對任何功能有問題或想要深入瞭解？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。您也可以透過<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 預約 20 分鐘的一對一課程，以獲得深入的瞭解、指導和問題解答。</p>

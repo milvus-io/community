@@ -10,7 +10,7 @@ desc: >-
   Scoprite come Milvus Analyzer alimenta il reperimento ibrido dell'intelligenza
   artificiale con una tokenizzazione e un filtraggio efficienti, consentendo una
   ricerca full-text più rapida e intelligente.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -141,14 +141,14 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>L'analizzatore giusto rende la ricerca più veloce ed economica. Per soddisfare le diverse esigenze, Milvus offre tre tipi: Analizzatori integrati, multilingue e personalizzati.</p>
-<h3 id="Built-in-Analyzer" class="common-anchor-header">Analizzatore integrato</h3><p>Gli analizzatori incorporati sono pronti per l'uso e sono configurazioni standard che funzionano per gli scenari più comuni. Sono dotati di combinazioni predefinite di tokenizer e filtri:</p>
+<h3 id="Built-in-Analyzer" class="common-anchor-header">Analizzatore integrato</h3><p>Gli analizzatori incorporati sono pronti per l'uso e sono configurazioni standard che funzionano per gli scenari più comuni. Sono dotati di combinazioni predefinite di Tokenizer e filtri:</p>
 <table>
 <thead>
 <tr><th><strong>Nome</strong></th><th><strong>Componenti（Tokenizer+Filtri）</strong></th><th><strong>Caso d'uso</strong></th></tr>
 </thead>
 <tbody>
 <tr><td>Standard</td><td>Tokenizzatore standard + minuscolo</td><td>Uso generale per l'inglese o per le lingue delimitate da spazi</td></tr>
-<tr><td>Inglese</td><td>Tokenizzatore standard + Minuscolo + Stop + Stemmer</td><td>Ricerca in inglese con maggiore precisione</td></tr>
+<tr><td>Inglese</td><td>Tokenizzatore standard + Minuscole + Stop + Stemmer</td><td>Ricerca in inglese con maggiore precisione</td></tr>
 <tr><td>Cinese</td><td>Tokenizzatore Jieba + Solo Cnalphanum</td><td>Ricerca in cinese con segmentazione naturale delle parole</td></tr>
 </tbody>
 </table>

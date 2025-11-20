@@ -4,8 +4,7 @@ title: RAGのよりスマートな検索：Jina Embeddings v2とmilvusによる�
 author: Wei Zang
 date: 2025-10-11T00:00:00.000Z
 desc: 効率的で文脈を考慮した文書埋め込みと、より高速でスマートなベクトル検索のために、後期チャンキングとmilvusを使用してRAGの精度を向上させます。
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -69,7 +68,7 @@ canonicalUrl: >-
 <p><em>図2.ナイーブ・チャンキングとレイト・チャンキングの比較</em><em>（</em><a href="https://jina.ai/news/late-chunking-in-long-context-embedding-models/"><em>ソース）</em></a></p>
 <p>すべてのチャンクに完全なドキュメントのコンテキストを保持することで、Late Chunking は次のような効果をもたらします：</p>
 <ul>
-<li><p><strong>より高い検索精度-各チャンクは</strong>コンテキストを意識している。</p></li>
+<li><p><strong>検索精度の向上-各チャンクは</strong>文脈を意識している。</p></li>
 <li><p><strong>より少ないチャンク-より</strong>焦点を絞ったテキストをLLMに送ることができ、コストと待ち時間を削減できます。</p></li>
 </ul>
 <p>jina-embeddings-v2-base-enのような多くのロングコンテキストモデルは、最大8,192トークンまで処理することができます。</p>
@@ -89,7 +88,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Basic-Implementation" class="common-anchor-header">基本的な実装</h3><p>以下はレイトチャンキングのコア機能です。各ステップのガイドとして、分かりやすいドキュメントを追加しました。関数<code translate="no">sentence_chunker</code> は、元の文書を段落ベースのチャンクに分割し、チャンクの内容とチャンクの注釈情報<code translate="no">span_annotations</code> （つまり、各チャンクの開始と終了のインデックス）の両方を返します。</p>
+    </button></h2><h3 id="Basic-Implementation" class="common-anchor-header">基本的な実装</h3><p>以下はレイトチャンキングのコア機能です。各ステップのガイドとして、分かりやすいドキュメントを追加しました。関数<code translate="no">sentence_chunker</code> は元の文書を段落ベースのチャンクに分割し、チャンクの内容とチャンクの注釈情報<code translate="no">span_annotations</code> （各チャンクの開始と終了のインデックス）の両方を返します。</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">sentence_chunker</span>(<span class="hljs-params">document, batch_size=<span class="hljs-number">10000</span></span>):
     nlp = spacy.blank(<span class="hljs-string">&quot;en&quot;</span>)
     nlp.add_pipe(<span class="hljs-string">&quot;sentencizer&quot;</span>, config={<span class="hljs-string">&quot;punct_chars&quot;</span>: <span class="hljs-literal">None</span>})

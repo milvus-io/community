@@ -6,7 +6,7 @@ title: >-
   chiarezza al comportamento dell'agente LLM
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -20,7 +20,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md
 ---
-<p>Immaginate di dover portare a termine un compito che coinvolge 200 regole aziendali, 50 strumenti e 30 demo, e di avere solo un'ora di tempo per farlo. È semplicemente impossibile. Eppure spesso ci aspettiamo che i modelli linguistici di grandi dimensioni facciano esattamente questo, trasformandoli in "agenti" e sovraccaricandoli di istruzioni.</p>
+<p>Immaginate di dover completare un'attività che coinvolge 200 regole aziendali, 50 strumenti e 30 demo, e di avere solo un'ora di tempo per farlo. È semplicemente impossibile. Eppure spesso ci aspettiamo che i modelli linguistici di grandi dimensioni facciano esattamente questo, trasformandoli in "agenti" e sovraccaricandoli di istruzioni.</p>
 <p>In pratica, questo approccio si rompe rapidamente. I framework tradizionali per agenti, come LangChain o LlamaIndex, iniettano tutte le regole e gli strumenti nel contesto del modello in una volta sola, il che porta a conflitti di regole, sovraccarico del contesto e comportamento imprevedibile in produzione.</p>
 <p>Per risolvere questo problema, un framework open-source per agenti chiamato<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a> ha recentemente guadagnato terreno su GitHub. Introduce un nuovo approccio chiamato Alignment Modeling, insieme a un meccanismo di supervisione e a transizioni condizionali che rendono il comportamento degli agenti molto più controllabile e spiegabile.</p>
 <p>Se abbinato a <a href="https://milvus.io/"><strong>Milvus</strong></a>, un database vettoriale open-source, Parlant diventa ancora più capace. Milvus aggiunge intelligenza semantica, consentendo agli agenti di recuperare dinamicamente le regole e il contesto più rilevanti in tempo reale, mantenendoli accurati, efficienti e pronti per la produzione.</p>
@@ -469,7 +469,7 @@ python main.py
       </svg>
     </button></h2><p>Rispetto ai framework di agenti esistenti come <strong>LangChain</strong> o <strong>LlamaIndex</strong>, in cosa si differenzia Parlant?</p>
 <p>LangChain e LlamaIndex sono framework di uso generale. Offrono un'ampia gamma di componenti e integrazioni, che li rendono ideali per la prototipazione rapida e gli esperimenti di ricerca. Tuttavia, quando si tratta di distribuire in produzione, gli sviluppatori devono spesso costruire da soli dei livelli aggiuntivi, come la gestione delle regole, i controlli di conformità e i meccanismi di affidabilità, per mantenere gli agenti coerenti e affidabili.</p>
-<p>Parlant offre una gestione integrata delle linee guida, meccanismi di autocritica e strumenti di spiegabilità che aiutano gli sviluppatori a gestire il comportamento, le risposte e le motivazioni di un agente. Ciò rende Parlant particolarmente adatto a casi d'uso ad alto rischio e rivolti al cliente, in cui l'accuratezza e la responsabilità sono importanti, come nel settore finanziario, sanitario e legale.</p>
+<p>Parlant offre una gestione delle linee guida integrata, meccanismi di autocritica e strumenti di spiegabilità che aiutano gli sviluppatori a gestire il comportamento, le risposte e le motivazioni di un agente. Ciò rende Parlant particolarmente adatto a casi d'uso ad alto rischio e rivolti al cliente, in cui l'accuratezza e la responsabilità sono importanti, come nel settore finanziario, sanitario e legale.</p>
 <p>In effetti, questi framework possono lavorare insieme:</p>
 <ul>
 <li><p>Utilizzate LangChain per costruire complesse pipeline di elaborazione dei dati o flussi di lavoro di recupero.</p></li>

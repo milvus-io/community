@@ -3,9 +3,8 @@ id: smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.m
 title: 為 RAG 提供更聰明的擷取功能：使用 Jina Embeddings v2 和 Milvus 的後期分塊功能
 author: Wei Zang
 date: 2025-10-11T00:00:00.000Z
-desc: 使用 Late Chunking 和 Milvus 來提高 RAG 的準確度，以達到高效、上下文感知的文件嵌入，以及更快、更智慧的向量搜尋。
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+desc: 使用 Late Chunking 和 Milvus 來提升 RAG 的準確度，以達到高效、上下文感知的文件嵌入，以及更快、更智慧的向量搜尋。
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -21,7 +20,7 @@ canonicalUrl: >-
 <li><p><strong>遞歸分塊</strong>（分層分割）</p></li>
 <li><p><strong>語意分塊</strong>（依主題分類）</p></li>
 </ul>
-<p>雖然這些方法都有其優點，但它們往往會破壞長距離的上下文。為了解決這個挑戰，Jina AI 創造了一種 Late Chunking 方法：先嵌入整個文件，然後再分割出您的分塊。</p>
+<p>雖然這些方法都有其優點，但它們往往會破壞長距離的上下文。為了解決這個難題，Jina AI 創造了一種 Late Chunking 方法：先嵌入整個文件，然後再分割出您的分塊。</p>
 <p>在這篇文章中，我們將探討 Late Chunking 如何運作，並示範如何將它與<a href="https://milvus.io/">Milvus</a>結合<a href="https://milvus.io/">（Milvus 是</a>專為相似性搜尋建立的高效能開放原始碼向量資料庫），以大幅改善您的 RAG 管道。無論您是要建立企業知識庫、AI 驅動的客戶支援，或是進階的搜尋應用程式，這篇演練都會告訴您如何更有效地管理嵌入式規模。</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">什麼是後期分塊？<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -205,7 +204,7 @@ milvus_embedding = model.encode(<span class="hljs-string">&#x27;milvus 2.4.13&#x
 <span class="hljs-title function_">similarity_traditional</span>(<span class="hljs-string">&quot;milvus 2.4.13&quot;</span>, <span class="hljs-string">&quot;We highly recommend upgrading to this release for better performance and stability.&quot;</span>)
 <span class="hljs-attr">traditional_chunking</span>: <span class="hljs-number">0.71859795</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>我們可以看到，先嵌入完整的段落可以確保每個分塊都帶有 "<code translate="no">Milvus 2.4.13</code>" 上下文，從而提升相似度分數和檢索品質。</p>
+<p>我們可以看到，先嵌入完整的段落可以確保每個分塊都帶有 "<code translate="no">Milvus 2.4.13</code>" 上下文，進而提升相似度分數和檢索品質。</p>
 <h3 id="Testing-Late-Chunking-in-Milvus" class="common-anchor-header"><strong>在 Milvus 測試後期分塊</strong></h3><p>一旦生成了分塊嵌入，我們就可以將其存入 Milvus 並進行查詢。下面的程式碼會將分塊向量插入到集合中。</p>
 <h4 id="Importing-Embeddings-into-Milvus" class="common-anchor-header"><strong>將嵌入向量匯入 Milvus</strong></h4><pre><code translate="no">batch_data=[]
 <span class="hljs-keyword">for</span> i in <span class="hljs-keyword">range</span>(<span class="hljs-built_in">len</span>(chunks)):
@@ -271,9 +270,9 @@ res = client.insert(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在這篇文章中，我們深入探討了 Late Chunking 的機制和優點。我們首先識別了傳統分塊方法的缺點，尤其是在處理長文件時，保留上下文是非常重要的。我們介紹了後期分塊 (Late Chunking) 的概念 - 在將文檔分割成有意義的分塊之前先嵌入整個文檔，並展示了這種方法如何保留全局上下文，從而提高語義相似性和檢索準確性。</p>
+    </button></h2><p>在這篇文章中，我們深入探討了 Late Chunking 的機制和優點。我們首先識別了傳統分塊方法的缺點，尤其是在處理長文件時，保留上下文是非常重要的。我們介紹了後期分塊 (Late Chunking) 的概念 - 在將文檔分割成有意義的分塊之前先嵌入整個文檔，並展示了這如何保留全局上下文，從而提高語義相似性和檢索準確性。</p>
 <p>接著，我們使用 Jina AI 的 jina-embeddings-v2-base-en 模型進行實作，並與傳統方法比較評估其效能。最後，我們展示了如何將 Chunk embeddings 整合到 Milvus 中，以進行可擴充且精確的向量搜尋。</p>
-<p>Late Chunking 提供了一種<strong>上下文第一</strong>的嵌入方法，非常適合上下文最重要的複雜長篇文件。先嵌入整個文字，之後再進行切片，您可以獲得以下好處：</p>
+<p>Late Chunking 提供了一種<strong>上下文第一</strong>的嵌入方法，非常適合上下文最重要的複雜長篇文件。先嵌入整個文字，之後再進行分塊，您可以獲得以下好處</p>
 <ul>
 <li><p><strong>更精確的檢索準確度</strong></p></li>
 <li><p><strong>精簡、集中的 LLM 提示</strong></p></li>

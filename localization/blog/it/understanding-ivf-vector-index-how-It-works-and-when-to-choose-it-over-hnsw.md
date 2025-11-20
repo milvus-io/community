@@ -5,7 +5,7 @@ title: >-
   rispetto a HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -81,10 +81,10 @@ origin: >-
 </ul>
 <h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Fase 2: Assegnazione dei vettori</h3><p>Successivamente, ogni vettore viene assegnato al cluster al cui centroide è più vicino, formando liste invertite (List_i). Ogni lista invertita memorizza gli ID e le informazioni di memorizzazione di tutti i vettori che appartengono a quel cluster.</p>
 <p>Si può pensare a questa fase come a una sistemazione dei libri nelle rispettive sezioni. Quando si cerca un titolo in un secondo momento, è sufficiente controllare le poche sezioni in cui è più probabile che sia presente, invece di girare per l'intera biblioteca.</p>
-<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Fase 3: Codifica di compressione (opzionale)</h3><p>Per risparmiare memoria e accelerare i calcoli, i vettori di ciascun cluster possono essere sottoposti a una codifica di compressione. Esistono due approcci comuni:</p>
+<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Fase 3: Codifica di compressione (opzionale)</h3><p>Per risparmiare memoria e velocizzare il calcolo, i vettori di ciascun cluster possono essere sottoposti a una codifica di compressione. Esistono due approcci comuni:</p>
 <ul>
 <li><p><strong>SQ8 (Quantizzazione scalare):</strong> Questo metodo quantizza ogni dimensione di un vettore in 8 bit. Per un vettore standard <code translate="no">float32</code>, ogni dimensione occupa in genere 4 byte. Con SQ8, viene ridotta a un solo byte, ottenendo un rapporto di compressione di 4:1 e mantenendo la geometria del vettore sostanzialmente intatta.</p></li>
-<li><p><strong>PQ (Product Quantization):</strong> Suddivide un vettore ad alta dimensione in diversi sottospazi. Ad esempio, un vettore di 128 dimensioni può essere suddiviso in 8 sottovettori di 16 dimensioni ciascuno. In ogni sottospazio, viene preaddestrato un piccolo codebook (in genere con 256 voci) e ogni sottovettore è rappresentato da un indice a 8 bit che punta alla voce del codebook più vicina. Ciò significa che il vettore originale 128-D <code translate="no">float32</code> (che richiede 512 byte) può essere rappresentato utilizzando solo 8 byte (8 sottospazi × 1 byte ciascuno), ottenendo un rapporto di compressione 64:1.</p></li>
+<li><p><strong>PQ (Product Quantization):</strong> Suddivide un vettore ad alta dimensione in diversi sottospazi. Ad esempio, un vettore di 128 dimensioni può essere suddiviso in 8 sottovettori di 16 dimensioni ciascuno. In ogni sottospazio viene preaddestrato un piccolo codebook (in genere con 256 voci) e ogni sottovettore è rappresentato da un indice a 8 bit che punta alla voce del codebook più vicina. Ciò significa che il vettore originale 128-D <code translate="no">float32</code> (che richiede 512 byte) può essere rappresentato utilizzando solo 8 byte (8 sottospazi × 1 byte ciascuno), ottenendo un rapporto di compressione di 64:1.</p></li>
 </ul>
 <h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">Come utilizzare l'indice del vettore FIV per la ricerca<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -147,7 +147,7 @@ origin: >-
 <p>Sulla base di questi compromessi, ecco una regola pratica:</p>
 <p>Per i set di dati <strong>su scala milionaria</strong>, un buon punto di partenza è <strong>nlist ≈ √n</strong> (n è il numero di vettori nello shard di dati da indicizzare).</p>
 <p>Ad esempio, se si dispone di 1 milione di vettori, provare nlist = 1.000. Per insiemi di dati più grandi - decine o centinaia di milioni - la maggior parte dei database vettoriali suddivide i dati in modo che ogni shard contenga circa un milione di vettori, mantenendo questa regola pratica.</p>
-<p>Poiché nlist è fissato al momento della creazione dell'indice, modificarlo in seguito significa ricostruire l'intero indice. Quindi è meglio sperimentare subito. Provate diversi valori, possibilmente in potenze di due (ad esempio, 1024, 2048), per trovare il punto di equilibrio tra velocità, precisione e memoria per il vostro carico di lavoro.</p>
+<p>Poiché nlist è fissato al momento della creazione dell'indice, modificarlo in seguito significa ricostruire l'intero indice. Quindi è meglio sperimentare subito. Testate diversi valori, possibilmente in potenze di due (ad esempio, 1024, 2048), per trovare il punto di equilibrio tra velocità, precisione e memoria per il vostro carico di lavoro.</p>
 <h3 id="How-to-Tune-nprobe" class="common-anchor-header">Come regolare nprobe</h3><p>Il parametro nprobe controlla il numero di cluster ricercati durante l'interrogazione. Influisce direttamente sul compromesso tra richiamo e latenza.</p>
 <ul>
 <li><p><strong>Un nprobe più grande</strong>: Copre un maggior numero di cluster, il che comporta un richiamo più elevato, ma anche una maggiore latenza. Il ritardo aumenta generalmente in modo lineare con il numero di cluster cercati.</p></li>

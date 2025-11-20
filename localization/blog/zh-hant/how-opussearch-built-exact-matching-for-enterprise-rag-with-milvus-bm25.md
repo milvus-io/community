@@ -3,7 +3,7 @@ id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
 title: OpusSearch 如何利用 Milvus BM25 為企業 RAG 建立精確匹配
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -33,7 +33,7 @@ origin: >-
     </button></h2><p>想像一下：您是一位正在趕截稿的視訊編輯。您需要播客 「第 281 集 」的片段。您將它輸入到我們的搜尋中。我們的 AI 驅動的語意搜尋以其智慧引以為傲，會返回 280、282 的片段，甚至會建議第 218 集的片段，因為數字很相似，對吧？</p>
 <p><strong>錯了</strong>。</p>
 <p>當我們在 2025 年 1 月針對企業推出<a href="https://www.opus.pro/opussearch">OpusSearch</a>時，我們以為語意搜尋就夠了。自然語言查詢，例如「尋找有關約會的有趣片段」，效果非常好。我們由<a href="https://milvus.io/">Milvus 驅動的</a> RAG 系統非常成功。</p>
-<p><strong>但隨後的使用者回饋卻讓我們大受打擊：</strong></p>
+<p><strong>但隨後的使用者回饋讓我們大受打擊：</strong></p>
 <p>"我只想要第 281 集的片段。為什麼這麼難？</p>
 <p>"當我搜尋「她是這麼說的」時，我想要的正是這句話，而不是「他是這個意思」"。</p>
 <p>原來視訊編輯和剪接師並不總是希望 AI 很聰明。有時候，他們希望軟體<strong>直截了當且正確無誤</strong>。</p>
@@ -238,7 +238,7 @@ origin: >-
 })
 <button class="copy-code-btn"></button></code></pre>
 <h3 id="Collection-Design-Maintain-Clear-Separation-of-Concerns" class="common-anchor-header">集合設計：保持清晰的關注區隔</h3><p>我們的架構使用每個功能領域的專用集合。這種模組化方法可將模式變更的影響降至最低，並提高可維護性。</p>
-<h3 id="Memory-Usage-Optimize-with-MMAP" class="common-anchor-header">記憶體使用：使用 MMAP 進行最佳化</h3><p>稀疏索引需要大量的記憶體分配。對於大型文字資料集，我們建議配置 MMAP 以利用磁碟儲存。此方法需要足夠的 I/O 容量，以維持效能特性。</p>
+<h3 id="Memory-Usage-Optimize-with-MMAP" class="common-anchor-header">記憶體使用：使用 MMAP 優化</h3><p>稀疏索引需要大量的記憶體分配。對於大型文字資料集，我們建議配置 MMAP 以利用磁碟儲存。此方法需要足夠的 I/O 容量，以維持效能特性。</p>
 <pre><code translate="no"><span class="hljs-comment">// In your Milvus configuration</span>
 <span class="hljs-attr">use_mmap</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
@@ -258,7 +258,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>在 2025 年 6 月部署精確匹配功能之後，我們觀察到使用者滿意度指標有明顯的改善，而且搜尋相關問題的支援量也減少了。我們的雙重模式方法可針對探索性查詢進行語意搜尋，同時為特定內容檢索提供精確匹配。</p>
-<p>主要的架構優點：維持單一資料庫系統同時支援兩種搜尋模式，降低作業複雜度，同時擴充功能。</p>
+<p>主要的架構優勢：維持單一資料庫系統同時支援兩種搜尋模式，降低作業複雜度，同時擴充功能。</p>
 <h2 id="What’s-Next" class="common-anchor-header">下一步是什麼？<button data-href="#What’s-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -275,4 +275,4 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>我們正在嘗試<strong>在單一搜尋中結合語意和精確匹配的</strong> <strong>混合</strong> <strong>查詢</strong>。想像一下：「尋找第 281 集的有趣片段」，其中「有趣」使用語意搜尋，而「第 281 集」則使用精確匹配。</p>
-<p>搜索的未來不是在語義 AI 和精確匹配之間做選擇。而是在同一個系統中智慧地使用<strong>兩者</strong>。</p>
+<p>搜索的未來不是在語義 AI 和精確匹配之間挑選。而是在同一個系統中智慧地使用<strong>兩者</strong>。</p>

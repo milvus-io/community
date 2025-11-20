@@ -3,7 +3,7 @@ id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
 title: オーパス・サーチがMilvus BM25でエンタープライズRAGのための完全一致マッチングを構築した方法
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -38,7 +38,7 @@ origin: >-
 <p><strong>しかし、現実はユーザーからのフィードバックで私たちを直撃した：</strong></p>
 <p>「281話のクリップが欲しいだけなのに。なぜこんなに難しいのか？</p>
 <p>"That's what she said "を検索するとき、"that's what he meant "ではなく、正確にそのフレーズが欲しいのです。</p>
-<p>ビデオ編集者やクリッパーは、常にAIに賢さを求めているわけではないことがわかった。時には、ソフトウェアに<strong>わかりやすく正しい</strong>ことを求めることもあるのだ。</p>
+<p>ビデオ編集者やクリッパーは、常にAIに賢さを求めているわけではないことがわかった。時には、ソフトウェアに<strong>率直で正しい</strong>ことを求めることもあるのだ。</p>
 <h2 id="Why-do-we-care-about-Search" class="common-anchor-header">なぜ検索にこだわるのか？<button data-href="#Why-do-we-care-about-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -119,13 +119,13 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvusの全文検索は、完全一致というわけではなく、BM25<a href="https://en.wikipedia.org/wiki/Okapi_BM25">（Best Matching 25</a>）を使った関連性スコアリングというもので、クエリと文書の関連性を計算する。BM25は、"近いものを探す "のには最適ですが、"これと同じものを探す "のには不向きです。</p>
-<p>私たちは<strong>BM25のパワーをMilvusのTEXT_MATCHフィルタリングと組み合わせました</strong>。その仕組みはこうだ：</p>
+<p>私たちは<strong>BM25の力をMilvusのTEXT_MATCHフィルタリングと組み合わせました</strong>。その仕組みはこうだ：</p>
 <ol>
 <li><p><strong>まずフィルターをかけます</strong>：TEXT_MATCHはあなたのキーワードを正確に含む文書を見つける。</p></li>
 <li><p><strong>次にランク付け</strong>: BM25はこれらの完全一致を関連性でソートします。</p></li>
 <li><p><strong>勝利</strong>：インテリジェントにランク付けされた完全一致を得る</p></li>
 </ol>
-<p>"エピソード281 "を含むものをすべて表示し、その中からベストなものを最初に表示する "と考えてください。</p>
+<p>"エピソード281 "を含むものをすべて表示し、ベストなものを最初に表示する "と考えてください。</p>
 <h2 id="The-Code-That-Made-It-Work" class="common-anchor-header">成功させたコード<button data-href="#The-Code-That-Made-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

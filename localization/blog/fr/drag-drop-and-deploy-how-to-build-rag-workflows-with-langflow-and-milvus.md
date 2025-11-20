@@ -1,11 +1,11 @@
 ---
 id: drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 title: >-
-  Glisser, déposer et déployer : Comment créer des flux de travail RAG avec
+  Glisser, déposer et déployer : Comment construire des flux de travail RAG avec
   Langflow et Milvus
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -19,10 +19,10 @@ desc: >-
 origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
-<p>L'élaboration d'un flux de travail d'IA semble souvent plus difficile qu'elle ne devrait l'être. Entre l'écriture du code glue, le débogage des appels API et la gestion des pipelines de données, le processus peut prendre des heures avant même que vous ne voyiez des résultats. <a href="https://www.langflow.org/"><strong>Langflow</strong></a> et <a href="https://milvus.io/"><strong>Milvus</strong></a> simplifient considérablement ce processus en vous permettant de concevoir, de tester et de déployer des workflows de génération augmentée par récupération (RAG) en quelques minutes et non en quelques jours.</p>
+<p>L'élaboration d'un flux de travail d'IA semble souvent plus difficile qu'elle ne devrait l'être. Entre l'écriture du code glue, le débogage des appels API et la gestion des pipelines de données, le processus peut prendre des heures avant même que vous ne voyiez des résultats. <a href="https://www.langflow.org/"><strong>Langflow</strong></a> et <a href="https://milvus.io/"><strong>Milvus</strong></a> simplifient considérablement ce processus en vous permettant de concevoir, de tester et de déployer des workflows RAG (retrieval-augmented generation) en quelques minutes, et non en quelques jours.</p>
 <p><strong>Langflow</strong> offre une interface propre, basée sur le principe du glisser-déposer, qui ressemble plus à un croquis sur un tableau blanc qu'à du codage. Vous pouvez connecter visuellement des modèles linguistiques, des sources de données et des outils externes pour définir la logique de votre flux de travail, le tout sans toucher à une ligne de code standard.</p>
 <p>Associés à <strong>Milvus</strong>, la base de données vectorielle open-source qui confère aux LLM une mémoire à long terme et une compréhension contextuelle, les deux éléments forment un environnement complet pour un RAG de niveau production. Milvus stocke et récupère efficacement les embeddings à partir de votre entreprise ou de données spécifiques à un domaine, ce qui permet aux LLM de générer des réponses fondées, précises et contextuelles.</p>
-<p>Dans ce guide, nous allons voir comment combiner Langflow et Milvus pour construire un flux de travail RAG avancé, le tout en quelques glisser-déposer et clics.</p>
+<p>Dans ce guide, nous allons voir comment combiner Langflow et Milvus pour construire un flux de travail RAG avancé, le tout grâce à quelques glisser-déposer et clics.</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">Qu'est-ce que Langflow ?<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -217,6 +217,6 @@ conda activate langflow
         ></path>
       </svg>
     </button></h2><p>Construire des workflows d'IA n'a pas besoin d'être compliqué. Langflow + Milvus le rend rapide, visuel et léger en code - un moyen simple d'améliorer RAG sans gros effort d'ingénierie.</p>
-<p>L'interface drag-and-drop de Langflow en fait un choix approprié pour l'enseignement, les ateliers ou les démonstrations en direct, lorsque vous avez besoin de démontrer comment les systèmes d'IA fonctionnent d'une manière claire et interactive. Pour les équipes cherchant à intégrer la conception intuitive de flux de travail à la recherche vectorielle de niveau entreprise, la combinaison de la simplicité de Langflow avec la recherche haute performance de Milvus offre à la fois flexibilité et puissance.</p>
+<p>L'interface drag-and-drop de Langflow en fait un choix approprié pour l'enseignement, les ateliers ou les démonstrations en direct, lorsque vous avez besoin de démontrer comment les systèmes d'IA fonctionnent d'une manière claire et interactive. Pour les équipes qui cherchent à intégrer la conception intuitive de flux de travail à la recherche vectorielle de niveau entreprise, la combinaison de la simplicité de Langflow et de la recherche haute performance de Milvus offre à la fois flexibilité et puissance.</p>
 <p>👉 Commencez à créer des flux de travail RAG plus intelligents avec <a href="https://milvus.io/">Milvus</a> dès aujourd'hui.</p>
 <p>Vous avez des questions ou souhaitez approfondir une fonctionnalité ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou déposez des problèmes sur<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des aperçus, des conseils et des réponses à vos questions par le biais des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

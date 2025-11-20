@@ -4,8 +4,7 @@ title: 更智能的 RAG 检索：使用 Jina Embeddings v2 和 Milvus 进行后�
 author: Wei Zang
 date: 2025-10-11T00:00:00.000Z
 desc: 利用 Late Chunking 和 Milvus 提高 RAG 的准确性，从而实现高效的上下文感知文档嵌入以及更快、更智能的向量搜索。
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -51,7 +50,7 @@ canonicalUrl: >-
 <p>启发式的解决方法--如滑动窗口、重叠上下文和重复扫描--提供了部分缓解，但无法保证。</p>
 <p><strong>传统的分块法</strong>遵循这一流程：</p>
 <ol>
-<li><p>对文本进行<strong>预分块</strong>（按句子、段落或最大标记长度）。</p></li>
+<li><p><strong>预分块</strong>文本（按句子、段落或最大标记长度）。</p></li>
 <li><p>分别<strong>嵌入</strong>每个分块。</p></li>
 <li><p><strong>将</strong>标记嵌入<strong>聚合</strong>（例如通过平均池化）为单一的分块向量。</p></li>
 </ol>

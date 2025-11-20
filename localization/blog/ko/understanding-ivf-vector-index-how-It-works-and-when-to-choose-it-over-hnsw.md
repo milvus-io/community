@@ -3,7 +3,7 @@ id: understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.
 title: '시험관 아기 벡터 인덱스 이해: 작동 방식 및 HNSW보다 선택해야 하는 경우'
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -188,7 +188,7 @@ origin: >-
 <tr><td><strong>알고리즘 개념</strong></td><td>클러스터링 및 버킷화</td><td>다층 그래프 탐색</td></tr>
 <tr><td><strong>메모리 사용량</strong></td><td>비교적 낮음</td><td>비교적 높음</td></tr>
 <tr><td><strong>인덱스 구축 속도</strong></td><td>빠름(클러스터링만 필요)</td><td>느림(다층 그래프 구성 필요)</td></tr>
-<tr><td><strong>쿼리 속도(필터링 없음)</strong></td><td>빠름, <em>nprobe에</em> 따라 다름</td><td>매우 빠르지만 대수적 복잡성이 있습니다.</td></tr>
+<tr><td><strong>쿼리 속도(필터링 없음)</strong></td><td>빠름, <em>nprobe에</em> 따라 다름</td><td>매우 빠름, 그러나 대수적 복잡성이 있음</td></tr>
 <tr><td><strong>쿼리 속도(필터링 포함)</strong></td><td>안정적 - 중심 수준에서 거친 필터링을 수행하여 후보를 좁힙니다.</td><td>불안정 - 특히 필터링 비율이 높은 경우(90% 이상), 그래프가 조각화되고 무차별 검색보다 훨씬 느린 전체 그래프 탐색으로 저하될 수 있습니다.</td></tr>
 <tr><td><strong>리콜률</strong></td><td>압축 사용 여부에 따라 다르며, 정량화하지 않으면 리콜률이 <strong>95% 이상에</strong> 달할 수 있습니다.</td><td>일반적으로 약 <strong>98%</strong> 이상으로 더 높습니다.</td></tr>
 <tr><td><strong>주요 파라미터</strong></td><td><em>nlist</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_construction</em>, <em>ef_search</em></td></tr>
@@ -201,7 +201,7 @@ origin: >-
 <p>실제로 IVF 인덱스는 이미 다양한 도메인에서 영향력이 큰 많은 사용 사례를 지원하고 있습니다:</p>
 <ul>
 <li><p><strong>전자 상거래 검색:</strong> 사용자가 제품 이미지를 업로드하면 수백만 개의 목록에서 시각적으로 유사한 항목을 즉시 찾을 수 있습니다.</p></li>
-<li><p><strong>특허 검색:</strong> 짧은 설명이 주어지면 시스템은 방대한 데이터베이스에서 의미론적으로 가장 연관성이 높은 특허를 찾아낼 수 있어 기존의 키워드 검색보다 훨씬 효율적입니다.</p></li>
+<li><p><strong>특허 검색:</strong> 짧은 설명이 주어지면 시스템은 방대한 데이터베이스에서 의미적으로 가장 연관성이 높은 특허를 찾아낼 수 있으며, 이는 기존의 키워드 검색보다 훨씬 더 효율적입니다.</p></li>
 <li><p><strong>RAG 지식 기반:</strong> IVF는 수백만 개의 테넌트 문서에서 가장 관련성이 높은 문맥을 검색하여 AI 모델이 보다 정확하고 근거 있는 답변을 생성할 수 있도록 지원합니다.</p></li>
 </ul>
 <h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">

@@ -6,7 +6,7 @@ title: >-
   contrôle et clarté au comportement des agents LLM
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -42,7 +42,7 @@ origin: >-
       </svg>
     </button></h2><p>Les frameworks d'agents traditionnels aiment faire les choses en grand : des centaines de règles, des dizaines d'outils et une poignée de démonstrations, le tout entassé dans un seul et unique message d'accueil surchargé. Cela peut sembler parfait dans une démo ou un petit test en bac à sable, mais une fois que vous le mettez en production, les fissures commencent à apparaître rapidement.</p>
 <ul>
-<li><p><strong>Les règles contradictoires sont source de chaos :</strong> Lorsque deux règles ou plus s'appliquent en même temps, ces frameworks n'ont aucun moyen intégré de décider laquelle l'emporte. Parfois, il en choisit une. Parfois, il mélange les deux. Parfois, il fait quelque chose de totalement imprévisible.</p></li>
+<li><p><strong>Les règles contradictoires provoquent le chaos :</strong> Lorsque deux règles ou plus s'appliquent en même temps, ces frameworks n'ont aucun moyen intégré de décider laquelle l'emporte. Parfois, il en choisit une. Parfois, il mélange les deux. Parfois, il fait quelque chose de totalement imprévisible.</p></li>
 <li><p><strong>Les cas marginaux révèlent les lacunes :</strong> Il est impossible de prévoir tout ce qu'un utilisateur pourrait dire. Et lorsque votre modèle est confronté à quelque chose qui ne fait pas partie de ses données d'apprentissage, il se contente de réponses génériques, sans engagement.</p></li>
 <li><p><strong>Le débogage est pénible et coûteux :</strong> Lorsqu'un agent se comporte mal, il est presque impossible de déterminer quelle règle est à l'origine du problème. Comme tout se trouve dans une énorme invite système, le seul moyen de résoudre le problème est de réécrire l'invite et de tout tester à nouveau à partir de zéro.</p></li>
 </ul>
@@ -125,7 +125,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Pour que ce flux de travail soit possible, la base de données vectorielles doit offrir trois fonctionnalités essentielles : une recherche par approximation du plus proche voisin (ANN) très performante, un filtrage flexible des métadonnées et des mises à jour de vecteurs en temps réel. <a href="https://milvus.io/"><strong>Milvus</strong></a>, la base de données vectorielles open-source et cloud-native, offre des performances de niveau production dans ces trois domaines.</p>
+<p>Pour que ce flux de travail soit possible, la base de données vectorielles doit offrir trois fonctionnalités essentielles : une recherche par approximation du plus proche voisin (ANN) très performante, un filtrage flexible des métadonnées et des mises à jour des vecteurs en temps réel. <a href="https://milvus.io/"><strong>Milvus</strong></a>, la base de données vectorielles open-source et cloud-native, offre des performances de niveau production dans ces trois domaines.</p>
 <p>Pour comprendre comment Milvus fonctionne dans des scénarios réels, prenons l'exemple d'un agent de services financiers.</p>
 <p>Supposons que le système définisse 800 directives commerciales couvrant des tâches telles que les demandes de renseignements sur les comptes, les transferts de fonds et les consultations sur les produits de gestion de patrimoine. Dans cette configuration, Milvus fait office de couche de stockage et d'extraction pour toutes les données relatives aux directives.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, Collection, FieldSchema, CollectionSchema, DataType
@@ -165,7 +165,7 @@ guideline_collection.create_index(field_name=<span class="hljs-string">&quot;con
     <span></span>
   </span>
 </p>
-<p>Dans cette configuration, Milvus offre une latence P99 inférieure à 15 ms, même lorsque la bibliothèque de lignes directrices atteint 100 000 entrées. Par comparaison, l'utilisation d'une base de données relationnelle traditionnelle avec correspondance par mot-clé entraîne généralement une latence supérieure à 200 ms et une précision de correspondance nettement inférieure.</p>
+<p>Dans cette configuration, Milvus offre une latence P99 inférieure à 15 ms, même lorsque la bibliothèque de lignes directrices atteint 100 000 entrées. Par comparaison, l'utilisation d'une base de données relationnelle traditionnelle avec une correspondance par mot-clé entraîne généralement une latence supérieure à 200 ms et une précision de correspondance nettement inférieure.</p>
 <h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Comment Milvus permet la mémoire à long terme et la personnalisation</h3><p>Milvus ne se contente pas de faire correspondre des lignes directrices. Dans les scénarios où les agents ont besoin d'une mémoire à long terme et de réponses personnalisées, Milvus peut servir de couche de mémoire qui stocke et récupère les interactions passées des utilisateurs sous forme de vecteurs intégrés, ce qui aide l'agent à se souvenir de ce qui a été discuté auparavant.</p>
 <pre><code translate="no"><span class="hljs-comment"># store user’s past interactions</span>
 user_memory_fields = [

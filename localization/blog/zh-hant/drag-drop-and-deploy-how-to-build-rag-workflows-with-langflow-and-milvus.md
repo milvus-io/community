@@ -3,7 +3,7 @@ id: drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 title: 拖、放、部署：如何使用 Langflow 和 Milvus 建立 RAG 工作流程
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -15,7 +15,7 @@ origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
 <p>建立一個 AI 工作流程通常會覺得比想像中困難。在撰寫膠水程式碼、調試 API 呼叫和管理資料管道之間，這個過程可能要花上好幾個小時才能看到結果。<a href="https://www.langflow.org/"><strong>Langflow</strong></a>和<a href="https://milvus.io/"><strong>Milvus</strong></a>大幅簡化了這一過程 - 讓您可以輕鬆編碼，在幾分鐘而非幾天內設計、測試和部署檢索增量生成 (RAG) 工作流程。</p>
-<p><strong>Langflow</strong>提供簡潔的拖放式介面，感覺更像是在白板上勾勒想法，而不是編寫程式。您可以直觀地將語言模型、資料來源和外部工具連接起來，以定義您的工作流程邏輯 - 所有這一切都不需要碰觸任何一行模板程式碼。</p>
+<p><strong>Langflow</strong>提供簡潔的拖放式介面，感覺更像是在白板上勾勒想法，而不是編寫程式。您可以直觀地連接語言模型、資料來源和外部工具，以定義您的工作流程邏輯 - 所有這一切都不需要碰觸任何一行模板程式碼。</p>
 <p><strong>Milvus</strong> 是開放原始碼的向量資料庫，可讓 LLM 具備長期記憶與上下文理解能力，搭配<strong>Milvus</strong>，兩者可組成完整的生產級 RAG 環境。Milvus 可以有效地儲存和擷取企業或特定領域資料中的嵌入，讓 LLMs 可以產生有根據、準確且能感知上下文的答案。</p>
 <p>在本指南中，我們將介紹如何結合 Langflow 與 Milvus 來建立進階的 RAG 工作流程 - 所有這一切只需要幾個拖曳、下拉與點選動作。</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">什麼是 Langflow？<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
@@ -34,7 +34,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>在進行 RAG 示範之前，讓我們先瞭解 Langflow 是什麼，以及它能做什麼。</p>
-<p>Langflow 是一個以 Python 為基礎的開放原始碼框架，可讓您更輕鬆地建立與實驗 AI 應用程式。它支援代理和模型上下文協定 (MCP) 等關鍵 AI 功能，為開發人員和非開發人員創造智慧系統提供了靈活的基礎。</p>
+<p>Langflow 是一個開放原始碼、以 Python 為基礎的框架，可讓您更輕鬆地建立和實驗 AI 應用程式。它支援代理和模型上下文協定 (MCP) 等關鍵 AI 功能，為開發人員和非開發人員創造智慧型系統提供了靈活的基礎。</p>
 <p>Langflow 的核心是提供可視化編輯器。您可以拖放和連接不同的資源，以設計結合模型、工具和資料來源的完整應用程式。當您匯出工作流程時，Langflow 會自動在您的本機產生一個名為<code translate="no">FLOW_NAME.json</code> 的檔案。這個檔案記錄了所有的節點、邊緣和描述流程的元資料，讓您可以輕鬆地在不同的團隊之間進行版本控制、分享和複製專案。</p>
 <p>
   <span class="img-wrapper">
@@ -60,7 +60,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>在 Langflow 架構的基礎上，Milvus 可作為向量資料庫，用來管理嵌入和擷取私有企業資料或特定領域的知識。</p>
-<p>在這個示範中，我們將使用 Langflow 的向量儲存 RAG 模版來示範如何整合 Milvus 並從本機資料建立向量索引，以實現高效率的情境增強問題解答。</p>
+<p>在這個示範中，我們將使用 Langflow 的向量儲存 RAG 模版來展示如何整合 Milvus 並從本機資料建立向量索引，以實現高效率的情境增強問題解答。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/data_processing_flow_289a9376c9.webp" alt="" class="doc-image" id="" />
@@ -158,7 +158,7 @@ conda activate langflow
 <h3 id="Step-6-Prepare-Test-Data" class="common-anchor-header">步驟 6.準備測試資料</h3><p>注意：使用 Milvus 2.6 的官方常見問題作為測試資料。</p>
 <pre><code translate="no">https://github.com/milvus-io/milvus-docs/blob/v2.6.x/site/en/faq/product_faq.md
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-7-Phase-One-Testing" class="common-anchor-header">步驟 7.第一階段測試</h3><p>上傳您的資料集，並將其擷取至 Milvus。 注意：然後 Langflow 會將您的文字轉換成向量表示法。您必須上傳至少兩個資料集，否則嵌入程序會失敗。這是 Langflow 目前節點實作中的已知錯誤。</p>
+<h3 id="Step-7-Phase-One-Testing" class="common-anchor-header">步驟 7.第一階段測試</h3><p>上傳您的資料集，並將其擷取至 Milvus。 注意：Langflow 接著會將您的文字轉換成向量表示。您必須上傳至少兩個資料集，否則嵌入程序會失敗。這是 Langflow 目前節點實作中的已知錯誤。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ingest_7b804d870a.webp" alt="" class="doc-image" id="" />

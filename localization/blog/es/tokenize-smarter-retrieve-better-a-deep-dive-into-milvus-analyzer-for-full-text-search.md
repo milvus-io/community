@@ -10,7 +10,7 @@ desc: >-
   Explore cómo Milvus Analyzer potencia la recuperación híbrida de IA con una
   tokenización y filtrado eficientes, permitiendo una búsqueda de texto completo
   más rápida e inteligente.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -21,7 +21,7 @@ origin: >-
   https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
 ---
 <p>Las aplicaciones modernas de IA son complejas y rara vez unidimensionales. En muchos casos, un único método de búsqueda no puede resolver por sí solo los problemas del mundo real. Tomemos como ejemplo un sistema de recomendación. Requiere <strong>una búsqueda vectorial</strong> para comprender el significado del texto o las imágenes, <strong>un filtrado de metadatos</strong> para refinar los resultados por precio, categoría o ubicación, y<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>una búsqueda de texto completo</strong></a> para gestionar consultas directas como "Nike Air Max". Cada método resuelve una parte diferente del rompecabezas, y los sistemas prácticos dependen de que todos ellos funcionen a la perfección.</p>
-<p>Milvus destaca en la búsqueda vectorial y el filtrado de metadatos y, a partir de la versión 2.5, introdujo la búsqueda de texto completo basada en el algoritmo optimizado BM25. Esta actualización hace que la búsqueda AI sea más inteligente y precisa, combinando la comprensión semántica con la intención precisa de palabras clave. Con<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a>, la búsqueda de texto completo es aún más rápida: hasta<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4 veces el rendimiento de Elasticsearch</a>.</p>
+<p>Milvus destaca en la búsqueda vectorial y el filtrado de metadatos y, a partir de la versión 2.5, introdujo la búsqueda de texto completo basada en el algoritmo optimizado BM25. Esta actualización hace que la búsqueda por IA sea más inteligente y precisa, combinando la comprensión semántica con la intención precisa de las palabras clave. Con<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a>, la búsqueda de texto completo es aún más rápida: hasta<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4 veces el rendimiento de Elasticsearch</a>.</p>
 <p>En el corazón de esta capacidad se encuentra <strong>Milvus Analyzer</strong>, el componente que transforma el texto en bruto en tokens buscables. Es lo que permite a Milvus interpretar el lenguaje de manera eficiente y realizar la concordancia de palabras clave a escala. En el resto de este artículo, nos sumergiremos en cómo funciona el Analizador Milvus y por qué es clave para liberar todo el potencial de la búsqueda híbrida en Milvus.</p>
 <h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">Qué es Milvus Analyzer？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -50,7 +50,7 @@ origin: >-
 <p>Como muestra el diagrama, Analyzer tiene dos componentes principales: <strong>Tokenizer</strong> y <strong>Filter</strong>. Juntos, convierten el texto de entrada en tokens y los optimizan para una indexación y recuperación eficientes.</p>
 <ul>
 <li><p><strong>Tokenizador</strong>: Divide el texto en tokens básicos utilizando métodos como la división de espacios en blanco (Whitespace), la segmentación de palabras chinas (Jieba) o la segmentación multilingüe (ICU).</p></li>
-<li><p><strong>Filtro</strong>: Procesa los tokens mediante transformaciones específicas. Milvus incluye un amplio conjunto de filtros incorporados para operaciones como la normalización de mayúsculas y minúsculas (Lowercase), la eliminación de puntuación (Removepunct), el filtrado de palabras vacías (Stop), el stemming (Stemmer) y la concordancia de patrones (Regex). Puede encadenar varios filtros para gestionar necesidades de procesamiento complejas.</p></li>
+<li><p><strong>Filtro</strong>: Procesa los tokens mediante transformaciones específicas. Milvus incluye un amplio conjunto de filtros incorporados para operaciones como la normalización de mayúsculas y minúsculas, la eliminación de puntuación (Removepunct), el filtrado de palabras vacías (Stop), el stemming (Stemmer) y la concordancia de patrones (Regex). Puede encadenar varios filtros para gestionar necesidades de procesamiento complejas.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -58,7 +58,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Milvus ofrece varios tipos de analizadores: tres opciones incorporadas (estándar, inglés y chino), analizadores personalizados en los que usted define sus propias combinaciones de tokenizador y filtro, y el analizador multilingüe para manejar documentos multilingües. El flujo de procesamiento es sencillo: Texto bruto → Tokenizer → Filtro → Tokens.</p>
+<p>Milvus ofrece varios tipos de analizadores: tres opciones incorporadas (estándar, inglés y chino), analizadores personalizados en los que usted define sus propias combinaciones de tokenizadores y filtros, y el analizador multilingüe para manejar documentos multilingües. El flujo de procesamiento es sencillo: Texto bruto → Tokenizer → Filtro → Tokens.</p>
 <h3 id="Tokenizer" class="common-anchor-header">Tokenizador</h3><p>El tokenizador es el primer paso del procesamiento. Divide el texto bruto en tokens más pequeños (palabras o subpalabras), y la elección correcta depende de su idioma y caso de uso.</p>
 <p>Milvus soporta actualmente los siguientes tipos de tokenizadores:</p>
 <table>

@@ -5,7 +5,7 @@ title: >-
   BM25
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -37,7 +37,7 @@ origin: >-
       </svg>
     </button></h2><p>Immaginate questo: Siete un editore video in scadenza. Hai bisogno di clip dall'"episodio 281" del tuo podcast. Lo digitate nella nostra ricerca. La nostra ricerca semantica basata sull'intelligenza artificiale, orgogliosa della sua intelligenza, restituisce clip da 280, 282 e suggerisce persino l'episodio 218 perché i numeri sono simili, giusto?</p>
 <p><strong>Sbagliato</strong>.</p>
-<p>Quando abbiamo lanciato <a href="https://www.opus.pro/opussearch">OpusSearch</a> per le aziende nel gennaio 2025, pensavamo che la ricerca semantica fosse sufficiente. Le query in linguaggio naturale come "trova momenti divertenti sugli appuntamenti" funzionavano benissimo. Il nostro sistema RAG <a href="https://milvus.io/">, alimentato da Milvus,</a> stava andando alla grande.</p>
+<p>Quando abbiamo lanciato <a href="https://www.opus.pro/opussearch">OpusSearch</a> per le aziende nel gennaio 2025, pensavamo che la ricerca semantica fosse sufficiente. Query in linguaggio naturale come "trova momenti divertenti sugli appuntamenti" funzionavano benissimo. Il nostro sistema RAG <a href="https://milvus.io/">, alimentato da Milvus,</a> stava andando alla grande.</p>
 <p><strong>Ma poi la realtà ci ha colpito con il feedback degli utenti:</strong></p>
 <p>"Voglio solo gli spezzoni dell'episodio 281. Perché è così difficile?".</p>
 <p>"Quando cerco 'Questo è quello che ha detto', voglio ESATTAMENTE quella frase, non 'Questo è quello che voleva dire'".</p>

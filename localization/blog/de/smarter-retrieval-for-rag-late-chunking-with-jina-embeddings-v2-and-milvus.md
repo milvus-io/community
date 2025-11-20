@@ -7,8 +7,7 @@ desc: >-
   Steigern Sie die RAG-Genauigkeit mit Late Chunking und Milvus für effiziente,
   kontextbewusste Dokumenteneinbettungen und schnellere, intelligentere
   Vektorsuche.
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -25,7 +24,7 @@ canonicalUrl: >-
 <li><p><strong>Semantisches Chunking</strong> (Gruppierung nach Themen)</p></li>
 </ul>
 <p>Diese Methoden haben zwar ihre Vorzüge, doch fehlt ihnen oft der weitreichende Kontext. Um dieser Herausforderung zu begegnen, hat Jina AI einen Late Chunking-Ansatz entwickelt: Zuerst wird das gesamte Dokument eingebettet, dann werden die Chunks herausgeschnitten.</p>
-<p>In diesem Artikel erfahren Sie, wie Late Chunking funktioniert und wie die Kombination mit <a href="https://milvus.io/">Milvus - einer</a>leistungsstarken Open-Source-Vektordatenbank, die für die Ähnlichkeitssuche entwickelt wurde - Ihre RAG-Pipelines drastisch verbessern kann. Ganz gleich, ob Sie unternehmensweite Wissensdatenbanken, KI-gesteuerten Kundensupport oder fortschrittliche Suchanwendungen erstellen, dieser Exkurs zeigt Ihnen, wie Sie Einbettungen im großen Maßstab effektiver verwalten können.</p>
+<p>In diesem Artikel erfahren Sie, wie Late Chunking funktioniert und wie die Kombination mit <a href="https://milvus.io/">Milvus - einer</a>leistungsstarken Open-Source-Vektordatenbank, die für die Ähnlichkeitssuche entwickelt wurde - Ihre RAG-Pipelines drastisch verbessern kann. Ganz gleich, ob Sie unternehmensweite Wissensdatenbanken, KI-gesteuerten Kundensupport oder fortgeschrittene Suchanwendungen erstellen, dieser Exkurs zeigt Ihnen, wie Sie Einbettungen im großen Maßstab effektiver verwalten können.</p>
 <h2 id="What-Is-Late-Chunking" class="common-anchor-header">Was ist Late Chunking?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -172,7 +171,7 @@ token_embeddings = document_to_token_embeddings(model, tokenizer, document)
 chunk_embeddings = late_chunking(token_embeddings, [span_annotations])[<span class="hljs-number">0</span>]
 <button class="copy-code-btn"></button></code></pre>
 <p><em>Tipp:</em> Wenn Sie Ihre Pipeline in Funktionen verpacken, können Sie leicht andere Langkontext-Modelle oder Chunking-Strategien einfügen.</p>
-<h3 id="Comparison-with-Traditional-Embedding-Methods" class="common-anchor-header">Vergleich mit traditionellen Einbettungsmethoden</h3><p>Um die Vorteile von Late Chunking weiter zu demonstrieren, haben wir es auch mit traditionellen Einbettungsmethoden verglichen, wobei wir eine Reihe von Beispieldokumenten und Abfragen verwendet haben.</p>
+<h3 id="Comparison-with-Traditional-Embedding-Methods" class="common-anchor-header">Vergleich mit traditionellen Einbettungsmethoden</h3><p>Um die Vorteile von Late Chunking weiter zu demonstrieren, haben wir es auch mit traditionellen Einbettungsmethoden verglichen, indem wir eine Reihe von Beispieldokumenten und Abfragen verwendet haben.</p>
 <p>Lassen Sie uns noch einmal unser Milvus 2.4.13 Release Note Beispiel betrachten:</p>
 <pre><code translate="no"><span class="hljs-title class_">Milvus</span> <span class="hljs-number">2.4</span><span class="hljs-number">.13</span> introduces dynamic replica load, allowing users to adjust the number <span class="hljs-keyword">of</span> collection replicas without needing to release and reload the collection. <span class="hljs-title class_">This</span> version also addresses several critical bugs related to bulk importing, expression parsing, load balancing, and failure recovery. <span class="hljs-title class_">Additionally</span>, significant improvements have been made to <span class="hljs-variable constant_">MMAP</span> resource usage and <span class="hljs-keyword">import</span> performance, enhancing overall system efficiency. <span class="hljs-title class_">We</span> highly recommend upgrading to <span class="hljs-variable language_">this</span> release <span class="hljs-keyword">for</span> better performance and stability.
 <button class="copy-code-btn"></button></code></pre>
@@ -280,5 +279,5 @@ res = client.insert(
 <ul>
 <li><p><strong>🔍 Höhere Abrufgenauigkeit</strong></p></li>
 <li><p>⚡ S <strong>chlanke, fokussierte LLM-Eingabeaufforderungen</strong></p></li>
-<li><p>🛠️ <strong>Einfache Integration</strong> in jedes Langtextmodell</p></li>
+<li><p>🛠️ <strong>Einfache Integration</strong> in ein beliebiges Modell für lange Kontexte</p></li>
 </ul>

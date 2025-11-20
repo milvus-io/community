@@ -5,7 +5,7 @@ title: >-
   Milvus
 author: Denise Ochoa-Mendoza
 date: 2025-11-10T00:00:00.000Z
-cover: assets.zilliz.com/hpe_cover_45b4796ef3.png
+cover: assets.zilliz.com/hpe_cover_ead19ff709.png
 tag: Engineering
 recommend: false
 publishToMedium: true

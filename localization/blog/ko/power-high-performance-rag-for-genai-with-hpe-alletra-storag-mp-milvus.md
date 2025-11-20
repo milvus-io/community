@@ -3,7 +3,7 @@ id: power-high-performance-rag-for-genai-with-hpe-alletra-storag-mp-milvus.md
 title: HPE Alletra 스토리지 MP + Milvus로 GenAI를 위한 고성능 RAG 지원
 author: Denise Ochoa-Mendoza
 date: 2025-11-10T00:00:00.000Z
-cover: assets.zilliz.com/hpe_cover_45b4796ef3.png
+cover: assets.zilliz.com/hpe_cover_ead19ff709.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -108,7 +108,7 @@ origin: >-
   </span>
 </p>
 <p>Milvus는 컴퓨팅과 스토리지를 깔끔하게 분리하는 반면, HPE Alletra Storage MP X10000은 벡터 워크로드에 맞춰 높은 처리량과 짧은 지연 시간을 제공하는 오브젝트 액세스를 제공합니다. 이 두 제품을 함께 사용하면 예측 가능한 스케일아웃 성능을 구현할 수 있습니다: Milvus는 쿼리를 여러 샤드에 분산하고, HPE Alletra Storage MP X10000의 부분적 다차원 확장은 데이터와 QPS가 증가함에 따라 지연 시간을 일관되게 유지합니다. 간단히 말해, 필요할 때 필요한 용량이나 성능을 정확하게 추가할 수 있습니다. 운영 간소화는 또 다른 장점입니다. HPE Alletra Storage MP X10000은 단일 버킷에서 최대 성능을 유지하므로 복잡한 계층화가 필요 없으며, 엔터프라이즈 기능(암호화, RBAC, 불변성, 견고한 내구성)은 강력한 데이터 주권과 일관된 서비스 수준 목표(SLO)로 온프레미스 또는 하이브리드 배포를 지원합니다.</p>
-<p>벡터 검색이 확장되면 스토리지가 느린 수집, 압축 또는 검색의 원인으로 지목되는 경우가 많습니다. HPE Alletra Storage MP X10000의 Milvus를 사용하면 이야기가 달라집니다. 이 플랫폼의 올-NVMe, 로그 구조화 아키텍처와 GPUDirect RDMA 옵션은 동시 접속이 많은 상황이나 인덱스 구축 및 재로드와 같은 수명주기 작업 중에도 일관되고 지연 시간이 매우 짧은 오브젝트 액세스를 제공합니다. 실제로, RAG 파이프라인은 스토리지에 종속되지 않고 컴퓨팅에 종속된 상태로 유지됩니다. 컬렉션이 증가하고 쿼리 볼륨이 급증하더라도 Milvus는 응답성을 유지하면서 HPE Alletra Storage MP X10000은 I/O 헤드룸을 보존하여 스토리지 재설계 없이 예측 가능한 선형 확장성을 구현합니다. 이는 RAG 배포가 초기 개념 증명 단계를 넘어 전체 프로덕션 단계로 확장될 때 특히 중요합니다.</p>
+<p>벡터 검색이 확장되면 스토리지가 느린 수집, 압축 또는 검색의 원인으로 지목되는 경우가 많습니다. HPE Alletra Storage MP X10000의 Milvus를 사용하면 이야기가 달라집니다. 이 플랫폼의 올-NVMe, 로그 구조 아키텍처와 GPUDirect RDMA 옵션은 동시 접속이 많은 상황이나 인덱스 구축 및 재로드와 같은 수명주기 작업 중에도 일관되고 지연 시간이 매우 짧은 오브젝트 액세스를 제공합니다. 실제로, RAG 파이프라인은 스토리지에 종속되지 않고 컴퓨팅에 종속된 상태로 유지됩니다. 컬렉션이 증가하고 쿼리 볼륨이 급증하더라도 Milvus는 응답성을 유지하면서 HPE Alletra Storage MP X10000은 I/O 헤드룸을 보존하여 스토리지 재설계 없이 예측 가능한 선형 확장성을 구현합니다. 이는 RAG 배포가 초기 개념 증명 단계를 넘어 전체 프로덕션 단계로 확장될 때 특히 중요합니다.</p>
 <h2 id="Enterprise-ready-RAG-Scalable-predictable-and-built-for-GenAI" class="common-anchor-header">엔터프라이즈급 RAG: 확장성, 예측 가능성, GenAI를 위한 구축<button data-href="#Enterprise-ready-RAG-Scalable-predictable-and-built-for-GenAI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

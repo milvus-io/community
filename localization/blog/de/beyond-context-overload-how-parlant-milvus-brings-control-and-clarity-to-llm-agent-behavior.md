@@ -6,7 +6,7 @@ title: >-
   LLM-Agenten Kontrolle und Klarheit verschafft
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -22,7 +22,7 @@ origin: >-
 ---
 <p>Stellen Sie sich vor, Sie sollen eine Aufgabe erledigen, die 200 Geschäftsregeln, 50 Tools und 30 Demos umfasst, und Sie haben dafür nur eine Stunde Zeit. Das ist einfach unmöglich. Dennoch erwarten wir oft, dass große Sprachmodelle genau das tun, wenn wir sie zu "Agenten" machen und sie mit Anweisungen überfrachten.</p>
 <p>In der Praxis scheitert dieser Ansatz jedoch schnell. Herkömmliche Agenten-Frameworks wie LangChain oder LlamaIndex injizieren alle Regeln und Werkzeuge auf einmal in den Kontext des Modells, was zu Regelkonflikten, Kontextüberlastung und unvorhersehbarem Verhalten in der Produktion führt.</p>
-<p>Um dieses Problem zu lösen, hat ein Open-Source-Agenten-Framework namens<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a> in letzter Zeit auf GitHub an Zugkraft gewonnen. Es führt einen neuen Ansatz namens Alignment Modeling ein, zusammen mit einem Überwachungsmechanismus und bedingten Übergängen, die das Agentenverhalten viel besser kontrollierbar und erklärbar machen.</p>
+<p>Um dieses Problem zu lösen, hat ein Open-Source-Agenten-Framework namens<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a> kürzlich auf GitHub an Zugkraft gewonnen. Es führt einen neuen Ansatz namens Alignment Modeling ein, zusammen mit einem Überwachungsmechanismus und bedingten Übergängen, die das Agentenverhalten viel besser kontrollierbar und erklärbar machen.</p>
 <p>In Verbindung mit <a href="https://milvus.io/"><strong>Milvus</strong></a>, einer Open-Source-Vektordatenbank, wird Parlant noch leistungsfähiger. Milvus fügt semantische Intelligenz hinzu, die es den Agenten ermöglicht, dynamisch und in Echtzeit die relevantesten Regeln und Kontexte abzurufen - so bleiben sie präzise, effizient und produktionsbereit.</p>
 <p>In diesem Beitrag erfahren Sie, wie Parlant im Verborgenen arbeitet und wie die Integration mit Milvus eine produktionsreife Lösung ermöglicht.</p>
 <h2 id="Why-Traditional-Agent-Frameworks-Fall-Apart" class="common-anchor-header">Warum traditionelle Agenten-Frameworks scheitern<button data-href="#Why-Traditional-Agent-Frameworks-Fall-Apart" class="anchor-icon" translate="no">
@@ -40,7 +40,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Herkömmliche Agenten-Frameworks lieben den großen Wurf: Hunderte von Regeln, Dutzende von Tools und eine Handvoll Demos - alles in einer einzigen, überladenen Eingabeaufforderung zusammengepfercht. Das mag in einer Demo oder einem kleinen Sandkastentest gut aussehen, aber sobald man es in die Produktion überführt, werden die Risse schnell sichtbar.</p>
+    </button></h2><p>Herkömmliche Agenten-Frameworks lieben es, groß aufzutreten: Hunderte von Regeln, Dutzende von Tools und eine Handvoll Demos - alles in einer einzigen, überladenen Eingabeaufforderung zusammengefasst. Das mag in einer Demo oder einem kleinen Sandkastentest gut aussehen, aber sobald man es in die Produktion überführt, zeigen sich schnell die Risse.</p>
 <ul>
 <li><p><strong>Widersprüchliche Regeln bringen Chaos:</strong> Wenn zwei oder mehr Regeln gleichzeitig gelten, haben diese Frameworks keine eingebaute Möglichkeit zu entscheiden, welche von ihnen gewinnt. Manchmal wird eine davon ausgewählt. Manchmal werden beide gemischt. Manchmal wird etwas völlig Unvorhersehbares getan.</p></li>
 <li><p><strong>Randfälle machen die Lücken deutlich:</strong> Sie können unmöglich alles vorhersagen, was ein Benutzer sagen könnte. Und wenn Ihr Modell auf etwas stößt, das nicht in seinen Trainingsdaten enthalten ist, gibt es nur allgemeine, unverbindliche Antworten.</p></li>
@@ -166,7 +166,7 @@ guideline_collection.create_index(field_name=<span class="hljs-string">&quot;con
   </span>
 </p>
 <p>In dieser Konfiguration liefert Milvus eine P99-Latenzzeit von unter 15 ms, selbst wenn die Richtlinienbibliothek auf 100.000 Einträge skaliert. Im Vergleich dazu führt die Verwendung einer herkömmlichen relationalen Datenbank mit Stichwortabgleich in der Regel zu einer Latenzzeit von über 200 ms und einer deutlich geringeren Treffergenauigkeit.</p>
-<h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Wie Milvus Langzeitgedächtnis und Personalisierung ermöglicht</h3><p>Milvus bietet mehr als nur den Abgleich von Richtlinien. In Szenarien, in denen Agenten ein Langzeitgedächtnis und personalisierte Antworten benötigen, kann Milvus als Gedächtnisebene dienen, die vergangene Interaktionen von Benutzern als Vektoreinbettungen speichert und abruft und dem Agenten hilft, sich an das zu erinnern, was zuvor besprochen wurde.</p>
+<h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Wie Milvus Langzeitgedächtnis und Personalisierung ermöglicht</h3><p>Milvus bietet mehr als nur den Abgleich von Richtlinien. In Szenarien, in denen Agenten ein Langzeitgedächtnis und personalisierte Antworten benötigen, kann Milvus als Gedächtnisebene dienen, die vergangene Interaktionen von Benutzern als Vektoreinbettungen speichert und abruft und dem Agenten hilft, sich zu erinnern, was zuvor besprochen wurde.</p>
 <pre><code translate="no"><span class="hljs-comment"># store user’s past interactions</span>
 user_memory_fields = [
     FieldSchema(name=<span class="hljs-string">&quot;interaction_id&quot;</span>, dtype=DataType.VARCHAR, max_length=<span class="hljs-number">100</span>, is_primary=<span class="hljs-literal">True</span>),
@@ -177,12 +177,12 @@ user_memory_fields = [
 ]
 memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&quot;</span>, schema=CollectionSchema(user_memory_fields))
 <button class="copy-code-btn"></button></code></pre>
-<p>Wenn derselbe Benutzer zurückkehrt, kann der Agent die relevantesten historischen Interaktionen von Milvus abrufen und sie verwenden, um eine vernetztere, menschenähnliche Erfahrung zu erzeugen. Wenn ein Nutzer beispielsweise letzte Woche nach einem Investmentfonds gefragt hat, kann sich der Agent an diesen Kontext erinnern und proaktiv reagieren: "Willkommen zurück! Haben Sie noch Fragen zu dem Fonds, den wir letztes Mal besprochen haben?"</p>
-<h3 id="How-to-Optimize-Performance-for-Milvus-Powered-Agent-Systems" class="common-anchor-header">Wie man die Leistung für Milvus-gestützte Agentensysteme optimiert</h3><p>Wenn ein von Milvus betriebenes Agentensystem in einer Produktionsumgebung eingesetzt wird, ist die Leistungsoptimierung von entscheidender Bedeutung. Um niedrige Latenzzeiten und einen hohen Durchsatz zu erreichen, müssen mehrere Schlüsselparameter beachtet werden:</p>
+<p>Wenn derselbe Benutzer zurückkehrt, kann der Agent die relevantesten historischen Interaktionen von Milvus abrufen und sie verwenden, um eine vernetztere, menschenähnliche Erfahrung zu erzeugen. Wenn ein Nutzer beispielsweise letzte Woche nach einem Investmentfonds gefragt hat, kann sich der Agent an diesen Kontext erinnern und proaktiv reagieren: "Willkommen zurück! Haben Sie noch Fragen zu dem Fonds, den wir beim letzten Mal besprochen haben?"</p>
+<h3 id="How-to-Optimize-Performance-for-Milvus-Powered-Agent-Systems" class="common-anchor-header">Wie man die Leistung von Milvus-gestützten Agentensystemen optimiert</h3><p>Wenn ein von Milvus betriebenes Agentensystem in einer Produktionsumgebung eingesetzt wird, ist die Leistungsoptimierung von entscheidender Bedeutung. Um niedrige Latenzzeiten und einen hohen Durchsatz zu erreichen, müssen mehrere Schlüsselparameter beachtet werden:</p>
 <p><strong>1. Auswahl des richtigen Index-Typs</strong></p>
 <p>Es ist wichtig, die richtige Indexstruktur zu wählen. HNSW (Hierarchical Navigable Small World) ist beispielsweise ideal für Szenarien mit hohem Abrufaufkommen, wie z. B. im Finanz- oder Gesundheitswesen, wo es auf Genauigkeit ankommt. IVF_FLAT eignet sich besser für groß angelegte Anwendungen wie E-Commerce-Empfehlungen, bei denen eine etwas geringere Wiederauffindbarkeit im Gegenzug für eine schnellere Leistung und einen geringeren Speicherbedarf akzeptabel ist.</p>
 <p><strong>2. Sharding-Strategie</strong></p>
-<p>Wenn die Anzahl der gespeicherten Richtlinien eine Million Einträge übersteigt, empfiehlt sich die Verwendung von <strong>Partitionierung</strong>, um die Daten nach Geschäftsbereichen oder Anwendungsfällen aufzuteilen. Durch die Partitionierung wird der Suchraum pro Abfrage verkleinert, wodurch sich die Abrufgeschwindigkeit erhöht und die Latenzzeit auch bei wachsendem Datenbestand stabil bleibt.</p>
+<p>Wenn die Anzahl der gespeicherten Richtlinien eine Million Einträge übersteigt, empfiehlt sich eine <strong>Partitionierung</strong>, um die Daten nach Geschäftsbereichen oder Anwendungsfällen aufzuteilen. Durch die Partitionierung wird der Suchraum pro Abfrage verkleinert, wodurch sich die Abrufgeschwindigkeit erhöht und die Latenzzeit auch bei wachsendem Datenbestand stabil bleibt.</p>
 <p><strong>3. Cache-Konfiguration</strong></p>
 <p>Für Richtlinien, auf die häufig zugegriffen wird, wie z. B. Standard-Kundenabfragen oder Workflows mit hohem Datenverkehr, können Sie das Caching der Milvus-Abfrageergebnisse nutzen. Dadurch kann das System frühere Ergebnisse wiederverwenden und die Latenzzeit bei wiederholten Abfragen auf unter 5 Millisekunden senken.</p>
 <h2 id="Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="common-anchor-header">Hands-on-Demo: Wie man ein intelligentes Q&amp;A-System mit Parlant und Milvus Lite aufbaut<button data-href="#Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="anchor-icon" translate="no">
@@ -201,7 +201,7 @@ memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&
         ></path>
       </svg>
     </button></h2><p><a href="https://milvus.io/docs/install-overview.md">Milvus Lite</a> ist eine leichtgewichtige Version von Milvus - eine Python-Bibliothek, die einfach in Ihre Anwendungen eingebettet werden kann. Sie ist ideal für schnelles Prototyping in Umgebungen wie Jupyter Notebooks oder für die Ausführung auf Edge- und Smart-Geräten mit begrenzten Rechenressourcen. Trotz seines geringen Platzbedarfs unterstützt Milvus Lite die gleichen APIs wie andere Milvus-Implementierungen. Das bedeutet, dass der clientseitige Code, den Sie für Milvus Lite schreiben, später nahtlos mit einer vollständigen Milvus- oder Zilliz-Cloud-Instanz verbunden werden kann - ohne Refactoring.</p>
-<p>In dieser Demo verwenden wir Milvus Lite in Verbindung mit Parlant, um zu demonstrieren, wie man ein intelligentes Q&amp;A-System aufbaut, das schnelle, kontextabhängige Antworten mit minimaler Einrichtung liefert.</p>
+<p>In dieser Demo verwenden wir Milvus Lite in Verbindung mit Parlant, um zu demonstrieren, wie man ein intelligentes Q&amp;A-System aufbaut, das schnelle, kontextbezogene Antworten bei minimaler Einrichtung liefert.</p>
 <h3 id="Prerequisites" class="common-anchor-header">Voraussetzungen：</h3><p>1) Parlant GitHub: https://github.com/emcie-co/parlant</p>
 <p>2.die Parlant-Dokumentation: https://parlant.io/docs</p>
 <p>3.python3.10+</p>
@@ -230,7 +230,7 @@ pip install pymilvus parlant openai
 <li>Initialisieren der Wissensbasis</li>
 </ul>
 <p>1. eine Milvus-Sammlung mit dem Namen kb_articles erstellen.</p>
-<p>2. fügen Sie Beispieldaten ein (z.B. Rückerstattungsrichtlinie, Umtauschrichtlinie, Versanddauer).</p>
+<p>2. fügen Sie Beispieldaten ein (z.B. Rückerstattungsrichtlinien, Umtauschrichtlinien, Versanddauer).</p>
 <p>3. einen HNSW-Index erstellen, um das Auffinden zu beschleunigen.</p>
 <ul>
 <li>Erstellen Sie das Vektorsuchwerkzeug</li>
@@ -468,7 +468,7 @@ python main.py
         ></path>
       </svg>
     </button></h2><p>Wie unterscheidet sich Parlant von bestehenden Agenten-Frameworks wie <strong>LangChain</strong> oder <strong>LlamaIndex</strong>?</p>
-<p>LangChain und LlamaIndex sind Allzweck-Frameworks. Sie bieten eine breite Palette von Komponenten und Integrationen und sind daher ideal für Rapid Prototyping und Forschungsexperimente. Wenn es jedoch um den Einsatz in der Produktion geht, müssen die Entwickler oft selbst zusätzliche Schichten aufbauen, wie z. B. Regelmanagement, Konformitätsprüfungen und Zuverlässigkeitsmechanismen, um die Agenten konsistent und vertrauenswürdig zu halten.</p>
+<p>LangChain und LlamaIndex sind Allzweck-Frameworks. Sie bieten eine breite Palette von Komponenten und Integrationen und sind daher ideal für Rapid Prototyping und Forschungsexperimente. Wenn es jedoch um den Einsatz in der Produktion geht, müssen Entwickler oft selbst zusätzliche Schichten aufbauen, wie z.B. Regelmanagement, Konformitätsprüfungen und Zuverlässigkeitsmechanismen, um die Agenten konsistent und vertrauenswürdig zu halten.</p>
 <p>Parlant bietet ein integriertes Richtlinienmanagement, Selbstkritik-Mechanismen und Erklärungswerkzeuge, die Entwicklern helfen, das Verhalten, die Reaktionen und die Gründe eines Agenten zu verwalten. Dadurch eignet sich Parlant besonders für anspruchsvolle, kundenorientierte Anwendungsfälle, bei denen es auf Genauigkeit und Verantwortlichkeit ankommt, wie z. B. im Finanz-, Gesundheits- und Rechtswesen.</p>
 <p>Diese Frameworks können sogar zusammenarbeiten:</p>
 <ul>

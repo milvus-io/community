@@ -202,14 +202,14 @@
   "blog/en/when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md": "2025-10-22T05:36:37.410Z",
   "blog/en/how-to-debug-slow-requests-in-milvus.md": "2025-10-06T20:11:43.743Z",
   "blog/en/how-to-choose-the-right-embedding-model-for-rag.md": "2025-10-06T20:15:06.654Z",
-  "blog/en/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md": "2025-10-22T05:36:08.079Z",
-  "blog/en/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md": "2025-10-17T16:48:01.907Z",
-  "blog/en/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md": "2025-10-18T03:25:30.729Z",
+  "blog/en/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md": "2025-11-20T06:41:45.160Z",
+  "blog/en/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md": "2025-11-20T06:42:07.344Z",
+  "blog/en/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md": "2025-11-20T06:41:16.550Z",
   "blog/en/vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-systems-the-smart-way.md": "2025-10-20T04:01:57.537Z",
-  "blog/en/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md": "2025-11-05T06:24:42.221Z",
-  "blog/en/understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md": "2025-11-05T06:25:03.693Z",
-  "blog/en/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md": "2025-11-07T07:44:33.153Z",
-  "blog/en/power-high-performance-rag-for-genai-with-hpe-alletra-storag-mp-milvus.md": "2025-11-10T08:17:47.191Z",
+  "blog/en/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md": "2025-11-20T06:41:01.593Z",
+  "blog/en/understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md": "2025-11-20T06:42:32.836Z",
+  "blog/en/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md": "2025-11-20T06:40:49.346Z",
+  "blog/en/power-high-performance-rag-for-genai-with-hpe-alletra-storag-mp-milvus.md": "2025-11-20T06:41:31.334Z",
   "blog/en/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md": "2025-11-20T02:59:22.818Z",
-  "blog/en/unlocking-8×-milvus-performance-with-cloudian-hyperstore-and-nvidia-rdma-for-s3-storage.md": "2025-11-20T03:00:01.891Z"
+  "blog/en/unlocking-8×-milvus-performance-with-cloudian-hyperstore-and-nvidia-rdma-for-s3-storage.md": "2025-11-20T06:42:52.018Z"
 }

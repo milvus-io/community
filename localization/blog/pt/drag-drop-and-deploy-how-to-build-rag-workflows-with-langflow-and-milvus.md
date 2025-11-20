@@ -5,7 +5,7 @@ title: >-
   e Milvus
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -20,7 +20,7 @@ origin: >-
   https://milvus.io/blog/drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 ---
 <p>Construir um fluxo de trabalho de IA muitas vezes parece mais difícil do que deveria. Entre escrever código cola, depurar chamadas de API e gerir pipelines de dados, o processo pode consumir horas antes mesmo de ver resultados. <a href="https://www.langflow.org/"><strong>O Langflow</strong></a> e <a href="https://milvus.io/"><strong>o Milvus</strong></a> simplificam drasticamente este processo, proporcionando-lhe uma forma simples de conceber, testar e implementar fluxos de trabalho de geração aumentada de recuperação (RAG) em minutos, não em dias.</p>
-<p><strong>O Langflow</strong> oferece uma interface limpa, de arrastar e largar, que se assemelha mais a esboçar ideias num quadro branco do que a codificar. Pode ligar visualmente modelos linguísticos, fontes de dados e ferramentas externas para definir a lógica do seu fluxo de trabalho - tudo isto sem tocar numa linha de código padrão.</p>
+<p><strong>O Langflow</strong> oferece uma interface limpa, de arrastar e largar, que se assemelha mais a esboçar ideias num quadro branco do que a codificar. Pode ligar visualmente modelos de linguagem, fontes de dados e ferramentas externas para definir a lógica do seu fluxo de trabalho - tudo isto sem tocar numa linha de código padrão.</p>
 <p>Em conjunto com o <strong>Milvus</strong>, a base de dados vetorial de código aberto que dá aos LLMs memória de longo prazo e compreensão contextual, os dois formam um ambiente completo para RAG de nível de produção. O Milvus armazena e recupera de forma eficiente os embeddings dos dados da sua empresa ou de um domínio específico, permitindo que os LLMs gerem respostas fundamentadas, precisas e contextualizadas.</p>
 <p>Neste guia, vamos explicar como combinar o Langflow e o Milvus para criar um fluxo de trabalho RAG avançado - tudo através de alguns arrastamentos, largadas e cliques.</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">O que é o Langflow?<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
@@ -216,7 +216,7 @@ conda activate langflow
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A criação de fluxos de trabalho de IA não precisa de ser complicada. O Langflow + Milvus torna-o rápido, visual e com pouco código - uma forma simples de melhorar o RAG sem grande esforço de engenharia.</p>
+    </button></h2><p>Construir fluxos de trabalho de IA não precisa de ser complicado. O Langflow + Milvus torna-o rápido, visual e com pouco código - uma forma simples de melhorar o RAG sem grande esforço de engenharia.</p>
 <p>A interface de arrastar e largar do Langflow torna-o uma escolha adequada para o ensino, workshops ou demonstrações ao vivo, onde é necessário demonstrar como funcionam os sistemas de IA de uma forma clara e interactiva. Para as equipas que procuram integrar a conceção intuitiva do fluxo de trabalho com a recuperação de vectores de nível empresarial, a combinação da simplicidade do Langflow com a pesquisa de elevado desempenho do Milvus proporciona flexibilidade e potência.</p>
 <p>Comece hoje mesmo a criar fluxos de trabalho RAG mais inteligentes com o <a href="https://milvus.io/">Milvus</a>.</p>
 <p>Tem dúvidas ou quer um mergulho profundo em qualquer recurso? Junte-se ao nosso<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou arquive problemas no<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Você também pode reservar uma sessão individual de 20 minutos para obter insights, orientações e respostas às suas perguntas através do<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

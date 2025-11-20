@@ -4,8 +4,7 @@ title: 'RAG를 위한 더 스마트한 검색: Jina Embedding v2 및 Milvus를 �
 author: Wei Zang
 date: 2025-10-11T00:00:00.000Z
 desc: 문맥을 인식하는 효율적인 문서 임베딩과 더 빠르고 스마트한 벡터 검색을 위해 후기 청킹 및 밀버스를 사용하여 RAG 정확도를 높입니다.
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false

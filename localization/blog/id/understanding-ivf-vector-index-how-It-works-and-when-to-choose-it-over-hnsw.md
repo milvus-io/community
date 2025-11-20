@@ -5,7 +5,7 @@ title: >-
   Dibanding HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -193,7 +193,7 @@ origin: >-
 <tr><td><strong>Kecepatan Pembuatan Indeks</strong></td><td>Cepat (hanya membutuhkan pengelompokan)</td><td>Lambat (membutuhkan konstruksi grafik multi-lapisan)</td></tr>
 <tr><td><strong>Kecepatan Kueri (Tanpa Pemfilteran)</strong></td><td>Cepat, tergantung pada <em>nprobe</em></td><td>Sangat cepat, tetapi dengan kompleksitas logaritmik</td></tr>
 <tr><td><strong>Kecepatan Kueri (Dengan Pemfilteran)</strong></td><td>Stabil - melakukan pemfilteran kasar pada tingkat centroid untuk mempersempit kandidat</td><td>Tidak stabil - terutama ketika rasio pemfilteran tinggi (90%+), grafik menjadi terfragmentasi dan dapat menurun hingga mendekati penelusuran grafik penuh, bahkan lebih lambat dari pencarian brute-force</td></tr>
-<tr><td><strong>Tingkat Penarikan Kembali</strong></td><td>Tergantung pada apakah kompresi digunakan; tanpa kuantisasi, recall dapat mencapai <strong>95%+</strong></td><td>Biasanya lebih tinggi, sekitar <strong>98%+</strong></td></tr>
+<tr><td><strong>Tingkat Penarikan Kembali</strong></td><td>Tergantung pada apakah kompresi digunakan; tanpa kuantisasi, penarikan kembali dapat mencapai <strong>95%+</strong></td><td>Biasanya lebih tinggi, sekitar <strong>98%+</strong></td></tr>
 <tr><td><strong>Parameter Kunci</strong></td><td><em>nlist</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_konstruksi</em>, <em>ef_pencarian</em></td></tr>
 <tr><td><strong>Kasus Penggunaan</strong></td><td>Ketika memori terbatas, tetapi kinerja kueri dan pemanggilan yang tinggi diperlukan; cocok untuk pencarian dengan kondisi pemfilteran</td><td>Ketika memori mencukupi dan tujuannya adalah kinerja pemanggilan dan kueri yang sangat tinggi, tetapi pemfilteran tidak diperlukan, atau rasio pemfilteran rendah</td></tr>
 </tbody>

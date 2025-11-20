@@ -3,7 +3,7 @@ id: drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
 title: '드래그, 드롭, 배포: Langflow 및 Milvus로 RAG 워크플로우를 구축하는 방법'
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -18,7 +18,7 @@ origin: >-
 ---
 <p>AI 워크플로우 구축은 생각보다 어렵게 느껴질 때가 많습니다. 글루 코드 작성, API 호출 디버깅, 데이터 파이프라인 관리 등으로 인해 결과를 보기도 전에 프로세스에 많은 시간이 소요될 수 있습니다. <a href="https://www.langflow.org/"><strong>Langflow와</strong></a> <a href="https://milvus.io/"><strong>Milvus는</strong></a> 이 과정을 획기적으로 간소화하여 며칠이 아닌 몇 분 만에 검색 증강 생성(RAG) 워크플로를 설계, 테스트 및 배포할 수 있는 코드 경량 방식을 제공합니다.</p>
 <p><strong>Langflow는</strong> 코딩보다는 화이트보드에 아이디어를 스케치하는 것과 같은 깔끔한 드래그 앤 드롭 방식의 인터페이스를 제공합니다. 언어 모델, 데이터 소스 및 외부 도구를 시각적으로 연결하여 상용구 코드를 한 줄도 건드리지 않고도 워크플로 로직을 정의할 수 있습니다.</p>
-<p>LLM에 장기 메모리와 컨텍스트 이해를 제공하는 오픈 소스 벡터 데이터베이스인 <strong>Milvus와</strong> 함께 사용하면 프로덕션급 RAG를 위한 완벽한 환경을 구축할 수 있습니다. Milvus는 기업 또는 도메인별 데이터에서 임베딩을 효율적으로 저장하고 검색하여 LLM이 근거가 있고 정확하며 컨텍스트를 인식하는 답변을 생성할 수 있도록 지원합니다.</p>
+<p>LLM에 장기적인 메모리와 컨텍스트 이해를 제공하는 오픈 소스 벡터 데이터베이스인 <strong>Milvus와</strong> 함께 사용하면 프로덕션급 RAG를 위한 완벽한 환경을 구성할 수 있습니다. Milvus는 기업 또는 도메인별 데이터에서 임베딩을 효율적으로 저장하고 검색하여 LLM이 근거가 있고 정확하며 컨텍스트를 인식하는 답변을 생성할 수 있도록 지원합니다.</p>
 <p>이 가이드에서는 몇 번의 드래그, 드롭, 클릭만으로 Langflow와 Milvus를 결합하여 고급 RAG 워크플로우를 구축하는 방법을 안내합니다.</p>
 <h2 id="What-is-Langflow" class="common-anchor-header">Langflow란 무엇인가요?<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -45,7 +45,7 @@ origin: >-
   </span>
 </p>
 <p>백그라운드에서는 Python 기반 런타임 엔진이 플로우를 실행합니다. 이 엔진은 LLM, 도구, 검색 모듈, 라우팅 로직을 오케스트레이션하여 데이터 흐름, 상태, 오류 처리를 관리함으로써 처음부터 끝까지 원활한 실행을 보장합니다.</p>
-<p>또한 Langflow에는 <a href="https://milvus.io/">Milvus를</a> 비롯한 인기 있는 LLM과 벡터 데이터베이스를 위한 사전 빌드된 어댑터가 포함된 풍부한 구성 요소 라이브러리가 포함되어 있습니다. 특수한 사용 사례를 위한 사용자 지정 Python 컴포넌트를 생성하여 이를 더욱 확장할 수 있습니다. 테스트 및 최적화를 위해 Langflow는 단계별 실행, 신속한 테스트를 위한 플레이그라운드, 워크플로우를 엔드투엔드 모니터링, 디버깅 및 재생하기 위한 LangSmith 및 Langfuse와의 통합을 제공합니다.</p>
+<p>또한 Langflow에는 <a href="https://milvus.io/">Milvus를</a> 비롯한 인기 있는 LLM과 벡터 데이터베이스를 위한 사전 빌드된 어댑터가 포함된 풍부한 구성 요소 라이브러리가 포함되어 있습니다. 특수한 사용 사례를 위한 사용자 지정 Python 컴포넌트를 생성하여 이를 더욱 확장할 수 있습니다. 테스트 및 최적화를 위해 Langflow는 단계별 실행, 신속한 테스트를 위한 플레이그라운드, 워크플로우를 엔드투엔드로 모니터링, 디버깅 및 재생하기 위한 LangSmith 및 Langfuse와의 통합을 제공합니다.</p>
 <h2 id="Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="common-anchor-header">실습 데모: Langflow와 Milvus로 RAG 워크플로우를 구축하는 방법<button data-href="#Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

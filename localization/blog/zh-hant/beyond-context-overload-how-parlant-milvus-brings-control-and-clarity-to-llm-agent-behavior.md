@@ -4,7 +4,7 @@ id: >-
 title: 超越情境超載：Parlant × Milvus 如何為 LLM 代理行為帶來控制與清晰度
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -15,8 +15,8 @@ desc: 探索 Parlant × Milvus 如何使用排列建模與向量智慧，讓 LLM
 origin: >-
   https://milvus.io/blog/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md
 ---
-<p>想像一下，您被要求完成一項涉及 200 個業務規則、50 個工具和 30 個示範的任務，而您只有一小時的時間來完成。這根本就是不可能的事。然而，當我們將大型語言模型轉變為「代理」，並為它們加載過多指令時，我們往往期望它們能夠做到這一點。</p>
-<p>實際上，這種方法很快就會瓦解。傳統的代理框架，例如 LangChain 或 LlamaIndex，會一次將所有規則和工具注入模型的上下文，這會導致規則衝突、上下文過載，以及在生產中不可預測的行為。</p>
+<p>想像一下，您被要求完成一項涉及 200 個業務規則、50 個工具和 30 個示範的任務，而您只有一小時的時間來完成。這簡直是不可能的事。然而，當我們將大型語言模型變成「代理」，並為它們加載過多的指令時，我們往往期望它們能夠完全做到這一點。</p>
+<p>實際上，這種方法很快就會瓦解。傳統的代理框架，例如 LangChain 或 LlamaIndex，會一次將所有規則和工具注入模型的上下文，這會導致規則衝突、上下文過載，以及在生產中出現不可預測的行為。</p>
 <p>為了解決這個問題，一個名為<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a>的開放原始碼代理框架最近在 GitHub 上逐漸受到矚目。它引進了稱為 Alignment Modeling 的新方法，以及監督機制和條件轉換，讓代理程式的行為更容易控制和解釋。</p>
 <p>若搭配開放原始碼向量資料庫<a href="https://milvus.io/"><strong>Milvus</strong></a>，Parlant 的功能將更加強大。Milvus 增加了語意智慧，讓代理能即時動態擷取最相關的規則與情境，保持準確、有效率，並為生產做好準備。</p>
 <p>在這篇文章中，我們將探討 Parlant 如何在遮罩下運作，以及如何將其與 Milvus 整合以達到生產級的效果。</p>
@@ -35,7 +35,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>傳統的代理程式框架喜歡大而全：數百個規則、數十個工具、數個示範，全都塞進一個過度膨脹的單一提示中。這在示範或小型沙箱測試中可能看起來很棒，但一旦將其推入生產，裂縫就會迅速顯現。</p>
+    </button></h2><p>傳統的代理程式框架喜歡大而全：數百個規則、數十個工具、數個示範，全都塞進一個過度膨脹的單一提示中。這在示範或小型沙箱測試中可能看起來很棒，但一旦將它推到生產中，裂縫就會迅速顯現。</p>
 <ul>
 <li><p><strong>衝突的規則帶來混亂：</strong>當兩個或更多的規則同時適用時，這些框架沒有內建的方法來決定哪一個獲勝。有時它會選擇其中一個。有時它會混合兩者。有時它會做一些完全無法預測的事情。</p></li>
 <li><p><strong>邊緣案例暴露缺口：</strong>您不可能預測使用者可能說的每一句話。當您的模型遇到訓練資料以外的情況時，它就會預設為一般、不具承諾性的答案。</p></li>
@@ -107,8 +107,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>當我們深入瞭解 Parlant 的指引匹配流程時，一個核心技術挑戰變得明確：系統如何在短短幾毫秒的時間內，從數百個甚至上千個選項中找出三到五個最相關的規則？這正是向量資料庫的用武之地。語意檢索讓這一切成為可能。</p>
-<h3 id="How-Milvus-Supports-Parlant’s-Guideline-Matching-Process" class="common-anchor-header">Milvus如何支持Parlant的指南匹配流程</h3><p>指南匹配是通過語義相似性進行的。每個指南的 Condition 欄位都會轉換成向量嵌入，以捕捉其意義，而不僅僅是其文字。當使用者傳送訊息時，Parlant 會將該訊息的語義與所有儲存的指引嵌入進行比較，以找出最相關的指引。</p>
+    </button></h2><p>當我們探究 Parlant 的指引匹配流程時，一個核心技術挑戰變得很明顯：系統如何能在幾毫秒的時間內，從數百個甚至上千個選項中找出三到五個最相關的規則？這正是向量資料庫的用武之地。語意檢索讓這一切成為可能。</p>
+<h3 id="How-Milvus-Supports-Parlant’s-Guideline-Matching-Process" class="common-anchor-header">Milvus如何支持Parlant的指南匹配流程</h3><p>指南匹配是通過語義相似性進行的。每個指南的 Condition 欄位都會轉換成向量嵌入，以捕捉其意義，而不僅僅是其文字。當使用者傳送訊息時，Parlant 會將該訊息的語意與所有儲存的指引嵌入進行比較，以找出最相關的指引。</p>
 <p>以下是整個過程的步驟：</p>
 <p><strong>1.編碼查詢</strong>- 將使用者的訊息和最近的對話記錄轉換成查詢向量。</p>
 <p><strong>2.搜尋相似性</strong>- 系統在指引向量儲存庫中執行相似性搜尋，找出最接近的匹配項目。</p>
@@ -161,7 +161,7 @@ guideline_collection.create_index(field_name=<span class="hljs-string">&quot;con
   </span>
 </p>
 <p>在此設定中，即使指引庫擴充至 100,000 個項目，Milvus 的 P99 延遲仍低於 15 毫秒。相較之下，使用傳統關聯式資料庫與關鍵字比對，通常會導致超過 200 毫秒的延遲，以及明顯較低的比對準確度。</p>
-<h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Milvus 如何實現長期記憶與個人化</h3><p>Milvus 的功能不僅限於指引匹配。在代理需要長期記憶和個人化回應的場景中，Milvus 可作為記憶層，以向量嵌入的方式儲存和檢索使用者過去的互動，協助代理記住之前討論的內容。</p>
+<h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Milvus 如何實現長期記憶與個人化</h3><p>Milvus 的功能不僅限於指引匹配。在代理需要長期記憶和個人化回應的情況下，Milvus 可作為記憶層，將使用者過去的互動以向量嵌入的方式儲存和檢索，幫助代理記住之前討論的內容。</p>
 <pre><code translate="no"><span class="hljs-comment"># store user’s past interactions</span>
 user_memory_fields = [
     FieldSchema(name=<span class="hljs-string">&quot;interaction_id&quot;</span>, dtype=DataType.VARCHAR, max_length=<span class="hljs-number">100</span>, is_primary=<span class="hljs-literal">True</span>),
@@ -177,7 +177,7 @@ memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&
 <p><strong>1.選擇正確的索引類型</strong></p>
 <p>選擇適當的索引結構非常重要。舉例來說，HNSW (Hierarchical Navigable Small World) 適合金融或醫療保健等高召回率的情境，因為在這些情境中，精確度是至關重要的。IVF_FLAT 更適合電子商務推薦等大型應用程式，在這些應用程式中，可以接受稍低的召回率，以換取更快的效能和更少的記憶體使用。</p>
 <p><strong>2.分片策略</strong></p>
-<p>當儲存的指引數量超過一百萬個項目時，建議使用<strong>Partition</strong>來依業務領域或用例分割資料。分區可減少每次查詢的搜尋空間，提高擷取速度，即使資料集成長，也能保持延遲穩定。</p>
+<p>當儲存的指引數量超過一百萬個項目時，建議使用<strong>Partition</strong>來按業務領域或用例分割資料。分區可減少每次查詢的搜尋空間，提高擷取速度，即使資料集成長，也能保持延遲穩定。</p>
 <p><strong>3.快取設定</strong></p>
 <p>對於頻繁存取的指引，例如標準客戶查詢或高流量工作流程，您可以使用 Milvus 查詢結果快取。這可讓系統重用先前的結果，將重複搜尋的延遲時間縮短至 5 毫秒以下。</p>
 <h2 id="Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="common-anchor-header">實際操作示範：如何使用 Parlant 和 Milvus Lite 建立智慧型問答系統<button data-href="#Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="anchor-icon" translate="no">
@@ -486,7 +486,7 @@ python main.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>當 LLM 代理從實驗走向生產時，關鍵問題不再是它們能做什麼，而是它們如何能可靠、安全地做到這一點。Parlant 提供結構與控制以達到可靠性，而 Milvus 則提供可擴充的向量基礎架構，以保持一切快速且具情境感知能力。</p>
+    </button></h2><p>當 LLM 代理從實驗走向生產時，關鍵問題不再是它們能做什麼，而是它們如何可靠、安全地做到這一點。Parlant 提供了結構與控制的可靠性，而 Milvus 則提供了可擴充的向量基礎架構，以保持一切快速且情境感知。</p>
 <p>兩者相輔相成，讓開發人員可以建立不僅有能力，而且值得信賴、可解釋且可生產的 AI 代理。</p>
 <p><a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> 在 GitHub 上</a>查看<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> Parlant</a>，並將其與<a href="https://milvus.io"> Milvus</a>整合，建立您自己的智慧型規則驅動代理系統。</p>
 <p>對任何功能有問題或想要深入瞭解？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。您也可以透過<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 預約 20 分鐘的一對一會議，以獲得深入的瞭解、指導和問題解答。</p>

@@ -10,7 +10,7 @@ desc: >-
   Explore como o Milvus Analyzer potencia a recuperação de IA híbrida com
   tokenização e filtragem eficientes, permitindo uma pesquisa de texto completo
   mais rápida e inteligente.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -22,7 +22,7 @@ origin: >-
 ---
 <p>As aplicações modernas de IA são complexas e raramente unidimensionais. Em muitos casos, um único método de pesquisa não consegue resolver sozinho os problemas do mundo real. Veja-se um sistema de recomendação, por exemplo. É necessária uma <strong>pesquisa vetorial</strong> para compreender o significado por detrás do texto ou das imagens, <strong>uma filtragem de metadados</strong> para refinar os resultados por preço, categoria ou localização e<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>uma pesquisa de texto completo</strong></a> para lidar com consultas diretas como "Nike Air Max". Cada método resolve uma parte diferente do puzzle - e os sistemas práticos dependem de todos eles trabalharem em conjunto sem problemas.</p>
 <p>O Milvus destaca-se na pesquisa vetorial e na filtragem de metadados e, a partir da versão 2.5, introduziu a pesquisa de texto completo com base no algoritmo BM25 optimizado. Esta atualização torna a pesquisa com IA mais inteligente e mais precisa, combinando a compreensão semântica com a intenção precisa de palavras-chave. Com o<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a>, a pesquisa de texto completo torna-se ainda mais rápida - até<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4 vezes o desempenho do Elasticsearch</a>.</p>
-<p>No centro desse recurso está o <strong>Milvus Analyzer</strong>, o componente que transforma o texto bruto em tokens pesquisáveis. É ele que permite que o Milvus interprete a linguagem de forma eficiente e realize a correspondência de palavras-chave em escala. No resto deste post, vamos analisar como o Milvus Analyzer funciona - e porque é que é a chave para desbloquear todo o potencial da pesquisa híbrida no Milvus.</p>
+<p>No centro desse recurso está o <strong>Milvus Analyzer</strong>, o componente que transforma o texto bruto em tokens pesquisáveis. É ele que permite que o Milvus interprete a linguagem de forma eficiente e realize a correspondência de palavras-chave em escala. No resto deste post, vamos analisar como o Milvus Analyzer funciona - e por que ele é a chave para desbloquear todo o potencial da pesquisa híbrida no Milvus.</p>
 <h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">O que é o Milvus Analyzer？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -97,9 +97,9 @@ origin: >-
 <tr><td>Cncharonly</td><td>Mantém apenas caracteres chineses</td><td>Limpeza de corpus chinês</td></tr>
 <tr><td>Cnalphanumonly</td><td>Mantém apenas caracteres chineses, ingleses e números</td><td>Texto misto chinês-inglês</td></tr>
 <tr><td>Comprimento</td><td>Filtra os tokens por comprimento</td><td>Remove tokens excessivamente curtos ou longos</td></tr>
-<tr><td>Parar</td><td>Filtragem de palavras de paragem</td><td>Remove palavras sem significado de alta frequência como "é" e "o"</td></tr>
+<tr><td>Parar</td><td>Filtragem de palavras de paragem</td><td>Remove palavras sem sentido de alta frequência como "é" e "o"</td></tr>
 <tr><td>Descompactador</td><td>Divide palavras compostas</td><td>Línguas com compostos frequentes, como o alemão e o neerlandês</td></tr>
-<tr><td>Separador de palavras</td><td>Decomposição de palavras</td><td>Cenários ingleses (por exemplo, &quot;studies&quot; e &quot;studying&quot; → &quot;study&quot;)</td></tr>
+<tr><td>Decompositor</td><td>Decomposição de palavras</td><td>Cenários ingleses (por exemplo, &quot;studies&quot; e &quot;studying&quot; → &quot;study&quot;)</td></tr>
 <tr><td>Removepunct</td><td>Remove a pontuação</td><td>Limpeza geral de texto</td></tr>
 <tr><td>Regex</td><td>Filtra ou substitui com um padrão regex</td><td>Necessidades personalizadas, como extrair apenas endereços de e-mail</td></tr>
 </tbody>
@@ -153,7 +153,7 @@ origin: >-
 </tbody>
 </table>
 <p>Para uma pesquisa simples em inglês ou chinês, estes analisadores incorporados funcionam sem qualquer configuração adicional.</p>
-<p>Uma nota importante: o Analisador Padrão foi concebido para o inglês por defeito. Se for aplicado a texto chinês, a pesquisa de texto completo pode não apresentar resultados.</p>
+<p>Uma nota importante: o Analisador Padrão foi concebido para inglês por defeito. Se for aplicado a texto chinês, a pesquisa de texto completo pode não apresentar resultados.</p>
 <h3 id="Multi-language-Analyzer" class="common-anchor-header">Analisador multilingue</h3><p>Quando se lida com vários idiomas, um único tokenizador muitas vezes não consegue lidar com tudo. É aí que entra o Analisador multilíngue - ele escolhe automaticamente o tokenizador correto com base no idioma de cada texto. Veja como os idiomas são mapeados para os Tokenizers:</p>
 <table>
 <thead>
@@ -193,7 +193,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A teoria ajuda, mas nada supera um exemplo de código completo. Vamos ver como usar os Analisadores em Milvus com o Python SDK, cobrindo tanto os Analisadores integrados como os Analisadores multi-linguagem. Estes exemplos usam Milvus v2.6.1 e Pymilvus v2.6.1.</p>
+    </button></h2><p>A teoria ajuda, mas nada supera um exemplo de código completo. Vamos ver como usar os Analisadores no Milvus com o Python SDK, abrangendo tanto os Analisadores incorporados como os Analisadores multi-linguagem. Estes exemplos usam Milvus v2.6.1 e Pymilvus v2.6.1.</p>
 <h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">Como usar o analisador incorporado</h3><p>Digamos que pretende criar uma coleção para pesquisa de texto em inglês que lida automaticamente com a tokenização e o pré-processamento durante a inserção de dados. Utilizaremos o Analisador de Inglês incorporado (equivalente a <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 

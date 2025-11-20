@@ -5,7 +5,7 @@ title: 更智能地标记，更好地检索：深入了解 Milvus 全文搜索�
 author: Jack Li
 date: 2025-10-16T00:00:00.000Z
 desc: 探索 Milvus Analyzer 如何通过高效的标记化和过滤功能为混合人工智能检索提供动力，从而实现更快、更智能的全文检索。
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -136,7 +136,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>合适的分析器能使搜索更快、更经济。为满足不同需求，Milvus 提供三种类型：内置分析器、多语言分析器和自定义分析器。</p>
-<h3 id="Built-in-Analyzer" class="common-anchor-header">内置分析器</h3><p>内置分析器开箱即用--标准配置适用于大多数常见情况。它们带有预定义的标记符和过滤器组合：</p>
+<h3 id="Built-in-Analyzer" class="common-anchor-header">内置分析器</h3><p>内置分析器是开箱即用的标准配置，适用于大多数常见情况。它们带有预定义的标记符和过滤器组合：</p>
 <table>
 <thead>
 <tr><th><strong>名称</strong></th><th><strong>组件（令牌器+过滤器）</strong></th><th><strong>使用案例</strong></th></tr>
@@ -162,7 +162,7 @@ origin: >-
 </tbody>
 </table>
 <p>如果您的数据集混合了英语、中文、日语、韩语甚至阿拉伯语，Milvus 可以在同一字段中进行处理。这大大减少了人工预处理的工作量。</p>
-<h3 id="Custom-Analyzer" class="common-anchor-header">自定义分析器</h3><p>当内置分析器或多语言分析器不太适用时，Milvus 可让您构建自定义分析器。混合和匹配标记符和过滤器，创建符合您需求的分析器。下面是一个例子：</p>
+<h3 id="Custom-Analyzer" class="common-anchor-header">自定义分析器</h3><p>当内置分析器或多语言分析器不太适用时，Milvus 可让您构建自定义分析器。混合和匹配标记符号和过滤器，创建符合您需求的分析器。下面是一个例子：</p>
 <pre><code translate="no">FieldSchema(
         name=<span class="hljs-string">&quot;text&quot;</span>,
         dtype=DataType.VARCHAR,

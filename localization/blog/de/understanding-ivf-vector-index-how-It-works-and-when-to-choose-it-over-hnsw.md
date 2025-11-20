@@ -5,7 +5,7 @@ title: >-
   vorziehen sollte
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -80,11 +80,11 @@ origin: >-
 <li><p>Eine kleinere nListe bedeutet weniger Abschnitte, die jeweils ein breiteres, gemischtes Themenspektrum abdecken.</p></li>
 </ul>
 <h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Schritt 2: Vektorzuordnung</h3><p>Als Nächstes wird jeder Vektor dem Cluster zugeordnet, dessen Schwerpunkt ihm am nächsten liegt, wobei invertierte Listen (List_i) gebildet werden. Jede invertierte Liste speichert die IDs und Speicherinformationen aller Vektoren, die zu diesem Cluster gehören.</p>
-<p>Dieser Schritt ist vergleichbar mit der Einordnung der Bücher in die jeweiligen Abteilungen. Wenn Sie später nach einem Titel suchen, brauchen Sie nur in den wenigen Abteilungen nachzusehen, in denen er am ehesten zu finden ist, anstatt die gesamte Bibliothek zu durchforsten.</p>
+<p>Dieser Schritt ist vergleichbar mit der Einordnung der Bücher in die jeweiligen Abteilungen. Wenn Sie später nach einem Titel suchen, brauchen Sie nur die wenigen Abteilungen zu überprüfen, in denen der Titel am ehesten zu finden ist, anstatt die gesamte Bibliothek zu durchforsten.</p>
 <h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Schritt 3: Komprimierungskodierung (optional)</h3><p>Um Speicherplatz zu sparen und die Berechnungen zu beschleunigen, können die Vektoren innerhalb jedes Clusters einer Kompressionskodierung unterzogen werden. Es gibt zwei gängige Ansätze:</p>
 <ul>
 <li><p><strong>SQ8 (Skalarquantisierung):</strong> Bei dieser Methode wird jede Dimension eines Vektors in 8 Bits quantisiert. Bei einem Standardvektor <code translate="no">float32</code> nimmt jede Dimension normalerweise 4 Byte ein. Mit SQ8 wird sie auf nur 1 Byte reduziert, wodurch ein Kompressionsverhältnis von 4:1 erreicht wird, während die Geometrie des Vektors weitgehend erhalten bleibt.</p></li>
-<li><p><strong>PQ (Produktquantisierung):</strong> Hierbei wird ein hochdimensionaler Vektor in mehrere Unterräume aufgeteilt. So kann beispielsweise ein 128-dimensionaler Vektor in 8 Untervektoren mit je 16 Dimensionen unterteilt werden. In jedem Unterraum wird ein kleines Codebuch (typischerweise mit 256 Einträgen) trainiert, und jeder Untervektor wird durch einen 8-Bit-Index dargestellt, der auf den nächstgelegenen Codebucheintrag verweist. Das bedeutet, dass der ursprüngliche 128-D-Vektor <code translate="no">float32</code> (der 512 Bytes benötigt) mit nur 8 Bytes (8 Unterräume × je 1 Byte) dargestellt werden kann, wodurch ein Kompressionsverhältnis von 64:1 erreicht wird.</p></li>
+<li><p><strong>PQ (Produktquantisierung):</strong> Hierbei wird ein hochdimensionaler Vektor in mehrere Unterräume aufgeteilt. Zum Beispiel kann ein 128-dimensionaler Vektor in 8 Untervektoren mit je 16 Dimensionen unterteilt werden. In jedem Unterraum wird ein kleines Codebuch (typischerweise mit 256 Einträgen) trainiert, und jeder Untervektor wird durch einen 8-Bit-Index dargestellt, der auf den nächstgelegenen Codebucheintrag verweist. Das bedeutet, dass der ursprüngliche 128-D-Vektor <code translate="no">float32</code> (der 512 Bytes benötigt) mit nur 8 Bytes (8 Unterräume × je 1 Byte) dargestellt werden kann, wodurch ein Kompressionsverhältnis von 64:1 erreicht wird.</p></li>
 </ul>
 <h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">Verwendung des IVF-Vektorindex für die Suche<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -193,7 +193,7 @@ origin: >-
 <tr><td><strong>Geschwindigkeit des Indexaufbaus</strong></td><td>Schnell (erfordert nur Clustering)</td><td>Langsam (erfordert mehrschichtigen Graphenaufbau)</td></tr>
 <tr><td><strong>Abfragegeschwindigkeit (keine Filterung)</strong></td><td>Schnell, hängt von <em>nprobe</em> ab</td><td>Extrem schnell, aber mit logarithmischer Komplexität</td></tr>
 <tr><td><strong>Abfragegeschwindigkeit (mit Filterung)</strong></td><td>Stabil - führt eine grobe Filterung auf der Ebene des Schwerpunkts durch, um die Kandidaten einzugrenzen</td><td>Instabil - vor allem bei einem hohen Filterungsgrad (90 % und mehr) wird der Graph fragmentiert und kann zu einer fast vollständigen Durchquerung des Graphen degradieren, was sogar langsamer ist als die Brute-Force-Suche</td></tr>
-<tr><td><strong>Wiederfindungsrate</strong></td><td>Hängt davon ab, ob Komprimierung verwendet wird; ohne Quantisierung kann die Wiederfindungsrate <strong>95%+</strong> erreichen</td><td>Normalerweise höher, etwa <strong>98%+</strong></td></tr>
+<tr><td><strong>Wiederfindungsrate</strong></td><td>Hängt davon ab, ob Kompression verwendet wird; ohne Quantisierung kann die Wiederfindungsrate <strong>95%+</strong> erreichen</td><td>Normalerweise höher, etwa <strong>98%+</strong></td></tr>
 <tr><td><strong>Wichtige Parameter</strong></td><td><em>nliste</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_construction</em>, <em>ef_search</em></td></tr>
 <tr><td><strong>Anwendungsfälle</strong></td><td>Wenn der Speicher begrenzt ist, aber eine hohe Abfrageleistung und ein hoher Abruf erforderlich sind; gut geeignet für Suchvorgänge mit Filterungsbedingungen</td><td>Wenn ausreichend Speicher vorhanden ist und das Ziel eine extrem hohe Auffindbarkeit und Abfrageleistung ist, aber keine Filterung benötigt wird oder die Filterungsrate gering ist</td></tr>
 </tbody>

@@ -3,7 +3,7 @@ id: power-high-performance-rag-for-genai-with-hpe-alletra-storag-mp-milvus.md
 title: 利用 HPE Alletra Storage MP + Milvus 为 GenAI 的高性能 RAG 提供动力
 author: Denise Ochoa-Mendoza
 date: 2025-11-10T00:00:00.000Z
-cover: assets.zilliz.com/hpe_cover_45b4796ef3.png
+cover: assets.zilliz.com/hpe_cover_ead19ff709.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -52,7 +52,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAG 的核心是语义搜索，即通过意义而不是准确的关键词来查找信息。这就是向量数据库的用武之地。矢量数据库存储文本、图像和其他非结构化数据的高维 Embeddings，可进行相似性搜索，为您的查询检索最相关的上下文。Milvus 就是一个领先的例子：它是一个云原生的开源向量数据库，专为十亿规模的相似性搜索而构建。它支持混合搜索，将向量相似性与关键字和标量过滤器相结合，以提高精确度，并通过 GPU 感知优化选项提供独立的计算和存储扩展，以实现加速。Milvus 还通过智能段生命周期管理数据，通过压缩和多种近似近邻（ANN）索引选项（如 HNSW 和 DiskANN），从增长段到封存段，确保 RAG 等实时人工智能工作负载的性能和可扩展性。</p>
+    </button></h2><p>RAG 的核心是语义搜索，即通过意义而不是准确的关键词来查找信息。这就是向量数据库的用武之地。矢量数据库存储文本、图像和其他非结构化数据的高维 Embeddings，可进行相似性搜索，为您的查询检索最相关的上下文。Milvus 就是一个领先的例子：它是一个云原生的开源向量数据库，专为十亿规模的相似性搜索而构建。它支持混合搜索，将向量相似性与关键字和标量过滤器相结合，以提高精确度，并提供独立的计算和存储扩展，以及 GPU 感知的加速优化选项。Milvus 还通过智能段生命周期管理数据，通过压缩和多种近似近邻（ANN）索引选项（如 HNSW 和 DiskANN），从增长段到封存段，确保 RAG 等实时人工智能工作负载的性能和可扩展性。</p>
 <h2 id="The-hidden-challenge-Storage-throughput--latency" class="common-anchor-header">隐藏的挑战：存储吞吐量和延迟<button data-href="#The-hidden-challenge-Storage-throughput--latency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -108,7 +108,7 @@ origin: >-
   </span>
 </p>
 <p>Milvus 清晰地将计算与存储分离，而 HPE Alletra Storage MP X10000 则提供高吞吐量、低延迟的对象访问，与向量工作负载保持同步。它们共同实现了可预测的扩展性能：Milvus 将查询分布到各个分片，而 HPE Alletra Storage MP X10000 的分数、多维扩展可在数据和 QPS 增长时保持延迟一致。简单地说，您可以在需要的时候增加所需的容量或性能。操作简便是另一个优势：HPE Alletra Storage MP X10000 可从单个存储桶维持最高性能，消除了复杂的分层，而企业功能（加密、RBAC、不变性、稳健耐用性）支持内部部署或混合部署，具有强大的数据主权和一致的服务级目标 (SLO)。</p>
-<p>当向量搜索规模扩大时，存储往往因摄取、压缩或检索缓慢而受到指责。有了 HPE Alletra Storage MP X10000 上的 Milvus，这种说法就会改变。该平台的全 NVMe、日志结构架构和 GPUDirect RDMA 选项可提供一致、超低延迟的对象访问 - 即使在并发严重的情况下以及在索引构建和重新加载等生命周期操作期间也是如此。在实践中，您的 RAG 管道仍然是计算绑定的，而不是存储绑定的。随着 Collections 的增长和查询量的激增，Milvus 保持响应速度，同时 HPE Alletra Storage MP X10000 保留 I/O 净空，从而在不重新架构存储的情况下实现可预测的线性可扩展性。当 RAG 部署规模超过最初的概念验证阶段并进入全面生产阶段时，这一点变得尤为重要。</p>
+<p>当向量搜索规模扩大时，存储往往因摄取、压缩或检索速度慢而受到指责。有了 HPE Alletra Storage MP X10000 上的 Milvus，这种说法就会改变。该平台的全 NVMe、日志结构架构和 GPUDirect RDMA 选项可提供一致、超低延迟的对象访问 - 即使在并发严重的情况下以及在索引构建和重新加载等生命周期操作期间也是如此。在实践中，您的 RAG 流水线仍然是计算绑定的，而不是存储绑定的。随着 Collections 的增长和查询量的激增，Milvus 保持响应速度，同时 HPE Alletra Storage MP X10000 保留 I/O 净空，从而在不重新架构存储的情况下实现可预测的线性可扩展性。当 RAG 部署规模超过最初的概念验证阶段并进入全面生产阶段时，这一点变得尤为重要。</p>
 <h2 id="Enterprise-ready-RAG-Scalable-predictable-and-built-for-GenAI" class="common-anchor-header">企业就绪的 RAG：可扩展、可预测，专为 GenAI 打造<button data-href="#Enterprise-ready-RAG-Scalable-predictable-and-built-for-GenAI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -124,4 +124,4 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>对于 RAG 和实时 GenAI 工作负载，HPE Alletra Storage MP X10000 与 Milvus 的组合提供了一个未来就绪的基础，可放心扩展。该集成解决方案使企业能够构建快速、弹性和安全的智能系统，而不会降低性能或可管理性。Milvus 通过模块化扩展提供分布式 GPU 加速向量搜索，而 HPE Alletra Storage MP X10000 则确保超快、低延迟的对象访问，并提供企业级耐用性和生命周期管理。它们共同实现了计算与存储的解耦，即使数据量和查询复杂性增加，也能实现可预测的性能。无论您是提供实时推荐、支持语义搜索，还是在数十亿个向量之间进行扩展，该架构都能使您的 RAG 管道保持快速响应、经济高效和云优化。通过与 Kubernetes 和 HPE GreenLake 云的无缝集成，您可以获得统一管理、基于消耗的定价以及在混合云或私有云环境中部署的灵活性。HPE Alletra Storage MP X10000 和 Milvus：针对现代 GenAI 的需求而构建的可扩展、高性能 RAG 解决方案。</p>
+    </button></h2><p>对于 RAG 和实时 GenAI 工作负载，HPE Alletra Storage MP X10000 与 Milvus 的组合提供了一个未来就绪的基础，可放心扩展。该集成解决方案使企业能够构建快速、弹性和安全的智能系统，而不会降低性能或可管理性。Milvus 通过模块化扩展提供分布式、GPU 加速的向量搜索，而 HPE Alletra Storage MP X10000 则确保超快、低延迟的对象访问，并提供企业级的耐用性和生命周期管理。它们共同实现了计算与存储的解耦，即使数据量和查询复杂性增加，也能实现可预测的性能。无论您是提供实时推荐、支持语义搜索，还是在数十亿个向量之间进行扩展，该架构都能使您的 RAG 管道保持快速响应、经济高效和云优化。通过与 Kubernetes 和 HPE GreenLake 云的无缝集成，您可以获得统一管理、基于消耗的定价以及在混合云或私有云环境中部署的灵活性。HPE Alletra Storage MP X10000 和 Milvus：针对现代 GenAI 的需求而构建的可扩展、高性能 RAG 解决方案。</p>

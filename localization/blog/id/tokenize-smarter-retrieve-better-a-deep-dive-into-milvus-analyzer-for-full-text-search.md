@@ -10,7 +10,7 @@ desc: >-
   Jelajahi bagaimana Milvus Analyzer mendukung pengambilan AI hibrida dengan
   tokenisasi dan pemfilteran yang efisien, sehingga memungkinkan pencarian teks
   lengkap yang lebih cepat dan lebih cerdas.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false

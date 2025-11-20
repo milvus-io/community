@@ -4,7 +4,7 @@ id: >-
 title: 利用 Cloudian HyperStore 和英伟达 RDMA 为 S3 存储释放 8× milvus 性能
 author: Jon Toor
 date: 2025-11-17T00:00:00.000Z
-cover: assets.zilliz.com/cloudian_b7531febff.png
+cover: assets.zilliz.com/cloudian_931ffc8646.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -16,8 +16,8 @@ origin: >-
   https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/
 ---
 <p><em>本文章最初发布于<a href="https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/">Cloudian</a>网站，现经授权在此转发。</em></p>
-<p>Cloudian 与英伟达™（NVIDIA®）合作，利用其 13 年多的 S3 API 实施经验，在其 HyperStore® 解决方案中添加了对 S3 兼容存储的 RDMA 支持。作为一个基于S3-API的并行处理架构平台，Cloudian具有得天独厚的优势，既能为这项技术的发展做出贡献，又能充分利用这项技术。此次合作充分利用了Cloudian在对象存储协议方面的深厚专业知识以及英伟达™（NVIDIA®）在计算和网络加速方面的领先地位，从而打造出一款将高性能计算与企业级存储无缝集成的解决方案。</p>
-<p>英伟达™（NVIDIA®）宣布即将全面推出兼容S3存储的RDMA（远程直接内存访问）技术，这是人工智能基础架构发展的一个重要里程碑。这项突破性技术有望改变企业处理现代人工智能工作负载的海量数据需求的方式，在保持可扩展性和简易性的同时实现前所未有的性能提升，而这正是 S3 兼容对象存储成为云计算基础的原因。</p>
+<p>Cloudian 与英伟达™（NVIDIA®）合作，利用其 13 年多的 S3 API 实施经验，在其 HyperStore® 解决方案中增加了对 S3 兼容存储的 RDMA 支持。作为一个基于S3-API的并行处理架构平台，Cloudian具有得天独厚的优势，既能为这项技术的发展做出贡献，又能充分利用这项技术。此次合作充分利用了Cloudian在对象存储协议方面的深厚专业知识以及英伟达™（NVIDIA®）在计算和网络加速方面的领先地位，从而打造出一款将高性能计算与企业级存储无缝集成的解决方案。</p>
+<p>英伟达™（NVIDIA®）宣布即将全面推出兼容S3存储的RDMA（远程直接内存访问）技术，这是人工智能基础架构发展的一个重要里程碑。这项突破性技术有望改变企业处理现代人工智能工作负载的海量数据需求的方式，在保持可扩展性和简易性的同时带来前所未有的性能提升，而这正是 S3 兼容对象存储成为云计算基础的原因。</p>
 <h2 id="What-is-RDMA-for-S3-compatible-storage" class="common-anchor-header">什么是 S3 兼容存储的 RDMA？<button data-href="#What-is-RDMA-for-S3-compatible-storage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -133,4 +133,4 @@ origin: >-
     </button></h2><p>随着人工智能日益成为医疗保健服务的核心，我们不断寻求提高基础设施的性能和效率。英伟达™（NVIDIA®）和 Cloudian 推出的全新 RDMA for S3 兼容型存储对于我们的医疗成像分析和人工智能诊断应用至关重要，在这些应用中，快速处理大型数据集可直接影响患者护理，同时降低在基于 S3-API 的存储设备和基于 SSD 的 NAS 存储设备之间移动数据的成本。  -<em>Swapnil Rane 博士医学博士、DNB、PDCC（肾病学）、Mres（中医）、肿瘤学研究员、FRCPath 病理学教授（F）、塔塔纪念中心数字与计算肿瘤学系 AI/Computational Pathology And Imaging Lab OIC 首席科学家</em></p>
 <p>"英伟达™（NVIDIA®）发布的兼容S3的RDMA证实了我们基于Cloudian的人工智能基础架构战略的价值。我们使企业能够大规模运行高性能人工智能，同时保留S3 API兼容性，从而保持迁移简单和应用开发成本低廉。"-<em>Yotta Data Services 联合创始人、董事总经理兼首席执行官（CEO）Sunil Gupta</em></p>
 <p>"在我们扩展本地部署能力以提供主权人工智能的过程中，英伟达的RDMA for S3兼容存储技术和Cloudian的高性能对象存储为我们提供了所需的性能，同时不影响数据驻留，也不需要任何内核级修改。Cloudian HyperStore 平台可以让我们将敏感的人工智能数据完全置于我们的控制之下，并将其扩展到数亿字节。-<em>Kakao 执行副总裁兼云计算主管 Logan Lee</em></p>
-<p>"英伟达宣布即将发布RDMA for S3兼容存储GA，我们对此感到非常兴奋。我们与Cloudian的测试显示，向量数据库操作的性能提升高达8倍，这将让我们的Milvus by Zilliz用户在保持完全数据主权的同时，为要求苛刻的AI工作负载实现云规模性能。"-<em>Zilliz 创始人兼首席执行官 Charles Xie</em></p>
+<p>"英伟达宣布即将发布RDMA for S3兼容存储GA，我们对此感到非常兴奋。我们与Cloudian的测试显示，向量数据库操作的性能提升高达8倍，这将让我们的Milvus by Zilliz用户在保持完全数据主权的同时，为要求苛刻的人工智能工作负载实现云规模性能。"-<em>Zilliz 创始人兼首席执行官 Charles Xie</em></p>

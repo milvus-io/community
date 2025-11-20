@@ -9,8 +9,7 @@ desc: >-
   Aumenta l'accuratezza della RAG utilizzando Late Chunking e Milvus per un
   embedding dei documenti efficiente e consapevole del contesto e una ricerca
   vettoriale più veloce e intelligente.
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -175,7 +174,7 @@ chunk_embeddings = late_chunking(token_embeddings, [span_annotations])[<span cla
 <button class="copy-code-btn"></button></code></pre>
 <p><em>Suggerimento: l'</em> involucro della pipeline in funzioni facilita l'inserimento di altri modelli a contesto lungo o di strategie di chunking.</p>
 <h3 id="Comparison-with-Traditional-Embedding-Methods" class="common-anchor-header">Confronto con i metodi di embedding tradizionali</h3><p>Per dimostrare ulteriormente i vantaggi del Late Chunking, lo abbiamo anche confrontato con gli approcci tradizionali di embedding, utilizzando una serie di documenti e query campione.</p>
-<p>Riprendiamo l'esempio della nostra nota di rilascio di Milvus 2.4.13:</p>
+<p>Riprendiamo l'esempio della nostra nota di rilascio Milvus 2.4.13:</p>
 <pre><code translate="no"><span class="hljs-title class_">Milvus</span> <span class="hljs-number">2.4</span><span class="hljs-number">.13</span> introduces dynamic replica load, allowing users to adjust the number <span class="hljs-keyword">of</span> collection replicas without needing to release and reload the collection. <span class="hljs-title class_">This</span> version also addresses several critical bugs related to bulk importing, expression parsing, load balancing, and failure recovery. <span class="hljs-title class_">Additionally</span>, significant improvements have been made to <span class="hljs-variable constant_">MMAP</span> resource usage and <span class="hljs-keyword">import</span> performance, enhancing overall system efficiency. <span class="hljs-title class_">We</span> highly recommend upgrading to <span class="hljs-variable language_">this</span> release <span class="hljs-keyword">for</span> better performance and stability.
 <button class="copy-code-btn"></button></code></pre>
 <p>Misuriamo la <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search#Cosine-Similarity">similarità del coseno</a> tra l'embedding della query ("milvus 2.4.13") e ogni chunk:</p>

@@ -3,7 +3,7 @@ id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
 title: Wie OpusSearch Exact Matching für Enterprise RAG mit Milvus BM25 aufbaute
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -119,7 +119,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bei der Volltextsuche von Milvus geht es nicht wirklich um exakte Übereinstimmung, sondern um Relevanzbewertung mit BM25<a href="https://en.wikipedia.org/wiki/Okapi_BM25">(Best Matching 25</a>), die berechnet, wie relevant ein Dokument für Ihre Anfrage ist. Das ist großartig für "Finde etwas, das mir ähnlich ist", aber schrecklich für "Finde genau das".</p>
+    </button></h2><p>Bei der Volltextsuche von Milvus geht es nicht wirklich um exakten Abgleich, sondern um Relevanzbewertung mit BM25<a href="https://en.wikipedia.org/wiki/Okapi_BM25">(Best Matching 25</a>), die berechnet, wie relevant ein Dokument für Ihre Anfrage ist. Das ist großartig für "Finde etwas, das mir ähnlich ist", aber schrecklich für "Finde genau das".</p>
 <p>Wir haben dann <strong>die Leistung von BM25 mit der TEXT_MATCH-Filterung von Milvus kombiniert</strong>. Und so funktioniert es:</p>
 <ol>
 <li><p><strong>Zuerst filtern</strong>: TEXT_MATCH findet Dokumente, die Ihre exakten Schlüsselwörter enthalten</p></li>

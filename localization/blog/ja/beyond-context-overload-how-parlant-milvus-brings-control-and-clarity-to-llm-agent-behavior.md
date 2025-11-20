@@ -4,7 +4,7 @@ id: >-
 title: コンテキストの過負荷を超えて：Parlant × MilvusはLLMエージェントの行動をどのように制御し、明確化するか？
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -109,13 +109,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Parlantのガイドラインマッチングプロセスのボンネットを覗いてみると、1つの核となる技術的課題が明らかになる。それは、数百、あるいは数千の選択肢の中から、最も関連性の高い3～5個のルールを数ミリ秒で見つけるにはどうすればよいか、ということだ。そこで登場するのがベクター・データベースである。セマンティック検索がこれを可能にする。</p>
+    </button></h2><p>Parlantのガイドラインマッチングプロセスのボンネットを覗いてみると、1つの核となる技術的課題が明らかになる。それは、数百、あるいは数千の選択肢の中から、最も関連性の高い3～5個のルールを数ミリ秒で見つけるにはどうすればよいか、ということだ。そこで登場するのがベクター・データベースである。セマンティック検索がこれを可能にするのです。</p>
 <h3 id="How-Milvus-Supports-Parlant’s-Guideline-Matching-Process" class="common-anchor-header">MilvusはどのようにParlantのガイドラインマッチングプロセスをサポートしているのか？</h3><p>ガイドラインのマッチングは、意味的類似性によって機能します。各ガイドラインの「条件」フィールドはベクトル埋め込みに変換され、単なるテキストではなく、その意味を捉えます。ユーザーがメッセージを送信すると、Parlantはそのメッセージのセマンティクスを、保存されているすべてのガイドライン埋め込みと比較し、最も関連性の高いものを見つけます。</p>
 <p>以下は、そのプロセスの流れです：</p>
 <p><strong>1.クエリをエンコードする</strong>- ユーザーのメッセージと最近の会話履歴をクエリベクトルに変換します。</p>
 <p><strong>2.類似性の検索</strong>- システムがガイドラインベクターストア内で類似性検索を行い、最も近い一致を見つける。</p>
 <p><strong>3.トップKの結果を取得</strong>- 意味的に最も関連性の高い上位3～5つのガイドラインが返されます。</p>
-<p><strong>4.コンテキストへの挿入</strong>- これらの一致したガイドラインは、LLMのコンテキストに動的に挿入され、モデルが正しいルールに従って行動できるようになります。</p>
+<p><strong>4.コンテキストへの挿入</strong>- 一致したガイドラインは、LLMのコンテキストに動的に挿入されます。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/guideline_matching_process_ffd874c77e.webp" alt="" class="doc-image" id="" />
@@ -153,7 +153,7 @@ guideline_collection.create_index(field_name=<span class="hljs-string">&quot;con
 <button class="copy-code-btn"></button></code></pre>
 <p>さて、ユーザーが「母の口座に10万人民元を送金したい」と言った場合、実行時のフローは次のようになる：</p>
 <p><strong>1.クエリーをレクタライズする</strong>- ユーザー入力を768次元のベクトルに変換する。</p>
-<p><strong>2.</strong>2.<strong>ハイブリッド検索</strong>- Milvusのベクトル類似度検索とメタデータのフィルタリング（例：<code translate="no">business_domain=&quot;transfer&quot;</code> ）を実行する。</p>
+<p><strong>2.</strong>2.<strong>ハイブリッド検索</strong>- Milvusのベクトル類似性検索とメタデータのフィルタリング（例：<code translate="no">business_domain=&quot;transfer&quot;</code> ）を実行する。</p>
 <p><strong>3.結果ランキング</strong>- 類似性スコアと<strong>優先度</strong>値を組み合わせて、ガイドライン候補をランク付けする。</p>
 <p><strong>4.コンテキストインジェクション</strong>- トップ3にマッチしたガイドラインの<code translate="no">action_text</code> を Parlant エージェントのコンテキストにインジェクションします。</p>
 <p>
@@ -177,7 +177,7 @@ memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&
 <p>同じユーザーが戻ってきたとき、エージェントはMilvusから最も関連性の高い過去のやりとりを取得し、よりつながりのある、人間のような体験を生成するためにそれらを使用することができます。例えば、ユーザーが先週投資ファンドについて質問した場合、エージェントはその文脈を思い出し、積極的に応答することができる：「おかえりなさい！"おかえりなさい！前回お話したファンドについてまだご質問はありますか？"</p>
 <h3 id="How-to-Optimize-Performance-for-Milvus-Powered-Agent-Systems" class="common-anchor-header">milvus搭載エージェントシステムのパフォーマンスを最適化する方法</h3><p>Milvusを利用したエージェントシステムを本番環境に導入する場合、パフォーマンスチューニングが重要になります。低レイテンシと高スループットを実現するためには、いくつかの重要なパラメータに注意を払う必要があります：</p>
 <p><strong>1.適切なインデックスタイプの選択</strong></p>
-<p>適切なインデックス構造を選択することが重要です。例えば、HNSW (Hierarchical Navigable Small World)は、精度が重要な金融やヘルスケアのような高リコールシナリオに最適です。IVF_FLATは、電子商取引の推奨のような大規模なアプリケーションに適しており、高速なパフォーマンスとメモリ使用量の削減と引き換えに、多少低いリコールが許容されます。</p>
+<p>適切なインデックス構造を選択することが重要です。例えば、HNSW (Hierarchical Navigable Small World)は、精度が重要な金融やヘルスケアのような高リコールシナリオに最適です。IVF_FLATは、電子商取引の推奨のような大規模なアプリケーションに適しており、高速なパフォーマンスとメモリ使用量の削減と引き換えに、多少リコールが低くても許容されます。</p>
 <p><strong>2.シャーディング戦略</strong></p>
 <p>保存されたガイドラインの数が100万エントリを超える場合、ビジネスドメインやユースケースごとにデータを<strong>分割</strong>するために<strong>パーティションを</strong>使用することをお勧めします。パーティショニングは、クエリごとの検索スペースを減らし、検索速度を向上させ、データセットが大きくなっても待ち時間を安定させます。</p>
 <p><strong>3.キャッシュ構成</strong></p>
@@ -197,7 +197,7 @@ memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/install-overview.md">Milvus Liteは</a>Milvusの軽量版で、アプリケーションに簡単に組み込むことができるPythonライブラリです。Jupyter Notebooksのような環境で素早くプロトタイプを作成したり、コンピューティングリソースが限られたエッジデバイスやスマートデバイスで実行するのに理想的です。その小さなフットプリントにもかかわらず、Milvus Liteは他のMilvusデプロイメントと同じAPIをサポートしています。つまり、Milvus Lite用に書いたクライアントサイドのコードは、後からMilvusやZilliz Cloudのフルインスタンスにシームレスに接続することができます。</p>
+    </button></h2><p><a href="https://milvus.io/docs/install-overview.md">Milvus Liteは</a>Milvusの軽量版で、アプリケーションに簡単に組み込むことができるPythonライブラリです。Jupyter Notebooksのような環境で素早くプロトタイプを作成したり、計算リソースが限られたエッジデバイスやスマートデバイスで実行するのに理想的です。その小さなフットプリントにもかかわらず、Milvus Liteは他のMilvusデプロイメントと同じAPIをサポートしています。つまり、Milvus Lite用に書いたクライアントサイドのコードは、後からMilvusやZilliz Cloudのフルインスタンスにシームレスに接続することができます。</p>
 <p>このデモでは、Milvus LiteとParlantを連携させ、最小限のセットアップでコンテキストに応じた回答を高速に提供するインテリジェントなQ&amp;Aシステムの構築方法をご紹介します。</p>
 <h3 id="Prerequisites" class="common-anchor-header">前提条件</h3><p>1.Parlant GitHub: https://github.com/emcie-co/parlant</p>
 <p>2.Parlant ドキュメント: https://parlant.io/docs</p>

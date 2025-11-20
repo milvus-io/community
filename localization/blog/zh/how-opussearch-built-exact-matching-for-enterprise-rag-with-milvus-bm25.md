@@ -3,7 +3,7 @@ id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
 title: OpusSearch 如何利用 Milvus BM25 为企业 RAG 构建精确匹配功能
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -36,7 +36,7 @@ origin: >-
 <p><strong>但是，用户的反馈给了我们当头一棒：</strong></p>
 <p>"我只想要第 281 集的片段。为什么这么难？</p>
 <p>"当我搜索'她就是这么说的'时，我想要的正是这句话，而不是'他就是这个意思'"。</p>
-<p>事实证明，视频编辑和剪辑师并不总是希望人工智能很聪明。有时，他们希望软件<strong>直截了当、正确无误</strong>。</p>
+<p>事实证明，视频编辑和剪辑师并不总是希望人工智能变得聪明。有时，他们希望软件<strong>直截了当、正确无误</strong>。</p>
 <h2 id="Why-do-we-care-about-Search" class="common-anchor-header">我们为什么关注搜索？<button data-href="#Why-do-we-care-about-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -117,14 +117,14 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Milvus 的全文搜索并不是真正的精确匹配，而是使用 BM25<a href="https://en.wikipedia.org/wiki/Okapi_BM25">（最佳匹配 25</a>）进行相关性评分，计算文档与查询的相关程度。它对于 "为我找到接近的内容 "非常有用，但对于 "为我准确找到这个内容 "却非常糟糕。</p>
-<p>于是，我们<strong>将 BM25 的强大功能与 Milvus 的 TEXT_MATCH 过滤功能结合起来</strong>。工作原理如下</p>
+<p>于是，我们<strong>将 BM25 的强大功能与 Milvus 的 TEXT_MATCH 过滤技术相结合</strong>。工作原理如下</p>
 <ol>
 <li><p><strong>先过滤</strong>：TEXT_MATCH 查找包含准确关键词的文档</p></li>
 <li><p><strong>排名第二</strong>：BM25 根据相关性对精确匹配的文档进行排序</p></li>
 <li><p><strong>获胜</strong>：您将获得智能排序的精确匹配结果</p></li>
 </ol>
 <p>把它想象成 "给我所有包含'第 281 集'的内容，然后先给我看最好的"。</p>
-<h2 id="The-Code-That-Made-It-Work" class="common-anchor-header">使其发挥作用的代码<button data-href="#The-Code-That-Made-It-Work" class="anchor-icon" translate="no">
+<h2 id="The-Code-That-Made-It-Work" class="common-anchor-header">让它发挥作用的代码<button data-href="#The-Code-That-Made-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,7 +139,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Schema-Design" class="common-anchor-header">Schema 设计</h3><p><strong>重要</strong>：我们完全禁用了停止词，因为 "The Office "和 "Office "等词在我们的内容域中代表着不同的实体。</p>
+    </button></h2><h3 id="Schema-Design" class="common-anchor-header">Schema 设计</h3><p><strong>重要</strong>：我们完全禁用了停止词，因为 "The Office "和 "Office "等词在我们的内容域中代表不同的实体。</p>
 <pre><code translate="no"><span class="hljs-built_in">export</span> <span class="hljs-keyword">function</span> getExactMatchFields(): FieldType[] {
  <span class="hljs-built_in">return</span> [
    {

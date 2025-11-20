@@ -3,7 +3,7 @@ id: understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.
 title: 瞭解 IVF 向量索引：它如何運作以及何時選擇它而非 HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -68,7 +68,7 @@ origin: >-
 <li><p><strong>更新：</strong>對於每個群集，計算其向量的平均值，並設定為新的中心點。</p></li>
 <li><p><strong>迭代與收斂：</strong>重複指派和更新，直到中心點不再大幅改變或達到最大迭代次數為止。</p></li>
 </ul>
-<p>一旦 k-means 收斂，所得的 nlist 中心點就會形成 IVF 的「索引目錄」。它們定義了資料集的粗略分割方式，允許稍後的查詢快速縮小搜尋空間。</p>
+<p>一旦 k-means 收斂，產生的 nlist 中心點就會形成 IVF 的「索引目錄」。它們定義了資料集的粗略分割方式，允許稍後的查詢快速縮小搜尋空間。</p>
 <p>回想一下圖書館的比喻：訓練中心點就像是決定如何依主題將書籍分類：</p>
 <ul>
 <li><p>較大的 nlist 代表較多的區塊，每個區塊都有較少、較特定的書籍。</p></li>
@@ -78,8 +78,8 @@ origin: >-
 <p>您可以將這個步驟想像成將書籍分類上架。當您稍後要找一個書名時，您只需要檢查最有可能有這個書名的幾個區塊，而不需要逛遍整個圖書館。</p>
 <h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">步驟 3：壓縮編碼 (選用)</h3><p>為了節省記憶體和加快計算速度，每個叢集內的向量都可以經過壓縮編碼。有兩種常見的方法：</p>
 <ul>
-<li><p><strong>SQ8（標量量化）：</strong>此方法將向量的每個維度量化為 8 位元。對於標準的<code translate="no">float32</code> 向量，每個維度通常佔用 4 位元組。使用 SQ8 時，則只需 1 個位元組，達到 4:1 的壓縮比，同時保持向量的幾何圖形基本不變。</p></li>
-<li><p><strong>PQ (乘積量化)：</strong>它將一個高維向量分割成幾個子空間。例如，128 維向量可分成 8 個子向量，每個子向量 16 維。在每個子空間中，預先訓練一個小編碼本（通常有 256 個項目），每個子向量由一個指向其最近編碼本項目的 8 位元索引來表示。這表示原始的 128-D<code translate="no">float32</code> 向量 (需要 512 位元組) 只需使用 8 位元組 (8 個子空間 × 每個子空間 1 位元組) 即可表示，達到 64:1 的壓縮比。</p></li>
+<li><p><strong>SQ8（標量量化）：</strong>此方法將向量的每個維度量化為 8 位元。對於標準的<code translate="no">float32</code> 向量，每個維度通常佔用 4 位元組。有了 SQ8，每個維度只需 1 個位元組，達到 4:1 的壓縮比，同時保持向量的幾何圖形基本不變。</p></li>
+<li><p><strong>PQ (乘積量化)：</strong>它將一個高維向量分割成幾個子空間。例如，128 維向量可以分成 8 個子向量，每個子向量 16 維。在每個子空間中，預先訓練一個小編碼本（通常有 256 個項目），每個子向量由一個指向其最近編碼本項目的 8 位元索引來表示。這表示原始的 128-D<code translate="no">float32</code> 向量 (需要 512 位元組) 只需使用 8 位元組 (8 個子空間 × 每個子空間 1 位元組) 即可表示，達到 64:1 的壓縮比。</p></li>
 </ul>
 <h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">如何使用 IVF 向量索引進行搜尋<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -133,8 +133,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>了解 IVF 向量索引的<strong>建立</strong>和<strong>搜尋</strong>方式後，下一步就是將它應用於實際工作負載。在實務中，您通常需要在<strong>效能</strong>、<strong>準確性</strong>和<strong>記憶體使用量</strong>之間取得平衡。以下是從工程經驗中汲取的一些實用指引。</p>
-<h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">如何選擇正確的 nlist</h3><p>如前所述，參數 nlist 決定了在建立 IVF 索引時將資料集分為多少個群集。</p>
+    </button></h2><p>瞭解 IVF 向量索引的<strong>建立</strong>與<strong>搜尋</strong>方式後，下一步就是將它應用於實際工作負載。在實務中，您通常需要在<strong>效能</strong>、<strong>準確性</strong>和<strong>記憶體使用量</strong>之間取得平衡。以下是從工程經驗中汲取的一些實用指引。</p>
+<h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">如何選擇正確的 nlist</h3><p>如前所述，參數 nlist 決定了建立 IVF 索引時將資料集分為多少個群集。</p>
 <ul>
 <li><p><strong>較大的 nlist</strong>：建立更細緻的叢集，也就是說每個叢集包含較少的向量。這可減少搜尋時掃描的向量數量，通常可加快查詢速度。但建立索引需要較長時間，而且中心點表會消耗較多記憶體。</p></li>
 <li><p><strong>較小的 nlist</strong>：加快索引建立速度並減少記憶體使用量，但每個群集會變得更 「擁擠」。每次查詢都必須掃描群集內更多的向量，這可能會導致效能瓶頸。</p></li>
@@ -199,8 +199,8 @@ origin: >-
 <p>實際上，IVF 索引已經在不同領域中為許多影響深遠的使用案例提供了動力：</p>
 <ul>
 <li><p><strong>電子商務搜尋：</strong>使用者可以上傳產品圖片，並立即從數百萬個列表中找到視覺上相似的商品。</p></li>
-<li><p><strong>專利檢索：</strong>只要給予簡短的描述，系統就能從龐大的資料庫中找出語意上最相關的專利，遠比傳統的關鍵字搜尋更有效率。</p></li>
-<li><p><strong>RAG 知識庫：</strong>IVF 有助於從數百萬個租戶文件中檢索最相關的上下文，確保 AI 模型產生更精確、更接地氣的回應。</p></li>
+<li><p><strong>專利檢索：</strong>只要給出簡短的描述，系統就能從龐大的資料庫中找出語意上最相關的專利，效率遠高於傳統的關鍵字搜尋。</p></li>
+<li><p><strong>RAG 知識庫：</strong>IVF 有助於從數百萬個租戶文件中檢索出最相關的上下文，確保 AI 模型產生更精確、更接地氣的回應。</p></li>
 </ul>
 <h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -218,5 +218,5 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>要選擇正確的索引，一切都要視乎您的特定使用個案而定。如果您正在處理大型資料集或需要支援篩選搜尋，IVF 可能會比較適合。與 HNSW 等以圖表為基礎的索引相比，IVF 的索引建立速度更快、記憶體使用量更低，而且在速度與精確度之間取得了很好的平衡。</p>
-<p>最流行的開放原始碼向量資料庫<a href="https://milvus.io/">Milvus</a> 提供對整個 IVF 系列的完整支援，包括 IVF_FLAT、IVF_PQ 和 IVF_SQ8。您可以輕鬆嘗試使用這些索引類型，找到最適合您的效能與記憶體需求的設定。如需 Milvus 支援索引的完整清單，請參閱此<a href="https://milvus.io/docs/index-explained.md">Milvus 索引說明文件頁面</a>。</p>
-<p>如果您正在建立圖片搜尋、推薦系統或 RAG 知識庫，請試試 Milvus 的 IVF 索引，看看高效率、大規模的向量搜尋在運作上有什麼感覺。</p>
+<p>最受歡迎的開放原始碼向量資料庫<a href="https://milvus.io/">Milvus</a> 提供對整個 IVF 系列的完整支援，包括 IVF_FLAT、IVF_PQ 和 IVF_SQ8。您可以輕鬆嘗試使用這些索引類型，找到最適合您的效能與記憶體需求的設定。如需 Milvus 支援索引的完整清單，請參閱此<a href="https://milvus.io/docs/index-explained.md">Milvus 索引說明文件頁面</a>。</p>
+<p>如果您正在建立圖片搜尋、推薦系統或 RAG 知識庫，請嘗試一下 Milvus 中的 IVF 索引 - 看看高效率、大規模向量搜尋在運作上的感受。</p>

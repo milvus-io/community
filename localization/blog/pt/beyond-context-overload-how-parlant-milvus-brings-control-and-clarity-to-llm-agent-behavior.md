@@ -6,7 +6,7 @@ title: >-
   clareza ao comportamento do agente LLM
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: >-
   https://milvus.io/blog/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md
 ---
 <p>Imagine que lhe é pedido para completar uma tarefa que envolve 200 regras comerciais, 50 ferramentas e 30 demonstrações, e que só tem uma hora para o fazer. Isso é simplesmente impossível. No entanto, muitas vezes esperamos que grandes modelos de linguagem façam exatamente isso quando os transformamos em "agentes" e os sobrecarregamos com instruções.</p>
-<p>Na prática, esta abordagem rapidamente se torna ineficaz. As estruturas tradicionais de agentes, como a LangChain ou a LlamaIndex, injectam todas as regras e ferramentas no contexto do modelo de uma só vez, o que leva a conflitos de regras, sobrecarga de contexto e comportamento imprevisível na produção.</p>
+<p>Na prática, esta abordagem rapidamente se torna ineficaz. As estruturas de agentes tradicionais, como a LangChain ou a LlamaIndex, injectam todas as regras e ferramentas no contexto do modelo de uma só vez, o que leva a conflitos de regras, sobrecarga de contexto e comportamento imprevisível na produção.</p>
 <p>Para resolver esse problema, uma estrutura de agente de código aberto chamada<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a> vem ganhando força no GitHub. Ele introduz uma nova abordagem chamada Modelagem de Alinhamento, juntamente com um mecanismo de supervisão e transições condicionais que tornam o comportamento do agente muito mais controlável e explicável.</p>
 <p>Quando emparelhado com o <a href="https://milvus.io/"><strong>Milvus</strong></a>, uma base de dados vetorial de código aberto, o Parlant torna-se ainda mais capaz. O Milvus acrescenta inteligência semântica, permitindo que os agentes recuperem dinamicamente as regras e o contexto mais relevantes em tempo real - mantendo-os precisos, eficientes e prontos para a produção.</p>
 <p>Nesta postagem, exploraremos como o Parlant funciona secretamente e como a integração com o Milvus permite a produção.</p>
@@ -40,7 +40,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>As estruturas de agente tradicionais adoram ser grandes: centenas de regras, dezenas de ferramentas e um punhado de demonstrações - tudo amontoado em um único prompt superlotado. Pode parecer ótimo em uma demonstração ou em um pequeno teste de sandbox, mas quando você o coloca em produção, as rachaduras começam a aparecer rapidamente.</p>
+    </button></h2><p>As estruturas de agentes tradicionais adoram ser grandes: centenas de regras, dezenas de ferramentas e um punhado de demonstrações - tudo amontoado em um único prompt superlotado. Pode parecer ótimo em uma demonstração ou em um pequeno teste de sandbox, mas quando você o coloca em produção, as rachaduras começam a aparecer rapidamente.</p>
 <ul>
 <li><p><strong>Regras conflitantes trazem o caos:</strong> Quando duas ou mais regras se aplicam ao mesmo tempo, esses frameworks não têm uma maneira integrada de decidir qual delas vence. Às vezes, ele escolhe uma. Às vezes, mistura as duas. Por vezes, faz algo totalmente imprevisível.</p></li>
 <li><p><strong>Casos extremos expõem as lacunas:</strong> Não é possível prever tudo o que um utilizador pode dizer. E quando o seu modelo se depara com algo fora dos dados de treino, o padrão são respostas genéricas e sem compromisso.</p></li>
@@ -67,7 +67,7 @@ origin: >-
 <p>Cada diretriz é composta por três partes:</p>
 <ul>
 <li><p><strong>Condição</strong> - Uma descrição em linguagem natural de quando a regra deve ser aplicada. O Parlant converte essa condição em um vetor semântico e a compara com a entrada do usuário para descobrir se ela é relevante.</p></li>
-<li><p><strong>Ação</strong> - Uma instrução clara que define como o agente deve responder quando a condição for atendida. Esta ação é injectada no contexto do LLM apenas quando activada.</p></li>
+<li><p><strong>Ação</strong> - Uma instrução clara que define como o agente deve responder quando a condição for atendida. Esta ação é injectada no contexto do LLM apenas quando é activada.</p></li>
 <li><p><strong>Ferramentas</strong> - Quaisquer funções externas ou APIs ligadas a essa regra específica. Estas são expostas ao agente apenas quando a diretriz está ativa, mantendo a utilização da ferramenta controlada e consciente do contexto.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">await</span> agent.<span class="hljs-title function_">create_guideline</span>(
@@ -125,7 +125,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Para que este fluxo de trabalho seja possível, a base de dados vetorial tem de fornecer três capacidades críticas: pesquisa de alto desempenho no vizinho mais próximo (Approximate Nearest Neighbor - ANN), filtragem flexível de metadados e actualizações vectoriais em tempo real. <a href="https://milvus.io/"><strong>O Milvus</strong></a>, o banco de dados vetorial nativo da nuvem e de código aberto, oferece desempenho de nível de produção em todas as três áreas.</p>
+<p>Para tornar este fluxo de trabalho possível, a base de dados de vectores tem de fornecer três capacidades críticas: pesquisa de alto desempenho no vizinho mais próximo (ANN), filtragem flexível de metadados e actualizações de vectores em tempo real. <a href="https://milvus.io/"><strong>O Milvus</strong></a>, o banco de dados vetorial nativo da nuvem e de código aberto, oferece desempenho de nível de produção em todas as três áreas.</p>
 <p>Para entender como o Milvus funciona em cenários reais, vamos analisar um agente de serviços financeiros como exemplo.</p>
 <p>Suponhamos que o sistema define 800 diretrizes comerciais que abrangem tarefas como pedidos de informação sobre contas, transferências de fundos e consultas sobre produtos de gestão de património. Nesta configuração, o Milvus actua como camada de armazenamento e recuperação de todos os dados das diretrizes.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, Collection, FieldSchema, CollectionSchema, DataType
@@ -165,7 +165,7 @@ guideline_collection.create_index(field_name=<span class="hljs-string">&quot;con
     <span></span>
   </span>
 </p>
-<p>Nesta configuração, o Milvus fornece uma latência P99 abaixo de 15 ms, mesmo quando a biblioteca de diretrizes é ampliada para 100.000 entradas. Em comparação, o uso de um banco de dados relacional tradicional com correspondência de palavras-chave normalmente resulta em latência acima de 200 ms e precisão de correspondência significativamente menor.</p>
+<p>Nesta configuração, o Milvus fornece latência P99 abaixo de 15 ms, mesmo quando a biblioteca de diretrizes é dimensionada para 100.000 entradas. Em comparação, o uso de um banco de dados relacional tradicional com correspondência de palavras-chave normalmente resulta em latência acima de 200 ms e precisão de correspondência significativamente menor.</p>
 <h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Como o Milvus permite a memória a longo prazo e a personalização</h3><p>O Milvus faz mais do que a correspondência de diretrizes. Em cenários em que os agentes necessitam de memória de longo prazo e de respostas personalizadas, o Milvus pode servir como camada de memória que armazena e recupera as interações passadas dos utilizadores como embeddings vectoriais, ajudando o agente a lembrar-se do que foi discutido anteriormente.</p>
 <pre><code translate="no"><span class="hljs-comment"># store user’s past interactions</span>
 user_memory_fields = [

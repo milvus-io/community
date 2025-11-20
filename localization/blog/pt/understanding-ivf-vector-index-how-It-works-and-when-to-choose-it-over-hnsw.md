@@ -5,7 +5,7 @@ title: >-
   do HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
-cover: assets.zilliz.com/ivf_cover_157df122bc.png
+cover: assets.zilliz.com/ivf_1bbe0e9f85.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -43,7 +43,7 @@ origin: >-
 <p><strong>1. Encontrar os clusters mais próximos.</strong> O sistema procura os poucos conjuntos cujos centróides estão mais próximos do vetor de consulta - tal como ir diretamente para as duas ou três secções da biblioteca com maior probabilidade de terem o seu livro.</p>
 <p><strong>2. Pesquise dentro desses grupos.</strong> Quando estiver nas secções certas, só precisa de procurar num pequeno conjunto de livros em vez de em toda a biblioteca.</p>
 <p>Esta abordagem reduz a quantidade de computação em ordens de grandeza. Continua a obter resultados altamente precisos, mas muito mais rapidamente.</p>
-<h2 id="How-to-Build-an-IVF-Vector-Index" class="common-anchor-header">Como criar um índice vetorial de FIV<button data-href="#How-to-Build-an-IVF-Vector-Index" class="anchor-icon" translate="no">
+<h2 id="How-to-Build-an-IVF-Vector-Index" class="common-anchor-header">Como construir um índice vetorial de FIV<button data-href="#How-to-Build-an-IVF-Vector-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,16 +65,16 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Etapa 1: Agrupamento K-means</h3><p>Em primeiro lugar, execute o agrupamento K-means no conjunto de dados X para dividir o espaço vetorial de elevada dimensão em n grupos de listas. Cada cluster é representado por um centróide, que é armazenado na tabela de centróides C. O número de centróides, nlist, é um hiperparâmetro chave que determina o grau de precisão do agrupamento.</p>
+<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Etapa 1: Agrupamento K-means</h3><p>Em primeiro lugar, execute o agrupamento K-means no conjunto de dados X para dividir o espaço vetorial de alta dimensão em n grupos de listas. Cada cluster é representado por um centróide, que é armazenado na tabela de centróides C. O número de centróides, nlist, é um hiperparâmetro chave que determina o grau de precisão do agrupamento.</p>
 <p>Eis como o k-means funciona nos bastidores:</p>
 <ul>
 <li><p><strong>Inicialização:</strong> Selecionar aleatoriamente os vectores <em>nlist</em> como centróides iniciais.</p></li>
 <li><p><strong>Atribuição:</strong> Para cada vetor, calcula a sua distância a todos os centróides e atribui-o ao mais próximo.</p></li>
 <li><p><strong>Atualização:</strong> Para cada cluster, calcule a média dos seus vectores e defina-a como o novo centróide.</p></li>
-<li><p><strong>Iteração e convergência:</strong> Repetir a atribuição e a atualização até os centróides deixarem de mudar significativamente ou até ser atingido um número máximo de iterações.</p></li>
+<li><p><strong>Iteração e convergência:</strong> Repetir a atribuição e atualização até os centróides deixarem de mudar significativamente ou até ser atingido um número máximo de iterações.</p></li>
 </ul>
 <p>Uma vez que o k-means converge, os centróides da lista n resultante formam o "diretório de índices" do IVF. Eles definem como o conjunto de dados é particionado de forma grosseira, permitindo que as consultas reduzam rapidamente o espaço de pesquisa posteriormente.</p>
-<p>Pensemos na analogia da biblioteca: treinar centróides é como decidir como agrupar livros por tópico:</p>
+<p>Voltemos à analogia da biblioteca: treinar centróides é como decidir como agrupar livros por tópico:</p>
 <ul>
 <li><p>Uma lista n maior significa mais secções, cada uma com menos livros e mais específicos.</p></li>
 <li><p>Uma lista n mais pequena significa menos secções, cada uma cobrindo uma gama mais vasta e variada de tópicos.</p></li>
@@ -83,7 +83,7 @@ origin: >-
 <p>Pode pensar neste passo como se estivesse a arrumar os livros nas suas respectivas secções. Quando procurar um título mais tarde, só precisa de verificar as poucas secções que têm maior probabilidade de o ter, em vez de percorrer toda a biblioteca.</p>
 <h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Passo 3: Codificação de compressão (opcional)</h3><p>Para poupar memória e acelerar o cálculo, os vectores de cada grupo podem passar por uma codificação de compressão. Existem duas abordagens comuns:</p>
 <ul>
-<li><p><strong>SQ8 (Quantização escalar):</strong> Este método quantiza cada dimensão de um vetor em 8 bits. Para um vetor <code translate="no">float32</code> padrão, cada dimensão ocupa normalmente 4 bytes. Com o SQ8, é reduzida a apenas 1 byte, atingindo uma taxa de compressão de 4:1 e mantendo a geometria do vetor praticamente intacta.</p></li>
+<li><p><strong>SQ8 (Quantização escalar):</strong> Este método quantiza cada dimensão de um vetor em 8 bits. Para um vetor <code translate="no">float32</code> padrão, cada dimensão ocupa normalmente 4 bytes. Com a SQ8, é reduzida a apenas 1 byte, atingindo uma taxa de compressão de 4:1 e mantendo a geometria do vetor praticamente intacta.</p></li>
 <li><p><strong>PQ (Product Quantization):</strong> Divide um vetor de elevada dimensão em vários subespaços. Por exemplo, um vetor de 128 dimensões pode ser dividido em 8 sub-vectores de 16 dimensões cada. Em cada subespaço, um pequeno livro de códigos (normalmente com 256 entradas) é pré-treinado e cada sub-vetor é representado por um índice de 8 bits que aponta para a entrada do livro de códigos mais próxima. Isto significa que o vetor original de 128-D <code translate="no">float32</code> (que requer 512 bytes) pode ser representado utilizando apenas 8 bytes (8 subespaços × 1 byte cada), atingindo um rácio de compressão de 64:1.</p></li>
 </ul>
 <h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">Como utilizar o índice vetorial IVF para pesquisa<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
@@ -110,7 +110,7 @@ origin: >-
 </p>
 <h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Passo 1: Calcular as distâncias do vetor de consulta a todos os centróides</h3><p>Quando chega um vetor de consulta q, o sistema começa por determinar a que clusters é mais provável que pertença. Depois, calcula a distância entre q e cada centróide na tabela de centróides C - normalmente utilizando a distância euclidiana ou o produto interno como métrica de semelhança. Os centróides são então ordenados pela sua distância ao vetor de consulta, produzindo uma lista ordenada do mais próximo para o mais distante.</p>
 <p>Por exemplo, como mostrado na ilustração, a ordem é: C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5.</p>
-<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Etapa 2: selecionar os clusters nprobe mais próximos</h3><p>Para evitar a varredura de todo o conjunto de dados, o IVF pesquisa apenas dentro dos principais <em>nagrupamentos de sonda</em> que estão mais próximos do vetor de consulta.</p>
+<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Etapa 2: selecionar os clusters nprobe mais próximos</h3><p>Para evitar a varredura de todo o conjunto de dados, o IVF pesquisa apenas dentro dos <em>nagrupamentos de sonda</em> superiores que estão mais próximos do vetor de consulta.</p>
 <p>O parâmetro nprobe define o âmbito da pesquisa e afecta diretamente o equilíbrio entre a velocidade e a recuperação:</p>
 <ul>
 <li><p>Um nprobe mais pequeno conduz a consultas mais rápidas, mas pode reduzir a recuperação.</p></li>
@@ -138,7 +138,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Depois de entender como os índices vetoriais IVF são <strong>criados</strong> e <strong>pesquisados</strong>, a próxima etapa é aplicá-los a cargas de trabalho reais. Na prática, muitas vezes é necessário equilibrar <strong>desempenho</strong>, <strong>precisão</strong> e <strong>uso de memória</strong>. Abaixo estão algumas diretrizes práticas extraídas da experiência de engenharia.</p>
+    </button></h2><p>Depois de entender como os índices vetoriais IVF são <strong>criados</strong> e <strong>pesquisados</strong>, a próxima etapa é aplicá-los em cargas de trabalho reais. Na prática, muitas vezes é necessário equilibrar <strong>desempenho</strong>, <strong>precisão</strong> e <strong>uso de memória</strong>. Abaixo estão algumas diretrizes práticas extraídas da experiência de engenharia.</p>
 <h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">Como escolher a nlist correta</h3><p>Como mencionado anteriormente, o parâmetro nlist determina o número de clusters em que o conjunto de dados é dividido ao criar um índice IVF.</p>
 <ul>
 <li><p><strong>Uma lista parcial maior</strong>: Cria clusters mais refinados, o que significa que cada cluster contém menos vetores. Isto reduz o número de vectores analisados durante a pesquisa e geralmente resulta em consultas mais rápidas. Mas a criação do índice leva mais tempo e a tabela de centroides consome mais memória.</p></li>
@@ -190,7 +190,7 @@ origin: >-
 <tbody>
 <tr><td><strong>Algoritmo Conceito</strong></td><td>Agrupamento e classificação</td><td>Navegação gráfica multi-camada</td></tr>
 <tr><td><strong>Utilização de memória</strong></td><td>Relativamente baixa</td><td>Relativamente alta</td></tr>
-<tr><td><strong>Velocidade de construção do índice</strong></td><td>Rápida (requer apenas clustering)</td><td>Lenta (necessita de construção de gráficos multi-camadas)</td></tr>
+<tr><td><strong>Velocidade de construção do índice</strong></td><td>Rápida (apenas requer clustering)</td><td>Lenta (necessita de construção de gráficos multi-camadas)</td></tr>
 <tr><td><strong>Velocidade de consulta (sem filtragem)</strong></td><td>Rápida, depende do <em>nprobe</em></td><td>Extremamente rápida, mas com complexidade logarítmica</td></tr>
 <tr><td><strong>Velocidade da consulta (com filtragem)</strong></td><td>Estável - efectua uma filtragem grosseira ao nível do centróide para reduzir os candidatos</td><td>Instável - especialmente quando o rácio de filtragem é elevado (90%+), o grafo fica fragmentado e pode degradar-se para uma travessia quase total do grafo, ainda mais lenta do que a pesquisa de força bruta</td></tr>
 <tr><td><strong>Taxa de recuperação</strong></td><td>Depende da utilização de compressão; sem quantização, a recuperação pode atingir <strong>95%+</strong></td><td>Normalmente mais alta, cerca de <strong>98%+</strong></td></tr>
@@ -222,6 +222,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para escolher o índice certo, tudo se resume ao seu caso de utilização específico. Se estiver a trabalhar com conjuntos de dados em grande escala ou precisar de suportar pesquisas filtradas, o IVF pode ser a melhor opção. Em comparação com índices baseados em gráficos, como o HNSW, o IVF oferece compilações de índices mais rápidas, menor uso de memória e um forte equilíbrio entre velocidade e precisão.</p>
+    </button></h2><p>Para escolher o índice certo, tudo se resume ao seu caso de utilização específico. Se estiver a trabalhar com conjuntos de dados de grande escala ou precisar de suportar pesquisas filtradas, o IVF pode ser a melhor opção. Em comparação com índices baseados em gráficos, como o HNSW, o IVF oferece compilações de índices mais rápidas, menor uso de memória e um forte equilíbrio entre velocidade e precisão.</p>
 <p><a href="https://milvus.io/">Milvus</a>, o banco de dados vetorial de código aberto mais popular, fornece suporte completo para toda a família IVF, incluindo IVF_FLAT, IVF_PQ e IVF_SQ8. Pode experimentar facilmente estes tipos de índices e encontrar a configuração que melhor se adapta às suas necessidades de desempenho e memória. Para obter uma lista completa dos índices que o Milvus suporta, consulte esta <a href="https://milvus.io/docs/index-explained.md">página do documento Milvus Index</a>.</p>
-<p>Se estiver a construir pesquisa de imagens, sistemas de recomendação ou bases de conhecimento RAG, experimente a indexação IVF no Milvus - e veja como a pesquisa vetorial eficiente e em grande escala se sente em ação.</p>
+<p>Se estiver a construir pesquisa de imagens, sistemas de recomendação ou bases de conhecimento RAG, experimente a indexação IVF no Milvus e veja como a pesquisa vetorial eficiente e em grande escala se sente em ação.</p>

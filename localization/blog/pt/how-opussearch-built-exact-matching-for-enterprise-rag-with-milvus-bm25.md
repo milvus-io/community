@@ -5,7 +5,7 @@ title: >-
   Milvus BM25
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -57,7 +57,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Criámos uma <a href="https://www.opus.pro/opussearch">função de pesquisa empresarial</a> porque identificámos que <strong>a rentabilização de</strong> grandes catálogos de vídeo é o principal desafio que as organizações enfrentam. A nossa plataforma com base no RAG funciona como um <strong>agente de crescimento</strong> que permite às empresas <strong>pesquisar, reutilizar e rentabilizar todas as suas bibliotecas de vídeo</strong>. Leia sobre as histórias de sucesso de <strong>All The Smoke</strong>, <strong>KFC Radio</strong> e <strong>TFTC</strong> <a href="https://www.opus.pro/blog/growing-a-new-youtube-channel-in-90-days-without-creating-new-videos">aqui</a>.</p>
+    </button></h2><p>Criámos uma <a href="https://www.opus.pro/opussearch">função de pesquisa empresarial</a> porque identificámos que <strong>a rentabilização de</strong> grandes catálogos de vídeo é o principal desafio que as organizações enfrentam. A nossa plataforma com tecnologia RAG funciona como um <strong>agente de crescimento</strong> que permite às empresas <strong>pesquisar, redirecionar e rentabilizar todas as suas bibliotecas de vídeo</strong>. Leia sobre as histórias de sucesso de <strong>All The Smoke</strong>, <strong>KFC Radio</strong> e <strong>TFTC</strong> <a href="https://www.opus.pro/blog/growing-a-new-youtube-channel-in-90-days-without-creating-new-videos">aqui</a>.</p>
 <h2 id="Why-We-Doubled-Down-on-Milvus-Instead-of-Adding-Another-Database" class="common-anchor-header">Por que dobramos a aposta no Milvus (em vez de adicionar outro banco de dados)<button data-href="#Why-We-Doubled-Down-on-Milvus-Instead-of-Adding-Another-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -263,7 +263,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Após a implementação da funcionalidade de correspondência exacta em junho de 2025, observámos melhorias mensuráveis nas métricas de satisfação do utilizador e um volume de suporte reduzido para problemas relacionados com a pesquisa. A nossa abordagem de modo duplo permite a pesquisa semântica para consultas exploratórias, ao mesmo tempo que fornece uma correspondência exacta para a recuperação de conteúdos específicos.</p>
-<p>A principal vantagem da arquitetura: manter um único sistema de base de dados que suporta ambos os paradigmas de pesquisa, reduzindo a complexidade operacional e expandindo a funcionalidade.</p>
+<p>A principal vantagem arquitetónica: manter um único sistema de base de dados que suporta ambos os paradigmas de pesquisa, reduzindo a complexidade operacional e expandindo a funcionalidade.</p>
 <h2 id="What’s-Next" class="common-anchor-header">O que vem a seguir?<button data-href="#What’s-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

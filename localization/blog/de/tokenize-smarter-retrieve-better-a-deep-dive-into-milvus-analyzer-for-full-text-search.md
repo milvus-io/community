@@ -10,7 +10,7 @@ desc: >-
   Erfahren Sie, wie Milvus Analyzer die hybride KI-Suche mit effizienter
   Tokenisierung und Filterung unterstützt und so eine schnellere und
   intelligentere Volltextsuche ermöglicht.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -49,7 +49,7 @@ origin: >-
 </p>
 <p>Wie das Diagramm zeigt, besteht der Analyzer aus zwei Kernkomponenten: dem <strong>Tokenizer</strong> und dem <strong>Filter</strong>. Gemeinsam wandeln sie den Eingabetext in Token um und optimieren sie für eine effiziente Indizierung und Abfrage.</p>
 <ul>
-<li><p><strong>Tokenisierer</strong>: Zerlegt den Text in einfache Token mit Hilfe von Methoden wie Leerraumtrennung (Whitespace), chinesische Wortsegmentierung (Jieba) oder mehrsprachige Segmentierung (ICU).</p></li>
+<li><p><strong>Tokenisierer</strong>: Zerlegt den Text in einfache Token, indem er Methoden wie Whitespace-Splitting (Whitespace), chinesische Wortsegmentierung (Jieba) oder mehrsprachige Segmentierung (ICU) verwendet.</p></li>
 <li><p><strong>Filtern</strong>: Verarbeitet Token durch spezifische Transformationen. Milvus enthält eine Vielzahl integrierter Filter für Operationen wie Groß- und Kleinschreibung (Lowercase), Entfernen von Satzzeichen (Removepunct), Filterung von Stoppwörtern (Stop), Stemming (Stemmer) und Mustervergleich (Regex). Sie können mehrere Filter verketten, um komplexe Verarbeitungsanforderungen zu erfüllen.</p></li>
 </ul>
 <p>
@@ -66,7 +66,7 @@ origin: >-
 <tr><th><strong>Tokenisierer</strong></th><th><strong>Anwendungsfall</strong></th><th><strong>Beschreibung</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Standard</td><td>Englisch und durch Leerzeichen getrennte Sprachen</td><td>Der gebräuchlichste Allzweck-Tokenizer; erkennt Wortgrenzen und trennt entsprechend auf.</td></tr>
+<tr><td>Standard</td><td>Englisch und durch Leerzeichen getrennte Sprachen</td><td>Der gebräuchlichste Allzweck-Tokenisierer; erkennt Wortgrenzen und trennt entsprechend auf.</td></tr>
 <tr><td>Leerzeichen</td><td>Einfacher Text mit minimaler Vorverarbeitung</td><td>Trennt nur nach Leerzeichen; behandelt keine Interpunktion oder Groß-/Kleinschreibung.</td></tr>
 <tr><td>Jieba（Chinesisch）</td><td>Chinesischer Text</td><td>Wörterbuch- und wahrscheinlichkeitsbasierter Tokenizer, der fortlaufende chinesische Zeichen in sinnvolle Wörter zerlegt.</td></tr>
 <tr><td>Lindera（JP/KR）</td><td>Japanischer und koreanischer Text</td><td>Verwendet die morphologische Analyse von Lindera für eine effektive Segmentierung.</td></tr>
@@ -104,7 +104,7 @@ origin: >-
 <tr><td>Regex</td><td>Filtert oder ersetzt mit einem Regex-Muster</td><td>Benutzerdefinierte Anforderungen, z. B. nur E-Mail-Adressen extrahieren</td></tr>
 </tbody>
 </table>
-<p>Die Stärke von Filtern liegt in ihrer Flexibilität: Sie können die Bereinigungsregeln je nach Bedarf kombinieren und anpassen. Für die englische Suche ist eine typische Kombination Kleinbuchstaben + Stopp + Stemmer, die die Einheitlichkeit der Groß- und Kleinschreibung gewährleistet, Füllwörter entfernt und Wortformen auf ihren Stamm normalisiert.</p>
+<p>Die Stärke von Filtern liegt in ihrer Flexibilität: Sie können die Bereinigungsregeln je nach Bedarf mischen und anpassen. Für die englische Suche ist eine typische Kombination Kleinbuchstaben + Stopp + Stemmer, die die Einheitlichkeit der Groß- und Kleinschreibung gewährleistet, Füllwörter entfernt und Wortformen auf ihren Stamm normalisiert.</p>
 <p>Für die chinesische Suche kombinieren Sie in der Regel Kleinbuchstaben + Stopp für sauberere, präzisere Ergebnisse. Konfigurieren Sie Filter auf die gleiche Weise wie Tokenizer, über <code translate="no">analyzer_params</code> in Ihrem FieldSchema:</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
@@ -193,7 +193,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Theorie hilft, aber nichts geht über ein vollständiges Code-Beispiel. Lassen Sie uns die Verwendung von Analyzern in Milvus mit dem Python SDK durchgehen, wobei sowohl eingebaute Analyzer als auch mehrsprachige Analyzer behandelt werden. Diese Beispiele verwenden Milvus v2.6.1 und Pymilvus v2.6.1.</p>
+    </button></h2><p>Theorie hilft, aber nichts geht über ein vollständiges Code-Beispiel. Lassen Sie uns durchgehen, wie man Analyzer in Milvus mit dem Python SDK verwendet, wobei sowohl eingebaute Analyzer als auch mehrsprachige Analyzer abgedeckt werden. Diese Beispiele verwenden Milvus v2.6.1 und Pymilvus v2.6.1.</p>
 <h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">Wie man den eingebauten Analyzer verwendet</h3><p>Angenommen, Sie möchten eine Sammlung für die englische Textsuche erstellen, die automatisch die Tokenisierung und Vorverarbeitung beim Einfügen der Daten übernimmt. Wir verwenden den eingebauten English Analyzer (äquivalent zu <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
@@ -400,7 +400,7 @@ Query <span class="hljs-number">4</span>: <span class="hljs-string">&#x27;learn&
 Search complete！
 ============================================================
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">Wie man den mehrsprachigen Analyzer verwendet</h3><p>Wenn Ihr Datensatz mehrere Sprachen enthält, z. B. Englisch, Chinesisch und Japanisch, können Sie den Multi-Language Analyzer aktivieren. Milvus wählt dann automatisch den richtigen Tokenizer auf der Grundlage der jeweiligen Sprache des Textes.</p>
+<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">Wie man den mehrsprachigen Analyzer verwendet</h3><p>Wenn Ihr Datensatz mehrere Sprachen enthält, z. B. Englisch, Chinesisch und Japanisch, können Sie den Multi-Language Analyzer aktivieren. Milvus wählt dann automatisch den richtigen Tokenizer auf der Grundlage der Sprache des jeweiligen Textes.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 <span class="hljs-keyword">import</span> time
 

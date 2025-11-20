@@ -5,7 +5,7 @@ title: >-
   Milvus BM25
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -14,7 +14,7 @@ meta_keywords: 'Milvus, enterprise RAG, vector database, semantic search'
 meta_title: How OpusSearch Built Exact Matching for Enterprise RAG with Milvus
 desc: >-
   تعرّف على كيفية استخدام OpusSearch لـ Milvus BM25 لتشغيل المطابقة التامة في
-  أنظمة RAG للمؤسسات - الجمع بين البحث الدلالي واسترجاع الكلمات الرئيسية
+  أنظمة RAG للمؤسسة - الجمع بين البحث الدلالي واسترجاع الكلمات المفتاحية
   الدقيقة.
 origin: >-
   https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b
@@ -125,10 +125,10 @@ origin: >-
 <p>ثم قمنا بعد ذلك <strong>بدمج قوة BM25 مع تصفية TEXT_MATCH في ميلفوس</strong>. إليك كيفية عملها:</p>
 <ol>
 <li><p>التصفية<strong>أولاً</strong>: TEXT_MATCH يعثر على المستندات التي تحتوي على كلماتك المفتاحية بالضبط</p></li>
-<li><p><strong>الترتيب ثانياً</strong>: يقوم BM25 بفرز تلك المطابقات الدقيقة حسب الصلة</p></li>
+<li><p><strong>الترتيب ثانياً</strong>: يقوم BM25 بفرز تلك المطابقات التامة حسب الصلة</p></li>
 <li><p><strong>الفوز</strong>: تحصل على التطابقات التامة، مرتبة بذكاء</p></li>
 </ol>
-<p>فكِّر في الأمر على أنه "أعطني كل شيء يحتوي على "الحلقة 281"، ثم اعرض لي أفضلها أولاً."</p>
+<p>فكّر في الأمر على أنه "أعطني كل شيء يحتوي على "الحلقة 281"، ثم اعرض لي أفضلها أولاً."</p>
 <h2 id="The-Code-That-Made-It-Work" class="common-anchor-header">الرمز الذي جعل الأمر ينجح<button data-href="#The-Code-That-Made-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -144,7 +144,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Schema-Design" class="common-anchor-header">تصميم المخطط</h3><p><strong>هام</strong>: لقد عطلنا كلمات التوقف تمامًا، حيث تمثل مصطلحات مثل "المكتب" و"المكتب" كيانات مميزة في مجال المحتوى الخاص بنا.</p>
+    </button></h2><h3 id="Schema-Design" class="common-anchor-header">تصميم المخطط</h3><p><strong>هام</strong>: لقد عطلنا كلمات التوقف تمامًا، حيث أن مصطلحات مثل "المكتب" و"المكتب" تمثل كيانات مميزة في مجال المحتوى الخاص بنا.</p>
 <pre><code translate="no"><span class="hljs-built_in">export</span> <span class="hljs-keyword">function</span> getExactMatchFields(): FieldType[] {
  <span class="hljs-built_in">return</span> [
    {
@@ -279,5 +279,5 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>نحن نجرب <strong>استعلامات</strong> <strong>هجينة</strong> <strong>تجمع بين المطابقة الدلالية والمطابقة التامة في بحث واحد</strong>. تخيل: "ابحث عن مقاطع مضحكة من الحلقة 281" حيث تستخدم كلمة "مضحك" البحث الدلالي وكلمة "الحلقة 281" المطابقة التامة.</p>
+    </button></h2><p>نحن نجرب <strong>الاستعلامات</strong> <strong>الهجينة</strong> <strong>التي تجمع بين المطابقة الدلالية والمطابقة التامة في بحث واحد</strong>. تخيل: "ابحث عن مقاطع مضحكة من الحلقة 281" حيث تستخدم كلمة "مضحك" البحث الدلالي وكلمة "الحلقة 281" المطابقة التامة.</p>
 <p>لا يكمن مستقبل البحث في الاختيار بين الذكاء الاصطناعي الدلالي والمطابقة التامة. إنه استخدام <strong>كليهما</strong> بذكاء في نفس النظام.</p>

@@ -9,8 +9,7 @@ desc: >-
   Améliorez la précision de RAG en utilisant Late Chunking et Milvus pour une
   intégration efficace et contextuelle des documents et une recherche
   vectorielle plus rapide et plus intelligente.
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false

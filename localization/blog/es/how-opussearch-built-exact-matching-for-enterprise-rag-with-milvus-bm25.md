@@ -3,7 +3,7 @@ id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
 title: Cómo OpusSearch creó Exact Matching para Enterprise RAG con Milvus BM25
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_2025_10_18_10_43_29_93fe542daf.png
+cover: assets.zilliz.com/opus_cover_new_1505263938.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

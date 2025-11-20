@@ -6,8 +6,7 @@ date: 2025-10-11T00:00:00.000Z
 desc: >-
   عزز دقة RAG باستخدام التقطيع المتأخر وMilvus لتضمين المستندات الفعال والمدرك
   للسياق والبحث الأسرع والأكثر ذكاءً في المتجهات.
-cover: >-
-  assets.zilliz.com/Milvus_Meets_Late_Chunking_Smarter_Retrieval_for_RAG_4f9640fffd.png
+cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -69,7 +68,7 @@ canonicalUrl: >-
   </span>
 </p>
 <p><em>الشكل 2. التقطيع الساذج مقابل التقطيع المتأخر (</em><a href="https://jina.ai/news/late-chunking-in-long-context-embedding-models/"><em>المصدر</em></a><em>)</em></p>
-<p>من خلال الحفاظ على سياق المستند الكامل في كل جزء، ينتج عن التقطيع المتأخر</p>
+<p>من خلال الحفاظ على سياق المستند الكامل في كل قطعة، ينتج عن التقطيع المتأخر</p>
 <ul>
 <li><p><strong>دقة أعلى في الاسترجاع - كل</strong>قطعة مدركة للسياق.</p></li>
 <li><p><strong>أجزاء أقل - فأنت</strong>ترسل نصًا أكثر تركيزًا إلى إدارة المستندات الطويلة مما يقلل من التكاليف ووقت الاستجابة.</p></li>

@@ -4,7 +4,7 @@ id: >-
 title: 超越语境超载：Parlant × Milvus 如何为 LLM Agents 行为带来控制力和清晰度
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
-cover: assets.zilliz.com/parlant_cover1_d39ad6c8b0.png
+cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -81,7 +81,7 @@ origin: >-
 <h3 id="Supervising-Mechanism-for-Accuracy-and-Consistency" class="common-anchor-header">确保准确性和一致性的监督机制</h3><p>为了进一步保持准确性和一致性，Parlant 引入了一种<strong>监督机制</strong>，作为第二层质量控制。这一过程分为三个步骤：</p>
 <p><strong>1.生成候选回复</strong>--Agent 根据匹配的准则和当前对话语境创建初始回复。</p>
 <p><strong>2.检查合规性</strong>--将回复与活动指南进行比较，以验证是否正确遵循了每一条指令。</p>
-<p><strong>3.</strong>3.<strong>修改或确认</strong>- 如果发现任何问题，系统会纠正输出；如果一切正常，回复会被批准并发送给用户。</p>
+<p><strong>3.修改或确认</strong>--如果发现任何问题，系统会纠正输出；如果一切正常，回复会被批准并发送给用户。</p>
 <p>这种监督机制确保 Agents 不仅理解规则，而且在回复前切实遵守规则--既提高了可靠性，又增强了控制力。</p>
 <h3 id="Conditional-Transitions-for-Control-and-Safety" class="common-anchor-header">控制和安全的条件转换</h3><p>在传统 Agents 框架中，所有可用工具都会随时暴露给 LLM。这种 "一切都摆在桌面上 "的方法往往会导致过载提示和意外的工具调用。Parlant 通过<strong>条件转换</strong>解决了这一问题。与状态机的工作原理类似，只有在满足特定条件时，才会触发操作或工具。每个工具都与相应的准则紧密相连，只有当该准则的条件被激活时，工具才会可用。</p>
 <pre><code translate="no"><span class="hljs-comment"># The balance inquiry tool is exposed only when the condition &quot;the user wants to make a transfer&quot; is met</span>

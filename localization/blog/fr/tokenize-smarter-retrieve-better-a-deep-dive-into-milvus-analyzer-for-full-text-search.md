@@ -10,7 +10,7 @@ desc: >-
   Découvrez comment Milvus Analyzer alimente la recherche AI hybride avec une
   tokenisation et un filtrage efficaces, permettant une recherche en texte
   intégral plus rapide et plus intelligente.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -39,7 +39,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Pour permettre une recherche plein texte efficace, qu'il s'agisse d'une recherche par mots clés ou d'une recherche sémantique, la première étape est toujours la même : transformer le texte brut en jetons que le système peut comprendre, indexer et comparer.</p>
-<p>L'<strong>analyseur Milvus</strong> prend en charge cette étape. Il s'agit d'un composant intégré de prétraitement de texte et de symbolisation qui décompose le texte d'entrée en jetons discrets, puis les normalise, les nettoie et les normalise pour garantir une correspondance cohérente entre les requêtes et les documents. Ce processus jette les bases d'une recherche plein texte et d'une récupération hybride précises et performantes.</p>
+<p>L'<strong>analyseur Milvus</strong> prend en charge cette étape. Il s'agit d'un composant intégré de prétraitement de texte et de symbolisation qui décompose le texte d'entrée en jetons discrets, puis les normalise, les nettoie et les normalise pour garantir une correspondance cohérente entre les requêtes et les documents. Ce processus jette les bases d'une recherche plein texte et d'une recherche hybride précises et performantes.</p>
 <p>Voici un aperçu de l'architecture de Milvus Analyzer :</p>
 <p>
   <span class="img-wrapper">

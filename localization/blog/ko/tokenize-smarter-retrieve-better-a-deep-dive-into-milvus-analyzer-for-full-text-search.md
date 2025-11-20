@@ -7,7 +7,7 @@ date: 2025-10-16T00:00:00.000Z
 desc: >-
   효율적인 토큰화 및 필터링을 통해 더 빠르고 스마트한 전체 텍스트 검색을 지원하는 Milvus Analyzer가 어떻게 하이브리드 AI
   검색을 지원하는지 알아보세요.
-cover: assets.zilliz.com/Milvus_Analyzer_5096bcbd47.png
+cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
 recommend: false
@@ -46,7 +46,7 @@ origin: >-
 </p>
 <p>다이어그램에서 볼 수 있듯이, 분석기에는 <strong>토큰화기와</strong> <strong>필터라는</strong> 두 가지 핵심 구성 요소가 있습니다. 이들은 함께 입력 텍스트를 토큰으로 변환하고 효율적인 색인 및 검색을 위해 이를 최적화합니다.</p>
 <ul>
-<li><p><strong>토큰화 도구</strong>: 공백 분할(공백), 중국어 단어 분할(Jieba) 또는 다국어 분할(ICU)과 같은 방법을 사용하여 텍스트를 기본 토큰으로 분할합니다.</p></li>
+<li><p><strong>토큰화기</strong>: 공백 분할(공백), 중국어 단어 분할(Jieba) 또는 다국어 분할(ICU) 등의 방법을 사용하여 텍스트를 기본 토큰으로 분할합니다.</p></li>
 <li><p><strong>필터</strong>: 특정 변환을 통해 토큰을 처리합니다. Milvus에는 대소문자 정규화(Lowercase), 구두점 제거(Removepunct), 단어 필터링 중지(Stop), 어간 제거(Stemmer), 패턴 일치(Regex) 등의 작업을 위한 풍부한 내장 필터 세트가 포함되어 있습니다. 여러 필터를 연결하여 복잡한 처리 요구를 처리할 수 있습니다.</p></li>
 </ul>
 <p>
@@ -628,4 +628,4 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
         ></path>
       </svg>
     </button></h2><p>Milvus 분석기는 단순한 전처리 단계였던 것을 텍스트 처리를 위한 잘 정의된 모듈식 시스템으로 바꾸어 놓았습니다. 토큰화 및 필터링을 중심으로 설계되어 개발자는 언어 해석, 정리 및 색인 방식을 세밀하게 제어할 수 있습니다. 단일 언어 애플리케이션을 구축하든, 여러 언어를 아우르는 글로벌 RAG 시스템을 구축하든, 분석기는 전체 텍스트 검색을 위한 일관된 기반을 제공합니다. 다른 모든 것을 조용히 더 잘 작동하게 만드는 Milvus의 일부입니다.</p>
-<p>궁금한 점이 있거나 기능에 대해 자세히 알아보고 싶으신가요?<a href="https://discord.com/invite/8uyFbECzPX"> Discord 채널에</a> 참여하거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출하세요.<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus 오피스 아워를</a> 통해 20분간의 일대일 세션을 예약하여 인사이트, 안내 및 질문에 대한 답변을 얻을 수도 있습니다.</p>
+<p>궁금한 점이 있거나 기능에 대해 자세히 알아보고 싶으신가요?<a href="https://discord.com/invite/8uyFbECzPX"> Discord 채널에</a> 참여하거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출하세요. 또한<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus 오피스 아워를</a> 통해 20분간의 일대일 세션을 예약하여 인사이트, 안내 및 질문에 대한 답변을 얻을 수도 있습니다.</p>

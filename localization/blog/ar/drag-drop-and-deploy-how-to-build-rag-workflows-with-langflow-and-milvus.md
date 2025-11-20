@@ -1,9 +1,9 @@
 ---
 id: drag-drop-and-deploy-how-to-build-rag-workflows-with-langflow-and-milvus.md
-title: 'السحب والإفلات والنشر: كيفية إنشاء مهام سير عمل RAG باستخدام لانجفلو وميلفوس'
+title: 'السحب والإسقاط والنشر: كيفية إنشاء مهام سير عمل RAG باستخدام لانجفلو وميلفوس'
 author: Min Yin
 date: 2025-10-30T00:00:00.000Z
-cover: assets.zilliz.com/langflow_milvus_cover_9f75a11f90.png
+cover: assets.zilliz.com/drag_drop_deploy_859c4369e8.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: >-
 <p>يوفر<strong>لانغفلو</strong> واجهة سحب وإفلات نظيفة وواضحة تشبه رسم الأفكار على السبورة البيضاء أكثر من البرمجة. يمكنك ربط نماذج اللغة ومصادر البيانات والأدوات الخارجية بصريًا لتحديد منطق سير عملك - كل ذلك دون لمس سطر من التعليمات البرمجية.</p>
 <p>وبالاقتران مع <strong>Milvus،</strong> قاعدة البيانات المتجهة مفتوحة المصدر التي تمنح نماذج اللغة الإنجليزية طويلة المدى والفهم السياقي، يشكل الاثنان بيئة كاملة لـ RAG على مستوى الإنتاج. يقوم Milvus بتخزين واسترجاع التضمينات بكفاءة من بيانات مؤسستك أو البيانات الخاصة بالمجال، مما يسمح لآلات إدارة التعلم الآلي بتوليد إجابات مستندة ودقيقة ومدركة للسياق.</p>
 <p>في هذا الدليل، سنتعرف في هذا الدليل على كيفية الجمع بين Langflow وMilvus لبناء سير عمل متقدم في RAG - كل ذلك من خلال بضع عمليات سحب وإسقاط ونقرات.</p>
-<h2 id="What-is-Langflow" class="common-anchor-header">ما هو Langflow؟<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
+<h2 id="What-is-Langflow" class="common-anchor-header">ما هو لانج فلو؟<button data-href="#What-is-Langflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,7 +46,7 @@ origin: >-
   </span>
 </p>
 <p>خلف الكواليس، يقوم محرك وقت تشغيل قائم على Python بتنفيذ التدفق. يقوم بتنسيق LLMs والأدوات ووحدات الاسترجاع ومنطق التوجيه - إدارة تدفق البيانات والحالة ومعالجة الأخطاء لضمان التنفيذ السلس من البداية إلى النهاية.</p>
-<p>يتضمن Langflow أيضًا مكتبة مكوِّنات غنية مع محولات مبنية مسبقًا لمكيفات LLM وقواعد بيانات متجهة شائعة - بما في ذلك <a href="https://milvus.io/">Milvus</a>. يمكنك توسيع ذلك أكثر من خلال إنشاء مكونات بايثون مخصصة لحالات الاستخدام المتخصصة. للاختبار والتحسين، يوفر Langflow التنفيذ خطوة بخطوة، وملعب للاختبار السريع، والتكامل مع LangSmith وLangfuse لمراقبة سير العمل وتصحيحه وإعادة تشغيله من البداية إلى النهاية.</p>
+<p>يتضمن Langflow أيضًا مكتبة مكوِّنات غنية مع محولات مبنية مسبقًا لمكيفات LLM وقواعد بيانات متجهة شائعة - بما في ذلك <a href="https://milvus.io/">Milvus</a>. يمكنك توسيع ذلك أكثر من خلال إنشاء مكونات بايثون مخصصة لحالات الاستخدام المتخصصة. للاختبار والتحسين، يوفر Langflow التنفيذ خطوة بخطوة، وساحة لعب للاختبار السريع، والتكامل مع LangSmith وLangfuse لمراقبة سير العمل وتصحيح الأخطاء وإعادة تشغيله من البداية إلى النهاية.</p>
 <h2 id="Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="common-anchor-header">عرض توضيحي عملي: كيفية بناء سير عمل RAG مع لانغفلو وميلفوس<button data-href="#Hands-on-Demo-How-to-Build-a-RAG-Workflow-with-Langflow-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
