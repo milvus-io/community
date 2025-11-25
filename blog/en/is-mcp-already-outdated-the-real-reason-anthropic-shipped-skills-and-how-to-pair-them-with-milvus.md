@@ -4,7 +4,7 @@ title: >
  Is MCP Already Outdated? The Real Reason Anthropic Shipped Skills—and How to Pair Them with Milvus
 author: Min Yin
 date: 2025-11-19
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
