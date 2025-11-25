@@ -99,7 +99,7 @@ This is where **Milvus** becomes essential. Milvus provides the high-performance
 
 #### **1. Semantic Search**
 
-Milvus delivers fast semantic search using indexing algorithms like HNSW and IVF\_FLAT. Agents can retrieve the most relevant historical records based on meaning rather than keywords, enabling them to:
+Milvus delivers fast semantic search using indexing algorithms like HNSW and IVF_FLAT. Agents can retrieve the most relevant historical records based on meaning rather than keywords, enabling them to:
 
 - recall prior decisions or plans,
 
@@ -149,7 +149,7 @@ This gives each agent community a memory layer that is scalable, persistent, and
 
 To make things concrete, let’s walk through a demo: building a **developer-support community** where multiple specialist agents—Python experts, database experts, DevOps engineers, and more—collaborate to answer technical questions. Instead of relying on a single overworked generalist agent, each expert contributes domain-specific reasoning, and the system routes queries to the best-suited agent automatically.
 
-This example demonstrates how to integrate **Milvus** into an OpenAgents deployment to provide long-term memory for technical Q\&A. Agent conversations, past solutions, troubleshooting logs, and user queries are all converted into vector embeddings and stored in Milvus, giving the network the ability to:
+This example demonstrates how to integrate **Milvus** into an OpenAgents deployment to provide long-term memory for technical Q&A. Agent conversations, past solutions, troubleshooting logs, and user queries are all converted into vector embeddings and stored in Milvus, giving the network the ability to:
 
 - remember previous answers,
 
