@@ -6,7 +6,7 @@ title: >-
   e come abbinarle a Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -28,7 +28,7 @@ origin: >-
 </p>
 <p>La frustrazione è comprensibile. L'MCP offre un accesso robusto ai sistemi esterni, ma costringe il modello a caricare schemi lunghi, descrizioni prolisse ed elenchi di strumenti molto estesi. Questo aggiunge costi reali. Se si scarica la trascrizione di una riunione e successivamente la si inserisce in un altro strumento, il modello potrebbe rielaborare lo stesso testo più volte, gonfiando l'utilizzo dei token senza alcun beneficio evidente. Per i team che operano su scala, questo non è un inconveniente, ma una bolletta.</p>
 <p>Ma dichiarare MCP obsoleto è prematuro. Anthropic, lo stesso team che ha inventato MCP, ha introdotto silenziosamente qualcosa di nuovo: <a href="https://claude.com/blog/skills"><strong>le competenze</strong></a>. Le competenze sono definizioni Markdown/YAML leggere che descrivono <em>come</em> e <em>quando</em> uno strumento deve essere usato. Invece di scaricare schemi completi nella finestra del contesto, il modello legge prima i metadati compatti e li usa per pianificare. In pratica, Skills riduce drasticamente l'overhead dei token e offre agli sviluppatori un maggiore controllo sull'orchestrazione degli strumenti.</p>
-<p>Questo significa che Skills sostituirà MCP? Non proprio. Le Skill semplificano la pianificazione, ma MCP continua a fornire le funzionalità effettive: lettura di file, chiamata di API, interazione con sistemi di archiviazione o collegamento a infrastrutture esterne come <a href="https://milvus.io/"><strong>Milvus</strong></a>, un database vettoriale open-source alla base di un rapido recupero semantico su scala, che lo rende un backend fondamentale quando le Skill hanno bisogno di un accesso reale ai dati.</p>
+<p>Questo significa che Skills sostituirà MCP? Non proprio. Le Skill semplificano la pianificazione, ma MCP continua a fornire le funzionalità effettive: lettura di file, chiamata di API, interazione con sistemi di archiviazione o collegamento a infrastrutture esterne come <a href="https://milvus.io/"><strong>Milvus</strong></a>, un database vettoriale open-source che è alla base di un rapido recupero semantico su scala, rendendolo un backend fondamentale quando le Skill hanno bisogno di un accesso reale ai dati.</p>
 <p>Questo post illustra quali sono le abilità che funzionano bene, dove MCP è ancora importante e come entrambi si inseriscono nell'architettura degli agenti in evoluzione di Anthropic. Poi spiegheremo come costruire le proprie Skill che si integrano in modo pulito con Milvus.</p>
 <h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">Cosa sono e come funzionano le Skill di Anthropic?<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -90,7 +90,7 @@ origin: >-
 <li><p>Contesto immediato (analisi di dati specifici, interpretazione di contenuti)</p></li>
 <li><p>Istruzioni ad hoc</p></li>
 </ul>
-<h3 id="3-Projects" class="common-anchor-header">3. I progetti</h3><p>I progetti sono spazi di lavoro autonomi con una propria cronologia di chat e basi di conoscenza. Ogni progetto offre una finestra di contesto di 200K. Quando la conoscenza del progetto si avvicina ai limiti del contesto, Claude passa senza problemi alla modalità RAG, consentendo un'espansione fino a 10 volte della capacità effettiva.</p>
+<h3 id="3-Projects" class="common-anchor-header">3. Progetti</h3><p>I progetti sono spazi di lavoro autonomi con una propria cronologia di chat e basi di conoscenza. Ogni progetto offre una finestra di contesto di 200K. Quando la conoscenza del progetto si avvicina ai limiti del contesto, Claude passa senza problemi alla modalità RAG, consentendo un'espansione fino a 10 volte della capacità effettiva.</p>
 <p><strong>Ideale per:</strong></p>
 <ul>
 <li><p>Contesto persistente (ad esempio, tutte le conversazioni relative al lancio di un prodotto)</p></li>

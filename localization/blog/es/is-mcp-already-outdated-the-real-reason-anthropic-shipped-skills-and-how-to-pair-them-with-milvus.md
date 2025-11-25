@@ -6,7 +6,7 @@ title: >-
   habilidades y cómo combinarlas con Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -19,7 +19,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
 ---
-<p>En las últimas semanas ha surgido una discusión sorprendentemente acalorada en X y Hacker News: <em>¿Siguen siendo necesarios los servidores MCP?</em> Algunos desarrolladores afirman que MCP está sobredimensionado, hambriento de tokens y fundamentalmente desalineado con la forma en que los agentes deberían usar las herramientas. Otros defienden MCP como la forma más fiable de exponer las capacidades del mundo real a los modelos lingüísticos. Dependiendo del hilo que se lea, MCP es el futuro del uso de herramientas o está muerto nada más llegar.</p>
+<p>En las últimas semanas ha surgido una discusión sorprendentemente acalorada en X y Hacker News: <em>¿Siguen siendo necesarios los servidores MCP?</em> Algunos desarrolladores afirman que MCP está sobredimensionado, hambriento de tokens y fundamentalmente desalineado con la forma en que los agentes deberían usar las herramientas. Otros defienden MCP como la forma fiable de exponer las capacidades del mundo real a los modelos lingüísticos. Dependiendo del hilo que se lea, MCP es el futuro del uso de herramientas o está muerto nada más llegar.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hackernews_c3236cca2c.png" alt="" class="doc-image" id="" />
@@ -28,7 +28,7 @@ origin: >-
 </p>
 <p>La frustración es comprensible. MCP ofrece un acceso sólido a sistemas externos, pero también obliga al modelo a cargar esquemas largos, descripciones detalladas y listas de herramientas interminables. Eso añade un coste real. Si se descarga la transcripción de una reunión y luego se introduce en otra herramienta, el modelo puede volver a procesar el mismo texto varias veces, inflando el uso de tokens sin ningún beneficio obvio. Para los equipos que trabajan a gran escala, esto no es un inconveniente, sino una factura.</p>
 <p>Pero declarar obsoleto el MCP es prematuro. Anthropic -el mismo equipo que inventó MCP- introdujo silenciosamente algo nuevo: <a href="https://claude.com/blog/skills"><strong>Skills</strong></a>. Las habilidades son definiciones ligeras de Markdown/YAML que describen <em>cómo</em> y <em>cuándo</em> debe utilizarse una herramienta. En lugar de volcar esquemas completos en la ventana contextual, el modelo lee primero metadatos compactos y los utiliza para planificar. En la práctica, Skills reduce drásticamente la sobrecarga de tokens y ofrece a los desarrolladores un mayor control sobre la orquestación de herramientas.</p>
-<p>¿Significa esto que Skills sustituirá a MCP? No del todo. Las Skills agilizan la planificación, pero MCP sigue proporcionando las capacidades reales: lectura de archivos, llamadas a API, interacción con sistemas de almacenamiento o conexión a infraestructuras externas como <a href="https://milvus.io/"><strong>Milvus</strong></a>, una base de datos vectorial de código abierto que sustenta una rápida recuperación semántica a escala, lo que la convierte en un backend fundamental cuando sus Skills necesitan acceder a datos reales.</p>
+<p>¿Significa esto que Skills sustituirá a MCP? No del todo. Las Skills agilizan la planificación, pero MCP sigue proporcionando las capacidades reales: lectura de archivos, llamadas a API, interacción con sistemas de almacenamiento o conexión a infraestructuras externas como <a href="https://milvus.io/"><strong>Milvus</strong></a>, una base de datos vectorial de código abierto que sustenta la rápida recuperación semántica a escala, lo que la convierte en un backend fundamental cuando sus Skills necesitan acceder a datos reales.</p>
 <p>En este artículo se explica qué hacen bien las Skills, dónde sigue siendo importante MCP y cómo encajan ambas en la arquitectura de agentes en evolución de Anthropic. Luego veremos cómo construir sus propias habilidades que se integran limpiamente con Milvus.</p>
 <h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">¿Qué son y cómo funcionan las habilidades de los agentes de Anthropic?<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
       <svg translate="no"

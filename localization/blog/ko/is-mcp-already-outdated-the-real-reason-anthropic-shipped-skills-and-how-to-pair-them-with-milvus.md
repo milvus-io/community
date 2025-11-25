@@ -4,7 +4,7 @@ id: >-
 title: MCP는 이미 시대에 뒤떨어진 기술인가요? 인류가 배송 기술을 도입한 진짜 이유와 밀버스와 함께 사용하는 방법
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

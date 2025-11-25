@@ -6,7 +6,7 @@ title: >-
   des compétences et comment les associer à Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -19,7 +19,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
 ---
-<p>Au cours des dernières semaines, une discussion étonnamment animée a éclaté sur X et Hacker News : <em>Avons-nous encore besoin des serveurs MCP ?</em> Certains développeurs affirment que MCP est trop technique, gourmand en jetons, et fondamentalement mal aligné avec la façon dont les agents devraient utiliser les outils. D'autres défendent MCP comme le moyen fiable d'exposer les capacités du monde réel aux modèles de langage. Selon le fil de discussion que vous lisez, MCP est soit l'avenir de l'utilisation des outils, soit mort à l'arrivée.</p>
+<p>Au cours des dernières semaines, une discussion étonnamment animée a éclaté sur X et Hacker News : <em>Avons-nous encore besoin des serveurs MCP ?</em> Certains développeurs affirment que MCP est trop technique, gourmand en jetons et fondamentalement mal aligné sur la façon dont les agents devraient utiliser les outils. D'autres défendent MCP comme le moyen fiable d'exposer les capacités du monde réel aux modèles de langage. Selon le fil de discussion que vous lisez, MCP est soit l'avenir de l'utilisation des outils, soit mort à l'arrivée.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hackernews_c3236cca2c.png" alt="" class="doc-image" id="" />
@@ -48,7 +48,7 @@ origin: >-
     </button></h2><p>L'un des problèmes de longue date des agents d'IA traditionnels est que les instructions s'effacent au fur et à mesure que la conversation s'intensifie.</p>
 <p>Même avec les invites les plus soigneusement conçues, le comportement du modèle peut progressivement dériver au cours de la conversation. Après plusieurs tours, Claude commence à oublier les instructions initiales ou à s'en désintéresser.</p>
 <p>Le problème réside dans la structure de l'invite du système. Il s'agit d'une injection unique et statique qui se dispute l'espace dans la fenêtre contextuelle du modèle, aux côtés de l'historique de la conversation, des documents et de toute autre entrée. Au fur et à mesure que la fenêtre contextuelle se remplit, l'attention du modèle pour l'invite du système se dilue de plus en plus, ce qui entraîne une perte de cohérence au fil du temps.</p>
-<p>Les compétences ont été conçues pour résoudre ce problème. Les compétences sont des dossiers contenant des instructions, des scripts et des ressources. Plutôt que de s'appuyer sur une invite statique du système, les compétences décomposent l'expertise en paquets d'instructions modulaires, réutilisables et persistants que Claude peut découvrir et charger dynamiquement lorsqu'il en a besoin pour une tâche.</p>
+<p>Les compétences ont été conçues pour résoudre ce problème. Les compétences sont des dossiers contenant des instructions, des scripts et des ressources. Plutôt que de s'appuyer sur un message-guide statique, les compétences décomposent l'expertise en paquets d'instructions modulaires, réutilisables et persistants que Claude peut découvrir et charger dynamiquement lorsqu'il en a besoin pour une tâche.</p>
 <p>Lorsque Claude commence une tâche, il effectue d'abord un balayage léger de toutes les compétences disponibles en lisant uniquement leurs métadonnées YAML (quelques dizaines de tokens seulement). Ces métadonnées fournissent juste assez d'informations pour que Claude puisse déterminer si une compétence est pertinente pour la tâche en cours. Si c'est le cas, Claude développe l'ensemble des instructions (généralement moins de 5k tokens), et des ressources ou des scripts supplémentaires ne sont chargés que si c'est nécessaire.</p>
 <p>Cette divulgation progressive permet à Claude d'initialiser une compétence avec seulement 30 à 50 tokens, ce qui améliore considérablement l'efficacité et réduit les surcharges de contexte inutiles.</p>
 <p>
@@ -90,7 +90,7 @@ origin: >-
 <li><p>Contexte immédiat (analyse de données spécifiques, interprétation du contenu)</p></li>
 <li><p>Instructions ad hoc</p></li>
 </ul>
-<h3 id="3-Projects" class="common-anchor-header">3. Les projets</h3><p>Les projets sont des espaces de travail autonomes disposant de leur propre historique de conversation et de leur propre base de connaissances. Chaque projet offre une fenêtre contextuelle de 200K. Lorsque la connaissance de votre projet approche les limites du contexte, Claude passe de manière transparente en mode RAG, ce qui permet de multiplier par 10 la capacité effective.</p>
+<h3 id="3-Projects" class="common-anchor-header">3. Les projets</h3><p>Les projets sont des espaces de travail autonomes disposant de leur propre historique de conversation et de leur propre base de connaissances. Chaque projet offre une fenêtre contextuelle de 200K. Lorsque la connaissance de votre projet approche les limites du contexte, Claude passe de façon transparente en mode RAG, ce qui permet de multiplier par 10 la capacité effective.</p>
 <p><strong>Idéal pour :</strong></p>
 <ul>
 <li><p>Contexte persistant (par exemple, toutes les conversations liées au lancement d'un produit)</p></li>

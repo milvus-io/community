@@ -6,7 +6,7 @@ title: >-
   habilidades - e como combiná-las com Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -47,8 +47,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Um problema de longa data dos agentes de IA tradicionais é que as instruções são apagadas à medida que a conversa cresce.</p>
-<p>Mesmo com as instruções do sistema mais cuidadosamente elaboradas, o comportamento do modelo pode se desviar gradualmente ao longo da conversa. Após várias voltas, Claude começa a esquecer ou perder o foco nas instruções originais.</p>
-<p>O problema está na estrutura do prompt do sistema. É uma injeção única e estática que compete por espaço na janela de contexto do modelo, juntamente com o histórico da conversa, documentos e quaisquer outras entradas. À medida que a janela de contexto se vai enchendo, a atenção do modelo à mensagem do sistema vai-se diluindo, o que leva a uma perda de consistência ao longo do tempo.</p>
+<p>Mesmo com as instruções do sistema mais cuidadosamente elaboradas, o comportamento do modelo pode se desviar gradualmente ao longo da conversa. Depois de várias voltas, Claude começa a esquecer ou perder o foco nas instruções originais.</p>
+<p>O problema está na estrutura da instrução do sistema. É uma injeção única e estática que compete por espaço na janela de contexto do modelo, juntamente com o histórico da conversa, documentos e quaisquer outras entradas. À medida que a janela de contexto se vai enchendo, a atenção do modelo à mensagem do sistema vai-se diluindo, o que leva a uma perda de consistência ao longo do tempo.</p>
 <p>As competências foram concebidas para resolver este problema. As competências são pastas que contêm instruções, guiões e recursos. Em vez de depender de um prompt estático do sistema, as habilidades dividem a experiência em pacotes de instruções modulares, reutilizáveis e persistentes que o Claude pode descobrir e carregar dinamicamente quando necessário para uma tarefa.</p>
 <p>Quando o Claude inicia uma tarefa, ele primeiro executa uma varredura leve de todas as habilidades disponíveis, lendo apenas seus metadados YAML (apenas algumas dezenas de tokens). Esses metadados fornecem apenas informações suficientes para que o Claude determine se uma habilidade é relevante para a tarefa atual. Em caso afirmativo, o Claude expande para o conjunto completo de instruções (geralmente menos de 5 mil tokens), e recursos ou scripts adicionais são carregados apenas se necessário.</p>
 <p>Essa revelação progressiva permite que o Claude inicialize uma habilidade com apenas 30-50 tokens, melhorando significativamente a eficiência e reduzindo a sobrecarga de contexto desnecessária.</p>
@@ -115,7 +115,7 @@ origin: >-
 <li><p>Ligação a ambientes de desenvolvimento (ficheiros locais, IDEs, controlo de versões)</p></li>
 <li><p>Integração com sistemas personalizados (ferramentas proprietárias e fontes de dados)</p></li>
 </ul>
-<p>Com base no que precede, podemos ver que as Competências e o CIM abordam desafios diferentes e trabalham em conjunto para se complementarem.</p>
+<p>Com base no exposto, podemos ver que as Competências e o CIM abordam desafios diferentes e trabalham em conjunto para se complementarem.</p>
 <table>
 <thead>
 <tr><th><strong>Dimensão</strong></th><th><strong>CIM</strong></th><th><strong>Competências</strong></th></tr>
@@ -134,7 +134,7 @@ origin: >-
 <li><p><strong>Competências:</strong> Define o fluxo de trabalho, como priorizar o código modificado mais recentemente, classificar os resultados por relevância e apresentar os dados em uma tabela Markdown.</p></li>
 </ul>
 <p>O MCP fornece a capacidade, enquanto as habilidades definem o processo. Juntas, elas formam um par complementar.</p>
-<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">Como criar habilidades personalizadas com o Claude-Context e o Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">Como criar habilidades personalizadas com Claude-Context e Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

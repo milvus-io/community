@@ -4,7 +4,7 @@ id: >-
 title: MCP已经过时了吗？人类运载技能的真正原因--以及如何与 Milvus 配对
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

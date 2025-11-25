@@ -4,7 +4,7 @@ id: >-
 title: MCP 已經過時了嗎？Anthropic運送技能的真正原因-以及如何搭配Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
-cover: assets.zilliz.com/skill_mcp_cover_0b12d0d95d.png
+cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -15,7 +15,7 @@ desc: 瞭解 Skills 如何減少代用幣消耗，以及 Skills 和 MCP 如何�
 origin: >-
   https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
 ---
-<p>在過去幾個星期，X 和 Hacker News 上爆發了一場令人驚訝的激烈爭論：<em>我們真的還需要 MCP 伺服器嗎？</em>有些開發人員聲稱 MCP 過度工程化、渴求代幣，而且與代理應該如何使用工具根本不符。其他人則為 MCP 辯護，認為 MCP 是讓語言模型曝露真實世界功能的可靠方式。視您閱讀的主題而定，MCP 不是工具使用的未來，就是死路一條。</p>
+<p>在過去幾個星期，X 和 Hacker News 上爆發了一場令人驚訝的激烈爭論：<em>我們真的還需要 MCP 伺服器嗎？</em>有些開發人員聲稱 MCP 過度工程化、渴求代幣，而且與代理應該如何使用工具根本不符。其他人則為 MCP 辯護，認為 MCP 是讓語言模型曝露真實世界功能的可靠方法。視您閱讀的主題而定，MCP 不是工具使用的未來，就是死路一條。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hackernews_c3236cca2c.png" alt="" class="doc-image" id="" />
