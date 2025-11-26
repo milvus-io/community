@@ -94,7 +94,7 @@ With its cloud-native architecture and compute-storage separation, Milvus delive
 
 Milvus also ensures enterprise-grade reliability through its distributed, fault-tolerant design, which keeps the system stable even if individual nodes fail. This makes it a strong fit for production-level multimodal RAG deployments.
 
-![](https://assets.zilliz.com/milvus_architecture_d6c47b95cb.webp)
+![](https://assets.zilliz.com/milvus_ab54d5e798.png)
 
 ## How to Build a Multimodal Q&A System with RAG-Anything and Milvus
 
