@@ -10,7 +10,8 @@ recommend: false
 publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Milvus, JSON Shredding, JSON performance, columnar storage
-meta_title: Milvus JSON Shredding: Faster JSON Filtering With Flexibility
+meta_title: >
+ Milvus JSON Shredding: Faster JSON Filtering With Flexibility
 desc: Discover how Milvus JSON Shredding uses optimized columnar storage to speed up JSON queries by up to 89× while preserving full schema flexibility.
 origin: https://milvus.io/blog/json-shredding-in-milvus-88.9x-faster-json-filtering-with-flexibility.md
 ---
