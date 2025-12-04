@@ -1,5 +1,5 @@
 ---
-id: json-shredding-in-milvus-88.9x-faster-json-filtering-with-flexibility.md
+id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: >
  JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility
 author: Jack Zhang
@@ -13,7 +13,7 @@ meta_keywords: Milvus, JSON Shredding, JSON performance, columnar storage
 meta_title: >
  Milvus JSON Shredding: Faster JSON Filtering With Flexibility
 desc: Discover how Milvus JSON Shredding uses optimized columnar storage to speed up JSON queries by up to 89× while preserving full schema flexibility.
-origin: https://milvus.io/blog/json-shredding-in-milvus-88.9x-faster-json-filtering-with-flexibility.md
+origin: https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 ---
 
 Modern AI systems are producing more semi-structured JSON data than ever before. Customer and product information are compacted to a JSON object, microservices emit JSON logs on every request, IoT devices stream sensor readings in lightweight JSON payloads, and today’s AI applications increasingly standardize on JSON for structured output. The result is a flood of JSON-like data flowing into vector databases. 
