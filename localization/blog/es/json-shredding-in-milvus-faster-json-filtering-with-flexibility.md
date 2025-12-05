@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: 'JSON Shredding en Milvus: Filtrado JSON 88,9 veces más rápido con flexibilidad'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -18,7 +18,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 ---
-<p>Los sistemas de IA modernos producen más datos JSON semiestructurados que nunca. La información sobre clientes y productos se compacta en un objeto JSON, los microservicios emiten registros JSON en cada solicitud, los dispositivos IoT transmiten lecturas de sensores en cargas útiles JSON ligeras y las aplicaciones de IA actuales estandarizan cada vez más JSON para obtener resultados estructurados. El resultado es una avalancha de datos de tipo JSON que fluyen hacia las bases de datos vectoriales.</p>
+<p>Los sistemas modernos de IA producen más datos JSON semiestructurados que nunca. La información sobre clientes y productos se compacta en un objeto JSON, los microservicios emiten registros JSON en cada solicitud, los dispositivos IoT transmiten lecturas de sensores en cargas útiles JSON ligeras y las aplicaciones de IA actuales estandarizan cada vez más JSON para obtener resultados estructurados. El resultado es una avalancha de datos de tipo JSON que fluyen hacia las bases de datos vectoriales.</p>
 <p>Tradicionalmente, hay dos formas de manejar los documentos JSON:</p>
 <ul>
 <li><p><strong>Predefinir cada campo de JSON en un esquema fijo y construir un índice:</strong> Este enfoque ofrece un sólido rendimiento de consulta, pero es rígido. Una vez que cambia el formato de los datos, cada campo nuevo o modificado desencadena otra ronda de dolorosas actualizaciones del lenguaje de definición de datos (DDL) y migraciones de esquemas.</p></li>
@@ -124,7 +124,7 @@ origin: >-
 <tr><td>json['identity']['did'] == 'xxxxx'</td><td>7.6</td><td>352</td><td><strong>46.3x</strong></td></tr>
 </tbody>
 </table>
-<p>Las consultas con claves compartidas son las que muestran las mejoras más espectaculares (hasta 89 veces más rápidas), mientras que las consultas con claves mecanografiadas ofrecen aumentos de velocidad constantes de 15 a 30 veces. En general, todos los tipos de consulta se benefician de JSON Shredding, con claras mejoras de rendimiento en todos los ámbitos.</p>
+<p>Las consultas de clave compartida son las que muestran las mejoras más espectaculares (hasta 89 veces más rápidas), mientras que las consultas de clave mecanografiada ofrecen aumentos de velocidad constantes de 15 a 30 veces. En general, todos los tipos de consulta se benefician de JSON Shredding, con claras mejoras de rendimiento en todos los ámbitos.</p>
 <h2 id="Try-It-Now" class="common-anchor-header">Pruébelo ahora<button data-href="#Try-It-Now" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -143,4 +143,3 @@ origin: >-
     </button></h2><p>Tanto si trabaja con registros de API, datos de sensores IoT o cargas útiles de aplicaciones en rápida evolución, JSON Shredding le ofrece la rara posibilidad de disponer tanto de flexibilidad como de alto rendimiento.</p>
 <p>La función ya está disponible y le invitamos a probarla ahora. También puede consultar <a href="https://milvus.io/docs/json-shredding.md">este documento</a> para obtener más información.</p>
 <p>¿Tiene preguntas o desea una inmersión profunda en cualquier característica de la última Milvus? Únase a nuestro<a href="https://discord.com/invite/8uyFbECzPX"> canal de Discord</a> o presente cuestiones en<a href="https://github.com/milvus-io/milvus"> GitHub</a>. También puede reservar una sesión individual de 20 minutos para obtener información, orientación y respuestas a sus preguntas a través de<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<p>Y si desea explorar aún más, permanezca atento a las inmersiones profundas adicionales a lo largo de nuestra serie Milvus Week.</p>

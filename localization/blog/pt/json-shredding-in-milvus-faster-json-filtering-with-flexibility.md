@@ -5,7 +5,7 @@ title: >-
   flexibilidade
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -45,7 +45,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>A fragmentação de JSON acelera as consultas JSON ao transformar documentos JSON baseados em linhas em armazenamento colunar altamente otimizado. O Milvus preserva a flexibilidade do JSON para modelagem de dados enquanto otimiza automaticamente o armazenamento em colunas - melhorando significativamente o acesso aos dados e o desempenho das consultas.</p>
-<p>Para lidar com campos JSON esparsos ou raros de forma eficiente, o Milvus também tem um índice invertido para chaves partilhadas. Tudo isto acontece de forma transparente para os utilizadores: pode inserir documentos JSON como habitualmente, e deixar que seja o Milvus a gerir internamente a estratégia de armazenamento e indexação ideal.</p>
+<p>Para lidar com campos JSON esparsos ou raros de forma eficiente, o Milvus também tem um índice invertido para chaves partilhadas. Tudo isto acontece de forma transparente para os utilizadores: pode inserir documentos JSON como habitualmente e deixar que seja o Milvus a gerir internamente a estratégia de armazenamento e indexação ideal.</p>
 <p>Quando o Milvus recebe registos JSON em bruto com formas e estruturas variadas, analisa cada chave JSON quanto à sua taxa de ocorrência e estabilidade de tipo (se o seu tipo de dados é consistente entre documentos). Com base nesta análise, cada chave é classificada numa de três categorias:</p>
 <ul>
 <li><p><strong>Chaves digitadas:</strong> Chaves que aparecem na maioria dos documentos e têm sempre o mesmo tipo de dados (por exemplo, todos os números inteiros ou todas as cadeias de caracteres).</p></li>
@@ -67,19 +67,19 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Agora que cobrimos o básico de como a fragmentação JSON funciona, vamos dar uma olhada mais de perto nos principais recursos que tornam essa abordagem flexível e de alto desempenho.</p>
+<p>Agora que já cobrimos o básico de como a fragmentação JSON funciona, vamos dar uma olhada mais de perto nos principais recursos que tornam essa abordagem flexível e de alto desempenho.</p>
 <h3 id="Shredding-and-Columnarization" class="common-anchor-header">Fragmentação e colunarização</h3><p>Quando um novo documento JSON é escrito, Milvus o divide e o reorganiza em um armazenamento colunar otimizado:</p>
 <ul>
 <li><p>Chaves digitadas e dinâmicas são automaticamente identificadas e armazenadas em colunas dedicadas.</p></li>
-<li><p>Se o JSON contém objectos aninhados, o Milvus gera automaticamente nomes de colunas baseados em caminhos. Por exemplo, um campo <code translate="no">name</code> dentro de um objeto <code translate="no">user</code> pode ser armazenado com o nome de coluna <code translate="no">/user/name</code>.</p></li>
+<li><p>Se o JSON contiver objectos aninhados, o Milvus gera automaticamente nomes de colunas baseados em caminhos. Por exemplo, um campo <code translate="no">name</code> dentro de um objeto <code translate="no">user</code> pode ser armazenado com o nome de coluna <code translate="no">/user/name</code>.</p></li>
 <li><p>As chaves partilhadas são armazenadas em conjunto numa única coluna JSON binária compacta. Como essas chaves aparecem com pouca frequência, o Milvus cria um índice invertido para elas, permitindo uma filtragem rápida e permitindo que o sistema localize rapidamente as linhas que contêm a chave especificada.</p></li>
 </ul>
-<h3 id="Intelligent-Column-Management" class="common-anchor-header">Gestão inteligente de colunas</h3><p>Para além de fragmentar o JSON em colunas, o Milvus acrescenta uma camada adicional de inteligência através da gestão dinâmica de colunas, garantindo que a fragmentação JSON se mantém flexível à medida que os dados evoluem.</p>
+<h3 id="Intelligent-Column-Management" class="common-anchor-header">Gestão inteligente de colunas</h3><p>Para além de fragmentar o JSON em colunas, o Milvus acrescenta uma camada adicional de inteligência através da gestão dinâmica de colunas, assegurando que a fragmentação JSON se mantém flexível à medida que os dados evoluem.</p>
 <ul>
 <li><p><strong>Colunas criadas conforme necessário:</strong> Quando novas chaves aparecem em documentos JSON de entrada, o Milvus agrupa automaticamente valores com a mesma chave numa coluna dedicada. Isto preserva as vantagens de desempenho do armazenamento em colunas sem exigir que os utilizadores concebam esquemas antecipadamente. O Milvus também infere o tipo de dados dos novos campos (por exemplo, INTEGER, DOUBLE, VARCHAR) e seleciona um formato colunar eficiente para eles.</p></li>
-<li><p><strong>Todas as chaves são tratadas automaticamente:</strong> Milvus analisa e processa cada chave no documento JSON. Isto garante uma ampla cobertura de consulta sem forçar os utilizadores a predefinir campos ou construir índices antecipadamente.</p></li>
+<li><p><strong>Todas as chaves são tratadas automaticamente:</strong> Milvus analisa e processa cada chave no documento JSON. Isto garante uma ampla cobertura de consulta sem forçar os utilizadores a predefinir campos ou a construir índices antecipadamente.</p></li>
 </ul>
-<h3 id="Query-Optimization" class="common-anchor-header">Otimização de Consultas</h3><p>Uma vez que os dados são reorganizados nas colunas certas, Milvus seleciona o caminho de execução mais eficiente para cada consulta:</p>
+<h3 id="Query-Optimization" class="common-anchor-header">Otimização de consultas</h3><p>Uma vez que os dados são reorganizados nas colunas certas, Milvus seleciona o caminho de execução mais eficiente para cada consulta:</p>
 <ul>
 <li><p><strong>Varredura direta de colunas para chaves digitadas e dinâmicas:</strong> Se uma consulta visa um campo que já foi dividido na sua própria coluna, o Milvus pode pesquisar essa coluna diretamente. Isso reduz a quantidade total de dados que precisam ser processados e aproveita a computação colunar acelerada por SIMD para uma execução ainda mais rápida.</p></li>
 <li><p><strong>Pesquisa indexada para chaves partilhadas:</strong> Se a consulta envolver um campo que não foi promovido para a sua própria coluna - normalmente uma chave rara - o Milvus avalia-a em relação à coluna de chave partilhada. O índice invertido construído nesta coluna permite ao Milvus identificar rapidamente quais as linhas que contêm a chave especificada e saltar as restantes, melhorando significativamente o desempenho dos campos de baixa frequência.</p></li>
@@ -109,7 +109,7 @@ origin: >-
 <h3 id="Results-typed-keys" class="common-anchor-header">Resultados: chaves digitadas</h3><p>Este teste mediu o desempenho ao consultar uma chave presente na maioria dos documentos.</p>
 <table>
 <thead>
-<tr><th>Expressão de consulta</th><th>QPS (sem fragmentação)</th><th>QPS (com fragmentação)</th><th>Aumento de desempenho</th></tr>
+<tr><th>Expressão da consulta</th><th>QPS (sem fragmentação)</th><th>QPS (com fragmentação)</th><th>Aumento de desempenho</th></tr>
 </thead>
 <tbody>
 <tr><td>json['time_us'] &gt; 0</td><td>8.69</td><td>287.5</td><td><strong>33x</strong></td></tr>
@@ -145,4 +145,3 @@ origin: >-
     </button></h2><p>Quer esteja a trabalhar com registos de API, dados de sensores IoT ou cargas úteis de aplicações em rápida evolução, o JSON Shredding dá-lhe a rara capacidade de ter flexibilidade e elevado desempenho.</p>
 <p>O recurso já está disponível e é bem-vindo para experimentá-lo agora. Você também pode consultar <a href="https://milvus.io/docs/json-shredding.md">este documento</a> para obter mais detalhes.</p>
 <p>Tem perguntas ou quer um mergulho profundo em qualquer caraterística do Milvus mais recente? Junte-se ao nosso<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou arquive problemas no<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Você também pode reservar uma sessão individual de 20 minutos para obter insights, orientações e respostas às suas perguntas através do<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<p>E se quiser explorar ainda mais, fique atento a outros mergulhos profundos ao longo da nossa série Milvus Week.</p>

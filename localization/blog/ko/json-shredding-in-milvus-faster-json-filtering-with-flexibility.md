@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: 'Milvus의 JSON 파쇄: 유연성을 갖춘 88.9배 빠른 JSON 필터링'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -13,7 +13,7 @@ meta_title: |
   Milvus JSON Shredding: Faster JSON Filtering With Flexibility
 desc: >-
   밀버스 JSON 슈레딩이 어떻게 최적화된 컬럼형 스토리지를 사용해 전체 스키마 유연성을 유지하면서 JSON 쿼리 속도를 최대 89배까지
-  향상시키는지 알아보세요.
+  높이는지 알아보세요.
 origin: >-
   https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 ---
@@ -47,7 +47,7 @@ origin: >-
 <ul>
 <li><p><strong>입력된 키:</strong> 대부분의 문서에 나타나며 항상 동일한 데이터 유형(예: 모든 정수 또는 모든 문자열)을 갖는 키입니다.</p></li>
 <li><p><strong>동적 키</strong>: 자주 나타나지만 데이터 유형이 혼합된 키(예: 때로는 문자열, 때로는 정수)입니다.</p></li>
-<li><p><strong>공유 키:</strong> 빈도가 낮거나, 희박하거나, 중첩된 키로 구성 가능한 빈도 임계값 이하로 떨어지는 키입니다.</p></li>
+<li><p><strong>공유 키:</strong> 빈도가 낮거나, 희소하거나, 중첩된 키로 구성 가능한 빈도 임계값에 미달하는 키입니다.</p></li>
 </ul>
 <p>Milvus는 효율성을 극대화하기 위해 각 카테고리를 다르게 처리합니다:</p>
 <ul>
@@ -141,5 +141,4 @@ origin: >-
       </svg>
     </button></h2><p>API 로그, IoT 센서 데이터, 빠르게 진화하는 애플리케이션 페이로드 등 어떤 작업을 하든 JSON 파쇄는 유연성과 고성능을 모두 갖춘 보기 드문 기능을 제공합니다.</p>
 <p>이 기능은 현재 사용 가능하며 지금 바로 사용해 보세요. 자세한 내용은 <a href="https://milvus.io/docs/json-shredding.md">이 문서에서도</a> 확인할 수 있습니다.</p>
-<p>최신 Milvus의 기능에 대해 궁금한 점이 있거나 자세히 알아보고 싶으신가요?<a href="https://discord.com/invite/8uyFbECzPX"> Discord 채널에</a> 참여하거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출하세요. 또한<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus 오피스 아워를</a> 통해 20분간의 일대일 세션을 예약하여 인사이트, 안내 및 질문에 대한 답변을 얻을 수 있습니다.</p>
-<p>더 자세히 알아보고 싶으시다면 Milvus Week 시리즈를 통해 추가 심층 분석을 기대해 주세요.</p>
+<p>최신 Milvus의 기능에 대해 궁금한 점이 있거나 자세히 알아보고 싶으신가요?<a href="https://discord.com/invite/8uyFbECzPX"> Discord 채널에</a> 참여하거나<a href="https://github.com/milvus-io/milvus"> GitHub에</a> 이슈를 제출하세요. 또한<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus 오피스 아워를</a> 통해 20분간의 일대일 세션을 예약하여 인사이트, 안내 및 질문에 대한 답변을 얻을 수도 있습니다.</p>

@@ -5,7 +5,7 @@ title: >-
   flessibile
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -28,7 +28,7 @@ origin: >-
 </ul>
 <p>Un tempo si trattava di un dilemma tra flessibilità e prestazioni.</p>
 <p>Non più con la nuova funzione JSON Shredding di <a href="https://milvus.io/">Milvus</a>.</p>
-<p>Con l'introduzione di <a href="https://milvus.io/docs/json-shredding.md">JSON Shredding</a>, Milvus raggiunge ora un'agilità senza schema con le prestazioni dell'archiviazione colonnare, rendendo finalmente i dati semi-strutturati su larga scala flessibili e facili da interrogare.</p>
+<p>Con l'introduzione di <a href="https://milvus.io/docs/json-shredding.md">JSON Shredding</a>, Milvus raggiunge ora l'agilità senza schema con le prestazioni dell'archiviazione colonnare, rendendo finalmente i dati semi-strutturati su larga scala flessibili e facili da interrogare.</p>
 <h2 id="How-JSON-Shredding-Works" class="common-anchor-header">Come funziona la triturazione JSON<button data-href="#How-JSON-Shredding-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -49,7 +49,7 @@ origin: >-
 <p>Quando Milvus riceve record JSON grezzi con forme e strutture diverse, analizza ogni chiave JSON per verificarne il rapporto di occorrenza e la stabilità del tipo (se il tipo di dati è coerente tra i documenti). In base a questa analisi, ogni chiave viene classificata in una delle tre categorie:</p>
 <ul>
 <li><p><strong>Chiavi digitate:</strong> Chiavi che appaiono nella maggior parte dei documenti e che hanno sempre lo stesso tipo di dati (ad esempio, tutti i numeri interi o tutte le stringhe).</p></li>
-<li><p><strong>Chiavi dinamiche</strong>: Chiavi che appaiono frequentemente ma che hanno tipi di dati misti (ad esempio, a volte una stringa, a volte un numero intero).</p></li>
+<li><p><strong>Chiavi dinamiche</strong>: Chiavi che compaiono frequentemente ma con tipi di dati misti (ad esempio, a volte una stringa, a volte un numero intero).</p></li>
 <li><p><strong>Chiavi condivise:</strong> Chiavi poco frequenti, rade o annidate, al di sotto di una soglia di frequenza configurabile.</p></li>
 </ul>
 <p>Milvus gestisce ogni categoria in modo diverso per massimizzare l'efficienza:</p>
@@ -72,7 +72,7 @@ origin: >-
 <ul>
 <li><p>Le chiavi digitate e dinamiche vengono identificate automaticamente e memorizzate in colonne dedicate.</p></li>
 <li><p>Se il JSON contiene oggetti annidati, Milvus genera automaticamente nomi di colonne basati sul percorso. Ad esempio, un campo <code translate="no">name</code> all'interno di un oggetto <code translate="no">user</code> può essere memorizzato con il nome di colonna <code translate="no">/user/name</code>.</p></li>
-<li><p>Le chiavi condivise vengono memorizzate insieme in un'unica colonna JSON binaria e compatta. Poiché queste chiavi appaiono di rado, Milvus crea un indice inverso per esse, consentendo un filtraggio veloce e permettendo al sistema di individuare rapidamente le righe che contengono la chiave specificata.</p></li>
+<li><p>Le chiavi condivise vengono memorizzate insieme in un'unica colonna JSON binaria e compatta. Poiché queste chiavi appaiono di rado, Milvus costruisce un indice inverso per esse, consentendo un filtraggio rapido e permettendo al sistema di individuare rapidamente le righe che contengono la chiave specificata.</p></li>
 </ul>
 <h3 id="Intelligent-Column-Management" class="common-anchor-header">Gestione intelligente delle colonne</h3><p>Oltre alla triturazione di JSON in colonne, Milvus aggiunge un ulteriore livello di intelligenza attraverso la gestione dinamica delle colonne, assicurando che la triturazione di JSON rimanga flessibile con l'evoluzione dei dati.</p>
 <ul>
@@ -144,5 +144,4 @@ origin: >-
       </svg>
     </button></h2><p>Se lavorate con i log delle API, i dati dei sensori IoT o i payload delle applicazioni in rapida evoluzione, JSON Shredding vi offre la rara possibilità di avere sia flessibilità che prestazioni elevate.</p>
 <p>La funzione è ora disponibile e potete provarla subito. Per ulteriori dettagli è possibile consultare <a href="https://milvus.io/docs/json-shredding.md">questo documento</a>.</p>
-<p>Avete domande o volete un approfondimento su una qualsiasi funzione dell'ultima versione di Milvus? Unitevi al nostro<a href="https://discord.com/invite/8uyFbECzPX"> canale Discord</a> o inviate problemi su<a href="https://github.com/milvus-io/milvus"> GitHub</a>. È anche possibile prenotare una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande tramite<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<p>E se volete saperne di più, restate sintonizzati per ulteriori approfondimenti durante la nostra serie di Milvus Week.</p>
+<p>Avete domande o volete un approfondimento su una qualsiasi funzione dell'ultima versione di Milvus? Unitevi al nostro<a href="https://discord.com/invite/8uyFbECzPX"> canale Discord</a> o inviate problemi su<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Potete anche prenotare una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande tramite<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

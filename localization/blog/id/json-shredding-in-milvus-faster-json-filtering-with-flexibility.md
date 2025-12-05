@@ -5,7 +5,7 @@ title: >-
   Fleksibilitas
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -144,5 +144,4 @@ origin: >-
       </svg>
     </button></h2><p>Baik Anda bekerja dengan log API, data sensor IoT, atau muatan aplikasi yang berkembang pesat, JSON Shredding memberi Anda kemampuan langka untuk memiliki fleksibilitas dan kinerja tinggi.</p>
 <p>Fitur ini sekarang sudah tersedia dan silakan mencobanya sekarang. Anda juga dapat melihat <a href="https://milvus.io/docs/json-shredding.md">dokumen ini</a> untuk informasi lebih lanjut.</p>
-<p>Ada pertanyaan atau ingin mendalami fitur-fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga bisa memesan sesi one-on-one selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<p>Dan jika Anda ingin menjelajahi lebih jauh, nantikan pembahasan mendalam lainnya di seluruh seri Milvus Week kami.</p>
+<p>Ada pertanyaan atau ingin mendalami fitur-fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: Milvus 的 JSON 切碎：靈活的 JSON 過濾速度快 88.9 倍
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -139,5 +139,4 @@ origin: >-
       </svg>
     </button></h2><p>無論您處理的是 API 日誌、物聯網感測器資料，或是快速演進的應用程式有效負載，JSON Shredding 都能讓您同時擁有難得的彈性與高效能。</p>
 <p>此功能現已推出，歡迎立即試用。您也可以查看<a href="https://milvus.io/docs/json-shredding.md">此文件</a>以瞭解更多詳細資訊。</p>
-<p>對最新 Milvus 的任何功能有問題或想要深入瞭解？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。您也可以透過<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 預約 20 分鐘的一對一課程，以獲得深入的瞭解、指導和問題解答。</p>
-<p>如果您想要探索更多，請密切注意 Milvus Week 系列的深入探討。</p>
+<p>對最新 Milvus 的任何功能有問題或想要深入瞭解？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。您也可以透過<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 預約 20 分鐘的一對一課程，以獲得深入的了解、指導和問題解答。</p>

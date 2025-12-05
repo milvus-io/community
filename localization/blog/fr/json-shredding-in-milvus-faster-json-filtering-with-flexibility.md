@@ -5,7 +5,7 @@ title: >-
   flexible
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -45,11 +45,11 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Le déchiquetage JSON accélère les requêtes JSON en transformant les documents JSON basés sur des lignes en un stockage en colonnes hautement optimisé. Milvus préserve la flexibilité de JSON pour la modélisation des données tout en optimisant automatiquement le stockage en colonnes, ce qui améliore considérablement l'accès aux données et les performances des requêtes.</p>
-<p>Pour traiter efficacement les champs JSON rares ou épars, Milvus dispose également d'un index inversé pour les clés partagées. Tout cela se passe de manière transparente pour les utilisateurs : vous pouvez insérer des documents JSON comme d'habitude et laisser Milvus gérer la stratégie de stockage et d'indexation optimale en interne.</p>
+<p>Pour traiter efficacement les champs JSON rares ou épars, Milvus dispose également d'un index inversé pour les clés partagées. Tout cela est transparent pour les utilisateurs : vous pouvez insérer des documents JSON comme d'habitude et laisser Milvus gérer la stratégie de stockage et d'indexation optimale en interne.</p>
 <p>Lorsque Milvus reçoit des enregistrements JSON bruts dont la forme et la structure varient, il analyse chaque clé JSON en fonction de son taux d'occurrence et de la stabilité de son type (si son type de données est cohérent d'un document à l'autre). Sur la base de cette analyse, chaque clé est classée dans l'une des trois catégories suivantes :</p>
 <ul>
 <li><p><strong>Les clés typées :</strong> Les clés qui apparaissent dans la plupart des documents et qui ont toujours le même type de données (par exemple, tous les entiers ou toutes les chaînes).</p></li>
-<li><p><strong>Clés dynamiques</strong>: Les clés qui apparaissent fréquemment mais dont les types de données sont mixtes (par exemple, parfois une chaîne de caractères, parfois un nombre entier).</p></li>
+<li><p><strong>Clés dynamiques</strong>: Clés qui apparaissent fréquemment mais dont les types de données sont mixtes (par exemple, parfois une chaîne de caractères, parfois un nombre entier).</p></li>
 <li><p><strong>Clés partagées :</strong> Clés peu fréquentes, éparses ou imbriquées, dont la fréquence est inférieure à un seuil configurable.</p></li>
 </ul>
 <p>Milvus traite chaque catégorie différemment pour maximiser l'efficacité :</p>
@@ -145,4 +145,3 @@ origin: >-
     </button></h2><p>Que vous travailliez avec des logs d'API, des données de capteurs IoT ou des charges utiles d'application en évolution rapide, JSON Shredding vous offre la rare possibilité de bénéficier à la fois de flexibilité et de performances élevées.</p>
 <p>La fonctionnalité est maintenant disponible et nous vous invitons à l'essayer dès maintenant. Vous pouvez également consulter <a href="https://milvus.io/docs/json-shredding.md">cette documentation</a> pour plus de détails.</p>
 <p>Vous avez des questions ou souhaitez approfondir une fonctionnalité de la dernière version de Milvus ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou déposez des questions sur<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions dans le cadre des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<p>Et si vous souhaitez en savoir encore plus, restez à l'écoute pour d'autres approfondissements tout au long de notre série de semaines Milvus.</p>

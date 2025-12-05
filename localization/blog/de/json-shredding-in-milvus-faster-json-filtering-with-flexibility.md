@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: 'JSON Shredding in Milvus: 88,9x schnellere JSON-Filterung mit Flexibilität'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -44,7 +44,7 @@ origin: >-
       </svg>
     </button></h2><p>JSON Shredding beschleunigt JSON-Abfragen durch die Umwandlung von zeilenbasierten JSON-Dokumenten in einen hochoptimierten spaltenbasierten Speicher. Milvus bewahrt die Flexibilität von JSON für die Datenmodellierung und optimiert gleichzeitig automatisch die spaltenbasierte Speicherung, was den Datenzugriff und die Abfrageleistung erheblich verbessert.</p>
 <p>Um spärliche oder seltene JSON-Felder effizient zu handhaben, verfügt Milvus auch über einen invertierten Index für gemeinsame Schlüssel. All dies geschieht für die Benutzer transparent: Sie können JSON-Dokumente wie gewohnt einfügen und es Milvus überlassen, die optimale Speicher- und Indexierungsstrategie intern zu verwalten.</p>
-<p>Wenn Milvus JSON-Rohdatensätze mit unterschiedlichen Formen und Strukturen empfängt, analysiert es jeden JSON-Schlüssel auf die Häufigkeit seines Auftretens und die Stabilität seines Typs (ob sein Datentyp in allen Dokumenten gleich ist). Auf der Grundlage dieser Analyse wird jeder Schlüssel in eine von drei Kategorien eingeteilt:</p>
+<p>Wenn Milvus JSON-Rohdatensätze mit unterschiedlichen Formen und Strukturen empfängt, analysiert es jeden JSON-Schlüssel auf sein Vorkommensverhältnis und seine Typstabilität (ob sein Datentyp in allen Dokumenten konsistent ist). Auf der Grundlage dieser Analyse wird jeder Schlüssel in eine von drei Kategorien eingeteilt:</p>
 <ul>
 <li><p><strong>Getippte Schlüssel:</strong> Schlüssel, die in den meisten Dokumenten vorkommen und immer den gleichen Datentyp haben (z. B. alle Ganzzahlen oder alle Zeichenketten).</p></li>
 <li><p><strong>Dynamische Schlüssel</strong>: Schlüssel, die häufig vorkommen, aber unterschiedliche Datentypen haben (z. B. manchmal eine Zeichenkette, manchmal eine ganze Zahl).</p></li>
@@ -107,7 +107,7 @@ origin: >-
 <h3 id="Results-typed-keys" class="common-anchor-header">Ergebnisse: Eingetippte Schlüssel</h3><p>Bei diesem Test wurde die Leistung bei der Abfrage eines in den meisten Dokumenten vorhandenen Schlüssels gemessen.</p>
 <table>
 <thead>
-<tr><th>Abfrage-Ausdruck</th><th>QPS (ohne Schreddern)</th><th>QPS (mit Zerkleinerung)</th><th>Leistungssteigerung</th></tr>
+<tr><th>Abfrageausdruck</th><th>QPS (ohne Schreddern)</th><th>QPS (mit Zerkleinerung)</th><th>Leistungssteigerung</th></tr>
 </thead>
 <tbody>
 <tr><td>json['time_us'] &gt; 0</td><td>8.69</td><td>287.5</td><td><strong>33x</strong></td></tr>
@@ -142,5 +142,4 @@ origin: >-
       </svg>
     </button></h2><p>Ganz gleich, ob Sie mit API-Protokollen, IoT-Sensordaten oder sich schnell entwickelnden Anwendungs-Payloads arbeiten, JSON Shredding bietet Ihnen die seltene Möglichkeit, sowohl Flexibilität als auch hohe Leistung zu erhalten.</p>
 <p>Die Funktion ist ab sofort verfügbar und Sie sind herzlich eingeladen, sie jetzt auszuprobieren. Weitere Details finden Sie <a href="https://milvus.io/docs/json-shredding.md">in diesem Dokument</a>.</p>
-<p>Haben Sie Fragen oder möchten Sie eine Funktion des neuesten Milvus genauer kennenlernen? Treten Sie unserem<a href="https://discord.com/invite/8uyFbECzPX"> Discord-Kanal</a> bei oder stellen Sie Fragen auf<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Sie können auch eine 20-minütige Einzelsitzung buchen, um Einblicke, Anleitungen und Antworten auf Ihre Fragen über die<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> zu erhalten.</p>
-<p>Und wenn Sie noch mehr erfahren möchten, bleiben Sie dran für weitere Vertiefungen während unserer Milvus-Wochenreihe.</p>
+<p>Haben Sie Fragen oder möchten Sie eine Funktion des neuesten Milvus genauer kennenlernen? Treten Sie unserem<a href="https://discord.com/invite/8uyFbECzPX"> Discord-Kanal</a> bei oder stellen Sie Fragen auf<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Sie können auch eine 20-minütige Einzelsitzung buchen, um Einblicke, Anleitung und Antworten auf Ihre Fragen über die<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> zu erhalten.</p>
