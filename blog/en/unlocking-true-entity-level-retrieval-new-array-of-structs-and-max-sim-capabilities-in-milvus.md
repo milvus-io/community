@@ -177,7 +177,7 @@ The value of **Array of Structs** becomes clear when you look at what it enables
 Because of these properties, Array of Structs is a natural fit whenever a _single logical entity is represented by multiple vectors_. Common examples include articles split into paragraphs, documents decomposed into token embeddings, or products represented by multiple images. If your search results suffer from duplicate hits, scattered fragments, or the same entity appearing multiple times in the top results, Array of Structs solves these issues at the storage and retrieval layer—not through after-the-fact patching in application code.
 
 This pattern is especially powerful for modern AI systems that rely on **multi-vector retrieval**.
-&#x20;For instance:
+For instance:
 
 - [**ColBERT**](https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search) represents a single document as 100–500 token embeddings for fine-grained semantic matching across domains such as legal text and academic research.
 
