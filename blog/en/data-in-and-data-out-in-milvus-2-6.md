@@ -1,3 +1,22 @@
+---
+id: data-in-and-data-out-in-milvus-2-6.md
+title: >
+ Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search
+author: Xuqi Yang
+date: 2025-12-03
+cover: assets.zilliz.com/data_in_data_out_cover_0783504ea4.png
+tag: Engineering
+recommend: false
+publishToMedium: true
+tags: Milvus, vector database
+meta_keywords: Milvus, vector database, embedding, vector search
+meta_title: > 
+ Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search
+desc: Discover how Milvus 2.6 simplifies embedding process and vector search with Data-in, Data-out. Automatically handle embedding and reranking — no external preprocessing needed.
+origin: https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md
+---
+
+
 If you’ve ever built a vector search application, you already know the workflow a little too well. Before any data can be stored, it must first be transformed into vectors using an embedding model, cleaned and formatted, and then finally ingested into your vector database. Every query goes through the same process as well: embed the input, run a similarity search, then map the resulting IDs back to your original documents or records. It works — but it creates a distributed tangle of preprocessing scripts, embedding pipelines, and glue code that you have to maintain.
 
 [Milvus](https://milvus.io/), a high-performance open-source vector database, now takes a major step toward simplifying all of that. [Milvus 2.6](https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md) introduces the **Data-in, Data-out feature (also known as the** [**Embedding Function**](https://milvus.io/docs/embedding-function-overview.md#Embedding-Function-Overview)**)**, a built-in embedding capability that connects directly to major model providers such as OpenAI, AWS Bedrock, Google Vertex AI, and Hugging Face. Instead of managing your own embedding infrastructure, Milvus can now call these models for you. You can also insert and query using raw text — and soon other data types — while Milvus automatically handles vectorization at write and query time. 
@@ -25,6 +44,8 @@ In short, Milvus now automatically embeds — and optionally reranks — your da
 ## How Data-in, Data-out Works
 
 The diagram below illustrates how Data-in, Data-out operates inside Milvus. 
+
+![](https://assets.zilliz.com/diagram_data_in_data_out_4c9e06c884.png)
 
 The Data-in, Data-out workflow can be broken down into six main steps:
 
@@ -56,8 +77,7 @@ If you are running Milvus with **Docker Compose**, you’ll need to modify the `
 
 In the configuration file, locate the sections `credential` and `function`.
 
-Then, update the fields `apikey1.apikey` and `providers.cohere`.\
-\`\`\`
+Then, update the fields `apikey1.apikey` and `providers.cohere`.
 
 ```
 ...
@@ -82,7 +102,7 @@ function:
 ...
 ```
 
-\`\`\`
+
 
 Once you’ve made these changes, restart Milvus to apply the updated configuration.
 
@@ -98,8 +118,6 @@ To enable the embedding feature, your **collection schema** must include at leas
 - **Scalar field (**`document`**)** – Stores the original raw data.
 
 - **Vector field (**`dense`**)** – Stores the generated vector embeddings.
-
-\`\`\`
 
 ```
 from pymilvus import MilvusClient, DataType, Function, FunctionType
@@ -120,8 +138,6 @@ schema.add_field("document", DataType.VARCHAR, max_length=9000)
 schema.add_field("dense", DataType.FLOAT_VECTOR, dim=1536) # Set dim according to the embedding model you use.
 ```
 
-\`\`\`
-
 
 ### 2. Define the Embedding Function
 
@@ -139,7 +155,7 @@ Next, define the **embedding function** in the schema.
 
 **Note:** Each function must have a unique `name` and `output_field_names` to distinguish different transformation logics and prevent conflicts.
 
-\`\`\`
+
 
 ```
 # Define embedding function (example: OpenAI provider)
@@ -161,14 +177,14 @@ text_embedding_function = Function(
 schema.add_function(text_embedding_function)
 ```
 
-\`\`\`
+
 
 
 ### 3. Configure the Index
 
 Once the fields and functions are defined, create an index for the collection. For simplicity, we use the AUTOINDEX type here as an example.
 
-\`\`\`
+
 
 ```
 # Prepare index parameters
@@ -181,14 +197,14 @@ index_params.add_index(
 )
 ```
 
-\`\`\`
+
 
 
 ### 4. Create the Collection
 
 Use the defined schema and index to create a new collection. In this example, we’ll create a collection named Demo.
 
-\`\`\`
+
 
 ```
 # Create collection named "demo"
@@ -199,14 +215,14 @@ client.create_collection(
 )
 ```
 
-\`\`\`
+
 
 
 ### 5. Insert Data
 
 Now you can insert raw data directly into Milvus — there’s no need to generate embeddings manually. 
 
-\`\`\`
+
 
 ```
 # Insert sample documents
@@ -217,14 +233,14 @@ client.insert('demo', [
 ])
 ```
 
-\`\`\`
+
 
 
 ### 6. Perform Vector Search
 
 After inserting data, you can perform searches directly using raw text queries. Milvus automatically converts your query into an embedding, perform similarity search against stored vectors, and return the top matches.
 
-\`\`\`
+
 
 ```
 # Perform semantic search
@@ -240,7 +256,7 @@ print(results)
 # data: ["[{'id': 1, 'distance': 0.8821347951889038, 'entity': {'document': 'Milvus simplifies semantic search through embeddings.'}}]"]
 ```
 
-\`\`\`
+
 
 For more details on vector search, see: [Basic Vector Search ](https://milvus.io/docs/single-vector-search.md)and [Query API](https://milvus.io/docs/get-and-scalar-query.md).
 
@@ -260,7 +276,7 @@ Have questions or want a deep dive on any feature? Join our[ Discord channel](ht
 
 - [JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility](https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md)
 
-- [Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX\_SIM Capabilities in Milvus](https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md)
+- [Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus](https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md)
 
 - [MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data ](https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md)
 
