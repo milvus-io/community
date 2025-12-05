@@ -4,7 +4,7 @@ title: >
  JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility
 author: Jack Zhang
 date: 2025-12-04
-cover: assets.zilliz.com/Milvus_Week_JSON_Shredding_cover_829a12b086.png
+cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -129,5 +129,3 @@ Whether you’re working with API logs, IoT sensor data, or rapidly evolving app
 The feature is now available and welcome to try it out now. You can also check [this doc](https://milvus.io/docs/json-shredding.md) for more details.
 
 Have questions or want a deep dive on any feature of the latest Milvus? Join our[ Discord channel](https://discord.com/invite/8uyFbECzPX) or file issues on[ GitHub](https://github.com/milvus-io/milvus). You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through[ Milvus Office Hours](https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md).
-
-And if you’d like to explore even more, stay tuned for additional deep dives throughout our Milvus Week series.
