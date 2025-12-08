@@ -77,19 +77,19 @@ Gemini 3 Pro shows impressive versatility across text, images, video, and code. 
 
 Google’s internal evaluations show similar behavior: Gemini 3 Pro handled handwritten recipes across multiple languages, transcribed and translated each one, and compiled them into a shareable family recipe book.
 
-![](https://assets.zilliz.com/recipe_394accbbab.mp4)
+
 
 ### Zero-Shot Tasks
 
 Gemini 3 Pro can generate fully interactive web UIs with no prior examples or scaffolding. When prompted to create a polished, retro-futuristic **3D spaceship web game**, the model produced a complete interactive scene: a neon-purple grid, cyberpunk-style ships, glowing particle effects, and smooth camera controls — all in a single zero-shot response.
 
-![](https://assets.zilliz.com/zero_shot_b907aa7eb9.mp4)
+
 
 ### Complex Task Planning
 
 The model also demonstrates stronger long-horizon task planning than many of its peers. In our inbox-organization test, Gemini 3 Pro behaved much like an AI administrative assistant: categorizing messy emails into project buckets, drafting actionable suggestions (reply, follow-up, archive), and presenting a clean, structured summary. With the model’s plan laid out, the entire inbox could be cleared with a single confirmation click.
 
-![](https://assets.zilliz.com/Gemini3_Organizeemail_nologo_8d98eb58ed.mp4)
+
 
 ## How to Build a RAG System with Gemini 3 Pro and Milvus
 
