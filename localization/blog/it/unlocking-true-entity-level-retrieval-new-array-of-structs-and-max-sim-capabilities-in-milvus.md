@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs e MAX_SIM in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -123,7 +123,7 @@ origin: >-
 <li><p>corso → guida (0,7)</p></li>
 </ul>
 <p>Sommando le migliori corrispondenze si ottiene per doc_1 un <strong>punteggio MAX_SIM di 2,4</strong>.</p>
-<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Passo 2: Calcolo di MAX_SIM per il documento_2</h3><p>Ora ripetiamo il procedimento per il documento_2:</p>
+<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Passo 2: Calcolo di MAX_SIM per il documento_2</h3><p>Ora ripetiamo il processo per il documento_2:</p>
 <table>
 <thead>
 <tr><th></th><th>avanzato</th><th>guida</th><th>LLM</th><th>carta</th><th>lettura</th></tr>
@@ -140,7 +140,7 @@ origin: >-
 <li><p>"principiante" → "guida" (0,6)</p></li>
 <li><p>"corso" → "guida" (0,8)</p></li>
 </ul>
-<p>Sommandoli, il doc_2 ottiene un <strong>punteggio MAX_SIM di 2,3</strong>.</p>
+<p>La somma dei punteggi dà al doc_2 un <strong>punteggio MAX_SIM di 2,3</strong>.</p>
 <h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">Passo 3: confrontare i punteggi</h3><p>Poiché <strong>2,4 &gt; 2,3</strong>, il <strong>doc_1 si classifica più in alto del doc_2</strong>, il che ha un senso intuitivo, poiché il doc_1 è più vicino a una guida introduttiva all'apprendimento automatico.</p>
 <p>Da questo esempio, possiamo evidenziare tre caratteristiche fondamentali di MAX_SIM:</p>
 <ul>
@@ -167,7 +167,7 @@ origin: >-
 <ul>
 <li><p><strong>Memorizzare entità multivettore in modo nativo:</strong> Array of Structs consente di memorizzare gruppi di vettori correlati in un unico campo senza dividerli in righe separate o tabelle ausiliarie.</p></li>
 <li><p><strong>Calcolo efficiente del best-match:</strong> In combinazione con indici vettoriali come IVF e HNSW, MAX_SIM può calcolare le migliori corrispondenze senza scansionare ogni vettore, mantenendo alte le prestazioni anche con documenti di grandi dimensioni.</p></li>
-<li><p><strong>Costruito appositamente per carichi di lavoro ad alto contenuto semantico:</strong> Questo approccio eccelle nel reperimento di testi lunghi, nella corrispondenza semantica multi-sfaccettata, nell'allineamento documento-sommario, nelle query con più parole chiave e in altri scenari di intelligenza artificiale che richiedono un ragionamento semantico flessibile e a grana fine.</p></li>
+<li><p><strong>Costruito appositamente per carichi di lavoro ad alto contenuto semantico:</strong> Questo approccio eccelle nel reperimento di testi lunghi, nella corrispondenza semantica multi-sfaccettata, nell'allineamento documento-sommario, nelle interrogazioni con più parole chiave e in altri scenari di intelligenza artificiale che richiedono un ragionamento semantico flessibile e a grana fine.</p></li>
 </ul>
 <h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">Quando usare un array di strutture<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -190,7 +190,7 @@ origin: >-
 <li><p><strong>Allinea l'archiviazione alle entità del mondo reale</strong>, in modo che ogni riga del database corrisponda perfettamente a un elemento reale, come un articolo, un prodotto o un video.</p></li>
 <li><p><strong>Se combinato con funzioni di aggregazione come MAX_SIM</strong>, consente di recuperare un vero e proprio multivettore a livello di entità direttamente dal database, eliminando la deduplicazione, il raggruppamento o il reranking nel livello applicativo.</p></li>
 </ul>
-<p>Grazie a queste proprietà, Array of Structs è una soluzione naturale ogni volta che una <em>singola entità logica è rappresentata da più vettori</em>. Esempi comuni sono gli articoli suddivisi in paragrafi, i documenti scomposti in token embeddings o i prodotti rappresentati da più immagini. Se i risultati della ricerca soffrono di duplicazioni, frammenti sparsi o la stessa entità appare più volte nei primi risultati, Array of Structs risolve questi problemi a livello di archiviazione e recupero, non attraverso patch a posteriori nel codice dell'applicazione.</p>
+<p>Grazie a queste proprietà, Array of Structs è una soluzione naturale ogni volta che una <em>singola entità logica è rappresentata da più vettori</em>. Esempi comuni sono gli articoli suddivisi in paragrafi, i documenti scomposti in token embeddings o i prodotti rappresentati da più immagini. Se i risultati di una ricerca soffrono di duplicazioni, frammenti sparsi o la stessa entità appare più volte tra i primi risultati, Array of Structs risolve questi problemi a livello di archiviazione e recupero, non attraverso patch a posteriori nel codice dell'applicazione.</p>
 <p>Questo pattern è particolarmente potente per i moderni sistemi di intelligenza artificiale che si basano sul <strong>recupero di più vettori</strong>. Ad esempio:</p>
 <ul>
 <li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> rappresenta un singolo documento come 100-500 token embeddings per una corrispondenza semantica a grana fine in domini come il testo legale e la ricerca accademica.</p></li>
@@ -352,7 +352,7 @@ results = client.search(
 <tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">Una pagina PDF → molte incorporazioni di patch</td><td style="text-align:center">256-1024</td><td style="text-align:center">Rapporti finanziari, contratti, fatture, ricerca di documenti multimodale</td></tr>
 </tbody>
 </table>
-<p>Questi modelli <em>richiedono</em> uno schema di archiviazione multivettoriale. Prima di Array of Structs, gli sviluppatori dovevano dividere i vettori tra le righe e ricucire manualmente i risultati. Con Milvus, queste entità possono ora essere memorizzate e recuperate in modo nativo, con MAX_SIM che gestisce automaticamente il punteggio a livello di documento.</p>
+<p>Questi modelli <em>richiedono</em> uno schema di archiviazione multivettore. Prima di Array of Structs, gli sviluppatori dovevano dividere i vettori tra le righe e ricucire manualmente i risultati. Con Milvus, queste entità possono essere memorizzate e recuperate in modo nativo, con MAX_SIM che gestisce automaticamente il punteggio a livello di documento.</p>
 <h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Ricerca di documenti basata su immagini ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> è un potente modello per il recupero cross-modale di PDF. Invece di basarsi sul testo, elabora ogni pagina PDF come un'immagine e la suddivide in un massimo di 1024 patch visive, generando un embedding per ogni patch. In uno schema di database tradizionale, ciò richiederebbe la memorizzazione di una singola pagina come centinaia o migliaia di righe separate, rendendo impossibile per il database capire che queste righe appartengono alla stessa pagina. Di conseguenza, la ricerca a livello di entità diventa frammentata e poco pratica.</p>
 <p>Array of Structs risolve questo problema in modo pulito, memorizzando tutti i patch embeddings <em>all'interno di un singolo campo</em>, consentendo a Milvus di trattare la pagina come un'entità coesa e multivettoriale.</p>
 <p>La ricerca tradizionale nei PDF dipende spesso dall'<strong>OCR</strong>, che converte le immagini delle pagine in testo. Questo funziona per il testo semplice, ma perde grafici, tabelle, layout e altri elementi visivi. ColPali evita questa limitazione lavorando direttamente sulle immagini delle pagine, conservando tutte le informazioni visive e testuali. Il compromesso è la scala: ogni pagina contiene ora centinaia di vettori, il che richiede un database in grado di aggregare molte incorporazioni in un'unica entità, esattamente ciò che fornisce Array of Structs + MAX_SIM.</p>

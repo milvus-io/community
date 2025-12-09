@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs и MAX_SIM в Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -137,7 +137,7 @@ origin: >-
 <p>Лучшими совпадениями для doc_2 являются:</p>
 <ul>
 <li><p>"машинное обучение" → "LLM" (0.9)</p></li>
-<li><p>"новичок" → "руководство" (0,6)</p></li>
+<li><p>"начинающий" → "руководство" (0,6)</p></li>
 <li><p>"курс" → "руководство" (0,8)</p></li>
 </ul>
 <p>Их суммирование дает документу doc_2 <strong>оценку MAX_SIM, равную 2,3</strong>.</p>

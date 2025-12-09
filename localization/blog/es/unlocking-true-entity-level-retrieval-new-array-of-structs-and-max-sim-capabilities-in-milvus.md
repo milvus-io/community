@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs y MAX_SIM en Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -30,7 +30,7 @@ origin: >-
 <li><p><strong>Recuperación al estilo ColBERT / ColPali:</strong> Los documentos se expanden en cientos de incrustaciones a nivel de token o parche, y los resultados se obtienen en trozos minúsculos que todavía hay que combinar.</p></li>
 </ul>
 <p>Todos estos problemas tienen su origen en la <em>misma carencia arquitectónica</em>: la mayoría de las bases de datos vectoriales tratan cada incrustación como una fila aislada, mientras que las aplicaciones reales operan con entidades de nivel superior: documentos, productos, vídeos, elementos, escenas. Como resultado, los equipos de ingeniería se ven obligados a reconstruir las entidades manualmente utilizando la lógica de deduplicación, agrupación, bucketing y reordenación. Funciona, pero es frágil, lento y sobrecarga su capa de aplicación con lógica que nunca debería haber vivido allí en primer lugar.</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> cierra esta brecha con una nueva característica: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> con el tipo métrico <strong>MAX_SIM</strong>. Juntos, permiten que todas las incrustaciones de una única entidad se almacenen en un único registro y permiten a Milvus puntuar y devolver la entidad de forma holística. Se acabaron los conjuntos de resultados duplicados. Se acabaron los complejos postprocesamientos como el reordenamiento y la fusión.</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> cierra esta brecha con una nueva característica: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> con el tipo métrico <strong>MAX_SIM</strong>. Juntos, permiten que todas las incrustaciones de una única entidad se almacenen en un único registro y permiten a Milvus puntuar y devolver la entidad de forma holística. Se acabaron los conjuntos de resultados duplicados. Se acabaron los complejos postprocesamientos, como el reordenamiento y la fusión.</p>
 <p>En este artículo, veremos cómo funcionan Array of Structs y MAX_SIM, y lo demostraremos con dos ejemplos reales: La recuperación de documentos de Wikipedia y la búsqueda de documentos basada en imágenes de ColPali.</p>
 <h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">¿Qué es una matriz de estructuras?<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -522,7 +522,7 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>La mayoría de las bases de datos vectoriales almacenan cada fragmento como un registro independiente, lo que significa que las aplicaciones tienen que volver a ensamblar esos fragmentos cuando necesitan un documento, producto o página completos. Una matriz de Structs cambia esta situación. Al combinar escalares, vectores, texto y otros campos en un único objeto estructurado, permite que una fila de la base de datos represente una entidad completa de extremo a extremo.</p>
-<p>El resultado es sencillo pero potente: el trabajo que solía requerir una compleja agrupación, deduplicación y reordenación en la capa de aplicación se convierte en una capacidad nativa de la base de datos. Y ahí es exactamente hacia donde se dirige el futuro de las bases de datos vectoriales: estructuras más ricas, recuperación más inteligente y canalizaciones más sencillas.</p>
+<p>El resultado es sencillo pero potente: el trabajo que solía requerir agrupaciones complejas, deduplicación y reordenación en la capa de aplicación se convierte en una capacidad nativa de la base de datos. Y ahí es exactamente hacia donde se dirige el futuro de las bases de datos vectoriales: estructuras más ricas, recuperación más inteligente y canalizaciones más sencillas.</p>
 <p>Para obtener más información sobre Array of Structs y MAX_SIM, consulte la documentación siguiente:</p>
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Documentación de Milvus</a></li>

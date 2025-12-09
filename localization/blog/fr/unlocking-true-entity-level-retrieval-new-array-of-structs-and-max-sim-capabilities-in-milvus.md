@@ -6,7 +6,7 @@ title: >-
   tableaux de structures et de MAX_SIM dans Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -342,7 +342,7 @@ results = client.search(
 </tbody>
 </table>
 <p><strong>Charges de travail des modèles d'IA (principaux cas d'utilisation multisectoriels)</strong></p>
-<p>Les tableaux de structures deviennent encore plus critiques dans les modèles d'IA modernes qui produisent intentionnellement de grands ensembles de vecteurs par entité pour un raisonnement sémantique fin.</p>
+<p>Les tableaux de structures deviennent encore plus critiques dans les modèles d'IA modernes qui produisent intentionnellement de grands ensembles de vecteurs par entité pour un raisonnement sémantique à grain fin.</p>
 <table>
 <thead>
 <tr><th style="text-align:center"><strong>Modèle</strong></th><th style="text-align:center"><strong>Modèle de données</strong></th><th style="text-align:center"><strong>Vecteurs par entité</strong></th><th style="text-align:center"><strong>Application</strong></th></tr>
@@ -505,7 +505,7 @@ results = client.search(
 <span class="hljs-number">3.</span> <span class="hljs-title class_">Product</span>_Manual.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">1</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.5231</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Ici, les résultats renvoient directement des pages PDF complètes. Nous n'avons pas à nous préoccuper de l'intégration des 1024 patchs sous-jacents, car Milvus se charge automatiquement de l'agrégation.</p>
+<p>Ici, les résultats renvoient directement des pages PDF complètes. Nous n'avons pas à nous préoccuper de l'intégration des 1024 patchs sous-jacents - Milvus se charge automatiquement de l'agrégation.</p>
 <h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -522,7 +522,7 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>La plupart des bases de données vectorielles stockent chaque fragment comme un enregistrement indépendant, ce qui signifie que les applications doivent réassembler ces fragments lorsqu'elles ont besoin d'un document, d'un produit ou d'une page complète. Un tableau de Structs change la donne. En combinant des scalaires, des vecteurs, du texte et d'autres champs en un seul objet structuré, il permet à une ligne de base de données de représenter une entité complète de bout en bout.</p>
-<p>Le résultat est simple mais puissant : le travail qui nécessitait auparavant des opérations complexes de regroupement, de déduplication et de reclassement dans la couche applicative devient une capacité native de la base de données. Et c'est exactement vers cela que se dirige l'avenir des bases de données vectorielles : des structures plus riches, une récupération plus intelligente et des pipelines plus simples.</p>
+<p>Le résultat est simple mais puissant : le travail qui nécessitait auparavant des opérations complexes de regroupement, de déduplication et de reclassement dans la couche applicative devient une fonctionnalité native de la base de données. Et c'est exactement vers cela que se dirige l'avenir des bases de données vectorielles : des structures plus riches, une récupération plus intelligente et des pipelines plus simples.</p>
 <p>Pour plus d'informations sur les tableaux de structures et MAX_SIM, consultez la documentation ci-dessous :</p>
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Milvus Documentation</a></li>

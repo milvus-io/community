@@ -6,7 +6,7 @@ title: >-
   in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -47,7 +47,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In Milvus ermöglicht ein <strong>Array of Structs</strong> Feld, dass ein einzelner Datensatz eine <em>geordnete Liste</em> von Struct-Elementen enthält, die alle dem gleichen vordefinierten Schema folgen. Eine Struct kann sowohl mehrere Vektoren als auch skalare Felder, Strings oder andere unterstützte Typen enthalten. Mit anderen Worten: Sie können damit alle Teile, die zu einer Entität gehören - Absatzeinbettungen, Bildansichten, Token-Vektoren, Metadaten - direkt in einer Zeile bündeln.</p>
+    </button></h2><p>In Milvus ermöglicht ein <strong>Array of Structs</strong> Feld, dass ein einzelner Datensatz eine <em>geordnete Liste</em> von Struct-Elementen enthält, die alle dem gleichen vordefinierten Schema folgen. Eine Struct kann sowohl mehrere Vektoren als auch skalare Felder, Strings oder andere unterstützte Typen enthalten. Mit anderen Worten, Sie können damit alle Teile, die zu einer Entität gehören - Absatzeinbettungen, Bildansichten, Token-Vektoren, Metadaten - direkt in einer Zeile bündeln.</p>
 <p>Hier ist ein Beispiel für eine Entität aus einer Sammlung, die ein Array of Structs-Feld enthält.</p>
 <pre><code translate="no">{
     <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">0</span>,
@@ -145,7 +145,7 @@ origin: >-
 <p>Anhand dieses Beispiels können wir drei Hauptmerkmale von MAX_SIM hervorheben:</p>
 <ul>
 <li><p><strong>Semantisch zuerst, nicht schlagwortbasiert:</strong> MAX_SIM vergleicht Einbettungen, nicht Textliterale. Obwohl <em>"maschinelles Lernen"</em> und <em>"tiefe neuronale Netze"</em> null überlappende Wörter haben, beträgt ihre semantische Ähnlichkeit 0,9. Das macht MAX_SIM robust gegenüber Synonymen, Paraphrasen, konzeptionellen Überschneidungen und modernen, einbettungsreichen Arbeitslasten.</p></li>
-<li><p><strong>Unempfindlich gegenüber Länge und Reihenfolge:</strong> MAX_SIM setzt nicht voraus, dass die Anfrage und das Dokument die gleiche Anzahl von Vektoren haben (z.B. doc_1 hat 4 Vektoren, doc_2 hat 5, und beide funktionieren gut). Auch die Reihenfolge der Vektoren spielt keine Rolle - wenn "Anfänger" am Anfang der Abfrage und "Einführung" am Ende des Dokuments steht, hat das keine Auswirkungen auf die Bewertung.</p></li>
+<li><p><strong>Unempfindlich gegenüber Länge und Reihenfolge:</strong> MAX_SIM verlangt nicht, dass die Anfrage und das Dokument die gleiche Anzahl von Vektoren haben (z.B. doc_1 hat 4 Vektoren, doc_2 hat 5, und beide funktionieren gut). Auch die Reihenfolge der Vektoren spielt keine Rolle - wenn "Anfänger" am Anfang der Abfrage und "Einführung" am Ende des Dokuments steht, hat das keine Auswirkungen auf die Bewertung.</p></li>
 <li><p><strong>Jeder Abfragevektor ist wichtig:</strong> MAX_SIM nimmt die beste Übereinstimmung für jeden Abfragevektor und summiert diese besten Ergebnisse. Dadurch wird verhindert, dass nicht übereinstimmende Vektoren das Ergebnis verzerren, und es wird sichergestellt, dass jedes wichtige Abfrage-Token zum Endergebnis beiträgt. Zum Beispiel reduziert die minderwertige Übereinstimmung für "Anfänger" in doc_2 direkt die Gesamtpunktzahl.</p></li>
 </ul>
 <h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">Warum MAX_SIM + Array of Structs in der Vektordatenbank wichtig sind<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">

@@ -4,7 +4,7 @@ id: >-
 title: 開啟真正的實體層級擷取：Milvus 中新的結構陣列與 MAX_SIM 功能
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -16,7 +16,7 @@ desc: 了解 Milvus 中的 Array of Structs 和 MAX_SIM 如何實現多向量資
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>如果您在向量資料庫之上建立了人工智慧應用程式，您可能會遇到相同的痛點：資料庫擷取的是個別區塊的嵌入，但您的應用程式關心的<strong>是<em>實體</em>。</strong>這種錯配讓整個擷取工作流程變得複雜。</p>
+<p>如果您已經在向量資料庫之上建立了人工智能應用程式，您可能已經遇到了相同的痛點：資料庫擷取的是個別區塊的嵌入，但您的應用程式關心的<strong>是<em>實體</em>。</strong>這種錯配讓整個擷取工作流程變得複雜。</p>
 <p>您可能已經看到這種情況一再發生：</p>
 <ul>
 <li><p><strong>RAG 知識庫：</strong>文章被分成段落嵌入，因此搜尋引擎會返回分散的片段，而不是完整的文件。</p></li>
@@ -24,7 +24,7 @@ origin: >-
 <li><p><strong>視訊平台：</strong>影片被分割成片段嵌入，但搜尋結果顯示的是同一影片的片段，而不是單一的整合項目。</p></li>
 <li><p><strong>ColBERT / ColPali 式檢索：</strong>文件會擴展成數百個標記或片段層級的嵌入，而您的結果則是仍需合併的小片段。</p></li>
 </ul>
-<p>所有這些問題都源自於<em>相同的架構差異</em>：大多數向量資料庫將每個內嵌視為獨立的一行，而實際應用程式則是在更高層級的實體上運作 - 文件、產品、視訊、項目、場景。因此，工程團隊不得不使用重複資料刪除、群組、分類和重排邏輯來手動重建實體。這種方法雖然有效，但卻脆弱、緩慢，而且會為應用程式層增添原本就不該存在的邏輯。</p>
+<p>所有這些問題都源自於<em>相同的架構差異</em>：大多數向量資料庫都將每個嵌入視為獨立的一行，而實際應用程式是在更高層級的實體上運作 - 文件、產品、視訊、項目、場景。因此，工程團隊不得不使用重複資料刪除、群組、分類和重排邏輯來手動重建實體。這種方法雖然有效，但卻脆弱、緩慢，而且會為應用程式層增添原本就不該存在的邏輯。</p>
 <p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4 藉由</a>一項新功能縮小了這個差距：具有<strong>MAX_SIM</strong>公制類型的<a href="https://milvus.io/docs/array-of-structs.md"><strong>結構陣列</strong></a>。兩者結合起來，可讓單一實體的所有嵌入都儲存在單一記錄中，並使 Milvus 能夠整體地評分和回傳實體。不再有重複的結果集。不再有複雜的後期處理，例如重排和合併。</p>
 <p>在這篇文章中，我們將介紹 Array of Structs 和 MAX_SIM 如何運作，並透過兩個實例進行示範：維基百科文件檢索和 ColPali 圖像文件搜尋。</p>
 <h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">什麼是結構陣列？<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
@@ -139,7 +139,7 @@ origin: >-
 <h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">步驟 3: 比較分數</h3><p>由於<strong>2.4 &gt; 2.3</strong>，<strong>doc_1 的排名比 doc_2 高</strong>，這是直覺的道理，因為 doc_1 比較接近機器學習入門指南。</p>
 <p>從這個例子，我們可以突顯 MAX_SIM 的三個核心特徵：</p>
 <ul>
-<li><p><strong>語義第一，而非基於關鍵字：</strong>MAX_SIM 比較的是嵌入，而不是文字。即使<em>「機器學習」</em>與<em>「深度神經網路」</em>的重疊字彙為零，它們的語意相似度仍高達 0.9。這使得 MAX_SIM 對於同義詞、意譯、概念重疊以及現代嵌入式豐富的工作負載都很穩健。</p></li>
+<li><p><strong>語義第一，而非基於關鍵字：</strong>MAX_SIM 比較的是嵌入，而不是文字。即使<em>「機器學習」</em>和<em>「深度神經網路」</em>的重疊字彙為零，它們的語意相似度仍高達 0.9。這使得 MAX_SIM 對於同義詞、意譯、概念重疊以及現代嵌入式豐富的工作負載都很穩健。</p></li>
 <li><p><strong>對長度和順序不敏感：</strong>MAX_SIM 不要求查詢和文檔有相同數量的向量 (例如，doc_1 有 4 個向量，而 doc_2 有 5 個，兩者都可以正常運作)。它也忽略向量的順序 - 「初學者」 出現在查詢的較前位置，而 「介紹」 出現在文件的較後位置，對得分沒有影響。</p></li>
 <li><p><strong>每個查詢向量都很重要：</strong>MAX_SIM 取每個查詢向量的最佳匹配值，並將這些最佳分數相加。這可以防止未匹配的向量歪曲結果，並確保每個重要的查詢符記都會對最終得分有所貢獻。例如，doc_2 中 "beginner" 的低品質匹配直接降低了它的總分。</p></li>
 </ul>
@@ -183,7 +183,7 @@ origin: >-
 <ul>
 <li><p><strong>它可以將異質資料（向量</strong>、標量、字串、元資料）<strong>捆綁</strong>成單一結構物件。</p></li>
 <li><p><strong>它將儲存與現實世界的實體對齊</strong>，因此資料庫的每一行都能清楚地對應到文章、產品或視訊等實際項目。</p></li>
-<li><p><strong>當與 MAX_SIM 等聚合功能結合時</strong>，它可以直接從資料庫中進行真正的實體層級多向量檢索，而不需要在應用程式層中進行重複資料刪除、分組或重新排序。</p></li>
+<li><p><strong>當與 MAX_SIM 等聚合功能結合時</strong>，它可以直接從資料庫中進行真正的實體層級多向量擷取，而不需要在應用程式層中進行重複資料刪除、分組或重新排序。</p></li>
 </ul>
 <p>由於這些特性，<em>當單一邏輯實體由多向量來表示</em>時，Array of Structs 就是一個天然的選擇。常見的例子包括分割成段落的文章、分解成標記嵌入的文件，或是由多張圖片代表的產品。如果您的搜尋結果出現重複點擊、分散的片段，或是同一個實體多次出現在頂端結果中，Array of Structs 可在儲存和檢索層解決這些問題，而不是在應用程式碼中進行事後修補。</p>
 <p>對於依賴<strong>多向量擷取的</strong>現代 AI 系統來說，這種模式尤其強大。 舉例來說，ColBERT 將單一文件表示為一個<strong>矢量</strong>：</p>
@@ -193,7 +193,7 @@ origin: >-
 </ul>
 <p>Structs 陣列可讓 Milvus 將所有這些向量儲存在單一實體之下，並有效且原生地計算集合相似度 (例如 MAX_SIM)。為了更清楚說明這一點，這裡有兩個具體的範例。</p>
 <h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">範例 1：電子商務產品搜尋</h3><p>以前，具有多張圖片的產品會儲存在平面模式中，每行只有一張圖片。一個產品有正面、側面和角度拍攝，會產生三行。搜尋結果通常會傳回同一產品的多張圖像，需要手動重複刪除和重新排序。</p>
-<p>有了 Structs 陣列，每個產品都變成<strong>一列</strong>。所有的圖片嵌入和元資料 (角度、is_primary 等) 都以結構陣列的形式存在於<code translate="no">images</code> 欄位中。Milvus 瞭解它們屬於同一個產品，並返回產品整體，而非其個別圖片。</p>
+<p>有了 Structs 陣列，每個產品都變成<strong>一列</strong>。所有的圖片嵌入與元資料 (角度、is_primary 等) 都以結構陣列的形式存在於<code translate="no">images</code> 欄位中。Milvus 瞭解它們屬於同一個產品，並返回產品整體，而非其個別圖片。</p>
 <h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">範例 2：知識庫或維基百科搜尋</h3><p>以前，一篇 Wikipedia 文章會分成<em>N 個</em>段落行。搜尋結果會傳回分散的段落，迫使系統將它們分組，並猜測它們屬於哪篇文章。</p>
 <p>有了 Structs 陣列，整篇文章就變成了<strong>一行</strong>。所有段落及其嵌入都會歸類到段落欄位，資料庫會傳回完整的文章，而不是零碎的片段。</p>
 <h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">實作教學：使用結構陣列進行文件層級檢索<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
@@ -323,7 +323,7 @@ results = client.search(
 <tr><td style="text-align:center"><strong>應用程式邏輯</strong></td><td style="text-align:center">需要<strong>分組、重複資料刪除和重新排序</strong>（複雜）</td><td style="text-align:center">不需要後處理 - 實體層級的結果直接來自 Milvus</td></tr>
 </tbody>
 </table>
-<p>在維基百科的範例中，我們只展示了最簡單的情況：將段落向量結合為統一的文件表示。但 Array of Structs 的真正優勢在於它可以通用於<strong>任何</strong>多向量資料模型 - 無論是傳統的檢索管道或是現代的人工智能架構。</p>
+<p>在維基百科的範例中，我們只展示了最簡單的情況：將段落向量結合為統一的文件表示。但 Array of Structs 的真正優勢在於它可以通用於<strong>任何</strong>多向量資料模型 - 包括傳統的檢索管道和現代的人工智能架構。</p>
 <p><strong>傳統多向量檢索情境</strong></p>
 <p>許多成熟的搜尋和推薦系統自然會在具有多個相關向量的實體上運作。Array of Structs 可輕鬆對應這些使用個案：</p>
 <table>
@@ -337,7 +337,7 @@ results = client.search(
 </tbody>
 </table>
 <p><strong>AI 模型工作量（關鍵多向量使用個案）</strong></p>
-<p>在現代的 AI 模型中，Structs 的 Array 變得更加重要，這些模型會刻意為每個實體產生大量向量集，以進行細粒度的語意推理。</p>
+<p>在現代的 AI 模型中，Structs 的陣列變得更加重要，這些模型會刻意為每個實體產生大量向量集，以進行細粒度的語意推理。</p>
 <table>
 <thead>
 <tr><th style="text-align:center"><strong>模型</strong></th><th style="text-align:center"><strong>資料模型</strong></th><th style="text-align:center"><strong>每個實體的向量</strong></th><th style="text-align:center"><strong>應用程式</strong></th></tr>
@@ -348,9 +348,9 @@ results = client.search(
 </tbody>
 </table>
 <p>這些模式<em>需要</em>多向量的儲存模式。在使用 Array of Structs 之前，開發人員必須跨行分割向量，並將結果手動拼接回來。有了 Milvus，這些實體現在可以原生儲存與擷取，並由 MAX_SIM 自動處理文件層級的評分。</p>
-<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2.ColPali 影像式文件搜尋</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a>是一個強大的跨模式 PDF 檢索模型。它不依賴文字，而是將每個 PDF 頁面視為一張圖片來處理，並將其切分成多達 1024 個可視化斑塊，每個斑塊產生一個嵌入。在傳統的資料庫模式下，這需要將單一頁面儲存為數百或數千個獨立的行，使得資料庫無法理解這些行屬於同一頁面。因此，實體層級的搜尋變得支離破碎且不切實際。</p>
+<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2.ColPali 影像式文件搜尋</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a>是一個強大的跨模式 PDF 檢索模型。它不依賴文字，而是將每個 PDF 頁面視為一張圖片來處理，並將其切割成多達 1024 個可視化斑塊，每個斑塊產生一個嵌入。在傳統的資料庫模式下，這需要將單一頁面儲存為數百或數千個獨立的行，使得資料庫無法理解這些行屬於同一頁面。因此，實體層級的搜尋變得支離破碎且不切實際。</p>
 <p>Array of Structs 將所有的 patch embeddings 儲存在<em>單一欄位中</em>，讓 Milvus 可以將頁面視為一個有凝聚力的多向量實體，乾淨地解決了這個問題。</p>
-<p>傳統的 PDF 搜尋通常依賴<strong>OCR</strong>，將頁面影像轉換成文字。這種方式適用於純文字，但會遺失圖表、表格、排版和其他視覺提示。ColPali 可直接處理頁面影像，保留所有視覺和文字資訊，從而避免此限制。取捨是規模：現在每一頁面都包含數百個向量，這就需要一個資料庫能夠將許多嵌入聚合為一個實體 - 這正是 Array of Structs + MAX_SIM 所能提供的。</p>
+<p>傳統的 PDF 搜尋通常依賴<strong>OCR</strong>，將頁面影像轉換成文字。這種方式適用於純文字，但會遺失圖表、表格、排版和其他視覺提示。ColPali 可直接處理頁面影像，保留所有視覺與文字資訊，從而避免此限制。取捨是規模：現在每一頁面都包含數百個向量，這就需要一個資料庫能夠將許多嵌入聚合為一個實體 - 這正是 Array of Structs + MAX_SIM 所能提供的。</p>
 <p>最常見的使用案例是<strong>Vision RAG</strong>，其中每個 PDF 頁面成為一個多向量實體。典型的情境包括</p>
 <ul>
 <li><p><strong>財務報告：</strong>在數以千計的 PDF 中搜尋包含特定圖表的頁面。</p></li>
@@ -374,7 +374,7 @@ results = client.search(
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>步驟 1：準備資料</strong>有關 ColPali 如何將圖像或文字轉換為多向量表示法的詳細資訊，您可以參考說明文件。</p>
+<p><strong>步驟 1：準備資料</strong>有關 ColPali 如何將圖像或文字轉換為多向量表示的詳細資訊，您可以參考說明文件。</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 
@@ -517,7 +517,7 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>大多數向量資料庫將每個片段儲存為獨立的記錄，這表示應用程式在需要完整的文件、產品或頁面時，必須重新組合這些片段。Structs 陣列改變了這種情況。透過將標量、向量、文字和其他欄位結合為單一結構化物件，它允許一條資料庫行代表一個完整的端對端實體。</p>
-<p>結果是簡單但強大的：過去需要在應用程式層中進行複雜的群組、遞減和重新排序的工作，現在都變成原生資料庫的功能。這正是向量資料庫的未來發展方向 - 更豐富的結構、更聰明的擷取和更簡單的管道。</p>
+<p>其結果是簡單但強大的：以往需要在應用程式層中進行複雜的群組、遞減和重新排序的工作，現在都變成了本機資料庫功能。這正是向量資料庫的未來發展方向 - 更豐富的結構、更聰明的擷取和更簡單的管道。</p>
 <p>如需更多關於 Array of Structs 和 MAX_SIM 的資訊，請參閱下列說明文件：</p>
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">結構陣列 | Milvus 文件</a></li>

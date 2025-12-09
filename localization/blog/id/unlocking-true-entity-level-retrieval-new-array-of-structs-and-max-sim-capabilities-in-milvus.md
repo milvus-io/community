@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs dan MAX_SIM yang baru di Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_struct_cover_457c5a104b.png
+cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>Jika Anda telah membangun aplikasi AI di atas basis data vektor, Anda mungkin mengalami masalah yang sama: basis data mengambil penyematan potongan-potongan individu, tetapi aplikasi Anda peduli dengan <strong><em>entitas</em></strong>. Ketidaksesuaian ini membuat seluruh alur kerja pengambilan menjadi rumit.</p>
+<p>Jika Anda telah membuat aplikasi AI di atas basis data vektor, Anda mungkin mengalami masalah yang sama: basis data mengambil penyematan potongan-potongan individu, tetapi aplikasi Anda peduli dengan <strong><em>entitas</em></strong>. Ketidaksesuaian ini membuat seluruh alur kerja pengambilan menjadi rumit.</p>
 <p>Anda mungkin telah melihat hal ini berulang kali:</p>
 <ul>
 <li><p><strong>Basis pengetahuan RAG:</strong> Artikel dipotong-potong menjadi beberapa paragraf, sehingga mesin pencari mengembalikan potongan-potongan yang tersebar, bukan dokumen lengkap.</p></li>
@@ -47,7 +47,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam Milvus, sebuah bidang <strong>Array of Structs</strong> memungkinkan sebuah record tunggal untuk berisi <em>daftar</em> elemen Struct yang <em>terurut</em>, masing-masing mengikuti skema yang sudah ditentukan sebelumnya. Sebuah Struct dapat menampung beberapa vektor serta bidang skalar, string, atau jenis lain yang didukung. Dengan kata lain, struktur ini memungkinkan Anda menggabungkan semua bagian yang termasuk dalam satu entitas-penyematan paragraf, tampilan gambar, vektor token, metadata-langsung di dalam satu baris.</p>
+    </button></h2><p>Dalam Milvus, sebuah bidang <strong>Array of Structs</strong> memungkinkan sebuah catatan tunggal untuk berisi <em>daftar</em> elemen Struct yang <em>terurut</em>, masing-masing mengikuti skema yang sudah ditentukan sebelumnya. Sebuah Struct dapat menampung beberapa vektor serta bidang skalar, string, atau jenis lain yang didukung. Dengan kata lain, struktur ini memungkinkan Anda menggabungkan semua bagian yang termasuk dalam satu entitas-penyematan paragraf, tampilan gambar, vektor token, metadata-langsung di dalam satu baris.</p>
 <p>Berikut ini contoh entitas dari koleksi yang berisi bidang Array of Structs.</p>
 <pre><code translate="no">{
     <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">0</span>,
@@ -223,7 +223,7 @@ origin: >-
 <li><p>Memuat dan melakukan praproses data paragraf Wikipedia</p></li>
 <li><p>Mengelompokkan semua paragraf yang termasuk dalam artikel yang sama ke dalam Array of Structs</p></li>
 <li><p>Masukkan dokumen terstruktur ini ke dalam Milvus</p></li>
-<li><p>Menjalankan kueri MAX_SIM untuk mengambil artikel lengkap - dengan bersih, tanpa melakukan deduping atau pengurutan ulang</p></li>
+<li><p>Jalankan kueri MAX_SIM untuk mengambil artikel lengkap - dengan bersih, tanpa deduping atau perangkingan ulang</p></li>
 </ol>
 <p>Pada akhir tutorial ini, Anda akan memiliki pipeline yang berfungsi di mana Milvus menangani pengambilan tingkat entitas secara langsung, persis seperti yang diharapkan pengguna.</p>
 <p><strong>Model Data:</strong></p>
