@@ -108,7 +108,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher viene eseguito interamente sulla vostra macchina, raccoglie informazioni da tutte le fonti, sintetizza le intuizioni e fornisce citazioni, fasi di ragionamento e tracciabilità, caratteristiche essenziali per una vera ricerca, non solo per riassunti di superficie. Nessuna scatola nera. Nessun vincolo con il fornitore. Solo analisi trasparenti e riproducibili di cui sviluppatori e ricercatori possono fidarsi.</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Assistenti di codifica che capiscono davvero il vostro codice</h3><p>La maggior parte degli strumenti di codifica per l'intelligenza artificiale si comportano ancora come delle pipeline di grep di fantasia: veloci, superficiali, che bruciano token e non tengono conto della struttura reale del progetto. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> **** cambia le cose. Costruito come plugin per MCP, offre finalmente agli assistenti di codifica ciò che mancava loro: una vera comprensione semantica della vostra base di codice.</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Assistenti di codifica che capiscono davvero il vostro codice</h3><p>La maggior parte degli strumenti di codifica dell'intelligenza artificiale si comportano ancora come pipeline di grep di fantasia: veloci, superficiali, bruciano token e non tengono conto della struttura reale del progetto. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> cambia questa situazione. Costruito come plugin MCP, offre finalmente agli assistenti di codifica ciò che mancava loro: una vera comprensione semantica della vostra base di codice.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
@@ -132,8 +132,13 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Oggi, più di 10.000 team aziendali utilizzano Milvus in produzione, da startup in rapida crescita ad alcune delle aziende tecnologiche più affermate al mondo e alle Fortune 500. I team di NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch e Microsoft si affidano a Milvus per alimentare i sistemi di intelligenza artificiale che operano ogni minuto di ogni giorno. I loro carichi di lavoro comprendono ricerca, raccomandazioni, pipeline agenziali, recupero multimodale e altre applicazioni che spingono l'infrastruttura vettoriale ai suoi limiti.</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+    </button></h2><p>Oggi, più di 10.000 team aziendali utilizzano Milvus in produzione, da startup in rapida crescita ad alcune delle aziende tecnologiche più affermate del mondo e delle Fortune 500. I team di NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch e Microsoft si affidano a Milvus per alimentare i sistemi di intelligenza artificiale che operano ogni minuto di ogni giorno. I loro carichi di lavoro comprendono ricerca, raccomandazioni, pipeline agenziali, recupero multimodale e altre applicazioni che spingono l'infrastruttura vettoriale ai suoi limiti.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>Ma ciò che conta di più non è solo <em>chi</em> usa Milvus, ma anche <em>cosa ci costruisce</em>. In tutti i settori, Milvus è alla base di sistemi che modellano il modo in cui le aziende operano, innovano e competono:</p>
 <ul>
 <li><p><strong>Copiloti AI e assistenti aziendali</strong> che migliorano l'assistenza ai clienti, i flussi di lavoro di vendita e il processo decisionale interno grazie all'accesso istantaneo a miliardi di embeddings.</p></li>
@@ -183,7 +188,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>Elastico ed efficiente in termini di costi:</strong> I prezzi pay-as-you-go, l'autoscaling serverless e la gestione intelligente delle risorse spesso riducono i costi del 50% o più rispetto alle implementazioni autogestite.</p></li>
 <li><p><strong>Affidabilità di livello enterprise:</strong> SLA di uptime del 99,95%, ridondanza multi-AZ, conformità SOC 2 Type II, ISO 27001 e GDPR. Supporto completo per RBAC, BYOC, registri di audit e crittografia.</p></li>
 <li><p><strong>Distribuzione cloud-agnostica:</strong> Esecuzione su AWS, Azure, GCP, Alibaba Cloud o Tencent Cloud: nessun vendor lock-in, prestazioni uniformi ovunque.</p></li>
-<li><p><strong>Query in linguaggio naturale:</strong> Il supporto integrato per i server MCP consente di interrogare i dati in modo conversazionale, invece di creare manualmente le chiamate API.</p></li>
+<li><p><strong>Query in linguaggio naturale:</strong> Il supporto integrato per il server MCP consente di interrogare i dati in modo conversazionale, invece di creare manualmente le chiamate API.</p></li>
 <li><p><strong>Migrazione senza sforzo</strong>: Passate da Milvus, Pinecone, Qdrant, Weaviate, Elasticsearch o PostgreSQL utilizzando gli strumenti di migrazione integrati: non sono necessarie riscritture dello schema o tempi di inattività.</p></li>
 <li><p><strong>100% compatibile con Milvus open-source.</strong> Nessun fork proprietario. Nessun lock-in. Solo Milvus, reso più semplice.</p></li>
 </ul>

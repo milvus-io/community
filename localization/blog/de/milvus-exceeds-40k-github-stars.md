@@ -19,9 +19,9 @@ desc: >-
   Open-Source-Vektordatenbank
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
-<p>Im Juni 2025 erreichte Milvus 35.000 GitHub-Sterne. Nur wenige Monate später haben wir <a href="https://github.com/milvus-io/milvus">40.000 überschritten - ein Beweis</a>nicht nur für die Dynamik, sondern auch für eine globale Community, die die Zukunft der vektoriellen und multimodalen Suche vorantreibt.</p>
+<p>Im Juni 2025 erreichte Milvus 35.000 GitHub-Sterne. Nur wenige Monate später haben wir <a href="https://github.com/milvus-io/milvus">40.000 überschritten - ein Beweis</a>nicht nur für die Dynamik, sondern auch für eine globale Gemeinschaft, die die Zukunft der vektoriellen und multimodalen Suche vorantreibt.</p>
 <p>Wir sind zutiefst dankbar. An alle, die Milvus mit Sternen versehen, geforkt, Probleme gemeldet, über eine API gestritten, einen Benchmark geteilt oder etwas Unglaubliches mit Milvus gebaut haben: <strong>Danke, und ihr seid der Grund, warum dieses Projekt so schnell voranschreitet</strong>. Jeder Stern steht für mehr als nur einen gedrückten Knopf - er spiegelt jemanden wider, der Milvus als Antrieb für seine Arbeit gewählt hat, jemanden, der an das glaubt, was wir aufbauen, jemanden, der unsere Vision einer offenen, zugänglichen und leistungsstarken KI-Infrastruktur teilt.</p>
-<p>Während wir also feiern, blicken wir auch in die Zukunft - auf die Funktionen, die Sie fordern, auf die Architekturen, die KI heute verlangt, und auf eine Welt, in der multimodales, semantisches Verstehen der Standard in jeder Anwendung ist.</p>
+<p>Während wir also feiern, blicken wir auch in die Zukunft - auf die Funktionen, die Sie fordern, auf die Architekturen, die KI jetzt verlangt, und auf eine Welt, in der multimodales, semantisches Verstehen der Standard in jeder Anwendung ist.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/star_history_3dfceda40f.png" alt="" class="doc-image" id="" />
@@ -49,7 +49,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <ul>
 <li><p><strong>2019:</strong> Wir haben Milvus 0.10 veröffentlicht. Das bedeutete, dass wir alle unsere Ecken und Kanten offenlegen mussten - die Hacks, die TODOs, die Teile, auf die wir noch nicht stolz waren. Aber die Community war da. Die Entwickler meldeten Probleme, die wir nie gefunden hätten, schlugen Funktionen vor, die wir uns nicht vorgestellt hatten, und stellten Annahmen in Frage, die Milvus letztendlich stärker machten.</p></li>
 <li><p><strong>2020-2021:</strong> Wir traten der <a href="https://lfaidata.foundation/projects/milvus/">LF AI &amp; Data Foundation</a> bei, lieferten Milvus 1.0 aus, schlossen die LF AI &amp; Data ab und gewannen die <a href="https://big-ann-benchmarks.com/neurips21.html">BigANN-Milliarden-Vektorsuchherausforderung</a> - ein früher Beweis dafür, dass unsere Architektur mit realem Umfang umgehen konnte.</p></li>
-<li><p><strong>2022:</strong> Unternehmensanwender brauchten Kubernetes-native Skalierung, Elastizität und eine echte Trennung von Speicher und Rechenleistung. Wir standen vor einer schwierigen Entscheidung: das alte System zu flicken oder alles neu zu bauen. Wir wählten den schwierigeren Weg. <strong>Milvus 2.0 war eine grundlegende Neuerfindung</strong>, die eine vollständig entkoppelte Cloud-native Architektur einführte, die Milvus in eine produktionsfähige Plattform für geschäftskritische KI-Workloads verwandelte.</p></li>
+<li><p><strong>2022:</strong> Unternehmensanwender brauchten Kubernetes-native Skalierung, Elastizität und eine echte Trennung von Speicher und Rechenleistung. Wir standen vor einer schwierigen Entscheidung: das alte System flicken oder alles neu aufbauen. Wir wählten den schwierigeren Weg. <strong>Milvus 2.0 war eine grundlegende Neuerfindung</strong>, die eine vollständig entkoppelte Cloud-native Architektur einführte, die Milvus in eine produktionsfähige Plattform für geschäftskritische KI-Workloads verwandelte.</p></li>
 <li><p><strong>2024-2025:</strong> <a href="https://zilliz.com/">Zilliz</a> (das Team hinter Milvus) wurde <a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">von Forrester</a> zum <a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">Marktführer</a> ernannt, überschritt die 30.000-Sterne-Marke und liegt nun bei über 40.000. Es wurde zum Rückgrat für multimodale Suche, RAG-Systeme, agentenbasierte Workflows und Retrieval in Milliardenhöhe in verschiedenen Branchen - Bildung, Finanzen, kreative Produktion, wissenschaftliche Forschung und mehr.</p></li>
 </ul>
 <p>Dieser Meilenstein wurde nicht durch einen Hype erreicht, sondern dadurch, dass Entwickler Milvus für reale Arbeitslasten in der Produktion einsetzen und uns bei jedem Schritt zur Verbesserung anspornen.</p>
@@ -108,14 +108,14 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher läuft vollständig auf Ihrem Computer, sammelt Informationen aus verschiedenen Quellen, fasst Erkenntnisse zusammen und stellt Zitate, Argumentationsschritte und Rückverfolgbarkeit bereit - Funktionen, die für eine echte Recherche unerlässlich sind, nicht nur oberflächliche Zusammenfassungen. Keine Blackboxen. Keine Bindung an einen bestimmten Anbieter. Nur transparente, reproduzierbare Analysen, denen Entwickler und Forscher vertrauen können.</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Kodierassistenten, die Ihren Code wirklich verstehen</h3><p>Die meisten KI-Codierwerkzeuge verhalten sich immer noch wie ausgefallene Grep-Pipelines - schnell, oberflächlich, Token-verbrennend und ohne Kenntnis der tatsächlichen Projektstruktur. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> **** ändert das. Es wurde als MCP-Plugin entwickelt und gibt Programmierassistenten endlich das, was sie bisher vermisst haben: ein echtes semantisches Verständnis Ihrer Codebasis.</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Kodierassistenten, die Ihren Code wirklich verstehen</h3><p>Die meisten KI-Codierwerkzeuge verhalten sich immer noch wie ausgefallene Grep-Pipelines - schnell, oberflächlich, Token-verbrennend und ohne Kenntnis der tatsächlichen Projektstruktur. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> ändert das. Claude Context wurde als MCP-Plugin entwickelt und bietet Programmierassistenten endlich das, was sie bisher vermisst haben: ein echtes semantisches Verständnis Ihrer Codebasis.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Claude Context baut einen vektorgestützten semantischen Index über Ihr Projekt auf, der es Agenten ermöglicht, die richtigen Module zu finden, Beziehungen zwischen Dateien zu verfolgen, Absichten auf Architekturebene zu verstehen und Fragen mit Relevanz statt mit Vermutungen zu beantworten. Es reduziert die Verschwendung von Token, erhöht die Präzision und - was am wichtigsten ist - lässt Programmierassistenten sich so verhalten, als würden sie Ihre Software wirklich verstehen, anstatt so zu tun, als ob.</p>
+<p>Claude Context erstellt einen vektorgestützten semantischen Index für Ihr Projekt, mit dem Agenten die richtigen Module finden, Beziehungen zwischen Dateien verfolgen, die Absicht auf Architekturebene verstehen und Fragen mit Relevanz statt mit Vermutungen beantworten können. Es reduziert die Verschwendung von Token, erhöht die Präzision und - was am wichtigsten ist - lässt Programmierassistenten sich so verhalten, als würden sie Ihre Software wirklich verstehen, anstatt so zu tun, als ob.</p>
 <p>Beide Tools sind vollständig quelloffen. Weil die KI-Infrastruktur allen gehören sollte - und weil die Zukunft der KI nicht hinter proprietären Mauern eingeschlossen sein sollte.</p>
 <h2 id="Trusted-by-10000+-Teams-in-Production" class="common-anchor-header">Mehr als 10.000 Teams in der Produktion vertrauen darauf<button data-href="#Trusted-by-10000+-Teams-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -133,7 +133,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>Heute setzen mehr als 10.000 Unternehmensteams Milvus in der Produktion ein - von schnell wachsenden Startups bis hin zu einigen der weltweit etabliertesten Technologie- und Fortune 500-Unternehmen. Teams bei NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch und innerhalb von Microsoft verlassen sich auf Milvus, um KI-Systeme zu betreiben, die jede Minute eines jeden Tages funktionieren. Ihre Workloads umfassen Suche, Empfehlungen, agentenbasierte Pipelines, multimodales Retrieval und andere Anwendungen, die die Vektorinfrastruktur an ihre Grenzen bringen.</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>Aber was am meisten zählt, ist nicht nur, <em>wer</em> Milvus nutzt, sondern auch, <em>was sie damit aufbauen</em>. Milvus ist branchenübergreifend für Systeme zuständig, die die Art und Weise beeinflussen, wie Unternehmen arbeiten, innovieren und konkurrieren:</p>
 <ul>
 <li><p><strong>KI-Kopiloten und Unternehmensassistenten</strong>, die den Kundensupport, die Vertriebsabläufe und die interne Entscheidungsfindung mit sofortigem Zugriff auf Milliarden von Einbettungen verbessern.</p></li>
@@ -230,7 +235,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <p>Jeder Pull-Request, jeder Bug-Report, jede in unseren Foren beantwortete Frage, jedes erstellte Tutorial - diese Beiträge machen Milvus für alle besser.</p>
 <p>Dieser Meilenstein gehört Ihnen allen:</p>
 <ul>
-<li><p><strong>Unseren Mitwirkenden</strong>: Wir danken Ihnen für Ihren Code, Ihre Ideen und Ihre Zeit. Sie machen Milvus jeden einzelnen Tag besser.</p></li>
+<li><p><strong>Unseren Mitwirkenden</strong>: Vielen Dank für Ihren Code, Ihre Ideen und Ihre Zeit. Sie machen Milvus jeden einzelnen Tag besser.</p></li>
 <li><p><strong>An unsere Benutzer</strong>: Vielen Dank, dass Sie Milvus Ihre Arbeitslasten anvertrauen und uns Ihre Erfahrungen mitteilen, sowohl die guten als auch die schwierigen. Ihr Feedback treibt unsere Roadmap voran.</p></li>
 <li><p><strong>An unsere Community-Unterstützer</strong>: Vielen Dank für die Beantwortung von Fragen, das Schreiben von Tutorials, die Erstellung von Inhalten und die Unterstützung von Neulingen beim Einstieg. Sie machen unsere Community zu einer einladenden und integrativen Gemeinschaft.</p></li>
 <li><p><strong>An unsere Partner und Integratoren</strong>: Vielen Dank, dass Sie mit uns zusammenarbeiten und Milvus zu einem erstklassigen Bürger im Ökosystem der KI-Entwicklung machen.</p></li>

@@ -104,7 +104,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher 完全在您的機器上執行，收集各個來源的資訊、綜合洞察力，並提供引文、推理步驟和可追蹤性 - 這些都是真正研究的必要功能，而不僅僅是表面層級的摘要。沒有黑盒。沒有廠商鎖定。只有開發人員和研究人員可以信任的透明、可重複的分析。</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context：真正瞭解您程式碼的編碼助手</h3><p>大多數 AI 編碼工具的行為仍像花俏的 grep 管道 - 快速、膚淺、燒代幣，而且對真正的專案結構視若無睹。<a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>**** 改變了這種情況。Claude Context 是一個 MCP 外掛程式，它終於讓編碼助理得到他們一直缺少的東西：對您的程式碼庫有真正的語意理解。</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context：真正瞭解您程式碼的編碼助手</h3><p>大多數 AI 編碼工具的行為仍像花俏的 grep 管道 - 快速、膚淺、燒代幣，而且對真正的專案結構視若無睹。<a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>改變了這一切。Claude Context 是一個 MCP 外掛程式，它終於讓編碼助理擁有了他們一直缺少的東西：對您的程式碼庫有真正的語意理解。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
@@ -129,7 +129,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>今天，超過 10,000 個企業團隊在生產中運行 Milvus，從快速成長的新創公司到全球最知名的科技公司和財富 500 強企業。NVIDIA、Salesforce、eBay、Airbnb、IBM、AT&amp;T、LINE、Shopee、Roblox、Bosch，以及微軟內部的團隊都仰賴 Milvus 為人工智慧系統提供動力，讓系統每分每秒都能運作。他們的工作負載涵蓋搜尋、推薦、代理管道、多模態檢索，以及將向量基礎架構推至極限的其他應用程式。</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>但最重要的不僅僅是<em>誰在</em>使用 Milvus，而是<em>他們在用</em> Milvus<em>建構什麼</em>。在各行各業中，Milvus 是塑造企業營運、創新和競爭方式的系統：</p>
 <ul>
 <li><p>透過即時存取數十億個嵌入式資料，改善客戶支援、銷售工作流程和內部決策的<strong>AI 協同駕駛員和企業助理</strong>。</p></li>
@@ -203,7 +208,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
     </button></h2><p>身為向量資料庫的導入團隊，我們對企業資料如何改變有著前瞻性的觀察。從前整齊地排列在 TB 級結構化表格中的資料，正快速地轉換成 PB 級，甚至很快就會轉換成 TB 級的多模態物件。文字、影像、音訊、視訊、時序串流、多感測器日誌......這些都是現代人工智能系統所依賴的資料集。</p>
 <p>矢量資料庫是專為非結構化及多模態資料所建立的，但它們並不總是最經濟或架構上最合理的選擇 - 尤其是當絕大多數的資料都是冷冰冰的時候。大型模型的訓練語料庫、自動駕駛感知日誌和機器人資料集通常不需要毫秒級的延遲或高並發。透過即時向量資料庫執行如此大量的資料，對於不需要這種效能層級的管道來說，會變得昂貴、作業繁重、過於複雜。</p>
 <p>這個現實促使我們提出下一個重要計畫：<strong>Milvus Lake - 一個</strong>專為 AI 規模資料所設計的語意驅動、索引先行的多模態湖泊。Milvus Lake 統一各種模式的語意訊號，包括向量、元資料、標籤、LLM 產生的描述，以及結構化欄位，並將這些訊號組織成以實際業務實體為中心的<strong>Semantic Wide Tables</strong>。以前以原始、分散檔案形式存在於物件儲存、湖泊倉庫和模型管道中的資料，現在則變成了統一、可查詢的語義層。龐大的多模式企業體會變成可管理、可檢索、可重複使用的資產，並在整個企業中具有一致的意義。</p>
-<p>Milvus Lake 是建構在簡潔的<strong>清單 + 資料 + 索引</strong>架構上，將索引視為基礎，而非事後考慮。這樣就能發揮「先擷取、後處理」的工作流程，並針對萬億規模的冷資料進行最佳化，提供可預測的延遲、大幅降低的儲存成本，以及更高的作業穩定性。分層儲存方法 - 用於熱路徑的 NVMe/SSD，以及用於深層歸檔的物件儲存，搭配高效壓縮和懶人索引，可在保持語意保真度的同時，牢牢控制基礎架構的開銷。</p>
+<p>Milvus Lake 是建構在簡潔的<strong>清單 + 資料 + 索引</strong>架構上，將索引視為基礎，而非事後考慮。這樣就能發揮「先擷取、後處理」的工作流程，並針對萬億規模的冷資料進行最佳化，提供可預測的延遲、大幅降低的儲存成本，以及更高的作業穩定性。分層儲存方法 - 用於熱路徑的 NVMe/SSD，以及用於深層歸檔的物件儲存，搭配高效壓縮和懶人索引，可保留語意的真實性，同時牢牢控制基礎架構的開銷。</p>
 <p>Milvus Lake 還能無縫插入現代資料生態系統，與 Paimon、Iceberg、Hudi、Spark、Ray 及其他大型資料引擎和格式整合。團隊可以在一個地方執行批次處理、近即時管道、語義檢索、特徵工程和訓練資料準備，而無需重新平台現有的工作流程。無論您是要建立基礎模型庫、管理自動駕駛模擬資料庫、訓練機器人代理，或是為大型檢索系統提供動力，Milvus Lake 都能為 AI 時代提供可擴充、具成本效益的語意湖泊。</p>
 <p><strong>Milvus Lake 正在積極開發中。</strong>對早期存取有興趣或想瞭解更多？<a href="https://zilliz.com/contact"> </a></p>
 <p><a href="https://zilliz.com/contact-sales"><strong>請聯絡我們 →。</strong></a></p>

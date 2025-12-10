@@ -17,7 +17,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
 <p>2025년 6월, Milvus는 35,000개의 GitHub 스타를 달성했습니다. 불과 몇 달 만에 <a href="https://github.com/milvus-io/milvus">40,000개를 넘어섰으니</a>, 그 추진력뿐만 아니라 벡터 및 멀티모달 검색의 미래를 계속 발전시키는 글로벌 커뮤니티가 있다는 <a href="https://github.com/milvus-io/milvus">증거이기도</a>합니다.</p>
 <p>깊은 감사를 드립니다. 별표, 포크, 이슈 제기, API에 대한 논쟁, 벤치마크 공유, Milvus와 함께 놀라운 무언가를 만들어주신 모든 분들께 <strong>감사드립니다. 여러분 덕분에 이 프로젝트가 지금처럼 빠르게 발전할 수</strong> 있었습니다. 모든 별은 단순히 버튼을 누른 것 이상의 의미를 지니며, 자신의 작업을 지원하기 위해 Milvus를 선택한 사람, 우리가 만들고 있는 것을 믿는 사람, 개방적이고 접근 가능한 고성능 AI 인프라에 대한 비전을 공유하는 사람을 의미합니다.</p>
-<p>따라서 우리는 이를 축하하는 동시에 여러분이 요청하는 기능, 현재 AI가 요구하는 아키텍처, 그리고 모든 애플리케이션에서 멀티모달 시맨틱 이해가 기본이 되는 세상을 향해 나아가고 있습니다.</p>
+<p>따라서 우리는 이를 축하하는 동시에 여러분이 요청하는 기능, 현재 AI가 요구하는 아키텍처, 모든 애플리케이션에서 멀티모달 시맨틱 이해가 기본이 되는 세상으로 나아가고자 합니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/star_history_3dfceda40f.png" alt="" class="doc-image" id="" />
@@ -66,7 +66,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
       </svg>
     </button></h2><p>2025년은 Milvus가 새로운 단계로 도약한 해입니다. 벡터 검색은 의미론적 이해에 탁월하지만, <strong>개발자들은 여전히</strong> 제품 ID, 일련 번호, 정확한 구문, 법률 용어 등에 대한 <strong>정확한 키워드 매칭을 필요로</strong> 합니다. 기본 전체 텍스트 검색이 없으면, 팀들은 Elasticsearch/OpenSearch 클러스터를 유지 관리하거나 자체 사용자 정의 솔루션을 함께 사용해야 했기 때문에 운영 오버헤드와 파편화가 두 배로 증가했습니다.</p>
 <p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md"><strong>Milvus 2.5가</strong></a> <strong>이를 바꿔놓았습니다</strong>. 전체 텍스트 검색과 벡터 검색을 단일 엔진으로 결합한 <strong>진정한 네이티브 하이브리드 검색을</strong> 도입했습니다. 개발자들은 처음으로 별도의 시스템이나 파이프라인 동기화 없이 어휘 쿼리, 시맨틱 쿼리, 메타데이터 필터를 함께 실행할 수 있게 되었습니다. 또한 메타데이터 필터링, 표현식 구문 분석 및 실행 효율성을 업그레이드하여 실제 프로덕션 부하에서도 하이브리드 쿼리가 자연스럽고 빠르게 느껴지도록 했습니다.</p>
-<p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6은</strong></a> <strong>이러한 모멘텀을 더욱 강화하여</strong> 대규모로 실행하는 사용자들로부터 가장 자주 듣는 두 가지 문제, 즉 <strong><em>비용과</em> <em>성능을</em></strong> 목표로 삼았습니다 <strong>.</strong> 이번 릴리즈는 보다 예측 가능한 쿼리 경로, 더 빠른 인덱싱, 획기적으로 낮아진 메모리 사용량, 훨씬 더 효율적인 스토리지 등 아키텍처를 대폭 개선했습니다. 많은 팀에서 애플리케이션 코드를 단 한 줄도 변경하지 않고도 즉각적인 이점을 얻었다고 보고했습니다.</p>
+<p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6은</strong></a> <strong>이러한 모멘텀을 더욱 강화하여</strong> 대규모로 실행하는 사용자들로부터 가장 자주 듣는 두 가지 문제, 즉 <strong><em>비용과</em> <em>성능을</em></strong> 목표로 삼았습니다 <strong>.</strong> 이번 릴리즈는 보다 예측 가능한 쿼리 경로, 더 빠른 인덱싱, 획기적으로 낮아진 메모리 사용량, 훨씬 더 효율적인 스토리지 등 아키텍처를 크게 개선했습니다. 많은 팀에서 애플리케이션 코드를 단 한 줄도 변경하지 않고도 즉각적인 이점을 얻었다고 보고했습니다.</p>
 <p>다음은 Milvus 2.6의 몇 가지 주요 특징입니다:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/tiered-storage-overview.md"><strong>계층형 스토리지를</strong></a> 통해 팀이 비용과 성능의 균형을 더욱 지능적으로 조정하여 스토리지 비용을 최대 50%까지 절감할 수 있습니다.</p></li>
@@ -104,7 +104,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher는 전적으로 사용자의 컴퓨터에서 실행되며, 여러 소스에서 정보를 수집하고, 인사이트를 종합하며, 인용, 추론 단계, 추적성 등 표면적인 요약뿐 아니라 실제 연구에 필수적인 기능을 제공합니다. 블랙박스 없음. 특정 벤더에 종속되지 않습니다. 개발자와 연구자가 신뢰할 수 있는 투명하고 재현 가능한 분석만 제공합니다.</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">클로드 컨텍스트: 코드를 실제로 이해하는 코딩 어시스턴트</h3><p>대부분의 AI 코딩 도구는 여전히 빠르고, 얕고, 토큰을 태우고, 실제 프로젝트 구조를 파악하지 못하는 멋진 그렙 파이프라인처럼 작동합니다. <a href="https://github.com/zilliztech/claude-context"><strong>클로드 컨텍스트</strong></a> (****)는 이를 바꿔줍니다. MCP 플러그인으로 구축된 이 도구는 코딩 어시스턴트가 놓치고 있던 기능, 즉 코드베이스에 대한 진정한 의미론적 이해를 마침내 제공합니다.</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">클로드 컨텍스트: 코드를 실제로 이해하는 코딩 어시스턴트</h3><p>대부분의 AI 코딩 도구는 여전히 빠르고, 얕고, 토큰을 태우며, 실제 프로젝트 구조를 파악하지 못하는 멋진 그렙 파이프라인처럼 작동합니다. <a href="https://github.com/zilliztech/claude-context"><strong>클로드 컨텍스트는</strong></a> 이를 바꿔줍니다. MCP 플러그인으로 구축된 이 도구는 코딩 어시스턴트가 놓치고 있던 기능, 즉 코드베이스에 대한 진정한 의미론적 이해를 마침내 제공합니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
@@ -129,7 +129,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>현재 빠르게 성장하는 스타트업부터 세계에서 가장 유명한 기술 기업 및 포춘 500대 기업에 이르기까지 10,000개 이상의 엔터프라이즈 팀이 Milvus를 프로덕션 환경에서 운영하고 있습니다. NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch, 그리고 Microsoft 내부의 팀들은 매일 매 순간 작동하는 AI 시스템을 구동하기 위해 Milvus를 사용하고 있습니다. 이들 기업의 워크로드는 검색, 추천, 에이전트 파이프라인, 멀티모달 검색, 그리고 벡터 인프라의 한계를 뛰어넘는 기타 애플리케이션에 걸쳐 있습니다.</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>그러나 가장 중요한 것은 Milvus를 사용하는 <em>사람이 누구</em> 인지가 아니라 Milvus를 <em>통해 무엇을 구축하는지가</em> 중요합니다. Milvus는 산업 전반에 걸쳐 비즈니스 운영, 혁신, 경쟁 방식을 형성하는 시스템 뒤에 자리 잡고 있습니다:</p>
 <ul>
 <li><p>수십억 개의 임베딩에 즉시 액세스하여 고객 지원, 영업 워크플로, 내부 의사 결정을 개선하는<strong>AI 코파일럿 및 엔터프라이즈 어시스턴트입니다</strong>.</p></li>
@@ -169,7 +174,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>Milvus는 무료이며 강력하고 실전 테스트를 거쳤습니다. 하지만 분산 시스템이기도 하며, 분산 시스템을 잘 실행하는 것은 실제 엔지니어링 작업입니다. 인덱스 튜닝, 메모리 관리, 클러스터 안정성, 확장, 통합 가시성... 이러한 작업에는 많은 팀에게 여유가 없는 시간과 전문 지식이 필요합니다. 개발자들은 대규모로 관리할 때 필연적으로 수반되는 운영 부담 없이 Milvus의 강력한 기능을 사용하기를 원했습니다.</p>
-<p>이러한 현실을 통해 우리는 Milvus가 AI 애플리케이션의 핵심 인프라가 되려면 운영이 쉬워야 한다는 간단한 결론에 도달했습니다. 그래서 오픈소스 프로젝트의 동일한 팀이 만들고 유지 관리하는 완전 관리형 Milvus 서비스인 <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud를</strong></a> 구축했습니다.</p>
+<p>이러한 현실을 통해 우리는 Milvus가 AI 애플리케이션의 핵심 인프라가 되려면 운영이 쉬워야 한다는 간단한 결론에 도달했습니다. 그래서 오픈소스 프로젝트의 개발팀과 동일한 팀이 만들고 유지 관리하는 완전 관리형 Milvus 서비스인 <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud를</strong></a> 구축했습니다.</p>
 <p>Zilliz Cloud는 개발자가 이미 알고 있고 신뢰하는 Milvus를 제공하지만 클러스터 프로비저닝, 성능 문제 해결, 업그레이드 계획, 스토리지 및 컴퓨팅 튜닝에 대한 걱정 없이 사용할 수 있습니다. 또한 자체 관리 환경에서는 실행할 수 없는 최적화가 포함되어 있어 더욱 빠르고 안정적입니다. 상용 등급의 자체 최적화 벡터 엔진인 <a href="https://zilliz.com/blog/cardinal-most-performant-vector-search-engine">Cardinal은</a> <strong>오픈 소스 Milvus보다</strong> 10배 높은 성능을 제공합니다.</p>
 <p><strong>질리즈 클라우드의 차별화 요소</strong></p>
 <ul>

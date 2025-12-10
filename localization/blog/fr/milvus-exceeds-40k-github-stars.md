@@ -21,7 +21,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
 <p>En juin 2025, Milvus a atteint 35 000 étoiles GitHub. Quelques mois plus tard, nous avons <a href="https://github.com/milvus-io/milvus">franchi le cap des 40 000 étoiles, preuve</a>non seulement de notre dynamisme, mais aussi de l'existence d'une communauté mondiale qui ne cesse de faire avancer l'avenir de la recherche vectorielle et multimodale.</p>
 <p>Nous sommes profondément reconnaissants. À tous ceux qui ont marqué d'un astérisque ou d'une fourche, déposé des problèmes, débattu d'une API, partagé un benchmark ou construit quelque chose d'incroyable avec Milvus : <strong>merci, et c'est grâce à vous que ce projet avance aussi vite</strong>. Chaque étoile représente plus qu'un bouton pressé - elle reflète quelqu'un qui choisit Milvus pour alimenter son travail, quelqu'un qui croit en ce que nous construisons, quelqu'un qui partage notre vision d'une infrastructure d'IA ouverte, accessible et performante.</p>
-<p>Alors que nous célébrons, nous nous tournons également vers l'avenir, vers les fonctionnalités que vous demandez, vers les architectures que l'IA exige désormais et vers un monde où la compréhension multimodale et sémantique est la valeur par défaut de toutes les applications.</p>
+<p>Alors que nous célébrons, nous regardons également vers l'avenir - vers les fonctionnalités que vous demandez, vers les architectures que l'IA exige désormais, et vers un monde où la compréhension multimodale et sémantique est la valeur par défaut de toutes les applications.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/star_history_3dfceda40f.png" alt="" class="doc-image" id="" />
@@ -78,7 +78,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><a href="https://milvus.io/docs/full-text-search.md"><strong>Un moteur plein texte repensé</strong></a> avec une implémentation BM25 significativement plus rapide - jusqu'à 4× plus rapide qu'Elasticsearch dans nos benchmarks.</p></li>
 <li><p><strong>Un nouveau Path Index</strong> pour les <a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">métadonnées structurées en JSON</a>, permettant un filtrage jusqu'à 100 fois plus rapide sur les documents complexes.</p></li>
 <li><p><a href="https://milvus.io/docs/aisaq.md"><strong>AiSAQ</strong>:</a> compression à l'échelle du milliard avec une réduction de stockage de 3200× et un rappel important.</p></li>
-<li><p><a href="https://milvus.io/docs/geometry-operators.md"><strong>Recherche</strong></a><strong>sémantique +</strong> <a href="https://milvus.io/docs/geometry-operators.md"><strong>géospatiale</strong></a> <strong>avec R-Tree :</strong> Combinaison de l'<em>emplacement des objets</em> et de <em>leur signification</em> pour des résultats plus pertinents.</p></li>
+<li><p><a href="https://milvus.io/docs/geometry-operators.md"><strong>Recherche</strong></a><strong>sémantique +</strong> <a href="https://milvus.io/docs/geometry-operators.md"><strong>géospatiale</strong></a> <strong>avec R-Tree :</strong> Combinaison de l'<em>emplacement des choses</em> et de <em>leur signification</em> pour des résultats plus pertinents.</p></li>
 <li><p><a href="https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA"><strong>CAGRA+ Vamana</strong></a><strong>:</strong> Réduction des coûts de déploiement grâce à un mode CAGRA hybride qui s'appuie sur le GPU, mais dont les requêtes sont effectuées par l'unité centrale.</p></li>
 <li><p><strong>Un</strong><strong>flux de travail</strong><strong>"</strong><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md"><strong>données entrantes, données sortantes</strong></a><strong>"</strong> qui simplifie l'ingestion et la récupération des données intégrées, en particulier pour les pipelines multimodaux.</p></li>
 <li><p><strong>La prise en charge d'un maximum de 100 000 collections</strong> dans un seul cluster - une étape importante vers une véritable multi-tenance à l'échelle.</p></li>
@@ -108,7 +108,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher fonctionne entièrement sur votre machine, rassemblant des informations à travers les sources, synthétisant les idées et fournissant des citations, des étapes de raisonnement et une traçabilité - des caractéristiques essentielles pour une véritable recherche, et pas seulement des résumés de surface. Pas de boîte noire. Pas de verrouillage des fournisseurs. Juste des analyses transparentes et reproductibles auxquelles les développeurs et les chercheurs peuvent faire confiance.</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context : Des assistants de codage qui comprennent réellement votre code</h3><p>La plupart des outils de codage de l'IA se comportent encore comme des pipelines grep fantaisistes - rapides, superficiels, brûleurs de jetons et inconscients de la structure réelle du projet. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> **** change cela. Construit comme un plugin MCP, il donne enfin aux assistants de codage ce qui leur manquait : une véritable compréhension sémantique de votre base de code.</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context : Des assistants de codage qui comprennent réellement votre code</h3><p>La plupart des outils de codage d'IA se comportent encore comme des pipelines grep fantaisistes - rapides, superficiels, brûleurs de jetons et inconscients de la structure réelle du projet. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> change cela. Construit comme un plugin MCP, il donne enfin aux assistants de codage ce qui leur manquait : une véritable compréhension sémantique de votre base de code.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
@@ -133,7 +133,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>Aujourd'hui, plus de 10 000 équipes d'entreprise utilisent Milvus en production, qu'il s'agisse de startups à croissance rapide ou de sociétés technologiques parmi les plus établies au monde et figurant au classement Fortune 500. Les équipes de NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch et Microsoft s'appuient sur Milvus pour alimenter les systèmes d'IA qui fonctionnent à chaque minute de la journée. Leurs charges de travail couvrent la recherche, les recommandations, les pipelines agentiques, la recherche multimodale et d'autres applications qui poussent l'infrastructure vectorielle à ses limites.</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>Mais ce qui importe le plus, ce n'est pas seulement <em>qui</em> utilise Milvus, c'est <em>ce qu'ils construisent avec</em>. Dans tous les secteurs, Milvus se trouve derrière des systèmes qui façonnent la façon dont les entreprises fonctionnent, innovent et sont compétitives :</p>
 <ul>
 <li><p>Les<strong>copilotes d'IA et les assistants d'entreprise</strong> qui améliorent le support client, les flux de travail de vente et la prise de décision interne grâce à un accès instantané à des milliards d'éléments intégrés.</p></li>
@@ -150,7 +155,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p>Des flux de travail 5 à 10 fois plus rapides que les solutions alternatives</p></li>
 <li><p>Des architectures multi-locataires prenant en charge des centaines de milliers de collections</p></li>
 </ul>
-<p>Les équipes choisissent Milvus pour une raison simple : <strong>il répond aux besoins en termes de vitesse, de fiabilité, de rentabilité et de capacité à évoluer vers des milliards sans avoir à démanteler leur architecture tous les deux ou trois mois.</strong> La confiance que ces équipes nous accordent est la raison pour laquelle nous continuons à renforcer Milvus pour la décennie d'IA à venir.</p>
+<p>Les équipes choisissent Milvus pour une raison simple : <strong>il est à la hauteur des attentes en termes de vitesse, de fiabilité, de rentabilité et de capacité à évoluer vers des milliards d'utilisateurs sans avoir à démanteler leur architecture tous les deux ou trois mois.</strong> La confiance que ces équipes nous accordent est la raison pour laquelle nous continuons à renforcer Milvus pour la décennie d'IA à venir.</p>
 <p><a href="https://zilliz.com/share-your-story">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/share_your_story_3c44c533ed.png" alt="" class="doc-image" id="" />
@@ -173,7 +178,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>Milvus est gratuit, puissant et éprouvé. Mais c'est aussi un système distribué, et le bon fonctionnement des systèmes distribués est un véritable travail d'ingénierie. Le réglage de l'index, la gestion de la mémoire, la stabilité du cluster, la mise à l'échelle, l'observabilité... ces tâches nécessitent du temps et une expertise que de nombreuses équipes n'ont tout simplement pas à leur disposition. Les développeurs voulaient la puissance de Milvus, mais sans le poids opérationnel qui vient inévitablement avec la gestion à l'échelle.</p>
-<p>Cette réalité nous a conduits à une conclusion simple : si Milvus devait devenir une infrastructure de base pour les applications d'IA, nous devions la rendre facile à exploiter. C'est pourquoi nous avons créé <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>, le service Milvus entièrement géré, créé et maintenu par la même équipe que celle qui est à l'origine du projet open-source.</p>
+<p>Cette réalité nous a conduits à une conclusion simple : si Milvus devait devenir l'infrastructure de base des applications d'IA, nous devions la rendre facile à exploiter. C'est pourquoi nous avons créé <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>, le service Milvus entièrement géré, créé et maintenu par la même équipe que celle qui est à l'origine du projet open-source.</p>
 <p>Zilliz Cloud offre aux développeurs le Milvus qu'ils connaissent déjà et auquel ils font confiance, mais sans avoir à provisionner des clusters, à lutter contre les problèmes de performances, à planifier des mises à niveau ou à s'inquiéter du réglage du stockage et de l'informatique. Et comme il inclut des optimisations impossibles à exécuter dans des environnements autogérés, il est encore plus rapide et plus fiable. <a href="https://zilliz.com/blog/cardinal-most-performant-vector-search-engine">Cardinal</a>, notre moteur vectoriel auto-optimisant de qualité commerciale, offre des performances 10 fois supérieures à celles du <strong>logiciel libre Milvus</strong>.</p>
 <p><strong>Ce qui distingue Zilliz Cloud</strong></p>
 <ul>

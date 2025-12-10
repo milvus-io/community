@@ -15,13 +15,13 @@ meta_title: >
   7 Years, 2 Major Rebuilds, 40K+ GitHub Stars: The Rise of Milvus as the
   Leading Open-Source Vector Database
 desc: >-
-  Celebración de los 7 años de viaje de Milvus para convertirse en la principal
-  base de datos vectorial de código abierto del mundo
+  Celebración de los 7 años de Milvus para convertirse en la principal base de
+  datos vectorial de código abierto del mundo
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
 <p>En junio de 2025, Milvus alcanzó las 35.000 estrellas de GitHub. Tan solo unos meses después, hemos <a href="https://github.com/milvus-io/milvus">superado las 40.000, prueba</a>no solo del impulso, sino también de una comunidad global que sigue impulsando el futuro de la búsqueda vectorial y multimodal.</p>
 <p>Estamos profundamente agradecidos. A todos los que han puesto una estrella, han hecho un fork, han presentado problemas, han discutido sobre una API, han compartido un benchmark o han construido algo increíble con Milvus: <strong>Gracias, y ustedes son la razón por la que este proyecto se mueve tan rápido como lo hace</strong>. Cada estrella representa algo más que un botón pulsado: refleja a alguien que elige Milvus para impulsar su trabajo, alguien que cree en lo que estamos construyendo, alguien que comparte nuestra visión de una infraestructura de IA abierta, accesible y de alto rendimiento.</p>
-<p>Así que, mientras celebramos, también miramos hacia el futuro: hacia las funciones que nos piden, hacia las arquitecturas que la IA exige ahora y hacia un mundo en el que la comprensión multimodal y semántica sea la norma en todas las aplicaciones.</p>
+<p>Así que, mientras celebramos, también miramos hacia el futuro: hacia las funciones que usted nos pide, hacia las arquitecturas que la IA exige ahora y hacia un mundo en el que la comprensión multimodal y semántica sea la norma en todas las aplicaciones.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/star_history_3dfceda40f.png" alt="" class="doc-image" id="" />
@@ -100,7 +100,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>En 2025, no sólo mejoramos Milvus, sino que creamos herramientas que fortalecen todo el ecosistema de desarrolladores de IA. Nuestro objetivo no era perseguir tendencias, sino ofrecer a los desarrolladores el tipo de herramientas abiertas, potentes y transparentes que siempre hemos deseado que existieran.</p>
-<h3 id="DeepSearcher-Research-Without-Cloud-Lock-In" class="common-anchor-header">DeepSearcher: Investigación sin bloqueo en la nube</h3><p>Deep Researcher de OpenAI demostró lo que pueden hacer los agentes de razonamiento profundo. Pero es cerrado, caro y está bloqueado detrás de APIs en la nube. <a href="https://github.com/zilliztech/deep-searcher"><strong>DeepSearcher</strong></a> <strong>es nuestra respuesta.</strong> Es un motor de investigación profunda local y de código abierto diseñado para cualquiera que desee investigaciones estructuradas sin sacrificar el control o la privacidad.</p>
+<h3 id="DeepSearcher-Research-Without-Cloud-Lock-In" class="common-anchor-header">DeepSearcher: Investigación sin bloqueo en la nube</h3><p>Deep Researcher de OpenAI demostró lo que pueden hacer los agentes de razonamiento profundo. Pero es cerrado, caro y está bloqueado detrás de las API de la nube. <a href="https://github.com/zilliztech/deep-searcher"><strong>DeepSearcher</strong></a> <strong>es nuestra respuesta.</strong> Es un motor de investigación profunda local y de código abierto diseñado para cualquiera que desee investigaciones estructuradas sin sacrificar el control o la privacidad.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepsearcher_5cf6a4f0dc.png" alt="" class="doc-image" id="" />
@@ -108,14 +108,14 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher se ejecuta completamente en su máquina, recopilando información a través de fuentes, sintetizando ideas y proporcionando citas, pasos de razonamiento y trazabilidad, características esenciales para la investigación real, no sólo resúmenes superficiales. Sin cajas negras. Sin dependencia de un proveedor. Sólo análisis transparentes y reproducibles en los que puedan confiar desarrolladores e investigadores.</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Asistentes de codificación que realmente entienden su código</h3><p>La mayoría de las herramientas de codificación de inteligencia artificial se comportan todavía como extravagantes grep pipelines: rápidas, superficiales, quemadoras de tokens y ajenas a la estructura real del proyecto. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> ****cambia eso. Construido como un plugin MCP, por fin ofrece a los asistentes de codificación lo que les faltaba: una auténtica comprensión semántica de tu código base.</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Asistentes de codificación que realmente entienden su código</h3><p>La mayoría de las herramientas de codificación de IA todavía se comportan como extravagantes tuberías grep: rápidas, superficiales, quemadoras de tokens y ajenas a la estructura real del proyecto. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> cambia eso. Construido como un plugin MCP, por fin ofrece a los asistentes de codificación lo que les faltaba: una auténtica comprensión semántica de tu código base.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Claude Context construye un índice semántico vectorial en todo el proyecto, lo que permite a los agentes encontrar los módulos adecuados, seguir las relaciones entre los archivos, comprender la intención a nivel de arquitectura y responder a las preguntas con relevancia en lugar de conjeturas. Reduce el desperdicio de fichas, aumenta la precisión y, lo que es más importante, permite que los asistentes de codificación se comporten como si realmente entendieran su software en lugar de fingir que lo hacen.</p>
+<p>Claude Context construye un índice semántico vectorial a través de su proyecto, permitiendo a los agentes encontrar los módulos correctos, seguir las relaciones entre los archivos, entender la intención a nivel de arquitectura, y responder a las preguntas con relevancia en lugar de conjeturas. Reduce el desperdicio de fichas, aumenta la precisión y, lo que es más importante, permite que los asistentes de codificación se comporten como si realmente entendieran su software en lugar de fingir que lo hacen.</p>
 <p>Ambas herramientas son de código abierto. Porque la infraestructura de IA debería pertenecer a todo el mundo y porque el futuro de la IA no debería estar encerrado tras muros propietarios.</p>
 <h2 id="Trusted-by-10000+-Teams-in-Production" class="common-anchor-header">Con la confianza de más de 10.000 equipos en producción<button data-href="#Trusted-by-10000+-Teams-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -133,7 +133,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>En la actualidad, más de 10.000 equipos empresariales utilizan Milvus en producción, desde empresas emergentes de rápido crecimiento hasta algunas de las compañías tecnológicas más consolidadas del mundo y de la lista Fortune 500. Los equipos de NVIDIA, Sales &amp; Co. Los equipos de NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch y Microsoft confían en Milvus para impulsar sistemas de IA que funcionan cada minuto del día. Sus cargas de trabajo abarcan la búsqueda, las recomendaciones, las canalizaciones agénticas, la recuperación multimodal y otras aplicaciones que llevan al límite la infraestructura de vectores.</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>Pero lo más importante no es sólo <em>quién</em> utiliza Milvus, sino <em>lo que están construyendo con él</em>. En todos los sectores, Milvus está detrás de sistemas que determinan la forma en que las empresas operan, innovan y compiten:</p>
 <ul>
 <li><p><strong>Copilotos de IA y asistentes de empresa</strong> que mejoran la atención al cliente, los flujos de trabajo de ventas y la toma de decisiones interna con acceso instantáneo a miles de millones de incrustaciones.</p></li>

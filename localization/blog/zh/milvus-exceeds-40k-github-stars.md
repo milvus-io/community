@@ -40,7 +40,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>当我们在 2017 年开始构建 Milvus 时，<em>向量数据库</em>这个词甚至还不存在。我们当时只是一个工程师小团队，深信人工智能应用很快就会需要一种新型数据基础架构--不是为行和列而建，而是为高维、非结构化、多模态数据而建。传统数据库并不是为这个世界而构建的，我们知道必须有人重新想象存储和检索的样子。</p>
-<p>最初的日子并不光彩。构建企业级基础架构是一项缓慢而艰苦的工作，我们需要花费数周的时间剖析代码路径、重写组件，并在凌晨两点对设计选择提出质疑。但我们坚持一个简单的使命：<strong>让构建人工智能应用的每个开发人员都能使用向量搜索，并使其具有可扩展性和可靠性</strong>。这一使命让我们取得了最初的突破，也经历了不可避免的挫折。</p>
+<p>最初的日子并不光彩。构建企业级基础架构是一项缓慢而艰苦的工作，我们需要花费数周的时间剖析代码路径、重写组件，并在凌晨两点对设计选择提出质疑。但我们坚持一个简单的使命：<strong>让构建人工智能应用的每一位开发人员都能使用向量搜索，并使其具有可扩展性和可靠性</strong>。这一使命让我们取得了最初的突破，也经历了不可避免的挫折。</p>
 <p>一路走来，几个转折点改变了一切：</p>
 <ul>
 <li><p><strong>2019：</strong>我们开源了 Milvus 0.10。这意味着我们暴露了所有粗糙的边缘--黑客、TODO、我们还不引以为豪的部分。但社区出现了。开发人员提出了我们从未发现的问题，提出了我们从未想象过的功能，并对我们的假设提出了挑战，最终使 Milvus 变得更加强大。</p></li>
@@ -48,7 +48,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>2022年：</strong>企业用户需要Kubernetes原生扩展、弹性以及存储和计算的真正分离。我们面临着艰难的抉择：修补旧系统还是重建一切。我们选择了更艰难的道路。<strong>Milvus 2.0 是一次从头开始的重塑</strong>，引入了完全解耦的云原生架构，将 Milvus 转变为适用于关键任务 AI 工作负载的生产级平台。</p></li>
 <li><p><strong>2024-2025:</strong> <a href="https://zilliz.com/">Zilliz</a>（Milvus 背后的团队）被<a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">Forrester</a> 评为<a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">领导者</a>，一举突破 3 万颗星，目前已突破 4 万颗。它成为多模态搜索、RAG 系统、Agentic 工作流以及跨行业--教育、金融、创意制作、科学研究等--十亿规模检索的中坚力量。</p></li>
 </ul>
-<p>这一里程碑不是靠炒作得来的，而是开发人员选择 Milvus 用于实际生产工作负载，并推动我们不断改进每一步。</p>
+<p>这一里程碑不是靠炒作得来的，而是开发人员在实际生产工作负载中选择了 Milvus，并推动我们不断改进每一步。</p>
 <h2 id="2025-Two-Major-Releases-Massive-Performance-Gains" class="common-anchor-header">2025:两次重大发布，性能大幅提升<button data-href="#2025-Two-Major-Releases-Massive-Performance-Gains" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -104,14 +104,14 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
   </span>
 </p>
 <p>DeepSearcher 完全在你的机器上运行，收集各种来源的信息，综合各种见解，并提供引文、推理步骤和可追溯性--这些功能对于真正的研究至关重要，而不仅仅是表面的摘要。没有黑盒。没有供应商锁定。只有开发人员和研究人员可以信任的透明、可重复的分析。</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">克劳德语境：真正理解你代码的编码助手</h3><p>大多数人工智能编码工具仍然表现得像花哨的 grep 管道--快速、肤浅、烧令牌，对真实的项目结构视而不见。<a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>**** 改变了这种状况。作为一个 MCP 插件，它最终为编码助手提供了他们一直缺少的东西：对代码库的真正语义理解。</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">克劳德语境：真正理解你代码的编码助手</h3><p>大多数人工智能编码工具仍然表现得像花哨的 grep 管道--快速、肤浅、烧令牌，对真实的项目结构视而不见。<a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>改变了这一切。作为一个 MCP 插件，它终于为编码助手提供了他们一直缺少的东西：对代码库的真正语义理解。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Claude Context 在整个项目中构建了一个向量驱动的语义索引，让 Agents 可以找到正确的模块，跟踪文件间的关系，理解架构层面的意图，并通过相关性而非猜测来回答问题。它能减少代币浪费，提高精确度，最重要的是，能让编码助手表现得真正理解你的软件，而不是假装理解。</p>
+<p>Claude Context 在整个项目中构建了一个向量驱动的语义索引，让 Agents 可以找到正确的模块，跟踪文件间的关系，理解架构层面的意图，并通过相关性而不是猜测来回答问题。它能减少代币浪费，提高精确度，最重要的是，能让编码助手表现得真正理解你的软件，而不是假装理解。</p>
 <p>这两种工具都是完全开源的。因为人工智能基础架构应该属于每一个人，因为人工智能的未来不应该被锁在专有的围墙后面。</p>
 <h2 id="Trusted-by-10000+-Teams-in-Production" class="common-anchor-header">受到 10,000 多个生产团队的信任<button data-href="#Trusted-by-10000+-Teams-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -129,7 +129,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>如今，超过 10,000 个企业团队在生产中使用 Milvus，其中既有快速发展的初创企业，也有世界上最成熟的科技公司和财富 500 强企业。英伟达（NVIDIA）、Salesforce、eBay、Airbnb、IBM、AT&amp;T、LINE、Shopee、Roblox、博世以及微软内部的团队都依靠Milvus为人工智能系统提供动力，这些系统每时每刻都在操作Milvus Operator。他们的工作负载涵盖搜索、推荐、代理管道、多模态检索以及将向量基础设施推向极限的其他应用。</p>
-<p><a href="https://assets.zilliz.com/logos_eb0d3ad4af.png"></a></p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</p>
 <p>但最重要的不仅仅是<em>谁在</em>使用 Milvus，而是<em>他们在用</em> Milvus<em>构建什么</em>。在各行各业中，Milvus 的系统影响着企业的操作、创新和竞争方式：</p>
 <ul>
 <li><p><strong>人工智能辅助驾驶员和企业助理</strong>，通过即时访问数十亿个 Embeddings 来改善客户支持、销售工作流程和内部决策。</p></li>
@@ -227,7 +232,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <p>这个里程碑属于你们所有人：</p>
 <ul>
 <li><p><strong>献给我们的贡献者</strong>：感谢你们的代码、想法和时间。你们让 Milvus 每一天都变得更好。</p></li>
-<li><p><strong>致我们的用户</strong>：感谢您信任 Milvus，将其作为您的生产工作负载，并与我们分享您的经验，包括好的和具有挑战性的经验。您的反馈推动着我们的路线图。</p></li>
+<li><p><strong>致我们的用户</strong>：感谢您信任 Milvus，将其作为您的生产工作负载，并与我们分享您的经验，无论是好的还是具有挑战性的。您的反馈推动着我们的路线图。</p></li>
 <li><p><strong>致我们的社区支持者</strong>：感谢你们回答问题、编写教程、创建内容并帮助新人入门。是你们让我们的社区充满了欢迎和包容。</p></li>
 <li><p><strong>致我们的合作伙伴和集成商</strong>：感谢你们与我们共同建设，使 Milvus 成为人工智能开发生态系统中的一流公民。</p></li>
 <li><p><strong>致 Zilliz 团队</strong>：感谢你们对开源项目和用户成功的坚定承诺。</p></li>
