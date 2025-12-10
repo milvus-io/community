@@ -92,7 +92,7 @@ DeepSearcher runs entirely on your machine, gathering information across sources
 
 ### Claude Context: Coding Assistants That Actually Understand Your Code
 
-Most AI coding tools still behave like fancy grep pipelines—fast, shallow, token-burning, and oblivious to real project structure. [**Claude Context**](https://github.com/zilliztech/claude-context) ****changes that. Built as an MCP plugin, it finally gives coding assistants what they’ve been missing: genuine semantic understanding of your codebase.
+Most AI coding tools still behave like fancy grep pipelines—fast, shallow, token-burning, and oblivious to real project structure. [**Claude Context**](https://github.com/zilliztech/claude-context) changes that. Built as an MCP plugin, it finally gives coding assistants what they’ve been missing: genuine semantic understanding of your codebase.
 
 ![](https://assets.zilliz.com/claude_context_7f608a153d.png)
 
@@ -102,14 +102,11 @@ Both tools are fully open source. Because AI infrastructure should belong to eve
 
 
 
-
-
-
 ## Trusted by 10,000+ Teams in Production
 
 Today, more than 10,000 enterprise teams run Milvus in production—from fast-growing startups to some of the world’s most established technology and Fortune 500 companies. Teams at NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&T, LINE, Shopee, Roblox, Bosch, and inside Microsoft rely on Milvus to power AI systems that operate every minute of every day. Their workloads span search, recommendations, agentic pipelines, multimodal retrieval, and other applications that push vector infrastructure to its limits.
 
-[](https://assets.zilliz.com/logos_eb0d3ad4af.png)
+![](https://assets.zilliz.com/logos_eb0d3ad4af.png)
 
 But what matters most isn’t just _who_ uses Milvus—it’s _what they’re building with it_. Across industries, Milvus sits behind systems that shape how businesses operate, innovate, and compete:
 
