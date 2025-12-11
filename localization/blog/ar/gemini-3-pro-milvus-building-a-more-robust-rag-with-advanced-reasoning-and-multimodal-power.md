@@ -54,7 +54,7 @@ origin: >-
       </svg>
     </button></h2><p>يقدم Gemini 3 Pro مجموعة من التحسينات الجوهرية التي تعيد تشكيل كيفية تعليل النموذج وإنشاء المهام وتنفيذها والتفاعل مع المستخدمين. تنقسم هذه التحسينات إلى أربعة مجالات قدرات رئيسية:</p>
 <h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">الفهم والاستدلال متعدد الوسائط</h3><p>يسجل Gemini 3 Pro أرقامًا قياسية جديدة عبر معايير مهمة متعددة الوسائط، بما في ذلك ARC-AGI-2 للفهم البصري وMMMU-Pro للفهم متعدد الوسائط وMMMU-MMMU لفهم الفيديو واكتساب المعرفة. كما يقدم النموذج أيضًا طريقة التفكير العميق، وهي طريقة تفكير موسعة تتيح المعالجة المنطقية المنظمة ومتعددة الخطوات. وينتج عن ذلك دقة أعلى بكثير في المشاكل المعقدة حيث تميل نماذج سلسلة التفكير التقليدية إلى الفشل.</p>
-<h3 id="Code-Generation" class="common-anchor-header">توليد الشيفرات البرمجية</h3><p>يأخذ النموذج الترميز التوليدي إلى مستوى جديد. يمكن ل Gemini 3 Pro إنتاج صور SVG تفاعلية وتطبيقات ويب كاملة ومشاهد ثلاثية الأبعاد وحتى ألعاب وظيفية - بما في ذلك البيئات الشبيهة بماين كرافت والبلياردو المستندة إلى المتصفح - كل ذلك من موجه واحد باللغة الطبيعية. يستفيد تطوير الواجهة الأمامية بشكل خاص: يمكن للنموذج إعادة إنشاء تصميمات واجهة المستخدم الحالية بدقة عالية أو ترجمة لقطة شاشة مباشرةً إلى كود جاهز للإنتاج، مما يجعل عمل واجهة المستخدم التكرارية أسرع بشكل كبير.</p>
+<h3 id="Code-Generation" class="common-anchor-header">توليد الشيفرة</h3><p>يأخذ النموذج الترميز التوليدي إلى مستوى جديد. يمكن ل Gemini 3 Pro إنتاج صور SVG تفاعلية وتطبيقات ويب كاملة ومشاهد ثلاثية الأبعاد وحتى ألعاب وظيفية - بما في ذلك البيئات الشبيهة بماين كرافت والبلياردو المستندة إلى المتصفح - كل ذلك من موجه واحد باللغة الطبيعية. يستفيد تطوير الواجهة الأمامية بشكل خاص: يمكن للنموذج إعادة إنشاء تصميمات واجهة المستخدم الحالية بدقة عالية أو ترجمة لقطة شاشة مباشرةً إلى كود جاهز للإنتاج، مما يجعل عمل واجهة المستخدم التكرارية أسرع بشكل كبير.</p>
 <h3 id="AI-Agents-and-Tool-Use" class="common-anchor-header">وكلاء الذكاء الاصطناعي واستخدام الأدوات</h3><p>بعد الحصول على إذن المستخدم، يمكن لـ Gemini 3 Pro الوصول إلى البيانات من جهاز المستخدم من Google لأداء مهام طويلة المدى ومتعددة الخطوات مثل تخطيط الرحلات أو حجز السيارات المستأجرة. تنعكس قدرة الوكيل هذه في أدائه القوي على <strong>Vending-Bench 2،</strong> وهو معيار مصمم خصيصًا لاختبار ضغط استخدام الأداة على المدى الطويل. يدعم النموذج أيضاً سير عمل الوكيل على مستوى احترافي، بما في ذلك تنفيذ الأوامر الطرفية والتفاعل مع الأدوات الخارجية من خلال واجهات برمجة التطبيقات المحددة جيداً.</p>
 <h3 id="Generative-UI" class="common-anchor-header">واجهة المستخدم التوليدية</h3><p>يتخطى Gemini 3 Pro نموذج السؤال الواحد والإجابة الواحدة التقليدي ويقدم <strong>واجهة مستخدم</strong> مولدة، حيث يمكن للنموذج بناء تجارب تفاعلية كاملة بشكل ديناميكي. بدلاً من إرجاع نص ثابت، يمكنه إنشاء واجهات مخصصة بالكامل - على سبيل المثال، مخطط سفر غني وقابل للتعديل - مباشرةً استجابةً لتعليمات المستخدم. يؤدي هذا إلى تحويل LLMs من مستجيبات سلبية إلى مولدات واجهات نشطة.</p>
 <h2 id="Putting-Gemini-3-Pro-to-the-Test" class="common-anchor-header">وضع Gemini 3 Pro تحت الاختبار<button data-href="#Putting-Gemini-3-Pro-to-the-Test" class="anchor-icon" translate="no">
@@ -72,7 +72,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بالإضافة إلى النتائج القياسية، أجرينا سلسلة من الاختبارات العملية لفهم كيف يتصرف Gemini 3 Pro في سير العمل الحقيقي. وتسلط النتائج الضوء على كيفية ترجمة تفكيره متعدد الوسائط وقدراته التوليدية وتخطيطه طويل المدى إلى قيمة عملية للمطورين.</p>
+    </button></h2><p>بالإضافة إلى النتائج القياسية، أجرينا سلسلة من الاختبارات العملية لفهم كيف يتصرف Gemini 3 Pro في تدفقات العمل الحقيقية. وتسلط النتائج الضوء على كيفية ترجمة تفكيره متعدد الوسائط وقدراته التوليدية وتخطيطه طويل المدى إلى قيمة عملية للمطورين.</p>
 <h3 id="Multimodal-understanding" class="common-anchor-header">الفهم متعدد الوسائط</h3><p>يُظهر Gemini 3 Pro تنوعًا مثيرًا للإعجاب عبر النصوص والصور والفيديو والرموز البرمجية. في اختبارنا، قمنا بتحميل فيديو زيليز مباشرة من يوتيوب. قام النموذج بمعالجة المقطع بأكمله - بما في ذلك السرد والانتقالات والنص الذي يظهر على الشاشة - في <strong>40 ثانية</strong> تقريبًا، وهو تحول سريع بشكل غير عادي للمحتوى الطويل متعدد الوسائط.</p>
 <p>
   <span class="img-wrapper">
@@ -87,8 +87,11 @@ origin: >-
   </span>
 </p>
 <p>تُظهر تقييمات Google الداخلية سلوكًا مشابهًا: تعامل Gemini 3 Pro مع وصفات مكتوبة بخط اليد بلغات متعددة، وقام بنسخ وترجمة كل واحدة منها، ثم جمعها في كتاب وصفات عائلي قابل للمشاركة.</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">المهام الصفرية</h3><p>يمكن ل Gemini 3 Pro إنشاء واجهات مستخدم ويب تفاعلية بالكامل بدون أمثلة أو سقالات مسبقة. عندما طُلب منه إنشاء <strong>لعبة ويب</strong> مصقولة <strong>ثلاثية الأبعاد لسفينة فضاء ثلاثية الأبعاد،</strong> أنتج النموذج مشهدًا تفاعليًا كاملًا: شبكة نيون أرجوانية، وسفن على غرار لعبة السايبربانك، وتأثيرات جسيمات متوهجة، وعناصر تحكم سلسة في الكاميرا - كل ذلك في استجابة واحدة من دون لقطة واحدة.</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h3 id="Complex-Task-Planning" class="common-anchor-header">تخطيط المهام المعقدة</h3><p>يُظهر النموذج أيضًا تخطيط مهام بعيد المدى أقوى من العديد من أقرانه. في اختبار تنظيم صندوق الوارد الذي أجريناه، تصرف Gemini 3 Pro إلى حد كبير مثل مساعد إداري يعمل بالذكاء الاصطناعي: تصنيف رسائل البريد الإلكتروني الفوضوية إلى مجموعات مشاريع، وصياغة اقتراحات قابلة للتنفيذ (الرد، المتابعة، الأرشفة)، وتقديم ملخص منظم ونظيف. مع وضع خطة النموذج، يمكن مسح صندوق الوارد بأكمله بنقرة تأكيد واحدة.</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">كيفية بناء نظام RAG مع Gemini 3 Pro و Milvus<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -148,7 +151,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embeddings[<span cla
 <span class="hljs-built_in">print</span>(embedding_dim)
 <span class="hljs-built_in">print</span>(test_embeddings[<span class="hljs-number">0</span>][:<span class="hljs-number">10</span>])
 <button class="copy-code-btn"></button></code></pre>
-<p>ناتج متجه الاختبار:</p>
+<p>مخرجات متجه الاختبار:</p>
 <p>768</p>
 <p>[0.013588584, -0.004361838, -0.08481652, -0.039724775, 0.04723794, -0.0051557426, 0.026071774, 0.045514572, -0.016867816, 0.039378334]</p>
 <h3 id="Loading-Data-into-Milvus" class="common-anchor-header">تحميل البيانات في ميلفوس</h3><p><strong>إنشاء مجموعة</strong></p>
@@ -259,7 +262,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>استخدم نموذج <code translate="no">gemini-3-pro-preview</code> مع هذه المطالبات لإنشاء الاستجابة النهائية.</p>
+<p>استخدم النموذج <code translate="no">gemini-3-pro-preview</code> مع هذه المطالبات لتوليد الاستجابة النهائية.</p>
 <pre><code translate="no">gemini_model = genai.GenerativeModel(
     <span class="hljs-string">&quot;gemini-3-pro-preview&quot;</span>, system_instruction=SYSTEM_PROMPT
 )

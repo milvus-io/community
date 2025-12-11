@@ -83,8 +83,11 @@ origin: >-
   </span>
 </p>
 <p>Google 的內部評估也顯示出類似的表現：Gemini 3 Pro 能處理多國語言的手寫食譜，轉錄並翻譯每一份食譜，並將它們編輯成可分享的家庭食譜集。</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">零拍攝任務</h3><p>Gemini 3 Pro 可以生成完全互動的 Web UI，而無需事先提供範例或支架。當被要求製作一個精緻、復古、前衛的<strong>3D 太空船網頁遊戲</strong>時，模型產生了一個完整的互動式場景：霓虹紫色的網格、賽博朋克風格的船艦、發光的粒子效果，以及流暢的攝影機控制 - 所有這些都在單次零拍攝的回應中完成。</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h3 id="Complex-Task-Planning" class="common-anchor-header">複雜的任務規劃</h3><p>與許多同級產品相比，該模型還展現了更強大的長遠任務規劃能力。在我們的收件匣整理測試中，Gemini 3 Pro 的表現很像 AI 行政助理：將雜亂的電子郵件歸類為專案桶、草擬可執行的建議 (回覆、跟進、歸檔)，並提出乾淨、有條理的摘要。有了模型的計畫，只要按一下確認，就能清除整個收件匣。</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">如何使用 Gemini 3 Pro 和 Milvus 建立 RAG 系統<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

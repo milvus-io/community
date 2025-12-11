@@ -24,7 +24,7 @@ origin: >-
 <li><p><strong>人類最後の試験：</strong>ツールなしで37.5%、ツールありで45.8% - 最も近い競合製品は26.5%。</p></li>
 <li><p><strong>MathArena Apex：</strong>23.4％、ほとんどのモデルは2％を切ることができなかった。</p></li>
 <li><p><strong>ScreenSpot-Pro：</strong>72.7％の精度で、次点の36.2％のほぼ2倍。</p></li>
-<li><p><strong>Vending-Bench 2:</strong>平均純額<strong>$5,478.16</strong>、2位を<strong>約1.4倍</strong>上回る。</p></li>
+<li><p><strong>Vending-Bench 2:</strong>平均純額<strong>5,478.16ドル</strong>、2位を<strong>約1.4倍</strong>上回る。</p></li>
 </ul>
 <p>その他のベンチマーク結果は以下の表をご覧ください。</p>
 <p>
@@ -50,9 +50,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gemini 3 Proは、モデルの理由付け、作成、タスクの実行、およびユーザーとの対話方法を再構築する一連の大幅なアップグレードを導入しています。これらの改善は、4つの主要な機能分野に分類される：</p>
+    </button></h2><p>Gemini 3 Proは、モデルの理由付け、作成、タスクの実行、およびユーザーとのインタラクションの方法を再構築する一連の実質的なアップグレードを導入しています。これらの改善は、4つの主要な機能分野に分類される：</p>
 <h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">マルチモーダル理解と推論</h3><p>Gemini 3 Proは、視覚的推論のARC-AGI-2、クロスモーダル理解のMMMU-Pro、ビデオ理解と知識習得のVideo-MMMUなど、重要なマルチモーダルベンチマークで新記録を樹立しています。また、構造化されたマルチステップの論理処理を可能にする拡張推論モード「Deep Think」も導入されている。これにより、従来の思考連鎖モデルが失敗しがちな複雑な問題でも、精度が大幅に向上する。</p>
-<h3 id="Code-Generation" class="common-anchor-header">コード生成</h3><p>このモデルは、ジェネレーティブコーディングを新しいレベルに引き上げます。Gemini 3 Proは、インタラクティブなSVG、完全なWebアプリケーション、3Dシーン、さらには、Minecraftのような環境やブラウザベースのビリヤードなどの機能的なゲームを、すべて1つの自然言語プロンプトから生成することができます。フロントエンド開発には特に利点があります。このモデルでは、既存のUIデザインを忠実に再現したり、スクリーンショットをそのまま制作可能なコードに変換したりできるため、UIの反復作業が劇的に速くなります。</p>
+<h3 id="Code-Generation" class="common-anchor-header">コード生成</h3><p>このモデルは、ジェネレーティブコーディングを新しいレベルに引き上げます。Gemini 3 Proは、インタラクティブなSVG、完全なWebアプリケーション、3Dシーン、さらには、Minecraftのような環境やブラウザベースのビリヤードを含む機能的なゲームを、すべて1つの自然言語のプロンプトから生成することができます。フロントエンド開発には特に利点があります。このモデルでは、既存のUIデザインを忠実に再現したり、スクリーンショットをそのまま制作可能なコードに変換したりできるため、UIの反復作業が劇的に速くなります。</p>
 <h3 id="AI-Agents-and-Tool-Use" class="common-anchor-header">AIエージェントとツールの使用</h3><p>ユーザーの許可があれば、Gemini 3 Proは、ユーザーのGoogleデバイスからデータにアクセスし、旅行の計画やレンタカーの予約など、長期的で複数ステップのタスクを実行することができる。このエージェント機能は、<strong>Vending-Bench 2</strong>（ロングホライズンツール使用のストレステスト用に特別に設計されたベンチマーク）での強力なパフォーマンスに反映されている。このモデルはまた、端末コマンドの実行や、明確に定義されたAPIを通じた外部ツールとのやり取りを含む、プロフェッショナルグレードのエージェントワークフローをサポートしています。</p>
 <h3 id="Generative-UI" class="common-anchor-header">ジェネレーティブUI</h3><p>Gemini 3 Proは、従来の一問一答モデルを超えて、<strong>ジェネレーティブUIを</strong>導入しています。ジェネレーティブ<strong>UIでは</strong>、インタラクティブな体験全体を動的に構築することができます。静的なテキストを返す代わりに、完全にカスタマイズされたインターフェース（例えば、リッチで調整可能なトラベルプランナー）を、ユーザーの指示に直接反応して生成することができる。これにより、LLMは受動的な応答者から能動的なインターフェース生成者へとシフトする。</p>
 <h2 id="Putting-Gemini-3-Pro-to-the-Test" class="common-anchor-header">Gemini 3 Proをテストする<button data-href="#Putting-Gemini-3-Pro-to-the-Test" class="anchor-icon" translate="no">
@@ -70,7 +70,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベンチマークの結果だけでなく、Gemini 3 Proが実際のワークフローでどのように動作するかを理解するために、一連の実地テストを実施した。その結果、Gemini 3 Proのマルチモーダルな推論、ジェネレーティブな機能、そして長期的なプランニングが、開発者にとってどのように実用的な価値につながるかが明らかになった。</p>
+    </button></h2><p>ベンチマークの結果だけでなく、Gemini 3 Proが実際のワークフローでどのように動作するかを理解するために、一連の実地テストを実施した。その結果、Gemini 3 Proのマルチモーダルな推論、ジェネレーティブな機能、および長期的なプランニングが、開発者にとってどのように実用的な価値につながるかが明らかになった。</p>
 <h3 id="Multimodal-understanding" class="common-anchor-header">マルチモーダルな理解</h3><p>Gemini 3 Proは、テキスト、画像、ビデオ、コードに渡って、印象的な多機能性を示す。テストでは、YouTubeからZillizのビデオを直接アップロードした。このモデルは、ナレーション、トランジション、画面上のテキストを含むクリップ全体を<strong>約40</strong>秒で処理し、長尺のマルチモーダルコンテンツとしては異例の速さで処理した。</p>
 <p>
   <span class="img-wrapper">
@@ -85,8 +85,11 @@ origin: >-
   </span>
 </p>
 <p>Googleの内部評価でも同様の結果が得られている：Gemini 3 Proは、複数の言語にまたがる手書きのレシピを扱い、それぞれを書き起こして翻訳し、共有可能な家族のレシピブックにまとめた。</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">ゼロショットタスク</h3><p>Gemini 3 Proは、事前のサンプルや足場がなくても、完全にインタラクティブなWeb UIを生成することができます。洗練されたレトロフューチャーな<strong>3D宇宙船のWeb</strong>ゲームを作成するように指示されたとき、このモデルは、ネオンパープルのグリッド、サイバーパンクスタイルの船、光るパーティクル効果、スムーズなカメラコントロールなど、完全なインタラクティブシーンを作成しました。</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h3 id="Complex-Task-Planning" class="common-anchor-header">複雑なタスクプランニング</h3><p>このモデルはまた、他の多くのモデルよりも強力な長期的タスクプランニングを示す。私たちの受信箱整理テストでは、Gemini 3 ProはAIの事務アシスタントのように振る舞った：乱雑なメールをプロジェクトのバケツに分類し、実行可能な提案（返信、フォローアップ、アーカイブ）を起草し、きれいで構造化された要約を提示する。このモデルの計画では、受信箱全体を1回の確認クリックで片付けることができる。</p>
+<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">Gemini 3 ProとmilvusでRAGシステムを構築する方法<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -156,7 +159,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p><code translate="no">MilvusClient</code> を作成する際、規模や環境に応じて3つの設定オプションから選択することができます：</p>
 <ul>
-<li><p><strong>ローカルモード（Milvus Lite）：</strong>ローカルモード(Milvus Lite): URIをローカルファイルパスに設定する(例:<code translate="no">./milvus.db</code>)。<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteは</a>自動的にすべてのデータをそのファイルに保存します。</p></li>
+<li><p><strong>ローカルモード（Milvus Lite）：</strong>ローカルモード(Milvus Lite): URIをローカルのファイルパスに設定する(例:<code translate="no">./milvus.db</code>)。<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteは</a>自動的にすべてのデータをそのファイルに保存します。</p></li>
 <li><p><strong>セルフホストMilvus（DockerまたはKubernetes）：</strong>より大きなデータセットやプロダクションワークロードの場合は、DockerまたはKubernetes上でMilvusを実行します。MilvusサーバーのエンドポイントにURIを設定します（<code translate="no">http://localhost:19530</code> など）。</p></li>
 <li><p><strong>Zilliz Cloud (フルマネージドMilvusサービス)：</strong>マネージドソリューションをご希望の場合は、Zilliz Cloudをご利用ください。URIをパブリックエンドポイントに設定し、認証トークンとしてAPIキーを指定します。</p></li>
 </ul>
@@ -164,7 +167,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <pre><code translate="no">if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<p>指定したパラメータで新しいコレクションを作成します。</p>
+<p>指定されたパラメータで新しいコレクションを作成します。</p>
 <p>スキーマが指定されていない場合、Milvusは自動的にプライマリキーとしてデフォルトのIDフィールドを生成し、エンベッディングを格納するためのベクターフィールドを生成します。また、スキーマで定義されていない追加フィールドをキャプチャする予約JSONダイナミックフィールドも提供します。</p>
 <pre><code translate="no">milvus_client.create_collection(
     collection_name=collection_name,
@@ -329,7 +332,7 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
       </svg>
     </button></h2><p>Gemini 3 Proと同時に、Googleはエディタ、ターミナル、ブラウザと自律的に対話するバイブコーディングプラットフォーム、<a href="https://antigravity.google/"><strong>Google Antigravityを</strong></a>発表した。単発の命令を扱う以前のAI支援ツールとは異なり、Antigravityはタスク指向のレベルで動作する。開発者が<em>何を</em>作りたいかを指定すると、システムがその<em>方法を</em>管理し、完全なワークフローをエンドツーエンドで編成する。</p>
 <p>従来のAIコーディング・ワークフローでは、開発者が手作業でレビュー、統合、デバッグ、実行しなければならない孤立したスニペットが生成されるのが一般的だった。Antigravityは、そのような動きを変えます。例えば、<em>「シンプルなペットとのインタラクションゲームを作成する</em>」といったタスクを記述するだけで、システムはリクエストを分解し、コードを生成し、ターミナルコマンドを実行し、結果をテストするためにブラウザを開き、動作するまで繰り返し実行する。これはAIを受動的なオートコンプリート・エンジンから能動的なエンジニアリング・パートナーへと昇華させる。</p>
-<p>将来的には、エージェントが直接データベースと連携するというアイデアは、そう遠い話ではない。MCP経由でツールを呼び出すことで、AIは最終的にMilvusデータベースから読み出し、ナレッジベースを構築し、さらには自律的に独自の検索パイプラインを維持することができるだろう。AIが製品レベルの記述を受け取り、それを実行可能なタスクのシーケンスに変換できるようになれば、人間の労力は、目的、制約、そして「正しさ」とはどのようなものかを定義することに自然とシフトする。</p>
+<p>将来的には、エージェントが直接データベースと連携するというアイデアは、遠い未来の話ではない。MCP経由でツールを呼び出すことで、AIは最終的にMilvusデータベースから読み出し、ナレッジベースを構築し、さらには自律的に独自の検索パイプラインを維持することができるだろう。AIが製品レベルの記述を受け取り、それを実行可能なタスクのシーケンスに変換できるようになれば、人間の労力は、目的、制約、そして「正しさ」とはどのようなものかを定義することに自然とシフトする。</p>
 <h2 id="Ready-to-Build" class="common-anchor-header">構築の準備はできていますか？<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
