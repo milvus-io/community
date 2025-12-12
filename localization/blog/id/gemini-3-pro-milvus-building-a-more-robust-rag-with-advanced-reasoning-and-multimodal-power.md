@@ -15,9 +15,9 @@ meta_keywords: 'Gemini 3 Pro, vibe coding, Milvus, RAG'
 meta_title: |
   Gemini 3 Pro + Milvus: Robust RAG With Advanced Reasoning and Multimodal Power
 desc: >-
-  Pelajari pembaruan inti dalam Gemini 3 Pro, lihat bagaimana kinerjanya pada
-  tolok ukur utama, dan ikuti panduan untuk membangun pipeline RAG berkinerja
-  tinggi dengan Milvus.
+  Pelajari pembaruan inti di Gemini 3 Pro, lihat bagaimana kinerjanya pada tolok
+  ukur utama, dan ikuti panduan untuk membangun pipeline RAG berkinerja tinggi
+  dengan Milvus.
 origin: >-
   https://milvus.io/blog/gemini-3-pro-milvus-building-a-more-robust-rag-with-advanced-reasoning-and-multimodal-power.md
 ---
@@ -88,11 +88,11 @@ origin: >-
   </span>
 </p>
 <p>Evaluasi internal Google menunjukkan perilaku yang serupa: Gemini 3 Pro menangani resep tulisan tangan dalam berbagai bahasa, menyalin dan menerjemahkannya, serta menyusunnya menjadi buku resep keluarga yang dapat dibagikan.</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">Tugas Tanpa Jepretan</h3><p>Gemini 3 Pro dapat menghasilkan UI web yang sepenuhnya interaktif tanpa contoh atau perancah sebelumnya. Ketika diminta untuk membuat <strong>game web pesawat ruang angkasa 3D</strong> retro-futuristik yang dipoles, model ini menghasilkan pemandangan interaktif yang lengkap: kisi-kisi neon-ungu, kapal bergaya cyberpunk, efek partikel yang bercahaya, dan kontrol kamera yang halus - semuanya dalam satu respons tanpa jepretan.</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Complex-Task-Planning" class="common-anchor-header">Perencanaan Tugas yang Kompleks</h3><p>Model ini juga menunjukkan perencanaan tugas jangka panjang yang lebih kuat daripada kebanyakan model lainnya. Dalam pengujian pengaturan kotak masuk kami, Gemini 3 Pro berperilaku seperti asisten administratif AI: mengkategorikan email yang berantakan ke dalam ember proyek, menyusun saran yang dapat ditindaklanjuti (balas, tindak lanjuti, arsipkan), dan menyajikan ringkasan yang bersih dan terstruktur. Dengan rencana model yang telah disusun, seluruh kotak masuk dapat dibersihkan dengan satu klik konfirmasi.</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">Cara Membangun Sistem RAG dengan Gemini 3 Pro dan Milvus<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

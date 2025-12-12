@@ -83,11 +83,11 @@ origin: >-
   </span>
 </p>
 <p>谷歌的内部评估也显示了类似的表现：Gemini 3 Pro 处理了多种语言的手写食谱，转录并翻译了每一份食谱，并将其编译成一本可共享的家庭食谱。</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">零镜头任务</h3><p>Gemini 3 Pro 可以生成完全交互式的网络用户界面，而无需事先提供示例或脚手架。当被要求创建一个精致的、复古未来主义的<strong>3D 飞船网页游戏</strong>时，该模型生成了一个完整的交互式场景：霓虹紫色网格、赛博朋克风格的飞船、发光粒子效果和流畅的相机控制--所有这一切都在一次零镜头响应中完成。</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Complex-Task-Planning" class="common-anchor-header">复杂的任务规划</h3><p>与许多同类产品相比，该模型还表现出更强的远距离任务规划能力。在我们的收件箱整理测试中，Gemini 3 Pro 的表现就像一位人工智能行政助理：将杂乱无章的电子邮件归类到项目桶中，起草可执行的建议（回复、跟进、存档），并提交一份简洁、有条理的摘要。有了模型的计划布局，只需点击确认，整个收件箱就能被清理干净。</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">如何使用 Gemini 3 Pro 和 Milvus 建立 RAG 系统<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -166,7 +166,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
     milvus_client.drop_collection(collection_name)
 <button class="copy-code-btn"></button></code></pre>
 <p>使用指定参数创建新 Collections。</p>
-<p>如果没有提供 Schema，Milvus 会自动生成一个默认 ID 字段作为主键，并生成一个向量字段用于存储嵌入。它还提供了一个保留的 JSON 动态字段，用于捕捉模式中未定义的任何其他字段。</p>
+<p>如果没有提供 Schema，Milvus 会自动生成一个默认 ID 字段作为主键，并生成一个向量字段用于存储 Embeddings。它还提供了一个保留的 JSON 动态字段，用于捕捉模式中未定义的任何其他字段。</p>
 <pre><code translate="no">milvus_client.create_collection(
     collection_name=collection_name,
     dimension=embedding_dim,
@@ -329,7 +329,7 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
         ></path>
       </svg>
     </button></h2><p>除了 Gemini 3 Pro，Google 还推出了<a href="https://antigravity.google/"><strong>Google Antigravity</strong></a>，这是一个可与编辑器、终端和浏览器自主交互的视频编码平台。与处理一次性指令的早期人工智能辅助工具不同，Antigravity 在面向任务的层面上进行操作--允许开发人员指定他们想要构建<em>的内容</em>，而系统则管理<em>如何</em>构建，端到端协调整个工作流程。</p>
-<p>传统的人工智能编码工作流程通常会生成孤立的片段，开发人员仍需对其进行审查、集成、调试和手动运行。反重力改变了这种动态。您只需描述一项任务，例如<em>"创建一个简单的宠物互动游戏</em>"，系统就会分解请求、生成代码、执行终端命令、打开浏览器测试结果，并反复运行，直到成功为止。它将人工智能从一个被动的自动完成引擎提升为一个主动的工程合作伙伴--它可以学习你的偏好，并随着时间的推移适应你的个人开发风格。</p>
+<p>传统的人工智能编码工作流程通常会生成孤立的片段，开发人员仍需对其进行审查、集成、调试和手动运行。反重力技术改变了这一动态。您只需描述一项任务，例如<em>"创建一个简单的宠物互动游戏</em>"，系统就会分解请求、生成代码、执行终端命令、打开浏览器测试结果，并反复运行，直到成功为止。它将人工智能从一个被动的自动完成引擎提升为一个主动的工程合作伙伴--它可以学习你的偏好，并随着时间的推移适应你的个人开发风格。</p>
 <p>展望未来，Agent 直接与数据库协调的想法并不遥远。通过MCP进行工具调用，人工智能最终可以从Milvus数据库中读取数据，组建知识库，甚至自主维护自己的检索管道。在许多方面，这种转变甚至比模型升级本身更有意义：一旦人工智能能够获取产品层面的描述，并将其转换为一系列可执行的任务，人类的努力就会自然而然地转向定义目标、约束条件以及 "正确性 "是什么样子--真正推动产品开发的高层次思维。</p>
 <h2 id="Ready-to-Build" class="common-anchor-header">准备好构建了吗？<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -347,4 +347,4 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
         ></path>
       </svg>
     </button></h2><p>如果您已经准备好尝试，请按照我们的教程逐步操作，今天就使用<strong>Gemini 3 Pro + Milvus</strong>构建一个 RAG 系统。</p>
-<p>有问题或想深入了解任何功能？加入我们的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 频道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提交问题。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 预订 20 分钟的一对一课程，获得见解、指导和问题解答。</p>
+<p>有问题或想深入了解任何功能？加入我们的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 频道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提交问题。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 预订 20 分钟的一对一课程，以获得见解、指导和问题解答。</p>

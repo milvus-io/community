@@ -85,11 +85,11 @@ origin: >-
   </span>
 </p>
 <p>Googleの内部評価でも同様の結果が得られている：Gemini 3 Proは、複数の言語にまたがる手書きのレシピを扱い、それぞれを書き起こして翻訳し、共有可能な家族のレシピブックにまとめた。</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">ゼロショットタスク</h3><p>Gemini 3 Proは、事前のサンプルや足場がなくても、完全にインタラクティブなWeb UIを生成することができます。洗練されたレトロフューチャーな<strong>3D宇宙船のWeb</strong>ゲームを作成するように指示されたとき、このモデルは、ネオンパープルのグリッド、サイバーパンクスタイルの船、光るパーティクル効果、スムーズなカメラコントロールなど、完全なインタラクティブシーンを作成しました。</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Complex-Task-Planning" class="common-anchor-header">複雑なタスクプランニング</h3><p>このモデルはまた、他の多くのモデルよりも強力な長期的タスクプランニングを示す。私たちの受信箱整理テストでは、Gemini 3 ProはAIの事務アシスタントのように振る舞った：乱雑なメールをプロジェクトのバケツに分類し、実行可能な提案（返信、フォローアップ、アーカイブ）を起草し、きれいで構造化された要約を提示する。このモデルの計画では、受信箱全体を1回の確認クリックで片付けることができる。</p>
-<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">Gemini 3 ProとmilvusでRAGシステムを構築する方法<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -159,7 +159,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p><code translate="no">MilvusClient</code> を作成する際、規模や環境に応じて3つの設定オプションから選択することができます：</p>
 <ul>
-<li><p><strong>ローカルモード（Milvus Lite）：</strong>ローカルモード(Milvus Lite): URIをローカルのファイルパスに設定する(例:<code translate="no">./milvus.db</code>)。<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteは</a>自動的にすべてのデータをそのファイルに保存します。</p></li>
+<li><p><strong>ローカルモード（Milvus Lite）：</strong>ローカルモード(Milvus Lite): URIをローカルファイルパスに設定する(例:<code translate="no">./milvus.db</code>)。<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteは</a>自動的にすべてのデータをそのファイルに保存します。</p></li>
 <li><p><strong>セルフホストMilvus（DockerまたはKubernetes）：</strong>より大きなデータセットやプロダクションワークロードの場合は、DockerまたはKubernetes上でMilvusを実行します。MilvusサーバーのエンドポイントにURIを設定します（<code translate="no">http://localhost:19530</code> など）。</p></li>
 <li><p><strong>Zilliz Cloud (フルマネージドMilvusサービス)：</strong>マネージドソリューションをご希望の場合は、Zilliz Cloudをご利用ください。URIをパブリックエンドポイントに設定し、認証トークンとしてAPIキーを指定します。</p></li>
 </ul>
@@ -167,7 +167,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <pre><code translate="no">if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<p>指定されたパラメータで新しいコレクションを作成します。</p>
+<p>指定したパラメータで新しいコレクションを作成します。</p>
 <p>スキーマが指定されていない場合、Milvusは自動的にプライマリキーとしてデフォルトのIDフィールドを生成し、エンベッディングを格納するためのベクターフィールドを生成します。また、スキーマで定義されていない追加フィールドをキャプチャする予約JSONダイナミックフィールドも提供します。</p>
 <pre><code translate="no">milvus_client.create_collection(
     collection_name=collection_name,
@@ -332,7 +332,7 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
       </svg>
     </button></h2><p>Gemini 3 Proと同時に、Googleはエディタ、ターミナル、ブラウザと自律的に対話するバイブコーディングプラットフォーム、<a href="https://antigravity.google/"><strong>Google Antigravityを</strong></a>発表した。単発の命令を扱う以前のAI支援ツールとは異なり、Antigravityはタスク指向のレベルで動作する。開発者が<em>何を</em>作りたいかを指定すると、システムがその<em>方法を</em>管理し、完全なワークフローをエンドツーエンドで編成する。</p>
 <p>従来のAIコーディング・ワークフローでは、開発者が手作業でレビュー、統合、デバッグ、実行しなければならない孤立したスニペットが生成されるのが一般的だった。Antigravityは、そのような動きを変えます。例えば、<em>「シンプルなペットとのインタラクションゲームを作成する</em>」といったタスクを記述するだけで、システムはリクエストを分解し、コードを生成し、ターミナルコマンドを実行し、結果をテストするためにブラウザを開き、動作するまで繰り返し実行する。これはAIを受動的なオートコンプリート・エンジンから能動的なエンジニアリング・パートナーへと昇華させる。</p>
-<p>将来的には、エージェントが直接データベースと連携するというアイデアは、遠い未来の話ではない。MCP経由でツールを呼び出すことで、AIは最終的にMilvusデータベースから読み出し、ナレッジベースを構築し、さらには自律的に独自の検索パイプラインを維持することができるだろう。AIが製品レベルの記述を受け取り、それを実行可能なタスクのシーケンスに変換できるようになれば、人間の労力は、目的、制約、そして「正しさ」とはどのようなものかを定義することに自然とシフトする。</p>
+<p>将来的には、エージェントが直接データベースと連携するというアイデアは、そう遠い話ではない。MCP経由でツールを呼び出すことで、AIは最終的にMilvusデータベースから読み出し、ナレッジベースを構築し、さらには自律的に独自の検索パイプラインを維持することができるだろう。AIが製品レベルの記述を受け取り、それを実行可能なタスクのシーケンスに変換できるようになれば、人間の労力は、目的、制約、そして「正しさ」とはどのようなものかを定義することに自然とシフトする。</p>
 <h2 id="Ready-to-Build" class="common-anchor-header">構築の準備はできていますか？<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
