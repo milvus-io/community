@@ -1,8 +1,8 @@
 ---
 id: unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 title: >-
-  Lo spazio incontra la semantica: Sbloccare la ricerca geo-vettoriale con i
-  campi geometrici e l'indice RTREE in Milvus
+  Filtraggio geospaziale e ricerca vettoriale insieme a campi geometrici e RTREE
+  in Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
 cover: assets.zilliz.com/rtree_cover_53c424f967.png
@@ -12,7 +12,7 @@ publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 2.6, Geometry field, RTREE index, Geo-Vector Search'
 meta_title: |
-  Milvus Geometry Field and RTREE Index for Geo-Vector Search
+  Geospatial Filtering + Vector Search in Milvus with Geometry Fields and RTREE
 desc: >-
   Scoprite come Milvus 2.6 unifica la ricerca vettoriale con l'indicizzazione
   geospaziale grazie ai campi geometrici e all'indice RTREE, consentendo un
@@ -21,16 +21,15 @@ desc: >-
 origin: >-
   https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 ---
-<p>Con l'aumentare dell'intelligenza dei sistemi moderni, i dati di geolocalizzazione sono diventati essenziali per applicazioni come le raccomandazioni guidate dall'intelligenza artificiale, il dispacciamento intelligente e la guida autonoma.</p>
-<p>Ad esempio, quando si ordina del cibo su piattaforme come DoorDash o Uber Eats, il sistema considera molto di più della distanza tra l'utente e il ristorante. Tiene conto anche delle valutazioni dei ristoranti, della posizione dei corrieri, delle condizioni del traffico e persino delle tue preferenze personali. Nella guida autonoma, i veicoli devono eseguire la pianificazione del percorso, il rilevamento degli ostacoli e la comprensione semantica della scena, spesso in pochi millisecondi.</p>
-<p>Tutto questo dipende dalla capacità di indicizzare e recuperare in modo efficiente i dati geospaziali.</p>
-<p>Tradizionalmente, i dati geografici e i dati vettoriali vivevano in due sistemi separati:</p>
+<p>Poiché i sistemi di intelligenza artificiale sono sempre più applicati al processo decisionale in tempo reale, i dati geospaziali diventano sempre più importanti in una serie crescente di applicazioni, in particolare quelle che operano nel mondo fisico o che servono gli utenti in luoghi reali.</p>
+<p>Si pensi alle piattaforme di consegna di cibo come DoorDash o Uber Eats. Quando un utente effettua un ordine, il sistema non si limita a calcolare la distanza più breve tra due punti. Valuta la qualità del ristorante, la disponibilità del corriere, le condizioni del traffico in tempo reale, le aree di servizio e, sempre più spesso, le incorporazioni di utenti e articoli che rappresentano le preferenze personali. Allo stesso modo, i veicoli autonomi devono eseguire la pianificazione del percorso, il rilevamento degli ostacoli e la comprensione semantica della scena con vincoli di latenza molto stretti, spesso entro i millisecondi. In questi domini, le decisioni efficaci dipendono dalla combinazione di vincoli spaziali e similarità semantica, piuttosto che trattarli come fasi indipendenti.</p>
+<p>A livello di dati, tuttavia, i dati spaziali e semantici sono stati tradizionalmente gestiti da sistemi separati.</p>
 <ul>
-<li><p>I sistemi geospaziali memorizzano le coordinate e le relazioni spaziali (latitudine, longitudine, regioni poligonali, ecc.).</p></li>
-<li><p>I database vettoriali gestiscono le incorporazioni semantiche e la ricerca di somiglianze generate dai modelli di intelligenza artificiale.</p></li>
+<li><p>I database geospaziali e le estensioni spaziali sono progettati per memorizzare coordinate, poligoni e relazioni spaziali come il contenimento o la distanza.</p></li>
+<li><p>I database vettoriali gestiscono le incorporazioni vettoriali che rappresentano il significato semantico dei dati.</p></li>
 </ul>
-<p>Questa separazione complica l'architettura, rallenta le interrogazioni e rende difficile per le applicazioni eseguire ragionamenti spaziali e semantici allo stesso tempo.</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> risolve questo problema introducendo il <a href="https://milvus.io/docs/geometry-field.md">campo geometrico</a>, che consente di combinare la ricerca di similarità vettoriale direttamente con i vincoli spaziali. Ciò consente di risolvere casi d'uso quali:</p>
+<p>Quando le applicazioni hanno bisogno di entrambe le cose, sono spesso costrette a eseguire query in più fasi: filtrare in base alla posizione in un sistema, quindi eseguire la ricerca vettoriale in un altro. Questa separazione aumenta la complessità del sistema, la latenza delle interrogazioni e rende difficile eseguire ragionamenti spaziali e semantici in modo efficiente su scala.</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> affronta questo problema introducendo il <a href="https://milvus.io/docs/geometry-field.md">campo geometrico</a>, che consente di combinare la ricerca di similarità vettoriale direttamente con i vincoli spaziali. Ciò consente di risolvere casi d'uso quali:</p>
 <ul>
 <li><p>Servizi di localizzazione (LBS): "trovare POI simili all'interno di questo isolato".</p></li>
 <li><p>Ricerca multimodale: "trovare foto simili nel raggio di 1 km da questo punto".</p></li>
@@ -38,7 +37,7 @@ origin: >-
 </ul>
 <p>Insieme al nuovo <a href="https://milvus.io/docs/rtree.md">indice RTREE, una</a>struttura ad albero ottimizzata per il filtraggio spaziale, Milvus supporta ora operatori geospaziali efficienti come <code translate="no">st_contains</code>, <code translate="no">st_within</code> e <code translate="no">st_dwithin</code> oltre alla ricerca vettoriale ad alta dimensione. Insieme, questi strumenti rendono il reperimento intelligente e consapevole dello spazio non solo possibile, ma anche pratico.</p>
 <p>In questo post spiegheremo come funzionano il campo geometrico e l'indice RTREE e come si combinano con la ricerca per similarità vettoriale per consentire applicazioni spaziali-semantiche del mondo reale.</p>
-<h2 id="What-Is-a-Geometry-Field" class="common-anchor-header">Che cos'è un campo geometrico?<button data-href="#What-Is-a-Geometry-Field" class="anchor-icon" translate="no">
+<h2 id="What-Is-a-Geometry-Field-in-Milvus" class="common-anchor-header">Cos'è un campo geometrico in Milvus?<button data-href="#What-Is-a-Geometry-Field-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -79,13 +78,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Una volta introdotto il tipo di dati Geometria, Milvus ha bisogno di un modo efficiente per filtrare gli oggetti spaziali. Milvus gestisce questo aspetto utilizzando una pipeline di filtraggio spaziale a due stadi:</p>
+    </button></h2><p>Una volta introdotto il tipo di dati Geometry, Milvus ha bisogno di un modo efficiente per filtrare gli oggetti spaziali. Milvus gestisce questo aspetto utilizzando una pipeline di filtraggio spaziale a due stadi:</p>
 <ul>
 <li><p><strong>Filtraggio grossolano:</strong> Restringe rapidamente i candidati utilizzando indici spaziali come RTREE.</p></li>
 <li><p><strong>Filtraggio fine:</strong> Applica controlli geometrici esatti ai candidati rimasti, garantendo la correttezza ai confini.</p></li>
 </ul>
-<p>Il cuore di questo processo è <strong>RTREE (Rectangle Tree)</strong>, una struttura di indicizzazione spaziale progettata per i dati geometrici multidimensionali. RTREE accelera le interrogazioni spaziali organizzando gli oggetti geometrici in modo gerarchico.</p>
-<p><strong>Fase 1: costruzione dell'indice</strong></p>
+<p>Questo progetto bilancia prestazioni e accuratezza. L'indice spaziale elimina in modo aggressivo i dati irrilevanti, mentre i controlli geometrici precisi assicurano risultati corretti per operatori quali il contenimento, l'intersezione e le soglie di distanza.</p>
+<p>Il cuore di questa pipeline è <strong>RTREE (Rectangle Tree)</strong>, una struttura di indicizzazione spaziale progettata per accelerare le interrogazioni sui dati geometrici. RTREE funziona organizzando gli oggetti in modo gerarchico utilizzando i <strong>rettangoli minimi di delimitazione (MBR)</strong>, consentendo di saltare ampie porzioni dello spazio di ricerca durante l'esecuzione delle query.</p>
+<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Fase 1: costruzione dell'indice RTREE</h3><p>La costruzione di RTREE segue un processo bottom-up che raggruppa gli oggetti spaziali vicini in regioni di delimitazione sempre più grandi:</p>
 <p><strong>1. Creare i nodi foglia:</strong> Per ogni oggetto geometrico, calcolare il suo <strong>Minimum Bounding Rectangle (MBR)</strong>- il rettangolo più piccolo che contiene completamente l'oggetto - e memorizzarlo come nodo foglia.</p>
 <p><strong>2. Raggruppare in riquadri più grandi:</strong> Raggruppare i nodi foglia vicini e avvolgere ogni gruppo in un nuovo MBR, producendo nodi interni.</p>
 <p><strong>3. Aggiungere il nodo radice:</strong> Creare un nodo radice il cui MBR copre tutti i gruppi interni, formando una struttura ad albero bilanciata in altezza.</p>
@@ -133,7 +133,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Applications-of-Geo-Vector-Retrieval" class="common-anchor-header">Applicazioni reali del recupero geo-vettoriale<button data-href="#Real-World-Applications-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
+<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">Casi d'uso nel mondo reale del recupero geo-vettoriale<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -180,20 +180,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La geolocalizzazione è molto più che latitudine e longitudine: è una preziosa fonte di informazioni semantiche che ci dice dove avvengono le cose, come si relazionano con l'ambiente circostante e a quale contesto appartengono.</p>
-<p>Nel database di nuova generazione di Zilliz, i dati vettoriali e le informazioni geospaziali si uniscono gradualmente in una base unificata. Questo permette di:</p>
-<ul>
-<li><p>Recupero congiunto di vettori, dati geospaziali e tempo.</p></li>
-<li><p>Sistemi di raccomandazione consapevoli dello spazio</p></li>
-<li><p>Ricerca multimodale basata sulla posizione (LBS).</p></li>
-</ul>
-<p>In futuro, l'intelligenza artificiale non solo capirà <em>il significato</em> dei contenuti, ma anche dove si applicano e quando sono più importanti.</p>
+    </button></h2><p>La geolocalizzazione è molto più che latitudine e longitudine. Nelle applicazioni sensibili alla localizzazione, fornisce un contesto essenziale sul <strong>luogo in cui si verificano gli eventi, sul modo in cui le entità si relazionano spazialmente e sul modo in cui queste relazioni modellano il comportamento del sistema</strong>. Se combinati con i segnali semantici dei modelli di apprendimento automatico, i dati geospaziali consentono una classe più ricca di interrogazioni che sono difficili da esprimere o inefficienti da eseguire quando i dati spaziali e vettoriali sono gestiti separatamente.</p>
+<p>Con l'introduzione del campo geometrico e dell'indice RTREE, Milvus riunisce la ricerca di similarità vettoriale e il filtraggio spaziale in un unico motore di interrogazione. Ciò consente alle applicazioni di eseguire il reperimento congiunto di <strong>vettori, dati geospaziali e tempo</strong>, supportando casi d'uso come i sistemi di raccomandazione spaziali, la ricerca multimodale basata sulla posizione e l'analisi di regioni o percorsi limitati. Inoltre, riduce la complessità architettonica eliminando le pipeline a più stadi che spostano i dati tra sistemi specializzati.</p>
+<p>Mentre i sistemi di intelligenza artificiale continuano ad avvicinarsi al processo decisionale del mondo reale, la comprensione <strong><em>dei</em></strong> contenuti rilevanti dovrà essere sempre più abbinata a <strong><em>dove</em></strong> si applicano e <strong><em>quando sono</em></strong> importanti. Milvus fornisce gli elementi costitutivi di questa classe di carichi di lavoro spaziali-semantici in un modo che è sia espressivo che pratico per operare su scala.</p>
 <p>Per ulteriori informazioni sul campo geometrico e sull'indice RTREE, consultare la documentazione qui sotto:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/geometry-field.md">Campo geometrico | Documentazione Milvus</a></p></li>
 <li><p><a href="https://milvus.io/docs/rtree.md">RTREE | Documentazione Milvus</a></p></li>
 </ul>
-<p>Avete domande o volete un approfondimento su una qualsiasi funzione dell'ultima versione di Milvus? Unitevi al nostro<a href="https://discord.com/invite/8uyFbECzPX"> canale Discord</a> o inviate problemi su<a href="https://github.com/milvus-io/milvus"> GitHub</a>. È anche possibile prenotare una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande tramite<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>Avete domande o volete un approfondimento su una qualsiasi caratteristica dell'ultima versione di Milvus? Unitevi al nostro<a href="https://discord.com/invite/8uyFbECzPX"> canale Discord</a> o inviate problemi su<a href="https://github.com/milvus-io/milvus"> GitHub</a>. È anche possibile prenotare una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande tramite<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
 <h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Per saperne di più sulle caratteristiche di Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

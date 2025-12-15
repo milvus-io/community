@@ -1,6 +1,6 @@
 ---
 id: unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
-title: 空間と意味の融合：MilvusにおけるジオメトリフィールドとRTREEインデックスを用いたジオベクトル検索のアンロック
+title: Milvus 2.6で地理空間フィルタリングとベクトル検索をジオメトリフィールドとRTREEに統合
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
 cover: assets.zilliz.com/rtree_cover_53c424f967.png
@@ -10,30 +10,29 @@ publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 2.6, Geometry field, RTREE index, Geo-Vector Search'
 meta_title: |
-  Milvus Geometry Field and RTREE Index for Geo-Vector Search
+  Geospatial Filtering + Vector Search in Milvus with Geometry Fields and RTREE
 desc: >-
   Milvus2.6では、GeometryフィールドとRTREEインデックスを使用して、ベクトル検索と地理空間インデックスを統合し、正確で場所を認識したAI検索を可能にしています。
 origin: >-
   https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 ---
-<p>最新のシステムがよりインテリジェントになるにつれ、地理位置データはAI主導のレコメンデーション、スマートな配車、自律走行などのアプリケーションに不可欠なものとなっている。</p>
-<p>例えば、DoorDashやUber Eatsのようなプラットフォームで食べ物を注文するとき、システムはあなたとレストランの距離以上のものを考慮する。レストランの評価、宅配便の場所、交通状況、さらには個人的な好みの埋め込みも考慮する。自律走行では、車両は進路計画、障害物検知、シーンレベルの意味理解を、しばしば数ミリ秒以内に実行しなければならない。</p>
-<p>これらはすべて、地理空間データに効率的にインデックスを付け、検索する能力に依存している。</p>
-<p>従来、地理データとベクトルデータは2つの別々のシステムに存在していた：</p>
+<p>AIシステムがリアルタイムの意思決定にますます適用されるにつれて、地理空間データは、特に物理的な世界で動作するアプリケーションや、実際の場所にまたがってユーザーにサービスを提供するアプリケーションにおいて、ますます重要になってきている。</p>
+<p>DoorDashやUber Eatsのようなフードデリバリープラットフォームを考えてみよう。ユーザーが注文をするとき、システムは単純に2地点間の最短距離を計算しているわけではない。レストランの品質、宅配便の空き状況、交通状況、サービスエリア、そして最近では個人の嗜好を表すユーザーとアイテムの埋め込みを評価する。同様に、自律走行車は、しばしばミリ秒以内という厳しいレイテンシ制約のもとで、パスプランニング、障害物検知、シーンレベルの意味理解を実行しなければならない。これらの領域では、効果的な意思決定は、空間的制約を独立したステップとして扱うのではなく、意味的類似性と組み合わせることに依存する。</p>
+<p>しかしデータ層では、空間データと意味データは従来別々のシステムで扱われてきた。</p>
 <ul>
-<li><p>地理空間システムは座標と空間的関係（緯度、経度、多角形領域など）を保存する。</p></li>
-<li><p>ベクトル・データベースは、AIモデルによって生成されたセマンティック埋め込みと類似性検索を扱う。</p></li>
+<li><p>地理空間データベースと空間拡張は、座標、多角形、および包含や距離のような空間的関係を格納するように設計されている。</p></li>
+<li><p>ベクトルデータベースは、データの意味的な意味を表すベクトル埋め込みを扱う。</p></li>
 </ul>
-<p>この分離はアーキテクチャを複雑にし、クエリを遅くし、アプリケーションが空間的推論と意味的推論を同時に実行することを難しくしている。</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6では</a>、ベクトル類似性検索を空間制約と直接組み合わせることができる<a href="https://milvus.io/docs/geometry-field.md">Geometry Fieldを</a>導入することで、この問題に対処している。これにより、以下のようなユースケースが可能になる：</p>
+<p>アプリケーションが両方を必要とする場合、多くの場合、多段階のクエリパイプラインを強いられる。このような分離はシステムの複雑性を増し、クエリの待ち時間を増やし、空間的意味的推論を効率的に実行することを困難にしています。</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus2.6は</a>、ベクトル類似性検索を空間制約と直接組み合わせることができる<a href="https://milvus.io/docs/geometry-field.md">Geometry Fieldを</a>導入することで、この問題に対処している。これにより、以下のようなユースケースが可能になる：</p>
 <ul>
 <li><p>ロケーションベースサービス（LBS）："この街区内で類似のPOIを見つける"</p></li>
 <li><p>マルチモーダル検索："この地点から1km以内の類似写真を検索"</p></li>
 <li><p>地図と物流："地域内の資産 "や "経路と交差するルート"</p></li>
 </ul>
 <p>Milvusは、空間フィルタリングに最適化されたツリーベースの構造<a href="https://milvus.io/docs/rtree.md">である</a>新しい<a href="https://milvus.io/docs/rtree.md">RTREEインデックスと</a>組み合わせることで、高次元ベクトル検索とともに、<code translate="no">st_contains</code> 、<code translate="no">st_within</code> 、<code translate="no">st_dwithin</code> のような効率的な地理空間演算子をサポートします。これらを組み合わせることで、空間を意識したインテリジェントな検索が可能になるだけでなく、実用的になる。</p>
-<p>この記事では、Geometry FieldとRTREEインデックスがどのように機能するのか、また、ベクトル類似性検索とどのように組み合わせることで、実世界の空間意味的アプリケーションを実現できるのかについて説明する。</p>
-<h2 id="What-Is-a-Geometry-Field" class="common-anchor-header">ジオメトリフィールドとは<button data-href="#What-Is-a-Geometry-Field" class="anchor-icon" translate="no">
+<p>この記事では、Geometry FieldとRTREEインデックスがどのように機能するのか、また、ベクトル類似性検索とどのように組み合わせることで、実世界の空間意味的なアプリケーションを実現できるのかについて説明する。</p>
+<h2 id="What-Is-a-Geometry-Field-in-Milvus" class="common-anchor-header">Milvusにおけるジオメトリーフィールドとは？<button data-href="#What-Is-a-Geometry-Field-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,9 +47,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>ジオメトリーフィールドとは</strong>、Milvus のスキーマ定義データタイプ(<code translate="no">DataType.GEOMETRY</code>)の一つで、ジオメトリーデータを格納するために使用されます。生の座標のみを扱うシステムとは異なり、Milvusは<strong>Point</strong>、<strong>LineString</strong>、<strong>Polygonなどの</strong>様々な空間構造をサポートしています。</p>
-<p>これにより、レストランの位置（Point）、配達区域（Polygon）、自律走行車の軌跡（LineString）といった実世界の概念を、意味ベクトルを格納する同じデータベース内で表現することが可能になる。言い換えれば、Milvusは、何かが<em>どこにあるのか</em>、そして<em>それが何を意味する</em>のかを示す統一されたシステムとなる。</p>
-<p>ジオメトリ値は、ジオメトリデータの挿入とクエリのための人間可読標準である<a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">Well-Known Text (WKT)</a>フォーマットを使用して保存される。WKT形式の文字列はMilvusのレコードに直接挿入することができるため、データの取り込みや照会が簡単になります。例えば</p>
+    </button></h2><p><strong>ジオメトリーフィールドとは</strong>、Milvusのスキーマ定義データタイプ(<code translate="no">DataType.GEOMETRY</code>)の一つで、ジオメトリーデータを格納するために使用されます。座標のみを扱うシステムとは異なり、Milvusは<strong>Point</strong>、<strong>LineString</strong>、<strong>Polygonなどの</strong>様々な空間構造をサポートしています。</p>
+<p>これにより、レストランの場所（Point）、配達区域（Polygon）、自律走行車の軌跡（LineString）といった実世界の概念を、意味ベクトルを格納する同じデータベース内で表現することが可能になる。言い換えれば、Milvusは、何かが<em>どこにあるのか</em>、そして<em>それが何を意味する</em>のかを示す統一されたシステムとなる。</p>
+<p>ジオメトリ値は、ジオメトリデータの挿入とクエリのための人間可読標準である<a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">Well-Known Text (WKT)</a>フォーマットを使用して保存される。WKT形式の文字列はMilvusのレコードに直接挿入することができるため、データのインジェストやクエリを簡素化することができます。例えば</p>
 <pre><code translate="no">data = [
     { 
         <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
@@ -77,11 +76,12 @@ origin: >-
     </button></h2><p>MilvusがGeometryデータタイプを導入すると、空間オブジェクトをフィルタリングする効率的な方法が必要になります。Milvusは、2段階の空間フィルタリングパイプラインを使用してこれを処理します：</p>
 <ul>
 <li><p><strong>粗いフィルタリング：</strong>粗いフィルタリング：RTREEなどの空間インデックスを使用して、候補をすばやく絞り込みます。</p></li>
-<li><p><strong>細かいフィルタリング：</strong>残った候補に対して厳密なジオメトリチェックを適用し、境界での正確性を確保します。</p></li>
+<li><p><strong>細かいフィルタリング：</strong>残った候補に対して正確なジオメトリチェックを適用し、境界での正確性を確保します。</p></li>
 </ul>
-<p>このプロセスの中核となるのが<strong>RTREE（Rectangle Tree）</strong>です。<strong>RTREEは</strong>、多次元の幾何学データ用に設計された空間インデックス構造です。RTREEは、幾何オブジェクトを階層的に整理することで、空間クエリを高速化します。</p>
-<p><strong>フェーズ1：インデックスの構築</strong></p>
-<p><strong>1.リーフノードを作成する：</strong>各ジオメトリオブジェクトについて、<strong>MBR（Minimum Bounding Rectangle</strong>：そのオブジェクトを完全に含む最小の矩形）を計算し、リーフノードとして格納します。</p>
+<p>この設計では、パフォーマンスと精度のバランスをとっています。空間インデックスは無関係なデータを積極的に除去し、正確なジオメトリチェックは、包含、交差、距離しきい値などの演算子の正しい結果を保証します。</p>
+<p>このパイプラインの中核となるのが<strong>RTREE（Rectangle Tree</strong>）で、幾何学データに対するクエリを高速化するために設計された空間インデックス構造です。RTREEは、<strong>最小境界矩形（MBR）を</strong>使用してオブジェクトを階層的に整理することで、クエリ実行時に検索空間の大部分をスキップできるようにします。</p>
+<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">フェーズ1：RTREEインデックスの構築</h3><p>RTREEの構築は、近傍の空間オブジェクトをより大きな境界領域にグループ化するボトムアッププロセスに従って行われます：</p>
+<p><strong>1.リーフノードを作成します：</strong>リーフノードの作成：各ジオメトリオブジェクトについて、<strong>最小境界矩形（MBR</strong>：<strong>Minimum Bounding Rectangle）</strong>（オブジェクトを完全に含む最小の矩形）を計算し、リーフノードとして格納します。</p>
 <p><strong>2.より大きなボックスにグループ化します：</strong>近くのリーフノードをクラスタ化し、各グループを新しい MBR 内にラップして内部ノードを生成します。</p>
 <p><strong>3.ルート・ノードを追加する：</strong>MBRがすべての内部グループをカバーするルートノードを作成し、高さバランスの取れたツリー構造を形成する。</p>
 <p>
@@ -100,7 +100,7 @@ origin: >-
 <li><p><strong>各ノードがMBRを格納：</strong>各ノードは、そのサブツリー内のすべてのジオメトリの面積を近似します。これにより、クエリ中にブランチを探索すべきかどうかを簡単に判断できます。</p></li>
 <li><p><strong>高速な枝刈り：</strong>MBRがクエリ領域と交差する部分木のみが探索されます。無関係な領域は完全に無視される。</p></li>
 <li><p><strong>データサイズに合わせて拡張可能：</strong>RTREEは<strong>O(log N)</strong>時間で空間検索をサポートするため、データセットが拡張しても高速なクエリが可能です。</p></li>
-<li><p><strong>Boost.Geometryの実装</strong>Milvusは、<a href="https://www.boost.org/library/latest/geometry/">Boost.Geometryを</a>使用してRTREEインデックスを構築します。<a href="https://www.boost.org/library/latest/geometry/">Boost.Geometryは</a>、最適化されたジオメトリアルゴリズムと、並行処理に適したスレッドセーフなRTREE実装を提供する、広く使用されているC++ライブラリです。</p></li>
+<li><p><strong>Boost.Geometryの実装</strong>Milvusは、最適化されたジオメトリアルゴリズムと、並行処理に適したスレッドセーフなRTREE実装を提供する、広く使用されているC++ライブラリである<a href="https://www.boost.org/library/latest/geometry/">Boost.Geometryを</a>使用してRTREEインデックスを構築します。</p></li>
 </ul>
 <h3 id="Supported-geometry-operators" class="common-anchor-header">サポートされるジオメトリ演算子</h3><p>Milvusは、幾何学的関係に基づいてエンティティのフィルタリングと取得を可能にする一連の空間演算子を提供します。これらの演算子は、オブジェクトが空間内で互いにどのように関連しているかを理解する必要があるワークロードに不可欠です。</p>
 <p>以下の表は、Milvus で現在利用可能な<a href="https://milvus.io/docs/geometry-operators.md">ジオメトリ演算子の</a>一覧です。</p>
@@ -121,14 +121,14 @@ origin: >-
 </table>
 <h3 id="How-to-Combine-Geolocation-Index-and-Vector-Index" class="common-anchor-header">ジオロケーションインデックスとベクトルインデックスの組み合わせ方</h3><p>GeometryサポートとRTREEインデックスにより、Milvusは地理空間フィルタリングとベクトル類似性検索を単一のワークフローで組み合わせることができます。このプロセスは2つのステップで行われます：</p>
 <p><strong>1.</strong>1.<strong>RTREEを使用した位置によるフィルタリング：</strong>Milvusはまず、RTREEインデックスを使用して、指定された地理的範囲内（例：「2km以内」）のエンティティに検索を絞り込みます。</p>
-<p><strong>2.ベクトル検索を使用したセマンティクスによるランク付け：</strong>残りの候補から、ベクトルインデックスが埋め込み類似度に基づき、最も類似した上位N個の結果を選択する。</p>
+<p><strong>2.ベクトル検索を使用したセマンティクスによるランク付け：</strong>残りの候補から、埋め込み類似度に基づき、ベクトルインデックスが上位N位までの最も類似した結果を選択する。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Geometry_R_Tree_f1d88fc252.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Applications-of-Geo-Vector-Retrieval" class="common-anchor-header">地理ベクトル検索の実世界での応用<button data-href="#Real-World-Applications-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
+<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">地理ベクトル検索の実際の使用例<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,17 +175,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ジオロケーションは緯度と経度以上のものであり、物事がどこで起こり、周囲とどのように関係し、どのようなコンテクストに属しているかを教えてくれる、セマンティック情報の貴重な情報源である。</p>
-<p>Zillizの次世代データベースでは、ベクターデータと地理空間情報が統一された基盤として徐々に統合されつつある。これにより、次のことが可能になります：</p>
+    </button></h2><p>ジオロケーションは緯度と経度以上のものである。ロケーションセンシティブなアプリケーションでは、<strong>イベントが発生する場所、エンティティが空間的にどのように関係するか、そしてそれらの関係がどのようにシステムの動作を形成するかについての</strong>重要なコンテキストを提供する。地理空間データを機械学習モデルからのセマンティック・シグナルと組み合わせることで、空間データとベクトルデータを別々に扱う場合には表現が難しかったり、実行効率が悪かったりする、より豊富な種類のクエリが可能になる。</p>
+<p>GeometryフィールドとRTREEインデックスの導入により、Milvusはベクトル類似検索と空間フィルタリングを単一のクエリーエンジンに統合しました。これにより、アプリケーションは<strong>ベクトル、地理空間データ、時間を</strong>横断した共同検索を実行できるようになり、空間を意識した推薦システム、マルチモーダルなロケーションベース検索、地域やパスに制約のある分析などのユースケースをサポートします。さらに重要なのは、専門システム間でデータを移動させる多段パイプラインを排除することで、アーキテクチャの複雑さを軽減することだ。</p>
+<p>AIシステムが現実世界の意思決定に近づき続けるにつれ、<strong><em>どのような</em></strong>コンテンツが関連性があるのかを理解することは、それが適用される<strong><em>場所や</em></strong>重要な<strong><em>タイミングと</em></strong>組み合わされることがますます必要になる。Milvusは、このような空間的意味論的ワークロードのためのビルディングブロックを、表現力と実用性を兼ね備えた方法で提供します。</p>
+<p>Geometry FieldとRTREEインデックスの詳細については、以下のドキュメントをご参照ください：</p>
 <ul>
-<li><p>ベクトル、地理空間データ、時間を横断した共同検索</p></li>
-<li><p>空間を意識した推薦システム</p></li>
-<li><p>マルチモーダルな位置情報検索（LBS）</p></li>
-</ul>
-<p>将来、AIはコンテンツの<em>意味だけ</em>でなく、それが適用される場所や最も重要なタイミングも理解するようになるだろう。</p>
-<p>Geometry FieldとRTREEインデックスについての詳細は、以下のドキュメントをご覧ください：</p>
-<ul>
-<li><p><a href="https://milvus.io/docs/geometry-field.md">ジオメトリーフィールド｜Milvusドキュメント</a></p></li>
+<li><p><a href="https://milvus.io/docs/geometry-field.md">Geometry Field｜Milvusドキュメント</a></p></li>
 <li><p><a href="https://milvus.io/docs/rtree.md">RTREE｜Milvusドキュメント</a></p></li>
 </ul>
 <p>Milvusの最新機能に関するご質問やディープダイブをご希望ですか？私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discord チャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHub</a> に課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察やガイダンス、質問への回答を得ることもできます。</p>

@@ -1,6 +1,6 @@
 ---
 id: unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
-title: 空间与语义的结合：利用 Milvus 中的几何字段和 RTREE 索引解锁地理向量搜索
+title: Milvus 2.6 将地理空间过滤和向量搜索与几何字段和 RTREE 结合在一起
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
 cover: assets.zilliz.com/rtree_cover_53c424f967.png
@@ -10,29 +10,28 @@ publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 2.6, Geometry field, RTREE index, Geo-Vector Search'
 meta_title: |
-  Milvus Geometry Field and RTREE Index for Geo-Vector Search
+  Geospatial Filtering + Vector Search in Milvus with Geometry Fields and RTREE
 desc: 了解 Milvus 2.6 如何利用几何字段和 RTREE 索引将向量搜索与地理空间索引统一起来，从而实现准确的位置感知人工智能检索。
 origin: >-
   https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 ---
-<p>随着现代系统越来越智能化，地理位置数据已成为人工智能驱动的推荐、智能调度和自动驾驶等应用的关键。</p>
-<p>例如，当您在 DoorDash 或 Uber Eats 等平台上订餐时，系统考虑的远不止您与餐厅之间的距离。它还会权衡餐厅评级、快递位置、交通状况，甚至你的个人偏好Embeddings。在自动驾驶中，车辆必须执行路径规划、障碍物检测和场景级语义理解，而且通常只能在几毫秒内完成。</p>
-<p>所有这些都取决于高效索引和检索地理空间数据的能力。</p>
-<p>传统上，地理数据和向量数据分属两个不同的系统：</p>
+<p>随着人工智能系统越来越多地应用于实时决策，地理空间数据在越来越多的应用中变得越来越重要--尤其是那些在物理世界中操作或跨真实地点为用户提供服务的应用。</p>
+<p>考虑一下 DoorDash 或 Uber Eats 这样的送餐平台。当用户下订单时，系统并不是简单地计算两点之间的最短距离。它需要评估餐厅质量、快递可用性、实时交通状况、服务区域，以及越来越多代表个人偏好的用户和物品嵌入。同样，自动驾驶汽车必须在严格的延迟限制条件下（通常在几毫秒内）执行路径规划、障碍物检测和场景级语义理解。在这些领域，有效的决策取决于空间约束与语义相似性的结合，而不是将它们视为独立的步骤。</p>
+<p>然而，在数据层，空间数据和语义数据历来由不同的系统处理。</p>
 <ul>
-<li><p>地理空间系统存储坐标和空间关系（纬度、经度、多边形区域等）。</p></li>
-<li><p>向量数据库处理人工智能模型生成的语义嵌入和相似性搜索。</p></li>
+<li><p>地理空间数据库和空间扩展旨在存储坐标、多边形和空间关系（如包含或距离）。</p></li>
+<li><p>向量数据库处理代表数据语义的向量 Embeddings。</p></li>
 </ul>
-<p>这种分离使架构变得复杂，降低了查询速度，并使应用程序难以同时执行空间和语义推理。</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>通过引入<a href="https://milvus.io/docs/geometry-field.md">几何字段（Geometry Field</a>）解决了这一问题，该字段可将向量相似性搜索与空间约束直接结合起来。这使得以下用例成为可能：</p>
+<p>当应用程序同时需要这两种数据时，往往被迫进入多阶段查询管道--在一个系统中按位置进行过滤，然后在另一个系统中执行向量搜索。这种分离增加了系统的复杂性，增加了查询延迟，并且难以有效地大规模执行空间语义推理。</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>通过引入<a href="https://milvus.io/docs/geometry-field.md">几何字段（Geometry Field</a>）解决了这一问题，它允许将向量相似性搜索与空间约束直接结合起来。这样就可以实现以下用例</p>
 <ul>
 <li><p>位置服务（LBS）："查找该城市街区内的类似 POI"。</p></li>
 <li><p>多模式搜索："检索该点 1km 范围内的相似照片</p></li>
 <li><p>地图与物流："区域内的资产 "或 "与路径相交的路线"</p></li>
 </ul>
 <p>配合新的<a href="https://milvus.io/docs/rtree.md">RTREE 索引--一种</a>针对空间过滤进行了优化的树形结构--Milvus 现在支持高效的地理空间操作符，如<code translate="no">st_contains</code> 、<code translate="no">st_within</code> 和<code translate="no">st_dwithin</code> 以及高维向量搜索。它们的结合使空间感知智能检索不仅成为可能，而且非常实用。</p>
-<p>在本篇文章中，我们将介绍几何字段和 RTREE 索引的工作原理，以及它们如何与向量相似性搜索相结合，实现现实世界中的空间语义应用。</p>
-<h2 id="What-Is-a-Geometry-Field" class="common-anchor-header">什么是几何字段？<button data-href="#What-Is-a-Geometry-Field" class="anchor-icon" translate="no">
+<p>在这篇文章中，我们将介绍几何字段和 RTREE 索引的工作原理，以及它们如何与向量相似性搜索相结合，从而实现现实世界中的空间语义应用。</p>
+<h2 id="What-Is-a-Geometry-Field-in-Milvus" class="common-anchor-header">什么是 Milvus 中的几何字段？<button data-href="#What-Is-a-Geometry-Field-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,7 +46,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在 Milvus 中，几何<strong>字段</strong>是一种 Schema 定义的数据类型 (<code translate="no">DataType.GEOMETRY</code>) ，用于存储几何数据。与只处理原始坐标的系统不同，Milvus 支持一系列空间结构，包括<strong>点（Point</strong>）、<strong>线字符串（LineString</strong>）和<strong>多边形（Polygon</strong>）。</p>
+    </button></h2><p>在 Milvus 中，<strong>几何字段</strong>是一种 Schema 定义的数据类型 (<code translate="no">DataType.GEOMETRY</code>) ，用于存储几何数据。与只处理原始坐标的系统不同，Milvus 支持一系列空间结构，包括<strong>点（Point</strong>）、<strong>线字符串（LineString</strong>）和<strong>多边形（Polygon</strong>）。</p>
 <p>这样，就可以在存储语义向量的同一个数据库中表示真实世界的概念，如餐厅位置（点）、配送区域（多边形）或自动驾驶汽车轨迹（LineString）。换句话说，Milvus 成为了一个统一的系统，既能显示某物的<em>位置</em>，也能显示<em>其含义</em>。</p>
 <p>几何值使用<a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">已知文本（WKT）</a>格式存储，这是一种用于插入和查询几何数据的人类可读标准。由于 WKT 字符串可以直接插入 Milvus 记录，因此简化了数据摄取和查询。例如</p>
 <pre><code translate="no">data = [
@@ -78,8 +77,9 @@ origin: >-
 <li><p><strong>粗过滤：</strong>使用 RTREE 等空间索引快速缩小候选对象的范围。</p></li>
 <li><p><strong>精细过滤：</strong>对剩余的候选对象进行精确的几何检查，确保边界的正确性。</p></li>
 </ul>
-<p>该流程的核心是<strong>RTREE（矩形树）</strong>，这是一种专为多维几何数据设计的空间索引结构。RTREE 通过对几何对象进行分层组织，加快了空间查询速度。</p>
-<p><strong>第 1 阶段：建立索引</strong></p>
+<p>这种设计兼顾了性能和准确性。空间索引会积极删除不相关的数据，而精确的几何检查则能确保包含、交叉和距离阈值等操作符的结果正确无误。</p>
+<p>该管道的核心是<strong>RTREE（矩形树）</strong>，这是一种空间索引结构，旨在加快几何数据的查询速度。RTREE 使用<strong>最小边界矩形 (MBR)</strong> 对对象进行分层组织，允许在执行查询时跳过大部分搜索空间。</p>
+<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">第 1 阶段：构建 RTREE 索引</h3><p>RTREE 的构建遵循一个自下而上的过程，将附近的空间对象分组到越来越大的边界区域中：</p>
 <p><strong>1.创建叶节点：</strong>对于每个几何对象，计算其<strong>最小边界矩形 (MBR)</strong>- 即完全包含该对象的最小矩形，并将其存储为叶节点。</p>
 <p><strong>2.组合成更大的方框：</strong>将附近的叶节点分组，并将每个分组包裹在一个新的 MBR 内，生成内部节点。</p>
 <p><strong>3.添加根节点：</strong>创建一个根节点，其 MBR 覆盖所有内部组，形成一个高度平衡的树形结构。</p>
@@ -127,7 +127,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Applications-of-Geo-Vector-Retrieval" class="common-anchor-header">地理向量检索的实际应用<button data-href="#Real-World-Applications-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
+<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">地理向量检索的实际应用案例<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,14 +174,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>地理定位不仅仅是经度和纬度，它还是宝贵的语义信息来源，能告诉我们事情发生的地点、与周围环境的关系以及所属的环境。</p>
-<p>在 Zilliz 的下一代数据库中，向量数据和地理空间信息正逐渐融合为一个统一的基础。这使得</p>
-<ul>
-<li><p>跨向量、地理空间数据和时间的联合检索</p></li>
-<li><p>空间感知推荐系统</p></li>
-<li><p>多模式、基于位置的搜索（LBS）</p></li>
-</ul>
-<p>未来，人工智能不仅能理解内容<em>的</em>含义，还能理解内容的适用范围和最重要的时间。</p>
+    </button></h2><p>地理定位不仅仅是经度和纬度。在位置敏感型应用中，它提供了有关<strong>事件发生地点、实体空间关系以及这些关系如何影响系统行为的</strong>重要背景信息。当地理空间数据与来自机器学习模型的语义信号相结合时，就能实现更丰富的查询，而这些查询在单独处理空间和向量数据时难以表达或执行效率低下。</p>
+<p>通过引入几何字段和 RTREE 索引，Milvus 将向量相似性搜索和空间过滤整合到了一个单一的查询引擎中。这样，应用程序就可以跨<strong>向量、地理空间数据和时间</strong>执行联合检索，支持空间感知推荐系统、基于位置的多模式搜索以及区域或路径受限分析等用例。更重要的是，它消除了在专业系统之间移动数据的多级管道，从而降低了架构的复杂性。</p>
+<p>随着人工智能系统不断向现实世界的决策靠拢，了解<strong><em>哪些</em></strong>内容是相关的将越来越需要与它的<strong><em>适用范围</em></strong>和适用<strong><em>时间</em></strong>相匹配。Milvus 为这类空间语义工作负载提供了构建模块，其方式既具有表现力，又切实可行，适合大规模操作。</p>
 <p>有关几何字段和 RTREE 索引的更多信息，请查看下面的文档：</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/geometry-field.md">几何字段 | Milvus 文档</a></p></li>
@@ -205,7 +200,7 @@ origin: >-
       </svg>
     </button></h2><ul>
 <li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">介绍 Milvus 2.6：十亿规模的经济型向量搜索</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">介绍 Embeddings 功能：Milvus 2.6 如何简化矢量化和语义搜索</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">介绍 Embeddings 功能：Milvus 2.6 如何简化向量化和语义搜索</a></p></li>
 <li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Milvus中的JSON粉碎功能：快88.9倍的灵活JSON过滤功能</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">解锁真正的实体级检索：Milvus 中新的结构数组和 MAX_SIM 功能</a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 中的 MinHash LSH：打击 LLM 训练数据中重复数据的秘密武器 </a></p></li>
