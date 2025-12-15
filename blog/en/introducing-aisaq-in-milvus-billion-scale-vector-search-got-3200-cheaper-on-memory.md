@@ -5,7 +5,7 @@ title: >
 author: Martin Li
 date: 2025-12-10
 cover: assets.zilliz.com/AISAQ_Cover_66b628b762.png
-tag: Tutorial
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
