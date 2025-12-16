@@ -1,8 +1,8 @@
 ---
 id: milvus-exceeds-40k-github-stars.md
 title: >-
-  7 anos, 2 grandes reconstruções, mais de 40 mil estrelas no GitHub: A ascensão
-  do Milvus como a principal base de dados vetorial de código aberto
+  7 Anos, 2 Grandes Rebuilds, 40K+ Estrelas no GitHub: A ascensão do Milvus como
+  a principal base de dados vetorial de código aberto
 author: Fendy Feng
 date: 2025-12-02T00:00:00.000Z
 cover: assets.zilliz.com/star_history_3dfceda40f.png
@@ -19,7 +19,7 @@ desc: >-
   dados vetorial de código aberto do mundo
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
-<p>Em junho de 2025, o Milvus atingiu 35.000 estrelas no GitHub. Alguns meses depois, já ultrapassámos <a href="https://github.com/milvus-io/milvus">as 40.000, o que comprova</a>não só a dinâmica, mas também a existência de uma comunidade global que continua a impulsionar o futuro da pesquisa vetorial e multimodal.</p>
+<p>Em junho de 2025, o Milvus atingiu 35.000 estrelas no GitHub. Alguns meses depois, já ultrapassámos <a href="https://github.com/milvus-io/milvus">as 40.000, o que prova</a>não só a dinâmica, mas também uma comunidade global que continua a impulsionar o futuro da pesquisa vetorial e multimodal.</p>
 <p>Estamos profundamente gratos. A todos os que fizeram estrelas, bifurcaram, apresentaram problemas, discutiram sobre uma API, partilharam um benchmark, ou construíram algo incrível com o Milvus: <strong>Obrigado, e vocês são a razão pela qual este projeto se move tão rapidamente como o faz</strong>. Cada estrela representa mais do que um botão premido - reflecte alguém que escolheu o Milvus para impulsionar o seu trabalho, alguém que acredita no que estamos a construir, alguém que partilha a nossa visão de uma infraestrutura de IA aberta, acessível e de alto desempenho.</p>
 <p>Por isso, enquanto celebramos, também estamos a olhar para o futuro - para as funcionalidades que pedem, para as arquitecturas que a IA exige agora e para um mundo onde a compreensão multimodal e semântica é o padrão em todas as aplicações.</p>
 <p>
@@ -68,9 +68,9 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>2025 foi o ano em que o Milvus entrou numa nova liga. Embora a pesquisa vetorial seja excelente na compreensão semântica, a realidade na produção é simples: <strong>os desenvolvedores ainda precisam de correspondência precisa de palavras-chave</strong> para IDs de produtos, números de série, frases exatas, termos legais e muito mais. Sem a pesquisa de texto completo nativa, as equipas eram forçadas a manter clusters Elasticsearch/OpenSearch ou a juntar as suas próprias soluções personalizadas - duplicando a sobrecarga operacional e a fragmentação.</p>
-<p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md"><strong>O Milvus 2.5</strong></a> <strong>mudou isso</strong>. Ele introduziu <strong>a pesquisa híbrida verdadeiramente nativa</strong>, combinando a recuperação de texto completo e a pesquisa vetorial em um único mecanismo. Pela primeira vez, os programadores puderam executar consultas lexicais, consultas semânticas e filtros de metadados em conjunto, sem terem de fazer malabarismos com sistemas extra ou sincronizar condutas. Também actualizámos a filtragem de metadados, a análise de expressões e a eficiência de execução, para que as consultas híbridas parecessem naturais - e rápidas - sob cargas de produção reais.</p>
-<p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>O Milvus 2.6</strong></a> <strong>impulsionou ainda mais essa dinâmica</strong>, visando os dois desafios que ouvimos com mais frequência dos usuários que executam em escala: <strong><em>custo</em> e <em>desempenho</em>.</strong> Esta versão proporcionou melhorias profundas na arquitetura - caminhos de consulta mais previsíveis, indexação mais rápida, utilização de memória drasticamente inferior e armazenamento significativamente mais eficiente. Muitas equipas relataram ganhos imediatos sem alterar uma única linha do código da aplicação.</p>
+    </button></h2><p>2025 foi o ano em que o Milvus entrou numa nova liga. Embora a pesquisa vetorial se destaque na compreensão semântica, a realidade na produção é simples: <strong>os desenvolvedores ainda precisam de correspondência precisa de palavras-chave</strong> para IDs de produtos, números de série, frases exatas, termos legais e muito mais. Sem a pesquisa de texto completo nativa, as equipas eram forçadas a manter clusters Elasticsearch/OpenSearch ou a juntar as suas próprias soluções personalizadas - duplicando a sobrecarga operacional e a fragmentação.</p>
+<p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md"><strong>O Milvus 2.5</strong></a> <strong>mudou isso</strong>. Ele introduziu <strong>a pesquisa híbrida verdadeiramente nativa</strong>, combinando a recuperação de texto completo e a pesquisa vetorial em um único mecanismo. Pela primeira vez, os programadores puderam executar consultas lexicais, consultas semânticas e filtros de metadados em conjunto, sem terem de fazer malabarismos com sistemas adicionais ou sincronizar condutas. Também actualizámos a filtragem de metadados, a análise de expressões e a eficiência de execução, para que as consultas híbridas parecessem naturais - e rápidas - sob cargas de produção reais.</p>
+<p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>O Milvus 2.6</strong></a> <strong>impulsionou ainda mais essa dinâmica</strong>, visando os dois desafios que ouvimos com mais frequência dos usuários que executam em escala: <strong><em>custo</em> e <em>desempenho</em>.</strong> Esta versão proporcionou melhorias profundas na arquitetura - caminhos de consulta mais previsíveis, indexação mais rápida, utilização de memória drasticamente inferior e armazenamento significativamente mais eficiente. Muitas equipas relataram ganhos imediatos sem alterar uma única linha de código da aplicação.</p>
 <p>Aqui estão apenas alguns destaques do Milvus 2.6:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/tiered-storage-overview.md"><strong>Armazenamento em camadas</strong></a> que permite às equipas equilibrar o custo e o desempenho de forma mais inteligente, reduzindo os custos de armazenamento até 50%.</p></li>
@@ -84,6 +84,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>Suporte para até 100 mil coleções</strong> em um único cluster - um grande passo em direção ao verdadeiro multi-tenancy em escala.</p></li>
 </ul>
 <p>Para uma análise mais aprofundada do Milvus 2.6, consulte <a href="https://milvus.io/docs/release_notes.md">as notas de lançamento completas</a>.</p>
+<p><a href="https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&amp;utm_medium=milvus-40k-stars&amp;utm_campaign=milvus-26-webinar">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">Além do Milvus: ferramentas de código aberto para desenvolvedores de IA<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -239,7 +245,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>Aos nossos utilizadores</strong>: Obrigado por confiarem ao Milvus as vossas cargas de trabalho de produção e por partilharem as vossas experiências, tanto as boas como as difíceis. Os vossos comentários orientam o nosso roteiro.</p></li>
 <li><p><strong>Aos apoiantes da nossa comunidade</strong>: Obrigado por responderem a perguntas, escreverem tutoriais, criarem conteúdos e ajudarem os recém-chegados a começar. Vocês tornam a nossa comunidade acolhedora e inclusiva.</p></li>
 <li><p><strong>Aos nossos parceiros e integradores</strong>: Obrigado por construírem connosco e fazerem do Milvus um cidadão de primeira classe no ecossistema de desenvolvimento de IA.</p></li>
-<li><p><strong>À equipa Zilliz</strong>: Obrigado pelo vosso empenho inabalável no projeto open-source e no sucesso dos nossos utilizadores.</p></li>
+<li><p><strong>À equipa Zilliz</strong>: Obrigado pelo vosso compromisso inabalável com o projeto de código aberto e com o sucesso dos nossos utilizadores.</p></li>
 </ul>
 <p>O Milvus cresceu porque milhares de pessoas decidiram construir algo em conjunto - de forma aberta, generosa e com a convicção de que a infraestrutura fundamental de IA deve ser acessível a todos.</p>
 <h2 id="Join-Us-on-This-Journey" class="common-anchor-header">Junte-se a nós nesta jornada<button data-href="#Join-Us-on-This-Journey" class="anchor-icon" translate="no">

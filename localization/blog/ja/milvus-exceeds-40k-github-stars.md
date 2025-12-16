@@ -16,7 +16,7 @@ desc: オープンソースのベクターデータベースで世界をリー�
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
 <p>2025年6月、Milvusは35,000のGitHubスターを達成しました。それからわずか数ヶ月で、<a href="https://github.com/milvus-io/milvus">40,000</a>スターを超えました。これは、勢いだけでなく、ベクトル検索とマルチモーダル検索の未来を押し進め続けるグローバル・コミュニティの<a href="https://github.com/milvus-io/milvus">証でも</a>あります。</p>
-<p>深く感謝している。スターを付けてくださった方々、フォークしてくださった方々、issueを提出してくださった方々、APIについて議論してくださった方々、ベンチマークを共有してくださった方々、milvusを使って素晴らしいものを作ってくださった方々、<strong>ありがとうござい</strong>ます。すべての星は、ボタンを押したこと以上のことを表しています。それは、Milvusを選んで自分の仕事を動かしている人、私たちが構築しているものを信じている人、オープンでアクセス可能な高性能AIインフラストラクチャという私たちのビジョンに共感している人を反映しています。</p>
+<p>深く感謝している。スターを付けてくださった方、フォークしてくださった方、issueを提出してくださった方、APIについて議論してくださった方、ベンチマークを共有してくださった方、milvusを使って素晴らしいものを作ってくださった方：<strong>ありがとうございます</strong>。すべての星は、ボタンを押したこと以上のことを表しています。それは、Milvusを選んで自分の仕事を動かしている人、私たちが構築しているものを信じている人、オープンでアクセス可能な高性能AIインフラストラクチャという私たちのビジョンに共感している人を反映しています。</p>
 <p>私たちは、皆様が求めている機能、AIが今求めているアーキテクチャ、そしてマルチモーダルかつセマンティックな理解があらゆるアプリケーションのデフォルトとなる世界を見据えています。</p>
 <p>
   <span class="img-wrapper">
@@ -80,6 +80,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p>単一クラスターで<strong>最大100Kコレクションをサポート</strong>- スケールでの真のマルチテナントへの大きな一歩。</p></li>
 </ul>
 <p>Milvus 2.6の詳細については、<a href="https://milvus.io/docs/release_notes.md">リリースノートを</a>ご覧ください。</p>
+<p><a href="https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&amp;utm_medium=milvus-40k-stars&amp;utm_campaign=milvus-26-webinar">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">Milvusを超えて：AI開発者のためのオープンソースツール<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -128,7 +134,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>現在、10,000を超える企業チームがMilvusを実運用しており、その中には急成長中の新興企業から、フォーチュン500に名を連ねる世界有数のテクノロジー企業も含まれています。NVIDIA、Salesforce、eBay、Airbnb、IBM、AT&amp;T、LINE、Shopee、Roblox、Bosch、そしてマイクロソフト社内のチームが、毎日毎分稼働するAIシステムのためにMilvusを利用しています。彼らのワークロードは、検索、レコメンデーション、エージェント・パイプライン、マルチモーダル検索など、ベクター・インフラを限界まで押し上げるアプリケーションに及んでいる。</p>
+    </button></h2><p>現在、10,000を超える企業チームがMilvusを実運用しており、その中には急成長中の新興企業から、フォーチュン500に名を連ねる世界有数のテクノロジー企業も含まれています。NVIDIA、Salesforce、eBay、Airbnb、IBM、AT&amp;T、LINE、Shopee、Roblox、Bosch、そしてマイクロソフト社内のチームが、毎日毎分稼働するAIシステムを動かすためにMilvusを利用しています。彼らのワークロードは、検索、レコメンデーション、エージェント・パイプライン、マルチモーダル検索など、ベクター・インフラを限界まで押し上げるアプリケーションに及んでいる。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
@@ -184,11 +190,11 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>柔軟性とコスト効率：</strong>従量課金、サーバーレス自動スケーリング、インテリジェントなリソース管理により、自己管理型の導入と比較してコストを 50% 以上削減できます。</p></li>
 <li><p><strong>エンタープライズグレードの信頼性：</strong>99.95%のアップタイムSLA、マルチAZ冗長性、SOC 2 Type II、ISO 27001、GDPRコンプライアンス。RBAC、BYOC、監査ログ、暗号化をフルサポート。</p></li>
 <li><p><strong>クラウドにとらわれない展開：</strong>AWS、Azure、GCP、Alibaba Cloud、またはTencent Cloud上で実行できるため、ベンダーロックインがなく、あらゆる場所で一貫したパフォーマンスを実現できます。</p></li>
-<li><p><strong>自然言語クエリ：</strong>組み込みのMCPサーバーサポートにより、手動でAPIコールを作成する代わりに、会話形式でデータを照会できます。</p></li>
+<li><p><strong>自然言語クエリ：</strong>内蔵のMCPサーバーサポートにより、手動でAPIコールを作成する代わりに、会話形式でデータを照会できます。</p></li>
 <li><p><strong>簡単な移行</strong>：Milvus、Pinecone、Qdrant、Weaviate、Elasticsearch、またはPostgreSQLから、組み込みの移行ツールを使って移行できます。</p></li>
 <li><p><strong>オープンソースのMilvusと100%互換。</strong>プロプライエタリなフォークなし。ロックインもありません。Milvusをより簡単に。</p></li>
 </ul>
-<p><strong>Milvusは今後もオープンソースで無料でご利用いただけます。</strong>しかし、それを企業規模で確実に運用するには、かなりの専門知識とリソースが必要です。<strong>Zilliz Cloudは、そのギャップに対する私たちの答え</strong>です。29のリージョンと5つの主要クラウドに展開されたZilliz Cloudは、エンタープライズグレードのパフォーマンス、セキュリティ、コスト効率を提供し、お客様が既にご存知のMilvusと完全に連携した状態を保ちます。</p>
+<p><strong>Milvusは今後もオープンソースで無料でご利用いただけます。</strong>しかし、それを企業規模で確実に運用するには、かなりの専門知識とリソースが必要です。<strong>Zilliz Cloudは、そのギャップに対する私たちの答え</strong>です。29のリージョンと5つの主要なクラウドに展開されたZilliz Cloudは、エンタープライズグレードのパフォーマンス、セキュリティ、コスト効率を提供し、お客様が既にご存知のMilvusと完全に連携します。</p>
 <p><a href="https://cloud.zilliz.com/signup"><strong>無料トライアルを開始</strong></a></p>
 <h2 id="Whats-Next-Milvus-Lake" class="common-anchor-header">次の展開Milvus Lake<button data-href="#Whats-Next-Milvus-Lake" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -206,10 +212,10 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>ベクターデータベースを導入したチームとして、私たちはエンタープライズデータがどのように変化しているかを最前列で見てきました。かつてはテラバイト単位の構造化されたテーブルにきちんと収まっていたものが、今やペタバイト、そしてやがて兆単位のマルチモーダル・オブジェクトへと急速に変化している。テキスト、画像、音声、ビデオ、時系列ストリーム、マルチセンサーログ...これらは今や、最新のAIシステムが依拠するデータセットを定義している。</p>
-<p>ベクトル・データベースは、非構造化データやマルチモーダルデータ用に構築されていますが、最も経済的でアーキテクチャ的に健全な選択とは限りません。大規模モデルのためのトレーニング・コーパス、自律走行知覚ログ、ロボット工学データセットは通常、ミリ秒レベルのレイテンシーや高い同時実行性を必要としません。このような大量のデータをリアルタイム・ベクター・データベースで実行することは、そのレベルのパフォーマンスを必要としないパイプラインにとっては、高価で運用が重く、複雑になりすぎる。</p>
+<p>ベクトル・データベースは、非構造化データやマルチモーダルデータ用に構築されていますが、最も経済的でアーキテクチャ的に健全な選択とは限りません。大規模なモデルのためのトレーニングコーパス、自律走行知覚ログ、ロボット工学データセットは、通常ミリ秒レベルのレイテンシーや高い同時実行性を必要としません。このような大量のデータをリアルタイム・ベクター・データベースで実行することは、そのレベルのパフォーマンスを必要としないパイプラインにとっては、高価で運用が重く、複雑になりすぎる。</p>
 <p>この現実が、私たちを次の大きな取り組みへと導いた：<strong>Milvusレイクは、</strong>AIスケールデータのために設計された、セマンティック主導、インデックスファーストのマルチモーダルレイクハウスです。Milvus Lakeは、ベクトル、メタデータ、ラベル、LLMで生成された記述、構造化フィールドなど、あらゆるモダリティのセマンティックシグナルを統合し、実際のビジネスエンティティを中心とした<strong>セマンティックワイドテーブルに</strong>整理します。以前はオブジェクトストレージ、レイクハウス、モデルパイプラインに未加工の散在したファイルとして存在していたデータが、統一されたクエリ可能なセマンティックレイヤーとなる。大規模なマルチモーダルコーパスは、企業全体で一貫した意味を持つ、管理可能で検索可能な再利用可能な資産に変わります。</p>
-<p>Milvus Lakeは、クリーンな<strong>マニフェスト＋データ＋インデックスの</strong>アーキテクチャで構築されており、インデックス作成は後付けではなく、基礎的なものとして扱われます。これにより、予測可能なレイテンシー、劇的に低いストレージコスト、そしてはるかに高い運用安定性を提供する、兆規模のコールドデータに最適化された「最初に検索し、後で処理する」ワークフローが実現します。ホットパスにはKVMe/SSD、ディープアーカイブにはオブジェクトストレージを使用し、効率的な圧縮と遅延負荷の少ないインデックスと組み合わせることで、セマンティックな忠実性を維持しつつ、インフラストラクチャーのオーバーヘッドをしっかりと制御します。</p>
-<p>Milvus Lakeはまた、Paimon、Iceberg、Hudi、Spark、Ray、その他のビッグデータエンジンやフォーマットと統合し、最新のデータエコシステムにシームレスに接続します。チームは、既存のワークフローを再プラットフォーム化することなく、バッチ処理、ほぼリアルタイムのパイプライン、セマンティック検索、フィーチャーエンジニアリング、トレーニングデータの準備のすべてを一箇所で実行することができます。Milvus Lakeは、基礎モデルコーパスの構築、自律走行シミュレーションライブラリの管理、ロボットエージェントのトレーニング、大規模な検索システムなど、AI時代の拡張性とコスト効率に優れたセマンティックレイクハウスを提供します。</p>
+<p>Milvus Lakeは、クリーンな<strong>マニフェスト＋データ＋インデックスの</strong>アーキテクチャで構築されており、インデックス作成は後付けではなく、基礎的なものとして扱われます。これにより、予測可能なレイテンシー、劇的に低いストレージコスト、そしてはるかに高い運用安定性を提供する、兆規模のコールドデータに最適化された「最初に検索し、後で処理する」ワークフローが実現します。ホットパスにはKVMe/SSD、ディープアーカイブにはオブジェクトストレージを使用し、効率的な圧縮と遅延負荷の少ないインデックスと組み合わせることで、セマンティックな忠実性を維持しながら、インフラストラクチャーのオーバーヘッドをしっかりと制御することができます。</p>
+<p>Milvus Lakeはまた、Paimon、Iceberg、Hudi、Spark、Ray、その他のビッグデータエンジンやフォーマットと統合し、最新のデータエコシステムにシームレスに接続します。チームは、既存のワークフローを再プラットフォーム化することなく、バッチ処理、ほぼリアルタイムのパイプライン、セマンティック検索、フィーチャーエンジニアリング、トレーニングデータの準備のすべてを一箇所で実行することができます。Milvus Lakeは、基礎モデルコーパスの構築、自律走行シミュレーションライブラリの管理、ロボットエージェントのトレーニング、大規模な検索システムのパワーアップなど、AI時代のための拡張可能でコスト効率の高いセマンティックレイクハウスを提供します。</p>
 <p><strong>Milvus Lakeは現在開発中です。</strong>早期アクセスにご興味のある方、詳細をお知りになりたい方は、こちらまでご連絡ください。<a href="https://zilliz.com/contact"> </a></p>
 <p><a href="https://zilliz.com/contact-sales"><strong>お問い合わせはこちらから</strong></a></p>
 <h2 id="Built-by-the-Community-For-the-Community" class="common-anchor-header">コミュニティによるコミュニティのための構築<button data-href="#Built-by-the-Community-For-the-Community" class="anchor-icon" translate="no">
@@ -232,7 +238,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <p>このマイルストーンは皆様のものです：</p>
 <ul>
 <li><p><strong>貢献者の皆さん</strong>：あなたのコード、アイデア、時間に感謝します。皆様のおかげでMilvusは日々向上しています。</p></li>
-<li><p><strong>ユーザーの皆様へ</strong>：Milvusを信頼していただき、良い経験も困難な経験も共有していただきありがとうございます。皆様のフィードバックが私たちのロードマップの原動力となっています。</p></li>
+<li><p><strong>ユーザーの皆様へ</strong>：Milvusを信頼し、良い経験も困難な経験も共有していただきありがとうございます。皆様のフィードバックが私たちのロードマップの原動力となっています。</p></li>
 <li><p><strong>コミュニティサポーターの皆様</strong>：質問に対する回答、チュートリアルの執筆、コンテンツの作成、そして新規ユーザーの立ち上げを支援していただきありがとうございます。私たちのコミュニティを歓迎し、包括的にしてくれています。</p></li>
 <li><p><strong>パートナーおよびインテグレーターの皆様</strong>：MilvusをAI開発のエコシステムにおいて一流の市民にしてくださりありがとうございます。</p></li>
 <li><p><strong>Zillizチームへ</strong>：オープンソースプロジェクトとユーザーの成功への揺るぎないコミットメントに感謝します。</p></li>
@@ -258,7 +264,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <ul>
 <li><p><strong>GitHubでスターをつける</strong>:<a href="https://github.com/milvus-io/milvus"> github.com/milvus-io/milvus</a></p></li>
 <li><p>☁️<strong>Zilliz Cloudを無料で試す</strong>:<a href="https://zilliz.com/"> zilliz.com/cloud</a></p></li>
-<li><p>💬<a href="https://discord.com/invite/8uyFbECzPX"><strong>Discordに</strong></a>参加して世界中の開発者とつながりましょう。</p></li>
+<li><p>💬<a href="https://discord.com/invite/8uyFbECzPX"><strong>Discordに</strong></a>参加して世界中の開発者と繋がりましょう。</p></li>
 <li><p>📚<strong>ドキュメントをご覧ください</strong>：<a href="https://milvus.io/docs">Milvusドキュメント</a></p></li>
 <li><p>💬<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>20分間の1対1のセッションを</strong></a> <strong>予約して</strong>、洞察、ガイダンス、質問への回答を得ましょう。</p></li>
 </ul>

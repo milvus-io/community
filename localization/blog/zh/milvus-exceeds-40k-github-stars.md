@@ -40,7 +40,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>当我们在 2017 年开始构建 Milvus 时，<em>向量数据库</em>这个词甚至还不存在。我们当时只是一个工程师小团队，深信人工智能应用很快就会需要一种新型数据基础架构--不是为行和列而建，而是为高维、非结构化、多模态数据而建。传统数据库并不是为这个世界而构建的，我们知道必须有人重新想象存储和检索的样子。</p>
-<p>最初的日子并不光彩。构建企业级基础架构是一项缓慢而艰苦的工作，我们需要花费数周的时间剖析代码路径、重写组件，并在凌晨两点对设计选择提出质疑。但我们坚持一个简单的使命：<strong>让构建人工智能应用的每一位开发人员都能使用向量搜索，并使其具有可扩展性和可靠性</strong>。这一使命让我们取得了最初的突破，也经历了不可避免的挫折。</p>
+<p>最初的日子并不光彩。构建企业级基础架构是一项缓慢而艰苦的工作，我们需要花费数周的时间剖析代码路径、重写组件，并在凌晨两点对设计选择提出质疑。但我们坚持一个简单的使命：<strong>让构建人工智能应用的每个开发人员都能使用向量搜索，并使其具有可扩展性和可靠性</strong>。这一使命让我们取得了最初的突破，也经历了不可避免的挫折。</p>
 <p>一路走来，几个转折点改变了一切：</p>
 <ul>
 <li><p><strong>2019：</strong>我们开源了 Milvus 0.10。这意味着我们暴露了所有粗糙的边缘--黑客、TODO、我们还不引以为豪的部分。但社区出现了。开发人员提出了我们从未发现的问题，提出了我们从未想象过的功能，并对我们的假设提出了挑战，最终使 Milvus 变得更加强大。</p></li>
@@ -48,7 +48,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>2022年：</strong>企业用户需要Kubernetes原生扩展、弹性以及存储和计算的真正分离。我们面临着艰难的抉择：修补旧系统还是重建一切。我们选择了更艰难的道路。<strong>Milvus 2.0 是一次从头开始的重塑</strong>，引入了完全解耦的云原生架构，将 Milvus 转变为适用于关键任务 AI 工作负载的生产级平台。</p></li>
 <li><p><strong>2024-2025:</strong> <a href="https://zilliz.com/">Zilliz</a>（Milvus 背后的团队）被<a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">Forrester</a> 评为<a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">领导者</a>，一举突破 3 万颗星，目前已突破 4 万颗。它成为多模态搜索、RAG 系统、Agentic 工作流以及跨行业--教育、金融、创意制作、科学研究等--十亿规模检索的中坚力量。</p></li>
 </ul>
-<p>这一里程碑不是靠炒作得来的，而是开发人员在实际生产工作负载中选择了 Milvus，并推动我们不断改进每一步。</p>
+<p>这一里程碑不是靠炒作得来的，而是开发人员选择 Milvus 用于实际生产工作负载，并推动我们不断改进每一步。</p>
 <h2 id="2025-Two-Major-Releases-Massive-Performance-Gains" class="common-anchor-header">2025:两次重大发布，性能大幅提升<button data-href="#2025-Two-Major-Releases-Massive-Performance-Gains" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -80,6 +80,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p>在单个集群中<strong>支持多达 100K 个 Collections</strong>，这是向真正的大规模多租户迈出的重要一步。</p></li>
 </ul>
 <p>要深入了解 Milvus 2.6，请查看<a href="https://milvus.io/docs/release_notes.md">完整的发布说明</a>。</p>
+<p><a href="https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&amp;utm_medium=milvus-40k-stars&amp;utm_campaign=milvus-26-webinar">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">Milvus之外：面向人工智能开发人员的开源工具<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -208,7 +214,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
     </button></h2><p>作为推出向量数据库的团队，我们对企业数据正在发生的变化了如指掌。曾经整齐排列在 TB 级结构化表格中的数据，正在迅速转变为 PB 级（很快将达到万亿级）的多模态对象。文本、图像、音频、视频、时间序列流、多传感器日志......这些都是现代人工智能系统所依赖的数据集。</p>
 <p>向量数据库专为非结构化和多模态数据而设计，但它们并不总是最经济或架构最合理的选择--尤其是当绝大多数数据都是冷数据时。大型模型的训练语料库、自动驾驶感知日志和机器人数据集通常不需要毫秒级的延迟或高并发性。通过实时向量数据库运行如此大量的数据，对于不需要这种性能水平的管道来说，会变得昂贵、操作符繁重和过于复杂。</p>
 <p>这一现实促使我们开始了下一个重大举措：<strong>Milvus Lake--</strong>语义驱动、索引优先的多模态湖泊，专为人工智能规模的数据而设计。Milvus Lake统一了每种模式的语义信号--向量、元数据、标签、LLM生成的描述和结构化字段，并将它们组织成围绕真实业务实体的语义<strong>宽表</strong>。以前以原始、分散文件形式存在于对象存储、湖库和模型管道中的数据，现在变成了统一、可查询的语义层。海量多模态语料库变成了可管理、可检索、可重复使用的资产，在整个企业中具有一致的意义。</p>
-<p>在引擎盖下，Milvus Lake 建立在一个简洁的<strong>清单+数据+索引</strong>架构上，该架构将索引视为基础而非事后考虑。这就开启了一个 "先检索，后处理 "的工作流程，该流程针对万亿规模的冷数据进行了优化，可提供可预测的延迟、显著降低的存储成本和更高的操作符稳定性。分层存储方法--NVMe/SSD 用于热路径，对象存储用于深度存档--搭配高效压缩和懒加载索引，在保持语义保真度的同时，还能牢牢控制基础架构开销。</p>
+<p>在引擎盖下，Milvus Lake 建立在一个简洁的<strong>清单+数据+索引</strong>架构上，该架构将索引视为基础而非事后考虑。这就开启了一个 "先检索，后处理 "的工作流程，该流程针对万亿规模的冷数据进行了优化，可提供可预测的延迟、显著降低的存储成本和更高的操作符稳定性。分层存储方法--NVMe/SSD（用于热路径）和对象存储（用于深度存档）--搭配高效压缩和懒加载索引，在保持语义保真度的同时，还能牢牢控制基础架构开销。</p>
 <p>Milvus Lake 还能无缝接入现代数据生态系统，与 Paimon、Iceberg、Hudi、Spark、Ray 以及其他大数据引擎和格式集成。团队可以在一个地方运行批处理、近实时管道、语义检索、特征工程和训练数据准备，而无需重新平台现有的工作流程。无论您是要建立基础模型库、管理自动驾驶模拟库、训练机器人代理，还是要为大规模检索系统提供动力，Milvus Lake 都能为人工智能时代提供一个可扩展且经济高效的语义湖泊。</p>
 <p><strong>Milvus Lake 正在积极开发中。</strong>对早期访问感兴趣或想了解更多信息？<a href="https://zilliz.com/contact"> </a></p>
 <p><a href="https://zilliz.com/contact-sales"><strong>联系我们 →</strong></a></p>
@@ -232,7 +238,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <p>这个里程碑属于你们所有人：</p>
 <ul>
 <li><p><strong>献给我们的贡献者</strong>：感谢你们的代码、想法和时间。你们让 Milvus 每一天都变得更好。</p></li>
-<li><p><strong>致我们的用户</strong>：感谢您信任 Milvus，将其作为您的生产工作负载，并与我们分享您的经验，无论是好的还是具有挑战性的。您的反馈推动着我们的路线图。</p></li>
+<li><p><strong>致我们的用户</strong>：感谢您信任 Milvus，将其作为您的生产工作负载，并与我们分享您的经验，包括好的和具有挑战性的经验。您的反馈推动着我们的路线图。</p></li>
 <li><p><strong>致我们的社区支持者</strong>：感谢你们回答问题、编写教程、创建内容并帮助新人入门。是你们让我们的社区充满了欢迎和包容。</p></li>
 <li><p><strong>致我们的合作伙伴和集成商</strong>：感谢你们与我们共同建设，使 Milvus 成为人工智能开发生态系统中的一流公民。</p></li>
 <li><p><strong>致 Zilliz 团队</strong>：感谢你们对开源项目和用户成功的坚定承诺。</p></li>

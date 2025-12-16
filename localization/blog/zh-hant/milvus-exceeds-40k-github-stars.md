@@ -15,8 +15,8 @@ meta_title: >
 desc: 慶祝 Milvus 成為全球領先的開放原始碼向量資料庫的七年旅程
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
-<p>2025 年 6 月，Milvus 在 GitHub 上的星級達到 35,000 個。短短幾個月後，我們現在已經<a href="https://github.com/milvus-io/milvus">突破 40,000 顆星</a>，這不僅是動力的<a href="https://github.com/milvus-io/milvus">證明</a>，也是全球社群不斷推動向量與多模式搜尋未來的<a href="https://github.com/milvus-io/milvus">證明</a>。</p>
-<p>我們非常感激。對於每一位在 Milvus 上加星、分叉、提出問題、爭論 API、分享基準或建立令人難以置信的東西的人：<strong>感謝您們，是您們讓這個專案能如此快速地發展</strong>。每顆星星代表的不只是按下一個按鈕 - 它反映出有人選擇 Milvus 來推動他們的工作，有人相信我們正在建立的東西，有人分享我們對開放、無障礙、高效能 AI 基礎架構的願景。</p>
+<p>2025 年 6 月，Milvus 在 GitHub 上的星級達到 35,000 個。短短幾個月後，我們現在已經<a href="https://github.com/milvus-io/milvus">突破 40,000 顆星</a>，這不僅<a href="https://github.com/milvus-io/milvus">證明</a>了動力，也<a href="https://github.com/milvus-io/milvus">證明</a>了全球社群不斷推動向量和多模式搜尋的未來。</p>
+<p>我們非常感激。對於每一位在 Milvus 上加星、分叉、提出問題、爭論 API、分享基準或建立一些令人難以置信的東西的人：<strong>謝謝您們，是您們讓這個專案能如此快速地發展</strong>。每顆星星代表的不只是按下一個按鈕 - 它反映出有人選擇 Milvus 來推動他們的工作，有人相信我們正在建立的東西，有人分享我們對開放、無障礙、高效能 AI 基礎架構的願景。</p>
 <p>因此，在慶祝的同時，我們也展望未來--您所要求的功能、AI 現在所需的架構，以及多模態、語義理解成為每個應用程式預設功能的世界。</p>
 <p>
   <span class="img-wrapper">
@@ -80,6 +80,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p>在單一叢集中<strong>支援高達 100K 的集合</strong>- 邁向真正規模化多租戶的重要一步。</p></li>
 </ul>
 <p>如需深入瞭解 Milvus 2.6，請查看<a href="https://milvus.io/docs/release_notes.md">完整的發佈說明</a>。</p>
+<p><a href="https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&amp;utm_medium=milvus-40k-stars&amp;utm_campaign=milvus-26-webinar">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">超越 Milvus：AI 開發人員的開放原始碼工具<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -206,7 +212,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
         ></path>
       </svg>
     </button></h2><p>身為向量資料庫的導入團隊，我們對企業資料如何改變有著前瞻性的觀察。從前整齊地排列在 TB 級結構化表格中的資料，正快速地轉換成 PB 級，甚至很快就會轉換成 TB 級的多模態物件。文字、影像、音訊、視訊、時序串流、多感測器日誌......這些都是現代人工智能系統所依賴的資料集。</p>
-<p>矢量資料庫是專為非結構化及多模態資料所建立的，但它們並不總是最經濟或架構上最合理的選擇 - 尤其是當絕大多數的資料都是冷冰冰的時候。大型模型的訓練語料庫、自動駕駛感知日誌和機器人資料集通常不需要毫秒級的延遲或高並發。透過即時向量資料庫執行如此大量的資料，對於不需要這種效能層級的管道來說，會變得昂貴、作業繁重、過於複雜。</p>
+<p>矢量資料庫是專為非結構化及多模態資料所建立的，但它們並不總是最經濟或架構上最合理的選擇 - 尤其是當絕大多數的資料都是冷冰冰的時候。大型模型的訓練語料庫、自動駕駛感知日誌和機器人資料集通常不需要毫秒級的延遲或高並發。透過即時向量資料庫執行如此大量的資料，對於不需要這種效能層級的管道來說，會變得昂貴、操作繁重且過於複雜。</p>
 <p>這個現實促使我們提出下一個重要計畫：<strong>Milvus Lake - 一個</strong>專為 AI 規模資料所設計的語意驅動、索引先行的多模態湖泊。Milvus Lake 統一各種模式的語意訊號，包括向量、元資料、標籤、LLM 產生的描述，以及結構化欄位，並將這些訊號組織成以實際業務實體為中心的<strong>Semantic Wide Tables</strong>。以前以原始、分散檔案形式存在於物件儲存、湖泊倉庫和模型管道中的資料，現在則變成了統一、可查詢的語義層。龐大的多模式企業體會變成可管理、可檢索、可重複使用的資產，並在整個企業中具有一致的意義。</p>
 <p>Milvus Lake 是建構在簡潔的<strong>清單 + 資料 + 索引</strong>架構上，將索引視為基礎，而非事後考慮。這樣就能發揮「先擷取、後處理」的工作流程，並針對萬億規模的冷資料進行最佳化，提供可預測的延遲、大幅降低的儲存成本，以及更高的作業穩定性。分層儲存方法 - 用於熱路徑的 NVMe/SSD，以及用於深層歸檔的物件儲存，搭配高效壓縮和懶人索引，可保留語意的真實性，同時牢牢控制基礎架構的開銷。</p>
 <p>Milvus Lake 還能無縫插入現代資料生態系統，與 Paimon、Iceberg、Hudi、Spark、Ray 及其他大型資料引擎和格式整合。團隊可以在一個地方執行批次處理、近即時管道、語義檢索、特徵工程和訓練資料準備，而無需重新平台現有的工作流程。無論您是要建立基礎模型庫、管理自動駕駛模擬資料庫、訓練機器人代理，或是為大型檢索系統提供動力，Milvus Lake 都能為 AI 時代提供可擴充、具成本效益的語意湖泊。</p>
@@ -233,7 +239,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <ul>
 <li><p><strong>我們的貢獻者</strong>：感謝您的程式碼、想法和時間。你們讓 Milvus 每一天都變得更好。</p></li>
 <li><p><strong>致我們的使用者</strong>：感謝您信任 Milvus 的生產工作負載，並分享您的經驗，包括好的和具挑戰性的。您的回饋推動著我們的發展藍圖。</p></li>
-<li><p><strong>致我們的社群支持者</strong>：感謝您回答問題、撰寫教程、創建內容，並幫助新手入門。是您們讓我們的社群變得熱情和包容。</p></li>
+<li><p><strong>致我們的社群支持者</strong>：感謝您回答問題、撰寫教程、創建內容，以及幫助新手入門。是您們讓我們的社群變得熱情和包容。</p></li>
 <li><p><strong>致我們的合作夥伴和整合商</strong>：感謝您們與我們合作，讓 Milvus 成為 AI 開發生態系統中的一級公民。</p></li>
 <li><p><strong>致 Zilliz 團隊</strong>：感謝您們對開源專案與使用者成功的堅定承諾。</p></li>
 </ul>

@@ -19,7 +19,7 @@ desc: >-
   Open-Source-Vektordatenbank
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
-<p>Im Juni 2025 erreichte Milvus 35.000 GitHub-Sterne. Nur wenige Monate später haben wir <a href="https://github.com/milvus-io/milvus">40.000 überschritten - ein Beweis</a>nicht nur für die Dynamik, sondern auch für eine globale Gemeinschaft, die die Zukunft der vektoriellen und multimodalen Suche vorantreibt.</p>
+<p>Im Juni 2025 erreichte Milvus 35.000 GitHub-Sterne. Nur wenige Monate später haben wir <a href="https://github.com/milvus-io/milvus">40.000 überschritten - ein Beweis</a>nicht nur für die Dynamik, sondern auch für eine globale Community, die die Zukunft der vektoriellen und multimodalen Suche vorantreibt.</p>
 <p>Wir sind zutiefst dankbar. An alle, die Milvus mit Sternen versehen, geforkt, Probleme gemeldet, über eine API gestritten, einen Benchmark geteilt oder etwas Unglaubliches mit Milvus gebaut haben: <strong>Danke, und ihr seid der Grund, warum dieses Projekt so schnell voranschreitet</strong>. Jeder Stern steht für mehr als nur einen gedrückten Knopf - er spiegelt jemanden wider, der Milvus als Antrieb für seine Arbeit gewählt hat, jemanden, der an das glaubt, was wir aufbauen, jemanden, der unsere Vision einer offenen, zugänglichen und leistungsstarken KI-Infrastruktur teilt.</p>
 <p>Während wir also feiern, blicken wir auch in die Zukunft - auf die Funktionen, die Sie fordern, auf die Architekturen, die KI jetzt verlangt, und auf eine Welt, in der multimodales, semantisches Verstehen der Standard in jeder Anwendung ist.</p>
 <p>
@@ -49,7 +49,7 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <ul>
 <li><p><strong>2019:</strong> Wir haben Milvus 0.10 veröffentlicht. Das bedeutete, dass wir alle unsere Ecken und Kanten offenlegen mussten - die Hacks, die TODOs, die Teile, auf die wir noch nicht stolz waren. Aber die Community war da. Die Entwickler meldeten Probleme, die wir nie gefunden hätten, schlugen Funktionen vor, die wir uns nicht vorgestellt hatten, und stellten Annahmen in Frage, die Milvus letztendlich stärker machten.</p></li>
 <li><p><strong>2020-2021:</strong> Wir traten der <a href="https://lfaidata.foundation/projects/milvus/">LF AI &amp; Data Foundation</a> bei, lieferten Milvus 1.0 aus, schlossen die LF AI &amp; Data ab und gewannen die <a href="https://big-ann-benchmarks.com/neurips21.html">BigANN-Milliarden-Vektorsuchherausforderung</a> - ein früher Beweis dafür, dass unsere Architektur mit realem Umfang umgehen konnte.</p></li>
-<li><p><strong>2022:</strong> Unternehmensanwender brauchten Kubernetes-native Skalierung, Elastizität und eine echte Trennung von Speicher und Rechenleistung. Wir standen vor einer schwierigen Entscheidung: das alte System flicken oder alles neu aufbauen. Wir wählten den schwierigeren Weg. <strong>Milvus 2.0 war eine grundlegende Neuerfindung</strong>, die eine vollständig entkoppelte Cloud-native Architektur einführte, die Milvus in eine produktionsfähige Plattform für geschäftskritische KI-Workloads verwandelte.</p></li>
+<li><p><strong>2022:</strong> Unternehmensanwender brauchten Kubernetes-native Skalierung, Elastizität und eine echte Trennung von Speicher und Rechenleistung. Wir standen vor einer schwierigen Entscheidung: das alte System zu flicken oder alles neu zu bauen. Wir wählten den schwierigeren Weg. <strong>Milvus 2.0 war eine grundlegende Neuerfindung</strong>, die eine vollständig entkoppelte Cloud-native Architektur einführte, die Milvus in eine produktionsfähige Plattform für geschäftskritische KI-Workloads verwandelte.</p></li>
 <li><p><strong>2024-2025:</strong> <a href="https://zilliz.com/">Zilliz</a> (das Team hinter Milvus) wurde <a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">von Forrester</a> zum <a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">Marktführer</a> ernannt, überschritt die 30.000-Sterne-Marke und liegt nun bei über 40.000. Es wurde zum Rückgrat für multimodale Suche, RAG-Systeme, agentenbasierte Workflows und Retrieval in Milliardenhöhe in verschiedenen Branchen - Bildung, Finanzen, kreative Produktion, wissenschaftliche Forschung und mehr.</p></li>
 </ul>
 <p>Dieser Meilenstein wurde nicht durch einen Hype erreicht, sondern dadurch, dass Entwickler Milvus für reale Arbeitslasten in der Produktion einsetzen und uns bei jedem Schritt zur Verbesserung anspornen.</p>
@@ -84,6 +84,12 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 <li><p><strong>Unterstützung für bis zu 100K Sammlungen</strong> in einem einzigen Cluster - ein wichtiger Schritt in Richtung echter Multi-Tenancy im großen Maßstab.</p></li>
 </ul>
 <p>Einen tieferen Einblick in Milvus 2.6 erhalten Sie in den <a href="https://milvus.io/docs/release_notes.md">vollständigen Versionshinweisen</a>.</p>
+<p><a href="https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&amp;utm_medium=milvus-40k-stars&amp;utm_campaign=milvus-26-webinar">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png" alt="" class="doc-image" id="" />
+    <span></span>
+  </span>
+</a></p>
 <h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">Über Milvus hinaus: Open-Source-Tools für KI-Entwickler<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
