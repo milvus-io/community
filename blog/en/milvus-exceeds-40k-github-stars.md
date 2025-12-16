@@ -75,6 +75,7 @@ Here are just a few highlights from Milvus 2.6:
 
 For a deeper look at Milvus 2.6, check out the [full release notes](https://milvus.io/docs/release_notes.md).
 
+[![](https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png)](https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&utm_medium=milvus-40k-stars&utm_campaign=milvus-26-webinar)
 
 ## Beyond Milvus: Open-Source Tools for AI Developers
 
