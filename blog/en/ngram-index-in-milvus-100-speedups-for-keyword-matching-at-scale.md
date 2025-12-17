@@ -291,7 +291,7 @@ The benchmark results highlight a clear pattern: the Ngram Index significantly a
 
 - For **long text fields**, such as Wiki-style documents truncated to 1,000 bytes, the performance gains are especially pronounced. Compared to brute-force execution with no index, the Ngram Index achieves speedups of roughly **100–200×**. When compared against a conventional inverted index, the improvement is even more dramatic, reaching **1,200–1,900×**. This is because LIKE queries on long text are particularly expensive for traditional indexing approaches, while n-gram lookups can quickly narrow the search space to a very small set of candidates.
 
-On datasets consisting of **single-word entries**, the gains are smaller but still substantial. In this scenario, the Ngram Index runs approximately **80–100×** faster than brute-force execution and **45–55×** faster than a conventional inverted index. Although shorter text is inherently cheaper to scan, the n-gram–based approach still avoids unnecessary comparisons and consistently reduces query cost.
+- On datasets consisting of **single-word entries**, the gains are smaller but still substantial. In this scenario, the Ngram Index runs approximately **80–100×** faster than brute-force execution and **45–55×** faster than a conventional inverted index. Although shorter text is inherently cheaper to scan, the n-gram–based approach still avoids unnecessary comparisons and consistently reduces query cost.
 
 ## Conclusion
 
