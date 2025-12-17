@@ -1341,9 +1341,9 @@ for i, result in enumerate(results1, 1):
     print(f"   Product: {result['text']}")
     print(f"   Category: {result['category']} | Brand: {result['brand']} | Price: ${result['price']} | Rating: {result['rating']}*")
 ```
-================================================================================
-Example 1: Simple Semantic Search
-================================================================================
+
+**Example 1: Simple Semantic Search**
+
 
 1. Score: 0.5381
    Product: FashionHub Running shoes with cushioned sole, lightweight design, perfect for daily jogging. $89. Customer rating: 4.6 stars. In Stock.
@@ -1390,9 +1390,8 @@ for i, result in enumerate(results2, 1):
     print(f"   Product: {result['text']}")
     print(f"   Category: {result['category']} | Brand: {result['brand']} | Price: ${result['price']} | Rating: {result['rating']}*")
 ```
-================================================================================
-Example 2: Semantic Search with Price Filter
-================================================================================
+
+**Example 2: Semantic Search with Price Filter**
 
 1. Score: 0.6223
    Product: TechPro Wireless Bluetooth headphones with active noise cancellation, 30-hour battery life, premium sound quality. Price: $149. Rating: 4.5/5. In Stock.
@@ -1441,9 +1440,9 @@ for i, result in enumerate(results3, 1):
     print(f"   Product: {result['text']}")
     print(f"   Category: {result['category']} | Brand: {result['brand']} | Price: ${result['price']} | Rating: {result['rating']}* | Stock: {result['stock_status']}")
 ```
-================================================================================
-Example 3: Semantic Search with Multiple Filters
-================================================================================
+
+**Example 3: Semantic Search with Multiple Filters**
+
 
 1. Score: 0.5786
    Product: SmartGadget Smartwatch with fitness tracking, heart rate monitor, GPS, and water resistance up to 50 meters. Currently $199. Customer rating: 4.8 stars. Available now.
@@ -1758,9 +1757,9 @@ for i, product in enumerate(result['results'], 1):
 if result['answer']:
     print(f"\nRAG Answer:\n{result['answer']}")
 ```
-================================================================================
-Complete Search Pipeline Demo
-================================================================================
+
+**Complete Search Pipeline Demo**
+
 
 Query: affordable fitness equipment
 Found 2 results
