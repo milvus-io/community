@@ -1,36 +1,42 @@
 ---
-id: ngram-index-in-milvus-100-speedups-for-keyword-matching-at-scale.md
+id: milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md
 title: >
- Ngram Index in Milvus: 100× Speedups for Keyword Matching at Scale
+ Introducing the Milvus Ngram Index: Faster Keyword Matching and LIKE Queries for Agent Workloads
 author: Chenjie Tang
-date: 2025-12-19
+date: 2025-12-16
 cover: assets.zilliz.com/Ngram_Index_cover_9e6063c638.png
 tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
-meta_keywords: Milvus, Ngram Index, n-gram search, LIKE queries
+meta_keywords: Milvus, Ngram Index, n-gram search, LIKE queries, full-text search
 meta_title: >
- Ngram Index in Milvus: 100× Faster LIKE Queries at Scale
+ Milvus Ngram Index: Faster Keyword Matching and LIKE Queries for Agent Workloads
 desc: Learn how the Ngram Index in Milvus accelerates LIKE queries by turning substring matching into efficient n-gram lookups, delivering 100× faster performance.
-origin: https://milvus.io/blog/ngram-index-in-milvus-100-speedups-for-keyword-matching-at-scale.md
+origin: https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md
 ---
 
-In Agent systems, context processing spans multiple critical stages, including retrieval, filtering, validation, and decision-making. Throughout this pipeline, exact keyword matching has always been a foundational requirement.
+In agent systems, **context retrieval** is a foundational building block across the entire pipeline, providing the basis for downstream reasoning, planning, and action. Vector search helps agents retrieve semantically relevant context that captures intent and meaning across large and unstructured datasets. However, semantic relevance alone is often not enough. Agent pipelines also rely on full-text search to enforce exact keyword constraints—such as product names, function calls, error codes, or legally significant terms. This supporting layer ensures that retrieved context is not only relevant, but also explicitly satisfies hard textual requirements.
 
-This is common in scenarios such as customer support agents searching historical conversations for a specific product name or ingredient, coding agents retrieving code snippets that contain a particular function, API call, or error message, and agents in legal, medical, and academic domains filtering documents that explicitly reference a given term.
+Real workloads consistently reflect this need:
 
-For a long time, the SQL `LIKE` expression has been the standard tool for handling this type of query. For example, if you want to find all records where the `name` field contains the string rod anywhere in the text, you can use a filter such as `name LIKE '%rod%'`.
+- Customer support assistants must find conversations mentioning a specific product or ingredient.
 
-However, under high concurrency and large data volumes, this simplicity comes with significant performance trade-offs:
+- Coding copilots look for snippets containing an exact function name, API call, or error string.
 
-- **Without an index**, `LIKE` queries must scan the entire context store and apply regular expression–style matching row by row. With millions of records, even a single query can take seconds—far too slow for real-time Agent interactions.
+- Legal, medical, and academic agents filter documents for clauses or citations that must appear verbatim.
 
-- **Even with a conventional inverted index**, patterns such as `%rod%` are still difficult to optimize. The database must traverse the entire index dictionary and perform pattern matching on each entry. While this avoids scanning raw data rows, the operation remains fundamentally linear, resulting in only marginal performance improvements.
+Traditionally, systems have handled this with the SQL `LIKE` operator. A query such as `name LIKE '%rod%'` is simple and widely supported, but under high concurrency and large data volumes, this simplicity carries major performance costs. 
 
-To address these limitations, [Milvus](https://milvus.io/) introduces the [Ngram Index](https://milvus.io/docs/ngram.md), which improves `LIKE` query performance by splitting text into smaller substrings and indexing them for efficient lookup. This approach significantly reduces the amount of data that needs to be examined during query execution, resulting in **tens to hundreds of times faster** `LIKE` queries in real workloads.
+- **Without an index**, a `LIKE` query scans the entire context store and applies pattern matching row by row. At millions of records, even a single query can take seconds—far too slow for real-time agent interactions. 
 
-In this post, we’ll walk through how the Ngram Index in Milvus works and evaluate its real-world performance.
+- **Even with a conventional inverted index**, wildcard patterns such as `%rod%` remain hard to optimize because the engine must still traverse the entire dictionary and run pattern matching on each entry. The operation avoids row scans but remains fundamentally linear, resulting in only marginal improvements.
+
+This creates a clear gap in hybrid retrieval systems: vector search handles semantic relevance efficiently, but exact keyword filtering often becomes the slowest step in the pipeline.
+
+Milvus natively supports hybrid vector and full-text search with metadata filtering. To address the limitations of keyword matching, Milvus introduces the [**Ngram Index**](https://milvus.io/docs/ngram.md), which improves `LIKE` performance by splitting text into small substrings and indexing them for efficient lookup. This dramatically reduces the amount of data examined during query execution, delivering **tens to hundreds of times faster** `LIKE` queries in real agentic workloads. 
+
+The rest of this post walks through how the Ngram Index works in Milvus and evaluates its performance in real-world scenarios.
 
 
 ## What Is the Ngram Index?
