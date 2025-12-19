@@ -1,47 +1,51 @@
 ---
 id: building-a-search-pipeline-that-understands-what-users-want.md
 title: >
- Building a Search Pipeline That Understands What Users Want
+ Building AI Search Pipelines That Understand What Users Want with Milvus 
 author: Sudhanshu Prajapati
-date: 2025-12-17
+date: 2025-12-22
 cover: assets.zilliz.com/semantic_search_325a0b5597.png
 tag: Tutorial
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
-meta_keywords: Milvus, vector database, semantic search, filtered search
+meta_keywords: Milvus, vector database, semantic search, filtered search, hybrid search
 meta_title: >
- How to Add Label Extraction to Semantic Search Pipeline with Milvus
+ How to Build AI Search Pipelines That Understand User Intent with Milvus
 desc: Discover how Milvus enables a single search pipeline that combines semantic search with structured constraints for consistent, high-quality retrieval.
 origin: https://github.com/sudhanshu456/milvus-rag-semantic-search/blob/main/search_pipeline_demo.ipynb
 ---
 
 _This post was originally published on_ [_GitHub_](https://github.com/sudhanshu456/milvus-rag-semantic-search/blob/main/search_pipeline_demo.ipynb) _and is reposted here with permission._
 
-Whenever you try to find something on an e-commerce site, you don't search in natural language, because the way search engine result is not catered to our natural way of looking things. For example, we searched for _“comfortable running shoes under $100”_ and the results will contain items costing more than $200, some of which are not running shoes, and ignore the comfort requirement. This happens because keyword search treats queries as disconnected terms instead of meaningful requests. It cannot infer that “comfortable” refers to cushioning and support or that “under $100” is a strict limit.
+When you search on most e-commerce sites, you rarely use natural language—not because you don’t want to, but because the search engine isn’t built to understand it. If you type _“comfortable running shoes under $100”_, the results often include shoes priced over $200, products that aren’t even designed for running, and items that ignore the idea of comfort altogether. Keyword-based systems treat your query as a handful of unrelated terms rather than a meaningful request. They can’t infer that “comfortable” implies cushioning and support or that “under $100” is a strict constraint.
 
-In such scenarios, you either move away from that platform or you think the product isn't available on the site. This leads to the Null Result Fallacy, they tend to show anything matching those keywords, any kind of shoe, where results are technically correct but practically irrelevant. This is where semantic search helps!
+When this happens, you either assume the platform doesn’t carry what you need or you abandon the search entirely. This leads to what’s often called the **Null Result Fallacy**—the system avoids returning zero results and instead displays anything loosely matching the keywords. The results are technically correct, but practically useless.
+
+This is where [**semantic search** ](https://zilliz.com/glossary/semantic-search)helps!
 
 
 ## Why Semantic Search?
 
-To understand semantic search let's think about you search for things in real life. When you ask a friend "where can I find good coffee nearby?", you're not looking for place with "good coffee" in their name. You're looking for coffee shops that serve quality coffee and are close to you. Your friend understands the meaning behind your question, not just the keywords.
+To understand semantic search, imagine how you look for things in real life. If you ask a friend, _“Where can I find good coffee nearby?”_ you’re not expecting them to look for shop names that literally contain the words “good coffee.” You want recommendations for cafes that serve quality coffee and are close to you. Your friend interprets the meaning of your question—not just the keywords.
 
-Semantic search applies similar idea. A model can recognize that “comfortable running shoes” relates to concepts like cushioning, support, and softness even if those words are not present. Semantic understanding is only part of the solution. You might expect the system to apply structured filters such as price, category, and availability. A Filtered Search supports this by combining semantic vectors with strict filters in one retrieval process. Before we look at the structured filters, let's deep dive more into matching words vs vectors!
+Semantic search works the same way. A model understands that “comfortable running shoes” relates to ideas like cushioning, support, and softness, even when those words never appear in the text. But semantic understanding alone isn’t enough. In practice, users also expect the system to honor structured filters such as price range, category, or availability.
+
+A **filtered search** combines semantic vectors with strict filters in a single retrieval step, ensuring results are both relevant and constrained by the rules you set. Before we dive into how those filters work, let’s take a closer look at the difference between matching keywords and matching vectors.
 
 
 ### From Words to Vectors
 
-In the early days of search approaches, we used to match _words_, nowadays we switched to matching _vectors_. This is where embedding models come in. The reason is that traditional word embeddings, such as TF-IDF, Word2Vec, and GloVe, operate at the word level. They can tell you that "dog" and "puppy" are similar, but they struggle with understanding the full meaning of a sentence or phrase. When you search for "comfortable running shoes," you need to understand the entire phrase as a unit, not just individual words.
+Traditional search used to rely on matching words. Today, we match **vectors**—and that shift is what embedding models make possible. Earlier approaches, such as [TF-IDF](https://zilliz.com/learn/tf-idf-understanding-term-frequency-inverse-document-frequency-in-nlp), [Word2Vec](https://zilliz.com/glossary/word2vec), and [GloVe](https://zilliz.com/glossary/glove), operate at the word level. They can tell you that “dog” is similar to “puppy,” but they struggle to capture the meaning of an entire sentence or phrase. If someone searches for “comfortable running shoes,” simply matching individual words isn’t enough—you need to understand the intent behind the whole phrase.
 
-New embedding models solve this by converting entire sentences or phrases into dense vector representations (embeddings) that capture their semantic meaning. These models are trained on millions of text pairs to understand that "comfortable running shoes" and "cushioned athletic footwear" mean essentially the same thing, even though they share no common words.
+Modern embedding models, such as [text-embedding-3-small](https://zilliz.com/ai-models/text-embedding-3-small), address this by converting entire sentences or phrases into dense vector representations. These vectors encode semantic meaning, allowing the system to recognize that _“comfortable running shoes”_ and _“cushioned athletic footwear”_ refer to essentially the same concept, even though they share no overlapping words.
 
-The model we will be using in this blog is gemini-embedding-001, Google's latest embedding model that converts text into 3072-dimensional vectors. Each dimension captures some aspect of meaning. When two pieces of text have similar meanings, their vectors will be close together. When they're different, the vectors will be far apart. This higher dimensionality allows for a more nuanced understanding of semantic relationships.
+In this blog, we’ll use **gemini-embedding-001**, Google’s latest embedding model. It transforms text into **3072-dimensional vectors**, with each dimension capturing a subtle aspect of meaning. Texts with similar meanings end up close together in this high-dimensional space, while unrelated texts are far apart. The higher dimensionality enables the model to represent fine-grained semantic relationships, enabling far more accurate, context-aware search.
 
 
-### Milvus
+### Vector Databases
 
-A search pipeline needs more than a vector index. It needs a database that supports vector search and structured filtering in one place. Milvus provides this by running vector similarity search with scalar filters such as price and category. It also performs pre filtering so that items outside constraints do not enter the vector search step. Helps improves accuracy and latency.
+A search pipeline needs more than a vector index. It needs a database that supports vector search and structured filtering in one place. Vector databases like [Milvus](https://milvus.io/) provide this by running vector similarity search with scalar filters such as price and category. It also performs pre-filtering so that items outside constraints do not enter the vector search step. Helps improve accuracy and latency.
 
 
 ### When Semantic Search Needs Structure
