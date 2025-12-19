@@ -1,38 +1,55 @@
 ---
-id: tiered-storage-in-milvus-80-cost-reduction-with-on-demand-loading-for-hot–cold-data-at-scale.md
+id: milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
 title: >
- Tiered Storage in Milvus: 80% Cost Reduction with On-Demand Loading for Hot–Cold Data at Scale
+ Stop Paying for Cold Data: 80% Cost Reduction with On-Demand Hot–Cold Data Loading in Milvus Tiered Storage
 author: Buqian Zheng
-date: 2025-12-19
+date: 2025-12-15
 cover: assets.zilliz.com/tiered_storage_cover_38237a3bda.png
 tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
-meta_keywords: Milvus, Tiered Storage, vector search, hot data
+meta_keywords: Milvus, Tiered Storage, vector search, hot data, cold data
 meta_title: >
- Tiered Storage in Milvus: Cost-Effective Vector Search at Scale
-desc: Learn how Tiered Storage in Milvus enables on-demand loading for hot, warm, and cold data, delivering up to 80% cost reduction and faster load times at scale.
-origin: https://milvus.io/blog/tiered-storage-in-milvus-80-cost-reduction-with-on-demand-loading-for-hot–cold-data-at-scale.md
+ Milvus Tiered Storage: 80% Less Vector Search Cost with On-Demand Hot–Cold Data Loading
+desc: Learn how Tiered Storage in Milvus enables on-demand loading for hot and cold data, delivering up to 80% cost reduction and faster load times at scale.
+origin: https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
 ---
 
-As vector databases are pushed into larger and more cost-sensitive production environments, teams inevitably run into a trade-off between cost and performance. The root cause is simple: not all data is accessed equally, yet many systems still treat all data as if it were.
+**How many of you are still paying premium infrastructure bills for data your system barely touches? Be honest — most teams are.**
 
-This mismatch becomes obvious in real-world workloads. If you’ve built or operated a vector search system at scale, these scenarios will likely feel familiar:
+If you run vector search in production, you’ve probably seen this firsthand. You provision large amounts of memory and SSDs so everything stays “query-ready,” even though only a small slice of your dataset is actually active. And you’re not alone. We’ve seen a lot of similar cases as well: 
 
-- **Multi-tenant SaaS**: Out of 800 tenants, only ~15% are active in a given 24-hour window, while data from the remaining 85% sits idle but still consumes resources.
+- **Multi-tenant SaaS platforms:** Hundreds of onboarded tenants, but only 10–15% active on any given day. The rest sit cold but still occupy resources.
 
-- **E-commerce recommendations**: A catalog may contain one million SKUs, but the top 8% of products generate roughly 75% of all queries. The long tail is rarely accessed.
+- **E-commerce recommendation systems:** A million SKUs, yet the top 8% of products generate most of the recommendations and search traffic.
 
-- **Content retrieval**: Query traffic is heavily time-skewed. Around 90% of searches target content from the past seven days, even though archived vectors account for more than 95% of the dataset.
+- **AI search:** Vast archives of embeddings, even though 90% of user queries hit items from the past week.
 
-All of these workloads share the same underlying problem: **cold data contributes less than 10% of query traffic, yet consumes up to 80% of memory and local storage resources**.
+It’s the same story across industries: **less than 10% of your data gets queried frequently, but it often consumes 80% of your storage and memory.** Everyone knows the imbalance exists — but until recently, there hasn’t been a clean architectural way to fix it.
 
-In [Milvus 2.5](https://milvus.io/docs/v2.5.x/release_notes.md) and earlier releases, this imbalance was difficult to avoid. Milvus relied on a _full-load mode_: regardless of how frequently data was accessed, it had to be loaded onto local nodes—into memory or local disk—before it could be queried. As a result, users paid the cost of keeping nearly all data “hot,” even when most of it remained idle, leading to high infrastructure and operational overhead.
+**That changes with** [Milvus 2.6](https://milvus.io/docs/release_notes.md)**.** 
 
-To remove this limitation, [Milvus 2.6](https://milvus.io/docs/release_notes.md) introduces [Tiered Storage](https://milvus.io/docs/tiered-storage-overview.md), changing how data is loaded and managed across local and remote storage. Instead of preloading all data upfront, Milvus shifts from a _“load everything in advance”_ approach to a _“load on demand”_ mode. This allows resource usage—and cost—to scale with actual access patterns, rather than total data volume.
+Before this release, Milvus (like most vector databases) depended on **a full-load model**: if data needed to be searchable, it had to be loaded onto local nodes. It didn’t matter whether that data was hit a thousand times a minute or once a quarter — **it all had to stay hot.** That design choice ensured predictable performance, but it also meant oversizing clusters and paying for resources that cold data simply didn’t deserve.
 
-In this post, we’ll introduce Tiered Storage in Milvus 2.6, evaluate its performance under realistic production workloads, and outline the scenarios where it delivers the most value.
+[Tiered Storage](https://milvus.io/docs/tiered-storage-overview.md) **is our answer.**
+
+Milvus 2.6 introduces a new tiered storage architecture with **true on-demand loading**, letting the system differentiate between hot and cold data automatically:
+
+- Hot segments stay cached close to the compute
+
+- Cold segments live cheaply in remote object storage
+
+- Data is pulled into local nodes **only when a query actually needs it**
+
+
+![](https://milvus.io/docs/v2.6.x/assets/full-load-mode-vs-tiered-storage-mode.png)
+
+
+
+This shifts your cost structure from “how much data you have” to **“how much data you actually use.”** And in early production deployments, this simple shift delivers **up to an 80% reduction in storage and memory cost**.
+
+In the rest of this post, we’ll walk through how Tiered Storage works, share real performance results, and show where this change delivers the biggest impact.
 
 
 ## Why Full Loading Breaks Down at Scale
