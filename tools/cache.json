@@ -225,5 +225,6 @@
   "blog/en/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md": "2025-12-15T05:22:20.519Z",
   "blog/en/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md": "2025-12-18T17:38:42.903Z",
   "blog/en/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md": "2025-12-19T04:35:45.347Z",
-  "blog/en/building-a-search-pipeline-that-understands-what-users-want.md": "2025-12-19T13:09:28.246Z"
+  "blog/en/building-a-search-pipeline-that-understands-what-users-want.md": "2025-12-19T13:09:28.246Z",
+  "blog/en/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md": "2025-12-19T14:26:24.932Z"
 }
