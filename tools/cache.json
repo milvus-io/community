@@ -223,5 +223,6 @@
   "blog/en/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md": "2025-12-15T03:50:46.716Z",
   "blog/en/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md": "2025-12-15T13:31:23.905Z",
   "blog/en/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md": "2025-12-15T05:22:20.519Z",
-  "blog/en/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md": "2025-12-18T17:38:42.903Z"
+  "blog/en/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md": "2025-12-18T17:38:42.903Z",
+  "blog/en/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md": "2025-12-19T04:35:45.347Z"
 }
