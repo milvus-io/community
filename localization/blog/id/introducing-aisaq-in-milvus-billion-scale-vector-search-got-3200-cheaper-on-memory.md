@@ -23,8 +23,8 @@ origin: >-
 ---
 <p>Basis data vektor telah menjadi infrastruktur inti untuk sistem AI yang sangat penting, dan volume datanya tumbuh secara eksponensial-sering kali mencapai miliaran vektor. Pada skala tersebut, semuanya menjadi lebih sulit: mempertahankan latensi rendah, menjaga akurasi, memastikan keandalan, dan beroperasi di berbagai replika dan wilayah. Namun, satu tantangan cenderung muncul lebih awal dan mendominasi keputusan<strong>arsitektur-BIAYA</strong>.</p>
 <p>Untuk menghadirkan pencarian cepat, sebagian besar basis data vektor menyimpan struktur pengindeksan kunci dalam DRAM (Dynamic Random Access Memory), tingkat memori tercepat dan termahal. Desain ini efektif untuk kinerja, tetapi penskalaannya buruk. Penggunaan DRAM berskala dengan ukuran data, bukan lalu lintas kueri, dan bahkan dengan kompresi atau pembongkaran sebagian SSD, sebagian besar indeks harus tetap berada di memori. Seiring dengan bertambahnya kumpulan data, biaya memori dengan cepat menjadi faktor pembatas.</p>
-<p>Milvus telah mendukung <strong>DISKANN</strong>, sebuah pendekatan ANN berbasis disk yang mengurangi tekanan memori dengan memindahkan sebagian besar indeks ke SSD. Namun, DISKANN masih mengandalkan DRAM untuk representasi terkompresi yang digunakan selama pencarian. <a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> mengambil langkah lebih jauh dengan <a href="https://milvus.io/docs/aisaq.md">AISAQ</a>, indeks vektor berbasis disk yang terinspirasi dari <a href="https://milvus.io/docs/diskann.md">DISKANN</a> yang menyimpan semua data penting dalam pencarian pada disk. Dalam beban kerja miliaran vektor, hal ini mengurangi penggunaan memori dari <strong>32 GB menjadi sekitar 10 MB -</strong> <strong>pengurangan 3.200 kali lipat - dengan tetap</strong>mempertahankan kinerja yang praktis.</p>
-<p>Pada bagian selanjutnya, kami akan menjelaskan cara kerja pencarian vektor berbasis grafik, dari mana biaya memori berasal, dan bagaimana AISAQ membentuk kembali kurva biaya untuk pencarian vektor skala miliar.</p>
+<p>Milvus telah mendukung <strong>DISKANN</strong>, sebuah pendekatan ANN berbasis disk yang mengurangi tekanan memori dengan memindahkan sebagian besar indeks ke SSD. Namun, DISKANN masih mengandalkan DRAM untuk representasi terkompresi yang digunakan selama pencarian. <a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> mengambil langkah lebih jauh dengan <a href="https://milvus.io/docs/aisaq.md">AISAQ</a>, indeks vektor berbasis disk yang terinspirasi oleh <a href="https://milvus.io/docs/diskann.md">DISKANN</a>. Dikembangkan oleh KIOXIA, arsitektur AiSAQ dirancang dengan "Zero-DRAM-Footprint Architecture", yang menyimpan semua data yang sangat penting untuk pencarian pada disk dan mengoptimalkan penempatan data untuk meminimalisir operasi I/O. Dalam beban kerja miliaran vektor, hal ini mengurangi penggunaan memori dari <strong>32 GB menjadi sekitar 10</strong> <strong>MB-pengurangan 3.200×-sekaligus</strong>mempertahankan kinerja praktis.</p>
+<p>Pada bagian selanjutnya, kami akan menjelaskan cara kerja pencarian vektor berbasis grafik, di mana biaya memori berasal, dan bagaimana AISAQ membentuk ulang kurva biaya untuk pencarian vektor skala miliar.</p>
 <h2 id="How-Conventional-Graph-Based-Vector-Search-Works" class="common-anchor-header">Cara Kerja Pencarian Vektor Berbasis Grafik Konvensional<button data-href="#How-Conventional-Graph-Based-Vector-Search-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -152,22 +152,22 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Untuk menyeimbangkan kinerja dan efisiensi penyimpanan di bawah beban kerja yang berbeda, AISAQ menyediakan dua mode penyimpanan berbasis disk. Mode-mode ini berbeda terutama dalam hal bagaimana data yang dikompresi PQ disimpan dan diakses selama pencarian.</p>
+<p>Untuk memenuhi kebutuhan aplikasi yang berbeda, AISAQ menyediakan dua mode penyimpanan berbasis disk: Performa dan Skala. Dari perspektif teknis, mode-mode ini berbeda terutama dalam hal bagaimana data yang dikompresi PQ disimpan dan diakses selama pencarian. Dari perspektif aplikasi, mode-mode ini menangani dua jenis kebutuhan yang berbeda: kebutuhan latensi rendah, tipikal pencarian semantik online dan sistem rekomendasi, dan kebutuhan skala sangat tinggi, tipikal RAG.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/aisaq_vs_diskann_35ebee3c64.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">Kinerja AISAQ: Dioptimalkan untuk Kecepatan</h3><p>Performa AISAQ menyimpan semua data pada disk sambil mempertahankan overhead I/O yang rendah melalui kolokasi data.</p>
+<h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">Kinerja AISAQ: Dioptimalkan untuk Kecepatan</h3><p>Performa AISAQ menyimpan semua data di disk sambil mempertahankan overhead I/O yang rendah melalui kolokasi data.</p>
 <p>Dalam mode ini:</p>
 <ul>
-<li><p>Vektor lengkap setiap node, daftar tepi, dan kode PQ tetangganya disimpan bersama pada disk.</p></li>
+<li><p>Vektor lengkap setiap node, daftar edge, dan kode PQ tetangganya disimpan bersama pada disk.</p></li>
 <li><p>Mengunjungi sebuah node hanya membutuhkan <strong>satu pembacaan SSD</strong>, karena semua data yang diperlukan untuk ekspansi dan evaluasi kandidat berada dalam satu lokasi.</p></li>
 </ul>
 <p>Dari perspektif algoritma pencarian, hal ini sangat mirip dengan pola akses DISKANN. Perluasan kandidat tetap efisien, dan kinerja runtime sebanding, meskipun semua data yang sangat penting untuk pencarian sekarang berada di disk.</p>
 <p>Pengorbanannya adalah biaya penyimpanan. Karena data PQ tetangga dapat muncul di beberapa halaman disk beberapa node, tata letak ini memperkenalkan redundansi dan secara signifikan meningkatkan ukuran indeks secara keseluruhan.</p>
-<p><strong>Oleh karena itu, mode AISAQ-Performance memprioritaskan latensi I / O yang rendah di atas efisiensi disk.</strong></p>
+<p>Oleh karena itu, mode AISAQ-Performance memprioritaskan latensi I/O yang rendah daripada efisiensi disk. Dari perspektif aplikasi, mode AiSAQ-Performance dapat menghasilkan latensi dalam kisaran 10 mSec, seperti yang diperlukan untuk pencarian semantik online.</p>
 <h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">Skala AISAQ: Dioptimalkan untuk Efisiensi Penyimpanan</h3><p>AISAQ-Scale mengambil pendekatan yang berlawanan. Mode ini dirancang untuk <strong>meminimalkan penggunaan disk</strong> sambil tetap menyimpan semua data pada SSD.</p>
 <p>Dalam mode ini:</p>
 <ul>
@@ -178,10 +178,10 @@ origin: >-
 <p>Untuk mengendalikan overhead ini, mode AISAQ-Scale memperkenalkan dua pengoptimalan tambahan:</p>
 <ul>
 <li><p>Penataan<strong>ulang data PQ</strong>, yang mengurutkan vektor PQ berdasarkan prioritas akses untuk meningkatkan lokalitas dan mengurangi pembacaan secara acak.</p></li>
-<li><p><strong>Cache PQ dalam DRAM</strong> (<code translate="no">pq_cache_size</code>), yang menyimpan data PQ yang sering diakses dan menghindari pembacaan disk berulang kali untuk entri yang panas.</p></li>
+<li><p><strong>Cache PQ dalam DRAM</strong> (<code translate="no">pq_read_page_cache_size</code>), yang menyimpan data PQ yang sering diakses dan menghindari pembacaan disk berulang kali untuk entri yang panas.</p></li>
 </ul>
-<p>Dengan pengoptimalan ini, mode AISAQ-Scale mencapai efisiensi penyimpanan yang jauh lebih baik daripada AISAQ-Performance, dengan tetap mempertahankan kinerja pencarian yang praktis. Performa tersebut tetap lebih rendah daripada DISKANN atau AISAQ-Performance, tetapi jejak memori secara dramatis lebih kecil.</p>
-<h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">Keunggulan Utama AISAQ</h3><p>Dengan memindahkan semua data yang penting dalam pencarian ke disk dan mendesain ulang bagaimana data tersebut diakses, AISAQ secara fundamental mengubah profil biaya dan skalabilitas pencarian vektor berbasis grafik. Desainnya memberikan tiga keuntungan yang signifikan.</p>
+<p>Dengan pengoptimalan ini, mode AISAQ-Scale mencapai efisiensi penyimpanan yang jauh lebih baik daripada AISAQ-Performance, dengan tetap mempertahankan kinerja pencarian yang praktis. Performa tersebut tetap lebih rendah daripada DISKANN, tetapi tidak ada overhead penyimpanan (ukuran indeks serupa dengan DISKANN) dan jejak memori secara dramatis lebih kecil. Dari perspektif aplikasi, AiSAQ menyediakan sarana untuk memenuhi persyaratan RAG pada skala sangat tinggi.</p>
+<h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">Keuntungan Utama dari AISAQ</h3><p>Dengan memindahkan semua data yang sangat penting untuk pencarian ke disk dan mendesain ulang bagaimana data tersebut diakses, AISAQ secara fundamental mengubah profil biaya dan skalabilitas pencarian vektor berbasis grafik. Desainnya memberikan tiga keuntungan yang signifikan.</p>
 <p><strong>1. Penggunaan DRAM Lebih Rendah Hingga 3.200× Lebih Rendah</strong></p>
 <p>Kuantisasi Produk secara signifikan mengurangi ukuran vektor dimensi tinggi, tetapi pada skala miliaran, jejak memori masih cukup besar. Bahkan setelah kompresi, kode PQ harus disimpan dalam memori selama pencarian dalam desain konvensional.</p>
 <p>Sebagai contoh, pada <strong>SIFT1B</strong>, sebuah benchmark dengan satu miliar vektor 128 dimensi, kode PQ saja membutuhkan sekitar <strong>30-120 GB DRAM</strong>, tergantung konfigurasi. Menyimpan seluruh vektor yang belum dikompresi akan membutuhkan tambahan <strong>~480 GB</strong>. Meskipun PQ mengurangi penggunaan memori sebesar 4-16×, jejak yang tersisa masih cukup besar untuk mendominasi biaya infrastruktur.</p>
@@ -244,7 +244,7 @@ origin: >-
   <span class="hljs-string">&quot;beamwidth&quot;</span>: <span class="hljs-number">8</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Benchmark-Method" class="common-anchor-header">Metode Pembanding</h3><p>Baik DISKANN maupun AISAQ diuji menggunakan <a href="https://milvus.io/docs/knowhere.md">Knowhere</a>, mesin pencari vektor sumber terbuka yang digunakan di Milvus. Dua set data digunakan dalam evaluasi ini:</p>
+<h3 id="Benchmark-Method" class="common-anchor-header">Metode Pembandingan</h3><p>Baik DISKANN maupun AISAQ diuji menggunakan <a href="https://milvus.io/docs/knowhere.md">Knowhere</a>, mesin pencari vektor sumber terbuka yang digunakan di Milvus. Dua set data digunakan dalam evaluasi ini:</p>
 <ul>
 <li><p><strong>SIFT128D (vektor 1M):</strong> tolok ukur 128 dimensi yang terkenal yang biasa digunakan untuk pencarian deskriptor gambar. <em>(Ukuran dataset mentah ≈ 488 MB)</em></p></li>
 <li><p><strong>Cohere768D (1M vektor):</strong> set penyematan 768 dimensi yang khas untuk pencarian semantik berbasis transformator. <em>(Ukuran set data mentah ≈ 2930 MB)</em></p></li>
@@ -253,7 +253,7 @@ origin: >-
 <h3 id="Results" class="common-anchor-header">Hasil</h3><p><strong>Sift128D1M (Vektor Penuh ~ 488MB)</strong></p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Sift128_D1_M_706a5b4e23.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/aisaq_53da7b566a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -273,7 +273,7 @@ origin: >-
 <li><p>Total: 3780B</p></li>
 </ul>
 <p>Karena seluruh node muat dalam satu halaman, hanya satu I/O yang diperlukan per akses, dan AISAQ menghindari pembacaan data PQ eksternal secara acak.</p>
-<p>Namun, ketika hanya sebagian dari data PQ yang diisikan, kode PQ yang tersisa harus diambil dari tempat lain pada disk. Ini memperkenalkan operasi I / O acak tambahan, yang secara tajam meningkatkan permintaan IOPS dan menyebabkan penurunan kinerja yang signifikan.</p>
+<p>Namun, ketika hanya sebagian dari data PQ yang diisikan, kode PQ yang tersisa harus diambil dari tempat lain pada disk. Hal ini memperkenalkan operasi I / O acak tambahan, yang secara tajam meningkatkan permintaan IOPS dan menyebabkan penurunan kinerja yang signifikan.</p>
 <p><strong>Kumpulan Data Cohere768D</strong></p>
 <p>Pada dataset Cohere768D, AISAQ berkinerja lebih buruk daripada DISKANN. Alasannya adalah vektor 768 dimensi tidak muat dalam satu halaman SSD 4 KB:</p>
 <ul>
@@ -284,7 +284,7 @@ origin: >-
 </ul>
 <p>Dalam kasus ini, meskipun semua kode PQ sebaris, setiap simpul mencakup beberapa halaman. Meskipun jumlah operasi I/O tetap konsisten, namun setiap I/O harus mentransfer lebih banyak data, sehingga menghabiskan bandwidth SSD lebih cepat. Setelah bandwidth menjadi faktor pembatas, AISAQ tidak dapat mengimbangi DISKANN-terutama pada beban kerja berdimensi tinggi di mana jejak data per node tumbuh dengan cepat.</p>
 <p><strong>Catatan:</strong></p>
-<p>Tata letak penyimpanan AISAQ biasanya meningkatkan ukuran indeks pada disk sebesar <strong>4× hingga 6×.</strong> Hal ini merupakan pertukaran yang disengaja: vektor penuh, daftar tetangga, dan kode PQ ditempatkan pada disk untuk memungkinkan akses satu halaman yang efisien selama pencarian. Meskipun hal ini meningkatkan penggunaan SSD, kapasitas disk secara signifikan lebih murah daripada DRAM dan lebih mudah diukur pada volume data yang besar.</p>
+<p>Tata letak penyimpanan AISAQ biasanya meningkatkan ukuran indeks pada disk sebesar <strong>4× hingga 6×.</strong> Hal ini merupakan pertukaran yang disengaja: vektor penuh, daftar tetangga, dan kode PQ ditempatkan di disk untuk memungkinkan akses satu halaman yang efisien selama pencarian. Meskipun hal ini meningkatkan penggunaan SSD, kapasitas disk secara signifikan lebih murah daripada DRAM dan lebih mudah diukur pada volume data yang besar.</p>
 <p>Pada praktiknya, pengguna dapat menyesuaikan keseimbangan ini dengan menyesuaikan rasio kompresi <code translate="no">INLINE_PQ</code> dan PQ. Parameter ini memungkinkan untuk menyeimbangkan kinerja pencarian, jejak disk, dan biaya sistem secara keseluruhan berdasarkan kebutuhan beban kerja, daripada dibatasi oleh batas memori tetap.</p>
 <h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -302,8 +302,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Ekonomi perangkat keras modern sedang berubah. Harga DRAM tetap tinggi, sementara performa SSD telah berkembang pesat - drive PCIe 5.0 sekarang memberikan bandwidth melebihi <strong>14 GB/s</strong>. Hasilnya, arsitektur yang mengalihkan data penting untuk pencarian dari DRAM yang mahal ke penyimpanan SSD yang jauh lebih terjangkau menjadi semakin menarik. Dengan kapasitas SSD yang harganya <strong>kurang dari 30 kali lipat per gigabyte</strong> dibandingkan dengan DRAM, perbedaan ini tidak lagi bersifat marjinal - perbedaan ini sangat berpengaruh pada desain sistem.</p>
-<p>AISAQ mencerminkan pergeseran ini. Dengan menghilangkan kebutuhan akan alokasi memori yang besar dan selalu aktif, AISAQ memungkinkan sistem pencarian vektor untuk menskalakan berdasarkan ukuran data dan kebutuhan beban kerja, bukan batas DRAM. Pendekatan ini sejalan dengan tren yang lebih luas terhadap <strong>arsitektur "all-in-storage"</strong>, di mana SSD cepat memainkan peran utama tidak hanya dalam hal ketahanan, tetapi juga dalam hal komputasi dan pencarian aktif.</p>
-<p>Pergeseran ini sepertinya tidak akan terbatas pada database vektor. Pola desain serupa sudah muncul dalam pemrosesan grafik, analisis deret waktu, dan bahkan bagian dari sistem relasional tradisional, karena pengembang memikirkan kembali asumsi lama tentang tempat penyimpanan data untuk mencapai performa yang dapat diterima. Karena ekonomi perangkat keras terus berkembang, arsitektur sistem akan mengikuti.</p>
+<p>AISAQ mencerminkan pergeseran ini. Dengan menghilangkan kebutuhan akan alokasi memori yang besar dan selalu aktif, AISAQ memungkinkan sistem pencarian vektor untuk menskalakan berdasarkan ukuran data dan kebutuhan beban kerja, bukan batas DRAM. Pendekatan ini selaras dengan tren yang lebih luas terhadap arsitektur "all-in-storage", di mana SSD cepat memainkan peran utama tidak hanya dalam persistensi, tetapi juga dalam komputasi dan pencarian aktif. Dengan menawarkan dua mode operasi - Performa dan Skala - AiSAQ memenuhi persyaratan pencarian semantik (yang membutuhkan latensi terendah) dan RAG (yang membutuhkan skala yang sangat tinggi, tetapi latensi sedang).</p>
+<p>Pergeseran ini sepertinya tidak akan terbatas pada database vektor. Pola desain yang serupa sudah muncul dalam pemrosesan grafik, analitik deret waktu, dan bahkan bagian dari sistem relasional tradisional, karena para pengembang memikirkan kembali asumsi lama tentang di mana data harus berada untuk mencapai kinerja yang dapat diterima. Karena ekonomi perangkat keras terus berkembang, arsitektur sistem akan mengikuti.</p>
 <p>Untuk detail lebih lanjut tentang desain yang dibahas di sini, lihat dokumentasinya:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/aisaq.md">AISAQ | Dokumentasi Milvus</a></p></li>

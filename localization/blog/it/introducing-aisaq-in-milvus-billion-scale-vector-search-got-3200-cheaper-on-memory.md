@@ -22,7 +22,7 @@ origin: >-
 ---
 <p>I database vettoriali sono diventati l'infrastruttura principale dei sistemi di intelligenza artificiale mission-critical e i loro volumi di dati crescono in modo esponenziale, spesso raggiungendo miliardi di vettori. A questa scala, tutto diventa più difficile: mantenere una bassa latenza, preservare l'accuratezza, garantire l'affidabilità e operare attraverso repliche e regioni. Ma una sfida tende a emergere presto e a dominare le decisioni architettoniche: il costo<strong>.</strong></p>
 <p>Per garantire una ricerca veloce, la maggior parte dei database vettoriali mantiene le strutture di indicizzazione chiave nella DRAM (Dynamic Random Access Memory), il livello di memoria più veloce e più costoso. Questo design è efficace per le prestazioni, ma è poco scalabile. L'utilizzo della DRAM varia in base alle dimensioni dei dati piuttosto che al traffico delle query e, anche con la compressione o l'offloading parziale su SSD, gran parte dell'indice deve rimanere in memoria. Quando i dataset crescono, i costi della memoria diventano rapidamente un fattore limitante.</p>
-<p>Milvus supporta già <strong>DISKANN</strong>, un approccio ANN basato su disco che riduce la pressione sulla memoria spostando gran parte dell'indice su SSD. Tuttavia, DISKANN si affida ancora alla DRAM per le rappresentazioni compresse utilizzate durante la ricerca. <a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> si spinge oltre con <a href="https://milvus.io/docs/aisaq.md">AISAQ</a>, un indice vettoriale basato su disco ispirato a <a href="https://milvus.io/docs/diskann.md">DISKANN</a> che memorizza tutti i dati critici per la ricerca su disco. In un carico di lavoro di un miliardo di vettori, questo riduce l'uso della memoria da <strong>32 GB a circa 10 MB, una</strong> <strong>riduzione di 3.200 volte, pur</strong>mantenendo prestazioni pratiche.</p>
+<p>Milvus supporta già <strong>DISKANN</strong>, un approccio ANN basato su disco che riduce la pressione sulla memoria spostando gran parte dell'indice su SSD. Tuttavia, DISKANN si affida ancora alla DRAM per le rappresentazioni compresse utilizzate durante la ricerca. <a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> si spinge oltre con <a href="https://milvus.io/docs/aisaq.md">AISAQ</a>, un indice vettoriale basato su disco ispirato a <a href="https://milvus.io/docs/diskann.md">DISKANN</a>. Sviluppata da KIOXIA, l'architettura di AiSAQ è stata progettata con una "Zero-DRAM-Footprint Architecture", che memorizza tutti i dati critici per la ricerca su disco e ottimizza la collocazione dei dati per ridurre al minimo le operazioni di I/O. In un carico di lavoro di un miliardo di vettori, questo riduce l'uso della memoria da <strong>32 GB a circa 10 MB, con una</strong> <strong>riduzione di 3.200 volte, pur</strong>mantenendo prestazioni pratiche.</p>
 <p>Nelle sezioni che seguono spieghiamo come funziona la ricerca vettoriale basata su grafi, da dove derivano i costi di memoria e come AISAQ ridisegna la curva dei costi per la ricerca vettoriale su scala miliardaria.</p>
 <h2 id="How-Conventional-Graph-Based-Vector-Search-Works" class="common-anchor-header">Come funziona la ricerca vettoriale convenzionale basata sui grafi<button data-href="#How-Conventional-Graph-Based-Vector-Search-Works" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -54,7 +54,7 @@ origin: >-
 <p>A ogni iterazione, l'algoritmo:</p>
 <ul>
 <li><p><strong>Seleziona il candidato più vicino scoperto finora.</strong> Dall'elenco dei candidati, sceglie il vettore con la distanza minore dall'interrogazione.</p></li>
-<li><p><strong>Recupera i vicini di quel vettore dal grafo.</strong> Questi vicini sono vettori che sono stati identificati durante la costruzione dell'indice come vicini al vettore corrente.</p></li>
+<li><p><strong>Recupera i vicini di questo vettore dal grafo.</strong> Questi vicini sono vettori che sono stati identificati durante la costruzione dell'indice come vicini al vettore corrente.</p></li>
 <li><p><strong>Valuta i vicini non visitati e li aggiunge all'elenco dei candidati.</strong> Per ogni vicino che non è già stato esplorato, l'algoritmo calcola la sua distanza dalla query. I vicini visitati in precedenza vengono saltati, mentre quelli nuovi vengono inseriti nell'elenco dei candidati se sembrano promettenti.</p></li>
 </ul>
 <p>Espandendo ripetutamente l'elenco dei candidati, la ricerca esplora regioni sempre più rilevanti del grafo. Questo permette all'algoritmo di muoversi costantemente verso risposte migliori, esaminando solo una piccola frazione di tutti i vettori.</p>
@@ -110,7 +110,7 @@ origin: >-
   </span>
 </p>
 <p>DISKANN è la soluzione ANN basata su disco più influente finora e funge da base ufficiale per la competizione NeurIPS Big ANN, un benchmark globale per la ricerca vettoriale su scala miliardaria. La sua importanza non risiede solo nelle prestazioni, ma in ciò che ha dimostrato: la <strong>ricerca ANN basata su grafi non deve vivere interamente in memoria per essere veloce</strong>.</p>
-<p>Combinando l'archiviazione basata su SSD con strutture in memoria accuratamente scelte, DISKANN ha dimostrato che la ricerca vettoriale su larga scala può raggiungere un'elevata precisione e una bassa latenza su hardware commodity, senza richiedere un ingombro massiccio di DRAM. Ciò avviene ripensando <em>quali parti della ricerca devono essere veloci</em> e <em>quali possono tollerare un accesso più lento</em>.</p>
+<p>Combinando l'archiviazione basata su SSD con strutture in memoria accuratamente scelte, DISKANN ha dimostrato che la ricerca vettoriale su larga scala può raggiungere un'elevata accuratezza e una bassa latenza su hardware commodity, senza richiedere ingombri massicci di DRAM. Ciò avviene ripensando <em>quali parti della ricerca devono essere veloci</em> e <em>quali possono tollerare un accesso più lento</em>.</p>
 <p><strong>Ad alto livello, DISKANN mantiene in memoria i dati a cui si accede più frequentemente, spostando su disco le strutture più grandi e a cui si accede meno frequentemente.</strong> Questo equilibrio si ottiene grazie a diverse scelte progettuali fondamentali.</p>
 <h3 id="1-Using-PQ-Distances-to-Expand-the-Candidate-List" class="common-anchor-header">1. Uso delle distanze PQ per espandere l'elenco dei candidati</h3><p>L'espansione dell'elenco dei candidati è l'operazione più frequente nella ricerca a grafo. Ogni espansione richiede la stima della distanza tra il vettore della query e i vicini di un nodo candidato. L'esecuzione di questi calcoli utilizzando vettori completi ad alta dimensione richiederebbe frequenti letture casuali dal disco, un'operazione costosa sia dal punto di vista computazionale che dell'I/O. DISKANN evita questo costo.</p>
 <p>DISKANN evita questo costo comprimendo i vettori in <strong>codici di quantizzazione del prodotto (PQ)</strong> e mantenendoli in memoria. I codici PQ sono molto più piccoli dei vettori completi, ma conservano comunque informazioni sufficienti per stimare approssimativamente la distanza.</p>
@@ -124,7 +124,7 @@ origin: >-
 <p>Grazie alla co-localizzazione dei dati correlati, DISKANN riduce il numero di accessi casuali al disco necessari durante la ricerca. Questa ottimizzazione migliora l'efficienza dell'espansione e del reranking, soprattutto su larga scala.</p>
 <h3 id="3-Parallel-Node-Expansion-for-Better-SSD-Utilization" class="common-anchor-header">3. Espansione parallela dei nodi per un migliore utilizzo dell'SSD</h3><p>La ricerca di RNA basate su grafi è un processo iterativo. Se ogni iterazione espande un solo nodo candidato, il sistema esegue una sola lettura del disco alla volta, lasciando inutilizzata la maggior parte della larghezza di banda parallela dell'SSD. Per evitare questa inefficienza, DISKANN espande più candidati in ogni iterazione e invia richieste di lettura parallele all'SSD. Questo approccio sfrutta molto meglio la larghezza di banda disponibile e riduce il numero totale di iterazioni necessarie.</p>
 <p>Il parametro <strong>beam_width_ratio</strong> controlla il numero di candidati espansi in parallelo: <strong>Larghezza del fascio = numero di core della CPU × beam_width_ratio.</strong> Un rapporto più alto allarga la ricerca, potenzialmente migliorando l'accuratezza, ma aumenta anche il calcolo e l'I/O su disco.</p>
-<p>Per compensare questo problema, DISKANN introduce un <code translate="no">search_cache_budget_gb_ratio</code> che riserva la memoria per memorizzare nella cache i dati a cui si accede di frequente, riducendo le letture ripetute sull'SSD. Insieme, questi meccanismi aiutano DISKANN a bilanciare accuratezza, latenza ed efficienza I/O.</p>
+<p>Per compensare questo problema, DISKANN introduce un <code translate="no">search_cache_budget_gb_ratio</code> che riserva la memoria per memorizzare nella cache i dati a cui si accede di frequente, riducendo le letture ripetute sull'SSD. Insieme, questi meccanismi aiutano DISKANN a trovare un equilibrio tra precisione, latenza ed efficienza I/O.</p>
 <h3 id="Why-This-Matters--and-Where-the-Limits-Appear" class="common-anchor-header">Perché questo è importante e dove appaiono i limiti</h3><p>Il design di DISKANN rappresenta un importante passo avanti per la ricerca vettoriale su disco. Mantenendo i codici PQ in memoria e spingendo le strutture più grandi su SSD, riduce significativamente l'ingombro in memoria rispetto agli indici a grafo completamente in-memory.</p>
 <p>Allo stesso tempo, questa architettura dipende ancora dalla <strong>DRAM sempre attiva</strong> per i dati critici per la ricerca. I codici PQ, le cache e le strutture di controllo devono rimanere in memoria per mantenere efficiente l'attraversamento. Quando i set di dati crescono fino a miliardi di vettori e le implementazioni aggiungono repliche o regioni, questo requisito di memoria può ancora diventare un fattore limitante.</p>
 <p>Questa è la lacuna che <strong>AISAQ</strong> è stato progettato per colmare.</p>
@@ -151,7 +151,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Per bilanciare le prestazioni e l'efficienza di memorizzazione con carichi di lavoro diversi, AISAQ offre due modalità di memorizzazione su disco. Queste modalità differiscono principalmente per il modo in cui i dati compressi in PQ vengono memorizzati e acceduti durante la ricerca.</p>
+<p>Per rispondere alle diverse esigenze applicative, AISAQ offre due modalità di archiviazione su disco: Performance e Scale. Da un punto di vista tecnico, queste modalità differiscono principalmente per il modo in cui i dati compressi in PQ vengono memorizzati e a cui si accede durante la ricerca. Dal punto di vista applicativo, queste modalità rispondono a due tipi distinti di requisiti: requisiti di bassa latenza, tipici della ricerca semantica online e dei sistemi di raccomandazione, e requisiti di altissima scala, tipici del RAG.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/aisaq_vs_diskann_35ebee3c64.png" alt="" class="doc-image" id="" />
@@ -166,8 +166,8 @@ origin: >-
 </ul>
 <p>Dal punto di vista dell'algoritmo di ricerca, questo rispecchia fedelmente il modello di accesso di DISKANN. L'espansione dei candidati rimane efficiente e le prestazioni di runtime sono paragonabili, anche se tutti i dati critici per la ricerca si trovano ora su disco.</p>
 <p>Il compromesso è l'overhead di memorizzazione. Poiché i dati PQ di un vicino possono apparire nelle pagine del disco di più nodi, questa disposizione introduce ridondanza e aumenta significativamente la dimensione complessiva dell'indice.</p>
-<p><strong>Pertanto, la modalità AISAQ-Performance privilegia una bassa latenza di I/O rispetto all'efficienza del disco.</strong></p>
-<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">Scala AISAQ: Ottimizzato per l'efficienza dello storage</h3><p>AISAQ-Scale adotta l'approccio opposto. È stata progettata per <strong>ridurre al minimo l'utilizzo del disco</strong>, pur mantenendo tutti i dati su SSD.</p>
+<p>Pertanto, la modalità AISAQ-Performance privilegia una bassa latenza di I/O rispetto all'efficienza del disco. Dal punto di vista applicativo, la modalità AiSAQ-Performance può garantire una latenza dell'ordine di 10 mSec, come richiesto per la ricerca semantica online.</p>
+<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">Scala AISAQ: Ottimizzato per l'efficienza dello storage</h3><p>AISAQ-Scale adotta l'approccio opposto. È stato progettato per <strong>ridurre al minimo l'utilizzo del disco</strong>, pur mantenendo tutti i dati su SSD.</p>
 <p>In questa modalità:</p>
 <ul>
 <li><p>I dati PQ vengono archiviati su disco separatamente, senza ridondanza.</p></li>
@@ -177,9 +177,9 @@ origin: >-
 <p>Per controllare questo overhead, la modalità AISAQ-Scale introduce due ottimizzazioni aggiuntive:</p>
 <ul>
 <li><p><strong>Riorganizzazione dei dati PQ</strong>, che ordina i vettori PQ in base alla priorità di accesso per migliorare la localizzazione e ridurre le letture casuali.</p></li>
-<li><p>Una <strong>cache PQ nella DRAM</strong> (<code translate="no">pq_cache_size</code>), che memorizza i dati PQ a cui si accede di frequente ed evita letture ripetute del disco per le voci calde.</p></li>
+<li><p>Una <strong>cache PQ nella DRAM</strong> (<code translate="no">pq_read_page_cache_size</code>), che memorizza i dati PQ a cui si accede di frequente ed evita letture ripetute del disco per le voci calde.</p></li>
 </ul>
-<p>Con queste ottimizzazioni, la modalità AISAQ-Scale raggiunge un'efficienza di memorizzazione molto migliore di AISAQ-Performance, pur mantenendo prestazioni di ricerca pratiche. Le prestazioni rimangono inferiori a quelle di DISKANN o AISAQ-Performance, ma l'ingombro in memoria è nettamente inferiore.</p>
+<p>Con queste ottimizzazioni, la modalità AISAQ-Scale raggiunge un'efficienza di memorizzazione molto migliore di AISAQ-Performance, pur mantenendo prestazioni di ricerca pratiche. Le prestazioni rimangono inferiori a quelle di DISKANN, ma non c'è sovraccarico di memoria (la dimensione dell'indice è simile a quella di DISKANN) e l'ingombro della memoria è nettamente inferiore. Dal punto di vista applicativo, AiSAQ fornisce i mezzi per soddisfare i requisiti RAG su scala ultraelevata.</p>
 <h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">Vantaggi principali di AISAQ</h3><p>Spostando tutti i dati critici per la ricerca su disco e riprogettando le modalità di accesso a tali dati, AISAQ cambia radicalmente il profilo di costo e scalabilità della ricerca vettoriale a grafo. Il suo design offre tre vantaggi significativi.</p>
 <p><strong>1. Utilizzo della DRAM fino a 3.200 volte inferiore</strong></p>
 <p>La quantizzazione del prodotto riduce in modo significativo le dimensioni dei vettori ad alta dimensionalità, ma su scala miliardaria l'ingombro in memoria è ancora notevole. Anche dopo la compressione, i codici PQ devono essere mantenuti in memoria durante la ricerca nei progetti convenzionali.</p>
@@ -188,7 +188,7 @@ origin: >-
 <p>Dato che lo storage SSD costa circa <strong>1/30 del prezzo per unità di capacità</strong> rispetto alla DRAM, questo cambiamento ha un impatto diretto e drammatico sul costo totale del sistema.</p>
 <p><strong>2. Nessun sovraccarico di I/O aggiuntivo</strong></p>
 <p>Lo spostamento dei codici PQ dalla memoria al disco normalmente aumenta il numero di operazioni di I/O durante la ricerca. AISAQ evita questo problema controllando attentamente <strong>la disposizione dei dati e i modelli di accesso</strong>. Invece di disperdere i dati correlati sul disco, AISAQ co-loca i codici PQ, i vettori completi e gli elenchi di vicini in modo che possano essere recuperati insieme. Ciò garantisce che l'espansione dei candidati non introduca letture casuali aggiuntive.</p>
-<p>Per consentire agli utenti di controllare il compromesso tra dimensioni dell'indice ed efficienza I/O, AISAQ introduce il parametro <code translate="no">inline_pq</code>, che determina la quantità di dati PQ memorizzati in linea con ciascun nodo:</p>
+<p>Per consentire agli utenti di controllare il compromesso tra dimensione dell'indice ed efficienza I/O, AISAQ introduce il parametro <code translate="no">inline_pq</code>, che determina la quantità di dati PQ memorizzati in linea con ciascun nodo:</p>
 <ul>
 <li><p><strong>Inline_pq più basso:</strong> dimensione dell'indice più piccola, ma può richiedere I/O aggiuntivo</p></li>
 <li><p><strong>Inline_pq più alto:</strong> dimensione dell'indice maggiore, ma preserva l'accesso a lettura singola.</p></li>
@@ -199,7 +199,7 @@ origin: >-
 <p>Il layout sequenziale offre due importanti vantaggi:</p>
 <ul>
 <li><p><strong>Le letture sequenziali su SSD sono molto più veloci</strong> delle letture casuali sparse.</p></li>
-<li><p><strong>I dati contigui sono più adatti alla cache</strong> e consentono alle CPU di calcolare le distanze PQ in modo più efficiente.</p></li>
+<li><p><strong>I dati contigui sono più adatti alla cache</strong>, consentendo alle CPU di calcolare le distanze PQ in modo più efficiente.</p></li>
 </ul>
 <p>Questo migliora sia la velocità che la prevedibilità dei calcoli delle distanze PQ e aiuta a compensare il costo delle prestazioni della memorizzazione dei codici PQ su SSD piuttosto che su DRAM.</p>
 <h2 id="AISAQ-vs-DISKANN-Performance-Evaluation" class="common-anchor-header">AISAQ vs. DISKANN: valutazione delle prestazioni<button data-href="#AISAQ-vs-DISKANN-Performance-Evaluation" class="anchor-icon" translate="no">
@@ -217,7 +217,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dopo aver compreso come AISAQ differisce architettonicamente da DISKANN, la domanda successiva è semplice: <strong>in che modo queste scelte progettuali influiscono sulle prestazioni e sull'utilizzo delle risorse nella pratica?</strong> Questa valutazione confronta AISAQ e DISKANN su tre dimensioni che contano di più su scala miliardaria: <strong>prestazioni di ricerca, consumo di memoria e utilizzo del disco</strong>.</p>
+    </button></h2><p>Dopo aver compreso come AISAQ differisce architettonicamente da DISKANN, la domanda successiva è semplice: <strong>come influiscono queste scelte progettuali sulle prestazioni e sull'utilizzo delle risorse nella pratica?</strong> Questa valutazione confronta AISAQ e DISKANN su tre dimensioni che contano di più su scala miliardaria: <strong>prestazioni di ricerca, consumo di memoria e utilizzo del disco</strong>.</p>
 <p>In particolare, esaminiamo il comportamento di AISAQ al variare della quantità di dati PQ inline (<code translate="no">INLINE_PQ</code>). Questo parametro controlla direttamente il compromesso tra dimensione dell'indice, I/O su disco ed efficienza di runtime. Valutiamo inoltre entrambi gli approcci su <strong>carichi di lavoro vettoriali a bassa e alta dimensione, poiché la dimensionalità influenza fortemente il costo del calcolo della distanza e i</strong> requisiti di memorizzazione.</p>
 <h3 id="Setup" class="common-anchor-header">Configurazione</h3><p>Tutti gli esperimenti sono stati condotti su un sistema a singolo nodo per isolare il comportamento dell'indice ed evitare l'interferenza degli effetti della rete o del sistema distribuito.</p>
 <p><strong>Configurazione hardware:</strong></p>
@@ -252,7 +252,7 @@ origin: >-
 <h3 id="Results" class="common-anchor-header">Risultati</h3><p><strong>Sift128D1M (vettore completo ~488MB)</strong></p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Sift128_D1_M_706a5b4e23.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/aisaq_53da7b566a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -264,7 +264,7 @@ origin: >-
   </span>
 </p>
 <h3 id="Analysis" class="common-anchor-header">Analisi</h3><p><strong>Set di dati SIFT128D</strong></p>
-<p>Sul set di dati SIFT128D, AISAQ è in grado di eguagliare le prestazioni di DISKANN quando tutti i dati PQ vengono inseriti in linea, in modo che i dati richiesti da ciascun nodo si inseriscano interamente in una singola pagina SSD da 4 KB (INLINE_PQ = 48). Con questa configurazione, tutte le informazioni necessarie per la ricerca sono collocate:</p>
+<p>Sul set di dati SIFT128D, AISAQ è in grado di eguagliare le prestazioni di DISKANN quando tutti i dati PQ sono inseriti in linea, in modo che i dati richiesti da ciascun nodo si inseriscano interamente in una singola pagina SSD da 4 KB (INLINE_PQ = 48). Con questa configurazione, tutte le informazioni necessarie per la ricerca sono collocate:</p>
 <ul>
 <li><p>Vettore completo: 512B</p></li>
 <li><p>Elenco dei vicini: 48 × 4 + 4 = 196B</p></li>
@@ -272,7 +272,7 @@ origin: >-
 <li><p>Totale: 3780B</p></li>
 </ul>
 <p>Poiché l'intero nodo rientra in una pagina, è necessario un solo I/O per ogni accesso e AISAQ evita la lettura casuale dei dati PQ esterni.</p>
-<p>Tuttavia, quando solo una parte dei dati PQ è inline, i codici PQ rimanenti devono essere recuperati da altre parti del disco. Questo introduce ulteriori operazioni di I/O casuali, che aumentano drasticamente la richiesta di IOPS e portano a significativi cali di prestazioni.</p>
+<p>Tuttavia, quando solo una parte dei dati PQ è inline, i codici PQ rimanenti devono essere recuperati da un'altra parte del disco. Questo introduce ulteriori operazioni di I/O casuali, che aumentano drasticamente la richiesta di IOPS e portano a significativi cali di prestazioni.</p>
 <p><strong>Set di dati Cohere768D</strong></p>
 <p>Sul dataset Cohere768D, AISAQ si comporta peggio di DISKANN. Il motivo è che un vettore di 768 dimensioni semplicemente non si adatta a una pagina SSD da 4 KB:</p>
 <ul>
@@ -301,8 +301,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>L'economia dell'hardware moderno sta cambiando. I prezzi delle memorie DRAM rimangono elevati, mentre le prestazioni delle unità SSD sono progredite rapidamente: le unità PCIe 5.0 offrono ora una larghezza di banda superiore a <strong>14 GB/s</strong>. Di conseguenza, le architetture che spostano i dati critici per la ricerca dalla costosa DRAM allo storage SSD, molto più conveniente, stanno diventando sempre più interessanti. Con la capacità delle unità SSD che costa <strong>meno di 30 volte per gigabyte rispetto alla</strong> DRAM, queste differenze non sono più marginali: influenzano in modo significativo la progettazione del sistema.</p>
-<p>AISAQ riflette questo cambiamento. Eliminando la necessità di allocare grandi quantità di memoria, consente ai sistemi di ricerca vettoriale di scalare in base alle dimensioni dei dati e ai requisiti del carico di lavoro piuttosto che ai limiti della DRAM. Questo approccio è in linea con una tendenza più ampia verso le <strong>architetture "all-in-storage"</strong>, in cui le veloci unità SSD svolgono un ruolo centrale non solo nella persistenza, ma anche nel calcolo e nella ricerca attivi.</p>
-<p>È improbabile che questo cambiamento sia limitato ai database vettoriali. Modelli di progettazione simili stanno già emergendo nell'elaborazione dei grafi, nell'analisi delle serie temporali e persino in alcune parti dei sistemi relazionali tradizionali, in quanto gli sviluppatori ripensano a ipotesi di vecchia data su dove i dati debbano risiedere per ottenere prestazioni accettabili. Con l'evoluzione dell'economia dell'hardware, le architetture di sistema seguiranno la stessa strada.</p>
+<p>AISAQ riflette questo cambiamento. Eliminando la necessità di allocare grandi quantità di memoria, consente ai sistemi di ricerca vettoriale di scalare in base alle dimensioni dei dati e ai requisiti del carico di lavoro piuttosto che ai limiti della DRAM. Questo approccio è in linea con una tendenza più ampia verso le architetture "all-in-storage", in cui le veloci unità SSD svolgono un ruolo centrale non solo nella persistenza, ma anche nel calcolo e nella ricerca attivi. Offrendo due modalità operative - Performance e Scale - AiSAQ soddisfa i requisiti sia della ricerca semantica (che richiede la latenza più bassa) sia della RAG (che richiede una scala molto elevata, ma una latenza moderata).</p>
+<p>È improbabile che questo cambiamento sia limitato ai database vettoriali. Modelli di progettazione simili stanno già emergendo nell'elaborazione dei grafi, nell'analisi delle serie temporali e persino in parti dei sistemi relazionali tradizionali, in quanto gli sviluppatori ripensano a ipotesi di vecchia data sulla posizione dei dati per ottenere prestazioni accettabili. Con l'evoluzione dell'economia dell'hardware, le architetture di sistema seguiranno la stessa strada.</p>
 <p>Per maggiori dettagli sui progetti qui discussi, consultare la documentazione:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/aisaq.md">AISAQ | Documentazione Milvus</a></p></li>
@@ -333,5 +333,5 @@ origin: >-
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Portare la compressione vettoriale all'estremo: come Milvus serve 3 volte di più le query con RaBitQ</a></p></li>
 <li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">I benchmark mentono: i DB vettoriali meritano un test reale </a></p></li>
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Abbiamo sostituito Kafka/Pulsar con un picchio per Milvus </a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">La ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza uccidere il richiamo</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza uccidere il richiamo</a></p></li>
 </ul>

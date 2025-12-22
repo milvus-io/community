@@ -18,7 +18,7 @@ origin: >-
 ---
 <p>向量資料庫已經成為關鍵任務 AI 系統的核心基礎架構，而且其資料量正以指數級的速度成長 - 通常會達到數十億個向量。在這樣的規模下，一切都變得更困難：維持低延遲、保持精確度、確保可靠性，以及跨複本和區域運作。但有一項挑戰往往很早就會浮現，並且主導架構決策 - 成本<strong>。</strong></p>
 <p>為了提供快速搜尋，大多數向量資料庫將關鍵索引結構保留在 DRAM (動態隨機存取記憶體)，也就是最快、最昂貴的記憶體層級。這種設計對於效能來說很有效，但擴充性卻很差。DRAM 的使用量會隨資料大小而擴充，而不是隨查詢流量而擴充，而且即使有壓縮或部分 SSD 卸載，索引的大部分仍必須保留在記憶體中。隨著資料集的成長，記憶體成本很快就會成為限制因素。</p>
-<p>Milvus 已支援<strong>DISKANN</strong>，這是一種以磁碟為基礎的 ANN 方法，可將大部分索引移至 SSD 上，從而降低記憶體壓力。然而，DISKANN 在搜尋過程中使用的壓縮表示法仍依賴 DRAM。<a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>更進一步採用<a href="https://milvus.io/docs/aisaq.md">AISAQ</a>，這是一種基於磁碟的向量索引，靈感來自<a href="https://milvus.io/docs/diskann.md">DISKANN</a>，可將所有關鍵搜尋資料儲存在磁碟上。在十億向量的工作負載中，記憶體使用量從<strong>32 GB</strong> <strong>減少</strong> <strong>到約 10 MB</strong>，減少了<strong>3,200 倍，同時</strong>維持實際效能。</p>
+<p>Milvus 已支援<strong>DISKANN</strong>，這是一種以磁碟為基礎的 ANN 方法，可將大部分索引移至 SSD 上，從而降低記憶體壓力。然而，DISKANN 在搜尋過程中使用的壓縮表示法仍依賴 DRAM。<a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>在<a href="https://milvus.io/docs/diskann.md">DISKANN</a> 的啟發下，進一步採用<a href="https://milvus.io/docs/aisaq.md">AISAQ</a> 這個以磁碟為基礎的向量索引。AiSAQ 由 KIOXIA 開發，其架構設計採用「零 DRAM 足跡架構」，將所有搜尋關鍵資料儲存在磁碟上，並最佳化資料放置位置，以盡量減少 I/O 作業。在十億向量的工作負載中，記憶體使用量從<strong>32 GB</strong> <strong>減少</strong> <strong>到約 10 MB</strong>，減少了<strong>3,200 倍，同時</strong>維持實際效能。</p>
 <p>在接下來的幾節中，我們將解釋基於圖的向量搜尋如何運作、記憶體成本從何而來，以及 AISAQ 如何重塑十億向量搜尋的成本曲線。</p>
 <h2 id="How-Conventional-Graph-Based-Vector-Search-Works" class="common-anchor-header">傳統圖形向量搜尋的運作方式<button data-href="#How-Conventional-Graph-Based-Vector-Search-Works" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -39,7 +39,7 @@ origin: >-
 <p>為了避免鉅細無遺的比較，現代的近似近鄰搜尋 (ANNS) 系統依賴於<strong>圖表索引</strong>。索引不是將查詢與每個向量進行比較，而是將向量組織<strong>成圖</strong>。每個節點代表一個向量，而邊則連接數字上接近的向量。這種結構可讓系統大幅縮小搜尋空間。</p>
 <p>圖形是事先建立的，完全基於向量之間的關係。它不取決於查詢。當查詢到達時，系統的任務就是<strong>有效率地瀏覽圖表</strong>，找出與查詢距離最小的向量，而無需掃描整個資料集。</p>
 <p>搜尋從圖形中預先定義的<strong>入口點開始</strong>。這個起點可能遠離查詢點，但演算法會朝離查詢點較近的向量移動，逐步改善其位置。在這個過程中，搜尋會維護兩個共同運作的內部資料結構：一個<strong>候選清單</strong>和一個結<strong>果清單</strong>。</p>
-<p>這個過程中最重要的兩個步驟是擴充候選列表和更新結果列表。</p>
+<p>在這個過程中，最重要的兩個步驟是擴充候選列表和更新結果列表。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/whiteboard_exported_image_84f8324275.png" alt="" class="doc-image" id="" />
@@ -50,7 +50,7 @@ origin: >-
 <p>在每次迭代時，演算法會</p>
 <ul>
 <li><p><strong>選擇目前發現的最接近的候選人。</strong>從候選清單中，選擇與查詢距離最小的向量。</p></li>
-<li><p><strong>從圖表中擷取向量的鄰居。</strong>這些鄰居是在索引建構過程中被識別為與目前向量接近的向量。</p></li>
+<li><p><strong>從圖表中擷取向量的鄰居。</strong>這些鄰居是在索引建構過程中被識別為接近目前向量的向量。</p></li>
 <li><p><strong>評估未訪問的鄰居，並將其加入候選清單中。</strong>對於每個尚未探索過的鄰居，演算法會計算其與查詢的距離。之前造訪過的鄰居會被跳過，而新的鄰居如果看起來很有希望，就會被插入候選清單。</p></li>
 </ul>
 <p>透過反覆擴大候選清單，搜尋會探索圖表中越來越多的相關區域。這可讓演算法在僅檢查所有向量的一小部分時，就能穩定地獲得更好的答案。</p>
@@ -140,30 +140,30 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>AISAQ 直接建基於 DISKANN 背後的核心理念，但引入了一個關鍵的轉變：它不再<strong>需要在 DRAM 中保留 PQ 資料</strong>。AISAQ 將壓縮向量移至 SSD，並重新設計圖形資料在磁碟上的佈局，以維持有效率的遍歷，而非將壓縮向量視為搜尋關鍵、永遠在記憶體中的結構。</p>
-<p>為了實現這一目標，AISAQ 重組了節點儲存，使圖表搜尋時所需的資料 (完整向量、鄰居清單和 PQ 資訊) 以最佳化存取位置的模式排列在磁碟上。我們的目標不只是將更多資料推到更經濟的磁碟上，而是要<strong>在不破壞前面描述的搜尋流程的情況</strong>下做到這一點。</p>
+<p>為了實現這一目標，AISAQ 重組了節點儲存，使圖表搜尋時所需的資料 (完整向量、鄰居清單和 PQ 資訊) 以最佳化存取位置的模式排列在磁碟上。我們的目標不只是將更多資料推送到更經濟的磁碟，而是<strong>在不破壞前面所述的搜尋程序</strong>的情況下做到這一點。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/AISAQ_244e661794.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>為了平衡不同工作負載下的效能與儲存效率，AISAQ 提供兩種以磁碟為基礎的儲存模式。這些模式的差異主要在於 PQ 壓縮資料在搜尋過程中的儲存與存取方式。</p>
+<p>為了滿足不同的應用需求，AISAQ 提供了兩種基於磁碟的儲存模式：效能與規模。從技術角度來看，這兩種模式的差異主要在於 PQ 壓縮資料在搜尋過程中的儲存與存取方式。從應用程式的角度來看，這些模式可滿足兩種不同類型的需求：低延遲需求（線上語義搜尋和推薦系統的典型需求）和超高規模需求（RAG 的典型需求）。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/aisaq_vs_diskann_35ebee3c64.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">AISAQ-performance：速度最佳化</h3><p>AISAQ-performance 將所有資料保留在磁碟上，同時透過資料託管維持低 I/O 開銷。</p>
+<h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">AISAQ 效能：速度最佳化</h3><p>AISAQ-performance 將所有資料保留在磁碟上，同時透過資料代管維持低 I/O 開銷。</p>
 <p>在此模式下：</p>
 <ul>
-<li><p>每個節點的完整向量、邊緣清單及其鄰居的 PQ 代碼都一起儲存在磁碟上。</p></li>
+<li><p>每個節點的完整向量、邊緣列表及其鄰居的 PQ 代碼都一起儲存在磁碟上。</p></li>
 <li><p>造訪節點仍然只需要<strong>讀取一次 SSD</strong>，因為候選人擴充和評估所需的所有資料都是集中在一起的。</p></li>
 </ul>
 <p>從搜尋演算法的角度來看，這非常接近 DISKANN 的存取模式。儘管所有關鍵搜尋資料現在都存放在磁碟上，候選人擴充仍然很有效率，而執行時間效能也不相上下。</p>
-<p>取捨是儲存開銷。由於鄰居的 PQ 資料可能會出現在多個節點的磁碟頁中，因此這種佈局會引入冗餘，並大幅增加整體索引的大小。</p>
-<p><strong>因此，AISAQ-Performance 模式將低 I/O 延遲優先於磁碟效率。</strong></p>
-<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">AISAQ 規模：儲存效率最佳化</h3><p>AISAQ-Scale 採取相反的方式。它的設計目的是在 SSD 上保留所有資料的同時，將<strong>磁碟使用量降至最低</strong>。</p>
+<p>取捨是儲存開銷。由於鄰居的 PQ 資料可能會出現在多個節點的磁碟頁中，因此此佈局會引入冗餘，並大幅增加整體索引大小。</p>
+<p>因此，AISAQ-Performance 模式將低 I/O 延遲優先於磁碟效率。從應用程式的角度來看，AiSAQ-Performance 模式可以提供線上語意搜尋所需的 10 mSec 範圍內的延遲。</p>
+<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">AISAQ 規模：儲存效率最佳化</h3><p>AISAQ-Scale 採用相反的方法。它的設計目的是在 SSD 上保留所有資料的同時，將<strong>磁碟使用量降至最低</strong>。</p>
 <p>在此模式下：</p>
 <ul>
 <li><p>PQ 資料會單獨儲存於磁碟上，沒有冗餘。</p></li>
@@ -173,9 +173,9 @@ origin: >-
 <p>為了控制這個開銷，AISAQ-Scale 模式引入了兩個額外的最佳化：</p>
 <ul>
 <li><p><strong>PQ 資料重新排列</strong>，依存取優先順序排列 PQ 向量，以改善位置性並減少隨機讀取。</p></li>
-<li><p><strong>DRAM 中的 PQ 快取記憶體</strong>(<code translate="no">pq_cache_size</code>)，可儲存經常存取的 PQ 資料，避免重複讀取磁碟上的熱門項目。</p></li>
+<li><p><strong>DRAM 中的 PQ 快取記憶體</strong>(<code translate="no">pq_read_page_cache_size</code>)，可儲存經常存取的 PQ 資料，避免重複讀取磁碟上的熱門項目。</p></li>
 </ul>
-<p>透過這些最佳化，AISAQ-Scale 模式達到比 AISAQ-Performance 更佳的儲存效率，同時維持實際的搜尋效能。該效能仍低於 DISKANN 或 AISAQ-Performance，但記憶體佔用量卻大幅減少。</p>
+<p>透過這些最佳化，AISAQ-Scale 模式達到比 AISAQ-Performance 更佳的儲存效率，同時維持實際的搜尋效能。該效能仍低於 DISKANN，但沒有儲存開銷 (索引大小與 DISKANN 相似)，且記憶體佔用量大幅減少。從應用的角度來看，AiSAQ 提供了在超高規模下滿足 RAG 要求的方法。</p>
 <h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">AISAQ 的主要優勢</h3><p>AISAQ 將所有關鍵搜尋資料移至磁碟，並重新設計資料的存取方式，從根本上改變了以圖表為基礎的向量搜尋的成本與擴充性。它的設計提供了三個顯著的優勢。</p>
 <p><strong>1.DRAM 使用量最多可降低 3,200 倍</strong></p>
 <p>乘積量化 (Product Quantization) 可顯著縮小高維向量的大小，但在十億級的規模下，記憶體佔用量仍相當可觀。在傳統設計中，即使經過壓縮，PQ 代碼在搜尋過程中仍必須保留在記憶體中。</p>
@@ -187,11 +187,11 @@ origin: >-
 <p>為了讓使用者控制索引大小與 I/O 效率之間的取捨，AISAQ 引進了<code translate="no">inline_pq</code> 參數，決定每個節點內嵌儲存多少 PQ 資料：</p>
 <ul>
 <li><p><strong>較低的 inline_pq：</strong>較小的索引大小，但可能需要額外的 I/O</p></li>
-<li><p><strong>較高的 inline_pq：</strong>索引大小較大，但保留單讀取存取。</p></li>
+<li><p><strong>較高的 inline_pq：</strong>索引大小較大，但可保留單讀取存取。</p></li>
 </ul>
 <p>當配置為<strong>inline_pq = max_degree</strong>，AISAQ 會在一次磁碟操作中讀取節點的完整向量、鄰居清單和所有 PQ 代碼，符合 DISKANN 的 I/O 模式，同時將所有資料保留在 SSD 上。</p>
 <p><strong>3.順序 PQ 存取提高計算效率</strong></p>
-<p>在 DISKANN 中，擴充候選節點需要 R 次隨機存取記憶體，以取得其 R 個鄰居的 PQ 代碼。AISAQ 藉由在單一 I/O 中擷取所有 PQ 代碼，並將它們依序儲存在磁碟上，來消除這種隨機性。</p>
+<p>在 DISKANN 中，擴充候選節點需要 R 次隨機存取記憶體，以取得其 R 個鄰居的 PQ 代碼。AISAQ 透過單次 I/O 擷取所有 PQ 代碼，並將它們依序儲存在磁碟上，消除了這種隨機性。</p>
 <p>順序佈局提供了兩個重要的優點：</p>
 <ul>
 <li><p><strong>順序的 SSD 讀取</strong>比分散的隨機讀取<strong>快得多</strong>。</p></li>
@@ -248,7 +248,7 @@ origin: >-
 <h3 id="Results" class="common-anchor-header">結果</h3><p><strong>Sift128D1M (全向量 ~488MB)</strong></p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Sift128_D1_M_706a5b4e23.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/aisaq_53da7b566a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -267,7 +267,7 @@ origin: >-
 <li><p>鄰居的 PQ 代碼：48 × (512B × 0.125) ≈ 3072B</p></li>
 <li><p>總計：3780B</p></li>
 </ul>
-<p>由於整個節點可容納在一個頁面內，因此每次存取只需要一次 I/O，而且 AISAQ 可以避免隨機讀取外部 PQ 資料。</p>
+<p>由於整個節點可容納在一個頁面內，因此每次存取只需要一次 I/O，而且 AISAQ 可避免隨機讀取外部 PQ 資料。</p>
 <p>然而，當只有部分 PQ 資料內嵌時，其餘的 PQ 代碼必須從磁碟上的其他地方取得。這會引入額外的隨機 I/O 作業，大幅增加 IOPS 需求，導致效能大幅下降。</p>
 <p><strong>Cohere768D 資料集</strong></p>
 <p>在 Cohere768D 資料集上，AISAQ 的效能比 DISKANN 差。原因是 768 維向量根本無法放入一個 4 KB 的 SSD 頁面：</p>
@@ -297,8 +297,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>現代硬體的經濟效益正在改變。DRAM 價格居高不下，而固態硬碟機的效能卻突飛猛進 -CIe 5.0 硬碟機現在的頻寬已超過<strong>14 GB/秒</strong>。因此，將搜索關鍵資料從昂貴的 DRAM 轉移到更經濟實惠的 SSD 儲存的架構，正變得越來越有吸引力。固態硬碟機容量的<strong>每 GB</strong>成本<strong>不到</strong>DRAM 的<strong>30 倍</strong>，這些差異不再是微不足道，而是會影響系統設計。</p>
-<p>AISAQ 反映了這一轉變。AISAQ 不需要大量永遠開啟的記憶體分配，因此向量搜尋系統可以根據資料大小和工作負載需求而非 DRAM 限制進行擴充。這種方法符合<strong>「全儲存」架構的</strong>廣泛趨勢，在這種架構中，快速固態硬碟機不僅在持久性方面扮演核心角色，在主動計算和搜尋方面也是如此。</p>
-<p>這種轉變不可能僅限於向量資料庫。類似的設計模式已經出現在圖形處理、時序分析，甚至是傳統關係系統的某些部分，因為開發人員重新思考長久以來對於資料必須存放在何處才能達到可接受效能的假設。隨著硬體經濟的持續發展，系統架構也會跟著改變。</p>
+<p>AISAQ 反映了這一轉變。AISAQ 不需要大量永遠開啟的記憶體分配，因此向量搜尋系統可以根據資料大小和工作負載需求而非 DRAM 限制進行擴充。此方法符合「全儲存」架構的大趨勢，在此架構中，快速固態硬碟機不僅在持久性方面扮演核心角色，在主動運算和搜尋方面也是如此。AiSAQ 提供效能與規模兩種作業模式，可滿足語意搜尋 (需要最低延遲) 與 RAG (需要極高規模，但延遲適中) 的需求。</p>
+<p>這種轉變不太可能僅限於向量資料庫。類似的設計模式已經出現在圖表處理、時序分析，甚至是傳統關係系統的某些部分，因為開發人員重新思考長久以來的假設：資料必須存放在何處才能達到可接受的效能。隨著硬體經濟的持續發展，系統架構也會跟著改變。</p>
 <p>有關本文所討論設計的詳細資訊，請參閱說明文件：</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/aisaq.md">AISAQ | Milvus 文件</a></p></li>

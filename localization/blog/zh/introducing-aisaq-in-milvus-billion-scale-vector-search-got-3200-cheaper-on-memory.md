@@ -18,7 +18,7 @@ origin: >-
 ---
 <p>向量数据库已成为关键任务人工智能系统的核心基础架构，其数据量呈指数级增长--往往达到数十亿向量。在这种规模下，一切都变得更加困难：保持低延迟、保持准确性、确保可靠性以及跨副本和跨区域操作。但有一个挑战往往很早就会出现，并主导着架构决策--成本<strong>。</strong></p>
 <p>为了提供快速搜索，大多数向量数据库将关键索引结构保存在 DRAM（动态随机存取内存）中，这是速度最快、成本最高的内存层。这种设计对提高性能很有效，但扩展性很差。DRAM 的使用量随数据大小而非查询流量的变化而变化，即使进行了压缩或部分 SSD 卸载，索引的大部分仍必须保留在内存中。随着数据集的增长，内存成本很快就会成为限制因素。</p>
-<p>Milvus 已经支持<strong>DISKANN</strong>，这是一种基于磁盘的 ANN 方法，通过将大部分索引转移到固态硬盘来减少内存压力。不过，DISKANN 在搜索过程中使用的压缩表示法仍依赖于 DRAM。<a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>在此基础上更进一步，采用了<a href="https://milvus.io/docs/aisaq.md">AISAQ</a>，这是一种受<a href="https://milvus.io/docs/diskann.md">DISKANN</a>启发的基于磁盘的向量索引，将所有搜索关键数据存储在磁盘上。在十亿向量的工作负载中，内存使用量从<strong>32 GB</strong> <strong>减少</strong> <strong>到约 10 MB</strong> <strong>，减少了 3200 倍，同时</strong>保持了实用性能。</p>
+<p>Milvus 已经支持<strong>DISKANN</strong>，这是一种基于磁盘的 ANN 方法，通过将大部分索引转移到固态硬盘来减少内存压力。不过，DISKANN 在搜索过程中使用的压缩表示法仍依赖于 DRAM。<a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>在<a href="https://milvus.io/docs/diskann.md">DISKANN</a> 的启发下，进一步采用了基于磁盘的向量索引<a href="https://milvus.io/docs/aisaq.md">AISAQ</a>。AiSAQ 由 KIOXIA 开发，其架构设计采用了 "零 DRAM 足印架构"，将所有搜索关键数据存储在磁盘上，并优化数据放置，以最大限度地减少 I/O 操作符。在十亿向量的工作负载中，内存使用量从<strong>32 GB</strong> <strong>减少</strong> <strong>到约 10 MB</strong> <strong>，减少了 3200 倍，同时</strong>保持了实际性能。</p>
 <p>在接下来的章节中，我们将介绍基于图的向量搜索的工作原理、内存成本的来源以及 AISAQ 如何重塑十亿级向量搜索的成本曲线。</p>
 <h2 id="How-Conventional-Graph-Based-Vector-Search-Works" class="common-anchor-header">传统基于图的向量搜索的工作原理<button data-href="#How-Conventional-Graph-Based-Vector-Search-Works" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -114,7 +114,7 @@ origin: >-
 <h3 id="2-Co-Locating-Full-Vectors-and-Neighbor-Lists-on-Disk" class="common-anchor-header">2.在磁盘上共定位全向量和邻居列表</h3><p>并非所有数据都能压缩或近似访问。一旦确定了有希望的候选数据，搜索仍需要访问两类数据才能获得准确结果：</p>
 <ul>
 <li><p><strong>邻居列表</strong>，用于继续图遍历</p></li>
-<li><p><strong>完整（未压缩）向量</strong>，用于最终<strong>Rerankers</strong></p></li>
+<li><p><strong>完整（未压缩）向量</strong>，用于最终重排</p></li>
 </ul>
 <p>与 PQ 代码相比，这些结构的访问频率较低，因此 DISKANN 将其存储在 SSD 上。为了尽量减少磁盘开销，DISKANN 将每个节点的邻居列表及其完整向量放在磁盘的同一物理区域。这确保了单次 SSD 读取就能检索到这两个数据。</p>
 <p>通过共同定位相关数据，DISKANN 减少了搜索过程中所需的随机磁盘访问次数。这一优化提高了扩展和 Rerankers 的效率，尤其是在大规模扩展时。</p>
@@ -147,7 +147,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>为了平衡不同工作负载下的性能和存储效率，AISAQ 提供了两种基于磁盘的存储模式。这两种模式的主要区别在于搜索过程中如何存储和访问 PQ 压缩数据。</p>
+<p>为了满足不同的应用需求，AISAQ 提供了两种基于磁盘的存储模式：性能模式和规模模式。从技术角度看，这两种模式的主要区别在于搜索过程中如何存储和访问 PQ 压缩数据。从应用角度看，这两种模式可满足两种不同类型的要求：低延迟要求（在线语义搜索和推荐系统的典型要求）和超大规模要求（RAG 的典型要求）。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/aisaq_vs_diskann_35ebee3c64.png" alt="" class="doc-image" id="" />
@@ -157,14 +157,14 @@ origin: >-
 <h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">AISAQ 性能：优化速度</h3><p>AISAQ-performance 将所有数据保存在磁盘上，同时通过数据主机托管保持较低的 I/O 开销。</p>
 <p>在这种模式下</p>
 <ul>
-<li><p>每个节点的完整向量、边缘列表及其邻居的 PQ 代码都一起存储在磁盘上。</p></li>
+<li><p>每个节点的完整向量、边列表及其邻居的 PQ 代码都一起存储在磁盘上。</p></li>
 <li><p>访问一个节点仍然只需要<strong>读取一次固态硬盘</strong>，因为候选扩展和评估所需的所有数据都被集中在一起。</p></li>
 </ul>
 <p>从搜索算法的角度来看，这与 DISKANN 的访问模式如出一辙。尽管所有搜索关键数据现在都在磁盘上，但候选扩展依然高效，运行时性能也不相上下。</p>
 <p>需要权衡的是存储开销。因为一个邻居的 PQ 数据可能出现在多个节点的磁盘页面中，这种布局会带来冗余，并显著增加整体索引的大小。</p>
-<p><strong>因此，AISAQ-性能模式优先考虑低 I/O 延迟，而不是磁盘效率。</strong></p>
-<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">AISAQ 级：优化存储效率</h3><p>AISAQ-Scale 采用了相反的方法。它旨在<strong>尽量减少磁盘使用量</strong>，同时仍将所有数据保留在 SSD 上。</p>
-<p>在这种模式下</p>
+<p>因此，AISAQ-性能模式优先考虑低 I/O 延迟，而不是磁盘效率。从应用的角度来看，AiSAQ-Performance 模式可以提供在线语义搜索所需的 10 毫秒范围内的延迟。</p>
+<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">AISAQ 规模：优化存储效率</h3><p>AISAQ-Scale 采用了相反的方法。它旨在<strong>尽量减少磁盘使用量</strong>，同时仍将所有数据保存在固态硬盘上。</p>
+<p>在这种模式下：</p>
 <ul>
 <li><p>PQ 数据单独存储在磁盘上，没有冗余。</p></li>
 <li><p>这样就消除了冗余，并显著减少了索引大小。</p></li>
@@ -173,10 +173,10 @@ origin: >-
 <p>为了控制这一开销，AISAQ-Scale 模式引入了两项额外的优化：</p>
 <ul>
 <li><p><strong>PQ 数据重新排列</strong>，根据访问优先级对 PQ 向量进行排序，以提高定位性并减少随机读取。</p></li>
-<li><p><strong>DRAM 中的 PQ 缓存</strong>（<code translate="no">pq_cache_size</code> ），用于存储频繁访问的 PQ 数据，避免重复读取磁盘<strong>中</strong>的热条目。</p></li>
+<li><p><strong>DRAM 中的 PQ 缓存</strong>（<code translate="no">pq_read_page_cache_size</code> ），用于存储频繁访问的 PQ 数据，避免重复读取磁盘<strong>中</strong>的热条目。</p></li>
 </ul>
-<p>通过这些优化，AISAQ-Scale 模式的存储效率大大高于 AISAQ-Performance，同时还能保持实用的搜索性能。该性能仍然低于 DISKANN 或 AISAQ-Performance，但内存占用却大大减少。</p>
-<h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">AISAQ 的主要优势</h3><p>通过将所有搜索关键数据转移到磁盘并重新设计数据访问方式，AISAQ 从根本上改变了基于图的向量搜索的成本和可扩展性。它的设计具有三个显著优势。</p>
+<p>通过这些优化，AISAQ-Scale 模式的存储效率大大高于 AISAQ-Performance，同时还能保持实用的搜索性能。该性能仍然低于 DISKANN，但没有存储开销（索引大小与 DISKANN 相似），内存占用也大大减少。从应用角度看，AiSAQ 提供了在超大规模下满足 RAG 要求的方法。</p>
+<h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">AISAQ 的主要优势</h3><p>通过将所有搜索关键数据移至磁盘并重新设计数据访问方式，AISAQ 从根本上改变了基于图的向量搜索的成本和可扩展性状况。其设计具有三个显著优势。</p>
 <p><strong>1.DRAM 使用量最多可降低 3,200 倍</strong></p>
 <p>乘积量化能显著减小高维向量的大小，但在十亿分规模下，内存占用仍然很大。在传统设计中，即使经过压缩，PQ 代码在搜索过程中也必须保留在内存中。</p>
 <p>例如，在具有 10 亿 128 维向量的基准<strong>SIFT1B</strong> 上，仅 PQ 代码就需要大约<strong>30-120 GB 的 DRAM</strong>（取决于配置）。存储未压缩的完整向量则需要额外的<strong>~480 GB</strong>。虽然 PQ 将内存使用量降低了 4-16倍，但剩余的占用空间仍然很大，足以影响基础设施成本。</p>
@@ -248,7 +248,7 @@ origin: >-
 <h3 id="Results" class="common-anchor-header">搜索结果</h3><p><strong>Sift128D1M （全向量 ~488MB）</strong></p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Sift128_D1_M_706a5b4e23.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/aisaq_53da7b566a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -297,8 +297,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>现代硬件的经济性正在发生变化。DRAM 价格居高不下，而固态硬盘的性能却突飞猛进--PCIe 5.0 硬盘的带宽现已超过<strong>14 GB/s</strong>。因此，将搜索关键数据从昂贵的 DRAM 转移到价格低廉得多的 SSD 存储的架构正变得越来越有吸引力。由于固态硬盘<strong>每千兆字节的</strong>容量成本<strong>不到</strong>DRAM 的<strong>30 倍</strong>，这些差异不再是微不足道的，而是会对系统设计产生重大影响。</p>
-<p>AISAQ 反映了这一转变。通过消除对大型、始终在线内存分配的需求，它使向量搜索系统能够根据数据大小和工作负载要求而不是 DRAM 限制进行扩展。这种方法符合<strong>"全存储 "架构的</strong>大趋势，在这种架构中，快速固态硬盘不仅在持久性方面，而且在主动计算和搜索方面都发挥着核心作用。</p>
-<p>这种转变不可能仅限于向量数据库。类似的设计模式已经出现在图形处理、时间序列分析，甚至部分传统关系系统中，因为开发人员重新思考了长期以来关于数据必须位于何处才能实现可接受性能的假设。随着硬件经济的不断发展，系统架构也将随之改变。</p>
+<p>AISAQ 反映了这一转变。通过消除对大型、始终在线内存分配的需求，它使向量搜索系统能够根据数据大小和工作负载要求而不是 DRAM 限制进行扩展。这种方法符合 "全存储 "架构的大趋势，在这种架构中，快速固态硬盘不仅在持久性方面，而且在主动计算和搜索方面都发挥着核心作用。通过提供两种操作模式（性能和规模），AiSAQ 可以同时满足语义搜索（需要最低延迟）和 RAG（需要非常高的规模，但延迟适中）的要求。</p>
+<p>这种转变不太可能仅限于向量数据库。类似的设计模式已经出现在图处理、时间序列分析，甚至部分传统关系系统中，因为开发人员重新思考了长期以来关于数据必须位于何处才能实现可接受性能的假设。随着硬件经济的不断发展，系统架构也将随之改变。</p>
 <p>有关此处讨论的设计的更多详情，请参阅文档：</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/aisaq.md">AISAQ | Milvus 文档</a></p></li>
@@ -322,7 +322,7 @@ origin: >-
       </svg>
     </button></h2><ul>
 <li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">介绍 Milvus 2.6：十亿规模的经济型向量搜索</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">介绍 Embeddings 功能：Milvus 2.6 如何简化矢量化和语义搜索</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">介绍 Embeddings 功能：Milvus 2.6 如何简化向量化和语义搜索</a></p></li>
 <li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Milvus中的JSON粉碎功能：快88.9倍的灵活JSON过滤功能</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">解锁真正的实体级检索：Milvus 中新的结构数组和 MAX_SIM 功能</a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 中的 MinHash LSH：打击 LLM 训练数据中重复数据的秘密武器 </a></p></li>
