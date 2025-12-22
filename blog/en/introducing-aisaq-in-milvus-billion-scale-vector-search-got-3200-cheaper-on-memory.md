@@ -20,7 +20,7 @@ Vector databases have become core infrastructure for mission-critical AI systems
 
 To deliver fast search, most vector databases keep key indexing structures in DRAM (Dynamic Random Access Memory), the fastest and most expensive tier of memory. This design is effective for performance, but it scales poorly. DRAM usage scales with data size rather than query traffic, and even with compression or partial SSD offloading, large portions of the index must remain in memory. As datasets grow, memory costs quickly become a limiting factor.
 
-Milvus already supports **DISKANN**, a disk-based ANN approach that reduces memory pressure by moving much of the index onto SSD. However, DISKANN still relies on DRAM for compressed representations used during search. [Milvus 2.6](https://milvus.io/docs/release_notes.md#v264) takes this further with [AISAQ](https://milvus.io/docs/aisaq.md), a disk-based vector index inspired by [DISKANN](https://milvus.io/docs/diskann.md) that stores all search-critical data on disk. In a billion-vector workload, this reduces memory usage from **32 GB to about 10 MB**—a **3,200× reduction**—while maintaining practical performance.
+Milvus already supports **DISKANN**, a disk-based ANN approach that reduces memory pressure by moving much of the index onto SSD. However, DISKANN still relies on DRAM for compressed representations used during search. [Milvus 2.6](https://milvus.io/docs/release_notes.md#v264) takes this further with [AISAQ](https://milvus.io/docs/aisaq.md), a disk-based vector index inspired by [DISKANN](https://milvus.io/docs/diskann.md). Developed by KIOXIA, AiSAQ’s architecture was designed with a “Zero-DRAM-Footprint Architecture”, which stores all search-critical data on disk and optimizes data placement to minimize I/O operations. In a billion-vector workload, this reduces memory usage from **32 GB to about 10 MB**—a **3,200× reduction**—while maintaining practical performance.
 
 In the sections that follow, we explain how graph-based vector search works, where memory costs come from, and how AISAQ reshapes the cost curve for billion-scale vector search.
 
@@ -141,7 +141,9 @@ To make this work, AISAQ reorganizes node storage so that data needed during gra
 
 ![](https://assets.zilliz.com/AISAQ_244e661794.png)
 
-To balance performance and storage efficiency under different workloads, AISAQ provides two disk-based storage modes. These modes differ primarily in how PQ-compressed data is stored and accessed during search.
+
+To address different application requirements, AISAQ provides two disk-based storage modes: Performance and Scale. From a technical perspective, these modes differ primarily in how PQ-compressed data is stored and accessed during search. From an application perspective, these modes address two distinct types of requirements: low-latency requirements, typical of online semantic search and recommendation systems, and ultra-high-scale requirements, typical of RAG. 
+
 
 ![](https://assets.zilliz.com/aisaq_vs_diskann_35ebee3c64.png)
 
@@ -159,8 +161,7 @@ From the perspective of the search algorithm, this closely mirrors DISKANN’s a
 
 The trade-off is storage overhead. Because a neighbor’s PQ data may appear in multiple nodes’ disk pages, this layout introduces redundancy and significantly increases the overall index size. 
 
-**Therefore, the AISAQ-Performance mode prioritizes low I/O latency over disk efficiency.**
-
+Therefore, the AISAQ-Performance mode prioritizes low I/O latency over disk efficiency. From an application perspective, AiSAQ-Performance mode can deliver latency in the 10 mSec range, as required for online semantic search. 
 
 ### AISAQ-scale: Optimized for Storage Efficiency
 
@@ -178,10 +179,9 @@ To control this overhead, the AISAQ-Scale mode introduces two additional optimiz
 
 - **PQ data rearrangement**, which orders PQ vectors by access priority to improve locality and reduce random reads.
 
-- A **PQ cache in DRAM** (`pq_cache_size`), which stores frequently accessed PQ data and avoids repeated disk reads for hot entries.
+- A **PQ cache in DRAM** (`pq_read_page_cache_size`), which stores frequently accessed PQ data and avoids repeated disk reads for hot entries.
 
-With these optimizations, the AISAQ-Scale mode achieves much better storage efficiency than AISAQ-Performance, while maintaining practical search performance. That performance remains lower than DISKANN or AISAQ-Performance, but the memory footprint is dramatically smaller.
-
+With these optimizations, the AISAQ-Scale mode achieves much better storage efficiency than AISAQ-Performance, while maintaining practical search performance. That performance remains lower than DISKANN, but there is no storage overhead (index size is similar to DISKANN) and the memory footprint is dramatically smaller. From an application perspective, AiSAQ provides the means to meet RAG requirements at ultra-high scale. 
 
 ### Key Advantages of AISAQ
 
@@ -279,7 +279,7 @@ These datasets reflect two distinct real-world scenarios: compact vision feature
 
 **Sift128D1M (Full Vector ~488MB)**
 
-![](https://assets.zilliz.com/Sift128_D1_M_706a5b4e23.png)
+![](https://assets.zilliz.com/aisaq_53da7b566a.png)
 
 **Cohere768D1M (Full Vector ~2930MB)**
 
@@ -328,7 +328,7 @@ In practice, users can tune this trade-off by adjusting `INLINE_PQ` and PQ compr
 
 The economics of modern hardware are changing. DRAM prices remain high, while SSD performance has advanced rapidly—PCIe 5.0 drives now deliver bandwidth exceeding **14 GB/s**. As a result, architectures that shift search-critical data from expensive DRAM to far more affordable SSD storage are becoming increasingly compelling. With SSD capacity costing **less than 30 times as much per gigabyte as** DRAM, these differences are no longer marginal—they meaningfully influence system design.
 
-AISAQ reflects this shift. By eliminating the need for large, always-on memory allocations, it enables vector search systems to scale based on data size and workload requirements rather than DRAM limits. This approach aligns with a broader trend toward **“all-in-storage” architectures**, where fast SSDs play a central role not just in persistence, but in active computation and search.
+AISAQ reflects this shift. By eliminating the need for large, always-on memory allocations, it enables vector search systems to scale based on data size and workload requirements rather than DRAM limits. This approach aligns with a broader trend toward “all-in-storage” architectures, where fast SSDs play a central role not just in persistence, but in active computation and search. By offering two operating modes – Performance and Scale – AiSAQ meets the requirements of both semantic search (which requires the lowest latency) and RAG (which requires very high scale, but moderate latency).
 
 This shift is unlikely to be confined to vector databases. Similar design patterns are already emerging in graph processing, time-series analytics, and even parts of traditional relational systems, as developers rethink long-standing assumptions about where data must reside to achieve acceptable performance. As hardware economics continue to evolve, system architectures will follow.
 
