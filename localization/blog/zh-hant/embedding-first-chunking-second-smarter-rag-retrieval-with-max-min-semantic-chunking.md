@@ -18,11 +18,10 @@ desc: >-
 origin: >-
   https://milvus.io/blog/embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 ---
-<p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a>已經成為為 AI 應用程式提供上下文和記憶的預設方法 - AI 代理、客戶支援助理、知識庫和搜尋系統都仰賴它。</p>
-<p>在幾乎所有的 RAG 輸送管道中，標準流程都是一樣的：取用文件、將文件分割成區塊、然後將這些區塊嵌入<a href="https://milvus.io/">Milvus</a> 等向量資料庫中進行相似性檢索。由於<strong>分塊</strong>是在事前進行的，因此這些分塊的品質會直接影響系統擷取資訊的效能以及最終答案的精確度。</p>
+<p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a>已經成為提供 AI 應用程式上下文和記憶的預設方法 - AI 代理、客戶支援助理、知識庫和搜尋系統都仰賴它。</p>
+<p>在幾乎所有的 RAG 輸送管道中，標準流程都是一樣的：取用文件、將文件分割成小塊，然後將這些小塊嵌入<a href="https://milvus.io/">Milvus</a> 等向量資料庫中進行相似性檢索。由於<strong>分塊</strong>是在事前進行的，因此這些分塊的品質會直接影響系統擷取資訊的效能以及最終答案的精確度。</p>
 <p>問題在於傳統的分塊策略通常是在沒有任何語意理解的情況下分割文字。固定長度的分塊是根據標記數量來進行切割，而遞迴分塊則使用表面層級的結構，但兩者都仍然忽略了文字的實際意義。因此，相關的想法往往會被分開，不相關的句子會被組合在一起，而重要的上下文則會被分割得支離破碎。</p>
-<p><a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>Max-Min Semantic Chunking</strong></a>以不同的方式處理問題。它不是先切塊，而是先嵌入文字，並使用語義相似性來決定邊界應該在哪裡形成。透過先嵌入後切割的方式，管道可以追蹤意義的自然轉換，而不是依賴任意的長度限制。</p>
-<p>在我們之前的部落格中，我們討論過 Jina AI 的<a href="https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md"><strong>Late Chunking</strong></a> 等方法，這些方法有助於普及「先嵌入」的想法，並顯示它在實務上是可行的。<strong>Max-Min Semantic Chunking（最大最小語意分塊</strong>）則是以相同的概念為基礎，利用簡單的規則來識別何時意義變化大到需要一個新的分塊。在本篇文章中，我們將介紹 Max-Min 的運作方式，並檢視其在實際 RAG 工作負載中的優勢和限制。</p>
+<p>在這篇部落格中，我想分享一種不同的分塊策略：<a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>最大最小語意分塊</strong></a>。它不是先切分塊，而是先嵌入文字，並使用語義相似性來決定邊界應該在哪裡形成。透過先嵌入再切割的方式，管道可以追蹤意義的自然轉換，而不是依賴任意的長度限制。</p>
 <h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">典型的 RAG 管道如何運作<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -38,8 +37,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>不論是何種框架，大多數 RAG 管道都遵循相同的四階段流水線。您可能自己也寫過某些版本：</p>
-<h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1.資料清理與分塊</h3><p>流水線會先清理原始文件：移除頁眉、頁腳、導覽文字，以及任何非實際內容的東西。清除雜訊後，文字會被分割成較小的片段。大多數團隊使用固定大小的區塊 - 通常是 300-800 個記號 - 因為這樣可以保持嵌入模型的可管理性。缺點是分割是基於長度而非意義，因此邊界可以是任意的。</p>
+    </button></h2><p>不論是何種框架，大多數 RAG 管道都遵循相同的四階段組裝線。您可能自己也寫過某些版本：</p>
+<h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1.資料清理與分塊</h3><p>流水線會先清理原始文件：移除頁眉、頁腳、導覽文字，以及任何非實際內容的東西。清除雜訊之後，文字會被分割成較小的片段。大多數團隊使用固定大小的區塊 - 通常是 300-800 個記號 - 因為這樣可以保持嵌入模型的可管理性。缺點是分割是基於長度而非意義，因此邊界可以是任意的。</p>
 <h3 id="2-Embedding-and-Storage" class="common-anchor-header">2.嵌入與儲存</h3><p>然後使用嵌入模型（如 OpenAI 的 <a href="https://zilliz.com/ai-models/text-embedding-3-small"><code translate="no">text-embedding-3-small</code></a>或 BAAI 的編碼器。產生的向量會儲存在向量資料庫中，例如<a href="https://milvus.io/">Milvus</a>或<a href="https://zilliz.com/cloud">Zilliz Cloud</a>。資料庫會處理索引和相似性搜尋，因此您可以快速地將新的查詢與所有儲存的資料塊進行比較。</p>
 <h3 id="3-Querying" class="common-anchor-header">3.查詢</h3><p>當使用者提出問題時，例如<em>「RAG 如何減少幻覺？</em>- 系統會嵌入查詢並將其發送至資料庫。資料庫會回傳向量與查詢最接近的前 K 個資料塊。這些就是模型回答問題所依賴的文字片段。</p>
 <h3 id="4-Answer-Generation" class="common-anchor-header">4.答案產生</h3><p>擷取到的資料塊與使用者的查詢捆綁在一起，並輸入 LLM。模型會使用所提供的上下文作為基礎來產生答案。</p>
@@ -50,7 +49,7 @@ origin: >-
 <p><strong>2.遞歸字元分割</strong></p>
 <p>這種方法比較聰明。它會根據段落、換行符或句子等提示，分層分割文字。如果某部分太長，它會遞歸地將其進一步分割。輸出一般較為連貫，但仍不一致。有些文件缺乏明確的結構或部分長度不均勻，這會損害檢索的準確性。而且在某些情況下，這種方法產生的片段仍會超出模型的上下文視窗。</p>
 <p>這兩種方法都面臨同樣的取捨問題：精確度與上下文。較小的資料塊可以提高檢索精確度，但卻會失去周遭的上下文；較大的資料塊則可以保留其意義，但卻有可能增加不相關的雜訊。在 RAG 系統設計中，如何取得適當的平衡是分塊技術的基礎，也是令人沮喪的地方。</p>
-<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Second" class="common-anchor-header">最大最小語意分塊：先嵌入，後分塊<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Second" class="anchor-icon" translate="no">
+<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="common-anchor-header">最大最小語意分塊：先嵌入，後分塊<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

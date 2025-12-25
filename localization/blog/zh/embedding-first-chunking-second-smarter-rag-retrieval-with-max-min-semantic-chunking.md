@@ -21,9 +21,8 @@ origin: >-
 <p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">检索增强生成（RAG）</a>已成为为人工智能应用提供上下文和记忆的默认方法--人工智能 Agents、客户支持助理、知识库和搜索系统都依赖于它。</p>
 <p>在几乎所有 RAG 管道中，标准流程都是一样的：获取文档，将其分割成块，然后将这些块嵌入<a href="https://milvus.io/">Milvus</a> 这样的向量数据库中进行相似性检索。由于<strong>分块</strong>是在前期进行的，因此这些分块的质量直接影响到系统检索信息的效果和最终答案的准确性。</p>
 <p>问题在于，传统的分块策略通常是在不理解语义的情况下分割文本。固定长度分块基于标记数进行切割，递归分块则使用表层结构，但这两种方法都忽略了文本的实际含义。因此，相关的观点往往会被分开，不相关的行文会被组合在一起，重要的上下文也会被割裂。</p>
-<p><a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>最大最小语义分块</strong></a>法采用了不同的处理方法。它不是先进行分块，而是先嵌入文本，并利用语义相似性来决定边界的形成。通过先嵌入后切块，管道可以跟踪意义的自然变化，而不是依赖于任意的长度限制。</p>
-<p>在上一篇博客中，我们讨论了像 Jina AI 的<a href="https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md"><strong>Late Chunking</strong></a> 这样的方法，它帮助普及了 "先嵌入 "的理念，并证明了它在实践中是可行的。<strong>Max-Min Semantic Chunking（最大最小语义分块</strong>法）基于相同的概念，采用了一条简单的规则，用于识别含义何时发生变化，以至于有必要创建一个新的分块。在本篇文章中，我们将介绍Max-Min是如何工作的，并探讨它在实际RAG工作负载中的优势和局限性。</p>
-<h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">典型 RAG 管道的工作原理<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
+<p>在本博客中，我想与大家分享一种不同的分块策略：<a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>最大-最小语义分块</strong></a>。它不是先进行分块，而是先嵌入文本，并使用语义相似性来决定边界的形成。通过先Embeddings后切分，管道可以跟踪意义的自然变化，而不是依赖于任意的长度限制。</p>
+<h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">典型的 RAG 管道如何工作<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,7 +37,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>无论采用何种框架，大多数 RAG 管道都遵循相同的四阶段流水线。您自己可能也写过类似的版本：</p>
+    </button></h2><p>无论采用何种框架，大多数 RAG 管道都遵循相同的四阶段流水线。你可能自己也写过一些这样的版本：</p>
 <h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1.数据清理和分块</h3><p>流水线首先要清理原始文档：删除页眉、页脚、导航文本以及任何非真实内容。去除杂质后，文本会被分割成更小的片段。大多数团队使用固定大小的块--通常为 300-800 个标记--因为这样可以保持嵌入模型的可管理性。这样做的缺点是，分割是基于长度而不是意义，因此边界可以是任意的。</p>
 <h3 id="2-Embedding-and-Storage" class="common-anchor-header">2.嵌入和存储</h3><p>然后，使用类似 OpenAI 的嵌入模型或 BAAI 的编码器嵌入每个语块。 <a href="https://zilliz.com/ai-models/text-embedding-3-small"><code translate="no">text-embedding-3-small</code></a>或 BAAI 编码器。生成的向量存储在向量数据库中，如<a href="https://milvus.io/">Milvus</a>或<a href="https://zilliz.com/cloud">Zilliz Cloud</a>。数据库会处理索引和相似性搜索，因此您可以快速将新查询与所有存储的数据块进行比较。</p>
 <h3 id="3-Querying" class="common-anchor-header">3.查询</h3><p>当用户提出问题时，例如<em>"RAG 如何减少幻觉？</em>- 系统会嵌入查询并将其发送到数据库。数据库会返回向量最接近查询的前 K 个文本块。这些就是模型回答问题所依赖的文本片段。</p>
@@ -50,7 +49,7 @@ origin: >-
 <p><strong>2.递归字符分割</strong></p>
 <p>这种方法比较聪明。它根据段落、换行或句子等线索对文本进行分层。如果某个部分过长，它就会递归地进一步分割。这种方法的输出一般比较连贯，但仍不一致。有些文档缺乏清晰的结构，或者章节长度不均匀，这都会影响检索的准确性。在某些情况下，这种方法仍然会产生超出模型上下文窗口的内容块。</p>
 <p>这两种方法都面临着同样的取舍：精度与上下文。较小的信息块可以提高检索精度，但会丢失周围的上下文；较大的信息块可以保留意义，但有可能增加无关的噪音。如何在两者之间取得适当的平衡，是分块法在 RAG 系统设计中既重要又令人头疼的问题。</p>
-<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Second" class="common-anchor-header">最大最小语义分块：先嵌入，后分块<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Second" class="anchor-icon" translate="no">
+<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="common-anchor-header">最大最小语义分块：先嵌入，后分块<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,15 +64,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>2025 年，S.R. Bhat 等人发表了《<a href="https://arxiv.org/abs/2505.21700"><em>重新思考长文档检索的分块大小》（</em></a>Rethinking<a href="https://arxiv.org/abs/2505.21700"><em>Chunk Size for Long-Document Retrieval）一文：多数据集分析</em></a>》一书。他们的主要发现之一是，对于 RAG 而言，并不存在单一的<strong>"最佳 "</strong>分块大小。小块（64-128 个词块）往往更适合事实性或查找式问题，而大块（512-1024 个词块）则有助于叙述性或高层次推理任务。换句话说，固定大小的分块总是一种折衷。</p>
+    </button></h2><p>2025 年，S.R. Bhat 等人发表了《<a href="https://arxiv.org/abs/2505.21700"><em>反思长文档检索的分块大小》（</em></a>Rethinking<a href="https://arxiv.org/abs/2505.21700"><em>Chunk Size for Long-Document Retrieval）一文：多数据集分析</em></a>》一书。他们的主要发现之一是，对于 RAG 而言，并不存在单一的<strong>"最佳 "</strong>分块大小。小块（64-128 个词块）往往更适合事实性或查找式问题，而大块（512-1024 个词块）则有助于叙述性或高层次推理任务。换句话说，固定大小的分块总是一种折衷。</p>
 <p>这就自然而然地提出了一个问题：我们是否可以根据意义而不是大小来分块，而不是选择一种长度并希望达到最佳效果？<a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>最大最小语义分块</strong></a>法正是我发现的一种尝试这样做的方法。</p>
 <p>这个想法很简单：<strong>先嵌入，后分块</strong>。这种算法不是先分割文本，然后再嵌入掉出来的任何碎片，而是先嵌入<em>所有句子</em>。然后，它利用这些句子嵌入之间的语义关系来决定边界的位置。</p>
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/embed_first_chunk_second_94f69c664c.png" alt="Diagram showing embed-first chunk-second workflow in Max-Min Semantic Chunking" class="doc-image" id="diagram-showing-embed-first-chunk-second-workflow-in-max-min-semantic-chunking" />
    </span> <span class="img-wrapper"> <span>最大最小语义分块法中 "先嵌入，后分块 "工作流程示意图</span> </span></p>
-<p>从概念上讲，该方法将分块处理视为嵌入空间中的受限聚类问题。您按顺序浏览文档，每次浏览一个句子。对于每个句子，算法都会将其嵌入与当前分块中的嵌入进行比较。如果新句子在语义上足够接近，它就会加入该语块。如果距离太远，算法就会启动一个新的语块。关键的约束条件是，语块必须遵循原始句子的顺序--不能重新排序，也不能进行全局聚类。</p>
-<p>这样就产生了一组长度可变的语义块，它们反映了文档意义的实际变化，而不是字符计数器碰巧归零的地方。</p>
+<p>从概念上讲，该方法将分块处理视为嵌入空间中的受限聚类问题。您按顺序浏览文档，每次浏览一个句子。对于每个句子，算法都会将其嵌入与当前分块中的嵌入进行比较。如果新句子在语义上足够接近，它就会加入该语块。如果距离太远，算法就会启动一个新的语块。关键的限制条件是，语块必须遵循原始句子的顺序--不能重新排序，也不能进行全局聚类。</p>
+<p>这样就产生了一组长度可变的语块，这些语块反映了文档含义的实际变化，而不是字符计数器碰巧归零的地方。</p>
 <h2 id="How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="common-anchor-header">最大最小语义分块策略的工作原理<button data-href="#How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -91,7 +90,7 @@ origin: >-
       </svg>
     </button></h2><p>Max-Min Semantic Chunking（最大最小语义分块）通过比较句子在高维向量空间中的相互关系来确定分块边界。它不依赖于固定的长度，而是研究意义在整个文档中的变化。这一过程可分为六个步骤：</p>
 <h3 id="1-Embed-all-sentences-and-start-a-chunk" class="common-anchor-header">1.嵌入所有句子并开始一个大块</h3><p>嵌入模型会将文档中的每个句子转换为向量嵌入。它按顺序处理句子。如果前<em>n-k 个</em>句子构成了当前的语块 C，那么接下来的句子（sₙ₋ₖ₊₁）需要进行评估：是加入 C，还是开始一个新的语块？</p>
-<h3 id="2-Measure-how-consistent-the-current-chunk-is" class="common-anchor-header">2.测量当前数据块的一致性</h3><p>在语块 C 中，计算所有句子嵌入之间的最小成对余弦相似度。该值反映了该语块中各句子之间的紧密程度。最小相似度越低，说明句子之间的关联度越低，表明该语块可能需要拆分。</p>
+<h3 id="2-Measure-how-consistent-the-current-chunk-is" class="common-anchor-header">2.测量当前数据块的一致性</h3><p>在语块 C 中，计算所有句子嵌入之间的最小成对余弦相似度。这个值反映了该语块中各句子之间的紧密程度。最小相似度越低，说明句子之间的关联度越低，表明该语块可能需要拆分。</p>
 <h3 id="3-Compare-the-new-sentence-to-the-chunk" class="common-anchor-header">3.将新句子与语块进行比较</h3><p>接下来，计算新句子与 C 中已有句子之间的最大余弦相似度。</p>
 <h3 id="4-Decide-whether-to-extend-the-chunk-or-start-a-new-one" class="common-anchor-header">4.决定是扩展语块还是开始一个新的语块</h3><p>这是核心规则：</p>
 <ul>
@@ -100,7 +99,7 @@ origin: >-
 </ul>
 <p>这样可以确保每个语块保持其内部语义的一致性。</p>
 <h3 id="5-Adjust-thresholds-as-the-document-changes" class="common-anchor-header">5.根据文档变化调整阈值</h3><p>为了优化数据块质量，可以动态调整数据块大小和相似性阈值等参数。这样，算法就能适应不同的文档结构和语义密度。</p>
-<h3 id="6-Handle-the-first-few-sentences" class="common-anchor-header">6.处理前几个句子</h3><p>当一个语块只包含一个句子时，算法会使用一个固定的相似性阈值来处理第一次比较。如果句子 1 和句子 2 之间的相似度高于该阈值，它们就会形成一个语块。否则，它们会立即分开。</p>
+<h3 id="6-Handle-the-first-few-sentences" class="common-anchor-header">6.处理前几个句子</h3><p>当一个语块只包含一个句子时，算法会使用一个固定的相似性阈值来处理第一次比较。如果句子 1 和句子 2 之间的相似度高于该阈值，它们就会形成一个语块。否则，它们会立即分裂。</p>
 <h2 id="Strengths-and-Limitations-of-Max–Min-Semantic-Chunking" class="common-anchor-header">最大最小语义分块的优势和局限性<button data-href="#Strengths-and-Limitations-of-Max–Min-Semantic-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

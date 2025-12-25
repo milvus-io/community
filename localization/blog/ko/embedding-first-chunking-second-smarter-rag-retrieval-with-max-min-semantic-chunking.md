@@ -19,10 +19,9 @@ origin: >-
   https://milvus.io/blog/embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 ---
 <p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">검색 증강 생성(RAG)</a> 은 AI 애플리케이션에 컨텍스트와 메모리를 제공하기 위한 기본 접근 방식으로 자리 잡았으며, AI 에이전트, 고객 지원 도우미, 지식 기반 및 검색 시스템 모두 이를 사용합니다.</p>
-<p>거의 모든 RAG 파이프라인에서 표준 프로세스는 동일합니다. 문서를 가져와 청크로 분할한 다음, 유사성 검색을 위해 해당 청크를 <a href="https://milvus.io/">Milvus와</a> 같은 벡터 데이터베이스에 임베드하는 것입니다. <strong>청킹은</strong> 미리 이루어지기 때문에 이러한 청크의 품질은 시스템이 정보를 얼마나 잘 검색하고 최종 답변이 얼마나 정확한지에 직접적인 영향을 미칩니다.</p>
+<p>거의 모든 RAG 파이프라인에서 표준 프로세스는 동일합니다. 문서를 가져와 청크로 분할한 다음 유사성 검색을 위해 해당 청크를 <a href="https://milvus.io/">Milvus와</a> 같은 벡터 데이터베이스에 임베드하는 것입니다. <strong>청킹은</strong> 미리 이루어지기 때문에 이러한 청크의 품질은 시스템이 정보를 얼마나 잘 검색하고 최종 답변이 얼마나 정확한지에 직접적인 영향을 미칩니다.</p>
 <p>문제는 기존의 청킹 전략은 일반적으로 의미론적 이해 없이 텍스트를 분할한다는 것입니다. 고정 길이 청킹은 토큰 수를 기준으로 잘라내고, 재귀 청킹은 표면 수준 구조를 사용하지만 둘 다 여전히 텍스트의 실제 의미를 무시합니다. 그 결과, 관련 아이디어가 분리되고, 관련 없는 줄이 함께 그룹화되며, 중요한 문맥이 파편화되는 경우가 많습니다.</p>
-<p><a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>최대-최소 시맨틱 청킹은</strong></a> 이 문제에 다르게 접근합니다. 먼저 청킹하는 대신 텍스트를 미리 임베드하고 의미적 유사성을 사용해 경계가 형성되어야 할 위치를 결정합니다. 잘라내기 전에 임베딩함으로써 파이프라인은 임의의 길이 제한에 의존하지 않고 의미의 자연스러운 변화를 추적할 수 있습니다.</p>
-<p>이전 블로그에서는 '임베드 우선' 아이디어를 대중화하고 실제로 작동할 수 있음을 보여준 Jina AI의 <a href="https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md"><strong>후기 청킹과</strong></a> 같은 방법에 대해 설명했습니다. <strong>최대-최소 시맨틱 청킹은</strong> 동일한 개념을 기반으로 새로운 청크가 필요할 만큼 의미가 변경되는 시점을 식별하는 간단한 규칙을 사용합니다. 이 글에서는 Max-Min이 어떻게 작동하는지 살펴보고 실제 RAG 워크로드에 대한 강점과 한계를 살펴보겠습니다.</p>
+<p>이 블로그에서는 다른 청킹 전략을 공유하고자 합니다: <a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>최대-최소 시맨틱 청킹입니다</strong></a>. 이 전략은 먼저 청킹하는 대신 텍스트를 미리 임베드하고 의미적 유사성을 사용하여 경계를 형성할 위치를 결정합니다. 잘라내기 전에 임베딩함으로써 파이프라인은 임의의 길이 제한에 의존하지 않고 의미의 자연스러운 변화를 추적할 수 있습니다.</p>
 <h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">일반적인 RAG 파이프라인의 작동 방식<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -38,8 +37,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>프레임워크에 관계없이 대부분의 RAG 파이프라인은 동일한 4단계 어셈블리 라인을 따릅니다. 아마 여러분도 직접 작성해 보셨을 것입니다:</p>
-<h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1. 데이터 정리 및 청킹</h3><p>파이프라인은 헤더, 바닥글, 탐색 텍스트 및 실제 콘텐츠가 아닌 모든 것을 제거하는 등 원시 문서를 정리하는 것으로 시작됩니다. 노이즈가 제거되면 텍스트는 더 작은 조각으로 분할됩니다. 대부분의 팀은 임베딩 모델을 관리하기 쉽도록 고정 크기 청크(일반적으로 300~800토큰)를 사용합니다. 단점은 분할이 의미가 아닌 길이를 기준으로 이루어지기 때문에 경계가 임의적일 수 있다는 것입니다.</p>
+    </button></h2><p>프레임워크에 관계없이 대부분의 RAG 파이프라인은 동일한 4단계 조립 라인을 따릅니다. 아마 여러분도 직접 작성해 보셨을 것입니다:</p>
+<h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1. 데이터 정리 및 청킹</h3><p>파이프라인은 헤더, 바닥글, 탐색 텍스트 및 실제 콘텐츠가 아닌 모든 것을 제거하는 등 원시 문서를 정리하는 것으로 시작합니다. 노이즈가 제거되면 텍스트는 더 작은 조각으로 분할됩니다. 대부분의 팀은 임베딩 모델을 관리하기 쉽도록 고정 크기 청크(일반적으로 300~800토큰)를 사용합니다. 단점은 분할이 의미가 아닌 길이를 기준으로 이루어지기 때문에 경계가 임의적일 수 있다는 것입니다.</p>
 <h3 id="2-Embedding-and-Storage" class="common-anchor-header">2. 임베딩 및 저장</h3><p>그런 다음 각 청크는 OpenAI의 임베딩 모델이나 <a href="https://zilliz.com/ai-models/text-embedding-3-small"><code translate="no">text-embedding-3-small</code></a> 또는 BAAI의 인코더를 사용합니다. 결과 벡터는 <a href="https://milvus.io/">Milvus</a> 또는 <a href="https://zilliz.com/cloud">Zilliz Cloud와</a> 같은 벡터 데이터베이스에 저장됩니다. 데이터베이스는 색인 및 유사성 검색을 처리하므로 저장된 모든 청크와 새 쿼리를 빠르게 비교할 수 있습니다.</p>
 <h3 id="3-Querying" class="common-anchor-header">3. 쿼리</h3><p>사용자가 <em>"RAG는 어떻게 환각을 줄여주나요?"</em> 와 같은 질문을 하면 <em>.</em> - 라는 질문을 하면 시스템이 쿼리를 임베드하여 데이터베이스로 보냅니다. 데이터베이스는 쿼리에 가장 가까운 벡터를 가진 상위 K 청크를 반환합니다. 이것이 모델이 질문에 답하는 데 사용할 텍스트 조각입니다.</p>
 <h3 id="4-Answer-Generation" class="common-anchor-header">4. 답변 생성</h3><p>검색된 청크는 사용자 쿼리와 함께 번들로 묶여 LLM에 공급됩니다. 모델은 제공된 컨텍스트를 근거로 하여 답변을 생성합니다.</p>
@@ -50,7 +49,7 @@ origin: >-
 <p><strong>2. 재귀적 문자 분할</strong></p>
 <p>이 방법은 좀 더 스마트한 방법입니다. 단락, 줄 바꿈 또는 문장과 같은 단서를 기반으로 텍스트를 계층적으로 분할합니다. 섹션이 너무 길면 재귀적으로 더 길게 나눕니다. 출력은 일반적으로 더 일관성이 있지만 여전히 일관성이 없습니다. 일부 문서는 구조가 명확하지 않거나 섹션 길이가 고르지 않아 검색 정확도가 떨어집니다. 그리고 어떤 경우에는 이 접근 방식이 여전히 모델의 컨텍스트 창을 초과하는 청크를 생성하기도 합니다.</p>
 <p>두 방법 모두 정확도 대 컨텍스트라는 동일한 상충 관계에 직면해 있습니다. 청크가 작을수록 검색 정확도는 향상되지만 주변 컨텍스트가 손실되고, 청크가 클수록 의미는 보존되지만 관련 없는 노이즈가 추가될 위험이 있습니다. 적절한 균형을 맞추는 것이 RAG 시스템 설계에서 청킹의 기본이 되기도 하고 좌절감을 주기도 합니다.</p>
-<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Second" class="common-anchor-header">최대-최소 시맨틱 청킹: 선 임베드, 후 청크<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Second" class="anchor-icon" translate="no">
+<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="common-anchor-header">최대-최소 시맨틱 청킹: 먼저 임베드하고 나중에 청크하기<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
