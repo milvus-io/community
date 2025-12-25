@@ -1,7 +1,7 @@
 ---
 id: >-
   embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
-title: 先嵌入，后分块：利用最大-最小语义分块实现更智能的 RAG 检索
+title: 先嵌入，后分块：利用最大最小语义分块实现更智能的 RAG 检索
 author: Rachel Liu
 date: 2025-12-24T00:00:00.000Z
 cover: assets.zilliz.com/maxmin_cover_8be0b87409.png
@@ -72,8 +72,8 @@ origin: >-
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/embed_first_chunk_second_94f69c664c.png" alt="Diagram showing embed-first chunk-second workflow in Max-Min Semantic Chunking" class="doc-image" id="diagram-showing-embed-first-chunk-second-workflow-in-max-min-semantic-chunking" />
    </span> <span class="img-wrapper"> <span>最大最小语义分块法中 "先嵌入，后分块 "工作流程示意图</span> </span></p>
-<p>从概念上讲，该方法将分块处理视为嵌入空间中的受限聚类问题。您按顺序浏览文档，每次浏览一个句子。对于每个句子，算法都会将其嵌入与当前分块中的嵌入进行比较。如果新句子在语义上足够接近，它就会加入该语块。如果距离太远，算法就会启动一个新的语块。关键的限制条件是，语块必须遵循原始句子的顺序--不能重新排序，也不能进行全局聚类。</p>
-<p>这样就产生了一组长度可变的语块，这些语块反映了文档含义的实际变化，而不是字符计数器碰巧归零的地方。</p>
+<p>从概念上讲，该方法将分块处理视为嵌入空间中的受限聚类问题。您按顺序浏览文档，每次浏览一个句子。对于每个句子，算法都会将其嵌入与当前分块中的嵌入进行比较。如果新句子在语义上足够接近，它就会加入该语块。如果距离太远，算法就会启动一个新的语块。关键的约束条件是，语块必须遵循原始句子的顺序--不能重新排序，也不能进行全局聚类。</p>
+<p>这样就产生了一组长度可变的语义块，它们反映了文档意义的实际变化，而不是字符计数器碰巧归零的地方。</p>
 <h2 id="How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="common-anchor-header">最大最小语义分块策略的工作原理<button data-href="#How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -91,7 +91,7 @@ origin: >-
       </svg>
     </button></h2><p>Max-Min Semantic Chunking（最大最小语义分块）通过比较句子在高维向量空间中的相互关系来确定分块边界。它不依赖于固定的长度，而是研究意义在整个文档中的变化。这一过程可分为六个步骤：</p>
 <h3 id="1-Embed-all-sentences-and-start-a-chunk" class="common-anchor-header">1.嵌入所有句子并开始一个大块</h3><p>嵌入模型会将文档中的每个句子转换为向量嵌入。它按顺序处理句子。如果前<em>n-k 个</em>句子构成了当前的语块 C，那么接下来的句子（sₙ₋ₖ₊₁）需要进行评估：是加入 C，还是开始一个新的语块？</p>
-<h3 id="2-Measure-how-consistent-the-current-chunk-is" class="common-anchor-header">2.测量当前数据块的一致性</h3><p>在语块 C 中，计算所有句子嵌入之间的最小成对余弦相似度。这个值反映了该语块中各句子之间的紧密程度。最小相似度越低，说明句子之间的关联度越低，表明该语块可能需要拆分。</p>
+<h3 id="2-Measure-how-consistent-the-current-chunk-is" class="common-anchor-header">2.测量当前数据块的一致性</h3><p>在语块 C 中，计算所有句子嵌入之间的最小成对余弦相似度。该值反映了该语块中各句子之间的紧密程度。最小相似度越低，说明句子之间的关联度越低，表明该语块可能需要拆分。</p>
 <h3 id="3-Compare-the-new-sentence-to-the-chunk" class="common-anchor-header">3.将新句子与语块进行比较</h3><p>接下来，计算新句子与 C 中已有句子之间的最大余弦相似度。</p>
 <h3 id="4-Decide-whether-to-extend-the-chunk-or-start-a-new-one" class="common-anchor-header">4.决定是扩展语块还是开始一个新的语块</h3><p>这是核心规则：</p>
 <ul>

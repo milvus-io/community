@@ -2,8 +2,8 @@
 id: >-
   embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 title: >-
-  التضمين أولاً، والتقطيع ثانياً: استرجاع RAG الأكثر ذكاءً باستخدام التقطيع
-  الدلالي الأقصى
+  التضمين أولاً، ثم التقطيع: استرجاع RAG الأكثر ذكاءً مع التقطيع الدلالي الأقصى
+  الأدنى
 author: Rachel Liu
 date: 2025-12-24T00:00:00.000Z
 cover: assets.zilliz.com/maxmin_cover_8be0b87409.png

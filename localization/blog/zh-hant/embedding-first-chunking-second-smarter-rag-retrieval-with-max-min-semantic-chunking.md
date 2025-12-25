@@ -1,7 +1,7 @@
 ---
 id: >-
   embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
-title: 先嵌入，後分塊：使用最大最小語意分塊進行更精明的 RAG 檢索
+title: 先嵌入，後分塊：使用最大最小語意分塊進行更聰明的 RAG 檢索
 author: Rachel Liu
 date: 2025-12-24T00:00:00.000Z
 cover: assets.zilliz.com/maxmin_cover_8be0b87409.png
@@ -18,11 +18,11 @@ desc: >-
 origin: >-
   https://milvus.io/blog/embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 ---
-<p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a>已經成為提供 AI 應用程式上下文和記憶的預設方法 - AI 代理、客戶支援助理、知識庫和搜尋系統都仰賴它。</p>
+<p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a>已經成為為 AI 應用程式提供上下文和記憶的預設方法 - AI 代理、客戶支援助理、知識庫和搜尋系統都仰賴它。</p>
 <p>在幾乎所有的 RAG 輸送管道中，標準流程都是一樣的：取用文件、將文件分割成區塊、然後將這些區塊嵌入<a href="https://milvus.io/">Milvus</a> 等向量資料庫中進行相似性檢索。由於<strong>分塊</strong>是在事前進行的，因此這些分塊的品質會直接影響系統擷取資訊的效能以及最終答案的精確度。</p>
 <p>問題在於傳統的分塊策略通常是在沒有任何語意理解的情況下分割文字。固定長度的分塊是根據標記數量來進行切割，而遞迴分塊則使用表面層級的結構，但兩者都仍然忽略了文字的實際意義。因此，相關的想法往往會被分開，不相關的句子會被組合在一起，而重要的上下文則會被分割得支離破碎。</p>
 <p><a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>Max-Min Semantic Chunking</strong></a>以不同的方式處理問題。它不是先切塊，而是先嵌入文字，並使用語義相似性來決定邊界應該在哪裡形成。透過先嵌入後切割的方式，管道可以追蹤意義的自然轉換，而不是依賴任意的長度限制。</p>
-<p>在我們之前的部落格中，我們討論過 Jina AI 的<a href="https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md"><strong>Late Chunking</strong></a> 等方法，這些方法有助於普及「先嵌入」的想法，並顯示出它在實務上是可行的。<strong>Max-Min Semantic Chunking（最大最小語意分塊</strong>）則是以相同的概念為基礎，利用簡單的規則來識別何時意義變化大到需要一個新的分塊。在本篇文章中，我們將介紹 Max-Min 的運作方式，並檢視其在實際 RAG 工作負載中的優勢和限制。</p>
+<p>在我們之前的部落格中，我們討論過 Jina AI 的<a href="https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md"><strong>Late Chunking</strong></a> 等方法，這些方法有助於普及「先嵌入」的想法，並顯示它在實務上是可行的。<strong>Max-Min Semantic Chunking（最大最小語意分塊</strong>）則是以相同的概念為基礎，利用簡單的規則來識別何時意義變化大到需要一個新的分塊。在本篇文章中，我們將介紹 Max-Min 的運作方式，並檢視其在實際 RAG 工作負載中的優勢和限制。</p>
 <h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">典型的 RAG 管道如何運作<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -137,7 +137,7 @@ origin: >-
    </span> <span class="img-wrapper"> <span>顯示 Milvus 2.4.13 發行紀錄中上下文分割的範例，版本識別符和功能清單分開在不同的區塊中</span> </span></li>
 </ul>
 <p>這種分割也會影響 LLM 的產生階段。如果版本參考在一個 chunk 中，而功能描述在另一個 chunk 中，模型就會接收到不完整的上下文，無法清楚推理兩者之間的關係。</p>
-<p>為了減輕這些情況，系統通常會使用滑動視窗、重疊儲存區邊界或多通道掃描等技術。這些方法可重新引入部分遺失的上下文、減少破碎化，並協助擷取步驟保留相關資訊。</p>
+<p>為了減輕這些情況，系統通常會使用滑動視窗、重疊分區邊界或多通道掃描等技術。這些方法可重新引入部分遺失的上下文、減少破碎化，並協助擷取步驟保留相關資訊。</p>
 <h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -153,7 +153,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最大最小語意分塊（Max-Min Semantic Chunking）並不是解決所有 RAG 問題的靈丹妙藥，但它確實給了我們一個更理智的方式來思考分塊邊界。它並不是讓標記限制來決定在哪裡砍掉想法，而是使用嵌入（embeddings）來偵測意義實際轉變的地方。對於許多真實世界的文件 -API、規格、日誌、發行記錄、疑難排解指南 - 單是這一點就能顯著提升檢索品質。</p>
+    </button></h2><p>最大最小語意分塊（Max-Min Semantic Chunking）並不是解決所有 RAG 問題的靈丹妙藥，但它確實給了我們一種更理智的方式來思考分塊邊界。它並不是讓標記限制來決定在哪個地方會被切分，而是使用嵌入（embeddings）來偵測意義實際上在哪個地方發生了轉變。對於許多真實世界的文件 -API、規格、日誌、發行記錄、疑難排解指南 - 單是這一點就能顯著提升檢索品質。</p>
 <p>我喜歡這種方法的地方在於它可以自然地融入現有的 RAG 管道。如果您已經嵌入句子或段落，額外的成本基本上就是幾個余弦相似性檢查。您不需要額外的模型、複雜的聚類或重量級的預處理。當這種方法奏效時，它所產生的資料塊會讓「人」感覺更強，更接近我們在閱讀時將資訊分類的方式。</p>
 <p>但這種方法仍有盲點。它只能看到局部的意義，而且無法重新連接故意分散的資訊。重疊視窗、多路掃描以及其他保留上下文的技巧仍然是必要的，尤其是對於參考文獻和說明彼此相距甚遠的文件。</p>
 <p>不過，Max-Min Semantic Chunking 仍然讓我們朝正確的方向前進：擺脫任意的文字切片，邁向真正尊重語意的檢索管道。如果您正在探索讓 RAG 更為可靠的方法，它是值得一試的。</p>

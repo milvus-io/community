@@ -2,7 +2,7 @@
 id: >-
   embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 title: >-
-  Erst Einbettung, dann Chunking: Smarteres RAG Retrieval mit Max-Min Semantic
+  Erst einbetten, dann chunking: Smarter RAG Retrieval mit Max-Min Semantic
   Chunking
 author: Rachel Liu
 date: 2025-12-24T00:00:00.000Z
@@ -139,7 +139,7 @@ origin: >-
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/v2413_a98e1b1f99.png" alt="Example showing context fragmentation in Milvus 2.4.13 Release Notes with version identifier and feature list in separate chunks" class="doc-image" id="example-showing-context-fragmentation-in-milvus-2.4.13-release-notes-with-version-identifier-and-feature-list-in-separate-chunks" />
    </span> <span class="img-wrapper"> <span>Beispiel für die Kontextfragmentierung in Milvus 2.4.13 Release Notes mit Versionskennung und Feature-Liste in separaten Chunks</span> </span></li>
 </ul>
-<p>Diese Fragmentierung wirkt sich auch auf die LLM-Erstellungsphase aus. Wenn sich die Versionsreferenz in einem Chunk und die Merkmalsbeschreibungen in einem anderen Chunk befinden, erhält das Modell einen unvollständigen Kontext und kann nicht sauber auf die Beziehung zwischen den beiden schließen.</p>
+<p>Diese Fragmentierung wirkt sich auch auf die LLM-Generierungsphase aus. Wenn sich die Versionsreferenz in einem Chunk und die Merkmalsbeschreibungen in einem anderen Chunk befinden, erhält das Modell einen unvollständigen Kontext und kann nicht sauber auf die Beziehung zwischen den beiden schließen.</p>
 <p>Um diese Fälle zu entschärfen, verwenden Systeme oft Techniken wie gleitende Fenster, überlappende Chunk-Grenzen oder Multi-Pass-Scans. Mit diesen Ansätzen wird ein Teil des fehlenden Kontexts wiederhergestellt, die Fragmentierung verringert und der Abruf von zusammenhängenden Informationen erleichtert.</p>
 <h2 id="Conclusion" class="common-anchor-header">Schlussfolgerung<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
