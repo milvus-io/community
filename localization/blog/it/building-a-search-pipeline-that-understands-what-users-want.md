@@ -4,7 +4,7 @@ title: Creare pipeline di ricerca AI per capire cosa vogliono gli utenti con Mil
 author: Sudhanshu Prajapati
 date: 2025-12-22T00:00:00.000Z
 cover: assets.zilliz.com/semantic_search_325a0b5597.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'

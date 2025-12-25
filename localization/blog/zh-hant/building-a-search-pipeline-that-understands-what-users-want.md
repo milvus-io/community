@@ -4,7 +4,7 @@ title: 使用 Milvus 建立能瞭解使用者需求的 AI 搜尋管道
 author: Sudhanshu Prajapati
 date: 2025-12-22T00:00:00.000Z
 cover: assets.zilliz.com/semantic_search_325a0b5597.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: 'Milvus, vector database'
