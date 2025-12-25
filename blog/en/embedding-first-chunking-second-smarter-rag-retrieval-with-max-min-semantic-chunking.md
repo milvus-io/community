@@ -166,7 +166,7 @@ One common issue is **context fragmentation**. When important information is spr
 
 For example, in the Milvus 2.4.13 Release Notes, as shown below, one chunk might contain the version identifier while another contains the feature list. A query like _“What new features were introduced in Milvus 2.4.13?”_ depends on both. If those details are split across different chunks, the embedding model may not connect them, leading to weaker retrieval.
 
-![](https://assets.zilliz.com/v2413_a98e1b1f99.png)
++ ![Example showing context fragmentation in Milvus 2.4.13 Release Notes with version identifier and feature list in separate chunks](https://assets.zilliz.com/v2413_a98e1b1f99.png)
 
 This fragmentation also affects the LLM generation stage. If the version reference is in one chunk and the feature descriptions are in another, the model receives incomplete context and can’t reason cleanly about the relationship between the two.
 
