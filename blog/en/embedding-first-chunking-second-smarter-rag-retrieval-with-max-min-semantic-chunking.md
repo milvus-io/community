@@ -22,10 +22,7 @@ In almost every RAG pipeline, the standard process is the same: take the documen
 
 The issue is that traditional chunking strategies usually split text without any semantic understanding. Fixed-length chunking cuts based on token counts, and recursive chunking uses surface-level structure, but both still ignore the actual meaning of the text. As a result, related ideas often get separated, unrelated lines get grouped together, and important context gets fragmented.
 
-[**Max–Min Semantic Chunking**](https://link.springer.com/article/10.1007/s10791-025-09638-7) approaches the problem differently. Instead of chunking first, it embeds the text upfront and uses semantic similarity to decide where boundaries should form. By embedding before cutting, the pipeline can track natural shifts in meaning rather than relying on arbitrary length limits.
-
-In our previous blog, we discussed methods like Jina AI’s [**Late Chunking**](https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md), which helped popularize the “embed-first” idea and showed that it can work in practice. **Max–Min Semantic Chunking** builds on the same concept with a simple rule that identifies when the meaning changes enough to warrant a new chunk. In this post, we’ll walk through how Max–Min works and examine its strengths and limitations for real RAG workloads.
-
+In this blog, I’d like to share a different chunking strategy: [**Max–Min Semantic Chunking**](https://link.springer.com/article/10.1007/s10791-025-09638-7). Instead of chunking first, it embeds the text upfront and uses semantic similarity to decide where boundaries should form. By embedding before cutting, the pipeline can track natural shifts in meaning rather than relying on arbitrary length limits.
 
 ## How a Typical RAG Pipeline Works
 
@@ -69,7 +66,7 @@ This method is a bit smarter. It splits text hierarchically based on cues like p
 Both methods face the same tradeoff: precision vs. context. Smaller chunks improve retrieval accuracy but lose surrounding context; larger chunks preserve meaning but risk adding irrelevant noise. Striking the right balance is what makes chunking both foundational—and frustrating—in RAG system design.
 
 
-## Max–Min Semantic Chunking: Embed First, Chunk Second
+## Max–Min Semantic Chunking: Embed First, Chunk Later
 
 In 2025, S.R. Bhat et al. published [_Rethinking Chunk Size for Long-Document Retrieval: A Multi-Dataset Analysis_](https://arxiv.org/abs/2505.21700). One of their key findings was that there isn’t a single **“best”** chunk size for RAG. Small chunks (64–128 tokens) tend to work better for factual or lookup-style questions, while larger chunks (512–1024 tokens) help with narrative or high-level reasoning tasks. In other words, fixed-size chunking is always a compromise.
 
