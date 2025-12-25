@@ -77,7 +77,7 @@ This raises a natural question: instead of picking one length and hoping for the
 
 The idea is simple: **embed first, chunk second**. Instead of splitting text and then embedding whatever pieces fall out, the algorithm embeds _all sentences_ up front. It then uses the semantic relationships between those sentence embeddings to decide where the boundaries should go.
 
-![](https://assets.zilliz.com/embed_first_chunk_second_94f69c664c.png)
+![Diagram showing embed-first chunk-second workflow in Max-Min Semantic Chunking](https://assets.zilliz.com/embed_first_chunk_second_94f69c664c.png)
 
 Conceptually, the method treats chunking as a constrained clustering problem in embedding space. You walk through the document in order, one sentence at a time. For each sentence, the algorithm compares its embedding with those in the current chunk. If the new sentence is semantically close enough, it joins the chunk. If it’s too far, the algorithm starts a new chunk. The key constraint is that chunks must follow the original sentence order — no reordering, no global clustering.
 
