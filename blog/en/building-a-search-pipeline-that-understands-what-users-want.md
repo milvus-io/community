@@ -5,7 +5,7 @@ title: >
 author: Sudhanshu Prajapati
 date: 2025-12-22
 cover: assets.zilliz.com/semantic_search_325a0b5597.png
-tag: Tutorial
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
