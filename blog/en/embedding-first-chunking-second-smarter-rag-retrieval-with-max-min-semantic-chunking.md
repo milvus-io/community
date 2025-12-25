@@ -1,7 +1,7 @@
 ---
 id: embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 title: >
- Embedding First, Chunking Second: Smarter RAG Retrieval with Max–Min Semantic Chunking
+ Embedding First, Then Chunking: Smarter RAG Retrieval with Max–Min Semantic Chunking 
 author: Rachel Liu
 date: 2025-12-24
 cover: assets.zilliz.com/maxmin_cover_8be0b87409.png
