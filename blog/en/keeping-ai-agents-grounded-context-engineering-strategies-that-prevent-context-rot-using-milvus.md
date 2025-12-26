@@ -18,7 +18,7 @@ origin: https://milvus.io/blog/keeping-ai-agents-grounded-context-engineering-st
 
 If you’ve worked with long-running LLM conversations, you’ve probably had this frustrating moment: halfway through a long thread, the model starts drifting. Answers get vague, reasoning weakens, and key details mysteriously vanish. But if you drop the exact same prompt into a new chat, suddenly the model behaves—focused, accurate, grounded.
 
-This isn’t the model “getting tired” — it’s **context rot**. As a conversation grows, the model has to juggle more information, and its ability to prioritize slowly declines. [Antropic studie](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)s show that as context windows stretch from around 8K tokens to 128K, retrieval accuracy can drop by 15–30%. The model still has room, but it loses track of what matters. Bigger context windows help delay the problem, but they don’t eliminate it.
+This isn’t the model “getting tired” — it’s **context rot**. As a conversation grows, the model has to juggle more information, and its ability to prioritize slowly declines. [Antropic studies](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) show that as context windows stretch from around 8K tokens to 128K, retrieval accuracy can drop by 15–30%. The model still has room, but it loses track of what matters. Bigger context windows help delay the problem, but they don’t eliminate it.
 
 This is where **context engineering** comes in. Instead of handing the model everything at once, we shape what it sees: retrieving only the pieces that matter, compressing what no longer needs to be verbose, and keeping prompts and tools clean enough for the model to reason over. The goal is simple: make important information available at the right moment, and ignore the rest.
 
@@ -225,11 +225,11 @@ Instead of keeping everything inside the model’s window, the system can store 
 
 For example, Claude’s Pokémon-agent prototype stores durable facts like:
 
-    "Pikachu leveled up to 8"
+- `Pikachu leveled up to 8`
 
-    "Trained 1234 steps on Route 1"
+- `Trained 1234 steps on Route 1`
 
-    "Goal: reach level 10"
+- `Goal: reach level 10`
 
 Meanwhile, transient details—battle logs, long tool outputs—stay outside the active context. This mirrors how humans use notebooks: we don’t keep every detail in our working memory; we store reference points externally and look them up when needed.
 
@@ -253,14 +253,15 @@ After handling context overflow, there’s another equally important piece: how 
 
 ![](https://assets.zilliz.com/System_Prompts_cf655dcd0d.png)
 
-In practice, it's best to start by using a single agent combined with compression to handle the task. External storage should only be introduced when there’s a need to retain memory across sessions. The multi-agent architecture should be reserved for tasks that genuinely require parallel processing of complex, specialized sub-tasks.
+Anthropic offers a helpful way to think about this—less as a single prompt-writing exercise, and more as constructing context across three layers.
 
-Each approach extends the system's effective “working memory” without blowing the context window—and without triggering context rot.
+### **System Prompts: Find the Goldilocks Zone**
 
+Most system prompts fail at the extremes. Too much detail—lists of rules, nested conditions, hard-coded exceptions—makes the prompt brittle and difficult to maintain. Too little structure leaves the model guessing what to do.
 
-## Best Practices for Designing Context That Actually Works
+The best prompts sit in the middle: structured enough to guide behavior, flexible enough for the model to reason. In practice, this means giving the model a clear role, a general workflow, and light tool guidance—nothing more, nothing less.
 
-After handling context overflow, there’s another equally important piece: how the context is built in the first place. Even with compression, external notes, and sub-agents, the system will struggle if the prompt and tools themselves aren’t designed to support long, complex reasoning.
+For example:
 
 ```
 You are a technical documentation assistant serving developers.
