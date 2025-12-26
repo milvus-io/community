@@ -30,7 +30,7 @@ Before diving into the upgrade workflow itself, let’s first understand how the
 
 ### Milvus 2.5 Architecture
 
-![](https://assets.zilliz.com/Milvus_Architecture_2_5_4e228af3c4.PNG)
+![Milvus 2.5 Architecture](https://assets.zilliz.com/Milvus_Architecture_2_5_4e228af3c4.PNG)
 
 In Milvus 2.5, streaming and batch workflows were intertwined across multiple worker nodes:
 
@@ -43,7 +43,7 @@ This mixing of batch and real-time logic made it difficult to scale batch worklo
 
 ### Milvus 2.6 Architecture
 
-![](https://assets.zilliz.com/Milvus_Architecture_2_6_ee6f1f0635.PNG)
+![Milvus 2.6 Architecture](https://assets.zilliz.com/Milvus_Architecture_2_6_ee6f1f0635.PNG)
 
 Milvus 2.6 introduces a dedicated **StreamingNode** that handles all real-time data responsibilities: consuming the message queue, writing incremental segments, serving incremental queries, and managing WAL-based recovery. With streaming isolated, the remaining components take on cleaner, more focused roles:
 
@@ -81,9 +81,9 @@ Before getting into the upgrade workflow, here’s a quick look at what Milvus 2
 
 - **JSON Path Indexing with JSON Shredding** – Structured filtering on nested JSON is now dramatically faster and much more predictable. Pre-indexed JSON paths cut filter latency from **140 ms → 1.5 ms** (P99: **480 ms → 10 ms**), making hybrid vector search + metadata filtering significantly more responsive.
 
-* **Expanded Data Type Support** – Adds Int8 vector types, [Geometry](https://milvus.io/docs/geometry-field.md#Geometry-Field) fields (POINT / LINESTRING / POLYGON), and Array-of-Structs. These extensions support geospatial workloads, richer metadata modeling, and cleaner schemas.
+- **Expanded Data Type Support** – Adds Int8 vector types, [Geometry](https://milvus.io/docs/geometry-field.md#Geometry-Field) fields (POINT / LINESTRING / POLYGON), and Array-of-Structs. These extensions support geospatial workloads, richer metadata modeling, and cleaner schemas.
 
-* **Upsert for Partial Updates** – You can now insert or update entities using a single primary-key call. Partial updates modify only the fields provided, reducing write amplification and simplifying pipelines that frequently refresh metadata or embeddings.
+- **Upsert for Partial Updates** – You can now insert or update entities using a single primary-key call. Partial updates modify only the fields provided, reducing write amplification and simplifying pipelines that frequently refresh metadata or embeddings.
 
 
 ### Search and Retrieval Enhancements
@@ -315,7 +315,7 @@ helm repo add zilliztech https://zilliztech.github.io/milvus-helm
 helm repo update
 ```
 
-2.If the cluster is deployed with multiple coordinator components, first upgrade Milvus to version 2.5.16 or later zand enable MixCoord.
+2.If the cluster is deployed with multiple coordinator components, first upgrade Milvus to version 2.5.16 or later and enable MixCoord.
 
 ```
 mixCoordinator
