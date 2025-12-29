@@ -5,7 +5,7 @@ title: >-
   dan RTREE di Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: >-
   https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 ---
 <p>Karena sistem AI semakin banyak diterapkan pada pengambilan keputusan secara real-time, data geospasial menjadi semakin penting dalam serangkaian aplikasi yang terus berkembang-terutama aplikasi yang beroperasi di dunia nyata atau melayani pengguna di lokasi nyata.</p>
-<p>Pertimbangkan platform pengantaran makanan seperti DoorDash atau Uber Eats. Ketika pengguna melakukan pemesanan, sistem tidak hanya menghitung jarak terpendek antara dua titik. Sistem ini mengevaluasi kualitas restoran, ketersediaan kurir, kondisi lalu lintas langsung, area layanan, dan semakin banyak, penyematan pengguna dan barang yang mewakili preferensi pribadi. Demikian pula, kendaraan otonom harus melakukan perencanaan jalur, deteksi rintangan, dan pemahaman semantik tingkat adegan di bawah batasan latensi yang ketat - seringkali dalam hitungan milidetik. Dalam domain ini, keputusan yang efektif bergantung pada penggabungan kendala spasial dengan kesamaan semantik, daripada memperlakukannya sebagai langkah yang berdiri sendiri-sendiri.</p>
+<p>Pertimbangkan platform pengantaran makanan seperti DoorDash atau Uber Eats. Ketika pengguna melakukan pemesanan, sistem tidak hanya menghitung jarak terpendek antara dua titik. Sistem ini mengevaluasi kualitas restoran, ketersediaan kurir, kondisi lalu lintas langsung, area layanan, dan semakin banyak, penyematan pengguna dan barang yang mewakili preferensi pribadi. Demikian pula, kendaraan otonom harus melakukan perencanaan jalur, deteksi rintangan, dan pemahaman semantik tingkat pemandangan di bawah batasan latensi yang ketat - seringkali dalam hitungan milidetik. Dalam domain ini, keputusan yang efektif bergantung pada penggabungan kendala spasial dengan kesamaan semantik, daripada memperlakukannya sebagai langkah yang berdiri sendiri-sendiri.</p>
 <p>Namun, pada lapisan data, data spasial dan semantik secara tradisional ditangani oleh sistem yang terpisah.</p>
 <ul>
 <li><p>Basis data geospasial dan ekstensi spasial dirancang untuk menyimpan koordinat, poligon, dan hubungan spasial seperti penahanan atau jarak.</p></li>
@@ -51,7 +51,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Bidang Geometri</strong> adalah sebuah tipe data yang ditentukan skema (<code translate="no">DataType.GEOMETRY</code>) di Milvus yang digunakan untuk menyimpan data geometri. Tidak seperti sistem yang hanya menangani koordinat mentah, Milvus mendukung berbagai struktur spasial-termasuk <strong>Point</strong>, <strong>LineString</strong>, dan <strong>Poligon</strong>.</p>
+    </button></h2><p><strong>Bidang Geometri</strong> adalah sebuah tipe data yang ditentukan oleh skema (<code translate="no">DataType.GEOMETRY</code>) di Milvus yang digunakan untuk menyimpan data geometri. Tidak seperti sistem yang hanya menangani koordinat mentah, Milvus mendukung berbagai struktur spasial-termasuk <strong>Point</strong>, <strong>LineString</strong>, dan <strong>Poligon</strong>.</p>
 <p>Hal ini memungkinkan untuk merepresentasikan konsep dunia nyata seperti lokasi restoran (Point), zona pengantaran (Polygon), atau lintasan kendaraan otonom (LineString), semuanya dalam basis data yang sama yang menyimpan vektor semantik. Dengan kata lain, Milvus menjadi sistem terpadu untuk mengetahui <em>letak</em> sesuatu dan <em>artinya</em>.</p>
 <p>Nilai geometri disimpan menggunakan format <a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">Well-Known Text (WKT</a> ), sebuah standar yang dapat dibaca manusia untuk memasukkan dan menanyakan data geometri. Hal ini menyederhanakan pemasukan dan permintaan data karena string WKT dapat dimasukkan secara langsung ke dalam catatan Milvus. Sebagai contoh:</p>
 <pre><code translate="no">data = [
@@ -86,7 +86,7 @@ origin: >-
 <p>Inti dari pipeline ini adalah <strong>RTREE (Rectangle Tree)</strong>, struktur pengindeksan spasial yang dirancang untuk mempercepat kueri atas data geometris. RTREE bekerja dengan mengatur objek secara hirarkis menggunakan <strong>Minimum Bounding Rectangles (MBR)</strong>, yang memungkinkan sebagian besar ruang pencarian dilewati selama eksekusi kueri.</p>
 <h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Tahap 1: Membangun Indeks RTREE</h3><p>Konstruksi RTREE mengikuti proses dari bawah ke atas yang mengelompokkan objek spasial yang berdekatan ke dalam wilayah yang semakin besar:</p>
 <p><strong>1. Buatlah simpul-simpul daun (leaf nodes):</strong> Untuk setiap objek geometri, hitung <strong>Minimum Bounding Rectangle (MBR</strong>) - persegi panjang terkecil yang sepenuhnya berisi objek tersebut - dan simpan sebagai leaf node.</p>
-<p><strong>2. Kelompokkan ke dalam kotak yang lebih besar:</strong> Kelompokkan node daun yang berdekatan dan bungkus setiap kelompok di dalam MBR baru, menghasilkan node internal.</p>
+<p><strong>2. Kelompokkan ke dalam kotak yang lebih besar:</strong> Kelompokkan node daun yang berdekatan dan bungkus setiap kelompok di dalam MBR baru, sehingga menghasilkan node internal.</p>
 <p><strong>3. Tambahkan simpul akar:</strong> Buat simpul akar yang MBR-nya mencakup semua kelompok internal, membentuk struktur pohon yang seimbang.</p>
 <p>
   <span class="img-wrapper">
@@ -114,7 +114,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td style="text-align:center"><strong>st_intersects(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A dan B memiliki setidaknya satu titik yang sama.</td></tr>
-<tr><td style="text-align:center"><strong>st_mengandung(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A sepenuhnya berisi geometri B (tidak termasuk batas).</td></tr>
+<tr><td style="text-align:center"><strong>st_berisi(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A sepenuhnya berisi geometri B (tidak termasuk batas).</td></tr>
 <tr><td style="text-align:center"><strong>st_dalam(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A sepenuhnya terkandung di dalam geometri B. Ini adalah kebalikan dari st_contains(A, B).</td></tr>
 <tr><td style="text-align:center"><strong>st_menutupi(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A menutupi geometri B (termasuk batas).</td></tr>
 <tr><td style="text-align:center"><strong>st_menyentuh(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A dan B bersentuhan pada batas-batasnya tetapi tidak berpotongan secara internal.</td></tr>
@@ -147,7 +147,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Delivery-Services-Smarter-Location-Aware-Recommendations" class="common-anchor-header">1. Layanan Pengiriman: Rekomendasi yang Lebih Cerdas dan Sadar Lokasi</h3><p>Platform seperti DoorDash atau Uber Eats menangani ratusan juta permintaan setiap harinya. Saat pengguna membuka aplikasi, sistem harus menentukan-berdasarkan lokasi pengguna, waktu, preferensi rasa, estimasi waktu pengantaran, lalu lintas waktu nyata, dan ketersediaan kurir-restoran atau kurir mana yang paling cocok saat <em>ini</em>.</p>
+    </button></h2><h3 id="1-Delivery-Services-Smarter-Location-Aware-Recommendations" class="common-anchor-header">1. Layanan Pengiriman: Rekomendasi yang Lebih Cerdas dan Sadar Lokasi</h3><p>Platform seperti DoorDash atau Uber Eats menangani ratusan juta permintaan setiap harinya. Pada saat pengguna membuka aplikasi, sistem harus menentukan-berdasarkan lokasi pengguna, waktu, preferensi rasa, estimasi waktu pengantaran, lalu lintas waktu nyata, dan ketersediaan kurir-restoran atau kurir mana yang paling cocok untuk saat <em>ini</em>.</p>
 <p>Biasanya, hal ini membutuhkan permintaan database geospasial dan mesin rekomendasi yang terpisah, diikuti dengan beberapa kali penyaringan dan pemeringkatan ulang. Dengan Indeks Geolokasi, Milvus sangat menyederhanakan alur kerja ini:</p>
 <ul>
 <li><p><strong>Penyimpanan terpadu</strong> - Koordinat restoran, lokasi kurir, dan penyematan preferensi pengguna, semuanya berada dalam satu sistem.</p></li>
@@ -181,7 +181,7 @@ origin: >-
       </svg>
     </button></h2><p>Geolokasi lebih dari sekadar garis lintang dan garis bujur. Dalam aplikasi yang peka terhadap lokasi, geolokasi memberikan konteks penting tentang <strong>di mana peristiwa terjadi, bagaimana entitas berhubungan secara spasial, dan bagaimana hubungan tersebut membentuk perilaku sistem</strong>. Ketika digabungkan dengan sinyal semantik dari model pembelajaran mesin, data geospasial memungkinkan kelas kueri yang lebih kaya yang sulit untuk diekspresikan - atau tidak efisien untuk dieksekusi - ketika data spasial dan vektor ditangani secara terpisah.</p>
 <p>Dengan diperkenalkannya Bidang Geometri dan indeks RTREE, Milvus menghadirkan pencarian kesamaan vektor dan penyaringan spasial ke dalam satu mesin kueri. Hal ini memungkinkan aplikasi untuk melakukan pengambilan bersama di seluruh <strong>vektor, data geospasial, dan waktu</strong>, mendukung kasus penggunaan seperti sistem rekomendasi yang sadar secara spasial, pencarian berbasis lokasi multimodal, dan analisis yang dibatasi wilayah atau jalur. Lebih penting lagi, hal ini mengurangi kompleksitas arsitektur dengan menghilangkan jalur pipa multi-tahap yang memindahkan data di antara sistem khusus.</p>
-<p>Karena sistem AI terus bergerak lebih dekat dengan pengambilan keputusan di dunia nyata, pemahaman tentang konten <strong><em>apa</em></strong> yang relevan akan semakin perlu dipasangkan dengan <strong><em>tempat</em></strong> dan <strong><em>waktu</em></strong> yang tepat. Milvus menyediakan blok bangunan untuk kelas beban kerja spasial-semantik ini dengan cara yang ekspresif dan praktis untuk beroperasi dalam skala besar.</p>
+<p>Karena sistem AI terus bergerak lebih dekat dengan pengambilan keputusan di dunia nyata, pemahaman tentang konten <strong><em>apa</em></strong> yang relevan akan semakin perlu dipasangkan dengan <strong><em>tempat</em></strong> konten tersebut berlaku dan <strong><em>kapan</em></strong> konten tersebut penting. Milvus menyediakan blok bangunan untuk kelas beban kerja spasial-semantik ini dengan cara yang ekspresif dan praktis untuk beroperasi dalam skala besar.</p>
 <p>Untuk informasi lebih lanjut mengenai Geometry Field dan indeks RTREE, lihat dokumentasi di bawah ini:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/geometry-field.md">Bidang Geometri | Dokumentasi Milvus</a></p></li>

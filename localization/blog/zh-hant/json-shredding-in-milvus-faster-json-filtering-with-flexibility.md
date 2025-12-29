@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: Milvus 的 JSON 切碎：靈活的 JSON 過濾速度快 88.9 倍
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -54,7 +54,7 @@ origin: >-
 <li><p>類型欄和動態欄都以 Arrow/Parquet 欄格式儲存，以便快速掃描和高度最佳化的查詢執行。</p></li>
 <li><p><strong>共用</strong>鍵被整合到一個精簡的二進位 JSON 欄中，並隨附一個共用鍵反向索引。此索引可加速低頻欄位的查詢，方法是及早剪除不相關的行，並將搜尋範圍限制為僅包含查詢關鍵字的文件。</p></li>
 </ul>
-<p>這種自適應列式儲存與倒轉式索引的結合，形成了 Milvus JSON 切碎機制的核心，可同時實現彈性與高效能的規模。</p>
+<p>這種自適應列式儲存與倒轉式索引的結合，形成了 Milvus JSON 切碎機制的核心，可在規模上實現彈性與高效能。</p>
 <p>整體工作流程如下圖所示：</p>
 <p>
   <span class="img-wrapper">
@@ -74,7 +74,7 @@ origin: >-
 <li><p><strong>根據需要建立欄：</strong>當新的鍵出現在傳入的 JSON 文件中時，Milvus 會自動將具有相同鍵的值組合到專用列中。這可保留列式儲存的效能優勢，而不需要使用者事先設計模式。Milvus 也會推斷新欄位的資料類型 (例如 INTEGER、DOUBLE、VARCHAR)，並為它們選擇有效率的列格式。</p></li>
 <li><p><strong>每個 key 都會自動處理：</strong>Milvus 會分析並處理 JSON 文件中的每個關鍵字。這可確保廣泛的查詢涵蓋範圍，而不會強迫使用者事先定義欄位或建立索引。</p></li>
 </ul>
-<h3 id="Query-Optimization" class="common-anchor-header">查詢最佳化</h3><p>一旦資料被重新組織到正確的欄位，Milvus 會為每個查詢選擇最有效的執行路徑：</p>
+<h3 id="Query-Optimization" class="common-anchor-header">查詢最佳化</h3><p>一旦資料被重新組織到正確的列中，Milvus 會為每個查詢選擇最有效的執行路徑：</p>
 <ul>
 <li><p><strong>直接列掃描鍵入和動態鍵：</strong>如果查詢的目標欄位已經被分割成自己的欄位，Milvus 可以直接掃描該欄位。這可減少需要處理的資料總量，並利用 SIMD 加速列運算，使執行速度更快。</p></li>
 <li><p><strong>共用鍵的索引查詢：</strong>如果查詢所涉及的欄位沒有升級為自己的欄位，通常是罕見的key，Milvus 會針對共用key 的欄位來評估查詢。在此列上建立的反向索引可讓 Milvus 快速識別哪些行包含指定的關鍵，並跳過其他行，大幅提升低頻欄位的效能。</p></li>

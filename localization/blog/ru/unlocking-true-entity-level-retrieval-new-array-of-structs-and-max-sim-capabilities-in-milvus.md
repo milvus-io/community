@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs и MAX_SIM в Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -336,7 +336,7 @@ results = client.search(
 <tr><th style="text-align:center"><strong>Сценарий</strong></th><th style="text-align:center"><strong>Модель данных</strong></th><th style="text-align:center"><strong>Векторы на сущность</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">🛍️ <strong>Продукты электронной коммерции</strong></td><td style="text-align:center">Один продукт → несколько изображений</td><td style="text-align:center">5-20</td></tr>
+<tr><td style="text-align:center">🛍️ <strong>Продукты электронной коммерции</strong></td><td style="text-align:center">Один товар → несколько изображений</td><td style="text-align:center">5-20</td></tr>
 <tr><td style="text-align:center">🎬 <strong>Поиск видео</strong></td><td style="text-align:center">Одно видео → несколько клипов</td><td style="text-align:center">20-100</td></tr>
 <tr><td style="text-align:center">📖 <strong>Поиск документов</strong></td><td style="text-align:center">Один документ → несколько разделов</td><td style="text-align:center">5-15</td></tr>
 </tbody>

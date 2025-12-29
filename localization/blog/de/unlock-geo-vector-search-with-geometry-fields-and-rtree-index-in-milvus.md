@@ -5,7 +5,7 @@ title: >-
   Geometriefeldern und RTREE in Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -82,9 +82,9 @@ origin: >-
 <li><p><strong>Grobfilterung:</strong> Schnelles Eingrenzen der Kandidaten mit Hilfe von räumlichen Indizes wie RTREE.</p></li>
 <li><p><strong>Feines Filtern:</strong> Wendet exakte Geometrieprüfungen auf die verbleibenden Kandidaten an, um die Korrektheit an den Grenzen zu gewährleisten.</p></li>
 </ul>
-<p>Dieses Design stellt ein Gleichgewicht zwischen Leistung und Genauigkeit her. Der räumliche Index entfernt aggressiv irrelevante Daten, während präzise geometrische Prüfungen korrekte Ergebnisse für Operatoren wie Einschluss, Schnittpunkt und Abstandsschwellenwerte sicherstellen.</p>
+<p>Dieses Design stellt ein Gleichgewicht zwischen Leistung und Genauigkeit her. Der räumliche Index entfernt aggressiv irrelevante Daten, während präzise geometrische Prüfungen korrekte Ergebnisse für Operatoren wie Einschluss, Schnittpunkt und Abstandsschwellenwerte gewährleisten.</p>
 <p>Das Herzstück dieser Pipeline ist <strong>RTREE (Rectangle Tree)</strong>, eine räumliche Indexierungsstruktur, die zur Beschleunigung von Abfragen über geometrische Daten entwickelt wurde. RTREE organisiert Objekte hierarchisch mit Hilfe von <strong>Minimum Bounding Rectangles (MBRs)</strong>, wodurch große Teile des Suchraums bei der Ausführung von Abfragen übersprungen werden können.</p>
-<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Phase 1: Aufbau des RTREE-Index</h3><p>Die RTREE-Konstruktion folgt einem Bottom-up-Prozess, bei dem nahegelegene räumliche Objekte in zunehmend größeren Begrenzungsbereichen gruppiert werden:</p>
+<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Phase 1: Aufbau des RTREE-Index</h3><p>Die RTREE-Konstruktion folgt einem Bottom-up-Prozess, bei dem nahegelegene räumliche Objekte in zunehmend größeren Begrenzungsregionen gruppiert werden:</p>
 <p><strong>1. Erstellen von Blattknoten:</strong> Berechnen Sie für jedes Geometrieobjekt sein <strong>Minimum Bounding Rectangle (MBR)</strong>- das kleinste Rechteck, das das Objekt vollständig enthält - und speichern Sie es als Blattknoten.</p>
 <p><strong>2. Gruppieren in größere Boxen:</strong> Gruppieren Sie nahe gelegene Blattknoten und umhüllen Sie jede Gruppe mit einem neuen MBR, wodurch interne Knoten entstehen.</p>
 <p><strong>3. Hinzufügen des Wurzelknotens:</strong> Erstellen Sie einen Wurzelknoten, dessen MBR alle internen Gruppen umfasst, und bilden Sie so eine höhenbalancierte Baumstruktur.</p>

@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: كيفية الترقية بأمان من Milvus 2.5.x إلى Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -50,7 +50,7 @@ origin: >-
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_6_ee6f1f0635.PNG" alt="Milvus 2.6 Architecture" class="doc-image" id="milvus-2.6-architecture" />
    </span> <span class="img-wrapper"> <span>بنية ميلفوس 2.6</span> </span></p>
-<p>يقدم Milvus 2.6 Milvus 2.6 <strong>عقدة دفق</strong> مخصصة تتولى جميع مسؤوليات البيانات في الوقت الحقيقي: استهلاك قائمة انتظار الرسائل، وكتابة المقاطع التزايدية، وخدمة الاستعلامات التزايدية، وإدارة الاسترداد المستند إلى WAL. مع عزل التدفق، تأخذ المكونات المتبقية أدوارًا أنظف وأكثر تركيزًا:</p>
+<p>يقدم Milvus 2.6 Milvus 2.6 <strong>عقدة دفق</strong> مخصصة تتعامل مع جميع مسؤوليات البيانات في الوقت الحقيقي: استهلاك قائمة انتظار الرسائل، وكتابة المقاطع التزايدية، وخدمة الاستعلامات التزايدية، وإدارة الاسترداد المستند إلى WAL. مع عزل التدفق، تأخذ المكونات المتبقية أدوارًا أنظف وأكثر تركيزًا:</p>
 <ul>
 <li><p>تتعامل<strong>QueryNode</strong> الآن مع الاستعلامات الدفعية <em>فقط</em> على المقاطع التاريخية.</p></li>
 <li><p>تتعامل<strong>DataNode</strong> الآن مع مهام البيانات التاريخية <em>فقط</em> مثل الضغط وبناء الفهرس.</p></li>
@@ -87,10 +87,10 @@ origin: >-
       </svg>
     </button></h2><p>قبل الدخول في سير عمل الترقية، إليك نظرة سريعة على ما يجلبه الإصدار Milvus 2.6 إلى الطاولة. <strong>يركّز هذا الإصدار على خفض تكلفة البنية التحتية، وتحسين أداء البحث، وتسهيل توسيع نطاق أعباء عمل الذكاء الاصطناعي الديناميكي الكبير.</strong></p>
 <h3 id="Cost--Efficiency-Improvements" class="common-anchor-header">تحسينات التكلفة والكفاءة</h3><ul>
-<li><p><strong>تكميم</strong><a href="https://milvus.io/docs/ivf-rabitq.md#RaBitQ"><strong>RaBitQ</strong></a> <strong>للفهارس الأساسية</strong> - طريقة تكميم جديدة بحجم 1 بت تضغط فهارس المتجهات إلى <strong>1/32</strong> من حجمها الأصلي. وبالاقتران مع إعادة ترتيب SQ8، فإنها تقلل من استخدام الذاكرة إلى 28% تقريبًا، وتعزز QPS بنسبة 4 أضعاف، وتحافظ على نسبة استرجاع تصل إلى 95% تقريبًا، مما يقلل من تكاليف الأجهزة بشكل كبير.</p></li>
+<li><p><strong>تكميم</strong><a href="https://milvus.io/docs/ivf-rabitq.md#RaBitQ"><strong>RaBitQ</strong></a> <strong>للفهارس الأساسية</strong> - طريقة تكميم جديدة ذات 1 بت تضغط فهارس المتجهات إلى <strong>1/32</strong> من حجمها الأصلي. وبالاقتران مع إعادة ترتيب SQ8، فإنها تقلل من استخدام الذاكرة إلى 28% تقريبًا، وتعزز QPS بنسبة 4 أضعاف، وتحافظ على نسبة استرجاع تصل إلى 95% تقريبًا، مما يقلل من تكاليف الأجهزة بشكل كبير.</p></li>
 <li><p><strong>البحث عن النص الكامل</strong><a href="https://milvus.io/docs/full-text-search.md#BM25-implementation"><strong>المحسّن BM25</strong></a> - تسجيل نقاط BM25 الأصلي المدعوم بمتجهات متناثرة ذات وزن مصطلح متناثر. يعمل البحث عن الكلمات الرئيسية <strong>بسرعة 3-4 أضعاف</strong> (حتى <strong>7 أضعاف</strong> في بعض مجموعات البيانات) مقارنةً ب Elasticsearch، مع الحفاظ على حجم الفهرس في حدود ثلث البيانات النصية الأصلية.</p></li>
-<li><p><strong>فهرسة مسار JSON مع فهرسة JSON Shredding</strong> - أصبحت التصفية المهيكلة على JSON المتداخلة أسرع بشكل كبير وأكثر قابلية للتنبؤ. تقلل مسارات JSON المفهرسة مسبقًا من زمن انتقال التصفية من <strong>140 مللي ثانية إلى 1.5 مللي ثانية</strong> (P99: <strong>480 مللي ثانية إلى 10 مللي ثانية</strong>)، مما يجعل البحث المتجه الهجين + تصفية البيانات الوصفية أكثر استجابة بشكل كبير.</p></li>
-<li><p><strong>دعم نوع البيانات الموسع</strong> - يضيف أنواع متجهات Int8، وحقول <a href="https://milvus.io/docs/geometry-field.md#Geometry-Field">هندسية</a> (POINT / LINESTRING / POLYGON)، وصفيف الهياكل. تدعم هذه الإضافات أعباء العمل الجغرافية المكانية ونمذجة البيانات الوصفية الأكثر ثراءً ومخططات أنظف.</p></li>
+<li><p><strong>فهرسة مسار JSON مع فهرسة JSON Shredding</strong> - أصبحت التصفية المهيكلة على JSON المتداخلة أسرع بشكل كبير وأكثر قابلية للتنبؤ. تقلل مسارات JSON المفهرسة مسبقًا من زمن انتقال التصفية من <strong>140 مللي ثانية إلى 1.5 مللي ثانية</strong> (P99: <strong>480 مللي ثانية إلى 10 مللي ثانية</strong>)، مما يجعل البحث المتجه الهجين + تصفية البيانات الوصفية أكثر استجابة بشكل ملحوظ.</p></li>
+<li><p><strong>دعم نوع البيانات الموسّع</strong> - يضيف أنواع متجهات Int8، وحقول <a href="https://milvus.io/docs/geometry-field.md#Geometry-Field">هندسية</a> (POINT / LINESTRING / POLYGON)، وصفيف الهياكل. تدعم هذه الإضافات أعباء العمل الجغرافية المكانية ونمذجة البيانات الوصفية الأكثر ثراءً ومخططات أنظف.</p></li>
 <li><p><strong>Upsert للتحديثات الجزئية</strong> - يمكنك الآن إدراج الكيانات أو تحديثها باستخدام استدعاء مفتاح أساسي واحد. تقوم التحديثات الجزئية بتعديل الحقول المتوفرة فقط، مما يقلل من تضخيم الكتابة ويبسط خطوط الأنابيب التي تقوم بتحديث البيانات الوصفية أو التضمينات بشكل متكرر.</p></li>
 </ul>
 <h3 id="Search-and-Retrieval-Enhancements" class="common-anchor-header">تحسينات البحث والاسترجاع</h3><ul>
@@ -350,7 +350,7 @@ helm upgrade -i my-release zilliztech/milvus \
 <li><p>بالنسبة لعمليات نشر مجموعة الإنتاج، يوصى باستخدام وضع مجموعة Woodpecker القادم بمجرد أن يصبح متاحًا.</p></li>
 </ul>
 <h3 id="Q3-Can-the-Message-Queue-be-switched-during-an-upgrade" class="common-anchor-header">س3: هل يمكن تبديل قائمة انتظار الرسائل أثناء الترقية؟</h3><p>لا، تبديل قائمة انتظار الرسائل أثناء الترقية غير مدعوم حاليًا. ستقدم الإصدارات المستقبلية واجهات برمجة تطبيقات الإدارة لدعم التبديل بين Pulsar وKafka وWoodpecker وRocksMQ.</p>
-<h3 id="Q4-Do-rate-limiting-configurations-need-to-be-updated-for-Milvus-26" class="common-anchor-header">س4: هل تحتاج تكوينات تحديد المعدل إلى تحديثها من أجل Milvus 2.6؟</h3><p>لا، تظل تكوينات تحديد المعدل الحالية فعالة وتنطبق أيضًا على عقدة البث الجديدة. لا توجد تغييرات مطلوبة.</p>
+<h3 id="Q4-Do-rate-limiting-configurations-need-to-be-updated-for-Milvus-26" class="common-anchor-header">س4: هل تحتاج تكوينات تحديد المعدل إلى تحديثها من أجل Milvus 2.6؟</h3><p>لا، تظل تكوينات تحديد المعدل الحالية فعالة وتنطبق أيضًا على عقدة البث الجديدة. لا يلزم إجراء أي تغييرات.</p>
 <h3 id="Q5-After-the-coordinator-merge-do-monitoring-roles-or-configurations-change" class="common-anchor-header">س5: بعد دمج المنسق، هل تتغير أدوار المراقبة أو التكوينات؟</h3><ul>
 <li><p>تظل أدوار المراقبة دون تغيير (<code translate="no">RootCoord</code> ، <code translate="no">QueryCoord</code> ، <code translate="no">DataCoord</code>).</p></li>
 <li><p>تستمر خيارات التكوين الحالية في العمل كما كانت من قبل.</p></li>
@@ -377,10 +377,10 @@ helm upgrade -i my-release zilliztech/milvus \
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يمثل Milvus 2.6 تحسنًا كبيرًا في كل من البنية والعمليات. من خلال الفصل بين معالجة التدفق والمعالجة المجمعة مع تقديم StreamingNode، ودمج المنسقين في MixCoord، وتبسيط أدوار العاملين، يوفر Milvus 2.6 أساسًا أكثر استقرارًا وقابلية للتطوير وأسهل في التشغيل لأعباء عمل المتجهات واسعة النطاق.</p>
+    </button></h2><p>يمثل Milvus 2.6 تحسنًا كبيرًا في كل من البنية والعمليات. من خلال الفصل بين معالجة الدفق والمعالجة المجمعة مع تقديم StreamingNode، ودمج المنسقين في MixCoord، وتبسيط أدوار العاملين، يوفر Milvus 2.6 أساسًا أكثر استقرارًا وقابلية للتطوير وأسهل في التشغيل لأعباء عمل المتجهات واسعة النطاق.</p>
 <p>هذه التغييرات المعمارية تجعل الترقيات - خاصةً من Milvus 2.5 - أكثر حساسية للطلب. تعتمد الترقية الناجحة على احترام تبعيات المكونات وقيود التوافر المؤقت. بالنسبة لبيئات الإنتاج، يعتبر Milvus Operator هو النهج الموصى به، حيث إنه يعمل على أتمتة تسلسل الترقية ويقلل من المخاطر التشغيلية، في حين أن الترقيات المستندة إلى Helm مناسبة بشكل أفضل لحالات الاستخدام غير الإنتاجية.</p>
 <p>بفضل إمكانات البحث المحسّنة، وأنواع البيانات الأكثر ثراءً، والتخزين المتدرج، وخيارات قائمة انتظار الرسائل المحسّنة، فإن Milvus 2.6 في وضع جيد لدعم تطبيقات الذكاء الاصطناعي الحديثة التي تتطلب استيعابًا في الوقت الحقيقي، وأداءً عاليًا للاستعلام، وعمليات فعالة على نطاق واسع.</p>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة من أحدث إصدار من Milvus؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو سجل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات عن أسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل Milvus المكتبية</a>.</p>
+<p>هل لديك أسئلة أو تريد التعمق في أي ميزة من أحدث إصدار من Milvus؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو سجل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل Milvus المكتبية</a>.</p>
 <h2 id="More-Resources-about-Milvus-26" class="common-anchor-header">المزيد من المصادر حول ملفوس 2.6<button data-href="#More-Resources-about-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -402,8 +402,8 @@ helm upgrade -i my-release zilliztech/milvus \
 <li><p>مدونات ميزات الإصدار ميلفوس 2.6</p>
 <ul>
 <li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">تقديم وظيفة التضمين: كيف يعمل ملفوس 2.6 على تبسيط عملية التضمين والبحث الدلالي</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">تمزيق JSON في ميلفوس: تصفية JSON أسرع ب 88.9 مرة مع المرونة</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">فتح الاسترجاع الحقيقي على مستوى الكيان: مجموعة جديدة من الهياكل وإمكانيات MAX_SIM في Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">تمزيق JSON في ميلفوس: تصفية JSON أسرع ب 88.9 مرة مع مرونة</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">فتح الاسترجاع الحقيقي على مستوى الكيان: صفيف الهياكل الجديد وقدرات MAX_SIM في Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot%E2%80%93cold-data-loading.md">التوقف عن الدفع مقابل البيانات الباردة: تخفيض التكلفة بنسبة 80٪ مع تحميل البيانات الباردة والساخنة عند الطلب في التخزين المتدرج في ميلفوس</a></p></li>
 <li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">تقديم AISAQ في Milvus: بحث متجه بمليارات النطاقات أصبح أرخص ب 3,200 مرة على الذاكرة</a></p></li>
 <li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">تحسين NVIDIA CAGRA في ميلفوس: نهج هجين بين وحدة معالجة الرسومات ووحدة المعالجة المركزية للفهرسة الأسرع والاستعلامات الأرخص</a></p></li>
@@ -411,8 +411,8 @@ helm upgrade -i my-release zilliztech/milvus \
 <li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">الجمع بين التصفية الجغرافية المكانية والبحث المتجهي مع الحقول الهندسية وRTREE في Milvus 2.6</a></p></li>
 <li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">البحث عن المتجهات في العالم الحقيقي: كيفية التصفية بكفاءة دون قتل التذكر</a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">الارتقاء بضغط المتجهات إلى أقصى الحدود: كيف يخدم ميلفوس 3 أضعاف الاستعلامات باستخدام RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">تكذب المعايير - تستحق قواعد بيانات المتجهات اختبارًا حقيقيًا</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">تكذب المعايير - قواعد بيانات المتجهات تستحق اختبارًا حقيقيًا</a></p></li>
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">لقد استبدلنا كافكا/بولسار بنقار الخشب في ميلفوس - إليكم ما حدث</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH في ميلفوس: السلاح السري لمحاربة التكرارات في بيانات تدريب LLM</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH في ميلفوس: السلاح السري لمكافحة التكرارات في بيانات تدريب LLM</a></p></li>
 </ul></li>
 </ul>

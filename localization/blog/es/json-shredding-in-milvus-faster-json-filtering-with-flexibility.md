@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: 'JSON Shredding en Milvus: Filtrado JSON 88,9 veces más rápido con flexibilidad'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -124,7 +124,7 @@ origin: >-
 <tr><td>json['identity']['did'] == 'xxxxx'</td><td>7.6</td><td>352</td><td><strong>46.3x</strong></td></tr>
 </tbody>
 </table>
-<p>Las consultas de clave compartida son las que muestran las mejoras más espectaculares (hasta 89 veces más rápidas), mientras que las consultas de clave mecanografiada ofrecen aumentos de velocidad constantes de 15 a 30 veces. En general, todos los tipos de consulta se benefician de JSON Shredding, con claras mejoras de rendimiento en todos los ámbitos.</p>
+<p>Las consultas con claves compartidas son las que muestran las mejoras más espectaculares (hasta 89 veces más rápidas), mientras que las consultas con claves mecanografiadas ofrecen aumentos de velocidad constantes de 15 a 30 veces. En general, todos los tipos de consulta se benefician de JSON Shredding, con claras mejoras de rendimiento en todos los ámbitos.</p>
 <h2 id="Try-It-Now" class="common-anchor-header">Pruébelo ahora<button data-href="#Try-It-Now" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

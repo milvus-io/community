@@ -5,7 +5,7 @@ title: >-
   Fleksibilitas
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -57,7 +57,7 @@ origin: >-
 <li><p><strong>Tombol</strong> yang diketik disimpan dalam kolom khusus yang diketik dengan kuat.</p></li>
 <li><p><strong>Kunci dinamis</strong> ditempatkan ke dalam kolom dinamis berdasarkan jenis nilai aktual yang diamati pada saat runtime.</p></li>
 <li><p>Baik kolom yang diketik maupun kolom dinamis disimpan dalam format kolom Panah/Partikel untuk pemindaian cepat dan eksekusi kueri yang sangat dioptimalkan.</p></li>
-<li><p><strong>Kunci bersama</strong> dikonsolidasikan ke dalam kolom biner-JSON yang ringkas, disertai dengan indeks terbalik kunci bersama. Indeks ini mempercepat kueri pada bidang berfrekuensi rendah dengan memangkas baris yang tidak relevan lebih awal dan membatasi pencarian hanya pada dokumen yang mengandung kunci yang ditanyakan.</p></li>
+<li><p><strong>Kunci bersama</strong> dikonsolidasikan ke dalam kolom biner-JSON yang ringkas, disertai dengan indeks terbalik kunci bersama. Indeks ini mempercepat kueri pada bidang berfrekuensi rendah dengan memangkas baris yang tidak relevan lebih awal dan membatasi pencarian hanya pada dokumen yang berisi kunci yang ditanyakan.</p></li>
 </ul>
 <p>Kombinasi penyimpanan kolumnar adaptif dan pengindeksan terbalik ini merupakan inti dari mekanisme penghancuran JSON Milvus, yang memungkinkan fleksibilitas dan kinerja tinggi dalam skala besar.</p>
 <p>Alur kerja keseluruhan diilustrasikan di bawah ini:</p>

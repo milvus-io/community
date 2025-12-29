@@ -3,7 +3,7 @@ id: unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 title: Milvus 2.6에서 지오메트리 필드 및 RTREE와 함께 지리공간 필터링 및 벡터 검색 제공
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -122,7 +122,7 @@ origin: >-
 </table>
 <h3 id="How-to-Combine-Geolocation-Index-and-Vector-Index" class="common-anchor-header">위치정보 인덱스와 벡터 인덱스를 결합하는 방법</h3><p>밀버스는 지오메트리 지원과 RTREE 인덱스를 통해 단일 워크플로우에서 지리적 공간 필터링과 벡터 유사성 검색을 결합할 수 있습니다. 이 프로세스는 두 단계로 진행됩니다:</p>
 <p><strong>1. RTREE를 사용해 위치별로 필터링:</strong> Milvus는 먼저 RTREE 인덱스를 사용해 지정된 지리적 범위(예: "2km 이내") 내의 엔티티로 검색 범위를 좁힙니다.</p>
-<p><strong>2. 벡터 검색을 사용하여 시맨틱별로 순위를 매깁니다:</strong> 벡터 인덱스는 나머지 후보 중에서 임베딩 유사도를 기준으로 가장 유사한 상위 N개의 결과를 선택합니다.</p>
+<p><strong>2. 벡터 검색을 사용하여 의미별로 순위를 매깁니다:</strong> 벡터 인덱스는 나머지 후보 중에서 임베딩 유사도를 기준으로 가장 유사한 상위 N개의 결과를 선택합니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Geometry_R_Tree_f1d88fc252.png" alt="" class="doc-image" id="" />
@@ -148,18 +148,18 @@ origin: >-
 <p>기존에는 지리공간 데이터베이스와 별도의 추천 엔진을 쿼리한 후 여러 차례의 필터링과 순위 재지정을 거쳐야 했습니다. Milvus는 지리적 위치 인덱스를 통해 이러한 워크플로를 크게 간소화합니다:</p>
 <ul>
 <li><p><strong>통합 스토리지</strong> - 레스토랑 좌표, 택배 위치, 사용자 선호도 임베딩이 모두 하나의 시스템에 저장됩니다.</p></li>
-<li><p><strong>공동 검색</strong> - 먼저 공간 필터(예: <em>3km 이내의 레스토랑</em>)를 적용한 다음 벡터 검색을 사용해 유사성, 취향 선호도 또는 품질에 따라 순위를 매깁니다.</p></li>
+<li><p><strong>공동 검색</strong> - 먼저 공간 필터(예: <em>3km 이내 레스토랑</em>)를 적용한 다음 벡터 검색을 사용해 유사성, 취향 선호도 또는 품질에 따라 순위를 매깁니다.</p></li>
 <li><p><strong>동적 의사 결정</strong> - 실시간 택배 분포와 교통 신호를 결합하여 가장 가까운, 가장 적합한 택배를 신속하게 배정합니다.</p></li>
 </ul>
 <p>이러한 통합 접근 방식을 통해 플랫폼은 단일 쿼리에서 공간 및 의미론적 추론을 수행할 수 있습니다. 예를 들어 사용자가 '카레라이스'를 검색하면 Milvus는 의미론적으로 연관성이 높은 레스토랑을 <em>검색하여</em> 근처에 있고, 빠르게 배달되며, 사용자의 과거 취향 프로필과 일치하는 레스토랑의 우선순위를 지정합니다.</p>
 <h3 id="2-Autonomous-Driving-More-Intelligent-Decisions" class="common-anchor-header">2. 자율 주행: 더욱 지능적인 의사 결정</h3><p>자율 주행에서 지리공간 인덱싱은 인식, 위치 파악, 의사 결정의 기본입니다. 차량은 단 몇 밀리초 내에 고화질 지도에 지속적으로 자신을 정렬하고 장애물을 감지하며 안전한 궤적을 계획해야 합니다.</p>
 <p>Milvus를 사용하면 지오메트리 유형과 RTREE 인덱스를 통해 다음과 같은 풍부한 공간 구조를 저장하고 쿼리할 수 있습니다:</p>
 <ul>
-<li><p><strong>도로 경계</strong> (LineString)</p></li>
+<li><p><strong>도로 경계</strong> (라인스트링)</p></li>
 <li><p><strong>교통 규제 구역</strong> (폴리곤)</p></li>
 <li><p><strong>감지된 장애물</strong> (점)</p></li>
 </ul>
-<p>이러한 구조를 효율적으로 색인화하여 지리공간 데이터가 AI 의사 결정 루프에 직접 참여할 수 있도록 할 수 있습니다. 예를 들어, 자율주행 차량은 RTREE 공간 술어를 통해 현재 좌표가 특정 차선 내에 있는지 또는 제한 구역과 교차하는지 여부를 빠르게 판단할 수 있습니다.</p>
+<p>이러한 구조는 효율적으로 색인화할 수 있어 지리공간 데이터가 AI 의사 결정 루프에 직접 참여할 수 있습니다. 예를 들어, 자율주행 차량은 RTREE 공간 술어를 통해 현재 좌표가 특정 차선 내에 있는지 또는 제한 구역과 교차하는지 여부를 빠르게 판단할 수 있습니다.</p>
 <p>현재 주행 환경을 캡처하는 장면 임베딩과 같이 인식 시스템에서 생성된 벡터 임베딩과 결합하면 Milvus는 반경 50m 내에서 현재와 유사한 과거 주행 시나리오를 검색하는 등 보다 고급 쿼리를 지원할 수 있습니다. 이를 통해 모델은 환경을 더 빠르게 해석하고 더 나은 의사 결정을 내릴 수 있습니다.</p>
 <h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -178,7 +178,7 @@ origin: >-
       </svg>
     </button></h2><p>지리적 위치는 위도와 경도 그 이상입니다. 위치에 민감한 애플리케이션에서는 <strong>이벤트가 발생하는 위치, 엔터티가 공간적으로 어떻게 연관되는지, 이러한 관계가 시스템 동작을 어떻게 형성하는지에</strong> 대한 필수적인 컨텍스트를 제공합니다. 지리공간 데이터를 머신 러닝 모델의 시맨틱 신호와 결합하면 공간 데이터와 벡터 데이터를 개별적으로 처리할 때는 표현하기 어렵거나 실행하기 비효율적인 더 풍부한 종류의 쿼리를 가능하게 합니다.</p>
 <p>지오메트리 필드와 RTREE 인덱스의 도입으로 Milvus는 벡터 유사성 검색과 공간 필터링을 단일 쿼리 엔진으로 통합했습니다. 이를 통해 애플리케이션은 <strong>벡터, 지리공간 데이터, 시간에</strong> 걸쳐 공동 검색을 수행하여 공간 인식 추천 시스템, 멀티모달 위치 기반 검색, 지역 또는 경로 제약 분석과 같은 사용 사례를 지원할 수 있습니다. 더 중요한 것은 특수 시스템 간에 데이터를 이동하는 다단계 파이프라인을 제거하여 아키텍처의 복잡성을 줄인다는 점입니다.</p>
-<p>AI 시스템이 실제 의사 결정에 점점 더 가까워짐에 따라, <strong><em>어떤</em></strong> 콘텐츠가 관련성이 있는지를 파악하는 것은 점점 더 중요한 <strong><em>시기와</em></strong> 적용 <strong><em>대상과</em></strong> 결합되어야 할 것입니다. Milvus는 이러한 종류의 공간 의미론적 워크로드를 위한 빌딩 블록을 표현력이 뛰어나면서도 대규모 운영에 실용적인 방식으로 제공합니다.</p>
+<p>AI 시스템이 실제 의사 결정에 점점 더 가까워짐에 따라, <strong><em>어떤</em></strong> 콘텐츠가 관련성이 있는지를 파악하는 것은 점점 더 중요한 <strong><em>시점과</em></strong> 적용 <strong><em>대상과</em></strong> 결합되어야 할 것입니다. Milvus는 이러한 종류의 공간 의미론적 워크로드를 위한 빌딩 블록을 표현력이 뛰어나면서도 대규모 운영에 실용적인 방식으로 제공합니다.</p>
 <p>지오메트리 필드와 RTREE 인덱스에 대한 자세한 내용은 아래 설명서를 참조하세요:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/geometry-field.md">지오메트리 필드 | Milvus 문서</a></p></li>

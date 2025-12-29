@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: 如何安全地從 Milvus 2.5.x 升級到 Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -11,7 +11,7 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, vector databases, Milvus 2.6 features, Nvidia Cagra, full text search'
 meta_title: |
   How to Safely Upgrade from Milvus 2.5.x to Milvus 2.6.x
-desc: 探索 Milvus 2.6 的新功能，包括架構變更和關鍵功能，並學習如何從 Milvus 2.5 執行滾動升級。
+desc: 探索 Milvus 2.6 的新功能，包括架構變更和主要功能，並學習如何從 Milvus 2.5 執行滾動升級。
 origin: >-
   https://milvus.io/blog/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 ---
@@ -132,11 +132,11 @@ origin: >-
 <p><strong>5.升級代理伺服器</strong></p>
 <p>將 Proxy 升級到 Milvus 2.6 後，Proxy 上的寫入作業將一直不可用，直到所有群集元件都升級到 2.6。</p>
 <p><strong>6.移除索引節點</strong></p>
-<p>當所有其他元件升級後，就可以安全地移除獨立的索引節點。</p>
+<p>當所有其他元件升級後，獨立的索引節點就可以安全地移除。</p>
 <p><strong>注意事項：</strong></p>
 <ul>
 <li><p>從 DataNode 升級完成到 Proxy 升級完成，Flush 作業無法使用。</p></li>
-<li><p>從第一個 Proxy 升級到所有 Proxy 節點升級為止，某些寫入作業不可用。</p></li>
+<li><p>從第一個 Proxy 升級到所有 Proxy 節點升級為止，某些寫入作業無法使用。</p></li>
 <li><p><strong>當直接從 Milvus 2.5.x 升級到 2.6.6，由於 DDL 框架的變化，在升級過程中 DDL（數據定義語言）操作不可用。</strong></p></li>
 </ul>
 <h2 id="How-to-Upgrade-to-Milvus-26-with-Milvus-Operator" class="common-anchor-header">如何使用 Milvus Operator 升級到 Milvus 2.6<button data-href="#How-to-Upgrade-to-Milvus-26-with-Milvus-Operator" class="anchor-icon" translate="no">
@@ -407,7 +407,7 @@ helm upgrade -i my-release zilliztech/milvus \
 <li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">在 Milvus 中優化 NVIDIA CAGRA：GPU-CPU 混合方法可加快索引速度並降低查詢成本</a></p></li>
 <li><p><a href="https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md">介紹 Milvus Ngram 索引：為代理工作負載提供更快的關鍵字配對和 LIKE 查詢</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Milvus 2.6 中的幾何字段與 RTREE 將地理空間篩選與向量搜尋結合在一起</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">現實世界中的矢量搜尋：如何有效篩選而不降低回復率</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">現實世界中的向量搜尋：如何有效篩選而不損害回復率</a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">將向量壓縮發揮到極致：Milvus 如何利用 RaBitQ 提供多 3 倍的查詢服務</a></p></li>
 <li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie - Vector DBs 值得真正的測試</a></p></li>
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">我們為 Milvus 用啄木鳥取代了 Kafka/Pulsar，結果如何？</a></p></li>

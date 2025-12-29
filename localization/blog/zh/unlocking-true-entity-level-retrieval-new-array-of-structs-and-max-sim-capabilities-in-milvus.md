@@ -4,7 +4,7 @@ id: >-
 title: 解锁真正的实体级检索：Milvus 中新的结构阵列和 MAX_SIM 功能
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -24,7 +24,7 @@ origin: >-
 <li><p><strong>视频平台：</strong>视频被分割成片段嵌入，但搜索结果显示的是同一视频的片段，而不是单一的合并条目。</p></li>
 <li><p><strong>ColBERT / ColPali 风格检索：</strong>文档扩展为数以百计的标记或片段级嵌入，而搜索结果却显示为仍需合并的小片段。</p></li>
 </ul>
-<p>所有这些问题都源于<em>相同的架构缺陷</em>：大多数向量数据库都将每个嵌入作为一个独立的行来处理，而实际应用操作的是更高层次的实体--文档、产品、视频、项目和场景。因此，工程团队不得不使用重复数据删除、分组、分块和 Rerankers 逻辑手动重构实体。这种方法虽然有效，但却脆弱、缓慢，而且会用原本就不应该存在的逻辑臃肿应用层。</p>
+<p>所有这些问题都源于<em>相同的架构缺陷</em>：大多数向量数据库都将每个嵌入作为一个独立的行来处理，而实际应用操作的是更高层次的实体--文档、产品、视频、项目和场景。因此，工程团队不得不使用重复数据删除、分组、分块和 Rerankers 逻辑手动重构实体。这种方法虽然有效，但却脆弱、缓慢，而且会让应用层臃肿不堪，其中的逻辑本来就不应该存在。</p>
 <p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a>通过一项新功能弥补了这一缺陷：具有<strong>MAX_SIM</strong>度量类型的<a href="https://milvus.io/docs/array-of-structs.md"><strong>结构数组</strong></a>。这两项功能结合在一起，可将单个实体的所有 Embdings 保存在一条记录中，并使 Milvus 能够对实体进行整体评分和返回。不再有重复填充的结果集。不再需要重排和合并等复杂的后处理工作</p>
 <p>在本文中，我们将介绍结构数组（Array of Structs）和 MAX_SIM 的工作原理，并通过两个实际案例进行演示：维基百科文档检索和 ColPali 基于图像的文档搜索。</p>
 <h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">什么是结构数组？<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
@@ -42,7 +42,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在 Milvus 中，<strong>结构数组</strong>字段允许一条记录包含一个<em>有序的</em>Struct 元素<em>列表</em>，每个元素都遵循相同的预定义 Schema。一个 Struct 可以包含多个向量、标量字段、字符串或其他任何支持的类型。换句话说，它可以让你把属于一个实体的所有部分--段落嵌入、图像视图、标记向量、元数据--直接捆绑在一行中。</p>
+    </button></h2><p>在 Milvus 中，<strong>结构数组</strong>字段允许单条记录包含一个<em>有序的</em>Struct 元素<em>列表</em>，每个元素都遵循相同的预定义 Schema。一个 Struct 可以包含多个向量、标量字段、字符串或其他任何支持的类型。换句话说，它可以让你把属于一个实体的所有部分--段落嵌入、图像视图、标记向量、元数据--直接捆绑在一行中。</p>
 <p>下面是一个集合实体的示例，其中包含一个 Array of Structs 字段。</p>
 <pre><code translate="no">{
     <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">0</span>,
@@ -118,7 +118,7 @@ origin: >-
 <li><p>课程 → 指南 (0.7)</p></li>
 </ul>
 <p>将最佳匹配值相加，得出 doc_1 的<strong>MAX_SIM 分数为 2.4</strong>。</p>
-<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">第二步：计算 doc_2 的 MAX_SIM 分数</h3><p>现在我们对 doc_2 重复上述过程：</p>
+<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">第 2 步：计算 doc_2 的 MAX_SIM 分数</h3><p>现在我们对 doc_2 重复上述过程：</p>
 <table>
 <thead>
 <tr><th></th><th>高级</th><th>指导</th><th>LLM</th><th>论文</th><th>阅读</th></tr>
@@ -374,7 +374,7 @@ results = client.search(
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>第 1 步：准备数据</strong>关于 ColPali 如何将图像或文本转换为多向量表示法，你可以参考文档的详细介绍。</p>
+<p><strong>第1步：准备数据</strong>关于ColPali如何将图像或文本转换成多向量表示法，你可以参考文档的详细介绍。</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 

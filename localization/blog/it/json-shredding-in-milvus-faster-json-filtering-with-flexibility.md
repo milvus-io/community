@@ -5,7 +5,7 @@ title: >-
   flessibile
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -45,7 +45,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>La triturazione JSON accelera le query JSON trasformando i documenti JSON basati su righe in archivi colonnari altamente ottimizzati. Milvus conserva la flessibilità di JSON per la modellazione dei dati e ottimizza automaticamente l'archiviazione colonnare, migliorando significativamente l'accesso ai dati e le prestazioni delle query.</p>
-<p>Per gestire in modo efficiente campi JSON scarsi o rari, Milvus dispone anche di un indice invertito per le chiavi condivise. Tutto questo avviene in modo trasparente per gli utenti: è possibile inserire documenti JSON come di consueto, lasciando a Milvus il compito di gestire internamente la strategia ottimale di archiviazione e indicizzazione.</p>
+<p>Per gestire in modo efficiente campi JSON scarsi o rari, Milvus dispone anche di un indice invertito per le chiavi condivise. Tutto questo avviene in modo trasparente per gli utenti: è possibile inserire documenti JSON come di consueto, lasciando a Milvus il compito di gestire internamente la strategia di archiviazione e indicizzazione ottimale.</p>
 <p>Quando Milvus riceve record JSON grezzi con forme e strutture diverse, analizza ogni chiave JSON per verificarne il rapporto di occorrenza e la stabilità del tipo (se il tipo di dati è coerente tra i documenti). In base a questa analisi, ogni chiave viene classificata in una delle tre categorie:</p>
 <ul>
 <li><p><strong>Chiavi digitate:</strong> Chiavi che appaiono nella maggior parte dei documenti e che hanno sempre lo stesso tipo di dati (ad esempio, tutti i numeri interi o tutte le stringhe).</p></li>
@@ -116,7 +116,7 @@ origin: >-
 <tr><td>json['kind'] == 'commit'</td><td>8.42</td><td>126.1</td><td><strong>14.9x</strong></td></tr>
 </tbody>
 </table>
-<h3 id="Results-shared-keys" class="common-anchor-header">Risultati: chiavi condivise</h3><p>Questo test si è concentrato sull'interrogazione di chiavi rade e annidate che rientrano nella categoria "condivise".</p>
+<h3 id="Results-shared-keys" class="common-anchor-header">Risultati: chiavi condivise</h3><p>Questo test si è concentrato sull'interrogazione di chiavi rade e annidate che rientrano nella categoria "condivisa".</p>
 <table>
 <thead>
 <tr><th>Espressione della query</th><th>QPS (senza triturazione)</th><th>QPS (con triturazione)</th><th>Incremento delle prestazioni</th></tr>

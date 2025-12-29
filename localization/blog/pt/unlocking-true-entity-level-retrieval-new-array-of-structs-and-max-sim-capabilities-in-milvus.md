@@ -6,7 +6,7 @@ title: >-
   de matriz de estruturas e MAX_SIM no Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -22,7 +22,7 @@ origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
 <p>Se criou aplicações de IA com base em bases de dados vectoriais, provavelmente já se deparou com o mesmo problema: a base de dados recupera embeddings de pedaços individuais, mas a sua aplicação preocupa-se com <strong><em>entidades</em>.</strong> A incompatibilidade torna complexo todo o fluxo de trabalho de recuperação.</p>
-<p>É provável que já tenha visto esta situação repetir-se vezes sem conta:</p>
+<p>É provável que já tenha visto isto acontecer vezes sem conta:</p>
 <ul>
 <li><p><strong>Bases de dados de conhecimento RAG:</strong> Os artigos são divididos em fragmentos de parágrafos, pelo que o motor de busca devolve fragmentos dispersos em vez do documento completo.</p></li>
 <li><p><strong>Recomendação de comércio eletrónico:</strong> Um produto tem vários embeddings de imagem e o seu sistema devolve cinco ângulos do mesmo item em vez de cinco produtos únicos.</p></li>
@@ -348,12 +348,12 @@ results = client.search(
 <tr><th style="text-align:center"><strong>Modelo</strong></th><th style="text-align:center"><strong>Modelo de dados</strong></th><th style="text-align:center"><strong>Vectores por entidade</strong></th><th style="text-align:center"><strong>Aplicação</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">Um documento → muitos token embeddings</td><td style="text-align:center">100-500</td><td style="text-align:center">Texto jurídico, artigos académicos, recuperação de documentos com precisão</td></tr>
+<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">Um documento → muitos token embeddings</td><td style="text-align:center">100-500</td><td style="text-align:center">Textos jurídicos, artigos académicos, recuperação de documentos com precisão</td></tr>
 <tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">Uma página PDF → muitas incorporações de fragmentos</td><td style="text-align:center">256-1024</td><td style="text-align:center">Relatórios financeiros, contratos, facturas, pesquisa multimodal de documentos</td></tr>
 </tbody>
 </table>
-<p>Estes modelos <em>requerem</em> um padrão de armazenamento multi-vetorial. Antes do Array of Structs, os programadores tinham de dividir os vectores por linhas e juntar manualmente os resultados. Com o Milvus, estas entidades podem agora ser armazenadas e recuperadas nativamente, com o MAX_SIM a tratar automaticamente a pontuação ao nível do documento.</p>
-<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Pesquisa de documentos baseada em imagens ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>O ColPali</strong></a> é um modelo poderoso para a recuperação multimodal de PDFs. Em vez de se basear em texto, processa cada página de PDF como uma imagem e divide-a em até 1024 partes visuais, gerando uma incorporação por parte de cada parte. Num esquema de base de dados tradicional, isto exigiria o armazenamento de uma única página como centenas ou milhares de linhas separadas, tornando impossível para a base de dados compreender que estas linhas pertencem à mesma página. Como resultado, a pesquisa a nível de entidade torna-se fragmentada e impraticável.</p>
+<p>Estes modelos <em>requerem</em> um padrão de armazenamento multi-vetorial. Antes do Array of Structs, os programadores tinham de dividir os vectores por linhas e juntar manualmente os resultados. Com o Milvus, estas entidades podem agora ser armazenadas e recuperadas de forma nativa, com o MAX_SIM a tratar automaticamente a pontuação ao nível do documento.</p>
+<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Pesquisa de documentos baseada em imagens ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>O ColPali</strong></a> é um modelo poderoso para a recuperação multimodal de PDFs. Em vez de se basear em texto, processa cada página de PDF como uma imagem e divide-a em até 1024 partes visuais, gerando uma incorporação por parte de cada parte. Num esquema de base de dados tradicional, isto exigiria o armazenamento de uma única página como centenas ou milhares de linhas separadas, tornando impossível para a base de dados compreender que estas linhas pertencem à mesma página. Como resultado, a pesquisa ao nível da entidade torna-se fragmentada e impraticável.</p>
 <p>O Array of Structs resolve este problema armazenando todos os patch embeddings <em>num único campo</em>, permitindo que o Milvus trate a página como uma entidade coesa e multi-vetorial.</p>
 <p>A pesquisa tradicional em PDFs geralmente depende do <strong>OCR</strong>, que converte imagens de páginas em texto. Isso funciona para texto simples, mas perde gráficos, tabelas, layout e outras dicas visuais. O ColPali evita esta limitação ao trabalhar diretamente nas imagens das páginas, preservando todas as informações visuais e textuais. A desvantagem é a escala: cada página contém agora centenas de vectores, o que requer uma base de dados que possa agregar muitos embeddings numa única entidade - exatamente o que o Array of Structs + MAX_SIM fornece.</p>
 <p>O caso de utilização mais comum é o <strong>Vision RAG</strong>, em que cada página PDF se torna uma entidade multi-vetorial. Os cenários típicos incluem:</p>
@@ -522,7 +522,7 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>A maioria dos bancos de dados vetoriais armazena cada fragmento como um registro independente, o que significa que os aplicativos precisam remontar esses fragmentos quando precisam de um documento, produto ou página completa. Uma matriz de Structs muda isso. Ao combinar escalares, vectores, texto e outros campos num único objeto estruturado, permite que uma linha da base de dados represente uma entidade completa de ponta a ponta.</p>
-<p>O resultado é simples, mas poderoso: o trabalho que costumava exigir agrupamento, eliminação de duplicações e reanálise complexos na camada de aplicação torna-se uma capacidade nativa da base de dados. E é exatamente para aí que se dirige o futuro das bases de dados vectoriais - estruturas mais ricas, recuperação mais inteligente e condutas mais simples.</p>
+<p>O resultado é simples, mas poderoso: o trabalho que costumava exigir agrupamento, eliminação de duplicações e reanálise complexos na camada de aplicação torna-se uma capacidade nativa da base de dados. E é exatamente para aí que se dirige o futuro das bases de dados vectoriais: estruturas mais ricas, recuperação mais inteligente e condutas mais simples.</p>
 <p>Para obter mais informações sobre Array of Structs e MAX_SIM, consulte a documentação abaixo:</p>
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">Matriz de Structs | Documentação do Milvus</a></li>

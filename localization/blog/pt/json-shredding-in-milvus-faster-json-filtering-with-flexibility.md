@@ -5,7 +5,7 @@ title: >-
   flexibilidade
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -23,8 +23,8 @@ origin: >-
 <p>Os sistemas de IA modernos estão a produzir mais dados JSON semiestruturados do que nunca. As informações de clientes e produtos são compactadas em um objeto JSON, os microsserviços emitem logs JSON em cada solicitação, os dispositivos IoT transmitem leituras de sensores em cargas JSON leves e os aplicativos de IA atuais padronizam cada vez mais o JSON para saída estruturada. O resultado é uma enxurrada de dados do tipo JSON fluindo para bancos de dados vetoriais.</p>
 <p>Tradicionalmente, há duas maneiras de lidar com documentos JSON:</p>
 <ul>
-<li><p><strong>Predefinir cada campo do JSON em um esquema fixo e criar um índice:</strong> Essa abordagem oferece um bom desempenho de consulta, mas é rígida. Uma vez que o formato dos dados muda, cada campo novo ou modificado aciona outra rodada de atualizações dolorosas da Linguagem de Definição de Dados (DDL) e migrações de esquema.</p></li>
-<li><p><strong>Armazene todo o objeto JSON como uma única coluna (tanto o tipo JSON quanto o Dynamic Schema no Milvus usam essa abordagem):</strong> Esta opção oferece excelente flexibilidade, mas ao custo do desempenho da consulta. Cada solicitação requer análise de JSON em tempo de execução e, muitas vezes, uma varredura completa da tabela, resultando em latência que aumenta à medida que o conjunto de dados cresce.</p></li>
+<li><p><strong>Predefinir cada campo do JSON em um esquema fixo e criar um índice:</strong> Essa abordagem oferece um bom desempenho de consulta, mas é rígida. Uma vez que o formato dos dados é alterado, cada campo novo ou modificado aciona outra rodada de atualizações dolorosas da Linguagem de Definição de Dados (DDL) e migrações de esquema.</p></li>
+<li><p><strong>Armazenar todo o objeto JSON como uma única coluna (tanto o tipo JSON como o Dynamic Schema em Milvus utilizam esta abordagem):</strong> Esta opção oferece excelente flexibilidade, mas ao custo do desempenho da consulta. Cada solicitação requer a análise JSON em tempo de execução e, muitas vezes, uma varredura completa da tabela, resultando em latência que aumenta à medida que o conjunto de dados cresce.</p></li>
 </ul>
 <p>Costumava ser um dilema de flexibilidade e desempenho.</p>
 <p>Não é mais assim com o recurso JSON Shredding recentemente introduzido no <a href="https://milvus.io/">Milvus</a>.</p>
@@ -45,7 +45,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>A fragmentação de JSON acelera as consultas JSON ao transformar documentos JSON baseados em linhas em armazenamento colunar altamente otimizado. O Milvus preserva a flexibilidade do JSON para modelagem de dados enquanto otimiza automaticamente o armazenamento em colunas - melhorando significativamente o acesso aos dados e o desempenho das consultas.</p>
-<p>Para lidar com campos JSON esparsos ou raros de forma eficiente, o Milvus também tem um índice invertido para chaves partilhadas. Tudo isto acontece de forma transparente para os utilizadores: pode inserir documentos JSON como habitualmente e deixar que seja o Milvus a gerir internamente a estratégia de armazenamento e indexação ideal.</p>
+<p>Para lidar com campos JSON esparsos ou raros de forma eficiente, o Milvus também tem um índice invertido para chaves partilhadas. Tudo isto acontece de forma transparente para os utilizadores: pode inserir documentos JSON como habitualmente, e deixar que seja o Milvus a gerir internamente a estratégia de armazenamento e indexação ideal.</p>
 <p>Quando o Milvus recebe registos JSON em bruto com formas e estruturas variadas, analisa cada chave JSON quanto à sua taxa de ocorrência e estabilidade de tipo (se o seu tipo de dados é consistente entre documentos). Com base nesta análise, cada chave é classificada numa de três categorias:</p>
 <ul>
 <li><p><strong>Chaves digitadas:</strong> Chaves que aparecem na maioria dos documentos e têm sempre o mesmo tipo de dados (por exemplo, todos os números inteiros ou todas as cadeias de caracteres).</p></li>
@@ -67,17 +67,17 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Agora que já cobrimos o básico de como a fragmentação JSON funciona, vamos dar uma olhada mais de perto nos principais recursos que tornam essa abordagem flexível e de alto desempenho.</p>
+<p>Agora que cobrimos o básico de como a fragmentação JSON funciona, vamos dar uma olhada mais de perto nos principais recursos que tornam essa abordagem flexível e de alto desempenho.</p>
 <h3 id="Shredding-and-Columnarization" class="common-anchor-header">Fragmentação e colunarização</h3><p>Quando um novo documento JSON é escrito, Milvus o divide e o reorganiza em um armazenamento colunar otimizado:</p>
 <ul>
 <li><p>Chaves digitadas e dinâmicas são automaticamente identificadas e armazenadas em colunas dedicadas.</p></li>
-<li><p>Se o JSON contiver objectos aninhados, o Milvus gera automaticamente nomes de colunas baseados em caminhos. Por exemplo, um campo <code translate="no">name</code> dentro de um objeto <code translate="no">user</code> pode ser armazenado com o nome de coluna <code translate="no">/user/name</code>.</p></li>
+<li><p>Se o JSON contém objectos aninhados, o Milvus gera automaticamente nomes de colunas baseados em caminhos. Por exemplo, um campo <code translate="no">name</code> dentro de um objeto <code translate="no">user</code> pode ser armazenado com o nome de coluna <code translate="no">/user/name</code>.</p></li>
 <li><p>As chaves partilhadas são armazenadas em conjunto numa única coluna JSON binária compacta. Como essas chaves aparecem com pouca frequência, o Milvus cria um índice invertido para elas, permitindo uma filtragem rápida e permitindo que o sistema localize rapidamente as linhas que contêm a chave especificada.</p></li>
 </ul>
 <h3 id="Intelligent-Column-Management" class="common-anchor-header">Gestão inteligente de colunas</h3><p>Para além de fragmentar o JSON em colunas, o Milvus acrescenta uma camada adicional de inteligência através da gestão dinâmica de colunas, assegurando que a fragmentação JSON se mantém flexível à medida que os dados evoluem.</p>
 <ul>
 <li><p><strong>Colunas criadas conforme necessário:</strong> Quando novas chaves aparecem em documentos JSON de entrada, o Milvus agrupa automaticamente valores com a mesma chave numa coluna dedicada. Isto preserva as vantagens de desempenho do armazenamento em colunas sem exigir que os utilizadores concebam esquemas antecipadamente. O Milvus também infere o tipo de dados dos novos campos (por exemplo, INTEGER, DOUBLE, VARCHAR) e seleciona um formato colunar eficiente para eles.</p></li>
-<li><p><strong>Todas as chaves são tratadas automaticamente:</strong> Milvus analisa e processa cada chave no documento JSON. Isto garante uma ampla cobertura de consulta sem forçar os utilizadores a predefinir campos ou a construir índices antecipadamente.</p></li>
+<li><p><strong>Todas as chaves são tratadas automaticamente:</strong> Milvus analisa e processa cada chave no documento JSON. Isto garante uma ampla cobertura de consulta sem forçar os utilizadores a predefinir campos ou construir índices antecipadamente.</p></li>
 </ul>
 <h3 id="Query-Optimization" class="common-anchor-header">Otimização de consultas</h3><p>Uma vez que os dados são reorganizados nas colunas certas, Milvus seleciona o caminho de execução mais eficiente para cada consulta:</p>
 <ul>
@@ -100,7 +100,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Concebemos um parâmetro de referência para comparar o desempenho de consulta do armazenamento de todo o documento JSON como um único campo em bruto em comparação com a utilização da funcionalidade JSON Shredding recentemente lançada.</p>
+    </button></h2><p>Concebemos um parâmetro de referência para comparar o desempenho de consulta do armazenamento de todo o documento JSON como um único campo em bruto com a utilização da funcionalidade JSON Shredding recentemente lançada.</p>
 <h3 id="Test-environment-and-methodology" class="common-anchor-header">Ambiente de teste e metodologia</h3><ul>
 <li><p>Hardware: cluster de 1 núcleo/8 GB</p></li>
 <li><p>Conjunto de dados: 1 milhão de documentos do <a href="https://github.com/ClickHouse/JSONBench.git">JSONBench</a></p></li>
@@ -109,7 +109,7 @@ origin: >-
 <h3 id="Results-typed-keys" class="common-anchor-header">Resultados: chaves digitadas</h3><p>Este teste mediu o desempenho ao consultar uma chave presente na maioria dos documentos.</p>
 <table>
 <thead>
-<tr><th>Expressão da consulta</th><th>QPS (sem fragmentação)</th><th>QPS (com fragmentação)</th><th>Aumento de desempenho</th></tr>
+<tr><th>Expressão de consulta</th><th>QPS (sem fragmentação)</th><th>QPS (com fragmentação)</th><th>Aumento de desempenho</th></tr>
 </thead>
 <tbody>
 <tr><td>json['time_us'] &gt; 0</td><td>8.69</td><td>287.5</td><td><strong>33x</strong></td></tr>

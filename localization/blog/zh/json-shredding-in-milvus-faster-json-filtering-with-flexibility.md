@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: Milvus 中的 JSON 粉碎功能：以 88.9 倍的速度灵活过滤 JSON
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -39,7 +39,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>JSON 破碎处理将基于行的 JSON 文档转换为高度优化的列式存储，从而加快了 JSON 查询的速度。Milvus 为数据建模保留了 JSON 的灵活性，同时自动优化列式存储--显著提高数据访问和查询性能。</p>
+    </button></h2><p>JSON 切碎通过将基于行的 JSON 文档转换为高度优化的列式存储，加快了 JSON 查询的速度。Milvus 为数据建模保留了 JSON 的灵活性，同时自动优化列式存储--显著提高数据访问和查询性能。</p>
 <p>为了有效处理稀疏或罕见的 JSON 字段，Milvus 还为共享键提供了反转索引。所有这些对用户来说都是透明的：你可以像往常一样插入 JSON 文档，让 Milvus 在内部管理最佳存储和索引策略。</p>
 <p>当 Milvus 接收到具有不同形状和结构的原始 JSON 记录时，它会分析每个 JSON 关键字的出现率和类型稳定性（其数据类型在不同文档中是否一致）。根据分析结果，每个关键字被分为以下三类：</p>
 <ul>
@@ -52,7 +52,7 @@ origin: >-
 <li><p><strong>类型键</strong>存储在专用的强类型列中。</p></li>
 <li><p><strong>动态键则</strong>根据运行时观察到的实际值类型放置在动态列中。</p></li>
 <li><p>类型化列和动态列都以 Arrow/Parquet 列格式存储，以实现快速扫描和高度优化的查询执行。</p></li>
-<li><p><strong>共享键</strong>被合并到一个紧凑的二进制-JSON 列中，并附带一个共享键反转索引。该索引通过提前剪切不相关的行，并将搜索范围限制在仅包含查询键的文档上，从而加快了低频字段的查询速度。</p></li>
+<li><p><strong>共享键</strong>被合并到一个紧凑的二进制-JSON 列中，并附带一个共享键反转索引。该索引通过提前剪切不相关的行，并将搜索范围限制在仅包含所查询键的文档上，从而加快了低频字段的查询速度。</p></li>
 </ul>
 <p>这种自适应列式存储和倒排索引的组合构成了 Milvus JSON 切碎机制的核心，既能实现灵活性，又能实现高性能。</p>
 <p>整体工作流程如下图所示：</p>
@@ -67,7 +67,7 @@ origin: >-
 <ul>
 <li><p>类型键和动态键会被自动识别并存储在专用列中。</p></li>
 <li><p>如果 JSON 包含嵌套对象，Milvus 会自动生成基于路径的列名。例如，<code translate="no">user</code> 对象中的<code translate="no">name</code> 字段可以用列名<code translate="no">/user/name</code> 来存储。</p></li>
-<li><p>共享键一起存储在单个紧凑的二进制 JSON 列中。由于这些键出现的频率不高，Milvus 会为它们建立一个倒排索引，从而实现快速过滤，让系统能快速找到包含指定键的行。</p></li>
+<li><p>共享键一起存储在一个紧凑的二进制 JSON 列中。由于这些键出现的频率不高，Milvus 会为它们建立一个倒排索引，从而实现快速过滤，让系统能快速找到包含指定键的行。</p></li>
 </ul>
 <h3 id="Intelligent-Column-Management" class="common-anchor-header">智能列管理</h3><p>除了将 JSON 粉碎成列外，Milvus 还通过动态列管理增加了一层智能，确保 JSON 粉碎在数据演变时保持灵活性。</p>
 <ul>
@@ -137,6 +137,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>无论您是处理 API 日志、物联网传感器数据，还是处理快速发展的应用有效载荷，JSON Shredding 都能为您提供罕见的灵活性和高性能。</p>
+    </button></h2><p>无论您是在处理 API 日志、物联网传感器数据，还是在处理快速发展的应用有效载荷，JSON Shredding 都能为您提供罕见的灵活性和高性能。</p>
 <p>该功能现已推出，欢迎立即试用。您还可以查看<a href="https://milvus.io/docs/json-shredding.md">此文档</a>了解更多详情。</p>
 <p>对最新版 Milvus 的任何功能有疑问或想深入了解？加入我们的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 频道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提交问题。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 预约 20 分钟的一对一课程，获得见解、指导和问题解答。</p>

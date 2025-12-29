@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs y MAX_SIM en Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -522,9 +522,9 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>La mayoría de las bases de datos vectoriales almacenan cada fragmento como un registro independiente, lo que significa que las aplicaciones tienen que volver a ensamblar esos fragmentos cuando necesitan un documento, producto o página completos. Una matriz de Structs cambia esta situación. Al combinar escalares, vectores, texto y otros campos en un único objeto estructurado, permite que una fila de la base de datos represente una entidad completa de extremo a extremo.</p>
-<p>El resultado es sencillo pero potente: el trabajo que solía requerir agrupaciones complejas, deduplicación y reordenación en la capa de aplicación se convierte en una capacidad nativa de la base de datos. Y ahí es exactamente hacia donde se dirige el futuro de las bases de datos vectoriales: estructuras más ricas, recuperación más inteligente y canalizaciones más sencillas.</p>
+<p>El resultado es sencillo pero potente: el trabajo que solía requerir una compleja agrupación, deduplicación y reordenación en la capa de aplicación se convierte en una capacidad nativa de la base de datos. Y ahí es exactamente hacia donde se dirige el futuro de las bases de datos vectoriales: estructuras más ricas, recuperación más inteligente y canalizaciones más sencillas.</p>
 <p>Para obtener más información sobre Array of Structs y MAX_SIM, consulte la documentación siguiente:</p>
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Documentación de Milvus</a></li>
 </ul>
-<p>¿Tiene preguntas o desea una inmersión profunda en cualquier característica de la última Milvus? Únase a nuestro<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> o envíe problemas a<a href="https://github.com/milvus-io/milvus"> GitHub</a>. También puede reservar una sesión individual de 20 minutos para obtener información, orientación y respuestas a sus preguntas a través de<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>¿Tiene preguntas o desea una inmersión profunda en cualquier característica de la última Milvus? Únase a nuestro<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> o presente cuestiones en<a href="https://github.com/milvus-io/milvus"> GitHub</a>. También puede reservar una sesión individual de 20 minutos para obtener información, orientación y respuestas a sus preguntas a través de<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

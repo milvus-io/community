@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: 'JSON Shredding in Milvus: 88,9x schnellere JSON-Filterung mit Flexibilität'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -18,11 +18,11 @@ desc: >-
 origin: >-
   https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 ---
-<p>Moderne KI-Systeme produzieren mehr halbstrukturierte JSON-Daten als je zuvor. Kunden- und Produktinformationen werden zu einem JSON-Objekt verdichtet, Microservices geben bei jeder Anfrage JSON-Protokolle aus, IoT-Geräte streamen Sensormesswerte in leichtgewichtigen JSON-Payloads, und die heutigen KI-Anwendungen standardisieren zunehmend JSON für strukturierte Ausgaben. Das Ergebnis ist eine Flut von JSON-ähnlichen Daten, die in Vektordatenbanken fließen.</p>
+<p>Moderne KI-Systeme produzieren mehr halbstrukturierte JSON-Daten als je zuvor. Kunden- und Produktinformationen werden zu einem JSON-Objekt komprimiert, Microservices geben bei jeder Anfrage JSON-Protokolle aus, IoT-Geräte streamen Sensormesswerte in leichtgewichtigen JSON-Payloads, und die heutigen KI-Anwendungen standardisieren zunehmend JSON für strukturierte Ausgaben. Das Ergebnis ist eine Flut von JSON-ähnlichen Daten, die in Vektordatenbanken fließen.</p>
 <p>Traditionell gibt es zwei Möglichkeiten, JSON-Dokumente zu verarbeiten:</p>
 <ul>
 <li><p><strong>Jedes JSON-Feld wird in einem festen Schema vordefiniert und ein Index erstellt:</strong> Dieser Ansatz liefert eine solide Abfrageleistung, ist aber starr. Sobald sich das Datenformat ändert, löst jedes neue oder geänderte Feld eine weitere Runde mühsamer DDL-Aktualisierungen und Schemamigrationen aus.</p></li>
-<li><p><strong>Speichern Sie das gesamte JSON-Objekt als eine einzige Spalte (sowohl der JSON-Typ als auch das dynamische Schema in Milvus verwenden diesen Ansatz):</strong> Diese Option bietet eine ausgezeichnete Flexibilität, allerdings auf Kosten der Abfrageleistung. Jede Abfrage erfordert ein JSON-Parsing zur Laufzeit und oft einen vollständigen Tabellenscan, was zu einer Latenz führt, die mit dem Wachstum des Datensatzes in die Höhe schießt.</p></li>
+<li><p><strong>Speichern Sie das gesamte JSON-Objekt als eine einzige Spalte (sowohl der JSON-Typ als auch das dynamische Schema in Milvus verwenden diesen Ansatz):</strong> Diese Option bietet eine ausgezeichnete Flexibilität, allerdings auf Kosten der Abfrageleistung. Jede Abfrage erfordert ein JSON-Parsing zur Laufzeit und oft einen vollständigen Tabellenscan, was zu einer Latenz führt, die mit wachsendem Datensatz ansteigt.</p></li>
 </ul>
 <p>Früher war dies ein Dilemma zwischen Flexibilität und Leistung.</p>
 <p>Mit der neu eingeführten JSON Shredding-Funktion in <a href="https://milvus.io/">Milvus</a> ist dies nicht mehr der Fall.</p>
@@ -44,7 +44,7 @@ origin: >-
       </svg>
     </button></h2><p>JSON Shredding beschleunigt JSON-Abfragen durch die Umwandlung von zeilenbasierten JSON-Dokumenten in einen hochoptimierten spaltenbasierten Speicher. Milvus bewahrt die Flexibilität von JSON für die Datenmodellierung und optimiert gleichzeitig automatisch die spaltenbasierte Speicherung, was den Datenzugriff und die Abfrageleistung erheblich verbessert.</p>
 <p>Um spärliche oder seltene JSON-Felder effizient zu handhaben, verfügt Milvus auch über einen invertierten Index für gemeinsame Schlüssel. All dies geschieht für die Benutzer transparent: Sie können JSON-Dokumente wie gewohnt einfügen und es Milvus überlassen, die optimale Speicher- und Indexierungsstrategie intern zu verwalten.</p>
-<p>Wenn Milvus JSON-Rohdatensätze mit unterschiedlichen Formen und Strukturen empfängt, analysiert es jeden JSON-Schlüssel auf sein Vorkommensverhältnis und seine Typstabilität (ob sein Datentyp in allen Dokumenten konsistent ist). Auf der Grundlage dieser Analyse wird jeder Schlüssel in eine von drei Kategorien eingeteilt:</p>
+<p>Wenn Milvus JSON-Rohdatensätze mit unterschiedlichen Formen und Strukturen empfängt, analysiert es jeden JSON-Schlüssel auf die Häufigkeit seines Auftretens und die Stabilität seines Typs (ob sein Datentyp in allen Dokumenten gleich ist). Auf der Grundlage dieser Analyse wird jeder Schlüssel in eine von drei Kategorien eingeteilt:</p>
 <ul>
 <li><p><strong>Getippte Schlüssel:</strong> Schlüssel, die in den meisten Dokumenten vorkommen und immer den gleichen Datentyp haben (z. B. alle Ganzzahlen oder alle Zeichenketten).</p></li>
 <li><p><strong>Dynamische Schlüssel</strong>: Schlüssel, die häufig vorkommen, aber unterschiedliche Datentypen haben (z. B. manchmal eine Zeichenkette, manchmal eine ganze Zahl).</p></li>
@@ -81,7 +81,7 @@ origin: >-
 <ul>
 <li><p><strong>Direkte Spaltenscans für getippte und dynamische Schlüssel:</strong> Wenn eine Abfrage auf ein Feld abzielt, das bereits in eine eigene Spalte aufgeteilt wurde, kann Milvus diese Spalte direkt scannen. Dadurch wird die Gesamtmenge der zu verarbeitenden Daten reduziert und die SIMD-beschleunigte Spaltenberechnung für eine noch schnellere Ausführung genutzt.</p></li>
 <li><p><strong>Indizierte Suche für gemeinsame Schlüssel:</strong> Wenn die Abfrage ein Feld umfasst, das nicht in eine eigene Spalte verschoben wurde - typischerweise ein seltener Schlüssel - wertet Milvus sie anhand der Spalte mit dem gemeinsamen Schlüssel aus. Der auf dieser Spalte aufgebaute invertierte Index ermöglicht es Milvus, schnell zu erkennen, welche Zeilen den angegebenen Schlüssel enthalten, und den Rest zu überspringen, was die Leistung für Felder mit geringer Häufigkeit erheblich verbessert.</p></li>
-<li><p><strong>Automatische Metadatenverwaltung:</strong> Milvus verwaltet kontinuierlich globale Metadaten und Wörterbücher, so dass Abfragen auch dann genau und effizient bleiben, wenn sich die Struktur der eingehenden JSON-Dokumente im Laufe der Zeit verändert.</p></li>
+<li><p><strong>Automatische Metadatenverwaltung:</strong> Milvus verwaltet kontinuierlich globale Metadaten und Wörterbücher, so dass Abfragen auch dann präzise und effizient bleiben, wenn sich die Struktur der eingehenden JSON-Dokumente im Laufe der Zeit verändert.</p></li>
 </ul>
 <h2 id="Performance-benchmarks" class="common-anchor-header">Leistungsvergleiche<button data-href="#Performance-benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -107,7 +107,7 @@ origin: >-
 <h3 id="Results-typed-keys" class="common-anchor-header">Ergebnisse: Eingetippte Schlüssel</h3><p>Bei diesem Test wurde die Leistung bei der Abfrage eines in den meisten Dokumenten vorhandenen Schlüssels gemessen.</p>
 <table>
 <thead>
-<tr><th>Abfrageausdruck</th><th>QPS (ohne Schreddern)</th><th>QPS (mit Zerkleinerung)</th><th>Leistungssteigerung</th></tr>
+<tr><th>Abfrage-Ausdruck</th><th>QPS (ohne Schreddern)</th><th>QPS (mit Zerkleinerung)</th><th>Leistungssteigerung</th></tr>
 </thead>
 <tbody>
 <tr><td>json['time_us'] &gt; 0</td><td>8.69</td><td>287.5</td><td><strong>33x</strong></td></tr>

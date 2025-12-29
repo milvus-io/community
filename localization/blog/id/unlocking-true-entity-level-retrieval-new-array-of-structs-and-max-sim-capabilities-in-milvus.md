@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs dan MAX_SIM yang baru di Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>Jika Anda telah membuat aplikasi AI di atas basis data vektor, Anda mungkin mengalami masalah yang sama: basis data mengambil penyematan potongan-potongan individu, tetapi aplikasi Anda peduli dengan <strong><em>entitas</em></strong>. Ketidaksesuaian ini membuat seluruh alur kerja pengambilan menjadi rumit.</p>
+<p>Jika Anda telah membangun aplikasi AI di atas basis data vektor, Anda mungkin mengalami masalah yang sama: basis data mengambil penyematan potongan-potongan individu, tetapi aplikasi Anda peduli dengan <strong><em>entitas</em></strong>. Ketidaksesuaian ini membuat seluruh alur kerja pengambilan menjadi rumit.</p>
 <p>Anda mungkin telah melihat hal ini berulang kali:</p>
 <ul>
 <li><p><strong>Basis pengetahuan RAG:</strong> Artikel dipotong-potong menjadi beberapa paragraf, sehingga mesin pencari mengembalikan potongan-potongan yang tersebar, bukan dokumen lengkap.</p></li>
@@ -223,7 +223,7 @@ origin: >-
 <li><p>Memuat dan melakukan praproses data paragraf Wikipedia</p></li>
 <li><p>Mengelompokkan semua paragraf yang termasuk dalam artikel yang sama ke dalam Array of Structs</p></li>
 <li><p>Masukkan dokumen terstruktur ini ke dalam Milvus</p></li>
-<li><p>Jalankan kueri MAX_SIM untuk mengambil artikel lengkap - dengan bersih, tanpa deduping atau perangkingan ulang</p></li>
+<li><p>Menjalankan kueri MAX_SIM untuk mengambil artikel lengkap - dengan bersih, tanpa melakukan deduping atau pengurutan ulang</p></li>
 </ol>
 <p>Pada akhir tutorial ini, Anda akan memiliki pipeline yang berfungsi di mana Milvus menangani pengambilan tingkat entitas secara langsung, persis seperti yang diharapkan pengguna.</p>
 <p><strong>Model Data:</strong></p>
@@ -353,7 +353,7 @@ results = client.search(
 </tbody>
 </table>
 <p>Model-model ini <em>membutuhkan</em> pola penyimpanan multi-vektor. Sebelum Array of Structs, pengembang harus membagi vektor menjadi beberapa baris dan secara manual menyatukan hasilnya. Dengan Milvus, entitas-entitas ini sekarang dapat disimpan dan diambil secara native, dengan MAX_SIM yang menangani penilaian tingkat dokumen secara otomatis.</p>
-<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Pencarian Dokumen Berbasis Gambar ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> adalah model yang kuat untuk pengambilan PDF lintas-modal. Alih-alih mengandalkan teks, ColPali memproses setiap halaman PDF sebagai gambar dan mengirisnya menjadi hingga 1024 tambalan visual, menghasilkan satu penyematan per tambalan. Dalam skema database tradisional, hal ini memerlukan penyimpanan satu halaman sebagai ratusan atau ribuan baris terpisah, sehingga database tidak dapat memahami bahwa baris-baris tersebut adalah bagian dari halaman yang sama. Akibatnya, pencarian tingkat entitas menjadi terpecah-pecah dan tidak praktis.</p>
+<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Pencarian Dokumen Berbasis Gambar ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> adalah model yang kuat untuk pengambilan PDF lintas-modal. Alih-alih mengandalkan teks, ColPali memproses setiap halaman PDF sebagai gambar dan mengirisnya menjadi hingga 1024 tambalan visual, menghasilkan satu penyematan per tambalan. Dalam skema database tradisional, hal ini memerlukan penyimpanan satu halaman sebagai ratusan atau ribuan baris terpisah, sehingga database tidak dapat memahami bahwa baris-baris tersebut adalah bagian dari halaman yang sama. Akibatnya, pencarian tingkat entitas menjadi terfragmentasi dan tidak praktis.</p>
 <p>Array of Structs memecahkan masalah ini dengan menyimpan semua patch yang disematkan di <em>dalam satu bidang</em>, sehingga Milvus dapat memperlakukan halaman sebagai satu entitas multi-vektor yang kohesif.</p>
 <p>Pencarian PDF tradisional sering kali bergantung pada <strong>OCR</strong>, yang mengubah gambar halaman menjadi teks. Ini berfungsi untuk teks biasa tetapi kehilangan bagan, tabel, tata letak, dan isyarat visual lainnya. ColPali menghindari keterbatasan ini dengan bekerja secara langsung pada gambar halaman, mempertahankan semua informasi visual dan tekstual. Pengorbanannya adalah skala: setiap halaman sekarang berisi ratusan vektor, yang membutuhkan basis data yang dapat menggabungkan banyak penyematan ke dalam satu entitas - persis seperti yang disediakan oleh Array of Structs + MAX_SIM.</p>
 <p>Kasus penggunaan yang paling umum adalah <strong>Vision RAG</strong>, di mana setiap halaman PDF menjadi entitas multi-vektor. Skenario umum meliputi:</p>

@@ -6,7 +6,7 @@ title: >-
   Array-of-Structs e MAX_SIM in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -167,7 +167,7 @@ origin: >-
 <ul>
 <li><p><strong>Memorizzare entità multivettore in modo nativo:</strong> Array of Structs consente di memorizzare gruppi di vettori correlati in un unico campo senza dividerli in righe separate o tabelle ausiliarie.</p></li>
 <li><p><strong>Calcolo efficiente del best-match:</strong> In combinazione con indici vettoriali come IVF e HNSW, MAX_SIM può calcolare le migliori corrispondenze senza scansionare ogni vettore, mantenendo alte le prestazioni anche con documenti di grandi dimensioni.</p></li>
-<li><p><strong>Costruito appositamente per carichi di lavoro ad alto contenuto semantico:</strong> Questo approccio eccelle nel reperimento di testi lunghi, nella corrispondenza semantica multi-sfaccettata, nell'allineamento documento-sommario, nelle interrogazioni con più parole chiave e in altri scenari di intelligenza artificiale che richiedono un ragionamento semantico flessibile e a grana fine.</p></li>
+<li><p><strong>Costruito appositamente per carichi di lavoro ad alto contenuto semantico:</strong> Questo approccio eccelle nel reperimento di testi lunghi, nella corrispondenza semantica multi-sfaccettata, nell'allineamento documento-sommario, nelle query con più parole chiave e in altri scenari di intelligenza artificiale che richiedono un ragionamento semantico flessibile e a grana fine.</p></li>
 </ul>
 <h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">Quando usare un array di strutture<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -328,7 +328,7 @@ results = client.search(
 <tr><td style="text-align:center"><strong>Logica applicativa</strong></td><td style="text-align:center">Richiede il <strong>raggruppamento, la deduplicazione e il reranking</strong> (complesso)</td><td style="text-align:center">Non è necessaria alcuna post-elaborazione - i risultati a livello di entità provengono direttamente da Milvus</td></tr>
 </tbody>
 </table>
-<p>Nell'esempio di Wikipedia, abbiamo dimostrato solo il caso più semplice: la combinazione di vettori di paragrafi in una rappresentazione unificata del documento. Ma il vero punto di forza di Array of Structs è che è generalizzabile a <strong>qualsiasi</strong> modello di dati multivettoriali, sia alle classiche pipeline di recupero che alle moderne architetture di intelligenza artificiale.</p>
+<p>Nell'esempio di Wikipedia, abbiamo dimostrato solo il caso più semplice: la combinazione di vettori di paragrafi in una rappresentazione unificata del documento. Ma il vero punto di forza di Array of Structs è che è generalizzabile a <strong>qualsiasi</strong> modello di dati multivettoriale, sia alle classiche pipeline di recupero che alle moderne architetture di intelligenza artificiale.</p>
 <p><strong>Scenari di recupero multivettoriale tradizionali</strong></p>
 <p>Molti sistemi di ricerca e raccomandazione consolidati operano naturalmente su entità con più vettori associati. Array of Structs si adatta perfettamente a questi casi d'uso:</p>
 <table>

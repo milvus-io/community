@@ -5,7 +5,7 @@ title: >-
   flexible
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -27,7 +27,7 @@ origin: >-
 <li><p><strong>Stocker l'intégralité de l'objet JSON en tant que colonne unique (le type JSON et le schéma dynamique dans Milvus utilisent tous deux cette approche) :</strong> Cette option offre une excellente flexibilité, mais au détriment des performances des requêtes. Chaque requête nécessite une analyse JSON au moment de l'exécution et souvent un balayage complet de la table, ce qui entraîne une latence qui augmente au fur et à mesure que l'ensemble de données s'accroît.</p></li>
 </ul>
 <p>Il s'agissait auparavant d'un dilemme entre flexibilité et performance.</p>
-<p>Ce n'est plus le cas avec la nouvelle fonction JSON Shredding de <a href="https://milvus.io/">Milvus</a>.</p>
+<p>Ce n'est plus le cas avec la nouvelle fonctionnalité JSON Shredding de <a href="https://milvus.io/">Milvus</a>.</p>
 <p>Avec l'introduction de <a href="https://milvus.io/docs/json-shredding.md">JSON Shredding</a>, Milvus permet désormais une agilité sans schéma avec les performances du stockage en colonnes, rendant enfin les données semi-structurées à grande échelle à la fois flexibles et conviviales pour les requêtes.</p>
 <h2 id="How-JSON-Shredding-Works" class="common-anchor-header">Fonctionnement du déchiquetage JSON<button data-href="#How-JSON-Shredding-Works" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -45,11 +45,11 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Le déchiquetage JSON accélère les requêtes JSON en transformant les documents JSON basés sur des lignes en un stockage en colonnes hautement optimisé. Milvus préserve la flexibilité de JSON pour la modélisation des données tout en optimisant automatiquement le stockage en colonnes, ce qui améliore considérablement l'accès aux données et les performances des requêtes.</p>
-<p>Pour traiter efficacement les champs JSON rares ou épars, Milvus dispose également d'un index inversé pour les clés partagées. Tout cela est transparent pour les utilisateurs : vous pouvez insérer des documents JSON comme d'habitude et laisser Milvus gérer la stratégie de stockage et d'indexation optimale en interne.</p>
+<p>Pour traiter efficacement les champs JSON rares ou épars, Milvus dispose également d'un index inversé pour les clés partagées. Tout cela se passe de manière transparente pour les utilisateurs : vous pouvez insérer des documents JSON comme d'habitude et laisser Milvus gérer la stratégie de stockage et d'indexation optimale en interne.</p>
 <p>Lorsque Milvus reçoit des enregistrements JSON bruts dont la forme et la structure varient, il analyse chaque clé JSON en fonction de son taux d'occurrence et de la stabilité de son type (si son type de données est cohérent d'un document à l'autre). Sur la base de cette analyse, chaque clé est classée dans l'une des trois catégories suivantes :</p>
 <ul>
 <li><p><strong>Les clés typées :</strong> Les clés qui apparaissent dans la plupart des documents et qui ont toujours le même type de données (par exemple, tous les entiers ou toutes les chaînes).</p></li>
-<li><p><strong>Clés dynamiques</strong>: Clés qui apparaissent fréquemment mais dont les types de données sont mixtes (par exemple, parfois une chaîne de caractères, parfois un nombre entier).</p></li>
+<li><p><strong>Clés dynamiques</strong>: Les clés qui apparaissent fréquemment mais dont les types de données sont mixtes (par exemple, parfois une chaîne de caractères, parfois un nombre entier).</p></li>
 <li><p><strong>Clés partagées :</strong> Clés peu fréquentes, éparses ou imbriquées, dont la fréquence est inférieure à un seuil configurable.</p></li>
 </ul>
 <p>Milvus traite chaque catégorie différemment pour maximiser l'efficacité :</p>
@@ -142,6 +142,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Que vous travailliez avec des logs d'API, des données de capteurs IoT ou des charges utiles d'application en évolution rapide, JSON Shredding vous offre la rare possibilité de bénéficier à la fois de flexibilité et de performances élevées.</p>
+    </button></h2><p>Que vous travailliez avec des logs d'API, des données de capteurs IoT ou des charges utiles d'application en évolution rapide, JSON Shredding vous offre la rare possibilité de bénéficier à la fois d'une flexibilité et de performances élevées.</p>
 <p>La fonctionnalité est maintenant disponible et nous vous invitons à l'essayer dès maintenant. Vous pouvez également consulter <a href="https://milvus.io/docs/json-shredding.md">cette documentation</a> pour plus de détails.</p>
 <p>Vous avez des questions ou souhaitez approfondir une fonctionnalité de la dernière version de Milvus ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou déposez des questions sur<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions dans le cadre des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

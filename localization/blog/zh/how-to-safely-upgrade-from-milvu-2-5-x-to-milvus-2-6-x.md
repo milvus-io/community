@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: 如何安全地从 Milvus 2.5.x 升级到 Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -15,9 +15,9 @@ desc: 探索 Milvus 2.6 的新功能，包括架构变化和主要功能，并�
 origin: >-
   https://milvus.io/blog/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 ---
-<p><a href="https://milvus.io/docs/release_notes.md"><strong>Milvus 2.6</strong></a>已上线一段时间，事实证明它是该项目向前迈出的坚实一步。该版本带来了完善的架构、更强的实时性能、更低的资源消耗，以及在生产环境中更智能的扩展行为。其中许多改进都是直接根据用户反馈形成的，2.6.x 的早期用户已经报告说，在繁重或动态工作负载下，搜索速度明显加快，系统性能更可预测。</p>
-<p>对于运行 Milvus 2.5.x 并正在评估向 2.6.x 迁移的团队，本指南将是您的起点。它分解了架构上的差异，强调了 Milvus 2.6 中引入的关键功能，并提供了实用的逐步升级路径，旨在最大限度地减少操作中断。</p>
-<p>如果您的工作负载涉及实时流水线、多模态或混合搜索或大规模向量操作，本博客将帮助您评估 2.6 是否符合您的需求--如果您决定继续升级，请放心升级，同时保持数据的完整性和服务的可用性。</p>
+<p><a href="https://milvus.io/docs/release_notes.md"><strong>Milvus 2.6</strong></a>已上线一段时间，事实证明它是该项目向前迈出的坚实一步。该版本带来了完善的架构、更强的实时性能、更低的资源消耗以及在生产环境中更智能的扩展行为。其中许多改进都是直接根据用户反馈形成的，2.6.x 的早期用户已经报告说，在繁重或动态工作负载下，搜索速度明显加快，系统性能更可预测。</p>
+<p>对于运行 Milvus 2.5.x 并正在评估向 2.6.x 迁移的团队，本指南将是您的起点。它分解了架构上的差异，强调了 Milvus 2.6 中引入的关键功能，并提供了一个实用的逐步升级路径，旨在最大限度地减少操作中断。</p>
+<p>如果您的工作负载涉及实时流水线、多模态或混合搜索或大规模向量操作，本博客将帮助您评估 2.6 是否符合您的需求--如果您决定继续升级，请放心升级，同时保持数据完整性和服务可用性。</p>
 <h2 id="Architecture-Changes-from-Milvus-25-to-Milvus-26" class="common-anchor-header">从 Milvus 2.5 到 Milvus 2.6 的架构变化<button data-href="#Architecture-Changes-from-Milvus-25-to-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

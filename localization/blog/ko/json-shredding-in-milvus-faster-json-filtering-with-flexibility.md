@@ -3,7 +3,7 @@ id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 title: 'Milvus의 JSON 파쇄: 유연성을 갖춘 88.9배 빠른 JSON 필터링'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -47,7 +47,7 @@ origin: >-
 <ul>
 <li><p><strong>입력된 키:</strong> 대부분의 문서에 나타나며 항상 동일한 데이터 유형(예: 모든 정수 또는 모든 문자열)을 갖는 키입니다.</p></li>
 <li><p><strong>동적 키</strong>: 자주 나타나지만 데이터 유형이 혼합된 키(예: 때로는 문자열, 때로는 정수)입니다.</p></li>
-<li><p><strong>공유 키:</strong> 빈도가 낮거나, 희소하거나, 중첩된 키로 구성 가능한 빈도 임계값에 미달하는 키입니다.</p></li>
+<li><p><strong>공유 키:</strong> 빈도가 낮거나, 희박하거나, 중첩된 키로 구성 가능한 빈도 임계값 이하로 떨어지는 키입니다.</p></li>
 </ul>
 <p>Milvus는 효율성을 극대화하기 위해 각 카테고리를 다르게 처리합니다:</p>
 <ul>

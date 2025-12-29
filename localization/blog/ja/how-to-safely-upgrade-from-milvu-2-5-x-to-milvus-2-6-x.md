@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: Milvus 2.5.xからMilvus 2.6.xへの安全なアップグレード方法
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -15,7 +15,7 @@ desc: Milvus 2.6でのアーキテクチャの変更や主要な機能を含む�
 origin: >-
   https://milvus.io/blog/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 ---
-<p><a href="https://milvus.io/docs/release_notes.md"><strong>Milvus 2.6が</strong></a>リリースされてしばらく経つが、プロジェクトにとって確かな前進であることが証明された。このリリースは、洗練されたアーキテクチャ、より強力なリアルタイムパフォーマンス、より少ないリソース消費、そして本番環境におけるよりスマートなスケーリング動作をもたらします。これらの改善点の多くは、ユーザーからのフィードバックによって直接形作られたものであり、2.6.xを早期に導入したユーザーからは、重いワークロードや動的なワークロードの下で、検索が著しく高速になり、システムのパフォーマンスがより予測しやすくなったという報告がすでに寄せられています。</p>
+<p><a href="https://milvus.io/docs/release_notes.md"><strong>Milvus 2.6が</strong></a>リリースされてしばらく経つが、プロジェクトにとって確かな前進であることが証明された。このリリースは、洗練されたアーキテクチャ、より強力なリアルタイムパフォーマンス、より少ないリソース消費、本番環境におけるよりスマートなスケーリング動作をもたらします。これらの改善点の多くは、ユーザーからのフィードバックによって直接形作られたものであり、2.6.xを早期に導入したユーザーからは、重いワークロードや動的なワークロードの下で、検索が著しく高速になり、システムのパフォーマンスがより予測しやすくなったという報告がすでに寄せられています。</p>
 <p>Milvus 2.5.xを運用し、2.6.xへの移行を検討しているチームにとって、本ガイドは出発点となるものです。アーキテクチャの違いを分解し、Milvus 2.6で導入された主要な機能に焦点を当て、運用の中断を最小限に抑えるよう設計された、実践的でステップバイステップのアップグレードパスを提供します。</p>
 <p>リアルタイムパイプライン、マルチモーダル検索、ハイブリッド検索、大規模なベクトル操作などのワークロードをお持ちの場合、このブログは、2.6がお客様のニーズに合致しているかどうかを評価し、続行することを決定した場合、データの整合性とサービスの可用性を維持しながら、自信を持ってアップグレードするのに役立ちます。</p>
 <h2 id="Architecture-Changes-from-Milvus-25-to-Milvus-26" class="common-anchor-header">Milvus 2.5からMilvus 2.6へのアーキテクチャの変更点<button data-href="#Architecture-Changes-from-Milvus-25-to-Milvus-26" class="anchor-icon" translate="no">
@@ -215,7 +215,7 @@ spec:
 </ul>
 <p><code translate="no">status.currentImage</code> <code translate="no">status.currentVersion</code>現在のバージョンが2.5で、希望するバージョンが2.6の場合、オペレータはアップグレードを2.5→2.6のアップグレードシナリオとして識別します。</p>
 <p><strong>2.ローリングアップグレードの実行順序</strong></p>
-<p>2.5から2.6へのアップグレードが検出され、アップグレードモードがローリングアップグレード(<code translate="no">spec.components.imageUpdateMode: rollingUpgrade</code>)に設定されている場合、Milvus Operatorは、Milvus 2.6のアーキテクチャに沿った事前定義された順序で自動的にアップグレードを実行します：</p>
+<p>2.5から2.6へのアップグレードが検出され、アップグレードモードがローリングアップグレード(<code translate="no">spec.components.imageUpdateMode: rollingUpgrade</code>)に設定されている場合、Milvus OperatorはMilvus 2.6アーキテクチャに沿った事前定義された順序で自動的にアップグレードを実行します：</p>
 <p>ストリーミング・ノードの起動 → MixCoordのアップグレード → クエリ・ノードのアップグレード → データ・ノードのアップグレード → プロキシのアップグレード → インデックス・ノードの削除</p>
 <p><strong>3.コーディネータの自動統合</strong></p>
 <p>Milvus 2.6は複数のコーディネータコンポーネントを単一のMixCoordに置き換えます。Milvus Operatorは、このアーキテクチャの移行を自動的に処理します。</p>
@@ -375,9 +375,9 @@ helm upgrade -i my-release zilliztech/milvus \
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6では、アーキテクチャと運用の両面で大きな改善がなされました。StreamingNode の導入によるストリーミング処理とバッチ処理の分離、コーディネー タの MixCoord への統合、ワーカーの役割の簡素化により、Milvus 2.6 は、大規模なベクタ ワークロードに対して、より安定でスケーラブルかつ運用しやすい基盤を提供します。</p>
+    </button></h2><p>Milvus 2.6では、アーキテクチャと運用の両面で大きな改善がなされました。StreamingNode の導入によるストリーミング処理とバッチ処理の分離、コーディネー ターの MixCoord への統合、ワーカーの役割の簡素化により、Milvus 2.6 は、大規模なベクターワークロードに対 して、より安定でスケーラブル、かつ運用しやすい基盤を提供します。</p>
 <p>このようなアーキテクチャの変更により、特に Milvus 2.5 からのアップグレードは、より順番を重視するようになりました。アップグレードが成功するかどうかは、コンポーネントの依存関係と一時的な可用性の制約を尊重できるかどうかにかかっています。Milvus Operatorは、アップグレードの順序を自動化し、運用リスクを低減するため、本番環境では推奨されるアプローチです。</p>
-<p>Milvus 2.6は、強化された検索機能、より豊富なデータタイプ、階層化されたストレージ、改善されたメッセージキューオプションにより、リアルタイムの取り込み、高いクエリパフォーマンス、スケールでの効率的な運用を必要とする最新のAIアプリケーションをサポートするのに十分なポジションにあります。</p>
+<p>Milvus 2.6は、強化された検索機能、より豊富なデータタイプ、階層化されたストレージ、改善されたメッセージキューオプションにより、リアルタイムインジェスト、高いクエリパフォーマンス、スケールでの効率的な運用を必要とする最新のAIアプリケーションをサポートするのに十分なポジションにあります。</p>
 <p>Milvusの最新機能に関するご質問やディープダイブをご希望ですか？私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察、ガイダンス、質問への回答を得ることもできます。</p>
 <h2 id="More-Resources-about-Milvus-26" class="common-anchor-header">Milvus 2.6に関するその他のリソース<button data-href="#More-Resources-about-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -395,7 +395,7 @@ helm upgrade -i my-release zilliztech/milvus \
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6リリースノート</a></p></li>
+<li><p><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 リリースノート</a></p></li>
 <li><p><a href="https://www.youtube.com/watch?v=Guct-UMK8lw&amp;t=157s">Milvus 2.6 ウェビナーの記録：より速い検索、より低いコスト、よりスマートなスケーリング</a></p></li>
 <li><p>Milvus 2.6フィーチャーブログ</p>
 <ul>

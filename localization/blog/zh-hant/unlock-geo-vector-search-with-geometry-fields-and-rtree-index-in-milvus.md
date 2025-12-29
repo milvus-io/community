@@ -3,7 +3,7 @@ id: unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 title: 在 Milvus 2.6 中將地理空間篩選和向量搜尋與幾何領域和 RTREE 結合起來
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -23,7 +23,7 @@ origin: >-
 <li><p>向量資料庫則處理代表資料語意的向量嵌入。</p></li>
 </ul>
 <p>當應用程式同時需要這兩種資料時，通常會被迫進入多階段查詢管道 - 在一個系統中以位置進行篩選，然後在另一個系統中執行向量搜尋。這樣的分離增加了系統的複雜性、延遲了查詢時間，並使空間語意推理難以有效率地大規模執行。</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>引入了<a href="https://milvus.io/docs/geometry-field.md">幾何領域 (Geometry Field)</a>，允許向量相似性搜尋直接與空間限制結合，從而解決了這個問題。這使得下列使用案例成為可能：</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a>引入了<a href="https://milvus.io/docs/geometry-field.md">幾何領域 (Geometry Field)</a>，允許向量相似性搜尋直接與空間限制結合，從而解決了這個問題。這使得以下使用案例成為可能：</p>
 <ul>
 <li><p>位置基礎服務 (LBS)："在此城市區塊內尋找相似的 POI</p></li>
 <li><p>多模式搜尋："檢索此點 1 公里範圍內的相似照片</p></li>
@@ -101,7 +101,7 @@ origin: >-
 <li><p><strong>隨資料大小調整：</strong>RTREE 支援在<strong>O(log N)</strong>時間內進行空間搜尋，即使資料集不斷擴大，也能進行快速查詢。</p></li>
 <li><p><strong>Boost.Geometry 實作：</strong>Milvus 使用<a href="https://www.boost.org/library/latest/geometry/">Boost.Geometry</a> 建立 RTREE 索引，<a href="https://www.boost.org/library/latest/geometry/">Boost.Geometry</a> 是一個廣泛使用的 C++ 函式庫，提供最佳化的幾何演算法，以及適用於並發工作負載的線程安全 RTREE 實作。</p></li>
 </ul>
-<h3 id="Supported-geometry-operators" class="common-anchor-header">支援的幾何運算符號</h3><p>Milvus 提供一組空間運算符號，可讓您根據幾何關係過濾和擷取實體。對於需要瞭解物件在空間中如何相互關聯的工作負載而言，這些運算符號是不可或缺的。</p>
+<h3 id="Supported-geometry-operators" class="common-anchor-header">支援的幾何運算符號</h3><p>Milvus 提供一組空間運算子，可讓您根據幾何關係過濾和擷取實體。對於需要瞭解物件在空間中如何相互關聯的工作負載而言，這些運算符號是不可或缺的。</p>
 <p>下表列出 Milvus 目前可用的<a href="https://milvus.io/docs/geometry-operators.md">幾何運算符號</a>。</p>
 <table>
 <thead>
@@ -110,8 +110,8 @@ origin: >-
 <tbody>
 <tr><td style="text-align:center"><strong>st_intersects(A, B)</strong></td><td style="text-align:center">如果幾何圖 A 和 B 至少有一個共同點，則傳回值為 TRUE。</td></tr>
 <tr><td style="text-align:center"><strong>st_contains(A, B)</strong></td><td style="text-align:center">如果幾何圖 A 完全包含幾何圖 B (不包含邊界)，則傳回值為 TRUE。</td></tr>
-<tr><td style="text-align:center"><strong>st_within(A, B)</strong></td><td style="text-align:center">如果幾何圖形 A 完全包含在幾何圖形 B 之內，則傳回值為 TRUE。</td></tr>
-<tr><td style="text-align:center"><strong>st_covers(A, B)</strong></td><td style="text-align:center">如果幾何圖形 A 包覆幾何圖形 B (包括邊界)，則傳回值為 TRUE。</td></tr>
+<tr><td style="text-align:center"><strong>st_within(A, B)</strong></td><td style="text-align:center">如果幾何圖形 A 完全包含在幾何圖形 B 中，則傳回值為 TRUE。</td></tr>
+<tr><td style="text-align:center"><strong>st_covers(A, B)</strong></td><td style="text-align:center">若幾何體 A 包覆幾何體 B (包括邊界)，則傳回值為 TRUE。</td></tr>
 <tr><td style="text-align:center"><strong>st_touches(A, B)</strong></td><td style="text-align:center">如果幾何圖形 A 和 B 在邊界相接，但內部沒有相交，則傳回值 TRUE。</td></tr>
 <tr><td style="text-align:center"><strong>st_equals(A, B)</strong></td><td style="text-align:center">如果幾何圖 A 和 B 在空間上相同，則傳回值為 TRUE。</td></tr>
 <tr><td style="text-align:center"><strong>st_overlaps(A, B)</strong></td><td style="text-align:center">如果幾何圖 A 與 B 部分重疊，且兩者都不完全包含對方，則傳回 TRUE。</td></tr>
@@ -154,7 +154,7 @@ origin: >-
 <p>透過 Milvus，Geometry 類型和 RTREE 索引可以儲存和查詢豐富的空間結構，例如</p>
 <ul>
 <li><p><strong>道路邊界</strong>(LineString)</p></li>
-<li><p><strong>交通管制區</strong>（多邊形）</p></li>
+<li><p><strong>交通管制區</strong>(多邊形)</p></li>
 <li><p><strong>偵測到的障礙</strong>(點)</p></li>
 </ul>
 <p>這些結構可以有效率地建立索引，讓地理空間資料直接參與 AI 決策迴圈。例如，只需透過 RTREE 空間謂語，自動駕駛車輛就能快速判斷其目前座標是否位於特定車道或與限制區域相交。</p>

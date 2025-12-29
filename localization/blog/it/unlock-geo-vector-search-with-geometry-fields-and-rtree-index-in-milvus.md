@@ -5,7 +5,7 @@ title: >-
   in Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -83,7 +83,7 @@ origin: >-
 <li><p><strong>Filtraggio grossolano:</strong> Restringe rapidamente i candidati utilizzando indici spaziali come RTREE.</p></li>
 <li><p><strong>Filtraggio fine:</strong> Applica controlli geometrici esatti ai candidati rimasti, garantendo la correttezza ai confini.</p></li>
 </ul>
-<p>Questo progetto bilancia prestazioni e accuratezza. L'indice spaziale elimina in modo aggressivo i dati irrilevanti, mentre i controlli geometrici precisi assicurano risultati corretti per operatori quali il contenimento, l'intersezione e le soglie di distanza.</p>
+<p>Questo progetto bilancia prestazioni e accuratezza. L'indice spaziale elimina in modo aggressivo i dati irrilevanti, mentre i controlli geometrici precisi assicurano risultati corretti per operatori come il contenimento, l'intersezione e le soglie di distanza.</p>
 <p>Il cuore di questa pipeline è <strong>RTREE (Rectangle Tree)</strong>, una struttura di indicizzazione spaziale progettata per accelerare le interrogazioni sui dati geometrici. RTREE funziona organizzando gli oggetti in modo gerarchico utilizzando i <strong>rettangoli minimi di delimitazione (MBR)</strong>, consentendo di saltare ampie porzioni dello spazio di ricerca durante l'esecuzione delle query.</p>
 <h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Fase 1: costruzione dell'indice RTREE</h3><p>La costruzione di RTREE segue un processo bottom-up che raggruppa gli oggetti spaziali vicini in regioni di delimitazione sempre più grandi:</p>
 <p><strong>1. Creare i nodi foglia:</strong> Per ogni oggetto geometrico, calcolare il suo <strong>Minimum Bounding Rectangle (MBR)</strong>- il rettangolo più piccolo che contiene completamente l'oggetto - e memorizzarlo come nodo foglia.</p>
@@ -133,7 +133,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">Casi d'uso nel mondo reale del recupero geo-vettoriale<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
+<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">Casi d'uso nel mondo reale della ricerca geo-vettoriale<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -182,7 +182,7 @@ origin: >-
       </svg>
     </button></h2><p>La geolocalizzazione è molto più che latitudine e longitudine. Nelle applicazioni sensibili alla localizzazione, fornisce un contesto essenziale sul <strong>luogo in cui si verificano gli eventi, sul modo in cui le entità si relazionano spazialmente e sul modo in cui queste relazioni modellano il comportamento del sistema</strong>. Se combinati con i segnali semantici dei modelli di apprendimento automatico, i dati geospaziali consentono una classe più ricca di interrogazioni che sono difficili da esprimere o inefficienti da eseguire quando i dati spaziali e vettoriali sono gestiti separatamente.</p>
 <p>Con l'introduzione del campo geometrico e dell'indice RTREE, Milvus riunisce la ricerca di similarità vettoriale e il filtraggio spaziale in un unico motore di interrogazione. Ciò consente alle applicazioni di eseguire il reperimento congiunto di <strong>vettori, dati geospaziali e tempo</strong>, supportando casi d'uso come i sistemi di raccomandazione spaziali, la ricerca multimodale basata sulla posizione e l'analisi di regioni o percorsi limitati. Inoltre, riduce la complessità architettonica eliminando le pipeline a più stadi che spostano i dati tra sistemi specializzati.</p>
-<p>Mentre i sistemi di intelligenza artificiale continuano ad avvicinarsi al processo decisionale del mondo reale, la comprensione <strong><em>dei</em></strong> contenuti rilevanti dovrà essere sempre più abbinata a <strong><em>dove</em></strong> si applicano e <strong><em>quando sono</em></strong> importanti. Milvus fornisce gli elementi costitutivi di questa classe di carichi di lavoro spaziali-semantici in un modo che è sia espressivo che pratico per operare su scala.</p>
+<p>Mentre i sistemi di intelligenza artificiale continuano ad avvicinarsi al processo decisionale del mondo reale, la comprensione <strong><em>dei</em></strong> contenuti rilevanti dovrà essere sempre più associata a <strong><em>dove</em></strong> si applicano e <strong><em>quando sono</em></strong> importanti. Milvus fornisce gli elementi costitutivi per questa classe di carichi di lavoro spaziali-semantici in un modo che è sia espressivo che pratico per operare su scala.</p>
 <p>Per ulteriori informazioni sul campo geometrico e sull'indice RTREE, consultare la documentazione qui sotto:</p>
 <ul>
 <li><p><a href="https://milvus.io/docs/geometry-field.md">Campo geometrico | Documentazione Milvus</a></p></li>
@@ -206,12 +206,12 @@ origin: >-
       </svg>
     </button></h2><ul>
 <li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Presentazione di Milvus 2.6: ricerca vettoriale accessibile su scala miliardaria</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introduzione alla funzione Embedding: Come Milvus 2.6 semplifica la vettorizzazione e la ricerca semantica</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introduzione alla funzione Embedding: Come Milvus 2.6 semplifica la vettorializzazione e la ricerca semantica</a></p></li>
 <li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Triturazione JSON in Milvus: filtraggio JSON 88,9 volte più veloce e flessibile</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Il vero recupero a livello di entità: Nuove funzionalità Array-of-Structs e MAX_SIM in Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: l'arma segreta per combattere i duplicati nei dati di addestramento LLM </a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Portare la compressione vettoriale all'estremo: come Milvus serve 3 volte di più le query con RaBitQ</a></p></li>
 <li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">I benchmark mentono: i DB vettoriali meritano un test reale </a></p></li>
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Abbiamo sostituito Kafka/Pulsar con un picchio per Milvus </a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">La ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza uccidere il richiamo</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Ricerca vettoriale nel mondo reale: come filtrare in modo efficiente senza uccidere il richiamo</a></p></li>
 </ul>

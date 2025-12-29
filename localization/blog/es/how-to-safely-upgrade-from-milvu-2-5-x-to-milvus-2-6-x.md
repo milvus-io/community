@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: Cómo actualizar con seguridad de Milvus 2.5.x a Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -36,7 +36,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de adentrarnos en el flujo de trabajo de actualización propiamente dicho, entendamos primero cómo cambia la arquitectura de Milvus en Milvus 2.6.</p>
+    </button></h2><p>Antes de sumergirnos en el flujo de trabajo de actualización propiamente dicho, entendamos primero cómo cambia la arquitectura de Milvus en Milvus 2.6.</p>
 <h3 id="Milvus-25-Architecture" class="common-anchor-header">Arquitectura de Milvus 2.5</h3><p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_5_4e228af3c4.PNG" alt="Milvus 2.5 Architecture" class="doc-image" id="milvus-2.5-architecture" />
@@ -53,7 +53,7 @@ origin: >-
    </span> <span class="img-wrapper"> <span>Arquitectura de Milvus 2.6</span> </span></p>
 <p>Milvus 2.6 introduce un <strong>StreamingNode</strong> dedicado que maneja todas las responsabilidades de los datos en tiempo real: consumir la cola de mensajes, escribir segmentos incrementales, servir consultas incrementales y gestionar la recuperación basada en WAL. Con el streaming aislado, el resto de componentes asumen funciones más limpias y centradas:</p>
 <ul>
-<li><p><strong>QueryNode</strong> ahora <em>sólo</em> gestiona consultas por lotes en segmentos históricos.</p></li>
+<li><p><strong>QueryNode</strong> gestiona ahora <em>sólo</em> consultas por lotes sobre segmentos históricos.</p></li>
 <li><p><strong>DataNode</strong> gestiona ahora <em>sólo</em> las tareas de datos históricos, como la compactación y la creación de índices.</p></li>
 </ul>
 <p>El StreamingNode absorbe todas las tareas relacionadas con el streaming que se dividían entre DataNode, QueryNode e incluso el Proxy en Milvus 2.5, aportando claridad y reduciendo la compartición de estados entre roles.</p>
@@ -125,7 +125,7 @@ origin: >-
       </svg>
     </button></h2><p>Para mantener el sistema lo más disponible posible durante la actualización, los clusters Milvus 2.5 deben actualizarse a Milvus 2.6 en el siguiente orden.</p>
 <p><strong>1. Inicie primero el nodo de transmisión</strong></p>
-<p>Inicie el Nodo de Transmisión por adelantado. El nuevo <strong>Delegator</strong> (el componente en el Query Node responsable del manejo de los datos en streaming) debe moverse al Milvus 2.6 Streaming Node.</p>
+<p>Inicie el Nodo de Transmisión por adelantado. El nuevo <strong>Delegator</strong> (el componente en el Query Node responsable del manejo de los datos de streaming) debe moverse al Milvus 2.6 Streaming Node.</p>
 <p><strong>2. Actualizar MixCoord</strong></p>
 <p>Actualice los componentes del coordinador a <strong>MixCoord</strong>. Durante este paso, MixCoord necesita detectar las versiones de los Worker Nodes para manejar la compatibilidad entre versiones dentro del sistema distribuido.</p>
 <p><strong>3. Actualizar el nodo de consulta</strong></p>
@@ -135,7 +135,7 @@ origin: >-
 <p><strong>5. Actualizar el proxy</strong></p>
 <p>Después de actualizar un Proxy a Milvus 2.6, las operaciones de escritura en ese Proxy seguirán sin estar disponibles hasta que todos los componentes del clúster se actualicen a 2.6.</p>
 <p><strong>6. Eliminar el nodo de índice</strong></p>
-<p>Una vez actualizados todos los demás componentes, el Nodo de Índice autónomo puede retirarse de forma segura.</p>
+<p>Una vez que todos los demás componentes estén actualizados, el Nodo de Índice autónomo puede retirarse de forma segura.</p>
 <p><strong>Notas:</strong></p>
 <ul>
 <li><p>Desde la finalización de la actualización del DataNode hasta la finalización de la actualización del Proxy, las operaciones de Flush no están disponibles.</p></li>
@@ -218,12 +218,12 @@ spec:
 </ul>
 <p>A continuación, el operador compara esta versión deseada con la versión actualmente en ejecución, que se registra en <code translate="no">status.currentImage</code> o <code translate="no">status.currentVersion</code>. Si la versión actual es 2.5 y la versión deseada es 2.6, el operador identifica la actualización como un escenario de actualización 2.5 → 2.6.</p>
 <p><strong>2. Orden de ejecución de la actualización progresiva</strong></p>
-<p>Cuando se detecta una actualización 2.5 → 2.6 y el modo de actualización se establece en actualización continua (<code translate="no">spec.components.imageUpdateMode: rollingUpgrade</code>, que es el valor predeterminado), Milvus Operator realiza automáticamente la actualización en un orden predefinido alineado con la arquitectura de Milvus 2.6:</p>
+<p>Cuando se detecta una actualización 2.5 → 2.6 y el modo de actualización está configurado como actualización continua (<code translate="no">spec.components.imageUpdateMode: rollingUpgrade</code>, que es el valor predeterminado), Milvus Operator realiza automáticamente la actualización en un orden predefinido alineado con la arquitectura de Milvus 2.6:</p>
 <p>Iniciar el nodo de transmisión → Actualizar MixCoord → Actualizar el nodo de consulta → Actualizar el nodo de datos → Actualizar el proxy → Eliminar el nodo de índice.</p>
 <p><strong>3. Consolidación automática de coordinadores</strong></p>
 <p>Milvus 2.6 sustituye múltiples componentes de coordinador por un único MixCoord. Milvus Operator maneja esta transición arquitectónica automáticamente.</p>
-<p>Cuando se configura <code translate="no">spec.components.mixCoord</code>, el operador trae MixCoord y espera hasta que esté listo. Una vez que MixCoord está totalmente operativo, el operador cierra los componentes del coordinador heredado -RootCoord, QueryCoord y DataCoord- completando la migración sin necesidad de intervención manual.</p>
-<h3 id="Upgrade-Steps-from-Milvus-25-to-26" class="common-anchor-header">Pasos de actualización de Milvus 2.5 a 2.6</h3><p>1.Actualice Milvus Operator a la última versión (en esta guía, utilizamos <strong>la versión 1.3.3</strong>, que era la última versión en el momento de redactar este documento).</p>
+<p>Cuando se configura <code translate="no">spec.components.mixCoord</code>, el operador trae MixCoord y espera hasta que esté listo. Una vez que MixCoord está totalmente operativo, el operador apaga los componentes del coordinador heredado -RootCoord, QueryCoord y DataCoord- completando la migración sin necesidad de intervención manual.</p>
+<h3 id="Upgrade-Steps-from-Milvus-25-to-26" class="common-anchor-header">Pasos de actualización de Milvus 2.5 a 2.6</h3><p>1.Actualice Milvus Operator a la última versión (En esta guía, utilizamos <strong>la versión 1.3.3</strong>, que era la última versión en el momento de redactar este documento).</p>
 <pre><code translate="no"><span class="hljs-comment"># Option 1: Using Helm</span>
 helm upgrade --install milvus-operator \
   -n milvus-operator --create-namespace \
@@ -243,7 +243,7 @@ helm upgrade --install milvus-operator \
   }
 }&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3.Asegúrese de que el clúster ejecuta Milvus 2.5.16 o posterior.</p>
+<p>3. Asegúrese de que el clúster ejecuta Milvus 2.5.16 o posterior.</p>
 <pre><code translate="no">kubectl patch milvus my-release -n demo-operator --<span class="hljs-built_in">type</span>=merge -p <span class="hljs-string">&#x27;
 {
   &quot;spec&quot;: {
@@ -293,7 +293,7 @@ kubectl <span class="hljs-built_in">wait</span> milvus my-release -n demo-operat
 <pre><code translate="no">helm repo <span class="hljs-keyword">add</span> zilliztech https:<span class="hljs-comment">//zilliztech.github.io/milvus-helm</span>
 helm repo update
 <button class="copy-code-btn"></button></code></pre>
-<p>2.Si el cluster se despliega con múltiples componentes coordinadores, primero actualice Milvus a la versión 2.5.16 o posterior y habilite MixCoord.</p>
+<p>2.Si el cluster está desplegado con múltiples componentes coordinadores, primero actualice Milvus a la versión 2.5.16 o posterior y habilite MixCoord.</p>
 <pre><code translate="no">mixCoordinator
 。
 helm upgrade -i my-release zilliztech/milvus \
@@ -411,7 +411,7 @@ helm upgrade -i my-release zilliztech/milvus \
 <li><p><a href="https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md">Presentación del índice Ngram de Milvus: Coincidencia de palabras clave y consultas LIKE más rápidas para cargas de trabajo de agentes</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Unificación del filtrado geoespacial y la búsqueda vectorial con campos geométricos y RTREE en Milvus 2.6</a></p></li>
 <li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Búsqueda vectorial en el mundo real: cómo filtrar eficazmente sin matar la recuperación</a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Llevar la compresión vectorial al extremo: cómo Milvus sirve 3 veces más consultas con RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Llevar la compresión vectorial al extremo: Cómo Milvus sirve 3 veces más consultas con RaBitQ</a></p></li>
 <li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Los puntos de referencia mienten: las bases de datos vectoriales merecen una prueba real</a></p></li>
 <li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Sustituimos Kafka/Pulsar por un Woodpecker para Milvus: esto es lo que ocurrió</a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH en Milvus: El arma secreta para luchar contra los duplicados en los datos de entrenamiento LLM</a></p></li>

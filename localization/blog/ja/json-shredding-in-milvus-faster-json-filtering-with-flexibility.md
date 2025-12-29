@@ -1,9 +1,9 @@
 ---
 id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
-title: MilvusのJSONシュレッダー：柔軟性を備えた88.9倍高速なJSONフィルタリング
+title: 'MilvusのJSONシュレッダー: 柔軟性を備えた88.9倍高速のJSONフィルタリング'
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -17,7 +17,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 ---
-<p>最新のAIシステムは、かつてないほど多くの半構造化JSONデータを生成している。顧客情報や製品情報はJSONオブジェクトにコンパクト化され、マイクロサービスはリクエストごとにJSONログを発行し、IoTデバイスはセンサーの読み取り値を軽量のJSONペイロードでストリーミングし、今日のAIアプリケーションは構造化された出力のためにますますJSONを標準化するようになっています。その結果、ベクトルデータベースにJSONのようなデータが大量に流れ込むことになる。</p>
+<p>最新のAIシステムは、かつてないほど多くの半構造化JSONデータを生成している。顧客情報や製品情報はJSONオブジェクトにコンパクト化され、マイクロサービスはリクエストごとにJSONログを発行し、IoTデバイスはセンサーの読み取り値を軽量のJSONペイロードでストリーミングし、今日のAIアプリケーションは構造化された出力のためにJSONを標準化することが多くなっています。その結果、ベクトルデータベースにJSONのようなデータが大量に流れ込むことになる。</p>
 <p>従来、JSONドキュメントを扱うには2つの方法があった：</p>
 <ul>
 <li><p><strong>JSONの各フィールドを固定スキーマに事前定義し、インデックスを構築する：</strong>このアプローチは、確かなクエリパフォーマンスを実現するが、硬直的である。データフォーマットが変更されると、新しいフィールドや変更されたフィールドがあるたびに、手間のかかるデータ定義言語（DDL）の更新やスキーマの移行が発生します。</p></li>

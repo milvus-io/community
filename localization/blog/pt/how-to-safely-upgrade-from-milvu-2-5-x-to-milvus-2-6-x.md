@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: Como atualizar com segurança do Milvus 2.5.x para o Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -12,7 +12,7 @@ meta_keywords: 'Milvus, vector databases, Milvus 2.6 features, Nvidia Cagra, ful
 meta_title: |
   How to Safely Upgrade from Milvus 2.5.x to Milvus 2.6.x
 desc: >-
-  Explore o que há de novo no Milvus 2.6, incluindo mudanças na arquitetura e
+  Explore o que há de novo no Milvus 2.6, incluindo alterações na arquitetura e
   recursos principais, e saiba como fazer uma atualização contínua do Milvus
   2.5.
 origin: >-
@@ -46,7 +46,7 @@ origin: >-
 <li><p><strong>O QueryNode</strong> tratava tanto as consultas históricas <em>como</em> as incrementais (streaming).</p></li>
 <li><p><strong>O DataNode</strong> tratava tanto da descarga em tempo de ingestão <em>como</em> da compactação em segundo plano dos dados históricos.</p></li>
 </ul>
-<p>Essa mistura de lógica em lote e em tempo real dificultava o dimensionamento independente das cargas de trabalho em lote. Isso também significava que o estado do streaming estava disperso em vários componentes, introduzindo atrasos de sincronização, complicando a recuperação de falhas e aumentando a complexidade operacional.</p>
+<p>Essa mistura de lógica em lote e em tempo real dificultava o dimensionamento independente das cargas de trabalho em lote. Também significava que o estado do streaming estava disperso em vários componentes, introduzindo atrasos de sincronização, complicando a recuperação de falhas e aumentando a complexidade operacional.</p>
 <h3 id="Milvus-26-Architecture" class="common-anchor-header">Arquitetura do Milvus 2.6</h3><p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_6_ee6f1f0635.PNG" alt="Milvus 2.6 Architecture" class="doc-image" id="milvus-2.6-architecture" />
@@ -64,10 +64,10 @@ origin: >-
 <tbody>
 <tr><td>Serviços do coordenador</td><td style="text-align:center">RootCoord / QueryCoord / DataCoord (ou MixCoord)</td><td style="text-align:center">MixCoord</td><td style="text-align:center">A gestão de metadados e o agendamento de tarefas são consolidados num único MixCoord, simplificando a lógica de coordenação e reduzindo a complexidade distribuída.</td></tr>
 <tr><td>Camada de acesso</td><td style="text-align:center">Proxy</td><td style="text-align:center">Proxy</td><td style="text-align:center">Os pedidos de escrita são encaminhados apenas através do nó de streaming para ingestão de dados.</td></tr>
-<tr><td>Nós de trabalho</td><td style="text-align:center">-</td><td style="text-align:center">Nó de fluxo contínuo</td><td style="text-align:center">Nó de processamento de fluxo contínuo dedicado responsável por toda a lógica incremental (segmentos crescentes), incluindo:- Ingestão de dados incrementais- Consulta de dados incrementais- Persistência de dados incrementais no armazenamento de objectos- Escritas baseadas em fluxo- Recuperação de falhas baseada em WAL</td></tr>
+<tr><td>Nós de trabalho</td><td style="text-align:center">-</td><td style="text-align:center">Nó de fluxo contínuo</td><td style="text-align:center">Nó de processamento de streaming dedicado responsável por toda a lógica incremental (segmentos crescentes), incluindo:- Ingestão de dados incrementais- Consulta de dados incrementais- Persistência de dados incrementais no armazenamento de objectos- Escritas baseadas em stream- Recuperação de falhas baseada em WAL</td></tr>
 <tr><td></td><td style="text-align:center">Nó de consulta</td><td style="text-align:center">Nó de consulta</td><td style="text-align:center">Nó de processamento em lote que trata apenas de consultas sobre dados históricos.</td></tr>
 <tr><td></td><td style="text-align:center">Nó de dados</td><td style="text-align:center">Nó de dados</td><td style="text-align:center">Nó de processamento em lote responsável apenas por dados históricos, incluindo compactação e construção de índices.</td></tr>
-<tr><td></td><td style="text-align:center">Nó de índice</td><td style="text-align:center">-</td><td style="text-align:center">O Nó de Índice é fundido com o Nó de Dados, simplificando as definições de funções e a topologia de implementação.</td></tr>
+<tr><td></td><td style="text-align:center">Nó de índice</td><td style="text-align:center">-</td><td style="text-align:center">O nó de índice é fundido com o nó de dados, simplificando as definições de funções e a topologia de implementação.</td></tr>
 </tbody>
 </table>
 <p>Em suma, o Milvus 2.6 traça uma linha clara entre as cargas de trabalho em fluxo e em lote, eliminando o emaranhado de componentes cruzados visto na versão 2.5 e criando uma arquitetura mais escalável e de fácil manutenção.</p>
@@ -105,7 +105,7 @@ origin: >-
 <h3 id="Architecture-and-Scalability-Upgrades" class="common-anchor-header">Atualizações de arquitetura e escalabilidade</h3><ul>
 <li><p><a href="https://milvus.io/docs/tiered-storage-overview.md#Tiered-Storage-Overview"><strong>Armazenamento em camadas</strong></a> <strong>para gerenciamento de dados quentes e frios:</strong> Separa dados quentes e frios em SSD e armazenamento de objectos; suporta carregamento parcial e preguiçoso; elimina a necessidade de carregar totalmente as colecções localmente; reduz a utilização de recursos em até 50% e acelera os tempos de carregamento de grandes conjuntos de dados.</p></li>
 <li><p><strong>Serviço de streaming em tempo real:</strong> Adiciona nós de streaming dedicados integrados com Kafka/Pulsar para ingestão contínua; permite indexação imediata e disponibilidade de consulta; melhora o rendimento de gravação e acelera a recuperação de falhas para cargas de trabalho em tempo real e em rápida mudança.</p></li>
-<li><p><strong>Escalabilidade e estabilidade aprimoradas:</strong> O Milvus suporta agora mais de 100.000 colecções para grandes ambientes multi-tenant. As actualizações de infraestrutura - <a href="https://milvus.io/docs/woodpecker_architecture.md#Woodpecker">Woodpecker</a> (WAL de disco zero), <a href="https://milvus.io/docs/roadmap.md#%F0%9F%94%B9-HotCold-Tiering--Storage-Architecture-StorageV2">Storage v2</a> (IOPS/memória reduzida) e o <a href="https://milvus.io/docs/release_notes.md#Coordinator-Merge-into-MixCoord">Coordinator Merge</a> - melhoram a estabilidade do cluster e permitem um escalonamento previsível sob cargas de trabalho pesadas.</p></li>
+<li><p><strong>Escalabilidade e estabilidade aprimoradas:</strong> O Milvus suporta agora mais de 100.000 colecções para grandes ambientes multi-tenant. As actualizações da infraestrutura - <a href="https://milvus.io/docs/woodpecker_architecture.md#Woodpecker">Woodpecker</a> (WAL de disco zero), <a href="https://milvus.io/docs/roadmap.md#%F0%9F%94%B9-HotCold-Tiering--Storage-Architecture-StorageV2">Storage v2</a> (IOPS/memória reduzida) e o <a href="https://milvus.io/docs/release_notes.md#Coordinator-Merge-into-MixCoord">Coordinator Merge</a> - melhoram a estabilidade do cluster e permitem um escalonamento previsível sob cargas de trabalho pesadas.</p></li>
 </ul>
 <p>Para obter uma lista completa dos recursos do Milvus 2.6, consulte <a href="https://milvus.io/docs/release_notes.md">as notas de versão do Milvus</a>.</p>
 <h2 id="How-to-Upgrade-from-Milvus-25x-to-Milvus-26x" class="common-anchor-header">Como atualizar do Milvus 2.5.x para o Milvus 2.6.x<button data-href="#How-to-Upgrade-from-Milvus-25x-to-Milvus-26x" class="anchor-icon" translate="no">
@@ -407,7 +407,7 @@ helm upgrade -i my-release zilliztech/milvus \
 <li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Desbloqueando a verdadeira recuperação em nível de entidade: Novas capacidades de Array-of-Structs e MAX_SIM no Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot%E2%80%93cold-data-loading.md">Pare de pagar por dados frios: 80% de redução de custos com o carregamento de dados quentes e frios sob demanda no armazenamento em camadas do Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Apresentando o AISAQ no Milvus: a pesquisa de vetores em escala de bilhões acaba de ficar 3.200 vezes mais barata na memória</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Otimização do NVIDIA CAGRA no Milvus: Uma abordagem híbrida GPU-CPU para uma indexação mais rápida e consultas mais baratas</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Otimização do NVIDIA CAGRA no Milvus: uma abordagem híbrida GPU-CPU para uma indexação mais rápida e consultas mais baratas</a></p></li>
 <li><p><a href="https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md">Apresentando o índice Milvus Ngram: Correspondência mais rápida de palavras-chave e consultas LIKE para cargas de trabalho de agentes</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Juntando Filtragem Geoespacial e Pesquisa Vetorial com Campos Geométricos e RTREE no Milvus 2.6</a></p></li>
 <li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Pesquisa vetorial no mundo real: como filtrar eficazmente sem prejudicar a recordação</a></p></li>

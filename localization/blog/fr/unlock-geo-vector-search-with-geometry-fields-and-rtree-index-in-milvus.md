@@ -5,7 +5,7 @@ title: >-
   RTREE dans Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ origin: >-
   https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 ---
 <p>Alors que les systèmes d'IA sont de plus en plus appliqués à la prise de décision en temps réel, les données géospatiales deviennent de plus en plus importantes dans un ensemble croissant d'applications - en particulier celles qui opèrent dans le monde physique ou servent les utilisateurs à travers des lieux réels.</p>
-<p>Prenons l'exemple des plateformes de livraison de nourriture comme DoorDash ou Uber Eats. Lorsqu'un utilisateur passe une commande, le système ne se contente pas de calculer la distance la plus courte entre deux points. Il évalue la qualité des restaurants, la disponibilité des coursiers, les conditions de circulation, les zones de service et, de plus en plus, l'intégration des utilisateurs et des articles qui représentent les préférences personnelles. De même, les véhicules autonomes doivent planifier leur trajet, détecter les obstacles et comprendre la sémantique de la scène en respectant des contraintes de latence strictes, souvent en l'espace de quelques millisecondes. Dans ces domaines, les décisions efficaces dépendent de la combinaison des contraintes spatiales et de la similarité sémantique, plutôt que de les traiter comme des étapes indépendantes.</p>
+<p>Prenons l'exemple des plateformes de livraison de nourriture comme DoorDash ou Uber Eats. Lorsqu'un utilisateur passe une commande, le système ne se contente pas de calculer la distance la plus courte entre deux points. Il évalue la qualité des restaurants, la disponibilité des coursiers, les conditions de circulation en direct, les zones de service et, de plus en plus, l'intégration des utilisateurs et des articles qui représentent les préférences personnelles. De même, les véhicules autonomes doivent planifier leur trajet, détecter les obstacles et comprendre la sémantique de la scène en respectant des contraintes de latence strictes, souvent en l'espace de quelques millisecondes. Dans ces domaines, les décisions efficaces dépendent de la combinaison des contraintes spatiales et de la similarité sémantique, plutôt que de les traiter comme des étapes indépendantes.</p>
 <p>Cependant, au niveau des données, les données spatiales et sémantiques sont traditionnellement traitées par des systèmes distincts.</p>
 <ul>
 <li><p>Les bases de données géospatiales et les extensions spatiales sont conçues pour stocker les coordonnées, les polygones et les relations spatiales telles que le confinement ou la distance.</p></li>

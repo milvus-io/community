@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: Comment passer en toute sécurité de Milvus 2.5.x à Milvus 2.6.x ?
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -380,7 +380,7 @@ helm upgrade -i my-release zilliztech/milvus \
       </svg>
     </button></h2><p>Milvus 2.6 marque une amélioration majeure à la fois de l'architecture et des opérations. En séparant le traitement en continu et le traitement par lots avec l'introduction de StreamingNode, en consolidant les coordinateurs dans MixCoord et en simplifiant les rôles des travailleurs, Milvus 2.6 fournit une base plus stable, plus évolutive et plus facile à exploiter pour les charges de travail vectorielles à grande échelle.</p>
 <p>Ces changements architecturaux rendent les mises à niveau, en particulier à partir de Milvus 2.5, plus sensibles à l'ordre. Une mise à niveau réussie dépend du respect des dépendances des composants et des contraintes de disponibilité temporaire. Pour les environnements de production, Milvus Operator est l'approche recommandée, car il automatise le séquençage des mises à niveau et réduit le risque opérationnel, tandis que les mises à niveau basées sur Helm sont mieux adaptées aux cas d'utilisation hors production.</p>
-<p>Avec des capacités de recherche améliorées, des types de données plus riches, un stockage hiérarchisé et des options de file d'attente de messages améliorées, Milvus 2.6 est bien placé pour prendre en charge les applications d'IA modernes qui nécessitent une ingestion en temps réel, des performances de requête élevées et des opérations efficaces à l'échelle.</p>
+<p>Avec des fonctionnalités de recherche améliorées, des types de données plus riches, un stockage hiérarchisé et des options de file d'attente de messages améliorées, Milvus 2.6 est bien placé pour prendre en charge les applications d'IA modernes qui nécessitent une ingestion en temps réel, des performances de requête élevées et des opérations efficaces à l'échelle.</p>
 <p>Vous avez des questions ou souhaitez approfondir l'une des fonctionnalités de la dernière version de Milvus ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou déposez des questions sur<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions dans le cadre des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
 <h2 id="More-Resources-about-Milvus-26" class="common-anchor-header">Plus de ressources sur Milvus 2.6<button data-href="#More-Resources-about-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"

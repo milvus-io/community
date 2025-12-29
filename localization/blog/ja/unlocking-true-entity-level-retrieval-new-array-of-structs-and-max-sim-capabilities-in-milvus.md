@@ -4,7 +4,7 @@ id: >-
 title: 真のエンティティレベルの検索を解き放つ：Milvusの新しいArray-of-StructsとMAX_SIM機能
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -14,11 +14,11 @@ meta_title: |
   Array of Structs in Milvus: Entity-Level Multi-Vector Retrieval
 desc: >-
   MilvusのArray of
-  StructsとMAX_SIMがどのようにマルチベクターデータの真のエンティティレベル検索を可能にし、デデューピングを排除して検索精度を向上させるかをご紹介します。
+  StructsとMAX_SIMがどのようにマルチベクターデータの真のエンティティレベル検索を可能にし、デデュープを排除して検索精度を向上させるかをご紹介します。
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>ベクターデータベースの上にAIアプリケーションを構築したことがある人なら、おそらく同じペインポイントにぶつかったことがあるだろう。データベースは個々のチャンクの埋め込みを検索するが、アプリケーションは<strong><em>エンティティを</em></strong>気にする。このミスマッチが、検索ワークフロー全体を複雑にしている。</p>
+<p>ベクター・データベースの上にAIアプリケーションを構築したことがある人なら、おそらく同じ痛点にぶつかったことがあるだろう。データベースは個々のチャンクの埋め込みを検索するが、アプリケーションは<strong><em>エンティティを</em></strong>気にする。このミスマッチが、検索ワークフロー全体を複雑にしている。</p>
 <p>このような現象は、何度も何度も目にしてきたことだろう：</p>
 <ul>
 <li><p><strong>RAG知識ベース：</strong>RAG知識ベース：記事は段落埋め込みにチャンクされているため、検索エンジンは完全なドキュメントではなく、散らばった断片を返す。</p></li>
@@ -127,7 +127,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td>機械学習</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
-<tr><td>ビギナー</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
+<tr><td>初心者</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
 <tr><td>コース</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
 </tbody>
 </table>
@@ -214,7 +214,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1.ウィキペディアのドキュメント検索</h3><p>このチュートリアルでは、段落レベルのデータを完全なドキュメントレコードに変換するために<strong>Array of Structsを</strong>使用する方法を説明します。</p>
-<p>多くの知識ベースパイプラインはWikipediaの記事をパラグラフチャンクとして保存しています。これは埋め込みやインデックス作成には有効ですが、検索には不向きです。ユーザクエリは通常、散らばった段落を返すため、手動で記事をグループ化し、再構築する必要があります。Array of StructsとMAX_SIMを使えば、<strong>各記事が1行になる</strong>ようにストレージスキーマを再設計することができ、milvusは文書全体をネイティブにランク付けして返すことができる。</p>
+<p>多くの知識ベースパイプラインはWikipediaの記事をパラグラフチャンクとして保存しています。これは埋め込みやインデックス作成には適していますが、検索には不向きです。ユーザクエリは通常、散らばった段落を返すため、手動で記事をグループ化し、再構築する必要があります。Array of StructsとMAX_SIMを使えば、<strong>各記事が1行になる</strong>ようにストレージスキーマを再設計することができ、milvusは文書全体をネイティブにランク付けして返すことができる。</p>
 <p>次のステップでは、以下の方法を紹介します：</p>
 <ol>
 <li><p>ウィキペディアの段落データの読み込みと前処理</p></li>
@@ -321,7 +321,7 @@ results = client.search(
 <tr><th style="text-align:center"><strong>次元</strong></th><th style="text-align:center"><strong>従来のアプローチ</strong></th><th style="text-align:center"><strong>構造体の配列</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>データベース出力</strong></td><td style="text-align:center"><strong>上位100段落を</strong>返す（冗長性が高い）</td><td style="text-align:center"><em>トップ10の完全なドキュメントを</em>返す - クリーンで正確</td></tr>
+<tr><td style="text-align:center"><strong>データベース出力</strong></td><td style="text-align:center"><strong>上位100段落を</strong>返す（冗長性が高い）</td><td style="text-align:center"><em>上位10個の完全な文書を</em>返す - クリーンで正確</td></tr>
 <tr><td style="text-align:center"><strong>アプリケーションロジック</strong></td><td style="text-align:center"><strong>グループ化、重複排除、再ランク付けが</strong>必要（複雑）</td><td style="text-align:center">後処理は不要 - エンティティレベルの結果はmilvusから直接得られる。</td></tr>
 </tbody>
 </table>
@@ -524,4 +524,4 @@ results = client.search(
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">構造体の配列｜Milvusドキュメント</a></li>
 </ul>
-<p>Milvusの最新機能についてのご質問やディープダイブをご希望ですか？私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discord チャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHub</a> に課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察やガイダンス、質問への回答を得ることもできます。</p>
+<p>Milvusの最新機能に関するご質問やディープダイブをご希望ですか？私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discord チャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHub</a> に課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察やガイダンス、質問への回答を得ることもできます。</p>

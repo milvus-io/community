@@ -4,7 +4,7 @@ id: >-
 title: '진정한 엔티티 레벨 검색을 실현합니다: Milvus의 새로운 구조체 배열 및 MAX_SIM 기능'
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -187,17 +187,17 @@ origin: >-
 <li><p><strong>스토리지를 실제 엔터티에 맞춰 정렬하므로</strong> 각 데이터베이스 행이 기사, 제품 또는 동영상과 같은 실제 항목에 깔끔하게 매핑됩니다.</p></li>
 <li><p><strong>MAX_SIM과 같은 집계 함수와 결합하면</strong> 데이터베이스에서 직접 진정한 엔티티 수준의 멀티벡터 검색이 가능하므로 애플리케이션 계층에서 중복 제거, 그룹화 또는 순위 재지정이 필요하지 않습니다.</p></li>
 </ul>
-<p>이러한 특성으로 인해 구조 배열은 <em>단일 논리적 엔티티가 여러 개의 벡터로 표현될</em> 때마다 자연스럽게 적합합니다. 일반적인 예로는 문단으로 분할된 기사, 토큰 임베딩으로 분해된 문서, 여러 이미지로 표현된 제품 등이 있습니다. 검색 결과에 중복된 히트, 흩어진 조각 또는 동일한 엔티티가 상위 결과에 여러 번 나타나는 경우, 배열 구조는 애플리케이션 코드의 사후 패치가 아닌 저장 및 검색 레이어에서 이러한 문제를 해결합니다.</p>
+<p>이러한 특성으로 인해 구조 배열은 <em>단일 논리적 엔티티가 여러 개의 벡터로 표현될</em> 때마다 자연스럽게 적합합니다. 일반적인 예로는 문단으로 분할된 기사, 토큰 임베딩으로 분해된 문서, 여러 이미지로 표현된 제품 등이 있습니다. 검색 결과에서 중복 히트, 흩어진 조각 또는 동일한 엔티티가 상위 결과에 여러 번 나타나는 경우, 배열 구조는 애플리케이션 코드의 사후 패치가 아닌 저장 및 검색 레이어에서 이러한 문제를 해결합니다.</p>
 <p>이 패턴은 <strong>다중 벡터 검색에</strong> 의존하는 최신 AI 시스템에서 특히 강력합니다. 예를 들어, <strong>콜버트는</strong> 하나의 문서를 나타냅니다:</p>
 <ul>
-<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT는</strong></a> 법률 텍스트나 학술 연구와 같은 영역에서 세분화된 의미론적 일치를 위해 단일 문서를 100~500개의 토큰 임베딩으로 표현합니다.</p></li>
+<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT는</strong></a> 법률 텍스트나 학술 연구와 같은 영역에서 세분화된 의미론적 매칭을 위해 단일 문서를 100-500개의 토큰 임베딩으로 표현합니다.</p></li>
 <li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali는</strong> </a>재무제표, 계약서, 송장, 기타 스캔 문서에서 교차 모드 검색을 위해 각 PDF 페이지를 256~1024개의 이미지 패치로<a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy">변환합니다 </a>.</p></li>
 </ul>
 <p>Milvus는 구조 배열을 통해 이러한 모든 벡터를 단일 엔티티 아래에 저장하고 총 유사도(예: MAX_SIM)를 효율적이고 기본적으로 계산할 수 있습니다. 이를 보다 명확하게 설명하기 위해 두 가지 구체적인 예를 들어보겠습니다.</p>
 <h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">예 1: 이커머스 제품 검색</h3><p>이전에는 여러 개의 이미지가 있는 제품이 행당 하나의 이미지가 있는 평면 스키마에 저장되었습니다. 정면, 측면, 각도가 있는 제품의 경우 세 개의 행이 생성되었습니다. 검색 결과에 동일한 제품의 이미지가 여러 개 표시되는 경우가 많았기 때문에 수동으로 중복 제거 및 순위 재지정이 필요했습니다.</p>
 <p>구조 배열을 사용하면 각 제품이 <strong>하나의 행이</strong> 됩니다. 모든 이미지 임베딩과 메타데이터(각도, is_primary 등)는 <code translate="no">images</code> 필드 안에 구조 배열로 존재합니다. Milvus는 이러한 이미지가 동일한 제품에 속한다는 것을 이해하고 개별 이미지가 아닌 제품 전체를 반환합니다.</p>
 <h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">예 2: 지식창고 또는 Wikipedia 검색</h3><p>이전에는 하나의 Wikipedia 문서가 <em>N개의</em> 단락 행으로 나뉘어 있었습니다. 검색 결과는 흩어져 있는 단락을 반환했기 때문에 시스템에서 이를 그룹화하고 어느 문서에 속하는지 추측해야 했습니다.</p>
-<p>구조 배열을 사용하면 전체 문서가 <strong>하나의 행이</strong> 됩니다. 모든 단락과 그 임베딩은 단락 필드 아래에 그룹화되며 데이터베이스는 단편적인 부분이 아닌 전체 문서를 반환합니다.</p>
+<p>구조 배열을 사용하면 전체 문서가 <strong>하나의 행이</strong> 됩니다. 모든 단락과 그 임베딩은 단락 필드 아래에 그룹화되며 데이터베이스는 단편적인 조각이 아닌 전체 문서를 반환합니다.</p>
 <h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">실습 튜토리얼: 구조 배열로 문서 수준 검색하기<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -214,7 +214,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. 위키백과 문서 검색</h3><p>이 튜토리얼에서는 <strong>구조체 배열을</strong> 사용하여 단락 수준 데이터를 전체 문서 레코드로 변환하는 방법을 살펴봄으로써 Milvus가 고립된 조각을 반환하는 대신 <strong>진정한 문서 수준 검색을</strong> 수행할 수 있도록 하는 방법을 안내합니다.</p>
-<p>많은 지식창고 파이프라인은 Wikipedia 문서를 문단 덩어리로 저장합니다. 이는 임베딩 및 인덱싱에는 효과적이지만 검색을 방해합니다. 사용자 쿼리는 일반적으로 흩어져 있는 단락을 반환하므로 문서를 수동으로 그룹화하고 재구성해야 합니다. 구조체 배열과 MAX_SIM을 사용하면 <strong>각 문서가 하나의 행이</strong> 되도록 저장 스키마를 재설계할 수 있으며, Milvus는 기본적으로 전체 문서의 순위를 매기고 반환할 수 있습니다.</p>
+<p>많은 지식창고 파이프라인은 Wikipedia 문서를 문단 덩어리로 저장합니다. 이는 임베딩과 인덱싱에는 효과적이지만 검색을 방해합니다. 사용자 쿼리는 일반적으로 흩어져 있는 단락을 반환하므로 문서를 수동으로 그룹화하고 재구성해야 합니다. 구조체 배열과 MAX_SIM을 사용하면 <strong>각 문서가 하나의 행이</strong> 되도록 저장 스키마를 재설계할 수 있으며, Milvus는 기본적으로 전체 문서의 순위를 매기고 반환할 수 있습니다.</p>
 <p>다음 단계에서는 그 방법을 보여드리겠습니다:</p>
 <ol>
 <li><p>Wikipedia 문단 데이터 로드 및 사전 처리하기</p></li>

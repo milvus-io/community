@@ -6,7 +6,7 @@ title: >-
   in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -190,7 +190,7 @@ origin: >-
 <li><p><strong>Es gleicht die Speicherung an reale Entitäten</strong> an, so dass jede Datenbankzeile sauber auf ein tatsächliches Element wie einen Artikel, ein Produkt oder ein Video abgebildet wird.</p></li>
 <li><p><strong>In Kombination mit Aggregatfunktionen wie MAX_SIM</strong> ermöglicht es eine echte Multi-Vektor-Abfrage auf Entity-Ebene direkt aus der Datenbank, wodurch Deduplizierung, Gruppierung oder Neuordnung in der Anwendungsschicht vermieden werden.</p></li>
 </ul>
-<p>Aufgrund dieser Eigenschaften eignet sich Array of Structs immer dann, wenn eine <em>einzelne logische Entität durch mehrere Vektoren dargestellt wird</em>. Gängige Beispiele sind Artikel, die in Absätze aufgeteilt sind, Dokumente, die in Token-Einbettungen zerlegt sind, oder Produkte, die durch mehrere Bilder dargestellt werden. Wenn Ihre Suchergebnisse unter doppelten Treffern, verstreuten Fragmenten oder dem mehrfachen Auftauchen derselben Entität in den Top-Ergebnissen leiden, löst Array of Structs diese Probleme in der Speicher- und Abrufschicht - und nicht durch nachträgliche Anpassungen im Anwendungscode.</p>
+<p>Aufgrund dieser Eigenschaften eignet sich Array of Structs immer dann, wenn eine <em>einzelne logische Entität durch mehrere Vektoren dargestellt wird</em>. Gängige Beispiele sind Artikel, die in Absätze aufgeteilt sind, Dokumente, die in Token-Einbettungen zerlegt sind, oder Produkte, die durch mehrere Bilder dargestellt werden. Wenn Ihre Suchergebnisse unter doppelten Treffern, verstreuten Fragmenten oder dem mehrfachen Auftauchen derselben Entität in den Top-Ergebnissen leiden, löst Array of Structs diese Probleme auf der Speicher- und Abrufebene - und nicht durch nachträgliche Anpassungen im Anwendungscode.</p>
 <p>Dieses Muster ist besonders leistungsfähig für moderne KI-Systeme, die auf die <strong>Abfrage mehrerer Vektoren</strong> angewiesen sind, z. B:</p>
 <ul>
 <li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> stellt ein einzelnes Dokument als 100-500 Token-Einbettungen dar, um einen feinkörnigen semantischen Abgleich in Bereichen wie Rechtstexten und akademischer Forschung zu ermöglichen.</p></li>
@@ -522,7 +522,7 @@ results = client.search(
         ></path>
       </svg>
     </button></h2><p>Die meisten Vektordatenbanken speichern jedes Fragment als unabhängigen Datensatz, was bedeutet, dass Anwendungen diese Fragmente neu zusammensetzen müssen, wenn sie ein vollständiges Dokument, ein Produkt oder eine Seite benötigen. Ein Array von Structs ändert dies. Durch die Kombination von Skalaren, Vektoren, Text und anderen Feldern in einem einzigen strukturierten Objekt kann eine Datenbankzeile eine vollständige Entität von Anfang bis Ende darstellen.</p>
-<p>Das Ergebnis ist einfach, aber wirkungsvoll: Arbeiten, die früher komplexe Gruppierung, Deduplizierung und Neuordnung in der Anwendungsschicht erforderten, werden zu einer nativen Datenbankfunktion. Und genau das ist die Zukunft der Vektordatenbanken - komplexere Strukturen, intelligentere Abfragen und einfachere Pipelines.</p>
+<p>Das Ergebnis ist einfach, aber wirkungsvoll: Arbeiten, die früher komplexe Gruppierung, Deduplizierung und Neuordnung in der Anwendungsschicht erforderten, werden zu einer nativen Datenbankfunktion. Und genau darauf zielt die Zukunft der Vektordatenbanken ab - sicherere Strukturen, intelligentere Abfragen und einfachere Pipelines.</p>
 <p>Weitere Informationen über Array of Structs und MAX_SIM finden Sie in der unten stehenden Dokumentation:</p>
 <ul>
 <li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Milvus Dokumentation</a></li>

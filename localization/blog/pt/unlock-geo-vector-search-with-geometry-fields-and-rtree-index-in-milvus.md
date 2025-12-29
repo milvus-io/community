@@ -5,7 +5,7 @@ title: >-
   Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -125,7 +125,7 @@ origin: >-
 </table>
 <h3 id="How-to-Combine-Geolocation-Index-and-Vector-Index" class="common-anchor-header">Como combinar o índice de geolocalização e o índice vetorial</h3><p>Com o suporte Geometry e o índice RTREE, o Milvus pode combinar a filtragem geoespacial com a pesquisa de similaridade vetorial num único fluxo de trabalho. O processo funciona em duas etapas:</p>
 <p><strong>1. Filtrar por localização usando RTREE:</strong> Milvus primeiro usa o índice RTREE para restringir a pesquisa a entidades dentro do intervalo geográfico especificado (por exemplo, "dentro de 2 km").</p>
-<p><strong>2. Classificar por semântica utilizando a pesquisa vetorial:</strong> Dos restantes candidatos, o índice vetorial seleciona os N resultados mais semelhantes com base na semelhança de incorporação.</p>
+<p><strong>2. Classificar por semântica utilizando a pesquisa vetorial:</strong> Dos restantes candidatos, o índice vetorial seleciona os Top-N resultados mais semelhantes com base na semelhança de incorporação.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Geometry_R_Tree_f1d88fc252.png" alt="" class="doc-image" id="" />
@@ -154,7 +154,7 @@ origin: >-
 <li><p><strong>Recuperação conjunta</strong> - Primeiro, aplique um filtro espacial (por exemplo, <em>restaurantes num raio de 3 km</em>) e, em seguida, utilize a pesquisa vetorial para classificar por semelhança, preferência de gosto ou qualidade.</p></li>
 <li><p>Tomada<strong>de decisões dinâmica</strong> - Combinar a distribuição de estafetas em tempo real e os sinais de trânsito para atribuir rapidamente a estafeta mais próxima e mais adequada.</p></li>
 </ul>
-<p>Esta abordagem unificada permite à plataforma efetuar raciocínios espaciais e semânticos numa única consulta. Por exemplo, quando um utilizador procura "arroz com caril", o Milvus recupera restaurantes semanticamente relevantes <em>e</em> dá prioridade aos que estão próximos, que fazem entregas rápidas e que correspondem ao perfil histórico de gostos do utilizador.</p>
+<p>Esta abordagem unificada permite que a plataforma efectue raciocínios espaciais e semânticos numa única consulta. Por exemplo, quando um utilizador procura "arroz com caril", o Milvus recupera restaurantes semanticamente relevantes <em>e</em> dá prioridade aos que estão próximos, que fazem entregas rápidas e que correspondem ao perfil histórico de gostos do utilizador.</p>
 <h3 id="2-Autonomous-Driving-More-Intelligent-Decisions" class="common-anchor-header">2. Condução autónoma: Decisões mais inteligentes</h3><p>Na condução autónoma, a indexação geoespacial é fundamental para a perceção, localização e tomada de decisões. Os veículos devem alinhar-se continuamente com mapas de alta definição, detetar obstáculos e planear trajectórias seguras - tudo isto em apenas alguns milissegundos.</p>
 <p>Com o Milvus, o tipo Geometry e o índice RTREE podem armazenar e consultar estruturas espaciais ricas, tais como:</p>
 <ul>
@@ -206,7 +206,7 @@ origin: >-
     </button></h2><ul>
 <li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Apresentando Milvus 2.6: Pesquisa Vetorial Acessível em Escala de Bilhões</a></p></li>
 <li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Apresentando a função Embedding: Como o Milvus 2.6 agiliza a vetorização e a busca semântica</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding no Milvus: Filtragem JSON 88,9x mais rápida com flexibilidade</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding em Milvus: Filtragem JSON 88,9x mais rápida com flexibilidade</a></p></li>
 <li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Desbloqueando a verdadeira recuperação em nível de entidade: Novas capacidades de Array-of-Structs e MAX_SIM em Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH em Milvus: A arma secreta para combater duplicatas em dados de treinamento LLM </a></p></li>
 <li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Leve a compressão vetorial ao extremo: como o Milvus atende a 3× mais consultas com o RaBitQ</a></p></li>

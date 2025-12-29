@@ -4,7 +4,7 @@ id: >-
 title: 開啟真正的實體層級擷取：Milvus 中新的結構陣列與 MAX_SIM 功能
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
-cover: assets.zilliz.com/array_of_structs_cover_update_5c3d76ac94.png
+cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -16,7 +16,7 @@ desc: 了解 Milvus 中的 Array of Structs 和 MAX_SIM 如何實現多向量資
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>如果您已經在向量資料庫之上建立了人工智能應用程式，您可能已經遇到了相同的痛點：資料庫擷取的是個別區塊的嵌入，但您的應用程式關心的<strong>是<em>實體</em>。</strong>這種錯配讓整個擷取工作流程變得複雜。</p>
+<p>如果您在向量資料庫之上建立了人工智慧應用程式，您可能會遇到相同的痛點：資料庫擷取的是個別區塊的嵌入，但您的應用程式關心的<strong>是<em>實體</em>。</strong>這種錯配讓整個擷取工作流程變得複雜。</p>
 <p>您可能已經看到這種情況一再發生：</p>
 <ul>
 <li><p><strong>RAG 知識庫：</strong>文章被分成段落嵌入，因此搜尋引擎會返回分散的片段，而不是完整的文件。</p></li>
@@ -211,8 +211,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1.維基百科文件擷取</h3><p>在本教程中，我們將介紹如何使用<strong>結構陣列將</strong>段落級資料轉換為完整的文檔記錄-允許 Milvus 執行<strong>真正的文檔級檢索</strong>，而不是返回孤立的片段。</p>
-<p>許多知識庫管道會將 Wikipedia 文章儲存為段落區塊。這對於嵌入和索引來說非常有效，但卻會破壞擷取：使用者查詢通常會傳回分散的段落，迫使您手動將文章分類並重組。有了 Structs 陣列和 MAX_SIM，我們就可以重新設計儲存模式，讓<strong>每篇文章成為一列</strong>，Milvus 就可以原生排序並傳回整份文件。</p>
+    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1.維基百科文件擷取</h3><p>在本教程中，我們將介紹如何使用<strong>結構陣列（Array of Structs</strong>）將段落層級的資料轉換為完整的文件記錄-允許 Milvus 執行<strong>真正的文件層級檢索</strong>，而不是返回孤立的片段。</p>
+<p>許多知識庫管道會將 Wikipedia 文章儲存為段落區塊。這對於嵌入和索引非常有效，但卻會破壞擷取：使用者查詢通常會返回分散的段落，迫使您手動將文章分類並重組。有了 Structs 陣列和 MAX_SIM，我們就可以重新設計儲存模式，讓<strong>每篇文章成為一列</strong>，Milvus 就可以原生排序並傳回整份文件。</p>
 <p>在接下來的步驟中，我們將展示如何</p>
 <ol>
 <li><p>載入並預先處理維基百科的段落資料</p></li>
@@ -328,7 +328,7 @@ results = client.search(
 <p>許多成熟的搜尋和推薦系統自然會在具有多個相關向量的實體上運作。Array of Structs 可輕鬆對應這些使用個案：</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>情境</strong></th><th style="text-align:center"><strong>資料模型</strong></th><th style="text-align:center"><strong>每個實體的向量</strong></th></tr>
+<tr><th style="text-align:center"><strong>使用情境</strong></th><th style="text-align:center"><strong>資料模型</strong></th><th style="text-align:center"><strong>每個實體的向量</strong></th></tr>
 </thead>
 <tbody>
 <tr><td style="text-align:center">🛍️<strong>電子商務產品</strong></td><td style="text-align:center">一個產品 → 多個影像</td><td style="text-align:center">5-20</td></tr>

@@ -3,7 +3,7 @@ id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 title: Wie man sicher von Milvus 2.5.x auf Milvus 2.6.x aktualisiert
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -162,9 +162,9 @@ origin: >-
 <li><p>Kernkomponenten von Milvus</p></li>
 <li><p>Erforderliche Abhängigkeiten wie etcd, Pulsar und MinIO</p></li>
 </ul>
-<p>Milvus Operator folgt dem Standard-Kubernetes-Operator-Muster. Er führt eine benutzerdefinierte Milvus-Ressource (CR) ein, die den gewünschten Zustand eines Milvus-Clusters beschreibt, z. B. seine Version, Topologie und Konfiguration.</p>
+<p>Milvus Operator folgt dem Standardmuster von Kubernetes Operator. Er führt eine benutzerdefinierte Milvus-Ressource (CR) ein, die den gewünschten Zustand eines Milvus-Clusters beschreibt, z. B. seine Version, Topologie und Konfiguration.</p>
 <p>Ein Controller überwacht den Cluster kontinuierlich und gleicht den Ist-Zustand mit dem in der CR definierten Soll-Zustand ab. Wenn Änderungen vorgenommen werden, z. B. ein Upgrade der Milvus-Version, wendet der Operator diese automatisch auf kontrollierte und wiederholbare Weise an und ermöglicht so automatisierte Upgrades und ein fortlaufendes Lifecycle-Management.</p>
-<h3 id="Milvus-Custom-Resource-CR-Example" class="common-anchor-header">Beispiel für eine benutzerdefinierte Milvus-Ressource (CR)</h3><pre><code translate="no">apiVersion: milvus.io/v1beta1
+<h3 id="Milvus-Custom-Resource-CR-Example" class="common-anchor-header">Beispiel für eine benutzerdefinierte Ressource (CR) von Milvus</h3><pre><code translate="no">apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
   name: my-milvus-mansion    
