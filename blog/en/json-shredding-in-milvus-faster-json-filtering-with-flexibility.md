@@ -4,7 +4,7 @@ title: >
  JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility
 author: Jack Zhang
 date: 2025-12-04
-cover: assets.zilliz.com/json_shredding_cover_new_a678c3731f.png
+cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
 tag: Engineering
 recommend: false
 publishToMedium: true

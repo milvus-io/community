@@ -4,7 +4,7 @@ title: >
  Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08
-cover: assets.zilliz.com/rtree_cover_53c424f967.png
+cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
 tag: Engineering
 recommend: false
 publishToMedium: true

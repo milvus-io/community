@@ -4,7 +4,7 @@ title: >
  How to Safely Upgrade from Milvus 2.5.x to Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25
-cover: assets.zilliz.com/Milvus_2_5_x_to_Milvus_2_6_x_cd2a5397fc.png
+cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
