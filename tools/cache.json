@@ -228,5 +228,6 @@
   "blog/en/building-a-search-pipeline-that-understands-what-users-want.md": "2025-12-25T12:38:23.007Z",
   "blog/en/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md": "2025-12-19T14:26:24.932Z",
   "blog/en/embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md": "2025-12-25T15:05:48.651Z",
-  "blog/en/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md": "2025-12-28T15:59:11.087Z"
+  "blog/en/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md": "2025-12-28T15:59:11.087Z",
+  "blog/en/keeping-ai-agents-grounded-context-engineering-strategies-that-prevent-context-rot-using-milvus.md": "2025-12-29T03:51:54.738Z"
 }
