@@ -94,7 +94,7 @@ The diagram below summarizes how Phrase Match works end-to-end.
 
 ## How to Enable Phrase Match in Milvus
 
-Phrase Match works on fields of type `**VARCHAR`**, the string type in Milvus. To use it, you must configure your collection schema so that Milvus performs text analysis and stores positional information for the field. This is done by enabling two parameters: `enable_analyzer` and `enable_match`.
+Phrase Match works on fields of type **`VARCHAR`**, the string type in Milvus. To use it, you must configure your collection schema so that Milvus performs text analysis and stores positional information for the field. This is done by enabling two parameters: `enable_analyzer` and `enable_match`.
 
 
 ### Set enable_analyzer and enable_match
