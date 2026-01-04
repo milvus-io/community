@@ -230,5 +230,6 @@
   "blog/en/embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md": "2025-12-25T15:05:48.651Z",
   "blog/en/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md": "2025-12-29T07:10:11.110Z",
   "blog/en/keeping-ai-agents-grounded-context-engineering-strategies-that-prevent-context-rot-using-milvus.md": "2025-12-29T03:51:54.738Z",
-  "blog/en/milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md": "2025-12-31T03:04:39.842Z"
+  "blog/en/milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md": "2025-12-31T03:04:39.842Z",
+  "blog/en/phrase-match-with-slop-in-milvus-2-6-how-to-improve-phrase-level-full-text-search-accuracy.md": "2026-01-04T02:57:04.360Z"
 }
