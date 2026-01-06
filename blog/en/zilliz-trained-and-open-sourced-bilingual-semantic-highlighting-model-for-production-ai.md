@@ -1,7 +1,7 @@
 ---
 id: zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
 title: >
- We Trained and Open-Sourced a Bilingual Semantic Highlighting Model for Production RAG and AI Search 
+ We Trained and Open-Sourced a Bilingual Semantic Highlighting Model for Production RAG and AI Search
 author: Cheney Zhang
 date: 2026-01-06
 cover: assets.zilliz.com/semantic_highlight_cover_f35a98fc58.png
