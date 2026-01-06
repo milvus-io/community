@@ -175,7 +175,7 @@ We used the following datasets in our evaluation:
 - **WikiText-2-ZH (Chinese)** – an out-of-domain Chinese Wikipedia corpus
 
 
-### Models Compared 
+### Models Compared
 
 The models included in the comparison are:
 
