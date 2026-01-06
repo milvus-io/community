@@ -49,7 +49,7 @@ These sentences directly answer the question, but they contain none of the query
 
 The problem becomes even more pronounced with AI agents. An agent’s search query is often not the user’s original question, but a derived instruction produced through reasoning and task decomposition. For example, if a user asks, _“Can you analyze recent market trends?”_, the agent might generate a query like “Retrieve Q4 2024 consumer electronics sales data, year-over-year growth rates, changes in major competitors’ market share, and supply chain cost fluctuations”.
 
-This query spans multiple dimensions and encodes complex intent. Traditional keyword based highlighting, however, can only mechanically mark literal matches such as _“2024”_, _“sales data”_, or _“growth rate”_.
+This query spans multiple dimensions and encodes complex intent. Traditional keyword-based highlighting, however, can only mechanically mark literal matches such as _“2024”_, _“sales data”_, or _“growth rate”_.
 
 Meanwhile, the most valuable insights may look like:
 
