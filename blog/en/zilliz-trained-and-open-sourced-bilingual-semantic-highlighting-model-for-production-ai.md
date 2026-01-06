@@ -86,7 +86,7 @@ Earlier this year, OpenSearch released a dedicated model for semantic highlighti
 
 ### Provence / XProvence
 
-[**Provence**](https://huggingface.co/naver/provence-reranker-debertav3-v1) is a model developed by [Naver ](https://zilliz.com/customers/naver)and was initially trained for **context pruning**—a task that is closely related to semantic highlighting. 
+[**Provence**](https://huggingface.co/naver/provence-reranker-debertav3-v1) is a model developed by [Naver](https://zilliz.com/customers/naver) and was initially trained for **context pruning**—a task that is closely related to semantic highlighting. 
 
 Both tasks are built on the same underlying idea: using semantic matching to identify relevant content and filter out irrelevant parts. For this reason, Provence can be repurposed for semantic highlighting with relatively little adaptation.
 
