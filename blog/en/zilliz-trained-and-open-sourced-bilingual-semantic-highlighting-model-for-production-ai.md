@@ -140,7 +140,7 @@ To achieve all of these, we adopted a straightforward approach: use large langua
 
 At a high level, the annotation pipeline works as follows: **LLM reasoning → highlight labels → filtering → final training sample.** 
 
-![](https://assets.zilliz.com/pipeline_4333d488a7.png)
+![](https://assets.zilliz.com/pipeline_en_2e917fe1ce.png)
 
 This design delivers three concrete benefits in practice:
 
