@@ -77,7 +77,7 @@ That is why practical semantic highlighting requires a lightweight, specialized 
 
 ![](https://assets.zilliz.com/opensearch_en_aea06a2114.png)
 
-Earlier this year, OpenSearch released a dedicated model for semantic highlighting: [**opensearch-semantic-highlighter-v1**](https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1). While it is a meaningful attempt at the problem, it has two critical limitations.
+Last year, OpenSearch released a dedicated model for semantic highlighting: [**opensearch-semantic-highlighter-v1**](https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1). While it is a meaningful attempt at the problem, it has two critical limitations.
 
 - **Small context window:** The model is based on a BERT architecture and supports a maximum of 512 tokens—roughly 300–400 Chinese characters or 400–500 English words. In real-world scenarios, product descriptions and technical documents often span thousands of words. Content beyond the first window is simply truncated, forcing the model to identify highlights based on only a small fraction of the document.
 
