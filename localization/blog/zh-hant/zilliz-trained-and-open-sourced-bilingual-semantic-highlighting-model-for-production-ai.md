@@ -16,9 +16,9 @@ desc: 深入瞭解語義強調，瞭解 Zilliz 的雙語模型是如何建立的
 origin: >-
   https://milvus.io/blog/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
 ---
-<p>無論您要建立的是產品搜尋、RAG 管道或 AI 代理，使用者最終需要的都是相同的東西：一種快速瞭解結果為何相關的方式。<strong>高亮顯示</strong>可標示支持匹配的精確文字，因此使用者不必掃描整個文件。</p>
-<p>大多數系統仍然依賴於基於關鍵字的高亮顯示。如果使用者搜尋「iPhone 的效能」，系統就會高亮「iPhone」和「效能」這兩個關鍵字。但當文字使用不同的措辭來表達相同的概念時，這種方式就會失效。類似「A15 Bionic 晶片、基準測試超過 100 萬次、流暢無延遲」的說明顯然是針對效能的，但由於關鍵字從未出現，因此沒有任何內容會被高亮顯示。</p>
-<p><strong>語意高亮顯示</strong>解決了這個問題。它不匹配精確的字串，而是識別出在語義上與查詢一致的文字跨度。對於 RAG 系統、AI 搜尋和代理（相關性取決於意義而非表面形式）來說，這可以更精確、更可靠地解釋為什麼要擷取文件。</p>
+<p>無論您要建立的是產品搜尋、RAG 管道或 AI 代理，使用者最終需要的都是相同的東西：一種快速瞭解結果為何相關的方式。<strong>高亮功能</strong>可標示支持匹配的精確文字，因此使用者不必掃描整個文件。</p>
+<p>大多數系統仍然依賴於基於關鍵字的高亮顯示。如果使用者搜尋「iPhone 的效能」，系統就會高亮「iPhone」和「效能」這兩個關鍵字。但當文字使用不同的措辭來表達相同的概念時，這種方式就會失效。類似「A15 Bionic 晶片、基準測試超過 100 萬次、流暢無延遲」的描述很明顯是針對效能的，但由於關鍵字從未出現，因此沒有任何內容會被高亮顯示。</p>
+<p><strong>語義高亮顯示</strong>解決了這個問題。它不匹配精確的字串，而是識別出在語義上與查詢一致的文字跨度。對於 RAG 系統、AI 搜尋和代理（相關性取決於意義而非表面形式）來說，這可以更精確、更可靠地解釋為什麼要擷取文件。</p>
 <p>然而，現有的語意強調方法並非專為生產型 AI 工作負載所設計。在評估了所有可用的解決方案之後，我們發現沒有一個解決方案能夠提供 RAG 管道、代理系統或大規模網路搜尋所需的精確度、延遲、多語言涵蓋率或穩定性。<strong>因此，我們訓練了自己的雙語語意強調模型，並將其開放源碼。</strong></p>
 <ul>
 <li><p>我們的語意強調模型：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
@@ -88,9 +88,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>今年較早時，OpenSearch 發表了一個專門用於語意高亮的模型：<a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>。 儘管這是一個有意義的嘗試，但它有兩個重要的限制。</p>
+<p>去年，OpenSearch 發表了一個專門用於語意強調的模型：<a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>。 儘管這是一個有意義的嘗試，但它有兩個重要的限制。</p>
 <ul>
-<li><p><strong>上下文視窗太小：</strong>該模型基於 BERT 架構，最多可支援 512 個字元 - 大約 300-400 個中文字元或 400-500 個英文字元。在現實世界的情境中，產品說明和技術文件通常長達數千字。超出第一個視窗的內容會被簡單地截斷，這就迫使模型只能根據文件的一小部分來識別亮點。</p></li>
+<li><p><strong>上下文視窗太小：</strong>該模型基於 BERT 架構，最多可支援 512 個字元 - 大約 300-400 個中文字元或 400-500 個英文字元。在現實世界的情境中，產品說明和技術文件通常長達數千字。超出第一個視窗的內容會被截斷，這就迫使模型只能根據文件的一小部分來識別重點。</p></li>
 <li><p><strong>域外概括性差：</strong>模型僅在與訓練集相似的資料分佈上表現良好。當應用於域外資料時，例如使用在新聞文章上訓練的模型來強調電子商務內容或技術文件，其效能就會大幅下降。在我們的實驗中，該模型在域內資料上的 F1 得分值約為 0.72，但在域外資料集上則降至約 0.46。這種程度的不穩定性在生產中是有問題的。此外，該模型不支援中文。</p></li>
 </ul>
 <h3 id="Provence--XProvence" class="common-anchor-header">Provence / XProvence</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a>是由<a href="https://zilliz.com/customers/naver">Naver</a>開發的模型，最初是為了<strong>上下文剪枝</strong>而訓練的 - 這項任務與語意強調密切相關。</p>
@@ -101,7 +101,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Provence 是一個純英文的模型，在這種環境下表現相當不錯。<a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a>是它的多語言變體，支援十多種語言，包括中文、日文和韓文。乍看之下，這使得 XProvence 似乎是雙語或多語語義強調方案的好候選。</p>
+<p>Provence 是一個純英文的模型，在這種環境下表現相當不錯。<a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a>是它的多語言變體，支援十多種語言，包括中文、日文和韓文。乍看之下，這讓 XProvence 似乎成為雙語或多語語義強調情境的最佳候選。</p>
 <p>但實際上，Provence 和 XProvence 都有幾個明顯的限制：</p>
 <ul>
 <li><p><strong>在多語言模型中的英文表現較弱：</strong>XProvence 在英文基準上的表現比不上 Provence。這是多語言模型中常見的取捨方式：各種語言共用容量，通常會導致高資源語言 (例如英文) 的效能較弱。在英文仍是主要或主要工作負載的真實世界系統中，這個限制很重要。</p></li>
@@ -148,7 +148,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>為了達成上述所有目標，我們採用了一種直接的方法：使用大型語言模型來產生高品質的標示資料，然後在其上使用開放原始碼工具訓練一個輕量級的語意高亮度模型。這讓我們可以結合 LLM 的推理能力與生產系統所需的高效率與低延遲。</p>
+<p>為了達成上述所有目標，我們採用了一種直接的方法：使用大型語言模型來產生高品質的標示資料，然後在此基礎上使用開放原始碼工具來訓練一個輕量級的語意高亮度模型。這讓我們可以結合 LLM 的推理強度與生產系統所需的高效率與低延遲。</p>
 <p><strong>這個過程中最具挑戰性的部分是資料建構</strong>。在註解過程中，我們會提示 LLM (Qwen3 8B) 不僅輸出高亮區域，還會輸出其背後的整個推理。這個額外的推理信號可以產生更精確、一致的監督，並顯著改善所產生模型的品質。</p>
 <p>在高層次上，註釋管道的運作如下：<strong>LLM 推理 → 高亮度標籤 → 篩選 → 最終訓練樣本。</strong></p>
 <p>
@@ -157,7 +157,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>這個設計在實務上提供了三個具體的好處：</p>
+<p>這種設計在實務上提供了三個具體的好處：</p>
 <ul>
 <li><p><strong>更高的標籤品質</strong>：模型會被提示<em>先思考，然後再回答</em>。這個中間推理步驟可作為內建的自我檢查，降低標籤膚淺或不一致的可能性。</p></li>
 <li><p><strong>改進的可觀察性和可調試性</strong>：由於每個標籤都附有推理軌跡，因此錯誤變得可見。這可讓您更容易診斷失敗案例，並快速調整管道中的提示、規則或資料篩選器。</p></li>
@@ -165,7 +165,7 @@ origin: >-
 </ul>
 <p>使用這個管道，我們產生了超過一百萬個雙語訓練樣本，大致平均分為英文和中文。</p>
 <p>在模型訓練方面，我們從 BGE-M3 Reranker v2 (0.6B 參數、8,192-token 上下文視窗) 開始，採用 Open Provence 訓練框架，並在 8× A100 GPU 上進行三個 epochs 訓練，在大約五小時內完成訓練。</p>
-<p>我們將在後續文章中深入探討這些技術選擇，包括為什麼我們要仰賴推理軌跡、我們如何選擇基礎模型，以及資料集是如何建構的。</p>
+<p>我們將在後續文章中深入探討這些技術選擇，包括為何要仰賴推理軌跡、如何選擇基礎模型，以及如何建構資料集。</p>
 <h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Zilliz 的雙語語意強調模型的基準測試<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -217,7 +217,7 @@ origin: >-
 <li><p>與 Provence 相比，<strong>XProvence</strong>犧牲了英文效能</p></li>
 <li><p><strong>OpenSearch Semantic Highlighter</strong>缺乏中文支援，而且顯示出弱概括性</p></li>
 </ul>
-<p>因此，我們的模型避免了語言覆蓋範圍與效能之間的常見取捨，使其更適合實際世界中的雙語部署。</p>
+<p>因此，我們的模型避免了語言涵蓋範圍與效能之間的常見取捨，使其更適合實際世界中的雙語部署。</p>
 <h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">具體實例</h3><p>除了基準分數之外，研究一個具體的範例往往更能揭示問題。以下案例展示了我們的模型在真實語義強調場景中的表現，以及為什麼精確度很重要。</p>
 <p><strong>查詢：</strong>誰寫了電影<em>The Killing of a Sacred Deer</em>？</p>
 <p><strong>上下文（5 句話）：</strong></p>

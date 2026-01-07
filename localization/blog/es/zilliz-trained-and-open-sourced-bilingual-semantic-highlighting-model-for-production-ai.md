@@ -29,7 +29,7 @@ origin: >-
 <li><p>Nuestro modelo de resaltado semántico: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 <li><p>Díganos lo que piensa: únase a nuestro <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, síganos en <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> o reserve una sesión <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">de 20 minutos de Milvus Office Hours</a> con nosotros.</p></li>
 </ul>
-<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">Cómo funciona el resaltado basado en palabras clave y por qué falla en los sistemas modernos de inteligencia artificial<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
+<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">Cómo funciona el resaltado basado en palabras clave y por qué falla en los sistemas de inteligencia artificial modernos<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,7 +61,7 @@ origin: >-
 <li><p>La serie iPhone 15 impulsó una recuperación más amplia del mercado.</p></li>
 <li><p>Las limitaciones de suministro de chips elevaron los costes un 15</p></li>
 </ul>
-<p>Puede que estas conclusiones no compartan ni una sola palabra clave con la consulta, aunque sean exactamente lo que el agente está intentando extraer. Los agentes necesitan identificar rápidamente la información verdaderamente útil a partir de grandes volúmenes de contenido recuperado, y el resaltado basado en palabras clave no ofrece ninguna ayuda real.</p>
+<p>Puede que estas conclusiones no compartan ni una sola palabra clave con la consulta, aunque sean exactamente lo que el agente está intentando extraer. Los agentes necesitan identificar rápidamente la información realmente útil a partir de grandes volúmenes de contenido recuperado, y el resaltado basado en palabras clave no ofrece ninguna ayuda real.</p>
 <h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">Qué es el resaltado semántico y cuáles son los puntos débiles de las soluciones actuales<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -93,7 +93,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>A principios de este año, OpenSearch lanzó un modelo dedicado al resaltado semántico: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. Aunque es un intento significativo de resolver el problema, tiene dos limitaciones críticas.</p>
+<p>El año pasado, OpenSearch lanzó un modelo dedicado al resaltado semántico: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. Aunque es un intento significativo de resolver el problema, tiene dos limitaciones críticas.</p>
 <ul>
 <li><p><strong>Ventana de contexto pequeña:</strong> El modelo se basa en una arquitectura BERT y admite un máximo de 512 tokens, unos 300-400 caracteres chinos o 400-500 palabras inglesas. En el mundo real, las descripciones de productos y los documentos técnicos suelen abarcar miles de palabras. El contenido más allá de la primera ventana simplemente se trunca, lo que obliga al modelo a identificar lo más destacado basándose sólo en una pequeña fracción del documento.</p></li>
 <li><p><strong>Escasa generalización fuera del dominio:</strong> El modelo sólo funciona bien en distribuciones de datos similares a las de su conjunto de entrenamiento. Cuando se aplica a datos fuera del dominio -como cuando se utiliza un modelo entrenado en artículos de noticias para destacar contenidos de comercio electrónico o documentación técnica-, el rendimiento se degrada drásticamente. En nuestros experimentos, el modelo alcanza una puntuación F1 de alrededor de 0,72 en datos dentro del dominio, pero cae a aproximadamente 0,46 en conjuntos de datos fuera del dominio. Este nivel de inestabilidad es problemático para la producción. Además, el modelo no es compatible con el chino.</p></li>
@@ -109,10 +109,10 @@ origin: >-
 <p>Provence es un modelo exclusivamente inglés y funciona razonablemente bien en ese entorno. <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a> es su variante multilingüe, compatible con más de una docena de idiomas, incluidos el chino, el japonés y el coreano. A primera vista, esto hace que XProvence parezca un buen candidato para escenarios de resaltado semántico bilingüe o multilingüe.</p>
 <p>En la práctica, sin embargo, tanto Provence como XProvence presentan varias limitaciones notables:</p>
 <ul>
-<li><p><strong>Rendimiento más débil en inglés en el modelo multilingüe:</strong> XProvence no iguala el rendimiento de Provence en las pruebas de referencia en inglés. Se trata de una solución de compromiso habitual en los modelos multilingües: la capacidad se reparte entre las distintas lenguas, lo que a menudo se traduce en un menor rendimiento en las lenguas con más recursos, como el inglés. Esta limitación es importante en sistemas reales en los que el inglés sigue siendo la carga de trabajo principal o dominante.</p></li>
+<li><p><strong>Rendimiento más débil en inglés en el modelo multilingüe:</strong> XProvence no iguala el rendimiento de Provence en las pruebas de referencia en inglés. Se trata de una solución de compromiso habitual en los modelos multilingües: la capacidad se reparte entre las distintas lenguas, lo que a menudo se traduce en un menor rendimiento en lenguas con muchos recursos, como el inglés. Esta limitación es importante en sistemas reales en los que el inglés sigue siendo la carga de trabajo principal o dominante.</p></li>
 <li><p><strong>Rendimiento limitado en chino:</strong> XProvence admite muchos idiomas. Durante la formación multilingüe, los datos y la capacidad del modelo se reparten entre los distintos idiomas, lo que limita la especialización del modelo en uno solo. Como resultado, su rendimiento en chino es sólo marginalmente aceptable y a menudo insuficiente para los casos de uso de resaltado de alta precisión.</p></li>
 <li><p><strong>Desajuste entre los objetivos de poda y de resaltado:</strong> Provence está optimizado para la poda contextual, en la que la prioridad es el recuerdo: conservar la mayor cantidad posible de contenido potencialmente útil para evitar la pérdida de información crítica. El resaltado semántico, por el contrario, hace hincapié en la precisión: resaltar sólo las frases más relevantes, no grandes porciones del documento. Cuando se aplican modelos provenzales al resaltado, este desajuste suele dar lugar a resaltados demasiado amplios o ruidosos.</p></li>
-<li><p><strong>Licencias restrictivas:</strong> Tanto Provence como XProvence están sujetos a la licencia CC BY-NC 4.0, que no permite el uso comercial. Esta restricción por sí sola los hace inadecuados para muchos despliegues de producción.</p></li>
+<li><p><strong>Licencias restrictivas:</strong> Tanto Provence como XProvence se distribuyen bajo licencia CC BY-NC 4.0, que no permite el uso comercial. Esta restricción por sí sola los hace inadecuados para muchos despliegues de producción.</p></li>
 </ul>
 <h3 id="Open-Provence" class="common-anchor-header">Open Provence</h3><p>
   <span class="img-wrapper">

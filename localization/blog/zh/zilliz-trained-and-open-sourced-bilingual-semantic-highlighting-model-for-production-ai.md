@@ -19,7 +19,7 @@ origin: >-
 <p>无论您是在构建产品搜索、RAG 管道还是人工智能代理，用户最终都需要同样的东西：一种快速查看结果为何相关的方法。<strong>高亮功能</strong>通过标记支持匹配的准确文本来帮助用户，这样用户就不必扫描整个文档。</p>
 <p>大多数系统仍然依赖于基于关键字的高亮显示。如果用户搜索 "iPhone 性能"，系统就会突出显示 "iPhone "和 "性能 "这两个确切的标记。但是，一旦文本用不同的措辞表达了相同的意思，系统就会崩溃。像 "A15 仿生芯片，基准测试超过 100 万次，流畅无延迟 "这样的描述显然是针对性能的，但却没有突出显示任何内容，因为关键词从未出现过。</p>
 <p><strong>语义高亮</strong>可以解决这个问题。它不是匹配精确的字符串，而是识别与查询语义一致的文本跨度。对于 RAG 系统、人工智能搜索和 Agents（相关性取决于意义而非表面形式）来说，这可以更精确、更可靠地解释检索文档的原因。</p>
-<p>然而，现有的语义高亮方法并不是为生产型人工智能工作负载而设计的。在对所有可用解决方案进行评估后，我们发现没有一种方案能提供 RAG 管道、Agent 系统或大规模网络搜索所需的精度、延迟、多语言覆盖率或稳健性。<strong>因此，我们训练了自己的双语语义高亮模型，并将其开源。</strong></p>
+<p>然而，现有的语义高亮方法并不是为生产型人工智能工作负载而设计的。在对所有可用解决方案进行评估后，我们发现没有一种方案能提供 RAG 管道、Agent 系统或大规模网络搜索所需的精确度、延迟、多语言覆盖率或稳健性。<strong>因此，我们训练了自己的双语语义高亮模型，并将其开源。</strong></p>
 <ul>
 <li><p>我们的语义高亮模型：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 <li><p>请告诉我们您的想法--加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord</a>，在<a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> 上关注我们，或与我们预约一次<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">20 分钟的 Milvus Office Hours</a>会议。</p></li>
@@ -40,8 +40,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><strong>传统的搜索系统通过简单的关键词匹配来实现高亮功能</strong>。当返回结果时，引擎会找到与查询相匹配的确切标记位置，并将其封装在标记中（通常是<code translate="no">&lt;em&gt;</code> 标记），然后让前端来呈现高亮显示。当查询词逐字出现在文本中时，这种方法很有效。</p>
-<p>问题在于，这种模型假定相关性与精确的关键词重叠相关。一旦这一假设被打破，可靠性就会迅速下降。任何以不同措辞表达正确想法的结果，即使检索步骤是正确的，最终也不会有高亮显示。</p>
-<p>这一弱点在现代人工智能应用中变得非常明显。在 RAG 管道和人工智能 Agents 工作流程中，查询更加抽象，文档更长，相关信息可能不会重复使用相同的词语。基于关键字的高亮显示无法再向开发人员或最终用户显示<em>答案的实际</em>位置，这使得整个系统即使在检索按预期运行时也感觉不够准确。</p>
+<p>问题在于，这种模型假定相关性与精确的关键词重叠相关。一旦这一假设被打破，可靠性就会迅速下降。任何以不同措辞表达正确想法的结果，即使检索步骤是正确的，最终也没有高亮显示。</p>
+<p>这一弱点在现代人工智能应用中变得非常明显。在 RAG 管道和人工智能 Agents 工作流程中，查询更加抽象，文档更长，相关信息可能不会重复使用相同的词语。基于关键字的高亮显示无法再向开发人员或最终用户显示<em>答案的实际</em>位置，这使得整个系统即使在检索按预期运行的情况下也感觉不够准确。</p>
 <p>假设用户问<em>"如何提高 Python 代码的执行效率？</em>系统从向量数据库中检索到一份技术文档。传统的高亮功能只能标记字面匹配，如<em>"Python"、</em> <em>"代码"、"</em> <em>执行 "</em>和<em>"效率"。</em></p>
 <p>然而，文档中最有用的部分可能是</p>
 <ul>
@@ -88,7 +88,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>今年早些时候，OpenSearch 发布了一个专门用于语义高亮的模型：<a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>。 虽然这是一个有意义的尝试，但它有两个关键的局限性。</p>
+<p>去年，OpenSearch 发布了一个专门用于语义高亮的模型：<a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>。 虽然这是一个有意义的尝试，但它有两个关键的局限性。</p>
 <ul>
 <li><p><strong>上下文窗口小：</strong>该模型基于 BERT 架构，最多支持 512 个标记--大约 300-400 个汉字或 400-500 个英文单词。在实际应用中，产品描述和技术文档往往长达数千字。超出第一个窗口的内容会被简单截断，从而迫使模型只能根据文档的一小部分内容来识别亮点。</p></li>
 <li><p><strong>域外泛化能力差：</strong>该模型仅在与其训练集类似的数据分布上表现良好。当应用到域外数据时，例如使用在新闻文章中训练的模型来突出显示电子商务内容或技术文档，性能就会急剧下降。在我们的实验中，该模型在域内数据上的 F1 得分为 0.72 左右，但在域外数据集上则降至 0.46 左右。这种不稳定性在生产中很成问题。此外，该模型不支持中文。</p></li>
@@ -105,7 +105,7 @@ origin: >-
 <p>但实际上，Provence 和 XProvence 都有几个明显的局限性：</p>
 <ul>
 <li><p><strong>在多语言模型中英语性能较弱：</strong>XProvence 在英语基准测试中的表现无法与 Provence 相提并论。这是多语种模型中常见的权衡问题：容量在不同语言间共享，往往导致英语等高资源语言的性能较弱。在现实世界的系统中，英语仍然是主要或主导的工作负载，这种限制很重要。</p></li>
-<li><p><strong>中文性能有限：</strong> XProvence 支持多种语言。在多语言训练过程中，数据和模型容量会分散到不同的语言中，这就限制了模型在任何一种语言中的专业化程度。因此，XProvence 的中文性能只能勉强接受，通常不足以满足高精度高亮使用案例的要求。</p></li>
+<li><p><strong>中文性能有限：</strong> XProvence 支持多种语言。在多语言训练过程中，数据和模型容量会分散到不同的语言中，这就限制了模型在任何一种语言中的专业化程度。因此，XProvence 的中文性能只能勉强接受，通常无法满足高精度高亮使用案例的要求。</p></li>
 <li><p><strong>剪枝和高亮目标不匹配：</strong>Provence 针对上下文剪枝进行了优化，在这种情况下，优先考虑的是回忆--保留尽可能多的潜在有用内容，以避免丢失关键信息。相比之下，语义高亮则强调精确性：只高亮最相关的句子，而不是文档的大部分内容。当普罗旺斯风格的模型应用于高亮时，这种不匹配往往会导致过于宽泛或嘈杂的高亮。</p></li>
 <li><p><strong>限制性许可：</strong>普罗旺斯和 XProvence 都是根据 CC BY-NC 4.0 许可发布的，不允许用于商业用途。仅这一限制就使它们不适合许多生产部署。</p></li>
 </ul>
@@ -259,7 +259,7 @@ origin: >-
 <li><p>即使将判定阈值从 0.5 降到 0.2，该模型仍未能浮现出正确答案。</p></li>
 </ul>
 <p>换句话说，该模型主要是由表层关键词关联驱动的，而不是问题的实际意图。</p>
-<p><strong>我们的模型如何表现不同</strong></p>
+<p><strong>我们的模型有哪些不同表现</strong></p>
 <ul>
 <li><p>我们的模型为句子 1 中的正确答案打出了高分（0.915），正确识别了<em>电影的编剧</em>。</p></li>
 <li><p>同时，它也给句子 3 打出了中等分数（0.719），因为该句子确实提到了与编剧相关的概念。</p></li>
@@ -285,4 +285,4 @@ origin: >-
     </button></h2><p>我们已经在<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a> 上开源了我们的双语语义高亮模型，并公开了所有模型权重，因此您可以立即开始尝试。我们很想听听您对它的评价--请在试用过程中分享任何反馈、问题或改进意见。</p>
 <p>与此同时，我们还在开发可投入生产的推理服务，并将该模型直接集成到<a href="https://milvus.io/">Milvus</a>中，成为原生的语义高亮应用程序接口（Semantic Highlighting API）。这种集成已经在进行中，很快就会推出。</p>
 <p>语义高亮为更直观的 RAG 和 Agents 人工智能体验打开了大门。当Milvus检索几个长文档时，系统可以立即浮现出最相关的句子，让人一目了然答案在哪里。这不仅改善了终端用户的体验，还通过准确显示系统所依赖的上下文部分，帮助开发人员调试检索管道。</p>
-<p>我们相信，语义高亮将成为下一代搜索和 RAG 系统的标准功能。如果您有关于双语语义高亮的想法、建议或使用案例，请加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 频道</a>并分享您的想法。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>预约20分钟的一对一会议，以获得见解、指导和问题解答。</p>
+<p>我们相信语义高亮将成为下一代搜索和 RAG 系统的标准功能。如果您有关于双语语义高亮的想法、建议或使用案例，请加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 频道</a>并分享您的想法。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>预约20分钟的一对一会议，以获得见解、指导和问题解答。</p>

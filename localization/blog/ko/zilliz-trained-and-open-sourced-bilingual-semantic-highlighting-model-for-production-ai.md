@@ -83,14 +83,14 @@ origin: >-
 </p>
 <p>이 접근 방식은 쿼리 용어가 그대로 표시될 때만 작동하는 기존 강조 표시의 핵심 문제를 해결합니다. 사용자가 'iPhone 성능'을 검색할 경우, 키워드 기반 강조 표시 기능은 'A15 바이오닉 칩', '벤치마크에서 100만 점 이상' 또는 '랙 없이 부드러운' 같은 문구가 질문에 대한 명확한 답변임에도 불구하고 이를 무시합니다. 시맨틱 하이라이트는 이러한 의미 중심의 연결을 포착하여 사용자가 실제로 관심을 갖는 부분을 텍스트에 표시합니다.</p>
 <p>이론적으로 이것은 간단한 의미론적 매칭 문제입니다. 최신 임베딩 모델은 이미 유사성을 잘 인코딩하므로 개념적 요소는 이미 갖춰져 있습니다. 문제는 실제 제약 조건에서 비롯됩니다. 모든 쿼리에서, 종종 검색된 많은 문서에서 강조 표시가 발생하므로 지연 시간, 처리량 및 도메인 간 견고성은 협상할 수 없는 요구 사항이 됩니다. 대규모 언어 모델은 이러한 빈도가 높은 경로에서 실행하기에는 너무 느리고 비용이 너무 많이 듭니다.</p>
-<p>그렇기 때문에 실용적인 의미론적 강조 표시를 위해서는 검색 인프라와 함께 배치할 수 있을 만큼 작고 몇 밀리초 내에 결과를 반환할 수 있을 만큼 빠른 가볍고 특화된 모델이 필요합니다. 대부분의 기존 솔루션은 바로 이 부분에서 문제가 발생합니다. 무거운 모델은 정확도를 제공하지만 대규모로 실행할 수 없고, 가벼운 모델은 빠르지만 정확도가 떨어지거나 다국어 또는 도메인별 데이터에서 실패합니다.</p>
+<p>그렇기 때문에 실용적인 의미론적 강조 표시를 위해서는 검색 인프라와 함께 배치할 수 있을 만큼 작고 몇 밀리초 내에 결과를 반환할 수 있을 만큼 빠른 가볍고 특화된 모델이 필요합니다. 대부분의 기존 솔루션은 바로 이 부분에서 문제가 발생합니다. 무거운 모델은 정확도를 제공하지만 대규모로 실행할 수 없고, 가벼운 모델은 빠르지만 정확도가 떨어지거나 다국어 또는 도메인별 데이터에서는 실패합니다.</p>
 <h3 id="opensearch-semantic-highlighter" class="common-anchor-header">오픈서치-시맨틱-하이라이터</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/opensearch_en_aea06a2114.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>올해 초, OpenSearch는 시맨틱 하이라이터 전용 모델인 <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1을</strong></a> 출시했습니다. 이 문제에 대한 의미 있는 시도이긴 하지만 두 가지 중요한 한계가 있습니다.</p>
+<p>작년에 OpenSearch는 시맨틱 하이라이터 전용 모델인 <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1을</strong></a> 출시했습니다. 이 문제에 대한 의미 있는 시도이긴 하지만 두 가지 중요한 한계가 있습니다.</p>
 <ul>
 <li><p><strong>작은 컨텍스트 창:</strong> 이 모델은 BERT 아키텍처를 기반으로 하며 최대 512개의 토큰(약 300-400개의 한자 또는 400-500개의 영어 단어)을 지원합니다. 실제 시나리오에서 제품 설명과 기술 문서는 수천 단어에 이르는 경우가 많습니다. 첫 번째 창을 넘어서는 콘텐츠는 단순히 잘려나가기 때문에 모델은 문서의 극히 일부만을 기반으로 하이라이트를 식별해야 합니다.</p></li>
 <li><p><strong>도메인 외부 일반화 성능 저하:</strong> 모델은 학습 세트와 유사한 데이터 분포에서만 잘 작동합니다. 뉴스 기사로 학습된 모델을 사용하여 전자상거래 콘텐츠나 기술 문서를 강조 표시하는 것과 같이 도메인 외부 데이터에 적용하면 성능이 급격히 저하됩니다. 실험 결과, 이 모델은 도메인 내 데이터에서는 약 0.72의 F1 점수를 얻었지만 도메인 외부 데이터 세트에서는 약 0.46으로 떨어졌습니다. 이러한 수준의 불안정성은 프로덕션 환경에서 문제가 될 수 있습니다. 또한 이 모델은 중국어를 지원하지 않습니다.</p></li>
@@ -251,7 +251,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td style="text-align:center">문장 1(영화 시나리오, <strong>정답</strong>)</td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
-<tr><td style="text-align:center">문장 3 (독창적인 연극, 산만함)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
+<tr><td style="text-align:center">문장 3(원작, 산만함)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
 </tbody>
 </table>
 <p><strong>XProvence의 부족한 점</strong></p>
@@ -268,7 +268,7 @@ origin: >-
 <li><p>결정적으로, 이 구분은 명확하고 의미 있는 구분입니다: <strong>0.915점 대 0.719점으로</strong> 거의 0.2점 차이가 납니다.</p></li>
 </ul>
 <p>이 예는 키워드 중심의 연관성을 넘어 사용자 의도를 올바르게 해석하는 우리 접근 방식의 핵심 강점을 잘 보여줍니다. 여러 '작성자' 개념이 등장하더라도 이 모델은 질문이 실제로 언급하는 개념을 일관되게 강조합니다.</p>
-<p>더 자세한 평가 보고서와 추가 사례 연구는 후속 포스팅에서 공유해 드리겠습니다.</p>
+<p>보다 자세한 평가 보고서와 추가 사례 연구는 후속 포스팅에서 공유해 드리겠습니다.</p>
 <h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">사용해 보고 의견을 알려주세요<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

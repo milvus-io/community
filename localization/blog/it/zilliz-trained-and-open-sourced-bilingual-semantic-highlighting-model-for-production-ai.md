@@ -24,7 +24,7 @@ origin: >-
 <p>Che si tratti di una ricerca di prodotti, di una pipeline RAG o di un agente AI, gli utenti hanno bisogno della stessa cosa: un modo rapido per capire perché un risultato è rilevante. L <strong>'evidenziazione</strong> aiuta a contrassegnare il testo esatto che supporta la corrispondenza, in modo che gli utenti non debbano scansionare l'intero documento.</p>
 <p>La maggior parte dei sistemi si basa ancora sull'evidenziazione basata su parole chiave. Se un utente cerca "prestazioni iPhone", il sistema evidenzia i token esatti "iPhone" e "prestazioni". Ma questo sistema si rompe non appena il testo esprime la stessa idea con parole diverse. Una descrizione come "Chip A15 Bionic, oltre un milione di benchmark, fluido senza lag" si riferisce chiaramente alle prestazioni, ma non viene evidenziato nulla perché le parole chiave non compaiono mai.</p>
 <p>L<strong>'evidenziazione semantica</strong> risolve questo problema. Invece di corrispondere a stringhe esatte, identifica gli intervalli di testo che sono semanticamente allineati con la query. Per i sistemi RAG, la ricerca AI e gli agenti, dove la rilevanza dipende dal significato piuttosto che dalla forma superficiale, ciò consente di ottenere spiegazioni più precise e affidabili del motivo per cui un documento è stato recuperato.</p>
-<p>Tuttavia, i metodi di evidenziazione semantica esistenti non sono progettati per i carichi di lavoro dell'IA di produzione. Dopo aver valutato tutte le soluzioni disponibili, abbiamo scoperto che nessuna offriva la precisione, la latenza, la copertura multilingue o la robustezza necessarie per le pipeline RAG, i sistemi ad agenti o la ricerca web su larga scala. <strong>Abbiamo quindi addestrato il nostro modello di evidenziazione semantica bilingue e lo abbiamo reso disponibile come open source.</strong></p>
+<p>Tuttavia, i metodi di evidenziazione semantica esistenti non sono progettati per i carichi di lavoro dell'IA di produzione. Dopo aver valutato tutte le soluzioni disponibili, abbiamo scoperto che nessuna offriva la precisione, la latenza, la copertura multilingue o la robustezza necessarie per le pipeline RAG, i sistemi ad agenti o la ricerca web su larga scala. <strong>Abbiamo quindi addestrato il nostro modello di evidenziazione semantica bilingue e lo abbiamo reso disponibile come open-source.</strong></p>
 <ul>
 <li><p>Il nostro modello di evidenziazione semantica: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 <li><p>Diteci cosa ne pensate: partecipate al nostro <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, seguiteci su <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> o prenotate una sessione <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">di 20 minuti di Milvus Office Hours</a> con noi.</p></li>
@@ -93,7 +93,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>All'inizio di quest'anno, OpenSearch ha rilasciato un modello dedicato all'evidenziazione semantica: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. Pur essendo un tentativo significativo di risolvere il problema, presenta due limiti critici.</p>
+<p>L'anno scorso OpenSearch ha rilasciato un modello dedicato all'evidenziazione semantica: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. Pur essendo un tentativo significativo di risolvere il problema, presenta due limiti critici.</p>
 <ul>
 <li><p><strong>Finestra di contesto piccola:</strong> Il modello si basa su un'architettura BERT e supporta un massimo di 512 token - circa 300-400 caratteri cinesi o 400-500 parole inglesi. Negli scenari reali, le descrizioni dei prodotti e i documenti tecnici spesso comprendono migliaia di parole. Il contenuto oltre la prima finestra viene semplicemente troncato, costringendo il modello a identificare i punti salienti basandosi solo su una piccola parte del documento.</p></li>
 <li><p><strong>Scarsa generalizzazione al di fuori del dominio:</strong> Il modello funziona bene solo su distribuzioni di dati simili al suo set di addestramento. Quando viene applicato a dati esterni al dominio, come nel caso dell'utilizzo di un modello addestrato su articoli di cronaca per evidenziare contenuti di e-commerce o documentazione tecnica, le prestazioni si riducono drasticamente. Nei nostri esperimenti, il modello raggiunge un punteggio F1 di circa 0,72 sui dati interni al dominio, ma scende a circa 0,46 sui set di dati esterni al dominio. Questo livello di instabilità è problematico in produzione. Inoltre, il modello non supporta il cinese.</p></li>
@@ -123,7 +123,7 @@ origin: >-
 <p><a href="https://github.com/hotchpotch/open_provence"><strong>Open Provence</strong></a> è un progetto guidato dalla comunità che reimplementa la pipeline di formazione Provence in modo aperto e trasparente. Fornisce non solo script di addestramento, ma anche flussi di lavoro per l'elaborazione dei dati, strumenti di valutazione e modelli preaddestrati su più scale.</p>
 <p>Un vantaggio fondamentale di Open Provence è la sua <strong>licenza MIT</strong>. A differenza di Provence e XProvence, può essere tranquillamente utilizzato in ambienti commerciali senza restrizioni legali, il che lo rende interessante per i team orientati alla produzione.</p>
 <p>Detto questo, Open Provence supporta attualmente solo l'<strong>inglese e il giapponese</strong>, il che lo rende inadatto ai nostri casi d'uso bilingue.</p>
-<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Abbiamo addestrato e reso open source un modello di evidenziazione semantica bilingue<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Abbiamo addestrato e reso disponibile un modello di evidenziazione semantica bilingue<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,7 +171,7 @@ origin: >-
 <p>Utilizzando questa pipeline, abbiamo generato più di un milione di campioni di formazione bilingue, suddivisi in modo approssimativo tra inglese e cinese.</p>
 <p>Per l'addestramento del modello, siamo partiti da BGE-M3 Reranker v2 (0,6B parametri, finestra di contesto da 8.192 token), abbiamo adottato il framework di addestramento Open Provence e ci siamo addestrati per tre epoche su 8× GPU A100, completando l'addestramento in circa cinque ore.</p>
 <p>Approfondiremo queste scelte tecniche - compreso il motivo per cui ci affidiamo alle tracce di ragionamento, come abbiamo selezionato il modello di base e come è stato costruito il set di dati - in un post successivo.</p>
-<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Benchmarking del modello di evidenziazione semantica bilingue di Zilliz<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Analisi comparativa del modello di evidenziazione semantica bilingue di Zilliz<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -186,7 +186,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Per valutare le prestazioni nel mondo reale, abbiamo valutato diversi modelli di evidenziazione semantica su una serie di set di dati diversi. I benchmark coprono sia scenari in-domain che out-of-domain, in inglese e cinese, per riflettere la varietà di contenuti incontrati nei sistemi di produzione.</p>
+    </button></h2><p>Per valutare le prestazioni nel mondo reale, abbiamo valutato diversi modelli di evidenziazione semantica su una serie di set di dati diversi. I benchmark coprono scenari sia all'interno che all'esterno del dominio, in inglese e in cinese, per riflettere la varietà di contenuti incontrati nei sistemi di produzione.</p>
 <h3 id="Datasets" class="common-anchor-header">Set di dati</h3><p>Per la nostra valutazione abbiamo utilizzato i seguenti set di dati:</p>
 <ul>
 <li><p><strong>MultiSpanQA (inglese)</strong> - un set di dati di risposta a domande multi-span nel dominio</p></li>
@@ -234,7 +234,7 @@ origin: >-
 <li><p>Egli presenta il ragazzo alla sua famiglia, dopodiché iniziano a verificarsi misteriose malattie.</p></li>
 </ol>
 <p><strong>Evidenziazione corretta:</strong> La<strong>frase 1</strong> è la risposta corretta, poiché afferma esplicitamente che la sceneggiatura è stata scritta da Yorgos Lanthimos e Efthymis Filippou.</p>
-<p>Questo esempio contiene una sottile trappola. <strong>La frase 3</strong> cita Euripide, l'autore dell'opera originale greca su cui la storia è vagamente basata. Tuttavia, la domanda chiede chi ha scritto il <em>film</em>, non la fonte antica. La risposta corretta è quindi gli sceneggiatori del film, non il drammaturgo di migliaia di anni fa.</p>
+<p>Questo esempio contiene una sottile trappola. <strong>La frase 3</strong> cita Euripide, l'autore dell'opera originale greca su cui la storia è vagamente basata. Tuttavia, la domanda chiede chi ha scritto il <em>film</em>, non il materiale di partenza antico. La risposta corretta è quindi gli sceneggiatori del film, non il drammaturgo di migliaia di anni fa.</p>
 <p><strong>Risultati:</strong></p>
 <p>La tabella seguente riassume le prestazioni dei diversi modelli su questo esempio.</p>
 <table>
@@ -261,7 +261,7 @@ origin: >-
 <ul>
 <li><p>XProvence è fortemente attratto dalle parole chiave <em>"Euripide"</em> e <em>"scritto",</em> assegnando alla frase 3 un punteggio quasi perfetto (0,947 e 0,802).</p></li>
 <li><p>Allo stesso tempo, ignora ampiamente la risposta corretta della frase 1, assegnando punteggi estremamente bassi (0,133 e 0,081).</p></li>
-<li><p>Anche dopo aver abbassato la soglia decisionale da 0,5 a 0,2, il modello non riesce a individuare la risposta corretta.</p></li>
+<li><p>Anche dopo aver abbassato la soglia decisionale da 0,5 a 0,2, il modello continua a non individuare la risposta corretta.</p></li>
 </ul>
 <p>In altre parole, il modello è guidato principalmente dalle associazioni di parole chiave a livello superficiale piuttosto che dall'intento effettivo della domanda.</p>
 <p><strong>Come il nostro modello si comporta diversamente</strong></p>
@@ -289,5 +289,5 @@ origin: >-
       </svg>
     </button></h2><p>Abbiamo reso disponibile il nostro modello di evidenziazione semantica bilingue su <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a>, con tutti i pesi del modello disponibili pubblicamente, in modo che possiate iniziare subito a sperimentare. Ci piacerebbe sapere come funziona per voi: vi invitiamo a condividere qualsiasi feedback, problema o idea di miglioramento mentre lo provate.</p>
 <p>Parallelamente, stiamo lavorando a un servizio di inferenza pronto per la produzione e all'integrazione del modello direttamente in <a href="https://milvus.io/">Milvus</a> come API nativa di Semantic Highlighting. Questa integrazione è già in corso e sarà presto disponibile.</p>
-<p>L'evidenziazione semantica apre le porte a un'esperienza RAG e di intelligenza artificiale più intuitiva. Quando Milvus recupera diversi documenti lunghi, il sistema è in grado di far emergere immediatamente le frasi più rilevanti, rendendo chiaro dove si trova la risposta. Questo non migliora solo l'esperienza dell'utente finale, ma aiuta anche gli sviluppatori a eseguire il debug delle pipeline di recupero, mostrando esattamente su quali parti del contesto si basa il sistema.</p>
+<p>L'evidenziazione semantica apre le porte a un'esperienza di RAG e AI agenziale più intuitiva. Quando Milvus recupera diversi documenti lunghi, il sistema è in grado di far emergere immediatamente le frasi più rilevanti, rendendo chiaro dove si trova la risposta. Questo non migliora solo l'esperienza dell'utente finale, ma aiuta anche gli sviluppatori a eseguire il debug delle pipeline di reperimento, mostrando esattamente su quali parti del contesto si basa il sistema.</p>
 <p>Crediamo che l'evidenziazione semantica diventerà una funzionalità standard nei sistemi di ricerca e di RAG di prossima generazione. Se avete idee, suggerimenti o casi d'uso per l'evidenziazione semantica bilingue, iscrivetevi al nostro <a href="https://discord.com/invite/8uyFbECzPX">canale Discord</a> e condividete i vostri pensieri. Potete anche prenotare una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande attraverso <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>
