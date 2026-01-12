@@ -94,7 +94,7 @@ Because the model operates within a fixed token limit, this history cannot grow 
 
 ## Claude’s Memory System
 
-Claude takes a different approach to memory management.  Rather than injecting a large, fixed bundle of memory components into every prompt—as ChatGPT does—Claude combines persistent user memory with on-demand tools and selective retrieval. Historical context is fetched only when the model judges it to be relevant, allowing the system to trade off contextual depth against computational cost.
+Claude takes a different approach to memory management. Rather than injecting a large, fixed bundle of memory components into every prompt—as ChatGPT does—Claude combines persistent user memory with on-demand tools and selective retrieval. Historical context is fetched only when the model judges it to be relevant, allowing the system to trade off contextual depth against computational cost.
 
 Claude’s prompt context is structured as follows:
 
