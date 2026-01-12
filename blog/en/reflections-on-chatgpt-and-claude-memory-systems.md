@@ -3,7 +3,7 @@ id: reflections-on-chatgpt-and-claude-memory-systems.md
 title: >
  Reflections on ChatGPT and Claude’s Memory Systems: What It Takes to Enable On-Demand Conversational Retrieval
 author: Min Yin
-date: 2026-01-12
+date: 2026-01-09
 cover: assets.zilliz.com/Chat_GPT_VS_Claude_cover_555fdac36d.png
 tag: Engineering
 recommend: false
