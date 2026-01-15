@@ -233,5 +233,6 @@
   "blog/en/milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md": "2025-12-31T03:04:39.842Z",
   "blog/en/phrase-match-with-slop-in-milvus-2-6-how-to-improve-phrase-level-full-text-search-accuracy.md": "2026-01-04T02:57:04.360Z",
   "blog/en/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md": "2026-01-07T03:24:55.352Z",
-  "blog/en/reflections-on-chatgpt-and-claude-memory-systems.md": "2026-01-15T06:49:30.341Z"
+  "blog/en/reflections-on-chatgpt-and-claude-memory-systems.md": "2026-01-15T06:49:30.341Z",
+  "blog/en/evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md": "2026-01-15T12:01:50.441Z"
 }
