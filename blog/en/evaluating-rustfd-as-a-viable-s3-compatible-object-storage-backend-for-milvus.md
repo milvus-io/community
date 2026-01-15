@@ -293,21 +293,20 @@ Log in using the default credentials: username and password are both minioadmin.
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
 # connect to Milvus
 connections.connect(
- alias=“default”,
- host=‘localhost’,
- port=‘19530’
+ alias="default",
+ host='localhost',
+ port='19530'
 )
-print(“✓ Successfully connected to Milvus!”)
+print("✓ Successfully connected to Milvus!")
 # create test collection
 fields = [
- FieldSchema(name=“id”, dtype=DataType. INT64, is_primary=True, auto_id=True),
- FieldSchema(name=“embedding”, dtype=DataType. FLOAT_VECTOR, dim=128)
+ FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+ FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=128)
 ]
-schema = CollectionSchema(fields=fields, description=“test collection”)
-collection = Collection(name=“test_collection”, schema=schema)
-print(“✓ Test collection created！”)
-print(“✓ RustFS verified as the S3 storage backend！”)
-```
+schema = CollectionSchema(fields=fields, description="test collection")
+collection = Collection(name="test_collection", schema=schema)
+print("✓ Test collection created!")
+print("✓ RustFS verified as the S3 storage backend!")
 
 ### Step 3: Storage Performance Testing (Experimental)
 
