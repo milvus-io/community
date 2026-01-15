@@ -379,7 +379,7 @@ Excellent query performance (**1.85 ms** average latency), mature small-file and
 
 RustFS significantly outperforms MinIO in write performance and storage efficiency, with both showing roughly 57% improvement. This demonstrates the system-level advantages of the Rust ecosystem. However, the 330% gap in query latency limits RustFS’s suitability for query-intensive workloads.
 
-For **production environments**, cloud-managed object storage services like **WS S3** are recommended first, as they are mature, stable, and require no operational effort. Self-hosted solutions are better suited to specific scenarios: RustFS for cost-sensitive or write-intensive workloads, MinIO for query-intensive use cases, and Ceph for data sovereignty. With further optimization in random read performance, RustFS has the potential to become a strong self-hosted option.
+For **production environments**, cloud-managed object storage services like **AWS S3** are recommended first, as they are mature, stable, and require no operational effort. Self-hosted solutions are better suited to specific scenarios: RustFS for cost-sensitive or write-intensive workloads, MinIO for query-intensive use cases, and Ceph for data sovereignty. With further optimization in random read performance, RustFS has the potential to become a strong self-hosted option.
 
 
 ## Conclusion
