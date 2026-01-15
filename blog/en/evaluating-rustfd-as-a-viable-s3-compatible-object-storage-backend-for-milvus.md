@@ -371,8 +371,8 @@ Excellent query performance (**1.85 ms** average latency), mature small-file and
 |     **Metric**    |  **RustFS**  |   **MinIO**  | **Difference** |
 | :---------------: | :----------: | :----------: | :------------: |
 | Insert Throughput | 4,472 rows/s | 2,845 rows/s |      0.57      |
-|  Index Build Time |     803 s    |     562 s    |      –43%      |
-| Load (Cold Start) |    22.7 s    |    18.3 s    |      –24%      |
+|  Index Build Time |     803 s    |     562 s    |      -43%      |
+| Load (Cold Start) |    22.7 s    |    18.3 s    |      -24%      |
 | Load (Warm Start) |    0.009 s   |    0.027 s   |      0.67      |
 |   Search Latency  |    7.96 ms   |    1.85 ms   |    **-330%**   |
 |   Storage Usage   |    7.8 GB    |    18.0 GB   |      0.57      |
