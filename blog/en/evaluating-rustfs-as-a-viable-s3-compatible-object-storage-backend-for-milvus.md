@@ -13,7 +13,7 @@ meta_keywords: object storage, S3 compatible storage, MinIO, RustFS, Milvus
 meta_title: >
  Evaluating RustFS for Milvus S3-Compatible Object Storage
 desc: Learn how Milvus relies on S3-compatible object storage, and how to deploy RustFS as a MinIO replacement in Milvus through a hands-on walkthrough.
-origin: https://milvus.io/blog/evaluating-rustfd-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
+origin: https://milvus.io/blog/evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
 ---
 
 _This post is written by Min Yin, one of the most active community contributors of Milvus, and is published here with permission._ 
