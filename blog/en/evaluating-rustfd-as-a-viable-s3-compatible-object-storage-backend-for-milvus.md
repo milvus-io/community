@@ -1,5 +1,5 @@
 ---
-id: evaluating-rustfd-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
+id: evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
 title: >
  MinIO Stops Accepting Community Changes: Evaluating RustFS as a Viable S3-Compatible Object Storage Backend for Milvus 
 author: Min Yin
