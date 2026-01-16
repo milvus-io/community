@@ -4,7 +4,7 @@ title: >
  MinIO Stops Accepting Community Changes: Evaluating RustFS as a Viable S3-Compatible Object Storage Backend for Milvus 
 author: Min Yin
 date: 2026-01-14
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_new_cover_d808417f9f.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
