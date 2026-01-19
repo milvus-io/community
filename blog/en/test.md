@@ -37,7 +37,7 @@ To compare the efficiency of Claude Context against the default grep-based setup
 
 - **Grep:** A standard agent using only `grep + read + edit` tools.
 
-- **Claude Context:** The Baseline setup, enhanced with the **Claude Context MCP**
+- **Claude Context:** The baseline setup, enhanced with the **Claude Context MCP**
 
 **What We Measured:**
 
@@ -61,7 +61,7 @@ To ensure the comparison was unbiased, both methods ran under identical conditio
 
 Each method was tested over three independent runs, and we averaged the results — six complete test cycles in total.
 
-![](https://assets.zilliz.com/token_usage_6712a352eb.png)
+![](https://assets.zilliz.com/Token_usage_11015e1e3d.webp)
 
 ### What the Results Showed
 
@@ -175,7 +175,7 @@ That’s 93% fewer tokens, which clearly shows how semantic search outperforms l
 
 In Xarray, the [`.swap_dims()`](https://github.com/pydata/xarray/pull/6938) method is designed to return a new object with updated dimensions — not to modify the original one. In other words, it should be a non-destructive operation: you get a new object, and the old one stays exactly the same.
 
-But Under certain conditions, calling `.swap_dims()` accidentally changed the original dataset. This happened because the function reused internal data references instead of making a clean copy. 
+But under certain conditions, calling `.swap_dims()` accidentally changed the original dataset. This happened because the function reused internal data references instead of making a clean copy. 
 
 Here’s an example:
 
