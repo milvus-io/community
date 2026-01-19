@@ -235,5 +235,6 @@
   "blog/en/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md": "2026-01-07T03:24:55.352Z",
   "blog/en/reflections-on-chatgpt-and-claude-memory-systems.md": "2026-01-15T06:49:30.341Z",
   "blog/en/evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md": "2026-01-15T12:01:50.441Z",
-  "blog/en/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md": "2026-01-16T03:07:22.948Z"
+  "blog/en/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md": "2026-01-16T03:07:22.948Z",
+  "blog/en/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md": "2026-01-19T13:12:01.268Z"
 }
