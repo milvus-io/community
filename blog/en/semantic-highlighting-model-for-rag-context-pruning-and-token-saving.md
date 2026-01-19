@@ -178,7 +178,7 @@ In total, we built **over 5 million bilingual training samples**, split roughly 
 
 Part of the dataset comes from re-annotating existing data used by projects like Open Provence. The rest was generated from raw corpora by first creating query–context pairs and then labeling them with our reasoning-based pipeline.
 
-All annotated training data is also available on HuggingFace for community development and training reference: [https://huggingface.co/zilliz/datasets](https://huggingface.co/zilliz/datasets)
+All annotated training data is also available on HuggingFace for community development and training reference: [Zilliz Datasets](https://huggingface.co/zilliz/datasets)
 
 ![](https://assets.zilliz.com/zilliz_datasets_dd91330d4d.png)
 
