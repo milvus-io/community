@@ -116,7 +116,7 @@ At runtime, our semantic highlighting model follows a simple pipeline:
     
 4.  **Sentence Aggregation—** Token scores are aggregated at the sentence level, typically by averaging, to produce a relevance score for each sentence.
     
-5.  **Threshold Filtering—** Sentences with scores above a configurable threshold are highlighted and retained, while low-scoring sentences are filtered out before being passed to the downstream LLM. 
+5.  **Threshold Filtering—** Sentences with scores above a configurable threshold are highlighted and retained, while low-scoring sentences are filtered out before being passed to the downstream LLM.
     
 
 ![](https://assets.zilliz.com/semantic_highlighting_workflows_db3d12a666.png)
