@@ -29,7 +29,7 @@ Traditional keyword-based highlighting can’t solve this problem. For example, 
 
 ## A Semantic Highlighting Model for RAG Noise Filtering and Context Pruning 
 
-To make this easy for RAG builders, we trained and open-sourced a [**Semantic Highlighting model**](http://zilliz/semantic-highlight-bilingual-v1) that identifies and highlights the sentences in retrieved documents that are more semantically aligned with the query. The model currently delivers the state-of-the-art performance on both English and Chinese and is designed to slot directly into existing RAG pipelines. 
+To make this easy for RAG builders, we trained and open-sourced a [**Semantic Highlighting model**](https://huggingface.co/zilliz/semantic-highlight-bilingual-v1) that identifies and highlights the sentences in retrieved documents that are more semantically aligned with the query. The model currently delivers the state-of-the-art performance on both English and Chinese and is designed to slot directly into existing RAG pipelines.
 
 ![](https://assets.zilliz.com/context_pruning_80f7b16280.png)
 
