@@ -4,7 +4,7 @@ title: >
  When Grep Isn’t Enough: Why Claude Context Delivers Better Code Search
 author: Cheney Zhang
 date: 2026-01-16
-desc: ICompare Claude Context and Grep to see how semantic search improves code understanding, reduces token usage, and accelerates AI-powered development.
+desc: Compare Claude Context and Grep to see how semantic search improves code understanding, reduces token usage, and accelerates AI-powered development.
 cover: assets.zilliz.com/cover_when_grep_c93c1f080b.jpeg
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, RAG, Generative AI
@@ -13,11 +13,9 @@ meta_keywords: Claude Context, grep, Token efficiency, code search, Semantic sea
 canonicalUrl: https://zilliz.com/blog/when-grep-isnt-enough-why-claude-context-delivers-better-code-search
 ---
 
-# When Grep Isn’t Enough: Why Claude Context Delivers Better Code Search
-
 Recently, developers everywhere have been complaining about **Claude Code** — and the main reason is simple: **token burn**. For many, even moderate coding sessions can chew through an alarming number of tokens, pushing usage costs sky-high. 
 
-The culprit is quite simple. Claude Code still depends on a grep-style, literal text-matching search that blindly sweeps the entire repository every time it tries to gather context. No semantic understanding, no structure awareness — just raw string matching.That brute-force approach drags huge slabs of irrelevant code into the prompt, and the result is predictable: massive, unnecessary token consumption.
+The culprit is quite simple. Claude Code still depends on a grep-style, literal text-matching search that blindly sweeps the entire repository every time it tries to gather context. No semantic understanding, no structure awareness — just raw string matching. That brute-force approach drags huge slabs of irrelevant code into the prompt, and the result is predictable: massive, unnecessary token consumption.
 
 To tackle this problem, we built and open-sourced [**Claude Context**](https://github.com/zilliztech/claude-context), an MCP (Model Context Protocol) plugin that adds semantic code search to Claude Code and other AI coding agents. Instead of scanning files blindly, it retrieves meaning-aware context from the entire codebase. In our tests, this cut token usage by roughly 40%, while improving both accuracy and response latency.
 
@@ -99,77 +97,70 @@ Logs from two test cases were analyzed to further illustrate why grep-based retr
 
 The issue came from [Django’s `YearLookup`](https://github.com/django/django/pull/14170) optimization logic. Normally, when you filter dates by year — for example:
 
-DTModel.objects.filter(start\_date\_\_year=2020)
+```
+DTModel.objects.filter(start_date__year=2020)
+```
 
 Django converts this into a SQL query like:
 
-
-WHERE "start\_date" BETWEEN '2020-01-01' AND '2020-12-31'
-
+```
+WHERE "start_date" BETWEEN '2020-01-01' AND '2020-12-31'
+```
 
 That’s correct for standard calendar years.
 
 However, the `__iso_year` filter follows the ISO week-date system, where a year is defined by its weeks rather than exact calendar dates. So when you try to filter by ISO year: 
 
-
-DTModel.objects.filter(start\_date\_\_iso\_year=2020)
-
+```
+DTModel.objects.filter(start_date__iso_year=2020)
+```
 
 Django still generates the same SQL:
 
-
-WHERE "start\_date" BETWEEN '2020-01-01' AND '2020-12-31'
-
+```
+WHERE "start_date" BETWEEN '2020-01-01' AND '2020-12-31'
+```
 
 But it should instead extract the ISO year explicitly:
 
-
-WHERE EXTRACT('isoyear' FROM "start\_date") = 2020
+```
+WHERE EXTRACT('isoyear' FROM "start_date") = 2020
+```
 
 In this case, the grep-based agent followed the wrong lead. It locked onto `ExtractIsoYear` simply because of a name match, missing the real fix hidden in the `YearLookup` logic. By relying solely on literal text matching, the grep method wasted thousands of tokens chasing unrelated code.
 
 Here’s what the logs showed:
 
-
-`🔧`directory\_tree()
-
-⚙️Result: Scanned 3,000+ lines of directory structure (\~50k tokens)
-
-     Problem: ****Information overload with no direct relevance.
-
-`🔧`search\_text('ExtractIsoYear')
-
+```
+🔧directory_tree()
+⚙️Result: Scanned 3,000+ lines of directory structure (~50k tokens)
+     Problem: Information overload with no direct relevance.
+🔧search_text('ExtractIsoYear')
 ⚙️Result: Found 21 matches across files:
-
-  - django/db/models/functions/\_\_init\_\_.py:5 (import)
-
-  - django/db/models/functions/\_\_init\_\_.py:31 (export list)
-
+  - django/db/models/functions/__init__.py:5 (import)
+  - django/db/models/functions/__init__.py:31 (export list)
   - django/db/models/functions/datetime.py:93 (ExtractIsoYear class)
-
-     Problem: ****Most matches were irrelevant.
-
-`🔧`edit\_file('django/db/models/functions/datetime.py')
-
+     Problem: Most matches were irrelevant.
+🔧edit_file('django/db/models/functions/datetime.py')
 ⚙️Edited registration statements — but in the wrong place.
+```
 
 The Claude Context–enhanced agent approached the problem very differently. Instead of matching keywords literally, it used semantic search to understand what the task was really about — fixing how Django’s `YearLookup` handled ISO year filtering.
 
 Here’s what the logs showed:
 
-
-🔧 **search\_code('YearLookup')** ⚙️ Found **10 results** for the query: "YearLookup" in the codebase
-
-1. Code snippet (python) \[repo\_\_django\_\_django]\
-    Location: django/db/models/lookups.py:568–577\
-    Context: YearExact class and the get\_bound\_params method
-
-2. Code snippet (python) \[repo\_\_django\_\_django]\
-    Location: django/db/models/lookups.py:538–569\
-    Context: YearLookup base class and the year\_lookup\_bounds method
-
-🔧 edit\_file(django/db/models/lookups.py)**** ⚙️ Successfully modified the core optimization logic to handle ISO years correctly.
-
+```
+🔧 search_code('YearLookup')
+ ⚙️ Found 10 results for the query: "YearLookup" in the codebase
+Code snippet (python) [repo__django__django]
+ Location: django/db/models/lookups.py:568–577
+ Context: YearExact class and the get_bound_params method
+Code snippet (python) [repo__django__django]
+ Location: django/db/models/lookups.py:538–569
+ Context: YearLookup base class and the year_lookup_bounds method
+🔧 edit_file(django/db/models/lookups.py)
+ ⚙️ Successfully modified the core optimization logic to handle ISO years correctly.
+```
 
 Performance at a Glance:
 
@@ -188,77 +179,65 @@ But Under certain conditions, calling `.swap_dims()` accidentally changed the or
 
 Here’s an example:
 
-
+```
 import numpy as np
-
 import xarray as xr
-
 nz = 11
-
 ds = xr.Dataset({
-
     "y": ("z", np.random.rand(nz)),
-
-    "lev": ("z", np.arange(nz) \* 10),
-
+    "lev": ("z", np.arange(nz) * 10),
 })
-
-\# This should not modify ds, but it actually does
-
-ds2=ds.swap\_dims(z="lev").rename\_dims(lev="z").reset\_index("lev").reset\_coords()
-
-ds2.swap\_dims(z='lev') # This unexpectedly mutates ds2\["lev"]
-
-\# ds2\["lev"] now has dimension "lev" instead of "z"
-
+# This should not modify ds, but it actually does
+ds2=ds.swap_dims(z="lev").rename_dims(lev="z").reset_index("lev").reset_coords()
+ds2.swap_dims(z='lev') # This unexpectedly mutates ds2["lev"]
+# ds2["lev"] now has dimension "lev" instead of "z"
+```
 
 The grep-based agent failed because it spent most of its time calling `list_directory` and `read_file`, rather than targeting the relevant methods.
 
 Here’s what the logs showed:
 
+```
+🔧 list_directory('repo__pydata__xarray')
+ ⚙️ Result: Retrieved directory structures from multiple subdirectories
+       Problem: Basic directory navigation with no targeted search
+🔧 search_text('swap_dims')
+ ⚙️ Result: Found 21 matches in core files:
+xarray/core/common.py:600 (reference to Dataset.swap_dims)
 
-🔧 list\_directory('repo\_\_pydata\_\_xarray')\
-⚙️ Result: Retrieved directory structures from multiple subdirectories\
-      Problem: Basic directory navigation with no targeted search
 
-🔧 search\_text('swap\_dims')\
-⚙️ Result: Found 21 matches in core files:
+xarray/core/dataarray.py:753 (“.rename() or .swap_dims() instead.”)
 
-- xarray/core/common.py:600 (reference to Dataset.swap\_dims)
 
-- xarray/core/dataarray.py:753 (“.rename() or .swap\_dims() instead.”)
+xarray/core/dataarray.py:2026 (reference to DataArray.swap_dims)
 
-- xarray/core/dataarray.py:2026 (reference to DataArray.swap\_dims)
 
-- xarray/core/dataarray.py:2044 (def swap\_dims method)\
-  Problem: Many matches appear in different contexts
-
-🔧 read\_file('xarray/core/dataarray.py', offset=2000, limit=40)\
-⚙️ Result: Read lines 2001–2040 showing documentation for the rename method
-
-🔧 read\_file('xarray/core/dataset.py', offset=3600, limit=40)\
-⚙️ Result: Read lines 3601–3640 showing the rename\_dims method
+xarray/core/dataarray.py:2044 (def swap_dims method)
+ Problem: Many matches appear in different contexts
+🔧 read_file('xarray/core/dataarray.py', offset=2000, limit=40)
+ ⚙️ Result: Read lines 2001–2040 showing documentation for the rename method
+🔧 read_file('xarray/core/dataset.py', offset=3600, limit=40)
+ ⚙️ Result: Read lines 3601–3640 showing the rename_dims method
+```
 
 With semantic search, Claude Context immediately found the true `swap_dims()` implementation and grasped the context of how it works.
 
 Here’s what the logs showed:
 
+```
+🔧 search_code('.swap_dims()')
+ ⚙️ Found 10 results for the query: ".swap_dims()" in the codebase
+Code snippet (python) [repo__pydata__xarray]
+ Location: xarray/tests/test_formatting_html.py:67–76
 
-🔧 search\_code('.swap\_dims()')\
-⚙️ Found 10 results for the query: ".swap\_dims()" in the codebase
 
-1. Code snippet (python) \[repo\_\_pydata\_\_xarray]\
-   Location: xarray/tests/test\_formatting\_html.py:67–76
-
-2. Code snippet (python) \[repo\_\_pydata\_\_xarray]\
-   Location: xarray/tests/test\_dataset.py:2926–2979
-
-🔧 edit\_file('xarray/core/dataset.py')\
-⚙️ Successfully modified the file, adding dimension-handling logic
-
-🔧 edit\_file('xarray/core/dataarray.py')\
-⚙️ Successfully modified the file to ensure the original DataArray is not mutated
-
+Code snippet (python) [repo__pydata__xarray]
+ Location: xarray/tests/test_dataset.py:2926–2979
+🔧 edit_file('xarray/core/dataset.py')
+ ⚙️ Successfully modified the file, adding dimension-handling logic
+🔧 edit_file('xarray/core/dataarray.py')
+ ⚙️ Successfully modified the file to ensure the original DataArray is not mutated
+```
 
 Performance at a Glance:
 
