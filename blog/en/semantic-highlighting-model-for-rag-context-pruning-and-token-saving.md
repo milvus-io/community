@@ -161,7 +161,7 @@ The annotation workflow looks like this:
 
 ![](https://assets.zilliz.com/annotation_data_generation_ff93eb18f4.png)
 
-### Qwen3 8B for Annotation 
+### Qwen3 8B for Annotation
 
 For annotation, we chose Qwen3 8B because it natively supports a “thinking mode” via outputs, making it much easier to extract consistent reasoning traces. Smaller models didn’t give us stable labels, and larger models were slower and unnecessarily expensive for this kind of pipeline. Qwen3 8B hit the right balance between quality, speed, and cost.
 
