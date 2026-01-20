@@ -1517,3 +1517,19 @@ I found some great affordable fitness clothing options for you!</p>
     </button></h2><p>In this blog, we have seen that the combination of semantic search and structured filtering can solve the traditional keyword search problem, which is too rigid, requiring exact word matches and manual synonym maintenance. Semantic search can bring more value if we combine structured filters, such as price ranges, stock status, or features, and we can achieve the best of both worlds.</p>
 <p>The search landscape is evolving rapidly, and the combination of semantic search with structured filtering is becoming essential for modern applications. Whether you’re building an e-commerce platform, a content discovery system, or an internal knowledge base, this approach gives you the flexibility and efficiency to deliver great search experiences.</p>
 <p>If you found this valuable, I’d love to hear about your use cases and how you’re implementing search in your applications. The future of search is intent-aware, and we’re just getting started.</p>
+<h2 id="About-the-author" class="common-anchor-header">About the author<button data-href="#About-the-author" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p><a href="https://www.linkedin.com/in/sudhanshu212/">Sudhanshu Prajapati</a> is a Senior Developer Advocate at Improving, with a background in backend and data engineering and a focus on cloud-native and distributed systems. He works on enabling developers to adopt complex infrastructure by building hands-on demos, writing blogs, and creating technical education around open-source projects. His experience spans Kubernetes, distributed databases, observability, and modern AI workflows including RAG and model serving and vLLM. Sudhanshu is an active open-source contributor and a regular speaker at CNCF and local community events.</p>
