@@ -3,7 +3,7 @@ id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 title: 我們如何為 RAG 上下文剪枝和代號儲存建立語意強調模型
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -301,7 +301,7 @@ origin: >-
     </button></h2><p>這項工作建基於許多偉大的想法和開放原始碼的貢獻，我們想要強調讓這個模型成為可能的專案。</p>
 <ul>
 <li><p><strong>Provence</strong>使用輕量級的編碼器模型，為上下文剪枝引入了簡潔實用的框架。</p></li>
-<li><p><strong>Open Provence</strong>提供了一個穩固且精心設計的程式碼基礎 - 訓練管道、資料處理和模型頭 - 並採用許可證。它為我們提供了一個強大的實驗起點。</p></li>
+<li><p><strong>Open Provence</strong>提供了一個穩固且精心設計的程式碼基礎 - 訓練管道、資料處理和模型頭 - 並提供許可證。它為我們提供了一個強大的實驗起點。</p></li>
 </ul>
 <p>在這個基礎上，我們加入了一些自己的貢獻：</p>
 <ul>
@@ -310,4 +310,4 @@ origin: >-
 <li><p>選擇更適合長上下文相關性評分的基礎模型<strong>（BGE-M3 Reranker v2）</strong></p></li>
 <li><p>僅訓練<strong>剪枝頭 (Pruning Head)</strong>，使模型專門用於語義強調</p></li>
 </ul>
-<p>我們非常感謝 Provence 和 Open Provence 團隊公開發表他們的工作。他們的貢獻大大加速了我們的發展，並讓這個專案成為可能。</p>
+<p>我們非常感謝 Provence 和 Open Provence 團隊公開發表他們的工作。他們的貢獻大大加快了我們的開發速度，也讓這個專案成為可能。</p>

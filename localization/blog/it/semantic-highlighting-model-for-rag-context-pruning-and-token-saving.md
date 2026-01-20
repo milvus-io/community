@@ -5,7 +5,7 @@ title: >-
   del contesto RAG e il salvataggio dei token
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -41,7 +41,7 @@ origin: >-
     </button></h2><p>La<strong>ricerca vettoriale</strong> è una base solida per i sistemi RAG: assistenti aziendali, agenti AI, bot di assistenza clienti e altro ancora. Trova in modo affidabile i documenti che contano. Ma il reperimento da solo non risolve il problema del contesto. Anche gli indici ben tarati restituiscono pezzi ampiamente rilevanti, mentre solo una piccola parte delle frasi contenute in quei pezzi risponde effettivamente alla query.</p>
 <p>Nei sistemi di produzione, questo divario si manifesta immediatamente. Una singola query può raccogliere decine di documenti, ciascuno lungo migliaia di token. Solo una manciata di frasi contiene il segnale vero e proprio; il resto è contesto che gonfia l'uso dei token, rallenta l'inferenza e spesso distrae il LLM. Il problema diventa ancora più evidente nei flussi di lavoro ad agenti, dove le query stesse sono il risultato di ragionamenti in più fasi e corrispondono solo a piccole parti del testo recuperato.</p>
 <p>Questo crea una chiara necessità di un modello in grado di <em><strong>identificare ed evidenziare</strong></em> <em>le frasi utili e ignorare il resto: in sostanza,</em>un filtro di rilevanza a livello di frase, o quello che molti team chiamano <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>context pruning</strong></a>. L'obiettivo è semplice: mantenere le parti che contano ed eliminare il rumore prima che raggiunga l'LLM.</p>
-<p>L'evidenziazione tradizionale basata sulle parole chiave non può risolvere questo problema. Per esempio, se un utente chiede "Come posso migliorare l'efficienza dell'esecuzione del codice Python?", un evidenziatore di parole chiave individuerà "Python" e "efficienza", ma non troverà la frase che risponde effettivamente alla domanda - "Usa le operazioni vettoriali NumPy invece dei loop" - perché non condivide alcuna parola chiave con la query. Ciò di cui abbiamo bisogno è una comprensione semantica, non una corrispondenza di stringhe.</p>
+<p>L'evidenziazione tradizionale basata sulle parole chiave non può risolvere questo problema. Ad esempio, se un utente chiede "Come posso migliorare l'efficienza dell'esecuzione del codice Python?", un evidenziatore di parole chiave individuerà "Python" e "efficienza", ma non troverà la frase che risponde effettivamente alla domanda - "Usa le operazioni vettoriali NumPy invece dei loop" - perché non condivide alcuna parola chiave con la query. Ciò di cui abbiamo bisogno è una comprensione semantica, non una corrispondenza di stringhe.</p>
 <h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">Un modello di evidenziazione semantica per il filtraggio del rumore e la selezione del contesto di RAG<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -68,7 +68,7 @@ origin: >-
 <ul>
 <li><p><strong>HuggingFace:</strong> <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 <li><p><strong>Licenza:</strong> MIT (commercial-friendly)</p></li>
-<li><p><strong>Architettura:</strong> 0,6B modello solo encoder basato su BGE-M3 Reranker v2</p></li>
+<li><p><strong>Architettura:</strong> 0,6B modello di solo encoder basato su BGE-M3 Reranker v2</p></li>
 <li><p><strong>Finestra di contesto:</strong> 8192 token</p></li>
 <li><p><strong>Lingue supportate:</strong> Inglese e cinese</p></li>
 </ul>
@@ -76,7 +76,7 @@ origin: >-
 <ul>
 <li><p><strong>una migliore interpretabilità</strong>, mostrando quali parti di un documento sono effettivamente importanti</p></li>
 <li><p><strong>riduzione del 70-80% del costo dei token</strong>, inviando al LLM solo le frasi evidenziate</p></li>
-<li><p><strong>una migliore qualità delle risposte</strong>, poiché il modello vede meno contesto irrilevante</p></li>
+<li><p><strong>Migliore qualità delle risposte</strong>, poiché il modello vede meno contesto irrilevante</p></li>
 <li><p><strong>Un debugging più semplice</strong>, perché gli ingegneri possono ispezionare direttamente le corrispondenze a livello di frase.</p></li>
 </ul>
 <h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">Risultati della valutazione: Raggiungere le prestazioni SOTA</h3><p>Abbiamo valutato il nostro modello di evidenziazione semantica su diversi set di dati in inglese e cinese, sia in condizioni di dominio che di non dominio.</p>
@@ -121,7 +121,7 @@ origin: >-
 <li><p><strong>Architettura del modello:</strong> utilizzare un progetto di solo encoder per un'inferenza veloce.</p></li>
 <li><p><strong>Dati di addestramento:</strong> generare etichette di rilevanza di alta qualità utilizzando LLM in grado di ragionare e scalare la generazione di dati con framework di inferenza locale.</p></li>
 </ul>
-<h3 id="Model-Architecture" class="common-anchor-header">Architettura del modello</h3><p>Abbiamo costruito il modello come una rete leggera di <strong>sola codifica</strong> che tratta il potenziamento del contesto come un <strong>compito di punteggio di rilevanza a livello di token</strong>. Questo design si ispira a <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, un approccio di potatura del contesto presentato da Naver all'ICLR 2025, che riformula la potatura da "scegliere il pezzo giusto" a "segnare ogni token". Questa impostazione si allinea naturalmente con l'evidenziazione semantica, dove i segnali a grana fine sono essenziali.</p>
+<h3 id="Model-Architecture" class="common-anchor-header">Architettura del modello</h3><p>Abbiamo costruito il modello come una rete leggera di <strong>sola codifica</strong> che tratta la potatura del contesto come un <strong>compito di punteggio di rilevanza a livello di token</strong>. Questo design si ispira a <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, un approccio di potatura del contesto presentato da Naver all'ICLR 2025, che riformula la potatura da "scegliere il pezzo giusto" a "segnare ogni token". Questa impostazione si allinea naturalmente con l'evidenziazione semantica, dove i segnali a grana fine sono essenziali.</p>
 <p>I modelli di solo codificatore non sono l'architettura più recente, ma in questo caso sono estremamente pratici: sono veloci, facili da scalare e possono produrre punteggi di rilevanza per tutte le posizioni dei token in parallelo. Per un sistema RAG di produzione, questo vantaggio di velocità è molto più importante dell'uso di un modello di decodifica più grande.</p>
 <p>Una volta calcolati i punteggi di rilevanza a livello di token, li aggreghiamo in punteggi <strong>a livello di frase</strong>. Questo passaggio trasforma i segnali rumorosi dei token in una metrica di rilevanza stabile e interpretabile. Le frasi che superano una soglia configurabile vengono evidenziate; tutto il resto viene filtrato. In questo modo si ottiene un meccanismo semplice e affidabile per selezionare le frasi che sono effettivamente importanti per la query.</p>
 <h3 id="Inference-Process" class="common-anchor-header">Processo di inferenza</h3><p>In fase di esecuzione, il nostro modello di evidenziazione semantica segue una semplice pipeline:</p>
@@ -167,9 +167,9 @@ origin: >-
 <p>Per migliorare la stabilità senza sacrificare la scalabilità, abbiamo apportato una modifica: il LLM deve fornire un breve frammento di ragionamento per ogni etichetta che produce. Ogni esempio di addestramento include la query, il documento, le frasi e una breve spiegazione del perché una frase è rilevante o irrilevante. Questa piccola modifica ha reso le annotazioni molto più coerenti e ci ha dato qualcosa di concreto a cui fare riferimento durante la validazione o il debug del dataset.</p>
 <p>L'inclusione del ragionamento si è rivelata sorprendentemente preziosa:</p>
 <ul>
-<li><p><strong>Una maggiore qualità delle annotazioni:</strong> La scrittura del ragionamento funziona come un autocontrollo, che riduce le etichette casuali o incoerenti.</p></li>
+<li><p><strong>Maggiore qualità delle annotazioni:</strong> La scrittura del ragionamento funziona come un autocontrollo, che riduce le etichette casuali o incoerenti.</p></li>
 <li><p><strong>Migliore osservabilità:</strong> Possiamo vedere <em>perché</em> una frase è stata selezionata, invece di trattare l'etichetta come una scatola nera.</p></li>
-<li><p><strong>Debug più facile:</strong> Quando qualcosa sembra sbagliato, il ragionamento rende facile individuare se il problema è il prompt, il dominio o la logica di annotazione.</p></li>
+<li><p><strong>Debug più semplice:</strong> Quando qualcosa sembra sbagliato, il ragionamento rende facile individuare se il problema è il prompt, il dominio o la logica di annotazione.</p></li>
 <li><p><strong>Dati riutilizzabili:</strong> Anche se in futuro passiamo a un modello di etichettatura diverso, le tracce del ragionamento rimangono utili per la rietichettatura o la verifica.</p></li>
 </ul>
 <p>Il flusso di lavoro di annotazione si presenta come segue:</p>
@@ -180,7 +180,7 @@ origin: >-
   </span>
 </p>
 <h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B per l'annotazione</h3><p>Per l'annotazione, abbiamo scelto Qwen3 8B perché supporta in modo nativo una "modalità di pensiero" attraverso le uscite, rendendo molto più semplice l'estrazione di tracce di ragionamento coerenti. I modelli più piccoli non ci davano etichette stabili e quelli più grandi erano più lenti e inutilmente costosi per questo tipo di pipeline. Qwen3 8B ha raggiunto il giusto equilibrio tra qualità, velocità e costi.</p>
-<p>Abbiamo eseguito tutte le annotazioni utilizzando un <strong>servizio vLLM locale</strong> anziché le API del cloud. Questo ci ha permesso di ottenere un throughput elevato, prestazioni prevedibili e costi molto più bassi: in sostanza, abbiamo scambiato il tempo della GPU con i costi dei token API, che è l'affare migliore quando si generano milioni di campioni.</p>
+<p>Abbiamo eseguito tutte le annotazioni utilizzando un <strong>servizio vLLM locale</strong> anziché le API del cloud. Questo ci ha permesso di ottenere un throughput elevato, prestazioni prevedibili e costi molto più bassi: in sostanza, abbiamo scambiato il tempo della GPU con le tariffe dei token API, che è l'affare migliore quando si generano milioni di campioni.</p>
 <h3 id="Dataset-Scale" class="common-anchor-header">Scala del set di dati</h3><p>In totale, abbiamo creato <strong>oltre 5 milioni di campioni di formazione bilingue</strong>, suddivisi in modo approssimativo tra inglese e cinese.</p>
 <ul>
 <li><p><strong>Fonti inglesi:</strong> MS MARCO, Natural Questions, GooAQ</p></li>
@@ -242,7 +242,7 @@ origin: >-
 <tr><td>XProvence v2</td><td>✗</td><td>Ha selezionato solo la frase 3, non ha risposto correttamente</td></tr>
 </tbody>
 </table>
-<p><strong>Confronto del punteggio delle frasi chiave:</strong></p>
+<p><strong>Confronto del punteggio della frase chiave:</strong></p>
 <table>
 <thead>
 <tr><th>Frase</th><th>Il nostro modello</th><th>XProvence v1</th><th>XProvence v2</th></tr>

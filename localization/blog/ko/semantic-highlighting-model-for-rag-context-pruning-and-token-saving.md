@@ -3,7 +3,7 @@ id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 title: RAG 컨텍스트 가지치기 및 토큰 저장을 위한 시맨틱 하이라이트 모델을 구축한 방법
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -35,8 +35,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p><strong>벡터 검색은</strong> 엔터프라이즈 어시스턴트, AI 에이전트, 고객 지원 봇 등 RAG 시스템을 위한 견고한 기반입니다. 중요한 문서를 안정적으로 찾아냅니다. 하지만 검색만으로는 컨텍스트 문제를 해결하지 못합니다. 잘 조정된 인덱스조차도 광범위하게 관련성이 있는 청크를 반환하지만, 그 청크 안의 문장 중 실제로 쿼리에 대한 답변은 극히 일부에 불과합니다.</p>
-<p>프로덕션 시스템에서는 이러한 격차가 즉시 나타납니다. 하나의 쿼리가 각각 수천 개의 토큰 길이를 가진 수십 개의 문서를 가져올 수 있습니다. 실제 신호가 포함된 문장은 소수에 불과하며, 나머지는 토큰 사용량을 늘리고 추론 속도를 늦추며 종종 LLM의 주의를 분산시키는 컨텍스트입니다. 쿼리 자체가 다단계 추론의 결과물이고 검색된 텍스트의 작은 부분만 일치하는 에이전트 워크플로우에서는 문제가 더욱 분명해집니다.</p>
-<p>따라서 <em>유용한 문장을</em> <em><strong>식별하고 강조 표시하고</strong></em> <em>나머지는 무시할</em>수 있는 모델, 즉 문장 수준의 관련성 필터링 또는 많은 팀에서 <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>컨텍스트</strong></a> 가지치기라고 부르는 모델이 분명하게 필요하게 됩니다. 목표는 간단합니다. 중요한 부분은 유지하고 노이즈는 LLM에 도달하기 전에 제거하는 것입니다.</p>
+<p>프로덕션 시스템에서는 이러한 격차가 즉시 나타납니다. 하나의 쿼리로 수천 개의 토큰 길이를 가진 수십 개의 문서를 가져올 수 있습니다. 실제 신호가 포함된 문장은 소수에 불과하며, 나머지는 토큰 사용량을 늘리고 추론 속도를 늦추며 종종 LLM의 주의를 분산시키는 컨텍스트입니다. 쿼리 자체가 다단계 추론의 결과물이고 검색된 텍스트의 작은 부분만 일치하는 에이전트 워크플로우에서는 문제가 더욱 분명해집니다.</p>
+<p>따라서 <em>유용한 문장을</em> <em><strong>식별하고 강조 표시하고</strong></em> <em>나머지는 무시할</em>수 있는 모델, 즉 문장 수준의 관련성 필터링 또는 많은 팀에서 <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>컨텍스트</strong></a> 가지치기라고 부르는 모델이 반드시 필요합니다. 목표는 간단합니다. 중요한 부분은 유지하고 노이즈는 LLM에 도달하기 전에 제거하는 것입니다.</p>
 <p>기존의 키워드 기반 강조 표시로는 이 문제를 해결할 수 없습니다. 예를 들어 사용자가 "파이썬 코드 실행 효율을 높이려면 어떻게 해야 하나요?"라고 묻는 경우, 키워드 하이라이터는 "파이썬"과 "효율성"을 선택하지만 쿼리와 키워드를 공유하지 않기 때문에 실제로 질문에 대한 답인 "루프 대신 NumPy 벡터화된 연산을 사용하세요"라는 문장을 놓칩니다. 대신 필요한 것은 문자열 매칭이 아니라 의미론적 이해입니다.</p>
 <h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">RAG 노이즈 필터링 및 컨텍스트 프루닝을 위한 시맨틱 강조 모델<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -97,7 +97,7 @@ origin: >-
 <li><p>훈련된 이중 언어 모델: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 </ul>
 <p>네 가지 데이터 세트 모두에서 이 모델이 최고 순위를 차지했습니다. 더 중요한 것은 영어와 중국어 모두에서 일관되게 우수한 성능을 보이는 <em>유일한</em> 모델이라는 점입니다. 경쟁 모델은 영어에만 집중하거나 중국어 텍스트에서 뚜렷한 성능 저하를 보입니다.</p>
-<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">시맨틱 하이라이트 모델을 구축한 방법<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">시맨틱 강조 모델을 구축한 방법<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

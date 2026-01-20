@@ -5,7 +5,7 @@ title: >-
   сохранения токенов
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true

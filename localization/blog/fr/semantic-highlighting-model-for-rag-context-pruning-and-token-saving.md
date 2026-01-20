@@ -5,7 +5,7 @@ title: >-
   l'élagage du contexte RAG et la sauvegarde des tokens
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -38,7 +38,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La<strong>recherche vectorielle</strong> est une base solide pour les systèmes RAG (assistants d'entreprise, agents d'intelligence artificielle, robots d'assistance à la clientèle, etc. Elle permet de trouver de manière fiable les documents importants. Mais la recherche à elle seule ne résout pas le problème du contexte. Même les index bien réglés renvoient des morceaux qui sont largement pertinents, alors que seule une petite fraction des phrases à l'intérieur de ces morceaux répond réellement à la requête.</p>
+    </button></h2><p>La<strong>recherche vectorielle</strong> est une base solide pour les systèmes RAG (assistants d'entreprise, agents d'intelligence artificielle, robots d'assistance à la clientèle, etc. Elle permet de trouver de manière fiable les documents importants. Mais la recherche vectorielle ne résout pas à elle seule le problème du contexte. Même les index bien réglés renvoient des morceaux qui sont largement pertinents, alors que seule une petite fraction des phrases à l'intérieur de ces morceaux répond réellement à la requête.</p>
 <p>Dans les systèmes de production, cette lacune apparaît immédiatement. Une seule requête peut donner lieu à des dizaines de documents, chacun contenant des milliers de tokens. Seule une poignée de phrases contient le signal réel ; le reste est un contexte qui gonfle l'utilisation des jetons, ralentit l'inférence et distrait souvent le LLM. Le problème devient encore plus évident dans les flux de travail des agents, où les requêtes elles-mêmes sont le résultat d'un raisonnement en plusieurs étapes et ne correspondent qu'à de petites parties du texte récupéré.</p>
 <p>Il en résulte un besoin évident d'un modèle capable d'<em><strong>identifier et de mettre en évidence</strong></em> <em>les phrases utiles et d'ignorer le reste - essentiellement</em>un filtrage de la pertinence au niveau de la phrase, ou ce que de nombreuses équipes appellent l'<a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>élagage du contexte</strong></a>. L'objectif est simple : conserver les parties importantes et éliminer le bruit avant qu'il n'atteigne le LLM.</p>
 <p>La mise en évidence traditionnelle par mot-clé ne peut pas résoudre ce problème. Par exemple, si un utilisateur demande "Comment améliorer l'efficacité de l'exécution du code Python ?", un surligneur de mots-clés repérera "Python" et "efficacité", mais ne verra pas la phrase qui répond réellement à la question - "Utiliser les opérations vectorisées NumPy au lieu des boucles" - parce qu'elle ne partage aucun mot-clé avec la requête. Ce dont nous avons besoin, c'est d'une compréhension sémantique, et non d'une correspondance de chaînes de caractères.</p>
@@ -100,8 +100,8 @@ origin: >-
 <li><p>L'outil de mise en valeur sémantique d'OpenSearch</p></li>
 <li><p>Notre modèle bilingue entraîné : <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 </ul>
-<p>Sur les quatre ensembles de données, notre modèle obtient le meilleur classement. Plus important encore, c'est le <em>seul</em> modèle qui obtient de bons résultats à la fois en anglais et en chinois. Les modèles concurrents se concentrent exclusivement sur l'anglais ou affichent des performances nettement inférieures sur les textes chinois.</p>
-<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">Comment nous avons construit ce modèle de surlignage sémantique<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Dans les quatre ensembles de données, notre modèle obtient le meilleur classement. Plus important encore, c'est le <em>seul</em> modèle qui obtient de bons résultats à la fois en anglais et en chinois. Les modèles concurrents se concentrent exclusivement sur l'anglais ou affichent des performances nettement inférieures sur les textes chinois.</p>
+<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">Comment nous avons construit ce modèle de mise en évidence sémantique<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,7 +143,7 @@ origin: >-
 <li><p>Il utilise une architecture d'encodeur adaptée à l'évaluation des jetons et des phrases.</p></li>
 <li><p>Prise en charge de plusieurs langues avec optimisation pour l'anglais et le chinois</p></li>
 <li><p>Fournit une fenêtre contextuelle de 8192 jetons appropriée pour les documents RAG plus longs.</p></li>
-<li><p>Maintient 0,6 milliard de paramètres, ce qui est suffisamment solide sans être lourd en termes de calcul.</p></li>
+<li><p>Maintient 0,6 milliard de paramètres - suffisamment fort sans être lourd en termes de calcul.</p></li>
 <li><p>Assure une connaissance suffisante du monde dans le modèle de base</p></li>
 <li><p>Entraîné pour le reranking, qui s'aligne étroitement sur les tâches de jugement de pertinence.</p></li>
 </ol>
@@ -180,7 +180,7 @@ origin: >-
   </span>
 </p>
 <h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B pour l'annotation</h3><p>Pour l'annotation, nous avons choisi Qwen3 8B parce qu'il prend nativement en charge un "mode de réflexion" via les sorties, ce qui facilite grandement l'extraction de traces de raisonnement cohérentes. Les modèles plus petits ne nous donnaient pas d'étiquettes stables, et les modèles plus grands étaient plus lents et inutilement coûteux pour ce type de pipeline. Qwen3 8B a trouvé le bon équilibre entre la qualité, la vitesse et le coût.</p>
-<p>Nous avons exécuté toutes les annotations à l'aide d'un <strong>service vLLM local</strong> plutôt que d'API dans le nuage. Cela nous a permis d'obtenir un débit élevé, des performances prévisibles et un coût beaucoup plus faible. En fait, nous avons échangé le temps passé sur le GPU contre des jetons d'API, ce qui est plus avantageux lorsque l'on génère des millions d'échantillons.</p>
+<p>Nous avons exécuté toutes les annotations à l'aide d'un <strong>service vLLM local</strong> plutôt que d'API dans le nuage. Cela nous a permis d'obtenir un débit élevé, des performances prévisibles et un coût beaucoup plus faible, en échangeant du temps de GPU contre des jetons d'API, ce qui est plus avantageux lorsque l'on génère des millions d'échantillons.</p>
 <h3 id="Dataset-Scale" class="common-anchor-header">Échelle des ensembles de données</h3><p>Au total, nous avons créé <strong>plus de 5 millions d'échantillons de formation bilingues</strong>, répartis à peu près équitablement entre l'anglais et le chinois.</p>
 <ul>
 <li><p><strong>Sources anglaises :</strong> MS MARCO, Natural Questions, GooAQ</p></li>

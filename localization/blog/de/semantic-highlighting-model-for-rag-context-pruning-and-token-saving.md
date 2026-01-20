@@ -5,7 +5,7 @@ title: >-
   Saving entwickelt haben
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -39,7 +39,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Die<strong>Vektorsuche</strong> ist eine solide Grundlage für RAG-Systeme - Unternehmensassistenten, KI-Agenten, Kundensupport-Bots und mehr. Sie findet zuverlässig die Dokumente, auf die es ankommt. Aber die Abfrage allein löst das Kontextproblem nicht. Selbst gut abgestimmte Indizes liefern im Großen und Ganzen relevante Abschnitte, während nur ein kleiner Teil der Sätze innerhalb dieser Abschnitte tatsächlich die Anfrage beantwortet.</p>
-<p>In Produktionssystemen macht sich diese Lücke sofort bemerkbar. Eine einzige Abfrage kann Dutzende von Dokumenten umfassen, von denen jedes Tausende von Token lang ist. Nur eine Handvoll Sätze enthält das eigentliche Signal; der Rest ist Kontext, der die Verwendung von Token aufbläht, die Inferenz verlangsamt und oft den LLM ablenkt. Noch deutlicher wird das Problem in Agenten-Workflows, wo die Abfragen selbst das Ergebnis mehrstufiger Schlussfolgerungen sind und nur kleine Teile des abgerufenen Textes abdecken.</p>
+<p>In Produktionssystemen macht sich diese Lücke sofort bemerkbar. Eine einzige Abfrage kann Dutzende von Dokumenten umfassen, von denen jedes Tausende von Token lang ist. Nur eine Handvoll Sätze enthält das eigentliche Signal; der Rest ist Kontext, der die Verwendung von Token aufbläht, die Inferenz verlangsamt und oft den LLM ablenkt. Noch deutlicher wird das Problem in Agenten-Workflows, bei denen die Abfragen selbst das Ergebnis einer mehrstufigen Schlussfolgerung sind und nur kleine Teile des abgerufenen Textes abdecken.</p>
 <p>Dadurch entsteht ein klarer Bedarf an einem Modell, das <em>die nützlichen Sätze</em> <em><strong>identifizieren und hervorheben</strong></em> <em>und den Rest ignorieren</em>kann <em>- im Wesentlichen</em>eine Relevanzfilterung auf Satzebene oder das, was viele Teams als <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>Context Pruning</strong></a> bezeichnen. Das Ziel ist einfach: die wichtigen Teile zu behalten und das Rauschen zu entfernen, bevor es den LLM erreicht.</p>
 <p>Herkömmliche schlagwortbasierte Hervorhebungen können dieses Problem nicht lösen. Wenn ein Benutzer beispielsweise fragt: "Wie kann ich die Ausführungseffizienz von Python-Code verbessern?", wird ein Keyword-Highlighter "Python" und "Effizienz" herausfiltern, aber den Satz, der die Frage tatsächlich beantwortet - "NumPy vektorisierte Operationen anstelle von Schleifen verwenden" - übersehen, da er keine Schlüsselwörter mit der Anfrage teilt. Was wir stattdessen brauchen, ist semantisches Verständnis, nicht String-Matching.</p>
 <h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">Ein semantisches Hervorhebungsmodell für die RAG-Rauschfilterung und das Pruning von Kontexten<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
@@ -140,7 +140,7 @@ origin: >-
 </p>
 <h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">Basismodell: BGE-M3 Reranker v2</h3><p>Wir haben BGE-M3 Reranker v2 aus mehreren Gründen als Basismodell ausgewählt:</p>
 <ol>
-<li><p>Es verwendet eine Encoder-Architektur, die für die Bewertung von Token und Sätzen geeignet ist</p></li>
+<li><p>Es verwendet eine Encoder-Architektur, die sich für das Scoring von Token und Sätzen eignet</p></li>
 <li><p>Unterstützt mehrere Sprachen mit Optimierung für Englisch und Chinesisch</p></li>
 <li><p>Bietet ein 8192-Token-Kontextfenster, das für längere RAG-Dokumente geeignet ist</p></li>
 <li><p>Behält 0,6B Parameter bei - stark genug, ohne rechenaufwändig zu sein</p></li>

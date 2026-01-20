@@ -5,7 +5,7 @@ title: >-
   gravação de tokens
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -41,8 +41,8 @@ origin: >-
     </button></h2><p><strong>A pesquisa vetorial</strong> é uma base sólida para os sistemas RAG - assistentes empresariais, agentes de IA, bots de apoio ao cliente e muito mais. Ela encontra de forma confiável os documentos que importam. Mas a recuperação por si só não resolve o problema do contexto. Mesmo os índices bem ajustados devolvem pedaços que são amplamente relevantes, enquanto apenas uma pequena fração das frases dentro desses pedaços responde realmente à consulta.</p>
 <p>Nos sistemas de produção, esta lacuna aparece imediatamente. Uma única consulta pode obter dezenas de documentos, cada um com milhares de tokens. Apenas um punhado de frases contém o sinal real; o resto é contexto que incha o uso de tokens, atrasa a inferência e muitas vezes distrai o LLM. O problema torna-se ainda mais óbvio nos fluxos de trabalho dos agentes, em que as próprias consultas são o resultado de um raciocínio em várias etapas e correspondem apenas a pequenas partes do texto recuperado.</p>
 <p>Isto cria uma necessidade clara de um modelo que possa <em><strong>identificar e realçar</strong></em> <em>as frases úteis e ignorar o resto - essencialmente</em>, filtragem de relevância ao nível da frase, ou aquilo a que muitas equipas se referem como <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>poda de contexto</strong></a>. O objetivo é simples: manter as partes que interessam e eliminar o ruído antes que este chegue ao LLM.</p>
-<p>O realce tradicional baseado em palavras-chave não consegue resolver este problema. Por exemplo, se um utilizador perguntar "Como posso melhorar a eficiência de execução do código Python?", um destacador de palavras-chave irá selecionar "Python" e "eficiência", mas não irá detetar a frase que realmente responde à pergunta - "Usar operações vectorizadas NumPy em vez de loops" - porque não partilha palavras-chave com a consulta. Em vez disso, o que precisamos é de compreensão semântica, e não de correspondência de strings.</p>
-<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">Um modelo de realce semântico para filtragem de ruído RAG e poda de contexto<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
+<p>O destaque tradicional baseado em palavras-chave não consegue resolver este problema. Por exemplo, se um utilizador perguntar "Como posso melhorar a eficiência de execução do código Python?", um destacador de palavras-chave irá selecionar "Python" e "eficiência", mas não irá detetar a frase que realmente responde à pergunta - "Usar operações vectorizadas NumPy em vez de loops" - porque não partilha palavras-chave com a consulta. Em vez disso, o que precisamos é de compreensão semântica, e não de correspondência de strings.</p>
+<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">Um modelo de realce semântico para filtragem de ruído e poda de contexto do RAG<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,7 +57,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para facilitar esta tarefa aos criadores de RAG, treinámos e disponibilizámos um <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>modelo de Realce Semântico</strong></a> que identifica e realça as frases dos documentos recuperados que estão mais alinhadas semanticamente com a consulta. Atualmente, o modelo apresenta o desempenho mais avançado em inglês e chinês e foi concebido para se integrar diretamente nos pipelines RAG existentes.</p>
+    </button></h2><p>Para facilitar a tarefa dos criadores de RAG, treinámos e disponibilizámos um <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>modelo de Realce Semântico</strong></a> que identifica e realça as frases dos documentos recuperados que estão mais alinhadas semanticamente com a consulta. Atualmente, o modelo apresenta o desempenho mais avançado em inglês e chinês e foi concebido para se integrar diretamente nos pipelines RAG existentes.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/context_pruning_80f7b16280.png" alt="" class="doc-image" id="" />
@@ -100,7 +100,7 @@ origin: >-
 <li><p>Marcador semântico do OpenSearch</p></li>
 <li><p>O nosso modelo bilingue treinado: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 </ul>
-<p>Em todos os quatro conjuntos de dados, o nosso modelo alcança a melhor classificação. Mais importante ainda, é o <em>único</em> modelo que tem um desempenho consistentemente bom tanto em inglês como em chinês. Os modelos concorrentes ou se concentram exclusivamente no inglês ou mostram claras quedas de desempenho no texto chinês.</p>
+<p>Nos quatro conjuntos de dados, o nosso modelo alcança a melhor classificação. Mais importante ainda, é o <em>único</em> modelo que tem um desempenho consistentemente bom tanto em inglês como em chinês. Os modelos concorrentes ou se concentram exclusivamente no inglês ou mostram claras quedas de desempenho no texto chinês.</p>
 <h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">Como criámos este modelo de realce semântico<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -162,7 +162,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Uma vez finalizada a arquitetura do modelo, o desafio seguinte foi construir um conjunto de dados que permitisse treinar um modelo fiável. Começámos por ver como a Open Provence lida com isto. A sua abordagem utiliza conjuntos de dados públicos de QA e um pequeno LLM para identificar as frases que são relevantes. É bem dimensionada e fácil de automatizar, o que a tornou uma boa base para nós.</p>
+    </button></h2><p>Uma vez finalizada a arquitetura do modelo, o desafio seguinte foi construir um conjunto de dados que permitisse treinar um modelo fiável. Começámos por ver como a Open Provence lida com isto. A sua abordagem utiliza conjuntos de dados públicos de QA e um pequeno LLM para identificar as frases que são relevantes. É bem escalável e fácil de automatizar, o que a tornou uma boa base de referência para nós.</p>
 <p>Mas rapidamente nos deparámos com o mesmo problema que eles descrevem: se pedirmos a um LLM para produzir diretamente etiquetas ao nível das frases, os resultados nem sempre são estáveis. Algumas etiquetas estão corretas, outras são questionáveis, e é difícil limpar as coisas depois. A anotação totalmente manual também não era uma opção - precisávamos de muito mais dados do que poderíamos rotular à mão.</p>
 <p>Para melhorar a estabilidade sem sacrificar a escalabilidade, fizemos uma alteração: o LLM deve fornecer um pequeno trecho de raciocínio para cada rótulo que produz. Cada exemplo de treino inclui a consulta, o documento, os intervalos de frases e uma breve explicação do motivo pelo qual uma frase é relevante ou irrelevante. Este pequeno ajuste tornou as anotações muito mais consistentes e deu-nos algo concreto para referenciar quando validamos ou depuramos o conjunto de dados.</p>
 <p>A inclusão do raciocínio revelou-se surpreendentemente valiosa:</p>
@@ -231,14 +231,14 @@ origin: >-
 5\. He introduces the boy to his family, who then mysteriously fall ill.
 <button class="copy-code-btn"></button></code></pre>
 <p>Resposta correta: Frase 1 (diz explicitamente "argumento de Lanthimos e Efthymis Filippou")</p>
-<p>Este exemplo tem uma armadilha: a frase 3 menciona que "Eurípedes" escreveu a peça original. Mas a pergunta é "quem escreveu o filme The Killing of a Sacred Deer", e a resposta deveria ser os argumentistas do filme, não o dramaturgo grego de há milhares de anos.</p>
+<p>Este exemplo tem uma armadilha: a frase 3 menciona que "Eurípides" escreveu a peça original. Mas a pergunta é "quem escreveu o filme The Killing of a Sacred Deer", e a resposta deveria ser os argumentistas do filme, não o dramaturgo grego de há milhares de anos.</p>
 <h3 id="Model-results" class="common-anchor-header">Resultados do modelo</h3><table>
 <thead>
 <tr><th>Modelo</th><th>Encontra a resposta correta?</th><th>Previsão</th></tr>
 </thead>
 <tbody>
 <tr><td>O nosso modelo</td><td>✓</td><td>Frases selecionadas 1 (correta) e 3</td></tr>
-<tr><td>XProvence v1</td><td>✗</td><td>Selecionou apenas a frase 3, falhou a resposta correta</td></tr>
+<tr><td>XProvence v1</td><td>✗</td><td>Só selecionou a frase 3, falhou a resposta correta</td></tr>
 <tr><td>XProvence v2</td><td>✗</td><td>Apenas selecionou a frase 3, falhou a resposta correta</td></tr>
 </tbody>
 </table>
@@ -254,8 +254,8 @@ origin: >-
 </table>
 <p>Modelos XProvence:</p>
 <ul>
-<li><p>Atraído fortemente por "Eurípides" e "peça", atribuindo à frase 3 pontuações quase perfeitas (0,947 e 0,802)</p></li>
-<li><p>Ignora completamente a resposta atual (frase 1), atribuindo pontuações extremamente baixas (0,133 e 0,081)</p></li>
+<li><p>Atraídos fortemente por "Eurípides" e "peça", atribuindo à frase 3 pontuações quase perfeitas (0,947 e 0,802)</p></li>
+<li><p>Ignora completamente a resposta efectiva (frase 1), atribuindo pontuações extremamente baixas (0,133 e 0,081)</p></li>
 <li><p>Mesmo baixando o limiar de 0,5 para 0,2, continua a não conseguir encontrar a resposta correta</p></li>
 </ul>
 <p>O nosso modelo:</p>
@@ -264,7 +264,7 @@ origin: >-
 <li><p>Continua a atribuir à frase 3 alguma relevância (0,719) porque está relacionada com o fundo</p></li>
 <li><p>Separa claramente as duas com uma margem de ~0,2</p></li>
 </ul>
-<p>Este exemplo mostra a força principal do modelo: compreender <strong>a intenção da consulta</strong> em vez de corresponder apenas a palavras-chave de nível superficial. Neste contexto, "Quem escreveu <em>The Killing of a Sacred Deer</em>" refere-se ao filme, não à peça grega antiga. O nosso modelo detecta esse facto, enquanto outros se distraem com pistas lexicais fortes.</p>
+<p>Este exemplo mostra a força principal do modelo: compreender <strong>a intenção da consulta</strong> em vez de corresponder apenas a palavras-chave de nível superficial. Neste contexto, "Quem escreveu <em>The Killing of a Sacred Deer</em>" refere-se ao filme, não à peça grega antiga. O nosso modelo detecta isso, enquanto outros se distraem com pistas lexicais fortes.</p>
 <h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Experimente e diga-nos o que pensa<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -313,7 +313,7 @@ origin: >-
 <ul>
 <li><p>Utilizar <strong>o raciocínio LLM</strong> para gerar etiquetas de relevância de maior qualidade</p></li>
 <li><p>Criação de <strong>quase 5 milhões de</strong> amostras de treino bilingue alinhadas com cargas de trabalho reais do RAG</p></li>
-<li><p>Seleção de um modelo de base mais adequado à pontuação de relevância de contexto longo<strong>(BGE-M3 Reranker v2</strong>)</p></li>
+<li><p>Seleção de um modelo de base mais adequado para a pontuação de relevância de contexto longo<strong>(BGE-M3 Reranker v2</strong>)</p></li>
 <li><p>Treinar apenas o <strong>Pruning Head</strong> para especializar o modelo para o realce semântico</p></li>
 </ul>
 <p>Estamos gratos às equipas Provence e Open Provence por publicarem o seu trabalho abertamente. As suas contribuições aceleraram significativamente o nosso desenvolvimento e tornaram este projeto possível.</p>

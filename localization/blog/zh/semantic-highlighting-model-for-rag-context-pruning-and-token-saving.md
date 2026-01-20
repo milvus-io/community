@@ -3,7 +3,7 @@ id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 title: 我们如何为 RAG 上下文剪枝和标记保存构建语义高亮模型
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -73,7 +73,7 @@ origin: >-
 <li><p><strong>更高的答案质量</strong>，因为模型看到的无关上下文更少</p></li>
 <li><p><strong>调试更容易</strong>，因为工程师可以直接检查句子级别的匹配情况</p></li>
 </ul>
-<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">评估结果：实现 SOTA 性能</h3><p>我们在多个数据集上对语义高亮显示模型进行了评估，这些数据集涵盖英语和中文，同时还包括域内和域外条件。</p>
+<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">评估结果：实现 SOTA 性能</h3><p>我们在多个数据集上对语义高亮显示模型进行了评估，这些数据集涵盖英语和汉语，同时还包括域内和域外条件。</p>
 <p>基准套件包括</p>
 <ul>
 <li><p><strong>英语多跨度 QA：</strong>multispanqa</p></li>
@@ -164,7 +164,7 @@ origin: >-
 <li><p><strong>提高注释质量：</strong>写出理由可以起到自我检查的作用，从而减少随意或不一致的标注。</p></li>
 <li><p><strong>更好的可观察性：</strong>我们可以看到<em>为什么</em>会选择某个句子，而不是把标签当作黑箱。</p></li>
 <li><p><strong>更容易调试：</strong>当出现问题时，推理可以让我们很容易地发现问题出在提示、领域还是注释逻辑上。</p></li>
-<li><p><strong>可重复使用的数据：</strong>即使将来我们改用了不同的标注模型，推理轨迹仍可用于重新标注或审核。</p></li>
+<li><p><strong>可重复使用的数据：</strong>即使我们将来改用不同的标注模型，推理轨迹仍可用于重新标注或审核。</p></li>
 </ul>
 <p>注释工作流程如下</p>
 <p>
@@ -205,7 +205,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>基准测试只能说明问题的一部分，下面是一个真实的案例，展示了模型在常见边缘情况下的表现：当检索到的文本同时包含正确答案和一个非常诱人的干扰项时。</p>
+    </button></h2><p>基准测试只能说明问题的一部分，下面是一个真实的案例，展示了模型在常见边缘情况下的表现：当检索到的文本既包含正确答案，又包含非常诱人的干扰项时。</p>
 <p><strong>查询：</strong> <em>谁写了《杀死一只圣鹿》？</em></p>
 <p><strong>上下文（5 句）：</strong></p>
 <pre><code translate="no">1\. The Killing of a Sacred Deer is a 2017 psychological horror film directed by Yorgos Lanthimos,

@@ -3,7 +3,7 @@ id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 title: RAGコンテキストの刈り込みとトークン保存のためのセマンティックハイライトモデルの構築方法
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
-cover: 'https://assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png'
+cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -116,7 +116,7 @@ origin: >-
 <li><p><strong>モデル・アーキテクチャ：</strong>高速推論のためにエンコーダのみの設計を使用する。</p></li>
 <li><p><strong>トレーニングデータ：</strong>推論可能なLLMを使用して高品質の関連性ラベルを生成し、ローカル推論フレームワークでデータ生成をスケールする。</p></li>
 </ul>
-<h3 id="Model-Architecture" class="common-anchor-header">モデルアーキテクチャ</h3><p>コンテキスト刈り込みを<strong>トークンレベルの関連性スコアリングタスクとして</strong>扱う、軽量な<strong>エンコーダのみの</strong>ネットワークとしてモデルを構築した。この設計は、NaverがICLR 2025で紹介したコンテキスト・プルーニング・アプローチである<a href="https://arxiv.org/html/2501.16214v1">Provenceに</a>インスパイアされたもので、プルーニングを "正しいチャンクを選択する "から "すべてのトークンをスコアリングする "ことに置き換えている。この枠組みは、きめ細かなシグナルが不可欠なセマンティック・ハイライトと自然に合致する。</p>
+<h3 id="Model-Architecture" class="common-anchor-header">モデルアーキテクチャ</h3><p>コンテキスト刈り込みを<strong>トークンレベルの関連性スコアリングタスクとして</strong>扱う、軽量な<strong>エンコーダのみの</strong>ネットワークとしてモデルを構築した。この設計は、ICLR 2025でNaverによって紹介されたコンテキスト・プルーニング・アプローチである<a href="https://arxiv.org/html/2501.16214v1">Provenceに</a>触発されたもので、プルーニングを "正しいチャンクを選択する "から "すべてのトークンをスコアリングする "ことに置き換える。この枠組みは、きめ細かなシグナルが不可欠なセマンティック・ハイライトと自然に合致する。</p>
 <p>エンコーダのみのモデルは最新のアーキテクチャではないが、ここでは非常に実用的である。本番のRAGシステムでは、このスピードの優位性は、より大きなデコーダーモデルを使うよりもはるかに重要である。</p>
 <p>トークン・レベルの関連性スコアを計算したら、それを<strong>文レベルの</strong>スコアに集約する。このステップにより、ノイズの多いトークン信号が安定した解釈可能な関連性メトリックに変わる。設定可能な閾値以上の文はハイライトされ、それ以外はフィルタリングされる。これにより、クエリにとって実際に重要なセンテンスを選択するためのシンプルで信頼性の高いメカニズムが出来上がる。</p>
 <h3 id="Inference-Process" class="common-anchor-header">推論プロセス</h3><p>実行時、我々のセマンティックハイライティングモデルはシンプルなパイプラインに従う：</p>
@@ -275,7 +275,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>私たちの<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>モデルは、現在MITライセンスの下で完全にオープンソース化されており、製品として使用する準備ができています。あなたのRAGパイプラインに追加したり、あなた自身のドメイン用に微調整したり、この上に新しいツールを構築することができます。コミュニティからの貢献やフィードバックも歓迎します。</p>
+    </button></h2><p>私たちの<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>モデルは、現在MITライセンスの下で完全にオープンソース化されており、実運用に使用する準備ができています。あなたのRAGパイプラインに組み込んだり、あなた自身のドメイン用に微調整したり、この上に新しいツールを構築することができます。コミュニティからの貢献やフィードバックも歓迎します。</p>
 <ul>
 <li><p><strong>HuggingFaceからダウンロード</strong>：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 <li><p><strong>全ての注釈付き学習データ</strong> <a href="https://huggingface.co/zilliz/datasets">: https://huggingface.co/zilliz/datasets</a></p></li>
@@ -283,7 +283,7 @@ origin: >-
 <h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">MilvusとZilliz Cloudで利用可能なセマンティックハイライト</h3><p>セマンティックハイライトは<a href="https://milvus.io/">Milvusと</a> <a href="https://zilliz.com/cloud">Zilliz Cloud</a>(フルマネージドMilvus)にも直接組み込まれており、各文書が<em>なぜ</em>検索されたかを明確に表示します。チャンク全体をスキャンする代わりに、クエリに関連する特定の文章を即座に見ることができます。これによって、検索が理解しやすくなり、デバッグが非常に速くなります。また、RAGパイプラインでは、下流のLLMが何を重視するかが明確になり、迅速な設計と品質チェックに役立ちます。</p>
 <p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>フルマネージドZilliz Cloudのセマンティックハイライトを無料でお試しください。</strong></a></p>
 <p>バグレポート、改善アイデア、ワークフローへの統合中に発見したことなど、ぜひお聞かせください。</p>
-<p>より詳しくお聞きになりたい場合は、<a href="https://discord.com/invite/8uyFbECzPX">Discordチャンネルに</a>ご参加いただくか、20分間の<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワーを</a>ご予約ください。他のビルダーとおしゃべりしたり、メモを交換したりするのはいつでも大歓迎です。</p>
+<p>より詳しくお聞きになりたい場合は、お気軽に<a href="https://discord.com/invite/8uyFbECzPX">Discordチャンネルに</a>ご参加いただくか、20分間の<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワーを</a>ご予約ください。他のビルダーとおしゃべりしたり、メモを交換したりするのはいつでも大歓迎です。</p>
 <h2 id="Acknowledgements" class="common-anchor-header">謝辞<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -302,7 +302,7 @@ origin: >-
     </button></h2><p>この作品は、多くの素晴らしいアイデアとオープンソースの貢献の上に成り立っており、このモデルを可能にしたプロジェクトに注目したい。</p>
 <ul>
 <li><p><strong>Provenceは</strong>、軽量エンコーダーモデルを使ったコンテキスト刈り込みのための、クリーンで実用的なフレームを導入した。</p></li>
-<li><p><strong>Open Provenceは</strong>、寛容なライセンスのもと、トレーニングパイプライン、データ処理、モデルヘッドなど、しっかりとした、よく設計されたコードベースを提供した。これは私たちに実験のための強力な出発点を与えてくれた。</p></li>
+<li><p><strong>Open Provenceは</strong>、寛容なライセンスの下で、トレーニングパイプライン、データ処理、モデルヘッドなど、堅実でよく設計されたコードベースを提供した。これは私たちに実験のための強力な出発点を与えてくれた。</p></li>
 </ul>
 <p>その基盤の上に、私たちはいくつかの貢献を加えた：</p>
 <ul>
