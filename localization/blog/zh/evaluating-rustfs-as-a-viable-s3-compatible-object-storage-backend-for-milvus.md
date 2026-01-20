@@ -4,7 +4,7 @@ id: >-
 title: MinIO 停止接受社区修改：评估 RustFS 作为 Milvus S3 兼容对象存储后端的可行性
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -109,7 +109,7 @@ minio:
     </button></h2><h3 id="Project-Overview" class="common-anchor-header">项目概述</h3><p>RustFS 是用 Rust 编写的分布式对象存储系统。它目前处于 alpha 阶段（版本 1.0.0-alpha.68），旨在将 MinIO 的操作简易性与 Rust 在内存安全和性能方面的优势结合起来。更多详情请访问<a href="https://github.com/rustfs/rustfs">GitHub</a>。</p>
 <p>RustFS 仍在积极开发中，其分布式模式尚未正式发布。因此，现阶段不建议将 RustFS 用于生产或关键任务工作负载。</p>
 <h3 id="Architecture-Design" class="common-anchor-header">架构设计</h3><p>RustFS 采用的设计在概念上与 MinIO 相似。HTTP 服务器提供与 S3 兼容的 API，对象管理器负责处理对象元数据，存储引擎负责数据块管理。在存储层，RustFS 依赖 XFS 或 ext4 等标准文件系统。</p>
-<p>对于计划中的分布式模式，RustFS 打算使用 etcd 进行元数据协调，多个 RustFS 节点组成一个集群。这种设计与常见的对象存储架构非常吻合，让拥有 MinIO 经验的用户对 RustFS 并不陌生。</p>
+<p>对于计划中的分布式模式，RustFS 打算使用 etcd 进行元数据协调，多个 RustFS 节点组成一个集群。这种设计与常见的对象存储架构非常吻合，让拥有 MinIO 经验的用户对 RustFS 不陌生。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/architecture_design_852f73b2c8.png" alt="" class="doc-image" id="" />

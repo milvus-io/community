@@ -6,7 +6,7 @@ title: >-
   als praktikables S3-kompatibles Objektspeicher-Backend für Milvus
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -22,7 +22,7 @@ origin: >-
   https://milvus.io/blog/evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
 ---
 <p><em>Dieser Beitrag stammt von Min Yin, einem der aktivsten Community-Mitarbeiter von Milvus, und wird hier mit Genehmigung veröffentlicht.</em></p>
-<p><a href="https://github.com/minio/minio">MinIO</a> ist ein quelloffenes, hochleistungsfähiges und S3-kompatibles Objektspeichersystem, das in den Bereichen KI/ML, Analytik und anderen datenintensiven Workloads weit verbreitet ist. Für viele <a href="https://milvus.io/">Milvus-Bereitstellungen</a> war es auch die Standardwahl für Objektspeicher. Kürzlich hat das MinIO-Team jedoch sein <a href="https://github.com/minio/minio?tab=readme-ov-file">GitHub README</a> aktualisiert, um darauf hinzuweisen, dass <strong><em>dieses Projekt keine neuen Änderungen mehr annimmt</em></strong><em>.</em></p>
+<p><a href="https://github.com/minio/minio">MinIO</a> ist ein quelloffenes, hochleistungsfähiges und S3-kompatibles Objektspeichersystem, das in der KI/ML, Analytik und anderen datenintensiven Workloads weit verbreitet ist. Für viele <a href="https://milvus.io/">Milvus-Bereitstellungen</a> war es auch die Standardwahl für Objektspeicher. Kürzlich hat das MinIO-Team jedoch sein <a href="https://github.com/minio/minio?tab=readme-ov-file">GitHub README</a> aktualisiert, um darauf hinzuweisen, dass <strong><em>dieses Projekt keine neuen Änderungen mehr annimmt</em></strong><em>.</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/minio_7b7df16860.png" alt="" class="doc-image" id="" />

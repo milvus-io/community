@@ -6,7 +6,7 @@ title: >-
   come backend di archiviazione degli oggetti compatibile con S3 per Milvus
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

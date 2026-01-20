@@ -4,7 +4,7 @@ id: >-
 title: 'MinIO, 커뮤니티 변경 사항 수락 중단: Milvus를 위한 실행 가능한 S3 호환 오브젝트 스토리지 백엔드로서 RustFS 평가하기'
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

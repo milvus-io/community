@@ -6,7 +6,7 @@ title: >-
   backend de almacenamiento de objetos compatible con S3 para Milvus
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -111,7 +111,7 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Project-Overview" class="common-anchor-header">Visión general del proyecto</h3><p>RustFS es un sistema distribuido de almacenamiento de objetos escrito en Rust. Actualmente se encuentra en fase alfa (versión 1.0.0-alpha.68) y pretende combinar la simplicidad operativa de MinIO con los puntos fuertes de Rust en seguridad de memoria y rendimiento. Más detalles en <a href="https://github.com/rustfs/rustfs">GitHub</a>.</p>
+    </button></h2><h3 id="Project-Overview" class="common-anchor-header">Visión general del proyecto</h3><p>RustFS es un sistema distribuido de almacenamiento de objetos escrito en Rust. Actualmente se encuentra en fase alfa (versión 1.0.0-alpha.68) y pretende combinar la simplicidad operativa de MinIO con los puntos fuertes de Rust en cuanto a seguridad de memoria y rendimiento. Más detalles en <a href="https://github.com/rustfs/rustfs">GitHub</a>.</p>
 <p>RustFS todavía está en desarrollo activo, y su modo distribuido aún no se ha publicado oficialmente. Como resultado, RustFS no se recomienda para la producción o cargas de trabajo de misión crítica en esta etapa.</p>
 <h3 id="Architecture-Design" class="common-anchor-header">Diseño de la arquitectura</h3><p>RustFS sigue un diseño conceptualmente similar a MinIO. Un servidor HTTP expone una API compatible con S3, mientras que un Gestor de Objetos gestiona los metadatos de los objetos y un Motor de Almacenamiento es responsable de la gestión de los bloques de datos. En la capa de almacenamiento, RustFS se basa en sistemas de archivos estándar como XFS o ext4.</p>
 <p>Para su modo distribuido previsto, RustFS pretende utilizar etcd para la coordinación de metadatos, con múltiples nodos RustFS formando un clúster. Este diseño se alinea estrechamente con las arquitecturas comunes de almacenamiento de objetos, haciendo que RustFS resulte familiar a los usuarios con experiencia en MinIO.</p>

@@ -4,7 +4,7 @@ id: >-
 title: MinIO、コミュニティによる変更の受付を停止：MilvusのS3互換オブジェクトストレージバックエンドとしてのRustFSの評価
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -27,7 +27,7 @@ origin: >-
 </p>
 <p>実際、過去数年間、MinIOは徐々に商用製品に目を向け、ライセンスと配布モデルを強化し、コミュニティ・リポジトリでの活発な開発を縮小してきた。オープンソース・プロジェクトをメンテナンス・モードに移行することは、そのような広範な移行の自然な結果である。</p>
 <p>デフォルトでMinIOに依存しているMilvusユーザーにとって、この変化は無視できない。オブジェクト・ストレージはMilvusの永続化レイヤーの中心に位置し、その長期的な信頼性は、現在機能していることだけでなく、システムがサポートするワークロードとともに進化し続けるかどうかにかかっている。</p>
-<p>このような背景から、本稿では代替となり得る<a href="https://github.com/rustfs/rustfs">RustFSについて</a>検討する。RustFSはRustベースのS3互換オブジェクト・ストレージ・システムであり、メモリ安全性と最新のシステム設計を重視している。RustFSはまだ実験的なものであり、この議論は本番環境での推奨ではない。</p>
+<p>このような背景から、本稿では代替となり得る<a href="https://github.com/rustfs/rustfs">RustFSについて</a>検討する。RustFSはRustベースのS3互換オブジェクト・ストレージ・システムであり、メモリ安全性と最新のシステム設計を重視している。RustFSはまだ実験的なものであり、この議論は本番での推奨ではない。</p>
 <h2 id="The-Milvus-Architecture-and-Where-the-Object-Storage-Component-Sits" class="common-anchor-header">Milvusアーキテクチャとオブジェクトストレージコンポーネントの位置づけ<button data-href="#The-Milvus-Architecture-and-Where-the-Object-Storage-Component-Sits" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

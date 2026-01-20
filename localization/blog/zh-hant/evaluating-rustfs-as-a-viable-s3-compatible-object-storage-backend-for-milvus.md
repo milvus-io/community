@@ -4,7 +4,7 @@ id: >-
 title: MinIO 停止接受社群變更：評估 RustFS 作為 Milvus 的 S3 相容物件儲存後端是否可行
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

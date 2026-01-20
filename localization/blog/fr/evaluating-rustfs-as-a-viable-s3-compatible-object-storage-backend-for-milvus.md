@@ -6,7 +6,7 @@ title: >-
   en tant que backend de stockage d'objets compatible S3 viable pour Milvus
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -16,7 +16,7 @@ meta_title: |
   Evaluating RustFS for Milvus S3-Compatible Object Storage
 desc: >-
   Découvrez comment Milvus s'appuie sur le stockage d'objets compatibles S3 et
-  comment déployer RustFS en remplacement de MinIO dans Milvus à l'aide d'une
+  comment déployer RustFS en remplacement de MinIO dans Milvus grâce à une
   démonstration pratique.
 origin: >-
   https://milvus.io/blog/evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
@@ -114,7 +114,7 @@ minio:
     </button></h2><h3 id="Project-Overview" class="common-anchor-header">Présentation du projet</h3><p>RustFS est un système de stockage d'objets distribué écrit en Rust. Il est actuellement en phase alpha (version 1.0.0-alpha.68) et vise à combiner la simplicité opérationnelle de MinIO avec les forces de Rust en matière de sécurité mémoire et de performance. Plus de détails sont disponibles sur <a href="https://github.com/rustfs/rustfs">GitHub</a>.</p>
 <p>RustFS est toujours en développement actif, et son mode distribué n'a pas encore été officiellement publié. Par conséquent, RustFS n'est pas recommandé pour la production ou les charges de travail critiques à ce stade.</p>
 <h3 id="Architecture-Design" class="common-anchor-header">Conception de l'architecture</h3><p>RustFS suit une conception similaire à celle de MinIO. Un serveur HTTP expose une API compatible S3, tandis qu'un gestionnaire d'objets gère les métadonnées des objets et qu'un moteur de stockage est responsable de la gestion des blocs de données. Au niveau de la couche de stockage, RustFS s'appuie sur des systèmes de fichiers standard tels que XFS ou ext4.</p>
-<p>Pour son mode distribué prévu, RustFS a l'intention d'utiliser etcd pour la coordination des métadonnées, avec plusieurs nœuds RustFS formant un cluster. Cette conception s'aligne étroitement sur les architectures de stockage d'objets courantes, rendant RustFS familier aux utilisateurs ayant l'expérience de MinIO.</p>
+<p>Pour son mode distribué prévu, RustFS a l'intention d'utiliser etcd pour la coordination des métadonnées, avec plusieurs nœuds RustFS formant un cluster. Cette conception s'aligne étroitement sur les architectures courantes de stockage d'objets, rendant RustFS familier aux utilisateurs ayant l'expérience de MinIO.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/architecture_design_852f73b2c8.png" alt="" class="doc-image" id="" />

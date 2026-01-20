@@ -6,7 +6,7 @@ title: >-
   backend viável de armazenamento de objetos compatível com S3 para o Milvus
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
-cover: assets.zilliz.com/Min_IO_cover_4102d4ef61.png
+cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -56,7 +56,7 @@ origin: >-
   </span>
 </p>
 <h3 id="The-Role-of-Object-Storage-in-Milvus" class="common-anchor-header">O papel do armazenamento de objectos em Milvus</h3><p>O armazenamento de objectos é a camada de armazenamento durável em Milvus. Os dados vetoriais brutos são persistidos como binlogs, e estruturas de índice como HNSW e IVF_FLAT também são armazenadas lá.</p>
-<p>Este design torna os nós de computação stateless. Os nós de consulta não armazenam dados localmente; em vez disso, eles carregam segmentos e índices do armazenamento de objetos sob demanda. Como resultado, os nós podem aumentar ou diminuir livremente, recuperar rapidamente de falhas e suportar o balanceamento de carga dinâmico em todo o cluster sem rebalanceamento de dados na camada de armazenamento.</p>
+<p>Este design torna os nós de computação stateless. Os nós de consulta não armazenam dados localmente; em vez disso, eles carregam segmentos e índices do armazenamento de objetos sob demanda. Como resultado, os nós podem aumentar ou diminuir livremente, recuperar-se rapidamente de falhas e suportar o balanceamento dinâmico de carga em todo o cluster sem rebalanceamento de dados na camada de armazenamento.</p>
 <pre><code translate="no">my-milvus-bucket/
 ├── files/                          <span class="hljs-comment"># rootPath (default)</span>
 │   ├── insert_log/                 <span class="hljs-comment"># insert binlogs</span>
@@ -152,7 +152,7 @@ minio:
     </button></h2><p>O objetivo deste exercício é substituir o serviço de armazenamento de objetos MinIO padrão e implantar o Milvus 2.6.7 usando o RustFS como backend de armazenamento de objetos.</p>
 <h3 id="Prerequisites" class="common-anchor-header">Pré-requisitos</h3><ol>
 <li><p>O Docker e o Docker Compose estão instalados (versão ≥ 20.10), e o sistema pode puxar imagens e executar contêineres normalmente.</p></li>
-<li><p>Um diretório local está disponível para armazenamento de dados de objetos, como <code translate="no">/volume/data/</code> (ou um caminho personalizado).</p></li>
+<li><p>Um diretório local está disponível para armazenamento de dados de objeto, como <code translate="no">/volume/data/</code> (ou um caminho personalizado).</p></li>
 <li><p>A porta 9000 do host está aberta para acesso externo, ou uma porta alternativa é configurada de acordo.</p></li>
 <li><p>O contentor RustFS é executado como um utilizador não-root (<code translate="no">rustfs</code>). Certifique-se de que o diretório de dados do host seja de propriedade do UID 10001.</p></li>
 </ol>
@@ -193,7 +193,7 @@ minio:
  retries: 3
 </span><button class="copy-code-btn"></button></code></pre>
 <p><strong>Configuração completa</strong></p>
-<p>Nota: A configuração de armazenamento do Milvus atualmente assume padrões no estilo MinIO e ainda não permite valores personalizados de chave de acesso ou chave secreta. Ao usar o RustFS como substituto, ele deve usar as mesmas credenciais padrão esperadas pelo Milvus.</p>
+<p>Observação: a configuração de armazenamento do Milvus atualmente assume padrões no estilo MinIO e ainda não permite valores personalizados de chave de acesso ou chave secreta. Ao usar o RustFS como substituto, ele deve usar as mesmas credenciais padrão esperadas pelo Milvus.</p>
 <pre><code translate="no">version: ‘3.5’
 services:
  etcd:
