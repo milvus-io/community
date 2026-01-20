@@ -10,7 +10,7 @@ tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, RAG, Generative AI
 recommend: true
 meta_keywords: Claude Context, grep, Token efficiency, code search, Semantic search
-canonicalUrl: https://zilliz.com/blog/when-grep-isnt-enough-why-claude-context-delivers-better-code-search
+canonicalUrl: https://milvus.io/blog/when-grep-isnt-enough-why-claude-context-delivers-better-code-search
 ---
 
 Recently, developers everywhere have been complaining about **Claude Code** — and the main reason is simple: **token burn**. For many, even moderate coding sessions can chew through an alarming number of tokens, pushing usage costs sky-high. 
