@@ -1603,5 +1603,3 @@ If you found this valuable, I'd love to hear about your use cases and how you're
 ## About the author
 
 [Sudhanshu Prajapati](https://www.linkedin.com/in/sudhanshu212/) is a Senior Developer Advocate at Improving, with a background in backend and data engineering and a focus on cloud-native and distributed systems. He works on enabling developers to adopt complex infrastructure by building hands-on demos, writing blogs, and creating technical education around open-source projects. His experience spans Kubernetes, distributed databases, observability, and modern AI workflows including RAG and model serving and vLLM. Sudhanshu is an active open-source contributor and a regular speaker at CNCF and local community events.
-
-![](https://assets.zilliz.com/_f242c67758.jpeg) 
