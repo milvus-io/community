@@ -70,33 +70,11 @@ In summary, ScaNN improves IVFPQ in two aspects:
 
 ### Score-aware Quantization Loss
 
-ScaNN adopts a quantization approach different from traditional PQ—this is the process shown in the second diagram above, which differs from PQ. In traditional PQ quantization, each vector needs to be assigned to a quantization center by computing distances to different quantization centers and selecting the one with the minimum distance. The objective is essentially to minimize the quantization error introduced when replacing $$x_i$$ with $$\tilde{x_i}$$: $$\sum_{i=1}^n \| x_i - \tilde{x}_i \|^2$$.
-
-ScaNN modifies this process. First, it introduces the concept of loss, which differs slightly from the quantization error above. This loss refers to the error between the actual distance between two vectors and the approximate distance computed using the quantization method. ScaNN primarily targets Inner Product (IP) distance. The IP distance error and query vector distribution can be described by the formula: 
-
-$$\mathbb{E}_q \sum^n\left(\left\langle q, x_i\right\rangle-\left\langle q, \tilde{x}_i\right\rangle\right)^2=\mathbb{E}_q \sum^n\left\langle q, x_i-\tilde{x}_i\right\rangle^2$$
-
-If the query vector q is assumed to be isotropic, then $$\mathbb{E} [qq^T] = cI$$, where $$I$$ is the identity matrix. Therefore, the loss function can be simplified to:
-
-$$\begin{aligned} \sum_{i=1}^n \mathbb{E}_q\left\langle q, x_i-\tilde{x_i}\right\rangle^2 &=\sum_{i=1}^n \mathbb{E}_q\left(x_i-\tilde{x_i}\right)^T q q^T\left(x_i-\tilde{x_i}\right) \\ &=c \sum_{i=1}^n\left\|x_i-\tilde{x_i}\right\|^2 \end{aligned}$$
-
-ScaNN argues that this loss function is not optimal because, for a given query, data points closer to the query are more important. Reducing the quantization error for these data points is more critical for the results. Therefore, ScaNN proposes a score-aware quantization loss: 
-
-$$\ell\left(x\_i, \tilde{x}\_i, w\right)=\mathbb{E}\_{q \sim \mathcal{Q}}\left\[w\left(\left\langle q, x\_i\right\rangle\right)\left\langle q, x\_i-\tilde{x}\_i\right\rangle^2\right] $$.
-
-Here, w represents the weight. 
+![](https://assets.zilliz.com/text_765e538864.png) 
 
 ![](https://assets.zilliz.com/score_aware_quantization_loss_d9d36223c2.png)
 
-However, this introduces a challenge: this weight is query-aware, meaning we can only compute this loss after knowing the query. Therefore, certain assumptions and transformations are needed to eliminate the explicit dependence on q, enabling index construction during the offline phase.
-
-The paper decomposes the error $$x_i-\tilde{x_i}$$ into components parallel and perpendicular to $$x_i$$, and a larger penalty should be applied to the parallel component. The loss is expressed as: 
-
-$$\begin{aligned} \ell\left(x_i, \tilde{x}_i, w\right) &=h_{\|}\left(w,\left\|x_i\right\|\right)\left\|r_{\|}\left(x_i, \tilde{x}_i\right)\right\|^2 +h_{\perp}\left(w,\left\|x_i\right\|\right)\left\|r_{\perp}\left(x_i, \tilde{x}_i\right)\right\|^2 \end{aligned}$$
-
-Why should a larger penalty be applied to the parallel component?
-
-First, if x is a near neighbor of q1, then the direction of x is similar to q1, so the parallel component of x can be approximately considered parallel to q1 as well, and this parallel component will increase the error.
+![](https://assets.zilliz.com/text2_dd95418ba9.png)
 
 ![](https://assets.zilliz.com/quantizer_f0e39762a4.png)
 
