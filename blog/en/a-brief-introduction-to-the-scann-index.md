@@ -17,12 +17,11 @@ desc: >
 origin: https://milvus.io/blog/a-brief-introduction-to-the-scann-index.md
 ---
 
-[ScaNN](https://github.com/google-research/google-research/tree/master/scann) is Google’s answer to a familiar challenge in large-scale vector search: how to increase query throughput and reduce memory usage without taking an unacceptable hit to result quality. Conceptually, ScaNN starts from the classic IVF+PQ recipe—coarse clustering plus aggressive product quantization—but layers on two important innovations that meaningfully shift the performance frontier:
+[ScaNN](https://github.com/google-research/google-research/tree/master/scann) is Google’s answer to a familiar challenge in large-scale vector search: **how to increase query throughput and reduce memory usage without taking an unacceptable hit to result quality.** Conceptually, ScaNN starts from the classic IVF+PQ recipe—coarse clustering plus aggressive product quantization—but layers on two important innovations that meaningfully shift the performance frontier:
 
--   A score-aware quantization objective that better preserves the relative ordering of true neighbors, improving ranking quality even under heavy compression.
-    
--   FastScan is a SIMD-optimized 4-bit PQ lookup path that reduces the traditional memory-load bottleneck by keeping more work inside CPU registers.
-    
+- **A score-aware quantization objective** that better preserves the relative ordering of true neighbors, improving ranking quality even under heavy compression.
+
+- **FastScan** is a SIMD-optimized 4-bit PQ lookup path that reduces the traditional memory-load bottleneck by keeping more work inside CPU registers.
 
 In practice, it is a strong choice when you are okay with trading some recall for high QPS and a much smaller memory footprint (often compressing vectors to ~1/16 of the original size), such as in recall-insensitive recommendation workloads.
 
@@ -34,7 +33,7 @@ ScaNN was proposed by Google in 2020, and the paper reports a 3× performance im
 
 Before introducing ScaNN, we’ll briefly recap IVFPQ, since ScaNN is built on top of the same overall framework.
 
-IVFPQ stands for Inverted File with Product Quantization, an algorithm used for efficient and large-scale Approximate Nearest Neighbor (ANN) search in high-dimensional vector databases. It is a hybrid approach that combines two techniques, the inverted file index (IVF) and product quantization (PQ), to balance search speed, memory usage, and accuracy. 
+**IVFPQ stands for Inverted File with Product Quantization**, an algorithm used for efficient and large-scale Approximate Nearest Neighbor (ANN) search in high-dimensional vector databases. It is a hybrid approach that combines two techniques, the **inverted file index (IVF)** and **product quantization (PQ)**, to balance search speed, memory usage, and accuracy. 
 
 ### How IVFPQ Works
 
@@ -71,9 +70,7 @@ In summary, ScaNN improves IVFPQ in two aspects:
 
 ### Score-aware Quantization Loss
 
-ScaNN adopts a quantization approach different from traditional PQ—this is the process shown in the second diagram above, which differs from PQ. In traditional PQ quantization, each vector needs to be assigned to a quantization center by computing distances to different quantization centers and selecting the one with the minimum distance. The objective is essentially to minimize the quantization error introduced when replacing $$x_i$$ with $$\tilde{x_i}$$: 
-
-$$\sum_{i=1}^n \| x_i - \tilde{x}_i \|^2$$.
+ScaNN adopts a quantization approach different from traditional PQ—this is the process shown in the second diagram above, which differs from PQ. In traditional PQ quantization, each vector needs to be assigned to a quantization center by computing distances to different quantization centers and selecting the one with the minimum distance. The objective is essentially to minimize the quantization error introduced when replacing $$x_i$$ with $$\tilde{x_i}$$: $$\sum_{i=1}^n \| x_i - \tilde{x}_i \|^2$$.
 
 ScaNN modifies this process. First, it introduces the concept of loss, which differs slightly from the quantization error above. This loss refers to the error between the actual distance between two vectors and the approximate distance computed using the quantization method. ScaNN primarily targets Inner Product (IP) distance. The IP distance error and query vector distribution can be described by the formula: 
 
