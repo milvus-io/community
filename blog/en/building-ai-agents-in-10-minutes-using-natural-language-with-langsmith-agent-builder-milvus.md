@@ -14,6 +14,7 @@ meta_keywords: LangSmith Agent Builder, Milvus vector database, AI agent memory,
 meta_title: >
  Build AI Agents in 10 Minutes with LangSmith Agent Builder & Milvus
 origin: https://milvus.io/blog/building-ai-agents-in-10-minutes-using-natural-language-with-langsmith-agent-builder-milvus.md
+---
 
 As AI development accelerates, more teams are discovering that building an AI assistant doesn’t necessarily require a software engineering background. The people who need assistants the most—product teams, operations, support, researchers—often know exactly what the agent should do, but not how to implement it in code. Traditional “no-code” tools tried to bridge that gap with drag-and-drop canvases, yet they collapse the moment you need real agent behavior: multi-step reasoning, tool use, or persistent memory. 
 
