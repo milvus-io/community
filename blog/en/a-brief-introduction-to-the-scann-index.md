@@ -71,23 +71,22 @@ In summary, ScaNN improves IVFPQ in two aspects:
 
 ### Score-aware Quantization Loss
 
-ScaNN adopts a quantization approach different from traditional PQ—this is the process shown in the second diagram above, which differs from PQ. In traditional PQ quantization, each vector needs to be assigned to a quantization center by computing distances to different quantization centers and selecting the one with the minimum distance.The objective is essentially to minimize the quantization error introduced when replacing $$x_i$$ with $$\tilde{x_i}$$：
-$$\begin{aligned}
+ScaNN adopts a quantization approach different from traditional PQ—this is the process shown in the second diagram above, which differs from PQ. In traditional PQ quantization, each vector needs to be assigned to a quantization center by computing distances to different quantization centers and selecting the one with the minimum distance.The objective is essentially to minimize the quantization error introduced when replacing $$x_i$$ with $$\tilde{x_i}$$：$$\begin{aligned}
 \sum_{i=1}^n\left\|x_i-\tilde{x_i}\right\|^2
 \end{aligned}$$.
 
 ScaNN modifies this process. First, it introduces the concept of loss, which differs slightly from the quantization error above. This loss refers to the error between the actual distance between two vectors and the approximate distance computed using the quantization method. ScaNN primarily targets Inner Product (IP) distance. The IP distance error and query vector distribution can be described by the formula: $$\mathbb{E}_q \sum^n\left(\left\langle q, x_i\right\rangle-\left\langle q, \tilde{x}_i\right\rangle\right)^2=\mathbb{E}_q \sum^n\left\langle q, x_i-\tilde{x}_i\right\rangle^2$$
 
 If the query vector q is assumed to be isotropic, then $$\mathbb{E} [qq^T] = cI$$, where $$I$$ is the identity matrix. Therefore, the loss function can be simplified to:
+$$\begin{aligned}
+\sum_{i=1}^n \mathbb{E}_q\left\langle q, x_i-\tilde{x_i}\right\rangle^2 &=\sum_{i=1}^n \mathbb{E}_q\left(x_i-\tilde{x_i}\right)^T q q^T\left(x_i-\tilde{x_i}\right) \\
+&=c \sum_{i=1}^n\left\|x_i-\tilde{x_i}\right\|^2
+\end{aligned}$$
 
-$$\begin{aligned} \sum_{i=1}^n \mathbb{E}_q\left\langle q, x_i-\tilde{x_i}\right\rangle^2 &=\sum_{i=1}^n \mathbb{E}_q\left(x_i-\tilde{x_i}\right)^T q q^T\left(x_i-\tilde{x_i}\right) \\ &=c \sum_{i=1}^n\left\|x_i-\tilde{x_i}\right\|^2 \end{aligned}$$
+ScaNN argues that this loss function is not optimal because, for a given query, data points closer to the query are more important. Reducing the quantization error for these data points is more critical for the results. Therefore, ScaNN proposes a score-aware quantization loss: $$\ell\left(x_i, \tilde{x}_i, w\right)=\mathbb{E}_{q \sim \mathcal{Q}}\left[w\left(\left\langle q, x_i\right\rangle\right)\left\langle q, x_i-\tilde{x}_i\right\rangle^2\right]
+$$.
 
-ScaNN argues that this loss function is not optimal because, for a given query, data points closer to the query are more important. Reducing the quantization error for these data points is more critical for the results. Therefore, ScaNN proposes a score-aware quantization loss:
-$$\ell\left(x_i, \tilde{x}_i, w\right)=\mathbb{E}_{q \sim \mathcal{Q}}\left[w\left(\left\langle q, x_i\right\rangle\right)\left\langle q, x_i-\tilde{x}_i\right\rangle^2\right]
-$$
-
-
-Here, w represents the weight.
+Here, w represents the weight. 
 
 ![](https://assets.zilliz.com/score_aware_quantization_loss_d9d36223c2.png)
 
