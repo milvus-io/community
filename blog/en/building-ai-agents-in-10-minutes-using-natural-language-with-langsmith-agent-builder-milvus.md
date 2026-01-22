@@ -83,7 +83,7 @@ Now that we’ve covered the design philosophy behind Agent Builder, let’s wal
 
 ![](https://assets.zilliz.com/640_7_0dfd5ff561.webp)
 
-1.  **Enter Parameters and Save**
+**(1) Enter Parameters and Save**
 
 ![](https://assets.zilliz.com/640_8_85f9e3008f.webp)
 
