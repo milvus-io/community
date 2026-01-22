@@ -73,7 +73,7 @@ In summary, ScaNN improves IVFPQ in two aspects:
 
 ScaNN adopts a quantization approach different from traditional PQ—this is the process shown in the second diagram above, which differs from PQ. In traditional PQ quantization, each vector needs to be assigned to a quantization center by computing distances to different quantization centers and selecting the one with the minimum distance. The objective is essentially to minimize the quantization error introduced when replacing $$x_i$$ with $$\tilde{x_i}$$: 
 
-$$\begin{aligned} \sum_{i=1}^n\left\|x_i-\tilde{x_i}\right\|^2 \end{aligned}$$.
+$$\sum_{i=1}^n \| x_i - \tilde{x}_i \|^2$$.
 
 ScaNN modifies this process. First, it introduces the concept of loss, which differs slightly from the quantization error above. This loss refers to the error between the actual distance between two vectors and the approximate distance computed using the quantization method. ScaNN primarily targets Inner Product (IP) distance. The IP distance error and query vector distribution can be described by the formula: 
 
