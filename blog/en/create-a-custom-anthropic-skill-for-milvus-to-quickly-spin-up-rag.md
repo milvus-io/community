@@ -38,13 +38,13 @@ A Skill follows a consistent folder structure:
 ```
 skill-name/
 
-├── SKILL.md          # Required: Skill instructions and metadata
+├── SKILL.md       # Required: Skill instructions and metadata
 
-├── scripts/             # Optional: helper scripts
+├── scripts/         # Optional: helper scripts
 
-├── templates/       # Optional: document templates
+├── templates/       # Optional: document templates
 
-└── resources/       # Optional: reference materials
+└── resources/       # Optional: reference materials
 ```
 
 **1.** `SKILL.md` **(Core File)**
