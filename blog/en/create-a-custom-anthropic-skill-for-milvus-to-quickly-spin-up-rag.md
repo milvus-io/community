@@ -190,7 +190,7 @@ These scripts show how to turn a Milvus-focused Skill into something practical: 
 **Describe the Request in Natural Language**
 
 ```
-“I want to build an RAG system.”
+"I want to build an RAG system."
 ```
 
 ![](https://assets.zilliz.com/test1_64fd549573.PNG)
