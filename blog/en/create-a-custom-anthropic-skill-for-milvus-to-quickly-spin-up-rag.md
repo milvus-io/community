@@ -51,11 +51,11 @@ skill-name/
 
 This is the execution guide for the agent—the document that tells the agent exactly how the task should be carried out. It defines the Skill’s metadata (such as name, description, and trigger keywords), the execution flow, and default settings. In this file, you should clearly describe:
 
--   **When the Skill should run:** For example, trigger the Skill when the user input includes a phrase like “process CSV files with Python.”
+- **When the Skill should run:** For example, trigger the Skill when the user input includes a phrase like “process CSV files with Python.”
     
--   **How the task should be performed:** Lay out the execution steps in order, such as: interpret the user’s request → call preprocessing scripts from the `scripts/` directory → generate the required code → format the output using templates from `templates/`.
+- **How the task should be performed:** Lay out the execution steps in order, such as: interpret the user’s request → call preprocessing scripts from the `scripts/` directory → generate the required code → format the output using templates from `templates/`.
     
--   **Rules and constraints:** Specify details such as coding conventions, output formats, and how errors should be handled.
+- **Rules and constraints:** Specify details such as coding conventions, output formats, and how errors should be handled.
     
 
 **2.** `scripts/` **(Execution Scripts)**
