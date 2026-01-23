@@ -36,7 +36,6 @@ The format is intentionally simple, and because of that, it’s already supporte
 A Skill follows a consistent folder structure:
 
 ```
-
 skill-name/
 
 ├── SKILL.md          # Required: Skill instructions and metadata
@@ -46,7 +45,6 @@ skill-name/
 ├── templates/       # Optional: document templates
 
 └── resources/       # Optional: reference materials
-
 ```
 
 **1.** `SKILL.md` **(Core File)**
@@ -103,9 +101,7 @@ In this section, we’ll walk through building a custom Skill that can set up a 
 **Install** `claude-code`
 
 ```
-
 npm install -g @anthropic-ai/claude-code
-
 ```
 
 **Install CC-Switch**
@@ -127,7 +123,6 @@ Project repository: [https://github.com/farion1231/cc-switch](https://github.com
 **Deploy and Start Milvus-Standalone**
 
 ```
-
 # Download docker-compose.yml
 
 wget https://github.com/milvus-io/milvus/releases/download/v2.6.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
@@ -145,9 +140,6 @@ docker-compose up -d
 docker ps | grep milvus
 
 # You should see three containers: milvus-standalone, milvus-etcd, milvus-minio
-
-  
-
 ```
 
 ![](https://assets.zilliz.com/code1_9c6a1a7f93.PNG)
@@ -155,11 +147,9 @@ docker ps | grep milvus
 **Configure the OpenAI API Key**
 
 ```
-
 # Add this to ~/.bashrc or ~/.zshrc
 
 OPENAI_API_KEY=your_openai_api_key_here
-
 ```
 
 ### Step 2: Create the Custom Skill for Milvus
@@ -167,11 +157,9 @@ OPENAI_API_KEY=your_openai_api_key_here
 **Create the Directory Structure**
 
 ```
-
 cd ~/.claude/skills/
 
 mkdir -p milvus-skills/example milvus-skills/scripts
-
 ```
 
 **Initialize** `SKILL.md`
@@ -179,11 +167,9 @@ mkdir -p milvus-skills/example milvus-skills/scripts
 **Note:** SKILL.md serves as the agent’s execution guide. It defines what the Skill does and how it should be triggered.
 
 ```
-
 name: milvus-collection-builder
 
 description: Create Milvus collections using natural language, supporting both RAG and text search scenarios
-
 ```
 
 **Write the Core Scripts**
@@ -191,7 +177,7 @@ description: Create Milvus collections using natural language, supporting both R
 | Script Type | File Name | Purpose |
 | --- | --- | --- |
 | Environment check | `check_env.py` | Checks the Python version, required dependencies, and the Milvus connection |
-| Intent parsing | `intent_parser.py` | Converts requests like “build a RAG database” into a structured intent such as scene=rag |
+| Intent parsing | `intent_parser.py` | Converts requests like “build a RAG database” into a structured intent such as `scene=rag` |
 | Collection creation | `milvus_builder.py` | The core builder that generates the collection schema and index configuration |
 | Data ingestion | `insert_milvus_data.py` | Loads documents, chunks them, generates embeddings, and writes data into Milvus |
 | Example 1 | `basic_text_search.py` | Demonstrates how to create a document search system |
@@ -204,9 +190,7 @@ These scripts show how to turn a Milvus-focused Skill into something practical: 
 **Describe the Request in Natural Language**
 
 ```
-
 “I want to build an RAG system.”
-
 ```
 
 ![](https://assets.zilliz.com/test1_64fd549573.PNG)
