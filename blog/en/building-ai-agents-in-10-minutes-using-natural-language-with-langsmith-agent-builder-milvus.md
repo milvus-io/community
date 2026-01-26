@@ -169,7 +169,7 @@ Click **Test** in the top-right corner to enter testing mode. Below is a sample 
 
 ## Agent Builder vs. DeepAgents: Which One Should You Choose?
 
-LangChain offers multiple agent frameworks, and the right choice depends on how much control you need. [DeepAgents](https://www.google.com/search?q=DeepAgents&newwindow=1&sca_esv=0e7ec9ce2aa7d5b4&sxsrf=ANbL-n5pe1KqjmJVjQCqmc3jneYhmGGOUg%3A1769066335766&ei=X89xab21Lp3a1e8Ppam06Ag&ved=2ahUKEwio15nYzZ6SAxU_mq8BHcf3BqUQgK4QegQIARAB&uact=5&oq=what+is+DeepAgents&gs_lp=Egxnd3Mtd2l6LXNlcnAiEndoYXQgaXMgRGVlcEFnZW50czIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzINEAAYgAQYsAMYQxiKBTINEAAYgAQYsAMYQxiKBUi8BlAYWL8FcAF4AZABAJgBqgKgAbAKqgEFMC4yLjS4AQPIAQD4AQGYAgGgAgyYAwCIBgGQBgqSBwExoAehHrIHALgHAMIHAzMtMcgHCYAIAA&sclient=gws-wiz-serp) is agent building tool. It is used to build autonomous, long-running AI agents that handle complex, multi-step tasks. Built on LangGraph, it supports advanced planning, file-based context management, and subagent orchestration—making it ideal for long-horizon or production-grade projects.
+LangChain offers multiple agent frameworks, and the right choice depends on how much control you need. [DeepAgents](https://python.langchain.com/v0.2/docs/experimental/deep_agents/) is an agent building tool. It is used to build autonomous, long-running AI agents that handle complex, multi-step tasks. Built on LangGraph, it supports advanced planning, file-based context management, and subagent orchestration—making it ideal for long-horizon or production-grade projects.
 
 So how does that compare to **Agent Builder**, and when should you use each?
 
