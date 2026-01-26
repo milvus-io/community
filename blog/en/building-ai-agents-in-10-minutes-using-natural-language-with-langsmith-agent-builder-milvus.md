@@ -26,7 +26,7 @@ This guide walks through how to build a production-ready, memory-enabled AI assi
 
 ## What is LangSmith Agent Builder and How It Works? 
 
-Just as its name reveals, [LangSmith Agent Builder](https://www.google.com/search?q=LangSmith+Agent+Builder&oq=what+is+LangSmith+Agent+Builder&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIGCAgQABgDMggICRAAGBYYHtIBCTI1OTJqMGoxNagCCLACAfEF2Mylr_IuXLk&sourceid=chrome&ie=UTF-8&ved=2ahUKEwjV1LfvxZ6SAxVFsFYBHYzTJAsQgK4QegQIARAB) is a no-code tool from LangChain that lets you build, deploy, and manage AI agents using plain language. Instead of writing logic or designing visual flows, you explain what the agent should do, what tools it can use, and how it should behave. The system then handles the hard parts—generating prompts, selecting tools, wiring components together, and enabling memory. 
+Just as its name reveals, [LangSmith Agent Builder](https://www.langchain.com/langsmith/agent-builder) is a no-code tool from LangChain that lets you build, deploy, and manage AI agents using plain language. Instead of writing logic or designing visual flows, you explain what the agent should do, what tools it can use, and how it should behave. The system then handles the hard parts—generating prompts, selecting tools, wiring components together, and enabling memory. 
 
 ![](https://assets.zilliz.com/_57c5cee35b.png)
 
