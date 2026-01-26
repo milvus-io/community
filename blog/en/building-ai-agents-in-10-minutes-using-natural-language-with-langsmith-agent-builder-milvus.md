@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-01-22
 desc:  Learn how to build memory-enabled AI agents in minutes using LangSmith Agent Builder and Milvus—no code, natural language, production-ready.
-cover: assets.zilliz.com/cover_ls_new_1_cffc21a759.png
+cover: assets.zilliz.com/cover_ls_final_19a7025eb4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
