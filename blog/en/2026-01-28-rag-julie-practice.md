@@ -9,7 +9,7 @@ tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Claude Cowork, Agent Memory, RAG, Milvus
-meta_keywords: Claude Code, Agent Memory, RAG, Milvus
+meta_keywords: Claude Cowork, Agent Memory, RAG, Milvus
 meta_title: >
  From RAG to Read-Write Memory: How Execution-Oriented AI Stores Context
 desc: >
