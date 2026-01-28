@@ -1,5 +1,5 @@
 ---
-id: from-rag-to-agent-memory-how-ai-systems-learn-by-writing-not-just-reading
+id: from-rag-to-agent-memory-how-ai-systems-learn-by-writing-not-just-reading.md
 title: >
  From RAG to Agent Memory: How AI Systems Learn by Writing, Not Just Reading
 author: Min Yin
@@ -8,15 +8,14 @@ cover: assets.zilliz.com/cover_cowork_febdab11be.png
 tag: Engineering
 recommend: false
 publishToMedium: true
-tags: Claude Cowork, Agent Memory, RAG, Milvus
-meta_keywords: Claude Cowork, Agent Memory, RAG, Milvus
+tags: Claude, Claude Code, Vector Database, Retreival Augmented Generation, Milvus
+meta_keywords: Claude Cowork, Agent Memory, RAG, Milvus, Claude
 meta_title: >
  From RAG to Read-Write Memory: How Execution-Oriented AI Stores Context
 desc: >
  Why modern AI agents need read-write memory, not just RAG, to act, store context, and handle real-world tasks.
 origin: https://milvus.io/blog/from-rag-to-agent-memory-how-ai-systems-learn-by-writing-not-just-reading.md
 ---
-# From RAG to Agent Memory: How AI Systems Learn by Writing, Not Just Reading
 
 AI systems are starting to *do things*, not just talk. Anthropic’s desktop assistant **Claude Cowork** is a good example. If you ask it to organize last week’s meetings, it doesn’t just summarize text. It searches your local folders, finds the relevant files, generates a slide deck, and saves it to your desktop.
 
