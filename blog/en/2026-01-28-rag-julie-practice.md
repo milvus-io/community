@@ -109,7 +109,8 @@ In the end, memory tiering is just **importance judgment** in disguise.
 
 Tiering forces a trade-off between latency and memory usage. Fetching cold data on demand adds delay, while aggressive preloading wastes memory. As a result, storage policy cannot be designed in isolation—it must be aligned with importance scoring.
 
-  
+
+
 
 ### How Fast Must Writes Be?
 
