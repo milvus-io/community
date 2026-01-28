@@ -39,7 +39,8 @@ To answer that, we need to step back and examine how RAG architectures evolved i
 
 **Key limitation:** Retrieval is unconditional. Even trivial or common-sense questions incur search latency and compute cost.
 
-  
+
+
 
 ### Generation 2: Agentic RAG—Decide to Retrieve
 
