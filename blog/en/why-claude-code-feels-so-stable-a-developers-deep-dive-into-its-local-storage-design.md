@@ -17,10 +17,6 @@ desc: >
 origin: https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 ---
 
-# Why Claude Code Feels So Stable: A Developer’s Deep Dive into Its Local Storage Design
-
-By Bill Chen
-
 Claude Code has been everywhere lately. Developers are using it to ship features faster, automate workflows, and prototype agents that actually work in real projects. What’s even more surprising is how many non-coders have jumped in too — building tools, wiring up tasks, and getting useful results with almost no setup. It’s rare to see an AI coding tool spread this quickly across so many different skill levels.
 
 What really stands out, though, is how *stable* it feels. Claude Code remembers what happened across sessions, survives crashes without losing progress, and behaves more like a local development tool than a chat interface. That reliability comes from how it handles local storage.
