@@ -239,5 +239,6 @@
   "blog/en/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md": "2026-01-20T05:09:54.925Z",
   "blog/en/a-brief-introduction-to-the-scann-index.md": "2026-01-22T11:32:33.349Z",
   "blog/en/building-ai-agents-in-10-minutes-using-natural-language-with-langsmith-agent-builder-milvus.md": "2026-01-22T10:58:21.303Z",
-  "blog/en/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md": "2026-01-23T08:57:19.720Z"
+  "blog/en/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md": "2026-01-23T08:57:19.720Z",
+  "blog/en/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md": "2026-01-30T10:09:20.916Z"
 }
