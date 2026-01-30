@@ -87,41 +87,23 @@ Next, let’s take a closer look at these two core components.
 This file acts as an index rather than a data store. It records which projects you’ve worked on, what tools are attached to each project, and which prompts you recently used. Conversation data itself is not stored here.
 
 ```
-
 {
-
-"projects": {
-
-"/Users/xxx/my-project": {
-
-"mcpServers": {
-
-"jarvis-tasks": {
-
-"type": "stdio",
-
-"command": "python",
-
-"args": \["/path/to/run_mcp.py"\]
-
+  "projects": {
+    "/Users/xxx/my-project": {
+      "mcpServers": {
+        "jarvis-tasks": {
+          "type": "stdio",
+          "command": "python",
+          "args": ["/path/to/run_mcp.py"]
+        }
+      }
+    }
+  },
+  "recentPrompts": [
+    "Fix the bug in auth module",
+    "Add unit tests"
+  ]
 }
-
-}
-
-}
-
-},
-
-"recentPrompts": \[
-
-"Fix the bug in auth module",
-
-"Add unit tests"
-
-\]
-
-}
-
 ```
 
   
@@ -131,99 +113,52 @@ This file acts as an index rather than a data store. It records which projects y
 The `~/.claude/` directory is where most of Claude Code’s local state lives. Its structure reflects a few core design ideas: project isolation, immediate persistence, and safe recovery from mistakes.
 
 ```
-
 ~/.claude/
-
-├── settings.json                    # Global settings (permissions, plugins, cleanup intervals)
-
-├── settings.local.json              # Local settings (machine-specific, not committed to Git)
-
-├── history.jsonl                    # Command history
-
+├── settings.json                    # Global settings (permissions, plugins, cleanup intervals)
+├── settings.local.json              # Local settings (machine-specific, not committed to Git)
+├── history.jsonl                    # Command history
 │
-
-├── projects/                        # 📁 Session data (organized by project, core directory)
-
-│   └── -Users-xxx-project/          # Path-encoded project directory
-
-│       ├── {session-id}.jsonl       # Primary session data (JSONL format)
-
-│       └── agent-{agentId}.jsonl    # Sub-agent session data
-
+├── projects/                        # 📁 Session data (organized by project, core directory)
+│   └── -Users-xxx-project/          # Path-encoded project directory
+│       ├── {session-id}.jsonl       # Primary session data (JSONL format)
+│       └── agent-{agentId}.jsonl    # Sub-agent session data
 │
-
-├── session-env/                     # Session environment variables
-
-│   └── {session-id}/                # Isolated by session ID
-
+├── session-env/                     # Session environment variables
+│   └── {session-id}/                # Isolated by session ID
 │
-
-├── skills/                          # 📁 User-level skills (globally available)
-
-│   └── mac-mail/
-
-│       └── SKILL.md
-
+├── skills/                          # 📁 User-level skills (globally available)
+│   └── mac-mail/
+│       └── SKILL.md
 │
-
-├── plugins/                         # 📁 Plugin management
-
-│   ├── config.json                  # Global plugin configuration
-
-│   ├── installed_plugins.json       # List of installed plugins
-
-│   ├── known_marketplaces.json      # Marketplace source configuration
-
-│   ├── cache/                       # Plugin cache
-
-│   └── marketplaces/
-
-│       └── anthropic-agent-skills/
-
-│           ├── .claude-plugin/
-
-│           │   └── marketplace.json
-
-│           └── skills/
-
-│               ├── pdf/
-
-│               ├── docx/
-
-│               └── frontend-design/
-
+├── plugins/                         # 📁 Plugin management
+│   ├── config.json                  # Global plugin configuration
+│   ├── installed_plugins.json       # List of installed plugins
+│   ├── known_marketplaces.json      # Marketplace source configuration
+│   ├── cache/                       # Plugin cache
+│   └── marketplaces/
+│       └── anthropic-agent-skills/
+│           ├── .claude-plugin/
+│           │   └── marketplace.json
+│           └── skills/
+│               ├── pdf/
+│               ├── docx/
+│               └── frontend-design/
 │
-
-├── todos/                           # Task list storage
-
-│   └── {session-id}-*.json          # Session-linked task files
-
+├── todos/                           # Task list storage
+│   └── {session-id}-*.json          # Session-linked task files
 │
-
-├── file-history/                    # File edit history (stored by content hash)
-
-│   └── {content-hash}/              # Hash-named backup directory
-
+├── file-history/                    # File edit history (stored by content hash)
+│   └── {content-hash}/              # Hash-named backup directory
 │
-
-├── shell-snapshots/                 # Shell state snapshots
-
-├── plans/                           # Plan Mode storage
-
-├── local/                           # Local tools / node_modules
-
-│   └── claude                       # Claude CLI executable
-
-│   └── node_modules/                # Local dependencies
-
+├── shell-snapshots/                 # Shell state snapshots
+├── plans/                           # Plan Mode storage
+├── local/                           # Local tools / node_modules
+│   └── claude                       # Claude CLI executable
+│   └── node_modules/                # Local dependencies
 │
-
-├── statsig/                         # Feature flag cache
-
-├── telemetry/                       # Telemetry data
-
-└── debug/                           # Debug logs
-
+├── statsig/                         # Feature flag cache
+├── telemetry/                       # Telemetry data
+└── debug/                           # Debug logs
 ```
 
 This layout is intentionally simple: everything Claude Code generates lives under one directory, organized by project and session. There’s no hidden state scattered around your system, and it’s easy to inspect or clean up when necessary.
@@ -237,27 +172,16 @@ Claude Code’s configuration system is designed around a simple idea: keep the 
 Claude Code loads configuration in the following order, from lowest priority to highest:
 
 ```
-
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-
-│           Project-level configuration   │  Highest priority
-
-│    project/.claude/settings.json        │  Project-specific, overrides other configs
-
-├─────────────────────────────────────────────────────────────────────────────────────┤
-
-│           Local configuration           │  Machine-specific, not version-controlled
-
-│    ~/.claude/settings.local.json        │  Overrides global configuration
-
-├─────────────────────────────────────────────────────────────────────────────────────┤
-
-│           Global configuration          │  Lowest priority
-
-│    ~/.claude/settings.json              │  Base default configuration
-
-└─────────────────────────────────────────────────────────────────────────────────────┘
-
+┌─────────────────────────────────────────┐
+│    Project-level configuration          │  Highest priority
+│    project/.claude/settings.json        │  Project-specific, overrides other configs
+├─────────────────────────────────────────┤
+│    Local configuration                  │  Machine-specific, not version-controlled
+│    ~/.claude/settings.local.json        │  Overrides global configuration
+├─────────────────────────────────────────┤
+│    Global configuration                 │  Lowest priority
+│    ~/.claude/settings.json              │  Base default configuration
+└─────────────────────────────────────────┘
 ```
 
 You can think of this as starting with global defaults, then applying machine-specific adjustments, and finally applying project-specific rules.
@@ -269,57 +193,34 @@ Next, we’ll walk through each configuration level in detail.
 The global configuration defines the default behavior for Claude Code across all projects. This is where you set baseline permissions, enable plugins, and configure cleanup behavior.
 
 ```
-
 {
-
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
-
-  "permissions": {
-
-    "allow": \["Read(**)", "Bash(npm:*)"\],
-
-    "deny": \["Bash(rm -rf:*)"\],
-
-    "ask": \["Edit", "Write"\]
-
-  },
-
-  "enabledPlugins": {
-
-    "document-skills@anthropic-agent-skills": true
-
-  },
-
-  "cleanupPeriodDays": 30
-
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": ["Read(**)", "Bash(npm:*)"],
+    "deny": ["Bash(rm -rf:*)"],
+    "ask": ["Edit", "Write"]
+  },
+  "enabledPlugins": {
+    "document-skills@anthropic-agent-skills": true
+  },
+  "cleanupPeriodDays": 30
 }
-
 ```
 
   
-
 **(2) Local configuration:** `~/.claude/settings.local.json`
 
 The local configuration is specific to a single machine. It is not meant to be shared or checked into version control. This makes it a good place for API keys, local tools, or environment-specific permissions.
 
 ```
-
 {
-
-  "permissions": {
-
-    "allow": \["Bash(git:*)", "Bash(docker:*)"\]
-
-  },
-
-  "env": {
-
-    "ANTHROPIC_API_KEY": "sk-ant-xxx"
-
-  }
-
+  "permissions": {
+    "allow": ["Bash(git:*)", "Bash(docker:*)"]
+  },
+  "env": {
+    "ANTHROPIC_API_KEY": "sk-ant-xxx"
+  }
 }
-
 ```
 
   
@@ -329,17 +230,11 @@ The local configuration is specific to a single machine. It is not meant to be s
 Project-level configuration applies only to a single project and has the highest priority. This is where you define rules that should always apply when working in that repository.
 
 ```
-
 {
-
-  "permissions": {
-
-    "allow": \["Bash(pytest:*)"\]
-
-  }
-
+  "permissions": {
+    "allow": ["Bash(pytest:*)"]
+  }
 }
-
 ```
 
 With the configuration layers defined, the next question is **how Claude Code actually resolves configuration and permissions at runtime.**
@@ -413,13 +308,9 @@ JSONL works better in several key ways:
 A simplified JSONL session file looks like this:
 
 ```
-
 {"type":"user","message":{"role":"user","content":"Hello"},"timestamp":"2026-01-05T10:00:00Z"}
-
-{"type":"assistant","message":{"role":"assistant","content":\[{"type":"text","text":"Hi!"}\]}}
-
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Hi!"}]}}
 {"type":"user","message":{"role":"user","content":"Help me fix this bug"}}
-
 ```
 
   
@@ -444,101 +335,55 @@ To make this more concrete, let’s look at specific examples of user messages a
 **(1) User messages example:**
 
 ```
-
 {
-
-"type": "user",
-
-"uuid": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
-
-"parentUuid": null,
-
-"sessionId": "e5d52290-e2c1-41d6-8e97-371401502fdf",
-
-"timestamp": "2026-01-05T10:00:00.000Z",
-
-"message": {
-
-"role": "user",
-
-"content": "Analyze the architecture of this project"
-
-},
-
-"cwd": "/Users/xxx/project",
-
-"gitBranch": "main",
-
-"version": "2.0.76"
-
+  "type": "user",
+  "uuid": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
+  "parentUuid": null,
+  "sessionId": "e5d52290-e2c1-41d6-8e97-371401502fdf",
+  "timestamp": "2026-01-05T10:00:00.000Z",
+  "message": {
+    "role": "user",
+    "content": "Analyze the architecture of this project"
+  },
+  "cwd": "/Users/xxx/project",
+  "gitBranch": "main",
+  "version": "2.0.76"
 }
-
 ```
 
 **(2) Assistant messages example:**
 
 ```
-
 {
-
-"type": "assistant",
-
-"uuid": "e684816e-f476-424d-92e3-1fe404f13212",
-
-"parentUuid": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
-
-"message": {
-
-"role": "assistant",
-
-"model": "claude-opus-4-5-20251101",
-
-"content": \[
-
-{
-
-"type": "thinking",
-
-"thinking": "The user wants to understand the project architecture, so I need to check the directory structure first..."
-
-},
-
-{
-
-"type": "text",
-
-"text": "Let me take a look at the project structure first."
-
-},
-
-{
-
-"type": "tool_use",
-
-"id": "toolu_01ABC",
-
-"name": "Bash",
-
-"input": {"command": "ls -la"}
-
+  "type": "assistant",
+  "uuid": "e684816e-f476-424d-92e3-1fe404f13212",
+  "parentUuid": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
+  "message": {
+    "role": "assistant",
+    "model": "claude-opus-4-5-20251101",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "The user wants to understand the project architecture, so I need to check the directory structure first..."
+      },
+      {
+        "type": "text",
+        "text": "Let me take a look at the project structure first."
+      },
+      {
+        "type": "tool_use",
+        "id": "toolu_01ABC",
+        "name": "Bash",
+        "input": {"command": "ls -la"}
+      }
+    ],
+    "usage": {
+      "input_tokens": 1500,
+      "output_tokens": 200,
+      "cache_read_input_tokens": 50000
+    }
+  }
 }
-
-\],
-
-"usage": {
-
-"input_tokens": 1500,
-
-"output_tokens": 200,
-
-"cache_read_input_tokens": 50000
-
-}
-
-}
-
-}
-
 ```
 
   
@@ -587,37 +432,24 @@ Instead of trying to reverse changes after the fact, Claude Code takes a simpler
 The diagram below shows this flow step by step:
 
 ```
+┌─────────────────────────┐
+│    before edit,  app.py │
+│    print("old")         │───────→  Backed up into snapshot trackedFileBackups
+└─────────────────────────┘
 
-`┌────────────────────────────┐`
+↓
 
-`│  `  before edit,  app.py ` │`
+┌──────────────────────────┐
+│   After Claude edits     │
+│    print("new")          │───────→  Written to disk (overwrites the original file)
+└──────────────────────────┘
 
-`│  `  `print``(``"old"``)    │───────→ ` Backed up into snapshot trackedFileBackups
+↓
 
-`└────────────────────────────┘`
-
-`↓`
-
-`┌────────────────────────────┐`
-
-`│  `  After Claude edits  `  │`
-
-`│  `  `print``(``"new"``)    │───────→ ` Written to disk (overwrites the original file)
-
-`└────────────────────────────┘`
-
-`↓`
-
-`┌────────────────────────────┐`
-
-`│  `  User triggers undo  `  │`
-
-`│  `  Press  ` Esc + Esc     │───────→ ` Restore "old" content to disk from snapshot
-
-`└────────────────────────────┘`
-
-  
-
+┌──────────────────────────┐
+│    User triggers undo    │
+│    Press   Esc + Esc     │───────→ Restore "old" content to disk from snapshot
+└──────────────────────────┘
 ```
 
   
@@ -629,35 +461,19 @@ The snapshot itself is stored as a structured record. It captures metadata about
 The example below shows a single `file-history-snapshot` record created before Claude edits any files. Each entry in `trackedFileBackups` stores the *pre-edit* content of a file, which is later used to restore the file during an undo.
 
 ```
-
 {
-
-"type": "file-history-snapshot",
-
-"messageId": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
-
-"snapshot": {
-
-"messageId": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
-
-"trackedFileBackups": {
-
-"/path/to/file1.py": "
-
-Original file content\ndef hello():\n    print('old')",
-
-"/path/to/file2.js": "// Original content..."
-
-},
-
-"timestamp": "2026-01-05T10:00:00.000Z"
-
-},
-
-"isSnapshotUpdate": false
-
+  "type": "file-history-snapshot",
+  "messageId": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
+  "snapshot": {
+    "messageId": "7d90e1c9-e727-4291-8eb9-0e7b844c4348",
+    "trackedFileBackups": {
+      "/path/to/file1.py": "Original file content\ndef hello():\n    print('old')",
+      "/path/to/file2.js": "// Original content..."
+    },
+    "timestamp": "2026-01-05T10:00:00.000Z"
+  },
+  "isSnapshotUpdate": false
 }
-
 ```
 
   
@@ -696,55 +512,30 @@ The `plugins/` directory stores add-ons that give Claude Code extra abilities. 
 This directory stores which *plugins* are installed, where they came from, and the extra skills those plugins provide. It also keeps local copies of downloaded plugins so they don’t need to be fetched again.
 
 ```
-
 ~/.claude/plugins/
-
 ├── config.json
-
-│   Global plugin configuration (e.g., enable/disable rules)
-
+│   Global plugin configuration (e.g., enable/disable rules)
 ├── installed_plugins.json
-
-│   List of installed plugins (including version and status)
-
+│   List of installed plugins (including version and status)
 ├── known_marketplaces.json
-
-│   Plugin marketplace source configuration (e.g., Anthropic official marketplace)
-
+│   Plugin marketplace source configuration (e.g., Anthropic official marketplace)
 ├── cache/
-
-│   Plugin download cache (avoids repeated downloads)
-
+│   Plugin download cache (avoids repeated downloads)
 └── marketplaces/
-
-    Marketplace source storage
-
-    └── anthropic-agent-skills/
-
-        Official plugin marketplace
-
-        ├── .claude-plugin/
-
-        │   └── marketplace.json
-
-        │       Marketplace metadata
-
-        └── skills/
-
-            Skills provided by the marketplace
-
-            ├── pdf/
-
-            │   PDF-related skills
-
-            ├── docx/
-
-            │   Word document processing skills
-
-            └── frontend-design/
-
-                Frontend design skills
-
+    Marketplace source storage
+    └── anthropic-agent-skills/
+        Official plugin marketplace
+        ├── .claude-plugin/
+        │   └── marketplace.json
+        │       Marketplace metadata
+        └── skills/
+            Skills provided by the marketplace
+            ├── pdf/
+            │   PDF-related skills
+            ├── docx/
+            │   Word document processing skills
+            └── frontend-design/
+                Frontend design skills
 ```
 
   
