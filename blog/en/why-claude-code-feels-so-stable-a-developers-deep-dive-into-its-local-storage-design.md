@@ -75,7 +75,7 @@ Claude Code stores all of its local data in a single place: your home directory.
 
 **Two core components:**
 
-- `~/.claude.json` — Stores global configuration and shortcuts, including project mappings, MCP server settings, and recently used prompts.
+- `~/.claude.json`Stores global configuration and shortcuts, including project mappings, MCP server settings, and recently used prompts.
     
 -   `~/.claude/`The main data directory, where Claude Code stores conversations, project sessions, permissions, plugins, skills, history, and related runtime data.
     
