@@ -75,7 +75,7 @@ Claude Code stores all of its local data in a single place: your home directory.
 
 **Two core components:**
 
--   `~/.claude.json`Stores global configuration and shortcuts, including project mappings, MCP server settings, and recently used prompts.
+- `~/.claude.json` — Stores global configuration and shortcuts, including project mappings, MCP server settings, and recently used prompts.
     
 -   `~/.claude/`The main data directory, where Claude Code stores conversations, project sessions, permissions, plugins, skills, history, and related runtime data.
     
@@ -594,4 +594,4 @@ What I like most is that there’s nothing mystical going on here. Claude Code w
 
 For teams building local or on-prem AI agents, especially in secure environments, this approach shows how strong storage and persistence make AI tools reliable and practical for everyday development.
 
-If you’re designing local or on-prem AI agents and want to discuss storage architecture, session design, or safe rollback in more detail, feel free to join our [](https://discord.com/invite/8uyFbECzPX)[Slack channel](https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email).You can also book a 20-minute one-on-one through [Milvus Office Hours](https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md) for personalized guidance.
+If you’re designing local or on-prem AI agents and want to discuss storage architecture, session design, or safe rollback in more detail, feel free to join our [Slack channel](https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email).You can also book a 20-minute one-on-one through [Milvus Office Hours](https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md) for personalized guidance.
