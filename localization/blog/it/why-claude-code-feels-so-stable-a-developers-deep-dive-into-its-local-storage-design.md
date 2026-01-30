@@ -4,7 +4,7 @@ id: >-
 title: >-
   Perché il codice Claude è così stabile: Un'immersione profonda di uno
   sviluppatore nel suo progetto di archiviazione locale
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -23,9 +23,9 @@ origin: >-
   https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 ---
 <p>Ultimamente il codice Claude è ovunque. Gli sviluppatori lo usano per produrre più velocemente funzionalità, automatizzare flussi di lavoro e prototipare agenti che funzionano davvero in progetti reali. Ciò che è ancora più sorprendente è il numero di non-codificatori che si sono lanciati in questa impresa, costruendo strumenti, collegando attività e ottenendo risultati utili quasi senza alcuna configurazione. È raro vedere uno strumento di codifica dell'intelligenza artificiale diffondersi così rapidamente tra così tanti livelli di competenza.</p>
-<p>Ciò che spicca, tuttavia, è la sua <em>stabilità</em>. Claude Code ricorda ciò che è successo nelle varie sessioni, sopravvive agli arresti anomali senza perdere i progressi e si comporta più come uno strumento di sviluppo locale che come un'interfaccia di chat. L'affidabilità deriva dal modo in cui gestisce l'archiviazione locale.</p>
+<p>Ciò che spicca, però, è la sua <em>stabilità</em>. Claude Code ricorda ciò che è successo nelle varie sessioni, sopravvive agli arresti anomali senza perdere i progressi e si comporta più come uno strumento di sviluppo locale che come un'interfaccia di chat. L'affidabilità deriva dal modo in cui gestisce l'archiviazione locale.</p>
 <p>Invece di trattare la sessione di codifica come una chat temporanea, Claude Code legge e scrive file reali, memorizza lo stato del progetto su disco e registra ogni fase del lavoro dell'agente. Le sessioni possono essere riprese, ispezionate o annullate senza dover fare congetture, e ogni progetto rimane isolato in modo pulito, evitando i problemi di contaminazione incrociata in cui incorrono molti strumenti per agenti.</p>
-<p>In questo post daremo un'occhiata più da vicino all'architettura di archiviazione che sta alla base di questa stabilità e perché gioca un ruolo così importante nel rendere Claude Code pratico per lo sviluppo quotidiano.</p>
+<p>In questo post daremo un'occhiata più da vicino all'architettura di archiviazione che sta alla base di questa stabilità e al motivo per cui gioca un ruolo così importante nel rendere Claude Code pratico per lo sviluppo quotidiano.</p>
 <h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">Le sfide che ogni assistente locale di codifica AI deve affrontare<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -43,7 +43,7 @@ origin: >-
       </svg>
     </button></h2><p>Prima di spiegare come Claude Code affronta l'archiviazione, diamo un'occhiata ai problemi comuni in cui tendono a imbattersi gli strumenti di codifica AI locali. Questi si presentano naturalmente quando un assistente lavora direttamente sul filesystem e mantiene lo stato nel tempo.</p>
 <p><strong>1. I dati del progetto vengono mescolati tra gli spazi di lavoro.</strong></p>
-<p>La maggior parte degli sviluppatori passa da un repository all'altro nel corso della giornata. Se un assistente trasporta lo stato da un progetto all'altro, diventa più difficile capire il suo comportamento e più facile che faccia ipotesi sbagliate. Ogni progetto ha bisogno di un proprio spazio pulito e isolato per lo stato e la cronologia.</p>
+<p>La maggior parte degli sviluppatori passa da un repository all'altro nel corso della giornata. Se un assistente trasporta lo stato da un progetto all'altro, diventa più difficile capire il suo comportamento e più facile che faccia ipotesi errate. Ogni progetto ha bisogno di un proprio spazio pulito e isolato per lo stato e la cronologia.</p>
 <p><strong>2. Gli arresti anomali possono causare la perdita di dati.</strong></p>
 <p>Durante una sessione di codifica, un assistente produce un flusso costante di dati utili: modifiche ai file, chiamate agli strumenti, passaggi intermedi. Se questi dati non vengono salvati subito, un crash o un riavvio forzato possono cancellarli. Un sistema affidabile scrive lo stato importante su disco non appena viene creato, in modo che il lavoro non vada perso inaspettatamente.</p>
 <p><strong>3. Non è sempre chiaro cosa abbia fatto l'agente.</strong></p>
@@ -69,7 +69,7 @@ origin: >-
       </svg>
     </button></h2><p>Il progetto di archiviazione di Claude Code si basa su quattro idee semplici. Possono sembrare semplici, ma insieme affrontano i problemi pratici che si presentano quando un assistente AI lavora direttamente sulla vostra macchina e su più progetti.</p>
 <h3 id="1-Each-project-gets-its-own-storage" class="common-anchor-header">1. Ogni progetto ha il suo spazio di archiviazione.</h3><p>Claude Code lega tutti i dati della sessione alla directory del progetto a cui appartengono. Ciò significa che le conversazioni, le modifiche e i registri rimangono nel progetto da cui provengono e non si disperdono negli altri. Mantenere l'archiviazione separata rende il comportamento dell'assistente più facile da capire e semplifica l'ispezione o l'eliminazione dei dati per un repo specifico.</p>
-<h3 id="2-Data-is-saved-to-disk-right-away" class="common-anchor-header">2. I dati vengono salvati subito su disco.</h3><p>Invece di tenere in memoria i dati dell'interazione, Claude Code li scrive su disco non appena vengono creati. Ogni evento (messaggio, chiamata allo strumento o aggiornamento dello stato) viene aggiunto come una nuova voce. Se il programma si blocca o viene chiuso inaspettatamente, quasi tutto è ancora lì. Questo approccio mantiene le sessioni durevoli senza aggiungere molta complessità.</p>
+<h3 id="2-Data-is-saved-to-disk-right-away" class="common-anchor-header">2. I dati vengono salvati subito su disco.</h3><p>Invece di tenere in memoria i dati delle interazioni, Claude Code li scrive su disco non appena vengono creati. Ogni evento (messaggio, chiamata allo strumento o aggiornamento dello stato) viene aggiunto come una nuova voce. Se il programma si blocca o viene chiuso inaspettatamente, quasi tutto è ancora lì. Questo approccio mantiene le sessioni durevoli senza aggiungere molta complessità.</p>
 <h3 id="3-Every-action-has-a-clear-place-in-history" class="common-anchor-header">3. Ogni azione ha un posto chiaro nella storia.</h3><p>Claude Code collega ogni messaggio e azione dello strumento a quello precedente, formando una sequenza completa. Questa cronologia ordinata permette di rivedere come si è svolta una sessione e di tracciare i passaggi che hanno portato a un risultato specifico. Per gli sviluppatori, questo tipo di traccia rende molto più semplice il debug e la comprensione del comportamento dell'agente.</p>
 <h3 id="4-Code-edits-are-easy-to-roll-back" class="common-anchor-header">4. Le modifiche al codice possono essere facilmente annullate.</h3><p>Prima che l'assistente aggiorni un file, Claude Code salva un'istantanea del suo stato precedente. Se la modifica si rivela sbagliata, è possibile ripristinare la versione precedente senza dover scavare nel repo o indovinare cosa è cambiato. Questa semplice rete di sicurezza rende le modifiche guidate dall'intelligenza artificiale molto meno rischiose.</p>
 <h2 id="Claude-Code-Local-Storage-Layout" class="common-anchor-header">Layout di archiviazione locale di Claude Code<button data-href="#Claude-Code-Local-Storage-Layout" class="anchor-icon" translate="no">
@@ -179,7 +179,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Il sistema di configurazione di Claude Code è progettato intorno a un'idea semplice: mantenere il comportamento predefinito coerente tra le macchine, ma lasciare che i singoli ambienti e progetti personalizzino ciò di cui hanno bisogno. Per far sì che questo funzioni, Claude Code utilizza un modello di configurazione a tre livelli. Quando la stessa impostazione compare in più punti, vince sempre il livello più specifico.</p>
+    </button></h2><p>Il sistema di configurazione di Claude Code è progettato intorno a un'idea semplice: mantenere il comportamento predefinito coerente tra le macchine, ma lasciare che i singoli ambienti e progetti personalizzino ciò di cui hanno bisogno. Per far funzionare questo sistema, Claude Code utilizza un modello di configurazione a tre livelli. Quando la stessa impostazione compare in più punti, vince sempre il livello più specifico.</p>
 <h3 id="The-three-configuration-levels" class="common-anchor-header">I tre livelli di configurazione</h3><p>Claude Code carica la configurazione nel seguente ordine, dalla priorità più bassa a quella più alta:</p>
 <pre><code translate="no">┌─────────────────────────────────────────┐
 │    <span class="hljs-title class_">Project</span>-level configuration          │  <span class="hljs-title class_">Highest</span> priority
@@ -278,10 +278,10 @@ origin: >-
 </table>
 <p>JSONL funziona meglio in diversi modi:</p>
 <ul>
-<li><p><strong>Salvataggio immediato:</strong> Ogni messaggio viene scritto su disco non appena viene generato, invece di attendere la fine della sessione.</p></li>
+<li><p><strong>Salvataggio immediato:</strong> Ogni messaggio viene scritto su disco non appena viene generato, invece di aspettare che la sessione finisca.</p></li>
 <li><p><strong>Resistente agli arresti anomali:</strong> se il programma si blocca, solo l'ultimo messaggio non terminato può andare perso. Tutto ciò che è stato scritto prima rimane intatto.</p></li>
 <li><p><strong>Aggiunta rapida di messaggi:</strong> I nuovi messaggi vengono aggiunti alla fine del file senza leggere o riscrivere i dati esistenti.</p></li>
-<li><p><strong>Basso utilizzo della memoria:</strong> I file di sessione possono essere letti una riga alla volta, quindi non è necessario caricare l'intero file in memoria.</p></li>
+<li><p><strong>Basso utilizzo della memoria:</strong> I file di sessione possono essere letti una riga alla volta, quindi non è necessario caricare in memoria l'intero file.</p></li>
 </ul>
 <p>Un file di sessione JSONL semplificato ha il seguente aspetto:</p>
 <pre><code translate="no">{<span class="hljs-string">&quot;type&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;message&quot;</span>:{<span class="hljs-string">&quot;role&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;content&quot;</span>:<span class="hljs-string">&quot;Hello&quot;</span>},<span class="hljs-string">&quot;timestamp&quot;</span>:<span class="hljs-string">&quot;2026-01-05T10:00:00Z&quot;</span>}
@@ -296,7 +296,7 @@ origin: >-
 <li><p><strong>I sommari</strong> forniscono una panoramica concisa della sessione e sono collegati al risultato finale. In questo modo è più facile capire il senso di una sessione senza dover ripetere ogni fase.</p></li>
 </ul>
 <p>Insieme, questi tipi di messaggi registrano non solo la conversazione, ma l'intera sequenza di azioni ed effetti che si verificano durante una sessione.</p>
-<p>Per rendere più concreto questo concetto, esaminiamo esempi specifici di messaggi dell'utente e di messaggi dell'assistente.</p>
+<p>Per rendere questo concetto più concreto, esaminiamo esempi specifici di messaggi dell'utente e di messaggi dell'assistente.</p>
 <p><strong>(1) Esempio di messaggi dell'utente:</strong></p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>,
@@ -490,12 +490,12 @@ origin: >-
 <p>La cartella <code translate="no">todos/</code> memorizza gli elenchi di attività che Claude crea per tenere traccia del lavoro durante una conversazione, come i passi da completare, gli elementi in corso e le attività completate.</p>
 <p>Gli elenchi di attività sono salvati come file JSON sotto<code translate="no">~/.claude/todos/{session-id}-*.json</code>.Ogni nome di file include l'ID di sessione, che lega l'elenco di attività a una specifica conversazione.</p>
 <p>I contenuti di questi file provengono dallo strumento <code translate="no">TodoWrite</code> e includono informazioni di base sulle attività, come la descrizione dell'attività, lo stato attuale, la priorità e i metadati correlati.</p>
-<p><strong>(4) local/ - Runtime e strumenti locali</strong></p>
+<p><strong>(4) local/ - Runtime locale e strumenti</strong></p>
 <p>La directory <code translate="no">local/</code> contiene i file fondamentali di cui Claude Code ha bisogno per funzionare sulla vostra macchina.</p>
 <p>Comprende l'eseguibile da riga di comando <code translate="no">claude</code> e la directory <code translate="no">node_modules/</code> che contiene le sue dipendenze di runtime. Mantenendo questi componenti a livello locale, Claude Code può funzionare in modo indipendente, senza dipendere da servizi esterni o installazioni a livello di sistema.</p>
 <p><strong>（5）Dirette di supporto aggiuntive</strong></p>
 <ul>
-<li><p><strong>shell-snapshots/:</strong> Memorizza le istantanee dello stato della sessione di shell (come la directory corrente e le variabili d'ambiente), consentendo il rollback delle operazioni di shell.</p></li>
+<li><p><strong>shell-snapshots/:</strong> Memorizza istantanee dello stato della sessione di shell (come la directory corrente e le variabili d'ambiente), consentendo il rollback delle operazioni di shell.</p></li>
 <li><p><strong>plans/:</strong> Memorizza i piani di esecuzione generati dalla modalità Piano (ad esempio, le suddivisioni passo-passo di attività di programmazione in più fasi).</p></li>
 <li><p><strong>statsig/:</strong> Memorizza le configurazioni dei flag delle funzioni (come l'abilitazione di nuove funzioni) per ridurre le richieste ripetute.</p></li>
 <li><p><strong>telemetria/:</strong> Memorizza dati di telemetria anonimi (come la frequenza di utilizzo delle funzioni) per l'ottimizzazione del prodotto.</p></li>
@@ -519,4 +519,4 @@ origin: >-
     </button></h2><p>Dopo aver analizzato il modo in cui Claude Code memorizza e gestisce tutto a livello locale, il quadro diventa piuttosto chiaro: lo strumento è stabile perché le fondamenta sono solide. Non c'è nulla di sofisticato, ma solo un'ingegnerizzazione accurata. Ogni progetto ha il suo spazio, ogni azione viene annotata e le modifiche ai file vengono salvate prima di qualsiasi cambiamento. È il tipo di design che fa tranquillamente il suo lavoro e vi lascia concentrare sul vostro.</p>
 <p>Ciò che mi piace di più è che non c'è nulla di mistico. Claude Code funziona bene perché le basi sono fatte bene. Se avete mai provato a costruire un agente che tocca file reali, sapete quanto sia facile che le cose vadano a rotoli: lo stato si mescola, i crash cancellano i progressi e l'annullamento diventa una congettura. Claude Code evita tutto questo grazie a un modello di archiviazione semplice, coerente e difficile da rompere.</p>
 <p>Per i team che costruiscono agenti di intelligenza artificiale locali o on-premise, soprattutto in ambienti sicuri, questo approccio dimostra come una solida archiviazione e persistenza renda gli strumenti di intelligenza artificiale affidabili e pratici per lo sviluppo quotidiano.</p>
-<p>Se state progettando agenti di intelligenza artificiale locali o on-premise e volete discutere più dettagliatamente dell'architettura di archiviazione, del design delle sessioni o del rollback sicuro, non esitate a unirvi al nostro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canale Slack</a>. Potete anche prenotare un incontro individuale di 20 minuti tramite <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> per una guida personalizzata.</p>
+<p>Se state progettando agenti di intelligenza artificiale locali o on-premise e volete discutere in modo più approfondito dell'architettura di archiviazione, del design delle sessioni o del rollback sicuro, non esitate a unirvi al nostro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canale Slack</a>. Potete anche prenotare un incontro individuale di 20 minuti tramite <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> per una guida personalizzata.</p>

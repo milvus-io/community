@@ -4,7 +4,7 @@ id: >-
 title: >-
   Mengapa Claude Code Terasa Sangat Stabil: Pendalaman Seorang Pengembang ke
   dalam Desain Penyimpanan Lokalnya
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -21,9 +21,9 @@ desc: >-
 origin: >-
   https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 ---
-<p>Claude Code ada di mana-mana akhir-akhir ini. Para pengembang menggunakannya untuk mengirimkan fitur lebih cepat, mengotomatiskan alur kerja, dan membuat prototipe agen yang benar-benar bekerja dalam proyek nyata. Yang lebih mengejutkan lagi adalah berapa banyak orang yang bukan pembuat kode yang ikut serta - membangun alat, memasang kabel, dan mendapatkan hasil yang berguna dengan hampir tanpa pengaturan. Jarang sekali ada alat pengkodean AI yang menyebar dengan cepat di berbagai tingkat keahlian yang berbeda.</p>
+<p>Claude Code telah ada di mana-mana akhir-akhir ini. Para pengembang menggunakannya untuk mengirimkan fitur lebih cepat, mengotomatiskan alur kerja, dan membuat prototipe agen yang benar-benar bekerja dalam proyek nyata. Yang lebih mengejutkan lagi adalah berapa banyak orang yang bukan pembuat kode yang ikut serta - membangun alat, memasang kabel, dan mendapatkan hasil yang berguna dengan hampir tanpa pengaturan. Jarang sekali ada alat pengkodean AI yang menyebar dengan cepat di berbagai tingkat keahlian yang berbeda.</p>
 <p>Namun, yang benar-benar menonjol adalah betapa <em>stabilnya</em> alat ini. Claude Code mengingat apa yang terjadi di seluruh sesi, bertahan dari kerusakan tanpa kehilangan kemajuan, dan berperilaku lebih seperti alat pengembangan lokal daripada antarmuka obrolan. Keandalan tersebut berasal dari bagaimana ia menangani penyimpanan lokal.</p>
-<p>Alih-alih memperlakukan sesi pengkodean Anda sebagai obrolan sementara, Claude Code membaca dan menulis file nyata, menyimpan status proyek di disk, dan mencatat setiap langkah kerja agen. Sesi dapat dilanjutkan, diperiksa, atau diputar kembali tanpa menebak-nebak, dan setiap proyek tetap terisolasi dengan bersih - menghindari masalah kontaminasi silang yang dialami oleh banyak alat agen.</p>
+<p>Alih-alih memperlakukan sesi pengkodean Anda sebagai obrolan sementara, Claude Code membaca dan menulis file nyata, menyimpan status proyek di disk, dan mencatat setiap langkah kerja agen. Sesi dapat dilanjutkan, diperiksa, atau diputar kembali tanpa menebak-nebak, dan setiap proyek tetap terisolasi dengan baik - menghindari masalah kontaminasi silang yang dialami oleh banyak alat agen.</p>
 <p>Dalam artikel ini, kita akan melihat lebih dekat pada arsitektur penyimpanan di balik stabilitas tersebut, dan mengapa arsitektur ini memainkan peran besar dalam membuat Claude Code terasa praktis untuk pengembangan sehari-hari.</p>
 <h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">Tantangan yang Dihadapi Setiap Asisten Pengkodean AI Lokal<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -42,13 +42,13 @@ origin: >-
       </svg>
     </button></h2><p>Sebelum menjelaskan bagaimana Claude Code melakukan pendekatan terhadap penyimpanan, mari kita lihat masalah umum yang sering dihadapi oleh alat pengkodean AI lokal. Hal ini muncul secara alami ketika asisten bekerja secara langsung pada sistem file Anda dan menyimpan status dari waktu ke waktu.</p>
 <p><strong>1. Data proyek tercampur di seluruh ruang kerja.</strong></p>
-<p>Sebagian besar pengembang beralih di antara beberapa repo sepanjang hari. Jika asisten membawa status dari satu proyek ke proyek lainnya, akan lebih sulit untuk memahami perilakunya dan lebih mudah baginya untuk membuat asumsi yang salah. Setiap proyek membutuhkan ruang yang bersih dan terisolasi untuk state dan riwayat.</p>
+<p>Sebagian besar pengembang beralih di antara beberapa repo sepanjang hari. Jika asisten membawa status dari satu proyek ke proyek lain, akan lebih sulit untuk memahami perilakunya dan lebih mudah baginya untuk membuat asumsi yang salah. Setiap proyek membutuhkan ruang yang bersih dan terisolasi untuk state dan riwayat.</p>
 <p><strong>2. Kerusakan dapat menyebabkan kehilangan data.</strong></p>
 <p>Selama sesi pengkodean, asisten menghasilkan aliran data yang berguna - pengeditan file, pemanggilan alat, langkah-langkah peralihan. Jika data ini tidak segera disimpan, crash atau restart paksa dapat menghapusnya. Sistem yang andal akan menulis status penting ke disk segera setelah dibuat, sehingga pekerjaan tidak akan hilang secara tiba-tiba.</p>
 <p><strong>3. Tidak selalu jelas apa yang sebenarnya dilakukan oleh agen.</strong></p>
 <p>Sesi yang biasa melibatkan banyak tindakan kecil. Tanpa catatan yang jelas dan teratur tentang tindakan-tindakan tersebut, sulit untuk menelusuri kembali bagaimana asisten sampai pada hasil tertentu atau menemukan langkah di mana terjadi kesalahan. Riwayat lengkap membuat debugging dan peninjauan menjadi lebih mudah dikelola.</p>
 <p><strong>4. Membatalkan kesalahan membutuhkan banyak usaha.</strong></p>
-<p>Terkadang asisten membuat perubahan yang tidak sesuai. Jika Anda tidak memiliki cara bawaan untuk mengembalikan perubahan tersebut, Anda akan mencari pengeditan secara manual di seluruh repo. Sistem seharusnya secara otomatis melacak apa yang berubah sehingga Anda dapat membatalkannya dengan bersih tanpa kerja ekstra.</p>
+<p>Terkadang asisten membuat perubahan yang tidak sesuai. Jika Anda tidak memiliki cara bawaan untuk mengembalikan perubahan tersebut, Anda akhirnya harus mencari pengeditan secara manual di seluruh repo. Sistem seharusnya secara otomatis melacak apa yang berubah sehingga Anda dapat membatalkannya dengan bersih tanpa kerja ekstra.</p>
 <p><strong>5. Proyek yang berbeda membutuhkan pengaturan yang berbeda.</strong></p>
 <p>Lingkungan lokal berbeda-beda. Beberapa proyek memerlukan izin, alat, atau aturan direktori tertentu; proyek lainnya memiliki skrip atau alur kerja khusus. Seorang asisten perlu menghormati perbedaan ini dan mengizinkan pengaturan per proyek sambil tetap menjaga perilaku intinya tetap konsisten.</p>
 <h2 id="The-Storage-Design-Principles-Behind-Claude-Code" class="common-anchor-header">Prinsip-prinsip Desain Penyimpanan di Balik Claude Code<button data-href="#The-Storage-Design-Principles-Behind-Claude-Code" class="anchor-icon" translate="no">
@@ -220,7 +220,7 @@ origin: >-
 }
 <button class="copy-code-btn"></button></code></pre>
 <p><strong>(3) Konfigurasi tingkat proyek</strong>: <code translate="no">project/.claude/settings.json</code></p>
-<p>Konfigurasi tingkat proyek hanya berlaku untuk satu proyek dan memiliki prioritas tertinggi. Di sinilah Anda mendefinisikan aturan yang harus selalu berlaku saat bekerja di repositori tersebut.</p>
+<p>Konfigurasi tingkat proyek hanya berlaku untuk satu proyek dan memiliki prioritas tertinggi. Di sinilah Anda mendefinisikan aturan yang harus selalu berlaku ketika bekerja di repositori tersebut.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;permissions&quot;</span>: {
     <span class="hljs-string">&quot;allow&quot;</span>: [<span class="hljs-string">&quot;Bash(pytest:*)&quot;</span>]

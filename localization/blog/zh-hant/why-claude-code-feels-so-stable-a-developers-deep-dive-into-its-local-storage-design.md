@@ -2,7 +2,7 @@
 id: >-
   why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 title: Claude 程式碼為何如此穩定？開發人員深入探討其本地儲存設計
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -18,7 +18,7 @@ origin: >-
 ---
 <p>Claude Code 最近無處不在。開發人員使用程式碼來加快功能開發速度、自動化工作流程，以及在實際專案中運作的代理原型。更令人驚訝的是，許多非程式設計師也加入其中 - 建立工具、佈線工作，幾乎不需要任何設定就能獲得有用的結果。AI 編碼工具能如此快速地普及到如此多不同的技術層級，實屬罕見。</p>
 <p>然而，真正突出的是它的<em>穩定性</em>。Claude Code 會記住各個階段所發生的事情，當機時也不會遺失進度，而且它的行為更像是本機開發工具，而非聊天介面。這種可靠性來自於它處理本機儲存的方式。</p>
-<p>Claude Code 不會將您的編碼階段視為臨時聊天，而是讀寫真實檔案、將專案狀態儲存在磁碟上，並記錄代理工作的每一步驟。每個專案都能保持乾淨隔離，避免許多代理程式工具會遇到的交叉污染問題。</p>
+<p>Claude Code 不會將您的編碼階段視為臨時聊天，而是讀寫真實檔案、將專案狀態儲存在磁碟上，並記錄代理工作的每一步驟。您可以毫無猜疑地恢復、檢查或回捲會話，而且每個專案都保持乾淨隔離 - 避免許多代理程式工具會遇到的交叉污染問題。</p>
 <p>在這篇文章中，我們將進一步了解這種穩定性背後的儲存架構，以及為什麼它在 Claude Code 的日常開發中扮演如此重要的角色。</p>
 <h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">每個本地 AI 編碼助理所面臨的挑戰<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -357,7 +357,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AI 產生的編輯不一定總是正確的，有時甚至會走向完全錯誤的方向。為了讓這些變更可以安全地進行實驗，Claude Code 使用一個簡單的快照系統，讓您可以撤銷編輯，而不需要翻查差異或手動清理檔案。</p>
+    </button></h2><p>AI 產生的編輯不一定總是正確的，有時甚至會走向完全錯誤的方向。為了讓這些變更可以安全地進行實驗，Claude Code 使用了一個簡單的快照系統，讓您可以撤銷編輯，而不需要翻查差異或手動清理檔案。</p>
 <p>這個想法很簡單：<strong>在 Claude Code 修改檔案之前，它會儲存原始內容的複本。</strong>如果編輯結果是錯誤的，系統可以立即還原先前的版本。</p>
 <h3 id="What-is-a-file-history-snapshot" class="common-anchor-header">什麼是<em>檔案歷史快照</em>？</h3><p><em>檔案歷史快照</em>是在檔案修改前建立的檢查點。它會記錄<strong>Claude</strong>即將編輯的每個檔案的原始內容。這些快照可作為撤消和回滾作業的資料來源。</p>
 <p>當使用者傳送可能會變更檔案的訊息時，<strong>Claude Code</strong>會為該訊息建立一個空快照。在編輯之前，系統會將每個目標檔案的原始內容備份到快照中，然後將編輯內容直接套用到磁碟上。如果使用者觸發<em>撤消</em>，<strong>Claude Code</strong>會還原已儲存的內容，並覆寫修改過的檔案。</p>
@@ -370,7 +370,7 @@ origin: >-
 <li><p><strong>還原原始內容Claude</strong>Code 從<code translate="no">trackedFileBackups</code> 讀取儲存的內容，並覆寫目前的檔案，完成撤消。</p></li>
 </ol>
 <h3 id="Why-Undo-Works-Snapshots-Save-the-Old-Version" class="common-anchor-header">為什麼撤消有效？快照儲存舊版本</h3><p>Claude Code 中的撤消之所以有效，是因為系統會在任何編輯發生之前儲存<em>原始</em>檔案內容。</p>
-<p>Claude Code 並非在事後才嘗試逆轉變更，而是採取更簡單的方法：它複製檔案在修改<em>前</em>的內容，並將該複本儲存在<code translate="no">trackedFileBackups</code> 中。當使用者觸發撤消時，系統會還原這個儲存的版本，並覆寫已編輯的檔案。</p>
+<p>Claude Code 並沒有嘗試在事後反復修改，而是採取了更簡單的方法：它複製修改<em>前</em>的檔案，並將該副本存儲在<code translate="no">trackedFileBackups</code> 中。當使用者觸發撤消時，系統會還原這個儲存的版本，並覆寫已編輯的檔案。</p>
 <p>下圖逐步顯示此流程：</p>
 <pre><code translate="no">┌─────────────────────────┐
 │    before edit,  app.py │

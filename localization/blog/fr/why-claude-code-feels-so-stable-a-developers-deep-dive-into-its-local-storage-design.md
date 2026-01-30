@@ -4,7 +4,7 @@ id: >-
 title: >-
   Pourquoi le code Claude semble si stable : Plongée en profondeur d'un
   développeur dans la conception de son stockage local
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -22,7 +22,7 @@ origin: >-
   https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 ---
 <p>Le code Claude est omniprésent ces derniers temps. Les développeurs l'utilisent pour livrer des fonctionnalités plus rapidement, automatiser les flux de travail et prototyper des agents qui fonctionnent réellement dans des projets réels. Ce qui est encore plus surprenant, c'est le nombre de non-codeurs qui s'y sont mis aussi - construisant des outils, câblant des tâches, et obtenant des résultats utiles avec presque aucune configuration. Il est rare de voir un outil de codage de l'IA se répandre aussi rapidement à travers autant de niveaux de compétences différents.</p>
-<p>Ce qui ressort vraiment, cependant, c'est la <em>stabilité de</em> l'outil. Claude Code se souvient de ce qui s'est passé d'une session à l'autre, survit aux pannes sans perdre de progrès et se comporte plus comme un outil de développement local que comme une interface de chat. Cette fiabilité vient de la façon dont il gère le stockage local.</p>
+<p>Ce qui ressort vraiment, cependant, c'est la <em>stabilité de</em> l'outil. Claude Code se souvient de ce qui s'est passé d'une session à l'autre, survit aux plantages sans perdre de progrès et se comporte plus comme un outil de développement local que comme une interface de chat. Cette fiabilité vient de la façon dont il gère le stockage local.</p>
 <p>Au lieu de traiter votre session de codage comme un chat temporaire, Claude Code lit et écrit de vrais fichiers, stocke l'état du projet sur le disque et enregistre chaque étape du travail de l'agent. Les sessions peuvent être reprises, inspectées, ou annulées sans avoir à se poser de questions, et chaque projet reste proprement isolé - évitant ainsi les problèmes de contamination croisée que rencontrent beaucoup d'outils d'agent.</p>
 <p>Dans cet article, nous allons examiner de plus près l'architecture de stockage qui sous-tend cette stabilité, et pourquoi elle joue un rôle si important dans le fait que Claude Code semble pratique pour le développement quotidien.</p>
 <h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">Défis auxquels chaque assistant de codage d'IA locale est confronté<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
@@ -423,7 +423,7 @@ origin: >-
 <tr><th>Commande / Action</th><th>Description de la commande</th></tr>
 </thead>
 <tbody>
-<tr><td>Esc + Esc</td><td>Annule la dernière série d'éditions de fichiers (le plus souvent utilisé)</td></tr>
+<tr><td>Esc + Esc</td><td>Annule la dernière série d'éditions de fichiers (la plus couramment utilisée)</td></tr>
 <tr><td>/rewind</td><td>Revenir à un point de contrôle spécifié précédemment (snapshot)</td></tr>
 <tr><td>/diff</td><td>Affiche les différences entre le fichier actuel et la sauvegarde instantanée.</td></tr>
 </tbody>
@@ -494,7 +494,7 @@ origin: >-
 <p>Cela inclut l'exécutable en ligne de commande <code translate="no">claude</code> et le répertoire <code translate="no">node_modules/</code> qui contient ses dépendances d'exécution. En gardant ces composants locaux, Claude Code peut fonctionner de manière indépendante, sans dépendre de services externes ou d'installations sur l'ensemble du système.</p>
 <p><strong>（5）Additional Supporting Directories</strong></p>
 <ul>
-<li><p><strong>shell-snapshots/ :</strong> Stocke les instantanés de l'état de la session shell (comme le répertoire courant et les variables d'environnement), ce qui permet de revenir en arrière dans les opérations shell.</p></li>
+<li><p><strong>shell-snapshots/ :</strong> Stocke des instantanés de l'état de la session shell (comme le répertoire courant et les variables d'environnement), ce qui permet de revenir en arrière dans les opérations shell.</p></li>
 <li><p><strong>plans/ :</strong> Stocke les plans d'exécution générés par le mode Plan (par exemple, la décomposition étape par étape des tâches de programmation à plusieurs étapes).</p></li>
 <li><p><strong>statsig/ :</strong> Met en cache les configurations des indicateurs de fonctionnalités (par exemple, si de nouvelles fonctionnalités sont activées) afin de réduire le nombre de requêtes répétées.</p></li>
 <li><p><strong>telemetry/ :</strong> Stocke des données télémétriques anonymes (telles que la fréquence d'utilisation des fonctionnalités) afin d'optimiser le produit.</p></li>

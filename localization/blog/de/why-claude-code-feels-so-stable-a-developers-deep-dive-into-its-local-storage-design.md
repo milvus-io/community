@@ -2,9 +2,9 @@
 id: >-
   why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 title: >-
-  Warum sich Claude Code so stabil anfühlt: Das Design der lokalen Speicherung
+  Warum sich Claude-Code so stabil anfühlt: Das Design des lokalen Speichers
   eines Entwicklers
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -42,11 +42,11 @@ origin: >-
       </svg>
     </button></h2><p>Bevor wir erläutern, wie Claude Code an die Speicherung herangeht, wollen wir einen Blick auf die üblichen Probleme werfen, mit denen lokale KI-Codierungswerkzeuge zu kämpfen haben. Diese treten natürlich auf, wenn ein Assistent direkt auf Ihrem Dateisystem arbeitet und den Status über die Zeit behält.</p>
 <p><strong>1. Projektdaten werden in verschiedenen Arbeitsbereichen vermischt.</strong></p>
-<p>Die meisten Entwickler wechseln im Laufe des Tages zwischen mehreren Repos hin und her. Wenn ein Assistent den Status von einem Projekt zum anderen überträgt, wird es schwieriger, sein Verhalten zu verstehen, und es ist leichter, falsche Annahmen zu treffen. Jedes Projekt braucht einen eigenen, sauberen und isolierten Bereich für Status und Historie.</p>
+<p>Die meisten Entwickler wechseln im Laufe des Tages zwischen mehreren Repos hin und her. Wenn ein Assistent den Status von einem Projekt zum anderen überträgt, wird es schwieriger, sein Verhalten zu verstehen, und es ist leichter, falsche Annahmen zu treffen. Jedes Projekt braucht einen eigenen, sauberen, isolierten Bereich für Status und Historie.</p>
 <p><strong>2. Abstürze können zu Datenverlusten führen.</strong></p>
 <p>Während einer Coding-Sitzung produziert ein Assistent einen stetigen Strom nützlicher Daten - Dateibearbeitungen, Tool-Aufrufe, Zwischenschritte. Wenn diese Daten nicht sofort gespeichert werden, können sie bei einem Absturz oder erzwungenen Neustart verloren gehen. Ein zuverlässiges System schreibt wichtige Daten auf die Festplatte, sobald sie erstellt wurden, damit die Arbeit nicht unerwartet verloren geht.</p>
 <p><strong>3. Es ist nicht immer klar, was der Agent tatsächlich getan hat.</strong></p>
-<p>Eine typische Sitzung umfasst viele kleine Aktionen. Ohne eine klare, geordnete Aufzeichnung dieser Aktionen ist es schwierig, nachzuvollziehen, wie der Assistent zu einem bestimmten Ergebnis gekommen ist, oder den Schritt zu finden, bei dem etwas schief gelaufen ist. Ein vollständiger Verlauf macht die Fehlersuche und -behebung wesentlich einfacher.</p>
+<p>Eine typische Sitzung umfasst viele kleine Aktionen. Ohne eine klare, geordnete Aufzeichnung dieser Aktionen ist es schwierig, nachzuvollziehen, wie der Assistent zu einem bestimmten Ergebnis gekommen ist, oder den Schritt zu finden, bei dem etwas schief gelaufen ist. Eine vollständige Historie macht die Fehlersuche und -behebung wesentlich einfacher.</p>
 <p><strong>4. Das Rückgängigmachen von Fehlern ist zu aufwändig.</strong></p>
 <p>Manchmal nimmt der Assistent Änderungen vor, die nicht ganz funktionieren. Wenn Sie keine eingebaute Möglichkeit haben, diese Änderungen rückgängig zu machen, müssen Sie am Ende manuell nach Änderungen im Projektarchiv suchen. Das System sollte automatisch verfolgen, was sich geändert hat, so dass Sie es sauber und ohne zusätzliche Arbeit rückgängig machen können.</p>
 <p><strong>5. Verschiedene Projekte brauchen verschiedene Einstellungen.</strong></p>
@@ -228,7 +228,7 @@ origin: >-
 }
 <button class="copy-code-btn"></button></code></pre>
 <p>Nachdem die Konfigurationsebenen definiert sind, stellt sich nun die Frage <strong>, wie Claude Code die Konfiguration und die Berechtigungen zur Laufzeit auflöst.</strong></p>
-<p><strong>Claude Code</strong> wendet die Konfiguration in drei Ebenen an: Zunächst werden globale Standardeinstellungen verwendet, dann werden maschinenspezifische Überschreibungen angewendet und schließlich werden projektspezifische Regeln angewendet. Wenn dieselbe Einstellung an mehreren Stellen vorkommt, hat die spezifischste Konfiguration Vorrang.</p>
+<p><strong>Claude Code</strong> wendet die Konfiguration in drei Ebenen an: Zunächst werden globale Standardeinstellungen verwendet, dann werden maschinenspezifische Überschreibungen angewendet und schließlich werden projektspezifische Regeln angewendet. Wenn die gleiche Einstellung an mehreren Stellen vorkommt, hat die spezifischste Konfiguration Vorrang.</p>
 <p>Die Berechtigungen folgen einer festen Bewertungsreihenfolge:</p>
 <ol>
 <li><p><strong>verweigern</strong> - sperrt immer</p></li>
@@ -294,7 +294,7 @@ origin: >-
 <li><p><strong>Schnappschüsse der Dateigeschichte</strong> sind Sicherheitskontrollpunkte, die erstellt werden, bevor Claude eine Datei ändert. Indem der ursprüngliche Dateistatus zuerst gespeichert wird, ermöglicht Claude Code es, Änderungen rückgängig zu machen, falls etwas schief geht.</p></li>
 <li><p><strong>Zusammenfassungen</strong> bieten einen knappen Überblick über die Sitzung und sind mit dem Endergebnis verknüpft. Sie erleichtern das Verständnis einer Sitzung, ohne dass jeder Schritt noch einmal durchgespielt werden muss.</p></li>
 </ul>
-<p>Zusammen zeichnen diese Nachrichtentypen nicht nur das Gespräch auf, sondern die gesamte Abfolge von Aktionen und Auswirkungen, die während einer Sitzung auftreten.</p>
+<p>Zusammen zeichnen diese Nachrichtentypen nicht nur das Gespräch auf, sondern die gesamte Abfolge der Aktionen und Auswirkungen, die während einer Sitzung auftreten.</p>
 <p>Um dies zu verdeutlichen, sehen wir uns spezifische Beispiele für Benutzernachrichten und Assistentenmeldungen an.</p>
 <p><strong>(1) Beispiel für Benutzernachrichten:</strong></p>
 <pre><code translate="no">{

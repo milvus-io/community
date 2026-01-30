@@ -4,7 +4,7 @@ id: >-
 title: >-
   Por qué el código de Claude es tan estable: Una inmersión profunda de un
   desarrollador en su diseño de almacenamiento local
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -22,9 +22,9 @@ origin: >-
   https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 ---
 <p>Últimamente, el código Claude está en todas partes. Los desarrolladores lo utilizan para acelerar el lanzamiento de funcionalidades, automatizar flujos de trabajo y crear prototipos de agentes que funcionan en proyectos reales. Lo que es aún más sorprendente es la cantidad de personas que no son programadores que también se han lanzado a crear herramientas, cablear tareas y obtener resultados útiles sin apenas configuración. Es raro ver que una herramienta de programación de IA se extienda tan rápidamente a tantos niveles de conocimientos.</p>
-<p>Pero lo que realmente destaca es su <em>estabilidad</em>. Claude Code recuerda lo que ha sucedido en las distintas sesiones, sobrevive a los bloqueos sin perder el progreso y se comporta más como una herramienta de desarrollo local que como una interfaz de chat. Esta fiabilidad proviene de cómo gestiona el almacenamiento local.</p>
+<p>Pero lo que realmente destaca es su <em>estabilidad</em>. Claude Code recuerda lo que ha ocurrido en las distintas sesiones, sobrevive a los bloqueos sin perder el progreso y se comporta más como una herramienta de desarrollo local que como una interfaz de chat. Esta fiabilidad proviene de cómo gestiona el almacenamiento local.</p>
 <p>En lugar de tratar su sesión de codificación como un chat temporal, Claude Code lee y escribe archivos reales, almacena el estado del proyecto en el disco y registra cada paso del trabajo del agente. Las sesiones pueden reanudarse, inspeccionarse o revertirse sin conjeturas, y cada proyecto permanece limpiamente aislado, evitando los problemas de contaminación cruzada con los que tropiezan muchas herramientas de agentes.</p>
-<p>En este post, vamos a echar un vistazo más de cerca a la arquitectura de almacenamiento detrás de esa estabilidad, y por qué juega un papel tan importante en hacer Claude Code sentir práctico para el desarrollo de todos los días.</p>
+<p>En este post, vamos a echar un vistazo más de cerca a la arquitectura de almacenamiento detrás de esa estabilidad, y por qué juega un papel tan importante en hacer Claude Code sentir práctico para el desarrollo diario.</p>
 <h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">Desafíos a los que se enfrenta todo asistente de codificación de IA local<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -44,7 +44,7 @@ origin: >-
 <p><strong>1. Los datos del proyecto se mezclan a través de los espacios de trabajo.</strong></p>
 <p>La mayoría de los desarrolladores cambian entre varios repos a lo largo del día. Si un asistente lleva el estado de un proyecto a otro, se hace más difícil entender su comportamiento y más fácil para él hacer suposiciones incorrectas. Cada proyecto necesita su propio espacio limpio y aislado para el estado y el historial.</p>
 <p><strong>2. Las caídas pueden provocar pérdidas de datos.</strong></p>
-<p>Durante una sesión de codificación, un asistente produce un flujo constante de datos útiles: ediciones de archivos, llamadas a herramientas, pasos intermedios. Si estos datos no se guardan inmediatamente, un fallo o un reinicio forzado pueden eliminarlos. Un sistema fiable escribe el estado importante en el disco tan pronto como se crea para que el trabajo no se pierda inesperadamente.</p>
+<p>Durante una sesión de codificación, un asistente produce un flujo constante de datos útiles -ediciones de archivos, llamadas a herramientas, pasos intermedios-. Si estos datos no se guardan inmediatamente, un fallo o un reinicio forzado pueden eliminarlos. Un sistema fiable escribe el estado importante en el disco tan pronto como se crea para que el trabajo no se pierda inesperadamente.</p>
 <p><strong>3. No siempre está claro qué ha hecho realmente el agente.</strong></p>
 <p>Una sesión típica implica muchas pequeñas acciones. Sin un registro claro y ordenado de esas acciones, es difícil rastrear cómo llegó el asistente a un determinado resultado o localizar el paso en el que algo salió mal. Un historial completo hace que la depuración y la revisión sean mucho más manejables.</p>
 <p><strong>4. Deshacer errores requiere demasiado esfuerzo.</strong></p>
@@ -178,7 +178,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El sistema de configuración de Claude Code está diseñado en torno a una idea simple: mantener el comportamiento predeterminado consistente en todas las máquinas, pero permitiendo que los entornos y proyectos individuales personalicen lo que necesiten. Para que esto funcione, Claude Code utiliza un modelo de configuración de tres capas. Cuando la misma configuración aparece en más de un lugar, siempre gana la capa más específica.</p>
+    </button></h2><p>El sistema de configuración de Claude Code está diseñado en torno a una idea simple: mantener el comportamiento por defecto consistente en todas las máquinas, pero permitiendo que los entornos y proyectos individuales personalicen lo que necesiten. Para que esto funcione, Claude Code utiliza un modelo de configuración de tres capas. Cuando la misma configuración aparece en más de un lugar, siempre gana la capa más específica.</p>
 <h3 id="The-three-configuration-levels" class="common-anchor-header">Los tres niveles de configuración</h3><p>Claude Code carga la configuración en el siguiente orden, de menor a mayor prioridad:</p>
 <pre><code translate="no">┌─────────────────────────────────────────┐
 │    <span class="hljs-title class_">Project</span>-level configuration          │  <span class="hljs-title class_">Highest</span> priority
@@ -192,7 +192,7 @@ origin: >-
 └─────────────────────────────────────────┘
 <button class="copy-code-btn"></button></code></pre>
 <p>Puede pensar en esto como si comenzara con valores predeterminados globales, luego aplicara ajustes específicos de la máquina y, finalmente, aplicara reglas específicas del proyecto.</p>
-<p>A continuación, veremos cada nivel de configuración en detalle.</p>
+<p>A continuación veremos cada nivel de configuración en detalle.</p>
 <p><strong>(1) Configuración global</strong>: <code translate="no">~/.claude/settings.json</code></p>
 <p>La configuración global define el comportamiento por defecto para Claude Code en todos los proyectos. Aquí es donde se establecen los permisos básicos, se habilitan los plugins y se configura el comportamiento de limpieza.</p>
 <pre><code translate="no">{
@@ -261,8 +261,8 @@ origin: >-
 <p>Por ejemplo:</p>
 <p><code translate="no">/Users/bill/My Project → -Users-bill-My-Project</code></p>
 <p>Este enfoque garantiza que los datos de sesión de diferentes proyectos nunca se mezclen y puedan gestionarse o eliminarse por proyecto.</p>
-<h3 id="Why-sessions-are-stored-in-JSONL-format" class="common-anchor-header">Por qué las sesiones se almacenan en formato JSONL</h3><p><strong>Claude Code</strong> almacena los datos de sesión utilizando JSONL (JSON Lines) en lugar de JSON estándar.</p>
-<p>En un archivo JSON tradicional, todos los mensajes están agrupados dentro de una gran estructura, lo que significa que todo el archivo tiene que ser leído y reescrito cada vez que cambia. En cambio, JSONL almacena cada mensaje como su propia línea en el archivo. Una línea equivale a un mensaje, sin envoltorio exterior.</p>
+<h3 id="Why-sessions-are-stored-in-JSONL-format" class="common-anchor-header">Por qué las sesiones se almacenan en formato JSONL</h3><p><strong>Claude Code</strong> almacena los datos de sesión utilizando JSONL (Líneas JSON) en lugar de JSON estándar.</p>
+<p>En un archivo JSON tradicional, todos los mensajes están agrupados dentro de una gran estructura, lo que significa que todo el archivo tiene que ser leído y reescrito cada vez que cambia. En cambio, JSONL almacena cada mensaje como su propia línea en el archivo. Una línea equivale a un mensaje, sin envoltorio externo.</p>
 <table>
 <thead>
 <tr><th>Aspecto</th><th>JSON estándar</th><th>JSONL (Líneas JSON)</th></tr>
@@ -474,10 +474,10 @@ origin: >-
 <p><strong>(2) skills/ - Donde se almacenan y aplican las habilidades</strong></p>
 <p>En Claude Code, una habilidad es una pequeña capacidad reutilizable que ayuda a Claude a realizar una tarea específica, como trabajar con PDFs, editar documentos o seguir un flujo de trabajo de codificación.</p>
 <p>No todas las habilidades están disponibles en todas partes. Algunas se aplican globalmente, mientras que otras están limitadas a un único proyecto o son proporcionadas por un plugin. Claude Code almacena las habilidades en diferentes ubicaciones para controlar dónde puede utilizarse cada habilidad.</p>
-<p>La siguiente jerarquía muestra cómo las habilidades están distribuidas por niveles, desde las habilidades disponibles globalmente hasta las específicas de un proyecto y las proporcionadas por un plugin.</p>
+<p>La jerarquía que se muestra a continuación indica cómo se clasifican las habilidades por ámbito, desde las disponibles globalmente hasta las específicas de un proyecto y las proporcionadas por un plugin.</p>
 <table>
 <thead>
-<tr><th>Nivel</th><th>Ubicación</th><th>Descripción</th></tr>
+<tr><th>Nivel</th><th>Ubicación de almacenamiento</th><th>Descripción</th></tr>
 </thead>
 <tbody>
 <tr><td>Usuario</td><td>~/.claude/skills/</td><td>Disponible globalmente, accesible por todos los proyectos</td></tr>
@@ -487,7 +487,7 @@ origin: >-
 </table>
 <p><strong>(3) todos/ - Almacenamiento de listas de tareas</strong></p>
 <p>El directorio <code translate="no">todos/</code> almacena listas de tareas que Claude crea para realizar un seguimiento del trabajo durante una conversación, como pasos a completar, elementos en curso y tareas completadas.</p>
-<p>Las listas de tareas se guardan como archivos JSON en<code translate="no">~/.claude/todos/{session-id}-*.json</code>. Cada nombre de archivo incluye el identificador de sesión, que vincula la lista de tareas a una conversación específica.</p>
+<p>Las listas de tareas se guardan como archivos JSON en<code translate="no">~/.claude/todos/{session-id}-*.json</code>. Cada nombre de archivo incluye el ID de sesión, que vincula la lista de tareas a una conversación específica.</p>
 <p>El contenido de estos archivos procede de la herramienta <code translate="no">TodoWrite</code> e incluye información básica sobre la tarea, como su descripción, estado actual, prioridad y metadatos relacionados.</p>
 <p><strong>(4) local/ - Tiempo de ejecución local y herramientas</strong></p>
 <p>El directorio <code translate="no">local/</code> contiene los archivos centrales que Claude Code necesita para ejecutarse en su máquina.</p>
@@ -515,7 +515,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Después de profundizar en cómo Claude Code almacena y gestiona todo localmente, la imagen se vuelve bastante clara: la herramienta se siente estable porque la base es sólida. Nada del otro mundo, sólo ingeniería bien pensada. Cada proyecto tiene su propio espacio, cada acción se anota y se hace una copia de seguridad de las ediciones de los archivos antes de que nada cambie. Es el tipo de diseño que hace tranquilamente su trabajo y te permite centrarte en el tuyo.</p>
-<p>Lo que más me gusta es que aquí no hay nada místico. Claude Code funciona bien porque lo básico está bien hecho. Si alguna vez ha tratado de construir un agente que toca archivos reales, usted sabe lo fácil que es que las cosas se desmoronen - el estado se mezcla, los accidentes borran el progreso, y deshacer se convierte en conjeturas. Claude Code evita todo eso con un modelo de almacenamiento que es simple, consistente y difícil de romper.</p>
-<p>Para los equipos que crean agentes de IA locales o locales, especialmente en entornos seguros, este enfoque muestra cómo el almacenamiento y la persistencia sólidos hacen que las herramientas de IA sean fiables y prácticas para el desarrollo diario.</p>
-<p>Si está diseñando agentes de IA locales u on-prem y desea discutir la arquitectura de almacenamiento, el diseño de sesiones o la reversión segura con más detalle, no dude en unirse a nuestro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal de Slack</a>. También puede reservar una sesión individual de 20 minutos a través de <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> para obtener orientación personalizada.</p>
+    </button></h2><p>Después de escarbar en cómo Claude Code almacena y gestiona todo localmente, la imagen se vuelve bastante clara: la herramienta se siente estable porque la base es sólida. Nada del otro mundo, sólo ingeniería bien pensada. Cada proyecto tiene su propio espacio, cada acción se anota y se hace una copia de seguridad de las ediciones de los archivos antes de que nada cambie. Es el tipo de diseño que hace tranquilamente su trabajo y te permite centrarte en el tuyo.</p>
+<p>Lo que más me gusta es que aquí no hay nada místico. Claude Code funciona bien porque lo básico está bien hecho. Si alguna vez ha tratado de construir un agente que toca archivos reales, usted sabe lo fácil que es que las cosas se caigan a pedazos - el estado se mezcla, los accidentes borran el progreso, y deshacer se convierte en una conjetura. Claude Code evita todo eso con un modelo de almacenamiento que es simple, consistente y difícil de romper.</p>
+<p>Para los equipos que crean agentes de IA locales o locales, especialmente en entornos seguros, este enfoque muestra cómo un almacenamiento y una persistencia sólidos hacen que las herramientas de IA sean fiables y prácticas para el desarrollo diario.</p>
+<p>Si está diseñando agentes de IA locales u on-prem y desea hablar sobre la arquitectura de almacenamiento, el diseño de sesiones o la reversión segura con más detalle, no dude en unirse a nuestro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal de Slack</a>. También puede reservar una sesión individual de 20 minutos a través de <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> para obtener orientación personalizada.</p>

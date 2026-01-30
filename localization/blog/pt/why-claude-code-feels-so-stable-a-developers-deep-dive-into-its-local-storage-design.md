@@ -4,7 +4,7 @@ id: >-
 title: >-
   Por que o código do Claude parece tão estável: Um mergulho profundo de um
   desenvolvedor em seu design de armazenamento local
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
@@ -44,7 +44,7 @@ origin: >-
 <p><strong>1. Os dados do projeto são misturados entre os espaços de trabalho.</strong></p>
 <p>A maioria dos programadores alterna entre vários repositórios ao longo do dia. Se um assistente transporta o estado de um projeto para outro, torna-se mais difícil compreender o seu comportamento e mais fácil para ele fazer suposições incorrectas. Cada projeto precisa do seu próprio espaço limpo e isolado para o estado e o histórico.</p>
 <p><strong>2. Os crashes podem causar perda de dados.</strong></p>
-<p>Durante uma sessão de programação, um assistente produz um fluxo constante de dados úteis - edições de ficheiros, chamadas de ferramentas, passos intermédios. Se estes dados não forem guardados de imediato, uma falha ou reinício forçado pode eliminá-los. Um sistema fiável grava o estado importante no disco assim que é criado, para que o trabalho não se perca inesperadamente.</p>
+<p>Durante uma sessão de programação, um assistente produz um fluxo constante de dados úteis - edições de ficheiros, chamadas de ferramentas, passos intermédios. Se estes dados não forem guardados de imediato, uma falha ou reinício forçado pode eliminá-los. Um sistema fiável grava o estado importante no disco assim que é criado para que o trabalho não se perca inesperadamente.</p>
 <p><strong>3. Nem sempre é claro o que o agente realmente fez.</strong></p>
 <p>Uma sessão típica envolve muitas acções pequenas. Sem um registo claro e ordenado dessas acções, é difícil reconstituir a forma como o assistente chegou a um determinado resultado ou localizar o passo em que algo correu mal. Um histórico completo torna a depuração e a revisão muito mais fáceis de gerir.</p>
 <p><strong>4. Desfazer os erros exige demasiado esforço.</strong></p>
@@ -178,7 +178,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O sistema de configuração do Claude Code foi projetado em torno de uma idéia simples: manter o comportamento padrão consistente entre as máquinas, mas ainda permitir que ambientes e projetos individuais personalizem o que precisam. Para que isso funcione, o Claude Code usa um modelo de configuração de três camadas. Quando a mesma configuração aparece em mais de um lugar, a camada mais específica sempre vence.</p>
+    </button></h2><p>O sistema de configuração do Claude Code é projetado em torno de uma idéia simples: manter o comportamento padrão consistente entre as máquinas, mas ainda permitir que ambientes e projetos individuais personalizem o que precisam. Para que isso funcione, o Claude Code usa um modelo de configuração de três camadas. Quando a mesma configuração aparece em mais de um lugar, a camada mais específica sempre vence.</p>
 <h3 id="The-three-configuration-levels" class="common-anchor-header">Os três níveis de configuração</h3><p>O Claude Code carrega a configuração na seguinte ordem, da prioridade mais baixa para a mais alta:</p>
 <pre><code translate="no">┌─────────────────────────────────────────┐
 │    <span class="hljs-title class_">Project</span>-level configuration          │  <span class="hljs-title class_">Highest</span> priority
@@ -260,7 +260,7 @@ origin: >-
 <p>Para criar um nome de diretório válido, caracteres especiais como <code translate="no">/</code>, espaços e <code translate="no">~</code> são substituídos por <code translate="no">-</code>.</p>
 <p>Por exemplo:</p>
 <p><code translate="no">/Users/bill/My Project → -Users-bill-My-Project</code></p>
-<p>Esta abordagem garante que os dados de sessão de diferentes projectos nunca se misturam e podem ser geridos ou removidos por projeto.</p>
+<p>Esta abordagem garante que os dados da sessão de diferentes projectos nunca se misturam e podem ser geridos ou removidos por projeto.</p>
 <h3 id="Why-sessions-are-stored-in-JSONL-format" class="common-anchor-header">Por que as sessões são armazenadas no formato JSONL</h3><p><strong>O Claude Code</strong> armazena dados de sessão usando JSONL (JSON Lines) em vez de JSON padrão.</p>
 <p>Em um arquivo JSON tradicional, todas as mensagens são agrupadas em uma estrutura grande, o que significa que o arquivo inteiro precisa ser lido e reescrito sempre que for alterado. Em contraste, o JSONL armazena cada mensagem como a sua própria linha no ficheiro. Uma linha equivale a uma mensagem, sem qualquer invólucro exterior.</p>
 <table>
@@ -346,7 +346,7 @@ origin: >-
 <button class="copy-code-btn"></button></code></pre>
 <h3 id="How-Session-Messages-Are-Linked" class="common-anchor-header">Como as mensagens de sessão são ligadas</h3><p>O Claude Code não armazena mensagens de sessão como entradas isoladas. Em vez disso, associa-as para formar uma cadeia clara de eventos. Cada mensagem inclui um identificador único (<code translate="no">uuid</code>) e uma referência à mensagem que veio antes dela (<code translate="no">parentUuid</code>). Isto torna possível ver não só o que aconteceu, mas porque é que aconteceu.</p>
 <p>Uma sessão começa com uma mensagem do utilizador, que inicia a cadeia. Cada resposta do Claude aponta para a mensagem que a originou. As chamadas de ferramentas e os seus resultados são adicionados da mesma forma, com cada passo ligado ao anterior. Quando a sessão termina, um resumo é anexado à mensagem final.</p>
-<p>Como cada passo está ligado, o Claude Code pode reproduzir a sequência completa de acções e compreender como foi produzido um resultado, facilitando muito a depuração e a análise.</p>
+<p>Como cada etapa está conectada, o Claude Code pode reproduzir a sequência completa de ações e entender como um resultado foi produzido, facilitando muito a depuração e a análise.</p>
 <h2 id="Making-Code-Changes-Easy-to-Undo-with-File-Snapshots" class="common-anchor-header">Tornar as alterações de código fáceis de desfazer com instantâneos de ficheiros<button data-href="#Making-Code-Changes-Easy-to-Undo-with-File-Snapshots" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
