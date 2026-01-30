@@ -2,7 +2,7 @@
 id: why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 title: >
  Why Claude Code Feels So Stable: A Developer’s Deep Dive into Its Local Storage Design
-author: Bill chen
+author: Bill Chen
 date: 2026-01-30
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
 tag: Engineering
