@@ -123,15 +123,20 @@ We'll start with a simple single-agent example to show the full workflow. Then w
 
 ```
 
-**wget** **<https://github.com/Milvus-io/Milvus/releases/download/v2.****5****.****12****/Milvus-standalone-docker-compose.yml> -O docker-compose.yml**
+**wget** **
+<https://github.com/Milvus-io/Milvus/releases/download/v2.****5****.****12****/Milvus-standalone-docker-compose.yml> -O docker-compose.yml**
 
 ```
 
 **(2) Start the Milvus Service**
 
-```docker-compose up -d```
+```
+docker-compose up -d
+```
 
-```docker-compose ps -a```
+```
+docker-compose ps -a
+```
 
 ![](https://assets.zilliz.com/_80575354d3.png)
 
