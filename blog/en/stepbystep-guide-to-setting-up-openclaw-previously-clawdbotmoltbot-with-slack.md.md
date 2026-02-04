@@ -63,7 +63,7 @@ curl -fsSL https://molt.bot/install.sh | bash
 
   
 When prompted, select **Yes** to continue.
-![](Ihttps://assets.zilliz.com/ST_4_8004e87516.png)
+![](https://assets.zilliz.com/ST_4_8004e87516.png)
 
   
 Then, choose **QuickStart** mode.
@@ -75,7 +75,7 @@ Then, choose **QuickStart** mode.
 The installer will ask you to pick a model provider. We're using Anthropic with the Claude Code CLI for authentication.
 
 1.  Select **Anthropic** as the provider
-![](Ihttps://assets.zilliz.com/ST_6_a593124f6c.png)
+![](https://assets.zilliz.com/ST_6_a593124f6c.png)
 
 
 2.  Complete the verification in your browser when prompted.
@@ -102,7 +102,7 @@ Now you'll need to create a Slack app and grab two tokens. Here's how:
 **3.1 Create a Slack App**
 
 Go to the [Slack API website](https://api.slack.com/apps?new_app=1) and create a new app from scratch.
-![](Ihttps://assets.zilliz.com/ST_12_21987505d5.png)
+![](https://assets.zilliz.com/ST_12_21987505d5.png)
 
   
 Give it a name and select the workspace you want to use.
@@ -137,7 +137,7 @@ Then choose which events your bot should subscribe to.
 **3.5 Install the App**
 
 Click **Install App** in the sidebar, then **Request to Install** (or install directly if you're a workspace admin).
-![](Ihttps://assets.zilliz.com/ST_19_a5e76d0d33.png)
+![](https://assets.zilliz.com/ST_19_a5e76d0d33.png)
 
   
 Once approved, you'll see your **Bot User OAuth Token** (starts with `xoxb-`). Copy this as well.
