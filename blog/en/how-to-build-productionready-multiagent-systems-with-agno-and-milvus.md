@@ -122,10 +122,8 @@ We'll start with a simple single-agent example to show the full workflow. Then w
 **(1) Download the Deployment Files**
 
 ```
-
 **wget** **
 <https://github.com/Milvus-io/Milvus/releases/download/v2.****5****.****12****/Milvus-standalone-docker-compose.yml> -O docker-compose.yml**
-
 ```
 
 **(2) Start the Milvus Service**
@@ -143,113 +141,61 @@ docker-compose ps -a
 ### 2. Core Implementation
 
 ```
-
 import os
-
 from pathlib import Path
-
 from agno.os import AgentOS
-
 from agno.agent import Agent
-
 from agno.models.openai import OpenAIChat
-
 from agno.knowledge.knowledge import Knowledge
-
 from agno.vectordb.milvus import Milvus
-
 from agno.knowledge.embedder.openai import OpenAIEmbedder
-
 from agno.db.sqlite import SqliteDb
-
 os.environ\["OPENAI_API_KEY"\] = "you-key-here"
-
 data_dir = Path("./data")
-
 data_dir.mkdir(exist_ok=True)
-
 knowledge_base = Knowledge(
-
     contents_db=SqliteDb(
-
         db_file=str(data_dir / "knowledge_contents.db"),
-
         knowledge_table="knowledge_contents",
-
     ),
-
     vector_db=Milvus(
-
         collection="agno_knowledge",
-
         uri="http://192.168.x.x:19530",
-
         embedder=OpenAIEmbedder(id="text-embedding-3-small"),
-
     ),
-
 )
-
-*# 创建Agent*
-
+*# Create Agent*
 agent = Agent(
-
     name="Knowledge Assistant",
-
     model=OpenAIChat(id="gpt-4o"),
-
     instructions=\[
-
         "You are a knowledge base assistant that helps users query and manage knowledge base content.",
-
         "Answer questions in English.",
-
         "Always search the knowledge base before answering questions.",
-
         "If the knowledge base is empty, kindly prompt the user to upload documents."
-
     \],
-
     knowledge=knowledge_base,
-
     search_knowledge=True,
-
     db=SqliteDb(
-
         db_file=str(data_dir / "agent.db"),
-
         session_table="agent_sessions",
-
     ),
-
     add_history_to_context=True,
-
     markdown=True,
-
 )
-
 agent_os = AgentOS(agents=\[agent\])
-
 app = agent_os.get_app()
-
 if __name__ == "__main__":
-
     print("\n🚀 Starting service...")
-
     print("📍 http://localhost:7777")
-
     print("💡 Please upload documents to the knowledge base in the UI\n")
-
     agent_os.serve(app="knowledge_agent:app", port=7777, reload=False)
-
 ```
 
 **(1) Running the Agent**
 
 ```
-
 **python** **knowledge_agent.py**
-
 ```
 
 ![](https://assets.zilliz.com/1_df885706cf.png)
@@ -306,45 +252,25 @@ This is why retrieval accuracy matters even more in multi-agent systems. A bad r
 Here's an example Team setup:
 
 ```
-
 from agno.team import Team
-
 analyst = Agent(
-
     name="Data Analyst",
-
     model=OpenAIChat(id="gpt-4o"),
-
     knowledge=knowledge_base,
-
     search_knowledge=True,
-
     instructions=\["Analyze data and extract key metrics"\]
-
 )
-
 writer = Agent(
-
     name="Report Writer",
-
     model=OpenAIChat(id="gpt-4o"),
-
     knowledge=knowledge_base,
-
     search_knowledge=True,
-
     instructions=\["Write reports based on the analysis results"\]
-
 )
-
 team = Team(
-
     agents=\[analyst, writer\],
-
     share_member_interactions=True,  *# Share knowledge retrieval results*
-
 )
-
 ```
 
 ## Why Agno and Milvus Are Layered Separately
