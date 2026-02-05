@@ -34,7 +34,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </p>
 <p>Bienvenue dans l'engouement pour OpenClaw.</p>
 <p>L'engouement est tel que l'action de Cloudflare a bondi de 14 %, simplement parce que les développeurs utilisent son infrastructure pour exécuter des applications. Les ventes de Mac Mini auraient grimpé en flèche car les gens achètent du matériel dédié à leur nouvel employé en charge de l'IA. Et le dossier GitHub ? Plus de <a href="https://github.com/openclaw/openclaw">150 000 étoiles</a> en quelques semaines.</p>
-<p>Nous devions donc naturellement vous montrer comment configurer votre propre instance OpenClaw et la connecter à Slack pour que vous puissiez diriger votre assistant IA depuis votre application de messagerie préférée.</p>
+<p>Nous devions donc naturellement vous montrer comment configurer votre propre instance OpenClaw et la connecter à Slack pour que vous puissiez diriger votre assistant d'IA depuis votre application de messagerie préférée.</p>
 <h2 id="What-Is-OpenClaw" class="common-anchor-header">Qu'est-ce qu'OpenClaw ?<button data-href="#What-Is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -50,7 +50,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a> (anciennement connu sous le nom de Clawdbot/Moltbot) est un agent d'IA autonome open-source qui s'exécute localement sur les machines des utilisateurs et effectue des tâches du monde réel via des applications de messagerie telles que WhatsApp, Telegram et Discord. Il automatise les flux de travail numériques, tels que la gestion des courriels, la navigation sur le web ou la planification de réunions, en se connectant à des LLM tels que Claude ou ChatGPT.</p>
+    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a> (anciennement connu sous le nom de Clawdbot/Moltbot) est un agent d'IA autonome open-source qui s'exécute localement sur les machines des utilisateurs et effectue des tâches réelles via des applications de messagerie telles que WhatsApp, Telegram et Discord. Il automatise les flux de travail numériques, tels que la gestion des courriels, la navigation sur le web ou la planification de réunions, en se connectant à des LLM tels que Claude ou ChatGPT.</p>
 <p>En bref, c'est comme avoir un assistant numérique 24/7 qui peut penser, répondre et faire avancer les choses.</p>
 <h2 id="Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="common-anchor-header">Configurer OpenClaw comme un assistant IA basé sur Slack<button data-href="#Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -67,7 +67,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Imaginez que vous disposiez d'un bot dans votre espace de travail Slack, capable de répondre instantanément à des questions sur votre produit, d'aider à déboguer les problèmes des utilisateurs ou d'orienter les coéquipiers vers la bonne documentation, sans que personne n'ait à interrompre ce qu'il est en train de faire. Pour nous, cela pourrait signifier une assistance plus rapide pour la communauté Milvus : un bot qui répond aux questions courantes ("Comment créer une collection ?"), aide à résoudre les erreurs ou résume les notes de version à la demande. Pour votre équipe, il peut s'agir d'intégrer de nouveaux ingénieurs, de traiter des FAQ internes ou d'automatiser des tâches DevOps répétitives. Les cas d'utilisation sont très variés.</p>
+    </button></h2><p>Imaginez que vous disposiez d'un bot dans votre espace de travail Slack, capable de répondre instantanément à des questions sur votre produit, d'aider à déboguer des problèmes d'utilisateurs ou d'orienter vos coéquipiers vers la bonne documentation, sans que personne n'ait à interrompre ce qu'il est en train de faire. Pour nous, cela pourrait signifier une assistance plus rapide pour la communauté Milvus : un bot qui répond aux questions courantes ("Comment créer une collection ?"), aide à résoudre les erreurs ou résume les notes de version à la demande. Pour votre équipe, il peut s'agir d'intégrer de nouveaux ingénieurs, de traiter des FAQ internes ou d'automatiser des tâches DevOps répétitives. Les cas d'utilisation sont très variés.</p>
 <p>Dans ce tutoriel, nous allons aborder les bases : installer OpenClaw sur votre machine et le connecter à Slack. Une fois cela fait, vous aurez un assistant IA fonctionnel prêt à être personnalisé pour tout ce dont vous avez besoin.</p>
 <h3 id="Prerequisites" class="common-anchor-header">Conditions préalables</h3><ul>
 <li><p>Une machine Mac ou Linux</p></li>
@@ -123,7 +123,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
     <span></span>
   </span>
 </p>
-<p>Vous devez maintenant créer une application Slack et obtenir deux jetons. Voici comment procéder : <span class="img-wrapper">
+<p>Vous devez maintenant créer une application Slack et vous procurer deux jetons. Voici comment procéder : <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_11_50df3aec5d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
@@ -174,7 +174,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Une fois approuvé, vous verrez votre <strong>Bot User OAuth Token</strong> (commence par <code translate="no">xoxb-</code>). Copiez-le également.  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

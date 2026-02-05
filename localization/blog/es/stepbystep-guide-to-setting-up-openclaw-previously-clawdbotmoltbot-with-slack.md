@@ -30,7 +30,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Bienvenidos a la locura de OpenClaw.</p>
-<p>El hype es tan real que las acciones de Cloudflare subieron un 14% simplemente porque los desarrolladores utilizan su infraestructura para ejecutar aplicaciones. Según los informes, las ventas del Mac Mini se dispararon porque la gente compra hardware dedicado para su nuevo empleado de IA. ¿Y el repositorio de GitHub? Más de <a href="https://github.com/openclaw/openclaw">150.000 estrellas</a> en unas pocas semanas.</p>
+<p>El revuelo es tan real que las acciones de Cloudflare subieron un 14% simplemente porque los desarrolladores utilizan su infraestructura para ejecutar aplicaciones. Según los informes, las ventas del Mac Mini se dispararon porque la gente compra hardware dedicado para su nuevo empleado de IA. ¿Y el repositorio de GitHub? Más de <a href="https://github.com/openclaw/openclaw">150.000 estrellas</a> en unas pocas semanas.</p>
 <p>Así que, naturalmente, teníamos que mostrarte cómo configurar tu propia instancia de OpenClaw y conectarla a Slack para que puedas dar órdenes a tu asistente de IA desde tu aplicación de mensajería favorita.</p>
 <h2 id="What-Is-OpenClaw" class="common-anchor-header">¿Qué es OpenClaw?<button data-href="#What-Is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -165,19 +165,19 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p><strong>3.5 Instalar la aplicación</strong></p>
-<p>Haz clic en <strong>Instalar aplicación</strong> en la barra lateral y, a continuación, <strong>solicita la instalación</strong> (o instálala directamente si eres administrador de un espacio de trabajo).  <span class="img-wrapper">
+<p>Haz clic en <strong>Instalar aplicación</strong> en la barra lateral y, a continuación, en <strong>Solicitar instalación</strong> (o instálala directamente si eres administrador de un espacio de trabajo).  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_19_a5e76d0d33.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
 <p>Una vez aprobado, verás tu <strong>Bot User OAuth Token</strong> (comienza con <code translate="no">xoxb-</code>). Cópialo también.  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
 <h3 id="Step-4-Configure-OpenClaw" class="common-anchor-header">Paso 4: Configurar OpenClaw</h3><p>De vuelta en la CLI de OpenClaw:</p>
 <ol>
-<li><p>Introduce tu <strong>Bot User OAuth Token</strong> (<code translate="no">xoxb-...</code>)</p></li>
+<li><p>Ingresa tu <strong>Bot User OAuth Token</strong> (<code translate="no">xoxb-...</code>)</p></li>
 <li><p>Introduzca su <strong>Token de nivel de aplicación</strong> (<code translate="no">xapp-...</code>) <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_21_bd1629fb6a.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -280,7 +280,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </ul>
 <p><strong>¿Tienes preguntas o quieres compartir lo que estás construyendo?</strong></p>
 <ul>
-<li><p>Únase a la <a href="https://milvus.io/slack">comunidad Milvus Slack</a> para conectar con otros desarrolladores</p></li>
+<li><p>Únete a la <a href="https://milvus.io/slack">comunidad Milvus Slack</a> para conectar con otros desarrolladores</p></li>
 <li><p>Reserva nuestro <a href="https://milvus.io/office-hours">Milvus Office Hours</a> para preguntas y respuestas en directo con el equipo.</p></li>
 </ul>
 <p>¡Feliz hacking! 🦞</p>

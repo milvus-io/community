@@ -169,7 +169,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>批准后，您将看到您的<strong>机器人用户 OAuth 令牌</strong>（以<code translate="no">xoxb-</code> 开头）。将其也复制下来。  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

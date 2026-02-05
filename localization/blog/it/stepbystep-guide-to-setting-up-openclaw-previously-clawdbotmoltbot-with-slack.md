@@ -32,7 +32,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Benvenuti nella mania di OpenClaw.</p>
-<p>L'entusiasmo è tale che le azioni di Cloudflare sono balzate del 14% semplicemente perché gli sviluppatori utilizzano la sua infrastruttura per eseguire le applicazioni. Secondo quanto riferito, le vendite di Mac Mini hanno subito un'impennata a causa dell'acquisto di hardware dedicato per il loro nuovo dipendente AI. E il repo di GitHub? Oltre <a href="https://github.com/openclaw/openclaw">150.000 stelle</a> in poche settimane.</p>
+<p>L'entusiasmo è tale che le azioni di Cloudflare sono balzate del 14% semplicemente perché gli sviluppatori utilizzano la sua infrastruttura per eseguire le applicazioni. Secondo quanto riferito, le vendite di Mac Mini sono aumentate perché le persone acquistano hardware dedicato per il loro nuovo dipendente AI. E il repo di GitHub? Oltre <a href="https://github.com/openclaw/openclaw">150.000 stelle</a> in poche settimane.</p>
 <p>Quindi, naturalmente, abbiamo dovuto mostrarvi come configurare la vostra istanza di OpenClaw e come collegarla a Slack, in modo da poter comandare il vostro assistente AI dalla vostra app di messaggistica preferita.</p>
 <h2 id="What-Is-OpenClaw" class="common-anchor-header">Cos'è OpenClaw?<button data-href="#What-Is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -173,7 +173,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Una volta approvata, si vedrà il proprio <strong>Bot User OAuth Token</strong> (che inizia con <code translate="no">xoxb-</code>). Copiare anche questo.  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -246,7 +246,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </ul>
 <p><strong>Le notizie meno buone:</strong></p>
 <ul>
-<li><p>L'iniezione di prompt è un rischio reale: un messaggio dannoso potrebbe potenzialmente indurre il bot a eseguire comandi indesiderati.</p></li>
+<li><p>L'iniezione di prompt è un rischio reale: un messaggio dannoso potrebbe potenzialmente indurre il bot a eseguire comandi non voluti.</p></li>
 <li><p>I truffatori hanno già creato repository e token OpenClaw falsi, quindi fate attenzione a ciò che scaricate.</p></li>
 </ul>
 <p><strong>Il nostro consiglio:</strong></p>

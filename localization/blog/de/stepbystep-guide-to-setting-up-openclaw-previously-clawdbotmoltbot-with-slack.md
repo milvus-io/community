@@ -34,7 +34,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </p>
 <p>Willkommen beim OpenClaw-Wahn.</p>
 <p>Der Hype ist so real, dass die Aktien von Cloudflare um 14 % gestiegen sind, nur weil Entwickler die Infrastruktur von Cloudflare zur Ausführung von Anwendungen nutzen. Die Mac Mini-Verkäufe sind Berichten zufolge in die Höhe geschnellt, weil die Leute spezielle Hardware für ihren neuen KI-Mitarbeiter kaufen. Und das GitHub-Repositorium? Über <a href="https://github.com/openclaw/openclaw">150.000 Sterne</a> in nur wenigen Wochen.</p>
-<p>Deshalb mussten wir Ihnen natürlich zeigen, wie Sie Ihre eigene OpenClaw-Instanz einrichten - und sie mit Slack verbinden, damit Sie Ihren KI-Assistenten von Ihrer bevorzugten Messaging-App aus herumkommandieren können.</p>
+<p>Deshalb mussten wir Ihnen natürlich zeigen, wie Sie Ihre eigene OpenClaw-Instanz einrichten - und sie mit Slack verbinden, damit Sie Ihren KI-Assistenten von Ihrer bevorzugten Messaging-App aus steuern können.</p>
 <h2 id="What-Is-OpenClaw" class="common-anchor-header">Was ist OpenClaw?<button data-href="#What-Is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -174,7 +174,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Nach der Genehmigung sehen Sie Ihr <strong>Bot User OAuth Token</strong> (beginnt mit <code translate="no">xoxb-</code>). Kopieren Sie auch dieses.  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
@@ -283,7 +283,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </ul>
 <p><strong>Haben Sie Fragen oder möchten Sie uns mitteilen, was Sie entwickeln?</strong></p>
 <ul>
-<li><p>Treten Sie der <a href="https://milvus.io/slack">Milvus-Slack-Community</a> bei, um sich mit anderen Entwicklern auszutauschen</p></li>
+<li><p>Treten Sie der <a href="https://milvus.io/slack">Milvus-Slack-Community</a> bei, um sich mit anderen Entwicklern auszutauschen.</p></li>
 <li><p>Buchen Sie unsere <a href="https://milvus.io/office-hours">Milvus Office Hours</a> für Live-Fragen und Antworten mit dem Team</p></li>
 </ul>
 <p>Viel Spaß beim Hacken! 🦞</p>

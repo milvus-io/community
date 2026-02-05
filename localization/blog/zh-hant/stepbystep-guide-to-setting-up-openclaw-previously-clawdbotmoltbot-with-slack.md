@@ -22,7 +22,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
     <span></span>
   </span>
 </p>
-<p>週末的情況更加怪異。企業家 Matt Schlicht 推出了<a href="https://moltbook.com">Moltbook - 一個</a>Reddit 式的社群網路，在這裡只有 AI 代理可以發表文章，人類只能觀看。幾天之內，就有超過 150 萬個代理註冊。他們組成社群、辯論哲學、抱怨人類操作員，甚至成立了自己的宗教「Crustafarianism」。是的，真的。  <span class="img-wrapper">
+<p>週末的情況更加怪異。企業家 Matt Schlicht 推出了<a href="https://moltbook.com">Moltbook - 一個</a>Reddit 式的社群網路，在這裡只有 AI 代理可以發表文章，人類只能觀看。短短幾天內，就有超過 150 萬名代理註冊。他們組成社群、辯論哲學、抱怨人類操作員，甚至成立了自己的宗教「Crustafarianism」。是的，真的。  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_2_b570b3e59b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
@@ -45,7 +45,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a>(以前稱為 Clawdbot/Moltbot)是一個開放原始碼的自主式 AI 代理程式，可在使用者的機器上執行本機作業，並透過 WhatsApp、Telegram 和 Discord 等訊息應用程式執行真實世界的任務。它透過與 Claude 或 ChatGPT 等 LLM 連線，自動執行數位工作流程，例如管理電子郵件、瀏覽網頁或安排會議。</p>
+    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a>(以前稱為 Clawdbot/Moltbot)是一個開放原始碼的自主式 AI 代理程式，可在使用者電腦上執行本機作業，並透過 WhatsApp、Telegram 和 Discord 等訊息應用程式執行實際世界的工作。它透過與 Claude 或 ChatGPT 等 LLM 連線，自動執行數位工作流程，例如管理電子郵件、瀏覽網頁或安排會議。</p>
 <p>簡而言之，這就像是擁有一個全天候的數位助理，能夠思考、回應並真正完成工作。</p>
 <h2 id="Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="common-anchor-header">將 OpenClaw 設定為以 Slack 為基礎的 AI 助理<button data-href="#Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -62,7 +62,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>想像一下，在您的 Slack 工作區中有一個機器人，可以立即回答有關您產品的問題、協助調試使用者的問題，或指導團隊成員找到正確的文件，而無需任何人停下手邊的工作。對我們來說，這可能意味著為 Milvus 社群提供更快速的支援：一個回答常見問題 (「如何建立資料集？」)、協助排除錯誤或按需求總結發行說明的機器人。對於您的團隊而言，它可能是新工程師上線、處理內部常見問題，或是自動化重複的 DevOps 任務。使用案例非常廣泛。</p>
+    </button></h2><p>想像一下，在您的 Slack 工作區中有一個機器人，可以立即回答有關您產品的問題、協助調試使用者的問題，或指導團隊成員找到正確的文件，而無需任何人停下手邊的工作。對我們來說，這可能意味著為 Milvus 社群提供更快速的支援：一個回答常見問題 (「如何建立資料集？」)、協助排除錯誤或按需求總結發行稿注意事項的機器人。對於您的團隊而言，它可能是新工程師上線、處理內部常見問題，或是自動化重複的 DevOps 任務。使用案例非常廣泛。</p>
 <p>在本教程中，我們將介紹基本知識：在您的機器上安裝 OpenClaw 並將其連接到 Slack。完成後，您就可以擁有一個可運作的 AI 助理，隨時為您的需求進行客製化。</p>
 <h3 id="Prerequisites" class="common-anchor-header">先決條件</h3><ul>
 <li><p>Mac 或 Linux 電腦</p></li>
@@ -169,7 +169,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>一旦通過，您會看到您的<strong>Bot 使用者 OAuth Token</strong>(以<code translate="no">xoxb-</code> 開頭 )。同時複製此項。  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

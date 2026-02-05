@@ -68,7 +68,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
         ></path>
       </svg>
     </button></h2><p>Bayangkan memiliki bot di ruang kerja Slack Anda yang bisa langsung menjawab pertanyaan tentang produk Anda, membantu men-debug masalah pengguna, atau mengarahkan rekan tim ke dokumentasi yang tepat-tanpa ada yang harus menghentikan pekerjaan mereka. Bagi kami, ini berarti dukungan yang lebih cepat untuk komunitas Milvus: bot yang menjawab pertanyaan umum ("Bagaimana cara membuat koleksi?"), membantu mengatasi kesalahan, atau meringkas catatan rilis sesuai permintaan. Untuk tim Anda, ini mungkin untuk membantu teknisi baru, menangani FAQ internal, atau mengotomatiskan tugas-tugas DevOps yang berulang. Kasus penggunaannya terbuka lebar.</p>
-<p>Dalam tutorial ini, kita akan membahas dasar-dasarnya: menginstal OpenClaw di komputer Anda dan menghubungkannya ke Slack. Setelah selesai, Anda akan memiliki asisten AI yang siap bekerja dan siap untuk disesuaikan untuk apa pun yang Anda butuhkan.</p>
+<p>Dalam tutorial ini, kita akan membahas dasar-dasarnya: menginstal OpenClaw di komputer Anda dan menghubungkannya ke Slack. Setelah selesai, Anda akan memiliki asisten AI yang siap bekerja dan siap untuk disesuaikan dengan apa pun yang Anda butuhkan.</p>
 <h3 id="Prerequisites" class="common-anchor-header">Prasyarat</h3><ul>
 <li><p>Sebuah mesin Mac atau Linux</p></li>
 <li><p><a href="https://console.anthropic.com/">Kunci API Anthropic</a> (atau akses CLI Claude Code)</p></li>
@@ -174,7 +174,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Setelah disetujui, Anda akan melihat <strong>Token OAuth Pengguna Bot</strong> Anda (dimulai dengan <code translate="no">xoxb-</code>). Salin ini juga.  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>

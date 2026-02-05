@@ -30,7 +30,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </p>
 <p>OpenClawブームへようこそ。</p>
 <p>クラウドフレアの株価が14％も急上昇したのは、開発者が同社のインフラを使ってアプリケーションを走らせているからだ。Mac Miniの売上は、新しいAI従業員のために専用のハードウェアを購入する人々によって急増したと伝えられている。GitHubのレポは？わずか数週間で<a href="https://github.com/openclaw/openclaw">15万スターを</a>超えた。</p>
-<p>というわけで、OpenClawインスタンスをセットアップし、Slackに接続して、お気に入りのメッセージングアプリからAIアシスタントを使いこなす方法を紹介しなければならない。</p>
+<p>というわけで、OpenClawインスタンスをセットアップし、Slackに接続して、お気に入りのメッセージングアプリからAIアシスタントを使いこなす方法を紹介しよう。</p>
 <h2 id="What-Is-OpenClaw" class="common-anchor-header">OpenClawとは？<button data-href="#What-Is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -170,7 +170,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>承認されると、<strong>Bot User OAuth Token</strong>（<code translate="no">xoxb-</code> で始まる）が表示されます。これもコピーしてください。  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/ST_20_a4a6878dbf.png" alt="" class="doc-image" id="" />
+    <img translate="no" src="https://assets.zilliz.com/oauth_tokens_2e75e66f89.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
