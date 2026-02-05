@@ -141,7 +141,7 @@ Click **Install App** in the sidebar, then **Request to Install** (or install di
 
   
 Once approved, you'll see your **Bot User OAuth Token** (starts with `xoxb-`). Copy this as well.
-![](https://assets.zilliz.com/ST_20_a4a6878dbf.png)
+![](https://assets.zilliz.com/oauth_tokens_2e75e66f89.png)
 
 
 ### Step 4: Configure OpenClaw
