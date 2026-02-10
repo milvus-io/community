@@ -1,0 +1,32 @@
+name: Manual publish to Medium
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_path:
+        description: "Blog file path (e.g. blog/en/your-blog-post.md)"
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Post blog to Medium
+        env:
+          MEDIUM_ID: ${{ secrets.MEDIUM_ID }}
+          MEDIUM_PUBLICATION_ID: ${{ secrets.MEDIUM_PUBLICATION_ID }}
+          MEDIUM_TOKEN: ${{ secrets.MEDIUM_TOKEN }}
+          REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN: ${{ secrets.REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN }}
+          REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN: ${{ secrets.REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN }}
+        run: |
+          mv postMedium.md postMedium.js
+          yarn
+          node postMedium.js ${{ inputs.file_path }}
