@@ -21,7 +21,7 @@ origin: https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md
 
 ![](https://assets.zilliz.com/OC_1_e9bc8881bc.png)
 
-What makes OpenClaw distinct is its combination: MIT-licensed, open-source, local-first (memory and data stored as Markdown files on your disk), and community-extensible through a portable skill format. It's also where some of the more interesting experiments in agentic AI are happening — one developer's agent negotiated $4,200 off a car purchase over email while he slept; another's filed a legal rebuttal to an insurance denial without being asked; and another user built [Moltbook](https://moltbook.com/), a social network where over a million AI agents interact autonomously while humans watch.
+What makes OpenClaw distinct is its combination: MIT-licensed, open-source, local-first (memory and data stored as Markdown files on your disk), and community-extensible through a portable skill format. It's also where some of the more interesting experiments in agentic AI are happening — one developer's agent negotiated \$4,200 off a car purchase over email while he slept; another's filed a legal rebuttal to an insurance denial without being asked; and another user built [Moltbook](https://moltbook.com/), a social network where over a million AI agents interact autonomously while humans watch.
 
 This guide breaks down everything you need to know: what OpenClaw is, how it works, what it can do in real life, how it relates to Moltbook, and the security risks associated with it.
 
@@ -121,7 +121,7 @@ In late January, posts circulated showing developers unboxing multiple Mac Minis
 
 ![](https://assets.zilliz.com/OC_5_896f6a05f6.png)
 
-The official documentation lists minimum requirements as 2GB RAM and 2 CPU cores for basic chat, or 4GB if you want browser automation. A $5/month VPS handles this fine. You can also deploy on AWS or Hetzner with Pulumi, run it in Docker on a small VPS, or use an old laptop gathering dust. The Mac Mini trend was driven by social proof, not technical requirements.
+The official documentation lists minimum requirements as 2GB RAM and 2 CPU cores for basic chat, or 4GB if you want browser automation. A \$5/month VPS handles this fine. You can also deploy on AWS or Hetzner with Pulumi, run it in Docker on a small VPS, or use an old laptop gathering dust. The Mac Mini trend was driven by social proof, not technical requirements.
 
 **So why did people buy dedicated hardware? Two reasons: isolation and persistence.** When you give an autonomous agent shell access, you want a machine you can physically unplug if something goes wrong. And because OpenClaw runs on a heartbeat — waking on a configurable schedule to act on your behalf — a dedicated device means it's always on, always ready. The appeal is physical isolation on a computer you can unplug and uptime without depending on a cloud service's availability.
 
@@ -203,7 +203,7 @@ At a high level, OpenClaw is a local-first gateway that lives on your hardware a
 | Session memory | File‑based memory (Markdown + logs) on disk; optional plugins add semantic / long‑term memory | Per‑project sessions with history, plus optional Claude Memory on the account | Per‑session state in CLI / editor; no built‑in long‑term user memory | Per‑task “agent run” backed by ChatGPT’s account‑level memory features (if enabled) | Cloud‑side, account‑scoped memory across runs, tuned for recurring workflows |
 | Deployment | Always‑running gateway/daemon on your machine or VPS; calls out to LLM providers | Runs on the developer’s machine as CLI/IDE plugin; all model calls go to Anthropic’s API | CLI runs locally; models execute via OpenAI’s API or Codex Web | Fully hosted by OpenAI; Agent mode spins up a virtual workspace from the ChatGPT client | Fully hosted by Manus; agents execute in Manus’ cloud environment |
 | Target audience | Developers and power users comfortable running their own infrastructure | Developers and DevOps engineers working in terminals and IDEs | Developers who want a coding agent in terminal/IDE | Knowledge workers and teams using ChatGPT for end‑user tasks | Business users and teams automating web‑centric workflows |
-| Cost | Free + API calling based on your usage | $20–200/mo | $20–200/mo | $20–200/mo | $39–199/mo (credits) |
+| Cost | Free + API calling based on your usage | \$20–200/mo | \$20–200/mo | \$20–200/mo | \$39–199/mo (credits) |
 
   
 ## Real-World Applications of OpenClaw
@@ -217,9 +217,9 @@ The Zilliz team connected OpenClaw to its Slack workspace as a [Milvus community
 -   **OpenClaw Tutorial:** [Step-by-Step Guide to Setting Up OpenClaw with Slack](https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md)
     
 
-**AJ Stuyvenberg Built an Agent That Helped Him Negotiate $4,200 Off a Car Purchase While he was Sleeping**
+**AJ Stuyvenberg Built an Agent That Helped Him Negotiate \$4,200 Off a Car Purchase While he was Sleeping**
 
-Software engineer AJ Stuyvenberg tasked his OpenClaw with buying a 2026 Hyundai Palisade. The agent scraped local dealer inventories, filled out contact forms using his phone number and email, then spent several days playing dealers against each other—forwarding competing PDF quotes and asking each to beat the other's price. Final result: [$4,200](https://aaronstuyvenberg.com/posts/clawd-bought-a-car) below sticker, with Stuyvenberg showing up only to sign the paperwork. "Outsourcing the painful aspects of a car purchase to AI was refreshingly nice," he wrote.
+Software engineer AJ Stuyvenberg tasked his OpenClaw with buying a 2026 Hyundai Palisade. The agent scraped local dealer inventories, filled out contact forms using his phone number and email, then spent several days playing dealers against each other—forwarding competing PDF quotes and asking each to beat the other's price. Final result: [\$4,200](https://aaronstuyvenberg.com/posts/clawd-bought-a-car) below sticker, with Stuyvenberg showing up only to sign the paperwork. "Outsourcing the painful aspects of a car purchase to AI was refreshingly nice," he wrote.
 
 ![](https://assets.zilliz.com/OC_6_b147a5e824.png)
 
@@ -253,7 +253,7 @@ Before you deploy OpenClaw anywhere that matters, you need to understand what yo
 
 **The heartbeat loop will do things you didn't ask for.** That Hormold story from the intro — where the agent found an insurance denial, researched precedent, and sent a legal rebuttal autonomously — is not a feature demo; it's a liability risk. The agent committed to legal correspondence without human approval. It worked out that time. It won't always. **Anything involving payments, deletions, or external communication needs a human-in-the-loop gate, full stop.**
 
-**API costs add up fast if you're not watching.** Rough numbers: a light setup with a few heartbeats per day runs $18–36/month on Sonnet 4.5. Bump that to 12+ checks daily on Opus and you're looking at $270–540/month. One person on HN found they were burning $70/month on redundant API calls and verbose logging — cut it to almost nothing after cleaning up the config. **Set spending alerts at the provider level.** A misconfigured heartbeat interval can drain your API budget overnight.
+**API costs add up fast if you're not watching.** Rough numbers: a light setup with a few heartbeats per day runs \$18–36/month on Sonnet 4.5. Bump that to 12+ checks daily on Opus and you're looking at \$270–540/month. One person on HN found they were burning \$70/month on redundant API calls and verbose logging — cut it to almost nothing after cleaning up the config. **Set spending alerts at the provider level.** A misconfigured heartbeat interval can drain your API budget overnight.
 
 Before you deploy, we highly recommend that you go through this:
 
