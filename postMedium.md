@@ -17,8 +17,15 @@ const post = async (url, data, opts = {}) => {
     ...opts,
   });
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error?.errors?.[0]?.message);
+    const text = await res.text();
+    let message = `HTTP ${res.status} ${res.statusText}`;
+    try {
+      const error = JSON.parse(text);
+      message = error?.errors?.[0]?.message || message;
+    } catch {
+      message = `${message} - Response: ${text.slice(0, 500)}`;
+    }
+    throw new Error(message);
   }
   return res.json();
 };
@@ -71,8 +78,15 @@ const readMdFiles = async (pathList = []) => {
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error?.errors?.[0]?.message);
+    const text = await res.text();
+    let message = `HTTP ${res.status} ${res.statusText}`;
+    try {
+      const error = JSON.parse(text);
+      message = error?.errors?.[0]?.message || message;
+    } catch {
+      message = `${message} - Response: ${text.slice(0, 500)}`;
+    }
+    throw new Error(message);
   }
   const me = await res.json();
   userId = me.data.id;
