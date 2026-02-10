@@ -27,6 +27,7 @@ jobs:
           REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN: ${{ secrets.REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN }}
           REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN: ${{ secrets.REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN }}
         run: |
+          echo "File path: ${{ inputs.file_path }}"
           mv postMedium.md postMedium.js
           yarn
-          node postMedium.js ${{ inputs.file_path }}
+          node postMedium.js "${{ inputs.file_path }}"
