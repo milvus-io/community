@@ -296,5 +296,4 @@ That said, the architecture that makes OpenClaw powerful also makes it risky if 
 -   [Stop Building Vanilla RAG: Embrace Agentic RAG with DeepSearcher](https://milvus.io/blog/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md) — Why agentic RAG outperforms traditional retrieval, with a hands-on open-source implementation
     
 -   [Agentic RAG with Milvus and LangGraph](https://milvus.io/docs/agentic_rag_with_milvus_and_langgraph.md) — Tutorial: build an agent that decides when to retrieve, grades document relevance, and rewrites queries
-    
 -   [Building a Production-Ready AI Assistant with Spring Boot and Milvus](https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md) — Full-stack guide to building an enterprise AI assistant with semantic search and conversation memory
