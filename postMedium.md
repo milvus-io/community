@@ -10,24 +10,38 @@ const MEDIUM_POST_TOKEN = process.env.MEDIUM_TOKEN || '';
 const REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN = process.env.REPOST_SUCCESS_FEISHU_ALERT_URL_TOKEN || '';
 const REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN = process.env.REPOST_FAILURE_FEISHU_ALERT_URL_TOKEN || '';
 
+const MAX_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 5000;
+const REQUEST_INTERVAL_MS = 3000;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const post = async (url, data, opts = {}) => {
-  const res = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(data),
-    ...opts,
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    let message = `HTTP ${res.status} ${res.statusText}`;
-    try {
-      const error = JSON.parse(text);
-      message = error?.errors?.[0]?.message || message;
-    } catch {
-      message = `${message} - Response: ${text.slice(0, 500)}`;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+      ...opts,
+    });
+    if (res.status === 403 && attempt < MAX_RETRIES) {
+      const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
+      console.log(`---- 403 Forbidden, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES}) ----`);
+      await sleep(delay);
+      continue;
     }
-    throw new Error(message);
+    if (!res.ok) {
+      const text = await res.text();
+      let message = `HTTP ${res.status} ${res.statusText}`;
+      try {
+        const error = JSON.parse(text);
+        message = error?.errors?.[0]?.message || message;
+      } catch {
+        message = `${message} - Response: ${text.slice(0, 500)}`;
+      }
+      throw new Error(message);
+    }
+    return res.json();
   }
-  return res.json();
 };
 
 const post2Medium = async (userId, body) => {
@@ -37,7 +51,8 @@ const post2Medium = async (userId, body) => {
         Authorization: `Bearer ${MEDIUM_POST_TOKEN}`,
         "Content-Type": "application/json",
         Accept: "application/json",
-        AcceptCharset: "utf-8"
+        "Accept-Charset": "utf-8",
+        "User-Agent": "Mozilla/5.0 (compatible; MilvusBlogPublisher/1.0)",
       },
     });
     console.log("---- post medium ----", res);
@@ -71,9 +86,10 @@ const readMdFiles = async (pathList = []) => {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${MEDIUM_POST_TOKEN}`,
-      ContentType: "application/json",
+      "Content-Type": "application/json",
       Accept: "application/json",
-      AcceptCharset: "utf-8",
+      "Accept-Charset": "utf-8",
+      "User-Agent": "Mozilla/5.0 (compatible; MilvusBlogPublisher/1.0)",
     }
   });
 
@@ -127,6 +143,7 @@ const readMdFiles = async (pathList = []) => {
         const requestBody = { title, tags: mediumTags, publishStatus, contentFormat: 'markdown', canonicalUrl, license, content: contentBodyWidthCover };
 
         if (shouldPublishToMedium) {
+          await sleep(REQUEST_INTERVAL_MS);
           const res = await post2Medium(userId, requestBody);
           console.log('---- response ----', res);
           successList.push({ title, mediumId: res.data.id, mediumUrl: res.data.url });
