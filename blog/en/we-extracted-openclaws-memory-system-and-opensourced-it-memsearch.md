@@ -292,7 +292,7 @@ The most common question developers ask is why they would use memsearch when est
 | Zep | Rich feature set: temporal memory, multi-persona modeling, complex knowledge graphs | Heavy architecture; more moving pieces; harder to learn and operate | Agents that truly need advanced memory structures or time-aware reasoning |
 | LangMem / Letta | Deep, seamless integration inside their own ecosystems | Framework lock-in; hard to port to other agent stacks | Teams already committed to those specific frameworks |
 
-## Start Using memsearch and Join the Project
+## Try memsearch and let us know your feedback 
 
 Memsearch is fully open source under the MIT license, and the repository is ready for production experiments today.
 
