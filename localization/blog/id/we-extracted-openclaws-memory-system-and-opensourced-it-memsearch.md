@@ -110,7 +110,7 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>File memori Anda tetap sama persis. Infrastruktur di sekitarnya dapat berkembang dengan bebas. Hasilnya adalah portabilitas jangka panjang - sifat yang langka dalam sistem AI.</p>
-<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">File Penurunan Harga Bersama Memungkinkan Manusia dan Agen Menulis Memori Bersama</h3><p>Pada sebagian besar solusi memori, mengedit apa yang diingat oleh AI memerlukan penulisan kode terhadap API. Itu berarti hanya pengembang yang dapat mengelola memori AI, dan bahkan bagi mereka, hal ini merepotkan.</p>
+<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">File Penurunan Harga Bersama Memungkinkan Manusia dan Agen Menulis Memori Bersama</h3><p>Di sebagian besar solusi memori, mengedit apa yang diingat oleh AI memerlukan penulisan kode terhadap API. Itu berarti hanya pengembang yang dapat mengelola memori AI, dan bahkan bagi mereka, hal ini merepotkan.</p>
 <p>Memsearch memungkinkan pembagian tanggung jawab yang lebih alami:</p>
 <ul>
 <li><p><strong>AI menangani:</strong> Catatan harian otomatis (<code translate="no">YYYY-MM-DD.md</code>) dengan detail eksekusi seperti "diterapkan v2.3.1, peningkatan kinerja 12%."</p></li>
@@ -139,7 +139,7 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
   </span>
 </p>
 <p>memsearch memiliki empat alur kerja inti: <strong>Menonton</strong> (memantau) → <strong>Indeks</strong> (memotong dan menyematkan) → <strong>Cari</strong> (mengambil) → <strong>Ringkas</strong> (meringkas). Inilah yang dilakukan oleh masing-masing alur tersebut.</p>
-<h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1. Menonton: Mengindeks Ulang Secara Otomatis pada Setiap Penyimpanan File</h3><p>Alur kerja <strong>Watch</strong> memonitor semua file Markdown dalam memori/direktori dan memicu indeks ulang setiap kali sebuah file dimodifikasi dan disimpan. <strong>Debounce 1500ms</strong> memastikan pembaruan terdeteksi tanpa membuang-buang komputasi: jika beberapa penyimpanan terjadi secara berurutan, pengatur waktu akan diatur ulang dan menyala hanya ketika pengeditan telah stabil.</p>
+<h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1. Perhatikan: Mengindeks Ulang Secara Otomatis pada Setiap Penyimpanan File</h3><p>Alur kerja <strong>Watch</strong> memonitor semua file Markdown dalam memori/direktori dan memicu indeks ulang setiap kali sebuah file dimodifikasi dan disimpan. <strong>Debounce 1500ms</strong> memastikan pembaruan terdeteksi tanpa membuang-buang komputasi: jika beberapa penyimpanan terjadi secara berurutan, pengatur waktu akan diatur ulang dan menyala hanya ketika pengeditan telah stabil.</p>
 <p>Penundaan itu disetel secara empiris:</p>
 <ul>
 <li><p><strong>100ms</strong> → terlalu sensitif; menyala pada setiap penekanan tombol, membakar panggilan penyematan</p></li>
@@ -176,7 +176,7 @@ PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</sp
 <li><p><strong>BM25</strong> menangani pencocokan yang tepat. Kueri untuk "PostgreSQL 16" tidak mengembalikan hasil tentang "PostgreSQL 15." Hal ini penting untuk kode kesalahan, nama fungsi, dan perilaku spesifik versi, di mana close tidak cukup baik.</p></li>
 </ul>
 <p>Pembagian default 70/30 bekerja dengan baik untuk sebagian besar kasus penggunaan. Untuk alur kerja yang sangat condong ke arah pencocokan yang sama persis, menaikkan bobot BM25 menjadi 50% adalah perubahan konfigurasi satu baris.</p>
-<p>Hasil dikembalikan sebagai potongan top-K (default 3), masing-masing terpotong menjadi 200 karakter. Ketika konten lengkap diperlukan, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> akan memuatnya. Pengungkapan progresif ini membuat penggunaan jendela konteks LLM tetap ramping tanpa mengorbankan akses ke detail.</p>
+<p>Hasil dikembalikan sebagai potongan top-K (default 3), masing-masing dipotong menjadi 200 karakter. Ketika konten lengkap diperlukan, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> akan memuatnya. Pengungkapan progresif ini membuat penggunaan jendela konteks LLM tetap ramping tanpa mengorbankan akses ke detail.</p>
 <h3 id="4-Compact-Summarize-Historical-Memory-to-Keep-Context-Clean" class="common-anchor-header">4. Ringkas: Meringkas Memori Historis untuk Menjaga Konteks Tetap Bersih</h3><p>Memori yang menumpuk pada akhirnya menjadi masalah. Entri lama memenuhi jendela konteks, meningkatkan biaya token, dan menambahkan noise yang menurunkan kualitas jawaban. Compact mengatasi hal ini dengan memanggil LLM untuk meringkas memori historis ke dalam bentuk yang ringkas, kemudian menghapus atau mengarsipkan yang asli. Ini dapat dipicu secara manual atau dijadwalkan untuk berjalan pada interval yang teratur.</p>
 <h2 id="How-to-get-started-with-memsearch" class="common-anchor-header">Cara memulai dengan memsearch<button data-href="#How-to-get-started-with-memsearch" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -271,7 +271,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><td>LangMem / Letta</td><td>Integrasi yang dalam dan mulus di dalam ekosistem mereka sendiri</td><td>Kerangka kerja terkunci; sulit untuk di-porting ke tumpukan agen lain</td><td>Tim yang sudah berkomitmen pada kerangka kerja spesifik tersebut</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">Mulai Menggunakan memsearch dan Bergabunglah dengan Proyek<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Coba memsearch dan beri tahu kami umpan balik Anda<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -288,7 +288,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
       </svg>
     </button></h2><p>Memsearch sepenuhnya bersifat open source di bawah lisensi MIT, dan repositori siap untuk percobaan produksi hari ini.</p>
 <ul>
-<li><p><strong>Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
+<li><p><strong>Repositori:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
 <li><p><strong>Dokumen:</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>
 </ul>
 <p>Jika Anda sedang membangun sebuah agen yang perlu mengingat berbagai hal di seluruh sesi dan menginginkan kontrol penuh atas apa yang diingatnya, memsearch patut dicoba. Pustaka ini dipasang dengan satu <code translate="no">pip install</code>, bekerja dengan kerangka kerja agen apa pun, dan menyimpan semuanya sebagai Markdown yang dapat Anda baca, edit, dan versi dengan Git.</p>

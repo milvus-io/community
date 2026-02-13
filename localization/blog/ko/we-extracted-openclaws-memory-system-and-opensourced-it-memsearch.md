@@ -20,8 +20,8 @@ origin: >-
   https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
 <p>2주 만에 <a href="https://github.com/openclaw/openclaw">189,000개 이상의 GitHub 별을</a> 받은<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (이전 명칭은 clawdbot 및 moltbot)가 입소문을 타고 있습니다. 정말 대단한 수치입니다. 대부분의 입소문은 iMessage, WhatsApp, Slack, Telegram 등 일상적인 채팅 채널에서 자율적이고 에이전트적인 기능에 관한 것입니다.</p>
-<p>하지만 벡터 데이터베이스 시스템을 개발하는 엔지니어로서 저희의 관심을 끌었던 것은 <strong>장기 기억에 대한 OpenClaw의 접근 방식이었습니다</strong>. 대부분의 메모리 시스템과 달리 OpenClaw는 AI가 자동으로 일일 로그를 마크다운 파일로 작성합니다. 이 파일은 진실의 원천이며, 모델은 디스크에 기록되는 내용만 '기억'합니다. 인간 개발자는 이러한 마크다운 파일을 열어 직접 편집하고, 장기적인 원칙을 추출하고, AI가 기억하는 내용을 언제든지 정확하게 확인할 수 있습니다. 블랙박스가 없습니다. 솔직히 지금까지 본 것 중 가장 깔끔하고 개발자 친화적인 메모리 아키텍처 중 하나입니다.</p>
-<p>그래서 자연스럽게 의문이 생겼습니다. <strong><em>왜 이 기능이 OpenClaw 내부에서만 작동해야 할까요? 모든 에이전트가 이런 메모리를 가질 수 있다면 어떨까요?</em></strong> 저희는 OpenClaw의 메모리 아키텍처를 그대로 가져와 모든 에이전트에 지속적이고 투명하며 사람이 편집할 수 있는 메모리를 제공하는 독립형 플러그 앤 플레이 장기 메모리 라이브러리인 <a href="https://github.com/zilliztech/memsearch">memsearch를</a> 구축했습니다. OpenClaw의 나머지 부분에 대한 종속성이 없습니다. 이 라이브러리를 도입하기만 하면 에이전트는 Milvus/Zilliz Cloud가 제공하는 검색과 마크다운 로그를 표준 소스로 사용하여 내구성이 뛰어난 메모리를 확보할 수 있습니다.</p>
+<p>하지만 벡터 데이터베이스 시스템을 개발하는 엔지니어로서 저희의 관심을 끌었던 것은 <strong>장기 기억에 대한 OpenClaw의 접근 방식이었습니다</strong>. 대부분의 메모리 시스템과 달리 OpenClaw는 AI가 자동으로 일일 로그를 마크다운 파일로 작성합니다. 이 파일은 진실의 원천이며, 모델은 디스크에 기록되는 내용만 '기억'합니다. 인간 개발자는 이러한 마크다운 파일을 열어 직접 편집하고, 장기적인 원칙을 추출하고, AI가 기억하는 내용을 언제든지 정확히 확인할 수 있습니다. 블랙박스가 없습니다. 솔직히 지금까지 본 것 중 가장 깔끔하고 개발자 친화적인 메모리 아키텍처 중 하나입니다.</p>
+<p>그래서 자연스럽게 의문이 생겼습니다. <strong><em>왜 이 기능이 OpenClaw 내부에서만 작동해야 할까요? 모든 에이전트가 이런 메모리를 가질 수 있다면 어떨까요?</em></strong> 저희는 OpenClaw의 메모리 아키텍처를 그대로 가져와 모든 에이전트에 지속적이고 투명하며 사람이 편집할 수 있는 메모리를 제공하는 독립형 플러그 앤 플레이 장기 메모리 라이브러리인 <a href="https://github.com/zilliztech/memsearch">memsearch를</a> 구축했습니다. OpenClaw의 나머지 부분에 대한 종속성이 없습니다. 이 라이브러리를 도입하기만 하면 에이전트는 Milvus/Zilliz Cloud가 제공하는 검색과 마크다운 로그를 표준 소스로 사용하여 내구성 있는 메모리를 확보할 수 있습니다.</p>
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <ul>
 <li><p><strong>GitHub 리포지토리:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a> (오픈 소스, MIT 라이선스)</p></li>
@@ -169,7 +169,7 @@ PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</sp
 </ul>
 <p><strong>중복 제거는</strong> 각 청크의 SHA-256 해시를 사용하여 동일한 텍스트가 두 번 포함되지 않도록 합니다. 여러 파일에서 "PostgreSQL 16"을 언급하는 경우 임베딩 API는 파일당 한 번이 아니라 한 번만 호출됩니다. 약 500KB의 텍스트의 경우 <strong> 월 0.15달러를</strong> 절약할 수 있습니다 <strong>.</strong> 규모에 따라 수백 달러에 달하는 비용이 추가됩니다.</p>
 <p>청크<strong>ID 디자인은</strong> 청크가 오래되었는지 여부를 파악하는 데 필요한 모든 것을 인코딩합니다. 형식은 <code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code> 입니다. <code translate="no">model_version</code> 필드는 중요한 부분입니다. 임베딩 모델이 <code translate="no">text-embedding-3-small</code> 에서 <code translate="no">text-embedding-3-large</code> 로 업그레이드되면 이전 임베딩은 유효하지 않게 됩니다. 모델 버전이 ID에 베이크되기 때문에 시스템에서 자동으로 다시 임베딩해야 하는 청크를 식별합니다. 수동으로 정리할 필요가 없습니다.</p>
-<h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3. 검색: 하이브리드 벡터 + BM25 검색으로 정확도 극대화</h3><p>검색은 70%의 가중치가 부여된 벡터 검색과 30%의 가중치가 부여된 BM25 키워드 검색이라는 하이브리드 검색 방식을 사용합니다. 이는 실무에서 자주 발생하는 두 가지 요구 사항의 균형을 맞추는 방식입니다.</p>
+<h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3. 검색: 하이브리드 벡터 + BM25 검색으로 정확도 극대화</h3><p>검색은 70%의 가중치가 부여된 벡터 검색과 30%의 가중치가 부여된 BM25 키워드 검색이라는 하이브리드 검색 방식을 사용합니다. 이는 실무에서 자주 발생하는 두 가지 요구 사항의 균형을 맞춥니다.</p>
 <ul>
 <li><p><strong>벡터 검색은</strong> 시맨틱 매칭을 처리합니다. "Redis 캐시 구성"에 대한 쿼리는 문구가 다르더라도 "5분 TTL이 있는 Redis L1 캐시"를 포함하는 청크를 반환합니다. 이는 개발자가 개념은 기억하지만 정확한 문구는 기억하지 못하는 경우에 유용합니다.</p></li>
 <li><p><strong>BM25는</strong> 정확한 일치를 처리합니다. "PostgreSQL 16"에 대한 쿼리는 "PostgreSQL 15"에 대한 결과를 반환하지 않습니다. 이는 오류 코드, 함수 이름 및 버전별 동작에서 중요하며, 닫기로는 충분하지 않습니다.</p></li>
@@ -258,19 +258,19 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>개발자들이 가장 많이 묻는 질문은 이미 확립된 옵션이 있는데 왜 굳이 memsearch를 사용해야 하느냐는 것입니다. 간단히 답하자면, memsearch는 임시 지식 그래프와 같은 고급 기능을 투명성, 이식성, 단순성과 교환합니다. 대부분의 에이전트 메모리 사용 사례에서는 이것이 올바른 절충안입니다.</p>
+    </button></h2><p>개발자들이 가장 많이 하는 질문은 이미 확립된 옵션이 있는데 왜 굳이 memsearch를 사용해야 하느냐는 것입니다. 간단히 답하자면, memsearch는 임시 지식 그래프와 같은 고급 기능을 투명성, 이식성, 단순성과 교환합니다. 대부분의 에이전트 메모리 사용 사례에서는 이것이 올바른 절충안입니다.</p>
 <table>
 <thead>
 <tr><th>솔루션</th><th>강점</th><th>제한 사항</th><th>최적 대상</th></tr>
 </thead>
 <tbody>
-<tr><td>멤서치</td><td>투명한 일반 텍스트 메모리, 인간-AI 공동 저작, 마이그레이션 마찰 제로, 손쉬운 디버깅, Git 기본 지원</td><td>내장된 임시 그래프나 복잡한 멀티에이전트 메모리 구조 없음</td><td>장기 메모리의 제어, 단순성, 이식성을 중요시하는 팀</td></tr>
+<tr><td>멤서치</td><td>투명한 일반 텍스트 메모리, 인간-AI 공동 저작, 마이그레이션 마찰 제로, 손쉬운 디버깅, Git 네이티브</td><td>내장된 임시 그래프나 복잡한 멀티에이전트 메모리 구조 없음</td><td>장기 메모리의 제어, 단순성, 이식성을 중요시하는 팀</td></tr>
 <tr><td>Mem0</td><td>완전 관리형, 실행 또는 유지 관리할 인프라 없음</td><td>불투명 - 메모리를 검사하거나 수동으로 편집할 수 없으며, 임베딩이 유일한 표현입니다.</td><td>핸즈오프 관리형 서비스를 원하고 가시성이 낮아도 괜찮은 팀</td></tr>
 <tr><td>Zep</td><td>풍부한 기능 세트: 임시 메모리, 다중 페르소나 모델링, 복잡한 지식 그래프</td><td>무거운 아키텍처, 움직이는 부분이 많아 학습 및 운영이 어려움</td><td>고급 메모리 구조 또는 시간 인식 추론이 진정으로 필요한 에이전트</td></tr>
-<tr><td>랭멤 / 레타</td><td>자체 에코시스템 내부의 심층적이고 원활한 통합</td><td>프레임워크 종속성, 다른 에이전트 스택으로 포팅하기 어려움</td><td>이미 특정 프레임워크에 전념하는 팀</td></tr>
+<tr><td>랭멤 / 레타</td><td>자체 에코시스템 내부의 심층적이고 원활한 통합</td><td>프레임워크 종속성, 다른 에이전트 스택으로 포팅하기 어려움</td><td>이미 특정 프레임워크에 전념하고 있는 팀</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">memsearch 사용 시작 및 프로젝트 참여<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">memsearch를 사용해 보고 피드백을 알려주세요.<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -285,7 +285,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Memsearch는 MIT 라이선스에 따라 완전 오픈 소스이며, 현재 리포지토리에서 프로덕션 실험을 할 수 있습니다.</p>
+    </button></h2><p>Memsearch는 MIT 라이선스에 따라 완전 오픈 소스이며, 현재 리포지토리는 프로덕션 실험을 위한 준비가 완료되었습니다.</p>
 <ul>
 <li><p><strong>리포지토리:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
 <li><p><strong>문서:</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>

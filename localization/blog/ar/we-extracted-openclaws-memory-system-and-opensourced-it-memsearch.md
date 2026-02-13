@@ -20,7 +20,7 @@ origin: >-
   https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
 <p>ينتشر<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (clawdbot و moltbot سابقًا) انتشارًا هائلاً - <a href="https://github.com/openclaw/openclaw">أكثر من 189 ألف نجمة على GitHub</a> في أقل من أسبوعين. هذا جنون. تدور معظم هذه الضجة حول قدراته المستقلة والوكيلة عبر قنوات الدردشة اليومية، بما في ذلك iMessages وواتساب وسلاك وتيليجرام وغيرها.</p>
-<p>ولكن بصفتنا مهندسين نعمل على نظام قاعدة بيانات متجهة، فإن ما لفت انتباهنا حقًا هو <strong>نهج OpenClaw في الذاكرة طويلة المدى</strong>. فعلى عكس معظم أنظمة الذاكرة الموجودة، فإن OpenClaw يجعل الذكاء الاصطناعي الخاص به يكتب تلقائياً سجلات يومية كملفات Markdown. هذه الملفات هي مصدر الحقيقة، والنموذج "يتذكر" فقط ما تتم كتابته على القرص. يمكن للمطورين البشريين فتح ملفات التخفيض تلك، وتحريرها مباشرة، واستخلاص المبادئ طويلة المدى، ورؤية ما يتذكره الذكاء الاصطناعي بالضبط في أي وقت. لا توجد صناديق سوداء. بصراحة، إنها واحدة من أنظف بنيات الذاكرة التي رأيناها وأكثرها ملاءمة للمطورين.</p>
+<p>ولكن بصفتنا مهندسين نعمل على نظام قاعدة بيانات متجهة، فإن ما لفت انتباهنا حقًا هو <strong>نهج OpenClaw في الذاكرة طويلة المدى</strong>. فعلى عكس معظم أنظمة الذاكرة الموجودة، فإن OpenClaw يجعل الذكاء الاصطناعي الخاص به يكتب تلقائياً سجلات يومية كملفات Markdown. هذه الملفات هي مصدر الحقيقة، والنموذج "يتذكر" فقط ما تتم كتابته على القرص. يمكن للمطورين البشريين فتح ملفات تخفيض السعر تلك، وتحريرها مباشرة، واستخلاص المبادئ طويلة الأمد، ورؤية ما يتذكره الذكاء الاصطناعي بالضبط في أي وقت. لا توجد صناديق سوداء. بصراحة، إنها واحدة من أنظف بنيات الذاكرة التي رأيناها وأكثرها ملاءمة للمطورين.</p>
 <p>لذلك بطبيعة الحال، كان لدينا سؤال: <strong><em>لماذا يجب أن يعمل هذا فقط داخل OpenClaw؟ ماذا لو كان بإمكان أي وكيل الحصول على ذاكرة كهذه؟</em></strong> لقد أخذنا بنية الذاكرة الدقيقة من OpenClaw وقمنا ببناء <a href="https://github.com/zilliztech/memsearch">memsearch</a> - مكتبة ذاكرة طويلة الأجل مستقلة وقابلة للتوصيل والتشغيل تمنح أي وكيل ذاكرة ثابتة وشفافة وقابلة للتحرير البشري. لا تعتمد على بقية OpenClaw. ما عليك سوى إسقاطها، وسيحصل وكيلك على ذاكرة دائمة مع بحث مدعوم من Milvus/Zilliz Cloud، بالإضافة إلى سجلات Markdown كمصدر أساسي للحقيقة.</p>
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <ul>
@@ -115,7 +115,7 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
 <li><p><strong>يتعامل الذكاء الاصطناعي مع</strong> السجلات اليومية التلقائية (<code translate="no">YYYY-MM-DD.md</code>) مع تفاصيل التنفيذ مثل "تم نشر الإصدار 2.3.1، تحسن الأداء بنسبة 12%".</p></li>
 <li><p><strong>يتعامل البشر مع:</strong> المبادئ طويلة المدى في <code translate="no">MEMORY.md</code> ، مثل "مكدس الفريق: Python + FastAPI + PostgreSQL."</p></li>
 </ul>
-<p>يقوم كلا الجانبين بتحرير ملفات Markdown نفسها باستخدام الأدوات التي يستخدمونها بالفعل. لا توجد استدعاءات لواجهة برمجة التطبيقات، ولا أدوات خاصة، ولا حارس بوابة. عندما تكون الذاكرة مقفلة داخل قاعدة بيانات، فإن هذا النوع من التأليف المشترك غير ممكن. memsearch يجعلها memsearch هي الافتراضية.</p>
+<p>يقوم كلا الجانبين بتحرير ملفات Markdown نفسها باستخدام الأدوات التي يستخدمونها بالفعل. لا توجد استدعاءات لواجهة برمجة التطبيقات، ولا أدوات خاصة، ولا حارس بوابة. عندما تكون الذاكرة مقفلة داخل قاعدة البيانات، فإن هذا النوع من التأليف المشترك غير ممكن. memsearch يجعلها memsearch هي الافتراضية.</p>
 <h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">تحت الغطاء: يعمل memsearch على أربعة تدفقات عمل أساسية تحافظ على الذاكرة سريعة وجديدة وخفيفة الوزن<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -202,7 +202,7 @@ PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</sp
 <p>عادةً ما يكون التحويل من التطوير المحلي إلى الإنتاج <strong>تغييراً في التكوين من سطر واحد</strong>. تبقى شفرتك كما هي.</p>
 <h3 id="Install" class="common-anchor-header">التثبيت</h3><pre><code translate="no" class="language-bash">pip install memsearch
 <button class="copy-code-btn"></button></code></pre>
-<p>يدعم memsearch أيضًا العديد من موفري التضمين، بما في ذلك OpenAI وGoogle وVoyage وOllama والنماذج المحلية. وهذا يضمن بقاء بنية الذاكرة الخاصة بك محمولة ومحايدة للبائعين.</p>
+<p>تدعم memsearch أيضًا العديد من موفري التضمين، بما في ذلك OpenAI وGoogle وVoyage وOllama والنماذج المحلية. وهذا يضمن بقاء بنية الذاكرة الخاصة بك محمولة ومحايدة للبائعين.</p>
 <h3 id="Option-1-Python-API-integrated-into-your-agent-framework" class="common-anchor-header">الخيار 1: واجهة برمجة تطبيقات بايثون (مدمجة في إطار عمل وكيلك)</h3><p>فيما يلي مثال بسيط على حلقة وكيل كاملة باستخدام memsearch. يمكنك النسخ/اللصق والتعديل حسب الحاجة:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> memsearch <span class="hljs-keyword">import</span> MemSearch
@@ -265,12 +265,12 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 </thead>
 <tbody>
 <tr><td>ميمسارش</td><td>ذاكرة نص عادي شفافة، مشاركة الإنسان والذكاء الاصطناعي في التأليف، عدم وجود احتكاك في الترحيل، سهولة تصحيح الأخطاء، سهولة التصحيح، Git-native</td><td>لا توجد رسوم بيانية زمنية مدمجة أو هياكل ذاكرة معقدة متعددة العوامل</td><td>فرق العمل التي تقدر التحكم والبساطة وقابلية النقل في الذاكرة طويلة المدى</td></tr>
-<tr><td>ميم0</td><td>مُدار بالكامل، لا توجد بنية تحتية للتشغيل أو الصيانة</td><td>مبهمة - لا يمكن فحص الذاكرة أو تحريرها يدويًا؛ التضمينات هي التمثيل الوحيد</td><td>الفرق التي ترغب في خدمة مُدارة دون تدخل من أحد ولا بأس من رؤية أقل</td></tr>
+<tr><td>ميم0</td><td>مُدارة بالكامل، لا توجد بنية تحتية للتشغيل أو الصيانة</td><td>مبهمة - لا يمكن فحص الذاكرة أو تحريرها يدويًا؛ التضمينات هي التمثيل الوحيد</td><td>الفرق التي ترغب في خدمة مُدارة دون تدخل من أحد ولا بأس من رؤية أقل</td></tr>
 <tr><td>Zep</td><td>مجموعة ميزات غنية: الذاكرة الزمنية، والنمذجة متعددة الشخصيات، والرسوم البيانية المعرفية المعقدة</td><td>بنية ثقيلة؛ المزيد من الأجزاء المتحركة؛ أصعب في التعلم والتشغيل</td><td>الوكلاء الذين يحتاجون حقًا إلى هياكل ذاكرة متقدمة أو تفكير مدرك للوقت</td></tr>
 <tr><td>لانج ميم / ليتا</td><td>تكامل عميق وسلس داخل أنظمتها البيئية الخاصة بها</td><td>انغلاق الإطار؛ صعوبة النقل إلى حزم الوكلاء الآخرين</td><td>الفرق الملتزمة بالفعل بهذه الأطر المحددة</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">ابدأ باستخدام memsearch وانضم إلى المشروع<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">جرّب Memsearch وأخبرنا بتعليقاتك.<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -290,7 +290,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <li><p><strong>الريبو:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
 <li><p><strong>المستندات</strong> <a href="https://zilliztech.github.io/memsearch">: zilliztech.github.io/memsearch</a></p></li>
 </ul>
-<p>إذا كنت تقوم ببناء وكيل يحتاج إلى تذكر الأشياء عبر الجلسات وتريد التحكم الكامل فيما يتذكره، فإن memsearch يستحق البحث. يتم تثبيت المكتبة باستخدام <code translate="no">pip install</code> واحد، وتعمل مع أي إطار عمل وكيل، وتخزن كل شيء في شكل Markdown يمكنك قراءته وتحريره وإصداره باستخدام Git.</p>
+<p>إذا كنت تقوم ببناء وكيل يحتاج إلى تذكر الأشياء عبر الجلسات وتريد التحكم الكامل فيما يتذكره، فإن memsearch يستحق البحث. يتم تثبيت المكتبة باستخدام <code translate="no">pip install</code> واحد، وتعمل مع أي إطار عمل وكيل، وتخزن كل شيء على شكل Markdown يمكنك قراءته وتحريره وإصداره باستخدام Git.</p>
 <p>نحن نعمل بنشاط على تطوير memsearch ونود الحصول على مدخلات من المجتمع.</p>
 <ul>
 <li><p>افتح مشكلة إذا تعطل شيء ما.</p></li>
@@ -318,5 +318,5 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">البرنامج التعليمي لـ OpenClaw الاتصال بـ Slack لمساعد الذكاء الاصطناعي المحلي</a></p></li>
 <li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">بناء وكلاء ذكاء اصطناعي على غرار Clawdbot-Style AI Agents مع LangGraph و Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">RAG مقابل الوكلاء طويل المدى: هل RAG عفا عليها الزمن؟</a></p></li>
-<li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">إنشاء مهارة أنثروبك مخصصة لـ Milvus لتدوير RAG بسرعة</a></p></li>
+<li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">إنشاء مهارة أنثروبيك مخصصة لـ Milvus لتدوير RAG بسرعة</a></p></li>
 </ul>

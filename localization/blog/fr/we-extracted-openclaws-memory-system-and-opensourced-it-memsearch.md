@@ -273,7 +273,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><td>LangMem / Letta</td><td>Intégration profonde et transparente au sein de leurs propres écosystèmes</td><td>Verrouillage du cadre ; difficile à porter sur d'autres piles d'agents</td><td>Les équipes sont déjà engagées dans ces frameworks spécifiques</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">Commencez à utiliser memsearch et rejoignez le projet<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Essayez memsearch et faites-nous part de vos commentaires<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -319,7 +319,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
     </button></h2><ul>
 <li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">Qu'est-ce qu'OpenClaw ? Guide complet de l'agent d'intelligence artificielle open-source</a></p></li>
 <li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Tutoriel OpenClaw : Se connecter à Slack pour un assistant IA local</a></p></li>
-<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Construire des agents d'IA de type Clawdbot avec LangGraph et Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Construire des agents IA de type Clawdbot avec LangGraph et Milvus</a></p></li>
 <li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">RAG contre les agents à longue durée d'exécution : RAG est-il obsolète ?</a></p></li>
 <li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">Créer une compétence anthropique personnalisée pour Milvus afin de faire tourner rapidement RAG</a></p></li>
 </ul>

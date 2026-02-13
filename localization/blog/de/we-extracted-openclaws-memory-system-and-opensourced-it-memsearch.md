@@ -273,7 +273,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><td>LangMem / Letta</td><td>Tiefe, nahtlose Integration in ihre eigenen Ökosysteme</td><td>Framework-Lock-in; schwer auf andere Agenten-Stacks zu portieren</td><td>Teams sind bereits auf diese spezifischen Frameworks festgelegt</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">Verwenden Sie memsearch und schließen Sie sich dem Projekt an<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Testen Sie memsearch und lassen Sie uns Ihr Feedback wissen<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

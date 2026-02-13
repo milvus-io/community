@@ -23,7 +23,7 @@ origin: >-
   https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
 <p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (precedentemente clawdbot e moltbot) sta diventando virale: <a href="https://github.com/openclaw/openclaw">più di 189k stelle su GitHub</a> in meno di due settimane. È una cosa pazzesca. La maggior parte del clamore riguarda le sue capacità autonome e agenziali nei canali di chat di tutti i giorni, tra cui iMessage, WhatsApp, Slack, Telegram e altri ancora.</p>
-<p>Ma come ingegneri che lavorano a un sistema di database vettoriale, ciò che ha davvero attirato la nostra attenzione è stato l'<strong>approccio di OpenClaw alla memoria a lungo termine</strong>. A differenza della maggior parte dei sistemi di memoria in circolazione, OpenClaw fa sì che la sua IA scriva automaticamente i log giornalieri come file Markdown. Questi file sono la fonte della verità e il modello "ricorda" solo ciò che viene scritto su disco. Gli sviluppatori umani possono aprire questi file Markdown, modificarli direttamente, distillare i principi a lungo termine e vedere esattamente ciò che l'IA ricorda in qualsiasi momento. Nessuna scatola nera. Onestamente, è una delle architetture di memoria più pulite e più facili da sviluppare che abbiamo visto.</p>
+<p>Ma come ingegneri che lavorano a un sistema di database vettoriale, ciò che ha davvero attirato la nostra attenzione è stato l'<strong>approccio di OpenClaw alla memoria a lungo termine</strong>. A differenza della maggior parte dei sistemi di memoria in circolazione, OpenClaw fa in modo che la sua intelligenza artificiale scriva automaticamente i registri giornalieri come file Markdown. Questi file sono la fonte della verità e il modello "ricorda" solo ciò che viene scritto su disco. Gli sviluppatori umani possono aprire questi file Markdown, modificarli direttamente, distillare i principi a lungo termine e vedere esattamente ciò che l'IA ricorda in qualsiasi momento. Nessuna scatola nera. Onestamente, è una delle architetture di memoria più pulite e più facili da sviluppare che abbiamo visto.</p>
 <p>Quindi, naturalmente, ci siamo posti una domanda: <strong><em>perché questo dovrebbe funzionare solo all'interno di OpenClaw? E se qualsiasi agente potesse avere una memoria di questo tipo?</em></strong> Abbiamo preso l'esatta architettura di memoria di OpenClaw e abbiamo costruito <a href="https://github.com/zilliztech/memsearch">memsearch</a>, una libreria di memoria a lungo termine indipendente e plug-and-play che fornisce a qualsiasi agente una memoria persistente, trasparente e modificabile dall'uomo. Non dipende dal resto di OpenClaw. Basta inserirla e l'agente ottiene una memoria durevole con una ricerca alimentata da Milvus/Zilliz Cloud, oltre ai log Markdown come fonte canonica di verità.</p>
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <ul>
@@ -112,14 +112,14 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>I file di memoria rimangono esattamente gli stessi. L'infrastruttura che li circonda può evolvere liberamente. Il risultato è una portabilità a lungo termine, una proprietà rara nei sistemi di intelligenza artificiale.</p>
-<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">I file Markdown condivisi permettono a umani e agenti di essere coautori della memoria</h3><p>Nella maggior parte delle soluzioni di memoria, la modifica di ciò che l'intelligenza artificiale ricorda richiede la scrittura di codice per un'API. Ciò significa che solo gli sviluppatori possono gestire la memoria dell'IA, e anche per loro è complicato.</p>
+<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">I file Markdown condivisi permettono a umani e agenti di essere coautori della memoria</h3><p>Nella maggior parte delle soluzioni di memoria, la modifica di ciò che l'intelligenza artificiale ricorda richiede la scrittura di codice per un'API. Ciò significa che solo gli sviluppatori possono gestire la memoria dell'intelligenza artificiale, e anche per loro è un'operazione macchinosa.</p>
 <p>Memsearch consente una divisione più naturale delle responsabilità:</p>
 <ul>
 <li><p><strong>L'intelligenza artificiale gestisce:</strong> Registri giornalieri automatici (<code translate="no">YYYY-MM-DD.md</code>) con dettagli di esecuzione come "distribuito v2.3.1, miglioramento delle prestazioni del 12%".</p></li>
 <li><p><strong>Gli esseri umani gestiscono:</strong> Principi a lungo termine in <code translate="no">MEMORY.md</code>, come "Team stack: Python + FastAPI + PostgreSQL".</p></li>
 </ul>
 <p>Entrambe le parti modificano gli stessi file Markdown con gli strumenti che già utilizzano. Nessuna chiamata API, nessuno strumento speciale, nessun gatekeeper. Quando la memoria è bloccata all'interno di un database, questo tipo di autorialità condivisa non è possibile. memsearch la rende predefinita.</p>
-<h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">Sotto il cofano: memsearch funziona con quattro flussi di lavoro che mantengono la memoria veloce, fresca e snella<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
+<h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">Sotto il cofano: memsearch si basa su quattro flussi di lavoro che mantengono la memoria veloce, fresca e snella<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -239,7 +239,7 @@ ms = MemSearch(paths=[<span class="hljs-string">&quot;./memory/&quot;</span>])
 <li><p><strong>Ricordate</strong>: l'agente scrive nuova memoria in Markdown e memsearch aggiorna il suo indice.</p></li>
 </ul>
 <p>Questo schema si adatta naturalmente a qualsiasi sistema di agenti: LangChain, AutoGPT, router semantici, LangGraph o cicli di agenti personalizzati. È un sistema indipendente dal framework.</p>
-<h3 id="Option-2-CLI-quick-operations-good-for-debugging" class="common-anchor-header">Opzione 2: CLI (operazioni rapide, ottime per il debug)</h3><p>La CLI è ideale per i flussi di lavoro autonomi, i controlli rapidi o l'ispezione della memoria durante lo sviluppo:</p>
+<h3 id="Option-2-CLI-quick-operations-good-for-debugging" class="common-anchor-header">Opzione 2: CLI (operazioni rapide, ottime per il debug)</h3><p>La CLI è ideale per i flussi di lavoro autonomi, per i controlli rapidi o per ispezionare la memoria durante lo sviluppo:</p>
 <pre><code translate="no" class="language-bash">memsearch index ./docs/              <span class="hljs-comment"># Index files</span>
 memsearch search <span class="hljs-string">&quot;Redis caching&quot;</span>     <span class="hljs-comment"># Search</span>
 memsearch watch ./docs/              <span class="hljs-comment"># Watch for file changes</span>
@@ -273,7 +273,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><td>LangMem / Letta</td><td>Integrazione profonda e senza soluzione di continuità all'interno dei loro ecosistemi</td><td>Lock-in del framework; difficile da portare su altri stack di agenti</td><td>Team già impegnati su quei framework specifici</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">Iniziare a usare memsearch e unirsi al progetto<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Provate memsearch e fateci sapere il vostro feedback<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

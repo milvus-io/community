@@ -43,14 +43,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在深入了解 OpenClaw 内存架构之前，让我们先弄清楚两个概念：<strong>上下文</strong>和<strong>内存</strong>。这两个概念听起来很相似，但在实际工作中却大相径庭。</p>
+    </button></h2><p>在深入了解 OpenClaw 内存架构之前，让我们先搞清楚两个概念：<strong>上下文</strong>和<strong>内存</strong>。这两个概念听起来很相似，但在实际工作中却大相径庭。</p>
 <ul>
 <li><p><strong>上下文</strong>是代理在单个请求中看到的所有内容--系统提示、项目级指导文件（如<code translate="no">AGENTS.md</code> 和<code translate="no">SOUL.md</code> ）、对话历史（消息、工具调用、压缩摘要）以及用户的当前消息。它只限于一个会话，而且相对紧凑。</p></li>
 <li><p><strong>内存</strong>是跨会话持续存在的内容。它存在于本地磁盘中，包括过去对话的全部历史记录、代理处理过的文件以及用户偏好。未汇总。未压缩。原始内容。</p></li>
 </ul>
 <p>现在，OpenClaw 的设计决定使其与众不同：<strong>所有内存都以普通 Markdown 文件的形式存储在本地文件系统中。</strong>每次会话结束后，人工智能都会自动将更新内容写入这些 Markdown 日志。你和任何开发人员都可以打开、编辑、重组、删除或完善它们。与此同时，向量数据库与该系统并肩作战，创建并维护用于检索的索引。每当 Markdown 文件发生变化时，系统就会检测到变化并自动重新建立索引。</p>
 <p>如果你用过 Mem0 或 Zep 这样的工具，你会立刻发现其中的不同。这些系统将记忆存储为 Embeddings，这是唯一的副本。你无法读取 Agents 的记忆。你无法通过编辑一行来修复糟糕的记忆。OpenClaw 的方法可以同时提供这两种功能：普通文件的透明度<strong>和</strong>使用向量数据库进行向量搜索的检索能力。你可以读取它、<code translate="no">git diff</code> 、grep--它只是文件。</p>
-<p>唯一的缺点是什么？现在，这个 Markdown 优先的内存系统与整个 OpenClaw 生态系统--网关流程、平台连接器、工作区配置和消息传输基础架构--紧密相连。如果你只想要内存模型，那就需要拖入很多机器。</p>
+<p>唯一的缺点是什么？目前，这个 Markdown 优先的内存系统与整个 OpenClaw 生态系统（网关流程、平台连接器、工作区配置和消息传输基础架构）紧密相连。如果你只想要内存模型，那就需要拖入很多机器。</p>
 <p>这正是我们构建<a href="http://github.com/zilliztech/memsearch"><strong>Memsearch</strong></a> 的原因：同样的理念--Markdown 作为真实来源、自动向量索引、完全由人工编辑--但它是一个轻量级的独立库，可以放入任何 Agents 架构中。</p>
 <h2 id="How-Memsearch-Works" class="common-anchor-header">Memsearch 如何工作<button data-href="#How-Memsearch-Works" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -85,7 +85,7 @@ origin: >-
 - Query count dropped <span class="hljs-keyword">from</span> 152 to 3
 </span><button class="copy-code-btn"></button></code></pre>
 <p>如果人工智能出了问题，修复它就像编辑文件一样简单。更新条目、保存，memsearch 就会自动重新索引更改内容。只需五秒。无需调用 API。无需工具。没有神秘感。你调试人工智能内存的方式与调试文档的方式相同--编辑文件。</p>
-<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Git 支持的内存意味着团队可以跟踪、审查和回滚变更</h3><p>生活在数据库中的人工智能内存很难进行协作。要想知道谁在什么时候修改了什么，就必须挖掘审计日志，而很多解决方案甚至不提供审计日志。变更发生得悄无声息，而关于人工智能应记住什么的分歧也没有明确的解决途径。团队最终只能依赖 Slack 消息和假设。</p>
+<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Git 支持的内存意味着团队可以跟踪、审查和回滚变更</h3><p>生活在数据库中的人工智能内存很难进行协作。要想知道谁在什么时候修改了什么，就必须挖掘审计日志，而很多解决方案甚至不提供审计日志。变更发生得悄无声息，而关于人工智能应记住哪些内容的分歧也没有明确的解决途径。团队最终只能依赖 Slack 消息和假设。</p>
 <p>Memsearch 解决了这一问题，它只记忆 Markdown 文件，这意味着<strong>Git 会自动处理版本控制</strong>。一个命令就能显示整个历史记录：</p>
 <pre><code translate="no" class="language-bash">git <span class="hljs-built_in">log</span> memory/MEMORY.md
 git diff HEAD~1 memory/2026-02-09.md
@@ -141,7 +141,7 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
 <h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1.观察：每次保存文件时自动重新索引</h3><p><strong>Watch</strong>工作流程监控内存/目录中的所有 Markdown 文件，并在文件修改和保存时触发重新索引。<strong>1500 毫秒</strong>的<strong>延时</strong>可确保在不浪费计算的情况下检测到更新：如果连续多次保存，定时器会重置，并在编辑稳定后才触发。</p>
 <p>该延迟根据经验进行调整：</p>
 <ul>
-<li><p><strong>100 毫秒</strong>→ 太敏感；每次按键都触发，烧毁嵌入式调用</p></li>
+<li><p><strong>100 毫秒</strong>→ 太敏感；每次按键都触发，烧毁嵌入调用</p></li>
 <li><p><strong>10 秒</strong>→ 太慢；开发人员会注意到延迟</p></li>
 <li><p><strong>1500ms</strong>→ 反应速度和资源效率的理想平衡点</p></li>
 </ul>
@@ -242,7 +242,7 @@ memsearch search <span class="hljs-string">&quot;Redis caching&quot;</span>     
 memsearch watch ./docs/              <span class="hljs-comment"># Watch for file changes</span>
 memsearch compact                    <span class="hljs-comment"># Compact old memory</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>CLI 反映了 Python API 的功能，但无需编写任何代码，非常适合调试、检查、迁移或验证内存文件夹结构。</p>
+<p>CLI 与 Python API 的功能相同，但无需编写任何代码，非常适合调试、检查、迁移或验证内存文件夹结构。</p>
 <h2 id="How-memsearch-Compares-to-Other-Memory-Solutions" class="common-anchor-header">memsearch 与其他内存解决方案的比较<button data-href="#How-memsearch-Compares-to-Other-Memory-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -270,7 +270,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><td>LangMem / Letta</td><td>在各自生态系统内进行深度无缝集成</td><td>框架锁定；难以移植到其他 Agents 堆栈中</td><td>团队已致力于这些特定框架</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">开始使用 memsearch 并加入项目<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">试用 memsearch 并告诉我们您的反馈意见<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -285,7 +285,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Memsearch 在 MIT 许可下完全开源，其资源库已准备就绪，可立即用于生产实验。</p>
+    </button></h2><p>Memsearch 在 MIT 许可下完全开源，其资源库已准备就绪，可在今天进行生产实验。</p>
 <ul>
 <li><p><strong>Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
 <li><p><strong>文档：</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>
@@ -295,7 +295,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <ul>
 <li><p>如果有问题，请提交问题。</p></li>
 <li><p>如果你想扩展该库，请提交 PR。</p></li>
-<li><p>如果你对 "Markdown-as-source-of-truth "的理念有共鸣，请在软件仓库中加入 "明星"。</p></li>
+<li><p>如果你对 "Markdown-as-source-of-truth"（标记即真理之源）的理念有共鸣，请在软件仓库中加入 "明星"。</p></li>
 </ul>
 <p>OpenClaw 的内存系统不再锁定在 OpenClaw 内部。现在，任何人都可以使用它。</p>
 <h2 id="Keep-Reading" class="common-anchor-header">继续阅读<button data-href="#Keep-Reading" class="anchor-icon" translate="no">

@@ -25,9 +25,9 @@ origin: >-
 <ul>
 <li><p><strong>GitHub Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a>(オープンソース、MITライセンス)</p></li>
 <li><p><strong>ドキュメント</strong> <a href="https://zilliztech.github.io/memsearch/">: https://zilliztech.github.io/memsearch/</a></p></li>
-<li><p><strong>クロードコードプラグイン</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">：https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
+<li><p><strong>クロードコードプラグイン:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
 </ul>
-<h2 id="What-Makes-OpenClaws-Memory-Different" class="common-anchor-header">OpenClaw のメモリの特徴<button data-href="#What-Makes-OpenClaws-Memory-Different" class="anchor-icon" translate="no">
+<h2 id="What-Makes-OpenClaws-Memory-Different" class="common-anchor-header">OpenClawのメモリの特徴<button data-href="#What-Makes-OpenClaws-Memory-Different" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,7 +75,7 @@ origin: >-
     ├── 2026-02-08.md
     └── 2026-02-07.md
 <button class="copy-code-btn"></button></code></pre>
-<p>memsearchは<a href="https://milvus.io/"><strong>Milvusを</strong></a>ベクトルデータベースとして使用し、これらのMarkdownファイルにインデックスを付け、高速な意味検索を行います。MemsearchはMilvusをベクトル・データベースとして使用し、Markdownファイルのインデックスを作成します。Milvusインデックスを完全に削除しても、<strong>何も失うものはない。</strong>Memsearchは単純にMarkdownファイルを再インデックス化し、数分で完全な検索レイヤーを再構築する。これは、エージェントのメモリが透過的で、耐久性があり、完全に再構築可能であることを意味します。</p>
+<p>memsearchは<a href="https://milvus.io/"><strong>Milvusを</strong></a>ベクターデータベースとして使用し、これらのMarkdownファイルにインデックスを付け、高速なセマンティック検索を行います。MemsearchはMilvusをベクトル・データベースとして使用し、Markdownファイルのインデックスを作成します。Milvusインデックスを完全に削除しても、<strong>何も失うものはない。</strong>Memsearchは単純にMarkdownファイルを再インデックス化し、数分で完全な検索レイヤーを再構築する。これは、エージェントのメモリが透過的で、耐久性があり、完全に再構築可能であることを意味します。</p>
 <p>以下はmemsearchのコア機能です：</p>
 <h3 id="Readable-Markdown-Makes-Debugging-as-Simple-as-Editing-a-File" class="common-anchor-header">読み取り可能なマークダウンにより、デバッグはファイルを編集するのと同じくらい簡単になります。</h3><p>AIの記憶のデバッグは、通常痛みを伴います。エージェントが間違った答えを出したとき、ほとんどの記憶システムでは、実際に<em>何が</em>記憶されているのかを確認する明確な方法がありません。典型的なワークフローは、メモリAPIをクエリするためにカスタムコードを書き、不透明なエンベッディングや冗長なJSONブロブをふるいにかけることです。</p>
 <p><strong>memsearchは、このような問題をすべて解決してくれる。</strong>すべての記憶は、プレーンなMarkdownとしてmemory/フォルダに保存される：</p>
@@ -108,7 +108,7 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>メモリファイルは全く同じままです。周りのインフラは自由に進化させることができます。その結果、AIシステムには珍しい長期的な移植性が実現します。</p>
-<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">共有されたMarkdownファイルにより、人間とエージェントが共同でメモリーを作成できます。</h3><p>ほとんどのメモリ・ソリューションでは、AIが記憶する内容を編集するには、APIに対してコードを書く必要がある。つまり、開発者だけがAIのメモリを管理することができ、開発者にとっても面倒なのだ。</p>
+<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">共有されたMarkdownファイルにより、人間とエージェントは共同でメモリを作成することができます。</h3><p>ほとんどのメモリ・ソリューションでは、AIが記憶する内容を編集するには、APIに対してコードを書く必要がある。つまり、開発者だけがAIのメモリを管理することができ、開発者にとっても面倒なのだ。</p>
 <p>Memsearchは、より自然な責任分担を可能にする：</p>
 <ul>
 <li><p><strong>AIが処理する：</strong>デプロイされたv2.3.1、12％のパフォーマンス向上 "のような実行の詳細を含む自動デイリーログ(<code translate="no">YYYY-MM-DD.md</code>)。</p></li>
@@ -263,13 +263,13 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><th>ソリューション</th><th>長所</th><th>制限事項</th><th>最適</th></tr>
 </thead>
 <tbody>
-<tr><td>memsearch</td><td>透過的なプレーンテキストメモリ、人間とAIの共同オーサリング、マイグレーション摩擦ゼロ、簡単なデバッグ、Gitネイティブ</td><td>時系列グラフや複雑なマルチエージェントメモリー構造を内蔵していない</td><td>長期記憶におけるコントロール、シンプルさ、移植性を重視するチーム</td></tr>
+<tr><td>memsearch</td><td>透過的なプレーンテキストメモリ、人間とAIの共同オーサリング、移行摩擦ゼロ、簡単なデバッグ、Gitネイティブ</td><td>時系列グラフや複雑なマルチエージェントメモリー構造を内蔵していない</td><td>長期記憶におけるコントロール、シンプルさ、移植性を重視するチーム</td></tr>
 <tr><td>Mem0</td><td>完全に管理され、インフラストラクチャの運用や保守が不要</td><td>不透明-メモリの検査や手動での編集ができない。</td><td>手を煩わせないマネージドサービスを希望し、可視性が低くても構わないチーム</td></tr>
 <tr><td>ゼップ</td><td>豊富な機能セット：一時記憶、マルチペルソナモデリング、複雑な知識グラフ</td><td>アーキテクチャが重く、可動部分が多く、学習と運用が難しい</td><td>本当に高度なメモリ構造や時間認識推論を必要とするエージェント</td></tr>
 <tr><td>LangMem / Letta</td><td>独自のエコシステム内に深くシームレスに統合</td><td>他のエージェントスタックへの移植が困難</td><td>チームが既に特定のフレームワークにコミットしている</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">memsearchを使い始め、プロジェクトに参加する<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">memsearchを試して、フィードバックを教えてください。<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

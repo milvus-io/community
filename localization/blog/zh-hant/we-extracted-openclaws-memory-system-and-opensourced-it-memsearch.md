@@ -20,8 +20,8 @@ origin: >-
   https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
 <p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a>(前身為 clawdbot 和 moltbot) 正以病毒式的方式傳播 - 在不到兩週的時間內，<a href="https://github.com/openclaw/openclaw">GitHub 上的星級已超過 189k</a>。這實在太瘋狂了。大部分的討論都圍繞著它在日常聊天管道上的自主代理能力，包括 iMessages、WhatsApp、Slack、Telegram 等等。</p>
-<p>不過，身為研究向量資料庫系統的工程師，<strong>OpenClaw</strong> 真正吸引我們注意的是<strong>它對長期記憶的處理方式</strong>。與大多數的記憶體系統不同，OpenClaw 讓其人工智能自動將每日日誌寫成 Markdown 檔案。這些檔案是真相的來源，而模型只「記得」寫入磁碟的內容。人類開發者可以開啟這些 Markdown 檔案，直接編輯它們，提煉出長期原則，並確切看到 AI 在任何時候所記得的東西。沒有黑盒。老實說，這是我們見過最簡潔、最方便開發人員使用的記憶體架構之一。</p>
-<p>所以很自然地，我們有了一個問題：<strong><em>為什麼這只能在 OpenClaw 中運作？如果任何代理都能擁有這樣的記憶體會如何？</em></strong>我們從 OpenClaw 擷取了精確的記憶體架構，並建立了<a href="https://github.com/zilliztech/memsearch">memsearch</a>- 一個獨立、隨插即用的長期記憶體函式庫，可讓任何代理程式擁有持久、透明、可由人員編輯的記憶體。不需依賴 OpenClaw 的其他部分。只要將它放入，您的代理程式就能獲得由 Milvus/Zilliz Cloud 提供搜尋功能的持久性記憶體，以及 Markdown 日誌作為真相的正統來源。</p>
+<p>不過，身為研究向量資料庫系統的工程師，<strong>OpenClaw</strong> 真正吸引我們注意的是<strong>它對長期記憶的處理方式</strong>。與大多數的記憶體系統不同，OpenClaw 讓其人工智能自動將每日記錄寫成 Markdown 檔案。這些檔案是真相的來源，而模型只「記得」寫入磁碟的內容。人類開發者可以開啟這些 Markdown 檔案，直接編輯它們，提煉出長期原則，並確切看到 AI 在任何時候所記得的東西。沒有黑盒。老實說，這是我們見過最簡潔、最方便開發人員使用的記憶體架構之一。</p>
+<p>所以很自然地，我們有了一個問題：<strong><em>為什麼這只能在 OpenClaw 中運作？如果任何代理都能擁有這樣的記憶體會如何？</em></strong>我們從 OpenClaw 擷取了精確的記憶體架構，並建立了<a href="https://github.com/zilliztech/memsearch">memsearch</a>- 一個獨立、隨插即用的長期記憶體函式庫，讓任何代理程式都能擁有持久、透明、可由人員編輯的記憶體。不需依賴 OpenClaw 的其他部分。只要將它放入，您的代理程式就能獲得由 Milvus/Zilliz Cloud 提供搜尋功能的持久性記憶體，以及 Markdown 日誌作為真相的正統來源。</p>
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <ul>
 <li><p><strong>GitHub Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a>(開放原始碼，MIT 授權)</p></li>
@@ -50,7 +50,7 @@ origin: >-
 </ul>
 <p>現在，OpenClaw 的設計決定讓它變得特別：<strong>所有的記憶體都儲存在本機檔案系統上的純 Markdown 檔案。</strong>每次會話之後，AI 都會自動寫入更新的 Markdown 記錄。您和任何開發人員都可以開啟、編輯、重組、刪除或精進它們。同時，向量資料庫與此系統並列，建立並維護檢索索引。每當 Markdown 檔案變更時，系統就會偵測到該變更，並自動重新建立索引。</p>
 <p>如果您使用過 Mem0 或 Zep 之類的工具，您會立即發現其中的差異。那些系統會將記憶體儲存為 embeddings - 這是唯一的副本。您無法讀取代理程式所記憶的內容。您也無法透過編輯一行來修正錯誤的記憶。OpenClaw 的方法讓您兩者兼具：純檔案的透明度<strong>，以及</strong>使用向量資料庫進行向量搜尋的檢索能力。您可以讀取、<code translate="no">git diff</code> 、grep - 它只是檔案而已。</p>
-<p>唯一的缺點是什麼？現在這個 Markdown-first 記憶體系統與整個 OpenClaw 生態系統緊密交織在一起 - Gateway 程序、平台連接器、工作區設定以及訊息基礎架構。如果您只想要記憶體模型，那就需要拖入許多機器。</p>
+<p>唯一的缺點是什麼？目前，這個 Markdown-first 記憶體系統與整個 OpenClaw 生態系統緊密交織在一起 - Gateway 程序、平台連接器、工作區設定以及訊息傳輸基礎架構。如果您只想要記憶體模型，那就需要拖入許多機器。</p>
 <p>這正是我們建立<a href="http://github.com/zilliztech/memsearch"><strong>memsearch</strong></a> 的原因：相同的理念 - 以 Markdown 作為真相來源、自動向量索引、完全由人工編輯 - 但卻以輕量、獨立的函式庫形式提供，您可以將其放入任何代理體架構中。</p>
 <h2 id="How-Memsearch-Works" class="common-anchor-header">Memsearch 如何運作<button data-href="#How-Memsearch-Works" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -85,7 +85,7 @@ origin: >-
 - Query count dropped <span class="hljs-keyword">from</span> 152 to 3
 </span><button class="copy-code-btn"></button></code></pre>
 <p>如果 AI 做錯了什麼，只需要編輯檔案就可以解決問題。更新項目、儲存，memsearch 就會自動重新索引變更。五秒鐘。無需呼叫 API。不需要工具。沒有神秘感。您調試 AI 記憶體的方式與調試文件的方式相同，只需編輯檔案即可。</p>
-<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Git 支援的記憶體可讓團隊追蹤、檢閱及回復變更</h3><p>存儲在資料庫中的 AI 記憶體很難進行協作。若要找出誰在何時修改了什麼，就必須翻查稽核記錄，而許多解決方案甚至不提供這些記錄。變更發生得悄無聲息，而關於 AI 應該記住什麼的爭議也沒有明確的解決途徑。團隊最後只能依賴 Slack 消息和假設。</p>
+<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Git 支援的記憶體可讓團隊追蹤、檢閱及回復變更</h3><p>存儲在資料庫中的 AI 記憶體很難進行協作。若要找出誰在何時修改了什麼，就必須翻查稽核記錄，而許多解決方案甚至不提供這些記錄。變更發生得悄無聲息，而關於 AI 應該記住什麼的爭議也沒有明確的解決途徑。團隊最後只能依賴 Slack 訊息和假設。</p>
 <p>Memsearch 可以解決這個問題，它讓記憶體變成 Markdown 檔案，也就是說<strong>Git 會自動處理版本</strong>。單一指令即可顯示整個歷史記錄：</p>
 <pre><code translate="no" class="language-bash">git <span class="hljs-built_in">log</span> memory/MEMORY.md
 git diff HEAD~1 memory/2026-02-09.md
@@ -168,7 +168,7 @@ PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</sp
 <li><p>Chunk 2：<code translate="no">## Database\nPostgreSQL 16 is the primary database.</code></p></li>
 </ul>
 <p><strong>重複資料刪除</strong>使用每個 chunk 的 SHA-256 切細值，以避免嵌入相同文字兩次。如果多個檔案提到「PostgreSQL 16」，嵌入 API 會被呼叫一次，而不是每個檔案呼叫一次。對於 ~500KB 的文字，<strong>每月</strong>可節省約<strong> 0.15 美元。</strong>若擴大規模，則可節省數百美元。</p>
-<p><strong>Chunk ID 設計</strong>編碼了知道一個 chunk 是否過期所需的一切。格式為<code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code> 。<code translate="no">model_version</code> 欄位是重要的部分：當嵌入模型從<code translate="no">text-embedding-3-small</code> 升級到<code translate="no">text-embedding-3-large</code> 時，舊的嵌入就會變得無效。由於模型版本已嵌入 ID 中，系統會自動識別需要重新嵌入的片段。不需要手動清理。</p>
+<p><strong>Chunk ID 設計</strong>編碼了知道一個 chunk 是否過期所需的一切。格式為<code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code> 。<code translate="no">model_version</code> 欄位是重要的部分：當嵌入模型從<code translate="no">text-embedding-3-small</code> 升級到<code translate="no">text-embedding-3-large</code> 時，舊的嵌入就會變得無效。由於模型版本已嵌入 ID 中，因此系統會自動識別哪些片段需要重新嵌入。不需要手動清理。</p>
 <h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3.搜尋：混合向量 + BM25 擷取最大精確度</h3><p>擷取使用混合搜尋方式：向量搜尋佔 70% 的權重，BM25 關鍵字搜尋佔 30% 的權重。這平衡了在實務中經常出現的兩種不同需求。</p>
 <ul>
 <li><p><strong>向量搜尋可</strong>處理語意匹配。對「Redis 快取配置」的查詢會回傳一個包含「Redis L1 cache with 5min TTL」的 chunk，即使字眼不同。當開發人員記得概念，但不記得確切的措辭時，這將非常有用。</p></li>
@@ -264,13 +264,13 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <tr><th>解決方案</th><th>優勢</th><th>限制</th><th>最適合</th></tr>
 </thead>
 <tbody>
-<tr><td>記憶體搜尋</td><td>透明的明文記憶體、人類與人工智能共同撰寫、零移轉摩擦、簡易除錯、Git-native</td><td>無內建的時序圖或複雜的多代理記憶體結構</td><td>重視長期記憶體的控制、簡易性與可攜性的團隊</td></tr>
+<tr><td>記憶體搜尋</td><td>透明的明文記憶體、人類與人工智能共同撰寫、零移轉摩擦、簡易除錯、Git-native</td><td>沒有內建時序圖或複雜的多重代理記憶體結構</td><td>重視長期記憶體的控制、簡易性與可攜性的團隊</td></tr>
 <tr><td>Mem0</td><td>完全管理，無需執行或維護基礎架構</td><td>不透明 - 無法檢查或手動編輯記憶體；內嵌是唯一的表達方式</td><td>需要放手不管的管理服務，且能見度較低的團隊</td></tr>
-<tr><td>Zep</td><td>豐富的功能集：時間記憶、多角色建模、複雜的知識圖形</td><td>沉重的架構；較多的移動元件；較難學習和操作</td><td>真正需要進階記憶結構或時間感知推理的 Agents</td></tr>
+<tr><td>Zep</td><td>豐富的功能集：時間記憶、多角色建模、複雜的知識圖表</td><td>沉重的架構；更多的移動元件；更難學習和操作</td><td>真正需要進階記憶結構或時間感知推理的 Agents</td></tr>
 <tr><td>LangMem / Letta</td><td>在各自的生態系統中進行深入、無縫的整合</td><td>框架鎖定；很難移植到其他代理堆疊</td><td>團隊已經致力於那些特定的框架</td></tr>
 </tbody>
 </table>
-<h2 id="Start-Using-memsearch-and-Join-the-Project" class="common-anchor-header">開始使用 memsearch 並加入計畫<button data-href="#Start-Using-memsearch-and-Join-the-Project" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">嘗試 memsearch 並讓我們知道您的回饋<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -297,7 +297,7 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
 <li><p>如果您想要擴充函式庫，請提交 PR。</p></li>
 <li><p>如果您對 Markdown-as-source-of-truth 的理念有共嗚，請在 repo 加入星號。</p></li>
 </ul>
-<p>OpenClaw 的記憶體系統不再鎖在 OpenClaw 之內。現在，任何人都可以使用它。</p>
+<p>OpenClaw 的記憶體系統不再鎖在 OpenClaw 內。現在，任何人都可以使用它。</p>
 <h2 id="Keep-Reading" class="common-anchor-header">繼續閱讀<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
