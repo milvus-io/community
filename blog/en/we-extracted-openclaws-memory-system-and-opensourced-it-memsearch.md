@@ -8,7 +8,7 @@ cover: assets.zilliz.com/memsearch_openclaw_memory_11zon_b2a6b4cbb9.jpg
 tag: Engineering
 recommend: true
 publishToMedium: true
-tags: OpenClaw, AI agent memory, persistent memory, Python, vector search, Milvus, memsearch
+tags: OpenClaw, AI agent memory, vector search, Milvus
 meta_keywords: OpenClaw, AI agent memory, persistent memory, Python, vector search, Milvus, memsearch
 meta_title: >
  We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)
