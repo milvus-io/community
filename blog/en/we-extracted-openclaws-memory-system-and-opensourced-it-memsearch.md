@@ -24,17 +24,20 @@ So naturally, we had a question: ***why should this only work inside OpenClaw? W
 
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- **GitHub Repo:** [github.com/zilliztech/memsearch](https://github.com/zilliztech/memsearch) (open-source, MIT license)
-- **Documentation**: [https://zilliztech.github.io/memsearch/](https://zilliztech.github.io/memsearch/)
-- **Claude code plugin:** [https://zilliztech.github.io/memsearch/claude-plugin/](https://zilliztech.github.io/memsearch/claude-plugin/)
+-   **GitHub Repo:** [github.com/zilliztech/memsearch](https://github.com/zilliztech/memsearch) (open-source, MIT license)
+
+-   **Documentation**: [https://zilliztech.github.io/memsearch/](https://zilliztech.github.io/memsearch/)
+
+-   **Claude code plugin:** [https://zilliztech.github.io/memsearch/claude-plugin/](https://zilliztech.github.io/memsearch/claude-plugin/)
+
 
 ## What Makes OpenClaw's Memory Different
 
 Before diving into the OpenClaw memory architecture, let's get two concepts straight: **context** and **memory**. They sound similar but work very differently in practice.
 
-- **Context** is everything the agent sees in a single request — system prompts, project-level guidance files like `AGENTS.md` and `SOUL.md`, conversation history (messages, tool calls, compressed summaries), and the user's current message. It's scoped to one session and relatively compact.
+-   **Context** is everything the agent sees in a single request — system prompts, project-level guidance files like `AGENTS.md` and `SOUL.md`, conversation history (messages, tool calls, compressed summaries), and the user's current message. It's scoped to one session and relatively compact.
 
-- **Memory** is what persists across sessions. It lives on your local disk — the full history of past conversations, files the agent has worked with, and user preferences. Not summarized. Not compressed. The raw stuff.
+-   **Memory** is what persists across sessions. It lives on your local disk — the full history of past conversations, files the agent has worked with, and user preferences. Not summarized. Not compressed. The raw stuff.
 
 Now here's the design decision that makes OpenClaw's approach special: **all memory is stored as plain Markdown files on the local filesystem.** After each session, the AI writes updates to those Markdown logs automatically. You—and any developer—can open them, edit them, reorganize them, delete them, or refine them. Meanwhile, the vector database sits alongside this system, creating and maintaining an index for retrieval. Whenever a Markdown file changes, the system detects the change and re-indexes it automatically. 
 
@@ -102,9 +105,12 @@ Migration is one of the biggest hidden costs of memory frameworks. Moving from o
 
 memsearch avoids the problem entirely because memory is plaintext Markdown. There is no proprietary format, no schema to translate, nothing to migrate:
 
-- **Switch machines:** `rsync` the memory folder. Done.
-- **Switch embedding models:** Re-run the index command. It'll take five minutes, and markdown files stay untouched.
-- **Switch vector database deployment:** Change one config value. For example, going from Milvus Lite in development to Zilliz Cloud in production:
+-   **Switch machines:** `rsync` the memory folder. Done.
+
+-   **Switch embedding models:** Re-run the index command. It'll take five minutes, and markdown files stay untouched.
+
+-   **Switch vector database deployment:** Change one config value. For example, going from Milvus Lite in development to Zilliz Cloud in production:
+
 
 ```python
 # Development
@@ -122,8 +128,10 @@ In most memory solutions, editing what the AI remembers requires writing code ag
 
 Memsearch enables a more natural division of responsibility:
 
-- **AI handles:** Automatic daily logs (`YYYY-MM-DD.md`) with execution details like "deployed v2.3.1, 12% performance improvement."
-- **Humans handle:** Long-term principles in `MEMORY.md`, like "Team stack: Python + FastAPI + PostgreSQL."
+-   **AI handles:** Automatic daily logs (`YYYY-MM-DD.md`) with execution details like "deployed v2.3.1, 12% performance improvement."
+
+-   **Humans handle:** Long-term principles in `MEMORY.md`, like "Team stack: Python + FastAPI + PostgreSQL."
+
 
 Both sides edit the same Markdown files with whatever tools they already use. No API calls, no special tooling, no gatekeeper. When memory is locked inside a database, this kind of shared authorship is not possible. memsearch makes it the default.
 
@@ -140,9 +148,12 @@ The **Watch** workflow monitors all Markdown files in the memory/ directory and 
 
 That delay is empirically tuned:
 
-- **100ms** → too sensitive; fires on every keystroke, burning embedding calls
-- **10s** → too slow; developers notice lag
-- **1500ms** → ideal balance of responsiveness and resource efficiency
+-   **100ms** → too sensitive; fires on every keystroke, burning embedding calls
+
+-   **10s** → too slow; developers notice lag
+
+-   **1500ms** → ideal balance of responsiveness and resource efficiency
+
 
 ![](https://assets.zilliz.com/ms2_92fdb7f1f8.png)
 
@@ -167,8 +178,10 @@ PostgreSQL 16 is the primary database.
 
 Becomes two chunks:
 
-- Chunk 1: `## Redis Caching\nWe use Redis for L1 cache...`
-- Chunk 2: `## Database\nPostgreSQL 16 is the primary database.`
+-   Chunk 1: `## Redis Caching\nWe use Redis for L1 cache...`
+
+-   Chunk 2: `## Database\nPostgreSQL 16 is the primary database.`
+
 
 **Deduplication** uses a SHA-256 hash of each chunk to avoid embedding the same text twice. If multiple files mention "PostgreSQL 16," the embedding API is called once, not once per file. For ~500KB of text, this saves around **$0.15/month.** At scale, that adds up to hundreds of dollars.
 
@@ -178,9 +191,9 @@ Becomes two chunks:
 
 Retrieval uses a hybrid search approach: vector search weighted at 70% and BM25 keyword search weighted at 30%. This balances two different needs that arise frequently in practice.
 
-- **Vector search** handles semantic matching. A query for "Redis cache config" returns a chunk containing "Redis L1 cache with 5min TTL" even though the wording is different. This is useful when the developer remembers the concept but not the exact phrasing.
+-   **Vector search** handles semantic matching. A query for "Redis cache config" returns a chunk containing "Redis L1 cache with 5min TTL" even though the wording is different. This is useful when the developer remembers the concept but not the exact phrasing.
 
-- **BM25** handles exact matching. A query for "PostgreSQL 16" does not return results about "PostgreSQL 15." This matters for error codes, function names, and version-specific behavior, where close is not good enough.
+-   **BM25** handles exact matching. A query for "PostgreSQL 16" does not return results about "PostgreSQL 15." This matters for error codes, function names, and version-specific behavior, where close is not good enough.
 
 The default 70/30 split works well for most use cases. For workflows that lean heavily toward exact matches, raising the BM25 weight to 50% is a one-line configuration change.
 
@@ -196,9 +209,12 @@ Memsearch provides both a **Python API** and a **CLI**, so you can use it inside
 
 Memsearch supports three Milvus-compatible backends, all exposed through the **same API**:
 
-- [**Milvus Lite (default)**](https://milvus.io/docs/milvus_lite.md)**:** Local `.db` file, zero configuration, suited for individual use.
-- **Milvus Standalone / Cluster:** Self-hosted, supports multiple agents sharing data, suited for team environments.
-- [**Zilliz Cloud**](https://zilliz.com/cloud)**:** Fully managed, with auto-scaling, backups, high availability, and isolation. Ideal for production workloads.
+-   [**Milvus Lite (default)**](https://milvus.io/docs/milvus_lite.md)**:** Local `.db` file, zero configuration, suited for individual use.
+
+-   **Milvus Standalone / Cluster:** Self-hosted, supports multiple agents sharing data, suited for team environments.
+
+-   [**Zilliz Cloud**](https://zilliz.com/cloud)**:** Fully managed, with auto-scaling, backups, high availability, and isolation. Ideal for production workloads.
+
 
 Switching from local development to production is typically **a one-line config change**. Your code stays the same.
 
@@ -243,9 +259,12 @@ async def agent_chat(user_input: str) -> str:
 
 This shows the core loop:
 
-- **Recall**: memsearch performs hybrid vector + BM25 retrieval
-- **Think**: your LLM processes the user input + retrieved memory
-- **Remember**: the agent writes new memory to Markdown, and memsearch updates its index
+-   **Recall**: memsearch performs hybrid vector + BM25 retrieval
+
+-   **Think**: your LLM processes the user input + retrieved memory
+
+-   **Remember**: the agent writes new memory to Markdown, and memsearch updates its index
+
 
 This pattern fits naturally into any agent system—LangChain, AutoGPT, semantic routers, LangGraph, or custom agent loops. It's framework-agnostic by design.
 
@@ -277,23 +296,30 @@ The most common question developers ask is why they would use memsearch when est
 
 Memsearch is fully open source under the MIT license, and the repository is ready for production experiments today.
 
-- **Repo:** [github.com/zilliztech/memsearch](https://github.com/zilliztech/memsearch)
-- **Docs:** [zilliztech.github.io/memsearch](https://zilliztech.github.io/memsearch)
+-   **Repo:** [github.com/zilliztech/memsearch](https://github.com/zilliztech/memsearch)
+
+-   **Docs:** [zilliztech.github.io/memsearch](https://zilliztech.github.io/memsearch)
 
 If you are building an agent that needs to remember things across sessions and want full control over what it remembers, memsearch is worth a look. The library installs with a single `pip install`, works with any agent framework, and stores everything as Markdown that you can read, edit, and version with Git.
 
 We are actively developing memsearch and would love input from the community. 
 
-- Open an issue if something breaks.
-- Submit a PR if you want to extend the library.
-- Star the repo if the Markdown-as-source-of-truth philosophy resonates with you.
+-   Open an issue if something breaks.
+
+-   Submit a PR if you want to extend the library.
+
+-   Star the repo if the Markdown-as-source-of-truth philosophy resonates with you.
 
 OpenClaw's memory system is no longer locked inside OpenClaw. Now, anyone can use it.
 
 ## Keep Reading
 
-- [What Is OpenClaw? Complete Guide to the Open-Source AI Agent](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md)
-- [OpenClaw Tutorial: Connect to Slack for Local AI Assistant](https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md)
-- [Build Clawdbot-Style AI Agents with LangGraph & Milvus](https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md)
-- [RAG vs Long-Running Agents: Is RAG Obsolete?](https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md)
-- [Create a Custom Anthropic Skill for Milvus to Quickly Spin Up RAG](https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md)
+-   [What Is OpenClaw? Complete Guide to the Open-Source AI Agent](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md)
+
+-   [OpenClaw Tutorial: Connect to Slack for Local AI Assistant](https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md)
+
+-   [Build Clawdbot-Style AI Agents with LangGraph & Milvus](https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md)
+
+-   [RAG vs Long-Running Agents: Is RAG Obsolete?](https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md)
+
+-   [Create a Custom Anthropic Skill for Milvus to Quickly Spin Up RAG](https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md)
