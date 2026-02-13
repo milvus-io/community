@@ -16,8 +16,6 @@ desc: >
  We extracted OpenClaw's AI memory architecture into memsearch — a standalone Python library with Markdown logs, hybrid vector search, and Git support.
 origin: https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
-# We Extracted OpenClaw's Memory System and Open-Sourced It (memsearch)
-
 [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) (previously clawdbot and moltbot) is going viral — [189k+ GitHub stars](https://github.com/openclaw/openclaw) in under two weeks. That's insane. Most of the buzz is around its autonomous, agentic capabilities across everyday chat channels, including iMessages, WhatsApp, Slack, Telegram, and more. 
 
 But as engineers working on a vector database system, what really caught our attention was **OpenClaw's approach to long-term memory**. Unlike most memory systems out there, OpenClaw has its AI automatically write daily logs as Markdown files. Those files are the source of truth, and the model only "remembers" what gets written to disk. Human developers can open those markdown files, edit them directly, distill long-term principles, and see exactly what the AI remembers at any point. No black boxes. Honestly, it's one of the cleanest and most developer-friendly memory architectures we've seen.
