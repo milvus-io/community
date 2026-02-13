@@ -15,14 +15,14 @@ meta_title: |
 desc: OpenClaw（Clawdbot/Moltbot）完整指南--工作原理、安装攻略、使用案例、Moltbook 和安全警告。
 origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 ---
-<p><a href="https://openclaw.ai/">OpenClaw</a>（前身为 Moltbot 和 Clawdbot）是一个开源的人工智能代理，它运行在你的机器上，通过你已经使用的消息应用程序（WhatsApp、Telegram、Slack、Signal 等）进行连接，并代表你进行操作--shell 命令、浏览器自动化、电子邮件、日历和文件操作。心跳调度程序会以可配置的时间间隔唤醒它，因此无需提示即可运行。2026 年 1 月底，OpenClaw 在 GitHub 上发布，不到一周就获得了<a href="https://github.com/openclaw/openclaw">10 万多颗</a>星，成为 GitHub 历史上增长最快的开源软件源之一。</p>
+<p><a href="https://openclaw.ai/">OpenClaw</a>（前身为 Moltbot 和 Clawdbot）是一个开源的人工智能代理，它运行在你的机器上，通过你已经使用的消息应用程序（WhatsApp、Telegram、Slack、Signal 等）进行连接，并代表你进行操作--shell 命令、浏览器自动化、电子邮件、日历和文件操作。心跳调度程序会以可配置的时间间隔唤醒它，因此无需提示即可运行。2026 年 1 月底，OpenClaw 在 GitHub 上发布，不到一周时间就获得了<a href="https://github.com/openclaw/openclaw">10 万多颗</a>星，成为 GitHub 历史上增长最快的开源软件源之一。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_1_e9bc8881bc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>OpenClaw 的与众不同之处在于它的组合：MIT 许可、开源、本地优先（内存和数据以 Markdown 文件的形式存储在磁盘上），并可通过便携式技能格式进行社区扩展。这也是代理式人工智能中一些更有趣的实验发生的地方--一位开发者的代理在他睡觉时通过电子邮件谈妥了 4200 美元的购车折扣；另一位开发者在没有被问及的情况下对保险拒绝提出了法律反驳；还有一位用户建立了一个社交网络<a href="https://moltbook.com/">Moltbook</a>，在这个网络中，有超过一百万个人工智能代理在人类的注视下自主互动。</p>
+<p>OpenClaw 的与众不同之处在于它的组合：MIT 许可、开源、本地优先（内存和数据以 Markdown 文件的形式存储在磁盘上），并可通过便携式技能格式进行社区扩展。这也是代理式人工智能领域一些更有趣的实验发生的地方--一位开发者的代理在他睡觉时通过电子邮件谈妥了 4200 美元的购车优惠；另一位开发者在没有被要求的情况下对保险拒赔提出了法律反驳；还有一位用户创建了<a href="https://moltbook.com/">Moltbook</a>，这是一个社交网络，有超过一百万个人工智能代理在人类的注视下自主互动。</p>
 <p>本指南将为您介绍您需要了解的一切：OpenClaw 是什么、它如何工作、它在现实生活中能做什么、它与 Moltbook 的关系以及与之相关的安全风险。</p>
 <h2 id="What-is-OpenClaw" class="common-anchor-header">什么是 OpenClaw？<button data-href="#What-is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -39,7 +39,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclawd.ai/">OpenClaw</a>（前身为 Clawdbot 和 Moltbot）是一个自主的开源人工智能助手，它运行在您的机器上，并存在于您的聊天应用程序中。您可以通过 WhatsApp、Telegram、<a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack</a>、Discord、iMessage 或 Signal（无论您使用的是什么）与它对话，它也会回话。但与 ChatGPT 或 Claude 的网页界面不同，OpenClaw 不只是回答问题。它可以运行 shell 命令、控制浏览器、读写文件、管理日历和发送电子邮件，所有这些都由文本信息触发。</p>
+    </button></h2><p><a href="https://openclawd.ai/">OpenClaw</a>（前身为 Clawdbot 和 Moltbot）是一款自主、开源的人工智能助手，可在您的机器上运行，并存在于您的聊天应用程序中。您可以通过 WhatsApp、Telegram、<a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack</a>、Discord、iMessage 或 Signal（无论您使用的是什么）与它对话，它也会回话。但与 ChatGPT 或 Claude 的网页界面不同，OpenClaw 不只是回答问题。它可以运行 shell 命令、控制浏览器、读写文件、管理日历和发送电子邮件，所有这些都由文本信息触发。</p>
 <p>它专为开发人员和高级用户设计，他们需要一个可以随时随地发送信息的个人人工智能助手，而无需牺牲对数据的控制或依赖托管服务。</p>
 <h3 id="Key-Capabilities-of-OpenClaw" class="common-anchor-header">OpenClaw 的主要功能</h3><ul>
 <li><p><strong>多渠道网关</strong>--WhatsApp、Telegram、Discord 和 iMessage 只需一个网关流程。通过扩展包添加 Mattermost 等功能。</p></li>
@@ -321,7 +321,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <li><p><strong>隔离运行。</strong>使用专用设备或虚拟机，而不是您的主计算机。如果出了问题，你需要一个可以实际触及的 "必杀开关"。</p></li>
 <li><p><strong>安装前对技能进行审核。</strong>思科分析了 26% 的社区技能，其中至少包含一个漏洞。分叉并审查任何你不信任的东西。</p></li>
 <li><p><strong>在提供商级别设置 API 支出限制。</strong>一个配置错误的心跳可能在一夜之间烧掉数百美元。在部署前配置警报。</p></li>
-<li><p><strong>对不可逆转的操作进行把关。</strong>付款、删除、外部通信：这些都需要人工审批，而不是自主执行。</p></li>
+<li><p><strong>对不可逆转的操作进行把关。</strong>付款、删除、外部通信：这些都需要人工批准，而不是自主执行。</p></li>
 </ul>
 <h2 id="Keep-Reading" class="common-anchor-header">继续阅读<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"

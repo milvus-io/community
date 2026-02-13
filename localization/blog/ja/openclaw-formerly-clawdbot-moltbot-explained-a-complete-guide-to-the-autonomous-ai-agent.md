@@ -25,7 +25,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
   </span>
 </p>
 <p>OpenClawの特徴は、その組み合わせにある：MITライセンス、オープンソース、ローカルファースト（メモリとデータはディスク上のMarkdownファイルとして保存される）、そしてポータブルスキルフォーマットによるコミュニティの拡張性だ。ある開発者のエージェントは、彼が寝ている間にEメールで車の購入を4,200ドル値引きするよう交渉し、別の開発者は、頼まれもしないのに保険の拒否に対して法的な反論を提出した。</p>
-<p>このガイドでは、OpenClawとは何か、どのように動作するのか、実生活で何ができるのか、Moltbookとの関連性、それに関連するセキュリティリスクなど、知っておくべきことをすべて説明します。</p>
+<p>このガイドでは、OpenClawとは何か、どのように動作するのか、実生活で何ができるのか、Moltbookとの関係、それに関連するセキュリティリスクなど、知っておくべきことをすべて説明します。</p>
 <h2 id="What-is-OpenClaw" class="common-anchor-header">OpenClawとは？<button data-href="#What-is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -41,7 +41,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclawd.ai/">OpenClaw</a>（以前のClawdbotとMoltbot）は、あなたのマシン上で動作し、あなたのチャットアプリに住み着く自律的なオープンソースのAIアシスタントです。WhatsApp、Telegram、<a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack</a>、Discord、iMessage、Signalなど、あなたがすでに使っているものを使って話しかけると、AIが話し返してくれる。しかし、ChatGPTやClaudeのウェブインターフェイスとは異なり、OpenClawは質問に答えるだけではない。シェルコマンドの実行、ブラウザの制御、ファイルの読み書き、カレンダーの管理、Eメールの送信など、すべてテキストメッセージをトリガーに行うことができる。</p>
+    </button></h2><p><a href="https://openclawd.ai/">OpenClaw</a>（以前のClawdbotとMoltbot）は、あなたのマシン上で動作し、あなたのチャットアプリに住み着く自律的なオープンソースのAIアシスタントです。WhatsApp、Telegram、<a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack</a>、Discord、iMessage、Signalなど、あなたがすでに使っているものを使って話しかけると、AIが話し返してくれる。しかし、ChatGPTやClaudeのウェブインターフェイスとは異なり、OpenClawは質問に答えるだけではない。シェルコマンドの実行、ブラウザの制御、ファイルの読み書き、カレンダーの管理、メールの送信など、すべてテキストメッセージをトリガーに行うことができる。</p>
 <p>データのコントロールを犠牲にすることなく、またホストされたサービスに依存することなく、どこからでもメッセージ可能なパーソナルAIアシスタントを求める開発者やパワーユーザー向けに構築されています。</p>
 <h3 id="Key-Capabilities-of-OpenClaw" class="common-anchor-header">OpenClawの主な機能</h3><ul>
 <li><p><strong>マルチチャネルゲートウェイ</strong>- WhatsApp、Telegram、Discord、iMessage を単一のゲートウェイプロセスで。拡張パッケージで Mattermost などを追加できます。</p></li>
@@ -75,7 +75,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
         ></path>
       </svg>
     </button></h2><p><strong>1つのプロセス、すべての内部</strong></p>
-<p><code translate="no">openclaw gateway</code> を実行すると、ゲートウェイと呼ばれる長寿命のNode.jsプロセスが1つ起動する。このプロセスは、チャネル接続、セッションの状態、エージェントのループ、モデルの呼び出し、ツールの実行、メモリーの永続性など、システム全体だ。管理する個別のサービスはない。</p>
+<p><code translate="no">openclaw gateway</code> を実行すると、ゲートウェイと呼ばれる長寿命のNode.jsプロセスが1つ起動する。このプロセスは、チャネル接続、セッションの状態、エージェントのループ、モデルの呼び出し、ツールの実行、メモリーの永続化など、システム全体だ。管理する個別のサービスはない。</p>
 <p>一つのプロセスの中に5つのサブシステムがある：</p>
 <ol>
 <li><p><strong>チャネルアダプタ</strong>- プラットフォームごとに1つ（WhatsApp用のBaileys、Telegram用のgrammYなど）。インバウンドメッセージを共通のフォーマットに正規化し、返信をシリアライズして送り返す。</p></li>
@@ -270,8 +270,8 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
     <span></span>
   </span>
 </p>
-<p>セキュリティー問題も同様に早くやってきた。ローンチから4日後の1月31日、<a href="https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/">404 Mediaは</a>、Supabaseデータベースの設定ミスにより、プラットフォームのバックエンド全体がインターネット上に公開されてしまったと<a href="https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/">報じた</a>。セキュリティ研究者のJameson O'Reillyがこの欠陥を発見し、<a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">Wizは独自に</a>それを<a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">確認</a>し、150万エージェントのAPIキー、35,000以上のメールアドレス、数千のプライベートメッセージを含むすべてのテーブルへの認証されていない読み取りと書き込みアクセスを文書化した。</p>
-<p>Moltbookがマシンの創発的な行動を表しているのか、それともエージェントが学習データからSF的な表現を再現しているのかは、未解決の問題である。より曖昧でないのは、技術的なデモンストレーションである。自律エージェントが永続的なコンテキストを維持し、共有プラットフォーム上で協調し、明示的な指示なしに構造化された出力を生成する。OpenClawや類似のフレームワークで構築するエンジニアにとって、これはエージェント型AIの機能とセキュリティ上の課題の両方をスケールアップするライブプレビューとなる。</p>
+<p>セキュリティー問題も同様に早くやってきた。ローンチから4日後の1月31日、<a href="https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/">404 Mediaは</a>、Supabaseデータベースの設定ミスにより、プラットフォームのバックエンド全体が公衆インターネットに公開されたままになっていることを<a href="https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/">報告した</a>。セキュリティ研究者のJameson O'Reillyがこの欠陥を発見し、<a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">Wizは独自に</a>それを<a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">確認</a>し、150万エージェントのAPIキー、35,000以上のメールアドレス、数千のプライベートメッセージを含むすべてのテーブルへの認証されていない読み取りと書き込みアクセスを文書化した。</p>
+<p>Moltbookがマシンの創発的な行動を表しているのか、それともエージェントが学習データからSF的な表現を再現しているのかは、未解決の問題だ。より曖昧でないのは、技術的なデモンストレーションである。自律エージェントが永続的なコンテキストを維持し、共有プラットフォーム上で協調し、明示的な指示なしに構造化された出力を生成する。OpenClawや類似のフレームワークで構築するエンジニアにとって、これはエージェント型AIの機能とセキュリティ上の課題の両方をスケールアップするライブプレビューとなる。</p>
 <h2 id="Technical-Risks-and-Production-Considerations-for-OpenClaw" class="common-anchor-header">OpenClawの技術的リスクと生産上の注意点<button data-href="#Technical-Risks-and-Production-Considerations-for-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -288,7 +288,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
         ></path>
       </svg>
     </button></h2><p>OpenClawを重要な場所にデプロイする前に、実際に実行しているものを理解する必要があります。OpenClawは、シェルアクセス、ブラウザコントロール、そしてあなたに代わって電子メールを送信する機能を持つエージェントです。それは強力だが、攻撃対象は膨大で、プロジェクトはまだ若い。</p>
-<p><strong>認証モデルには重大な穴があった。</strong>2026年1月30日、depthfirstのMav Levinが<a href="https://thehackernews.com/2026/02/openclaw-bug-enables-one-click-remote.html">CVE-2026-25253</a>(CVSS 8.8)を公開した。クロスサイトWebSocketハイジャックのバグで、どのウェブサイトもあなたの認証トークンを盗み、悪意のあるリンク1つであなたのマシンをRCEすることができる。ワンクリックでフルアクセス。このバグは<code translate="no">2026.1.29</code> で修正されましたが、Censys は当時、21,000 以上の OpenClaw インスタンスが公衆インターネットに公開されていることを発見しました。<strong>もし古いバージョンを使っていたり、ネットワーク設定をロックダウンしていなかったりしたら、まずそれをチェックしてください。</strong></p>
+<p><strong>認証モデルには重大な穴があった。</strong>2026年1月30日、depthfirstのMav Levinが<a href="https://thehackernews.com/2026/02/openclaw-bug-enables-one-click-remote.html">CVE-2026-25253</a>(CVSS 8.8)を公開した。クロスサイトWebSocketハイジャックのバグで、どのウェブサイトもあなたの認証トークンを盗み、悪意のあるリンク1つであなたのマシンをRCEすることができる。ワンクリックでフルアクセス。このバグは<code translate="no">2026.1.29</code> で修正されましたが、Censys は当時、21,000 以上の OpenClaw インスタンスが公共のインターネットに公開されていることを発見しました。<strong>もし古いバージョンを使っていたり、ネットワーク設定をロックダウンしていなかったりしたら、まずそれをチェックしてください。</strong></p>
 <p><strong>スキルは見知らぬ人のコードに過ぎず、サンドボックスは存在しない。</strong> <a href="https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare">Ciscoのセキュリティチームは</a>、"What Would Elon Do? "と呼ばれる、リポジトリで1位になるようゲーム化されたスキルをバラバラにした。このスキルは、プロンプト・インジェクションを使って安全性チェックを回避し、攻撃者が管理するサーバーにユーザーデータを流出させるという、れっきとしたマルウェアだった。彼らはこの1つのスキルに9つの脆弱性を発見し、そのうちの2つはクリティカルだった。複数のプラットフォーム（Claude、Copilot、一般的なAgentSkillsリポジトリ）にまたがる31,000のエージェントスキルを監査したところ、26%に少なくとも1つの脆弱性がありました。2月の最初の週だけで、230以上の悪意のあるスキルがClawHubにアップロードされました。<strong>自分で書いていないスキルは、信頼できない依存関係のように扱いましょう。</strong></p>
 <p><strong>ハートビートループは、あなたが頼んでもいないことをする。</strong>イントロで出てきたホーモルドの話（代理人が保険の否認を見つけ、判例を調べ、法的な反論を自律的に送る）は、機能のデモではなく、責任リスクなのだ。代理店は人間の承認なしに法的対応にコミットした。その時はうまくいった。いつもそうとは限らない。<strong>支払い、削除、社外とのコミュニケーションに関わるものは全て、人間がゲートを通す必要がある。</strong></p>
 <p><strong>APIのコストは、見ていないとすぐにかさむ。</strong>大雑把な数字ですが、1日に数回のハートビートで軽いセットアップの場合、Sonnet 4.5で月18-36ドルです。これをOpusで毎日12回以上チェックすると、月270-540ドルになる。HNのある人は、冗長なAPIコールと冗長なロギングに月70ドルも費やしていることに気づいた。<strong>プロバイダー・レベルで支出アラートを設定する。</strong>ハートビート間隔を誤って設定すると、API予算を一晩で使い果たす可能性がある。</p>
@@ -316,8 +316,8 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenClawは、2週間足らずでGitHubのスターが175,000を超え、GitHub史上最も急速に成長しているオープンソースリポジトリのひとつとなりました。これはGitHub史上最も急速に成長しているオープンソースのレポの一つである。</p>
-<p>技術的な観点から見ると、OpenClawはほとんどのAIエージェントにはない3つの特徴を持っている：完全なオープンソース（MIT）、ローカルファースト（あなたのマシン上のMarkdownファイルとして保存されたメモリ）、自律的にスケジュールされる（プロンプトなしで動作するハートビートデーモン）。Slack、Telegram、WhatsAppのようなメッセージングプラットフォームとすぐに統合でき、シンプルなSKILL.mdシステムを通じてコミュニティが構築したスキルをサポートする。この組み合わせは、常時稼働のアシスタントを構築するのに非常に適している：24時間365日質問に答えてくれるSlackボット、あなたが寝ている間にメールをトリアージしてくれる受信トレイモニター、あるいはベンダーロックインなしで独自のハードウェア上で動作する自動化ワークフローなどだ。</p>
+    </button></h2><p>OpenClawは2週間足らずでGitHubのスターが175,000を超え、GitHub史上最も急成長したオープンソースリポジトリのひとつとなりました。これはGitHub史上最も急速に成長しているオープンソースのレポの一つである。</p>
+<p>技術的な観点から見ると、OpenClawはほとんどのAIエージェントにはない3つの特徴を持っている：完全なオープンソース（MIT）、ローカルファースト（あなたのマシン上のMarkdownファイルとして保存されたメモリ）、自律的なスケジュール（プロンプトなしで動作するハートビートデーモン）。Slack、Telegram、WhatsAppのようなメッセージングプラットフォームとすぐに統合でき、シンプルなSKILL.mdシステムを通じてコミュニティが構築したスキルをサポートする。この組み合わせは、常時稼働のアシスタントを構築するのに非常に適している：24時間365日質問に答えてくれるSlackボット、あなたが寝ている間にメールをトリアージしてくれる受信トレイモニター、あるいはベンダーロックインなしで独自のハードウェア上で動作する自動化ワークフローなどだ。</p>
 <p>とはいえ、OpenClawを強力にしているアーキテクチャは、不用意に導入すると危険でもある。注意すべき点がいくつかある：</p>
 <ul>
 <li><p><strong>分離して実行すること。</strong>プライマリ・マシンではなく、専用のデバイスかVMを使うこと。何か問題が発生した場合、物理的に到達できるキルスイッチが必要です。</p></li>
