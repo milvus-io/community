@@ -2,7 +2,7 @@
 id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: >
  GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Deep Think: Which Model Fits Your AI Agent Stack?
-author: Lumina Wang, Julie Xie
+author: Lumina Wang, Julie Xia
 date: 2026-02-14
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
