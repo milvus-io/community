@@ -1,7 +1,7 @@
 ---
 id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: GLM-5 vs. MiniMax M2.5 vs. Gemini 3 深入思考：哪個模型適合您的 AI 代理堆疊？
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -69,10 +69,10 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
     <span></span>
   </span>
 </p>
-<p>它的核心優勢在於頂級的推理和競賽表現：它在 Codeforces 上的 Elo 值高達 3455，相當於全球第八名的競賽程序員。它在 2025 年國際物理、化學和數學奧林匹克競賽的書面部分達到金牌標準。成本效益是另一項突破。ARC-AGI-1 每項任務僅需 7.17 美元，與 14 個月前 OpenAI 的 o3-preview 相比，降低了 280 倍到 420 倍。在應用方面，Deep Think 最大的成果在於科學研究。專家們已經開始將它用於專業數學論文的同行評審，以及優化複雜的晶體生長製備工作流程。</p>
+<p>它的核心優勢在於頂級的推理和競賽表現：它在 Codeforces 上的 Elo 值高達 3455，相當於世界第八的競賽程序員。它在 2025 年國際物理、化學和數學奧林匹克競賽的書面部分達到金牌標準。成本效益是另一項突破。ARC-AGI-1 每項任務僅需 7.17 美元，與 14 個月前 OpenAI 的 o3-preview 相比，降低了 280 倍到 420 倍。在應用方面，Deep Think 最大的成果在於科學研究。專家們已經開始將它用於專業數學論文的同行評審，以及優化複雜的晶體生長製備工作流程。</p>
 <h3 id="MiniMax-M25-competes-on-cost-and-speed-for-production-workloads" class="common-anchor-header">MiniMax M2.5 以成本和速度競爭生產工作負載</h3><p>同一天，MiniMax 發佈了 M2.5，將其定位為生產用案例的成本和效率冠軍。</p>
-<p>作為業界迭代速度最快的機型系列之一，M2.5 在編碼、工具呼叫、搜尋和辦公生產力方面創造了新的 SOTA 成績。成本是其最大賣點：快速版本的運行速度約為 100 TPS，輸入價格為<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.30</mn><mi>permilliontokens</mi></mrow><annotation encoding="application/x-tex">，輸出價格為</annotation></semantics></math></span></span>0.<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">30 permilliontokens</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">；輸出價格為</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span></span></span></span>0<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.30 permilliontokens</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">，輸出</annotation></semantics></math></span></span>價格<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">為 2</span></span></span></span>.40<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">permilliontokens</span></span></span></span>。50 TPS 版本可將輸出成本再降低一半。速度比之前的 M2.1 提升 37%，平均 22.8 分鐘即可完成 SWE-bench 驗證任務，與 Claude Opus 4.6 大致相若。在能力方面，M2.5 支援 Go、Rust 和 Kotlin 等十多種語言的全堆疊開發，涵蓋了從零到一的系統設計到完整程式碼檢閱的所有功能。在辦公室工作流程方面，其 Office Skills 功能可與 Word、PPT 和 Excel 進行深度整合。當與金融和法律的領域知識結合時，它可以產生可直接使用的研究報告和財務模型。</p>
-<p>這就是高階概述。接下來，讓我們來看看它們在實作測試中的實際表現。</p>
+<p>作為業界迭代速度最快的機型系列之一，M2.5 在編碼、工具呼叫、搜尋和辦公生產力方面創造了新的 SOTA 成績。成本是其最大賣點：快速版本的運行速度約為 100 TPS，輸入價格為<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.30</mn><mi>permilliontokens</mi></mrow><annotation encoding="application/x-tex">，輸出價格為</annotation></semantics></math></span></span>0.<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">30 permilliontokens</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">；輸出價格為</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span></span></span></span>0<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.30 permilliontokens</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">，輸出</annotation></semantics></math></span></span>價格<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">為 2</span></span></span></span>.40<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">permilliontokens</span></span></span></span>。50 TPS 版本可將輸出成本再降低一半。速度比之前的 M2.1 提升了 37%，平均 22.8 分鐘即可完成 SWE-bench 驗證任務，與 Claude Opus 4.6 大致相同。在能力方面，M2.5 支援 Go、Rust 和 Kotlin 等十多種語言的全堆疊開發，涵蓋了從零到一的系統設計到完整程式碼檢閱的所有功能。在辦公室工作流程方面，其 Office Skills 功能可與 Word、PPT 和 Excel 進行深度整合。當與金融和法律的領域知識結合時，它可以產生可直接使用的研究報告和財務模型。</p>
+<p>這就是高階概述。接下來，讓我們看看它們在實際操作測試中的實際表現。</p>
 <h2 id="Hands-On-Comparisons" class="common-anchor-header">實際操作比較<button data-href="#Hands-On-Comparisons" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -101,9 +101,9 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
 <iframe width="707" height="561" src="https://www.youtube.com/embed/tTuW7qQBO1Y" title="GLM 5 test: 3D scene rendering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>MiniMax M2.5</p>
 <iframe width="594" height="561" src="https://www.youtube.com/embed/KJMhnXqa4Uc" title="minimax m2.5 test: 3D scene rendering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p><strong>Gemini 3 Deep Think</strong>提供了最強大的結果。它精確地詮釋了提示，並產生了高品質的 3D 場景。照明效果最為突出：陰影的方向和落差看起來很自然，清楚地表達出自然光從窗戶射入的空間關係。精細的細節也令人印象深刻，包括蠟燭半融化的紋理和紅色蠟封的材質。整體的視覺保真度很高。</p>
+<p><strong>Gemini 3 Deep Think</strong>提供了最強大的結果。它精確詮釋提示並產生高品質的 3D 場景。照明效果最為突出：陰影的方向和落差看起來很自然，清楚地表達出自然光從窗戶射入的空間關係。精細的細節也令人印象深刻，包括蠟燭半融化的紋理和紅色蠟封的材質。整體的視覺保真度很高。</p>
 <p><strong>GLM-5</strong>製作了詳細的物件建模和紋理工作，但其照明系統有明顯的問題。桌子的陰影呈現為堅硬的純黑色區塊，沒有柔和的轉換。蠟封似乎懸浮在桌面表面，無法正確處理物件與桌面之間的接觸關係。這些假象顯示在全局照明和空間推理方面還有改進的空間。</p>
-<p><strong>MiniMax M2.5</strong>無法有效解析複雜的場景描述。其輸出只是無序的粒子運動，顯示在處理具有精確視覺需求的多層語意指令時，在理解與產生兩方面都有顯著的限制。</p>
+<p><strong>MiniMax M2.5</strong>無法有效解析複雜的場景描述。輸出的結果只是無序的粒子運動，顯示在處理具有精確視覺需求的多層語意指令時，在理解和產生兩方面都有顯著的限制。</p>
 <h3 id="SVG-generation-all-three-models-handle-it-differently" class="common-anchor-header">SVG 生成：三種模型的處理方式都不同</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/simon_twitter_screenshot_fef1c01cbf.png" alt="" class="doc-image" id="" />

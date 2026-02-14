@@ -3,7 +3,7 @@ id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: >-
   GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Deep Think: ¿Qué modelo se adapta a su
   pila de agentes de IA?
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -203,7 +203,7 @@ glm_client = <span class="hljs-title class_">OpenAI</span>(
     base_url=<span class="hljs-string">&quot;https://openrouter.ai/api/v1&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Generar una incrustación de prueba e imprimir sus dimensiones y primeros elementos:</p>
+<p>Genera una incrustación de prueba e imprime sus dimensiones y sus primeros elementos:</p>
 <pre><code translate="no">EMBEDDING_MODEL = <span class="hljs-string">&quot;openai/text-embedding-3-small&quot;</span>  <span class="hljs-comment"># OpenRouter embedding model</span>
 resp = glm_client.embeddings.create(
     model=EMBEDDING_MODEL,

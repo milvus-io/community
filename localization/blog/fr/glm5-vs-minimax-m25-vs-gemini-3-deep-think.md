@@ -1,9 +1,9 @@
 ---
 id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: >-
-  GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Réflexion approfondie : quel modèle
+  GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Réflexion approfondie : Quel modèle
   convient à votre pile d'agents d'IA ?
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -26,7 +26,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
     <span></span>
   </span>
 </p>
-<p>Le plus effrayant, c'est que votre patron a probablement déjà vu les annonces. Votre patron a probablement déjà vu les annonces et il a hâte que vous créiez neuf applications internes en utilisant les trois modèles avant même la fin de la semaine.</p>
+<p>Le plus effrayant ? Votre patron a probablement déjà vu les annonces et il a hâte que vous créiez neuf applications internes en utilisant les trois modèles avant même la fin de la semaine.</p>
 <p>Qu'est-ce qui différencie réellement ces modèles ? Comment choisir entre eux ? Et (comme toujours) comment les relier à <a href="https://milvus.io/">Milvus</a> pour créer une base de connaissances interne ? Ajoutez cette page à vos favoris. Elle contient tout ce dont vous avez besoin.</p>
 <h2 id="GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="common-anchor-header">GLM-5, MiniMax M2.5 et Gemini 3 Deep Think en un coup d'œil<button data-href="#GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -104,7 +104,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
 <iframe width="707" height="561" src="https://www.youtube.com/embed/tTuW7qQBO1Y" title="GLM 5 test: 3D scene rendering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>MiniMax M2.5</p>
 <iframe width="594" height="561" src="https://www.youtube.com/embed/KJMhnXqa4Uc" title="minimax m2.5 test: 3D scene rendering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p><strong>Gemini 3 Deep Think</strong> a fourni le meilleur résultat. Il a interprété avec précision le message et généré une scène 3D de haute qualité. L'éclairage s'est distingué : la direction et la chute des ombres étaient naturelles et traduisaient clairement la relation spatiale de la lumière naturelle passant par une fenêtre. Les détails fins étaient également impressionnants, notamment la texture à moitié fondue des bougies et la qualité du matériau des sceaux de cire rouge. La fidélité visuelle globale était élevée.</p>
+<p><strong>Gemini 3 Deep Think</strong> a fourni le meilleur résultat. Il a interprété avec précision le message et généré une scène 3D de haute qualité. L'éclairage s'est distingué : la direction et la chute des ombres étaient naturelles, traduisant clairement la relation spatiale de la lumière naturelle passant par une fenêtre. Les détails fins étaient également impressionnants, notamment la texture à moitié fondue des bougies et la qualité du matériau des sceaux de cire rouge. La fidélité visuelle globale était élevée.</p>
 <p><strong>GLM-5</strong> a produit une modélisation d'objets et un travail de texture détaillés, mais son système d'éclairage présentait des problèmes notables. Les ombres des tables se présentaient sous la forme de blocs durs d'un noir pur, sans transitions douces. Le sceau de cire semblait flotter au-dessus de la surface de la table, ce qui ne permettait pas de gérer correctement la relation de contact entre les objets et le plateau de la table. Ces artefacts montrent qu'il est possible d'améliorer l'éclairage global et le raisonnement spatial.</p>
 <p><strong>MiniMax M2.5</strong> n'a pas pu analyser efficacement la description complexe de la scène. Le résultat n'était qu'un mouvement désordonné de particules, ce qui indique des limitations significatives à la fois dans la compréhension et la génération lorsqu'il s'agit de traiter des instructions sémantiques multicouches avec des exigences visuelles précises.</p>
 <h3 id="SVG-generation-all-three-models-handle-it-differently" class="common-anchor-header">Génération SVG : les trois modèles la gèrent différemment</h3><p>

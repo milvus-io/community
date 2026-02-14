@@ -3,7 +3,7 @@ id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: >-
   GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Глубоко задумайтесь: какая модель подходит
   для вашего стека агентов ИИ?
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -129,7 +129,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/minimax_m2_5_generated_image_06d50f8fa7.png" alt="MiniMax M2.5" class="doc-image" id="minimax-m2.5" />
    </span> <span class="img-wrapper"> <span>MiniMax M2.5</span> </span></p>
 <p><strong>Gemini 3 Deep Think</strong> создал самый полный SVG. Поза пеликана при езде точна: его центр тяжести естественно располагается на сиденье, а ноги лежат на педалях в динамичной позе велосипедиста. Текстура перьев детализирована и многослойна. Единственное слабое место - фирменный горловой мешок пеликана нарисован слишком большим, что немного нарушает общие пропорции.</p>
-<p>У<strong>GLM-5</strong> были заметные проблемы с осанкой. Ноги правильно расположены на педалях, но общее положение сидящего отклоняется от естественной позы для езды, а соотношение тела и сиденья выглядит не совсем правильным. При этом детализация проработана хорошо: горловой мешок имеет правильные пропорции, а качество текстуры перьев достойно уважения.</p>
+<p>У<strong>GLM-5</strong> были заметные проблемы с осанкой. Ноги правильно расположены на педалях, но общее положение сидящего отклоняется от естественной позы для езды, а соотношение тела и сиденья выглядит не совсем правильным. При этом детализация проработана хорошо: горловой мешок имеет правильные пропорции, а качество текстуры перьев заслуживает уважения.</p>
 <p><strong>MiniMax M2.5</strong> придерживается минималистского стиля и полностью отказался от фоновых элементов. Позиция пеликана на велосипеде примерно правильная, но детализация оставляет желать лучшего. Руль неправильной формы, текстура перьев практически отсутствует, шея слишком толстая, а на изображении присутствуют блуждающие белые овальные артефакты, которых не должно быть.</p>
 <h2 id="How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="common-anchor-header">Как выбрать между GLM-5, MiniMax M2.5 и Gemin 3 Deep Think<button data-href="#How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="anchor-icon" translate="no">
       <svg translate="no"

@@ -1,7 +1,7 @@
 ---
 id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: 'GLM-5 대 MiniMax M2.5 대 Gemini 3 깊이 생각하기: 어떤 모델이 귀사의 AI 에이전트 스택에 적합할까요?'
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -42,8 +42,8 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
       </svg>
     </button></h2><h3 id="GLM-5-leads-in-complex-system-engineering-and-long-horizon-agent-tasks" class="common-anchor-header">복잡한 시스템 엔지니어링 및 장시간 에이전트 작업을 선도하는 GLM-5</h3><p>지푸는 2월 12일 복잡한 시스템 엔지니어링과 장기적인 상담원 워크플로우에 탁월한 GLM-5를 공식 출시했습니다.</p>
 <p>이 모델은 28.5T 토큰으로 학습된 355B-744B 매개변수(40B 활성)를 보유하고 있습니다. 이 모델은 희소 주의 메커니즘과 비동기 강화 학습 프레임워크인 Slime을 통합하여 배포 비용을 낮추면서 품질 손실 없이 매우 긴 컨텍스트를 처리할 수 있습니다.</p>
-<p>GLM-5는 주요 벤치마크에서 오픈 소스 팩을 주도하며 SWE 벤치 검증에서 1위(77.8점), 터미널 벤치 2.0에서 1위(56.2점)를 차지하여 MiniMax 2.5 및 Gemini 3 Deep Think를 앞질렀습니다. 하지만 여전히 Claude Opus 4.5 및 GPT-5.2와 같은 최고의 비공개 소스 모델에 뒤처지는 점수를 기록했습니다. 비즈니스 시뮬레이션 평가인 벤딩 벤치 2에서 GLM-5는 시뮬레이션 연간 수익으로 4,432달러를 창출하여 오픈 소스 시스템과 거의 동일한 범위를 기록했습니다.</p>
-<p>또한 GLM-5는 시스템 엔지니어링 및 장거리 에이전트 기능을 대폭 업그레이드했습니다. 이제 텍스트 또는 원시 자료를 .docx, .pdf, .xlsx 파일로 직접 변환하고 제품 요구 사항 문서, 강의 계획, 시험, 스프레드시트, 재무 보고서, 순서도 및 메뉴와 같은 특정 결과물을 생성할 수 있습니다.</p>
+<p>GLM-5는 주요 벤치마크에서 오픈 소스 팩을 주도하며 SWE 벤치 검증에서 1위(77.8점), 터미널 벤치 2.0에서 1위(56.2점)를 차지하여 MiniMax 2.5와 Gemini 3 Deep Think를 앞질렀습니다. 하지만 여전히 Claude Opus 4.5 및 GPT-5.2와 같은 최고의 비공개 소스 모델에 뒤처지는 점수를 기록했습니다. 비즈니스 시뮬레이션 평가인 벤딩 벤치 2에서 GLM-5는 시뮬레이션 연간 수익으로 4,432달러를 창출하여 오픈 소스 시스템과 거의 동일한 범위를 기록했습니다.</p>
+<p>또한 GLM-5는 시스템 엔지니어링 및 장거리 에이전트 기능을 대폭 업그레이드했습니다. 이제 텍스트나 원시 자료를 .docx, .pdf, .xlsx 파일로 직접 변환하고 제품 요구 사항 문서, 강의 계획, 시험, 스프레드시트, 재무 보고서, 순서도 및 메뉴와 같은 특정 결과물을 생성할 수 있습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/benchmark_1_aa8211e962.png" alt="" class="doc-image" id="" />
@@ -69,9 +69,9 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
     <span></span>
   </span>
 </p>
-<p>이 모델의 핵심 강점은 최고 수준의 추론 및 경쟁 성능으로, 코드포스에서 세계 8위 수준의 경쟁 프로그래머에 해당하는 3455엘로를 기록했습니다. 2025년 국제 물리, 화학, 수학 올림피아드에서 필기 부문 금메달을 획득하기도 했습니다. 비용 효율성은 또 다른 혁신입니다. ARC-AGI-1은 작업당 7.17달러로 실행되며, 이는 14개월 전 OpenAI의 o3-프리뷰에 비해 280배에서 420배까지 절감된 비용입니다. 응용 측면에서 딥씽크의 가장 큰 이점은 과학 연구 분야입니다. 전문가들은 이미 전문 수학 논문의 동료 검토와 복잡한 결정 성장 준비 워크플로우를 최적화하는 데 사용하고 있습니다.</p>
+<p>이 모델의 핵심 강점은 최고 수준의 추론 및 경쟁 성능으로, 코드포스에서 세계 8위 수준의 경쟁 프로그래머와 맞먹는 3455엘로를 기록했습니다. 2025년 국제 물리, 화학, 수학 올림피아드에서 필기 부문 금메달을 획득하기도 했습니다. 비용 효율성은 또 다른 혁신입니다. ARC-AGI-1은 작업당 7.17달러로 실행되며, 이는 14개월 전 OpenAI의 o3-프리뷰에 비해 280배에서 420배까지 절감된 비용입니다. 응용 측면에서 딥씽크의 가장 큰 이점은 과학 연구 분야입니다. 전문가들은 이미 전문 수학 논문의 동료 검토와 복잡한 결정 성장 준비 워크플로우를 최적화하는 데 사용하고 있습니다.</p>
 <h3 id="MiniMax-M25-competes-on-cost-and-speed-for-production-workloads" class="common-anchor-header">생산 워크로드에서 비용과 속도 면에서 경쟁력이 있는 MiniMax M2.5</h3><p>같은 날 MiniMax는 M2.5를 출시하여 생산 사용 사례를 위한 비용 및 효율성 챔피언으로 자리매김했습니다.</p>
-<p>업계에서 가장 빠르게 반복되는 모델 제품군 중 하나인 M2.5는 코딩, 도구 호출, 검색 및 사무실 생산성 전반에 걸쳐 새로운 SOTA 결과를 설정합니다. 고속 버전은 약 100 TPS로 실행되며, 입력 가격은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">백만 토큰당 0.30달러, 출력은</annotation></semantics></math></span></span>백만 토큰당 0.30달러 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">(</span><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"></span></span></span></span>0. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">30달러</span></span></span>,<span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">출력은</annotation></semantics></math></span></span>백만 토큰당 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">2</span></span></span></span>.40달러)로 책정되어 있습니다. 50 TPS 버전은 출력 비용을 절반으로 줄였습니다. 속도는 이전 M2.1보다 37% 향상되었으며, SWE 벤치 검증 작업을 평균 22.8분 만에 완료하여 Claude Opus 4.6과 거의 일치합니다. 기능 측면에서 M2.5는 Go, Rust, Kotlin 등 10개 이상의 언어로 풀스택 개발을 지원하며 제로 투 원 시스템 설계부터 전체 코드 검토까지 모든 것을 포괄합니다. 오피스 워크플로우의 경우 Office 스킬 기능은 Word, PPT, Excel과 긴밀하게 통합됩니다. 재무 및 법률 분야의 도메인 지식과 결합하면 바로 사용할 수 있는 연구 보고서와 재무 모델을 생성할 수 있습니다.</p>
+<p>업계에서 가장 빠르게 반복되는 모델 제품군 중 하나인 M2.5는 코딩, 도구 호출, 검색 및 사무실 생산성 전반에 걸쳐 새로운 SOTA 결과를 설정합니다. 고속 버전은 약 100 TPS로 실행되며, 입력 가격은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">백만 토큰당 0.30달러, 출력은</annotation></semantics></math></span></span>백만 토큰당 0.30달러 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">(</span><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"></span></span></span></span>0. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">30달러</span></span></span>,<span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">출력은</annotation></semantics></math></span></span>백만 토큰당 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">2</span></span></span></span>.40달러)로 책정되어 있습니다. 50 TPS 버전은 출력 비용을 절반으로 줄였습니다. 속도는 이전 M2.1에 비해 37% 향상되었으며, 평균 22.8분 만에 SWE 벤치 검증 작업을 완료하여 Claude Opus 4.6과 거의 일치합니다. 기능 측면에서 M2.5는 Go, Rust, Kotlin 등 10개 이상의 언어로 풀스택 개발을 지원하여 제로 투 원 시스템 설계부터 전체 코드 검토까지 모든 것을 포괄합니다. 오피스 워크플로우의 경우 Office 스킬 기능은 Word, PPT, Excel과 긴밀하게 통합됩니다. 재무 및 법률 분야의 도메인 지식과 결합하면 바로 사용할 수 있는 연구 보고서와 재무 모델을 생성할 수 있습니다.</p>
 <p>이것이 개략적인 개요입니다. 이제 실제 테스트에서 실제로 어떻게 작동하는지 살펴보겠습니다.</p>
 <h2 id="Hands-On-Comparisons" class="common-anchor-header">실습 비교<button data-href="#Hands-On-Comparisons" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -266,7 +266,7 @@ search_res = milvus_client.search(
     output_fields=[<span class="hljs-string">&quot;text&quot;</span>],
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>결과는 거리별로 정렬되며, 가장 가까운 것부터 정렬됩니다:</p>
+<p>결과는 거리별로 정렬되며 가장 가까운 것부터 정렬됩니다:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 
 retrieved_lines_with_distances = [

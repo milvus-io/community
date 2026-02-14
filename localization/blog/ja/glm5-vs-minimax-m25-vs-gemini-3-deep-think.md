@@ -1,7 +1,7 @@
 ---
 id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: GLM-5 vs MiniMax M2.5 vs Gemini 3 ディープシンク：AIエージェントスタックに合うモデルは？
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -16,14 +16,14 @@ desc: >-
   Thinkのハンズオン比較。MilvusによるRAGチュートリアルを含みます。
 origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
 ---
-<p>わずか2日あまりの間に、3つの主要モデルが立て続けに発売された：GLM-5、MiniMax M2.5、そしてGemini 3 Deep Thinkだ。3つとも、<strong>コーディング、深い推論、エージェント的なワークフローという</strong>同じ機能をヘッドラインにしている。3つとも最先端の結果を謳っている。スペックシートに目を凝らせば、ほとんどマッチングゲームをすることができ、3つとも同じ論点を排除することができるだろう。</p>
+<p>わずか2日あまりの間に、3つの主要モデルが立て続けに発売された：GLM-5、MiniMax M2.5、そしてGemini 3 Deep Thinkだ。3つとも、<strong>コーディング、深い推論、エージェント型ワークフローという</strong>同じ機能をヘッドラインにしている。3つとも最先端の結果を謳っている。スペックシートに目を凝らせば、ほとんどマッチングゲームをすることができ、3つとも同じ論点を排除することができるだろう。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/comparsion_minimax_vs_glm5_vs_gemini3_d05715d4c2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>もっと怖いのは、あなたの上司がすでにその発表を見ていることだ。あなたの上司はおそらくすでに発表を見ていて、週が明ける前に3つのモデルを使って9つの社内アプリを作るよう、うずうずしていることだろう。</p>
+<p>もっと怖いのは、あなたの上司がすでにその発表を見ていることだ。あなたの上司はおそらくすでに発表を見ていて、週が明ける前に3つのモデルを使って9つの社内アプリを作るようにうずうずしていることだろう。</p>
 <p>では、実際にこれらのモデルの違いは何なのか？どのように選択すべきなのか？そして（いつものように）社内ナレッジベースを出荷するために<a href="https://milvus.io/">Milvusと</a>どのように接続するのでしょうか？このページをブックマークしてください。必要なものはすべて揃っています。</p>
 <h2 id="GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="common-anchor-header">GLM-5、MiniMax M2.5、Gemini 3ディープシンクの概要<button data-href="#GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -40,7 +40,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="GLM-5-leads-in-complex-system-engineering-and-long-horizon-agent-tasks" class="common-anchor-header">GLM-5が複雑なシステムエンジニアリングと長期のエージェントタスクでリード</h3><p>2月12日、Zhipuは複雑なシステムエンジニアリングと長時間エージェントワークフローを得意とするGLM-5を正式に発表した。</p>
+    </button></h2><h3 id="GLM-5-leads-in-complex-system-engineering-and-long-horizon-agent-tasks" class="common-anchor-header">GLM-5が複雑なシステムエンジニアリングと長周期エージェントタスクをリード</h3><p>2月12日、Zhipuは複雑なシステムエンジニアリングと長時間エージェントワークフローを得意とするGLM-5を正式に発表した。</p>
 <p>このモデルは355B-744Bのパラメータ（アクティブ40B）を持ち、28.5Tトークンで学習される。疎な注意メカニズムをSlimeと呼ばれる非同期強化学習フレームワークと統合することで、展開コストを抑えながら、品質を損なうことなく超長時間のコンテキストを処理することを可能にしている。</p>
 <p>GLM-5は主要なベンチマークでオープンソースのパックをリードし、SWE-bench Verifiedでは1位（77.8）、Terminal Bench 2.0では1位（56.2）となり、MiniMax 2.5とGemini 3 Deep Thinkを上回った。とはいえ、そのヘッドラインスコアは、クロード・オーパス4.5やGPT-5.2のようなトップクラスのクローズドソースモデルには及ばない。ビジネスシミュレーション評価であるVending Bench 2では、GLM-5の年間利益は4,432ドルで、クローズドソースシステムとほぼ同じ範囲であった。</p>
 <p>GLM-5はまた、システムエンジニアリングとロングホライズンエージェントの機能を大幅にアップグレードした。テキストや原材料を.docx、.pdf、.xlsxファイルに直接変換し、製品要求文書、授業計画、試験、スプレッドシート、財務報告書、フローチャート、メニューなどの特定の成果物を生成できるようになった。</p>
@@ -56,7 +56,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
     <span></span>
   </span>
 </p>
-<h3 id="Gemini-3-Deep-Think-sets-a-new-bar-for-scientific-reasoning" class="common-anchor-header">ジェミニ3ディープシンク、科学的推論の新たな基準を設定</h3><p>2026年2月13日未明、グーグルはGemini 3 Deep Thinkを正式にリリースした。これは、私が（仮に）地球上で最強の研究・推論モデルと呼ぶメジャーアップグレードである。結局のところ、ジェミニは洗車テストに合格した唯一のモデルだった：<em>「洗車をしたいのだが、洗車場は50メートル先にある。車を洗車</em>したいが、洗車場は50メートル先にある。</p>
+<h3 id="Gemini-3-Deep-Think-sets-a-new-bar-for-scientific-reasoning" class="common-anchor-header">ジェミニ3ディープシンク、科学的推論の新たな基準を設定</h3><p>2026年2月13日未明、グーグルはGemini 3 Deep Thinkを正式にリリースした。これは、私が（仮に）地球上で最強の研究・推論モデルと呼ぶメジャーアップグレードである。結局、ジェミニは洗車テストに合格した唯一のモデルだった：<em>「洗車をしたいのだが、洗車場は50メートル先にある。車を洗車</em>したいが、洗車場は50メートル先にある。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/car_wash_test_gemini_859ee40db8.png" alt="" class="doc-image" id="" />
@@ -71,7 +71,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
 </p>
 <p>Codeforcesで3455Eloを記録し、これは世界8位の競技プログラマーに相当する。2025年国際物理学、化学、数学オリンピックの筆記部門では金メダルに輝いた。コスト効率も画期的だ。ARC-AGI-1はタスクあたりわずか7.17ドルで、14ヶ月前のOpenAIのo3-previewと比べて280倍から420倍のコスト削減を実現している。応用面では、ディープシンクの最大の成果は科学研究である。専門家はすでに、専門的な数学論文の査読や、複雑な結晶成長準備ワークフローの最適化に利用している。</p>
 <h3 id="MiniMax-M25-competes-on-cost-and-speed-for-production-workloads" class="common-anchor-header">MiniMax M2.5、生産ワークロードのコストとスピードで競争</h3><p>同日、MiniMaxはM2.5をリリースし、生産ユースケースにおけるコストと効率のチャンピオンに位置づけた。</p>
-<p>M2.5は、業界で最も高速に動作するモデルファミリーの1つであり、コーディング、ツール呼び出し、検索、オフィス生産性において、SOTAの新記録を打ち立てた。コストは最大のセールスポイントである。高速版はおよそ100TPSで動作し、入力は<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">100万トークンあたり</annotation><mrow><mn>0.</mn><mi>30</mi><mn>パーミリオントークン、</mn></mrow><annotation encoding="application/x-tex">出力は</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"></span></span></span></span>0<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.30</span><span class="mord mathnormal">パーミリオントークン</span><span class="mord">、</span></span></span></span>100万トークンあたり<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">2</span></span></span></span>.40<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">パーミリオントークン</span></span></span></span>である。50TPSバージョンは出力コストをさらに半分に削減する。スピードは従来のM2.1より37%向上し、SWEベンチ検証済みタスクを平均22.8分で完了し、クロード・オーパス4.6とほぼ同等です。機能面では、M2.5はGo、Rust、Kotlinを含む10以上の言語でのフルスタック開発をサポートしており、ゼロ・トゥ・ワンのシステム設計から完全なコードレビューまでをカバーする。オフィスワークフローでは、Office Skills機能がWord、PPT、Excelと深く統合されている。金融や法律のドメイン知識と組み合わせることで、直接使用できる調査レポートや財務モデルを生成することができる。</p>
+<p>M2.5は、業界で最も高速に動作するモデルファミリーの1つであり、コーディング、ツール呼び出し、検索、オフィス生産性において、SOTAの新記録を打ち立てた。コストは最大のセールスポイントである。高速バージョンはおよそ100TPSで動作し、入力は<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">100万トークンあたり</annotation><mrow><mn>0.30</mn><mi>パーミリオントークンと</mi><mn>0</mn></mrow><annotation encoding="application/x-tex">.30</annotation><mrow><mn>アウトプット</mn></mrow><annotation encoding="application/x-tex">、出力は</annotation></semantics></math></span></span>100万トークンあたり<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"></span></span></span></span>0<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.30</span><span class="mord mathnormal">パーミリオントークンと</span><span class="mord">2</span></span></span></span>.40<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">アウトプットである</span></span></span></span>。50TPSバージョンは出力コストをさらに半分に削減する。スピードは従来のM2.1より37%向上し、SWEベンチ検証済みタスクを平均22.8分で完了し、クロード・オーパス4.6とほぼ同等です。機能面では、M2.5はGo、Rust、Kotlinを含む10以上の言語でのフルスタック開発をサポートしており、ゼロ・トゥ・ワンのシステム設計から完全なコードレビューまでをカバーする。オフィスワークフローでは、Office Skills機能がWord、PPT、Excelと深く統合されている。金融や法律のドメイン知識と組み合わせることで、直接使用できる調査レポートや財務モデルを生成することができる。</p>
 <p>これがハイレベルな概要だ。次に、ハンズオン・テストでの実際のパフォーマンスを見てみよう。</p>
 <h2 id="Hands-On-Comparisons" class="common-anchor-header">ハンズオン比較<button data-href="#Hands-On-Comparisons" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -238,7 +238,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Insert-data" class="common-anchor-header">データの挿入</h3><p>テキスト行を繰り返し、埋め込みデータを生成し、Milvusにデータを挿入します。ここでの<code translate="no">text</code> フィールドはスキーマで定義されていません。Milvusの予約済みJSONフィールドにバックされたダイナミックフィールドとして自動的に追加されます：</p>
+<h3 id="Insert-data" class="common-anchor-header">データの挿入</h3><p>テキスト行を繰り返し、埋め込みデータを生成し、Milvusにデータを挿入します。ここでの<code translate="no">text</code> フィールドはスキーマで定義されていません。Milvusの予約されたJSONフィールドにバックされたダイナミックフィールドとして自動的に追加されます：</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 data = []
 resp = glm_client.embeddings.create(model=EMBEDDING_MODEL, <span class="hljs-built_in">input</span>=text_lines)
@@ -347,7 +347,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>3つのモデルはどれも強力だが、得意とするものが異なる。Gemini 3 Deep Thinkは、推論の深さがコストよりも重要な場合に選ぶべきモデルである。GLM-5は、ローカル展開とシステムレベルのエンジニアリングを必要とするチームにとって、最高のオープンソースオプションである。MiniMax M2.5は、本番ワークロード全体のスループットと予算を最適化する場合に適している。</p>
+    </button></h2><p>3つのモデルはどれも強力だが、得意とするものが異なる。Gemini 3 Deep Thinkは、推論の深さがコストよりも重要な場合に選ぶべきモデルである。GLM-5は、ローカル展開とシステムレベルのエンジニアリングを必要とするチームにとって、最高のオープンソースオプションである。MiniMax M2.5は、本番ワークロード全体のスループットと予算を最適化する場合に理にかなっている。</p>
 <p>選択するモデルは、方程式の半分に過ぎない。これらのいずれかを有用なアプリケーションにするには、データとともに拡張できる検索レイヤーが必要です。そこでMilvusの出番となる。上記のRAGチュートリアルは、OpenAI互換のモデルで動作するため、GLM-5、MiniMax M2.5、または将来のリリースを入れ替えるには、1行の変更で済みます。</p>
 <p>もしあなたがローカルまたはオンプレミスのAIエージェントを設計していて、ストレージアーキテクチャ、セッション設計、または安全なロールバックについてもっと詳しく議論したい場合は、お気軽に<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slackチャンネルに</a>ご参加ください。</p>
 <p>また、Milvus Office Hoursで20分間の個別指導を予約することもできます。AIエージェントの構築についてさらに詳しく知りたい方は、こちらをご覧ください。</p>

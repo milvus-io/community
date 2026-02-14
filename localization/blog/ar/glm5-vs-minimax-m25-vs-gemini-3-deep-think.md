@@ -3,7 +3,7 @@ id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: >-
   GLM-5 مقابل MiniMax M2.5 مقابل Gemini 3 Deep Think: ما النموذج الذي يناسب
   مجموعة عملاء الذكاء الاصطناعي لديك؟
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -224,7 +224,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>ملاحظة حول تكوين MilvusClient:</p>
 <ul>
-<li><p>تعيين URI إلى ملف محلي (على سبيل المثال، <code translate="no">./milvus.db</code>) هو الخيار الأبسط. يستخدم تلقائيًا Milvus Lite لتخزين جميع البيانات في هذا الملف.</p></li>
+<li><p>تعيين URI إلى ملف محلي (على سبيل المثال، <code translate="no">./milvus.db</code>) هو أبسط خيار. يستخدم تلقائيًا Milvus Lite لتخزين جميع البيانات في هذا الملف.</p></li>
 <li><p>بالنسبة للبيانات واسعة النطاق، يمكنك نشر خادم Milvus أكثر أداءً على Docker أو Kubernetes. في هذه الحالة، استخدم URI الخادم (على سبيل المثال، <code translate="no">http://localhost:19530</code>).</p></li>
 <li><p>لاستخدام Zilliz Cloud (الإصدار السحابي المُدار بالكامل من Milvus)، قم بتعيين URI والرمز المميز إلى نقطة النهاية العامة ومفتاح API من وحدة تحكم Zilliz Cloud.</p></li>
 </ul>

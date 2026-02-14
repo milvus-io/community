@@ -3,7 +3,7 @@ id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
 title: >-
   GLM-5 vs MiniMax M2.5 vs Gemini 3 Deep Think: Model Mana yang Cocok dengan
   Tumpukan Agen AI Anda?
-author: 'Lumina Wang, Julie Xie'
+author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
 tag: Engineering
@@ -44,7 +44,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
       </svg>
     </button></h2><h3 id="GLM-5-leads-in-complex-system-engineering-and-long-horizon-agent-tasks" class="common-anchor-header">GLM-5 memimpin dalam rekayasa sistem yang kompleks dan tugas agen cakrawala panjang</h3><p>Pada tanggal 12 Februari, Zhipu secara resmi meluncurkan GLM-5, yang unggul dalam rekayasa sistem yang kompleks dan alur kerja agen jangka panjang.</p>
 <p>Model ini memiliki parameter 355B-744B (40B aktif), dilatih dengan token 28,5T. Model ini mengintegrasikan mekanisme perhatian yang jarang dengan kerangka kerja pembelajaran penguatan asinkron yang disebut Slime, yang memungkinkannya menangani konteks yang sangat panjang tanpa kehilangan kualitas sekaligus menekan biaya penerapan.</p>
-<p>GLM-5 memimpin paket open-source pada tolok ukur utama, menempati peringkat #1 di SWE-bench Verified (77,8) dan #1 di Terminal Bench 2.0 (56,2) - di depan MiniMax 2.5 dan Gemini 3 Deep Think. Meskipun begitu, skor utamanya masih berada di bawah model-model sumber tertutup teratas seperti Claude Opus 4.5 dan GPT-5.2. Dalam Vending Bench 2, sebuah evaluasi simulasi bisnis, GLM-5 menghasilkan $ 4.432 dalam simulasi laba tahunan, menempatkannya kira-kira dalam kisaran yang sama dengan sistem sumber tertutup.</p>
+<p>GLM-5 memimpin paket open-source pada tolok ukur utama, menempati peringkat #1 di SWE-bench Verified (77,8) dan #1 di Terminal Bench 2.0 (56,2) - di depan MiniMax 2.5 dan Gemini 3 Deep Think. Meskipun begitu, skor utamanya masih berada di bawah model-model sumber tertutup teratas seperti Claude Opus 4.5 dan GPT-5.2. Dalam Vending Bench 2, sebuah evaluasi simulasi bisnis, GLM-5 menghasilkan $ 4.432 dalam simulasi laba tahunan, menempatkannya secara kasar dalam kisaran yang sama dengan sistem sumber tertutup.</p>
 <p>GLM-5 juga melakukan peningkatan yang signifikan pada rekayasa sistem dan kemampuan agen jangka panjangnya. Sekarang dapat mengonversi teks atau bahan mentah secara langsung menjadi file .docx, .pdf, dan .xlsx, dan menghasilkan hasil tertentu seperti dokumen persyaratan produk, rencana pelajaran, ujian, spreadsheet, laporan keuangan, diagram alir, dan menu.</p>
 <p>
   <span class="img-wrapper">
@@ -129,7 +129,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/minimax_m2_5_generated_image_06d50f8fa7.png" alt="MiniMax M2.5" class="doc-image" id="minimax-m2.5" />
    </span> <span class="img-wrapper"> <span>MiniMax M2.5</span> </span></p>
 <p><strong>Gemini 3 Deep Think</strong> menghasilkan SVG yang paling lengkap secara keseluruhan. Postur berkendara burung pelikan ini sangat akurat: pusat gravitasinya berada secara alami di atas jok, dan kakinya bertumpu pada pedal dalam pose bersepeda yang dinamis. Tekstur bulu sangat detail dan berlapis-lapis. Satu titik lemahnya adalah kantong tenggorokan khas burung pelikan digambar terlalu besar, yang sedikit mengganggu proporsi keseluruhan.</p>
-<p><strong>GLM-5</strong> memiliki masalah postur tubuh yang nyata. Kaki ditempatkan dengan benar pada pedal, tetapi posisi duduk secara keseluruhan menjauh dari postur berkendara yang alami, dan hubungan tubuh-ke-kursi terlihat tidak pas. Meskipun demikian, detailnya sangat bagus: kantong tenggorokannya proporsional, dan kualitas tekstur bulunya cukup baik.</p>
+<p><strong>GLM-5</strong> memiliki masalah postur tubuh yang nyata. Kaki ditempatkan dengan benar pada pedal, tetapi posisi duduknya secara keseluruhan menjauh dari postur berkendara yang alami, dan hubungan tubuh-ke-kursi terlihat tidak pas. Meskipun demikian, detailnya sangat bagus: kantong tenggorokannya proporsional, dan kualitas tekstur bulunya cukup baik.</p>
 <p><strong>MiniMax M2.5</strong> tampil dengan gaya minimalis dan meniadakan elemen latar belakang sama sekali. Posisi burung pelikan pada sepeda secara kasar sudah tepat, tetapi detailnya kurang bagus. Setang sepeda memiliki bentuk yang salah, tekstur bulu hampir tidak ada, leher sepeda terlalu tebal, dan ada artefak oval putih yang tersesat pada gambar yang seharusnya tidak ada di sana.</p>
 <h2 id="How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="common-anchor-header">Cara Memilih Antara GLM-5, MiniMax M2.5 dan Gemin 3 Deep Think<button data-href="#How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="anchor-icon" translate="no">
       <svg translate="no"
