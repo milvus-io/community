@@ -1,37 +1,20 @@
 ---
-
 id: debugging-rag-in-3d-with-projectgolem-and-milvus.md
-
 title: >
-
  What If You Could See Why RAG Fails? Debugging RAG in 3D with Project_Golem and Milvus
-
 author: Min Yin
-
 date: 2026-02-18
-
 cover: assets.zilliz.com/Debugging_RAG_in_3_D_f1b45f9a99_5f98979c06.png
-
 tag: Engineering
-
 recommend: false
-
 publishToMedium: true
-
 tags: Milvus, vector database, RAG
-
 meta_keywords: Project_Golem, milvus, RAG
-
 meta_title: >
-
  Debugging RAG in 3D with Project_Golem and Milvus
-
 desc: >
-
  Learn how Project_Golem and Milvus make RAG systems observable by visualizing vector space, debugging retrieval errors, and scaling real-time vector search.
-
 origin: https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md
-
 ---
 
 
