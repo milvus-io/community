@@ -1,7 +1,7 @@
 ---
 id: how-to-build-productionready-ai-agents-with-longterm-memory-using-google-adk-and-milvus.md
 title: >
-How to Build Production-Ready AI Agents with Long-Term Memory Using Google ADK and Milvus
+ How to Build Production-Ready AI Agents with Long-Term Memory Using Google ADK and Milvus
 author: Min Yin
 date: 2026-02-26
 cover: https://assets.zilliz.com/cover_c543dbeab4.png
@@ -11,9 +11,9 @@ publishToMedium: true
 tags: Milvus, vector database, RAG
 meta_keywords: AI agent memory, long-term memory, ADK framework, Milvus vector database, semantic retrieval
 meta_title: >
-Production AI Agents with Persistent Memory Using Google ADK and Milvus
+ Production AI Agents with Persistent Memory Using Google ADK and Milvus
 desc: >
-Build AI agents with real long-term memory using ADK and Milvus, covering memory design, semantic retrieval, user isolation, and production-ready architecture.
+ Build AI agents with real long-term memory using ADK and Milvus, covering memory design, semantic retrieval, user isolation, and production-ready architecture.
 origin: https://milvus.io/blog/how-to-build-productionready-ai-agents-with-longterm-memory-using-google-adk-and-milvus.md
 ---
 
