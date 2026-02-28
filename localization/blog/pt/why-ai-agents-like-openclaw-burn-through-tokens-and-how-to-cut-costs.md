@@ -22,7 +22,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
 ---
-<custom-h1>Por que agentes de IA como o OpenClaw queimam tokens e como reduzir custos</custom-h1><p>Se você já passou algum tempo com o <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (anteriormente Clawdbot e Moltbot), você já sabe o quão bom é esse AI Agent. Ele é rápido, local, flexível e capaz de realizar fluxos de trabalho surpreendentemente complexos no Slack, no Discord, na sua base de código e em praticamente qualquer outra coisa que você o conecte. Mas quando você começa a usá-lo seriamente, um padrão emerge rapidamente: <strong>seu uso de token começa a subir.</strong></p>
+<p>Se você já passou algum tempo com o <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (anteriormente Clawdbot e Moltbot), você já sabe o quão bom é esse agente de IA. É rápido, local, flexível e capaz de realizar fluxos de trabalho surpreendentemente complexos no Slack, no Discord, na sua base de código e em praticamente qualquer outra coisa em que você o conecte. Mas quando você começa a usá-lo seriamente, um padrão emerge rapidamente: <strong>seu uso de token começa a subir.</strong></p>
 <p>Isso não é culpa do OpenClaw especificamente - é como a maioria dos agentes de IA se comporta hoje. Eles accionam uma chamada LLM para quase tudo: procurar um ficheiro, planear uma tarefa, escrever uma nota, executar uma ferramenta ou fazer uma pergunta de seguimento. E como os tokens são a moeda universal destas chamadas, cada ação tem um custo.</p>
 <p>Para perceber de onde vem esse custo, temos de olhar para dois grandes contribuidores:</p>
 <ul>
@@ -148,7 +148,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Ideal para: equipas que pretendem visibilidade total sobre o que o agente recorda, que necessitam de controlo de versão sobre a memória ou que pretendem um sistema de memória que não esteja preso a uma única estrutura de agente.</p>
+<p>Ideal para: equipas que pretendem visibilidade total sobre o que o agente recorda, que necessitam de controlo de versões sobre a memória ou que pretendem um sistema de memória que não esteja preso a uma única estrutura de agente.</p>
 <p>Resumindo:</p>
 <table>
 <thead>

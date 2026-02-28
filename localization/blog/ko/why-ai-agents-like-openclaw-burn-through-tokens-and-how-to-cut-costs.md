@@ -19,7 +19,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
 ---
-<custom-h1>OpenClaw와 같은 AI 에이전트가 토큰을 소모하는 이유와 비용을 절감하는 방법</custom-h1><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (이전의 Clawdbot 및 Moltbot)를 사용해 본 적이 있다면 이 AI 에이전트가 얼마나 뛰어난지 이미 알고 계실 것입니다. 빠르고, 로컬에 있으며, 유연하고, Slack, Discord, 코드베이스 등 거의 모든 곳에서 놀라울 정도로 복잡한 워크플로우를 처리할 수 있습니다. 하지만 본격적으로 사용하기 시작하면 한 가지 패턴이 빠르게 나타납니다. 바로 <strong>토큰 사용량이 증가하기 시작한다는</strong> 것입니다 <strong>.</strong></p>
+<p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (이전의 Clawdbot 및 Moltbot)를 사용해 본 적이 있다면 이 AI 에이전트가 얼마나 뛰어난지 이미 알고 계실 것입니다. 빠르고, 로컬에 있으며, 유연하고, Slack, Discord, 코드베이스, 그 외 거의 모든 곳에서 놀라울 정도로 복잡한 워크플로우를 처리할 수 있습니다. 하지만 본격적으로 사용하기 시작하면 한 가지 패턴이 빠르게 나타납니다. 바로 <strong>토큰 사용량이 증가하기 시작한다는</strong> 것입니다 <strong>.</strong></p>
 <p>이는 특별히 OpenClaw의 잘못이 아니라 오늘날 대부분의 AI 에이전트가 작동하는 방식입니다. 파일 조회, 작업 계획, 메모 작성, 도구 실행, 후속 질문 등 거의 모든 작업에 대해 LLM 호출을 트리거합니다. 그리고 토큰은 이러한 호출의 보편적인 통화이므로 모든 작업에는 비용이 발생합니다.</p>
 <p>그 비용이 어디에서 발생하는지 이해하려면 두 가지 주요 원인에 대해 자세히 살펴볼 필요가 있습니다:</p>
 <ul>

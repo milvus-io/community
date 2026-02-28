@@ -19,7 +19,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
 ---
-<custom-h1>为什么 OpenClaw 等人工智能代理会烧光代币以及如何降低成本</custom-h1><p>如果你用过<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a>（前身为 Clawdbot 和 Moltbot），你就已经知道这个人工智能代理有多棒了。它速度快、本地化、灵活，能够在 Slack、Discord、你的代码库以及你所连接的任何其他设备上完成令人惊讶的复杂工作流。但是，一旦你开始认真使用它，很快就会发现一个规律：<strong>你的令牌使用量开始攀升。</strong></p>
+<p>如果你用过<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a>（前身为 Clawdbot 和 Moltbot），你就会知道这个人工智能代理有多棒。它速度快、本地化、灵活，能够在 Slack、Discord、你的代码库以及你所连接的任何其他设备上完成令人惊讶的复杂工作流。但是，一旦你开始认真使用它，很快就会发现一个规律：<strong>你的令牌使用量开始攀升。</strong></p>
 <p>这不是 OpenClaw 的错，而是当今大多数人工智能 Agents 的行为方式。几乎所有事情都会触发 LLM 调用：查找文件、计划任务、撰写笔记、执行工具或提出后续问题。由于代币是这些调用的通用货币，因此每项操作都有成本。</p>
 <p>要了解这种成本的来源，我们需要深入了解两个主要贡献者：</p>
 <ul>
@@ -140,7 +140,7 @@ origin: >-
 <p>代价是部署开销。运行OpenClaw内存意味着运行整个OpenClaw生态系统：网关进程、消息平台连接以及堆栈的其他部分。对于已经使用OpenClaw的团队来说，这没什么问题。<strong>memsearch</strong>的建立就是为了弥补这一缺陷：它将OpenClaw的Markdown-first内存模式提取为一个独立的库，可以与任何Agent一起使用。</p>
 <p><strong><a href="https://github.com/zilliztech/memsearch">memsearch</a></strong>由Zilliz（Milvus背后的团队）创建，将Markdown文件视为唯一的真相来源。MEMORY.md 保存了你手写的长期事实和决策。每日日志（2026-02-26.md）由会话摘要自动生成。存储在 Milvus 中的向量索引是一个派生层，可以随时从 Markdown 中重建。</p>
 <p>实际上，这意味着你可以用文本编辑器打开任何内存文件，准确读取 Agents 所知道的内容，并对其进行修改。保存文件后，memsearch 的文件监视器会检测到更改并自动重新索引。你可以用 Git 管理记忆库，通过拉取请求审查人工智能生成的记忆库，或者通过复制文件夹移动到新的机器上。如果 Milvus 索引丢失，你可以从文件中重建索引。文件永远不会有风险。</p>
-<p>在引擎盖下，memsearch 采用了与上述相同的混合搜索模式：按标题结构和段落边界分割的块，BM25 + 向量检索，以及一个由 LLM 驱动的紧凑型命令，当日志变大时，该命令会汇总旧的记忆。  <span class="img-wrapper">
+<p>在引擎盖下，memsearch 采用了与上述相同的混合搜索模式：按标题结构和段落边界分割的块，BM25 + 向量检索，以及一个由 LLM 驱动的精简命令，当日志变大时，该命令会汇总旧的记忆。  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Blog_Open_Claw_Burning_Through_Tokens_3_d9df026b47.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
@@ -203,9 +203,9 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>始终在线的人工智能 Agents 带来的代币成本并非不可避免。本指南介绍了更好的工具可以减少浪费的两个领域：搜索和内存。</p>
-<p><a href="https://github.com/gladego/index1"></a><a href="https://github.com/gladego/index1">index1</a>和<a href="https://github.com/tobi/qmd"></a> QMD 将 BM25 关键字评分与向量搜索相结合，只返回最相关的结果，从而在单机上解决了这一问题。对于团队、多 Agents 设置或生产工作负载，<a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a>在可水平扩展的基础架构上提供了相同的混合搜索模式。</p>
+<p><a href="https://github.com/gladego/index1"></a><a href="https://github.com/gladego/index1">index1</a>和<a href="https://github.com/tobi/qmd"></a> QMD 将 BM25 关键字评分与向量搜索相结合，只返回最相关的结果，从而在单台机器上解决了这一问题。对于团队、多 Agents 设置或生产工作负载，<a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a>在可水平扩展的基础架构上提供了相同的混合搜索模式。</p>
 <p>在<a href="https://github.com/zilliztech/memsearch">内存</a>方面，大多数框架都将所有内容存储在向量数据库中：不透明、难以手工编辑，并且锁定在创建它的框架中。内存保存在普通的 Markdown 文件中，你可以读取、编辑并使用 Git 进行版本控制。Milvus 作为一个派生索引，可以随时从这些文件中重建。你可以随时控制 Agents 所知道的内容。</p>
-<p><a href="https://github.com/zilliztech/memsearch"></a><a href="https://github.com/zilliztech/memsearch">memsearch</a>和<a href="https://github.com/milvus-io/milvus"></a><a href="https://github.com/milvus-io/milvus">Milvus</a>都是开源的。我们正在积极开发 memsearch，并希望在生产中运行它的用户提供反馈。打开一个问题，提交一份报告，或者告诉我们哪些是可行的，哪些是不可行的。</p>
+<p><a href="https://github.com/zilliztech/memsearch"></a><a href="https://github.com/zilliztech/memsearch">memsearch</a>和<a href="https://github.com/milvus-io/milvus"></a><a href="https://github.com/milvus-io/milvus">Milvus</a>都是开源的。我们正在积极开发 memsearch，并希望在生产中运行它的用户提供反馈。请打开一个问题、提交一份报告，或者告诉我们哪些是可行的，哪些是不可行的。</p>
 <p>本指南中提到的项目：</p>
 <ul>
 <li><a href="https://github.com/zilliztech/memsearch">memsearch</a>：人工智能 Agents 的 Markdown 优先内存，由 Milvus 提供支持。</li>

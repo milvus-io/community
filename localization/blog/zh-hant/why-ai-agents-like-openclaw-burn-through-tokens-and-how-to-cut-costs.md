@@ -19,7 +19,7 @@ desc: >-
 origin: >-
   https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
 ---
-<custom-h1>為什麼 OpenClaw 等 AI 代理會燒完代用幣，以及如何降低成本</custom-h1><p>如果您曾使用過<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a>(前身為 Clawdbot 和 Moltbot)，您就已經知道這個 AI Agent 有多棒了。它快速、本地、靈活，而且能夠在 Slack、Discord、您的程式碼庫，以及任何您可以連結到的地方，完成令人驚訝的複雜工作流程。但是當您開始認真使用它時，有一種模式很快就會出現：<strong>您的代用幣使用量開始攀升。</strong></p>
+<p>如果您使用過<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a>(前身為 Clawdbot 和 Moltbot)，您就已經知道這個 AI Agent 有多棒了。它快速、本機、靈活，而且能夠在 Slack、Discord、您的程式碼庫，以及任何與它連結的地方，完成複雜得令人驚訝的工作流程。但是當您開始認真使用它時，有一種模式很快就會出現：<strong>您的代用幣使用量開始攀升。</strong></p>
 <p>這並不是 OpenClaw 的錯，而是當今大多數 AI 代理的行為模式。它們幾乎每件事都會觸發 LLM 呼叫：尋找檔案、規劃任務、寫筆記、執行工具或提出後續問題。因為代幣是這些呼叫的通用貨幣，所以每個動作都有成本。</p>
 <p>為了瞭解成本的來源，我們需要看看兩個主要的貢獻者：</p>
 <ul>
@@ -43,8 +43,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>當代理需要您的程式碼庫或文件庫中的資訊時，它通常會執行相當於整個專案的<strong>Ctrl+F</strong>。每一行匹配的資料都會被傳回 - 未排序、未篩選、未優先。Claude Code 是透過一個建構在 ripgrep 上的 Grep 工具來實現這個功能。OpenClaw 並沒有內建的程式碼庫搜尋工具，但它的執行工具可以讓底層模型執行任何指令，而且載入的技能可以引導代理程式使用 rg 等工具。在這兩種情況下，程式碼庫搜尋都會傳回未經排序和篩選的關鍵字匹配結果。</p>
-<p>這種粗暴的方式在小型專案中運作良好。但隨著資源庫的增加，代價也會隨之增加。不相關的匹配結果會堆積在 LLM 的上下文視窗中，迫使模型讀取和處理數以千計實際上不需要的符記。單一的非範圍搜尋可能會拖入完整的檔案、巨大的註解區塊，或是共享關鍵字但不共享基本意圖的記錄。在長時間的除錯或研究階段中重複這種模式，臃腫的情況就會迅速增加。</p>
-<p>OpenClaw 與 Claude Code 都嘗試管理這種增長。OpenClaw 會刪除過大的工具輸出，並壓縮冗長的會話歷史，而 Claude Code 則會限制檔案讀取輸出，並支援上下文壓縮。這些緩解措施都奏效了，但都是在臃腫的查詢已經執行之後。未排序的搜尋結果仍會消耗代幣，而您仍需為它們付費。情境管理幫助的是未來的轉彎，而不是產生浪費的原始呼叫。</p>
+<p>這種粗暴的方式在小型專案中運作良好。但隨著資源庫的增加，代價也會隨之增加。不相關的匹配結果會堆積在 LLM 的上下文視窗中，迫使模型讀取和處理數以千計實際上不需要的符記。單一的非範圍搜尋可能會拖入完整的檔案、巨大的註解區塊，或是共享關鍵字但不共享基本意圖的記錄。在長時間的除錯或研究階段中重複這種模式，臃腫就會迅速增加。</p>
+<p>OpenClaw 與 Claude Code 都嘗試管理這種增長。OpenClaw 會刪除過大的工具輸出，並壓縮長時間的會話歷史，而 Claude Code 則會限制檔案讀取輸出，並支援上下文壓縮。這些緩解措施都奏效了，但都是在臃腫的查詢已經執行之後。未排序的搜尋結果仍會消耗代幣，而您仍需為它們付費。情境管理幫助的是未來的轉彎，而不是產生浪費的原始呼叫。</p>
 <h2 id="How-AI-Agent-Memory-Works-and-Why-It-Also-Costs-Tokens" class="common-anchor-header">AI 代理記憶體如何運作，以及為什麼也會消耗代幣<button data-href="#How-AI-Agent-Memory-Works-and-Why-It-Also-Costs-Tokens" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -60,7 +60,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>搜尋並不是代幣開銷的唯一來源。代理程式從記憶體中召回的每一段上下文也必須載入 LLM 的上下文視窗，這也需要消耗代幣。</p>
+    </button></h2><p>搜尋並不是代幣開銷的唯一來源。代理程式從記憶體召回的每一片上下文也必須載入 LLM 的上下文視窗，這也會花費代幣。</p>
 <p>目前大多數代碼所依賴的 LLM API 都是無狀態的：Anthropic 的訊息 API 每次要求都需要完整的對話歷史，OpenAI 的聊天完成 API 也是如此。即使是 OpenAI 較新的有狀態回應 API（可在伺服器端管理對話狀態），每次呼叫時仍需要完整的上下文視窗。無論記憶體是如何載入上下文的，都會消耗代幣。</p>
 <p>為了解決這個問題，代理程式框架會將筆記寫入磁碟上的檔案，並在代理程式需要時將相關筆記載入上下文視窗。舉例來說，OpenClaw 將整理好的筆記儲存在 MEMORY.md 中，並將每日記錄附加到有時間戳記的 Markdown 檔案中，然後以混合 BM25 與向量搜尋為其編制索引，讓代理程式可以依需求調用相關的上下文。</p>
 <p>OpenClaw 的記憶體設計運作良好，但它需要完整的 OpenClaw 生態系統：Gateway 程序、訊息平台連線，以及堆疊的其他部分。Claude Code 的記憶體也是如此，它與 CLI 相連。如果您要在這些平台之外建立自訂的代理程式，就需要獨立的解決方案。下一節將介紹解決這兩個問題的工具。</p>
