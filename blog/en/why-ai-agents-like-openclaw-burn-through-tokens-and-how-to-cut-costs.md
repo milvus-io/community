@@ -16,7 +16,6 @@ desc: >
  Why OpenClaw and other AI agents’ token bills spike, and how to fix it with BM25 + vector retrieval (index1, QMD, Milvus) and Markdown-first memory (memsearch).
 origin: https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
 ---
-# Why AI Agents like OpenClaw Burn Through Tokens and How to Cut Costs
 
 If you’ve spent any time with [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) (formerly Clawdbot and Moltbot), you already know how good this AI Agent is. It’s fast, local, flexible, and capable of pulling off surprisingly complex workflows across Slack, Discord, your codebase, and practically anything else you hook it into. But once you start using it seriously, one pattern quickly emerges: **your token usage starts to climb.**
 
