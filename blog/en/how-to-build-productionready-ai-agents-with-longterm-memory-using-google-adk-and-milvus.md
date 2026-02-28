@@ -123,7 +123,7 @@ This example is useful because it shows three common problems that real agent me
 
 -   **Long-term memory across sessions**
 
-A question asked today may relate to a ticket created weeks ago. The agent must remember information across conversations, not just within the current session. This is why long-term memory, managed through MemoryService, is needed.
+A question asked today may relate to a ticket created weeks ago. The agent must remember information across conversations, not just within the current session. This is why long-term memory, managed through *MemoryService*, is needed.
 
 -   **User isolation**
 
