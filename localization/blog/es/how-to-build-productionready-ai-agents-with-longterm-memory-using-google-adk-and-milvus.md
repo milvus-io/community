@@ -6,7 +6,7 @@ title: >-
   utilizando Google ADK y Milvus
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -99,9 +99,9 @@ origin: >-
 <li><strong>Recuperación semántica</strong></li>
 </ul>
 <p><strong>La necesidad</strong>:</p>
-<p>Los usuarios rara vez hacen la misma pregunta de la misma manera. "No se conecta" y "tiempo de espera de la conexión" significan lo mismo. El sistema de memoria debe comprender el significado, no sólo coincidir con las palabras clave.</p>
+<p>Los usuarios rara vez hacen la misma pregunta de la misma manera. "No se conecta" y "tiempo de espera de la conexión" significan lo mismo. El sistema de memoria debe comprender el significado, no sólo coincidir con palabras clave.</p>
 <p><strong>Cómo lo cumple Milvus</strong>:</p>
-<p>Milvus admite muchos tipos de índices vectoriales, como HNSW y DiskANN, lo que permite a los desarrolladores elegir lo que se adapte a su carga de trabajo. Incluso con decenas de millones de vectores, la latencia de la consulta puede mantenerse por debajo de los 10 ms, lo que es suficientemente rápido para el uso de agentes.</p>
+<p>Milvus admite muchos tipos de índices vectoriales, como HNSW y DiskANN, lo que permite a los desarrolladores elegir el que mejor se adapte a su carga de trabajo. Incluso con decenas de millones de vectores, la latencia de la consulta puede mantenerse por debajo de los 10 ms, lo que es suficientemente rápido para el uso de agentes.</p>
 <ul>
 <li><strong>Consultas híbridas</strong></li>
 </ul>
@@ -523,4 +523,4 @@ You are a technical support expert. Strictly follow the process below:
 <p>Para la memoria de agentes, la pieza clave es la base de datos. La memoria semántica depende de bases de datos vectoriales, independientemente del framework que utilices. Milvus funciona bien porque es de código abierto, se ejecuta localmente, permite manejar miles de millones de vectores en una sola máquina y admite búsquedas híbridas vectoriales, escalares y de texto completo. Estas características cubren tanto las pruebas iniciales como el uso en producción.</p>
 <p>Esperamos que este artículo te ayude a comprender mejor el diseño de la memoria de los agentes y a elegir las herramientas adecuadas para tus proyectos.</p>
 <p>Si está creando agentes de IA que necesitan memoria real, no sólo ventanas de contexto más grandes, nos encantaría saber cómo lo está abordando.</p>
-<p>¿Tiene preguntas sobre ADK, el diseño de la memoria del agente o el uso de Milvus como backend de memoria? Únase a nuestro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal de Slack</a> o reserve una sesión de 20 minutos <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">de Milvus Office Hours</a> para hablar de su caso de uso.</p>
+<p>¿Tiene preguntas sobre ADK, el diseño de la memoria del agente o el uso de Milvus como backend de memoria? Únase a nuestro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal de Slack</a> o reserve una sesión de 20 minutos <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">de Milvus Office Hours</a> para hablar sobre su caso de uso.</p>

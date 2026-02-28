@@ -6,7 +6,7 @@ title: >-
   Langzeitspeicher erstellt
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -71,7 +71,7 @@ origin: >-
   </span>
 </p>
 <h3 id="Everything-Is-Recorded-as-Events" class="common-anchor-header">Alles wird als Ereignis aufgezeichnet</h3><p>Jede Aktion eines Agenten - das Aufrufen eines Erinnerungsprogramms, das Aufrufen eines Modells, das Generieren einer Antwort - wird als <strong>Ereignis</strong> aufgezeichnet.</p>
-<p>Dies hat zwei praktische Vorteile. Erstens können Entwickler, wenn etwas schief geht, die gesamte Interaktion Schritt für Schritt wiederholen, um den genauen Fehlerpunkt zu finden. Zweitens liefert das System für die Prüfung und Einhaltung von Vorschriften eine vollständige Ausführungsspur jeder Benutzerinteraktion.</p>
+<p>Dies hat zwei praktische Vorteile. Erstens können Entwickler, wenn etwas schief geht, die gesamte Interaktion Schritt für Schritt wiederholen, um den genauen Fehlerpunkt zu finden. Zweitens liefert das System für die Prüfung und Einhaltung von Vorschriften eine vollständige Ausführungsspur für jede Benutzerinteraktion.</p>
 <h3 id="Prefix-Based-Data-Scoping" class="common-anchor-header">Präfix-basiertes Data Scoping</h3><p>ADK steuert die Sichtbarkeit von Daten über einfache Schlüsselpräfixe:</p>
 <ul>
 <li><strong>temp:xxx</strong> - nur innerhalb der aktuellen Sitzung sichtbar und automatisch entfernt, wenn diese endet</li>
@@ -115,7 +115,7 @@ origin: >-
 <p><strong>Der Bedarf</strong>:</p>
 <p>Wenn die Zahl der Nutzer und der gespeicherten Daten wächst, muss das System reibungslos skalieren. Die Leistung sollte bei steigendem Datenvolumen stabil bleiben, ohne plötzliche Verlangsamungen oder Ausfälle.</p>
 <p><strong>Wie Milvus diese Anforderungen erfüllt</strong>:</p>
-<p>Milvus verwendet eine Architektur zur Trennung von Datenverarbeitung und Speicherung. Die Abfragekapazität kann durch Hinzufügen von Abfrageknoten nach Bedarf horizontal skaliert werden. Selbst die Standalone-Version, die auf einem einzigen Rechner läuft, kann Dutzende von Millionen von Vektoren verarbeiten und eignet sich daher für den Einsatz in der Frühphase.</p>
+<p>Milvus verwendet eine Architektur zur Trennung von Datenverarbeitung und Speicherung. Die Abfragekapazität kann durch Hinzufügen von Abfrageknoten nach Bedarf horizontal skaliert werden. Selbst die Standalone-Version, die auf einem einzigen Rechner läuft, kann Dutzende von Millionen von Vektoren verarbeiten und eignet sich daher für den Einsatz in der Anfangsphase.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_to_build_productionready_ai_agents_with_longterm_memory_using_google_adk_and_milvus_4_e1d89e6986.png" alt="" class="doc-image" id="" />
@@ -518,7 +518,7 @@ You are a technical support expert. Strictly follow the process below:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ADK trennt Kurzzeitkontext und Langzeitspeicher auf Framework-Ebene durch SessionService und MemoryService. <a href="https://milvus.io/">Milvus</a> übernimmt die semantische Suche und die Filterung auf Benutzerebene durch vektorbasiertes Retrieval.</p>
+    </button></h2><p>ADK trennt Kurzzeitkontext und Langzeitgedächtnis auf Framework-Ebene durch SessionService und MemoryService. <a href="https://milvus.io/">Milvus</a> übernimmt die semantische Suche und die Filterung auf Benutzerebene durch vektorbasiertes Retrieval.</p>
 <p>Bei der Wahl eines Frameworks kommt es auf das Ziel an. Wenn Sie eine starke Statusisolierung, Auditierbarkeit und Produktionsstabilität benötigen, ist ADK die bessere Wahl. Wenn Sie Prototypen erstellen oder experimentieren möchten, bietet LangChain (ein beliebtes Python-Framework zur schnellen Erstellung von LLM-basierten Anwendungen und Agenten) mehr Flexibilität.</p>
 <p>Der Schlüssel zum Agenten-Speicher ist die Datenbank. Das semantische Gedächtnis hängt von Vektordatenbanken ab, ganz gleich, welches Framework Sie verwenden. Milvus eignet sich gut, weil es quelloffen ist, lokal läuft, die Verarbeitung von Milliarden von Vektoren auf einem einzigen Rechner unterstützt und eine hybride Vektor-, Skalar- und Volltextsuche ermöglicht. Diese Funktionen eignen sich sowohl für frühe Tests als auch für den Produktionseinsatz.</p>
 <p>Wir hoffen, dass dieser Artikel Ihnen hilft, das Design von Agentenspeichern besser zu verstehen und die richtigen Tools für Ihre Projekte auszuwählen.</p>

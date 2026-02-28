@@ -4,7 +4,7 @@ id: >-
 title: Google ADK와 Milvus를 사용하여 장기 기억을 갖춘 프로덕션 지원 AI 에이전트를 구축하는 방법
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -519,5 +519,5 @@ You are a technical support expert. Strictly follow the process below:
 <p>프레임워크를 선택할 때는 목표가 중요합니다. 강력한 상태 격리, 감사 가능성 및 프로덕션 안정성이 필요하다면 ADK가 더 적합합니다. 프로토타이핑이나 실험을 하는 경우, LLM 기반 애플리케이션과 에이전트를 빠르게 구축하는 데 널리 사용되는 Python 프레임워크인 LangChain이 더 많은 유연성을 제공합니다.</p>
 <p>에이전트 메모리의 경우 핵심은 데이터베이스입니다. 시맨틱 메모리는 어떤 프레임워크를 사용하든 벡터 데이터베이스에 의존합니다. Milvus는 오픈 소스이고 로컬에서 실행되며 단일 머신에서 수십억 개의 벡터 처리를 지원하고 하이브리드 벡터, 스칼라 및 전체 텍스트 검색을 지원하기 때문에 잘 작동합니다. 이러한 기능은 초기 테스트와 프로덕션 사용 모두에 적용됩니다.</p>
 <p>이 글이 에이전트 메모리 설계를 더 잘 이해하고 프로젝트에 적합한 도구를 선택하는 데 도움이 되기를 바랍니다.</p>
-<p>더 큰 컨텍스트 창이 아닌 실제 메모리가 필요한 AI 에이전트를 구축하고 계신다면 어떻게 접근하고 계신지 듣고 싶습니다.</p>
+<p>더 큰 컨텍스트 창이 아닌 실제 메모리가 필요한 AI 에이전트를 구축하는 경우 어떻게 접근하고 계신지 궁금합니다.</p>
 <p>ADK, 에이전트 메모리 설계 또는 Milvus를 메모리 백엔드로 사용하는 것에 대해 질문이 있으신가요? <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack 채널에</a> 참여하거나 20분 동안 진행되는 <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus 오피스 아워</a> 세션을 예약하여 사용 사례에 대해 이야기해 보세요.</p>

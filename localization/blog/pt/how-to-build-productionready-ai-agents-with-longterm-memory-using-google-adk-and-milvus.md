@@ -6,7 +6,7 @@ title: >-
   usando o Google ADK e o Milvus
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -17,7 +17,7 @@ meta_keywords: >-
 meta_title: |
   Production AI Agents with Persistent Memory Using Google ADK and Milvus
 desc: >-
-  Construa agentes de IA com memória de longo prazo real utilizando o ADK e o
+  Crie agentes de IA com memória de longo prazo real utilizando o ADK e o
   Milvus, abrangendo a conceção da memória, a recuperação semântica, o
   isolamento do utilizador e a arquitetura pronta para produção.
 origin: >-
@@ -99,7 +99,7 @@ origin: >-
 <li><strong>Recuperação semântica</strong></li>
 </ul>
 <p><strong>A necessidade</strong>:</p>
-<p>Os utilizadores raramente fazem a mesma pergunta da mesma forma. "Não se liga" e "tempo limite de ligação" significam a mesma coisa. O sistema de memória tem de compreender o significado e não apenas corresponder a palavras-chave.</p>
+<p>Os utilizadores raramente fazem a mesma pergunta da mesma forma. "Não se conecta" e "tempo limite de conexão" significam a mesma coisa. O sistema de memória tem de compreender o significado e não apenas corresponder a palavras-chave.</p>
 <p><strong>Como o Milvus atende a isso</strong>:</p>
 <p>O Milvus suporta muitos tipos de índices vetoriais, como HNSW e DiskANN, permitindo que os desenvolvedores escolham o que melhor se adapta à sua carga de trabalho. Mesmo com dezenas de milhões de vetores, a latência da consulta pode ficar abaixo de 10 ms, o que é rápido o suficiente para o uso do agente.</p>
 <ul>

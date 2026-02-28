@@ -6,7 +6,7 @@ title: >-
   production avec une mémoire à long terme en utilisant Google ADK et Milvus
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -44,7 +44,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ADK est conçu pour décharger le développeur de la gestion de la mémoire. Le framework sépare automatiquement les données de session à court terme de la mémoire à long terme et les traite de manière appropriée. Pour ce faire, il s'appuie sur quatre principes de conception fondamentaux.</p>
+    </button></h2><p>ADK est conçu pour décharger le développeur de la gestion de la mémoire. Le framework sépare automatiquement les données de session à court terme de la mémoire à long terme et les traite de manière appropriée. Pour ce faire, il s'appuie sur quatre choix de conception fondamentaux.</p>
 <h3 id="Built-in-Interfaces-for-Short--and-Long-Term-Memory" class="common-anchor-header">Interfaces intégrées pour la mémoire à court et à long terme</h3><p>Chaque agent ADK est livré avec deux interfaces intégrées pour la gestion de la mémoire :</p>
 <p><strong>SessionService (données temporaires)</strong></p>
 <ul>
@@ -114,7 +114,7 @@ origin: >-
 <li><strong>Évolutivité</strong></li>
 </ul>
 <p><strong>Le besoin</strong>:</p>
-<p>Au fur et à mesure que le nombre d'utilisateurs et de mémoires stockées augmente, le système doit s'adapter en douceur. Les performances doivent rester stables à mesure que les données augmentent, sans ralentissement ni défaillance soudains.</p>
+<p>Au fur et à mesure que le nombre d'utilisateurs et de mémoires stockées augmente, le système doit s'adapter en douceur. Les performances doivent rester stables au fur et à mesure que les données augmentent, sans ralentissements ou pannes soudains.</p>
 <p><strong>Comment Milvus y répond</strong>:</p>
 <p>Milvus utilise une architecture de séparation calcul-stockage. La capacité d'interrogation peut être mise à l'échelle horizontalement en ajoutant des nœuds d'interrogation selon les besoins. Même la version autonome, exécutée sur une seule machine, peut traiter des dizaines de millions de vecteurs, ce qui la rend adaptée aux déploiements précoces.</p>
 <p>

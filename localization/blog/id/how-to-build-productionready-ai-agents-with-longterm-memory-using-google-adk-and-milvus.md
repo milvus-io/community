@@ -6,7 +6,7 @@ title: >-
   Google ADK dan Milvus
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -189,7 +189,7 @@ Demonstrates how to implement a cross-session memory recall system
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Model-and-Connection-Configuration" class="common-anchor-header">Langkah 2 Konfigurasi Model dan Koneksi</h3><p>Konfigurasikan API Gemini dan pengaturan koneksi Milvus.</p>
+<h3 id="Step-2-Model-and-Connection-Configuration" class="common-anchor-header">Langkah 2 Model dan Konfigurasi Koneksi</h3><p>Konfigurasikan API Gemini dan pengaturan koneksi Milvus.</p>
 <pre><code translate="no"><span class="hljs-comment"># ==================== Configuration ====================  </span>
 <span class="hljs-comment"># 1. Gemini API configuration  </span>
 GOOGLE_API_KEY = os.getenv(<span class="hljs-string">&quot;GOOGLE_API_KEY&quot;</span>)  

@@ -4,7 +4,7 @@ id: >-
 title: 如何使用 Google ADK 和 Milvus 建立具備長期記憶體的生產就緒 AI 代理
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true

@@ -6,7 +6,7 @@ title: >-
   utilizzando Google ADK e Milvus
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
-cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
@@ -138,7 +138,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In questa sezione costruiamo un semplice agente di assistenza tecnica. Quando un utente pone una domanda, l'agente cerca i ticket di assistenza simili che ha ricevuto in passato per rispondere, invece di ripetere lo stesso lavoro.</p>
+    </button></h2><p>In questa sezione, costruiamo un semplice agente di supporto tecnico. Quando un utente pone una domanda, l'agente cerca i ticket di assistenza simili che ha ricevuto in passato per rispondere, invece di ripetere lo stesso lavoro.</p>
 <p>Questo esempio è utile perché mostra tre problemi comuni che i sistemi di memoria degli agenti reali devono gestire.</p>
 <ul>
 <li><strong>Memoria a lungo termine tra le sessioni</strong></li>
