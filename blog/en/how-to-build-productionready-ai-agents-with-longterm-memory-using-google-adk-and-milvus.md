@@ -4,7 +4,7 @@ title: >
  How to Build Production-Ready AI Agents with Long-Term Memory Using Google ADK and Milvus
 author: Min Yin
 date: 2026-02-26
-cover: https://assets.zilliz.com/cover_c543dbeab4.png
+cover: assets.zilliz.com/cover_c543dbeab4.png
 tag: Tutorials
 recommend: false
 publishToMedium: true
