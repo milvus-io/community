@@ -1,9 +1,7 @@
 ---
 id: >-
   semantic-search-vs-full-text-search-which-one-should-i-choose-with-milvus-2-5.md
-title: >-
-  Pencarian Semantik vs Pencarian Teks Lengkap: Mana yang Harus Saya Pilih di
-  Milvus 2.5?
+title: 'Semantic Search vs. Full-Text Search: Which Do I Choose in Milvus 2.5?'
 author: 'David Wang, Jiang Chen'
 date: 2024-12-17T00:00:00.000Z
 cover: assets.zilliz.com/Semantic_Search_v_s_Full_Text_Search_5d93431c56.png
@@ -13,24 +11,24 @@ recommend: false
 canonicalUrl: >-
   https://milvus.io/blog/semantic-search-vs-full-text-search-which-one-should-i-choose-with-milvus-2-5.md
 ---
-<p>Milvus, database vektor berkinerja tinggi yang terkemuka, telah lama mengkhususkan diri dalam pencarian semantik menggunakan penyematan vektor dari model pembelajaran mendalam. Teknologi ini mendukung aplikasi AI seperti Retrieval-Augmented Generation (RAG), mesin pencari, dan sistem rekomendasi. Dengan meningkatnya popularitas RAG dan aplikasi pencarian teks lainnya, komunitas telah mengakui keuntungan dari menggabungkan metode pencocokan teks tradisional dengan pencarian semantik, yang dikenal sebagai pencarian hibrida. Pendekatan ini sangat bermanfaat dalam skenario yang sangat bergantung pada pencocokan kata kunci. Untuk memenuhi kebutuhan ini, Milvus 2.5 memperkenalkan fungsionalitas pencarian teks lengkap (FTS) dan mengintegrasikannya dengan kemampuan pencarian vektor dan pencarian hibrida yang telah tersedia sejak versi 2.4, menciptakan sinergi yang kuat.</p>
-<p>Pencarian hibrida adalah metode yang menggabungkan hasil dari beberapa jalur pencarian. Pengguna dapat mencari bidang data yang berbeda dengan berbagai cara, kemudian menggabungkan dan mengurutkan hasilnya untuk mendapatkan hasil yang komprehensif. Dalam skenario RAG yang populer saat ini, pendekatan hibrida yang umum digunakan menggabungkan pencarian semantik dengan pencarian teks lengkap. Secara khusus, hal ini melibatkan penggabungan hasil dari pencarian semantik berbasis sematan padat dan pencocokan leksikal berbasis BM25 menggunakan RRF (Reciprocal Rank Fusion) untuk meningkatkan pemeringkatan hasil.</p>
-<p>Dalam artikel ini, kami akan mendemonstrasikan hal ini dengan menggunakan dataset yang disediakan oleh Anthropic, yang terdiri dari potongan kode dari sembilan repositori kode. Ini menyerupai kasus penggunaan RAG yang populer: bot pengkodean dengan bantuan AI. Karena data kode mengandung banyak definisi, kata kunci, dan informasi lainnya, pencarian berbasis teks bisa sangat efektif dalam konteks ini. Sementara itu, model embedding padat yang dilatih pada kumpulan data kode yang besar dapat menangkap informasi semantik tingkat tinggi. Tujuan kami adalah untuk mengamati efek dari penggabungan kedua pendekatan ini melalui eksperimen.</p>
-<p>Kami akan menganalisis kasus-kasus tertentu untuk mengembangkan pemahaman yang lebih jelas tentang pencarian hybrid. Sebagai dasar, kami akan menggunakan model embedding padat tingkat lanjut (voyage-2) yang dilatih pada sejumlah besar data kode. Kami kemudian akan memilih contoh-contoh di mana pencarian hibrida mengungguli hasil pencarian semantik dan teks lengkap (5 besar) untuk menganalisis karakteristik di balik kasus-kasus ini.</p>
+<p>Milvus, a leading high-performance vector database, has long specialized in semantic search using vector embeddings from deep learning models. This technology powers AI applications like Retrieval-Augmented Generation (RAG), search engines, and recommender systems. With the rising popularity of RAG and other text search applications, the community has recognized the advantages of combining traditional text-matching methods with semantic search, known as hybrid search. This approach is particularly beneficial in scenarios that heavily rely on keyword matching. To address this need, Milvus 2.5 introduces full-text search (FTS) functionality and integrates it with the sparse vector search and hybrid search capabilities already available since version 2.4, creating a powerful synergy.</p>
+<p>Hybrid search is a method that combines results from multiple search paths. Users can search different data fields in various ways, then merge and rank the results to obtain a comprehensive outcome. In popular RAG scenarios today, a typical hybrid approach combines semantic search with full-text search. Specifically, this involves merging results from dense embedding-based semantic search and BM25-based lexical matching using RRF (Reciprocal Rank Fusion) to enhance result ranking.</p>
+<p>In this article, we will demonstrate this using a dataset provided by Anthropic, which consists of code snippets from nine code repositories. This resembles a popular use case of RAG: an AI-assisted coding bot. Because code data contains a lot of definitions, keywords, and other information, text-based search can be particularly effective in this context. Meanwhile, dense embedding models trained on large code datasets can capture higher-level semantic information. Our goal is to observe the effects of combining these two approaches through experimentation.</p>
+<p>We will analyze specific cases to develop a clearer understanding of hybrid search. As the baseline, we will use an advanced dense embedding model (voyage-2) trained on a large volume of code data. We will then select examples where hybrid search outperforms both semantic and full-text search results (top 5) to analyze the characteristics behind these cases.</p>
 <table>
 <thead>
-<tr><th style="text-align:center">Metode</th><th style="text-align:center">Lulus @ 5</th></tr>
+<tr><th style="text-align:center">Method</th><th style="text-align:center">Pass@5</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Pencarian Teks Lengkap</td><td style="text-align:center">0.7318</td></tr>
-<tr><td style="text-align:center">Pencarian Semantik</td><td style="text-align:center">0.8096</td></tr>
-<tr><td style="text-align:center">Pencarian Hibrida</td><td style="text-align:center">0.8176</td></tr>
-<tr><td style="text-align:center">Penelusuran Hibrida (tambahkan kata henti)</td><td style="text-align:center">0.8418</td></tr>
+<tr><td style="text-align:center">Full-text Search</td><td style="text-align:center">0.7318</td></tr>
+<tr><td style="text-align:center">Semantic Search</td><td style="text-align:center">0.8096</td></tr>
+<tr><td style="text-align:center">Hybrid Search</td><td style="text-align:center">0.8176</td></tr>
+<tr><td style="text-align:center">Hybrid Search (add stopword)</td><td style="text-align:center">0.8418</td></tr>
 </tbody>
 </table>
-<p>Selain menganalisis kualitas berdasarkan kasus per kasus, kami memperluas evaluasi kami dengan menghitung metrik Pass@5 di seluruh dataset. Metrik ini mengukur proporsi hasil relevan yang ditemukan dalam 5 hasil teratas dari setiap kueri. Temuan kami menunjukkan bahwa meskipun model penyematan canggih membentuk dasar yang kuat, mengintegrasikannya dengan penelusuran teks lengkap memberikan hasil yang lebih baik. Peningkatan lebih lanjut dapat dilakukan dengan memeriksa hasil BM25 dan menyempurnakan parameter untuk skenario tertentu, yang dapat menghasilkan peningkatan kinerja yang signifikan.</p>
-<custom-h1>Diskusi</custom-h1><p>Kami memeriksa hasil spesifik yang diambil untuk tiga kueri penelusuran yang berbeda, membandingkan penelusuran semantik dan teks lengkap dengan penelusuran hibrida. Anda juga dapat melihat <a href="https://github.com/wxywb/milvus_fts_exps">kode lengkapnya di repositori ini</a>.</p>
-<h2 id="Case-1-Hybrid-Search-Outperforms-Semantic-Search" class="common-anchor-header">Kasus 1: <strong>Pencarian Hibrida Mengungguli Pencarian Semantik</strong><button data-href="#Case-1-Hybrid-Search-Outperforms-Semantic-Search" class="anchor-icon" translate="no">
+<p>In addition to analyzing the quality on a case-by-case basis, we broadened our evaluation by calculating the Pass@5 metric across the entire dataset. This metric measures the proportion of relevant results found in the top 5 results of each query. Our findings show that while advanced embedding models establish a solid baseline, integrating them with full-text search yields even better results. Further improvements are possible by examining BM25 results and fine-tuning parameters for specific scenarios, which can lead to significant performance gains.</p>
+<custom-h1>Discussion</custom-h1><p>We examine the specific results retrieved for three different search queries, comparing semantic and full-text search to hybrid search. You can also check out <a href="https://github.com/wxywb/milvus_fts_exps">the full code in this repo</a>.</p>
+<h2 id="Case-1-Hybrid-Search-Outperforms-Semantic-Search" class="common-anchor-header">Case 1: <strong>Hybrid Search Outperforms Semantic Search</strong><button data-href="#Case-1-Hybrid-Search-Outperforms-Semantic-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,10 +43,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Kueri:</strong> Bagaimana file log dibuat?</p>
-<p>Kueri ini bertujuan untuk menanyakan tentang pembuatan berkas log, dan jawaban yang benar adalah potongan kode Rust yang membuat berkas log. Dalam hasil pencarian semantik, kami melihat beberapa kode yang memperkenalkan file header log dan kode C++ untuk mendapatkan pencatat. Namun, kuncinya di sini adalah variabel "logfile". Pada hasil pencarian hibrida #hybrid 0, kami menemukan hasil yang relevan ini, yang secara alami berasal dari pencarian teks lengkap karena pencarian hibrida menggabungkan hasil pencarian semantik dan teks lengkap.</p>
-<p>Selain hasil ini, kita dapat menemukan kode uji coba yang tidak terkait di #hybrid 2, terutama frasa yang diulang-ulang, "string panjang untuk menguji bagaimana hal itu ditangani." Hal ini membutuhkan pemahaman prinsip-prinsip di balik algoritme BM25 yang digunakan dalam pencarian teks lengkap. Pencarian teks lengkap bertujuan untuk mencocokkan kata-kata yang lebih jarang digunakan (karena kata-kata yang umum mengurangi keunikan teks dan menghambat diskriminasi objek). Misalkan kita melakukan analisis statistik pada sebuah korpus teks alami yang besar. Dalam hal ini, mudah untuk menyimpulkan bahwa "bagaimana" adalah kata yang sangat umum dan hanya berkontribusi sedikit terhadap skor relevansi. Namun, dalam kasus ini, kumpulan data terdiri dari kode, dan tidak banyak kemunculan kata "bagaimana" dalam kode tersebut, sehingga menjadikannya istilah pencarian utama dalam konteks ini.</p>
-<p><strong>Kebenaran Dasar:</strong> Jawaban yang benar adalah kode Rust yang membuat file log.</p>
+    </button></h2><p><strong>Query:</strong> How is the log file created?</p>
+<p>This query aims to inquire about creating a log file, and the correct answer should be a snippet of Rust code that creates a log file. In the semantic search results, we saw some code introducing the log header file and the C++ code for obtaining the logger. However, the key here is the “logfile” variable. In the hybrid search result #hybrid 0, we found this relevant result, which is naturally from the full-text search since hybrid search merges semantic and full-text search results.</p>
+<p>In addition to this result, we can find unrelated test mock code in #hybrid 2, especially the repeated phrase, “long string to test how those are handled.” This requires understanding the principles behind the BM25 algorithm used in full-text search. Full-text search aims to match more infrequent words (since common words reduce the distinctiveness of the text and hinder object discrimination). Suppose we perform a statistical analysis on a large corpus of natural text. In that case, it is easy to conclude that “how” is a very common word and contributes very little to the relevance score. However, in this case, the dataset consists of code, and there aren’t many occurrences of the word “how” in the code, making it a key search term in this context.</p>
+<p><strong>Ground Truth:</strong> The correct answer is the Rust code that creates a log file.</p>
 <pre><code translate="no" class="language-C++">use {
     crate::args::LogArgs,
     anyhow::{anyhow, Result},
@@ -71,7 +69,7 @@ impl Logger {
     }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Semantic-Search-Results" class="common-anchor-header">Hasil Pencarian Semantik</h3><pre><code translate="no" class="language-C++">##dense <span class="hljs-number">0</span> <span class="hljs-number">0.7745316028594971</span> 
+<h3 id="Semantic-Search-Results" class="common-anchor-header">Semantic Search Results</h3><pre><code translate="no" class="language-C++">##dense <span class="hljs-number">0</span> <span class="hljs-number">0.7745316028594971</span> 
 <span class="hljs-comment">/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -207,7 +205,7 @@ impl Logger {
 
 
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Hybrid-Search-Results" class="common-anchor-header">Hasil Pencarian Hibrida</h3><pre><code translate="no" class="language-C++">##hybrid <span class="hljs-number">0</span> <span class="hljs-number">0.016393441706895828</span> 
+<h3 id="Hybrid-Search-Results" class="common-anchor-header">Hybrid Search Results</h3><pre><code translate="no" class="language-C++">##hybrid <span class="hljs-number">0</span> <span class="hljs-number">0.016393441706895828</span> 
 use {
     crate::args::LogArgs,
     anyhow::{anyhow, Result},
@@ -316,7 +314,7 @@ std::vector&lt;std::<span class="hljs-type">string</span>&gt; MakeStrings() {
         <span class="hljs-string">&quot;long string to test how those are handled. Here goes more text. &quot;</span>
         <span class="hljs-string">&quot;long string to test how those are handled. Here goes more text. &quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Case-2-Hybrid-Search-Outperforms-Full-Text-Search" class="common-anchor-header">Kasus 2: Pencarian Hibrida Mengungguli Pencarian Teks Lengkap<button data-href="#Case-2-Hybrid-Search-Outperforms-Full-Text-Search" class="anchor-icon" translate="no">
+<h2 id="Case-2-Hybrid-Search-Outperforms-Full-Text-Search" class="common-anchor-header">Case 2: Hybrid Search Outperforms Full-Text Search<button data-href="#Case-2-Hybrid-Search-Outperforms-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -331,9 +329,9 @@ std::vector&lt;std::<span class="hljs-type">string</span>&gt; MakeStrings() {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Pertanyaan:</strong> Bagaimana Anda menginisialisasi pencatat?</p>
-<p>Kueri ini sangat mirip dengan kueri sebelumnya, dan jawaban yang benar juga merupakan cuplikan kode yang sama, tetapi dalam kasus ini, pencarian hibrida menemukan jawabannya (melalui pencarian semantik), sedangkan pencarian teks lengkap tidak. Alasan dari perbedaan ini terletak pada pembobotan statistik dari kata-kata di dalam korpus, yang tidak sesuai dengan pemahaman intuitif kita terhadap pertanyaan tersebut. Model gagal mengenali bahwa kecocokan untuk kata "bagaimana" tidak begitu penting di sini. Kata "logger" muncul lebih sering dalam kode daripada "how", yang menyebabkan kata "how" menjadi lebih penting dalam peringkat pencarian teks lengkap.</p>
-<p><strong>Kebenaran Dasar</strong></p>
+    </button></h2><p><strong>Query:</strong> How do you initialize the logger?</p>
+<p>This query is quite similar to the previous one, and the correct answer is also the same code snippet, but in this case, hybrid search found the answer (via semantic search), while full-text search did not. The reason for this discrepancy lies in the statistical weightings of words in the corpus, which do not align with our intuitive understanding of the question. The model failed to recognize that the match for the word “how” was not as important here. The word “logger” appeared more frequently in the code than “how,” which led to “how” becoming more significant in the full-text search ranking.</p>
+<p><strong>GroundTruth</strong></p>
 <pre><code translate="no" class="language-C++">use {
     crate::args::LogArgs,
     anyhow::{anyhow, Result},
@@ -356,7 +354,7 @@ impl Logger {
     }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Full-Text-Search-Results" class="common-anchor-header"><strong>Hasil Pencarian Teks Lengkap</strong></h3><pre><code translate="no" class="language-C++">##sparse <span class="hljs-number">0</span> <span class="hljs-number">10.17311954498291</span> 
+<h3 id="Full-Text-Search-Results" class="common-anchor-header"><strong>Full Text Search Results</strong></h3><pre><code translate="no" class="language-C++">##sparse <span class="hljs-number">0</span> <span class="hljs-number">10.17311954498291</span> 
         <span class="hljs-string">&quot;long string to test how those are handled. Here goes more text. &quot;</span>
         <span class="hljs-string">&quot;long string to test how those are handled. Here goes more text. &quot;</span>
         <span class="hljs-string">&quot;long string to test how those are handled. Here goes more text. &quot;</span>
@@ -446,7 +444,7 @@ std::vector&lt;std::<span class="hljs-type">string</span>&gt; MakeStrings() {
 #include &lt;log4cxx/spi/loggingevent.h&gt;
 #include <span class="hljs-string">&quot;../logunit.h&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Hybrid-Search-Results" class="common-anchor-header"><strong>Hasil Pencarian Hibrida</strong></h3><pre><code translate="no" class="language-C++">
+<h3 id="Hybrid-Search-Results" class="common-anchor-header"><strong>Hybrid Search Results</strong></h3><pre><code translate="no" class="language-C++">
  <span class="hljs-comment">##hybrid 0 0.016393441706895828 </span>
 use {
     crate::args::LogArgs,
@@ -529,8 +527,8 @@ std::vector&lt;std::string&gt; <span class="hljs-function"><span class="hljs-tit
 //   literal character, period (.), or a single \\ escape sequence;
 //   &#x27;</span>x<span class="hljs-string">&#x27; and &#x27;</span>y<span class="hljs-string">&#x27; denote regular expressions; &#x27;</span>m<span class="hljs-string">&#x27; and &#x27;</span>n<span class="hljs-string">&#x27; are for
 </span><button class="copy-code-btn"></button></code></pre>
-<p>Dalam pengamatan kami, kami menemukan bahwa dalam pencarian vektor jarang, banyak hasil berkualitas rendah disebabkan oleh pencocokan kata-kata yang informasinya rendah seperti "Bagaimana" dan "Apa". Dengan memeriksa data, kami menyadari bahwa kata-kata ini menyebabkan gangguan pada hasil pencarian. Salah satu pendekatan untuk mengatasi masalah ini adalah dengan menambahkan kata-kata ini ke daftar stopword dan mengabaikannya selama proses pencocokan. Hal ini akan membantu menghilangkan dampak negatif dari kata-kata umum ini dan meningkatkan kualitas hasil pencarian.</p>
-<h2 id="Case-3-Hybrid-Search-with-Stopword-Addition-Outperforms-Semantic-Search" class="common-anchor-header">Kasus 3: <strong>Pencarian Hibrida (dengan Penambahan Stopword) Mengungguli Pencarian Semantik</strong><button data-href="#Case-3-Hybrid-Search-with-Stopword-Addition-Outperforms-Semantic-Search" class="anchor-icon" translate="no">
+<p>In our observations, we found that in the sparse vector search, many low-quality results were caused by matching low-information words like “How” and “What.” By examining the data, we realized that these words caused interference in the results. One approach to mitigate this issue is to add these words to a stopword list and ignore them during the matching process. This would help eliminate the negative impact of these common words and improve the quality of the search results.</p>
+<h2 id="Case-3-Hybrid-Search-with-Stopword-Addition-Outperforms-Semantic-Search" class="common-anchor-header">Case 3: <strong>Hybrid Search (with Stopword Addition) Outperforms Semantic Search</strong><button data-href="#Case-3-Hybrid-Search-with-Stopword-Addition-Outperforms-Semantic-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -545,10 +543,10 @@ std::vector&lt;std::string&gt; <span class="hljs-function"><span class="hljs-tit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah menambahkan stopword untuk menyaring kata-kata dengan informasi rendah seperti "Bagaimana" dan "Apa", kami menganalisis kasus di mana pencarian hybrid yang disesuaikan dengan baik berkinerja lebih baik daripada pencarian semantik. Peningkatan dalam kasus ini disebabkan oleh pencocokan istilah "RegistryClient" dalam kueri, yang memungkinkan kami menemukan hasil yang tidak dapat ditemukan oleh model pencarian semantik saja.</p>
-<p>Selain itu, kami melihat bahwa pencarian hybrid mengurangi jumlah kecocokan berkualitas rendah dalam hasil pencarian. Dalam kasus ini, metode pencarian hybrid berhasil mengintegrasikan pencarian semantik dengan pencarian teks lengkap, sehingga menghasilkan hasil yang lebih relevan dengan akurasi yang lebih baik.</p>
-<p><strong>Pertanyaan:</strong> Bagaimana instance RegistryClient dibuat dalam metode pengujian?</p>
-<p>Pencarian hibrida secara efektif mendapatkan jawaban yang terkait dengan pembuatan instance "RegistryClient", yang tidak dapat ditemukan oleh pencarian semantik saja. Menambahkan stopword membantu menghindari hasil yang tidak relevan dari istilah seperti "How", sehingga menghasilkan kecocokan yang berkualitas lebih baik dan lebih sedikit hasil berkualitas rendah.</p>
+    </button></h2><p>After adding the stopwords to filter out low-information words like “How” and “What,” we analyzed a case where a fine-tuned hybrid search performed better than a semantic search. The improvement in this case was due to matching the term “RegistryClient” in the query, which allowed us to find results not recalled by the semantic search model alone.</p>
+<p>Furthermore, we noticed that hybrid search reduced the number of low-quality matches in the results. In this case, the hybrid search method successfully integrated the semantic search with the full-text search, leading to more relevant results with improved accuracy.</p>
+<p><strong>Query:</strong> How is the RegistryClient instance created in the test methods?</p>
+<p>The hybrid search effectively retrieved the answer related to creating the “RegistryClient” instance, which semantic search alone failed to find. Adding stopwords helped avoid irrelevant results from terms like “How,” leading to better-quality matches and fewer low-quality results.</p>
 <pre><code translate="no" class="language-C++"><span class="hljs-comment">/** Integration tests for {<span class="hljs-doctag">@link</span> BlobPuller}. */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BlobPullerIntegrationTest</span> {
 
@@ -567,7 +565,7 @@ std::vector&lt;std::string&gt; <span class="hljs-function"><span class="hljs-tit
 
     <span class="hljs-type">DescriptorDigest</span> <span class="hljs-variable">realDigest</span> <span class="hljs-operator">=</span> manifestTemplate.getLayers().get(<span class="hljs-number">0</span>).getDigest();
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Semantic-Search-Results" class="common-anchor-header">Hasil Pencarian Semantik</h3><pre><code translate="no" class="language-C++">
+<h3 id="Semantic-Search-Results" class="common-anchor-header">Semantic Search Results</h3><pre><code translate="no" class="language-C++">
  
 
 <span class="hljs-meta">##dense 0 0.7411458492279053 </span>
@@ -649,7 +647,7 @@ std::vector&lt;std::string&gt; <span class="hljs-function"><span class="hljs-tit
     }
   }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Hybrid-Search-Results" class="common-anchor-header">Hasil Pencarian Hibrida</h3><pre><code translate="no" class="language-C++">
+<h3 id="Hybrid-Search-Results" class="common-anchor-header">Hybrid Search Results</h3><pre><code translate="no" class="language-C++">
  <span class="hljs-meta">##hybrid 0 0.016393441706895828 </span>
 <span class="hljs-comment">/** Integration tests for {@link BlobPuller}. */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">BlobPullerIntegrationTest</span> {
@@ -738,7 +736,7 @@ std::vector&lt;std::string&gt; <span class="hljs-function"><span class="hljs-tit
     <span class="hljs-keyword">when</span>(mockCredentialRetrieverFactory.wellKnownCredentialHelpers())
         .thenReturn(mockWellKnownCredentialHelpersCredentialRetriever);
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusions" class="common-anchor-header">Kesimpulan<button data-href="#Conclusions" class="anchor-icon" translate="no">
+<h2 id="Conclusions" class="common-anchor-header">Conclusions<button data-href="#Conclusions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -753,6 +751,6 @@ std::vector&lt;std::string&gt; <span class="hljs-function"><span class="hljs-tit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dari analisis kami, kami dapat menarik beberapa kesimpulan tentang kinerja metode pencarian yang berbeda. Untuk sebagian besar kasus, model pencarian semantik membantu kami mendapatkan hasil yang baik dengan memahami maksud keseluruhan dari kueri, tetapi model ini gagal ketika kueri berisi kata kunci spesifik yang ingin kami cocokkan.</p>
-<p>Dalam kasus ini, model penyematan tidak secara eksplisit mewakili maksud ini. Di sisi lain, pencarian teks lengkap dapat mengatasi masalah ini secara langsung. Namun, hal ini juga membawa masalah hasil yang tidak relevan meskipun ada kata-kata yang cocok, yang dapat menurunkan kualitas hasil secara keseluruhan. Oleh karena itu, sangat penting untuk mengidentifikasi dan menangani kasus-kasus negatif ini dengan menganalisis hasil spesifik dan menerapkan strategi yang ditargetkan untuk meningkatkan kualitas pencarian. Pencarian hibrida dengan strategi pemeringkatan seperti RRF atau perangking berbobot biasanya merupakan opsi dasar yang baik.</p>
-<p>Dengan dirilisnya fungsionalitas pencarian teks lengkap di Milvus 2.5, kami bertujuan untuk memberikan solusi pencarian informasi yang fleksibel dan beragam kepada komunitas. Hal ini akan memungkinkan pengguna untuk mengeksplorasi berbagai kombinasi metode pencarian dan memenuhi permintaan pencarian yang semakin kompleks dan beragam di era GenAI. Lihat contoh kode tentang <a href="https://milvus.io/docs/full_text_search_with_milvus.md">bagaimana mengimplementasikan pencarian teks lengkap dan pencarian hybrid dengan Milvus 2.5</a>.</p>
+    </button></h2><p>From our analysis, we can draw several conclusions about the performance of different retrieval methods. For most of the cases, the semantic search model helps us obtain good results by grasping the overall intention of the query, but it falls short when the query contains specific keywords we want to match.</p>
+<p>In these cases, the embedding model doesn’t explicitly represent this intent. On the other hand, Full-text search can address this issue directly. However, it also brings the problem of irrelevant results despite matching words, which can degrade the overall result quality. Therefore, it’s crucial to identify and handle these negative cases by analyzing specific results and applying targeted strategies to improve search quality. A hybrid search with ranking strategies such as RRF or weighted reranker is usually a good baseline option.</p>
+<p>With the release of the full-text search functionality in Milvus 2.5, we aim to provide the community with flexible and diverse information retrieval solutions. This will allow users to explore various combinations of search methods and address the increasingly complex and varied search demands in the GenAI era. Check out the code example on <a href="https://milvus.io/docs/full_text_search_with_milvus.md">how to implement full-text search and hybrid search with Milvus 2.5</a>.</p>

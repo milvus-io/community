@@ -1,14 +1,13 @@
 ---
 id: intelligent-wardrobe-customization-system.md
 title: >-
-  Creare un sistema intelligente di personalizzazione del guardaroba grazie al
-  database vettoriale di Milvus
+  Building an Intelligent Wardrobe Customization System Powered by Milvus Vector
+  Database
 author: Yiyun Ni
 date: 2022-07-08T00:00:00.000Z
 desc: >-
-  Utilizzando la tecnologia di ricerca per similarità per sbloccare il
-  potenziale dei dati non strutturati, anche come gli armadi e i loro
-  componenti!
+  Using similarity search technology to unlock the potential of unstructured
+  data, even like wardrobes and its components!
 cover: assets.zilliz.com/Frame_1282_edc1fb7d99.png
 tag: Engineering
 tags: >-
@@ -17,30 +16,34 @@ tags: >-
 canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1282_edc1fb7d99.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>immagine di copertina</span> </span></p>
-<p>Se state cercando un armadio che si adatti perfettamente alla vostra camera da letto o al vostro camerino, scommetto che la maggior parte delle persone penserà a quelli su misura. Tuttavia, non tutti hanno a disposizione un budget così ampio. E allora che dire di quelli già pronti? Il problema di questo tipo di armadi è che è molto probabile che non soddisfino le vostre aspettative, perché non sono abbastanza flessibili da soddisfare le vostre esigenze di spazio. Inoltre, quando si effettua una ricerca online, è piuttosto difficile riassumere il tipo di armadio che si sta cercando con delle parole chiave. È molto probabile che la parola chiave digitata nella casella di ricerca (ad esempio, un armadio con vassoio portagioie) sia molto diversa da come viene definita nel motore di ricerca (ad esempio, un armadio con <a href="https://www.ikea.com/us/en/p/komplement-pull-out-tray-with-insert-black-brown-s79249366/">vassoio estraibile con inserto</a>).</p>
-<p>Ma grazie alle tecnologie emergenti, c'è una soluzione! IKEA, il conglomerato di vendita al dettaglio di mobili, fornisce un popolare strumento di progettazione <a href="https://www.ikea.com/us/en/rooms/bedroom/how-to/how-to-design-your-perfect-pax-wardrobe-pub8b76dda0">PAX wardrobe</a> che consente agli utenti di scegliere tra una serie di armadi già pronti e di personalizzarne il colore, le dimensioni e il design interno. Che abbiate bisogno di spazio per appendere, di più ripiani o di cassetti interni, questo sistema intelligente di personalizzazione degli armadi è sempre in grado di soddisfare le vostre esigenze.</p>
-<p>Per trovare o costruire il vostro guardaroba ideale utilizzando questo sistema intelligente di progettazione di armadi, è necessario:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1282_edc1fb7d99.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
+<p>If you are looking for a wardrobe to fit perfectly into your bedroom or fitting room, I bet most people will think of the made-to-measure ones. However, not everyone’s budget can stretch that far. Then what about those ready-made ones? The problem with this type of wardrobe is that they are very likely to fall short of your expectation as they are not flexible enough to cater to your unique storage needs. Plus, when searching online, it is rather difficult to summarize the particular type of wardrobe you are looking for with keywords. Very likely, the keyword you type in the search box (eg. A wardrobe with a jewellery tray) might be very different from how it is defined in the search engine (eg. A wardrobe with <a href="https://www.ikea.com/us/en/p/komplement-pull-out-tray-with-insert-black-brown-s79249366/">pullout tray with insert</a>).</p>
+<p>But thanks to emerging technologies, there is a solution! IKEA, the furniture retail conglomerate, provides a popular design tool <a href="https://www.ikea.com/us/en/rooms/bedroom/how-to/how-to-design-your-perfect-pax-wardrobe-pub8b76dda0">PAX wardrobe</a> that allows users to choose from a number of ready-made wardrobes and customize the color, size, and interior design of the wardrobes. Whether you need hanging space, multiple shelves or internal drawers, this intelligent wardrobe customization system can always cater to your needs.</p>
+<p>To find or build your ideal wardrobe using this smart wardrobe design system, you need to:</p>
 <ol>
-<li>Specificare i requisiti di base: forma (normale, a L o a U), lunghezza e profondità dell'armadio.</li>
-<li>Specificare le esigenze di stoccaggio e l'organizzazione interna dell'armadio (ad esempio, è necessario uno spazio per appendere, un portapantaloni estraibile, ecc.)</li>
-<li>Aggiungete o rimuovete parti dell'armadio come cassetti o ripiani.</li>
+<li>Specify the basic requirements - the shape (normal, L-shaped, or U-shaped), length and depth of the wardrobe.</li>
+<li>Specify your storage need and the interior organization of the wardrobe (eg. Hanging space, a pullout pants rack, etc is needed).</li>
+<li>Add or remove parts of the wardrobe like drawers or shelves.</li>
 </ol>
-<p>Il progetto è completato. Semplice e facile!</p>
+<p>Then your design is completed. Simple and easy!</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Pax_system_ff4c3fa182.png" alt="pax system" class="doc-image" id="pax-system" />
-   </span> <span class="img-wrapper"> <span>sistema pax</span> </span></p>
-<p>Un componente molto importante che rende possibile un sistema di progettazione di armadi è il <a href="https://zilliz.com/learn/what-is-vector-database">database vettoriale</a>. Per questo motivo, questo articolo si propone di presentare il flusso di lavoro e le soluzioni di ricerca per similarità utilizzate per costruire un sistema intelligente di personalizzazione del guardaroba basato sulla ricerca per similarità vettoriale.</p>
-<p>Vai a:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Pax_system_ff4c3fa182.png" alt="pax system" class="doc-image" id="pax-system" />
+    <span>pax system</span>
+  </span>
+</p>
+<p>A very critical component that makes such a  wardrobe design system possible is the <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a>. Therefore, this article aims to introduce the workflow and similarity search solutions used to build an intelligent wardrobe customization system powered by vector similarity search.</p>
+<p>Jump to:</p>
 <ul>
-<li><a href="#System-overview">Panoramica del sistema</a></li>
-<li><a href="#Data-flow">Flusso di dati</a></li>
-<li><a href="#System-demo">Demo del sistema</a></li>
+<li><a href="#System-overview">System overview</a></li>
+<li><a href="#Data-flow">Data flow</a></li>
+<li><a href="#System-demo">System demo</a></li>
 </ul>
-<h2 id="System-Overview" class="common-anchor-header">Panoramica del sistema<button data-href="#System-Overview" class="anchor-icon" translate="no">
+<h2 id="System-Overview" class="common-anchor-header">System Overview<button data-href="#System-Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,28 +58,36 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Per fornire uno strumento di personalizzazione del guardaroba così intelligente, dobbiamo innanzitutto definire la logica aziendale e comprendere gli attributi degli articoli e il percorso dell'utente. Gli armadi e i loro componenti, come cassetti, vassoi e scaffali, sono tutti dati non strutturati. Pertanto, il secondo passo consiste nello sfruttare gli algoritmi e le regole dell'intelligenza artificiale, le conoscenze pregresse, la descrizione degli articoli e altro ancora, per convertire questi dati non strutturati in un tipo di dati comprensibili ai computer: i vettori!</p>
+    </button></h2><p>In order to deliver such a smart wardrobe customization tool, we need to first define the business logic and understand item attributes and user journey. Wardrobes along with its components like drawers, trays, racks, are all unstructured data. Therefore, the second step is to leverage AI algorithms and rules, prior knowledge, item description, and more, to convert those unstructured data into a type of data that can be understood by computers - vectors!</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Customization_tool_overview_86d62e1730.png" alt="Customization tool overview" class="doc-image" id="customization-tool-overview" />
-   </span> <span class="img-wrapper"> <span>Panoramica dello strumento di personalizzazione</span> </span></p>
-<p>Con i vettori generati, abbiamo bisogno di potenti database vettoriali e motori di ricerca per elaborarli.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Customization_tool_overview_86d62e1730.png" alt="Customization tool overview" class="doc-image" id="customization-tool-overview" />
+    <span>Customization tool overview</span>
+  </span>
+</p>
+<p>With the generated vectors, we need powerful vector databases and search engines to process them.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/tool_architecutre_33fb646954.png" alt="tool architecture" class="doc-image" id="tool-architecture" />
-   </span> <span class="img-wrapper"> <span>architettura dello strumento</span> </span></p>
-<p>Lo strumento di personalizzazione sfrutta alcuni dei motori di ricerca e dei database più diffusi: Elasticsearch, <a href="https://milvus.io/">Milvus</a> e PostgreSQL.</p>
-<h3 id="Why-Milvus" class="common-anchor-header">Perché Milvus?</h3><p>Un componente del guardaroba contiene informazioni molto complesse, come il colore, la forma, l'organizzazione interna, ecc. Tuttavia, il modo tradizionale di conservare i dati del guardaroba in un database relazionale non è sufficiente. Un metodo molto diffuso è quello di utilizzare tecniche di embedding per convertire i guardaroba in vettori. Pertanto, è necessario cercare un nuovo tipo di database specificamente progettato per l'archiviazione vettoriale e la ricerca di similarità. Dopo aver sondato diverse soluzioni popolari, è stato scelto il database vettoriale <a href="https://github.com/milvus-io/milvus">Milvus</a> per le sue eccellenti prestazioni, stabilità, compatibilità e facilità d'uso. Il grafico che segue è un confronto tra le diverse soluzioni di ricerca vettoriale più diffuse.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/tool_architecutre_33fb646954.png" alt="tool architecture" class="doc-image" id="tool-architecture" />
+    <span>tool architecture</span>
+  </span>
+</p>
+<p>The customization tool leverages some of the most popular search engines and databases: Elasticsearch, <a href="https://milvus.io/">Milvus</a>, and PostgreSQL.</p>
+<h3 id="Why-Milvus" class="common-anchor-header">Why Milvus?</h3><p>A wardrobe component contains highly complex information, such as color, shape, and interior organization, etc. However, the traditional way of keeping wardrobe data in a relational database is far from enough. A popular way is to use embedding techniques to convert wardrobes into vectors. Therefore, we need to look for a new type of database specifically designed for vector storage and similarity search. After probing into several popular solutions, the <a href="https://github.com/milvus-io/milvus">Milvus</a> vector database is selected for its excellent performance, stability, compatibility, and ease-of-use. The chart below is a comparison of several popular vector search solutions.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Solution_comparison_d96b8f1dd5.png" alt="solution comparison" class="doc-image" id="solution-comparison" />
-   </span> <span class="img-wrapper"> <span>confronto tra le soluzioni</span> </span></p>
-<h3 id="System-workflow" class="common-anchor-header">Flusso di lavoro del sistema</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/System_workflow_250c275ec1.png" alt="System workflow" class="doc-image" id="system-workflow" />
-   </span> <span class="img-wrapper"> <span>Flusso di lavoro del sistema</span> </span></p>
-<p>Elasticsearch viene utilizzato per un filtraggio grossolano in base alle dimensioni del guardaroba, al colore, ecc. Poi i risultati filtrati passano attraverso Milvus, il database vettoriale, per una ricerca di similarità e i risultati vengono classificati in base alla loro distanza/similarità rispetto al vettore della query. Infine, i risultati vengono consolidati e ulteriormente raffinati in base alle intuizioni aziendali.</p>
-<h2 id="Data-flow" class="common-anchor-header">Flusso di dati<button data-href="#Data-flow" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Solution_comparison_d96b8f1dd5.png" alt="solution comparison" class="doc-image" id="solution-comparison" />
+    <span>solution comparison</span>
+  </span>
+</p>
+<h3 id="System-workflow" class="common-anchor-header">System workflow</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/System_workflow_250c275ec1.png" alt="System workflow" class="doc-image" id="system-workflow" />
+    <span>System workflow</span>
+  </span>
+</p>
+<p>Elasticsearch is used for a coarse filtering by the wardrobe size, color, etc. Then the filtered results go through Milvus the vector database for a similarity search and the results are ranked based on their distance/similarity to the query vector. Finally, the results are consolidated and further refined based on business insights.</p>
+<h2 id="Data-flow" class="common-anchor-header">Data flow<button data-href="#Data-flow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,40 +102,46 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Il sistema di personalizzazione del guardaroba è molto simile ai tradizionali motori di ricerca e sistemi di raccomandazione. Si compone di tre parti:</p>
+    </button></h2><p>The wardrobe customization system is very similar to traditional search engines and recommender systems. It contains three parts:</p>
 <ul>
-<li>Preparazione dei dati offline, compresa la definizione e la generazione dei dati.</li>
-<li>Servizi online, tra cui richiamo e classificazione.</li>
-<li>Postelaborazione dei dati basata sulla logica aziendale.</li>
+<li>Offline data preparation including data definition and generation.</li>
+<li>Online services including recall and ranking.</li>
+<li>Data post-processing based on business logic.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_flow_d0d9fa0fca.png" alt="Data flow" class="doc-image" id="data-flow" />
-   </span> <span class="img-wrapper"> <span>Flusso di dati</span> </span></p>
-<h3 id="Offline-data-flow" class="common-anchor-header">Flusso di dati offline</h3><ol>
-<li>Definire i dati utilizzando le intuizioni aziendali.</li>
-<li>Utilizzare le conoscenze pregresse per definire il modo in cui combinare i diversi componenti e formarli in un guardaroba.</li>
-<li>Riconoscere le etichette delle caratteristiche degli armadi e codificare le caratteristiche nei dati Elasticsearch in un file <code translate="no">.json</code>.</li>
-<li>Preparare i dati di richiamo codificando i dati non strutturati in vettori.</li>
-<li>Utilizzare il database vettoriale Milvus per classificare i risultati richiamati ottenuti nella fase precedente.</li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_flow_d0d9fa0fca.png" alt="Data flow" class="doc-image" id="data-flow" />
+    <span>Data flow</span>
+  </span>
+</p>
+<h3 id="Offline-data-flow" class="common-anchor-header">Offline data flow</h3><ol>
+<li>Define data using business insight.</li>
+<li>Use prior knowledge to define how to combine different components and form them into a wardrobe.</li>
+<li>Recognize feature labels of the wardrobes and encode the features into Elasticsearch data in <code translate="no">.json</code> file.</li>
+<li>Prepare recall data by encoding unstructured data into vectors.</li>
+<li>Use Milvus the vector database to rank the recalled results obtained in the previous step.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/offline_data_flow_f91ac9cf4c.png" alt="offline data flow" class="doc-image" id="offline-data-flow" />
-   </span> <span class="img-wrapper"> <span>flusso di dati offline</span> </span></p>
-<h3 id="Online-data-flow" class="common-anchor-header">Flusso di dati online</h3><ol>
-<li>Ricevere le richieste di informazioni dagli utenti e raccogliere i profili degli utenti.</li>
-<li>Comprendere le richieste degli utenti identificando i loro requisiti per il guardaroba.</li>
-<li>Ricerca grossolana con Elasticsearch.</li>
-<li>Attribuire un punteggio e classificare i risultati ottenuti dalla ricerca grossolana in base al calcolo della similarità vettoriale in Milvus.</li>
-<li>Post-processare e organizzare i risultati sulla piattaforma back-end per generare i risultati finali.</li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/offline_data_flow_f91ac9cf4c.png" alt="offline data flow" class="doc-image" id="offline-data-flow" />
+    <span>offline data flow</span>
+  </span>
+</p>
+<h3 id="Online-data-flow" class="common-anchor-header">Online data flow</h3><ol>
+<li>Receive query request from users and collect user profiles.</li>
+<li>Understand user query by identifying their requirements for the wardrobe.</li>
+<li>Coarse search using Elasticsearch.</li>
+<li>Score and rank the results obtained from coarse search based on the calculation of vector similarity in Milvus.</li>
+<li>Post-process and organize the results on the back-end platform to generate the final results.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/online_data_flow_1f2af25cc3.png" alt="online data flow" class="doc-image" id="online-data-flow" />
-   </span> <span class="img-wrapper"> <span>flusso di dati online</span> </span></p>
-<h3 id="Data-post-processing" class="common-anchor-header">Post-elaborazione dei dati</h3><p>La logica aziendale varia da un'azienda all'altra. È possibile aggiungere un tocco finale ai risultati applicando la logica aziendale.</p>
-<h2 id="System-demo" class="common-anchor-header">Demo del sistema<button data-href="#System-demo" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/online_data_flow_1f2af25cc3.png" alt="online data flow" class="doc-image" id="online-data-flow" />
+    <span>online data flow</span>
+  </span>
+</p>
+<h3 id="Data-post-processing" class="common-anchor-header">Data post-processing</h3><p>The business logic varies among each company. You can add a final touch to the results by applying your company’s business logic.</p>
+<h2 id="System-demo" class="common-anchor-header">System demo<button data-href="#System-demo" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,24 +156,30 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vediamo ora come funziona il sistema che abbiamo costruito.</p>
-<p>L'interfaccia utente (UI) mostra la possibilità di diverse combinazioni di componenti del guardaroba.</p>
-<p>Ogni componente viene etichettato in base alle sue caratteristiche (taglia, colore, ecc.) e memorizzato in Elasticsearch (ES). Quando si memorizzano le etichette in ES, si devono compilare quattro campi di dati principali: ID, tag, percorso di archiviazione e altri campi di supporto. ES e i dati etichettati vengono utilizzati per il richiamo granulare e il filtraggio degli attributi.</p>
+    </button></h2><p>Now let’s see how the system we build actually works.</p>
+<p>The user interface (UI) displays the possibility of different combinations of wardrobe components.</p>
+<p>Each component is labelled by its feature (size, color, etc.) and stored in Elasticsearch (ES). When storing the labels in ES, there are four main data fields to be filled out: ID, tags, storage path, and other support fields. ES and the labelled data are used for granular recall and attribute filtering.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/es_d5b0639610.png" alt="es" class="doc-image" id="es" />
-   </span> <span class="img-wrapper"> <span>es</span> </span></p>
-<p>Quindi vengono utilizzati diversi algoritmi di intelligenza artificiale per codificare un guardaroba in un insieme di vettori. Gli insiemi di vettori vengono memorizzati in Milvus per la ricerca di similarità e la classificazione. Questa fase restituisce risultati più raffinati e accurati.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/es_d5b0639610.png" alt="es" class="doc-image" id="es" />
+    <span>es</span>
+  </span>
+</p>
+<p>Then different AI algorithms are used to encode a wardrobe into a set of vectors. The vector sets are stored in Milvus for similarity search and ranking. This step returns more refined and accurate results.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_38dd93a439.jpeg" alt="Milvus" class="doc-image" id="milvus" />
-   </span> <span class="img-wrapper"> <span>Milvus</span> </span></p>
-<p>Elasticsearch, Milvus e altri componenti del sistema formano complessivamente la piattaforma di progettazione della personalizzazione. Durante il richiamo, il linguaggio specifico del dominio (DSL) in Elasticsearch e Milvus è il seguente.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_38dd93a439.jpeg" alt="Milvus" class="doc-image" id="milvus" />
+    <span>Milvus</span>
+  </span>
+</p>
+<p>Elasticsearch, Milvus, and other system components altogether form the customization design platform as a whole. During recall, the domain-specific language (DSL) in Elasticsearch and Milvus is as follows.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/dsl_df60097d23.png" alt="dsl" class="doc-image" id="dsl" />
-   </span> <span class="img-wrapper"> <span>dsl</span> </span></p>
-<h2 id="Looking-for-more-resources" class="common-anchor-header">Cercate altre risorse?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/dsl_df60097d23.png" alt="dsl" class="doc-image" id="dsl" />
+    <span>dsl</span>
+  </span>
+</p>
+<h2 id="Looking-for-more-resources" class="common-anchor-header">Looking for more resources?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,8 +194,8 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Scoprite come il database vettoriale Milvus può alimentare altre applicazioni di intelligenza artificiale:</p>
+    </button></h2><p>Learn how the Milvus vector database can power more AI applications:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md">Come la piattaforma di video brevi Likee rimuove i video duplicati con Milvus</a></li>
-<li><a href="https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md">Zhentu - Il rilevatore di frodi fotografiche basato su Milvus</a></li>
+<li><a href="https://milvus.io/blog/2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md">How Short Video Platform Likee Removes Duplicate Videos with Milvus</a></li>
+<li><a href="https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md">Zhentu - The Photo Fraud Detector Based on Milvus</a></li>
 </ul>

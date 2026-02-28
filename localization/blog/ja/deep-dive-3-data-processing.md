@@ -1,31 +1,35 @@
 ---
 id: deep-dive-3-data-processing.md
-title: ベクターデータベースでデータはどのように処理されるのか？
+title: How Is Data Processed in a Vector Database?
 author: Zhenshan Cao
 date: 2022-03-28T00:00:00.000Z
-desc: Milvusは本番AIアプリケーションに不可欠なデータ管理インフラを提供する。本記事では、データ処理の内部事情を公開する。
+desc: >-
+  Milvus provides a data management infrastructure essential for production AI
+  applications. This article unveils the intricacies of data processing inside.
 cover: assets.zilliz.com/How_Is_Data_Processed_in_a_Vector_Database_9fb236bc01.png
 tag: Engineering
 tags: 'Data science, Database, Technology, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/How_Is_Data_Processed_in_a_Vector_Database_9fb236bc01.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>表紙画像</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/How_Is_Data_Processed_in_a_Vector_Database_9fb236bc01.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>この記事は<a href="https://github.com/czs007">Zhenshan Caoが</a>執筆し、<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Niが</a>トランスコードしたものです。</p>
+<p>This article is written by <a href="https://github.com/czs007">Zhenshan Cao</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>このブログシリーズの前の2つの投稿では、世界で最も先進的なベクトル・データベースであるMilvusの<a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">システム・アーキテクチャと</a>、その<a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">Python SDKとAPIについて</a>すでに説明した。</p>
-<p>本記事では、Milvusのシステムに深く入り込み、データ処理コンポーネント間の相互作用を検証することで、Milvusでデータがどのように処理されるかを理解していただくことを主な目的としています。</p>
-<p><em>始める前に役立つリソースを以下に示します。本記事のトピックをより深く理解するために、まずこれらをお読みになることをお勧めします。</em></p>
+<p>In the previous two posts in this blog series, we have already covered the <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">system architecture</a> of Milvus, the world’s most advanced vector database, and its <a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">Python SDK and API</a>.</p>
+<p>This post mainly aims to help you understand how data is processed in Milvus by going deep into the Milvus system and examining the interaction between the data processing components.</p>
+<p><em>Some useful resources before getting started are listed below. We recommend reading them first to better understand the topic in this post.</em></p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvusアーキテクチャの深掘り</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">Milvusデータモデル</a></li>
-<li><a href="https://milvus.io/docs/v2.0.x/four_layers.md">Milvusの各コンポーネントの役割と機能</a></li>
-<li><a href="https://milvus.io/docs/v2.0.x/data_processing.md">Milvusにおけるデータ処理</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Deep dive into the Milvus architecture</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">Milvus data model</a></li>
+<li><a href="https://milvus.io/docs/v2.0.x/four_layers.md">The role and function of each Milvus component</a></li>
+<li><a href="https://milvus.io/docs/v2.0.x/data_processing.md">Data processing in Milvus</a></li>
 </ul>
-<h2 id="MsgStream-interface" class="common-anchor-header">MsgStreamインターフェース<button data-href="#MsgStream-interface" class="anchor-icon" translate="no">
+<h2 id="MsgStream-interface" class="common-anchor-header">MsgStream interface<button data-href="#MsgStream-interface" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,27 +44,31 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/milvus-io/milvus/blob/ca129d4308cc7221bb900b3722dea9b256e514f9/docs/developer_guides/chap04_message_stream.md">MsgStreamインターフェイスは</a>milvusのデータ処理において非常に重要である。<code translate="no">Start()</code> が呼び出されると、バックグラウンドのコルーチンがデータを<a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Log-as-data">ログブローカに</a>書き込んだり、ログブローカからデータを読み込んだりします。<code translate="no">Close()</code> が呼び出されると、コルーチンは停止します。</p>
+    </button></h2><p><a href="https://github.com/milvus-io/milvus/blob/ca129d4308cc7221bb900b3722dea9b256e514f9/docs/developer_guides/chap04_message_stream.md">MsgStream interface</a> is crucial to data processing in Milvus. When <code translate="no">Start()</code> is called, the coroutine in the background writes data into the <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Log-as-data">log broker</a> or reads data from there. When <code translate="no">Close()</code> is called, the coroutine stops.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Msg_Stream_interface_66b70309a7.png" alt="MsgStream interface" class="doc-image" id="msgstream-interface" />
-   </span> <span class="img-wrapper"> <span>MsgStream インターフェース</span> </span></p>
-<p>MsgStreamはプロデューサとしてもコンシューマとしても機能する。<code translate="no">AsProducer(channels []string)</code> インターフェースはMsgStreamをプロデューサーとして定義し、<code translate="no">AsConsumer(channels []string, subNamestring)</code>はコンシューマーとして定義している。パラメータ<code translate="no">channels</code> は両インターフェースで共有され、どの（物理）チャネルにデータを書き込むか、またはどのチャネルからデータを読み取るかを定義するために使用される。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Msg_Stream_interface_66b70309a7.png" alt="MsgStream interface" class="doc-image" id="msgstream-interface" />
+    <span>MsgStream interface</span>
+  </span>
+</p>
+<p>The MsgStream can serve as a producer and a consumer. The <code translate="no">AsProducer(channels []string)</code> interface defines MsgStream as a producer while the <code translate="no">AsConsumer(channels []string, subNamestring)</code>defines it as a consumer. The parameter <code translate="no">channels</code> is shared in both interfaces and it is used to define which (physical) channels to writes data into or read data from.</p>
 <blockquote>
-<p>コレクション内のシャードの数は、コレクションの作成時に指定できる。各シャードは<a href="https://milvus.io/docs/v2.0.x/glossary.md#VChannel">仮想チャネル（vchannel</a>）に対応する。したがって、コレクションは複数のvchannelを持つことができます。Milvusはログブローカ内の各vchannelに<a href="https://milvus.io/docs/v2.0.x/glossary.md#PChannel">物理チャネル(pchannel)</a>を割り当てます。</p>
+<p>The number of shards in a collection can be specified when a collection is created. Each shard corresponds to a <a href="https://milvus.io/docs/v2.0.x/glossary.md#VChannel">virtual channel (vchannel)</a>. Therefore, a collection can have multiple vchannels. Milvus assigns each vchannel in the log broker a <a href="https://milvus.io/docs/v2.0.x/glossary.md#PChannel">physical channel (pchannel)</a>.</p>
 </blockquote>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Each_virtual_channel_shard_corresponds_to_a_physical_channel_7cd60e4ed1.png" alt="Each virtual channel/shard corresponds to a physical channel." class="doc-image" id="each-virtual-channel/shard-corresponds-to-a-physical-channel." />
-   </span> <span class="img-wrapper"> <span>各仮想チャネル/シャードは物理チャネルに対応します</span>。 </span></p>
-<p><code translate="no">Produce()</code> MsgStream インターフェースは、ログブローカの pchannel にデータを書き込む役割を果たします。データは2つの方法で書き込むことができる：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Each_virtual_channel_shard_corresponds_to_a_physical_channel_7cd60e4ed1.png" alt="Each virtual channel/shard corresponds to a physical channel." class="doc-image" id="each-virtual-channel/shard-corresponds-to-a-physical-channel." />
+    <span>Each virtual channel/shard corresponds to a physical channel.</span>
+  </span>
+</p>
+<p><code translate="no">Produce()</code> in the MsgStream interface in charge of writing data into the pchannels in log broker. Data can be written in two ways:</p>
 <ul>
-<li>単一書き込み： エンティティは主キーのハッシュ値によって異なるシャード（vchannel）に書き込まれる。その後、これらのエンティティはログブローカの対応するpchannelsに流れ込む。</li>
-<li>ブロードキャスト書き込み: エンティティは、パラメータ<code translate="no">channels</code> で指定されたすべての pchannels に書き込まれる。</li>
+<li>Single write: entities are written into different shards (vchannel) by the hash values of primary keys. Then these entities flow into corresponding pchannels in the log broker.</li>
+<li>Broadcast write: entities are written into all of the pchannels specified by the parameter <code translate="no">channels</code>.</li>
 </ul>
-<p><code translate="no">Consume()</code> はブロッキングAPIの一種である。指定されたpchannelに利用可能なデータがない場合、MsgStreamインターフェースで が呼び出されると、コルーチンはブロックされる。一方、 はノンブロッキングAPIであり、指定されたpchannelに既存のデータがある場合にのみ、コルーチンはデータを読み込んで処理する。そうでなければ、コルーチンは他のタスクを処理することができ、利用可能なデータがないときにブロックされることはない。<code translate="no">Consume()</code> <code translate="no">Chan()</code> </p>
-<p><code translate="no">Seek()</code> は障害回復のためのメソッドです。新しいノードが起動すると、 を呼び出すことで、データ消費記録を取得し、中断したところからデータ消費を再開することができます。<code translate="no">Seek()</code></p>
-<h2 id="Write-data" class="common-anchor-header">データの書き込み<button data-href="#Write-data" class="anchor-icon" translate="no">
+<p><code translate="no">Consume()</code> is a type of blocking API. If there is no data available in the specified pchannel, the coroutine will be blocked when <code translate="no">Consume()</code> is called in MsgStream interface. On the other hand, <code translate="no">Chan()</code> is a non-blocking API, which means that the coroutine reads and processes data only if there is existing data in the specified pchannel. Otherwise, the coroutine can process other tasks and will not be blocked when there is no data available.</p>
+<p><code translate="no">Seek()</code> is method for failure recovery. When a new node is started, the data consumption record can be obtained and data consumption can resume from where it was interrupted by calling <code translate="no">Seek()</code>.</p>
+<h2 id="Write-data" class="common-anchor-header">Write data<button data-href="#Write-data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,35 +83,43 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>異なるVチャネル（シャード）に書き込まれるデータには、挿入メッセージと削除メッセージがある。これらのvchannelsはDmChannels（データ操作チャネル）とも呼ばれます。</p>
-<p>異なるコレクションはログブローカ内で同じ pchannels を共有することができます。1つのコレクションは複数のシャードを持つことができ、したがって複数の対応するvchannelsを持つことができます。同じコレクション内のエンティティは、結果的にログブローカ内の複数の対応するpchannelsに流れます。その結果、pchannelsを共有する利点は、ログブローカの高い同時実行性によって可能になるスループットの増大です。</p>
-<p>コレクションが作成されるとき、シャードの数が指定されるだけでなく、ログブローカ内のvchannelsとpchannels間のマッピングも決定されます。</p>
+    </button></h2><p>The data written  into different vchannels (shards) can either be insert message or delete message. These vchannels can also be called DmChannels (data manipulation channels).</p>
+<p>Different collections may share the same pchannels in the log broker. One collection can have multiple shards and hence multiple corresponding vchannels. The entities in the same collection consequently flow into multiple corresponding pchannels in the log broker. As a result, the benefit of sharing pchannels is an increased volume of throughput enabled by high concurrency of the log broker.</p>
+<p>When a collection is created, not only the number of shards is specified, but also the mapping between vchannels and pchannels in the log broker is decided.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Write_path_in_Milvus_00d93fb377.png" alt="Write path in Milvus" class="doc-image" id="write-path-in-milvus" />
-   </span> <span class="img-wrapper"> <span>Milvusにおける書き込みパス</span> </span></p>
-<p>上の図に示すように、書き込み経路では、プロキシがMsgStreamの<code translate="no">AsProducer()</code> インタフェースを介してログブローカにデータを書き込む。その後、データノードがデータを消費し、消費されたデータを変換してオブジェクトストレージに格納します。ストレージ・パスは、データ・コーディネータがetcdに記録するメタ情報の一種である。</p>
-<h3 id="Flowgraph" class="common-anchor-header">フローグラフ</h3><p>異なるコレクションがログブローカ内で同じpchannelを共有する可能性があるため、データを消費する際、データノードやクエリノードはpchannel内のデータがどのコレクションに属するかを判断する必要がある。この問題を解決するために、Milvusではflowgraphを導入しました。これは主にコレクションIDによって共有pchannel内のデータをフィルタリングする役割を担っている。つまり、各flowgraphは、コレクション内の対応するシャード（vchannel）のデータストリームを処理する。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Write_path_in_Milvus_00d93fb377.png" alt="Write path in Milvus" class="doc-image" id="write-path-in-milvus" />
+    <span>Write path in Milvus</span>
+  </span>
+</p>
+<p>As shown in the illustration above, in the write path, proxies write data into the log broker via the <code translate="no">AsProducer()</code> interface of the MsgStream. Then data nodes consume the data, then convert and store the consumed data in object storage. The storage path is a type of meta information which will be recorded in etcd by data coordinators.</p>
+<h3 id="Flowgraph" class="common-anchor-header">Flowgraph</h3><p>Since different collections may share the same pchannels in the log broker, when consuming data, data nodes or query nodes need to judge to which collection the data in a pchannel belongs. To solve this problem, we introduced flowgraph in Milvus. It is mainly in charge of filtering data in a shared pchannel by collection IDs. So, we can say that each flowgraph handles the data stream in a corresponding shard (vchannel) in a collection.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Flowgraph_in_write_path_1b201e1b71.png" alt="Flowgraph in write path" class="doc-image" id="flowgraph-in-write-path" />
-   </span> <span class="img-wrapper"> <span>書き込みパスのフローグラフ</span> </span></p>
-<h3 id="MsgStream-creation" class="common-anchor-header">MsgStreamの生成</h3><p>データを書き込む際、以下の2つのシナリオでMsgStreamオブジェクトが生成される：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Flowgraph_in_write_path_1b201e1b71.png" alt="Flowgraph in write path" class="doc-image" id="flowgraph-in-write-path" />
+    <span>Flowgraph in write path</span>
+  </span>
+</p>
+<h3 id="MsgStream-creation" class="common-anchor-header">MsgStream creation</h3><p>When writing data, MsgStream object is created in the following two scenarios:</p>
 <ul>
-<li>プロキシがデータ挿入要求を受信すると、まずルート・コーディネータ（root coordinator）を介してvchannelsとpchannelsの間のマッピングを取得しようとする。次に、プロキシはMsgStreamオブジェクトを作成する。</li>
+<li>When the proxy receives a data insertion request, it first tries to obtain the mapping between vchannels and pchannels via root coordinator (root coord). Then the proxy creates an MsgStream object.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Creating_Msg_Stream_object_in_write_path_Scenario_1_bdd0f94d8b.png" alt="Scenario 1" class="doc-image" id="scenario-1" />
-   </span> <span class="img-wrapper"> <span>シナリオ1</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Creating_Msg_Stream_object_in_write_path_Scenario_1_bdd0f94d8b.png" alt="Scenario 1" class="doc-image" id="scenario-1" />
+    <span>Scenario 1</span>
+  </span>
+</p>
 <ul>
-<li>データノードが起動し、etcd内のチャネルのメタ情報を読み込むと、MsgStreamオブジェクトが生成される。</li>
+<li>When data node starts and reads the meta information of channels in etcd, the MsgStream object is created.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Creating_Msg_Stream_object_in_write_path_Scenario_2_5b3f99a6d1.png" alt="Scenario 2" class="doc-image" id="scenario-2" />
-   </span> <span class="img-wrapper"> <span>シナリオ2</span> </span></p>
-<h2 id="Read-data" class="common-anchor-header">データの読み込み<button data-href="#Read-data" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Creating_Msg_Stream_object_in_write_path_Scenario_2_5b3f99a6d1.png" alt="Scenario 2" class="doc-image" id="scenario-2" />
+    <span>Scenario 2</span>
+  </span>
+</p>
+<h2 id="Read-data" class="common-anchor-header">Read data<button data-href="#Read-data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -119,27 +135,33 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Read_path_in_Milvus_c2f0ae5109.png" alt="Read path in Milvus" class="doc-image" id="read-path-in-milvus" />
-   </span> <span class="img-wrapper"> <span>Milvusにおける読み込みパス</span> </span></p>
-<p>データ読み込みの一般的なワークフローを上の図に示す。クエリ要求はDqRequestChannelを介してクエリノードにブロードキャストされる。クエリノードはクエリタスクを並列実行する。クエリーノードからのクエリー結果はgRPCを経由し、プロキシが結果を集約してクライアントに返す。</p>
-<p>データ読み取りプロセスを詳しく見ると、プロキシがDqRequestChannelにクエリ要求を書き込んでいることがわかる。そして、クエリノードはDqRequestChannelをサブスクライブすることでメッセージを消費する。DqRequestChannelの各メッセージはブロードキャストされ、サブスクライブしたすべてのクエリノードがメッセージを受信できる。</p>
-<p>クエリノードはクエリ要求を受信すると、密封されたセグメントに格納されたバッチデータと、Milvusに動的に挿入され、成長するセグメントに格納されたストリーミングデータの両方に対してローカルクエリを実行する。その後、クエリノードは<a href="https://milvus.io/docs/v2.0.x/glossary.md#Segment">密閉セグメントと成長セグメントの</a>両方でクエリ結果を集約する必要がある。これらの集約結果はgRPCを介してプロキシに渡される。</p>
-<p>プロキシは複数のクエリノードからすべての結果を収集し、それらを集約して最終的な結果を得る。そして、プロキシは最終的なクエリ結果をクライアントに返す。各クエリリクエストとそれに対応するクエリ結果は同じ一意なrequestIDでラベル付けされているので、プロキシはどのクエリリリクエストにどのクエリ結果が対応するかを把握することができる。</p>
-<h3 id="Flowgraph" class="common-anchor-header">フローグラフ</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Flowgraph_in_read_path_8a5faf2d58.png" alt="Flowgraph in read path" class="doc-image" id="flowgraph-in-read-path" />
-   </span> <span class="img-wrapper"> <span>読み取りパスのフローグラフ</span> </span></p>
-<p>書き込みパスと同様に、フローグラフは読み取りパスにも導入される。Milvusは、インクリメンタルデータとヒストリカルデータの処理を統合するユニファイドラムダアーキテクチャを実装している。そのため、クエリノードはリアルタイムのストリーミングデータも取得する必要がある。同様に、読み取りパスのフローグラフは、異なるコレクションからのデータをフィルタリングし、区別する。</p>
-<h3 id="MsgStream-creation" class="common-anchor-header">MsgStreamの作成</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Creating_Msg_Stream_object_in_read_path_7f059bde2f.png" alt="Creating MsgStream object in read path" class="doc-image" id="creating-msgstream-object-in-read-path" />
-   </span> <span class="img-wrapper"> <span>読み取りパスでのMsgStreamオブジェクトの作成</span> </span></p>
-<p>データを読み込む際、以下のシナリオでMsgStreamオブジェクトを作成します：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Read_path_in_Milvus_c2f0ae5109.png" alt="Read path in Milvus" class="doc-image" id="read-path-in-milvus" />
+    <span>Read path in Milvus</span>
+  </span>
+</p>
+<p>The general workflow of reading data is illustrated in the image above. Query requests are broadcast via DqRequestChannel to query nodes. The query nodes execute the query tasks in parallel. The query results from query nodes go through gRPC and proxy aggregate the results and returns them to the client.</p>
+<p>To take a closer look at the data reading process, we can see that the proxy writes query requests into DqRequestChannel. Query nodes then consume message by subscribing to DqRequestChannel. Each message in the DqRequestChannel is broadcast so that all subscribed query nodes can receive the message.</p>
+<p>When query nodes receive query requests, they conduct a local query on both batch data stored in sealed segments and streaming data that are dynamically inserted into Milvus and stored in growing segments. Afterwards, query nodes need to aggregate the query results in both <a href="https://milvus.io/docs/v2.0.x/glossary.md#Segment">sealed and growing segments</a>. These aggregated results are passed on to proxy via gRPC.</p>
+<p>The proxy collects all the results from multiple query nodes and then aggregate them to obtain the final results. Then the proxy returns the final query results to the client. Since each query request and its corresponding query results are labelled by the same unique requestID, proxy can figure out which query results correspond to which query request.</p>
+<h3 id="Flowgraph" class="common-anchor-header">Flowgraph</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Flowgraph_in_read_path_8a5faf2d58.png" alt="Flowgraph in read path" class="doc-image" id="flowgraph-in-read-path" />
+    <span>Flowgraph in read path</span>
+  </span>
+</p>
+<p>Similar to the write path, flowgraphs are also introduced in the read path. Milvus implements the unified Lambda architecture, which integrates the processing of the incremental and historical data. Therefore, query nodes need to obtain real-time streaming data as well. Similarly, flowgraphs in read path filters and differentiates data from different collections.</p>
+<h3 id="MsgStream-creation" class="common-anchor-header">MsgStream creation</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Creating_Msg_Stream_object_in_read_path_7f059bde2f.png" alt="Creating MsgStream object in read path" class="doc-image" id="creating-msgstream-object-in-read-path" />
+    <span>Creating MsgStream object in read path</span>
+  </span>
+</p>
+<p>When reading data, the MsgStream object is created in the following scenario:</p>
 <ul>
-<li>Milvusでは、データはロードされないと読み込むことができません。プロキシはデータロード要求を受け取ると、その要求をクエリコーディネータに送信し、クエリコーディネータは異なるクエリノードへのシャードの割り当て方法を決定します。割り当て情報（vchannelの名前、vchannelと対応するpchannel間のマッピング）は、メソッドコールまたはRPC（リモートプロシージャコール）を介してクエリノードに送信される。その後、クエリ・ノードは対応するMsgStreamオブジェクトを作成してデータを消費します。</li>
+<li>In Milvus, data cannot be read unless they are loaded. When the proxy receives a data load request, it sends the request to query coordinator which decides the way of assigning shards to different query nodes. The assigning information (i.e. The names of vchannels and the mapping between vchannels and their corresponding pchannels) is sent to query nodes via method call or RPC (remote procedure call). Subsequently, the query nodes create corresponding MsgStream objects to consume data.</li>
 </ul>
-<h2 id="DDL-operations" class="common-anchor-header">DDL 操作<button data-href="#DDL-operations" class="anchor-icon" translate="no">
+<h2 id="DDL-operations" class="common-anchor-header">DDL operations<button data-href="#DDL-operations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -154,28 +176,32 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DDL はデータ定義言語の略です。メタデータに対する DDL 操作は、書き込み要求と読み取り要求に分類できます。ただし、メタデータ処理中、この2種類の要求は同等に扱われます。</p>
-<p>メタデータの読み取り要求には以下が含まれます：</p>
+    </button></h2><p>DDL stands for data definition language. DDL operations on metadata can be categorized into write requests and read requests. However, these two types of requests are treated equally during metadata processing.</p>
+<p>Read requests on metadata include:</p>
 <ul>
-<li>クエリ・コレクション・スキーマ</li>
-<li>クエリ・インデキシング情報。</li>
+<li>Query collection schema</li>
+<li>Query indexing information
+And more</li>
 </ul>
-<p>書き込みリクエストには以下が含まれます：</p>
+<p>Write requests include:</p>
 <ul>
-<li>コレクションの作成</li>
-<li>コレクションの削除</li>
-<li>インデックスの作成</li>
-<li>インデックスの削除 など</li>
+<li>Create a collection</li>
+<li>Drop a collection</li>
+<li>Build an index</li>
+<li>Drop an index
+And more</li>
 </ul>
-<p>DDL リクエストはクライアントからプロキシに送られ、プロキシは受け取った順番に これらのリクエストをルートコーデックに渡し、ルートコーデックは各 DDL リクエストにタイムスタンプを割り当て、リクエストの動的チェックを行います。プロキシは各リクエストを一度に一つのDDLリクエストを意味するシリ アルな方法で操作する。プロキシは、前のリクエストの処理を完了し、ルートコー ドから結果を受け取るまで、次のリクエストを処理しない。</p>
+<p>DDL requests are sent to the proxy from the client, and the proxy further passes on these requests in the received order to the root coord which assigns a timestamp for each DDL request and conducts dynamic checks on the requests. Proxy handles each request in a serial manner, meaning one DDL request at a time. The proxy will not process the next request until it completes processing the previous request and receive results from the root coord.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/DDL_operations_02679a393c.png" alt="DDL operations." class="doc-image" id="ddl-operations." />
-   </span> <span class="img-wrapper"> <span>DDL操作</span>。 </span></p>
-<p>上の図に示すように、ルート・コー ディネート・タスク・キューには<code translate="no">K</code> DDL要求がある。タスク・キュー内の DDL 要求は、ルート・コー ディネートが受信した順に並べられる。つまり、<code translate="no">ddl1</code> がルート・コー ディネートに最初に送られたもので、<code translate="no">ddlK</code> がこのバッチの最後のものである。ルートコーデ ィックは時間順に一つずつリクエストを処理する。</p>
-<p>分散システムでは、プロキシとルートコーデック間の通信はgRPCによって 有効にされる。ルートコーデ ィションは、すべてのDDLリクエストが時間順に処理されることを保証するた めに、実行されたタスクの最大タイムスタンプ値の記録を保持する。</p>
-<p>2つの独立したプロキシ、プロキシ1とプロキシ2があるとする。両者は同じルートコー ドにDDLリクエストを送る。しかし、一つの問題は、先に送られたリクエストが、後で別のプロキシが 受け取ったリクエストよりも先にルートコーダに送られるとは限らない ことである。例えば、上の画像では、<code translate="no">DDL_K-1</code> がプロキシ1からルートコー ディネートに送られたとき、プロキシ2からの<code translate="no">DDL_K</code> はすでにルートコー ディネートによって受け入れられ、実行されている。ルートコー ドによって記録されるように、この時点で実行されたタスクの最大タ イムスタンプ値は、<code translate="no">K</code> である。したがって、時間順 序を中断しないために、リクエスト<code translate="no">DDL_K-1</code> はルートコー ドのタスクキューによって拒否される。しかし、プロキシ2がこの時点でルートコー ドにリクエスト<code translate="no">DDL_K+5</code> を送ると、リクエストはタスクキューに受 け入れられ、そのタイムスタンプ値に従って後で実行される。</p>
-<h2 id="Indexing" class="common-anchor-header">インデックスの構築<button data-href="#Indexing" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/DDL_operations_02679a393c.png" alt="DDL operations." class="doc-image" id="ddl-operations." />
+    <span>DDL operations.</span>
+  </span>
+</p>
+<p>As shown in the illustration above, there are <code translate="no">K</code> DDL requests in the Root coord task queue. The DDL requests in the task queue are arranged in the order they are received by the root coord. So, <code translate="no">ddl1</code> is the first sent to root coord, and <code translate="no">ddlK</code> is the last one in this batch. The root coord processes the requests one by one in the time order.</p>
+<p>In a distributed system, the communication between the proxies and the root coord is enabled by gRPC. The root coord keeps a record of the maximum timestamp value of the executed tasks to ensure that all DDL requests are processed in time order.</p>
+<p>Suppose there are two independent proxies, proxy 1 and proxy 2. They both send DDL requests to the same root coord. However, one problem is that earlier requests are not necessarily sent to the root coord before those requests received by another proxy later. For instance, in the image above, when <code translate="no">DDL_K-1</code> is sent to the root coord from proxy 1, <code translate="no">DDL_K</code> from proxy 2 has already been accepted and executed by the root coord. As recorded by the root coord, the maximum timestamp value of the executed tasks at this point is <code translate="no">K</code>. So in order not to interrupt the time order, the request <code translate="no">DDL_K-1</code> will be rejected by the root coord’s task queue . However, if proxy 2 sends the request <code translate="no">DDL_K+5</code> to the root coord at this point, the request will be accepted to the task queue and will be executed later according to its timestamp value.</p>
+<h2 id="Indexing" class="common-anchor-header">Indexing<button data-href="#Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,20 +216,24 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Building-an-index" class="common-anchor-header">インデックスの構築</h3><p>クライアントからインデックス構築リクエストを受け取ると、プロキシはまずリクエストの 静的チェックを行い、それをルートコーデックに送る。それからルートコーディネータはこれらのインデックス構築要求をメタストレージ(etcd)に永続化し、インデックスコーディネータ(index coordinator)に要求を送る。</p>
+    </button></h2><h3 id="Building-an-index" class="common-anchor-header">Building an index</h3><p>Upon receiving index building requests from the client, the proxy first carries out static checks on the requests and sends them to the root coord. Then the root coord persists these index building requests into meta storage (etcd) and sends the requests to the index coordinator (index coord).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Building_an_index_e130a4e715.png" alt="Building an index." class="doc-image" id="building-an-index." />
-   </span> <span class="img-wrapper"> <span>インデックスの構築</span>。 </span></p>
-<p>上図のように、インデックス・コーディネータはルート・コーディネータからインデックス構築要求を受け取ると、まずメタ・ストレージのetcdにタスクを永続化する。インデックス構築タスクの初期ステータスは<code translate="no">Unissued</code> である。インデックス・コーダは、各インデックス・ノードのタスク負荷の記録を保持し、負荷の少ないインデックス・ノードに受信タスクを送ります。タスクが完了すると、インデックスノードはそのタスクのステータス、<code translate="no">Finished</code> または<code translate="no">Failed</code> をmilvusのetcdであるメタストレージに書き込みます。その後、インデックス・ノードはetcdを検索することで、インデックス構築タスクが成功したか失敗したかを理解します。タスクがシステムリソースの制限やインデックスノードの脱落により失敗した場合、インデックスコーデックはプロセス全体を再トリガーし、同じタスクを別のインデックスノードに割り当てます。</p>
-<h3 id="Dropping-an-index" class="common-anchor-header">インデックスの削除</h3><p>さらに、インデックス・コーディネータはインデックスの削除依頼も担当します。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Building_an_index_e130a4e715.png" alt="Building an index." class="doc-image" id="building-an-index." />
+    <span>Building an index.</span>
+  </span>
+</p>
+<p>As illustrated above, when the index coord receives index building requests from the root coord, it first persists the task in etcd for meta store. The initial status of the index building task is <code translate="no">Unissued</code>. The index coord maintains a record of the task load of each index node, and sends to inbound tasks to a less loaded index node. Upon completion of the task, the index node writes the status of the task, either <code translate="no">Finished</code> or <code translate="no">Failed</code> into meta storage, which is etcd in Milvus. Then the index coord will understand if the index building task succeeds or fails by looking up in etcd. If the task fails due to limited system resources or dropout of the index node, the index coord will re-trigger the whole process and assign the same task to another index node.</p>
+<h3 id="Dropping-an-index" class="common-anchor-header">Dropping an index</h3><p>In addition, the index coord is also in charge of the requests of dropping indexes.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Dropping_an_index_afdab6a339.png" alt="Dropping an index." class="doc-image" id="dropping-an-index." />
-   </span> <span class="img-wrapper"> <span>インデックスの削除</span>。 </span></p>
-<p>ルート・コーダはクライアントからインデックスの削除要求を受け取ると、まずそのインデックスを &quot;dropped &quot;としてマークし、その結果をインデックス・コーダに通知しながらクライアントに返します。次に、インデックス・コーダはすべてのインデックス作成タスクを<code translate="no">IndexID</code> でフィルタリングし、条件に一致するタスクをドロップする。</p>
-<p>インデックス・コーディネーターのバックグラウンド・コルーチンは、オブジェクト・ストレージ（MinIOとS3）から、"droped "とマークされたすべてのインデックス作成タスクを徐々に削除する。このプロセスには、recycleIndexFilesインターフェースが関係します。対応するインデックスファイルがすべて削除されると、削除されたインデックス作成タスクのメタ情報がメタストレージ（etcd）から削除されます。</p>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">ディープ・ダイブ・シリーズについて<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Dropping_an_index_afdab6a339.png" alt="Dropping an index." class="doc-image" id="dropping-an-index." />
+    <span>Dropping an index.</span>
+  </span>
+</p>
+<p>When the root coord receives a request of dropping an index from the client, it first marks the index as &quot;dropped&quot;, and returns the result to the client while notifying the index coord. Then the index  coord filters all indexing tasks with the <code translate="no">IndexID</code> and those tasks matching the condition are dropped.</p>
+<p>The background coroutine of the index coord will gradually delete all indexing tasks marked as “dropped” from object storage (MinIO and S3). This process involves the recycleIndexFiles interface. When all corresponding index files are deleted, the meta information of the deleted indexing tasks are removed from meta storage (etcd).</p>
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -218,14 +248,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-3-data-processing.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.0の<a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">一般提供の正式発表に</a>伴い、Milvusのアーキテクチャとソースコードの詳細な解釈を提供するために、このMilvus Deep Diveブログシリーズを企画しました。このブログシリーズで扱うトピックは以下の通りです：</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvusアーキテクチャの概要</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIとPython SDK</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">データ処理</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">データ管理</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">リアルタイムクエリ</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">スカラー実行エンジン</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QAシステム</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">ベクトル実行エンジン</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

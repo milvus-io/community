@@ -1,12 +1,11 @@
 ---
 id: multimodal-semantic-search-with-images-and-text.md
-title: Búsqueda semántica multimodal con imágenes y texto
+title: Multimodal Semantic Search with Images and Text
 author: Stefan Webb
 date: 2025-02-3
 desc: >-
-  Aprenda a crear una aplicación de búsqueda semántica utilizando IA multimodal
-  que comprenda las relaciones texto-imagen, más allá de la concordancia básica
-  de palabras clave.
+  Learn how to build a semantic search app using multimodal AI that understands
+  text-image relationships, beyond basic keyword matching.
 cover: >-
   assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
@@ -15,17 +14,17 @@ recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>Como humanos, interpretamos el mundo a través de nuestros sentidos. Oímos sonidos, vemos imágenes, vídeos y textos, a menudo superpuestos. Entendemos el mundo a través de estas múltiples modalidades y de la relación entre ellas. Para que la inteligencia artificial iguale o supere realmente las capacidades humanas, debe desarrollar esta misma capacidad de entender el mundo a través de múltiples lentes simultáneamente.</p>
-<p>En este artículo, junto con el vídeo (arriba) y el <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">cuaderno que</a> lo acompaña, mostraremos los últimos avances en modelos capaces de procesar texto e imágenes a la vez. Lo demostraremos construyendo una aplicación de búsqueda semántica que va más allá de la simple concordancia de palabras clave: entiende la relación entre lo que piden los usuarios y el contenido visual que buscan.</p>
-<p>Lo que hace que este proyecto sea especialmente interesante es que se ha construido íntegramente con herramientas de código abierto: la base de datos vectorial Milvus, las bibliotecas de aprendizaje automático de HuggingFace y un conjunto de datos de reseñas de clientes de Amazon. Resulta sorprendente pensar que hace tan solo una década, para construir algo así se habrían necesitado importantes recursos patentados. Hoy en día, estos potentes componentes están disponibles gratuitamente y pueden ser combinados de forma innovadora por cualquiera que tenga la curiosidad de experimentar.</p>
-<custom-h1>Visión general</custom-h1><p>
+<p>As humans, we interpret the world through our senses. We hear sounds, we see images, video, and text, often layered on top of each other. We understand the world through these multiple modalities and the relationship between them. For artificial intelligence to truly match or exceed human capabilities, it must develop this same ability to understand the world through multiple lenses simultaneously.</p>
+<p>In this post and accompanying video (above) and <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">notebook</a>, we’ll showcase recent breakthroughs in models that can process both text and images together. We’ll demonstrate this by building a semantic search application that goes beyond simple keyword matching - it understands the relationship between what users are asking for and the visual content they’re searching through.</p>
+<p>What makes this project particularly exciting is that it’s built entirely with open-source tools: the Milvus vector database, HuggingFace’s machine learning libraries, and a dataset of Amazon customer reviews. It’s remarkable to think that just a decade ago, building something like this would have required significant proprietary resources. Today, these powerful components are freely available and can be combined in innovative ways by anyone with the curiosity to experiment.</p>
+<custom-h1>Overview</custom-h1><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/overview_97a124bc9a.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Nuestra aplicación de búsqueda multimodal es del tipo <em>retrieve-and-rerank.</em> Si está familiarizado con <em>la recuperación-aumentada-generación</em> (RAG) es muy similar, sólo que la salida final es una lista de imágenes que fueron reranked por un gran modelo de lenguaje-visión (LLVM). La consulta de búsqueda del usuario contiene texto e imagen, y el objetivo es un conjunto de imágenes indexadas en una base de datos vectorial. La arquitectura consta de tres pasos: <em>indexación</em>, <em>recuperación</em> y <em>renumeración</em> (algo así como "generación"), que resumimos a continuación.</p>
-<h2 id="Indexing" class="common-anchor-header">Indexación<button data-href="#Indexing" class="anchor-icon" translate="no">
+<p>Our multimodal search application is of the type <em>retrieve-and-rerank.</em> If you are familiar with <em>retrieval-augmented-generation</em> (RAG) it is very similar, only that the final output is a list of images that were reranked by a large language-vision model (LLVM). The user’s search query contains both text and image, and the target is a set of images indexed in a vector database. The architecture has three steps - <em>indexing</em>, <em>retrieval</em>, and <em>reranking</em> (akin to “generation”) - which we summarize in turn.</p>
+<h2 id="Indexing" class="common-anchor-header">Indexing<button data-href="#Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,17 +39,17 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nuestra aplicación de búsqueda debe tener algo que buscar. En nuestro caso, utilizamos un pequeño subconjunto del conjunto de datos "Amazon Reviews 2023", que contiene texto e imágenes de opiniones de clientes de Amazon sobre todo tipo de productos. Se puede imaginar que una búsqueda semántica como la que estamos construyendo sería un complemento útil para un sitio web de comercio electrónico. Utilizamos 900 imágenes y descartamos el texto, aunque observamos que este cuaderno puede escalar a tamaño de producción con la base de datos y los despliegues de inferencia adecuados.</p>
-<p>El primer elemento "mágico" de nuestro proceso es la elección del modelo de incrustación. Utilizamos un modelo multimodal desarrollado recientemente, denominado <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a>, capaz de incrustar texto e imágenes conjuntamente, o por separado, en el mismo espacio con un único modelo en el que los puntos cercanos son semánticamente similares. Recientemente se han desarrollado otros modelos de este tipo, por ejemplo <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
+    </button></h2><p>Our search application must have something to search. In our case, we use a small subset of the “Amazon Reviews 2023” dataset, which contains both text and images from Amazon customer reviews across all types of products. You can imagine a semantic search like that that we are building as being a useful addition to an ecommerce website. We use 900 images and discard the text, although observe that this notebook can scale to production-size with the right database and inference deployments.</p>
+<p>The first piece of “magic” in our pipeline is the choice of embedding model. We use a recently developed multimodal model called <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a> that is able to embed text and images jointly, or either separately, into the same space with a single model where points that are close are semantically similar. Other such models have been developed recently, for instance <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/indexing_1937241be5.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>La figura anterior lo ilustra: la incrustación para [una imagen de un león de perfil] más el texto "vista frontal de esto", se aproxima a una incrustación para [una imagen de un león de frente] sin texto. El mismo modelo se utiliza tanto para entradas con texto e imagen como para entradas sólo con imagen (así como para entradas sólo con texto). <em>De este modo, el modelo es capaz de comprender la intención del usuario en cuanto a la relación entre el texto y la imagen consultados.</em></p>
-<p>Incrustamos nuestras 900 imágenes de productos sin el texto correspondiente y almacenamos las incrustaciones en una base de datos vectorial utilizando <a href="https://milvus.io/docs">Milvus</a>.</p>
-<h2 id="Retrieval" class="common-anchor-header">Recuperación<button data-href="#Retrieval" class="anchor-icon" translate="no">
+<p>The figure above illustrates: the embedding for [an image of a lion side-on] plus the text “front view of this”, is close to an embedding for [an image of a lion front-on] without text. The same model is used for both text plus image inputs and image-only inputs (as well as text-only inputs). <em>In this way, the model is able to understand the user’s intent in how the query text relates to the query image.</em></p>
+<p>We embed our 900 product images without corresponding text and store the embeddings in a vector database using <a href="https://milvus.io/docs">Milvus</a>.</p>
+<h2 id="Retrieval" class="common-anchor-header">Retrieval<button data-href="#Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,16 +64,16 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Una vez creada la base de datos, podemos realizar una consulta al usuario. Imaginemos que un usuario viene con la consulta "una funda de teléfono con esto" más [una imagen de un Leopardo]. Es decir, busca fundas de teléfono con estampados de leopardo.</p>
-<p>Nótese que el texto de la consulta del usuario decía "esto" en lugar de "la piel de un Leopardo". Nuestro modelo de incrustación debe ser capaz de conectar "esto" con aquello a lo que se refiere, lo cual es una hazaña impresionante dado que la iteración anterior de modelos no era capaz de manejar instrucciones tan abiertas. El <a href="https://arxiv.org/abs/2403.19651">artículo MagicLens</a> ofrece más ejemplos.</p>
+    </button></h2><p>Now that our database is built, we can serve a user query. Imagine a user comes along with the query: “a phone case with this” plus [an image of a Leopard]. That is, they are searching for phone cases with Leopard skin prints.</p>
+<p>Note that the text of the user’s query said “this” rather than “a Leopard’s skin”. Our embedding model must be able to connect “this” to what it refers to, which is an impressive feat given that the previous iteration of models were not able to handle such open-ended instructions. The <a href="https://arxiv.org/abs/2403.19651">MagicLens paper</a> gives further examples.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Retrieval_ad64f48e49.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Integramos el texto y la imagen de la consulta y realizamos una búsqueda de similitudes en nuestra base de datos vectorial. Los resultados se muestran en la figura anterior, junto con la imagen del leopardo. Parece que el primer resultado no es el más pertinente para la consulta. El séptimo resultado parece ser el más relevante: se trata de una funda de teléfono con un estampado de piel de leopardo.</p>
-<h2 id="Generation" class="common-anchor-header">Generación<button data-href="#Generation" class="anchor-icon" translate="no">
+<p>We embed the query text and image jointly and perform a similarity search of our vector database, returning the top nine hits. The results are shown in the figure above, along with the query image of the leopard. It appears that the top hit is not the one that is most relevant to the query. The seventh result appears to be most relevant - it is a phone cover with a leopard skin print.</p>
+<h2 id="Generation" class="common-anchor-header">Generation<button data-href="#Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -89,20 +88,20 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Parece que nuestra búsqueda ha fallado en el sentido de que el resultado superior no es el más relevante. Sin embargo, podemos solucionarlo con un paso de reordenación. Es posible que esté familiarizado con el reordenamiento de los elementos recuperados, ya que es un paso importante en muchos procesos RAG. Utilizamos <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision</a> como modelo de reordenación.</p>
-<p>Primero pedimos a un LLVM que genere un pie de foto de la imagen consultada. El LLVM genera:</p>
-<p><em>"La imagen muestra un primer plano de la cara de un leopardo, centrándose en su pelaje moteado y sus ojos verdes".</em></p>
-<p>A continuación, introducimos este pie de foto, una sola imagen con los nueve resultados y la imagen de consulta, y construimos un mensaje de texto en el que se pide al modelo que vuelva a clasificar los resultados, dando la respuesta en forma de lista y justificando la elección de la mejor coincidencia.</p>
+    </button></h2><p>It appears our search has failed in that the top result is not the most relevant. However, we can fix this with a reranking step. You may be familiar with reranking of retrieved items as being an important step in many RAG pipelines. We use <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision</a> as the re-ranker model.</p>
+<p>We first ask a LLVM to generate a caption of the query image. The LLVM outputs:</p>
+<p><em>“The image shows a close-up of a leopard’s face with a focus on its spotted fur and green eyes.”</em></p>
+<p>We then feed this caption, a single image with the nine results and query image, and construct a text prompt asking the model to re-rank the results, giving the answer as a list and providing a reason for the choice of the top match.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Generation_b016a6c26a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>El resultado se visualiza en la figura anterior: el elemento más relevante es ahora el que más coincide, y la razón que se da es:</p>
-<p><em>"El elemento más adecuado es el que tiene el tema del leopardo, que coincide con la instrucción de consulta del usuario para una funda de teléfono con un tema similar".</em></p>
-<p>Nuestro re-ranker LLVM fue capaz de realizar la comprensión a través de imágenes y texto, y mejorar la relevancia de los resultados de búsqueda. <em>Un artefacto interesante es que el re-ranker sólo dio ocho resultados y ha descartado uno, lo que pone de relieve la necesidad de guardrails y salida estructurada.</em></p>
-<h2 id="Summary" class="common-anchor-header">Resumen<button data-href="#Summary" class="anchor-icon" translate="no">
+<p>The output is visualized in the figure above - the most relevant item is now the top match - and the reason given is:</p>
+<p><em>“The most suitable item is the one with the leopard theme, which matches the user’s query instruction for a phone case with a similar theme.”</em></p>
+<p>Our LLVM re-ranker was able to perform understanding across images and text, and improve the relevance of the search results. <em>One interesting artifact is that the re-ranker only gave eight results and has dropped one, which highlights the need for guardrails and structured output.</em></p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -117,10 +116,10 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En este post y en el <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">vídeo</a> y el <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">cuaderno</a> que lo acompañan, hemos construido una aplicación para la búsqueda semántica multimodal a través de texto e imágenes. El modelo de incrustación fue capaz de incrustar texto e imágenes conjunta o separadamente en el mismo espacio, y el modelo de fundamentación fue capaz de introducir texto e imagen mientras generaba texto como respuesta. <em>Y lo que es más importante, el modelo de incrustación fue capaz de relacionar la intención del usuario de una instrucción abierta con la imagen de la consulta y, de ese modo, especificar cómo quería el usuario que se relacionaran los resultados con la imagen introducida.</em></p>
-<p>Esto es sólo una muestra de lo que nos espera en un futuro próximo. Veremos muchas aplicaciones de búsqueda multimodal, comprensión y razonamiento multimodal, etc. en diversas modalidades: imagen, vídeo, audio, moléculas, redes sociales, datos tabulares, series temporales, el potencial es ilimitado.</p>
-<p>Y en el núcleo de estos sistemas se encuentra una base de datos vectorial que contiene la "memoria" externa del sistema. Milvus es una opción excelente para este fin. Es de código abierto, cuenta con todas las funciones (véase <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">este artículo sobre la búsqueda de texto completo en Milvus 2.5</a>) y se escala eficientemente a miles de millones de vectores con tráfico a escala web y latencia inferior a 100 ms. Obtenga más información en <a href="https://milvus.io/docs">la documentación de Milvus</a>, únase a nuestra comunidad de <a href="https://milvus.io/discord">Discord</a> y esperamos verle en nuestro próximo <a href="https://lu.ma/unstructured-data-meetup">encuentro sobre datos no estructurados</a>. Hasta entonces.</p>
-<h2 id="Resources" class="common-anchor-header">Recursos<button data-href="#Resources" class="anchor-icon" translate="no">
+    </button></h2><p>In this post and the accompanying <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">video</a> and <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">notebook</a>, we have constructed an application for multimodal semantic search across text and images. The embedding model was able to embed text and images jointly or separately into the same space, and the foundation model was able to input text and image while generating text in response. <em>Importantly, the embedding model was able to relate the user’s intent of an open-ended instruction to the query image and in that way specify how the user wanted the results to relate to the input image.</em></p>
+<p>This is just a taste of what is to come in the near future. We will see many applications of multimodal search, multimodal understanding and reasoning, and so on across diverse modalities: image, video, audio, molecules, social networks, tabular data, time-series, the potential is boundless.</p>
+<p>And at the core of these systems is a vector database holding the system’s external “memory”. Milvus is an excellent choice for this purpose. It is open-source, fully featured (see <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">this article on full-text search in Milvus 2.5</a>) and scales efficiently to the billions of vectors with web-scale traffic and sub-100ms latency. Find out more at the <a href="https://milvus.io/docs">Milvus docs</a>, join our <a href="https://milvus.io/discord">Discord</a> community, and hope to see you at our next <a href="https://lu.ma/unstructured-data-meetup">Unstructured Data meetup</a>. Until then!</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -136,13 +135,13 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Cuaderno de notas: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">"Búsqueda multimodal con Amazon Reviews y LLVM Reranking</a>"</p></li>
-<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Vídeo de Youtube AWS Developers</a></p></li>
-<li><p><a href="https://milvus.io/docs">Documentación de Milvus</a></p></li>
-<li><p><a href="https://lu.ma/unstructured-data-meetup">Reunión sobre datos no estructurados</a></p></li>
-<li><p>Modelo de incrustación: <a href="https://huggingface.co/BAAI/bge-visualized">Tarjeta de modelo BGE visualizada</a></p></li>
-<li><p>Modelo de incrustación alt: <a href="https://github.com/google-deepmind/magiclens">MagicLens model repo</a></p></li>
-<li><p>LLVM: <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Tarjeta de modelo Phi-3 Vision</a></p></li>
-<li><p>Ponencia: "<a href="https://arxiv.org/abs/2403.19651">MagicLens: Recuperación autosupervisada de imágenes con instrucciones abiertas</a>"</p></li>
-<li><p>Conjunto de datos: <a href="https://amazon-reviews-2023.github.io/">Reseñas de Amazon 2023</a></p></li>
+<li><p>Notebook: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">“Multimodal Search with Amazon Reviews and LLVM Reranking</a>”</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Youtube AWS Developers video</a></p></li>
+<li><p><a href="https://milvus.io/docs">Milvus documentation</a></p></li>
+<li><p><a href="https://lu.ma/unstructured-data-meetup">Unstructured Data meetup</a></p></li>
+<li><p>Embedding model: <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE model card</a></p></li>
+<li><p>Alt. embedding model: <a href="https://github.com/google-deepmind/magiclens">MagicLens model repo</a></p></li>
+<li><p>LLVM: <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision model card</a></p></li>
+<li><p>Paper: “<a href="https://arxiv.org/abs/2403.19651">MagicLens: Self-Supervised Image Retrieval with Open-Ended Instructions</a>”</p></li>
+<li><p>Dataset: <a href="https://amazon-reviews-2023.github.io/">Amazon Reviews 2023</a></p></li>
 </ul>

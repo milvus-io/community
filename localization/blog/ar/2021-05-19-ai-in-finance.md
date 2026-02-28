@@ -1,47 +1,49 @@
 ---
 id: ai-in-.md
-title: >-
-  تسريع الذكاء الاصطناعي في مجال التمويل باستخدام "ميلفوس"، قاعدة بيانات
-  المتجهات مفتوحة المصدر
+title: 'Accelerating AI in Finance with Milvus, an Open-Source Vector Database'
 author: milvus
 date: 2021-05-19T03:41:20.776Z
 desc: >-
-  يمكن استخدام Milvus لبناء تطبيقات الذكاء الاصطناعي في المجال المالي بما في ذلك
-  روبوتات الدردشة وأنظمة التوصية وغيرها.
+  Milvus can be used to build AI applications for the finance industry including
+  chatbots, recommender systems, and more.
 cover: assets.zilliz.com/03_1_1e5aaf7dd1.jpg
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/ai-in-finance'
 ---
-<custom-h1>تسريع الذكاء الاصطناعي في مجال التمويل باستخدام برنامج Milvus، قاعدة بيانات مفتوحة المصدر</custom-h1><p>لطالما كانت البنوك والمؤسسات المالية الأخرى من أوائل المتبنين للبرمجيات مفتوحة المصدر لمعالجة البيانات الضخمة وتحليلها. في عام 2010، <a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">بدأ</a> مورغان ستانلي في <a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">استخدام</a> إطار عمل أباتشي هادوب مفتوح المصدر كجزء من تجربة صغيرة. كانت الشركة تكافح من أجل توسيع نطاق قواعد البيانات التقليدية بنجاح لتتناسب مع الكميات الهائلة من البيانات التي أراد علماؤها الاستفادة منها، لذلك قررت استكشاف حلول بديلة. أصبح Hadoop الآن عنصرًا أساسيًا في مورغان ستانلي، حيث يساعد في كل شيء بدءًا من إدارة بيانات إدارة علاقات العملاء إلى تحليل المحافظ الاستثمارية. وقد كانت برامج قواعد البيانات العلائقية الأخرى مفتوحة المصدر مثل MySQL وMongoDB وPostgreSQL أدوات لا غنى عنها لفهم البيانات الضخمة في صناعة التمويل.</p>
-<p>إن التكنولوجيا هي ما يمنح صناعة الخدمات المالية ميزة تنافسية، وسرعان ما أصبح الذكاء الاصطناعي (AI) هو النهج القياسي لاستخراج الرؤى القيمة من البيانات الضخمة وتحليل النشاط في الوقت الفعلي في قطاعات الخدمات المصرفية وإدارة الأصول والتأمين. ومن خلال استخدام خوارزميات الذكاء الاصطناعي لتحويل البيانات غير المهيكلة مثل الصور أو الصوت أو الفيديو إلى متجهات، وهي صيغة بيانات رقمية يمكن قراءتها آلياً، يمكن إجراء عمليات بحث عن التشابه على مجموعات بيانات متجهة ضخمة بملايين أو مليارات أو حتى تريليونات البيانات. يتم تخزين البيانات المتجهة في مساحة عالية الأبعاد، ويتم العثور على المتجهات المتشابهة باستخدام البحث عن التشابه، الأمر الذي يتطلب بنية تحتية مخصصة تسمى قاعدة بيانات المتجهات.</p>
+<custom-h1>Accelerating AI in Finance with Milvus, an Open-Source Vector Database</custom-h1><p>Banks and other financial institutions have long been early adopters of open-source software for big data processing and analytics. In 2010, Morgan Stanley <a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">began using</a> the open-source Apache Hadoop framework as part of a small experiment. The company was struggling to successfully scale traditional databases to the massive volumes of data its scientists wanted to leverage, so it decided to explore alternative solutions. Hadoop is now a staple at Morgan Stanley, helping with everything from managing CRM data to portfolio analysis. Other open-source relational database software such as MySQL, MongoDB, and PostgreSQL have been indispensable tools for making sense of big data in the finance industry.</p>
+<p>Technology is what gives the financial services industry a competitive edge, and artificial intelligence (AI) is rapidly becoming the standard approach to extracting valuable insights from big data and analyzing activity in real-time across the banking, asset management, and insurance sectors. By using AI algorithms to convert unstructured data such as images, audio, or video to vectors, a machine-readable numeric data format, it is possible to run similarity searches on massive million, billion, or even trillion vector datasets. Vector data is stored in high-dimensional space, and similar vectors are found using similarity search, which requires a dedicated infrastructure called a vector database.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/01_1_cb99f15886.jpg" alt="01 (1).jpg" class="doc-image" id="01-(1).jpg" />
-   </span> <span class="img-wrapper"> <span>01 (1).jpg</span> </span></p>
-<p><a href="https://github.com/milvus-io/milvus">Milvus</a> عبارة عن قاعدة بيانات متجهات مفتوحة المصدر مصممة خصيصًا لإدارة البيانات المتجهة، مما يعني أنه يمكن للمهندسين وعلماء البيانات التركيز على بناء تطبيقات الذكاء الاصطناعي أو إجراء التحليلات - بدلاً من البنية التحتية الأساسية للبيانات. تم بناء المنصة حول سير عمل تطوير تطبيقات الذكاء الاصطناعي وتم تحسينها لتبسيط عمليات التعلم الآلي (MLOps). للمزيد من المعلومات حول Milvus وتقنيتها الأساسية، راجع <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">مدونتنا</a>.</p>
-<p>تشتمل التطبيقات الشائعة للذكاء الاصطناعي في قطاع الخدمات المالية على التداول الخوارزمي، وتكوين المحفظة وتحسينها، والتحقق من صحة النماذج، والاختبار العكسي، وتقديم المشورة الآلية، ومساعدو العملاء الافتراضيون، وتحليل تأثير السوق، والامتثال التنظيمي، واختبار الإجهاد. تغطي هذه المقالة ثلاثة مجالات محددة يتم فيها الاستفادة من البيانات المتجهة كأحد الأصول الأكثر قيمة للشركات المصرفية والمالية:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/01_1_cb99f15886.jpg" alt="01 (1).jpg" class="doc-image" id="01-(1).jpg" />
+    <span>01 (1).jpg</span>
+  </span>
+</p>
+<p><a href="https://github.com/milvus-io/milvus">Milvus</a> is an open-source vector database built specifically for managing vector data, which means engineers and data scientists can focus on building AI applications or conducting analysis—instead of the underlying data infrastructure. The platform was built around AI application development workflows and is optimized to streamline machine learning operations (MLOps). For more information about Milvus and its underlying technology, check out our <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">blog</a>.</p>
+<p>Common applications of AI in the financial services industry include algorithmic trading, portfolio composition and optimization, model validation, backtesting, Robo-advising, virtual customer assistants, market impact analysis, regulatory compliance, and stress testing. This article covers three specific areas where vector data is leveraged as one of the most valuable assets for banking and financial companies:</p>
 <ol>
-<li>تعزيز تجربة العملاء باستخدام روبوتات الدردشة المصرفية</li>
-<li>تعزيز مبيعات الخدمات المالية والمزيد باستخدام أنظمة التوصيات</li>
-<li>تحليل تقارير الأرباح وغيرها من البيانات المالية غير المهيكلة باستخدام التنقيب عن النصوص الدلالية</li>
+<li>Enhancing customer experience with banking chatbots</li>
+<li>Boosting financial services sales and more with recommender systems</li>
+<li>Analyzing earnings reports and other unstructured financial data with semantic text mining</li>
 </ol>
 <p><br/></p>
-<h3 id="Enhancing-customer-experience-with-banking-chatbots" class="common-anchor-header">تحسين تجربة العملاء باستخدام روبوتات الدردشة المصرفية</h3><p>يمكن لروبوتات الدردشة المصرفية تحسين تجارب العملاء من خلال مساعدة المستهلكين على اختيار الاستثمارات والمنتجات المصرفية وبوالص التأمين. تزداد شعبية الخدمات الرقمية بشكل سريع، ويرجع ذلك جزئيًا إلى الاتجاهات التي تسارعت بسبب جائحة فيروس كورونا. تعمل روبوتات الدردشة الآلية باستخدام معالجة اللغة الطبيعية (NLP) لتحويل الأسئلة التي يرسلها المستخدم إلى متجهات دلالية للبحث عن إجابات مطابقة. تقدم روبوتات الدردشة المصرفية الحديثة تجربة طبيعية مخصصة للمستخدمين وتتحدث بنبرة محادثة. يوفر Milvus نسيج بيانات مناسب تمامًا لإنشاء روبوتات الدردشة الآلية باستخدام البحث عن التشابه المتجه في الوقت الفعلي.</p>
-<p>تعرف على المزيد في عرضنا التوضيحي الذي يغطي إنشاء <a href="https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus">روبوتات الدردشة الآلية باستخدام Milvus</a>.</p>
+<h3 id="Enhancing-customer-experience-with-banking-chatbots" class="common-anchor-header">Enhancing customer experience with banking chatbots</h3><p>Banking chatbots can improve customer experiences by helping consumers select investments, banking products, and insurance policies. Digital services are rising rapidly in popularity in part due to trends accelerated by the coronavirus pandemic. Chatbots work by using natural language processing (NLP) to convert user-submitted questions into semantic vectors to search for matching answers. Modern banking chatbots offer a personalized natural experience for users and speak in a conversational tone. Milvus provides a data fabric well suited for creating chatbots using real-time vector similarity search.</p>
+<p>Learn more in our demo that covers building <a href="https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus">chatbots with Milvus</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/02_1_8c298c45e5.jpg" alt="02 (1).jpg" class="doc-image" id="02-(1).jpg" />
-   </span> <span class="img-wrapper"> <span>02 (1).jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/02_1_8c298c45e5.jpg" alt="02 (1).jpg" class="doc-image" id="02-(1).jpg" />
+    <span>02 (1).jpg</span>
+  </span>
+</p>
 <p><br/></p>
-<h4 id="Boosting-financial-services-sales-and-more-with-recommender-systems" class="common-anchor-header">تعزيز مبيعات الخدمات المالية وأكثر من ذلك باستخدام أنظمة التوصية:</h4><p>يستخدم قطاع الخدمات المصرفية الخاصة أنظمة التوصية لزيادة مبيعات المنتجات المالية من خلال توصيات مخصصة تستند إلى ملفات تعريف العملاء. يمكن أيضًا الاستفادة من أنظمة التوصية في الأبحاث المالية والأخبار التجارية واختيار الأسهم وأنظمة دعم التداول. وبفضل نماذج التعلم العميق، يتم وصف كل مستخدم وعنصر على أنه متجه تضمين. توفر قاعدة البيانات المتجهة مساحة تضمين حيث يمكن حساب أوجه التشابه بين المستخدمين والعناصر.</p>
-<p>تعرّف على المزيد من <a href="https://zilliz.com/blog/graph-based-recommendation-system-with-milvus">عرضنا التوضيحي</a> الذي يغطي أنظمة التوصية القائمة على الرسم البياني باستخدام Milvus.</p>
+<h4 id="Boosting-financial-services-sales-and-more-with-recommender-systems" class="common-anchor-header">Boosting financial services sales and more with recommender systems:</h4><p>The private banking sector uses recommender systems to increase sales of financial products through personalized recommendations based on customer profiles. Recommender systems can also be leveraged in financial research, business news, stock selection, and trading support systems. Thanks to deep learning models, every user and item is described as an embedding vector. A vector database offers an embedding space where similarities between users and items can be calculated.</p>
+<p>Learn more from our <a href="https://zilliz.com/blog/graph-based-recommendation-system-with-milvus">demo</a> covering graph-based recommendation systems with Milvus.</p>
 <p><br/></p>
-<h4 id="Analyzing-earnings-reports-and-other-unstructured-financial-data-with-semantic-text-mining" class="common-anchor-header">تحليل تقارير الأرباح وغيرها من البيانات المالية غير المنظمة باستخدام التنقيب عن النصوص الدلالية:</h4><p>كان لتقنيات التنقيب عن النصوص تأثير كبير على الصناعة المالية. ومع نمو البيانات المالية بشكل كبير، برز التنقيب في النصوص كمجال بحثي مهم في مجال التمويل.</p>
-<p>يتم تطبيق نماذج التعلم العميق حاليًا لتمثيل التقارير المالية من خلال ناقلات الكلمات القادرة على التقاط العديد من الجوانب الدلالية. تستطيع قاعدة بيانات المتجهات مثل Milvus تخزين متجهات الكلمات الدلالية الضخمة من ملايين التقارير، ثم إجراء عمليات بحث عن التشابه عليها في أجزاء من الثانية.</p>
-<p>تعرّف على المزيد حول كيفية <a href="https://medium.com/deepset-ai/semantic-search-with-milvus-knowledge-graph-qa-web-crawlers-and-more-837451eae9fa">استخدام كومة القش في deepset مع Milvus</a>.</p>
+<h4 id="Analyzing-earnings-reports-and-other-unstructured-financial-data-with-semantic-text-mining" class="common-anchor-header">Analyzing earnings reports and other unstructured financial data with semantic text mining:</h4><p>Text mining techniques had a substantial impact on the financial industry. As financial data grows exponentially, text mining has emerged as an important field of research in the domain of finance.</p>
+<p>Deep learning models are currently applied to represent financial reports through word vectors capable of capturing numerous semantic aspects. A vector database like Milvus is able to store massive semantic word vectors from millions of reports, then conduct similarity searches on them in milliseconds.</p>
+<p>Learn more about how to <a href="https://medium.com/deepset-ai/semantic-search-with-milvus-knowledge-graph-qa-web-crawlers-and-more-837451eae9fa">use deepset’s Haystack with Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Don’t-be-a-stranger" class="common-anchor-header">لا تكن غريباً</h3><ul>
-<li>ابحث أو ساهم في Milvus على <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>تفاعل مع المجتمع عبر <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>تواصل معنا على <a href="https://twitter.com/milvusio">تويتر</a>.</li>
+<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Don’t be a stranger</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

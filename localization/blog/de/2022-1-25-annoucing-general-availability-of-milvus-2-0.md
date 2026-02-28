@@ -1,21 +1,22 @@
 ---
 id: 2022-1-25-annoucing-general-availability-of-milvus-2-0.md
-title: Ankündigung der allgemeinen Verfügbarkeit von Milvus 2.0
+title: Announcing General Availability of Milvus 2.0
 author: Xiaofan Luan
 date: 2022-01-25T00:00:00.000Z
-desc: Ein einfacher Weg zur Verarbeitung umfangreicher hochdimensionaler Daten
+desc: An easy way to handle massive high-dimensional data
 cover: assets.zilliz.com/Milvus_2_0_GA_4308a0f552.png
 tag: News
 ---
-<p>Liebe Mitglieder und Freunde der Milvus Community:</p>
-<p>Heute, sechs Monate nachdem der erste Release Candidate (RC) veröffentlicht wurde, freuen wir uns, Ihnen mitteilen zu können, dass Milvus 2.0 <a href="https://milvus.io/docs/v2.0.x/release_notes.md#v200">allgemein verfügbar (GA)</a> und produktionsreif ist! Es war ein langer Weg, und wir danken allen, die uns auf diesem Weg geholfen haben - Community-Mitarbeitern, Nutzern und der LF AI &amp; Data Foundation.</p>
-<p>Die Fähigkeit, Milliarden von hochdimensionalen Daten zu verarbeiten, ist für KI-Systeme heutzutage von großer Bedeutung - und das aus gutem Grund:</p>
+<p>Dear Members and Friends of the Milvus Community:</p>
+<p>Today, six months after the first Release Candidate (RC) was made public, we are thrilled to announce that Milvus 2.0 is <a href="https://milvus.io/docs/v2.0.x/release_notes.md#v200">General Available (GA)</a> and production ready! It’s been a long journey, and we thank everyone – community contributors, users, and the LF AI &amp; Data Foundation – along the way who helped us make this happen.</p>
+<p>The ability to handle billions of high dimensional data is a big deal for AI systems these days, and for good reasons:</p>
 <ol>
-<li>Unstrukturierte Daten nehmen im Vergleich zu traditionellen strukturierten Daten ein dominantes Volumen ein.</li>
-<li>Die Aktualität der Daten war noch nie so wichtig wie heute. Datenwissenschaftler sind an zeitnahen Datenlösungen interessiert und nicht an dem traditionellen T+1-Kompromiss.</li>
-<li>Kosten und Leistung sind noch kritischer geworden, und dennoch klafft immer noch eine große Lücke zwischen aktuellen Lösungen und realen Anwendungsfällen. Daher Milvus 2.0. Milvus ist eine Datenbank, die den Umgang mit hochdimensionalen Daten in großem Umfang ermöglicht. Sie ist für die Cloud konzipiert und kann überall eingesetzt werden. Wenn Sie unsere RC-Releases verfolgt haben, wissen Sie, dass wir große Anstrengungen unternommen haben, um Milvus stabiler und einfacher zu implementieren und zu warten zu machen.</li>
+<li>Unstructured data occupy dominant volumes compared to traditional structured data.</li>
+<li>Data freshness has never been more important. Data scientists are eager for timely data solutions rather than the traditional T+1 compromise.</li>
+<li>Cost and performance have become even more critical, and yet there still exists a big gap between current solutions and real world use cases.
+Hence, Milvus 2.0. Milvus is a database that helps handle high dimensional data at scale. It is designed for cloud with the ability to run everywhere. If you’ve been following our RC releases, you know we’ve spent great effort on making Milvus more stable and easier to deploy and maintain.</li>
 </ol>
-<h2 id="Milvus-20-GA-now-offers" class="common-anchor-header">Milvus 2.0 GA bietet jetzt<button data-href="#Milvus-20-GA-now-offers" class="anchor-icon" translate="no">
+<h2 id="Milvus-20-GA-now-offers" class="common-anchor-header">Milvus 2.0 GA now offers<button data-href="#Milvus-20-GA-now-offers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,24 +31,24 @@ tag: News
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Löschung von Entitäten</strong></p>
-<p>Als Datenbank unterstützt Milvus jetzt das <a href="https://milvus.io/docs/v2.0.x/delete_data.md">Löschen von Entitäten nach Primärschlüssel</a> und wird später das Löschen von Entitäten nach Ausdruck unterstützen.</p>
-<p><strong>Automatischer Lastausgleich</strong></p>
-<p>Milvus unterstützt jetzt die Plugin-Lastausgleichspolitik, um die Last der einzelnen Abfrage- und Datenknoten auszugleichen. Dank der Disaggregation von Berechnung und Speicherung wird der Ausgleich in nur wenigen Minuten erledigt sein.</p>
-<p><strong>Weiterleitung</strong></p>
-<p>Sobald wachsende Segmente durch Flush versiegelt sind, ersetzen Handoff-Aufgaben wachsende Segmente durch indizierte historische Segmente, um die Suchleistung zu verbessern.</p>
-<p><strong>Datenverdichtung</strong></p>
-<p>Bei der Datenverdichtung handelt es sich um eine Hintergrundaufgabe, die kleine Segmente zu großen Segmenten zusammenführt und logisch gelöschte Daten bereinigt.</p>
-<p><strong>Unterstützung von eingebettetem etcd und lokalem Datenspeicher</strong></p>
-<p>Im Standalone-Modus von Milvus können wir die Abhängigkeit von etcd/MinIO mit nur wenigen Konfigurationen entfernen. Der lokale Datenspeicher kann auch als lokaler Cache verwendet werden, um das Laden aller Daten in den Hauptspeicher zu vermeiden.</p>
-<p><strong>Mehrsprachige SDKs</strong></p>
-<p>Zusätzlich zu <a href="https://github.com/milvus-io/pymilvus">PyMilvus</a> sind jetzt auch <a href="https://github.com/milvus-io/milvus-sdk-node">Node.js</a>, <a href="https://github.com/milvus-io/milvus-sdk-java">Java</a> und <a href="https://github.com/milvus-io/milvus-sdk-go">Go</a> SDKs einsatzbereit.</p>
+    </button></h2><p><strong>Entity deletion</strong></p>
+<p>As a database, Milvus now supports <a href="https://milvus.io/docs/v2.0.x/delete_data.md">deleting entities by primary key</a> and will support deleting entities by expression later on.</p>
+<p><strong>Automatic load balance</strong></p>
+<p>Milvus now supports plugin load balance policy to balance the load of each query node and data node. Thanks to the disaggregation of computation and storage, the balance will be done in just a couple of minutes.</p>
+<p><strong>Handoff</strong></p>
+<p>Once growing segments are sealed through flush, handoff tasks replace growing segments with indexed historical segments to improve search performance.</p>
+<p><strong>Data compaction</strong></p>
+<p>Data compaction is a background task to merge small segments into large ones and clean logical deleted data.</p>
+<p><strong>Support embedded etcd and local data storage</strong></p>
+<p>Under Milvus standalone mode, we can remove etcd/MinIO dependency with just a few configurations. Local data storage can also be used as a local cache to avoid loading all data into main memory.</p>
+<p><strong>Multi language SDKs</strong></p>
+<p>In addition to <a href="https://github.com/milvus-io/pymilvus">PyMilvus</a>, <a href="https://github.com/milvus-io/milvus-sdk-node">Node.js</a>, <a href="https://github.com/milvus-io/milvus-sdk-java">Java</a> and <a href="https://github.com/milvus-io/milvus-sdk-go">Go</a> SDKs are now ready-to-use.</p>
 <p><strong>Milvus K8s Operator</strong></p>
-<p><a href="https://milvus.io/docs/v2.0.x/install_cluster-milvusoperator.md">Milvus Operator</a> bietet eine einfache Lösung für die Bereitstellung und Verwaltung eines vollständigen Milvus-Service-Stacks, der sowohl Milvus-Komponenten als auch deren relevante Abhängigkeiten (z. B. etcd, Pulsar und MinIO) umfasst, in den <a href="https://kubernetes.io/">Ziel-Kubernetes-Clustern</a> auf skalierbare und hochverfügbare Weise.</p>
-<p><strong>Tools, die bei der Verwaltung von Milvus helfen</strong></p>
-<p>Wir haben <a href="https://zilliz.com/">Zilliz</a> für den fantastischen Beitrag von Management-Tools zu danken. Wir haben jetzt <a href="https://milvus.io/docs/v2.0.x/attu.md">Attu</a>, das uns die Interaktion mit Milvus über eine intuitive GUI ermöglicht, und <a href="https://milvus.io/docs/v2.0.x/cli_overview.md">Milvus_CLI</a>, ein Kommandozeilen-Tool für die Verwaltung von Milvus.</p>
-<p>Dank aller 212 Mitwirkenden hat die Community in den letzten 6 Monaten 6718 Commits fertiggestellt, und eine Menge Stabilitäts- und Leistungsprobleme wurden geschlossen. Wir werden unseren Stabilitäts- und Leistungs-Benchmark-Bericht bald nach der Veröffentlichung von 2.0 GA veröffentlichen.</p>
-<h2 id="Whats-next" class="common-anchor-header">Was kommt als Nächstes?<button data-href="#Whats-next" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/docs/v2.0.x/install_cluster-milvusoperator.md">Milvus Operator</a> provides an easy solution to deploy and manage a full Milvus service stack, including both Milvus components and its relevant dependencies (e.g. etcd, Pulsar and MinIO), to the target <a href="https://kubernetes.io/">Kubernetes</a> clusters in a scalable and highly available manner.</p>
+<p><strong>Tools that help to manage Milvus</strong></p>
+<p>We have <a href="https://zilliz.com/">Zilliz</a> to thank for the fantastic contribution of management tools. We now have <a href="https://milvus.io/docs/v2.0.x/attu.md">Attu</a>, which allows us to interact with Milvus via an intuitive GUI, and <a href="https://milvus.io/docs/v2.0.x/cli_overview.md">Milvus_CLI</a>, a command-line tool for managing Milvus.</p>
+<p>Thanks to all 212 contributors, the community finished 6718 commits during the last 6 months, and tons of stability and performance issues have been closed. We’ll open our stability and performance benchmark report soon after the 2.0 GA release.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next?<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,22 +63,22 @@ tag: News
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Funktionalität</strong></p>
-<p>Die Unterstützung von String-Typen wird das nächste Killer-Feature für Milvus 2.1 sein. Wir werden auch einen Time-to-Live-Mechanismus (TTL) und eine grundlegende ACL-Verwaltung einführen, um die Bedürfnisse der Benutzer besser zu erfüllen.</p>
-<p><strong>Verfügbarkeit</strong></p>
-<p>Wir arbeiten an der Überarbeitung des Abfragekoordinaten-Scheduling-Mechanismus, um mehrere Speicherreplikate für jedes Segment zu unterstützen. Mit mehreren aktiven Replikaten kann Milvus eine schnellere Ausfallsicherung und spekulative Ausführung unterstützen, um die Ausfallzeit auf wenige Sekunden zu verkürzen.</p>
-<p><strong>Leistung</strong></p>
-<p>Die Ergebnisse von Leistungsvergleichen werden demnächst auf unseren Websites veröffentlicht. Die folgenden Versionen werden voraussichtlich eine beeindruckende Leistungsverbesserung aufweisen. Unser Ziel ist die Halbierung der Suchlatenz bei kleineren Datenmengen und die Verdoppelung des Systemdurchsatzes.</p>
-<p><strong>Benutzerfreundlichkeit</strong></p>
-<p>Milvus ist so konzipiert, dass es überall läuft. Wir werden Milvus auf MacOS (sowohl M1 als auch X86) und auf ARM-Servern in den nächsten kleinen Versionen unterstützen. Wir werden auch eingebettetes PyMilvus anbieten, so dass Sie einfach <code translate="no">pip install</code> Milvus ohne komplexe Umgebungseinrichtung verwenden können.</p>
-<p><strong>Verwaltung der Gemeinschaft</strong></p>
-<p>Wir werden die Regeln für die Mitgliedschaft verfeinern und die Anforderungen und Verantwortlichkeiten der Mitwirkendenrollen klären. Ein Mentorenprogramm ist ebenfalls in der Entwicklung; jeder, der sich für Cloud-native Datenbanken, Vektorsuche und/oder Community Governance interessiert, kann sich gerne an uns wenden.</p>
-<p>Wir freuen uns sehr über die neueste Version von Milvus GA! Wie immer freuen wir uns über Ihr Feedback. Sollten Sie auf Probleme stoßen, zögern Sie nicht, uns auf <a href="https://github.com/milvus-io/milvus">GitHub</a> oder über <a href="http://milvusio.slack.com/">Slack</a> zu kontaktieren.</p>
+    </button></h2><p><strong>Functionality</strong></p>
+<p>String type support will be the next killer features for Milvus 2.1. We will also bring in time to live (TTL) mechanism and basic ACL management to better satisfy user needs.</p>
+<p><strong>Availability</strong></p>
+<p>We are working on refactoring the query coord scheduling mechanism to support multi memory replicas for each segment. With multiple active replicas, Milvus can support faster failover and speculative execution to shorten the downtime to within a couple of seconds.</p>
+<p><strong>Performance</strong></p>
+<p>Performance benchmark results will soon be offered on our websites. The following releases are anticipated to see an impressive performance improvement. Our target is to halve the search latency under smaller datasets and double the system throughput.</p>
+<p><strong>Ease of use</strong></p>
+<p>Milvus is designed to run anywhere. We will support Milvus on MacOS (Both M1 and X86) and on ARM servers in the next few small releases. We will also offer embedded PyMilvus so you can simply <code translate="no">pip install</code> Milvus without complex environment setup.</p>
+<p><strong>Community governance</strong></p>
+<p>We will refine the membership rules and clarify the requirements and responsibilities of contributor roles. A mentorship program is also under development; for anyone who is interested in cloud-native database, vector search, and/or community governance, feel free to contact us.</p>
+<p>We’re really excited about the latest Milvus GA release! As always, we are happy to hear your feedback. If you encounter any problems, don’t hesitate to contact us on <a href="https://github.com/milvus-io/milvus">GitHub</a> or via <a href="http://milvusio.slack.com/">Slack</a>.</p>
 <p><br/></p>
-<p>Mit freundlichen Grüßen,</p>
+<p>Best regards,</p>
 <p>Xiaofan Luan</p>
-<p>Milvus-Projektbetreuerin</p>
+<p>Milvus Project Maintainer</p>
 <p><br/></p>
 <blockquote>
-<p><em>Bearbeitet von <a href="https://github.com/claireyuw">Claire Yu</a>.</em></p>
+<p><em>Edited by <a href="https://github.com/claireyuw">Claire Yu</a>.</em></p>
 </blockquote>

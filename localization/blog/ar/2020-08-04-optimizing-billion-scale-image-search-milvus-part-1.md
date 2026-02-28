@@ -1,23 +1,23 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-1.md
-title: نظرة عامة
+title: Overview
 author: Rife Wang
 date: 2020-08-04T20:39:09.882Z
 desc: >-
-  دراسة حالة مع UPYUN. تعرف على كيفية تميز Milvus عن حلول قواعد البيانات
-  التقليدية ومساعدته في بناء نظام بحث عن تشابه الصور.
+  A case study with UPYUN. Learn about how Milvus stands out from traditional
+  database solutions and helps to build an image similarity search system.
 cover: assets.zilliz.com/header_23bbd76c8b.jpg
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1'
 ---
-<custom-h1>رحلة تحسين البحث عن الصور على نطاق المليار صورة (1/2)</custom-h1><p>يخدم Yupoo Picture Manager عشرات الملايين من المستخدمين ويدير عشرات المليارات من الصور. ومع ازدياد حجم معرض الصور الخاص بمستخدميه، أصبح لدى Yupoo حاجة ماسة إلى حل يمكنه تحديد موقع الصورة بسرعة. بمعنى آخر، عندما يقوم المستخدم بإدخال صورة ما، يجب أن يعثر النظام على صورته الأصلية والصور المماثلة في المعرض. يوفر تطوير خدمة البحث حسب الصورة نهجاً فعالاً لهذه المشكلة.</p>
-<p>خضعت خدمة البحث عن طريق الصورة لتطورين:</p>
+<custom-h1>The Journey to Optimizing Billion-scale Image Search (1/2)</custom-h1><p>Yupoo Picture Manager serves tens of millions of users and manages tens of billions of pictures. As its user gallery is growing larger, Yupoo has an urgent business need for a solution that can quickly locate the image. In other words, when a user inputs an image, the system should find its original image and similar images in the gallery. The development of the search by image service provides an effective approach to this problem.</p>
+<p>The search by image service has undergone two evolutions:</p>
 <ol>
-<li>بدء التحقيق التقني الأول في أوائل عام 2019 وإطلاق الجيل الأول من النظام في مارس وأبريل 2019;</li>
-<li>بدأ التحقيق في خطة الترقية في أوائل عام 2020 وبدأت الترقية الشاملة لنظام الجيل الثاني في أبريل 2020.</li>
+<li>Began the first technical investigation in early 2019 and launched the first-generation system in March and April 2019;</li>
+<li>Began the investigation of the upgrade plan in early 2020 and started the overall upgrade to the second-generation system in April 2020.</li>
 </ol>
-<p>تصف هذه المقالة اختيار التكنولوجيا والمبادئ الأساسية وراء الجيلين من نظام البحث بالصور بناءً على تجربتي الخاصة في هذا المشروع.</p>
-<h2 id="Overview" class="common-anchor-header">نظرة عامة<button data-href="#Overview" class="anchor-icon" translate="no">
+<p>This article describes the technology selection and basic principles behind the two generations of search by image system based on my own experience on this project.</p>
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -32,35 +32,42 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="What-is-an-image" class="common-anchor-header">ما هي الصورة؟</h3><p>يجب أن نعرف ما هي الصورة قبل التعامل مع الصور.</p>
-<p>الإجابة هي أن الصورة هي مجموعة من وحدات البكسل.</p>
-<p>على سبيل المثال، الجزء الموجود في المربع الأحمر في هذه الصورة هو فعليًا سلسلة من البكسلات.</p>
+    </button></h2><h3 id="What-is-an-image" class="common-anchor-header">What is an image?</h3><p>We must know what is an image before dealing with images.</p>
+<p>The answer is that an image is a collection of pixels.</p>
+<p>For example, the part in the red box on this image is virtually a series of pixels.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_what_is_an_image_021e0280cc.png" alt="1-what-is-an-image.png" class="doc-image" id="1-what-is-an-image.png" />
-   </span> <span class="img-wrapper"> <span>1-ما هو-ما هو-صورة.png</span> </span></p>
-<p>لنفترض أن الجزء الموجود في المربع الأحمر عبارة عن صورة، فإن كل مربع صغير مستقل في الصورة هو بكسل، وهو وحدة المعلومات الأساسية. بعد ذلك، يكون حجم الصورة 11 × 11 بكسل.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_what_is_an_image_021e0280cc.png" alt="1-what-is-an-image.png" class="doc-image" id="1-what-is-an-image.png" />
+    <span>1-what-is-an-image.png</span>
+  </span>
+</p>
+<p>Suppose the part in the red box is an image, then each independent small square in the image is a pixel, the basic information unit. Then, the size of the image is 11 x 11 px.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_what_is_an_image_602a91b4a0.png" alt="2-what-is-an-image.png" class="doc-image" id="2-what-is-an-image.png" />
-   </span> <span class="img-wrapper"> <span>2-ما-ما-هو-صورة.png</span> </span></p>
-<h3 id="Mathematical-representation-of-images" class="common-anchor-header">التمثيل الرياضي للصور</h3><p>يمكن تمثيل كل صورة بمصفوفة. يتوافق كل بكسل في الصورة مع عنصر في المصفوفة.</p>
-<h3 id="Binary-images" class="common-anchor-header">الصور الثنائية</h3><p>تكون وحدات البكسل في صورة ثنائية إما سوداء أو بيضاء، لذا يمكن تمثيل كل بكسل بـ 0 أو 1. على سبيل المثال، تمثيل المصفوفة لصورة ثنائية 4*4 هو</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_what_is_an_image_602a91b4a0.png" alt="2-what-is-an-image.png" class="doc-image" id="2-what-is-an-image.png" />
+    <span>2-what-is-an-image.png</span>
+  </span>
+</p>
+<h3 id="Mathematical-representation-of-images" class="common-anchor-header">Mathematical representation of images</h3><p>Each image can be represented by a matrix. Each pixel in the image corresponds to an element in the matrix.</p>
+<h3 id="Binary-images" class="common-anchor-header">Binary images</h3><p>The pixels of a binary image is either black or white, so each pixel can be represented by 0 or 1.
+For example, the matrix representation of a 4 * 4 binary image is:</p>
 <pre><code translate="no">0 1 0 1
 1 0 0 0
 1 1 1 0
 0 0 1 0
 </code></pre>
-<h3 id="RGB-images" class="common-anchor-header">صور RGB</h3><p>يمكن مزج الألوان الأساسية الثلاثة (الأحمر والأخضر والأزرق) لإنتاج أي لون. بالنسبة لصور RGB، يحتوي كل بكسل على المعلومات الأساسية لثلاث قنوات RGB. وبالمثل، إذا كانت كل قناة تستخدم رقم 8 بت (في 256 مستوى) لتمثيل مقياسها الرمادي، فإن التمثيل الرياضي للبكسل هو</p>
+<h3 id="RGB-images" class="common-anchor-header">RGB images</h3><p>The three primary colors (red, green, and blue) can be mixed to produce any color. For RGB images, each pixel has the basic information of three RGB channels. Similarly, if each channel uses an 8-bit number (in 256 levels) to represent its gray scale, then the mathematical representation of a pixel is:</p>
 <pre><code translate="no">([0 .. 255], [0 .. 255], [0 .. 255])
 </code></pre>
-<p>إذا أخذنا صورة 4*4 RGB كمثال:</p>
+<p>Taking a 4 * 4 RGB image as an example:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_4_x_4_rgb_image_136cec77ce.png" alt="3-4-x-4-rgb-image.png" class="doc-image" id="3-4-x-4-rgb-image.png" />
-   </span> <span class="img-wrapper"> <span>3-4-x-4-rgb-image.png</span> </span></p>
-<p>يتمثل جوهر معالجة الصور في معالجة مصفوفات البكسل هذه.</p>
-<h2 id="The-technical-problem-of-search-by-image" class="common-anchor-header">المشكلة التقنية للبحث بالصورة<button data-href="#The-technical-problem-of-search-by-image" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_4_x_4_rgb_image_136cec77ce.png" alt="3-4-x-4-rgb-image.png" class="doc-image" id="3-4-x-4-rgb-image.png" />
+    <span>3-4-x-4-rgb-image.png</span>
+  </span>
+</p>
+<p>The essence of image processing is to process these pixel matrices.</p>
+<h2 id="The-technical-problem-of-search-by-image" class="common-anchor-header">The technical problem of search by image<button data-href="#The-technical-problem-of-search-by-image" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,18 +82,18 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إذا كنت تبحث عن الصورة الأصلية، أي صورة بنفس وحدات البكسل بالضبط، فيمكنك مقارنة قيم MD5 الخاصة بها مباشرةً. ومع ذلك، فإن الصور التي يتم تحميلها على الإنترنت غالبًا ما تكون مضغوطة أو تحمل علامة مائية. حتى التغيير البسيط في الصورة يمكن أن يؤدي إلى نتيجة MD5 مختلفة. طالما أن هناك عدم اتساق في وحدات البكسل، فمن المستحيل العثور على الصورة الأصلية.</p>
-<p>بالنسبة لنظام البحث حسب الصورة، نريد البحث عن الصور ذات المحتوى المتشابه. إذن، نحتاج إلى حل مشكلتين أساسيتين:</p>
+    </button></h2><p>If you are looking for the original image, that is, an image with exactly the same pixels, then you can directly compare their MD5 values. However, images uploaded to the Internet are often compressed or watermarked. Even a small change in an image can create a different MD5 result. As long as there is inconsistency in pixels, it is impossible to find the original image.</p>
+<p>For a search-by-image system, we want to search for images with similar content. Then, we need to solve two basic problems:</p>
 <ul>
-<li>تمثيل أو تجريد الصورة كصيغة بيانات يمكن معالجتها بواسطة الكمبيوتر.</li>
-<li>يجب أن تكون البيانات قابلة للمقارنة لحسابها.</li>
+<li>Represent or abstract an image as a data format that can be processed by a computer.</li>
+<li>The data must be comparable for calculation.</li>
 </ul>
-<p>وبشكل أكثر تحديدًا، نحتاج إلى الميزات التالية:</p>
+<p>More specifically, we need the following features:</p>
 <ul>
-<li>استخراج سمات الصورة.</li>
-<li>حساب الميزات (حساب التشابه).</li>
+<li>Image feature extraction.</li>
+<li>Feature calculation (similarity calculation).</li>
 </ul>
-<h2 id="The-first-generation-search-by-image-system" class="common-anchor-header">الجيل الأول من نظام البحث حسب الصورة<button data-href="#The-first-generation-search-by-image-system" class="anchor-icon" translate="no">
+<h2 id="The-first-generation-search-by-image-system" class="common-anchor-header">The first-generation search-by-image system<button data-href="#The-first-generation-search-by-image-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,32 +108,34 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Feature-extraction--image-abstraction" class="common-anchor-header">استخراج الميزات - تجريد الصورة</h3><p>يستخدم الجيل الأول من نظام البحث عن طريق الصورة من الجيل الأول خوارزمية التجزئة الإدراكية أو خوارزمية pHash لاستخراج الميزة. ما هي أساسيات هذه الخوارزمية؟</p>
+    </button></h2><h3 id="Feature-extraction--image-abstraction" class="common-anchor-header">Feature extraction — image abstraction</h3><p>The first-generation search-by-image system uses Perceptual hash or pHash algorithm for feature extraction. What are the basics of this algorithm?</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_first_generation_image_search_ffd7088158.png" alt="4-first-generation-image-search.png" class="doc-image" id="4-first-generation-image-search.png" />
-   </span> <span class="img-wrapper"> <span>4-الجيل الأول-الجيل الأول-البحث عن الصور. png</span> </span></p>
-<p>كما هو موضح في الشكل أعلاه، تقوم خوارزمية pHash بإجراء سلسلة من التحويلات على الصورة للحصول على قيمة التجزئة. أثناء عملية التحويل، تقوم الخوارزمية بتجريد الصور باستمرار، وبالتالي تدفع نتائج الصور المتشابهة إلى التقارب بين الصور المتشابهة.</p>
-<h3 id="Feature-calculation--similarity-calculation" class="common-anchor-header">حساب الميزات - حساب التشابه</h3><p>كيف يمكن حساب التشابه بين قيم التجزئة لصورتين؟ الإجابة هي استخدام مسافة هامينج. كلما كانت مسافة هامينج أصغر، كلما كان محتوى الصور أكثر تشابهًا.</p>
-<p>ما هي مسافة هامينج؟ هي عدد البتات المختلفة.</p>
-<p>على سبيل المثال,</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_first_generation_image_search_ffd7088158.png" alt="4-first-generation-image-search.png" class="doc-image" id="4-first-generation-image-search.png" />
+    <span>4-first-generation-image-search.png</span>
+  </span>
+</p>
+<p>As shown in the figure above, the pHash algorithm performs a series of transformations on the image to get the hash value. During the transformation process, the algorithm continuously abstract images, thereby pushing the results of similar images closer to each other.</p>
+<h3 id="Feature-calculation--similarity-calculation" class="common-anchor-header">Feature calculation — similarity calculation</h3><p>How to calculate the similarity between the pHash values of two images? The answer is to use the Hamming distance. The smaller the Hamming distance, the more similar the images’ content.</p>
+<p>What is Hamming distance? It is the number of different bits.</p>
+<p>For example,</p>
 <pre><code translate="no">Value 1： 0 1 0 1 0
 Value 2： 0 0 0 1 1
 </code></pre>
-<p>هناك بتتان مختلفتان في القيمتين السابقتين، لذا فإن مسافة هامينج بينهما هي 2.</p>
-<p>الآن نحن نعرف مبدأ حساب التشابه. والسؤال التالي هو، كيف نحسب مسافات هامينج لبيانات بمقياس 100 مليون من 100 مليون صورة؟ باختصار، كيف نبحث عن الصور المتشابهة؟</p>
-<p>في المرحلة المبكرة من المشروع، لم أجد أداة مرضية (أو محرك حوسبة) يمكنه حساب مسافة هامينج بسرعة. لذلك غيرت خطتي.</p>
-<p>فكرتي هي أنه إذا كانت مسافة هامينج بين قيمتي pHash صغيرة، فيمكنني قطع قيم pHash ومن المحتمل أن تكون الأجزاء الصغيرة المقابلة متساوية.</p>
-<p>على سبيل المثال</p>
+<p>There are two different bits in the above two values, so the Hamming distance between them is 2.</p>
+<p>Now we know the principle of similarity calculation. The next question is, how to calculate the Hamming distances of 100-million-scale data from 100-million-scale pictures? In short, how to search for similar images?</p>
+<p>In the early stage of the project, I did not find a satisfactory tool (or a computing engine) that can quickly calculate the Hamming distance. So I changed my plan.</p>
+<p>My idea is that if the Hamming distance of two pHash values is small, then I can cut the pHash values and the corresponding small parts are likely to be equal.</p>
+<p>For example:</p>
 <pre><code translate="no">Value 1： 8 a 0 3 0 3 f 6
 Value 2： 8 a 0 3 0 3 d 8
 </code></pre>
-<p>نقسم القيمتين أعلاه إلى ثمانية أجزاء، وتكون قيم ستة أجزاء متماثلة تماماً. يمكن الاستدلال على أن المسافة بينهما متقاربة وبالتالي هاتان الصورتان متشابهتان.</p>
-<p>بعد عملية التحويل، يمكنك أن تجد أن مشكلة حساب مسافة هامينج أصبحت مشكلة تكافؤ مطابقة. إذا قسمت كل قيمة pHash إلى ثمانية أجزاء، طالما أن هناك أكثر من خمسة أجزاء لها نفس القيم بالضبط، فإن قيمتي pHash متشابهتان.</p>
-<p>وبالتالي من السهل جدًا حل مطابقة التكافؤ. يمكننا استخدام التصفية الكلاسيكية لنظام قاعدة البيانات التقليدية.</p>
-<p>وبالطبع، أستخدم المطابقة متعددة الفصول وأحدد درجة المطابقة باستخدام الحد الأدنى_should_match في ElasticSearch (لا تقدم هذه المقالة مبدأ ES، يمكنك تعلمه بنفسك).</p>
-<p>لماذا نختار ElasticSearch؟ أولاً، لأنه يوفر وظيفة البحث المذكورة أعلاه. ثانيًا، يستخدم مشروع مدير الصور في حد ذاته ES لتوفير وظيفة البحث عن النص الكامل وهو اقتصادي للغاية لاستخدام الموارد الموجودة.</p>
-<h2 id="Summary-of-the-first-generation-system" class="common-anchor-header">ملخص نظام الجيل الأول<button data-href="#Summary-of-the-first-generation-system" class="anchor-icon" translate="no">
+<p>We divide the above two values into eight segments and the values of six segments are exactly the same. It can be inferred that their Hamming distance is close and thus these two images are similar.</p>
+<p>After the transformation, you can find that the problem of calculating Hamming distance has become a problem of matching equivalence. If I divide each pHash value into eight segments, as long as there are more than five segments that have exactly the same values, then the two pHash values are similar.</p>
+<p>Thus it is very simple to solve equivalence matching. We can use the classical filtering of a traditional database system.</p>
+<p>Of course, I use the multi-term matching and specify the degree of matching using minimum_should_match in ElasticSearch (this article does not introduce the principle of ES, you can learn it by yourself).</p>
+<p>Why do we choose ElasticSearch? First, it provides the above-mentioned search function. Second, the image manager project in itself is using ES to provide a full-text search function and it is very economical to use the existing resources.</p>
+<h2 id="Summary-of-the-first-generation-system" class="common-anchor-header">Summary of the first-generation system<button data-href="#Summary-of-the-first-generation-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -141,11 +150,11 @@ Value 2： 8 a 0 3 0 3 d 8
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يختار الجيل الأول من نظام البحث بالصور من الجيل الأول حل pHash + ElasticSearch، والذي يتميز بالميزات التالية:</p>
+    </button></h2><p>The first-generation search-by-image system chooses the pHash + ElasticSearch solution, which has the following features:</p>
 <ul>
-<li>خوارزمية pHash سهلة الاستخدام ويمكنها مقاومة درجة معينة من الضغط والعلامة المائية والضوضاء.</li>
-<li>يستخدم ElasticSearch الموارد الحالية للمشروع دون إضافة تكاليف إضافية للبحث.</li>
-<li>لكن محدودية هذا النظام واضحة: خوارزمية pHash هي تمثيل مجرد للصورة بأكملها. وبمجرد تدمير تكامل الصورة، مثل إضافة حد أسود للصورة الأصلية، يصبح من المستحيل تقريبًا الحكم على التشابه بين الصورة الأصلية والصور الأخرى.</li>
+<li>The pHash algorithm is simple to use and can resist a certain degree of compression, watermark, and noise.</li>
+<li>ElasticSearch uses the existing resources of the project without adding additional costs to the search.</li>
+<li>But the limitation of this system is obvious: The pHash algorithm is an abstract representation of the entire image. Once we destroy the integrity of the image, such as adding a black border to the original image, it is almost impossible to judge the similarity between the original and the others.</li>
 </ul>
-<p>لاختراق هذه القيود، ظهر نظام البحث عن الصور من الجيل الثاني بتقنية أساسية مختلفة تمامًا.</p>
-<p>هذا المقال بقلم rifewang، مستخدم Milvus ومهندس برمجيات في UPYUN. إذا أعجبك هذا المقال، فمرحبًا بك لتلقي التحية! https://github.com/rifewang</p>
+<p>To break through such limitations, the second-generation image search system with a completely different underlying technology emerged.</p>
+<p>This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi! https://github.com/rifewang</p>

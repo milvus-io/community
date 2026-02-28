@@ -1,17 +1,17 @@
 ---
 id: 2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md
-title: Использование
+title: Usage
 author: Lichen Wang
 date: 2022-02-07T00:00:00.000Z
 desc: >-
-  Кардинальный дизайн функции удаления в Milvus 2.0, самой передовой в мире базе
-  данных векторов.
+  The cardinal design behind the deletion function in Milvus 2.0, the world's
+  most advanced vector database.
 cover: assets.zilliz.com/Delete_9f40bbfa94.png
 tag: Engineering
 ---
-<custom-h1>Как Milvus удаляет потоковые данные в распределенном кластере</custom-h1><p>Благодаря унифицированной пакетной и потоковой обработке и облачной нативной архитектуре Milvus 2.0 представляет собой более сложную задачу, чем его предшественник при разработке функции DELETE. Благодаря усовершенствованной конструкции дезагрегации хранения и вычислений и гибкому механизму публикации/подписки мы с гордостью можем заявить, что справились с этой задачей. В Milvus 2.0 вы можете удалить сущность в данной коллекции с помощью ее первичного ключа, и тогда удаленная сущность больше не будет фигурировать в результатах поиска или запроса.</p>
-<p>Обратите внимание, что операция DELETE в Milvus относится к логическому удалению, в то время как физическая очистка данных происходит во время Data Compaction. Логическое удаление не только значительно повышает производительность поиска, ограниченную скоростью ввода-вывода, но и облегчает восстановление данных. Логически удаленные данные все еще можно восстановить с помощью функции "Путешествие во времени".</p>
-<h2 id="Usage" class="common-anchor-header">Использование<button data-href="#Usage" class="anchor-icon" translate="no">
+<custom-h1>How Milvus Deletes Streaming Data in a Distributed Cluster</custom-h1><p>Featuring unified batch-and-stream processing and cloud-native architecture, Milvus 2.0 poses a greater challenge than its predecessor did during the development of the DELETE function. Thanks to its advanced storage-computation disaggregation design and the flexible publication/subscription mechanism, we are proud to announce that we made it happen. In Milvus 2.0, you can delete an entity in a given collection with its primary key so that the deleted entity will no longer be listed in the result of a search or a query.</p>
+<p>Please note that the DELETE operation in Milvus refers to logical deletion, whereas physical data cleanup occurs during the Data Compaction. Logical deletion not only greatly boosts the search performance constrained by the I/O speed, but also facilitates data recovery. Logically deleted data can still be retrieved with the help of the Time Travel function.</p>
+<h2 id="Usage" class="common-anchor-header">Usage<button data-href="#Usage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,7 +26,7 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Давайте сначала опробуем функцию DELETE в Milvus 2.0. (В следующем примере используется PyMilvus 2.0.0 на Milvus 2.0.0).</p>
+    </button></h2><p>Let’s try out the DELETE function in Milvus 2.0 first. (The following example uses PyMilvus 2.0.0 on Milvus 2.0.0).</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, utility, Collection, DataType, FieldSchema, CollectionSchema
 <span class="hljs-comment"># Connect to Milvus</span>
 connections.connect(
@@ -81,7 +81,7 @@ post_del_res = collection.query(
 )
 <span class="hljs-built_in">print</span>(post_del_res)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Implementation" class="common-anchor-header">Реализация<button data-href="#Implementation" class="anchor-icon" translate="no">
+<h2 id="Implementation" class="common-anchor-header">Implementation<button data-href="#Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,28 +96,32 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В экземпляре Milvus узел данных в основном отвечает за упаковку потоковых данных (журналов в лог-брокере) в исторические данные (снимки журналов) и их автоматическую промывку в объектное хранилище. Узел запросов выполняет поисковые запросы по полным данным, то есть как по потоковым, так и по историческим данным.</p>
-<p>Чтобы максимально использовать возможности параллельных узлов кластера по записи данных, Milvus использует стратегию шардинга на основе хеширования первичных ключей для равномерного распределения операций записи между различными рабочими узлами. Иными словами, прокси будет направлять сообщения (т. е. запросы) сущности на языке манипулирования данными (DML) на один и тот же узел данных и узел запросов. Эти сообщения публикуются через DML-канал и потребляются узлом данных и узлом запросов по отдельности для совместного предоставления услуг поиска и запросов.</p>
-<h3 id="Data-node" class="common-anchor-header">Узел данных</h3><p>Получив сообщения INSERT данных, узел данных вставляет данные в растущий сегмент, который представляет собой новый сегмент, созданный для приема потоковых данных в памяти. Если количество строк данных или продолжительность растущего сегмента достигает порогового значения, узел данных запечатывает его, чтобы предотвратить поступление данных. Затем узел данных сбрасывает запечатанный сегмент, содержащий исторические данные, в объектное хранилище. Тем временем узел данных генерирует фильтр цветения на основе первичных ключей новых данных и сбрасывает его в хранилище объектов вместе с запечатанным сегментом, сохраняя фильтр цветения как часть двоичного журнала статистики (binlog), который содержит статистическую информацию о сегменте.</p>
+    </button></h2><p>In a Milvus instance, a data node is mainly responsible for packing streaming data (logs in log broker) as historical data (log snapshots) and automatically flushing them to object storage. A query node executes search requests on full data, i.e. both streaming data and historical data.</p>
+<p>To make the most of the data writing capacity of parallel nodes in a cluster, Milvus adopts a sharding strategy based on primary key hashing to distribute writing operations evenly to different worker nodes. That is to say, proxy will route the Data Manipulation Language (DML) messages (i.e. requests) of an entity to the same data node and query node. These messages are published through the DML-Channel and consumed by the data node and query node separately to provide search and query services together.</p>
+<h3 id="Data-node" class="common-anchor-header">Data node</h3><p>Having received data INSERT messages, the data node inserts the data in a growing segment, which is a new segment created to receive streaming data in memory. If either the data row count or the duration of the growing segment reaches the threshold, the data node seals it to prevent any incoming data. The data node then flushes the sealed segment, which contains the historical data, to the object storage. Meanwhile, the data node generates a bloom filter based on the primary keys of the new data, and flushed it to the object storage together with the sealed segment, saving the bloom filter as a part of the statistics binary log (binlog), which contains the statistical information of the segment.</p>
 <blockquote>
-<p>Фильтр цветения - это вероятностная структура данных, состоящая из длинного двоичного вектора и ряда функций случайного отображения. Она может быть использована для проверки того, является ли элемент членом множества, но может возвращать ложноположительные совпадения.           -- Википедия</p>
+<p>A bloom filter is a probabilistic data structure that consists of a long binary vector and a series of random mapping functions. It can be used to test whether an element is a member of a set, but might return false positive matches.           —— Wikipedia</p>
 </blockquote>
-<p>Когда приходят сообщения DELETE, узел данных буферизирует все фильтры bloom в соответствующем шарде и сопоставляет их с первичными ключами, указанными в сообщениях, чтобы получить все сегменты (как растущие, так и закрытые), которые могут включать сущности, подлежащие удалению. Выявив соответствующие сегменты, узел данных буферизирует их в памяти, чтобы создать бинлоги Delta для записи операций удаления, а затем сбрасывает эти бинлоги вместе с сегментами обратно в хранилище объектов.</p>
+<p>When data DELETE messages come in, data node buffers all bloom filters in the corresponding shard, and matches them with the primary keys provided in the messages to retrieve all segments (from both growing and sealed ones) that possibly include the entities to delete. Having pinpointed the corresponding segments, data node buffers them in memory to generate the Delta binlogs to record the delete operations, and then flushes those binlogs together with the segments back to the object storage.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
-   </span> <span class="img-wrapper"> <span>Узел данных</span> </span></p>
-<p>Поскольку одному шарду назначается только один DML-канал, дополнительные узлы запросов, добавленные в кластер, не смогут подписаться на этот DML-канал. Чтобы гарантировать, что все узлы запросов смогут получать сообщения DELETE, узлы данных фильтруют сообщения DELETE из DML-канала и пересылают их в Delta-канал, чтобы уведомить все узлы запросов об операциях удаления.</p>
-<h3 id="Query-node" class="common-anchor-header">Узел запроса</h3><p>При загрузке коллекции из хранилища объектов узел запроса сначала получает контрольную точку каждого шарда, в которой отмечены операции DML с момента последней операции flush. Основываясь на контрольной точке, узел запроса загружает все запечатанные сегменты вместе с их дельта-бинлогом и фильтрами bloom. После загрузки всех данных узел запроса подписывается на DML-Channel, Delta-Channel и Query-Channel.</p>
-<p>Если после загрузки коллекции в память приходят сообщения INSERT с дополнительными данными, узел запроса сначала определяет растущие сегменты в соответствии с этими сообщениями и обновляет соответствующие фильтры цветения в памяти только для целей запроса. Эти фильтры цветности, предназначенные для запросов, не будут удаляться в хранилище объектов после завершения запроса.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
+    <span>Data Node</span>
+  </span>
+</p>
+<p>Since one shard is only assigned with one DML-Channel, extra query nodes added to the cluster will not be able to subscribe to the DML-Channel. To ensure that all query nodes can receive the DELETE messages, data nodes filter the DELETE messages from the DML-Channel, and forward them to Delta-Channel to notify all query nodes of the delete operations.</p>
+<h3 id="Query-node" class="common-anchor-header">Query node</h3><p>When loading a collection from object storage, the query node first obtains each shard’s checkpoint, which marks the DML operations since the last flush operation. Based on the checkpoint, the query node loads all sealed segments together with their Delta binlog and bloom filters. With all data loaded, the query node then subscribes to DML-Channel, Delta-Channel, and Query-Channel.</p>
+<p>If more data INSERT messages come after the collection is loaded to memory, query node first pinpoints the growing segments according to the messages, and updates corresponding bloom filters in memory for query purposes only. Those query-dedicated bloom filters will not be flushed to object storage after the query is finished.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
-   </span> <span class="img-wrapper"> <span>Узел запросов</span> </span></p>
-<p>Как упоминалось выше, только определенное количество узлов запросов может получать сообщения DELETE от DML-канала, а значит, только они могут выполнять запросы DELETE в растущих сегментах. Те узлы запросов, которые подписались на DML-канал, сначала фильтруют DELETE-сообщения в растущих сегментах, находят сущности, сопоставляя предоставленные первичные ключи с выделенными запросом фильтрами цветения растущих сегментов, а затем записывают операции удаления в соответствующие сегменты.</p>
-<p>Узлы запросов, которые не могут подписаться на DML-канал, могут обрабатывать запросы поиска или запросов только в сегментах с уплотнениями, поскольку они могут подписаться только на Delta-канал и получать сообщения DELETE, пересылаемые узлами данных. Собрав все сообщения DELETE в закрытых сегментах из Delta-Channel, узлы запросов находят сущности, сопоставляя предоставленные первичные ключи с фильтрами bloom в закрытых сегментах, а затем записывают операции удаления в соответствующие сегменты.</p>
-<p>В конечном итоге при поиске или запросе узлы запроса формируют набор битов на основе записей об удалении, чтобы исключить удаленные сущности, и осуществляют поиск среди оставшихся сущностей из всех сегментов, независимо от статуса сегмента. И последнее, но не менее важное: уровень согласованности влияет на видимость удаленных данных. При сильном уровне согласованности (как показано в предыдущем примере кода) удаленные сущности сразу же становятся невидимыми после удаления. При использовании уровня Bounded Consistency Level пройдет несколько секунд, прежде чем удаленные сущности станут невидимыми.</p>
-<h2 id="Whats-next" class="common-anchor-header">Что дальше?<button data-href="#Whats-next" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
+    <span>Query Node</span>
+  </span>
+</p>
+<p>As mentioned above, only a certain number of query nodes can receive DELETE messages from the DML-Channel, meaning only they can execute the DELETE requests in growing segments. For those query nodes which have subscribed to the DML-Channel, they first filter the DELETE messages in the growing segments, locate the entities by matching the provided primary keys with those query-dedicated bloom filters of the growing segments, and then record the delete operations in the corresponding segments.</p>
+<p>Query nodes that cannot subscribe to the DML-Channel are only allowed to process search or query requests on sealed segments because they can only subscribe to the Delta-Channel, and receive the DELETE messages forwarded by data nodes. Having collected all DELETE messages in the sealed segments from Delta-Channel, the query nodes locate the entities by matching the provided primary keys with the bloom filters of the sealed segments, and then record the delete operations in the corresponding segments.</p>
+<p>Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there will be several seconds of latency before the deleted entities become invisible.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next?<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,10 +136,10 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В серии блогов о новых возможностях версии 2.0 мы постараемся объяснить дизайн новых возможностей. Читайте больше в этой серии блогов!</p>
+    </button></h2><p>In the 2.0 new feature series blog, we aim to explain the design of the new features. Read more in this blog series!</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">Как Milvus удаляет потоковые данные в распределенном кластере</a></li>
-<li><a href="https://milvus.io/blog/2022-2-21-compact.md">Как уплотнить данные в Milvus?</a></li>
-<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">Как Milvus балансирует нагрузку запросов между узлами?</a></li>
-<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">Как Bitset обеспечивает универсальность поиска по векторному подобию</a></li>
+<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">How Milvus Deletes Streaming Data in a Distributed Cluster</a></li>
+<li><a href="https://milvus.io/blog/2022-2-21-compact.md">How to Compact Data in Milvus?</a></li>
+<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">How Milvus Balances Query Load across Nodes?</a></li>
+<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">How Bitset Enables the Versatility of Vector Similarity Search</a></li>
 </ul>

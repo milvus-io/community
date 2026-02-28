@@ -1,16 +1,16 @@
 ---
 id: 2019-12-24-view-metadata.md
-title: Gestión de metadatos Milvus (1) Cómo ver los metadatos
+title: Milvus Metadata Management (1) How to View Metadata
 author: Yihua Mo
 date: 2019-12-24T00:00:00.000Z
 desc: >-
-  Milvus soporta el almacenamiento de metadatos en SQLite o MySQL. Este artículo
-  explica cómo ver metadatos con SQLite y MySQL.
+  Milvus supports metadata storage in SQLite or MySQL. This post introduces how
+  to view metadata With SQLite and MySQL.
 cover: null
 tag: Engineering
 isPublish: false
 ---
-<custom-h1>Gestión de metadatos Milvus (1)</custom-h1><h2 id="How-to-View-Metadata" class="common-anchor-header">Cómo ver metadatos<button data-href="#How-to-View-Metadata" class="anchor-icon" translate="no">
+<custom-h1>Milvus Metadata Management (1)</custom-h1><h2 id="How-to-View-Metadata" class="common-anchor-header">How to View Metadata<button data-href="#How-to-View-Metadata" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,50 +26,54 @@ isPublish: false
         ></path>
       </svg>
     </button></h2><blockquote>
-<p>Autor: Yihua Mo</p>
-<p>Fecha: 2019-12-24</p>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-12-24</p>
 </blockquote>
-<p>Introdujimos alguna información sobre metadatos en <a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Gestión de datos en buscador vectorial masivo</a>. Este artículo muestra principalmente cómo ver los metadatos de Milvus.</p>
-<p>Milvus admite el almacenamiento de metadatos en SQLite o MySQL. Hay un parámetro <code translate="no">backend_url</code> (en el archivo de configuración <code translate="no">server_config.yaml</code>) mediante el cual puede especificar si desea utilizar SQLite o MySQL para gestionar sus metadatos.</p>
-<h3 id="SQLite" class="common-anchor-header">SQLite</h3><p>Si se utiliza SQLite, se generará un fichero <code translate="no">meta.sqlite</code> en el directorio de datos (definido en <code translate="no">primary_path</code> del fichero de configuración <code translate="no">server_config.yaml</code>) después de iniciar Milvus. Para ver el archivo, sólo necesita instalar un cliente SQLite.</p>
-<p>Instale SQLite3 desde la línea de comandos:</p>
+<p>We introduced some information about metadata in <a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Managing Data in Massive-Scale Vector Search Engine</a>. This article mainly shows how to view the metadata of Milvus.</p>
+<p>Milvus supports metadata storage in SQLite or MySQL. There’s a parameter <code translate="no">backend_url</code> (in the configuration file <code translate="no">server_config.yaml</code>) by which you can specify if to use SQLite or MySQL to manage your metadata.</p>
+<h3 id="SQLite" class="common-anchor-header">SQLite</h3><p>If SQLite is used, a <code translate="no">meta.sqlite</code> file will be generated in the data directory (defined in the <code translate="no">primary_path</code> of the configuration file <code translate="no">server_config.yaml</code>) after Milvus is started. To view the file, you only need to install a SQLite client.</p>
+<p>Install SQLite3 from the command line:</p>
 <pre><code translate="no" class="language-shell"><span class="hljs-built_in">sudo</span> apt-get install sqlite3
 <button class="copy-code-btn"></button></code></pre>
-<p>A continuación, entre en el directorio de datos de Milvus y abra el fichero meta utilizando SQLite3:</p>
+<p>Then enter the Milvus data directory, and open the meta file using SQLite3:</p>
 <pre><code translate="no" class="language-shell">sqlite3 meta.sqlite
 <button class="copy-code-btn"></button></code></pre>
-<p>Ahora, ya ha entrado en la línea de comandos del cliente SQLite. Sólo tiene que utilizar algunos comandos para ver lo que hay en los metadatos.</p>
-<p>Para que los resultados impresos sean más fáciles de leer para los humanos:</p>
+<p>Now, you’ve already entered the SQLite client command line. Just use a few commands to see what is in the metadata.</p>
+<p>To make the printed results typeset easier for humans to read:</p>
 <pre><code translate="no" class="language-sql">.mode column
 .header <span class="hljs-keyword">on</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Para consultar Tablas y ArchivosTabla utilizando sentencias SQL (sin distinguir mayúsculas de minúsculas):</p>
+<p>To query Tables and TableFiles using SQL statements (case-insensitive):</p>
 <pre><code translate="no" class="language-sql">SELECT \* FROM Tables
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no" class="language-sql">SELECT \* FROM TableFiles
 <button class="copy-code-btn"></button></code></pre>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/sqlite3.png" alt="sqlite3" class="doc-image" id="sqlite3" />
-   </span> <span class="img-wrapper"> <span>sqlite3</span> </span></p>
-<h3 id="MySQL" class="common-anchor-header">MySQL</h3><p>Si utiliza MySQL, debe especificar la dirección del servicio MySQL en <code translate="no">backend_url</code> del archivo de configuración <code translate="no">server_config.yaml</code>.</p>
-<p>Por ejemplo, la siguiente configuración indica que el servicio MySQL está desplegado localmente, con el puerto "3306", el nombre de usuario "root", la contraseña "123456" y el nombre de la base de datos "milvus":</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/sqlite3.png" alt="sqlite3" class="doc-image" id="sqlite3" />
+    <span>sqlite3</span>
+  </span>
+</p>
+<h3 id="MySQL" class="common-anchor-header">MySQL</h3><p>If you are using MySQL, you need to specify the address of the MySQL service in the <code translate="no">backend_url</code> of the configuration file <code translate="no">server_config.yaml</code>.</p>
+<p>For example, the following settings indicate that the MySQL service is deployed locally, with port ‘3306’, user name ‘root’, password ‘123456’, and database name ‘milvus’:</p>
 <pre><code translate="no">db_config:
 
    backend_url: mysql://root:123456@127.0.0.1:3306/milvus
 <button class="copy-code-btn"></button></code></pre>
-<p>En primer lugar, instale el cliente MySQL:</p>
+<p>First of all, install MySQL client:</p>
 <pre><code translate="no" class="language-shell">sudo apt-<span class="hljs-keyword">get</span> install <span class="hljs-literal">default</span>-mysql-client
 <button class="copy-code-btn"></button></code></pre>
-<p>Después de iniciar Milvus, se crearán dos tablas (Tables y TableFiles) en el servicio MySQL especificado por <code translate="no">backend_url</code>.</p>
-<p>Utilice el siguiente comando para conectarse al servicio MySQL:</p>
+<p>After Milvus is started, two tables (Tables and TableFiles) will be created in the MySQL service specified by <code translate="no">backend_url</code>.</p>
+<p>Use the following command to connect to MySQL service:</p>
 <pre><code translate="no" class="language-shell">mysql -h127.0.0.1 -uroot -p123456 -Dmilvus
 <button class="copy-code-btn"></button></code></pre>
-<p>Ahora, puede utilizar sentencias SQL para consultar la información de metadatos:</p>
+<p>Now, you can use SQL statements to query metadata information:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/mysql.png" alt="mysql" class="doc-image" id="mysql" />
-   </span> <span class="img-wrapper"> <span>mysql</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/mysql.png" alt="mysql" class="doc-image" id="mysql" />
+    <span>mysql</span>
+  </span>
+</p>
 <h2 id="相关博客" class="common-anchor-header">相关博客<button data-href="#相关博客" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -86,6 +90,6 @@ isPublish: false
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Gestión de datos en un motor de búsqueda vectorial a escala masiva</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d">Gestión de metadatos de Milvus (2): Campos de la tabla de metadatos</a></li>
+<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Managing Data in Massive Scale Vector Search Engine</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d">Milvus Metadata Management (2): Fields in the Metadata Table</a></li>
 </ul>

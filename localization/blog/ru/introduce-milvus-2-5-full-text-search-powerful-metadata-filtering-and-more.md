@@ -1,8 +1,8 @@
 ---
 id: introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md
 title: >-
-  Представляем Milvus 2.5: полнотекстовый поиск, более мощная фильтрация
-  метаданных и улучшения в удобстве использования!
+  Introducing Milvus 2.5: Full-Text Search, More Powerful Metadata Filtering,
+  and Usability Improvements!
 author: 'Ken Zhang, Stefan Webb, Jiang Chen'
 date: 2024-12-17T00:00:00.000Z
 cover: assets.zilliz.com/Introducing_Milvus_2_5_e4968e1cdb.png
@@ -14,7 +14,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md
 ---
-<h2 id="Overview" class="common-anchor-header">Обзор<button data-href="#Overview" class="anchor-icon" translate="no">
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,18 +29,18 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Мы рады представить вам последнюю версию Milvus, 2.5, в которой появилась новая мощная возможность: <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">полнотекстовый поиск</a>, также известный как лексический поиск или поиск по ключевым словам. Если вы новичок, то полнотекстовый поиск позволяет находить документы по определенным словам или фразам в них, подобно тому, как вы ищете в Google. Это дополняет наши существующие возможности семантического поиска, который понимает смысл вашего поиска, а не просто подбирает точные слова.</p>
-<p>Мы используем стандартную для отрасли метрику BM25 для сходства документов, и наша реализация основана на разреженных векторах, что позволяет более эффективно хранить и извлекать информацию. Для тех, кто не знаком с этим термином, разреженные векторы - это способ представления текста, в котором большинство значений равны нулю, что делает их очень эффективными для хранения и обработки - представьте себе огромную электронную таблицу, в которой только несколько ячеек содержат числа, а остальные пусты. Такой подход хорошо вписывается в философию продукта Milvus, где вектор является основным объектом поиска.</p>
-<p>Еще одним примечательным аспектом нашей реализации является возможность вставлять и запрашивать текст <em>напрямую</em>, а не заставлять пользователей вручную преобразовывать текст в разреженные векторы. Это еще на один шаг приближает Milvus к полноценной обработке неструктурированных данных.</p>
-<p>Но это только начало. С выходом версии 2.5 мы обновили <a href="https://milvus.io/docs/roadmap.md">дорожную карту продуктов Milvus</a>. В будущих итерациях Milvus мы сосредоточимся на развитии возможностей Milvus в четырех ключевых направлениях:</p>
+    </button></h2><p>We are thrilled to present the latest version of Milvus, 2.5, which introduces a powerful new capability: <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">full-text search</a>, also known as lexical or keyword search. If you are new to search, full-text search allows you to find documents by searching for specific words or phrases within them, similar to how you search in Google. This complements our existing semantic search capabilities, which understand the meaning behind your search rather than just matching exact words.</p>
+<p>We use the industry-standard BM25 metric for document similarity, and our implemention is based on sparse vectors, allowing for more efficient storage and retrieval. For those unfamiliar with the term, sparse vectors are a way to represent text where most values are zero, making them very efficient to store and process—imagine a huge spreadsheet where only a few cells contain numbers, and the rest are empty. This approach fits well into Milvus’s product philosophy where the vector is the core search entity.</p>
+<p>An additional noteworthy aspect of our implementation is the capability to insert and query text <em>directly</em> rather than having users first manually convert text into sparse vectors. This takes Milvus one step closer towards fully processing unstructured data.</p>
+<p>But this is just the beginning. With the release of 2.5, we updated the <a href="https://milvus.io/docs/roadmap.md">Milvus product roadmap</a>. In future product iterations of Milvus, our focus will be on evolving Milvus’s capabilities in four key directions:</p>
 <ul>
-<li>Оптимизированная обработка неструктурированных данных;</li>
-<li>Повышение качества и эффективности поиска;</li>
-<li>Более простое управление данными;</li>
-<li>Снижение затрат за счет совершенствования алгоритмов и дизайна.</li>
+<li>Streamlined unstructured data processing;</li>
+<li>Better search quality and efficiency;</li>
+<li>Easier data management;</li>
+<li>Lowering costs through algorithmic and design advances</li>
 </ul>
-<p>Наша цель - создать инфраструктуру данных, способную как эффективно хранить, так и эффективно извлекать информацию в эпоху ИИ.</p>
-<h2 id="Full-text-Search-via-Sparse-BM25" class="common-anchor-header">Полнотекстовый поиск с помощью Sparse-BM25<button data-href="#Full-text-Search-via-Sparse-BM25" class="anchor-icon" translate="no">
+<p>Our aim is to build data infrastructure that can both efficiently store and effectively retrieve information in the AI era.</p>
+<h2 id="Full-text-Search-via-Sparse-BM25" class="common-anchor-header">Full-text Search via Sparse-BM25<button data-href="#Full-text-Search-via-Sparse-BM25" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,27 +55,27 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Несмотря на то что семантический поиск, как правило, лучше понимает контекст и намерения, когда пользователю нужно найти конкретные имена существительные, серийные номера или полностью совпадающую фразу, полнотекстовый поиск с подбором ключевых слов часто дает более точные результаты.</p>
-<p>Проиллюстрируем это на примере:</p>
+    </button></h2><p>Although semantic search typically has better contexual awareness and intent understanding, when a user needs to search for specific proper nouns, serial numbers, or a completely-matching phrase, full-text retrieval with keyword matching often produces more accurate results.</p>
+<p>To illustrate this with an example:</p>
 <ul>
-<li>Семантический поиск лучше, когда вы задаете вопрос: "Найти документы о решениях в области возобновляемых источников энергии".</li>
-<li>Полнотекстовый поиск лучше, когда вам нужно: &quot;Найти документы, в которых упоминается <em>Tesla Model 3 2024</em>&quot;.</li>
+<li>Semantic search excels when you ask: “Find documents about renewable energy solutions”</li>
+<li>Full-text search is better when you need: &quot;Find documents mentioning <em>Tesla Model 3 2024</em>&quot;</li>
 </ul>
-<p>В нашей предыдущей версии (Milvus 2.4) пользователям приходилось предварительно обрабатывать текст с помощью отдельного инструмента (модуля BM25EmbeddingFunction к PyMilvus) на собственной машине, прежде чем они могли искать его. Этот подход имел несколько ограничений: он не мог хорошо обрабатывать растущие наборы данных, требовал дополнительных шагов по настройке и делал весь процесс сложнее, чем нужно. Для технически подкованных людей основными ограничениями были: возможность работы только на одной машине; невозможность обновления словарного запаса и другой статистики корпуса, используемой для оценки BM25, по мере изменения корпуса; преобразование текста в векторы на стороне клиента - менее интуитивная работа с текстом напрямую.</p>
-<p>Milvus 2.5 все упрощает. Теперь вы можете работать с текстом напрямую:</p>
+<p>In our previous version (Milvus 2.4), users had to pre-process their text using a separate tool (the BM25EmbeddingFunction module to the PyMilvus) on their own machines before they could search it This approach had several limitations: it couldn’t handle growing datasets well, required extra setup steps, and made the whole process more complicated than necessary. For the technically minded, the key limitations were that it could only work on a single machine; the vocabulary and other corpus statistics used for BM25 scoring couldn’t be updated as the corpus changed; and converting text to vectors on the client side is less intuitive working withtext directly.</p>
+<p>Milvus 2.5 simplifies everything. Now you can work with your text directly:</p>
 <ul>
-<li>Хранить исходные текстовые документы в том виде, в каком они есть.</li>
-<li>Поиск с помощью запросов на естественном языке</li>
-<li>Получайте результаты в удобочитаемом виде.</li>
+<li>Store your original text documents as they are</li>
+<li>Search using natural language queries</li>
+<li>Get results back in readable form</li>
 </ul>
-<p>За кулисами Milvus автоматически обрабатывает все сложные векторные преобразования, упрощая работу с текстовыми данными. Это то, что мы называем нашим подходом "Doc in, Doc out" - вы работаете с читаемым текстом, а мы делаем все остальное.</p>
-<h3 id="Techical-Implementation" class="common-anchor-header">Техническая реализация</h3><p>Для тех, кто интересуется техническими деталями, Milvus 2.5 добавляет возможность полнотекстового поиска через встроенную реализацию Sparse-BM25, включая:</p>
+<p>Behind the scenes, Milvus handles all the complex vector conversions automatically making it easier to work with text data. This is what we call our “Doc in, Doc out” approach—you work with readable text, and we handle the rest.</p>
+<h3 id="Techical-Implementation" class="common-anchor-header">Techical Implementation</h3><p>For those interested in the technical details, Milvus 2.5 adds the full-text search capability through its built-in Sparse-BM25 implementation, including:</p>
 <ul>
-<li><strong>Токенизатор, построенный на tantivy</strong>: Milvus теперь интегрируется с процветающей экосистемой tantivy.</li>
-<li><strong>Возможность вводить и получать необработанные документы</strong>: Поддержка прямого ввода и запроса текстовых данных</li>
-<li><strong>Скоринг релевантности BM25</strong>: Интернализация скоринга BM25, реализованного на основе разреженного вектора</li>
+<li><strong>A Tokenizer built on tantivy</strong>: Milvus now integrates with the thriving tantivy ecosystem</li>
+<li><strong>Capability to ingest and retrieve raw documents</strong>: Support for direct ingestion and query of text data</li>
+<li><strong>BM25 relevance scoring</strong>: Internalize BM25 scoring, implemented based on sparse vector</li>
 </ul>
-<p>Мы решили работать с хорошо развитой экосистемой tantivy и построить текстовый токенизатор Milvus на базе tantivy. В будущем Milvus будет поддерживать больше токенизаторов и раскрывать процесс токенизации, чтобы помочь пользователям лучше понять качество поиска. Мы также будем изучать токенизаторы на основе глубокого обучения и стратегии стеммеров для дальнейшей оптимизации производительности полнотекстового поиска. Ниже приведен пример кода для использования и настройки токенизатора:</p>
+<p>We chose to work with the well-developed tantivy ecosystem and build the Milvus text tokenizer on tantivy. In the future, Milvus will support more tokenizers and expose the tokenization process to help users better understand the retrieval quality. We will also explore deep learning-based tokenizers and stemmer strategies to further optimize the performance of full-text search. Below is sample code for using and configuring the tokenizer:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Tokenizer configuration</span>
 schema.add_field(
     field_name=<span class="hljs-string">&#x27;text&#x27;</span>,
@@ -86,7 +86,7 @@ schema.add_field(
     enable_match=<span class="hljs-literal">True</span>, <span class="hljs-comment"># Build an inverted index for Text_Match</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>После настройки токенизатора в схеме коллекции пользователи могут зарегистрировать текст в функции bm25 с помощью метода add_function. Это будет выполняться внутри сервера Milvus. Все последующие потоки данных, такие как добавления, удаления, модификации и запросы, могут быть завершены путем работы с необработанной текстовой строкой, а не с векторным представлением. Ниже приведен пример кода для получения текста и проведения полнотекстового поиска с помощью нового API:</p>
+<p>After configuring the tokenizer in the collection schema, users can register the text to bm25 function via add_function method. This will run internally in the Milvus server. All subsequent data flows such as additions, deletions, modifications, and queries can be completed by operating on the raw text string, as opposed to the vector representation. See below code example for how to ingest text and conduct full-text search with the new API:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Define the mapping relationship between raw text data and vectors on the schema</span>
 bm25_function = Function(
     name=<span class="hljs-string">&quot;text_bm25_emb&quot;</span>,
@@ -111,13 +111,13 @@ MilvusClient.search(
     limit=<span class="hljs-number">3</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Мы приняли реализацию скоринга релевантности BM25, которая представляет запросы и документы в виде разреженных векторов, под названием <strong>Sparse-BM25</strong>. Это открывает множество оптимизаций, основанных на разреженном векторе, таких как:</p>
-<p>Milvus достигает гибридных возможностей поиска благодаря своей передовой <strong>реализации Sparse-BM25</strong>, которая интегрирует полнотекстовый поиск в архитектуру векторной базы данных. Представляя частоты терминов в виде разреженных векторов вместо традиционных инвертированных индексов, Sparse-BM25 позволяет использовать такие передовые оптимизации, как <strong>индексация графов</strong>, <strong>квантование по произведению (PQ)</strong> и <strong>скалярное квантование (SQ)</strong>. Эти оптимизации минимизируют использование памяти и ускоряют производительность поиска. Подобно подходу с инвертированным индексом, Milvus поддерживает прием исходного текста и внутреннюю генерацию разреженных векторов. Благодаря этому он может работать с любым токенизатором и находить любые слова в динамически меняющемся корпусе.</p>
-<p>Кроме того, эвристическая обрезка отбрасывает малозначимые разреженные векторы, что еще больше повышает эффективность без ущерба для точности. В отличие от предыдущего подхода, использующего разреженный вектор, он может адаптироваться к растущему корпусу, а не к точности оценки BM25.</p>
+<p>We have adopted an implementation of BM25 relevance scoring that represents queries and documents as sparse vectors, called <strong>Sparse-BM25</strong>. This unlocks many optimizations based on sparse vector, such as:</p>
+<p>Milvus achieves hybrid search capabilities through its cutting-edge <strong>Sparse-BM25 implementation</strong>, which integrates full-text search into the vector database architecture. By representing term frequencies as sparse vectors instead of traditional inverted indexes, Sparse-BM25 enables advanced optimizations, such as <strong>graph indexing</strong>, <strong>product quantization (PQ)</strong>, and <strong>scalar quantization (SQ)</strong>. These optimizations minimize memory usage and accelerate search performance. Similar to inverted index approach, Milvus supports taking raw text as input and generating sparse vectors internally. This make it able to work with any tokenizer and grasp any word shown in the dynamicly changing corpus.</p>
+<p>Additionally, heuristic-based pruning discards low-value sparse vectors, further enhancing efficiency without compromising accuracy. Unlike previous approach using sparse vector, it can adapt to a growing corpus, not the accuracy of BM25 scoring.</p>
 <ol>
-<li>Построение графовых индексов на разреженном векторе, который работает лучше, чем инвертированный индекс, на запросах с длинным текстом, поскольку инвертированному индексу требуется больше шагов для завершения сопоставления лексем в запросе;</li>
-<li>Использование методов аппроксимации для ускорения поиска с незначительным влиянием на качество поиска, таких как квантование вектора и обрезка на основе эвристики;</li>
-<li>Унификация интерфейса и модели данных для выполнения семантического и полнотекстового поиска, что повышает удобство работы пользователя.</li>
+<li>Building graph indexes on the sparse vector, which performs better than inverted index on queries with long text as inverted index needs more steps to finish matching the tokens in the query;</li>
+<li>Leveraging approximation techniques to speed up search with only minor impact on retrieval quality, such as vector quantization and heuristic based pruning;</li>
+<li>Unifying the interface and data model for performing semantic search and full-text search, thus enhancing the user experience.</li>
 </ol>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Creating an index on the sparse column</span>
 index_params.add_index(
@@ -131,8 +131,8 @@ search_params = {
     <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;drop_ratio_search&#x27;</span>: <span class="hljs-number">0.6</span>}, <span class="hljs-comment"># WAND search parameter configuration can speed up search</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>В итоге Milvus 2.5 расширил возможности поиска за пределы семантического поиска, внедрив полнотекстовый поиск, что облегчает пользователям создание высококачественных приложений ИИ. Это лишь первые шаги в пространстве поиска Sparse-BM25, и мы ожидаем, что в будущем будут предприняты дополнительные меры по оптимизации.</p>
-<h2 id="Text-Matching-Search-Filters" class="common-anchor-header">Фильтры поиска по совпадению текста<button data-href="#Text-Matching-Search-Filters" class="anchor-icon" translate="no">
+<p>In summary, Milvus 2.5 has expanded its search capability beyond semantic search by introducing full-text retrieval, making it easier for users to build high quality AI applications. These are just initial steps in the space of Sparse-BM25 search and we anticipate that there will be further optimization measures to try in the future.</p>
+<h2 id="Text-Matching-Search-Filters" class="common-anchor-header">Text Matching Search Filters<button data-href="#Text-Matching-Search-Filters" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,14 +147,14 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Вторая функция текстового поиска, выпущенная в Milvus 2.5, - это <strong>Text Match</strong>, которая позволяет пользователю отфильтровать поиск по записям, содержащим определенную текстовую строку. Эта функция также построена на основе токенизации и активируется с помощью <code translate="no">enable_match=True</code>.</p>
-<p>Стоит отметить, что при использовании Text Match обработка текста запроса основана на логике ИЛИ после токенизации. Например, в приведенном ниже примере в результате будут возвращены все документы (по полю 'text'), содержащие либо 'vector', либо 'database'.</p>
+    </button></h2><p>A second text search feature released with Milvus 2.5 is <strong>Text Match</strong>, which allows the user to filter the search to entries containing a specific text string. This feature is also built on the basis of tokenization and is activated with <code translate="no">enable_match=True</code>.</p>
+<p>It is worth noting that with Text Match, the processing of the query text is based on the logic of OR after tokenization. For example, in the example below, the result will return all documents (using the ‘text’ field) that contain either ‘vector’ or 'database’.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-built_in">filter</span> = <span class="hljs-string">&quot;TEXT_MATCH(text, &#x27;vector database&#x27;)&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Если в вашем сценарии требуется найти и 'vector', и 'database', то вам нужно написать два отдельных текстовых совпадения и наложить на них AND, чтобы достичь цели.</p>
+<p>If your scenario requires matching both ‘vector’ and 'database’, then you need to write two separate Text Matches and overlay them with AND to achieve your goal.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-built_in">filter</span> = <span class="hljs-string">&quot;TEXT_MATCH(text, &#x27;vector&#x27;) and TEXT_MATCH(text, &#x27;database&#x27;)&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Significant-Enhancement-in-Scalar-Filtering-Performance" class="common-anchor-header">Значительное повышение производительности скалярной фильтрации<button data-href="#Significant-Enhancement-in-Scalar-Filtering-Performance" class="anchor-icon" translate="no">
+<h2 id="Significant-Enhancement-in-Scalar-Filtering-Performance" class="common-anchor-header">Significant Enhancement in Scalar Filtering Performance<button data-href="#Significant-Enhancement-in-Scalar-Filtering-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -169,11 +169,11 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Наш акцент на производительности скалярной фильтрации связан с тем, что мы обнаружили, что сочетание векторного поиска и фильтрации метаданных может значительно повысить производительность и точность запросов в различных сценариях. Эти сценарии варьируются от приложений для поиска изображений, таких как идентификация углов в автономном вождении, до сложных сценариев RAG в корпоративных базах знаний. Таким образом, эта технология очень удобна для корпоративных пользователей и может быть использована в сценариях применения крупномасштабных данных.</p>
-<p>На практике на производительность может влиять множество факторов, таких как объем фильтруемых данных, их организация и способ поиска. Для решения этой проблемы в Milvus 2.5 представлены три новых типа индексов - индекс битовой карты, инвертированный индекс массива и инвертированный индекс после токенизации текстового поля Varchar. Эти новые индексы могут значительно повысить производительность в реальных сценариях использования.</p>
-<p>В частности:</p>
+    </button></h2><p>Our emphasis on scalar filtering performance originates from our discovery that the combination of vector retrieval and metadata filtering can greatly improve query performance and accuracy in various scenarios. These scenarios range from image search applications such as corner case identification in autonomous driving to complex RAG scenarios in enterprise knowledge bases. Thus, it is highly suitable for enterprise users to implement in large-scale data application scenarios.</p>
+<p>In practice, many factors like how much data you’re filtering, how your data is organized, and how you’re searching can affect performance. To address this, Milvus 2.5 introduces three new types of indexes—BitMap Index, Array Inverted Index, and the Inverted Index after tokenizing the Varchar text field. These new indexes can significantly improve performance in real-world use cases.</p>
+<p>Specifically:</p>
 <ol>
-<li><strong>BitMap Index</strong> может использоваться для ускорения фильтрации по тегам (общие операторы включают in, array_contains и т. д.) и подходит для сценариев с меньшим количеством данных категории полей (кардинальность данных). Принцип заключается в том, чтобы определить, имеет ли строка данных определенное значение в столбце, причем 1 означает "да", а 0 - "нет", а затем сохранить список BitMap. На следующей диаграмме показано сравнение тестов производительности, проведенное нами на основе бизнес-сценария заказчика. В этом сценарии объем данных составляет 500 миллионов, категория данных - 20, различные значения имеют разные пропорции распределения (1 %, 5 %, 10 %, 50 %), и производительность при различных объемах фильтрации также различается. При 50-процентной фильтрации мы можем добиться 6,8-кратного прироста производительности за счет BitMap Index. Стоит отметить, что при увеличении кардинальности, по сравнению с BitMap Index, Inverted Index демонстрирует более сбалансированную производительность.</li>
+<li><strong>BitMap Index</strong> can be used to accelerate tag filtering (common operators include in, array_contains, etc.), and is suitable for scenarios with fewer field category data (data cardinality). The principle is to determine whether a row of data has a certain value on a column, with 1 for yes and 0 for no, and then maintain a BitMap list. The following chart shows the performance test comparison we conducted based on a customer’s business scenario. In this scenario, the data volume is 500 million, the data category is 20, different values have different distribution proportions (1%, 5%, 10%, 50%), and the performance under different filtering amounts also varies. With 50% filtering, we can achieve a 6.8-fold performance gain through BitMap Index. It’s worth noting that as cardinality increases, compared to BitMap Index, Inverted Index will show more balanced performance.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -182,7 +182,7 @@ search_params = {
   </span>
 </p>
 <ol start="2">
-<li><strong>Text Match</strong> основан на инвертированном индексе после токенизации текстового поля. Его производительность значительно превосходит функцию Wildcard Match (т. е. like + %), которую мы представили в 2.4. Согласно результатам наших внутренних тестов, преимущества Text Match очень очевидны, особенно в сценариях одновременных запросов, где она позволяет добиться 400-кратного прироста QPS.</li>
+<li><strong>Text Match</strong> is based on the Inverted Index after the text field is tokenized. Its performance far exceeds the Wildcard Match (i.e., like + %) function we provided in 2.4. According to our internal test results, the advantages of Text Match are very clear, especially in concurrent query scenarios, where it can achieve up to a 400-fold QPS increase.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -190,8 +190,8 @@ search_params = {
     <span></span>
   </span>
 </p>
-<p>Что касается обработки данных JSON, то в последующих версиях 2.5.x мы планируем внедрить построение инвертированных индексов для заданных пользователем ключей и запись информации о местоположении по умолчанию для всех ключей для ускорения парсинга. Мы ожидаем, что оба этих направления значительно повысят производительность запросов в JSON и Dynamic Field. Мы планируем представить больше информации в будущих заметках о выпуске и технических блогах, так что следите за новостями!</p>
-<h2 id="New-Management-Interface" class="common-anchor-header">Новый интерфейс управления<button data-href="#New-Management-Interface" class="anchor-icon" translate="no">
+<p>In terms of JSON data processing, we plan to introduce in subsequent versions of 2.5.x the building of inverted indices for user-specified keys and default location information recording for all keys to speed up parsing. We expect both of these areas to significantly enhance the query performance of JSON and Dynamic Field. We plan to showcase more information in future release notes and technical blogs, so stay tuned!</p>
+<h2 id="New-Management-Interface" class="common-anchor-header">New Management Interface<button data-href="#New-Management-Interface" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -206,16 +206,16 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Управление базой данных не должно требовать степени по информатике, но мы знаем, что администраторам баз данных нужны мощные инструменты. Именно поэтому мы представили <strong>Cluster Management WebUI</strong>- новый веб-интерфейс, доступный по адресу вашего кластера через порт 9091/webui. Это средство наблюдения обеспечивает:</p>
+    </button></h2><p>Managing a database shouldn’t require a computer science degree, but we know database administrators need powerful tools. That’s why we’ve introduced the <strong>Cluster Management WebUI</strong>, a new web-based interface accessible at your cluster’s address on port 9091/webui. This observability tool provides:</p>
 <ul>
-<li>панели мониторинга в реальном времени, отображающие метрики всего кластера</li>
-<li>Подробную аналитику памяти и производительности для каждого узла</li>
-<li>Информация о сегментах и отслеживание медленных запросов</li>
-<li>Индикаторы состояния системы и статус узла</li>
-<li>Простые в использовании средства устранения неисправностей для решения сложных системных проблем</li>
+<li>Real-time monitoring dashboards showing cluster-wide metrics</li>
+<li>Detailed memory and performance analytics per node</li>
+<li>Segment information and slow query tracking</li>
+<li>System health indicators and node status</li>
+<li>Easy-to-use troubleshooting tools for complex system issues</li>
 </ul>
-<p>Пока этот интерфейс находится в стадии бета-версии, но мы активно развиваем его на основе отзывов администраторов баз данных. Будущие обновления будут включать диагностику с помощью искусственного интеллекта, более интерактивные функции управления и расширенные возможности наблюдения за кластером.</p>
-<h2 id="Documentation-and-Developer-Experience" class="common-anchor-header">Документация и опыт разработчиков<button data-href="#Documentation-and-Developer-Experience" class="anchor-icon" translate="no">
+<p>While this interface is still in beta, we’re actively developing it based on user feedback from database administrators. Future updates will include AI-assisted diagnostics, more interactive management features, and enhanced cluster observability capabilities.</p>
+<h2 id="Documentation-and-Developer-Experience" class="common-anchor-header">Documentation and Developer Experience<button data-href="#Documentation-and-Developer-Experience" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,18 +230,18 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Мы полностью переработали нашу <strong>документацию</strong> и <strong>SDK/API</strong>, чтобы сделать Milvus более доступным, сохранив при этом глубину для опытных пользователей. Улучшения включают в себя:</p>
+    </button></h2><p>We’ve completely revamped our <strong>documentation</strong> and <strong>SDK/API</strong> experience to make Milvus more accessible while maintaining depth for experienced users. The improvements include:</p>
 <ul>
-<li>Реорганизованная система документации с более четким переходом от базовых к продвинутым концепциям</li>
-<li>Интерактивные учебные пособия и реальные примеры, демонстрирующие практическую реализацию</li>
-<li>Исчерпывающие ссылки на API с практическими примерами кода</li>
-<li>Более удобный дизайн SDK, упрощающий выполнение общих операций</li>
-<li>Иллюстрированные руководства, облегчающие понимание сложных концепций</li>
-<li>Помощник по работе с документацией на основе искусственного интеллекта (ASK AI) для быстрого получения ответов.</li>
+<li>A restructured documentation system with clearer progression from basic to advanced concepts</li>
+<li>Interactive tutorials and real-world examples that showcase practical implementations</li>
+<li>Comprehensive API references with practical code samples</li>
+<li>A more user-friendly SDK design that simplifies common operations</li>
+<li>Illustrated guides that make complex concepts easier to understand</li>
+<li>An AI-powered documentation assistant (ASK AI) for quick answers</li>
 </ul>
-<p>Обновленный SDK/API нацелен на улучшение работы разработчиков благодаря более интуитивно понятному интерфейсу и лучшей интеграции с документацией. Мы уверены, что вы заметите эти улучшения при работе с серией 2.5.x.</p>
-<p>Однако мы знаем, что разработка документации и SDK - это непрерывный процесс. Мы продолжим оптимизировать структуру контента и дизайн SDK на основе отзывов сообщества. Присоединяйтесь к нашему каналу Discord, чтобы поделиться своими предложениями и помочь нам в дальнейшем совершенствовании.</p>
-<h2 id="Summary" class="common-anchor-header"><strong>Резюме</strong><button data-href="#Summary" class="anchor-icon" translate="no">
+<p>The updated SDK/API focuses on improving developer experience through more intuitive interfaces and better integration with the documentation. We believe you’ll notice these improvements when working with the 2.5.x series.</p>
+<p>However, we know documentation and SDK development is an ongoing process. We’ll continue optimizing both the content structure and SDK design based on community feedback. Join our Discord channel to share your suggestions and help us improve further.</p>
+<h2 id="Summary" class="common-anchor-header"><strong>Summary</strong><button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -256,4 +256,4 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.5 содержит 13 новых функций и несколько оптимизаций на системном уровне, внесенных не только Zilliz, но и всем сообществом разработчиков. В этом посте мы затронули лишь некоторые из них и рекомендуем вам посетить наш <a href="https://milvus.io/docs/release_notes.md">релиз</a> и <a href="https://milvus.io/docs">официальные документы</a> для получения более подробной информации!</p>
+    </button></h2><p>Milvus 2.5 contains 13 new features and several system-level optimizations, contributed not just by Zilliz but the open-source community. We have only touched on a few of them in this post and encourage you to visit our <a href="https://milvus.io/docs/release_notes.md">release note</a> and <a href="https://milvus.io/docs">official documents</a> for more information!</p>

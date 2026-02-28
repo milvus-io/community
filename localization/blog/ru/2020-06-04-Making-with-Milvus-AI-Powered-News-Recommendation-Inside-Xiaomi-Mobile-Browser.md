@@ -1,73 +1,83 @@
 ---
 id: >-
   Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser.md
-title: Создание с помощью ИИ Milvus рекомендаций новостей в мобильном браузере Xiaomi
+title: >-
+  Making with Milvus AI-Powered News Recommendation Inside Xiaomi's Mobile
+  Browser
 author: milvus
 date: 2020-06-04T02:30:34.750Z
 desc: >-
-  Узнайте, как Xiaomi использовала ИИ и Milvus для создания интеллектуальной
-  системы рекомендаций новостей, способной находить наиболее релевантный контент
-  для пользователей своего мобильного веб-браузера.
+  Discover how Xiaomi leveraged AI and Milvus to build an intelligent news
+  recommendation system capable of finding the most relevant content for users
+  of its mobile web browser.
 cover: assets.zilliz.com/blog_Sohu_News_dec53d0814.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser
 ---
-<custom-h1>Создание с Milvus: рекомендация новостей с помощью искусственного интеллекта в мобильном браузере Xiaomi</custom-h1><p>От лент социальных сетей до рекомендаций плейлистов на Spotify - <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">искусственный интеллект</a> уже играет важную роль в контенте, который мы видим и с которым взаимодействуем каждый день. Стремясь выделить свой мобильный веб-браузер, транснациональный производитель электроники Xiaomi создал механизм рекомендаций новостей на основе искусственного интеллекта. В качестве основной платформы управления данными в приложении была использована <a href="https://milvus.io/">Milvus</a>- векторная база данных с открытым исходным кодом, созданная специально для поиска сходства и искусственного интеллекта. В этой статье рассказывается о том, как Xiaomi создала новостной рекомендательный механизм на основе ИИ, а также о том, как использовались Milvus и другие алгоритмы ИИ.</p>
+<custom-h1>Making with Milvus: AI-Powered News Recommendation Inside Xiaomi’s Mobile Browser</custom-h1><p>From social media feeds to playlist recommendations on Spotify, <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">artificial intelligence</a> already plays a major role in the content we see and interact with each day. In an effort to differentiate their mobile web browser, multinational electronics manufacturer Xiaomi built an AI-powered news recommendation engine. <a href="https://milvus.io/">Milvus</a>, an open-source vector database built specifically for similarity search and artificial intelligence, was used as the application’s core data management platform. This article explains how Xiaomi built its AI-powered news recommendation engine, and how Milvus and other AI algorithms were used.</p>
 <p><br/></p>
-<h3 id="Using-AI-to-suggest-personalized-content-and-cut-through-news-noise" class="common-anchor-header">Использование ИИ для предложения персонализированного контента и преодоления новостного шума</h3><p>Только газета New York Times ежедневно публикует более <a href="https://www.theatlantic.com/technology/archive/2016/05/how-many-stories-do-newspapers-publish-per-day/483845/">230</a> материалов, и из-за огромного количества статей отдельные люди не могут получить полное представление обо всех новостях. Чтобы просеять большие объемы контента и порекомендовать наиболее актуальные или интересные материалы, мы все чаще обращаемся к искусственному интеллекту. Хотя рекомендации по-прежнему далеки от совершенства, машинное обучение становится все более необходимым для того, чтобы пробиться сквозь постоянный поток новой информации, льющейся из нашего все более сложного и взаимосвязанного мира.</p>
-<p>Компания Xiaomi производит и инвестирует в смартфоны, мобильные приложения, ноутбуки, бытовую технику и многие другие продукты. Стремясь выделить мобильный браузер, который предустанавливается на многие из 40 с лишним миллионов смартфонов, продаваемых компанией каждый квартал, Xiaomi встроила в него систему рекомендаций новостей. Когда пользователи запускают мобильный браузер Xiaomi, искусственный интеллект рекомендует им похожий контент, основываясь на истории поиска, интересах пользователя и многом другом. Milvus - это база данных векторного поиска по сходству с открытым исходным кодом, используемая для ускорения поиска связанных статей.</p>
+<h3 id="Using-AI-to-suggest-personalized-content-and-cut-through-news-noise" class="common-anchor-header">Using AI to suggest personalized content and cut through news noise</h3><p>With the New York Times alone publishing over <a href="https://www.theatlantic.com/technology/archive/2016/05/how-many-stories-do-newspapers-publish-per-day/483845/">230 pieces</a> of content each day, the sheer volume of articles produced makes it impossible for individuals to get a comprehensive view of all the news. To help sift through large volumes of content, and recommend the most relevant or interesting pieces, we increasingly turn to AI. Although recommendations remain far from perfect, machine learning is increasingly necessary to cut through the constant stream of new information pouring out of our increasingly complex and interconnected world.</p>
+<p>Xiaomi makes and invests in smartphones, mobile apps, laptops, home appliances, and many more products. In an effort to differentiate a mobile browser that comes preinstalled on many of 40+ million smartphones the company sells each quarter, Xiaomi built a news recommendation system into it. When users launch Xiaomi’s mobile browser, artificial intelligence is used to recommend similar content based on user search history, interests, and more. Milvus is an open-source vector similarity search database used to accelerate retrieval of related articles.</p>
 <p><br/></p>
-<h3 id="How-does-AI-powered-content-recommendation-work" class="common-anchor-header">Как работает рекомендация контента на основе ИИ?</h3><p>По своей сути рекомендация новостей (или любой другой тип системы рекомендации контента) предполагает сравнение входных данных с массивной базой данных для поиска похожей информации. Успешная рекомендация контента предполагает баланс между актуальностью и своевременностью, а также эффективный учет огромных объемов новых данных - часто в режиме реального времени.</p>
-<p>Для работы с огромными массивами данных рекомендательные системы обычно делятся на два этапа:</p>
+<h3 id="How-does-AI-powered-content-recommendation-work" class="common-anchor-header">How does AI-powered content recommendation work?</h3><p>At its core, news recommendation (or any other type of content recommendation system) involves comparing input data to a massive database to find similar information. Successful content recommendation involves balancing relevance with timeliness, and efficiently incorporating huge volumes of new data—often in real time.</p>
+<p>To accommodate massive datasets, recommendation systems are typically divided into two stages:</p>
 <ol>
-<li><strong>Поиск</strong>: Во время поиска контент сужается из обширной библиотеки на основе интересов и поведения пользователя. В мобильном браузере Xiaomi тысячи фрагментов контента выбираются из огромного набора данных, содержащего миллионы новостных статей.</li>
-<li><strong>Сортировка</strong>: Далее контент, отобранный в процессе поиска, сортируется по определенным показателям, прежде чем быть предложенным пользователю. По мере того как пользователи просматривают рекомендованный контент, система в режиме реального времени адаптируется, чтобы предоставлять более релевантные предложения.</li>
+<li><strong>Retrieval</strong>: During retrieval, content is narrowed down from the broader library based on user interests and behavior. In Xiaomi’s mobile browser, thousands of pieces of content are selected from a massive dataset that contains millions of news articles.</li>
+<li><strong>Sorting</strong>: Next, content selected during retrieval is sorted according to certain indicators before being pushed to the user. As users engage with recommended content, the system adapts in real time to provide more relevant suggestions.</li>
 </ol>
-<p>Рекомендации новостного контента должны формироваться в режиме реального времени на основе поведения пользователей и недавно опубликованного контента. Кроме того, предлагаемый контент должен максимально соответствовать интересам пользователя и его поисковым запросам.</p>
+<p>News content recommendations need to be made in real-time based on user behavior and recently published content. Additionally, suggested content must match user interests and search intent as much as possible.</p>
 <p><br/></p>
-<h3 id="Milvus-+-BERT--intelligent-content-suggestions" class="common-anchor-header">Milvus + BERT = интеллектуальные предложения контента</h3><p>Milvus - это поисковая база данных векторного сходства с открытым исходным кодом, которая может быть интегрирована с моделями глубокого обучения для работы приложений, охватывающих обработку естественного языка, проверку личности и многое другое. Milvus индексирует большие векторные массивы данных, чтобы сделать поиск более эффективным, и поддерживает множество популярных фреймворков ИИ, чтобы упростить процесс разработки приложений машинного обучения. Эти характеристики делают платформу идеальной для хранения и запроса векторных данных - важнейшего компонента многих приложений машинного обучения.</p>
-<p>Компания Xiaomi выбрала Milvus для управления векторными данными в своей интеллектуальной системе рекомендаций новостей, поскольку она быстра, надежна и требует минимальной настройки и обслуживания. Однако для создания развертываемых приложений Milvus необходимо использовать в паре с алгоритмом искусственного интеллекта. Xiaomi выбрала BERT, сокращение от Bidirectional Encoder Representation Transformers, в качестве модели представления языка в своей рекомендательной системе. BERT может использоваться в качестве общей модели NLU (понимание естественного языка), которая способна решать множество различных задач NLP (обработка естественного языка). Ее ключевые особенности включают:</p>
+<h3 id="Milvus-+-BERT--intelligent-content-suggestions" class="common-anchor-header">Milvus + BERT = intelligent content suggestions</h3><p>Milvus is an open-source vector similarity search database that can be integrated with deep learning models to power applications spanning natural language processing, identity verification, and much more. Milvus indexes large vector datasets to make search more efficient, and supports a variety of popular AI frameworks to simplify the process of developing machine learning applications. These characteristics make the platform the ideal for storing and querying vector data, a critical component of many machine learning applications.</p>
+<p>Xiaomi selected Milvus to manage vector data for its intelligent news recommendation system because it is fast, reliable, and requires minimal configuration and maintenance. However, Milvus must be paired with an AI algorithm to build deployable applications. Xiaomi selected BERT, short for Bidirectional Encoder Representation Transformers, as the language representation model in its recommendation engine. BERT can be used as a general NLU (natural language understanding) model that can drive a number of different NLP (natural language processing) tasks. Its key features include:</p>
 <ul>
-<li>Трансформатор BERT используется в качестве основного каркаса алгоритма и способен улавливать явные и неявные связи внутри и между предложениями.</li>
-<li>Цели многозадачного обучения: моделирование языка по маске (MLM) и предсказание следующего предложения (NSP).</li>
-<li>BERT лучше работает с большими объемами данных и может улучшить другие методы обработки естественного языка, такие как Word2Vec, выступая в качестве матрицы преобразования.</li>
+<li>BERT’s transformer is used as the main framework of the algorithm and is capable of capturing explicit and implicit relationships within and between sentences.</li>
+<li>Multi-task learning goals, masked language modeling (MLM), and next sentence prediction (NSP).</li>
+<li>BERT performs better with greater amounts of data, and can enhance other natural language processing techniques such as Word2Vec by acting as a conversion matrix.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_1_6301344312.jpeg" alt="Blog_Xiaomi_1.jpeg" class="doc-image" id="blog_xiaomi_1.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog_Xiaomi_1.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_1_6301344312.jpeg" alt="Blog_Xiaomi_1.jpeg" class="doc-image" id="blog_xiaomi_1.jpeg" />
+    <span>Blog_Xiaomi_1.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>Архитектура сети BERT использует многослойную трансформационную структуру, которая отказывается от традиционных нейронных сетей RNN и CNN. Она работает, преобразуя расстояние между двумя словами в любой позиции в одно с помощью механизма внимания, и решает проблему зависимостей, которая сохраняется в НЛП уже некоторое время.</p>
+<p>BERT’s network architecture uses a multi-layer transformer structure that abandons the traditional RNN and CNN neural networks. It works by converting the distance between two words at any position into one through its attention mechanism, and solves the dependency issue that has persisted in NLP for some time.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_2_fe5cf2e401.jpeg" alt="Blog-Xiaomi-2.jpeg" class="doc-image" id="blog-xiaomi-2.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog-Xiaomi-2.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_2_fe5cf2e401.jpeg" alt="Blog-Xiaomi-2.jpeg" class="doc-image" id="blog-xiaomi-2.jpeg" />
+    <span>Blog-Xiaomi-2.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_3_5d10b51440.jpeg" alt="Blog-Xiaomi-3.jpeg" class="doc-image" id="blog-xiaomi-3.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog-Xiaomi-3.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_3_5d10b51440.jpeg" alt="Blog-Xiaomi-3.jpeg" class="doc-image" id="blog-xiaomi-3.jpeg" />
+    <span>Blog-Xiaomi-3.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>BERT предлагает простую и сложную модели. Соответствующие гиперпараметры следующие: BERT BASE: L = 12, H = 768, A = 12, общее количество параметров 110M; BERT LARGE: L = 24, H = 1024, A = 16, общее количество параметров 340M.</p>
-<p>В приведенных выше гиперпараметрах L представляет собой количество слоев в сети (т. е. количество блоков трансформации), A - количество самовниманий в Multi-Head Attention, а размер фильтра равен 4H.</p>
+<p>BERT provides a simple and a complex model. The corresponding hyperparameters are as follows: BERT BASE: L = 12, H = 768, A = 12, total parameter 110M; BERT LARGE: L = 24, H = 1024, A = 16, the total number of parameters is 340M.</p>
+<p>In the above hyperparameters, L represents the number of layers in the network (i.e. the number of Transformer blocks), A represents the number of self-Attention in Multi-Head Attention, and the filter size is 4H.</p>
 <p><br/></p>
-<h3 id="Xiaomi’s-content-recommendation-system" class="common-anchor-header">Система рекомендаций контента Xiaomi</h3><p>Браузерная система рекомендаций новостей Xiaomi опирается на три ключевых компонента: векторизацию, сопоставление идентификаторов и сервис приближенных ближайших соседей (ANN).</p>
-<p>Векторизация - это процесс, в ходе которого заголовки статей преобразуются в векторы общих предложений. В рекомендательной системе Xiaomi используется модель SimBert, основанная на BERT. SimBert - это 12-слойная модель со скрытым размером 768. Для непрерывного обучения SimBert использует обучающую модель Chinese L-12_H-768_A-12 (задача обучения - "метрическое обучение +UniLM") и отработала 1,17 млн шагов на Signle TITAN RTX с оптимизатором Adam (скорость обучения 2e-6, размер партии 128). Проще говоря, это оптимизированная BERT-модель.</p>
-<p>Алгоритмы ANN сравнивают векторные заголовки статей со всей библиотекой новостей, хранящейся в Milvus, и возвращают пользователям похожий контент. Сопоставление идентификаторов используется для получения релевантной информации, такой как просмотры страниц и клики по соответствующим статьям.</p>
+<h3 id="Xiaomi’s-content-recommendation-system" class="common-anchor-header">Xiaomi’s content recommendation system</h3><p>Xiaomi browser-based news recommender system relies on three key components: vectorization, ID mapping, and approximate nearest neighbor (ANN) service.</p>
+<p>Vectorization is process where article titles are converted into general sentence vectors. The SimBert model, based on BERT, is used in Xiaomi’s recommendation system. SimBert is a 12-layer model with a hidden size of 768. Simbert uses the training model Chinese L-12_H-768_A-12 for continuous training (training task being “metric learning +UniLM”, and has trained 1.17 million steps on a signle TITAN RTX with the Adam optimizer (learning rate 2e-6, batch size 128). Simply put, this is an optimized BERT model.</p>
+<p>ANN algorithms compare vectorized article titles to the entire news library stored in Milvus, then return similar content for users. ID mapping is used to obtain relevant information such as page views and clicks for corresponding articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_N1_f4749b3131.jpeg" alt="Blog-Xiaomi-N1.jpeg" class="doc-image" id="blog-xiaomi-n1.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog-Xiaomi-N1.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_N1_f4749b3131.jpeg" alt="Blog-Xiaomi-N1.jpeg" class="doc-image" id="blog-xiaomi-n1.jpeg" />
+    <span>Blog-Xiaomi-N1.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>Данные, хранящиеся в Milvus, на основе которых работает механизм рекомендаций новостей Xiaomi, постоянно обновляются, включая дополнительные статьи и информацию об активности. По мере того как в систему включаются новые данные, старые приходится удалять. В этой системе полное обновление данных происходит в течение первых T-1 дней, а инкрементное - в последующие T дней.</p>
-<p>Через определенные промежутки времени старые данные удаляются, а обработанные данные за T-1 день вставляются в коллекцию. При этом новые данные включаются в коллекцию в режиме реального времени. Как только новые данные вставлены, в Milvus выполняется поиск по сходству. Полученные статьи снова сортируются по количеству кликов и другим факторам, и пользователям показывается лучший контент. В подобном сценарии, когда данные часто обновляются и результаты должны выдаваться в режиме реального времени, способность Milvus быстро включать и искать новые данные позволяет значительно ускорить рекомендации новостного контента в мобильном браузере Xiaomi.</p>
+<p>The data stored in Milvus that powers Xiaomi’s news recommendation engine is constantly being updated, including additional articles and activity information. As the system incorporates new data, old data must be purged. In this system, full data updates are done for the first T-1 days and incremental updates are done in the subsequent T days.</p>
+<p>At defined intervals, old data is deleted and processed data of the T-1 days is inserted into the collection. Here newly generated data is incorporated in real time. Once new data is inserted, similarity search is conducted in Milvus. Retrieved articles are again sorted by click rate and other factors, and the top content is shown to users. In a scenario like this where data is frequently updated and results must be delivered in real time, Milvus’ ability to rapidly incorporate and search new data makes it possible to drastically accelerate news content recommendation in Xiaomi’s mobile browser.</p>
 <p><br/></p>
-<h3 id="Milvus-makes-vector-similarity-search-better" class="common-anchor-header">Milvus улучшает поиск по векторному сходству</h3><p>Векторизация данных и последующее вычисление сходства между векторами - наиболее часто используемая технология поиска. Появление поисковых систем на основе ANN значительно повысило эффективность вычислений векторного сходства. По сравнению с аналогичными решениями, Milvus предлагает оптимизированное хранение данных, богатый набор SDK и распределенную версию, что значительно снижает нагрузку на создание поискового слоя. Кроме того, активное сообщество разработчиков Milvus с открытым исходным кодом - это мощный ресурс, который поможет ответить на вопросы и устранить проблемы по мере их возникновения.</p>
-<p>Если вы хотите узнать больше о векторном поиске по сходству и Milvus, ознакомьтесь со следующими ресурсами:</p>
+<h3 id="Milvus-makes-vector-similarity-search-better" class="common-anchor-header">Milvus makes vector similarity search better</h3><p>Vectorizing data and then calculating similarity between vectors is the most commonly used retrieval technology. The rise of ANN-based vector similarity search engines has greatly improved the efficiency of vector similarity calculations. Compared with similar solutions, Milvus offers optimized data storage, abundant SDKs, and a distributed version that greatly reduces the workload of building a retrieval layer. Additionally, Milvus’ active open-source community is a powerful resource that can help answer questions and troubleshoot problems as they arise.</p>
+<p>If you would like to learn more about vector similarity search and Milvus, check out the following resources:</p>
 <ul>
-<li>Посмотрите <a href="https://github.com/milvus-io/milvus">Milvus</a> на Github.</li>
-<li><a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">Поиск векторного сходства скрывается от посторонних глаз</a></li>
-<li><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Ускорение поиска по сходству в действительно больших данных с помощью векторного индексирования</a></li>
+<li>Check out <a href="https://github.com/milvus-io/milvus">Milvus</a> on Github.</li>
+<li><a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">Vector Similarity Search Hides in Plain View</a></li>
+<li><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Accelerating Similarity Search on Really Big Data with Vector Indexing</a></li>
 </ul>
-<p>Читайте другие <a href="https://zilliz.com/user-stories">истории пользователей</a>, чтобы узнать больше о создании вещей с помощью Milvus.</p>
+<p>Read other <a href="https://zilliz.com/user-stories">user stories</a> to learn more about making things with Milvus.</p>

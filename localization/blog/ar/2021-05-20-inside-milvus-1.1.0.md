@@ -1,24 +1,24 @@
 ---
 id: inside-milvus-1.1.0.md
-title: الميزات الجديدة
+title: New features
 author: milvus
 date: 2021-05-20T08:35:42.700Z
 desc: >-
-  وصل الإصدار Milvus v1.1.0! الميزات الجديدة والتحسينات وإصلاحات الأخطاء متاحة
-  الآن.
+  Milvus v1.1.0 has arrived! New features, improvements, and bug fixes are
+  available now.
 cover: assets.zilliz.com/v1_1_cover_487e70971a.jpeg
 tag: News
 canonicalUrl: 'https://zilliz.com/blog/inside-milvus-1.1.0'
 ---
-<custom-h1>داخل ميلفوس 1.1.0</custom-h1><p><a href="https://github.com/milvus-io">Milvus</a> هو مشروع برمجيات مفتوحة المصدر (OSS) مستمر يركز على بناء أسرع قاعدة بيانات متجهات في العالم وأكثرها موثوقية. الميزات الجديدة داخل Milvus v1.1.0 هي أول التحديثات القادمة بفضل الدعم طويل الأمد من مجتمع البرمجيات مفتوحة المصدر والرعاية من Zilliz. تغطي مقالة المدونة هذه الميزات الجديدة والتحسينات وإصلاحات الأخطاء المضمنة في الإصدار Milvus v1.1.0.</p>
-<p><strong>انتقل إلى:</strong></p>
+<custom-h1>Inside Milvus 1.1.0</custom-h1><p><a href="https://github.com/milvus-io">Milvus</a> is an ongoing open-source software (OSS) project focused on building the world’s fastest and most reliable vector database. New features inside Milvus v1.1.0 are the first of many updates to come, thanks to long-term support from the open-source community and sponsorship from Zilliz. This blog article covers the new features, improvements, and bug fixes included with Milvus v1.1.0.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#new-features">الميزات الجديدة</a></li>
-<li><a href="#improvements">التحسينات</a></li>
-<li><a href="#bug-fixes">إصلاحات الأخطاء</a></li>
+<li><a href="#new-features">New features</a></li>
+<li><a href="#improvements">Improvements</a></li>
+<li><a href="#bug-fixes">Bug fixes</a></li>
 </ul>
 <p><br/></p>
-<h2 id="New-features" class="common-anchor-header">الميزات الجديدة<button data-href="#New-features" class="anchor-icon" translate="no">
+<h2 id="New-features" class="common-anchor-header">New features<button data-href="#New-features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,8 +33,8 @@ canonicalUrl: 'https://zilliz.com/blog/inside-milvus-1.1.0'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>مثل أي مشروع برمجيات مفتوحة المصدر، فإن ميلفوس هو عمل دائم قيد التطوير. نحن نسعى جاهدين للاستماع إلى مستخدمينا ومجتمع المصادر المفتوحة لتحديد أولويات الميزات الأكثر أهمية. يقدم آخر تحديث، Milvus v1.1.0، الميزات الجديدة التالية:</p>
-<h3 id="Specify-partitions-with-getentitybyid-method-calls" class="common-anchor-header">تحديد الأقسام باستخدام <code translate="no">get_entity_by_id()</code> استدعاءات طريقة </h3><p>لزيادة تسريع البحث عن تشابه المتجهات، يدعم Milvus 1.1.0 الآن استرجاع المتجهات من قسم محدد. بشكل عام، يدعم Milvus الاستعلام عن المتجهات من خلال معرفات متجهات محددة. في الإصدار Milvus 1.0 من Milvus 1.0، يؤدي استدعاء الطريقة <code translate="no">get_entity_by_id()</code> إلى البحث في المجموعة بأكملها، وهو ما قد يستغرق وقتًا طويلاً بالنسبة لمجموعات البيانات الكبيرة. كما نرى من الكود أدناه، يستخدم <code translate="no">GetVectorsByIdHelper</code> بنية <code translate="no">FileHolder</code> للتكرار والعثور على متجه محدد.</p>
+    </button></h2><p>Like any OSS project, Milvus is a perpetual work in progress. We strive to listen to our users and the open-source community to prioritize the features that matter most. The latest update, Milvus v1.1.0, offers the following new features:</p>
+<h3 id="Specify-partitions-with-getentitybyid-method-calls" class="common-anchor-header">Specify partitions with <code translate="no">get_entity_by_id()</code> method calls</h3><p>To further accelerate vector similarity search, Milvus 1.1.0 now supports retrieving vectors from a specified partition. Generally, Milvus supports querying vectors through specified vector IDs. In Milvus 1.0, calling the method <code translate="no">get_entity_by_id()</code> searches the entire collection, which can be time consuming for large datasets. As we can see from the code below, <code translate="no">GetVectorsByIdHelper</code> uses a <code translate="no">FileHolder</code> structure to loop through and find a specific vector.</p>
 <pre><code translate="no">std::vector&lt;meta::CollectionSchema&gt; collection_array; 
  <span class="hljs-type">auto</span> <span class="hljs-variable">status</span> <span class="hljs-operator">=</span> meta_ptr_-&gt;ShowPartitions(collection.collection_id_, collection_array); 
   
@@ -72,14 +72,14 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
      <span class="hljs-type">IDNumbers</span> <span class="hljs-variable">temp_ids</span> <span class="hljs-operator">=</span> id_array; 
      <span class="hljs-keyword">for</span> (auto&amp; file : files) { 
 <button class="copy-code-btn"></button></code></pre>
-<p>ومع ذلك، لا يتم تصفية هذه البنية من خلال أي أقسام في <code translate="no">FilesByTypeEx()</code>. في Milvus v1.1.0، من الممكن للنظام أن يمرر أسماء الأقسام إلى حلقة <code translate="no">GetVectorsIdHelper</code> بحيث يحتوي <code translate="no">FileHolder</code> على مقاطع من أقسام محددة فقط. وبعبارة أخرى، إذا كنت تعرف بالضبط القسم الذي ينتمي إليه متجه البحث، يمكنك تحديد اسم القسم في استدعاء طريقة <code translate="no">get_entity_by_id()</code> لتسريع عملية البحث.</p>
-<p>لم نقم فقط بإجراء تعديلات على التعليمات البرمجية التي تتحكم في استعلامات النظام على مستوى خادم Milvus، بل قمنا أيضًا بتحديث جميع حزم SDKs الخاصة بنا (Python وGo وC++ وJava وRESTful) بإضافة معلمة لتحديد أسماء الأقسام. على سبيل المثال، في pymilvus، تم تغيير تعريف <code translate="no">get_entity_by_id</code> <code translate="no">def get_entity_by_id(self, collection_name, ids, timeout=None)</code> إلى <code translate="no">def get_entity_by_id(self, collection_name, partition_tags=None, ids, timeout=None)</code>.</p>
+<p>However, this structure is not filtered by any partitions in <code translate="no">FilesByTypeEx()</code>. In Milvus v1.1.0, it is possible for the system to pass partition names to the <code translate="no">GetVectorsIdHelper</code> loop so that the <code translate="no">FileHolder</code> only contains segments from specified partitions. Put differently, if you know exactly which partition the vector for a search belongs to, you can specify the partition name in a <code translate="no">get_entity_by_id()</code> method call to accelerate the search process.</p>
+<p>We not only made modifications to code controlling system queries at the Milvus server level, but also updated all our SDKs(Python, Go, C++, Java, and RESTful) by adding a parameter for specifying partition names. For example, in pymilvus, the definition of <code translate="no">get_entity_by_id</code> <code translate="no">def get_entity_by_id(self, collection_name, ids, timeout=None)</code> is changed to <code translate="no">def get_entity_by_id(self, collection_name, partition_tags=None, ids, timeout=None)</code>.</p>
 <p><br/></p>
-<h3 id="Specify-partitions-with-deleteentitybyid-method-calls" class="common-anchor-header">تحديد الأقسام باستخدام استدعاءات الأسلوب <code translate="no">delete_entity_by_id()</code> </h3><p>لجعل إدارة المتجهات أكثر كفاءة، يدعم Milvus v1.1.0 الآن تحديد أسماء الأقسام عند حذف متجه في مجموعة. في الإصدار Milvus 1.0، لا يمكن حذف المتجهات في مجموعة إلا عن طريق المعرف. عند استدعاء طريقة الحذف، سيقوم Milvus بمسح جميع المتجهات في المجموعة. ومع ذلك، فإنه من الأكثر كفاءة بكثير مسح الأجزاء ذات الصلة فقط عند العمل مع مجموعات بيانات متجهات ضخمة بملايين أو مليارات أو حتى تريليون متجه. على غرار الميزة الجديدة لتحديد الأقسام باستخدام استدعاءات الأسلوب <code translate="no">get_entity_by_id()</code> ، تم إجراء تعديلات على كود Milvus باستخدام نفس المنطق.</p>
+<h3 id="Specify-partitions-with-deleteentitybyid-method-calls" class="common-anchor-header">Specify partitions with <code translate="no">delete_entity_by_id()</code> method calls</h3><p>To make vector management more efficient, Milvus v1.1.0 now supports specifying partition names when deleting a vector in a collection. In Milvus 1.0, vectors in a collection can only be deleted by ID. When calling the delete method, Milvus will scan all vectors in the collection. However, it is far more efficient to scan only relevant partitions when working with massive million, billion, or even trillion vector datasets. Similar to the new feature for specifying partitions with <code translate="no">get_entity_by_id()</code> method calls, modifications were made to the Milvus code using the same logic.</p>
 <p><br/></p>
-<h3 id="New-method-releasecollection" class="common-anchor-header">طريقة جديدة <code translate="no">release_collection()</code></h3><p>لتحرير ذاكرة Milvus المستخدمة لتحميل المجموعات في وقت التشغيل، تمت إضافة طريقة جديدة <code translate="no">release_collection()</code> في Milvus v1.1.0 لتفريغ مجموعات محددة يدويًا من ذاكرة التخزين المؤقت.</p>
+<h3 id="New-method-releasecollection" class="common-anchor-header">New method <code translate="no">release_collection()</code></h3><p>To free up memory Milvus used to load collections at runtime, a new method <code translate="no">release_collection()</code> has been added in Milvus v1.1.0 to manually unload specific collections from cache.</p>
 <p><br/></p>
-<h2 id="Improvements" class="common-anchor-header">التحسينات<button data-href="#Improvements" class="anchor-icon" translate="no">
+<h2 id="Improvements" class="common-anchor-header">Improvements<button data-href="#Improvements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,58 +94,63 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>على الرغم من أن الميزات الجديدة عادةً ما تكون في غاية الأهمية، إلا أنه من المهم أيضًا تحسين ما لدينا بالفعل. ما يلي هو ترقيات وتحسينات عامة أخرى على الإصدار 1.0 من ميلفوس.</p>
+    </button></h2><p>Although new features are usually all the rage, it’s also important to improve what we already have. What follows are upgrades and other general improvements over Milvus v1.0.</p>
 <p><br/></p>
-<h3 id="Improved-performance-of-getentitybyid-method-call" class="common-anchor-header">تحسين أداء استدعاء الأسلوب <code translate="no">get_entity_by_id()</code> </h3><p>الرسم البياني أدناه هو مقارنة أداء البحث المتجه بين Milvus v1.0 و Milvus v1.1.0:</p>
+<h3 id="Improved-performance-of-getentitybyid-method-call" class="common-anchor-header">Improved performance of <code translate="no">get_entity_by_id()</code> method call</h3><p>The chart below is a comparison of vector search performance between Milvus v1.0 and Milvus v1.1.0:</p>
 <blockquote>
-<p>وحدة المعالجة المركزية: وحدة المعالجة المركزية Intel® Core™ i7-8550U @ 1.80 جيجا هرتز * 8 <br/>حجم ملف المقطع = 1024 ميجابايت <br/>عدد الصفوف = 1,000,000 <br/>خافت = 128</p>
+<p>CPU: Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>
+Segment file size = 1024 MB <br/>
+Row count = 1,000,000 <br/>
+Dim = 128</p>
 </blockquote>
 <table>
 <thead>
-<tr><th style="text-align:center">رقم معرف الاستعلام</th><th style="text-align:center">v 1.0.0</th><th style="text-align:center">v1.1.0</th></tr>
+<tr><th style="text-align:center">Query ID Num</th><th style="text-align:center">v 1.0.0</th><th style="text-align:center">v1.1.0</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">10</td><td style="text-align:center">9 مللي ثانية</td><td style="text-align:center">2 مللي ثانية</td></tr>
-<tr><td style="text-align:center">100</td><td style="text-align:center">149 مللي ثانية</td><td style="text-align:center">19 مللي ثانية</td></tr>
+<tr><td style="text-align:center">10</td><td style="text-align:center">9 ms</td><td style="text-align:center">2 ms</td></tr>
+<tr><td style="text-align:center">100</td><td style="text-align:center">149 ms</td><td style="text-align:center">19 ms</td></tr>
 </tbody>
 </table>
 <p><br/></p>
-<h3 id="Hnswlib-upgraded-to-v050" class="common-anchor-header">تمت ترقية Hnswlib إلى الإصدار 0.5.0</h3><p>تتبنى Milvus العديد من مكتبات الفهارس المستخدمة على نطاق واسع، بما في ذلك Faiss وNMSLIB وHnswlib وAnnoy لتبسيط عملية اختيار نوع الفهرس المناسب لسيناريو معين.</p>
-<p>تمت ترقية Hnswlib من الإصدار 0.3.0 إلى الإصدار 0.5.0 في الإصدار Milvus 1.1.0 بسبب اكتشاف خطأ في الإصدار السابق. بالإضافة إلى ذلك، أدت ترقية Hnswlib إلى تحسين أداء <code translate="no">addPoint()</code> في بناء الفهرس.</p>
-<p>أنشأ أحد مطوّري Zilliz طلب سحب (PR) لتحسين أداء Hnswlib أثناء بناء الفهارس في Milvus. انظر <a href="https://github.com/nmslib/hnswlib/pull/298">PR #298</a> للحصول على التفاصيل.</p>
-<p>الرسم البياني أدناه عبارة عن مقارنة بين أداء <code translate="no">addPoint()</code> بين أداء Hnswlib 0.5.0 وطلب العلاقات العامة المقترح:</p>
+<h3 id="Hnswlib-upgraded-to-v050" class="common-anchor-header">Hnswlib upgraded to v0.5.0</h3><p>Milvus adopts multiple widely used index libraries, including Faiss, NMSLIB, Hnswlib, and Annoy to simplify the process of choosing the right index type for a given scenario.</p>
+<p>Hnswlib has been upgraded from v0.3.0 to v0.5.0 in Milvus 1.1.0 due to a bug detected in the earlier version. Additionally, upgrading Hnswlib improves <code translate="no">addPoint()</code> performance in index building.</p>
+<p>A Zilliz developer created a pull request (PR) to improve Hnswlib performance while building indexes in Milvus. See <a href="https://github.com/nmslib/hnswlib/pull/298">PR #298</a> for details.</p>
+<p>The chart below is a comparison of <code translate="no">addPoint()</code> performance between Hnswlib 0.5.0 and the proposed PR:</p>
 <blockquote>
-<p>وحدة المعالجة المركزية: وحدة المعالجة المركزية Intel® Core™ i7-8550U @ 1.80 جيجا هرتز * 8 <br/>مجموعة البيانات: sift_1M (عدد الصفوف = 1000000، خافت = 128، المساحة = L2)</p>
+<p>CPU: Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>
+Dataset: sift_1M (row count = 1000000, dim = 128, space = L2)</p>
 </blockquote>
 <table>
 <thead>
 <tr><th style="text-align:center"></th><th style="text-align:center">0.5.0</th><th style="text-align:center">PR-298</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">M = 16، ef_construction = 100</td><td style="text-align:center">274406 مللي ثانية</td><td style="text-align:center">265631 مللي ثانية</td></tr>
-<tr><td style="text-align:center">M = 16، ef_construction = 200</td><td style="text-align:center">522411 مللي ثانية</td><td style="text-align:center">499639 مللي ثانية</td></tr>
+<tr><td style="text-align:center">M = 16, ef_construction = 100</td><td style="text-align:center">274406 ms</td><td style="text-align:center">265631 ms</td></tr>
+<tr><td style="text-align:center">M = 16, ef_construction = 200</td><td style="text-align:center">522411 ms</td><td style="text-align:center">499639 ms</td></tr>
 </tbody>
 </table>
 <p><br/></p>
-<h3 id="Improved-IVF-index-training-performance" class="common-anchor-header">تحسين أداء التدريب على فهرس IVF</h3><p>يتضمن إنشاء الفهرس التدريب وإدخال البيانات وكتابتها على القرص. يعمل الإصدار Milvus 1.1.0 على تحسين عنصر التدريب في بناء الفهرس. الرسم البياني أدناه هو مقارنة لأداء تدريب فهرس IVF بين Milvus 1.0 و Milvus 1.1.0:</p>
+<h3 id="Improved-IVF-index-training-performance" class="common-anchor-header">Improved IVF index training performance</h3><p>Creating an index includes training, inserting and writing data to disk. Milvus 1.1.0 improves the training component of index building. The chart below is a comparison of IVF index training performance between Milvus 1.0 and Milvus 1.1.0:</p>
 <blockquote>
-<p>وحدة المعالجة المركزية: وحدة المعالجة المركزية Intel® Core™ i7-8550U @ 1.80 جيجا هرتز * 8 <br/>مجموعة البيانات: sift_1m (عدد الصفوف = 1000000، خافت = 128، نوع_المقياس = L2)</p>
+<p>CPU: Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>
+Dataset: sift_1m (row_count = 1000000, dim = 128, metric_type = L2)</p>
 </blockquote>
 <table>
 <thead>
-<tr><th style="text-align:center"></th><th style="text-align:center">الإصدار 1.0.0 (مللي ثانية)</th><th style="text-align:center">الإصدار 1.1.0 (مللي ثانية)</th></tr>
+<tr><th style="text-align:center"></th><th style="text-align:center">v1.0.0 (ms)</th><th style="text-align:center">v1.1.0 (ms)</th></tr>
 </thead>
 <tbody>
 <tr><td style="text-align:center">ivf_flat (nlist = 2048)</td><td style="text-align:center">90079</td><td style="text-align:center">81544</td></tr>
-<tr><td style="text-align:center">ivf_pq (قائمة رقمية = 2048، م=16)</td><td style="text-align:center">103535</td><td style="text-align:center">97115</td></tr>
-<tr><td style="text-align:center">ivf_pq (القائمة = 2048، م=32)</td><td style="text-align:center">108638</td><td style="text-align:center">104558</td></tr>
-<tr><td style="text-align:center">ivf_flat (القائمة = 4096)</td><td style="text-align:center">340643</td><td style="text-align:center">310685</td></tr>
-<tr><td style="text-align:center">ivf_pq (القائمة = 4096، م=16)</td><td style="text-align:center">351982</td><td style="text-align:center">323758</td></tr>
-<tr><td style="text-align:center">ivf_pq (القائمة = 4096، م=32)</td><td style="text-align:center">357359</td><td style="text-align:center">330887</td></tr>
+<tr><td style="text-align:center">ivf_pq (nlist = 2048, m=16)</td><td style="text-align:center">103535</td><td style="text-align:center">97115</td></tr>
+<tr><td style="text-align:center">ivf_pq (nlist = 2048, m=32)</td><td style="text-align:center">108638</td><td style="text-align:center">104558</td></tr>
+<tr><td style="text-align:center">ivf_flat (nlist = 4096)</td><td style="text-align:center">340643</td><td style="text-align:center">310685</td></tr>
+<tr><td style="text-align:center">ivf_pq (nlist = 4096, m=16)</td><td style="text-align:center">351982</td><td style="text-align:center">323758</td></tr>
+<tr><td style="text-align:center">ivf_pq (nlist = 4096, m=32)</td><td style="text-align:center">357359</td><td style="text-align:center">330887</td></tr>
 </tbody>
 </table>
 <p><br/></p>
-<h2 id="Bug-fixes" class="common-anchor-header">إصلاحات الأخطاء<button data-href="#Bug-fixes" class="anchor-icon" translate="no">
+<h2 id="Bug-fixes" class="common-anchor-header">Bug fixes<button data-href="#Bug-fixes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -160,4 +165,4 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قمنا أيضًا بإصلاح بعض الأخطاء لجعل Milvus أكثر استقرارًا وفعالية عند إدارة مجموعات البيانات المتجهة. انظر <a href="https://milvus.io/docs/v1.1.0/release_notes.md#Fixed-issues">المشكلات التي تم إصلاحها</a> لمزيد من التفاصيل.</p>
+    </button></h2><p>We also fixed some bugs to make Milvus more stable and efficient when managing vector datasets. See <a href="https://milvus.io/docs/v1.1.0/release_notes.md#Fixed-issues">Fixed Issues</a> for more details.</p>

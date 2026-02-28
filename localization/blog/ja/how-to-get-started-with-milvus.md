@@ -1,6 +1,6 @@
 ---
 id: how-to-get-started-with-milvus.md
-title: Milvusの始め方
+title: How to Get Started with Milvus
 author: Ruben Winastwan
 date: 2025-01-17T00:00:00.000Z
 cover: >-
@@ -13,21 +13,23 @@ recommend: false
 canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png" alt="How to get started with Milvus" class="doc-image" id="how-to-get-started-with-milvus" />
-   </span> <span class="img-wrapper"> <span>Milvusの始め方</span> </span></p>
-<p><strong><em>最終更新 2025年1月</em></strong></p>
-<p>大規模言語モデル<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM</a>)の進化とデータ量の増加により、データベースのような大量の情報を保存するための柔軟でスケーラブルなインフラが必要とされています。しかし、<a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">従来のデータベースは</a>、表形式や構造化されたデータを保存するように設計されており、高度なLLMや情報検索アルゴリズムの能力を活用するために一般的に有用な情報は、テキスト、画像、動画、音声などの<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非構造化</a>データである。</p>
-<p><a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベースは</a>、非構造化データ用に特別に設計されたデータベースシステムです。ベクトルデータベースでは、大量の非構造化データを保存できるだけでなく、<a href="https://zilliz.com/learn/vector-similarity-search">ベクトル検索も</a>可能です。ベクターデータベースは、Inverted File Index (IVFFlat)やHierarchical Navigable Small World<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">(HNSW</a>)といった高度なインデックス作成方法を持ち、高速で効率的なベクター検索や情報検索処理を行うことができます。</p>
-<p><strong>Milvusは</strong>オープンソースのベクターデータベースであり、ベクターデータベースが提供できる有益な機能をすべて活用することができます。この投稿で取り上げる内容は以下の通りです：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png" alt="How to get started with Milvus" class="doc-image" id="how-to-get-started-with-milvus" />
+    <span>How to get started with Milvus</span>
+  </span>
+</p>
+<p><strong><em>Last updated January 2025</em></strong></p>
+<p>The advancements in Large Language Models (<a href="https://zilliz.com/glossary/large-language-models-(llms)">LLMs</a>) and the increasing volume of data necessitate a flexible and scalable infrastructure to store massive amounts of information, such as a database. However, <a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">traditional databases</a> are designed to store tabular and structured data, while the information commonly useful for leveraging the power of sophisticated LLMs and information retrieval algorithms is <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured</a>, such as text, images, videos, or audio.</p>
+<p><a href="https://zilliz.com/learn/what-is-vector-database">Vector databases</a> are database systems specifically designed for unstructured data. Not only can we store massive amounts of unstructured data with vector databases, but we can also perform <a href="https://zilliz.com/learn/vector-similarity-search">vector searches</a> with them. Vector databases have advanced indexing methods such as Inverted File Index (IVFFlat) or Hierarchical Navigable Small World (<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a>) to perform fast and efficient vector search and information retrieval processes.</p>
+<p><strong>Milvus</strong> is an open-source vector database that we can use to leverage all of the beneficial features a vector database can offer. Here are what we’ll cover in this post:</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">Milvusの概要</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Milvus-Deployment-Options">Milvusの導入オプション</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Lite">Milvus Liteの使用方法</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Standalone">Milvusスタンドアロンで始める</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Fully-Managed-Milvus">フルマネージドMilvus </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">An Overview of Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Milvus-Deployment-Options">Milvus deployment options</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Lite">Getting started with Milvus Lite</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Standalone">Getting started with Milvus Standalone</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Fully-Managed-Milvus">Fully Managed Milvus </a></p></li>
 </ul>
-<h2 id="What-is-Milvus" class="common-anchor-header">Milvusとは？<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
+<h2 id="What-is-Milvus" class="common-anchor-header">What is Milvus?<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,16 +44,16 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/overview.md"><strong>Milvusは</strong> </a>オープンソースのベクトルデータベースであり、大量の非構造化データを保存し、高速かつ効率的なベクトル検索を行うことができます。Milvusは、推薦システム、パーソナライズされたチャットボット、異常検知、画像検索、自然言語処理、検索拡張世代<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">（</a>RAG）など、多くの一般的なGenAIアプリケーションに非常に有用です。</p>
-<p>Milvusをベクトルデータベースとして使用することで得られる利点はいくつかあります：</p>
+    </button></h2><p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong> </a>is an open-source vector database that enables us to store massive amounts of unstructured data and perform fast and efficient vector searches on them. Milvus is highly useful for many popular GenAI applications, such as recommendation systems, personalized chatbots, anomaly detection, image search, natural language processing, and retrieval augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>).</p>
+<p>There are several advantages that you can get by using Milvus as a vector database:</p>
 <ul>
-<li><p>Milvusには複数の導入オプションがあり、ユースケースや構築するアプリケーションの規模に応じて選択することができます。</p></li>
-<li><p>Milvusは、FLAT、IVFFlat、HNSW、<a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">SCANNの</a>ようなインメモリオプション、メモリ効率のための量子化バリアント、大規模データセット用のオンディスク<a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DANN</a>、メモリ効率の高い高速検索用のGPU_CAGRA、GPU_IVF_FLAT、GPU_IVF_PQのようなGPUに最適化されたインデックスなど、さまざまなデータとパフォーマンスのニーズに対応する多様なインデックス作成方法をサポートしています。</p></li>
-<li><p>また、Milvusはハイブリッド検索も提供しており、ベクトル検索操作中に密な埋め込み、疎な埋め込み、メタデータフィルタリングを組み合わせて使用することができ、より正確な検索結果につながります。さらに、<a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5では</a>、<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">全文検索と</a>ベクトル検索のハイブリッド検索に対応し、検索精度がさらに向上しました。</p></li>
-<li><p>Milvusは<a href="https://zilliz.com/cloud">Zilliz Cloudを通じて</a>クラウド上で利用することができ、論理クラスタ、ストリーミングデータと履歴データの分離、階層型ストレージ、オートスケール、マルチテナントのホットコールド分離という4つの先進機能により、運用コストとベクトル検索速度を最適化することができます。</p></li>
+<li><p>Milvus offers multiple deployment options that you can choose from depending on your use case and the size of the applications you want to build.</p></li>
+<li><p>Milvus supports a diverse array of indexing methods to meet various data and performance needs, including in-memory options like FLAT, IVFFlat, HNSW, and <a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">SCANN</a>, quantized variants for memory efficiency, the on-disk <a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DiskANN</a> for large datasets, and GPU-optimized indexes such as GPU_CAGRA, GPU_IVF_FLAT, and GPU_IVF_PQ for accelerated, memory-efficient searches.</p></li>
+<li><p>Milvus also offers hybrid search, where we can use a combination of dense embeddings, sparse embeddings, and metadata filtering during vector search operations, leading to more accurate retrieval results. Additionally, <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> now supports a hybrid <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">full-text search</a> and vector search, making your retrieval even more accurate.</p></li>
+<li><p>Milvus can be fully used on the cloud via <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, where you can optimize its operational costs and vector search speed due to four advanced features: logical clusters, streaming and historical data disaggregation, tiered storage, autoscaling, and multi-tenancy hot-cold separation.</p></li>
 </ul>
-<p>Milvusをベクターデータベースとして使用する場合、3つの異なる導入オプションを選択することができ、それぞれに長所と利点があります。それぞれの長所と利点について次のセクションで説明します。</p>
-<h2 id="Milvus-Deployment-Options" class="common-anchor-header">Milvusの展開オプション<button data-href="#Milvus-Deployment-Options" class="anchor-icon" translate="no">
+<p>When using Milvus as your vector database, you can choose three different deployment options, each with its strengths and benefits. We’ll talk about each of them in the next section.</p>
+<h2 id="Milvus-Deployment-Options" class="common-anchor-header">Milvus Deployment Options<button data-href="#Milvus-Deployment-Options" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,25 +68,25 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusを使い始めるにあたり、<strong>Milvus Lite、Milvus Standalone、Milvus Distributed、Zilliz Cloud（マネージドMilvus</strong>）の4つのデプロイオプションから選択することができる。各展開オプションは、データのサイズ、アプリケーションの目的、アプリケーションの規模など、ユースケースの様々なシナリオに合わせて設計されています。</p>
-<h3 id="Milvus-Lite" class="common-anchor-header">Milvus Lite</h3><p><a href="https://milvus.io/docs/quickstart.md"><strong>Milvus Liteは</strong></a>Milvusの軽量版であり、私たちにとって最も簡単に始めることができる方法です。次のセクションでは、Milvus Liteを実際に動かす方法を見ていく。その後、Milvusのコア機能のほとんどをベクターデータベースとして実行することができる。</p>
-<p>Milvus Liteは、迅速なプロトタイピングや学習目的に最適で、複雑な設定なしにJupyterノートブックで実行できる。Milvusは、ベクターデータベースのストレージとして、最大100万個のベクター埋め込みを保存することができます。Milvus Liteは、その軽量な機能とストレージ容量から、プライベートドキュメントの検索エンジンやデバイス上でのオブジェクト検出など、エッジデバイスでの作業に最適なデプロイメントオプションです。</p>
-<h3 id="Milvus-Standalone" class="common-anchor-header">Milvusスタンドアロン</h3><p>Milvus Standaloneは、Dockerイメージにパックされたシングルマシンサーバのデプロイメントです。そのため、DockerにMilvusをインストールし、Dockerコンテナを起動するだけで利用を開始できる。また、Milvus Standaloneの詳細な実装については次のセクションで説明する。</p>
-<p>Milvus Standaloneは、最大10Mのベクトル埋め込みを保存できるため、小規模から中規模のアプリケーションの構築とプロダクション化に最適です。さらに、Milvus Standaloneは、プライマリバックアップモードによる高可用性を提供し、プロダクション対応アプリケーションでの使用に高い信頼性をもたらします。</p>
-<p>また、Milvus StandaloneとMilvus Liteは同じクライアントサイドAPIを共有しているため、例えばMilvus LiteでMilvusの機能を学習し、プロトタイピングを行った後にMilvus Standaloneを使用することも可能です。</p>
-<h3 id="Milvus-Distributed" class="common-anchor-header">Milvusディストリビューテッド</h3><p>Milvus Distributedは、クラウドベースのアーキテクチャを活用したデプロイメントオプションであり、データの取り込みと取得が別々に処理されるため、拡張性が高く効率的なアプリケーションを実現することができます。</p>
-<p>Milvus Distributedを実行するには、通常、コンテナを複数のマシンや環境で実行できるようにKubernetesクラスタを使用する必要がある。Kubernetesクラスタを適用することで、Milvus Distributedのスケーラビリティと柔軟性が確保され、需要やワークロードに応じて割り当てられたリソースをカスタマイズできる。これはまた、1つの部分に障害が発生しても、他の部分が引き継ぐことができ、システム全体が中断されないことを保証することを意味する。</p>
-<p>Milvus Distributedは、最大数百億のベクトル埋め込みデータを扱うことができ、データが大きすぎて単一のサーバーマシンに保存できないようなユースケース向けに特別に設計されている。そのため、この導入オプションは、大規模なユーザーベースにサービスを提供するエンタープライズクライアントに最適です。</p>
+    </button></h2><p>We can choose from four deployment options to start using Milvus: <strong>Milvus Lite, Milvus Standalone, Milvus Distributed, and Zilliz Cloud (managed Milvus).</strong> Each deployment option is designed to suit various scenarios in our use case, such as the size of our data, the purpose of our application, and the scale of our application.</p>
+<h3 id="Milvus-Lite" class="common-anchor-header">Milvus Lite</h3><p><a href="https://milvus.io/docs/quickstart.md"><strong>Milvus Lite</strong></a> is a lightweight version of Milvus and the easiest way for us to get started. In the next section, we’ll see how we can run Milvus Lite in action, and all we need to do to get started is to install the Pymilvus library with pip. After that, we can perform most of the core functionalities of Milvus as a vector database.</p>
+<p>Milvus Lite is perfect for quick prototyping or learning purposes and can be run in a Jupyter notebook without any complicated setup. In terms of vector storage, Milvus Lite is suitable for storing roughly up to a million vector embeddings. Due to its lightweight feature and storage capacity, Milvus Lite is a perfect deployment option for working with edge devices, such as private documents search engine, on-device object detection, etc.</p>
+<h3 id="Milvus-Standalone" class="common-anchor-header">Milvus Standalone</h3><p>Milvus Standalone is a single-machine server deployment packed in a Docker image. Therefore, all we need to do to get started is to install Milvus in Docker, and then start the Docker container. We’ll also see the detailed implementation of Milvus Standalone in the next section.</p>
+<p>Milvus Standalone is ideal for building and productionizing small to medium-scale applications, as it’s able to store up to 10M vector embeddings. Additionally, Milvus Standalone offers high availability through a primary backup mode, making it highly dependable for use in production-ready applications.</p>
+<p>We can also use Milvus Standalone, for example, after performing quick prototyping and learning Milvus functionalities with Milvus Lite, as both Milvus Standalone and Milvus Lite share the same client-side API.</p>
+<h3 id="Milvus-Distributed" class="common-anchor-header">Milvus Distributed</h3><p>Milvus Distributed is a deployment option that leverages a cloud-based architecture, where data ingestion and retrieval are handled separately, allowing for a highly scalable and efficient application.</p>
+<p>To run Milvus Distributed, we typically need to use a Kubernetes cluster to allow the container to run on multiple machines and environments. The application of a Kubernetes cluster ensures the scalability and flexibility of Milvus Distributed in customizing the allocated resources depending on demand and workload. This also means that if one part fails, others can take over, ensuring the entire system remains uninterrupted.</p>
+<p>Milvus Distributed is able to handle up to tens of billions of vector embeddings and is specially designed for use cases where the data are too big to be stored in a single server machine. Therefore, this deployment option is perfect for Enterprise clients that serve a large user base.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Vector_embedding_storage_capability_of_different_Milvus_deployment_options_e3959ccfcd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>図：Milvusの各配備オプションのベクター埋め込みストレージ機能。</em></p>
-<p>この記事では、Milvus LiteとMilvus Standaloneの両方の導入方法を紹介する。ただし、Milvus Distributedは設定が複雑です。一旦Milvus Distributedをセットアップすれば、コレクションの作成、データの取り込み、ベクトル検索の実行などのコードや論理的なプロセスは、クライアント側のAPIを共有しているため、Milvus LiteやMilvus Standaloneと同様である。</p>
-<p>上記3つの導入オプションに加え、マネージドMilvus on<a href="https://zilliz.com/cloud">Zilliz Cloudも</a>手間をかけずにお試しいただけます。Zilliz Cloudについては後述します。</p>
-<h2 id="Getting-Started-with-Milvus-Lite" class="common-anchor-header">Milvus Liteを始めるにあたって<button data-href="#Getting-Started-with-Milvus-Lite" class="anchor-icon" translate="no">
+<p><em>Figure: Vector embedding storage capability of different Milvus deployment options.</em></p>
+<p>In this article, we’re going to show you how to get started with both Milvus Lite and Milvus Standalone, as you can get started quickly with both methods without complicated setup. Milvus Distributed, however, is more complicated to set up. Once we set Milvus Distributed up, the code and logical process to create collections, ingest data, perform vector search, etc. are similar to Milvus Lite and Milvus Standalone, as they share the same client-side API.</p>
+<p>In addition to the three deployment options mentioned above, you can also try the managed Milvus on <a href="https://zilliz.com/cloud">Zilliz Cloud</a> for a hassle-free experience. We’ll also talk about Zilliz Cloud later in this article.</p>
+<h2 id="Getting-Started-with-Milvus-Lite" class="common-anchor-header">Getting Started with Milvus Lite<button data-href="#Getting-Started-with-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,26 +101,26 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>PythonでMilvus Liteを導入するには、Pymilvusというライブラリをpipでインポートします。Pymilvusをインストールする前に、お使いの環境が以下の要件を満たしていることを確認してください：</p>
+    </button></h2><p>Milvus Lite can be implemented straightaway with Python by importing a library called Pymilvus using pip. Before installing Pymilvus, ensure that your environment meets the following requirements:</p>
 <ul>
 <li><p>Ubuntu &gt;= 20.04 (x86_64 and arm64)</p></li>
-<li><p>MacOS &gt;= 11.0 (Apple Silicon M1/M2およびx86_64)</p></li>
-<li><p>Python 3.7以降</p></li>
+<li><p>MacOS &gt;= 11.0 (Apple Silicon M1/M2 and x86_64)</p></li>
+<li><p>Python 3.7 or later</p></li>
 </ul>
-<p>これらの要件を満たした後、以下のコマンドでMilvus Liteとデモに必要な依存関係をインストールすることができる：</p>
+<p>Once these requirements are fulfilled, you can install Milvus Lite and the necessary dependencies for demonstration using the following command:</p>
 <pre><code translate="no">!pip install -U pymilvus
 !pip install <span class="hljs-string">&quot;pymilvus[model]&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p><code translate="no">!pip install -U pymilvus</code>:このコマンドはMilvusのPython SDKである<code translate="no">pymilvus</code> ライブラリをインストールまたはアップグレードします。Milvus LiteはPyMilvusにバンドルされているため、この1行のコードだけでMilvus Liteをインストールすることができます。</p></li>
-<li><p><code translate="no">!pip install &quot;pymilvus[model]&quot;</code>:このコマンドは、Milvusにあらかじめ統合されている高度な機能と追加ツールを追加します。これには、Hugging Face Transformersのような機械学習モデル、Jina AIエンベッディングモデル、リランキングモデルなどが含まれます。</p></li>
+<li><p><code translate="no">!pip install -U pymilvus</code>: This command installs or upgrades the <code translate="no">pymilvus</code> library, the Python SDK of Milvus. Milvus Lite is bunded with PyMilvus, so this single line of code is all you need to install Milvus Lite.</p></li>
+<li><p><code translate="no">!pip install &quot;pymilvus[model]&quot;</code>: This command adds advanced features and extra tools pre-integrated with Milvus, including machine learning models like Hugging Face Transformers, Jina AI embedding models, and reranking models.</p></li>
 </ul>
-<p>以下はMilvus Liteを使った手順です：</p>
+<p>Here are the steps we’re going to follow with Milvus Lite:</p>
 <ol>
-<li><p>埋め込みモデルを使って、テキストデータを埋め込み表現に変換する。</p></li>
-<li><p>Milvusデータベースにスキーマを作成し、テキストデータと埋め込み表現を格納する。</p></li>
-<li><p>スキーマにデータを格納し、インデックスを作成する。</p></li>
-<li><p>格納されたデータに対して簡単なベクトル検索を実行する。</p></li>
+<li><p>Transform text data into their embedding representation using an embedding model.</p></li>
+<li><p>Create a schema in our Milvus database to store our text data and their embedding representations.</p></li>
+<li><p>Store and index our data into our schema.</p></li>
+<li><p>Perform a simple vector search on the stored data.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -126,8 +128,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
     <span></span>
   </span>
 </p>
-<p><em>図：ベクトル検索のワークフロー</em></p>
-<p>テキストデータをベクトル埋め込み表現に変換するために、SentenceTransformersの<a href="https://zilliz.com/ai-models">埋め込みモデル</a>'all-MiniLM-L6-v2'を使用する。この埋め込みモデルは、テキストを384次元のベクトル埋め込みに変換します。このモデルを読み込み、テキストデータを変換し、すべてをまとめてみましょう。</p>
+<p><em>Figure: Workflow of vector search operation.</em></p>
+<p>To transform text data into vector embeddings, we’ll use an <a href="https://zilliz.com/ai-models">embedding model</a> from SentenceTransformers called 'all-MiniLM-L6-v2’. This embedding model transforms our text into a 384-dimensional vector embedding. Let’s load the model, transform our text data, and pack everything together.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
@@ -144,7 +146,7 @@ sentence_transformer_ef = model.dense.SentenceTransformerEmbeddingFunction(
 vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
-<p>次に、上記のデータをMilvusに格納するためのスキーマを作成します。上にあるように、データは3つのフィールドから構成されています：ID、ベクトル、テキストです。そこで、この3つのフィールドを持つスキーマを作成します。</p>
+<p>Next, let’s create a schema to store all of the data above into Milvus. As you can see above, our data consists of three fields: ID, vector, and text. Therefore, we’re going to create a schema with these three fields.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
@@ -157,7 +159,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;id&quot;</span>, dat
 schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>, datatype=DataType.FLOAT_VECTOR, dim=<span class="hljs-number">384</span>)
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus Liteを使えば、上記で定義したスキーマに基づいて、特定のデータベース上にコレクションを作成し、コレクションにデータを挿入したり、インデックスを作成したりすることが、わずか数行のコードで簡単にできます。</p>
+<p>With Milvus Lite, we can easily create a collection on a particular database based on the schema defined above, as well as inserting and indexing the data into the collection in just a few lines of code.</p>
 <pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
@@ -182,14 +184,14 @@ res = client.insert(
     data=data
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>上のコードでは、&quot;milvus_demo &quot;という名前のMilvusデータベース内に &quot;demo_collection &quot;というコレクションを作成しています。次に、作成した "demo_collection "にすべてのデータをインデックスします。</p>
-<p>これでデータベース内にデータができたので、任意のクエリに対してベクトル検索を行うことができます。例えば、「<em>アラン・チューリングとは誰か</em>」というクエリがあるとしよう。以下のステップを実行することで、クエリに対する最も適切な答えを得ることができる：</p>
+<p>In the code above, we create a collection called “demo_collection” inside a Milvus database named &quot;milvus_demo&quot;. Next, we index all of our data into the “demo_collection” that we just created.</p>
+<p>Now that we have our data inside the database, we can perform a vector search on them for any given query. Let’s say we have a query: &quot;<em>Who is Alan Turing?</em>&quot;. We can get the most appropriate answer to the query by implementing the following steps:</p>
 <ol>
-<li><p>データベース内のデータを埋め込みに変換するのに使ったのと同じ埋め込みモデルを用いて、クエリをベクトル埋め込みに変換する。</p></li>
-<li><p>コサイン類似度やユークリッド距離などのメトリックスを用いて、クエリの埋め込みとデータベース内の各エントリの埋め込みとの類似度を計算する。</p></li>
-<li><p>最も類似したエントリを、クエリに対する適切な回答として取り出す。</p></li>
+<li><p>Transform our query into a vector embedding using the same embedding model that we used to transform our data in the database into embeddings.</p></li>
+<li><p>Calculate the similarity between our query embedding and the embedding of each entry in the database using metrics like cosine similarity or Euclidean distance.</p></li>
+<li><p>Fetch the most similar entry as the appropriate answer to our query.</p></li>
 </ol>
-<p>以下は、Milvusを使った上記のステップの実装です：</p>
+<p>Below is the implementation of the above steps with Milvus:</p>
 <pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
@@ -211,8 +213,8 @@ Output:
 data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x27;entity&#x27;: {&#x27;text&#x27;: &#x27;Alan Turing was the first person to conduct substantial research in AI.&#x27;}}]&quot;] 
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>以上です！Milvusが提供する他の機能、例えば、データベースの管理、コレクションの挿入と削除、適切なインデックス作成方法の選択、メタデータフィルタリングやハイブリッド検索を用いたより高度なベクトル検索の実行などについては、<a href="https://milvus.io/docs/">Milvusのドキュメントを</a>ご参照ください。</p>
-<h2 id="Getting-Started-with-Milvus-Standalone" class="common-anchor-header">Milvus Standaloneを始めるにあたって<button data-href="#Getting-Started-with-Milvus-Standalone" class="anchor-icon" translate="no">
+<p>And that’s it! You can also learn more about other functionalities that Milvus offers, such as managing databases, inserting and deleting collections, choosing the right indexing method, and performing more advanced vector searches with metadata filtering and hybrid search in <a href="https://milvus.io/docs/">Milvus documentation</a>.</p>
+<h2 id="Getting-Started-with-Milvus-Standalone" class="common-anchor-header">Getting Started with Milvus Standalone<button data-href="#Getting-Started-with-Milvus-Standalone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -227,25 +229,25 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Standaloneは、すべてがDockerコンテナにまとめられているデプロイオプションです。そのため、Milvus Standaloneを始めるには、DockerにMilvusをインストールし、Dockerコンテナを起動する必要がある。</p>
-<p>Milvus Standaloneをインストールする前に、ハードウェアとソフトウェアの両方が<a href="https://milvus.io/docs/prerequisite-docker.md">このページに</a>記載されている要件を満たしていることを確認してください。また、Dockerがインストールされていることを確認してください。Dockerのインストールについては、こちらの<a href="https://docs.docker.com/get-started/get-docker/">ページを</a>ご参照ください。</p>
-<p>システムが要件を満たし、Dockerがインストールできたら、以下のコマンドでDockerにMilvusをインストールします：</p>
+    </button></h2><p>Milvus Standalone is a deployment option in which everything is packed in a Docker container. Therefore, we need to install Milvus in Docker and then start the Docker container to get started with Milvus Standalone.</p>
+<p>Before installing Milvus Standalone, make sure that both your hardware and software fulfill the requirements described on <a href="https://milvus.io/docs/prerequisite-docker.md">this page</a>. Also, ensure that you’ve installed Docker. To install Docker, refer to <a href="https://docs.docker.com/get-started/get-docker/">this page</a>.</p>
+<p>Once our system fulfills the requirements and we have installed Docker, we can proceed with Milvus installation in Docker using the following command:</p>
 <pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
 $ bash standalone_embed.sh start
 <button class="copy-code-btn"></button></code></pre>
-<p>上記のコードでは、Dockerコンテナも起動しており、起動すると以下のような出力が得られます：</p>
+<p>In the above code, we also start the Docker container and once it’s started, you’ll get similar output as below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Message_after_successful_starting_of_the_Docker_container_5c60fa15dd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>図：Dockerコンテナ起動成功後のメッセージ。</em></p>
-<p>上記のインストール・スクリプト "standalone_embed.sh "を実行すると、ポート19530で "milvus "という名前のDockerコンテナが起動する。したがって、クライアントを起動する際にこのポートを指定することで、新しいデータベースを作成するだけでなく、milvusデータベースに関連するすべてのものにアクセスすることができる。</p>
-<p>例えば、"milvus_demo "というデータベースを作成するとしよう。以下のようにすればよい：</p>
+<p><em>Figure: Message after successful starting of the Docker container.</em></p>
+<p>After running the installation script “standalone_embed.sh” above, a Docker container named “milvus” is started at port 19530. Therefore, we can create a new database as well as access all the things related to the Milvus database by pointing to this port when initiating the client.</p>
+<p>Let’s say we want to create a database called “milvus_demo”, similar to what we have done in Milvus Lite above. We can do so as follows:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
@@ -254,22 +256,22 @@ client = <span class="hljs-title class_">MilvusClient</span>(
 )
 client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>次に、<a href="https://milvus.io/docs/milvus-webui.md">Milvus Web UIに</a>アクセスすることで、新しく作成した "milvus_demo "というデータベースが本当にMilvusインスタンスに存在するかどうかを確認することができます。Milvus Web UIは、その名の通り、Milvusが提供するグラフィカルユーザインタフェースで、コンポーネントの統計やメトリクスの確認、データベース、コレクション、設定の一覧や詳細の確認などを行うことができます。Milvus Web UIは、上記のDockerコンテナを起動した後、http://127.0.0.1:9091/webui/。</p>
-<p>上記リンクにアクセスすると、このようなランディングページが表示される：</p>
+<p>Next, you can verify whether the newly created database called “milvus_demo” truly exists in your Milvus instance by accessing the <a href="https://milvus.io/docs/milvus-webui.md">Milvus Web UI</a>. As the name suggests, Milvus Web UI is a graphical user interface provided by Milvus to observe the statistics and metrics of the components, check the list and details of databases, collections, and configurations. You can access Milvus Web UI once you’ve started the Docker container above at http://127.0.0.1:9091/webui/.</p>
+<p>If you access the above link, you’ll see a landing page like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Landing_page_UI_187a40e935.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Collections "タブの下に、"milvus_demo "データベースが正常に作成されていることがわかります。ご覧のように、このWeb UIで、コレクションのリスト、コンフィギュレーション、実行したクエリなど、他のことも確認できます。</p>
+<p>Under the “Collections” tab, you’ll see that our “milvus_demo” database has been successfully created. As you can see, you can also check other things such as the list of collections, configurations, the queries you’ve performed, etc., with this Web UI.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Web_Ui_2_666eae57b1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>これで、上記のMilvus Liteのセクションで見たのと全く同じようにすべてを実行することができる。milvus_demo "データベース内に "demo_collection "という3つのフィールドからなるコレクションを作成します。そして、このコレクションにデータを挿入する。</p>
+<p>Now we can perform everything exactly as we’ve seen in the Milvus Lite section above. Let’s create a collection called “demo_collection” inside the “milvus_demo” database that consists of three fields, the same as what we had in the Milvus Lite section before. Then, we’ll insert our data into the collection.</p>
 <pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
@@ -292,7 +294,7 @@ res = client.insert(
     data=data
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>ベクトル検索を行うコードもMilvus Liteと同じだ：</p>
+<p>The code to perform a vector search operation is also the same as Milvus Lite, as you can see in the below code:</p>
 <pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
@@ -314,11 +316,11 @@ Output:
 data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x27;entity&#x27;: {&#x27;text&#x27;: &#x27;Alan Turing was the first person to conduct substantial research in AI.&#x27;}}]&quot;] 
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Dockerを使う以外にも、<a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a>（Linux用）や<a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a>（Windows用）を使ってMilvus Standaloneを使うこともできます。</p>
-<p>Milvusインスタンスを使わなくなったら、以下のコマンドでMilvus Standaloneを停止することができる：</p>
+<p>Aside from using Docker, you can also use Milvus Standalone with <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (for Linux) and <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (for Windows).</p>
+<p>When we’re not using our Milvus instance anymore, we can stop Milvus Standalone with the following command:</p>
 <pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Fully-Managed-Milvus" class="common-anchor-header">Milvusのフルマネージド化<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
+<h2 id="Fully-Managed-Milvus" class="common-anchor-header">Fully Managed Milvus<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,27 +335,27 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusを使い始める別の方法として、<a href="https://zilliz.com/cloud">Zilliz Cloudの</a>ネイティブクラウドベースのインフラを利用する方法があります。</p>
-<p>Zilliz Cloudは、お客様のAIアプリケーションをサポートするための専用環境とリソースを備えた専用クラスタを提供します。Milvus上に構築されたクラウドベースのデータベースであるため、ローカルインフラのセットアップや管理は不要です。また、Zilliz Cloudは、ベクトルストレージと計算の分離、S3のような一般的なオブジェクトストレージシステムへのデータバックアップ、ベクトル検索・取得操作を高速化するデータキャッシングなど、より高度な機能も提供している。</p>
-<p>しかし、クラウドベースのサービスを検討する際に考慮しなければならないのは、運用コストである。ほとんどの場合、データの取り込みやベクトル検索のアクティビティがなく、クラスタがアイドル状態であっても支払いが必要だ。アプリケーションの運用コストとパフォーマンスをさらに最適化したいのであれば、Zilliz Cloud Serverlessは優れた選択肢となるだろう。</p>
+    </button></h2><p>An alternative way to get started with Milvus is through a native cloud-based infrastructure in <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, where you can get a hassle-free, 10x faster experience.</p>
+<p>Zilliz Cloud offers dedicated clusters with dedicated environments and resources to support your AI application. Since it is a cloud-based database built on Milvus, we do not need to set up and manage local infrastructure. Zilliz Cloud also provides more advanced features, such as separation between vector storage and computation, data backup to popular object storage systems like S3, and data caching to speed up vector search and retrieval operations.</p>
+<p>However, one thing to consider when considering cloud-based services is the operational cost. In most cases, we still need to pay even when the cluster is idle with no data ingestion or vector search activity. If you want to optimize your application’s operational cost and performance further, Zilliz Cloud Serverless would be an excellent option.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Key_benefits_of_using_Zilliz_Cloud_Serverless_20f68e0fff.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>図：Zilliz Cloud Serverlessを利用する主なメリット。</em></p>
-<p>Zilliz Cloud Serverlessは、AWS、Azure、GCPといった主要なクラウドプロバイダーで利用できる。従量課金、つまりクラスターを利用したときだけ料金を支払うといった特徴がある。</p>
-<p>また、Zilliz Cloud Serverlessは、論理クラスタ、自動スケーリング、階層型ストレージ、ストリーミングデータと履歴データの分解、ホットコールドのデータ分離などの先進的なテクノロジーを実装している。これらの機能により、Zilliz Cloud ServerlessはインメモリMilvusと比較して、最大50倍のコスト削減と約10倍のベクトル検索処理の高速化を実現している。</p>
+<p><em>Figure: Key benefits of using Zilliz Cloud Serverless.</em></p>
+<p>Zilliz Cloud Serverless is available on major cloud providers such as AWS, Azure, and GCP. It offers features like pay-as-you-go pricing, meaning you only pay when you use the cluster.</p>
+<p>Zilliz Cloud Serverless also implements advanced technologies such as logical clusters, auto-scaling, tiered storage, disaggregation of streaming and historical data, and hot-cold data separation. These features enable Zilliz Cloud Serverless to achieve up to 50x cost savings and approximately 10x faster vector search operations compared to in-memory Milvus.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Illustration_of_tiered_storage_and_hot_cold_data_separation_c634dfd211.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>図：階層型ストレージとホットコールド・データ分離の説明図。</em></p>
-<p>Zilliz Cloud Serverlessを始めたい方は、<a href="https://zilliz.com/serverless">こちらのページを</a>ご覧ください。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><em>Figure: Illustration of tiered storage and hot-cold data separation.</em></p>
+<p>If you’d like to get started with Zilliz Cloud Serverless, check out <a href="https://zilliz.com/serverless">this page</a> for more information.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -368,5 +370,5 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusは、非構造化データを管理し、最新のAIアプリケーションで高速かつ効率的なベクトル検索処理を実行するという課題を解決するために設計された、汎用的で強力なベクトルデータベースとして際立っている。迅速なプロトタイピングのためのMilvus Lite、小規模から中規模のアプリケーションのためのMilvus Standalone、エンタープライズレベルのスケーラビリティのためのMilvus Distributedといったデプロイメントオプションにより、どのようなプロジェクトの規模や複雑さにも柔軟に対応できる。</p>
-<p>さらに、Zilliz Cloud Serverlessは、Milvusの機能をクラウドに拡張し、ローカルのインフラを不要にする費用対効果の高い従量課金モデルを提供します。Zilliz Cloud Serverlessは、階層型ストレージや自動スケーリングなどの高度な機能により、コストを最適化しながらベクトル検索業務の高速化を実現します。</p>
+    </button></h2><p>Milvus stands out as a versatile and powerful vector database designed to meet the challenges of managing unstructured data and performing fast, efficient vector search operations in modern AI applications. With deployment options such as Milvus Lite for quick prototyping, Milvus Standalone for small to medium-scale applications, and Milvus Distributed for enterprise-level scalability, it offers flexibility to match any project’s size and complexity.</p>
+<p>Additionally, Zilliz Cloud Serverless extends Milvus’s capabilities into the cloud and provides a cost-effective, pay-as-you-go model that eliminates the need for local infrastructure. With advanced features like tiered storage and auto-scaling, Zilliz Cloud Serverless ensures faster vector search operations while optimizing costs.</p>

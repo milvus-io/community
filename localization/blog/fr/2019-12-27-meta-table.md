@@ -1,15 +1,13 @@
 ---
 id: 2019-12-27-meta-table.md
-title: Gestion des métadonnées Milvus (2) Champs de la table des métadonnées
+title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 date: 2019-12-27T00:00:00.000Z
-desc: >-
-  En savoir plus sur le détail des champs dans les tables de métadonnées dans
-  Milvus.
+desc: Learn about the detail of the fields in metadata tables in Milvus.
 cover: null
 tag: Engineering
 ---
-<custom-h1>Gestion des métadonnées Milvus (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">Champs dans la table des métadonnées<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
+<custom-h1>Milvus Metadata Management (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">Fields in the Metadata Table<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -25,73 +23,79 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><blockquote>
-<p>Auteur : Yihua Mo</p>
-<p>Date : 2019-12-27</p>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-12-27</p>
 </blockquote>
-<p>Dans le dernier blog, nous avons mentionné comment afficher vos métadonnées à l'aide de MySQL ou de SQLite. Cet article vise principalement à présenter en détail les champs des tables de métadonnées.</p>
-<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">Champs de la table &quot;<code translate="no">Tables</code></h3><p>Prenons l'exemple de SQLite. Le résultat suivant provient de la version 0.5.0. Certains champs ont été ajoutés à la version 0.6.0 et seront présentés ultérieurement. Il y a une ligne dans <code translate="no">Tables</code> qui spécifie une table vectorielle de 512 dimensions avec le nom <code translate="no">table_1</code>. Lors de la création de la table, <code translate="no">index_file_size</code> vaut 1024 Mo, <code translate="no">engine_type</code> vaut 1 (FLAT), <code translate="no">nlist</code> vaut 16384, <code translate="no">metric_type</code> vaut 1 (distance euclidienne L2). <code translate="no">id</code> est l'identifiant unique de la table. <code translate="no">state</code> est l'état de la table, 0 indiquant un état normal. <code translate="no">created_on</code> est l'heure de création. <code translate="no">flag</code> est l'indicateur réservé à un usage interne.</p>
+<p>In the last blog, we mentioned how to view your metadata using MySQL or SQLite. This article mainly intends to introduce in detail the fields in the metadata tables.</p>
+<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">Fields in the &quot;<code translate="no">Tables</code>” table</h3><p>Take SQLite as an example. The following result comes from 0.5.0. Some fields are added to 0.6.0, which will be introduced later. There is a row in <code translate="no">Tables</code> specifying a 512-dimensional vector table with the name <code translate="no">table_1</code>. When the table is created, <code translate="no">index_file_size</code> is 1024 MB, <code translate="no">engine_type</code> is 1 (FLAT), <code translate="no">nlist</code> is 16384, <code translate="no">metric_type</code> is 1 (Euclidean distance L2). <code translate="no">id</code> is the unique identifier of the table. <code translate="no">state</code> is the state of the table with 0 indicating a normal state. <code translate="no">created_on</code> is the creation time. <code translate="no">flag</code> is the flag reserved for internal use.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
-   </span> <span class="img-wrapper"> <span>tables</span> </span></p>
-<p>Le tableau suivant indique les types de champs et les descriptions des champs de <code translate="no">Tables</code>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
+    <span>tables</span>
+  </span>
+</p>
+<p>The following table shows field types and descriptions of the fields in <code translate="no">Tables</code>.</p>
 <table>
 <thead>
-<tr><th style="text-align:left">Nom du champ</th><th style="text-align:left">Type de données</th><th style="text-align:left">Description</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Identifiant unique de la table vectorielle. <code translate="no">id</code> s'incrémente automatiquement.</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Nom de la table vectorielle. <code translate="no">table_id</code> doit être défini par l'utilisateur et respecter les directives Linux relatives aux noms de fichiers.</td></tr>
-<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">État de la table vectorielle. 0 signifie normal et 1 signifie supprimé (soft delete).</td></tr>
-<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">Dimension du tableau vectoriel. Doit être définie par l'utilisateur.</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Nombre de millisecondes entre le 1er janvier 1970 et le moment où la table est créée.</td></tr>
-<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">Indicateur à usage interne, indiquant par exemple si l'identifiant du vecteur est défini par l'utilisateur. La valeur par défaut est 0.</td></tr>
-<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">Si la taille d'un fichier de données atteint <code translate="no">index_file_size</code>, le fichier n'est pas combiné et est utilisé pour construire des index. La valeur par défaut est 1024 (MB).</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type d'index à construire pour une table vectorielle. La valeur par défaut est 0, ce qui signifie que l'index n'est pas valide. 1 spécifie FLAT. 2 spécifie IVFLAT. 3 spécifie IVFSQ8. 4 spécifie NSG. 5 spécifie IVFSQ8H.</td></tr>
-<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">Nombre de grappes dans lesquelles les vecteurs de chaque fichier de données sont divisés lors de la construction de l'index. La valeur par défaut est 16384.</td></tr>
-<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Méthode de calcul de la distance entre les vecteurs. 1 spécifie la distance euclidienne (L1) et 2 spécifie le produit intérieur.</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of the vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table. <code translate="no">table_id</code> must be user-defined and follow Linux filename guidelines.</td></tr>
+<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">State of the vector table. 0 stands for normal and 1 stands for deleted (soft delete).</td></tr>
+<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">Vector dimension of the vector table. Must be user-defined.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">Flag for internal use, such as whether the vector id is user-defined. The default is 0.</td></tr>
+<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">If the size of a data file reaches <code translate="no">index_file_size</code>, the file is not combined and is used to build indexes. The default is 1024 (MB).</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">Number of clusters the vectors in each data file are divided into when the index is being built. The default is 16384.</td></tr>
+<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Method to compute vector distance. 1 specifies Euclidean distance (L1) and 2 specifies inner product.</td></tr>
 </tbody>
 </table>
-<p>Le partitionnement des tables est activé dans la version 0.6.0 avec quelques nouveaux champs, dont <code translate="no">owner_table</code>，<code translate="no">partition_tag</code> et <code translate="no">version</code>. Une table vectorielle, <code translate="no">table_1</code>, possède une partition appelée <code translate="no">table_1_p1</code>, qui est également une table vectorielle. <code translate="no">partition_name</code> correspond à <code translate="no">table_id</code>. Les champs d'une table de partition sont hérités de la table propriétaire, le champ <code translate="no">owner table</code> spécifiant le nom de la table propriétaire et le champ <code translate="no">partition_tag</code> spécifiant l'étiquette de la partition.</p>
+<p>Table partitioning is enabled in 0.6.0 with a few new fields, including <code translate="no">owner_table</code>，<code translate="no">partition_tag</code> and <code translate="no">version</code>. A vector table, <code translate="no">table_1</code>, has a partition called <code translate="no">table_1_p1</code>, which is also a vector table. <code translate="no">partition_name</code> corresponds to <code translate="no">table_id</code>. Fields in a partition table are inherited from the owner table, with the <code translate="no">owner table</code> field specifying the name of the owner table and the <code translate="no">partition_tag</code> field specifying the tag of the partition.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
-   </span> <span class="img-wrapper"> <span>tables_new</span> </span></p>
-<p>Le tableau suivant présente les nouveaux champs de la version 0.6.0 :</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
+    <span>tables_new</span>
+  </span>
+</p>
+<p>The following table shows new fields in 0.6.0:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">Nom du champ</th><th style="text-align:left">Type de données</th><th style="text-align:left">Type de données Description</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">string (chaîne de caractères)</td><td style="text-align:left">Table parent de la partition.</td></tr>
-<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">chaîne</td><td style="text-align:left">Étiquette de la partition. Ne doit pas être une chaîne vide.</td></tr>
-<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">chaîne</td><td style="text-align:left">Version de Milvus.</td></tr>
+<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">string</td><td style="text-align:left">Parent table of the partition.</td></tr>
+<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">string</td><td style="text-align:left">Tag of the partition. Must not be an empty string.</td></tr>
+<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">string</td><td style="text-align:left">Milvus version.</td></tr>
 </tbody>
 </table>
-<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">Champs de la table "<code translate="no">TableFiles&quot;</code> </h3><p>L'exemple suivant contient deux fichiers appartenant tous deux à la table vectorielle <code translate="no">table_1</code>. Le type d'index (<code translate="no">engine_type</code>) du premier fichier est 1 (FLAT) ; l'état du fichier (<code translate="no">file_type</code>) est 7 (sauvegarde du fichier original) ; <code translate="no">file_size</code> est 411200113 octets ; le nombre de lignes du vecteur est 200 000. Le type d'index du deuxième fichier est 2 (IVFLAT) ; l'état du fichier est 3 (fichier d'index). Le deuxième fichier est en fait l'index du premier fichier. Nous présenterons plus d'informations dans les prochains articles.</p>
+<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">Fields in the “<code translate="no">TableFiles&quot;</code> table</h3><p>The following example contains two files, which both belong to the <code translate="no">table_1</code> vector table. The index type (<code translate="no">engine_type</code>) of the first file is 1 (FLAT); file status (<code translate="no">file_type</code>) is 7 (backup of the original file); <code translate="no">file_size</code> is 411200113 bytes; number of vector rows is 200,000. The index type of the second file is 2 (IVFLAT); file status is 3 (index file). The second file is actually the index of the first file. We will introduce more information in upcoming articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
-   </span> <span class="img-wrapper"> <span>fichiers de table</span> </span></p>
-<p>Le tableau suivant présente les champs et les descriptions de <code translate="no">TableFiles</code>:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
+    <span>tablefiles</span>
+  </span>
+</p>
+<p>The following table shows fields and descriptions of <code translate="no">TableFiles</code>:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">Nom du champ</th><th style="text-align:left">Type de données</th><th style="text-align:left">Description</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Identifiant unique d'une table vectorielle. <code translate="no">id</code> s'incrémente automatiquement.</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Nom de la table vectorielle.</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type d'index à construire pour une table vectorielle. La valeur par défaut est 0, ce qui signifie que l'index n'est pas valide. 1 spécifie FLAT. 2 spécifie IVFLAT. 3 spécifie IVFSQ8. 4 spécifie NSG. 5 spécifie IVFSQ8H.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">chaîne</td><td style="text-align:left">Nom de fichier généré à partir de l'heure de création du fichier. Egal à 1000 multiplié par le nombre de millisecondes entre le 1er janvier 1970 et l'heure de création de la table.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">État du fichier. 0 indique un fichier de données vectorielles brutes nouvellement généré. 1 spécifie un fichier de données vectorielles brutes. 2 indique qu'un index sera créé pour le fichier. 3 indique que le fichier est un fichier d'index. 4 indique que le fichier sera supprimé (suppression douce). 5 spécifie que le fichier est nouvellement généré et utilisé pour stocker les données de combinaison. 6 indique que le fichier est nouvellement créé et utilisé pour stocker des données d'index. 7 indique l'état de la sauvegarde du fichier de données vectorielles brutes.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">Taille du fichier en octets.</td></tr>
-<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">Nombre de vecteurs dans un fichier.</td></tr>
-<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">Horodatage de la dernière heure de mise à jour, qui spécifie le nombre de millisecondes entre le 1er janvier 1970 et l'heure de création de la table.</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Nombre de millisecondes entre le 1er janvier 1970 et la date de création du tableau.</td></tr>
-<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">Date de création de la table. Elle est encore présente pour des raisons historiques et sera supprimée dans les versions futures.</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of a vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table.</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Filename generated from file creation time. Equals 1000 multiplied by the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">File status. 0 specifies a newly generated raw vector data file. 1 specifies raw vector data file. 2 specifies that index will be built for the file. 3 specifies that the file is an index file. 4 specifies that the file will be deleted (soft delete). 5 specifies that the file is newly-generated and used to store combination data. 6 specifies that the file is newly-generated and used to store index data. 7 specifies the backup status of the raw vector data file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">File size in bytes.</td></tr>
+<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of vectors in a file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">Timestamp for the latest update time, which specifies the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">Date when the table is created. It is still here for historical reasons and will be removed in future versions.</td></tr>
 </tbody>
 </table>
-<h2 id="Related-blogs" class="common-anchor-header">Blogs associés<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -107,6 +111,6 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Gestion des données dans un moteur de recherche vectorielle à grande échelle</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Gestion des métadonnées Milvus (1) : Comment visualiser les métadonnées</a></li>
+<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Managing Data in Massive Scale Vector Search Engine</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus Metadata Management (1): How to View Metadata</a></li>
 </ul>

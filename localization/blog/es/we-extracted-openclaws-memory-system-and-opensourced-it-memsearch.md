@@ -1,8 +1,7 @@
 ---
 id: we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
-title: >-
-  Hemos extraído el sistema de memoria de OpenClaw y lo hemos puesto en código
-  abierto (memsearch)
+title: |
+  We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)
 author: Cheney Zhang
 date: 2026-02-13T00:00:00.000Z
 cover: assets.zilliz.com/memsearch_openclaw_memory_11zon_b2a6b4cbb9.jpg
@@ -15,23 +14,22 @@ meta_keywords: >-
   memsearch
 meta_title: |
   We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)
-desc: >-
-  Hemos extraído la arquitectura de memoria de IA de OpenClaw en memsearch, una
-  biblioteca independiente de Python con registros Markdown, búsqueda vectorial
-  híbrida y compatibilidad con Git.
+desc: >
+  We extracted OpenClaw's AI memory architecture into memsearch — a standalone
+  Python library with Markdown logs, hybrid vector search, and Git support.
 origin: >-
   https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
-<p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (antes clawdbot y moltbot) se está volviendo viral: <a href="https://github.com/openclaw/openclaw">más de 189.000 estrellas de GitHub</a> en menos de dos semanas. Es una locura. La mayor parte de la expectación gira en torno a sus capacidades autónomas y ágiles en los canales de chat cotidianos, como iMessages, WhatsApp, Slack, Telegram y otros.</p>
-<p>Pero como ingenieros que trabajamos en un sistema de base de datos vectorial, lo que realmente nos llamó la atención fue <strong>el enfoque de OpenClaw sobre la memoria a largo plazo</strong>. A diferencia de la mayoría de los sistemas de memoria que existen, OpenClaw hace que su IA escriba automáticamente registros diarios como archivos Markdown. Esos archivos son la fuente de la verdad, y el modelo sólo "recuerda" lo que se escribe en el disco. Los desarrolladores humanos pueden abrir esos archivos Markdown, editarlos directamente, destilar principios a largo plazo y ver exactamente lo que la IA recuerda en cualquier momento. Sin cajas negras. Sinceramente, es una de las arquitecturas de memoria más limpias y fáciles de desarrollar que hemos visto.</p>
-<p>Así que, naturalmente, nos hicimos una pregunta: <strong><em>¿por qué debería funcionar esto sólo dentro de OpenClaw? ¿Y si cualquier agente pudiera tener una memoria como ésta?</em></strong> Tomamos la arquitectura de memoria exacta de OpenClaw y creamos <a href="https://github.com/zilliztech/memsearch">memsearch</a>, una biblioteca de memoria a largo plazo independiente, plug-and-play, que proporciona a cualquier agente una memoria persistente, transparente y editable por humanos. No depende del resto de OpenClaw. Sólo tiene que colocarla y su agente obtendrá una memoria duradera con búsqueda impulsada por Milvus/Zilliz Cloud, además de registros Markdown como fuente canónica de la verdad.</p>
+<p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (previously clawdbot and moltbot) is going viral — <a href="https://github.com/openclaw/openclaw">189k+ GitHub stars</a> in under two weeks. That’s insane. Most of the buzz is around its autonomous, agentic capabilities across everyday chat channels, including iMessages, WhatsApp, Slack, Telegram, and more.</p>
+<p>But as engineers working on a vector database system, what really caught our attention was <strong>OpenClaw’s approach to long-term memory</strong>. Unlike most memory systems out there, OpenClaw has its AI automatically write daily logs as Markdown files. Those files are the source of truth, and the model only “remembers” what gets written to disk. Human developers can open those markdown files, edit them directly, distill long-term principles, and see exactly what the AI remembers at any point. No black boxes. Honestly, it’s one of the cleanest and most developer-friendly memory architectures we’ve seen.</p>
+<p>So naturally, we had a question: <strong><em>why should this only work inside OpenClaw? What if any agent could have memory like this?</em></strong> We took the exact memory architecture from OpenClaw and built <a href="https://github.com/zilliztech/memsearch">memsearch</a> — a standalone, plug-and-play long-term memory library that gives any agent persistent, transparent, human-editable memory. No dependency on the rest of OpenClaw. Just drop it in, and your agent gets durable memory with search powered by Milvus/Zilliz Cloud, plus Markdown logs as the canonical source of truth.</p>
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <ul>
-<li><p><strong>GitHub Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a> (código abierto, licencia MIT)</p></li>
-<li><p><strong>Documentación:</strong> <a href="https://zilliztech.github.io/memsearch/">https://zilliztech.github.io/memsearch/</a></p></li>
-<li><p><strong>Plugin de código Claude:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
+<li><p><strong>GitHub Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a> (open-source, MIT license)</p></li>
+<li><p><strong>Documentation</strong>: <a href="https://zilliztech.github.io/memsearch/">https://zilliztech.github.io/memsearch/</a></p></li>
+<li><p><strong>Claude code plugin:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
 </ul>
-<h2 id="What-Makes-OpenClaws-Memory-Different" class="common-anchor-header">Qué hace diferente a la memoria de OpenClaw<button data-href="#What-Makes-OpenClaws-Memory-Different" class="anchor-icon" translate="no">
+<h2 id="What-Makes-OpenClaws-Memory-Different" class="common-anchor-header">What Makes OpenClaw’s Memory Different<button data-href="#What-Makes-OpenClaws-Memory-Different" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,16 +44,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de sumergirnos en la arquitectura de memoria de OpenClaw, aclaremos dos conceptos: <strong>contexto</strong> y <strong>memoria</strong>. Suenan similares pero funcionan de forma muy diferente en la práctica.</p>
+    </button></h2><p>Before diving into the OpenClaw memory architecture, let’s get two concepts straight: <strong>context</strong> and <strong>memory</strong>. They sound similar but work very differently in practice.</p>
 <ul>
-<li><p><strong>Contexto</strong> es todo lo que el agente ve en una única petición - avisos del sistema, archivos de guía a nivel de proyecto como <code translate="no">AGENTS.md</code> y <code translate="no">SOUL.md</code>, historial de conversaciones (mensajes, llamadas a herramientas, resúmenes comprimidos), y el mensaje actual del usuario. Está limitado a una sesión y es relativamente compacto.</p></li>
-<li><p><strong>La memoria</strong> es lo que persiste a lo largo de las sesiones. Vive en el disco local: el historial completo de conversaciones anteriores, los archivos con los que ha trabajado el agente y las preferencias del usuario. No está resumida. Sin comprimir. El material en bruto.</p></li>
+<li><p><strong>Context</strong> is everything the agent sees in a single request — system prompts, project-level guidance files like <code translate="no">AGENTS.md</code> and <code translate="no">SOUL.md</code>, conversation history (messages, tool calls, compressed summaries), and the user’s current message. It’s scoped to one session and relatively compact.</p></li>
+<li><p><strong>Memory</strong> is what persists across sessions. It lives on your local disk — the full history of past conversations, files the agent has worked with, and user preferences. Not summarized. Not compressed. The raw stuff.</p></li>
 </ul>
-<p>Esta es la decisión de diseño que hace especial el enfoque de OpenClaw: <strong>toda la memoria se almacena como archivos Markdown en el sistema de archivos local.</strong> Después de cada sesión, la IA escribe automáticamente actualizaciones en esos registros Markdown. Usted -y cualquier desarrollador- puede abrirlos, editarlos, reorganizarlos, borrarlos o perfeccionarlos. Mientras tanto, la base de datos vectorial se asienta junto a este sistema, creando y manteniendo un índice para su recuperación. Cada vez que cambia un archivo Markdown, el sistema detecta el cambio y lo vuelve a indexar automáticamente.</p>
-<p>Si has utilizado herramientas como Mem0 o Zep, notarás la diferencia de inmediato. Esos sistemas almacenan las memorias como incrustaciones: ésa es la única copia. No puedes leer lo que tu agente recuerda. No puedes arreglar un mal recuerdo editando una fila. El enfoque de OpenClaw te ofrece ambas cosas: la transparencia de los archivos planos <strong>y</strong> la capacidad de recuperación de la búsqueda vectorial mediante una base de datos vectorial. Puedes leerlo, <code translate="no">git diff</code>, grep it - son sólo archivos.</p>
-<p>¿El único inconveniente? Ahora mismo este sistema de memoria Markdown-first está estrechamente entrelazado con todo el ecosistema OpenClaw: el proceso Gateway, los conectores de plataforma, la configuración del espacio de trabajo y la infraestructura de mensajería. Si sólo quieres el modelo de memoria, es un montón de maquinaria que arrastrar.</p>
-<p>Precisamente por eso hemos creado <a href="http://github.com/zilliztech/memsearch"><strong>memsearch</strong></a>: la misma filosofía -Markdown como fuente de verdad, indexación automática de vectores, totalmente editable por humanos- pero en forma de biblioteca ligera e independiente que puede integrarse en cualquier arquitectura agéntica.</p>
-<h2 id="How-Memsearch-Works" class="common-anchor-header">Cómo funciona memsearch<button data-href="#How-Memsearch-Works" class="anchor-icon" translate="no">
+<p>Now here’s the design decision that makes OpenClaw’s approach special: <strong>all memory is stored as plain Markdown files on the local filesystem.</strong> After each session, the AI writes updates to those Markdown logs automatically. You—and any developer—can open them, edit them, reorganize them, delete them, or refine them. Meanwhile, the vector database sits alongside this system, creating and maintaining an index for retrieval. Whenever a Markdown file changes, the system detects the change and re-indexes it automatically.</p>
+<p>If you’ve used tools like Mem0 or Zep, you’ll notice the difference immediately. Those systems store memories as embeddings — that’s the only copy. You can’t read what your agent remembers. You can’t fix a bad memory by editing a row. OpenClaw’s approach gives you both: the transparency of plain files <strong>and</strong> the retrieval power of vector search using a vector database. You can read it, <code translate="no">git diff</code> it, grep it — it’s just files.</p>
+<p>The only downside? Right now this Markdown-first memory system is tightly intertwined with the full OpenClaw ecosystem—the Gateway process, platform connectors, workspace configuration, and messaging infrastructure. If you only want the memory model, that’s a lot of machinery to drag in.</p>
+<p>Which is exactly why we built <a href="http://github.com/zilliztech/memsearch"><strong>memsearch</strong></a>: the same philosophy—Markdown as source of truth, automatic vector indexing, fully human-editable—but delivered as a lightweight, standalone library you can drop into any agentic architecture.</p>
+<h2 id="How-Memsearch-Works" class="common-anchor-header">How Memsearch Works<button data-href="#How-Memsearch-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,8 +68,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Como se mencionó anteriormente, <a href="https://github.com/zilliztech/memsearch">memsearch</a> es una biblioteca de memoria a largo plazo totalmente independiente que implementa la misma arquitectura de memoria utilizada en OpenClaw, sin llevar consigo el resto de la pila de OpenClaw. Puede conectarla a cualquier estructura de agentes (Claude, GPT, Llama, agentes personalizados, motores de flujo de trabajo) y dotar instantáneamente a su sistema de una memoria persistente, transparente y editable por el ser humano.</p>
-<p>Toda la memoria del agente en memsearch se almacena como texto plano Markdown en un directorio local. La estructura es intencionadamente simple para que los desarrolladores puedan entenderla de un vistazo:</p>
+    </button></h2><p>As mentioned earlier, <a href="https://github.com/zilliztech/memsearch">memsearch</a> is a fully independent long-term memory library that implements the same memory architecture used in OpenClaw—without bringing along the rest of the OpenClaw stack. You can plug it into any agent framework (Claude, GPT, Llama, custom agents, workflow engines) and instantly give your system persistent, transparent, human-editable memory.</p>
+<p>All agent memory in memsearch is stored as plain-text Markdown in a local directory. The structure is intentionally simple so developers can understand it at a glance:</p>
 <pre><code translate="no">~/your-project/
 └── memory/
     ├── MEMORY.md              <span class="hljs-comment"># Hand-written long-term memory</span>
@@ -79,31 +77,31 @@ origin: >-
     ├── 2026-02-08.md
     └── 2026-02-07.md
 <button class="copy-code-btn"></button></code></pre>
-<p>Memsearch utiliza <a href="https://milvus.io/"><strong>Milvus</strong></a> como base de datos vectorial para indexar estos archivos Markdown para una rápida recuperación semántica. Pero lo más importante es que el índice vectorial <em>no</em> es la fuente de la verdad, sino los archivos. Si se elimina por completo el índice Milvus, <strong>no se pierde nada.</strong> Memsearch simplemente vuelve a incrustar y a indexar los archivos Markdown, reconstruyendo toda la capa de recuperación en unos minutos. Esto significa que la memoria de su agente es transparente, duradera y totalmente reconstruible.</p>
-<p>Estas son las principales capacidades de memsearch:</p>
-<h3 id="Readable-Markdown-Makes-Debugging-as-Simple-as-Editing-a-File" class="common-anchor-header">Markdown legible hace que la depuración sea tan sencilla como editar un archivo</h3><p>La depuración de la memoria de la IA suele ser dolorosa. Cuando un agente produce una respuesta errónea, la mayoría de los sistemas de memoria no ofrecen una forma clara de ver <em>lo que</em> realmente almacenó. El flujo de trabajo típico consiste en escribir código personalizado para consultar una API de memoria y, a continuación, escudriñar incrustaciones opacas o ampulosos blobs JSON, ninguno de los cuales dice mucho sobre el estado interno real de la IA.</p>
-<p><strong>memsearch elimina toda esa clase de problemas.</strong> Toda la memoria vive en la carpeta memory/ como Markdown plano:</p>
+<p>Memsearch uses <a href="https://milvus.io/"><strong>Milvus</strong></a> as the vector database to index these Markdown files for fast semantic retrieval. But crucially, the vector index is <em>not</em> the source of truth—the files are. If you delete the Milvus index entirely, <strong>you lose nothing.</strong> Memsearch simply re-embeds and re-indexes the Markdown files, rebuilding the full retrieval layer in a few minutes. This means your agent’s memory is transparent, durable, and fully reconstructable.</p>
+<p>Here are the core capabilities of memsearch:</p>
+<h3 id="Readable-Markdown-Makes-Debugging-as-Simple-as-Editing-a-File" class="common-anchor-header">Readable Markdown Makes Debugging as Simple as Editing a File</h3><p>Debugging AI memory is usually painful. When an agent produces a wrong answer, most memory systems give you no clear way to see <em>what</em> it actually stored. The typical workflow is writing custom code to query a memory API, then sifting through opaque embeddings or verbose JSON blobs—neither of which tell you much about the AI’s real internal state.</p>
+<p><strong>memsearch eliminates that entire class of problems.</strong> All memory lives in the memory/ folder as plain Markdown:</p>
 <pre><code translate="no" class="language-markdown"><span class="hljs-meta">## Morning</span>
 - Fixed N+<span class="hljs-number">1</span> query issue — <span class="hljs-function">switched to <span class="hljs-title">selectinload</span>()
 - Query count dropped <span class="hljs-keyword">from</span> 152 to 3
 </span><button class="copy-code-btn"></button></code></pre>
-<p>Si la IA hace algo mal, arreglarlo es tan sencillo como editar el archivo. Actualiza la entrada, guarda, y memsearch automáticamente vuelve a indexar el cambio. Cinco segundos. Sin llamadas a la API. Sin herramientas. Ningún misterio. Puede depurar la memoria de IA del mismo modo que depura la documentación: editando un archivo.</p>
-<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">La memoria respaldada por Git permite a los equipos rastrear, revisar y revertir cambios</h3><p>La memoria de IA que vive en una base de datos es difícil de colaborar. Averiguar quién cambió qué y cuándo significa excavar en los registros de auditoría, y muchas soluciones ni siquiera los proporcionan. Los cambios se producen en silencio, y los desacuerdos sobre lo que la IA debe recordar no tienen una vía de resolución clara. Los equipos acaban confiando en los mensajes de Slack y en suposiciones.</p>
-<p>Memsearch soluciona este problema convirtiendo la memoria en archivos Markdown, lo que significa que <strong>Git gestiona el versionado automáticamente</strong>. Un solo comando muestra todo el historial:</p>
+<p>If the AI gets something wrong, fixing it is as simple as editing the file. Update the entry, save, and memsearch automatically re-indexes the change. Five seconds. No API calls. No tooling. No mystery. You debug AI memory the same way you debug documentation—by editing a file.</p>
+<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Git-Backed Memory Means Teams Can Track, Review, and Roll Back Changes</h3><p>AI memory that lives in a database is hard to collaborate on. Figuring out who changed what and when means digging through audit logs, and many solutions do not even provide those. Changes happen silently, and disagreements about what the AI should remember have no clear resolution path. Teams end up relying on Slack messages and assumptions.</p>
+<p>Memsearch fixes this problem by making memory just Markdown files—which means <strong>Git handles versioning automatically</strong>. A single command shows the entire history:</p>
 <pre><code translate="no" class="language-bash">git <span class="hljs-built_in">log</span> memory/MEMORY.md
 git diff HEAD~1 memory/2026-02-09.md
 <button class="copy-code-btn"></button></code></pre>
-<p>Ahora la memoria de IA participa en el mismo flujo de trabajo que el código. Las decisiones de arquitectura, las actualizaciones de configuración y los cambios de preferencias aparecen en diffs que cualquiera puede comentar, aprobar o revertir:</p>
+<p>Now AI memory participates in the same workflow as code. Architecture decisions, configuration updates, and preference changes all appear in diffs that anyone can comment on, approve, or revert:</p>
 <pre><code translate="no" class="language-diff">+ <span class="hljs-meta">## Architecture Decision</span>
 + - Use Kafka <span class="hljs-keyword">for</span> <span class="hljs-keyword">event</span> bus instead of RabbitMQ
 + - Reason: better horizontal scaling
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Plaintext-Memory-Makes-Migration-Nearly-Effortless" class="common-anchor-header">La memoria Plaintext hace que la migración sea casi sin esfuerzo</h3><p>La migración es uno de los mayores costes ocultos de los frameworks de memoria. Pasar de una herramienta a otra suele implicar exportar datos, convertir formatos, volver a importar y esperar que los campos sean compatibles. Ese tipo de trabajo puede consumir fácilmente medio día, y el resultado nunca está garantizado.</p>
-<p>memsearch evita el problema por completo porque la memoria es Markdown en texto plano. No hay formato propietario, ni esquema que traducir, ni nada que migrar:</p>
+<h3 id="Plaintext-Memory-Makes-Migration-Nearly-Effortless" class="common-anchor-header">Plaintext Memory Makes Migration Nearly Effortless</h3><p>Migration is one of the biggest hidden costs of memory frameworks. Moving from one tool to another usually means exporting data, converting formats, re-importing, and hoping the fields are compatible. That kind of work can easily eat half a day, and the result is never guaranteed.</p>
+<p>memsearch avoids the problem entirely because memory is plaintext Markdown. There is no proprietary format, no schema to translate, nothing to migrate:</p>
 <ul>
-<li><p><strong>Cambia de máquina:</strong> <code translate="no">rsync</code> la carpeta de memoria. Hecho.</p></li>
-<li><p><strong>Cambia de modelo de incrustación:</strong> Vuelva a ejecutar el comando de índice. Tardará cinco minutos, y los archivos markdown permanecen intactos.</p></li>
-<li><p><strong>Cambiar el despliegue de la base de datos vectorial:</strong> Cambie un valor de configuración. Por ejemplo, pasar de Milvus Lite en desarrollo a Zilliz Cloud en producción:</p></li>
+<li><p><strong>Switch machines:</strong> <code translate="no">rsync</code> the memory folder. Done.</p></li>
+<li><p><strong>Switch embedding models:</strong> Re-run the index command. It’ll take five minutes, and markdown files stay untouched.</p></li>
+<li><p><strong>Switch vector database deployment:</strong> Change one config value. For example, going from Milvus Lite in development to Zilliz Cloud in production:</p></li>
 </ul>
 <pre><code translate="no" class="language-python"><span class="hljs-meta"># Development</span>
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db&quot;</span>)
@@ -111,15 +109,15 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db
 <span class="hljs-meta"># Production (change only this <span class="hljs-keyword">line</span>)</span>
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Sus archivos de memoria permanecen exactamente igual. La infraestructura que los rodea puede evolucionar libremente. El resultado es la portabilidad a largo plazo, una propiedad poco común en los sistemas de IA.</p>
-<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">Los archivos Markdown compartidos permiten a humanos y agentes ser coautores de la memoria</h3><p>En la mayoría de las soluciones de memoria, editar lo que la IA recuerda requiere escribir código en una API. Esto significa que sólo los desarrolladores pueden mantener la memoria de la IA, e incluso para ellos resulta engorroso.</p>
-<p>Memsearch permite una división de responsabilidades más natural:</p>
+<p>Your memory files stay exactly the same. The infrastructure around them can evolve freely. The result is long-term portability—a rare property in AI systems.</p>
+<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">Shared Markdown Files Let Humans and Agents Co-Author Memory</h3><p>In most memory solutions, editing what the AI remembers requires writing code against an API. That means only developers can maintain AI memory, and even for them, it is cumbersome.</p>
+<p>Memsearch enables a more natural division of responsibility:</p>
 <ul>
-<li><p><strong>La IA se encarga:</strong> Registros diarios automáticos (<code translate="no">YYYY-MM-DD.md</code>) con detalles de ejecución como "desplegada v2.3.1, mejora del rendimiento del 12%".</p></li>
-<li><p><strong>Los humanos se encargan:</strong> Principios a largo plazo en <code translate="no">MEMORY.md</code>, como "Team stack: Python + FastAPI + PostgreSQL".</p></li>
+<li><p><strong>AI handles:</strong> Automatic daily logs (<code translate="no">YYYY-MM-DD.md</code>) with execution details like “deployed v2.3.1, 12% performance improvement.”</p></li>
+<li><p><strong>Humans handle:</strong> Long-term principles in <code translate="no">MEMORY.md</code>, like “Team stack: Python + FastAPI + PostgreSQL.”</p></li>
 </ul>
-<p>Ambas partes editan los mismos archivos Markdown con las herramientas que ya utilizan. Sin llamadas a API, sin herramientas especiales, sin guardián. Cuando la memoria está bloqueada dentro de una base de datos, este tipo de autoría compartida no es posible. memsearch lo hace por defecto.</p>
-<h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">Bajo el capó: memsearch funciona con cuatro flujos de trabajo que mantienen la memoria rápida, fresca y ágil<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
+<p>Both sides edit the same Markdown files with whatever tools they already use. No API calls, no special tooling, no gatekeeper. When memory is locked inside a database, this kind of shared authorship is not possible. memsearch makes it the default.</p>
+<h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">Under the Hood: memsearch Runs on Four Workflows That Keep Memory Fast, Fresh, and Lean<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -140,13 +138,13 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
     <span></span>
   </span>
 </p>
-<p>memsearch tiene cuatro flujos de trabajo principales: <strong>Observar</strong> (monitorizar) → <strong>Indexar</strong> (trocear e incrustar) → <strong>Buscar</strong> (recuperar) → <strong>Compactar</strong> (resumir). Esto es lo que hace cada uno de ellos</p>
-<h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1. Observar: Vuelve a indexar automáticamente cada vez que se guarda un archivo</h3><p>El flujo de trabajo <strong>Watch</strong> monitoriza todos los archivos Markdown en la memoria/directorio y activa un re-indexado cada vez que un archivo es modificado y guardado. Un <strong>retardo de 1500 ms</strong> garantiza que las actualizaciones se detecten sin malgastar recursos: si se guardan varios archivos en rápida sucesión, el temporizador se reinicia y se activa sólo cuando las ediciones se han estabilizado.</p>
-<p>Este retraso se ajusta empíricamente:</p>
+<p>memsearch has four core workflows: <strong>Watch</strong> (monitor) → <strong>Index</strong> (chunk and embed) → <strong>Search</strong> (retrieve) → <strong>Compact</strong> (summarize). Here is what each one does.</p>
+<h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1. Watch: Automatically Re-Index on Every File Save</h3><p>The <strong>Watch</strong> workflow monitors all Markdown files in the memory/ directory and triggers a re-index whenever a file is modified and saved. A <strong>1500ms debounce</strong> ensures updates are detected without wasting compute: if multiple saves occur in quick succession, the timer resets and fires only when edits have stabilized.</p>
+<p>That delay is empirically tuned:</p>
 <ul>
-<li><p><strong>100ms</strong> → demasiado sensible; se dispara en cada pulsación de tecla, quemando llamadas de incrustación.</p></li>
-<li><p><strong>10s</strong> → demasiado lento; los desarrolladores notan retraso</p></li>
-<li><p><strong>1500ms</strong> → equilibrio ideal entre capacidad de respuesta y eficiencia de recursos.</p></li>
+<li><p><strong>100ms</strong> → too sensitive; fires on every keystroke, burning embedding calls</p></li>
+<li><p><strong>10s</strong> → too slow; developers notice lag</p></li>
+<li><p><strong>1500ms</strong> → ideal balance of responsiveness and resource efficiency</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -154,10 +152,10 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
     <span></span>
   </span>
 </p>
-<p>En la práctica, esto significa que un desarrollador puede escribir código en una ventana y editar <code translate="no">MEMORY.md</code> en otra, añadiendo una URL de API docs o corrigiendo una entrada obsoleta. Guarda el archivo y la siguiente consulta de IA recoge la nueva memoria. Sin reinicios ni reindexación manual.</p>
-<h3 id="2-Index-Smart-Chunking-Deduplication-and-Version-Aware-Embeddings" class="common-anchor-header">2. Índice: Agrupación, deduplicación e incrustación inteligente en función de la versión</h3><p>Index es el flujo de trabajo crítico para el rendimiento. Se encarga de tres cosas: la <strong>fragmentación, la deduplicación y los identificadores de fragmentos versionados.</strong></p>
-<p><strong>La fragmentación</strong> divide el texto a lo largo de los límites semánticos -encabezamientos y cuerpos- para que el contenido relacionado permanezca unido. Esto evita casos en los que una frase como "configuración de Redis" se divide en varios chunks.</p>
-<p>Por ejemplo, este Markdown:</p>
+<p>In practice, this means a developer can write code in one window and edit <code translate="no">MEMORY.md</code> in another, adding an API docs URL or correcting an outdated entry. Save the file, and the next AI query picks up the new memory. No restart, no manual re-index.</p>
+<h3 id="2-Index-Smart-Chunking-Deduplication-and-Version-Aware-Embeddings" class="common-anchor-header">2. Index: Smart Chunking, Deduplication, and Version-Aware Embeddings</h3><p>Index is the performance-critical workflow. It handles three things: <strong>chunking, deduplication, and versioned chunk IDs.</strong></p>
+<p><strong>Chunking</strong> splits text along semantic boundaries—headings and their bodies—so related content stays together. This avoids cases where a phrase like “Redis configuration” gets split across chunks.</p>
+<p>For example, this Markdown:</p>
 <pre><code translate="no" class="language-markdown"><span class="hljs-comment">## Redis Caching</span>
 We use Redis <span class="hljs-keyword">for</span> L1 cache <span class="hljs-keyword">with</span> 5<span class="hljs-built_in">min</span> TTL.
 The connection pool <span class="hljs-keyword">is</span> configured <span class="hljs-keyword">with</span> <span class="hljs-built_in">max</span> <span class="hljs-number">100</span> connections.
@@ -165,22 +163,22 @@ The connection pool <span class="hljs-keyword">is</span> configured <span class=
 <span class="hljs-comment">## Database</span>
 PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</span> the primary database.
 <button class="copy-code-btn"></button></code></pre>
-<p>Se convierte en dos trozos:</p>
+<p>Becomes two chunks:</p>
 <ul>
-<li><p>Fragmento 1: <code translate="no">## Redis Caching\nWe use Redis for L1 cache...</code></p></li>
-<li><p>Fragmento 2: <code translate="no">## Database\nPostgreSQL 16 is the primary database.</code></p></li>
+<li><p>Chunk 1: <code translate="no">## Redis Caching\nWe use Redis for L1 cache...</code></p></li>
+<li><p>Chunk 2: <code translate="no">## Database\nPostgreSQL 16 is the primary database.</code></p></li>
 </ul>
-<p><strong>La deduplicación</strong> utiliza un hash SHA-256 de cada chunk para evitar incrustar el mismo texto dos veces. Si varios archivos mencionan "PostgreSQL 16", la API de incrustación se llama una vez, no una vez por archivo. Para ~500KB de texto, esto ahorra alrededor de <strong>$0.15/mes.</strong> A escala, eso suma cientos de dólares.</p>
-<p><strong>El diseño del Chunk ID</strong> codifica todo lo necesario para saber si un chunk es antiguo. El formato es <code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code>. El campo <code translate="no">model_version</code> es la parte importante: cuando un modelo de incrustación se actualiza de <code translate="no">text-embedding-3-small</code> a <code translate="no">text-embedding-3-large</code>, las antiguas incrustaciones dejan de ser válidas. Dado que la versión del modelo está integrada en el ID, el sistema identifica automáticamente los fragmentos que deben volver a incrustarse. No es necesaria ninguna limpieza manual.</p>
-<h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3. 3. Búsqueda: Recuperación híbrida de vectores + BM25 para obtener la máxima precisión</h3><p>La recuperación utiliza un enfoque de búsqueda híbrido: búsqueda vectorial ponderada al 70% y búsqueda de palabras clave BM25 ponderada al 30%. De este modo se equilibran dos necesidades diferentes que surgen con frecuencia en la práctica.</p>
+<p><strong>Deduplication</strong> uses a SHA-256 hash of each chunk to avoid embedding the same text twice. If multiple files mention “PostgreSQL 16,” the embedding API is called once, not once per file. For ~500KB of text, this saves around <strong>$0.15/month.</strong> At scale, that adds up to hundreds of dollars.</p>
+<p><strong>Chunk ID design</strong> encodes everything needed to know whether a chunk is stale. The format is <code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code>. The <code translate="no">model_version</code> field is the important part: when an embedding model is upgraded from <code translate="no">text-embedding-3-small</code> to <code translate="no">text-embedding-3-large</code>, the old embeddings become invalid. Because the model version is baked into the ID, the system automatically identifies which chunks need re-embedding. No manual cleanup required.</p>
+<h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3. Search: Hybrid Vector + BM25 Retrieval for Maximum Accuracy</h3><p>Retrieval uses a hybrid search approach: vector search weighted at 70% and BM25 keyword search weighted at 30%. This balances two different needs that arise frequently in practice.</p>
 <ul>
-<li><p>La<strong>búsqueda v</strong> ectorial se encarga de la correspondencia semántica. Una consulta sobre "Redis cache config" devuelve un chunk que contiene "Redis L1 cache with 5min TTL" aunque la redacción sea diferente. Esto es útil cuando el desarrollador recuerda el concepto pero no la formulación exacta.</p></li>
-<li><p><strong>BM25</strong> gestiona la correspondencia exacta. Una consulta para "PostgreSQL 16" no devuelve resultados sobre "PostgreSQL 15". Esto es importante para los códigos de error, los nombres de las funciones y el comportamiento específico de la versión, donde lo cercano no es suficiente.</p></li>
+<li><p><strong>Vector search</strong> handles semantic matching. A query for “Redis cache config” returns a chunk containing “Redis L1 cache with 5min TTL” even though the wording is different. This is useful when the developer remembers the concept but not the exact phrasing.</p></li>
+<li><p><strong>BM25</strong> handles exact matching. A query for “PostgreSQL 16” does not return results about “PostgreSQL 15.” This matters for error codes, function names, and version-specific behavior, where close is not good enough.</p></li>
 </ul>
-<p>La división por defecto 70/30 funciona bien para la mayoría de los casos de uso. Para los flujos de trabajo que se inclinan en gran medida hacia las coincidencias exactas, aumentar el peso de BM25 al 50% es un cambio de configuración de una sola línea.</p>
-<p>Los resultados se devuelven en trozos top-K (por defecto 3), cada uno truncado a 200 caracteres. Cuando se necesita el contenido completo, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> lo carga. Esta revelación progresiva mantiene el uso reducido de la ventana contextual LLM sin sacrificar el acceso a los detalles.</p>
-<h3 id="4-Compact-Summarize-Historical-Memory-to-Keep-Context-Clean" class="common-anchor-header">4. Compacta: Resumir la memoria histórica para mantener limpio el contexto</h3><p>La memoria acumulada acaba convirtiéndose en un problema. Las entradas antiguas llenan la ventana de contexto, aumentan el coste de los tokens y añaden ruido que degrada la calidad de la respuesta. Compact soluciona este problema llamando a un LLM para que resuma la memoria histórica en un formato condensado y, a continuación, borrando o archivando los originales. Puede activarse manualmente o programarse para que se ejecute a intervalos regulares.</p>
-<h2 id="How-to-get-started-with-memsearch" class="common-anchor-header">Cómo empezar a utilizar memsearch<button data-href="#How-to-get-started-with-memsearch" class="anchor-icon" translate="no">
+<p>The default 70/30 split works well for most use cases. For workflows that lean heavily toward exact matches, raising the BM25 weight to 50% is a one-line configuration change.</p>
+<p>Results are returned as top-K chunks (default 3), each truncated to 200 characters. When the full content is needed, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> loads it. This progressive disclosure keeps LLM context window usage lean without sacrificing access to detail.</p>
+<h3 id="4-Compact-Summarize-Historical-Memory-to-Keep-Context-Clean" class="common-anchor-header">4. Compact: Summarize Historical Memory to Keep Context Clean</h3><p>Accumulated memory eventually becomes a problem. Old entries fill the context window, increase token costs, and add noise that degrades answer quality. Compact addresses this by calling an LLM to summarize historical memory into a condensed form, then deleting or archiving the originals. It can be triggered manually or scheduled to run on a regular interval.</p>
+<h2 id="How-to-get-started-with-memsearch" class="common-anchor-header">How to get started with memsearch<button data-href="#How-to-get-started-with-memsearch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -195,18 +193,18 @@ PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Memsearch proporciona tanto una <strong>API Python</strong> como una <strong>CLI</strong>, por lo que puedes utilizarlo dentro de frameworks de agentes o como una herramienta de depuración independiente. La configuración es mínima, y el sistema está diseñado para que su entorno de desarrollo local y el despliegue de producción parezcan casi idénticos.</p>
-<p>Memsearch soporta tres backends compatibles con Milvus, todos expuestos a través de la <strong>misma API</strong>:</p>
+    </button></h2><p>Memsearch provides both a <strong>Python API</strong> and a <strong>CLI</strong>, so you can use it inside agent frameworks or as a standalone debugging tool. Setup is minimal, and the system is designed so your local development environment and production deployment look almost identical.</p>
+<p>Memsearch supports three Milvus-compatible backends, all exposed through the <strong>same API</strong>:</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite (por defecto)</strong></a><strong>:</strong> Archivo local <code translate="no">.db</code>, configuración cero, adecuado para uso individual.</p></li>
-<li><p><strong>Milvus Standalone / Cluster:</strong> Autoalojado, soporta múltiples agentes que comparten datos, adecuado para entornos de equipo.</p></li>
-<li><p><a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a><strong>:</strong> Totalmente gestionado, con autoescalado, copias de seguridad, alta disponibilidad y aislamiento. Ideal para cargas de trabajo de producción.</p></li>
+<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite (default)</strong></a><strong>:</strong> Local <code translate="no">.db</code> file, zero configuration, suited for individual use.</p></li>
+<li><p><strong>Milvus Standalone / Cluster:</strong> Self-hosted, supports multiple agents sharing data, suited for team environments.</p></li>
+<li><p><a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a><strong>:</strong> Fully managed, with auto-scaling, backups, high availability, and isolation. Ideal for production workloads.</p></li>
 </ul>
-<p>El cambio de desarrollo local a producción suele <strong>ser un cambio de configuración de una sola línea</strong>. Su código sigue siendo el mismo.</p>
-<h3 id="Install" class="common-anchor-header">Instalar</h3><pre><code translate="no" class="language-bash">pip install memsearch
+<p>Switching from local development to production is typically <strong>a one-line config change</strong>. Your code stays the same.</p>
+<h3 id="Install" class="common-anchor-header">Install</h3><pre><code translate="no" class="language-bash">pip install memsearch
 <button class="copy-code-btn"></button></code></pre>
-<p>memsearch también soporta múltiples proveedores de incrustación, incluyendo OpenAI, Google, Voyage, Ollama y modelos locales. Esto asegura que su arquitectura de memoria se mantiene portátil y agnóstica.</p>
-<h3 id="Option-1-Python-API-integrated-into-your-agent-framework" class="common-anchor-header">Opción 1: API Python (integrada en el marco de trabajo del agente)</h3><p>Aquí tienes un ejemplo mínimo de un bucle de agente completo utilizando memsearch. Puedes copiar/pegar y modificar según necesites:</p>
+<p>memsearch also supports multiple embedding providers, including OpenAI, Google, Voyage, Ollama, and local models. This ensures your memory architecture stays portable and vendor-agnostic.</p>
+<h3 id="Option-1-Python-API-integrated-into-your-agent-framework" class="common-anchor-header">Option 1: Python API (integrated into your agent framework)</h3><p>Here is a minimal example of a full agent loop using memsearch. You can copy/paste and modify as needed:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> memsearch <span class="hljs-keyword">import</span> MemSearch
 
@@ -232,21 +230,21 @@ ms = MemSearch(paths=[<span class="hljs-string">&quot;./memory/&quot;</span>])
     <span class="hljs-keyword">await</span> ms.index()
     <span class="hljs-keyword">return</span> resp.choices[<span class="hljs-number">0</span>].message.content
 <button class="copy-code-btn"></button></code></pre>
-<p>Muestra el bucle central:</p>
+<p>This shows the core loop:</p>
 <ul>
-<li><p><strong>Recuerda</strong>: memsearch realiza una recuperación híbrida de vector + BM25</p></li>
-<li><p><strong>Piensa</strong>: tu LLM procesa la entrada del usuario + la memoria recuperada</p></li>
-<li><p><strong>Recuerda</strong>: el agente escribe nueva memoria en Markdown, y memsearch actualiza su índice</p></li>
+<li><p><strong>Recall</strong>: memsearch performs hybrid vector + BM25 retrieval</p></li>
+<li><p><strong>Think</strong>: your LLM processes the user input + retrieved memory</p></li>
+<li><p><strong>Remember</strong>: the agent writes new memory to Markdown, and memsearch updates its index</p></li>
 </ul>
-<p>Este patrón encaja de forma natural en cualquier sistema de agente: LangChain, AutoGPT, enrutadores semánticos, LangGraph o bucles de agente personalizados. Su diseño es independiente del marco de trabajo.</p>
-<h3 id="Option-2-CLI-quick-operations-good-for-debugging" class="common-anchor-header">Opción 2: CLI (operaciones rápidas, bueno para depuración)</h3><p>La CLI es ideal para flujos de trabajo autónomos, comprobaciones rápidas o inspección de memoria durante el desarrollo:</p>
+<p>This pattern fits naturally into any agent system—LangChain, AutoGPT, semantic routers, LangGraph, or custom agent loops. It’s framework-agnostic by design.</p>
+<h3 id="Option-2-CLI-quick-operations-good-for-debugging" class="common-anchor-header">Option 2: CLI (quick operations, good for debugging)</h3><p>The CLI is ideal for standalone workflows, quick checks, or inspecting memory during development:</p>
 <pre><code translate="no" class="language-bash">memsearch index ./docs/              <span class="hljs-comment"># Index files</span>
 memsearch search <span class="hljs-string">&quot;Redis caching&quot;</span>     <span class="hljs-comment"># Search</span>
 memsearch watch ./docs/              <span class="hljs-comment"># Watch for file changes</span>
 memsearch compact                    <span class="hljs-comment"># Compact old memory</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>La CLI refleja las capacidades de la API de Python, pero funciona sin necesidad de escribir ningún código: ideal para depuración, inspecciones, migraciones o validación de la estructura de carpetas de memoria.</p>
-<h2 id="How-memsearch-Compares-to-Other-Memory-Solutions" class="common-anchor-header">Comparación de memsearch con otras soluciones de memoria<button data-href="#How-memsearch-Compares-to-Other-Memory-Solutions" class="anchor-icon" translate="no">
+<p>The CLI mirrors the Python API’s capabilities but works without writing any code—great for debugging, inspections, migrations, or validating your memory folder structure.</p>
+<h2 id="How-memsearch-Compares-to-Other-Memory-Solutions" class="common-anchor-header">How memsearch Compares to Other Memory Solutions<button data-href="#How-memsearch-Compares-to-Other-Memory-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -261,19 +259,19 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La pregunta más común que se hacen los desarrolladores es por qué utilizar memsearch cuando ya existen opciones establecidas. La respuesta corta: memsearch cambia características avanzadas como los gráficos de conocimiento temporal por transparencia, portabilidad y simplicidad. Para la mayoría de los casos de uso de la memoria de agentes, es el compromiso correcto.</p>
+    </button></h2><p>The most common question developers ask is why they would use memsearch when established options already exist. The short answer: memsearch trades advanced features like temporal knowledge graphs for transparency, portability, and simplicity. For most agent memory use cases, that is the right tradeoff.</p>
 <table>
 <thead>
-<tr><th>Solución</th><th>Puntos fuertes</th><th>Limitaciones</th><th>Lo mejor para</th></tr>
+<tr><th>Solution</th><th>Strengths</th><th>Limitations</th><th>Best For</th></tr>
 </thead>
 <tbody>
-<tr><td>memsearch</td><td>Memoria de texto plano transparente, co-autoría humano-AI, cero fricciones de migración, depuración sencilla, Git-native</td><td>No incorpora grafos temporales ni complejas estructuras de memoria multiagente.</td><td>Equipos que valoran el control, la simplicidad y la portabilidad en la memoria a largo plazo</td></tr>
-<tr><td>Mem0</td><td>Totalmente gestionado, sin infraestructura que ejecutar o mantener</td><td>Opaca: no se puede inspeccionar ni editar manualmente la memoria; las incrustaciones son la única representación.</td><td>Equipos que desean un servicio gestionado sin intervención y están de acuerdo con una menor visibilidad</td></tr>
-<tr><td>Zep</td><td>Amplio conjunto de funciones: memoria temporal, modelado multipersona, grafos de conocimiento complejos.</td><td>Arquitectura pesada; más piezas móviles; más difícil de aprender y manejar</td><td>Agentes que realmente necesitan estructuras de memoria avanzadas o razonamiento temporal</td></tr>
-<tr><td>LangMem / Letta</td><td>Integración profunda y sin fisuras en sus propios ecosistemas.</td><td>Bloqueo del marco; difícil de portar a otras pilas de agentes.</td><td>Equipos ya comprometidos con esos marcos específicos.</td></tr>
+<tr><td>memsearch</td><td>Transparent plaintext memory, human-AI co-authoring, zero migration friction, easy debugging, Git-native</td><td>No built-in temporal graphs or complex multi-agent memory structures</td><td>Teams that value control, simplicity, and portability in long-term memory</td></tr>
+<tr><td>Mem0</td><td>Fully managed, no infrastructure to run or maintain</td><td>Opaque—cannot inspect or manually edit memory; embeddings are the only representation</td><td>Teams that want a hands-off managed service and are okay with less visibility</td></tr>
+<tr><td>Zep</td><td>Rich feature set: temporal memory, multi-persona modeling, complex knowledge graphs</td><td>Heavy architecture; more moving pieces; harder to learn and operate</td><td>Agents that truly need advanced memory structures or time-aware reasoning</td></tr>
+<tr><td>LangMem / Letta</td><td>Deep, seamless integration inside their own ecosystems</td><td>Framework lock-in; hard to port to other agent stacks</td><td>Teams already committed to those specific frameworks</td></tr>
 </tbody>
 </table>
-<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Pruebe memsearch y háganos llegar sus comentarios<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Try memsearch and let us know your feedback<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -288,20 +286,20 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Memsearch es completamente de código abierto bajo la licencia MIT, y el repositorio está listo para experimentos de producción hoy mismo.</p>
+    </button></h2><p>Memsearch is fully open source under the MIT license, and the repository is ready for production experiments today.</p>
 <ul>
 <li><p><strong>Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
-<li><p><strong>Documentación:</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>
+<li><p><strong>Docs:</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>
 </ul>
-<p>Si estás construyendo un agente que necesita recordar cosas entre sesiones y quieres un control total sobre lo que recuerda, merece la pena echar un vistazo a memsearch. La librería se instala con un simple <code translate="no">pip install</code>, funciona con cualquier framework de agente, y almacena todo como Markdown que puedes leer, editar y versionar con Git.</p>
-<p>Estamos desarrollando memsearch activamente y nos encantaría recibir aportaciones de la comunidad.</p>
+<p>If you are building an agent that needs to remember things across sessions and want full control over what it remembers, memsearch is worth a look. The library installs with a single <code translate="no">pip install</code>, works with any agent framework, and stores everything as Markdown that you can read, edit, and version with Git.</p>
+<p>We are actively developing memsearch and would love input from the community.</p>
 <ul>
-<li><p>Abre una incidencia si algo se rompe.</p></li>
-<li><p>Envía un PR si quieres extender la librería.</p></li>
-<li><p>Haz una estrella en el repositorio si la filosofía de Markdown-como-fuente-de-la-verdad resuena contigo.</p></li>
+<li><p>Open an issue if something breaks.</p></li>
+<li><p>Submit a PR if you want to extend the library.</p></li>
+<li><p>Star the repo if the Markdown-as-source-of-truth philosophy resonates with you.</p></li>
 </ul>
-<p>El sistema de memoria de OpenClaw ya no está bloqueado dentro de OpenClaw. Ahora, cualquiera puede usarlo.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Seguir leyendo<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p>OpenClaw’s memory system is no longer locked inside OpenClaw. Now, anyone can use it.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -317,9 +315,9 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">¿Qué es OpenClaw? Guía completa del agente de IA de código abierto</a></p></li>
-<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Tutorial de OpenClaw: Conéctate a Slack para un asistente de IA local</a></p></li>
-<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Construir agentes de IA estilo Clawdbot con LangGraph y Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">RAG vs Agentes de larga duración: ¿Está obsoleta la RAG?</a></p></li>
-<li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">Crear una habilidad antrópica personalizada para Milvus para hacer girar rápidamente RAG</a></p></li>
+<li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a></p></li>
+<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></p></li>
+<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Build Clawdbot-Style AI Agents with LangGraph &amp; Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">RAG vs Long-Running Agents: Is RAG Obsolete?</a></p></li>
+<li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">Create a Custom Anthropic Skill for Milvus to Quickly Spin Up RAG</a></p></li>
 </ul>

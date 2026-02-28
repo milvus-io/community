@@ -1,15 +1,14 @@
 ---
 id: >-
   hands-on-tutorial-build-your-own-coding-copilot-with-qwen3-coder-qwen-code-and-code-context.md
-title: >-
-  Tutorial prático: Construa seu próprio copiloto de codificação com
-  Qwen3-Coder, Qwen Code e Code Context
+title: >
+  Hands-on Tutorial: Build Your Own Coding Copilot with Qwen3-Coder, Qwen Code,
+  and Code Context
 author: Lumina Wang
 date: 2025-07-29T00:00:00.000Z
 desc: >-
-  Aprenda a criar seu próprio copiloto de codificação de IA usando o
-  Qwen3-Coder, o Qwen Code CLI e o plug-in Code Context para uma compreensão
-  semântica profunda do código.
+  Learn to create your own AI coding copilot using Qwen3-Coder, Qwen Code CLI,
+  and the Code Context plugin for deep semantic code understanding.
 cover: assets.zilliz.com/_9dfadf5877.png
 tag: Tutorials
 recommend: false
@@ -21,9 +20,9 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/hands-on-tutorial-build-your-own-coding-copilot-with-qwen3-coder-qwen-code-and-code-context.md
 ---
-<p>O campo de batalha dos assistentes de codificação com IA está a aquecer rapidamente. Vimos <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md#Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely">o Claude Code</a> da Anthropic a fazer ondas, o <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md#Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely">Gemini CLI</a> da Google a agitar os fluxos de trabalho dos terminais, o Codex da OpenAI a alimentar o GitHub Copilot, o Cursor a conquistar os utilizadores do VS Code e <strong>agora o Alibaba Cloud entra com o Qwen Code.</strong></p>
-<p>Honestamente, estas são óptimas notícias para os programadores. Mais jogadores significam melhores ferramentas, recursos inovadores e, o mais importante, <strong>alternativas de código aberto</strong> para soluções proprietárias caras. Vamos aprender o que este último jogador traz para a mesa.</p>
-<h2 id="Meet-Qwen3-Coder-and-Qwen-Code" class="common-anchor-header">Conheça o Qwen3-Coder e o Qwen Code<button data-href="#Meet-Qwen3-Coder-and-Qwen-Code" class="anchor-icon" translate="no">
+<p>The AI coding assistant battlefield is heating up fast. We’ve seen <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md#Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely">Claude Code</a> from Anthropic making waves, Google’s <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md#Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely">Gemini CLI</a> shaking up terminal workflows, OpenAI’s Codex powering GitHub Copilot, Cursor winning over VS Code users, and <strong>now Alibaba Cloud enters with Qwen Code.</strong></p>
+<p>Honestly, this is great news for developers. More players mean better tools, innovative features, and most importantly, <strong>open-source alternatives</strong> to expensive proprietary solutions. Let’s learn what this latest player brings to the table.</p>
+<h2 id="Meet-Qwen3-Coder-and-Qwen-Code" class="common-anchor-header">Meet Qwen3-Coder and Qwen Code<button data-href="#Meet-Qwen3-Coder-and-Qwen-Code" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,9 +37,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A Alibaba Cloud lançou recentemente<a href="https://github.com/QwenLM/Qwen3-Coder"> <strong>o Qwen3-Coder</strong></a>, um modelo de codificação agêntica de código aberto que alcança resultados de última geração em vários benchmarks. Também lançaram<a href="https://github.com/QwenLM/qwen-code"> <strong>o Qwen Code</strong></a>, uma ferramenta CLI de codificação de IA de código aberto criada no Gemini CLI, mas aprimorada com analisadores especializados para o Qwen3-Coder.</p>
-<p>O modelo principal, <strong>Qwen3-Coder-480B-A35B-Instruct</strong>, oferece recursos impressionantes: suporte nativo para 358 linguagens de programação, janela de contexto de 256K tokens (expansível para 1M tokens via YaRN) e integração perfeita com Claude Code, Cline e outros assistentes de codificação.</p>
-<h2 id="The-Universal-Blind-Spot-in-Modern-AI-Coding-Copilots" class="common-anchor-header">O ponto cego universal nos copilotos de codificação de IA modernos<button data-href="#The-Universal-Blind-Spot-in-Modern-AI-Coding-Copilots" class="anchor-icon" translate="no">
+    </button></h2><p>Alibaba Cloud recently released<a href="https://github.com/QwenLM/Qwen3-Coder"> <strong>Qwen3-Coder</strong></a>, an open-source agentic coding model achieving state-of-the-art results across multiple benchmarks. They also launched<a href="https://github.com/QwenLM/qwen-code"> <strong>Qwen Code</strong></a>, an open-source AI coding CLI tool built on Gemini CLI but enhanced with specialized parsers for Qwen3-Coder.</p>
+<p>The flagship model, <strong>Qwen3-Coder-480B-A35B-Instruct</strong>, delivers impressive capabilities: native support for 358 programming languages, 256K token context window (expandable to 1M tokens via YaRN), and seamless integration with Claude Code, Cline, and other coding assistants.</p>
+<h2 id="The-Universal-Blind-Spot-in-Modern-AI-Coding-Copilots" class="common-anchor-header">The Universal Blind Spot in Modern AI Coding Copilots<button data-href="#The-Universal-Blind-Spot-in-Modern-AI-Coding-Copilots" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,10 +54,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Embora o Qwen3-Coder seja poderoso, estou mais interessado no seu assistente de codificação: <strong>Código Qwen</strong>. Eis o que achei interessante. Apesar de toda a inovação, o Qwen Code partilha exatamente a mesma limitação que o Claude Code e o Gemini CLI: <strong><em>são óptimos a gerar código novo, mas têm dificuldade em compreender as bases de código existentes.</em></strong></p>
-<p>Veja este exemplo: pede-se ao Gemini CLI ou ao Qwen Code para "encontrar onde este projeto lida com a autenticação do utilizador". A ferramenta começa a procurar por palavras-chave óbvias como "login" ou "password", mas perde completamente essa função crítica <code translate="no">verifyCredentials()</code>. A menos que você esteja disposto a queimar tokens alimentando toda a sua base de código como contexto - o que é caro e demorado - essas ferramentas atingem uma barreira muito rapidamente.</p>
-<p><strong><em>Esta é a verdadeira lacuna nas ferramentas de IA atuais: compreensão inteligente do contexto do código.</em></strong></p>
-<h2 id="Supercharge-Any-Coding-Copilot-with-Semantic-Code-Search" class="common-anchor-header">Supercarregar qualquer copiloto de codificação com pesquisa de código semântico<button data-href="#Supercharge-Any-Coding-Copilot-with-Semantic-Code-Search" class="anchor-icon" translate="no">
+    </button></h2><p>While Qwen3-Coder is powerful, I am more interested in its coding assistant: <strong>Qwen Code</strong>. Here’s what I found interesting. Despite all the innovation, Qwen Code shares the exact same limitation as Claude Code and Gemini CLI: <strong><em>they’re great at generating fresh code but struggle with understanding existing codebases.</em></strong></p>
+<p>Take this example: you ask Gemini CLI or Qwen Code to “find where this project handles user authentication.” The tool starts hunting for obvious keywords like “login” or “password” but completely misses that critical <code translate="no">verifyCredentials()</code> function. Unless you’re willing to burn through tokens by feeding your entire codebase as context—which is both expensive and time-consuming—these tools hit a wall pretty quickly.</p>
+<p><strong><em>This is the real gap in today’s AI tooling: intelligent code context understanding.</em></strong></p>
+<h2 id="Supercharge-Any-Coding-Copilot-with-Semantic-Code-Search" class="common-anchor-header">Supercharge Any Coding Copilot with Semantic Code Search<button data-href="#Supercharge-Any-Coding-Copilot-with-Semantic-Code-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,10 +72,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>E se você pudesse dar a qualquer copiloto de codificação de IA - seja o Claude Code, Gemini CLI ou Qwen Code - a capacidade de realmente entender sua base de código semanticamente? E se pudesse construir algo tão poderoso como o Cursor para os seus próprios projectos sem ter de pagar as elevadas taxas de subscrição, mantendo o controlo total sobre o seu código e dados?</p>
-<p>Bem, entre no<a href="https://github.com/zilliztech/code-context"> <strong>Code Context - um</strong></a>plug-in de código aberto e compatível com MCP que transforma qualquer agente de codificação de IA em uma potência com reconhecimento de contexto. É como dar ao seu assistente de IA a memória institucional de um programador sénior que trabalhou na sua base de código durante anos. Quer esteja a utilizar o Qwen Code, o Claude Code, o Gemini CLI, a trabalhar em VSCode ou mesmo a codificar no Chrome, <strong>o Code Context</strong> traz a pesquisa de código semântico para o seu fluxo de trabalho.</p>
-<p>Pronto para ver como isso funciona? Vamos construir um copiloto de codificação de IA de nível empresarial usando <strong>Qwen3-Coder + Qwen Code + Code Context</strong>.</p>
-<h2 id="Hands-On-Tutorial-Building-Your-Own-AI-Coding-Copilot" class="common-anchor-header">Tutorial prático: Criando seu próprio copiloto de codificação de IA<button data-href="#Hands-On-Tutorial-Building-Your-Own-AI-Coding-Copilot" class="anchor-icon" translate="no">
+    </button></h2><p>What if you could give any AI coding copilot—whether it’s Claude Code, Gemini CLI, or Qwen Code—the ability to truly understand your codebase semantically? What if you could build something as powerful as Cursor for your own projects without the hefty subscription fees, while maintaining complete control over your code and data?</p>
+<p>Well, enter<a href="https://github.com/zilliztech/code-context"> <strong>Code Context</strong></a>—an open-source, MCP-compatible plugin that transforms any AI coding agent into a context-aware powerhouse. It’s like giving your AI assistant the institutional memory of a senior developer who’s worked on your codebase for years. Whether you’re using Qwen Code, Claude Code, Gemini CLI, working in VSCode, or even coding in Chrome, <strong>Code Context</strong> brings semantic code search to your workflow.</p>
+<p>Ready to see how this works? Let’s build an enterprise-grade AI coding copilot using <strong>Qwen3-Coder + Qwen Code + Code Context</strong>.</p>
+<h2 id="Hands-On-Tutorial-Building-Your-Own-AI-Coding-Copilot" class="common-anchor-header">Hands-On Tutorial: Building Your Own AI Coding Copilot<button data-href="#Hands-On-Tutorial-Building-Your-Own-AI-Coding-Copilot" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,45 +90,45 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Pré-requisitos</h3><p>Antes de começarmos, certifique-se de ter:</p>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>Before we begin, ensure you have:</p>
 <ul>
-<li><p><strong>Node.js 20+</strong> instalado</p></li>
-<li><p><strong>Chave da API do OpenAI</strong><a href="https://openai.com/index/openai-api/">(obtenha uma aqui</a>)</p></li>
-<li><p><strong>Conta Alibaba Cloud</strong> para acesso ao Qwen3-Coder<a href="https://www.alibabacloud.com/en">(obtenha uma aqui</a>)</p></li>
-<li><p><strong>Conta Zilliz Cloud</strong> para base de dados vetorial<a href="https://cloud.zilliz.com/login">(Registe-se aqui</a> gratuitamente se ainda não tiver uma)</p></li>
+<li><p><strong>Node.js 20+</strong> installed</p></li>
+<li><p><strong>OpenAI API key</strong> (<a href="https://openai.com/index/openai-api/">Get one here</a>)</p></li>
+<li><p><strong>Alibaba Cloud account</strong> for Qwen3-Coder access (<a href="https://www.alibabacloud.com/en">get one here</a>)</p></li>
+<li><p><strong>Zilliz Cloud account</strong> for vector database (<a href="https://cloud.zilliz.com/login">Register here</a> for free if you don’t have one yet)</p></li>
 </ul>
-<p><strong>Notas: 1)</strong> Neste tutorial, vamos utilizar o Qwen3-Coder-Plus, a versão comercial do Qwen3-Coder, devido às suas fortes capacidades de codificação e facilidade de utilização. Se preferir uma opção de código aberto, pode usar o qwen3-coder-480b-a35b-instruct. 2) Embora o Qwen3-Coder-Plus ofereça excelente desempenho e usabilidade, ele vem com alto consumo de tokens. Certifique-se de levar isso em consideração nos planos de orçamento da sua empresa.</p>
-<h3 id="Step-1-Environment-Setup" class="common-anchor-header">Etapa 1: Configuração do ambiente</h3><p>Verifique sua instalação do Node.js:</p>
+<p><strong>Notes: 1)</strong> In this tutorial, we’ll use Qwen3-Coder-Plus, the commercial version of Qwen3-Coder, because of its strong coding capabilities and ease of use. If you prefer an open-source option, you can use qwen3-coder-480b-a35b-instruct instead. 2) While Qwen3-Coder-Plus offers excellent performance and usability, it comes with high token consumption. Be sure to factor this into your enterprise budgeting plans.</p>
+<h3 id="Step-1-Environment-Setup" class="common-anchor-header">Step 1: Environment Setup</h3><p>Verify your Node.js installation:</p>
 <pre><code translate="no">curl -qL <span class="hljs-attr">https</span>:<span class="hljs-comment">//www.npmjs.com/install.sh | sh</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Install-Qwen-Code" class="common-anchor-header">Etapa 2: Instalar o código Qwen</h3><pre><code translate="no">npm install -g <span class="hljs-meta">@qwen</span>-code/qwen-code
+<h3 id="Step-2-Install-Qwen-Code" class="common-anchor-header">Step 2: Install Qwen Code</h3><pre><code translate="no">npm install -g <span class="hljs-meta">@qwen</span>-code/qwen-code
 qwen --version
 <button class="copy-code-btn"></button></code></pre>
-<p>Se você vir o número da versão como abaixo, isso significa que a instalação foi bem-sucedida.</p>
+<p>If you see the version number like below, it means the installation was successful.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_0d5ebc152e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Configure-Qwen-Code" class="common-anchor-header">Passo 3: Configurar o código Qwen</h3><p>Navegue até o diretório do seu projeto e inicialize o Qwen Code.</p>
+<h3 id="Step-3-Configure-Qwen-Code" class="common-anchor-header">Step 3: Configure Qwen Code</h3><p>Navigate to your project directory and initialize Qwen Code.</p>
 <pre><code translate="no">Qwen
 <button class="copy-code-btn"></button></code></pre>
-<p>Em seguida, verá uma página como a abaixo.</p>
+<p>Then, you’ll see a page like below.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_e6598ea982.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Requisitos de configuração da API:</strong></p>
+<p><strong>API Configuration Requirements:</strong></p>
 <ul>
-<li><p>Chave de API: Obter do<a href="https://modelstudio.console.alibabacloud.com/"> Alibaba Cloud Model Studio</a></p></li>
-<li><p>URL base: <code translate="no">https://dashscope.aliyuncs.com/compatible-mode/v1</code></p></li>
-<li><p>Seleção de modelo:</p>
+<li><p>API Key: Obtain from<a href="https://modelstudio.console.alibabacloud.com/"> Alibaba Cloud Model Studio</a></p></li>
+<li><p>Base URL: <code translate="no">https://dashscope.aliyuncs.com/compatible-mode/v1</code></p></li>
+<li><p>Model Selection:</p>
 <ul>
-<li><p><code translate="no">qwen3-coder-plus</code> (versão comercial, mais capaz)</p></li>
-<li><p><code translate="no">qwen3-coder-480b-a35b-instruct</code> (versão de código aberto)</p></li>
+<li><p><code translate="no">qwen3-coder-plus</code> (commercial version, most capable)</p></li>
+<li><p><code translate="no">qwen3-coder-480b-a35b-instruct</code> (open-source version)</p></li>
 </ul></li>
 </ul>
 <p>
@@ -138,25 +137,25 @@ qwen --version
     <span></span>
   </span>
 </p>
-<p>Após a configuração, prima <strong>Enter</strong> para continuar.</p>
-<h3 id="Step-4-Test-Basic-Functionality" class="common-anchor-header">Passo 4: Testar a funcionalidade básica</h3><p>Vamos verificar a sua configuração com dois testes práticos:</p>
-<p><strong>Teste 1: Compreensão do código</strong></p>
-<p>Solicitar: "Resuma a arquitetura e os principais componentes deste projeto em uma frase".</p>
+<p>After configuration, press <strong>Enter</strong> to proceed.</p>
+<h3 id="Step-4-Test-Basic-Functionality" class="common-anchor-header">Step 4: Test Basic Functionality</h3><p>Let’s verify your setup with two practical tests:</p>
+<p><strong>Test 1: Code Understanding</strong></p>
+<p>Prompt: “Summarize this project’s architecture and main components in one sentence.”</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_41e601fc82.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Qwen3-Coder-Plus acertou em cheio no resumo - descrevendo o projeto como um tutorial técnico construído em Milvus, com foco em sistemas RAG, estratégias de recuperação e muito mais.</p>
-<p><strong>Teste 2: Geração de código</strong></p>
-<p>Pedido: "Por favor, crie um pequeno jogo de Tetris"</p>
-<p>Em menos de um minuto, o Qwen3-coder-plus:</p>
+<p>Qwen3-Coder-Plus nailed the summary—describing the project as a technical tutorial built on Milvus, with a focus on RAG systems, retrieval strategies, and more.</p>
+<p><strong>Test 2: Code Generation</strong></p>
+<p>Prompt: “Please create a small game of Tetris”</p>
+<p>In under a minute, Qwen3-coder-plus:</p>
 <ul>
-<li><p>Instala de forma autónoma as bibliotecas necessárias</p></li>
-<li><p>Estrutura a lógica do jogo</p></li>
-<li><p>Cria uma implementação completa e jogável</p></li>
-<li><p>Lida com toda a complexidade que normalmente passaria horas a pesquisar</p></li>
+<li><p>Autonomously installs required libraries</p></li>
+<li><p>Structures the game logic</p></li>
+<li><p>Creates a complete, playable implementation</p></li>
+<li><p>Handles all the complexity you’d normally spend hours researching</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -170,13 +169,13 @@ qwen --version
     <span></span>
   </span>
 </p>
-<p>Isto demonstra o verdadeiro desenvolvimento autónomo - não apenas a conclusão do código, mas a tomada de decisões arquitectónicas e a entrega de soluções completas.</p>
-<h3 id="Step-5-Set-Up-Your-Vector-Database" class="common-anchor-header">Passo 5: Configurar a sua base de dados de vectores</h3><p>Neste tutorial, utilizaremos <a href="https://zilliz.com/cloud">o Zilliz Cloud</a> como base de dados vetorial.</p>
-<p><strong>Criar um Zilliz Cluster:</strong></p>
+<p>This showcases true autonomous development—not just code completion, but architectural decision-making and complete solution delivery.</p>
+<h3 id="Step-5-Set-Up-Your-Vector-Database" class="common-anchor-header">Step 5: Set Up Your Vector Database</h3><p>We’ll use <a href="https://zilliz.com/cloud">Zilliz Cloud</a> as our vector database in this tutorial.</p>
+<p><strong>Create a Zilliz Cluster:</strong></p>
 <ol>
-<li><p>Iniciar sessão na<a href="https://cloud.zilliz.com/"> consola do Zilliz Cloud</a></p></li>
-<li><p>Criar um novo cluster</p></li>
-<li><p>Copie o <strong>ponto de extremidade público</strong> e o <strong>token</strong></p></li>
+<li><p>Log into<a href="https://cloud.zilliz.com/"> Zilliz Cloud Console</a></p></li>
+<li><p>Create a new cluster</p></li>
+<li><p>Copy the <strong>Public Endpoint</strong> and <strong>Token</strong></p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -190,7 +189,7 @@ qwen --version
     <span></span>
   </span>
 </p>
-<h3 id="Step-6-Configure-Code-Context-Integration" class="common-anchor-header">Etapa 6: configurar a integração do contexto de código</h3><p>Criar <code translate="no">~/.qwen/settings.json</code>:</p>
+<h3 id="Step-6-Configure-Code-Context-Integration" class="common-anchor-header">Step 6: Configure Code Context Integration</h3><p>Create <code translate="no">~/.qwen/settings.json</code>:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;code-context&quot;</span>: {
@@ -208,14 +207,14 @@ qwen --version
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-7-Activate-Enhanced-Capabilities" class="common-anchor-header">Etapa 7: Ativar recursos aprimorados</h3><p>Reinicie o Qwen Code:</p>
+<h3 id="Step-7-Activate-Enhanced-Capabilities" class="common-anchor-header">Step 7: Activate Enhanced Capabilities</h3><p>Restart Qwen Code:</p>
 <pre><code translate="no">Qwen
 <button class="copy-code-btn"></button></code></pre>
-<p>Pressione <strong>Ctrl + T</strong> para ver três novas ferramentas no nosso servidor MCP:</p>
+<p>Press <strong>Ctrl + T</strong> to see three new tools within our MCP server:</p>
 <ul>
-<li><p><code translate="no">index-codebase</code>: Cria índices semânticos para compreensão do repositório</p></li>
-<li><p><code translate="no">search-code</code>: Pesquisa de código em linguagem natural na sua base de código</p></li>
-<li><p><code translate="no">clear-index</code>: Redefine os índices quando necessário.</p></li>
+<li><p><code translate="no">index-codebase</code>: Creates semantic indexes for repository understanding</p></li>
+<li><p><code translate="no">search-code</code>: Natural language code search across your codebase</p></li>
+<li><p><code translate="no">clear-index</code>: Resets indexes when needed.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -223,51 +222,51 @@ qwen --version
     <span></span>
   </span>
 </p>
-<h3 id="Step-8-Test-the-Complete-Integration" class="common-anchor-header">Etapa 8: testar a integração completa</h3><p>Aqui está um exemplo real: Num grande projeto, revimos os nomes de código e descobrimos que "janela mais larga" soava pouco profissional, pelo que decidimos alterá-lo.</p>
-<p>Prompt: "Encontre todas as funções relacionadas com 'janela mais ampla' que precisam de uma renomeação profissional."</p>
+<h3 id="Step-8-Test-the-Complete-Integration" class="common-anchor-header">Step 8: Test the Complete Integration</h3><p>Here’s a real example: In a big project, we reviewed code names and found that ‘wider window’ sounded unprofessional, so we decided to change it.</p>
+<p>Prompt: “Find all functions related to ‘wider window’ that need professional renaming.”</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/11_c54398c4f2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Como se mostra na figura abaixo, o qwen3-coder-plus chamou primeiro a ferramenta <code translate="no">index_codebase</code> para criar um índice para todo o projeto.</p>
+<p>As shown in the figure below, qwen3-coder-plus first called the <code translate="no">index_codebase</code> tool to create an index for the entire project.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_25a7f3a039.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Depois, a ferramenta <code translate="no">index_codebase</code> criou índices para 539 ficheiros neste projeto, dividindo-os em 9.991 partes. Imediatamente após a criação do índice, ela chamou a ferramenta <code translate="no">search_code</code>para realizar a consulta.</p>
+<p>Then, the <code translate="no">index_codebase</code> tool created indexes for 539 files in this project, splitting them into 9,991 chunks. Immediately after building the index, it called the <code translate="no">search_code</code>tool to perform the query.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/13_6766663346.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Em seguida, informou-nos que encontrou os ficheiros correspondentes que precisavam de ser modificados.</p>
+<p>Next, it informed us that it found the corresponding files that needed modification.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/14_7b3c7e9cc0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Finalmente, descobriu 4 problemas utilizando o Contexto de Código, incluindo funções, importações e alguns nomes na documentação, ajudando-nos a concluir esta pequena tarefa.</p>
+<p>Finally, it discovered 4 issues using Code Context, including functions, imports, and some naming in documentation, helping us complete this small task.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/15_a529905b28.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Com a adição do Code Context, o <code translate="no">qwen3-coder-plus</code> agora oferece uma pesquisa de código mais inteligente e uma melhor compreensão dos ambientes de codificação.</p>
-<h3 id="What-Youve-Built" class="common-anchor-header">O que você construiu</h3><p>Agora você tem um copiloto de codificação de IA completo que combina:</p>
+<p>With the addition of Code Context, <code translate="no">qwen3-coder-plus</code> now offers smarter code search and better understanding of coding environments.</p>
+<h3 id="What-Youve-Built" class="common-anchor-header">What You’ve Built</h3><p>You now have a complete AI coding copilot that combines:</p>
 <ul>
-<li><p><strong>Qwen3-Coder</strong>: geração inteligente de código e desenvolvimento autónomo</p></li>
-<li><p><strong>Contexto de código</strong>: Compreensão semântica de bases de código existentes</p></li>
-<li><p><strong>Compatibilidade universal</strong>: Funciona com Claude Code, Gemini CLI, VSCode e muito mais</p></li>
+<li><p><strong>Qwen3-Coder</strong>: Intelligent code generation and autonomous development</p></li>
+<li><p><strong>Code Context</strong>: Semantic understanding of existing codebases</p></li>
+<li><p><strong>Universal compatibility</strong>: Works with Claude Code, Gemini CLI, VSCode, and more</p></li>
 </ul>
-<p>Isto não é apenas um desenvolvimento mais rápido - permite abordagens totalmente novas à modernização de legados, colaboração entre equipas e evolução da arquitetura.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This isn’t just faster development—it enables entirely new approaches to legacy modernization, cross-team collaboration, and architectural evolution.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -282,9 +281,9 @@ qwen --version
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Como desenvolvedor, já experimentei muitas ferramentas de codificação de IA - do Claude Code ao Cursor e Gemini CLI, e ao Qwen Code - e, embora sejam ótimas para gerar novos códigos, elas geralmente não funcionam quando se trata de entender as bases de código existentes. Essa é a verdadeira dor de cabeça: não escrever funções do zero, mas navegar em código legado complexo e confuso e descobrir <em>por que</em> as coisas foram feitas de uma certa maneira.</p>
-<p>É isso que torna esta configuração com <strong>Qwen3-Coder + Qwen Code + Code Context</strong> tão atraente. Você obtém o melhor dos dois mundos: um modelo de codificação poderoso que pode gerar implementações completas <em>e</em> uma camada de pesquisa semântica que realmente entende o histórico, a estrutura e as convenções de nomenclatura do seu projeto.</p>
-<p>Com a pesquisa vetorial e o ecossistema de plug-ins do MCP, você não precisa mais colar arquivos aleatórios na janela de prompt ou percorrer seu repositório tentando encontrar o contexto certo. Basta perguntar em linguagem simples, e ele encontra os arquivos, funções ou decisões relevantes para você - como ter um desenvolvedor sênior que se lembra de tudo.</p>
-<p>Para ser claro, esta abordagem não é apenas mais rápida - ela realmente muda a forma como você trabalha. É um passo em direção a um novo tipo de fluxo de trabalho de desenvolvimento, em que a IA não é apenas um ajudante de codificação, mas um assistente de arquitetura, um colega de equipa que conhece todo o contexto do projeto.</p>
-<p><em>Dito isto... aviso justo: O Qwen3-Coder-Plus é espantoso, mas muito exigente em termos de fichas. Só a construção deste protótipo consumiu 20 milhões de tokens. Portanto, sim, agora estou oficialmente sem créditos 😅</em></p>
+    </button></h2><p>As a developer, I’ve tried plenty of AI coding tools—from Claude Code to Cursor and Gemini CLI, and to Qwen Code—and while they’re great at generating new code, they usually fall flat when it comes to understanding existing codebases. That’s the real pain point: not writing functions from scratch, but navigating complex, messy, legacy code and figuring out <em>why</em> things were done a certain way.</p>
+<p>That’s what makes this setup with <strong>Qwen3-Coder + Qwen Code+ Code Context</strong> so compelling. You get the best of both worlds: a powerful coding model that can generate full-featured implementations <em>and</em> a semantic search layer that actually understands your project history, structure, and naming conventions.</p>
+<p>With vector search and the MCP plugin ecosystem, you’re no longer stuck pasting random files into the prompt window or scrolling through your repo trying to find the right context. You just ask in plain language, and it finds the relevant files, functions, or decisions for you—like having a senior dev who remembers everything.</p>
+<p>To be clear, this approach isn’t just faster—it actually changes how you work. It’s a step toward a new kind of development workflow where AI isn’t just a coding helper, but an architectural assistant, a teammate who gets the whole project context.</p>
+<p><em>That said… fair warning: Qwen3-Coder-Plus is amazing, but very token-hungry. Just building this prototype burned through 20 million tokens. So yeah—I’m now officially out of credits 😅</em></p>
 <p>__</p>

@@ -1,15 +1,14 @@
 ---
 id: >-
   tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
-title: >-
-  Intelligenter tokenisieren, besser abrufen: Ein tiefer Einblick in Milvus
-  Analyzer für die Volltextsuche
+title: >
+  Tokenize Smarter, Retrieve Better: A Deep Dive into Milvus Analyzer for
+  Full-Text Search
 author: Jack Li
 date: 2025-10-16T00:00:00.000Z
 desc: >-
-  Erfahren Sie, wie Milvus Analyzer die hybride KI-Suche mit effizienter
-  Tokenisierung und Filterung unterstützt und so eine schnellere und
-  intelligentere Volltextsuche ermöglicht.
+  Explore how Milvus Analyzer powers hybrid AI retrieval with efficient
+  tokenization and filtering, enabling faster, smarter full-text search.
 cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
@@ -20,10 +19,10 @@ meta_keywords: 'Milvus Analyzer, RAG, full-text search, vector database, tokeniz
 origin: >-
   https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
 ---
-<p>Moderne KI-Anwendungen sind komplex und selten eindimensional. In vielen Fällen kann eine einzelne Suchmethode reale Probleme nicht allein lösen. Nehmen Sie zum Beispiel ein Empfehlungssystem. Es benötigt eine <strong>Vektorsuche</strong>, um die Bedeutung hinter Text oder Bildern zu verstehen, eine <strong>Metadatenfilterung</strong>, um die Ergebnisse nach Preis, Kategorie oder Ort zu verfeinern, und eine<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>Volltextsuche</strong></a>, um direkte Anfragen wie "Nike Air Max" zu bearbeiten. Jede Methode löst einen anderen Teil des Puzzles - und praktische Systeme hängen davon ab, dass sie alle nahtlos zusammenarbeiten.</p>
-<p>Milvus zeichnet sich durch Vektorsuche und Metadatenfilterung aus und hat mit Version 2.5 eine Volltextsuche eingeführt, die auf dem optimierten BM25-Algorithmus basiert. Dieses Upgrade macht die KI-Suche sowohl intelligenter als auch präziser, indem es semantisches Verständnis mit präziser Keyword-Intention kombiniert. Mit<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a> wird die Volltextsuche noch schneller - bis zu<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> viermal so schnell wie Elasticsearch</a>.</p>
-<p>Das Herzstück dieser Fähigkeit ist der <strong>Milvus Analyzer</strong>, die Komponente, die Rohtext in durchsuchbare Token umwandelt. Sie ermöglicht es Milvus, Sprache effizient zu interpretieren und Schlüsselwortabgleiche in großem Umfang durchzuführen. Im weiteren Verlauf dieses Beitrags erfahren Sie, wie der Milvus Analyzer funktioniert - und warum er der Schlüssel ist, um das volle Potenzial der hybriden Suche in Milvus zu erschließen.</p>
-<h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">Was ist Milvus Analyzer？?<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
+<p>Modern AI applications are complex and rarely one-dimensional. In many cases, a single search method can’t solve real-world problems on its own. Take a recommendation system, for example. It requires <strong>vector search</strong> to comprehend the meaning behind text or images, <strong>metadata filtering</strong> to refine results by price, category, or location, and<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>full-text search</strong></a> to handle direct queries like “Nike Air Max.” Each method solves a different part of the puzzle—and practical systems depend on all of them working together seamlessly.</p>
+<p>Milvus excels at vector search and metadata filtering, and starting with version 2.5, it introduced full-text search based on the optimized BM25 algorithm. This upgrade makes AI search both smarter and more accurate, combining semantic understanding with precise keyword intent. With<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a>, full-text search becomes even faster—up to<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4× the performance of Elasticsearch</a>.</p>
+<p>At the heart of this capability is the <strong>Milvus Analyzer</strong>, the component that transforms raw text into searchable tokens. It’s what enables Milvus to interpret language efficiently and perform keyword matching at scale. In the rest of this post, we’ll dive into how the Milvus Analyzer works—and why it’s key to unlocking the full potential of hybrid search in Milvus.</p>
+<h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">What is Milvus Analyzer？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,19 +37,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um eine effiziente Volltextsuche zu ermöglichen - sei es für den Abgleich von Schlüsselwörtern oder die semantische Suche - ist der erste Schritt immer derselbe: die Umwandlung von Rohtext in Token, die das System verstehen, indizieren und vergleichen kann.</p>
-<p>Der <strong>Milvus Analyzer</strong> übernimmt diesen Schritt. Dabei handelt es sich um eine integrierte Komponente zur Textvorverarbeitung und Tokenisierung, die den eingegebenen Text in einzelne Token zerlegt und diese dann normalisiert, bereinigt und standardisiert, um einen konsistenten Abgleich über Abfragen und Dokumente hinweg sicherzustellen. Dieser Prozess bildet die Grundlage für eine präzise, leistungsstarke Volltextsuche und ein hybrides Retrieval.</p>
-<p>Hier finden Sie einen Überblick über die Architektur von Milvus Analyzer:</p>
+    </button></h2><p>To power efficient full-text search—whether for keyword matching or semantic retrieval—the first step is always the same: turning raw text into tokens that the system can understand, index, and compare.</p>
+<p>The <strong>Milvus Analyzer</strong> handles this step. It’s a built-in text preprocessing and tokenization component that breaks input text into discrete tokens, then normalizes, cleans, and standardizes them to ensure consistent matching across queries and documents. This process lays the foundation for accurate, high-performance full-text search and hybrid retrieval.</p>
+<p>Here’s an overview of the Milvus Analyzer architecture:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_5_8e0ec1dbdf.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Wie das Diagramm zeigt, besteht der Analyzer aus zwei Kernkomponenten: dem <strong>Tokenizer</strong> und dem <strong>Filter</strong>. Gemeinsam wandeln sie den Eingabetext in Token um und optimieren sie für eine effiziente Indizierung und Abfrage.</p>
+<p>As the diagram shows, Analyzer has two core components: the <strong>Tokenizer</strong> and the <strong>Filter</strong>. Together, they convert input text into tokens and optimize them for efficient indexing and retrieval.</p>
 <ul>
-<li><p><strong>Tokenisierer</strong>: Zerlegt den Text in einfache Token, indem er Methoden wie Whitespace-Splitting (Whitespace), chinesische Wortsegmentierung (Jieba) oder mehrsprachige Segmentierung (ICU) verwendet.</p></li>
-<li><p><strong>Filtern</strong>: Verarbeitet Token durch spezifische Transformationen. Milvus enthält eine Vielzahl integrierter Filter für Operationen wie Groß- und Kleinschreibung (Lowercase), Entfernen von Satzzeichen (Removepunct), Filterung von Stoppwörtern (Stop), Stemming (Stemmer) und Mustervergleich (Regex). Sie können mehrere Filter verketten, um komplexe Verarbeitungsanforderungen zu erfüllen.</p></li>
+<li><p><strong>Tokenizer</strong>: Splits text into basic tokens using methods like whitespace splitting (Whitespace), Chinese word segmentation (Jieba), or multilingual segmentation (ICU).</p></li>
+<li><p><strong>Filter</strong>: Processes tokens through specific transformations. Milvus includes a rich set of built-in filters for operations like case normalization (Lowercase), punctuation removal (Removepunct), stop word filtering (Stop), stemming (Stemmer), and pattern matching (Regex). You can chain multiple filters to handle complex processing needs.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -58,22 +57,22 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Milvus bietet mehrere Analyzer-Typen: drei eingebaute Optionen (Standard, Englisch und Chinesisch), benutzerdefinierte Analyzer, bei denen Sie Ihre eigenen Tokenizer- und Filterkombinationen definieren, und den Multisprachen-Analyzer für die Verarbeitung mehrsprachiger Dokumente. Der Verarbeitungsablauf ist einfach: Rohtext → Tokenizer → Filter → Tokens.</p>
-<h3 id="Tokenizer" class="common-anchor-header">Tokenisierer</h3><p>Der Tokenizer ist der erste Verarbeitungsschritt. Er zerlegt den Rohtext in kleinere Token (Wörter oder Unterwörter), und die richtige Wahl hängt von Ihrer Sprache und Ihrem Anwendungsfall ab.</p>
-<p>Milvus unterstützt derzeit die folgenden Arten von Tokenizern:</p>
+<p>Milvus offers several Analyzer types: three built-in options (Standard, English, and Chinese), Custom Analyzers where you define your own Tokenizer and Filter combinations, and the Multi-language Analyzer for handling multilingual documents. The processing flow is straightforward: Raw text → Tokenizer → Filter → Tokens.</p>
+<h3 id="Tokenizer" class="common-anchor-header">Tokenizer</h3><p>The Tokenizer is the first processing step. It splits raw text into smaller tokens (words or subwords), and the right choice depends on your language and use case.</p>
+<p>Milvus currently supports the following types of tokenizers:</p>
 <table>
 <thead>
-<tr><th><strong>Tokenisierer</strong></th><th><strong>Anwendungsfall</strong></th><th><strong>Beschreibung</strong></th></tr>
+<tr><th><strong>Tokenizer</strong></th><th><strong>Use Case</strong></th><th><strong>Description</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Standard</td><td>Englisch und durch Leerzeichen getrennte Sprachen</td><td>Der gebräuchlichste Allzweck-Tokenisierer; erkennt Wortgrenzen und trennt entsprechend auf.</td></tr>
-<tr><td>Leerzeichen</td><td>Einfacher Text mit minimaler Vorverarbeitung</td><td>Trennt nur nach Leerzeichen; behandelt keine Interpunktion oder Groß-/Kleinschreibung.</td></tr>
-<tr><td>Jieba（Chinesisch）</td><td>Chinesischer Text</td><td>Wörterbuch- und wahrscheinlichkeitsbasierter Tokenizer, der fortlaufende chinesische Zeichen in sinnvolle Wörter zerlegt.</td></tr>
-<tr><td>Lindera（JP/KR）</td><td>Japanischer und koreanischer Text</td><td>Verwendet die morphologische Analyse von Lindera für eine effektive Segmentierung.</td></tr>
-<tr><td>ICU（Mehrsprachig）</td><td>Komplexe Sprachen wie Arabisch, und mehrsprachige Szenarien</td><td>Basiert auf der ICU-Bibliothek mit Unterstützung für mehrsprachige Tokenisierung über Unicode.</td></tr>
+<tr><td>Standard</td><td>English and space-delimited languages</td><td>The most common general-purpose tokenizer; detects word boundaries and splits accordingly.</td></tr>
+<tr><td>Whitespace</td><td>Simple text with minimal preprocessing</td><td>Splits only by spaces; does not handle punctuation or casing.</td></tr>
+<tr><td>Jieba（Chinese）</td><td>Chinese text</td><td>Dictionary and probability-based tokenizer that splits continuous Chinese characters into meaningful words.</td></tr>
+<tr><td>Lindera（JP/KR）</td><td>Japanese and Korean text</td><td>Uses Lindera morphological analysis for effective segmentation.</td></tr>
+<tr><td>ICU（Multi-language）</td><td>Complex languages like Arabic, and multilingual scenarios</td><td>Based on the ICU library with support for multilingual tokenization across Unicode.</td></tr>
 </tbody>
 </table>
-<p>Sie können den Tokenizer bei der Erstellung des Schemas Ihrer Sammlung konfigurieren, insbesondere bei der Definition von <code translate="no">VARCHAR</code> Feldern über den Parameter <code translate="no">analyzer_params</code>. Mit anderen Worten, der Tokenizer ist kein eigenständiges Objekt, sondern eine Konfiguration auf Feldebene. Milvus führt beim Einfügen von Daten automatisch eine Tokenisierung und Vorverarbeitung durch.</p>
+<p>You can configure the Tokenizer when creating your Collection’s Schema, specifically when defining <code translate="no">VARCHAR</code> fields through the <code translate="no">analyzer_params</code> parameter. In other words, the Tokenizer is not a standalone object but a field-level configuration. Milvus automatically performs tokenization and preprocessing when inserting data.</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -83,29 +82,29 @@ origin: >-
     }
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Filter" class="common-anchor-header">Filter</h3><p>Wenn der Tokenizer den Text zerschneidet, verfeinert der Filter das, was übrig bleibt. Filter standardisieren, bereinigen oder transformieren Ihre Token, um sie suchfähig zu machen.</p>
-<p>Zu den üblichen Filteroperationen gehören die Normalisierung der Groß- und Kleinschreibung, das Entfernen von Stoppwörtern (wie "der" und "und"), das Entfernen von Satzzeichen und die Anwendung von Stemming (Reduzierung von "laufen" auf "laufen").</p>
-<p>Milvus enthält viele integrierte Filter für die meisten Sprachverarbeitungsanforderungen:</p>
+<h3 id="Filter" class="common-anchor-header">Filter</h3><p>If the Tokenizer cuts text apart, the Filter refines what’s left. Filters standardize, clean, or transform your tokens to make them search-ready.</p>
+<p>Common Filter operations include normalizing case, removing stop words (like “the” and “and”), stripping punctuation, and applying stemming (reducing “running” to “run”).</p>
+<p>Milvus includes many built-in Filters for most language processing needs:</p>
 <table>
 <thead>
-<tr><th><strong>Filter Name</strong></th><th><strong>Funktion</strong></th><th><strong>Verwendung Fall</strong></th></tr>
+<tr><th><strong>Filter Name</strong></th><th><strong>Function</strong></th><th><strong>Use Case</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Kleinbuchstaben</td><td>Konvertiert alle Token in Kleinbuchstaben</td><td>Unverzichtbar für die englische Suche, um Groß-/Kleinschreibungsfehler zu vermeiden</td></tr>
-<tr><td>Asciifolding</td><td>Konvertiert akzentuierte Zeichen in ASCII</td><td>Mehrsprachige Szenarien (z. B. "café" → "cafe")</td></tr>
-<tr><td>Nur Alphanum</td><td>Behält nur Buchstaben und Zahlen bei</td><td>Entfernt gemischte Symbole aus Text wie Logs</td></tr>
-<tr><td>Cncharonly</td><td>Behält nur chinesische Zeichen bei</td><td>Reinigung des chinesischen Korpus</td></tr>
-<tr><td>Cnalphanumonly</td><td>Behält nur Chinesisch, Englisch und Zahlen bei</td><td>Gemischter chinesisch-englischer Text</td></tr>
-<tr><td>Länge</td><td>Filtert Token nach Länge</td><td>Entfernt übermäßig kurze oder lange Zeichen</td></tr>
-<tr><td>Stopp</td><td>Filterung von Stoppwörtern</td><td>Entfernt hochfrequente bedeutungslose Wörter wie "ist" und "der".</td></tr>
-<tr><td>Dekomponierer</td><td>Zerlegt zusammengesetzte Wörter</td><td>Sprachen mit häufigen Zusammensetzungen wie Deutsch und Niederländisch</td></tr>
-<tr><td>Stemmer</td><td>Stämmen von Wörtern</td><td>Englische Szenarien (z. B. &quot;studies&quot; und &quot;studying&quot; → &quot;study&quot;)</td></tr>
-<tr><td>Satzzeichen entfernen</td><td>Entfernt Interpunktionszeichen</td><td>Allgemeine Textbereinigung</td></tr>
-<tr><td>Regex</td><td>Filtert oder ersetzt mit einem Regex-Muster</td><td>Benutzerdefinierte Anforderungen, z. B. nur E-Mail-Adressen extrahieren</td></tr>
+<tr><td>Lowercase</td><td>Converts all tokens to lowercase</td><td>Essential for English search to avoid case mismatches</td></tr>
+<tr><td>Asciifolding</td><td>Converts accented characters to ASCII</td><td>Multilingual scenarios (e.g., “café” → “cafe”)</td></tr>
+<tr><td>Alphanumonly</td><td>Keeps only letters and numbers</td><td>Strips mixed symbols from text like logs</td></tr>
+<tr><td>Cncharonly</td><td>Keeps only Chinese characters</td><td>Chinese corpus cleaning</td></tr>
+<tr><td>Cnalphanumonly</td><td>Keeps only Chinese, English, and numbers</td><td>Mixed Chinese-English text</td></tr>
+<tr><td>Length</td><td>Filters tokens by length</td><td>Removes excessively short or long tokens</td></tr>
+<tr><td>Stop</td><td>Stop word filtering</td><td>Removes high-frequency meaningless words like “is” and “the”</td></tr>
+<tr><td>Decompounder</td><td>Splits compound words</td><td>Languages with frequent compounds like German and Dutch</td></tr>
+<tr><td>Stemmer</td><td>Word stemming</td><td>English scenarios (e.g.,&quot;studies&quot; and “studying” → “study”</td></tr>
+<tr><td>Removepunct</td><td>Removes punctuation</td><td>General text cleaning</td></tr>
+<tr><td>Regex</td><td>Filters or replaces with a regex pattern</td><td>Custom needs, like extracting only email addresses</td></tr>
 </tbody>
 </table>
-<p>Die Stärke von Filtern liegt in ihrer Flexibilität: Sie können die Bereinigungsregeln je nach Bedarf mischen und anpassen. Für die englische Suche ist eine typische Kombination Kleinbuchstaben + Stopp + Stemmer, die die Einheitlichkeit der Groß- und Kleinschreibung gewährleistet, Füllwörter entfernt und Wortformen auf ihren Stamm normalisiert.</p>
-<p>Für die chinesische Suche kombinieren Sie in der Regel Kleinbuchstaben + Stopp für sauberere, präzisere Ergebnisse. Konfigurieren Sie Filter auf die gleiche Weise wie Tokenizer, über <code translate="no">analyzer_params</code> in Ihrem FieldSchema:</p>
+<p>The power of Filters is in their flexibility—you can mix and match cleaning rules based on your needs. For English search, a typical combination is Lowercase + Stop + Stemmer, ensuring case uniformity, removing filler words, and normalizing word forms to their stem.</p>
+<p>For Chinese search, you’ll usually combine Cncharonly + Stop for cleaner, more precise results. Configure Filters the same way as Tokenizers, through <code translate="no">analyzer_params</code> in your FieldSchema:</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -125,7 +124,7 @@ origin: >-
     }
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Analyzer-Types" class="common-anchor-header">Analyzer-Typen<button data-href="#Analyzer-Types" class="anchor-icon" translate="no">
+<h2 id="Analyzer-Types" class="common-anchor-header">Analyzer Types<button data-href="#Analyzer-Types" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -140,34 +139,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der richtige Analyzer macht Ihre Suche sowohl schneller als auch kostengünstiger. Um den unterschiedlichen Anforderungen gerecht zu werden, bietet Milvus drei Typen an: Eingebaute, mehrsprachige und benutzerdefinierte Analyzer.</p>
-<h3 id="Built-in-Analyzer" class="common-anchor-header">Eingebauter Analyzer</h3><p>Eingebaute Analyzer sind sofort einsatzbereit - Standardkonfigurationen, die für die meisten gängigen Szenarien funktionieren. Sie werden mit vordefinierten Tokenizer- und Filterkombinationen geliefert:</p>
+    </button></h2><p>The right Analyzer makes your search both faster and more cost-effective. To fit different needs, Milvus provides three types: Built-in, Multi-language, and Custom Analyzers.</p>
+<h3 id="Built-in-Analyzer" class="common-anchor-header">Built-in Analyzer</h3><p>Built-in Analyzers are ready to use out of the box—standard configurations that work for most common scenarios. They come with predefined Tokenizer and Filter combinations:</p>
 <table>
 <thead>
-<tr><th><strong>Name .</strong></th><th><strong>Komponenten（Tokenizer+Filter）</strong></th><th><strong>Anwendungsfall</strong></th></tr>
+<tr><th><strong>Name</strong></th><th><strong>Components（Tokenizer+Filters）</strong></th><th><strong>Use Case</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Standard</td><td>Standard Tokenizer + Kleinbuchstaben</td><td>Allgemeine Verwendung für Englisch oder durch Leerzeichen getrennte Sprachen</td></tr>
-<tr><td>Englisch</td><td>Standard Tokenizer + Kleinbuchstaben + Stop + Stemmer</td><td>Englische Suche mit höherer Präzision</td></tr>
-<tr><td>Chinesisch</td><td>Jieba Tokenisierer + Nur Kleinbuchstaben</td><td>Chinesische Textsuche mit natürlicher Wortsegmentierung</td></tr>
+<tr><td>Standard</td><td>Standard Tokenizer + Lowercase</td><td>General use for English or space-delimited languages</td></tr>
+<tr><td>English</td><td>Standard Tokenizer + Lowercase + Stop + Stemmer</td><td>English search with higher precision</td></tr>
+<tr><td>Chinese</td><td>Jieba Tokenizer + Cnalphanumonly</td><td>Chinese text search with natural word segmentation</td></tr>
 </tbody>
 </table>
-<p>Für eine einfache englische oder chinesische Suche funktionieren diese integrierten Analyzer ohne zusätzliche Einstellungen.</p>
-<p>Ein wichtiger Hinweis: Der Standard-Analyzer ist standardmäßig für Englisch ausgelegt. Wenn er auf chinesischen Text angewendet wird, liefert die Volltextsuche möglicherweise keine Ergebnisse.</p>
-<h3 id="Multi-language-Analyzer" class="common-anchor-header">Mehrsprachiger Analyzer</h3><p>Wenn Sie mit mehreren Sprachen arbeiten, kann ein einziger Tokenizer oft nicht alles bewältigen. Hier kommt der Multi-Language Analyzer ins Spiel - er wählt automatisch den richtigen Tokenizer auf der Grundlage der Sprache des jeweiligen Textes aus. Hier sehen Sie, wie die Sprachen den Tokenizern zugeordnet werden:</p>
+<p>For straightforward English or Chinese search, these built-in Analyzers work without any extra setup.</p>
+<p>One important note: the Standard Analyzer is designed for English by default. If applied to Chinese text, full-text search may return no results.</p>
+<h3 id="Multi-language-Analyzer" class="common-anchor-header">Multi-language Analyzer</h3><p>When you deal with multiple languages, a single tokenizer often can’t handle everything. That’s where the Multi-language Analyzer comes in—it automatically picks the right tokenizer based on each text’s language. Here’s how languages map to Tokenizers:</p>
 <table>
 <thead>
-<tr><th><strong>Sprachcode</strong></th><th><strong>Verwendeter Tokenizer</strong></th></tr>
+<tr><th><strong>Language Code</strong></th><th><strong>Tokenizer Used</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>en</td><td>Englischer Analyzer</td></tr>
+<tr><td>en</td><td>English Analyzer</td></tr>
 <tr><td>zh</td><td>Jieba</td></tr>
 <tr><td>ja / ko</td><td>Lindera</td></tr>
 <tr><td>ar</td><td>ICU</td></tr>
 </tbody>
 </table>
-<p>Wenn Ihr Datensatz eine Mischung aus Englisch, Chinesisch, Japanisch, Koreanisch und sogar Arabisch enthält, kann Milvus sie alle im selben Feld verarbeiten. Dadurch wird die manuelle Vorverarbeitung drastisch reduziert.</p>
-<h3 id="Custom-Analyzer" class="common-anchor-header">Benutzerdefinierter Analyzer</h3><p>Wenn die eingebauten oder mehrsprachigen Analyzer nicht ganz passen, können Sie mit Milvus benutzerdefinierte Analyzer erstellen. Kombinieren Sie Tokenizer und Filter, um etwas zu erstellen, das auf Ihre Bedürfnisse zugeschnitten ist. Hier ist ein Beispiel:</p>
+<p>If your dataset mixes English, Chinese, Japanese, Korean, and even Arabic, Milvus can handle them all in the same field. This cuts down dramatically on manual preprocessing.</p>
+<h3 id="Custom-Analyzer" class="common-anchor-header">Custom Analyzer</h3><p>When Built-in or Multi-language Analyzers don’t quite fit, Milvus lets you build Custom Analyzers. Mix and match Tokenizers and Filters to create something tailored to your needs. Here’s an example:</p>
 <pre><code translate="no">FieldSchema(
         name=<span class="hljs-string">&quot;text&quot;</span>,
         dtype=DataType.VARCHAR,
@@ -178,7 +177,7 @@ origin: >-
         }
     )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Hands-on-Coding-with-Milvus-Analyzer" class="common-anchor-header">Praktische Kodierung mit Milvus Analyzer<button data-href="#Hands-on-Coding-with-Milvus-Analyzer" class="anchor-icon" translate="no">
+<h2 id="Hands-on-Coding-with-Milvus-Analyzer" class="common-anchor-header">Hands-on Coding with Milvus Analyzer<button data-href="#Hands-on-Coding-with-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -193,8 +192,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Theorie hilft, aber nichts geht über ein vollständiges Code-Beispiel. Lassen Sie uns durchgehen, wie man Analyzer in Milvus mit dem Python SDK verwendet, wobei sowohl eingebaute Analyzer als auch mehrsprachige Analyzer abgedeckt werden. Diese Beispiele verwenden Milvus v2.6.1 und Pymilvus v2.6.1.</p>
-<h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">Wie man den eingebauten Analyzer verwendet</h3><p>Angenommen, Sie möchten eine Sammlung für die englische Textsuche erstellen, die automatisch die Tokenisierung und Vorverarbeitung beim Einfügen der Daten übernimmt. Wir verwenden den eingebauten English Analyzer (äquivalent zu <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
+    </button></h2><p>Theory helps, but nothing beats a full code example. Let’s walk through how to use Analyzers in Milvus with the Python SDK, covering both built-in Analyzers and multi-language Analyzers. These examples use Milvus v2.6.1 and Pymilvus v2.6.1.</p>
+<h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">How to Use Built-in Analyzer</h3><p>Say you want to build a Collection for English text search that automatically handles tokenization and preprocessing during data insertion. We’ll use the built-in English Analyzer (equivalent to <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 client = MilvusClient(
@@ -355,7 +354,7 @@ search_queries = [
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Search complete！&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">60</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Ausgabe：</p>
+<p>Output：</p>
 <pre><code translate="no">Dropped existing collection: english_demo
 Successfully created collection: english_demo
 
@@ -400,7 +399,7 @@ Query <span class="hljs-number">4</span>: <span class="hljs-string">&#x27;learn&
 Search complete！
 ============================================================
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">Wie man den mehrsprachigen Analyzer verwendet</h3><p>Wenn Ihr Datensatz mehrere Sprachen enthält, z. B. Englisch, Chinesisch und Japanisch, können Sie den Multi-Language Analyzer aktivieren. Milvus wählt dann automatisch den richtigen Tokenizer auf der Grundlage der Sprache des jeweiligen Textes.</p>
+<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">How to Use Multi-language Analyzer</h3><p>When your dataset contains multiple languages—English, Chinese, and Japanese, for example—you can enable the Multi-language Analyzer. Milvus will automatically pick the right tokenizer based on each text’s language.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 <span class="hljs-keyword">import</span> time
 
@@ -590,7 +589,7 @@ search_cases = [
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nComplete&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Ausgabe：</p>
+<p>Output：</p>
 <pre><code translate="no"><span class="hljs-title class_">Waiting</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BM25</span> vector generation...
 
 <span class="hljs-title class_">Tokenizer</span> <span class="hljs-title class_">Analysis</span>:
@@ -614,8 +613,8 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
 
 <span class="hljs-title class_">Complete</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus unterstützt auch den language_identifier-Tokenizer für die Suche. Er erkennt automatisch die Sprachen eines gegebenen Textes, was bedeutet, dass das Sprachfeld optional ist. Weitere Einzelheiten finden Sie unter<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> Wie Milvus 2.6 die mehrsprachige Volltextsuche in großem Maßstab aufwertet</a>.</p>
-<h2 id="Conclusion" class="common-anchor-header">Schlussfolgerung<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Also, Milvus supports the language_identifier tokenizer for search. It automatically detects the languages of a given text, which means the language field is optional. For more details, check out<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> How Milvus 2.6 Upgrades Multilingual Full-Text Search at Scale</a>.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -630,5 +629,5 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Milvus Analyzer macht aus einem einfachen Vorverarbeitungsschritt ein wohldefiniertes, modulares System für die Textverarbeitung. Sein Design, das auf Tokenisierung und Filterung aufbaut, gibt Entwicklern eine fein abgestufte Kontrolle darüber, wie Sprache interpretiert, bereinigt und indiziert wird. Unabhängig davon, ob Sie eine einsprachige Anwendung oder ein globales, mehrsprachiges RAG-System entwickeln, bietet der Analyzer eine konsistente Grundlage für die Volltextsuche. Es ist der Teil von Milvus, der im Stillen dafür sorgt, dass alles andere besser funktioniert.</p>
-<p>Haben Sie Fragen oder möchten Sie eine Funktion genauer kennenlernen? Treten Sie unserem<a href="https://discord.com/invite/8uyFbECzPX"> Discord-Kanal</a> bei oder stellen Sie Fragen auf<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Sie können auch eine 20-minütige Einzelsitzung buchen, um Einblicke, Anleitung und Antworten auf Ihre Fragen über die<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus-Sprechstunde</a> zu erhalten.</p>
+    </button></h2><p>The Milvus Analyzer turns what used to be a simple preprocessing step into a well-defined, modular system for handling text. Its design—built around tokenization and filtering—gives developers fine-grained control over how language is interpreted, cleaned, and indexed. Whether you’re building a single-language application or a global RAG system that spans multiple languages, the Analyzer provides a consistent foundation for full-text search. It’s the part of Milvus that quietly makes everything else work better.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

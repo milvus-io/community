@@ -1,15 +1,15 @@
 ---
 id: >-
   we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md
-title: >-
-  Avaliámos mais de 20 APIs de incorporação com o Milvus: 7 informações que o
-  vão surpreender
+title: >
+  We Benchmarked 20+ Embedding APIs with Milvus: 7 Insights That Will Surprise
+  You
 author: Jeremy Zhu
 date: 2025-05-23T00:00:00.000Z
 desc: >-
-  As APIs de incorporação mais populares não são as mais rápidas. A geografia é
-  mais importante do que a arquitetura do modelo. E, por vezes, uma CPU de 20
-  dólares por mês é melhor do que uma chamada de API de 200 dólares por mês.
+  The most popular embedding APIs aren't the fastest. Geography matters more
+  than model architecture. And sometimes a $20/month CPU beats a $200/month API
+  call.
 cover: >-
   assets.zilliz.com/We_Benchmarked_20_Embedding_AP_Is_with_Milvus_7_Insights_That_Will_Surprise_You_12268622f0.png
 tag: Engineering
@@ -23,17 +23,17 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md
 ---
-<p><strong>Provavelmente, todos os programadores de IA criaram um sistema RAG que funciona na perfeição... no seu ambiente local.</strong></p>
-<p>Conseguiu obter a precisão da recuperação, optimizou a sua base de dados de vectores e a sua demonstração funciona na perfeição. Depois, implementa-o na produção e, de repente:</p>
+<p><strong>Probably every AI developer has built a RAG system that works perfectly… in their local environment.</strong></p>
+<p>You’ve nailed the retrieval accuracy, optimized your vector database, and your demo runs like butter. Then you deploy to production and suddenly:</p>
 <ul>
-<li><p>As suas consultas locais de 200 ms demoram 3 segundos para os utilizadores reais</p></li>
-<li><p>Colegas em diferentes regiões relatam um desempenho completamente diferente</p></li>
-<li><p>O fornecedor de incorporação que escolheu para obter a "melhor precisão" torna-se o seu maior obstáculo</p></li>
+<li><p>Your 200ms local queries take 3 seconds for actual users</p></li>
+<li><p>Colleagues in different regions report completely different performance</p></li>
+<li><p>The embedding provider you chose for “best accuracy” becomes your biggest bottleneck</p></li>
 </ul>
-<p>O que é que aconteceu? Aqui está o assassino de desempenho que ninguém avalia: <strong>latência da API de incorporação</strong>.</p>
-<p>Enquanto as classificações MTEB estão obcecadas com as pontuações de recordação e os tamanhos dos modelos, ignoram a métrica que os seus utilizadores sentem - o tempo que esperam antes de verem qualquer resposta. Testámos todos os principais fornecedores de incorporação em condições reais e descobrimos diferenças extremas de latência que o farão questionar toda a sua estratégia de seleção de fornecedores.</p>
-<p><strong><em>Spoiler: As APIs de incorporação mais populares não são as mais rápidas. A geografia é mais importante do que a arquitetura do modelo. E, às vezes, uma <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>CPU de</mn><mi>20/mês</mi></mrow><annotation encoding="application/x-tex">bate uma CPU</annotation><mrow><mn>de 20/mês</mn></mrow><annotation encoding="application/x-tex">e uma</annotation></semantics></math></span></span>chamada de API de</em></strong><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><strong><em> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">20/mês bate uma</span></span></span></span>API de <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">200/mês</span></span></span></span>.</em></strong></p>
-<h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">Por que incorporar a latência da API é o gargalo oculto do RAG<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
+<p>What happened? Here’s the performance killer no one benchmarks: <strong>embedding API latency</strong>.</p>
+<p>While MTEB rankings obsess over recall scores and model sizes, they ignore the metric your users feel—how long they wait before seeing any response. We tested every major embedding provider across real-world conditions and discovered extreme latency differences they’ll make you question your entire provider selection strategy.</p>
+<p><strong><em>Spoiler: The most popular embedding APIs aren’t the fastest. Geography matters more than model architecture. And sometimes a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mi>C</mi><mi>P</mi><mi>U</mi><mi>b</mi><mi>e</mi><mi>a</mi><mi>t</mi><mi>s</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">20/month CPU beats a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">20/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal" style="margin-right:0.13889em;">CP</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord mathnormal">b</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">s</span><span class="mord mathnormal">a</span></span></span></span>200/month API call.</em></strong></p>
+<h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">Why Embedding API Latency Is the Hidden Bottleneck in RAG<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,20 +48,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ao criar sistemas RAG, pesquisa de comércio eletrónico ou motores de recomendação, os modelos de incorporação são o componente central que transforma o texto em vectores, permitindo que as máquinas compreendam a semântica e efectuem pesquisas de semelhança eficientes. Embora normalmente pré-computemos os embeddings para bibliotecas de documentos, as consultas dos utilizadores continuam a exigir chamadas à API de embedding em tempo real para converter perguntas em vectores antes da recuperação, e esta latência em tempo real torna-se frequentemente o estrangulamento de desempenho em toda a cadeia de aplicações.</p>
-<p>Os benchmarks de incorporação populares, como o MTEB, concentram-se na precisão da recuperação ou no tamanho do modelo, muitas vezes negligenciando a métrica de desempenho crucial - a latência da API. Utilizando a função <code translate="no">TextEmbedding</code> da Milvus, realizámos testes abrangentes no mundo real com os principais fornecedores de serviços de incorporação na América do Norte e na Ásia.</p>
-<p>A latência de incorporação manifesta-se em duas fases críticas:</p>
-<h3 id="Query-Time-Impact" class="common-anchor-header">Impacto no tempo de consulta</h3><p>Num fluxo de trabalho RAG típico, quando um utilizador faz uma pergunta, o sistema tem de:</p>
+    </button></h2><p>When building RAG systems, e-commerce search, or recommendation engines, embedding models are the core component that transforms text into vectors, enabling machines to understand semantics and perform efficient similarity searches. While we typically pre-compute embeddings for document libraries, user queries still require real-time embedding API calls to convert questions into vectors before retrieval, and this real-time latency often becomes the performance bottleneck in the entire application chain.</p>
+<p>Popular embedding benchmarks like MTEB focus on recall accuracy or model size, often overlooking the crucial performance metric—API latency. Using Milvus’s <code translate="no">TextEmbedding</code> Function, we conducted comprehensive real-world tests on major embedding service providers in North America and Asia.</p>
+<p>Embedding latency manifests at two critical stages:</p>
+<h3 id="Query-Time-Impact" class="common-anchor-header">Query-Time Impact</h3><p>In a typical RAG workflow, when a user asks a question, the system must:</p>
 <ul>
-<li><p>Converter a consulta num vetor através de uma chamada à API de incorporação</p></li>
-<li><p>Procurar vectores semelhantes no Milvus</p></li>
-<li><p>Enviar os resultados e a pergunta original para um LLM</p></li>
-<li><p>Gerar e devolver a resposta</p></li>
+<li><p>Convert the query to a vector via an embedding API call</p></li>
+<li><p>Search for similar vectors in Milvus</p></li>
+<li><p>Feed results and the original question to an LLM</p></li>
+<li><p>Generate and return the answer</p></li>
 </ul>
-<p>Muitos programadores assumem que a geração de respostas do LLM é a parte mais lenta. No entanto, a capacidade de saída de streaming de muitos LLMs cria uma ilusão de velocidade - você vê o primeiro token rapidamente. Na realidade, se a sua chamada à API de incorporação demorar centenas de milissegundos ou mesmo segundos, ela se tornará o primeiro - e mais percetível - gargalo na sua cadeia de resposta.</p>
-<h3 id="Data-Ingestion-Impact" class="common-anchor-header">Impacto da ingestão de dados</h3><p>Seja criando um índice do zero ou realizando atualizações de rotina, a ingestão em massa requer a vetorização de milhares ou milhões de pedaços de texto. Se cada chamada de incorporação sofrer alta latência, todo o pipeline de dados ficará muito lento, atrasando o lançamento de produtos e as atualizações da base de conhecimento.</p>
-<p>Ambas as situações tornam a latência da API de incorporação uma métrica de desempenho não negociável para sistemas RAG de produção.</p>
-<h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">Medindo a latência da API de incorporação no mundo real com o Milvus<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
+<p>Many developers assume the LLM’s answer generation is the slowest part. However, many LLMs’ streaming output capability creates an illusion of speed—you see the first token quickly. In reality, if your embedding API call takes hundreds of milliseconds or even seconds, it becomes the first—and most noticeable—bottleneck in your response chain.</p>
+<h3 id="Data-Ingestion-Impact" class="common-anchor-header">Data Ingestion Impact</h3><p>Whether building an index from scratch or performing routine updates, bulk ingestion requires vectorizing thousands or millions of text chunks. If each embedding call experiences high latency, your entire data pipeline slows dramatically, delaying product releases and knowledge base updates.</p>
+<p>Both situations make embedding API latency a non-negotiable performance metric for production RAG systems.</p>
+<h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">Measuring Real-World Embedding API Latency with Milvus<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,40 +76,40 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O Milvus é um banco de dados vetorial de alto desempenho e código aberto que oferece uma nova interface <code translate="no">TextEmbedding</code> Function. Esse recurso integra diretamente modelos de incorporação populares do OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI e muitos outros provedores em seu pipeline de dados, simplificando seu pipeline de pesquisa vetorial com uma única chamada.</p>
-<p>Usando essa nova interface de função, testamos e comparamos APIs de incorporação populares de provedores conhecidos como OpenAI e Cohere, bem como outros como AliCloud e SiliconFlow, medindo sua latência de ponta a ponta em cenários de implantação realistas.</p>
-<p>Nosso abrangente conjunto de testes abrangeu várias configurações de modelo:</p>
+    </button></h2><p>Milvus is an open-source, high-performance vector database that offers a new <code translate="no">TextEmbedding</code> Function interface. This feature directly integrates popular embedding models from OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and many more providers into your data pipeline, streamlining your vector search pipeline with a single call.</p>
+<p>Using this new function interface, we tested and benchmarked popular embedding APIs from well-known providers like OpenAI and Cohere, as well as others like AliCloud and SiliconFlow, measuring their end-to-end latency in realistic deployment scenarios.</p>
+<p>Our comprehensive test suite covered various model configurations:</p>
 <table>
 <thead>
-<tr><th><strong>Fornecedor</strong></th><th><strong>Modelo</strong></th><th><strong>Dimensões</strong></th></tr>
+<tr><th><strong>Provider</strong></th><th><strong>Model</strong></th><th><strong>Dimensions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>OpenAI</td><td>incorporação de texto-ada-002</td><td>1536</td></tr>
-<tr><td>OpenAI</td><td>incorporação de texto-3-pequeno</td><td>1536</td></tr>
-<tr><td>OpenAI</td><td>texto-embedding-3-grande</td><td>3072</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-ada-002</td><td>1536</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-small</td><td>1536</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-large</td><td>3072</td></tr>
 <tr><td>AWS Bedrock</td><td>amazon.titan-embed-text-v2:0</td><td>1024</td></tr>
-<tr><td>IA do Google Vertex</td><td>incorporação de texto-005</td><td>768</td></tr>
-<tr><td>Google Vertex AI</td><td>texto-multilingue-embedding-002</td><td>768</td></tr>
-<tr><td>VoyageAI</td><td>voyage-3-grande</td><td>1024</td></tr>
+<tr><td>Google Vertex AI</td><td>text-embedding-005</td><td>768</td></tr>
+<tr><td>Google Vertex AI</td><td>text-multilingual-embedding-002</td><td>768</td></tr>
+<tr><td>VoyageAI</td><td>voyage-3-large</td><td>1024</td></tr>
 <tr><td>VoyageAI</td><td>voyage-3</td><td>1024</td></tr>
 <tr><td>VoyageAI</td><td>voyage-3-lite</td><td>512</td></tr>
 <tr><td>VoyageAI</td><td>voyage-code-3</td><td>1024</td></tr>
-<tr><td>Coesão</td><td>embed-english-v3.0</td><td>1024</td></tr>
-<tr><td>Coesão</td><td>embed-multilingual-v3.0</td><td>1024</td></tr>
-<tr><td>Coesão</td><td>embed-english-light-v3.0</td><td>384</td></tr>
-<tr><td>Coesão</td><td>incorporar-multilingue-light-v3.0</td><td>384</td></tr>
-<tr><td>Aliyun Dashscope</td><td>incorporação de texto-v1</td><td>1536</td></tr>
-<tr><td>Dashscope de Aliyun</td><td>texto-embedding-v2</td><td>1536</td></tr>
-<tr><td>Dashscope de Aliyun</td><td>texto-embedding-v3</td><td>1024</td></tr>
+<tr><td>Cohere</td><td>embed-english-v3.0</td><td>1024</td></tr>
+<tr><td>Cohere</td><td>embed-multilingual-v3.0</td><td>1024</td></tr>
+<tr><td>Cohere</td><td>embed-english-light-v3.0</td><td>384</td></tr>
+<tr><td>Cohere</td><td>embed-multilingual-light-v3.0</td><td>384</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v1</td><td>1536</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v2</td><td>1536</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v3</td><td>1024</td></tr>
 <tr><td>Siliconflow</td><td>BAAI/bge-large-zh-v1.5</td><td>1024</td></tr>
-<tr><td>Fluxo de silício</td><td>BAAI/bge-large-en-v1.5</td><td>1024</td></tr>
-<tr><td>Fluxo de silício</td><td>netease-youdao/bce-embedding-base_v1</td><td>768</td></tr>
-<tr><td>Fluxo de silício</td><td>BAAI/bge-m3</td><td>1024</td></tr>
-<tr><td>Fluxo de silício</td><td>Pro/BAAI/bge-m3</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-large-en-v1.5</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>netease-youdao/bce-embedding-base_v1</td><td>768</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-m3</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>Pro/BAAI/bge-m3</td><td>1024</td></tr>
 <tr><td>TEI</td><td>BAAI/bge-base-en-v1.5</td><td>768</td></tr>
 </tbody>
 </table>
-<h2 id="7-Key-Findings-from-Our-Benchmarking-Results" class="common-anchor-header">7 Principais conclusões dos nossos resultados de avaliação comparativa<button data-href="#7-Key-Findings-from-Our-Benchmarking-Results" class="anchor-icon" translate="no">
+<h2 id="7-Key-Findings-from-Our-Benchmarking-Results" class="common-anchor-header">7 Key Findings from Our Benchmarking Results<button data-href="#7-Key-Findings-from-Our-Benchmarking-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,23 +124,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Testámos os principais modelos de incorporação em diferentes tamanhos de lote, comprimentos de token e condições de rede, medindo a latência média em todos os cenários. Os resultados revelam informações importantes que podem reformular a forma como escolhe e optimiza as APIs de incorporação. Vamos dar uma olhada.</p>
-<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1. Os efeitos da rede global são mais significativos do que se pensa</h3><p>O ambiente de rede é talvez o fator mais crítico que afeta o desempenho da API de incorporação. O mesmo provedor de serviços de API de incorporação pode ter um desempenho muito diferente em diferentes ambientes de rede.</p>
+    </button></h2><p>We tested leading embedding models under varying batch sizes, token lengths, and network conditions, measuring median latency across all scenarios. The results uncover key insights that could reshape how you choose and optimize embedding APIs. Let’s take a look.</p>
+<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1. Global Network Effects Are More Significant Than You Think</h3><p>The network environment is perhaps the most critical factor affecting embedding API performance. The same embedding API service provider can perform dramatically differently across network environments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/latency_in_Asia_vs_in_US_cb4b5a425a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Quando seu aplicativo é implantado na Ásia e acessa serviços como OpenAI, Cohere ou VoyageAI implantados na América do Norte, a latência da rede aumenta significativamente. Nossos testes reais mostram que a latência da chamada de API aumentou universalmente de <strong>3 a 4 vezes</strong>!</p>
-<p>Por outro lado, quando seu aplicativo é implantado na América do Norte e acessa serviços asiáticos como o AliCloud Dashscope ou o SiliconFlow, a degradação do desempenho é ainda mais grave. O SiliconFlow, em particular, apresentou aumentos de latência de <strong>quase 100 vezes</strong> em cenários inter-regionais!</p>
-<p>Isto significa que deve selecionar sempre os fornecedores de incorporação com base na localização da sua implementação e na geografia do utilizador - as afirmações de desempenho sem contexto de rede não fazem sentido.</p>
-<h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2. As classificações de desempenho do modelo revelam resultados surpreendentes</h3><p>Nossos testes abrangentes de latência revelaram hierarquias claras de desempenho:</p>
+<p>When your application is deployed in Asia and accesses services like OpenAI, Cohere, or VoyageAI deployed in North America, network latency increases significantly. Our real-world tests show API call latency universally increased by <strong>3 to 4 times</strong>!</p>
+<p>Conversely, when your application is deployed in North America and accesses Asian services like AliCloud Dashscope or SiliconFlow, performance degradation is even more severe. SiliconFlow, in particular, showed latency increases of <strong>nearly 100 times</strong> in cross-region scenarios!</p>
+<p>This means you must always select embedding providers based on your deployment location and user geography—performance claims without network context are meaningless.</p>
+<h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2. Model Performance Rankings Reveal Surprising Results</h3><p>Our comprehensive latency testing revealed clear performance hierarchies:</p>
 <ul>
-<li><p><strong>Modelos baseados na América do Norte (latência média)</strong>: Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
-<li><p><strong>Modelos baseados na Ásia (latência média)</strong>: SiliconFlow &gt; AliCloud Dashscope</p></li>
+<li><p><strong>North America-based Models (median latency)</strong>: Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
+<li><p><strong>Asia-based Models (median latency)</strong>: SiliconFlow &gt; AliCloud Dashscope</p></li>
 </ul>
-<p>Estas classificações desafiam a sabedoria convencional sobre a seleção de fornecedores.</p>
+<p>These rankings challenge conventional wisdom about provider selection.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/median_latency_with_batch_size_1_ef83bec9c8.png" alt="" class="doc-image" id="" />
@@ -165,11 +165,11 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Nota: Devido ao impacto significativo do ambiente de rede e das regiões geográficas do servidor na latência da API de incorporação em tempo real, comparamos as latências dos modelos baseados na América do Norte e na Ásia separadamente.</p>
-<h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3. O impacto do tamanho do modelo varia drasticamente de acordo com o provedor</h3><p>Observamos uma tendência geral em que os modelos maiores têm maior latência do que os modelos padrão, que têm maior latência do que os modelos menores/lite. No entanto, esse padrão não era universal e revelou informações importantes sobre a arquitetura de back-end. Por exemplo:</p>
+<p>Note: Due to the significant impact of network environment and server geographic regions on real-time embedding API latency, we compared North America and Asia-based model latencies separately.</p>
+<h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3. Model Size Impact Varies Dramatically by Provider</h3><p>We observed a general trend where larger models have higher latency than standard models, which have higher latency than smaller/lite models. However, this pattern wasn’t universal and revealed important insights about backend architecture. For example:</p>
 <ul>
-<li><p><strong>O Cohere e o OpenAI</strong> apresentaram diferenças mínimas de desempenho entre os tamanhos dos modelos</p></li>
-<li><p><strong>O VoyageAI</strong> apresentou diferenças claras de desempenho com base no tamanho do modelo</p></li>
+<li><p><strong>Cohere and OpenAI</strong> showed minimal performance gaps between model sizes</p></li>
+<li><p><strong>VoyageAI</strong> exhibited clear performance differences based on model size</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -189,47 +189,47 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Isso indica que o tempo de resposta da API depende de vários fatores além da arquitetura do modelo, incluindo estratégias de backend em lote, otimização do tratamento de solicitações e infraestrutura específica do provedor. A lição é clara: <em>não confie no tamanho do modelo ou na data de lançamento como indicadores de desempenho fiáveis - teste sempre no seu próprio ambiente de implementação.</em></p>
-<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4. O comprimento do token e o tamanho do lote criam compensações complexas</h3><p>Dependendo da sua implementação de back-end, especialmente da sua estratégia de lote. O comprimento do token pode ter pouco impacto na latência até que o tamanho dos lotes aumente. Nossos testes revelaram alguns padrões claros:</p>
+<p>This indicates that API response time depends on multiple factors beyond model architecture, including backend batching strategies, request handling optimization, and provider-specific infrastructure. The lesson is clear: <em>don’t trust model size or release date as reliable performance indicators—always test in your own deployment environment.</em></p>
+<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4. Token Length and Batch Size Create Complex Trade-offs</h3><p>Depending on your backend implementation, especially your batching strategy. Token length may have little impact on latency until batch sizes grow. Our testing revealed some clear patterns:</p>
 <ul>
-<li><p><strong>A latência do OpenAI</strong> permaneceu razoavelmente consistente entre lotes pequenos e grandes, sugerindo recursos generosos de loteamento de backend</p></li>
-<li><p><strong>O VoyageAI</strong> mostrou efeitos claros no comprimento dos tokens, o que implica uma otimização mínima do backend para a criação de lotes</p></li>
+<li><p><strong>OpenAI’s latency</strong> remained fairly consistent between small and large batches, suggesting generous backend batching capabilities</p></li>
+<li><p><strong>VoyageAI</strong> showed clear token-length effects, implying minimal backend batching optimization</p></li>
 </ul>
-<p>Tamanhos de lote maiores aumentam a latência absoluta, mas melhoram a taxa de transferência geral. Em nossos testes, passar de batch=1 para batch=10 aumentou a latência em 2×-5×, enquanto aumentou substancialmente o throughput total. Isso representa uma oportunidade crítica de otimização para fluxos de trabalho de processamento em massa, em que é possível trocar a latência de solicitações individuais por uma taxa de transferência geral do sistema drasticamente aprimorada.</p>
+<p>Larger batch sizes increase absolute latency but improve overall throughput. In our tests, moving from batch=1 to batch=10 increased latency by 2×-5×, while substantially boosting total throughput. This represents a critical optimization opportunity for bulk processing workflows where you can trade individual request latency for dramatically improved overall system throughput.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Going_from_batch_1_to_10_latency_increased_2_5_9811536a3c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Indo de batch=1 para 10, a latência aumentou 2×-5×</p>
-<h3 id="5-API-Reliability-Introduces-Production-Risk" class="common-anchor-header">5. Confiabilidade da API introduz risco de produção</h3><p>Observamos uma variabilidade significativa na latência, particularmente com OpenAI e VoyageAI, introduzindo imprevisibilidade nos sistemas de produção.</p>
+<p>Going from batch=1 to 10, latency increased 2×–5×</p>
+<h3 id="5-API-Reliability-Introduces-Production-Risk" class="common-anchor-header">5. API Reliability Introduces Production Risk</h3><p>We observed significant variability in latency, particularly with OpenAI and VoyageAI, introducing unpredictability into production systems.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Latency_variance_when_batch_1_d9cd88fb73.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Variação de latência quando lote=1</p>
+<p>Latency variance when batch=1</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Latency_variance_when_batch_10_5efc33bf4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Variação de latência quando lote=10</p>
-<p>Embora nossos testes tenham se concentrado principalmente na latência, confiar em qualquer API externa introduz riscos de falha inerentes, incluindo flutuações de rede, limitação de taxa do provedor e interrupções de serviço. Sem SLAs claros dos fornecedores, os programadores devem implementar estratégias robustas de tratamento de erros, incluindo novas tentativas, tempos limite e disjuntores para manter a fiabilidade do sistema em ambientes de produção.</p>
-<h3 id="6-Local-Inference-Can-Be-Surprisingly-Competitive" class="common-anchor-header">6. A inferência local pode ser surpreendentemente competitiva</h3><p>Os nossos testes também revelaram que a implementação local de modelos de incorporação de tamanho médio pode oferecer um desempenho comparável ao das APIs na nuvem - uma descoberta crucial para aplicações sensíveis ao orçamento ou à latência.</p>
-<p>Por exemplo, a implantação do código aberto <code translate="no">bge-base-en-v1.5</code> via TEI (Text Embeddings Inference) em uma modesta CPU de 4c8g correspondeu ao desempenho de latência do SiliconFlow, fornecendo uma alternativa acessível de inferência local. Esta descoberta é particularmente significativa para programadores individuais e pequenas equipas que podem não ter recursos de GPU de nível empresarial, mas que ainda precisam de capacidades de incorporação de alto desempenho.</p>
+<p>Latency variance when batch=10</p>
+<p>While our testing focused primarily on latency, relying on any external API introduces inherent failure risks, including network fluctuations, provider rate limiting, and service outages. Without clear SLAs from providers, developers should implement robust error handling strategies, including retries, timeouts, and circuit breakers to maintain system reliability in production environments.</p>
+<h3 id="6-Local-Inference-Can-Be-Surprisingly-Competitive" class="common-anchor-header">6. Local Inference Can Be Surprisingly Competitive</h3><p>Our tests also revealed that deploying mid-sized embedding models locally can offer performance comparable to cloud APIs—a crucial finding for budget-conscious or latency-sensitive applications.</p>
+<p>For example, deploying the open-source <code translate="no">bge-base-en-v1.5</code> via TEI (Text Embeddings Inference) on a modest 4c8g CPU matched SiliconFlow’s latency performance, providing an affordable local-inference alternative. This finding is particularly significant for individual developers and small teams who may lack enterprise-grade GPU resources but still need high-performance embedding capabilities.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/TEI_Latency_2f09be1ef0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Latência TEI</p>
-<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7. A sobrecarga do Milvus é insignificante</h3><p>Como usamos o Milvus para testar a latência da API de incorporação, validamos que a sobrecarga adicional introduzida pela função TextEmbedding do Milvus é mínima e praticamente insignificante. As nossas medições mostram que as operações do Milvus acrescentam apenas 20-40ms no total, enquanto as chamadas à API de incorporação demoram centenas de milissegundos a vários segundos, o que significa que o Milvus acrescenta menos de 5% de sobrecarga ao tempo total da operação. O gargalo de desempenho está principalmente na transmissão da rede e nas capacidades de processamento dos provedores de serviços da API de incorporação, e não na camada do servidor Milvus.</p>
-<h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">Dicas: Como otimizar o desempenho da incorporação de RAG<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
+<p>TEI Latency</p>
+<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7. Milvus Overhead Is Negligible</h3><p>Since we used Milvus to test embedding API latency, we validated that the additional overhead introduced by Milvus’s TextEmbedding Function is minimal and virtually negligible. Our measurements show Milvus operations add only 20-40ms in total while embedding API calls take hundreds of milliseconds to several seconds, meaning Milvus adds less than 5% overhead to the total operation time. The performance bottleneck primarily lies in network transmission and the embedding API service providers’ processing capabilities, not in the Milvus server layer.</p>
+<h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">Tips: How to Optimize Your RAG Embedding Performance<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -244,20 +244,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Com base nos nossos parâmetros de referência, recomendamos as seguintes estratégias para otimizar o desempenho de incorporação do seu sistema RAG:</p>
-<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1. Localize sempre os seus testes</h3><p>Não confie em nenhum relatório de benchmark genérico (incluindo este!). Deve testar sempre os modelos no seu ambiente de implementação real, em vez de se basear apenas em referências publicadas. As condições de rede, a proximidade geográfica e as diferenças de infraestrutura podem afetar drasticamente o desempenho no mundo real.</p>
-<h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2. Combine estrategicamente seus provedores geograficamente</h3><ul>
-<li><p><strong>Para implantações na América do Norte</strong>: Considere Cohere, VoyageAI, OpenAI/Azure ou GCP Vertex AI - e faça sempre a sua própria validação de desempenho</p></li>
-<li><p><strong>Para implantações na Ásia</strong>: Considere seriamente os fornecedores de modelos asiáticos, como o AliCloud Dashscope ou o SiliconFlow, que oferecem melhor desempenho regional</p></li>
-<li><p><strong>Para públicos globais</strong>: Implemente o roteamento de várias regiões ou selecione provedores com infraestrutura distribuída globalmente para minimizar as penalidades de latência entre regiões</p></li>
+    </button></h2><p>Based on our benchmarks, we recommend the following strategies to optimize your RAG system’s embedding performance:</p>
+<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1. Always Localize Your Testing</h3><p>Don’t trust any generic benchmark reports (including this one!). You should always test models within your actual deployment environment rather than relying solely on published benchmarks. Network conditions, geographic proximity, and infrastructure differences can dramatically impact real-world performance.</p>
+<h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2. Geo-Match Your Providers Strategically</h3><ul>
+<li><p><strong>For North American deployments</strong>: Consider Cohere, VoyageAI, OpenAI/Azure, or GCP Vertex AI—and always conduct your own performance validation</p></li>
+<li><p><strong>For Asian deployments</strong>: Seriously consider Asian model providers such as AliCloud Dashscope or SiliconFlow, which offer better regional performance</p></li>
+<li><p><strong>For global audiences</strong>: Implement multi-region routing or select providers with globally distributed infrastructure to minimize cross-region latency penalties</p></li>
 </ul>
-<h3 id="3-Question-Default-Provider-Choices" class="common-anchor-header">3. Questionar as escolhas do fornecedor predefinido</h3><p>Os modelos de incorporação da OpenAI são tão populares que muitas empresas e programadores os escolhem como opções predefinidas. No entanto, os nossos testes revelaram que a latência e a estabilidade da OpenAI eram, na melhor das hipóteses, médias, apesar da sua popularidade no mercado. Questione as suposições sobre os "melhores" fornecedores com as suas próprias referências rigorosas - a popularidade nem sempre se correlaciona com o desempenho ideal para o seu caso de utilização específico.</p>
-<h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4. Otimize as configurações de lotes e pedaços</h3><p>Uma configuração não se adapta a todos os modelos ou casos de uso. O tamanho ideal do lote e o comprimento do bloco variam significativamente entre os provedores devido a diferentes arquiteturas de back-end e estratégias de lote. Experimente sistematicamente com diferentes configurações para encontrar o ponto de desempenho ideal, considerando as compensações de taxa de transferência versus latência para os requisitos específicos da sua aplicação.</p>
-<h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5. Implemente o armazenamento em cache estratégico</h3><p>Para consultas de alta frequência, armazene em cache o texto da consulta e as suas incorporações geradas (utilizando soluções como o Redis). As consultas idênticas subsequentes podem ir diretamente para a cache, reduzindo a latência para milissegundos. Esta é uma das técnicas de otimização da latência das consultas mais rentáveis e com maior impacto.</p>
-<h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6. Considere a implantação de inferência local</h3><p>Se os requisitos de latência de ingestão de dados, latência de consulta e privacidade de dados forem extremamente altos, ou se os custos de chamadas de API forem proibitivos, considere implantar modelos de incorporação localmente para inferência. Os planos de API padrão geralmente vêm com limitações de QPS, latência instável e falta de garantias de SLA - restrições que podem ser problemáticas para ambientes de produção.</p>
-<p>Para muitos desenvolvedores individuais ou pequenas equipes, a falta de GPUs de nível empresarial é uma barreira para a implantação local de modelos de incorporação de alto desempenho. No entanto, isso não significa abandonar totalmente a inferência local. Com mecanismos de inferência de alto desempenho como o <a href="https://github.com/huggingface/text-embeddings-inference">text-embeddings-inference da Hugging Face</a>, até mesmo a execução de modelos de incorporação de pequeno a médio porte em uma CPU pode alcançar um desempenho decente que pode superar as chamadas de API de alta latência, especialmente para a geração de incorporação offline em grande escala.</p>
-<p>Esta abordagem requer uma consideração cuidadosa dos compromissos entre custo, desempenho e complexidade de manutenção.</p>
-<h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">Como o Milvus simplifica o seu fluxo de trabalho de incorporação<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
+<h3 id="3-Question-Default-Provider-Choices" class="common-anchor-header">3. Question Default Provider Choices</h3><p>OpenAI’s embedding models are so popular that many enterprises and developers choose them as default options. However, our tests revealed that OpenAI’s latency and stability were average at best, despite its market popularity. Challenge assumptions about “best” providers with your own rigorous benchmarks—popularity doesn’t always correlate with optimal performance for your specific use case.</p>
+<h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4. Optimize Batch and Chunk Configurations</h3><p>One configuration doesn’t fit all models or use cases. The optimal batch size and chunk length vary significantly between providers due to different backend architectures and batching strategies. Experiment systematically with different configurations to find your optimal performance point, considering the throughput vs. latency trade-offs for your specific application requirements.</p>
+<h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5. Implement Strategic Caching</h3><p>For high-frequency queries, cache both the query text and its generated embeddings (using solutions like Redis). Subsequent identical queries can directly hit the cache, reducing latency to milliseconds. This represents one of the most cost-effective and impactful query latency optimization techniques.</p>
+<h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6. Consider Local Inference Deployment</h3><p>If you have extremely high requirements for data ingestion latency, query latency, and data privacy, or if API call costs are prohibitive, consider deploying embedding models locally for inference. Standard API plans often come with QPS limitations, unstable latency, and lack of SLA guarantees—constraints that can be problematic for production environments.</p>
+<p>For many individual developers or small teams, the lack of enterprise-grade GPUs is a barrier to local deployment of high-performance embedding models. However, this doesn’t mean abandoning local inference entirely. With high-performance inference engines like <a href="https://github.com/huggingface/text-embeddings-inference">Hugging Face’s text-embeddings-inference</a>, even running small to medium-sized embedding models on a CPU can achieve decent performance that may outperform high-latency API calls, especially for large-scale offline embedding generation.</p>
+<p>This approach requires careful consideration of trade-offs between cost, performance, and maintenance complexity.</p>
+<h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">How Milvus Simplifies Your Embedding Workflow<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -272,18 +272,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Como mencionado, Milvus não é apenas uma base de dados vetorial de alto desempenho - também oferece uma interface de função de incorporação conveniente que se integra perfeitamente com modelos de incorporação populares de vários fornecedores, tais como OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, e mais em todo o mundo no seu pipeline de pesquisa vetorial.</p>
-<p>O Milvus vai além do armazenamento e da recuperação de vetores com recursos que simplificam a integração de incorporação:</p>
+    </button></h2><p>As mentioned, Milvus is not just a high-performance vector database—it also offers a convenient embedding function interface that seamlessly integrates with popular embedding models from various providers such as OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and more across the world into your vector search pipeline.</p>
+<p>Milvus goes beyond vector storage and retrieval with features that streamline embedding integration:</p>
 <ul>
-<li><p><strong>Gerenciamento eficiente de vetores</strong>: Como uma base de dados de alto desempenho criada para colecções de vectores maciças, o Milvus oferece armazenamento fiável, opções de indexação flexíveis (HNSW, IVF, RaBitQ, DiskANN, entre outras) e capacidades de recuperação rápidas e precisas.</p></li>
-<li><p><strong>Troca simplificada de provedores</strong>: Milvus oferece uma interface <code translate="no">TextEmbedding</code> Function, permitindo configurar a função com suas chaves de API, trocar de provedores ou modelos instantaneamente e medir o desempenho no mundo real sem integração complexa de SDK.</p></li>
-<li><p><strong>Pipelines de dados de ponta a ponta</strong>: Ligue para <code translate="no">insert()</code> com texto bruto, e o Milvus incorpora e armazena automaticamente os vectores numa única operação, simplificando drasticamente o código do seu pipeline de dados.</p></li>
-<li><p><strong>Texto para resultados em uma chamada</strong>: Ligue para <code translate="no">search()</code> com consultas de texto, e o Milvus lida com a incorporação, pesquisa e retorno de resultados - tudo em uma única chamada de API.</p></li>
-<li><p><strong>Integração independente do provedor</strong>: Milvus abstrai os detalhes de implementação do provedor; basta configurar sua função e chave de API uma vez, e você está pronto para começar.</p></li>
-<li><p><strong>Compatibilidade com ecossistemas de código aberto</strong>: Quer gere embeddings através da nossa função incorporada <code translate="no">TextEmbedding</code>, inferência local ou outro método, Milvus fornece armazenamento unificado e capacidades de recuperação.</p></li>
+<li><p><strong>Efficient Vector Management</strong>: As a high-performance database built for massive vector collections, Milvus offers reliable storage, flexible indexing options (HNSW, IVF, RaBitQ, DiskANN, and more), and fast, accurate retrieval capabilities.</p></li>
+<li><p><strong>Streamlined Provider Switching</strong>: Milvus offers a <code translate="no">TextEmbedding</code> Function interface, allowing you to configure the function with your API keys, switch providers or models instantly, and measure real-world performance without complex SDK integration.</p></li>
+<li><p><strong>End-to-End Data Pipelines</strong>: Call <code translate="no">insert()</code> with raw text, and Milvus automatically embeds and stores vectors in one operation, dramatically simplifying your data pipeline code.</p></li>
+<li><p><strong>Text-to-Results in One Call</strong>: Call <code translate="no">search()</code> with text queries, and Milvus handles embedding, searching, and returning results—all in a single API call.</p></li>
+<li><p><strong>Provider-Agnostic Integration</strong>: Milvus abstracts provider implementation details; just configure your Function and API key once, and you’re ready to go.</p></li>
+<li><p><strong>Open-Source Ecosystem Compatibility</strong>: Whether you generate embeddings via our built-in <code translate="no">TextEmbedding</code> Function, local inference, or another method, Milvus provides unified storage and retrieval capabilities.</p></li>
 </ul>
-<p>Isto cria uma experiência simplificada de "Data-In, Insight-Out", em que o Milvus trata internamente da geração de vectores, tornando o código da sua aplicação mais simples e fácil de manter.</p>
-<h2 id="Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="common-anchor-header">Conclusão: A verdade sobre o desempenho de que seu sistema RAG precisa<button data-href="#Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="anchor-icon" translate="no">
+<p>This creates a streamlined “Data-In, Insight-Out” experience where Milvus handles vector generation internally, making your application code more straightforward and maintainable.</p>
+<h2 id="Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="common-anchor-header">Conclusion: The Performance Truth Your RAG System Needs<button data-href="#Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -298,7 +298,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O assassino silencioso do desempenho do RAG não está onde a maioria dos desenvolvedores está procurando. Enquanto as equipas gastam recursos em engenharia de prontidão e otimização LLM, a latência da API incorporada sabota silenciosamente a experiência do utilizador com atrasos que podem ser 100 vezes piores do que o esperado. Nossos benchmarks abrangentes expõem a dura realidade: popular não significa performático, a geografia importa mais do que a escolha do algoritmo em muitos casos, e a inferência local às vezes supera APIs de nuvem caras.</p>
-<p>Essas descobertas destacam um ponto cego crucial na otimização de RAG. Penalidades de latência entre regiões, classificações inesperadas de desempenho de provedores e a surpreendente competitividade da inferência local não são casos extremos - são realidades de produção que afetam aplicativos reais. Compreender e medir o desempenho da API de incorporação é essencial para proporcionar experiências de utilizador com capacidade de resposta.</p>
-<p>A escolha do provedor de incorporação é uma peça crítica do quebra-cabeça do desempenho da RAG. Ao testar no seu ambiente de implantação real, selecionar provedores geograficamente apropriados e considerar alternativas como inferência local, você pode eliminar uma grande fonte de atrasos voltados para o usuário e criar aplicativos de IA realmente responsivos.</p>
-<p>Para obter mais detalhes sobre como fizemos esse benchmarking, consulte <a href="https://github.com/zhuwenxing/text-embedding-bench">este notebook</a>.</p>
+    </button></h2><p>The silent killer of RAG performance isn’t where most developers are looking. While teams pour resources into prompt engineering and LLM optimization, embedding API latency quietly sabotages user experience with delays that can be 100x worse than expected. Our comprehensive benchmarks expose the harsh reality: popular doesn’t mean performant, geography matters more than algorithm choice in many cases, and local inference sometimes beats expensive cloud APIs.</p>
+<p>These findings highlight a crucial blind spot in RAG optimization. Cross-region latency penalties, unexpected provider performance rankings, and the surprising competitiveness of local inference aren’t edge cases—they’re production realities affecting real applications. Understanding and measuring embedding API performance is essential for delivering responsive user experiences.</p>
+<p>Your embedding provider choice is one critical piece of your RAG performance puzzle. By testing in your actual deployment environment, selecting geographically appropriate providers, and considering alternatives like local inference, you can eliminate a major source of user-facing delays and build truly responsive AI applications.</p>
+<p>For more details on how we did this benchmarking, check <a href="https://github.com/zhuwenxing/text-embedding-bench">this notebook</a>.</p>

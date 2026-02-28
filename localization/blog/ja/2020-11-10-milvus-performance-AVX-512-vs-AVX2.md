@@ -1,15 +1,18 @@
 ---
 id: milvus-performance-AVX-512-vs-AVX2.md
-title: アドバンスト・ベクトル・エクステンションとは？
+title: What are Advanced Vector Extensions?
 author: milvus
 date: 2020-11-10T22:15:39.156Z
-desc: MilvusがAVX-512とAVX2において、さまざまな異なるベクトルインデックスを使用してどのような性能を発揮するかをご覧ください。
+desc: >-
+  Discover how Milvus performs on AVX-512 vs. AVX2 using a variety of different
+  vector indexes.
 cover: assets.zilliz.com/header_milvus_performance_avx_512_vs_avx2_2c9f14ef96.png
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
 ---
-<custom-h1>AVX-512とAVX2のMilvus性能比較</custom-h1><p>世界を征服しようとする意識的なインテリジェント・マシンは、サイエンス・フィクションの中では着実に定着しているが、現実には現代のコンピューターは非常に従順である。言われなくても、自分で何をすればいいのかほとんどわからない。コンピューターは、プログラムからプロセッサーに送られる命令（インストラクション）に基づいてタスクを実行する。一般に、コンピュータのアセンブリ言語では、機械語の各ステートメントがプロセッサの命令に対応する。中央演算処理装置（CPU）は、命令を頼りに計算を行い、システムを制御する。また、CPUの性能は命令実行能力（実行時間など）で測られることが多い。</p>
-<h2 id="What-are-Advanced-Vector-Extensions" class="common-anchor-header">アドバンスト・ベクトル・エクステンションとは？<button data-href="#What-are-Advanced-Vector-Extensions" class="anchor-icon" translate="no">
+<custom-h1>Milvus performance on AVX-512 vs. AVX2</custom-h1><p>Conscious intelligent machines that want to take over the world are a steady fixture in science fiction, but in reality modern computers are very obedient. Without being told, they seldom know what to do with themselves. Computers perform tasks based on instructions, or orders, sent from a program to a processor. At their lowest level, each instruction is a sequence of ones and zeroes that describes an operation for a computer to execute.
+Typically, in computer assembly languages each machine language statement corresponds to a processor instruction. The central processing unit (CPU) relies on instructions to perform calculations and control systems. Additionally, CPU performance is often measured in terms of instruction execution capability (e.g., execution time).</p>
+<h2 id="What-are-Advanced-Vector-Extensions" class="common-anchor-header">What are Advanced Vector Extensions?<button data-href="#What-are-Advanced-Vector-Extensions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,10 +27,10 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>アドバンスト・ベクトル拡張命令（AVX）は、x86ファミリーの命令セット・アーキテクチャを採用したマイクロプロセッサ向けの命令セットです。インテルが2008年3月に初めて提案したAVXは、3年後のSandy Bridge（第2世代インテルCoreプロセッサー（Core i7、i5、i3など）に採用されたマイクロアーキテクチャ）の発表と、同じく2011年に発表されたAMDの競合マイクロアーキテクチャBulldozerによって、幅広い支持を得るようになりました。</p>
-<p>AVXは新しいコーディング方式、新機能、新命令を導入した。AVX2では、ほとんどの整数演算が256ビットに拡張され、FMA（fused multiply-accumulate）演算が導入された。AVX-512は、新しい拡張ベクトル拡張（EVEX）プリフィックス符号化を使用して、AVXを512ビット演算に拡張します。</p>
-<p><a href="https://milvus.io/docs">Milvusは</a>、類似検索や人工知能（AI）アプリケーション向けに設計されたオープンソースのベクトルデータベースです。このプラットフォームはAVX-512命令セットをサポートしており、AVX-512命令を含むすべてのCPUで使用できる。Milvusは、レコメンダー・システム、コンピューター・ビジョン、自然言語処理（NLP）など、幅広い応用が可能です。この記事では、AVX-512とAVX2におけるMilvusベクトルデータベースの性能結果と解析を紹介します。</p>
-<h2 id="Milvus-performance-on-AVX-512-vs-AVX2" class="common-anchor-header">AVX-512とAVX2のMilvus性能比較<button data-href="#Milvus-performance-on-AVX-512-vs-AVX2" class="anchor-icon" translate="no">
+    </button></h2><p>Advanced Vector Extensions (AVX) are an instruction set for microprocessors that rely on the x86 family of instruction set architectures. First proposed by Intel in March 2008, AVX saw broad support three years later with the launch of Sandy Bridge—a microarchitecture used in the second generation of Intel Core processors (e.g, Core i7, i5, i3)— and AMD’s competing microarchitecture also released in 2011, Bulldozer.</p>
+<p>AVX introduced a new coding scheme, new features, and new instructions. AVX2 expands most integer operations to 256 bits and introduces fused multiply-accumulate (FMA) operations. AVX-512 expands AVX to 512-bit operations using a new enhanced vector extension (EVEX) prefix encoding.</p>
+<p><a href="https://milvus.io/docs">Milvus</a> is an open-source vector database designed for similarity search and artificial intelligence (AI) applications. The platform supports the AVX-512 instruction set, meaning it can be used with all CPUs that include the AVX-512 instructions. Milvus has broad applications spanning recommender systems, computer vision, natural language processing (NLP) and more. This article presents performance results and analysis of a Milvus vector database on AVX-512 and AVX2.</p>
+<h2 id="Milvus-performance-on-AVX-512-vs-AVX2" class="common-anchor-header">Milvus performance on AVX-512 vs. AVX2<button data-href="#Milvus-performance-on-AVX-512-vs-AVX2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,29 +45,49 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="System-configuration" class="common-anchor-header">システム構成</h3><ul>
-<li>CPUIntel® Platinum 8163 CPU @ 2.50GHz 24コア 48スレッド</li>
-<li>CPU数2</li>
-<li>グラフィックカード、GeForce RTX 2080Ti 11GB 4枚</li>
-<li>メモリ：768GB</li>
-<li>ディスク: 2TB SSD</li>
+    </button></h2><h3 id="System-configuration" class="common-anchor-header">System configuration</h3><ul>
+<li>CPU: Intel® Platinum 8163 CPU @ 2.50GHz24 cores 48 threads</li>
+<li>Number of CPU: 2</li>
+<li>Graphics card, GeForce RTX 2080Ti 11GB 4 cards</li>
+<li>Mem: 768GB</li>
+<li>Disk: 2TB SSD</li>
 </ul>
-<h3 id="Milvus-parameters" class="common-anchor-header">milvusパラメータ</h3><ul>
-<li>cahce.cahe_size: 25, 高速クエリのためのデータキャッシュに使用するCPUメモリのサイズ。</li>
-<li>nlist：4096</li>
-<li>nprobe：128</li>
+<h3 id="Milvus-parameters" class="common-anchor-header">Milvus parameters</h3><ul>
+<li>cahce.cahe_size: 25, The size of CPU memory used for caching data for faster query.</li>
+<li>nlist: 4096</li>
+<li>nprobe: 128</li>
 </ul>
-<p>注：<code translate="no">nlist</code> はクライアントから作成するインデックス作成パラメータです。<code translate="no">nprobe</code> は検索パラメータです。IVF_FLATとIVF_SQ8はどちらもクラスタリングアルゴリズムを使用して、多数のベクトルをバケットに分割します。<code translate="no">nlist</code> はクラスタリング中に分割するバケットの総数です。クエリの最初のステップは、ターゲットベクトルに最も近いバケットの数を見つけることであり、2番目のステップは、ベクトルの距離を比較することによって、これらのバケット内の上位k個のベクトルを見つけることです。<code translate="no">nprobe</code> は、最初のステップのバケットの数を意味します。</p>
-<h3 id="Dataset-SIFT10M-dataset" class="common-anchor-header">データセットSIFT10Mデータセット</h3><p>この<a href="https://archive.ics.uci.edu/ml/datasets/SIFT10M">データセットは</a>128次元のベクトルを100万個含み、対応する最近傍探索手法の性能分析によく使われる。nq = [1, 10, 100, 500, 1000]のトップ1探索時間を2つの命令セット間で比較する。</p>
-<h3 id="Results-by-vector-index-type" class="common-anchor-header">ベクトルインデックスの種類による結果</h3><p><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">ベクトルインデックスは</a>、様々な数学的モデルを用いてコレクションのベクトルフィールド上に構築される、時間と空間効率の良いデータ構造である。ベクトルインデックスを使用することで、入力ベクトルに類似したベクトルを特定しようとするときに、大規模なデータセットを効率的に検索することができる。正確な検索には時間がかかるため、<a href="https://milvus.io/docs/v2.0.x/index.md#CPU">Milvusがサポートする</a>インデックスタイプのほとんどは近似最近傍（ANN）検索を使用している。</p>
-<p>これらのテストではAVX-512とAVX2でIVF_FLAT、IVF_SQ8、HNSWの3つのインデックスが使用された。</p>
-<h3 id="IVFFLAT" class="common-anchor-header">IVF_FLAT</h3><p>反転ファイル(IVF_FLAT)は量子化に基づくインデックスタイプである。最も基本的なIVFインデックスであり、各ユニットに格納される符号化データは元のデータと一致します。 このインデックスは、ベクトルデータをいくつかのクラスタ単位（nlist）に分割し、対象となる入力ベクトルと各クラスタの中心との距離を比較します。システムがクエリに設定するクラスタ数（nprobe）に応じて、ターゲット入力と最も類似したクラスタ（複数可）内のベクトルとの比較に基づく類似性検索結果が返され、クエリ時間が大幅に短縮される。nprobeを調整することで、シナリオに応じた精度と速度の理想的なバランスを見つけることができます。</p>
-<p><strong>パフォーマンス結果</strong> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/IVF_FLAT_3688377fc8.png" alt="IVF_FLAT.png" class="doc-image" id="ivf_flat.png" /><span>IVF_FLAT.png</span> </span></p>
-<h3 id="IVFSQ8" class="common-anchor-header">IVF_SQ8</h3><p>IVF_FLATは圧縮を行わないため、生成されるインデックスファイルのサイズは、インデックスを持たない元の生のベクトルデータとほぼ同じです。ディスク、CPU、GPU のメモリリソースが限られている場合は、IVF_FLAT よりも IVF_SQ8 の方が適しています。 このインデックスタイプは、スカラー量子化を行うことで、元のベクトルの各次元を 4 バイトの浮動小数点数から 1 バイトの符号なし整数に変換できます。これにより、ディスク、CPU、GPUのメモリ消費量を70～75%削減することができます。</p>
-<p><strong>性能結果</strong> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/IVF_SQ_8_bed28307f7.png" alt="IVF_SQ8.png" class="doc-image" id="ivf_sq8.png" /><span>IVF_SQ8.png</span> </span></p>
-<h3 id="HNSW" class="common-anchor-header">HNSW</h3><p>HNSW（Hierarchical Small World Graph）は、グラフベースのインデックス作成アルゴリズムです。クエリは最上層でターゲットに最も近いノードを見つけることから始まり、次の層に降りて検索を繰り返します。何度も繰り返された後、ターゲットの位置に素早く近づくことができる。</p>
-<p><strong>パフォーマンス結果</strong> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/HNSW_52aba39214.png" alt="HNSW.png" class="doc-image" id="hnsw.png" /><span>HNSW.png</span> </span></p>
-<h2 id="Comparing-vector-indexes" class="common-anchor-header">ベクトルインデックスの比較<button data-href="#Comparing-vector-indexes" class="anchor-icon" translate="no">
+<p>Note: <code translate="no">nlist</code> is the indexing parameter to create from the client; <code translate="no">nprobe</code> the searching parameter. Both IVF_FLAT and IVF_SQ8 use a clustering algorithm to partition a large number of vectors into buckets, <code translate="no">nlist</code> being the total number of buckets to partition during clustering. The first step in a query is to find the number of buckets that are closest to the target vector, and the second step is to find the top-k vectors in these buckets by comparing the distance of the vectors. <code translate="no">nprobe</code> refers to the number of buckets in the first step.</p>
+<h3 id="Dataset-SIFT10M-dataset" class="common-anchor-header">Dataset: SIFT10M dataset</h3><p>These tests use the <a href="https://archive.ics.uci.edu/ml/datasets/SIFT10M">SIFT10M dataset</a>, which contains one million 128-dimensional vectors and is often used for analyzing the performance of corresponding nearest-neighbor search methods. The top-1 search time for nq = [1, 10, 100, 500, 1000] will be compared between the two instruction sets.</p>
+<h3 id="Results-by-vector-index-type" class="common-anchor-header">Results by vector index type</h3><p><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Vector indexes</a> are time- and space-efficient data structures built on the vector field of a collection using various mathematical models. Vector indexing allows large datasets to be searched efficiently when trying to identify similar vectors to an input vector. Due to the time consuming nature of accurate retrieval, most of the index types <a href="https://milvus.io/docs/v2.0.x/index.md#CPU">supported by Milvus</a> use approximate nearest neighbor (ANN) search.</p>
+<p>For these tests, three indexes were used with AVX-512 and AVX2: IVF_FLAT, IVF_SQ8, and HNSW.</p>
+<h3 id="IVFFLAT" class="common-anchor-header">IVF_FLAT</h3><p>Inverted file (IVF_FLAT) is an index type based on quantization. It is the most basic IVF index, and the encoded data stored in each unit is consistent with the original data.
+The index divides vector data into a number of cluster units (nlist), and then compares distances between the target input vector and the center of each cluster. Depending on the number of clusters the system is set to query (nprobe), similarity search results are returned based on comparisons between the target input and the vectors in the most similar cluster(s) only — drastically reducing query time. By adjusting nprobe, an ideal balance between accuracy and speed can be found for a given scenario.</p>
+<p><strong>Performance results</strong>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/IVF_FLAT_3688377fc8.png" alt="IVF_FLAT.png" class="doc-image" id="ivf_flat.png" />
+    <span>IVF_FLAT.png</span>
+  </span>
+</p>
+<h3 id="IVFSQ8" class="common-anchor-header">IVF_SQ8</h3><p>IVF_FLAT does not perform any compression, so the index files it produces are roughly the same size as the original, raw non-indexed vector data. When disk, CPU, or GPU memory resources are limited, IVF_SQ8 is a better option than IVF_FLAT.
+This index type can convert each dimension of the original vector from a four-byte floating-point number to a one-byte unsigned integer by performing scalar quantization. This reduces disk, CPU, and GPU memory consumption by 70–75%.</p>
+<p><strong>Performance results</strong>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/IVF_SQ_8_bed28307f7.png" alt="IVF_SQ8.png" class="doc-image" id="ivf_sq8.png" />
+    <span>IVF_SQ8.png</span>
+  </span>
+</p>
+<h3 id="HNSW" class="common-anchor-header">HNSW</h3><p>Hierarchical Small World Graph (HNSW) is a graph-based indexing algorithm. Queries begin in the uppermost layer by finding the node closest to the target, it then goes down to the next layer for another round of search. After multiple iterations, it can quickly approach the target position.</p>
+<p><strong>Performance results</strong>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/HNSW_52aba39214.png" alt="HNSW.png" class="doc-image" id="hnsw.png" />
+    <span>HNSW.png</span>
+  </span>
+</p>
+<h2 id="Comparing-vector-indexes" class="common-anchor-header">Comparing vector indexes<button data-href="#Comparing-vector-indexes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -79,9 +102,15 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベクトル検索はAVX2よりもAVX-512命令セットの方が一貫して高速です。これはAVX-512が512ビット計算をサポートするのに対し、AVX2では256ビット計算しかサポートしないからです。理論的にはAVX-512はAVX2の2倍速くなるはずですが、Milvusはベクトルの類似度計算に加えて他の時間のかかるタスクも行っています。AVX-512の全体的な検索時間は、実世界のシナリオではAVX2の2倍短くなるとは考えにくい。<span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/comparison_a64b92f1dd.png" alt="comparison.png" class="doc-image" id="comparison.png" /><span>comparison.png</span> </span></p>
-<p>HNSWインデックスの検索は他の2つのインデックスよりかなり高速ですが、IVF_SQ8の検索はどちらの命令セットでもIVF_FLATよりわずかに高速です。これは、IVF_SQ8はIVF_FLATが必要とするメモリの25%しか必要としないためと思われる。IVF_SQ8 は各ベクトル次元に 1 バイトをロードしますが、IVF_FLAT は各ベクトル次元に 4 バイトをロードします。計算に必要な時間は、メモリ帯域幅に制約される可能性が高いです。その結果、IVF_SQ8 は、占有スペースが少ないだけでなく、ベクトル検索に要する時間も短くて済みます。</p>
-<h2 id="Milvus-is-a-versatile-high-performance-vector-database" class="common-anchor-header">Milvusは汎用性の高い高性能ベクトルデータベースである。<button data-href="#Milvus-is-a-versatile-high-performance-vector-database" class="anchor-icon" translate="no">
+    </button></h2><p>Vector retrieval is consistently faster on the AVX-512 instruction set than on AVX2. This is because  AVX-512 supports 512-bit computation, compared to just 256-bit computation on AVX2. Theoretically, AVX-512 should be twice as fast as the AVX2 however, Milvus conducts other time-consuming tasks in addition to vector similarity calculations. The overall retrieval time of AVX-512 is unlikely to be twice as short as AVX2 in real-world scenarios.
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/comparison_a64b92f1dd.png" alt="comparison.png" class="doc-image" id="comparison.png" />
+    <span>comparison.png</span>
+  </span>
+</p>
+<p>Retrieval is significantly faster on the HNSW index than the other two indexes, while IVF_SQ8 retrieval is slightly faster than IVF_FLAT on both instruction sets. This is likely because IVF_SQ8 requires just 25% of the memory need by IVF_FLAT. IVF_SQ8 loads 1 byte for each vector dimension, while IVF_FLAT loads 4 bytes per vector dimension. The time required for the calculation is most likely constrained by memory bandwidth. As a result, IVF_SQ8 not only takes up less space, but also requires less time to retrieve vectors.</p>
+<h2 id="Milvus-is-a-versatile-high-performance-vector-database" class="common-anchor-header">Milvus is a versatile, high-performance vector database<button data-href="#Milvus-is-a-versatile-high-performance-vector-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,10 +125,10 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この記事で紹介したテストは、MilvusがAVX-512とAVX2の両方の命令セットで異なるインデックスを使用して優れた性能を発揮することを示しています。インデックスの種類に関係なく、MilvusはAVX-512で優れた性能を発揮します。</p>
-<p>Milvusはさまざまなディープラーニングプラットフォームと互換性があり、雑多なAIアプリケーションで使用されている。<a href="https://zilliz.com/news/lfaidata-launches-milvus-2.0-an-advanced-cloud-native-vector-database-built-for-ai">Milvus 2.0は</a>、世界で最も人気のあるベクトルデータベースを再構築したもので、2021年7月にオープンソースライセンスでリリースされた。プロジェクトの詳細については、以下のリソースをご覧ください：</p>
+    </button></h2><p>The tests presented in this article demonstrate that Milvus offers excellent performance on both the AVX-512 and AVX2 instruction sets using different indexes. Regardless of the index type, Milvus  performs better on AVX-512.</p>
+<p>Milvus is compatible with a variety of deep learning platforms and is used in miscellaneous AI applications. <a href="https://zilliz.com/news/lfaidata-launches-milvus-2.0-an-advanced-cloud-native-vector-database-built-for-ai">Milvus 2.0</a>, a reimagined version of the world’s most popular vector database, was released under an open-source license in July 2021. For more information about the project, check out the following resources:</p>
 <ul>
-<li><a href="https://github.com/milvus-io/milvus/">GitHubで</a>Milvusを見つける、またはMilvusに貢献する。</li>
-<li><a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slackで</a>コミュニティと交流する。</li>
-<li><a href="https://twitter.com/milvusio">Twitterで</a>つながる。</li>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

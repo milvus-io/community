@@ -1,9 +1,9 @@
 ---
 id: >-
   how-to-build-productionready-ai-agents-with-longterm-memory-using-google-adk-and-milvus.md
-title: >-
-  Como criar agentes de IA prontos para produção com memória de longo prazo
-  usando o Google ADK e o Milvus
+title: >
+  How to Build Production-Ready AI Agents with Long-Term Memory Using Google ADK
+  and Milvus
 author: Min Yin
 date: 2026-02-26T00:00:00.000Z
 cover: 'https://assets.zilliz.com/cover_c543dbeab4.png'
@@ -16,19 +16,19 @@ meta_keywords: >-
   semantic retrieval
 meta_title: |
   Production AI Agents with Persistent Memory Using Google ADK and Milvus
-desc: >-
-  Construa agentes de IA com memória de longo prazo real utilizando o ADK e o
-  Milvus, abrangendo a conceção da memória, a recuperação semântica, o
-  isolamento do utilizador e a arquitetura pronta para produção.
+desc: >
+  Build AI agents with real long-term memory using ADK and Milvus, covering
+  memory design, semantic retrieval, user isolation, and production-ready
+  architecture.
 origin: >-
   https://milvus.io/blog/how-to-build-productionready-ai-agents-with-longterm-memory-using-google-adk-and-milvus.md
 ---
-<p>Ao construir agentes inteligentes, um dos problemas mais difíceis é a gestão da memória: decidir o que o agente deve lembrar e o que deve esquecer.</p>
-<p>Nem toda a memória é para durar. Alguns dados são necessários apenas para a conversa atual e devem ser apagados quando esta termina. Outros dados, como as preferências do utilizador, devem persistir ao longo das conversações. Quando estes são misturados, os dados temporários acumulam-se e perde-se informação importante.</p>
-<p>O verdadeiro problema é arquitetónico. A maioria das estruturas não impõe uma separação clara entre a memória de curto prazo e a memória de longo prazo, deixando os programadores a tratar disso manualmente.</p>
-<p>O <a href="https://google.github.io/adk-docs/">Agent Development Kit (ADK)</a> de código aberto da Google, lançado em 2025, resolve este problema ao nível da estrutura, tornando a gestão da memória uma preocupação de primeira classe. Ele impõe uma separação padrão entre a memória de sessão de curto prazo e a memória de longo prazo.</p>
-<p>Neste artigo, veremos como essa separação funciona na prática. Usando o Milvus como banco de dados vetorial, criaremos um agente pronto para produção com memória de longo prazo real a partir do zero.</p>
-<h2 id="ADK’s-Core-Design-Principles" class="common-anchor-header">Princípios básicos de design do ADK<button data-href="#ADK’s-Core-Design-Principles" class="anchor-icon" translate="no">
+<p>When building intelligent agents, one of the hardest problems is memory management: deciding what the agent should remember and what it should forget.</p>
+<p>Not all memory is meant to last. Some data is only needed for the current conversation and should be cleared when it ends. Other data, like user preferences, must persist across conversations. When these are mixed, temporary data piles up, and important information is lost.</p>
+<p>The real problem is architectural. Most frameworks do not enforce a clear separation between short-term and long-term memory, leaving developers to handle it manually.</p>
+<p>Google’s open-source <a href="https://google.github.io/adk-docs/">Agent Development Kit (ADK)</a>, released in 2025, tackles this at the framework level by making memory management a first-class concern. It enforces a default separation between short-term session memory and long-term memory.</p>
+<p>In this article, we’ll look at how this separation works in practice. Using Milvus as the vector database, we’ll build a production-ready agent with real long-term memory from scratch.</p>
+<h2 id="ADK’s-Core-Design-Principles" class="common-anchor-header">ADK’s Core Design Principles<button data-href="#ADK’s-Core-Design-Principles" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,43 +43,43 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O ADK foi projetado para tirar o gerenciamento de memória do prato do desenvolvedor. O framework separa automaticamente os dados de sessão de curto prazo da memória de longo prazo e trata cada um deles apropriadamente. Ele faz isso através de quatro escolhas centrais de design.</p>
-<h3 id="Built-in-Interfaces-for-Short--and-Long-Term-Memory" class="common-anchor-header">Interfaces embutidas para memória de curto e longo prazo</h3><p>Todo agente ADK vem com duas interfaces integradas para gerenciar a memória:</p>
-<p><strong>SessionService (dados temporários)</strong></p>
+    </button></h2><p>ADK is designed to take memory management off the developer’s plate. The framework automatically separates short-term session data from long-term memory and handles each appropriately. It does this through four core design choices.</p>
+<h3 id="Built-in-Interfaces-for-Short--and-Long-Term-Memory" class="common-anchor-header">Built-in Interfaces for Short- and Long-Term Memory</h3><p>Every ADK agent comes with two built-in interfaces for managing memory:</p>
+<p><strong>SessionService (temporary data)</strong></p>
 <ul>
-<li><strong>O que armazena</strong>: conteúdo da conversa atual e resultados intermédios de chamadas de ferramentas</li>
-<li><strong>Quando é apagada</strong>: automaticamente apagada quando a sessão termina</li>
-<li><strong>Onde é armazenada</strong>: na memória (mais rápida), numa base de dados ou num serviço de nuvem</li>
+<li><strong>What it stores</strong>: current conversation content and intermediate results from tool calls</li>
+<li><strong>When it’s cleared</strong>: automatically cleared when the session ends</li>
+<li><strong>Where it’s stored</strong>: in memory (fastest), a database, or a cloud service</li>
 </ul>
-<p><strong>MemoryService (memória de longo prazo)</strong></p>
+<p><strong>MemoryService (long-term memory)</strong></p>
 <ul>
-<li><strong>O que armazena</strong>: informações que devem ser recordadas, como as preferências do utilizador ou registos anteriores</li>
-<li><strong>Quando é apagada</strong>: não é apagada automaticamente; tem de ser apagada manualmente</li>
-<li><strong>Onde é armazenado</strong>: O ADK define apenas a interface; o backend de armazenamento é da responsabilidade do utilizador (por exemplo, Milvus)</li>
+<li><strong>What it stores</strong>: information that should be remembered, such as user preferences or past records</li>
+<li><strong>When it’s cleared</strong>: not cleared automatically; must be deleted manually</li>
+<li><strong>Where it’s stored</strong>: ADK defines only the interface; the storage backend is up to you (for example, Milvus)</li>
 </ul>
-<h3 id="A-Three-Layer-Architecture" class="common-anchor-header">Uma arquitetura de três camadas</h3><p>O ADK divide o sistema em três camadas, cada uma com uma única responsabilidade:</p>
+<h3 id="A-Three-Layer-Architecture" class="common-anchor-header">A Three-Layer Architecture</h3><p>ADK splits the system into three layers, each with a single responsibility:</p>
 <ul>
-<li><strong>Camada de agente</strong>: onde reside a lógica empresarial, como "recuperar memória relevante antes de responder ao utilizador".</li>
-<li><strong>Camada de tempo de execução</strong>: gerida pela estrutura, responsável pela criação e destruição de sessões e pelo controlo de cada passo da execução.</li>
-<li><strong>Camada de serviço</strong>: integra-se com sistemas externos, como bases de dados vectoriais como o Milvus ou APIs de modelos de grande dimensão.</li>
+<li><strong>Agent layer</strong>: where business logic lives, such as “retrieve relevant memory before answering the user.”</li>
+<li><strong>Runtime layer</strong>: managed by the framework, responsible for creating and destroying sessions and tracking each step of execution.</li>
+<li><strong>Service layer</strong>: integrates with external systems, such as vector databases like Milvus or large model APIs.</li>
 </ul>
-<p>Esta estrutura mantém as preocupações separadas: a lógica empresarial reside no agente, enquanto o armazenamento reside noutro local. É possível atualizar um sem quebrar o outro.</p>
+<p>This structure keeps concerns separate: business logic lives in the agent, while storage lives elsewhere. You can update one without breaking the other.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_to_build_productionready_ai_agents_with_longterm_memory_using_google_adk_and_milvus_2_6af7f3a395.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Everything-Is-Recorded-as-Events" class="common-anchor-header">Tudo é registado como eventos</h3><p>Cada ação de um agente - chamar uma ferramenta de recuperação de memória, invocar um modelo, gerar uma resposta - é registada como um <strong>evento</strong>.</p>
-<p>Isto tem dois benefícios práticos. Primeiro, quando algo corre mal, os programadores podem reproduzir toda a interação passo a passo para encontrar o ponto exato da falha. Em segundo lugar, para auditoria e conformidade, o sistema fornece um traço de execução completo de cada interação do utilizador.</p>
-<h3 id="Prefix-Based-Data-Scoping" class="common-anchor-header">Escopo de dados baseado em prefixo</h3><p>O ADK controla a visibilidade dos dados usando prefixos de chave simples:</p>
+<h3 id="Everything-Is-Recorded-as-Events" class="common-anchor-header">Everything Is Recorded as Events</h3><p>Every action an agent takes—calling a memory recall tool, invoking a model, generating a response—is recorded as an <strong>event</strong>.</p>
+<p>This has two practical benefits. First, when something goes wrong, developers can replay the entire interaction step by step to find the exact failure point. Second, for auditing and compliance, the system provides a complete execution trace of each user interaction.</p>
+<h3 id="Prefix-Based-Data-Scoping" class="common-anchor-header">Prefix-Based Data Scoping</h3><p>ADK controls data visibility using simple key prefixes:</p>
 <ul>
-<li><strong>temp:xxx</strong> - visível apenas na sessão atual e removido automaticamente quando esta termina</li>
-<li><strong>user:xxx</strong> - partilhado em todas as sessões para o mesmo utilizador, permitindo preferências de utilizador persistentes</li>
-<li><strong>app:xxx</strong> - partilhado globalmente por todos os utilizadores, adequado para conhecimento de toda a aplicação, como documentação de produtos</li>
+<li><strong>temp:xxx</strong> — visible only within the current session and automatically removed when it ends</li>
+<li><strong>user:xxx</strong> — shared across all sessions for the same user, enabling persistent user preferences</li>
+<li><strong>app:xxx</strong> — shared globally across all users, suitable for application-wide knowledge such as product documentation</li>
 </ul>
-<p>Ao utilizar prefixos, os programadores podem controlar o âmbito dos dados sem escrever lógica de acesso adicional. A estrutura lida com a visibilidade e o tempo de vida automaticamente.</p>
-<h2 id="Milvus-as-the-Memory-Backend-for-ADK" class="common-anchor-header">Milvus como Backend de Memória para ADK<button data-href="#Milvus-as-the-Memory-Backend-for-ADK" class="anchor-icon" translate="no">
+<p>By using prefixes, developers can control data scope without writing extra access logic. The framework handles visibility and lifetime automatically.</p>
+<h2 id="Milvus-as-the-Memory-Backend-for-ADK" class="common-anchor-header">Milvus as the Memory Backend for ADK<button data-href="#Milvus-as-the-Memory-Backend-for-ADK" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,36 +94,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>No ADK, o MemoryService é apenas uma interface. Ele define como a memória de longo prazo é usada, mas não como ela é armazenada. A escolha da base de dados é da responsabilidade do programador. Então, que tipo de base de dados funciona bem como backend de memória de um agente?</p>
-<h3 id="What-an-Agent-Memory-System-Needs--and-How-Milvus-Delivers" class="common-anchor-header">O que um sistema de memória de agente precisa - e como o Milvus o fornece</h3><ul>
-<li><strong>Recuperação semântica</strong></li>
+    </button></h2><p>In ADK, MemoryService is just an interface. It defines how long-term memory is used, but not how it is stored. Choosing the database is up to the developer. So what kind of database works well as an agent’s memory backend?</p>
+<h3 id="What-an-Agent-Memory-System-Needs--and-How-Milvus-Delivers" class="common-anchor-header">What an Agent Memory System Needs — and How Milvus Delivers</h3><ul>
+<li><strong>Semantic Retrieval</strong></li>
 </ul>
-<p><strong>A necessidade</strong>:</p>
-<p>Os utilizadores raramente fazem a mesma pergunta da mesma forma. "Não se liga" e "tempo limite de ligação" significam a mesma coisa. O sistema de memória tem de compreender o significado e não apenas corresponder a palavras-chave.</p>
-<p><strong>Como o Milvus atende a isso</strong>:</p>
-<p>O Milvus suporta muitos tipos de índices vetoriais, como HNSW e DiskANN, permitindo que os desenvolvedores escolham o que melhor se adapta à sua carga de trabalho. Mesmo com dezenas de milhões de vetores, a latência da consulta pode ficar abaixo de 10 ms, o que é rápido o suficiente para o uso do agente.</p>
+<p><strong>The need</strong>:</p>
+<p>Users rarely ask the same question in the same way. “It doesn’t connect” and “connection timeout” mean the same thing. The memory system must understand meaning, not just match keywords.</p>
+<p><strong>How Milvus meets it</strong>:</p>
+<p>Milvus supports many vector index types, such as HNSW and DiskANN, allowing developers to choose what fits their workload. Even with tens of millions of vectors, query latency can stay under 10 ms, which is fast enough for agent use.</p>
 <ul>
-<li><strong>Consultas híbridas</strong></li>
+<li><strong>Hybrid Queries</strong></li>
 </ul>
-<p><strong>A necessidade</strong>:</p>
-<p>A recuperação de memória requer mais do que pesquisa semântica. O sistema também deve filtrar por campos estruturados, como user_id, para que apenas os dados do utilizador atual sejam devolvidos.</p>
-<p><strong>Como o Milvus atende a essa necessidade</strong>:</p>
-<p>O Milvus suporta nativamente consultas híbridas que combinam a pesquisa vetorial com a filtragem escalar. Por exemplo, pode obter registos semanticamente semelhantes enquanto aplica um filtro como user_id = 'xxx' na mesma consulta, sem prejudicar o desempenho ou a qualidade da pesquisa.</p>
+<p><strong>The need</strong>:</p>
+<p>Memory recall requires more than semantic search. The system must also filter by structured fields like user_id so that only the current user’s data is returned.</p>
+<p><strong>How Milvus meets it</strong>:</p>
+<p>Milvus natively supports hybrid queries that combine vector search with scalar filtering. For example, it can retrieve semantically similar records while applying a filter such as user_id = ‘xxx’ in the same query, without hurting performance or recall quality.</p>
 <ul>
-<li><strong>Escalabilidade</strong></li>
+<li><strong>Scalability</strong></li>
 </ul>
-<p><strong>A necessidade</strong>:</p>
-<p>À medida que o número de utilizadores e de memórias armazenadas aumenta, o sistema deve ser escalável sem problemas. O desempenho deve manter-se estável à medida que os dados aumentam, sem abrandamentos ou falhas súbitas.</p>
-<p><strong>Como é que o Milvus satisfaz essa necessidade</strong>:</p>
-<p>O Milvus utiliza uma arquitetura de separação entre computação e armazenamento. A capacidade de consulta pode ser escalada horizontalmente, adicionando nós de consulta conforme necessário. Mesmo a versão autónoma, executada numa única máquina, pode lidar com dezenas de milhões de vectores, tornando-a adequada para implementações em fase inicial.</p>
+<p><strong>The need</strong>:</p>
+<p>As the number of users and stored memories grows, the system must scale smoothly. Performance should remain stable as data increases, without sudden slowdowns or failures.</p>
+<p><strong>How Milvus meets it</strong>:</p>
+<p>Milvus uses a compute–storage separation architecture. Query capacity can be scaled horizontally by adding Query Nodes as needed. Even the standalone version, running on a single machine, can handle tens of millions of vectors, making it suitable for early-stage deployments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_to_build_productionready_ai_agents_with_longterm_memory_using_google_adk_and_milvus_4_e1d89e6986.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Nota: Para desenvolvimento e testes locais, os exemplos neste artigo usam <a href="https://milvus.io/docs/milvus_lite.md">o Milvus Lite</a> ou <a href="https://milvus.io/docs/install_standalone-docker.md">o Milvus Standalone</a>.</p>
-<h2 id="Building-an-Agent-with-Long-TermMemory-Powered-by-Milvus" class="common-anchor-header">Construindo um agente com Long-TermMemory Powered by Milvus<button data-href="#Building-an-Agent-with-Long-TermMemory-Powered-by-Milvus" class="anchor-icon" translate="no">
+<p>Note: For local development and testing, the examples in this article use <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> or <a href="https://milvus.io/docs/install_standalone-docker.md">Milvus Standalone</a>.</p>
+<h2 id="Building-an-Agent-with-Long-TermMemory-Powered-by-Milvus" class="common-anchor-header">Building an Agent with Long-TermMemory Powered by Milvus<button data-href="#Building-an-Agent-with-Long-TermMemory-Powered-by-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,26 +138,26 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nesta secção, construímos um agente de suporte técnico simples. Quando um usuário faz uma pergunta, o agente procura tickets de suporte anteriores semelhantes para responder, em vez de repetir o mesmo trabalho.</p>
-<p>Este exemplo é útil porque mostra três problemas comuns que os sistemas de memória de agentes reais devem resolver.</p>
+    </button></h2><p>In this section, we build a simple technical support agent. When a user asks a question, the agent looks up similar past support tickets to answer, rather than repeating the same work.</p>
+<p>This example is useful because it shows three common problems that real agent memory systems must handle.</p>
 <ul>
-<li><strong>Memória de longo prazo entre sessões</strong></li>
+<li><strong>Long-term memory across sessions</strong></li>
 </ul>
-<p>Uma pergunta feita hoje pode estar relacionada a um ticket criado semanas atrás. O agente deve lembrar-se das informações em todas as conversas, não apenas na sessão atual. É por isso que a memória de longo prazo, gerenciada pelo MemoryService, é necessária.</p>
+<p>A question asked today may relate to a ticket created weeks ago. The agent must remember information across conversations, not just within the current session. This is why long-term memory, managed through MemoryService, is needed.</p>
 <ul>
-<li><strong>Isolamento do utilizador</strong></li>
+<li><strong>User isolation</strong></li>
 </ul>
-<p>O histórico de suporte de cada utilizador deve permanecer privado. Os dados de um utilizador nunca devem aparecer nos resultados de outro utilizador. Isto requer a filtragem de campos como user_id, que o Milvus suporta através de consultas híbridas.</p>
+<p>Each user’s support history must stay private. Data from one user must never appear in another user’s results. This requires filtering on fields like user_id, which Milvus supports via hybrid queries.</p>
 <ul>
-<li><strong>Correspondência semântica</strong></li>
+<li><strong>Semantic matching</strong></li>
 </ul>
-<p>Os utilizadores descrevem o mesmo problema de formas diferentes, como "não é possível ligar" ou "tempo limite". A correspondência de palavras-chave não é suficiente. O agente precisa de uma pesquisa semântica, que é fornecida pela recuperação de vectores.</p>
-<h3 id="Environment-setup" class="common-anchor-header">Configuração do ambiente</h3><ul>
+<p>Users describe the same problem in different ways, such as “can’t connect” or “timeout.” Keyword matching is not enough. The agent needs a semantic search, which is provided by vector retrieval.</p>
+<h3 id="Environment-setup" class="common-anchor-header">Environment setup</h3><ul>
 <li>Python 3.11+</li>
-<li>Docker e Docker Compose</li>
-<li>Chave da API Gemini</li>
+<li>Docker and Docker Compose</li>
+<li>Gemini API key</li>
 </ul>
-<p>Esta secção abrange a configuração básica para garantir que o programa pode ser executado corretamente.</p>
+<p>This section covers the basic setup to make sure the program can run correctly.</p>
 <pre><code translate="no">pip install google-adk pymilvus google-generativeai  
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-string">&quot;&quot;&quot;  
@@ -175,10 +175,10 @@ Demonstrates how to implement a cross-session memory recall system
 <span class="hljs-keyword">from</span> google.adk.sessions <span class="hljs-keyword">import</span> InMemorySessionService  
 <span class="hljs-keyword">from</span> google.genai <span class="hljs-keyword">import</span> types  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-1-Deploy-Milvus-Standalone-Docker" class="common-anchor-header">Etapa 1: implantar o Milvus Standalone (Docker)</h3><p><strong>(1) Descarregar os ficheiros de implementação</strong></p>
+<h3 id="Step-1-Deploy-Milvus-Standalone-Docker" class="common-anchor-header">Step 1: Deploy Milvus Standalone (Docker)</h3><p><strong>(1) Download the deployment files</strong></p>
 <pre><code translate="no">wget &lt;https://github.com/Milvus-io/Milvus/releases/download/v2.5.12/Milvus-standalone-docker-compose.yml&gt; -O docker-compose.yml  
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) Iniciar o serviço Milvus</strong></p>
+<p><strong>(2) Start the Milvus service</strong></p>
 <pre><code translate="no">docker-compose up -d  
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">docker-compose ps -a  
@@ -189,7 +189,7 @@ Demonstrates how to implement a cross-session memory recall system
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Model-and-Connection-Configuration" class="common-anchor-header">Etapa 2: Configuração de modelo e conexão</h3><p>Configure as definições de ligação da Gemini API e do Milvus.</p>
+<h3 id="Step-2-Model-and-Connection-Configuration" class="common-anchor-header">Step 2 Model and Connection Configuration</h3><p>Configure the Gemini API and Milvus connection settings.</p>
 <pre><code translate="no"><span class="hljs-comment"># ==================== Configuration ====================  </span>
 <span class="hljs-comment"># 1. Gemini API configuration  </span>
 GOOGLE_API_KEY = os.getenv(<span class="hljs-string">&quot;GOOGLE_API_KEY&quot;</span>)  
@@ -210,7 +210,7 @@ USER_ID = <span class="hljs-string">&quot;user_123&quot;</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  LLM: <span class="hljs-subst">{LLM_MODEL}</span>&quot;</span>)  
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  Embedding: <span class="hljs-subst">{EMBEDDING_MODEL}</span> (dimension: <span class="hljs-subst">{EMBEDDING_DIM}</span>)&quot;</span>)  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Milvus-Database-Initialization" class="common-anchor-header">Etapa 3 Inicialização do banco de dados do Milvus</h3><p>Criar uma coleção de base de dados vetorial (semelhante a uma tabela numa base de dados relacional)</p>
+<h3 id="Step-3-Milvus-Database-Initialization" class="common-anchor-header">Step 3 Milvus Database Initialization</h3><p>Create a vector database collection (similar to a table in a relational database)</p>
 <pre><code translate="no"><span class="hljs-comment"># ==================== Initialize Milvus ====================  </span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">init_milvus</span>():  
    <span class="hljs-string">&quot;&quot;&quot;Initialize Milvus connection and collection&quot;&quot;&quot;</span>  
@@ -256,8 +256,8 @@ USER_ID = <span class="hljs-string">&quot;user_123&quot;</span>
 <span class="hljs-comment"># Run initialization  </span>
 memory_collection = init_milvus()  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Memory-Operation-Functions" class="common-anchor-header">Etapa 4 Funções de operação de memória</h3><p>Encapsular a lógica de armazenamento e recuperação como ferramentas para o agente.</p>
-<p>(1) Função de memória de armazenamento</p>
+<h3 id="Step-4-Memory-Operation-Functions" class="common-anchor-header">Step 4 Memory Operation Functions</h3><p>Encapsulate storage and retrieval logic as tools for the agent.</p>
+<p>(1) Store memory function</p>
 <pre><code translate="no"><span class="hljs-comment"># ==================== Memory Operation Functions ====================  </span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">store_memory</span>(<span class="hljs-params">question: <span class="hljs-built_in">str</span>, solution: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:  
    <span class="hljs-string">&quot;&quot;&quot;  
@@ -302,7 +302,7 @@ memory_collection = init_milvus()
        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[Tool Error] <span class="hljs-subst">{error_msg}</span>&quot;</span>)  
        <span class="hljs-keyword">return</span> error_msg  
 <button class="copy-code-btn"></button></code></pre>
-<p>(2) Função de recuperação de memória</p>
+<p>(2) Retrieve memory function</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">recall_memory</span>(<span class="hljs-params">query: <span class="hljs-built_in">str</span>, top_k: <span class="hljs-built_in">int</span> = <span class="hljs-number">3</span></span>) -&gt; <span class="hljs-built_in">str</span>:  
    <span class="hljs-string">&quot;&quot;&quot;  
    Retrieve relevant historical cases from the memory store  
@@ -353,14 +353,14 @@ memory_collection = init_milvus()
        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[Tool Error] <span class="hljs-subst">{error_msg}</span>&quot;</span>)  
        <span class="hljs-keyword">return</span> error_msg  
 <button class="copy-code-btn"></button></code></pre>
-<p>(3) Registar como uma ferramenta ADK</p>
+<p>(3) Register as an ADK Tool</p>
 <pre><code translate="no"><span class="hljs-comment"># Usage  </span>
 <span class="hljs-comment"># Wrap functions with FunctionTool  </span>
 store_memory_tool = FunctionTool(func=store_memory)  
 recall_memory_tool = FunctionTool(func=recall_memory)  
 memory_tools = [store_memory_tool, recall_memory_tool]  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Agent-Definition" class="common-anchor-header">Etapa 5 Definição do agente</h3><p>Ideia central: definir a lógica de comportamento do agente.</p>
+<h3 id="Step-5-Agent-Definition" class="common-anchor-header">Step 5 Agent Definition</h3><p>Core idea: define the agent’s behavior logic.</p>
 <pre><code translate="no"><span class="hljs-comment"># ==================== Create Agent ====================  </span>
 support_agent = Agent(  
    model=LLM_MODEL,  
@@ -389,7 +389,7 @@ You are a technical support expert. Strictly follow the process below:
    tools=memory_tools  
 )  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Main-Program-and-Execution-Flow" class="common-anchor-header">Etapa 6 Programa principal e fluxo de execução</h3><p>Demonstra o processo completo de recuperação de memória entre sessões.</p>
+<h3 id="Step-6-Main-Program-and-Execution-Flow" class="common-anchor-header">Step 6 Main Program and Execution Flow</h3><p>Demonstrates the complete process of cross-session memory retrieval.</p>
 <pre><code translate="no"><span class="hljs-comment"># ==================== Main Program ====================  </span>
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():  
    <span class="hljs-string">&quot;&quot;&quot;Demonstrate cross-session memory recall&quot;&quot;&quot;</span>  
@@ -482,12 +482,12 @@ You are a technical support expert. Strictly follow the process below:
        Except:  
            <span class="hljs-keyword">pass</span>  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-7-Run-and-Test" class="common-anchor-header">Etapa 7 Executar e testar</h3><p><strong>(1) Definir variáveis de ambiente</strong></p>
+<h3 id="Step-7-Run-and-Test" class="common-anchor-header">Step 7 Run and Test</h3><p><strong>(1) Set environment variables</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">export</span> <span class="hljs-variable constant_">GOOGLE_API_KEY</span>=<span class="hljs-string">&quot;your-gemini-api-key&quot;</span>  
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">python milvus_agent.py  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Expected-Output" class="common-anchor-header">Saída esperada</h3><p>
+<h3 id="Expected-Output" class="common-anchor-header">Expected Output</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_to_build_productionready_ai_agents_with_longterm_memory_using_google_adk_and_milvus_5_0c5a37fe32.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -499,11 +499,11 @@ You are a technical support expert. Strictly follow the process below:
     <span></span>
   </span>
 </p>
-<p>A saída mostra como o sistema de memória funciona em uso real.</p>
-<p>Na primeira conversa, o utilizador pergunta como lidar com o tempo limite de uma ligação Milvus. O agente apresenta uma solução. Depois de o utilizador confirmar que o problema está resolvido, o agente guarda esta pergunta e resposta na memória.</p>
-<p>Na segunda conversa, é iniciada uma nova sessão. O utilizador faz a mesma pergunta utilizando palavras diferentes: "O Milvus não consegue ligar-se." O agente recupera automaticamente um caso semelhante da memória e dá-lhe a mesma solução.</p>
-<p>Não são necessários passos manuais. O agente decide quando recuperar casos passados e quando armazenar novos casos, mostrando três capacidades-chave: memória entre sessões, correspondência semântica e isolamento do utilizador.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>The output shows how the memory system works in real use.</p>
+<p>In the first conversation, the user asks how to handle a Milvus connection timeout. The agent gives a solution. After the user confirms the problem is solved, the agent saves this question and answer to memory.</p>
+<p>In the second conversation, a new session starts. The user asks the same question using different words: “Milvus can’t connect.” The agent automatically retrieves a similar case from memory and gives the same solution.</p>
+<p>No manual steps are needed. The agent decides when to retrieve past cases and when to store new ones, showing three key abilities: cross-session memory, semantic matching, and user isolation.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -518,9 +518,9 @@ You are a technical support expert. Strictly follow the process below:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O ADK separa o contexto de curto prazo e a memória de longo prazo ao nível da estrutura, utilizando o SessionService e o MemoryService. <a href="https://milvus.io/">O Milvus</a> trata da pesquisa semântica e da filtragem ao nível do utilizador através da recuperação baseada em vectores.</p>
-<p>Ao escolher uma estrutura, o objetivo é importante. Se precisar de um forte isolamento de estado, auditabilidade e estabilidade de produção, o ADK é mais adequado. Se estiver a criar protótipos ou a experimentar, o LangChain (uma estrutura Python popular para criar rapidamente aplicações e agentes baseados em LLM) oferece mais flexibilidade.</p>
-<p>Para a memória do agente, a peça chave é o banco de dados. A memória semântica depende de bases de dados vectoriais, independentemente da estrutura utilizada. O Milvus funciona bem porque é de código aberto, corre localmente, suporta a manipulação de milhares de milhões de vectores numa única máquina e suporta pesquisa híbrida vetorial, escalar e de texto integral. Esses recursos abrangem tanto os testes iniciais quanto o uso em produção.</p>
-<p>Esperamos que este artigo o ajude a compreender melhor o design da memória do agente e a escolher as ferramentas certas para os seus projectos.</p>
-<p>Se você estiver criando agentes de IA que precisam de memória real, e não apenas de janelas de contexto maiores, gostaríamos de saber como você está lidando com isso.</p>
-<p>Tem dúvidas sobre o ADK, o design de memória do agente ou o uso do Milvus como back-end de memória? Junte-se ao nosso <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal Slack</a> ou marque uma sessão de 20 minutos <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">do Milvus Office Hours</a> para falar sobre o seu caso de utilização.</p>
+    </button></h2><p>ADK separates short-term context and long-term memory at the framework level using SessionService and MemoryService. <a href="https://milvus.io/">Milvus</a> handles semantic search and user-level filtering through vector-based retrieval.</p>
+<p>When choosing a framework, the goal matters. If you need strong state isolation, auditability, and production stability, ADK is a better fit. If you are prototyping or experimenting, LangChain (a popular Python framework for quickly building LLM-based applications and agents) offers more flexibility.</p>
+<p>For agent memory, the key piece is the database. Semantic memory depends on vector databases, no matter which framework you use. Milvus works well because it is open source, runs locally, supports handling billions of vectors on a single machine, and supports hybrid vector, scalar, and full-text search. These features cover both early testing and production use.</p>
+<p>We hope this article helps you better understand agent memory design and choose the right tools for your projects.</p>
+<p>If you’re building AI agents that need real memory—not just bigger context windows—we’d love to hear how you’re approaching it.</p>
+<p>Have questions about ADK, agent memory design, or using Milvus as a memory backend? Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session to talk through your use case.</p>

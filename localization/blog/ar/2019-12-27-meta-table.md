@@ -1,13 +1,13 @@
 ---
 id: 2019-12-27-meta-table.md
-title: إدارة البيانات الوصفية لميلفوس (2) الحقول في جدول البيانات الوصفية
+title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 date: 2019-12-27T00:00:00.000Z
-desc: تعرف على تفاصيل الحقول في جداول البيانات الوصفية في ميلفوس.
+desc: Learn about the detail of the fields in metadata tables in Milvus.
 cover: null
 tag: Engineering
 ---
-<custom-h1>إدارة البيانات الوصفية لملفوس ميتاداتا (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">الحقول في جدول البيانات الوصفية<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
+<custom-h1>Milvus Metadata Management (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">Fields in the Metadata Table<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -23,73 +23,79 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><blockquote>
-<p>المؤلف ييهوا مو</p>
-<p>التاريخ: 2019-12-27</p>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-12-27</p>
 </blockquote>
-<p>ذكرنا في المدونة الأخيرة كيفية عرض البيانات الوصفية باستخدام MySQL أو SQLite. تهدف هذه المقالة بشكل أساسي إلى تقديم الحقول في جداول البيانات الوصفية بالتفصيل.</p>
-<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">الحقول في جدول &quot;<code translate="no">Tables</code>&quot;</h3><p>خذ SQLite كمثال. تأتي النتيجة التالية من 0.5.0. تمت إضافة بعض الحقول إلى 0.6.0، والتي سيتم تقديمها لاحقًا. يوجد صف في <code translate="no">Tables</code> يحدد جدول متجه مكون من 512 بعدًا باسم <code translate="no">table_1</code>. عند إنشاء الجدول، <code translate="no">index_file_size</code> هو 1024 ميغابايت، <code translate="no">engine_type</code> هو 1 (مسطح)، <code translate="no">nlist</code> هو 16384، <code translate="no">metric_type</code> هو 1 (المسافة الإقليدية L2). <code translate="no">id</code> هو المعرف الفريد للجدول. <code translate="no">state</code> هو حالة الجدول مع 0 يشير إلى الحالة العادية. <code translate="no">created_on</code> هو وقت الإنشاء. <code translate="no">flag</code> هو العلم المحجوز للاستخدام الداخلي.</p>
+<p>In the last blog, we mentioned how to view your metadata using MySQL or SQLite. This article mainly intends to introduce in detail the fields in the metadata tables.</p>
+<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">Fields in the &quot;<code translate="no">Tables</code>” table</h3><p>Take SQLite as an example. The following result comes from 0.5.0. Some fields are added to 0.6.0, which will be introduced later. There is a row in <code translate="no">Tables</code> specifying a 512-dimensional vector table with the name <code translate="no">table_1</code>. When the table is created, <code translate="no">index_file_size</code> is 1024 MB, <code translate="no">engine_type</code> is 1 (FLAT), <code translate="no">nlist</code> is 16384, <code translate="no">metric_type</code> is 1 (Euclidean distance L2). <code translate="no">id</code> is the unique identifier of the table. <code translate="no">state</code> is the state of the table with 0 indicating a normal state. <code translate="no">created_on</code> is the creation time. <code translate="no">flag</code> is the flag reserved for internal use.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
-   </span> <span class="img-wrapper"> <span>الجداول</span> </span></p>
-<p>يوضح الجدول التالي أنواع الحقول وأوصاف الحقول في <code translate="no">Tables</code>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
+    <span>tables</span>
+  </span>
+</p>
+<p>The following table shows field types and descriptions of the fields in <code translate="no">Tables</code>.</p>
 <table>
 <thead>
-<tr><th style="text-align:left">اسم الحقل</th><th style="text-align:left">نوع البيانات</th><th style="text-align:left">الوصف</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">المعرف الفريد لجدول المتجه. <code translate="no">id</code> يتزايد تلقائيًا.</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">سلسلة</td><td style="text-align:left">اسم الجدول المتجه. <code translate="no">table_id</code> يجب أن يكون محدد من قبل المستخدم ويتبع إرشادات اسم ملف Linux.</td></tr>
-<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">حالة الجدول المتجه. 0 تعني عادي و1 تعني محذوف (حذف ناعم).</td></tr>
-<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">بُعد المتجه لجدول المتجهات. يجب أن يكون محدداً من قبل المستخدم.</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">عدد المللي ثانية من 1 يناير 1970 إلى وقت إنشاء الجدول.</td></tr>
-<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">علم للاستخدام الداخلي، مثل ما إذا كان معرف المتجه معرفاً من قبل المستخدم. الافتراضي هو 0.</td></tr>
-<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">إذا وصل حجم ملف البيانات إلى <code translate="no">index_file_size</code> ، لا يتم دمج الملف ويستخدم لبناء الفهارس. الافتراضي هو 1024 (ميغابايت).</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">نوع الفهرس المطلوب إنشاؤه لجدول متجه. الافتراضي هو 0، والذي يحدد فهرس غير صالح. 1 يحدد FLAT. 2 يحدد IVFLAT. 3 يحدد IVFSQ8. 4 يحدد NSG. 5 يحدد IVFSQ8H.</td></tr>
-<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">عدد المجموعات التي تنقسم إليها المتجهات في كل ملف بيانات عند إنشاء الفهرس. الافتراضي هو 16384.</td></tr>
-<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">طريقة حساب المسافة بين المتجهات. 1 يحدد المسافة الإقليدية (L1) و2 يحدد الضرب الداخلي.</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of the vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table. <code translate="no">table_id</code> must be user-defined and follow Linux filename guidelines.</td></tr>
+<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">State of the vector table. 0 stands for normal and 1 stands for deleted (soft delete).</td></tr>
+<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">Vector dimension of the vector table. Must be user-defined.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">Flag for internal use, such as whether the vector id is user-defined. The default is 0.</td></tr>
+<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">If the size of a data file reaches <code translate="no">index_file_size</code>, the file is not combined and is used to build indexes. The default is 1024 (MB).</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">Number of clusters the vectors in each data file are divided into when the index is being built. The default is 16384.</td></tr>
+<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Method to compute vector distance. 1 specifies Euclidean distance (L1) and 2 specifies inner product.</td></tr>
 </tbody>
 </table>
-<p>تم تمكين تقسيم الجدول في 0.6.0 مع بعض الحقول الجديدة، بما في ذلك <code translate="no">owner_table</code>，<code translate="no">partition_tag</code> و <code translate="no">version</code>. يحتوي الجدول المتجه، <code translate="no">table_1</code> ، على قسم يسمى <code translate="no">table_1_p1</code> ، وهو أيضًا جدول متجه. <code translate="no">partition_name</code> يتوافق مع <code translate="no">table_id</code>. يتم توريث الحقول في جدول التقسيم من جدول المالك، حيث يحدد الحقل <code translate="no">owner table</code> اسم جدول المالك والحقل <code translate="no">partition_tag</code> الذي يحدد علامة التقسيم.</p>
+<p>Table partitioning is enabled in 0.6.0 with a few new fields, including <code translate="no">owner_table</code>，<code translate="no">partition_tag</code> and <code translate="no">version</code>. A vector table, <code translate="no">table_1</code>, has a partition called <code translate="no">table_1_p1</code>, which is also a vector table. <code translate="no">partition_name</code> corresponds to <code translate="no">table_id</code>. Fields in a partition table are inherited from the owner table, with the <code translate="no">owner table</code> field specifying the name of the owner table and the <code translate="no">partition_tag</code> field specifying the tag of the partition.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
-   </span> <span class="img-wrapper"> <span>الجداول_الجديدة</span> </span></p>
-<p>يوضح الجدول التالي الحقول الجديدة في الإصدار 0.6.0:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
+    <span>tables_new</span>
+  </span>
+</p>
+<p>The following table shows new fields in 0.6.0:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">اسم الحقل</th><th style="text-align:left">نوع البيانات</th><th style="text-align:left">الوصف</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">السلسلة</td><td style="text-align:left">الجدول الرئيسي للقسم.</td></tr>
-<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">سلسلة</td><td style="text-align:left">علامة القسم. يجب ألا تكون سلسلة فارغة.</td></tr>
-<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">سلسلة</td><td style="text-align:left">إصدار ميلفوس.</td></tr>
+<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">string</td><td style="text-align:left">Parent table of the partition.</td></tr>
+<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">string</td><td style="text-align:left">Tag of the partition. Must not be an empty string.</td></tr>
+<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">string</td><td style="text-align:left">Milvus version.</td></tr>
 </tbody>
 </table>
-<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">الحقول في جدول "<code translate="no">TableFiles&quot;</code> </h3><p>يحتوي المثال التالي على ملفين، كلاهما ينتمي إلى جدول متجه <code translate="no">table_1</code>. نوع الفهرس (<code translate="no">engine_type</code>) للملف الأول هو 1 (مسطح)؛ حالة الملف (<code translate="no">file_type</code>) هي 7 (نسخة احتياطية من الملف الأصلي)؛ <code translate="no">file_size</code> هو 411200113 بايت؛ عدد صفوف المتجهات هو 200,000. نوع فهرس الملف الثاني هو 2 (IVFLAT)؛ حالة الملف هي 3 (ملف الفهرس). الملف الثاني هو في الواقع فهرس الملف الأول. سنقدم المزيد من المعلومات في المقالات القادمة.</p>
+<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">Fields in the “<code translate="no">TableFiles&quot;</code> table</h3><p>The following example contains two files, which both belong to the <code translate="no">table_1</code> vector table. The index type (<code translate="no">engine_type</code>) of the first file is 1 (FLAT); file status (<code translate="no">file_type</code>) is 7 (backup of the original file); <code translate="no">file_size</code> is 411200113 bytes; number of vector rows is 200,000. The index type of the second file is 2 (IVFLAT); file status is 3 (index file). The second file is actually the index of the first file. We will introduce more information in upcoming articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
-   </span> <span class="img-wrapper"> <span>ملفات الجدول</span> </span></p>
-<p>يوضح الجدول التالي حقول وأوصاف <code translate="no">TableFiles</code>:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
+    <span>tablefiles</span>
+  </span>
+</p>
+<p>The following table shows fields and descriptions of <code translate="no">TableFiles</code>:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">اسم الحقل</th><th style="text-align:left">نوع البيانات</th><th style="text-align:left">الوصف</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">المعرف الفريد لجدول متجه. <code translate="no">id</code> يتزايد تلقائيًا.</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">سلسلة</td><td style="text-align:left">اسم الجدول المتجه.</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">نوع الفهرس المطلوب إنشاؤه لجدول متجه. الافتراضي هو 0، والذي يحدد فهرس غير صالح. 1 يحدد FLAT. 2 يحدد IVFLAT. 3 يحدد IVFSQ8. 4 يحدد NSG. 5 يحدد IVFSQ8H.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">السلسلة</td><td style="text-align:left">اسم الملف الذي تم إنشاؤه من وقت إنشاء الملف. يساوي 1000 مضروباً في عدد المللي ثانية من 1 يناير 1970 إلى وقت إنشاء الجدول.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">حالة الملف. 0 يحدد ملف بيانات متجه خام تم إنشاؤه حديثًا. 1 يحدد ملف بيانات متجه خام. 2 يحدد أنه سيتم إنشاء فهرس للملف. 3 يحدد أن الملف هو ملف فهرس. 4 يحدد أن الملف سيتم حذفه (حذف ناعم). 5 يحدد أن الملف تم إنشاؤه حديثاً ويستخدم لتخزين البيانات المركبة. 6 يحدد أن الملف تم إنشاؤه حديثاً ويستخدم لتخزين بيانات الفهرس. 7 يحدد حالة النسخ الاحتياطي لملف بيانات المتجه الخام.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">حجم الملف بالبايت.</td></tr>
-<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">عدد المتجهات في الملف.</td></tr>
-<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">الطابع الزمني لآخر وقت تحديث، والذي يحدد عدد المللي ثانية من 1 يناير 1970 إلى وقت إنشاء الجدول.</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">عدد المللي ثانية من 1 يناير 1970 إلى وقت إنشاء الجدول.</td></tr>
-<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">تاريخ إنشاء الجدول. لا يزال هنا لأسباب تاريخية وستتم إزالته في الإصدارات المستقبلية.</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of a vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table.</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Filename generated from file creation time. Equals 1000 multiplied by the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">File status. 0 specifies a newly generated raw vector data file. 1 specifies raw vector data file. 2 specifies that index will be built for the file. 3 specifies that the file is an index file. 4 specifies that the file will be deleted (soft delete). 5 specifies that the file is newly-generated and used to store combination data. 6 specifies that the file is newly-generated and used to store index data. 7 specifies the backup status of the raw vector data file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">File size in bytes.</td></tr>
+<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of vectors in a file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">Timestamp for the latest update time, which specifies the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">Date when the table is created. It is still here for historical reasons and will be removed in future versions.</td></tr>
 </tbody>
 </table>
-<h2 id="Related-blogs" class="common-anchor-header">المدونات ذات الصلة<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,6 +111,6 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">إدارة البيانات في محرك بحث المتجهات ذات النطاق الضخم</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">إدارة البيانات الوصفية في ميلفوس ميتاداتا (1): كيفية عرض البيانات الوصفية</a></li>
+<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Managing Data in Massive Scale Vector Search Engine</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus Metadata Management (1): How to View Metadata</a></li>
 </ul>

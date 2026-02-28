@@ -1,15 +1,17 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-2.md
-title: 第二世代の画像検索システム
+title: The second-generation search-by-image system
 author: Rife Wang
 date: 2020-08-11T22:20:27.855Z
-desc: Milvusを活用し、実ビジネスのための画像類似検索システムを構築したユーザー事例。
+desc: >-
+  A user case of leveraging Milvus to build an image similarity search system
+  for real-world business.
 cover: assets.zilliz.com/header_c73631b1e7.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2'
 ---
-<custom-h1>億規模の画像検索を最適化する旅 (2/2)</custom-h1><p>この記事は、<strong>UPYUNによる「億規模の画像検索を最適化する旅</strong>」の後編です。前編を見逃した方は<a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">こちらを</a>ご覧ください。</p>
-<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">第二世代の画像検索システム<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
+<custom-h1>The Journey to Optimizing Billion-scale Image Search (2/2)</custom-h1><p>This article is the second part of <strong>The Journey to Optimizing Billion-scale Image Search by UPYUN</strong>. If you miss the first one, click <a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">here</a>.</p>
+<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">The second-generation search-by-image system<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,8 +26,8 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>第二世代の画像検索システムは、技術的にはCNN＋milvusソリューションを採用している。このシステムは特徴ベクトルに基づいており、より優れた技術サポートを提供します。</p>
-<h2 id="Feature-extraction" class="common-anchor-header">特徴抽出<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
+    </button></h2><p>The second-generation search-by-image system technically chooses the CNN + Milvus solution. The system is based on feature vectors and provides better technical support.</p>
+<h2 id="Feature-extraction" class="common-anchor-header">Feature extraction<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,21 +42,23 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>コンピュータビジョンの分野では、人工知能の利用が主流となっている。第2世代画像検索システムの特徴抽出も同様に、CNN（畳み込みニューラルネットワーク）を基盤技術としている。</p>
-<p>CNNという言葉を理解するのは難しい。ここでは2つの質問に答えることに焦点を当てる：</p>
+    </button></h2><p>In the field of computer vision, the use of artificial intelligence has become the mainstream. Similarly, the feature extraction of the second-generation search-by-image system uses convolutional neural network (CNN) as the underlying technology</p>
+<p>The term CNN is difficult to understand. Here we focus on answering two questions:</p>
 <ul>
-<li>CNNは何ができるのか？</li>
-<li>なぜ画像検索にCNNが使えるのか？</li>
+<li>What can CNN do?</li>
+<li>Why can I use CNN for an image search?</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
-   </span> <span class="img-wrapper"> <span>1-meme.jpg</span> </span></p>
-<p>AI分野には多くの競技があり、画像分類は最も重要な競技の一つである。画像分類の仕事は、写真の内容が猫なのか、犬なのか、リンゴなのか、梨なのか、あるいは他の種類の物体なのかを判断することである。</p>
-<p>CNNは何ができるのか？CNNは特徴を抽出し、物体を認識することができる。多次元から特徴を抽出し、画像の特徴が猫や犬の特徴にどれだけ近いかを測定する。最も近いものを識別結果として選択することで、特定の画像の内容が猫なのか犬なのか、あるいはそれ以外のものなのかを示すことができる。</p>
-<p>CNNの物体識別機能と画像による検索の関係は？我々が欲しいのは、最終的な識別結果ではなく、多次元から抽出された特徴ベクトルである。似たような内容の2つの画像の特徴ベクトルは近くないといけない。</p>
-<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">どのCNNモデルを使うべきか？</h3><p>答えはVGG16だ。なぜそれを選ぶのか？第一に、VGG16は汎化能力が高い、つまり汎用性が高い。第二に、VGG16によって抽出される特徴ベクトルは512次元である。次元数が少ないと精度に影響が出る。次元数が多すぎる場合、これらの特徴ベクトルの保存と計算のコストが相対的に高くなる。</p>
-<p>画像の特徴を抽出するためにCNNを使用することは、主流のソリューションである。モデルにはVGG16を、技術的な実装にはKeras + TensorFlowを使うことができる。以下はKerasの公式サンプルである：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
+    <span>1-meme.jpg</span>
+  </span>
+</p>
+<p>There are many competitions in the AI field and image classification is one of the most important. The job of image classification is to determine whether the content of the picture is about a cat, a dog, an apple, a pear, or other types of objects.</p>
+<p>What can CNN do? It can extract features and recognize objects. It extracts features from multiple dimensions and measures how close the features of an image are to the features of cats or dogs. We can choose the closest ones as our identification result which indicates whether the content of a specific image is about a cat, a dog, or something else.</p>
+<p>What is the connection between the object identification function of CNN and search by image? What we want is not the final identification result, but the feature vector extracted from multiple dimensions. The feature vectors of two images with similar content must be close.</p>
+<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">Which CNN model should I use?</h3><p>The answer is VGG16. Why choose it? First, VGG16 has good generalization capability, that is, it is very versatile. Second, the feature vectors extracted by VGG16 have 512 dimensions. If there are very few dimensions, the accuracy may be affected. If there are too many dimensions, the cost of storing and calculating these feature vectors is relatively high.</p>
+<p>Using CNN to extract image features is a mainstream solution. We can use VGG16 as the model and Keras + TensorFlow for technical implementation. Here is the official example of Keras:</p>
 <pre><code translate="no">from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
@@ -67,16 +71,16 @@ x = np.expand_dims(x, axis=0)
 x = preprocess_input(x)
 features = model.predict(x)
 </code></pre>
-<p>ここで抽出される特徴は特徴ベクトルである。</p>
-<h3 id="1-Normalization" class="common-anchor-header">1.正規化</h3><p>後続の処理を容易にするために、特徴量を正規化することがよくある：</p>
-<p>その後に使われるのも、正規化された<code translate="no">norm_feat</code> 。</p>
-<h3 id="2-Image-description" class="common-anchor-header">2.画像の記述</h3><p>画像は<code translate="no">keras.preprocessing</code> の<code translate="no">image.load_img</code> メソッドを使って読み込まれる：</p>
+<p>The features extracted here are feature vectors.</p>
+<h3 id="1-Normalization" class="common-anchor-header">1. Normalization</h3><p>To facilitate subsequent operations, we often normalize feature:</p>
+<p>What is used subsequently is also the normalized <code translate="no">norm_feat</code>.</p>
+<h3 id="2-Image-description" class="common-anchor-header">2. Image description</h3><p>The image is loaded using the <code translate="no">image.load_img</code> method of <code translate="no">keras.preprocessing</code>:</p>
 <pre><code translate="no">from keras.preprocessing import image
 img_path = 'elephant.jpg'
 img = image.load_img(img_path, target_size=(224, 224))
 </code></pre>
-<p>実際には、Kerasから呼び出されるTensorFlowメソッドである。詳細はTensorFlowのドキュメントを参照。最終的な画像オブジェクトは、実際にはPIL Imageインスタンス（TensorFlowが使用するPIL）である。</p>
-<h3 id="3-Bytes-conversion" class="common-anchor-header">3.バイト変換</h3><p>現実的には、画像コンテンツはネットワークを通じて送信されることが多い。そのため、パスから画像を読み込むのではなく、バイトデータを直接画像オブジェクト、つまりPIL Imageに変換することを好む：</p>
+<p>In fact, it is the TensorFlow method called by Keras. For details, see the TensorFlow documentation. The final image object is actually a PIL Image instance (the PIL used by TensorFlow).</p>
+<h3 id="3-Bytes-conversion" class="common-anchor-header">3. Bytes conversion</h3><p>In practical terms, image content is often transmitted through the network. Therefore, instead of loading images from path, we prefer converting bytes data directly into image objects, that is, PIL Images:</p>
 <pre><code translate="no">import io
 from PIL import Image
 
@@ -86,14 +90,14 @@ img = img.convert('RGB')
 
 img = img.resize((224, 224), Image.NEAREST)
 </code></pre>
-<p>上記のimgは、image.load_imgメソッドで得られた結果と同じです。注意すべき点が2つあります：</p>
+<p>The above img is the same as the result obtained by the image.load_img method. There are two things to pay attention to:</p>
 <ul>
-<li>RGB変換をしなければならない。</li>
-<li>リサイズが必要です（リサイズは<code translate="no">load_img method</code> の2番目のパラメータです）。</li>
+<li>You must do RGB conversion.</li>
+<li>You must resize (resize is the second parameter of the <code translate="no">load_img method</code>).</li>
 </ul>
-<h3 id="4-Black-border-processing" class="common-anchor-header">4.黒枠処理</h3><p>スクリーンショットのような画像には、時折黒い縁取りがあることがあります。これらの黒枠は実用的な価値はなく、多くの干渉を引き起こします。このため、黒枠を除去することも一般的に行われています。</p>
-<p>黒枠とは本質的に、すべてのピクセルが(0, 0, 0)（RGB画像）であるピクセルの行または列のことです。黒枠を削除するには、これらの行または列を見つけ、それらを削除します。これは実際にはNumPyの3次元行列の乗算である。</p>
-<p>水平方向の黒枠を削除する例：</p>
+<h3 id="4-Black-border-processing" class="common-anchor-header">4. Black border processing</h3><p>Images, such as screenshots, may occasionally have quite a few black borders. These black borders have no practical value and cause much interference. For this reason, removing black borders is also a common practice.</p>
+<p>A black border is essentially a row or column of pixels where all pixels are (0, 0, 0) (RGB image). To remove the black border is to find these rows or columns and delete them. This is actually a 3-D matrix multiplication in NumPy.</p>
+<p>An example of removing horizontal black borders:</p>
 <pre><code translate="no"># -*- coding: utf-8 -*-
 import numpy as np
 from keras.preprocessing import image
@@ -109,8 +113,8 @@ Returns:
    img = image.array_to_img(img_without_black)
 return img
 </code></pre>
-<p>これが、CNNを使って画像の特徴を抽出し、その他の画像処理を実装することについてお話ししたいことの大部分です。次にベクトル検索エンジンを見てみよう。</p>
-<h2 id="Vector-search-engine" class="common-anchor-header">ベクトル検索エンジン<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
+<p>This is pretty much what I want to talk about using CNN to extract image features and implement other image processing. Now let’s take a look at vector search engines.</p>
+<h2 id="Vector-search-engine" class="common-anchor-header">Vector search engine<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,16 +129,19 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>画像から特徴ベクトルを抽出する問題は解決した。となると、残る問題は</p>
+    </button></h2><p>The problem of extracting feature vectors from images has been solved. Then the remaining problems are:</p>
 <ul>
-<li>特徴ベクトルをどのように保存するか？</li>
-<li>オープンソースのベクトル検索エンジンmilvusは、この2つの問題を解決することができる。これまでのところ、私たちの本番環境ではうまく動作している。</li>
+<li>How to store feature vectors?</li>
+<li>How to calculate the similarity of feature vectors, that is, how to search?
+The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
-   </span> <span class="img-wrapper"> <span>3-milvus-logo.png</span> </span></p>
-<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">ベクトル検索エンジンMilvus<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
+    <span>3-milvus-logo.png</span>
+  </span>
+</p>
+<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">Milvus, the vector search engine<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -149,70 +156,70 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>画像から特徴ベクトルを抽出するだけでは十分ではない。また、これらの特徴ベクトルを動的に管理（追加、削除、更新）し、ベクトルの類似度を計算し、最近傍範囲のベクトルデータを返す必要があります。オープンソースのベクトル検索エンジンMilvusは、これらのタスクを非常にうまくこなします。</p>
-<p>この後は、具体的な実践方法と注意点について説明する。</p>
-<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1.CPUの要件</h3><p>Milvusを使用するには、CPUがavx2命令セットをサポートしている必要がある。Linuxシステムの場合、以下のコマンドでCPUがサポートしている命令セットを確認する：</p>
+    </button></h2><p>Extracting feature vectors from an image is far from enough. We also need to dynamically manage these feature vectors (addition, deletion, and update), calculate the similarity of the vectors, and return the vector data in the nearest neighbor range. The open-source vector search engine Milvus performs these tasks quite well.</p>
+<p>The rest of this article will describe specific practices and points to be noted.</p>
+<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1. Requirements for CPU</h3><p>To use Milvus, your CPU must support the avx2 instruction set. For Linux systems, use the following command to check which instruction sets your CPU supports:</p>
 <p><code translate="no">cat /proc/cpuinfo | grep flags</code></p>
-<p>すると、次のような結果が得られます：</p>
+<p>Then you get something like:</p>
 <pre><code translate="no">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb         rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2     ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
 </code></pre>
-<p>flagsの後に続くのは、あなたのCPUがサポートしている命令セットです。もちろん、これらは私が必要とするものよりもずっと多い。私が知りたいのは、avx2のような特定の命令セットがサポートされているかどうかだけだ。それをフィルタリングするためにgrepを追加するだけだ：</p>
+<p>What follows flags is the instruction sets your CPU supports. Of course, these are much more than I need. I just want to see if a specific instruction set, such as avx2, is supported. Just add a grep to filter it:</p>
 <pre><code translate="no">cat /proc/cpuinfo | grep flags | grep avx2
 </code></pre>
-<p>結果が返らない場合は、その特定の命令セットがサポートされていないことを意味する。その場合、マシンを変更する必要がある。</p>
-<h3 id="2-Capacity-planning" class="common-anchor-header">2.容量計画</h3><p>キャパシティ・プランニングは、システムを設計する際に最初に検討することである。どれだけのデータを保存する必要があるのか？そのデータが必要とするメモリとディスクの容量は？</p>
-<p>簡単な計算をしてみよう。ベクトルの各次元はfloat32である。float32型は4バイトを占有する。すると、512次元のベクトルには2KBのストレージが必要です。同じことだ：</p>
+<p>If no result is returned, it means that this specific instruction set is not supported. You need to change your machine then.</p>
+<h3 id="2-Capacity-planning" class="common-anchor-header">2. Capacity planning</h3><p>Capacity planning is our first consideration when we design a system. How much data do we need to store? How much memory and disk space does the data require?</p>
+<p>Let’s do some quick maths. Each dimension of a vector is float32. A float32 type takes up 4 Bytes. Then a vector of 512 dimensions requires 2 KB of storage. By the same token:</p>
 <ul>
-<li>1000個の512次元ベクトルには2MBのストレージが必要です。</li>
-<li>100万個の512次元ベクトルには2GBのストレージが必要です。</li>
-<li>1000万個の512次元ベクトルには20GBのストレージが必要です。</li>
-<li>1億個の512次元ベクトルは200GBのストレージを必要とする。</li>
-<li>10億個の512次元ベクトルは2TBのストレージを必要とする。</li>
+<li>One thousand 512-dimensional vectors require 2 MB of storage.</li>
+<li>One million 512-dimensional vectors require 2 GB of storage.</li>
+<li>10 million 512-dimensional vectors require 20 GB of storage.</li>
+<li>100 million 512-dimensional vectors require 200 GB of storage.</li>
+<li>One billion 512-dimensional vectors require 2 TB of storage.</li>
 </ul>
-<p>もしすべてのデータをメモリに保存したいのであれば、システムには少なくとも対応するメモリ容量が必要になる。</p>
-<p>公式のサイズ計算ツールを使用することをお勧めします：Milvusサイジングツール。</p>
-<p>実際にはメモリはそれほど大きくないかもしれません（メモリが足りなくても問題はありません）。Milvusは自動的にデータをディスクにフラッシュします)。元のベクトルデータに加えて、ログなど他のデータの保存も考慮する必要があります。</p>
-<h3 id="3-System-configuration" class="common-anchor-header">3.システム構成</h3><p>システム構成については、Milvusのドキュメントを参照してください：</p>
+<p>If we want to store all the data in the memory, then the system needs at least the corresponding memory capacity.</p>
+<p>It is recommended that you use the official size calculation tool: Milvus sizing tool.</p>
+<p>Actually our memory may not be that big. (It doesn’t really matter if you don’t have enough memory. Milvus automatically flushes data onto the disk.) In addition to the original vector data, we also need to consider the storage of other data such as logs.</p>
+<h3 id="3-System-configuration" class="common-anchor-header">3. System configuration</h3><p>For more information about the system configuration, see the Milvus documentation:</p>
 <ul>
-<li>Milvusサーバ構成: https://milvus.io/docs/v0.10.1/milvus_config.md を参照。</li>
+<li>Milvus server configuration: https://milvus.io/docs/v0.10.1/milvus_config.md</li>
 </ul>
-<h3 id="4-Database-design" class="common-anchor-header">4.データベース設計</h3><p><strong>コレクションとパーティション</strong></p>
+<h3 id="4-Database-design" class="common-anchor-header">4. Database design</h3><p><strong>Collection &amp; Partition</strong></p>
 <ul>
-<li>コレクションはテーブルとも呼ばれる。</li>
-<li>パーティションはコレクション内のパーティションを指す。</li>
+<li>Collection is also known as table.</li>
+<li>Partition refers to the partitions inside a collection.</li>
 </ul>
-<p>パーティションの基本的な実装はコレクションと同じだが、パーティションはコレクションの下にある。しかし、パーティションを使うことで、データの構成がより柔軟になります。また、コレクション内の特定のパーティションをクエリすることで、よりよいクエリ結果を得ることができます。</p>
-<p>コレクションとパーティションの数は？コレクションとパーティションの基本情報はメタデータにあります。Milvusは内部のメタデータ管理にSQLite（Milvus内部統合）またはMySQL（外部接続が必要）を使用します。デフォルトでSQLiteを使用してメタデータを管理する場合、コレクションとパーティションの数が多すぎるとパフォーマンスが著しく低下します。そのため、コレクション数とパーティション数の合計が50,000を超えないようにしてください（Milvus 0.8.0では4,096に制限されています）。それ以上の数を設定する必要がある場合は、外部接続経由でMySQLを使用することをお勧めします。</p>
-<p>Milvusのコレクションとパーティションがサポートするデータ構造は非常にシンプルで、<code translate="no">ID + vector</code> 。つまり、テーブルには2つの列しかない：IDとベクトルデータである。</p>
-<p><strong>注意：</strong></p>
+<p>The underlying implementation of partition is actually the same with that of collection, except that a partition is under a collection. But with partitions, the organization of data becomes more flexible. We can also query a specific partition in a collection to achieve better query results.</p>
+<p>How many collections and partitions can we have? The basic information on collection and partition is in Metadata. Milvus uses either SQLite (Milvus internal integration) or MySQL (requires external connection) for internal metadata management. If you use SQLite by default to manage Metadata, you will suffer severe performance loss when the numbers of collections and partitions are too large. Therefore, the total number of collections and partitions should not exceed 50,000 (Milvus 0.8.0 will limit this number to 4,096). If you need to set a larger number, it is recommended that you use MySQL via an external connection.</p>
+<p>The data structure supported by Milvus’ collection and partition is very simple, that is, <code translate="no">ID + vector</code>. In other words, there are only two columns in the table: ID and vector data.</p>
+<p><strong>Note:</strong></p>
 <ul>
-<li>IDは整数でなければならない。</li>
-<li>IDはパーティション内ではなく、コレクション内で一意であることを保証する必要がある。</li>
+<li>ID should be integers.</li>
+<li>We need to ensure that the ID is unique within a collection instead of within a partition.</li>
 </ul>
-<p><strong>条件付きフィルタリング</strong></p>
-<p>従来のデータベースを使用する場合、フィールド値をフィルタリング条件として指定することができます。Milvusは全く同じ方法でフィルタリングを行うわけではありませんが、コレクションとパーティションを使って簡単な条件付きフィルタリングを実装することができます。例えば、大量の画像データがあり、そのデータが特定のユーザのものであったとします。その場合、データをユーザーごとにパーティションに分けることができる。したがって、フィルター条件としてユーザーを使うことは、実際にはパーティションを指定することになる。</p>
-<p><strong>構造化データとベクトルマッピング</strong></p>
-<p>MilvusはID+ベクトルデータ構造しかサポートしていません。しかし、ビジネスシナリオにおいて必要なのは、ビジネス上の意味を持つ構造化データである。つまり、ベクトルを通して構造化データを見つける必要がある。従って、IDを通して構造化データとベクトルのマッピング関係を維持する必要があります。</p>
+<p><strong>Conditional filtering</strong></p>
+<p>When we use traditional databases, we can specify field values as filtering conditions. Though Milvus does not filter exactly the same way, we can implement simple conditional filtering using collections and partitions. For example, we have a large amount of image data and the data belongs to specific users. Then we can divide the data into partitions by user. Therefore, using the user as the filter condition is actually specifying the partition.</p>
+<p><strong>Structured data and vector mapping</strong></p>
+<p>Milvus only supports the ID + vector data structure. But in business scenarios, what we need is structured data-bearing business meaning. In other words, we need to find structured data through vectors. Accordingly, we need to maintain the mapping relations between structured data and vectors through ID.</p>
 <pre><code translate="no">structured data ID &lt;--&gt; mapping table &lt;--&gt; Milvus ID
 </code></pre>
-<p><strong>インデックスの選択</strong></p>
-<p>以下の記事を参照されたい：</p>
+<p><strong>Selecting index</strong></p>
+<p>You can refer to the following articles:</p>
 <ul>
-<li>インデックスの種類: https://www.milvus.io/docs/v0.10.1/index.md</li>
-<li>インデックスの選択方法: https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212</li>
+<li>Types of index: https://www.milvus.io/docs/v0.10.1/index.md</li>
+<li>How to select index: https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212</li>
 </ul>
-<h3 id="5-Processing-search-results" class="common-anchor-header">5.検索結果の処理</h3><p>Milvusの検索結果は、ID+距離の集合である：</p>
+<h3 id="5-Processing-search-results" class="common-anchor-header">5. Processing search results</h3><p>The search results of Milvus are a collection of ID + distance:</p>
 <ul>
-<li>ID：コレクション内のID。</li>
-<li>距離：0～1の距離値は類似度を示し、値が小さいほど2つのベクトルは類似している。</li>
+<li>ID: the ID in a collection.</li>
+<li>Distance: a distance value of 0 ~ 1 indicates similarity level; the smaller the value, the more similar the two vectors.</li>
 </ul>
-<p><strong>IDが-1のデータのフィルタリング</strong></p>
-<p>コレクションの数が少なすぎる場合、検索結果にIDが-1のデータが含まれることがある。そのようなデータは自分でフィルタリングする必要があります。</p>
-<p><strong>ページネーション</strong></p>
-<p>ベクトルの検索はまったく異なります。クエリ結果は類似度の降順にソートされ、最も類似した（topK）結果が選択されます（topKはクエリ時にユーザが指定します）。</p>
-<p>milvusはページ分割をサポートしていない。ページネーション機能が必要な場合は、自前で実装する必要がある。例えば、各ページに10件の結果があり、3ページ目だけを表示したい場合、topK = 30と指定し、最後の10件だけを返す必要があります。</p>
-<p><strong>ビジネスにおける類似度のしきい値</strong></p>
-<p>2つの画像のベクトル間の距離は0から1の間です。特定のビジネスシナリオで2つの画像が類似しているかどうかを判断したい場合、この範囲内で閾値を指定する必要があります。距離がしきい値より小さければ2つの画像は似ており、距離がしきい値より大きければ2つの画像はかなり異なっています。閾値は自分のビジネスニーズに合わせて調整する必要がある。</p>
+<p><strong>Filtering data whose ID is -1</strong></p>
+<p>When the number of collections is too small, the search results may contain data whose ID is -1. We need to filter it out by ourselves.</p>
+<p><strong>Pagination</strong></p>
+<p>The search for vectors is quite different. The query results are sorted in descending order of similarity, and the most similar (topK) of results are selected (topK is specified by the user at the time of query).</p>
+<p>Milvus does not support pagination. We need to implement the pagination function by ourselves if we need it for business. For example, if we have ten results on each page and only want to display the third page, we need to specify that topK = 30 and only return the last ten results.</p>
+<p><strong>Similarity threshold for business</strong></p>
+<p>The distance between the vectors of two images is between 0 and 1. If we want to decide whether two images are similar in a specific business scenario, we need to specify a threshold within this range. The two images are similar if the distance is smaller than the threshold, or they are quite different from each other if the distance is larger than the threshold. You need to adjust the threshold to meet your own business needs.</p>
 <blockquote>
-<p>この記事はMilvusユーザーでUPYUNのソフトウェアエンジニアであるrifewangによって書かれました。この記事が気に入ったら、https://github.com/rifewang。</p>
+<p>This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi @ https://github.com/rifewang.</p>
 </blockquote>

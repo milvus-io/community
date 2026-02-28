@@ -1,25 +1,26 @@
 ---
 id: Implement-Milvus-CLI-by-Python-Click.md
-title: Gambaran Umum
+title: Overview
 author: Zhen Chen
 date: 2021-09-15T00:00:00.000Z
-desc: Memperkenalkan cara mengimplementasikan CLI berdasarkan Python Click.
+desc: Introduce how to implement a CLI based on Python Click.
 tag: Engineering
 isPublish: true
 ---
-<custom-h1>Mengimplementasikan Milvus CLI dengan Python Click</custom-h1><ul>
-<li><a href="#Implement-Milvus-CLI-by-Python-Click">Mengimplementasikan Milvus CLI dengan Python Click</a><ul>
-<li><a href="#Overview">Ikhtisar</a></li>
-<li><a href="#Group-commands">Perintah grup</a></li>
-<li><a href="#Custom-a-command">Menyesuaikan perintah</a></li>
-<li><a href="#Implement-prompt-cli-for-user-to-input">Menerapkan CLI prompt untuk input pengguna</a></li>
-<li><a href="#Manually-implement-autocomplete">Menerapkan pelengkapan otomatis secara manual</a></li>
-<li><a href="#Add-one-time-option">Menambahkan opsi satu kali</a></li>
-<li><a href="#Build-and-release">Bangun dan rilis</a></li>
-<li><a href="#Learn-more-about-Milvus">Pelajari lebih lanjut tentang Milvus</a></li>
+<custom-h1>Implement Milvus CLI by Python Click</custom-h1><ul>
+<li><a href="#Implement-Milvus-CLI-by-Python-Click">Implement Milvus CLI by Python Click</a>
+<ul>
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Group-commands">Group commands</a></li>
+<li><a href="#Custom-a-command">Custom a command</a></li>
+<li><a href="#Implement-prompt-cli-for-user-to-input">Implement prompt CLI for user to input</a></li>
+<li><a href="#Manually-implement-autocomplete">Manually implement autocomplete</a></li>
+<li><a href="#Add-one-time-option">Add one-time option</a></li>
+<li><a href="#Build-and-release">Build and release</a></li>
+<li><a href="#Learn-more-about-Milvus">Learn more about Milvus</a></li>
 </ul></li>
 </ul>
-<h2 id="Overview" class="common-anchor-header">Gambaran Umum<button data-href="#Overview" class="anchor-icon" translate="no">
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,9 +35,9 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>URL proyek: https://github.com/milvus-io/milvus_cli</p>
-<p>Persiapan <code translate="no">Python3.8</code>,<a href="https://click.palletsprojects.com/en/8.0.x/api/"> <code translate="no">Click 8.0.x</code></a></p>
-<h2 id="Group-commands" class="common-anchor-header">Perintah grup<button data-href="#Group-commands" class="anchor-icon" translate="no">
+    </button></h2><p>Project URL: https://github.com/milvus-io/milvus_cli</p>
+<p>Preparation: <code translate="no">Python3.8</code>,<a href="https://click.palletsprojects.com/en/8.0.x/api/"> <code translate="no">Click 8.0.x</code></a></p>
+<h2 id="Group-commands" class="common-anchor-header">Group commands<button data-href="#Group-commands" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,7 +52,7 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Create-a-command" class="common-anchor-header">Membuat sebuah perintah</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> click
+    </button></h2><h3 id="Create-a-command" class="common-anchor-header">Create a command</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> click
 <span class="hljs-keyword">from</span> utils <span class="hljs-keyword">import</span> PyOrm
 
 <span class="hljs-meta">@click.group(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span>, add_help_option=<span class="hljs-literal">False</span>, invoke_without_command=<span class="hljs-literal">True</span></span>)</span>
@@ -63,9 +64,9 @@ isPublish: true
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     cli()
 <button class="copy-code-btn"></button></code></pre>
-<p>Seperti kode di atas, kita menggunakan <code translate="no">@click.group()</code> untuk membuat grup perintah <code translate="no">cli</code> sebagai titik masuk. Untuk mengimplementasikan CLI yang cepat, kita perlu menonaktifkan pesan bantuan untuk entri tersebut, jadi kita tambahkan <code translate="no">no_args_is_help=False</code>, <code translate="no">add_help_option=False</code> dan <code translate="no">invoke_without_command=True</code>. Dan tidak ada yang akan dicetak jika kita memasukkan <code translate="no">cli</code> di terminal saja.</p>
-<p>Selain itu kita menggunakan <code translate="no">@click.pass_context</code> untuk memberikan konteks ke grup ini untuk penggunaan lebih lanjut.</p>
-<h3 id="Create-a-sub-command-of-command-group" class="common-anchor-header">Membuat sub perintah dari grup perintah</h3><p>Kemudian kita tambahkan sub perintah pertama <code translate="no">help</code> di bawah <code translate="no">cli</code>:</p>
+<p>As the code above, we use <code translate="no">@click.group()</code> to create a command group <code translate="no">cli</code> as entry point. To implement a prompt CLI we need to disable help messages for the entry, so we add <code translate="no">no_args_is_help=False</code>, <code translate="no">add_help_option=False</code> and <code translate="no">invoke_without_command=True</code>. And nothing will be printed if we input <code translate="no">cli</code> in terminal only.</p>
+<p>Besides we use <code translate="no">@click.pass_context</code> to pass a context to this group for further usage.</p>
+<h3 id="Create-a-sub-command-of-command-group" class="common-anchor-header">Create a sub command of command group</h3><p>Then we add the first sub command <code translate="no">help</code> under <code translate="no">cli</code>:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Print the help message of specified command.</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">print_help_msg</span>(<span class="hljs-params">command</span>):
     <span class="hljs-keyword">with</span> click.Context(command) <span class="hljs-keyword">as</span> ctx:
@@ -79,20 +80,20 @@ isPublish: true
     <span class="hljs-comment"># Print help message of cli.</span>
     click.echo(print_help_msg(cli))
 <button class="copy-code-btn"></button></code></pre>
-<p>Sekarang kita dapat menggunakan <code translate="no">cli help</code> di terminal:</p>
+<p>Now we can use <code translate="no">cli help</code> in terminal:</p>
 <pre><code translate="no" class="language-shell">$ python milvus_cli/scripts/milvus_cli.py <span class="hljs-built_in">help</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Create-a-sub-group-of-a-command-group" class="common-anchor-header">Membuat sub grup dari grup perintah</h3><p>Kita tidak hanya ingin memiliki sub perintah seperti <code translate="no">cli help</code>, tetapi kita juga membutuhkan sub grup perintah seperti <code translate="no">cli list collection</code>, <code translate="no">cli list partition</code> dan <code translate="no">cli list indexes</code>.</p>
-<p>Pertama kita buat sub grup perintah <code translate="no">list</code>, disini kita bisa memberikan parameter pertama ke <code translate="no">@cli.group</code> sebagai nama perintah dan bukan menggunakan nama fungsi default, sehingga kita bisa mengurangi duplikasi nama fungsi.</p>
-<p>Perhatian di sini, kita menggunakan <code translate="no">@cli.group()</code> dan bukan <code translate="no">@click.group</code> sehingga kita membuat sub grup dari grup asal.</p>
-<p>Kita menggunakan <code translate="no">@click.pass_obj</code> untuk meneruskan <code translate="no">context.obj</code> ke sub perintah dari sub grup ini.</p>
+<h3 id="Create-a-sub-group-of-a-command-group" class="common-anchor-header">Create a sub group of a command group</h3><p>Not only we want to have a sub command like <code translate="no">cli help</code>, but also we need a sub group commands such as <code translate="no">cli list collection</code> , <code translate="no">cli list partition</code> and <code translate="no">cli list indexes</code>.</p>
+<p>First we create a sub group command <code translate="no">list</code>, here we can pass the first parameter to <code translate="no">@cli.group</code> as the command name instead of use defult function name, so that we can reduce duplicated function names.</p>
+<p>Attention here, we use <code translate="no">@cli.group()</code> instead of <code translate="no">@click.group</code> so that we create a sub group of origin group.</p>
+<p>The we use <code translate="no">@click.pass_obj</code> to pass the <code translate="no">context.obj</code> to sub commands of this sub group.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.group(<span class="hljs-params"><span class="hljs-string">&#x27;list&#x27;</span>, no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.pass_obj</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">listDetails</span>(<span class="hljs-params">obj</span>):
     <span class="hljs-string">&quot;&quot;&quot;List collections, partitions and indexes.&quot;&quot;&quot;</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Kemudian kita menambahkan beberapa sub perintah ke dalam sub grup ini dengan <code translate="no">@listDetails.command()</code> (bukan <code translate="no">@cli.command()</code>). Ini hanya sebuah contoh, Anda dapat mengabaikan implementasinya dan kita akan membahasnya nanti.</p>
+<p>Then we add some sub commands into this sub group by <code translate="no">@listDetails.command()</code> (not <code translate="no">@cli.command()</code>). Here’s just an example, you can ignore the implement and we will discuss it later.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@listDetails.command()</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;--timeout&#x27;</span>, <span class="hljs-string">&#x27;timeout&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;[Optional] - An optional duration of time in seconds to allow for the RPC. When timeout is set to None, client waits until server response or error occur.&quot;</span>, default=<span class="hljs-literal">None</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;--show-loaded&#x27;</span>, <span class="hljs-string">&#x27;showLoaded&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;[Optional] - Only show loaded collections.&quot;</span>, default=<span class="hljs-literal">False</span></span>)</span>
@@ -119,12 +120,14 @@ isPublish: true
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         click.echo(message=e, err=<span class="hljs-literal">True</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Setelah semua ini selesai, kita memiliki perintah miltigroup yang terlihat seperti:</p>
+<p>After all these complete, we have a miltigroup commands that look like:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png" alt="image" class="doc-image" id="image" />
-   </span> <span class="img-wrapper"> <span>image</span> </span></p>
-<h2 id="Custom-a-command" class="common-anchor-header">Menyesuaikan sebuah perintah<button data-href="#Custom-a-command" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png" alt="image" class="doc-image" id="image" />
+    <span>image</span>
+  </span>
+</p>
+<h2 id="Custom-a-command" class="common-anchor-header">Custom a command<button data-href="#Custom-a-command" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,10 +142,10 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Add-options" class="common-anchor-header">Menambahkan opsi</h3><p>Anda dapat menambahkan beberapa opsi pada perintah yang akan digunakan seperti <code translate="no">cli --test-option value</code>.</p>
-<p>Berikut ini adalah contohnya, kita menambahkan tiga opsi <code translate="no">alias</code>, <code translate="no">host</code> dan <code translate="no">port</code> untuk menentukan alamat yang akan terhubung ke Milvus.</p>
-<p>Dua parameter pertama mendefinisikan nama opsi singkat dan lengkap, parameter ketiga mendefinisikan nama variabel, parameter <code translate="no">help</code> menentukan pesan bantuan singkat, parameter <code translate="no">default</code> menentukan nilai default dan <code translate="no">type</code> menentukan tipe nilai.</p>
-<p>Dan semua nilai opsi akan diteruskan ke dalam fungsi sesuai dengan urutan definisi.</p>
+    </button></h2><h3 id="Add-options" class="common-anchor-header">Add options</h3><p>You can add some options to a command which will be used like <code translate="no">cli --test-option value</code>.</p>
+<p>Here’s an example, we add three options <code translate="no">alias</code>, <code translate="no">host</code> and <code translate="no">port</code> to specified an address to connect to Milvus.</p>
+<p>First two parameters define the short and full option name, the third parameter defines the variable name, the <code translate="no">help</code> parameter specifies the short help message, the <code translate="no">default</code> parameter specifies the default value and the <code translate="no">type</code> specifies the value type.</p>
+<p>And all options’ values will be passed into the function in order of definition.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-a&#x27;</span>, <span class="hljs-string">&#x27;--alias&#x27;</span>, <span class="hljs-string">&#x27;alias&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Milvus link alias name, default is `default`.&quot;</span>, default=<span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-h&#x27;</span>, <span class="hljs-string">&#x27;--host&#x27;</span>, <span class="hljs-string">&#x27;host&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Host name, default is `127.0.0.1`.&quot;</span>, default=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
@@ -151,8 +154,8 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">connect</span>(<span class="hljs-params">obj, alias, host, port</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-flag-options" class="common-anchor-header">Menambahkan opsi bendera</h3><p>Kita menggunakan opsi di atas untuk mengoper nilai, tetapi terkadang kita hanya membutuhkan flag sebagai nilai boolean.</p>
-<p>Seperti contoh di bawah ini, opsi <code translate="no">autoId</code> adalah opsi flag dan tidak mengoper data apa pun ke fungsi, jadi kita dapat menggunakannya seperti <code translate="no">cli create collection -c c_name -p p_name -a</code>.</p>
+<h3 id="Add-flag-options" class="common-anchor-header">Add flag options</h3><p>We use options above to pass a value, but some times we just need a flag as a boolean value.</p>
+<p>As the example below, option <code translate="no">autoId</code> is a flag option and don’t pass any data to function, so we can use it like <code translate="no">cli create collection -c c_name -p p_name -a</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@createDetails.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-c&#x27;</span>, <span class="hljs-string">&#x27;--collection-name&#x27;</span>, <span class="hljs-string">&#x27;collectionName&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Collection name to be created.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-p&#x27;</span>, <span class="hljs-string">&#x27;--schema-primary-field&#x27;</span>, <span class="hljs-string">&#x27;primaryField&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Primary field name.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
@@ -161,7 +164,7 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">createCollection</span>(<span class="hljs-params">obj, collectionName, primaryField, autoId, description, fields</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-arguments" class="common-anchor-header">Menambahkan argumen</h3><p>Dalam proyek ini kita mengganti semua penggunaan argumen dengan penggunaan opsi. Namun kita masih memperkenalkan penggunaan argumen di sini. Berbeda dengan options, argumen digunakan seperti <code translate="no">cli COMMAND [OPTIONS] ARGUEMENTS</code>. Jika kita ubah contoh di atas menjadi penggunaan argumen, maka akan menjadi seperti ini:</p>
+<h3 id="Add-arguments" class="common-anchor-header">Add arguments</h3><p>In this project we replace all arguments usage with options usage. But we still introduce argument usage here. Different from options, argements are used like <code translate="no">cli COMMAND [OPTIONS] ARGUEMENTS</code>. If we convert the example above into arguements usage, it’ll be like this:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@createDetails.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.argument(<span class="hljs-params"><span class="hljs-string">&#x27;collectionName&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-p&#x27;</span>, <span class="hljs-string">&#x27;--schema-primary-field&#x27;</span>, <span class="hljs-string">&#x27;primaryField&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Primary field name.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
@@ -170,8 +173,8 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">createCollection</span>(<span class="hljs-params">obj, collectionName, primaryField, autoId, description, fields</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Maka penggunaannya akan menjadi <code translate="no">cli create collection c_name -p p_name -a</code>.</p>
-<h3 id="Add-full-help-message" class="common-anchor-header">Menambahkan pesan bantuan lengkap</h3><p>Setelah kita mendefinisikan pesan bantuan singkat di atas, kita dapat mendefinisikan pesan bantuan lengkap di dalam fungsi:</p>
+<p>Then the usage should be <code translate="no">cli create collection c_name -p p_name -a</code>.</p>
+<h3 id="Add-full-help-message" class="common-anchor-header">Add full help message</h3><p>As we define the short help message above, we can define the full help message in function:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-a&#x27;</span>, <span class="hljs-string">&#x27;--alias&#x27;</span>, <span class="hljs-string">&#x27;alias&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Milvus link alias name, default is `default`.&quot;</span>, default=<span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-h&#x27;</span>, <span class="hljs-string">&#x27;--host&#x27;</span>, <span class="hljs-string">&#x27;host&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Host name, default is `127.0.0.1`.&quot;</span>, default=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
@@ -193,7 +196,7 @@ isPublish: true
         click.echo(<span class="hljs-string">&quot;Connect Milvus successfully!&quot;</span>)
         click.echo(obj.showConnection(alias))
 <button class="copy-code-btn"></button></code></pre>
-<p>Blok pertama di dalam fungsi tersebut adalah pesan bantuan yang akan dicetak setelah kita memasukkan <code translate="no">cli connect --help</code>.</p>
+<p>The first block inside of the function is the help message which will be printed after we input <code translate="no">cli connect --help</code>.</p>
 <pre><code translate="no" class="language-shell">milvus_cli &gt; connect --help
 Usage: milvus_cli.py connect [OPTIONS]
 
@@ -209,7 +212,7 @@ Options:
   -p, --port INTEGER  Port, <span class="hljs-literal">default</span> <span class="hljs-keyword">is</span> `<span class="hljs-number">19530</span>`.
   --help              Show <span class="hljs-keyword">this</span> message <span class="hljs-keyword">and</span> exit.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-confirm" class="common-anchor-header">Tambahkan konfirmasi</h3><p>Terkadang kita membutuhkan pengguna untuk mengkonfirmasi beberapa tindakan, terutama menghapus sesuatu. Kita dapat menambahkan <code translate="no">click.confirm</code> untuk menjeda dan meminta pengguna untuk mengkonfirmasi:</p>
+<h3 id="Add-confirm" class="common-anchor-header">Add confirm</h3><p>Sometimes we need user to confirm some action especially delete something. We can add <code translate="no">click.confirm</code> to pause and ask user to confirm:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@deleteSth.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-c&#x27;</span>, <span class="hljs-string">&#x27;--collection&#x27;</span>, <span class="hljs-string">&#x27;collectionName&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;The name of collection to be deleted.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-t&#x27;</span>, <span class="hljs-string">&#x27;--timeout&#x27;</span>, <span class="hljs-string">&#x27;timeout&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;An optional duration of time in seconds to allow for the RPC. If timeout is set to None, the client keeps waiting until the server responds or an error occurs.&#x27;</span>, default=<span class="hljs-literal">None</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span></span>)</span>
@@ -228,8 +231,8 @@ Options:
         <span class="hljs-keyword">return</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Seperti contoh di atas, percakapan konfirmasi akan muncul seperti <code translate="no">Aborted!ant to continue? [y/N]:</code>.</p>
-<h3 id="Add-prompts" class="common-anchor-header">Tambahkan petunjuk</h3><p>Untuk mengimplementasikan prompt, kita perlu menambahkan <code translate="no">click.prompt</code>.</p>
+<p>As the example above, a confirm conversation will show like <code translate="no">Aborted!ant to continue? [y/N]:</code>.</p>
+<h3 id="Add-prompts" class="common-anchor-header">Add prompts</h3><p>To implement prompts we juest need to add <code translate="no">click.prompt</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command()</span>
 <span class="hljs-meta">@click.pass_obj</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">query</span>(<span class="hljs-params">obj</span>):
@@ -246,23 +249,23 @@ Options:
     timeout = click.prompt(<span class="hljs-string">&#x27;timeout&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span>)
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Prompt akan muncul ketika setiap <code translate="no">click.prompt</code>. Kami menggunakan beberapa prompt secara berurutan sehingga akan terlihat seperti percakapan yang berkelanjutan. Hal ini memastikan pengguna akan memasukkan data sesuai dengan urutan yang kita inginkan. Dalam hal ini kita membutuhkan pengguna untuk memilih sebuah koleksi terlebih dahulu, dan kita perlu mendapatkan semua partisi di bawah koleksi tersebut, lalu menampilkannya kepada pengguna untuk dipilih.</p>
-<h3 id="Add-choices" class="common-anchor-header">Menambahkan pilihan</h3><p>Terkadang Anda ingin pengguna hanya memasukkan rentang/jenis nilai yang terbatas, Anda dapat menambahkan <code translate="no">type=click.Choice([&lt;any&gt;])</code> ke <code translate="no">click.prompt</code>, <code translate="no">click.options</code> dan lain-lain.</p>
-<p>Misalnya,</p>
+<p>The prompt will show when each <code translate="no">click.prompt</code>. We use a few prompts in series so that it’ll look like a continuously conversation. This ensure user will input the data in order we want. In this case we need user to choose a collection first, and we need to get all partitions under this collections, then show them to user to choose.</p>
+<h3 id="Add-choices" class="common-anchor-header">Add choices</h3><p>Sometimes you want user just input the limited range/type of value, you can add <code translate="no">type=click.Choice([&lt;any&gt;])</code> to <code translate="no">click.prompt</code> , <code translate="no">click.options</code> and etc…</p>
+<p>Such as,</p>
 <pre><code translate="no" class="language-python">collectionName = click.prompt(
         <span class="hljs-string">&#x27;Collection name&#x27;</span>, <span class="hljs-built_in">type</span>=click.Choice([<span class="hljs-string">&#x27;collection_1&#x27;</span>, <span class="hljs-string">&#x27;collection_2&#x27;</span>]))
 <button class="copy-code-btn"></button></code></pre>
-<p>Maka pengguna hanya dapat memasukkan <code translate="no">collection_1</code> atau <code translate="no">collection_2</code>, kesalahan akan muncul jika ada input lain.</p>
-<h3 id="Add-clear-screen" class="common-anchor-header">Tambahkan layar yang jelas</h3><p>Anda dapat menggunakan <code translate="no">click.clear()</code> untuk mengimplementasikannya.</p>
+<p>Then user can only input <code translate="no">collection_1</code> or <code translate="no">collection_2</code> , error will be raised if any other inputs.</p>
+<h3 id="Add-clear-screen" class="common-anchor-header">Add clear screen</h3><p>You can use <code translate="no">click.clear()</code> to implement it.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command()</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">clear</span>():
     <span class="hljs-string">&quot;&quot;&quot;Clear screen.&quot;&quot;&quot;</span>
     click.clear()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Additional-tips" class="common-anchor-header">Tips tambahan</h3><ul>
-<li>Nilai defaultnya adalah <code translate="no">None</code>, jadi tidak ada artinya jika Anda menentukan nilai default sebagai <code translate="no">None</code>. Dan default <code translate="no">None</code> akan menyebabkan <code translate="no">click.prompt</code> terus ditampilkan jika Anda ingin mengosongkan nilai untuk melompati nilai tersebut.</li>
+<h3 id="Additional-tips" class="common-anchor-header">Additional tips</h3><ul>
+<li>Default value is <code translate="no">None</code>, so it’s meaningless if you specified the default value as <code translate="no">None</code>. And default <code translate="no">None</code> will cause <code translate="no">click.prompt</code> continously show if you want to leave a value empty to jump over it.</li>
 </ul>
-<h2 id="Implement-prompt-CLI-for-user-to-input" class="common-anchor-header">Menerapkan prompt CLI untuk pengguna untuk memasukkan input<button data-href="#Implement-prompt-CLI-for-user-to-input" class="anchor-icon" translate="no">
+<h2 id="Implement-prompt-CLI-for-user-to-input" class="common-anchor-header">Implement prompt CLI for user to input<button data-href="#Implement-prompt-CLI-for-user-to-input" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -277,9 +280,9 @@ Options:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Why-prompt-CLI" class="common-anchor-header">Mengapa prompt CLI</h3><p>Untuk operasi basis data, kita membutuhkan koneksi secara terus menerus ke sebuah instance. Jika kita menggunakan mode baris perintah asal, koneksi akan terputus setelah setiap perintah dilakukan. Kita juga ingin menyimpan beberapa data ketika menggunakan CLI, dan membersihkannya setelah keluar.</p>
-<h3 id="Implement" class="common-anchor-header">Menerapkan</h3><ol>
-<li>Gunakan <code translate="no">while True</code> untuk mendengarkan input pengguna secara terus menerus.</li>
+    </button></h2><h3 id="Why-prompt-CLI" class="common-anchor-header">Why prompt CLI</h3><p>For database operation, we need a continuously connection to a instance. If we use origin command line mode, the connection will be dropped after each command performed. We also want to store some data when using CLI, and clean them after exit.</p>
+<h3 id="Implement" class="common-anchor-header">Implement</h3><ol>
+<li>Use <code translate="no">while True</code> for continuously listening user’s input.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
@@ -296,7 +299,7 @@ Options:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>Penggunaan <code translate="no">input</code> saja akan menyebabkan <code translate="no">up</code>, <code translate="no">down</code>, <code translate="no">left</code>, <code translate="no">right</code> tombol panah, tombol <code translate="no">tab</code> dan beberapa tombol lainnya dikonversi ke string Acsii secara otomatis. Selain itu perintah history tidak dapat dibaca dari session. Jadi kita tambahkan <code translate="no">readline</code> ke dalam fungsi <code translate="no">runCliPrompt</code>.</li>
+<li>Use <code translate="no">input</code> only will cause <code translate="no">up</code>, <code translate="no">down</code>, <code translate="no">left</code>, <code translate="no">right</code> arrow keys, <code translate="no">tab</code> key and some other keys converted to Acsii string automatically. Besides history commands can not be read from session. So we add <code translate="no">readline</code> into <code translate="no">runCliPrompt</code> function.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
@@ -311,7 +314,7 @@ Options:
             <span class="hljs-keyword">continue</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>Tambahkan <code translate="no">quit</code> CLI.</li>
+<li>Add <code translate="no">quit</code> CLI.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params"><span class="hljs-string">&#x27;exit&#x27;</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">quitapp</span>():
@@ -336,7 +339,7 @@ quitapp = <span class="hljs-literal">False</span>  <span class="hljs-comment"># 
             <span class="hljs-keyword">continue</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>Tangkap kesalahan <code translate="no">KeyboardInterrupt</code> saat menggunakan <code translate="no">ctrl C</code> untuk keluar.</li>
+<li>Catch <code translate="no">KeyboardInterrupt</code> error when use <code translate="no">ctrl C</code> to exit.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">try</span>:
@@ -354,7 +357,7 @@ quitapp = <span class="hljs-literal">False</span>  <span class="hljs-comment"># 
         sys.exit(<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>Setelah semua beres, tampilan CLI sekarang menjadi seperti ini:</li>
+<li>After all settled, the CLI now looks like:</li>
 </ol>
 <pre><code translate="no" class="language-shell">milvus_cli &gt;
 milvus_cli &gt; connect
@@ -388,7 +391,7 @@ Commands:
 
 milvus_cli &gt; exit
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Manually-implement-autocomplete" class="common-anchor-header">Menerapkan pelengkapan otomatis secara manual<button data-href="#Manually-implement-autocomplete" class="anchor-icon" translate="no">
+<h2 id="Manually-implement-autocomplete" class="common-anchor-header">Manually implement autocomplete<button data-href="#Manually-implement-autocomplete" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,7 +406,7 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Berbeda dengan pelengkapan otomatis shell klik, proyek kita membungkus baris perintah dan menggunakan perulangan untuk mendapatkan masukan dari pengguna untuk mengimplementasikan baris perintah prompt. Jadi kita perlu mengikat pelengkap ke <code translate="no">readline</code>.</p>
+    </button></h2><p>Different from click’s shell autocomplete, our project wrap the command line and use a loop to get user’s input to implement a prompt command line. So we need to bind a completer to <code translate="no">readline</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Completer</span>(<span class="hljs-title class_ inherited__">object</span>):
     RE_SPACE = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">&#x27;.*\s+$&#x27;</span>, re.M)
     CMDS_DICT = {
@@ -502,7 +505,7 @@ milvus_cli &gt; exit
             c + <span class="hljs-string">&#x27; &#x27;</span> <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.COMMANDS <span class="hljs-keyword">if</span> c.startswith(cmd)] + [<span class="hljs-literal">None</span>]
         <span class="hljs-keyword">return</span> results[state]
 <button class="copy-code-btn"></button></code></pre>
-<p>Setelah mendefinisikan <code translate="no">Completer</code> kita bisa mengikatnya dengan readline:</p>
+<p>After define <code translate="no">Completer</code> we can bind it with readline:</p>
 <pre><code translate="no" class="language-python">comp = Completer()
 
 
@@ -523,7 +526,7 @@ milvus_cli &gt; exit
     <span class="hljs-keyword">except</span> KeyboardInterrupt:
         sys.exit(<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Add-one-time-option" class="common-anchor-header">Menambahkan opsi satu kali<button data-href="#Add-one-time-option" class="anchor-icon" translate="no">
+<h2 id="Add-one-time-option" class="common-anchor-header">Add one-time option<button data-href="#Add-one-time-option" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -538,7 +541,7 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk baris perintah prompt, terkadang kita tidak ingin sepenuhnya menjalankan script untuk mendapatkan beberapa informasi seperti versi. Contoh yang baik adalah <code translate="no">Python</code>, ketika Anda mengetik <code translate="no">python</code> di terminal, baris perintah promtp akan muncul, tetapi hanya mengembalikan pesan versi dan tidak akan masuk ke dalam skrip prompt jika Anda mengetik <code translate="no">python -V</code>. Jadi kita dapat menggunakan <code translate="no">sys.args</code> dalam kode kita untuk mengimplementasikannya.</p>
+    </button></h2><p>For prompt command line, sometimes we don’t want to fully run into the scripts to get some informations such as version. A good example is <code translate="no">Python</code>, when you type <code translate="no">python</code> in terminal the promtp command line will show, but it only returns a version message and will not entry the prompt scripts if you type <code translate="no">python -V</code>. So we can use <code translate="no">sys.args</code> in our code to implement.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     args = sys.argv
     <span class="hljs-keyword">if</span> args <span class="hljs-keyword">and</span> (args[-<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;--version&#x27;</span>):
@@ -564,9 +567,9 @@ milvus_cli &gt; exit
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
-<p>Kita mendapatkan <code translate="no">sys.args</code> sebelum perulangan ketika pertama kali menjalankan skrip CLI. Jika argumen terakhir adalah <code translate="no">--version</code>, kode akan mengembalikan versi paket tanpa mengalami perulangan.</p>
-<p>Ini akan sangat membantu setelah kita membuat kode sebagai sebuah paket. Pengguna dapat mengetikkan <code translate="no">milvus_cli</code> untuk langsung masuk ke CLI, atau mengetikkan <code translate="no">milvus_cli --version</code> untuk mendapatkan versinya saja.</p>
-<h2 id="Build-and-release" class="common-anchor-header">Membangun dan merilis<button data-href="#Build-and-release" class="anchor-icon" translate="no">
+<p>We get <code translate="no">sys.args</code> before the loop when first run into CLI scripts. If the last arguments is <code translate="no">--version</code> , the code will return the package version without running into loop.</p>
+<p>It will be helpful after we build the codes as a package. User can type <code translate="no">milvus_cli</code> to jump into a prompt CLI, or type <code translate="no">milvus_cli --version</code> to only get the version.</p>
+<h2 id="Build-and-release" class="common-anchor-header">Build and release<button data-href="#Build-and-release" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -581,11 +584,11 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Terakhir, kita ingin membangun sebuah paket dan merilisnya dengan PYPI. Sehingga pengguna cukup menggunakan <code translate="no">pip install &lt;package name&gt;</code> untuk menginstal.</p>
-<h3 id="Install-locally-for-test" class="common-anchor-header">Menginstal secara lokal untuk pengujian</h3><p>Sebelum Anda mempublikasikan paket ke PYPI, Anda mungkin ingin menginstalnya secara lokal untuk beberapa pengujian.</p>
-<p>Dalam hal ini, Anda cukup memasukkan <code translate="no">cd</code> ke dalam direktori paket dan menjalankan <code translate="no">pip install -e .</code> (Jangan lupa <code translate="no">.</code>).</p>
-<h3 id="Create-package-files" class="common-anchor-header">Membuat berkas-berkas paket</h3><p>Lihat: https://packaging.python.org/tutorials/packaging-projects/</p>
-<p>Struktur sebuah paket akan terlihat seperti ini:</p>
+    </button></h2><p>Finally we want to build a package and release by PYPI. So that user can simply use <code translate="no">pip install &lt;package name&gt;</code> to install.</p>
+<h3 id="Install-locally-for-test" class="common-anchor-header">Install locally for test</h3><p>Before you publish the package to PYPI, you may want to install it locally for some tests.</p>
+<p>In this case, you can simply <code translate="no">cd</code> into the package directory and run <code translate="no">pip install -e .</code> (Don’t forget the <code translate="no">.</code>).</p>
+<h3 id="Create-package-files" class="common-anchor-header">Create package files</h3><p>Refer to: https://packaging.python.org/tutorials/packaging-projects/</p>
+<p>A package’s structure should look like:</p>
 <pre><code translate="no" class="language-shell">package_example/
 ├── LICENSE
 ├── README.md
@@ -598,7 +601,7 @@ milvus_cli &gt; exit
 │       └── example.py
 └── tests/
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Create-the-package-directory" class="common-anchor-header">Membuat direktori paket</h4><p>Buat direktori <code translate="no">Milvus_cli</code> dengan struktur di bawah ini:</p>
+<h4 id="Create-the-package-directory" class="common-anchor-header">Create the package directory</h4><p>Create <code translate="no">Milvus_cli</code> directory with the structure below:</p>
 <pre><code translate="no" class="language-shell">Milvus_cli/
 ├── LICENSE
 ├── README.md
@@ -612,7 +615,7 @@ milvus_cli &gt; exit
 │       └── milvus_cli.py
 └── dist/
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Write-the-entry-code" class="common-anchor-header">Tulis kode entri</h4><p>Entri skrip harus berada di <code translate="no">Milvus_cli/milvus_cli/scripts</code>, dan <code translate="no">Milvus_cli/milvus_cli/scripts/milvus_cli.py</code> harus seperti:</p>
+<h4 id="Write-the-entry-code" class="common-anchor-header">Write the entry code</h4><p>The script’s entry should be in <code translate="no">Milvus_cli/milvus_cli/scripts</code>, and the <code translate="no">Milvus_cli/milvus_cli/scripts/milvus_cli.py</code> should be like:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> sys
 <span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> click
@@ -673,7 +676,7 @@ comp = Completer()
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Edit-the-setuppy" class="common-anchor-header">Edit <code translate="no">setup.py</code></h4><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages
+<h4 id="Edit-the-setuppy" class="common-anchor-header">Edit the <code translate="no">setup.py</code></h4><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages
 
 <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;README.md&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> fh:
     long_description = fh.read()
@@ -703,30 +706,30 @@ setup(
     python_requires=<span class="hljs-string">&#x27;&gt;=3.8&#x27;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Beberapa tips di sini:</p>
+<p>Some tips here:</p>
 <ol>
-<li>Kami menggunakan konten <code translate="no">README.md</code> sebagai deskripsi panjang paket.</li>
-<li>Tambahkan semua dependensi ke <code translate="no">install_requires</code>.</li>
-<li>Tentukan <code translate="no">entry_points</code>. Dalam kasus ini, kita menetapkan <code translate="no">milvus_cli</code> sebagai anak dari <code translate="no">console_scripts</code>, sehingga kita dapat mengetikkan <code translate="no">milvus_cli</code> sebagai perintah secara langsung setelah kita menginstal paket ini. Dan titik masuk <code translate="no">milvus_cli</code> adalah fungsi <code translate="no">runCliPrompt</code> di <code translate="no">milvus_cli/scripts/milvus_cli.py</code>.</li>
+<li>We use <code translate="no">README.md</code> content as the package’s long description.</li>
+<li>Add all dependencies to <code translate="no">install_requires</code>.</li>
+<li>Specify the <code translate="no">entry_points</code>. In this case, we set <code translate="no">milvus_cli</code> as a child of <code translate="no">console_scripts</code>, so that we can type <code translate="no">milvus_cli</code> as a command directly after we install this package. And the <code translate="no">milvus_cli</code>'s entry point is <code translate="no">runCliPrompt</code> function in <code translate="no">milvus_cli/scripts/milvus_cli.py</code>.</li>
 </ol>
-<h4 id="Build" class="common-anchor-header">Membangun</h4><ol>
-<li><p>Tingkatkan paket <code translate="no">build</code>: <code translate="no">python3 -m pip install --upgrade build</code></p></li>
-<li><p>Jalankan build: <code translate="no">python -m build --sdist --wheel --outdir dist/ .</code></p></li>
-<li><p>Dua berkas akan dihasilkan di bawah direktori <code translate="no">dist/</code>:</p></li>
+<h4 id="Build" class="common-anchor-header">Build</h4><ol>
+<li><p>Upgrade the <code translate="no">build</code> package: <code translate="no">python3 -m pip install --upgrade build</code></p></li>
+<li><p>Run build: <code translate="no">python -m build --sdist --wheel --outdir dist/ .</code></p></li>
+<li><p>Two files will be generated under the <code translate="no">dist/</code> directory:</p></li>
 </ol>
 <pre><code translate="no" class="language-shell">dist/
   example_package_YOUR_USERNAME_HERE-<span class="hljs-number">0.0</span><span class="hljs-number">.1</span>-py3-none-<span class="hljs-built_in">any</span>.whl
   example_package_YOUR_USERNAME_HERE-<span class="hljs-number">0.0</span><span class="hljs-number">.1</span>.tar.gz
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Publish-release" class="common-anchor-header">Publikasikan rilis</h3><p>Lihat: https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</p>
+<h3 id="Publish-release" class="common-anchor-header">Publish release</h3><p>Refer to: https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</p>
 <ol>
-<li>Tingkatkan paket <code translate="no">twine</code>: <code translate="no">python3 -m pip install --upgrade twine</code></li>
-<li>Unggah ke <code translate="no">PYPI</code> test env: <code translate="no">python3 -m twine upload --repository testpypi dist/*</code></li>
-<li>Unggah ke <code translate="no">PYPI</code>: <code translate="no">python3 -m twine upload dist/*</code></li>
+<li>Upgrade <code translate="no">twine</code> package: <code translate="no">python3 -m pip install --upgrade twine</code></li>
+<li>Upload to <code translate="no">PYPI</code> test env: <code translate="no">python3 -m twine upload --repository testpypi dist/*</code></li>
+<li>Upload to <code translate="no">PYPI</code> : <code translate="no">python3 -m twine upload dist/*</code></li>
 </ol>
-<h3 id="CICD-by-Github-workflows" class="common-anchor-header">Alur kerja CI/CD oleh Github</h3><p>Lihat: https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/</p>
-<p>Kami ingin ada cara untuk mengunggah aset secara otomatis, yang dapat membangun paket dan mengunggahnya ke rilis github dan PYPI.</p>
-<p>(Untuk beberapa alasan, kami hanya ingin alur kerja hanya mempublikasikan rilis untuk menguji PYPI).</p>
+<h3 id="CICD-by-Github-workflows" class="common-anchor-header">CI/CD by Github workflows</h3><p>Refer to: https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/</p>
+<p>We want a way to upload assets automatically, it can build the packages and upload them to github releases and PYPI.</p>
+<p>(For some reason we just want the workflow only publish the release to test PYPI.)</p>
 <pre><code translate="no" class="language-yaml"><span class="hljs-comment"># This is a basic workflow to help you get started with Actions</span>
 
 name: Update the release<span class="hljs-string">&#x27;s assets after it published
@@ -785,7 +788,7 @@ jobs:
           packages_dir: dist/
           verify_metadata: <span class="hljs-literal">false</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Learn-more-about-Milvus" class="common-anchor-header">Pelajari lebih lanjut tentang Milvus<button data-href="#Learn-more-about-Milvus" class="anchor-icon" translate="no">
+<h2 id="Learn-more-about-Milvus" class="common-anchor-header">Learn more about Milvus<button data-href="#Learn-more-about-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -800,10 +803,10 @@ jobs:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus adalah alat yang kuat yang mampu memberdayakan beragam kecerdasan buatan dan aplikasi pencarian kemiripan vektor. Untuk mempelajari lebih lanjut tentang proyek ini, lihat sumber-sumber berikut:</p>
+    </button></h2><p>Milvus is a powerful tool capable of powering a vast array of artificial intelligence and vector similarity search applications. To learn more about the project, check out the following resources:</p>
 <ul>
-<li>Baca <a href="https://milvus.io/blog">blog</a> kami.</li>
-<li>Berinteraksi dengan komunitas sumber terbuka kami di <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a>.</li>
-<li>Gunakan atau kontribusikan database vektor paling populer di dunia di <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>Menguji dan menerapkan aplikasi AI dengan cepat menggunakan <a href="https://github.com/milvus-io/bootcamp">bootcamp</a> baru kami.</li>
+<li>Read our <a href="https://milvus.io/blog">blog</a>.</li>
+<li>Interact with our open-source community on <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a>.</li>
+<li>Use or contribute to the world’s most popular vector database on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Quickly test and deploy AI applications with our new <a href="https://github.com/milvus-io/bootcamp">bootcamp</a>.</li>
 </ul>

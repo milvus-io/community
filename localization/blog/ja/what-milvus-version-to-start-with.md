@@ -1,9 +1,11 @@
 ---
 id: what-milvus-version-to-start-with.md
-title: Milvusのバージョンは？
+title: What Milvus version to start with
 author: Chris Churilo
 date: 2024-02-19T00:00:00.000Z
-desc: Milvusの各バージョンの特徴や機能を包括的に紹介し、ベクトル検索プロジェクトに必要な情報を提供します。
+desc: >-
+  A comprehensive guide to the features and capabilities of each Milvus version
+  to make an informed decision for your vector search projects.
 cover: assets.zilliz.com/which_milvus_to_start_4a4250e314.jpeg
 tag: Engineering
 tags: >-
@@ -12,9 +14,9 @@ tags: >-
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
 ---
-<custom-h1>Milvusバージョン紹介</custom-h1><p>ベクトル検索技術を活用したプロジェクトを成功させるためには、Milvusの適切なバージョンを選択することが何よりも重要です。Milvusのバージョンは様々な要件に合わせて調整されているため、正しいバージョンを選択することの重要性を理解することは、望ましい結果を得るために非常に重要です。</p>
-<p>Milvusの適切なバージョンは、開発者の迅速な学習とプロトタイプ作成、リソース利用の最適化、開発作業の効率化、既存のインフラやツールとの互換性の確保に役立ちます。最終的には、開発者の生産性を維持し、効率性、信頼性、ユーザー満足度を向上させることになります。</p>
-<h2 id="Available-Milvus-versions" class="common-anchor-header">利用可能なMilvusのバージョン<button data-href="#Available-Milvus-versions" class="anchor-icon" translate="no">
+<custom-h1>Introduction to the Milvus versions</custom-h1><p>Selecting the appropriate Milvus version is foremost to the success of any project leveraging vector search technology. With different Milvus versions tailored to varying requirements, understanding the importance of selecting the correct version is crucial for achieving the desired results.</p>
+<p>The right Milvus version can help a developer to learn and prototype quickly or help optimize resource utilization, streamline development efforts, and ensure compatibility with existing infrastructure and tools. Ultimately, it is about maintaining developer productivity and improving efficiency, reliability, and user satisfaction.</p>
+<h2 id="Available-Milvus-versions" class="common-anchor-header">Available Milvus versions<button data-href="#Available-Milvus-versions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,7 +31,7 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusは開発者向けに3つのバージョンが提供されており、いずれもオープンソースである。その3つのバージョンとは、Milvus Lite、Milvus Standalone、Milvus Clusterであり、それぞれ機能や短期的・長期的なMilvusの利用方法が異なる。では、これらを個別に探ってみよう。</p>
+    </button></h2><p>Three versions of Milvus are available for developers, and all are open source. The three versions are Milvus Lite, Milvus Standalone, and Milvus Cluster, which differ in features and how users plan to use Milvus in the short and long term. So, let’s explore these individually.</p>
 <h2 id="Milvus-Lite" class="common-anchor-header">Milvus Lite<button data-href="#Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -45,22 +47,22 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>その名の通り、Milvus LiteはGoogle ColabやJupyter Notebookとシームレスに統合できる軽量版である。追加の依存関係を持たない単一のバイナリとしてパッケージ化されているため、あなたのマシンにインストールして実行したり、Pythonアプリケーションに組み込んだりすることが容易です。さらに、Milvus LiteにはCLIベースのMilvusスタンドアロンサーバーが含まれており、あなたのマシン上でMilvusを直接実行するための柔軟性を提供します。Pythonコードに組み込むか、スタンドアロンサーバーとして利用するかは、お客様の好みと特定のアプリケーション要件次第です。</p>
-<h3 id="Features-and-Capabilities" class="common-anchor-header">特徴と機能</h3><p>Milvus Liteには、Milvusのコアとなるベクトル検索機能が全て含まれています。</p>
+    </button></h2><p>As the name suggests, Milvus Lite is a lightweight version that integrates seamlessly with Google Colab and Jupyter Notebook. It is packaged as a single binary with no additional dependencies, making it easy to install and run on your machine or embed in Python applications. Additionally, Milvus Lite includes a CLI-based Milvus standalone server, providing flexibility for running it directly on your machine. Whether you embed it within your Python code or utilize it as a standalone server is entirely up to your preference and specific application requirements.</p>
+<h3 id="Features-and-Capabilities" class="common-anchor-header">Features and Capabilities</h3><p>Milvus Lite includes all core Milvus vector search features.</p>
 <ul>
-<li><p><strong>検索機能</strong>メタデータフィルタリングを含むトップk検索、範囲検索、ハイブリッド検索をサポートし、多様な検索要件に対応します。</p></li>
-<li><p><strong>インデックスタイプと類似度メトリック</strong>11種類のインデックスタイプと5種類の類似度メトリクスをサポートし、特定のユースケースに対応する柔軟性とカスタマイズオプションを提供します。</p></li>
-<li><p><strong>データ処理</strong>：バッチ処理（Apache Parquet、Arrays、JSON）およびストリーム処理が可能で、Airbyte、Apache Kafka、Apache Spark用のコネクタを通じてシームレスに統合できます。</p></li>
-<li><p><strong>CRUDオペレーション</strong>：完全なCRUDサポート（create、read、update/upsert、delete）を提供し、包括的なデータ管理機能をユーザーに提供します。</p></li>
+<li><p><strong>Search Capabilities</strong>: Supports top-k, range, and hybrid searches, including metadata filtering, to cater to diverse search requirements.</p></li>
+<li><p><strong>Index Types and Similarity Metrics</strong>: Offers support for 11 index types and five similarity metrics, providing flexibility and customization options for your specific use case.</p></li>
+<li><p><strong>Data Processing</strong>: Enables batch (Apache Parquet, Arrays, JSON) and stream processing, with seamless integration through connectors for Airbyte, Apache Kafka, and Apache Spark.</p></li>
+<li><p><strong>CRUD Operations</strong>: Offers full CRUD support (create, read, update/upsert, delete), empowering users with comprehensive data management capabilities.</p></li>
 </ul>
-<h3 id="Applications-and-limitations" class="common-anchor-header">用途と制限</h3><p>Milvus Liteは、迅速なプロトタイピングやローカル開発に理想的であり、小規模なデータセットの迅速なセットアップや実験が可能です。しかしながら、より大規模なデータセットや、より厳しいインフラ要件が要求される本番環境に移行する際には、その限界が明らかになります。そのため、Milvus Liteは初期の調査やテストには最適なツールですが、大量のアプリケーションや本番環境でのアプリケーションの展開には適していないかもしれません。</p>
-<h3 id="Available-Resources" class="common-anchor-header">利用可能なリソース</h3><ul>
-<li><p><a href="https://milvus.io/docs/milvus_lite.md">ドキュメント</a></p></li>
-<li><p><a href="https://github.com/milvus-io/milvus-lite/">Githubリポジトリ</a></p></li>
-<li><p><a href="https://github.com/milvus-io/milvus-lite/tree/main/examples">Google Colabサンプル</a></p></li>
-<li><p><a href="https://www.youtube.com/watch?v=IgJdrGiB5ZY">ビデオ</a></p></li>
+<h3 id="Applications-and-limitations" class="common-anchor-header">Applications and limitations</h3><p>Milvus Lite is ideal for rapid prototyping and local development, offering support for quick setup and experimentation with small-scale datasets on your machine. However, its limitations become apparent when transitioning to production environments with larger datasets and more demanding infrastructure requirements. As such, while Milvus Lite is an excellent tool for initial exploration and testing, it may not be suitable for deploying applications in high-volume or production-ready settings.</p>
+<h3 id="Available-Resources" class="common-anchor-header">Available Resources</h3><ul>
+<li><p><a href="https://milvus.io/docs/milvus_lite.md">Documentation</a></p></li>
+<li><p><a href="https://github.com/milvus-io/milvus-lite/">Github Repository</a></p></li>
+<li><p><a href="https://github.com/milvus-io/milvus-lite/tree/main/examples">Google Colab Example</a></p></li>
+<li><p><a href="https://www.youtube.com/watch?v=IgJdrGiB5ZY">Getting Started Video</a></p></li>
 </ul>
-<h2 id="Milvus-Standalone" class="common-anchor-header">Milvusスタンドアロン<button data-href="#Milvus-Standalone" class="anchor-icon" translate="no">
+<h2 id="Milvus-Standalone" class="common-anchor-header">Milvus Standalone<button data-href="#Milvus-Standalone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,21 +77,21 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusには2つの運用モードがあります：スタンドアロンとクラスタです。どちらのモードもコアとなるベクターデータベースの機能は同じで、データサイズのサポートとスケーラビリティ要件が異なります。この違いにより、お客様のデータセットサイズ、トラフィック量、その他本番稼動に必要なインフラ要件に最適なモードを選択することができます。</p>
-<p>Milvusスタンドアロンとは、Milvusベクトルデータベースシステムがクラスタリングや分散セットアップを行うことなく、単一のインスタンスとして独立して動作するモードです。Milvusはこのモードでは単一のサーバーまたはマシン上で動作し、インデックス作成やベクトル検索などの機能を提供します。データやトラフィックの規模が比較的小さく、クラスタ構成による分散機能を必要としない場合に適しています。</p>
-<h3 id="Features-and-Capabilities" class="common-anchor-header">特徴と機能</h3><ul>
-<li><p><strong>高性能</strong>：膨大なデータセット（数十億以上）のベクトル検索を卓越したスピードと効率で実行します。</p></li>
-<li><p><strong>検索機能</strong>：メタデータのフィルタリングを含むトップk検索、範囲検索、ハイブリッド検索をサポートし、多様な検索要件に対応します。</p></li>
-<li><p><strong>インデックスタイプと類似度メトリクス</strong>：11種類のインデックスタイプと5種類の類似度メトリクスをサポートし、特定のユースケースに対応する柔軟性とカスタマイズオプションを提供します。</p></li>
-<li><p><strong>データ処理</strong>：バッチ処理（Apache Parquet、Arrays、Json）とストリーム処理の両方が可能で、Airbyte、Apache Kafka、Apache Sparkのコネクターを通じてシームレスに統合できます。</p></li>
-<li><p><strong>スケーラビリティ</strong>：コンポーネントレベルのスケーリングにより動的なスケーラビリティを実現し、需要に応じてシームレスにスケールアップ/ダウンできます。Milvusはコンポーネントレベルでオートスケールが可能で、リソース割り当てを最適化し、効率を高めます。</p></li>
-<li><p><strong>マルチテナンシー</strong>：クラスタ内で最大10,000のコレクション/パーティションを管理できるマルチテナンシーをサポートし、異なるユーザやアプリケーションに対して効率的なリソース利用と分離を提供します。</p></li>
-<li><p><strong>CRUDオペレーション</strong>：完全なCRUDサポート（作成、読み取り、更新/アップサート、削除）を提供し、ユーザーに包括的なデータ管理機能を提供します。</p></li>
+    </button></h2><p>Milvus offers two operational modes: Standalone and Cluster. Both modes are identical in core vector database features and differ in data size support and scalability requirements. This distinction allows you to select the mode that best aligns with your dataset size, traffic volume, and other infrastructure requirements for production.</p>
+<p>Milvus Standalone is a mode of operation for the Milvus vector database system where it operates independently as a single instance without any clustering or distributed setup. Milvus runs on a single server or machine in this mode, providing functionalities such as indexing and searching for vectors. It is suitable for situations where the data and traffic volume scale is relatively small and does not require the distributed capabilities provided by a clustered setup.</p>
+<h3 id="Features-and-Capabilities" class="common-anchor-header">Features and Capabilities</h3><ul>
+<li><p><strong>High Performance</strong>: Conduct vector searches on massive datasets (billions or more) with exceptional speed and efficiency.</p></li>
+<li><p><strong>Search Capabilities</strong>: Supports top-k, range, and hybrid searches, including metadata filtering, to cater to diverse search requirements.</p></li>
+<li><p><strong>Index Types and Similarity Metrics</strong>: Offers support for 11 index types and 5 similarity metrics, providing flexibility and customization options for your specific use case.</p></li>
+<li><p><strong>Data Processing</strong>: Enables both batch (Apache Parquet, Arrays, Json) and stream processing, with seamless integration through connectors for Airbyte, Apache Kafka, and Apache Spark.</p></li>
+<li><p><strong>Scalability</strong>: Achieve dynamic scalability with component-level scaling, allowing for seamless scaling up and down based on demand. Milvus can autoscale at a component level, optimizing resource allocation for enhanced efficiency.</p></li>
+<li><p><strong>Multi-Tenancy</strong>: Supports multi-tenancy with the capability to manage up to 10,000 collections/partitions in a cluster, providing efficient resource utilization and isolation for different users or applications.</p></li>
+<li><p><strong>CRUD Operations</strong>: Offers full CRUD support (create, read, update/upsert, delete), empowering users with comprehensive data management capabilities.</p></li>
 </ul>
-<h3 id="Essential-components" class="common-anchor-header">必須コンポーネント</h3><ul>
-<li><p>milvus：中核となる機能コンポーネント。</p></li>
-<li><p>etcdMilvusの内部コンポーネント（プロキシ、インデックスノードなど）からのメタデータへのアクセスと保存を担当するメタデータエンジン。</p></li>
-<li><p>MinIO：Milvus内のデータ永続化を担うストレージエンジン。</p></li>
+<h3 id="Essential-components" class="common-anchor-header">Essential components:</h3><ul>
+<li><p>Milvus: The core functional component.</p></li>
+<li><p>etcd: The metadata engine responsible for accessing and storing metadata from Milvus’ internal components, including proxies, index nodes, and more.</p></li>
+<li><p>MinIO: The storage engine responsible for data persistence within Milvus.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -97,16 +99,16 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
     <span></span>
   </span>
 </p>
-<p>図1: Milvusスタンドアロンアーキテクチャ</p>
-<h3 id="Available-Resources" class="common-anchor-header">利用可能なリソース</h3><ul>
-<li><p>ドキュメント</p>
+<p>Figure 1: Milvus Standalone Architecture</p>
+<h3 id="Available-Resources" class="common-anchor-header">Available Resources</h3><ul>
+<li><p>Documentation</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/prerequisite-docker.md">Docker Composeを使用したMilvusの環境チェックリスト</a></p></li>
-<li><p><a href="https://milvus.io/docs/install_standalone-docker.md">DockerによるMilvusスタンドアロンのインストール</a></p></li>
+<li><p><a href="https://milvus.io/docs/prerequisite-docker.md">Environment Checklist for Milvus with Docker Compose</a></p></li>
+<li><p><a href="https://milvus.io/docs/install_standalone-docker.md">Install Milvus Standalone with Docker</a></p></li>
 </ul></li>
-<li><p><a href="https://github.com/milvus-io/milvus">Githubリポジトリ</a></p></li>
+<li><p><a href="https://github.com/milvus-io/milvus">Github Repository</a></p></li>
 </ul>
-<h2 id="Milvus-Cluster" class="common-anchor-header">Milvusクラスタ<button data-href="#Milvus-Cluster" class="anchor-icon" translate="no">
+<h2 id="Milvus-Cluster" class="common-anchor-header">Milvus Cluster<button data-href="#Milvus-Cluster" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,27 +123,27 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusクラスタとは、Milvusベクトルデータベースシステムが複数のノードやサーバに分散して動作するモードです。このモードでは、Milvusインスタンスはクラスタ化され、スタンドアロンのセットアップと比較して、より大容量のデータと高いトラフィック負荷を処理できる統合システムを形成します。Milvus Clusterはスケーラビリティ、フォールトトレランス、ロードバランシング機能を備えており、ビッグデータの処理や多数の同時クエリを効率的に処理する必要があるシナリオに適しています。</p>
-<h3 id="Features-and-Capabilities" class="common-anchor-header">特徴と機能</h3><ul>
-<li><p>高性能ベクトル検索、複数のインデックスタイプと類似度メトリックのサポート、バッチおよびストリーム処理フレームワークとのシームレスな統合など、Milvus Standaloneで利用可能なすべての機能を継承。</p></li>
-<li><p>複数のノードにまたがる分散コンピューティングとロードバランシングを活用することで、比類のない可用性、パフォーマンス、コストの最適化を実現。</p></li>
-<li><p>クラスタ全体のリソースを効率的に活用し、ワークロードの需要に基づいてリソースの割り当てを最適化することで、総コストを抑えながらセキュアでエンタープライズグレードのワークロードを展開および拡張できます。</p></li>
+    </button></h2><p>Milvus Cluster is a mode of operation for the Milvus vector database system where it operates and is distributed across multiple nodes or servers. In this mode, Milvus instances are clustered together to form a unified system that can handle larger volumes of data and higher traffic loads compared to a standalone setup. Milvus Cluster offers scalability, fault tolerance, and load balancing features, making it suitable for scenarios that need to handle big data and serve many concurrent queries efficiently.</p>
+<h3 id="Features-and-Capabilities" class="common-anchor-header">Features and Capabilities</h3><ul>
+<li><p>Inherits all features available in Milvus Standalone, including high-performance vector search, support for multiple index types and similarity metrics, and seamless integration with batch and stream processing frameworks.</p></li>
+<li><p>Offers unparalleled availability, performance, and cost optimization by leveraging distributed computing and load balancing across multiple nodes.</p></li>
+<li><p>Enables deploying and scaling secure, enterprise-grade workloads with lower total costs by efficiently utilizing resources across the cluster and optimizing resource allocation based on workload demands.</p></li>
 </ul>
-<h3 id="Essential-components" class="common-anchor-header">必須コンポーネント</h3><p>Milvus Clusterには、8つのマイクロサービスコンポーネントと3つのサードパーティ依存コンポーネントが含まれています。すべてのマイクロサービスは互いに独立してKubernetes上にデプロイできます。</p>
-<h4 id="Microservice-components" class="common-anchor-header">マイクロサービスコンポーネント</h4><ul>
-<li><p>ルートコーディネーション</p></li>
-<li><p>プロキシ</p></li>
-<li><p>クエリコーデック</p></li>
-<li><p>クエリノード</p></li>
-<li><p>インデックス・ノード</p></li>
-<li><p>インデックス・ノード</p></li>
-<li><p>データ・ノード</p></li>
-<li><p>データノード</p></li>
+<h3 id="Essential-components" class="common-anchor-header">Essential components:</h3><p>Milvus Cluster includes eight microservice components and three third-party dependencies. All microservices can be deployed on Kubernetes independently from each other.</p>
+<h4 id="Microservice-components" class="common-anchor-header">Microservice components</h4><ul>
+<li><p>Root coord</p></li>
+<li><p>Proxy</p></li>
+<li><p>Query coord</p></li>
+<li><p>Query node</p></li>
+<li><p>Index coord</p></li>
+<li><p>Index node</p></li>
+<li><p>Data coord</p></li>
+<li><p>Data node</p></li>
 </ul>
-<h4 id="Third-party-dependencies" class="common-anchor-header">サードパーティ依存</h4><ul>
-<li><p>etcd：クラスタ内のさまざまなコンポーネントのメタデータを格納します。</p></li>
-<li><p>MinIO：インデックスやバイナリ・ログ・ファイルなど、クラスタ内の大容量ファイルのデータ永続化を担当。</p></li>
-<li><p>Pulsar：パルサー：最近の変異操作のログを管理し、ストリーミング・ログを出力し、ログ・パブリッシュ・サブスクライブ・サービスを提供する。</p></li>
+<h4 id="Third-party-dependencies" class="common-anchor-header">Third-party dependencies</h4><ul>
+<li><p>etcd: Stores metadata for various components in the cluster.</p></li>
+<li><p>MinIO: Responsible for data persistence of large files in the cluster, such as index and binary log files.</p></li>
+<li><p>Pulsar: Manages logs of recent mutation operations, outputs streaming log, and provides log publish-subscribe services.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -149,17 +151,17 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
     <span></span>
   </span>
 </p>
-<p>図2: Milvusクラスタアーキテクチャ</p>
-<h4 id="Available-Resources" class="common-anchor-header">利用可能なリソース</h4><ul>
-<li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">ドキュメント</a>｜始め方</p>
+<p>Figure 2: Milvus Cluster Architecture</p>
+<h4 id="Available-Resources" class="common-anchor-header">Available Resources</h4><ul>
+<li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Documentation</a> | How to get started</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus OperatorでMilvusクラスタをインストールする</a></p></li>
-<li><p><a href="https://milvus.io/docs/install_cluster-helm.md">HelmによるMilvusクラスタのインストール</a></p></li>
-<li><p><a href="https://milvus.io/docs/scaleout.md">Milvusクラスタのスケール方法</a></p></li>
+<li><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Install Milvus Cluster with Milvus Operator</a></p></li>
+<li><p><a href="https://milvus.io/docs/install_cluster-helm.md">Install Milvus Cluster with Helm</a></p></li>
+<li><p><a href="https://milvus.io/docs/scaleout.md">How to scale a Milvus Cluster</a></p></li>
 </ul></li>
-<li><p><a href="https://github.com/milvus-io/milvus">Githubリポジトリ</a></p></li>
+<li><p><a href="https://github.com/milvus-io/milvus">Github Repository</a></p></li>
 </ul>
-<h2 id="Making-the-Decision-on-which-Milvus-version-to-use" class="common-anchor-header">Milvusバージョンの決定<button data-href="#Making-the-Decision-on-which-Milvus-version-to-use" class="anchor-icon" translate="no">
+<h2 id="Making-the-Decision-on-which-Milvus-version-to-use" class="common-anchor-header">Making the Decision on which Milvus version to use<button data-href="#Making-the-Decision-on-which-Milvus-version-to-use" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,6 +176,6 @@ canonicalUrl: 'https://milvus.io/blog/what-milvus-version-to-start-with.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>プロジェクトに使用するMilvusのバージョンを決定する際には、データセットのサイズ、トラフィック量、スケーラビリティ要件、本番環境の制約などの要素を考慮する必要があります。Milvus Liteはラップトップでのプロトタイピングに最適です。Milvus Standaloneは、データセットに対してベクトル検索を行うための高いパフォーマンスと柔軟性を提供し、小規模なデプロイメント、CI/CD、Kubernetesをサポートしていないオフラインのデプロイメントに適しています...そして最後に、Milvus Clusterは、エンタープライズグレードのワークロードに対して比類のない可用性、スケーラビリティ、コストの最適化を提供し、大規模で可用性の高い本番環境に適した選択肢となります。</p>
-<p>もう1つ、手間のかからないバージョンがあり、それは<a href="https://cloud.zilliz.com/signup">Zilliz Cloudと</a>呼ばれるMilvusのマネージド・バージョンだ。</p>
-<p>最終的には、Milvusのバージョンは、特定のユースケース、インフラ要件、および長期的な目標によって異なります。これらの要素を慎重に評価し、各バージョンの特徴と能力を理解することで、プロジェクトのニーズと目的に沿った情報に基づいた決定を下すことができます。MilvusスタンドアロンまたはMilvusクラスタのいずれを選択しても、ベクトルデータベースのパワーを活用してAIアプリケーションのパフォーマンスと効率を向上させることができます。</p>
+    </button></h2><p>When deciding which version of Milvus to use for your project, you must consider factors such as your dataset size, traffic volume, scalability requirements, and production environment constraints. Milvus Lite is perfect for prototyping on your laptop. Milvus Standalone offers high performance and flexibility for conducting vector searches on your datasets, making it suitable for smaller-scale deployments, CI/CD, and offline deployments when you have no Kubernetes support… And finally, Milvus Cluster provides unparalleled availability, scalability, and cost optimization for enterprise-grade workloads, making it the preferred choice for large-scale, highly available production environments.</p>
+<p>There is another version that is a hassle-free version, and that is a managed version of Milvus called <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>.</p>
+<p>Ultimately, the Milvus version will depend on your specific use case, infrastructure requirements, and long-term goals. By carefully evaluating these factors and understanding the features and capabilities of each version, you can make an informed decision that aligns with your project’s needs and objectives. Whether you choose Milvus Standalone or Milvus Cluster, you can leverage the power of vector databases to enhance the performance and efficiency of your AI applications.</p>

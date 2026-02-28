@@ -1,12 +1,15 @@
 ---
 id: >-
   minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
-title: Milvus 中的 MinHash LSH：對抗 LLM 訓練資料中重複資料的秘密武器
+title: >
+  MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM
+  Training Data
 author: 'Li Liu, Yaya Cheng'
 date: 2025-05-16T00:00:00.000Z
 desc: >-
-  Milvus 2.6 中的 MinHash LSH 為重複大量 LLM 訓練資料集提供了有效的解決方案，與傳統方法相比，處理速度快 2 倍，成本節省 3-5
-  倍。
+  MinHash LSH in Milvus 2.6 offers an efficient solution for deduplicating
+  massive LLM training datasets, with 2x faster processing and 3- 5x cost
+  savings compared to traditional methods.
 cover: assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png
 tag: Engineering
 recommend: true
@@ -19,16 +22,16 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md
 ---
-<p>大型語言模型 (LLM) 具備編寫程式碼、創建內容和解決複雜問題的能力，改變了人工智能的面貌。然而，這些強大的模型需要大量高品質的資料來進行訓練。</p>
-<p>挑戰在於原始訓練資料通常包含大量冗餘。這就像是在教導小孩時，不斷重複相同的課程，卻跳過其他重要的課題。一家大型人工智能公司正是為了這個問題與我們接洽 - 他們正在建立一個雄心勃勃的新語言模型，但卻苦於無法重複數百億的文件。傳統的比對方法無法擴充至如此大的數量，而專門的重複資料刪除工具需要大量的計算資源，因此在經濟上並不可行。</p>
-<p>為了解決這個問題，我們在 Milvus 2.6 中推出 MinHash LSH (Locality Sensitive Hashing) 索引。本文將探討 MinHash LSH 如何有效率地解決 LLM 訓練的重複資料刪除問題。</p>
+<p>Large Language Models (LLMs) have transformed the AI landscape with their ability to write code, create content, and solve complex problems. However, these powerful models require enormous amounts of high-quality data to fuel their training.</p>
+<p>The challenge is that raw training data often contains significant redundancy. It’s like teaching a child by repeating the same lessons over and over while skipping other important topics. A large AI company approached us with precisely this problem - they were building an ambitious new language model but struggled with deduplicating tens of billions of documents. Traditional matching methods couldn’t scale to this volume, and specialized deduplication tools required massive computational resources, making them economically unviable.</p>
+<p>To solve this problem, we introduced MinHash LSH (Locality Sensitive Hashing) indexing in Milvus 2.6. This article will explore how MinHash LSH efficiently solves the data deduplication problem for LLM training.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_May_16_2025_09_46_39_PM_1f3290ce5e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Data-Deduplication-Why-It-Matters-for-LLM-Training" class="common-anchor-header">重複資料刪除：為什麼它對 LLM 訓練很重要<button data-href="#Data-Deduplication-Why-It-Matters-for-LLM-Training" class="anchor-icon" translate="no">
+<h2 id="Data-Deduplication-Why-It-Matters-for-LLM-Training" class="common-anchor-header">Data Deduplication: Why It Matters for LLM Training<button data-href="#Data-Deduplication-Why-It-Matters-for-LLM-Training" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,21 +46,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>高品質、多樣化的資料是訓練強大 LLM 的必要條件。當重複的內容出現在訓練資料中時，會產生幾個重大的問題：</p>
+    </button></h2><p>High-quality, diverse data is essential for training powerful LLMs. When duplicate content appears in training data, it creates several significant problems:</p>
 <ul>
-<li><p><strong>浪費資源：</strong>重複資料會增加訓練時間、成本和能源消耗。</p></li>
-<li><p><strong>效能降低：</strong>模型可能會過度適應重複的內容，限制其歸納新資訊的能力。</p></li>
-<li><p><strong>記憶效應：</strong>重複的內容會增加模型記憶和逐字複製特定文字的機會。這也可能導致隱私洩漏或著作權問題。</p></li>
-<li><p><strong>誤導評估：</strong>訓練集和測試集之間的重複內容可能會意外地誇大效能指標。</p></li>
+<li><p><strong>Wasted Resources:</strong> Redundant data increases training time, costs, and energy consumption.</p></li>
+<li><p><strong>Reduced Performance:</strong> Models can overfit to repeated content, limiting their ability to generalize to new information.</p></li>
+<li><p><strong>Memorization Effect:</strong> Duplicated content increases the chance of models memorizing and reproducing specific text verbatim. It could also potentially lead to privacy leaks or copyright issues.</p></li>
+<li><p><strong>Misleading Evaluations:</strong> Duplicates between training and test sets can accidentally inflate performance metrics.</p></li>
 </ul>
-<p>尋找和移除重複資料的方法主要有三種：</p>
+<p>There are three main approaches to finding and removing duplicates:</p>
 <ul>
-<li><p><strong>精確匹配：</strong>透過雜湊識別完全相同的重複資料。</p></li>
-<li><p><strong>近似匹配：</strong>使用 MinHash LSH 和 Jaccard 相似度等演算法找出接近重複的內容。</p></li>
-<li><p><strong>語義配對：</strong>使用向量嵌入識別具有相似涵義的內容。</p></li>
+<li><p><strong>Exact Matching:</strong> Identifies identical duplicates through hashing.</p></li>
+<li><p><strong>Approximate Matching:</strong> Finds near-duplicates using algorithms like MinHash LSH and Jaccard similarity.</p></li>
+<li><p><strong>Semantic Matching:</strong> Identifies content with similar meaning using vector embeddings.</p></li>
 </ul>
-<p>由於預先訓練的語料庫已達 terabytes 甚至 petabytes，傳統的精確匹配方法 (例如成對比較) 在計算上並不可行。透過使用嵌入模型來產生向量，語意重複刪除會增加顯著的開銷。我們需要更創新的近似方法，就像<strong>MinHash LSH，</strong>既能平衡召回率與精確度，又能控制成本，讓大規模的重複資料刪除成為可能。</p>
-<h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH：有效偵測大量資料集中的近似重複資料<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
+<p>With pre-training corpora reaching terabytes or even petabytes, traditional exact matching methods like pairwise comparisons are computationally infeasible. Semantic deduplication adds significant overhead by using embedding models to generate vectors. We need more innovative approximate methods—like <strong>MinHash LSH</strong>—that balance recall and precision while keeping costs manageable, making large-scale deduplication practical.</p>
+<h2 id="MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="common-anchor-header">MinHash LSH: Efficiently Detecting Near-Duplicates in Massive Datasets<button data-href="#MinHash-LSH-Efficiently-Detecting-Near-Duplicates-in-Massive-Datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,13 +75,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>要在龐大的訓練資料中找出近乎重複的資料，我們需要一個既有效率又精確的近似比對演算法。MinHash LSH (Locality Sensitive Hashing) 是達成這個目標的絕佳工具。讓我們一步一步來分解這個看似複雜的名詞。</p>
-<h3 id="Step-1-Representing-Documents-with-MinHash" class="common-anchor-header">步驟 1：使用 MinHash 表示文件</h3><p>首先，我們需要測量文件相似性的方法。標準的方法是使用 Jaccard 相似度：</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi></mi></mrow></semantics></math></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span>J<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mfrac><mrow><mi mathvariant="normal">=∣A∩B∣∣A∪B∣J</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">(A,B) = \frac{||A\cap B|}{|A \cup B|}</annotation></semantics></math></span></span></span><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="katex-display"><span class="katex">J<span class="katex-html" aria-hidden="true"><span class="base"><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span></span></span>B<span class="katex-html" aria-hidden="true"><span class="base"><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span>=</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="katex-display"><span class="katex"></span></span><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span> <span class="katex-display"><span class="katex"></span></span><span class="mopen nulldelimiter"></span> <span class="katex-display"><span class="katex"></span></span><span class="pstrut" style="height:3em;"></span> <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="mord"><span class="mord mathnormal">∣A</span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">∪8</span></span></span></span></span></span></span></span></span></span>B∣</span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span class="katex-display"><span class="katex"></span></span><span class="pstrut" style="height:3em;"></span> <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-3.677em;"><span class="mord"><span class="mord mathnormal">∣A</span></span></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord"><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-3.677em;"><span class="mord"><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span></span></span><span class="vlist-s">B∣</span></span></span></span></span></span></span></span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span><span class="mclose nulldelimiter"></span></p>
-<p>此公式測量文件 A 與文件 B 之間的重疊程度 - 具體來說，是共用元素與總獨特元素的比率。值越高，表示文件越相似。</p>
-<p>然而，為數十億個文件對直接計算這個值會耗費大量資源，而且需要數年時間。MinHash 可以建立精簡的「指紋」（簽名），保留相似性關係，同時使比較速度更快。</p>
+    </button></h2><p>To find near-duplicates in an ocean of training data, we need an approximate matching algorithm that’s both efficient and accurate. MinHash LSH (Locality Sensitive Hashing) is a great tool for this goal. Let’s break down this seemingly complex term step by step.</p>
+<h3 id="Step-1-Representing-Documents-with-MinHash" class="common-anchor-header">Step 1: Representing Documents with MinHash</h3><p>First, we need a way to measure document similarity. The standard approach uses Jaccard similarity:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∩</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∪</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">J(A,B) = \frac{|A\cap B|}{|A \cup B|}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord">∣</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord">∣</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>This formula measures the overlap between document A and document B - specifically, the ratio of shared elements to total unique elements. A higher value means the documents are more similar.</p>
+<p>However, computing this directly for billions of document pairs is resource-intensive and would take years. MinHash creates compact “fingerprints” (signatures) that preserve similarity relationships while making comparisons much faster.</p>
 <ol>
-<li><strong>串聯：</strong>將每個文件分割成重疊的文字或字元序列 (k-shingles)。例如，句子「我愛向量搜尋」，以 k=3 (按字) 產生：{「我愛向量」、「愛向量搜尋」}。</li>
+<li><strong>Shingling:</strong> Break each document into overlapping sequences of words or characters (k-shingles). For example, the sentence “I love vector search” with k=3 (by word) yields: {“I love vector”, “love vector search”}</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -87,7 +90,7 @@ origin: >-
   </span>
 </p>
 <ol start="2">
-<li><strong>MinHashing:</strong>將多個雜湊函數套用在每組字元上，並記錄每個函數的最小雜湊值。這會產生每個文件的簽章向量。</li>
+<li><strong>MinHashing:</strong> Apply multiple hash functions to each set of shingles and record the minimum hash value from each function. This results in a signature vector for each document.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -95,20 +98,20 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>在計算相似性時，哈希值在兩個文件的 MinHash 簽署中相同位置對齊的機率值（相當於這些簽署的 Jaccard 距離），提供了它們原始瓦片集 Jaccard 相似性的近似值。這讓我們可以有效地估計文件相似性，而不需要直接比較較大的原始文字；相反地，我們可以分析它們精簡的 MinHash 簽署。</p>
-<p>MinHash 原則是使用散列值最小的字來代表整個文件，藉由加入額外的散列函數來提高精確度。輕微的字詞變更很可能會被忽略，因為它們通常不會影響最小切細值。相反地，較大的變更則會改變切細值，而且較容易被偵測到。這種方法可以看成是各種字詞雜湊值的 Min-pooling。除了 MinHash 之外，也有其他方法可以用來產生文件簽章，例如 SimHash，但在此不做討論。</p>
-<h3 id="Step-2-Identifying-Similar-Documents-via-LSH" class="common-anchor-header">步驟 2：透過 LSH 識別相似文件</h3><p>即使使用精簡的 MinHash 簽署，比較數百萬或數十億個文件中的每一對，仍會造成高昂的計算費用。這就是<strong>Locality Sensitive Hashing (LSH)</strong>的用武之地。</p>
-<p>LSH 的關鍵概念是使用<strong>故意造成碰撞的</strong>散列函數<strong>- 相似的</strong>項目更有可能散列到相同的資料桶，而不相似的則不會。這與旨在避免碰撞的傳統散列正好相反。</p>
-<p>對於 MinHash，流行的 LSH 策略是<strong>Banding 技術</strong>：</p>
+<p>When calculating similarity, the probability that hash values align at the same positions in the MinHash signatures of two documents (which corresponds to the Jaccard distance of these signatures) provides a close approximation of the Jaccard similarity of their original shingle sets. This allows us to effectively estimate document similarity without directly comparing the larger original texts; instead, we can analyze their compact MinHash signatures.</p>
+<p>The MinHash principle involves using the word with the smallest hash value to represent the entire document, enhancing accuracy by incorporating additional hash functions. Minor word changes are likely to be overlooked as they typically do not affect the minimum hash value. In contrast, more substantial changes tend to alter the hash value and are more easily detected. This method can be seen as a min-pooling of hash values across various words. In addition to MinHash, alternatives like SimHash are available for generating document signatures, but those will not be discussed here.</p>
+<h3 id="Step-2-Identifying-Similar-Documents-via-LSH" class="common-anchor-header">Step 2: Identifying Similar Documents via LSH</h3><p>Even with compact MinHash signatures, comparing every pair across millions or billions of documents remains computationally expensive. That’s where <strong>Locality Sensitive Hashing (LSH)</strong> comes in.</p>
+<p>The key idea of LSH is to use hash functions that <strong>intentionally cause collisions</strong>—similar items are more likely to hash into the same bucket, while dissimilar ones are not. This is the opposite of traditional hashing, which aims to avoid collisions.</p>
+<p>For MinHash, a popular LSH strategy is the <strong>banding technique</strong>:</p>
 <ol>
-<li><p><strong>分段</strong>：將每個 MinHash 簽章 (長度為<em>N</em> 的向量) 分割為<em>b</em>band，每個 band 有<em>r</em>dims<em>(N = b × r</em>)。</p></li>
-<li><p><strong>散列頻段：</strong>使用標準散列函數將每個 band (<em>r</em>個值的子向量) 散列到一個 bucket 中。</p></li>
-<li><p><strong>候選對：</strong>如果兩個文件在<strong>任何</strong>頻段中共用一個資料桶，它們就會被標記為潛在的匹配項目。</p></li>
+<li><p><strong>Banding</strong>: Split each MinHash signature (a vector of length <em>N</em>) into <em>b</em> bands, each with <em>r</em> dims (<em>N = b × r</em>).</p></li>
+<li><p><strong>Hashing Bands:</strong> Hash each band (a sub-vector of <em>r</em> values) into a bucket using a standard hash function.</p></li>
+<li><p><strong>Candidate Pairs:</strong> If two documents share a bucket in <strong>any</strong> band, they are flagged as potential matches.</p></li>
 </ol>
-<p>透過調整頻帶數 (b) 和每個頻帶的維度數 ®，您可以控制召回率、精確度和搜尋效率之間的權衡。</p>
-<p>關鍵的想法是：高度相似的文件在其 MinHash 簽署中會有許多匹配的雜湊值。當這些簽章被分割成頻帶時，即使有一個頻帶具有所有的匹配值，也足以將兩個文件放入同一個資料桶中。文件越相似，至少有一個區段出現這種情況的機率就越高，這使得 LSH 可以有效率地浮現候選配對（而無需鉅細無遺地比較所有簽章）。</p>
-<p>簡而言之，<strong>MinHash + LSH</strong>可實現可擴充的近似重複資料刪除：MinHash 將文件壓縮成精簡的簽名，而 LSH 則透過群組可能的匹配項目，有效地縮窄搜尋空間。這就像是在人群中找出雙胞胎一樣：首先，快速拍攝每個人的特徵快照 (MinHash)，將相似的人歸類 (LSH)，然後仔細檢查較小的群組，找出真正的重複。</p>
-<h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">在 Milvus 2.6 中整合 MinHash LSH<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
+<p>By adjusting the number of bands (b) and the number of dimensions per band ®, you can control the trade-off between recall, precision, and search efficiency.</p>
+<p>The key idea is: highly similar documents will have many matching hash values in their MinHash signatures. When these signatures are split into bands, even one band with all matching values is enough to place two documents in the same bucket. The more similar the documents are, the higher the probability that this happens in at least one band, allowing LSH to efficiently surface candidate pairs without exhaustively comparing all signatures.</p>
+<p>In short, <strong>MinHash + LSH</strong> enables scalable approximate deduplication: MinHash compresses documents into compact signatures, and LSH efficiently narrows the search space by grouping likely matches. It’s like spotting twins in a crowd: first, take a quick feature snapshot of everyone (MinHash), group lookalikes (LSH), then inspect the smaller groups closely for actual duplicates.</p>
+<h2 id="Integrating-MinHash-LSH-in-Milvus-26" class="common-anchor-header">Integrating MinHash LSH in Milvus 2.6<button data-href="#Integrating-MinHash-LSH-in-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,17 +126,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MinHash LSH 整合到 Milvus 2.6 是基於現實世界的需求。如前所述，Milvus 的用戶 (領先的 LLM 公司之一) 向我們提出一項挑戰：為 LLM 預先訓練有效率地重複大量文字資料。</p>
-<p>傳統的重複資料刪除管道通常依賴與儲存和檢索系統脫離的外部工具，需要在元件之間進行成本高昂的資料傳輸。這種零散的工作流程增加了作業開銷，也無法充分利用分散式運算資源。</p>
-<p>意識到 Milvus 在處理高通量向量資料方面的優勢，一個自然而然的想法出現了：<strong><em>如果 MinHash LSH 原生內建至 Milvus，讓近似重複資料刪除成為一級資料庫功能，會如何？</em></strong></p>
-<p>此方法可在 Milvus 內實現從重複資料刪除到語意檢索的完整工作流程，簡化 MLOps，同時充分利用其可擴充性和統一 API。我們與合作夥伴一起針對 Milvus 的雲原生架構優化 MinHash LSH，為大規模重複資料刪除提供快速且可擴充的解決方案。</p>
-<h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Milvus 2.6 的核心功能包括</h3><ul>
-<li><p><strong>原生 MinHash LSH 索引：</strong>為 LSH 執行標準 banding 技術，並支援可選的 Jaccard 重新排序，以提高召回率。提供以記憶體和 mmap 為基礎的實作，以便在不同的工作負載中靈活運用。</p></li>
-<li><p><strong>無縫 API 整合：</strong>使用者可以使用 Milvus 的標準 SDK 和宣告式 API 定義 MinHash 向量字段、建立<code translate="no">MINHASH_LSH</code> 索引、插入簽章資料，以及執行近似相似性搜尋。</p></li>
-<li><p><strong>分散式且可擴充：</strong>建立在 Milvus 的雲原生架構上，該功能支援大型資料集和高吞吐量處理的水平擴充。</p></li>
+    </button></h2><p>A real-world need drove the integration of MinHash LSH into Milvus 2.6. As mentioned earlier, a Milvus user—one of the leading LLM companies—approached us with a challenge: efficiently deduplicating massive volumes of text data for LLM pre-training.</p>
+<p>Traditional deduplication pipelines typically rely on external tools decoupled from storage and retrieval systems, requiring costly data transfers between components. This fragmented workflow increases operational overhead and prevents full utilization of distributed computing resources.</p>
+<p>Recognizing Milvus’s strengths in handling high-throughput vector data, a natural idea emerged: <strong><em>What if MinHash LSH were built into Milvus natively, making approximate deduplication a first-class database feature?</em></strong></p>
+<p>This approach enables a complete workflow from deduplication to semantic retrieval within Milvus, simplifying MLOps while leveraging its scalability and unified API. Together with our partner, we optimized MinHash LSH for Milvus’s cloud-native architecture, resulting in a fast and scalable solution for large-scale deduplication.</p>
+<h3 id="Core-capabilities-in-Milvus-26-include" class="common-anchor-header">Core capabilities in Milvus 2.6 include:</h3><ul>
+<li><p><strong>Native MinHash LSH Indexing:</strong> Implements the standard banding technique for LSH and supports optional Jaccard re-ranking to improve recall. Provides both in-memory and mmap-based implementations for flexibility across different workloads.</p></li>
+<li><p><strong>Seamless API Integration:</strong> Users can define MinHash vector fields, build <code translate="no">MINHASH_LSH</code> indexes, insert signature data, and perform approximate similarity searches using Milvus’s standard SDK and declarative APIs.</p></li>
+<li><p><strong>Distributed and Scalable:</strong> Built on Milvus’s cloud-native architecture, the feature supports horizontal scaling for large datasets and high-throughput processing.</p></li>
 </ul>
-<p>這種整合帶來了令人印象深刻的結果。透過在完全管理的 Milvus<a href="https://zilliz.com/cloud">(Zilliz Cloud</a>) 上執行 MinHash LSH，我們協助該使用者有效率地重複<strong>100 億份文件</strong>。與他們之前基於 MapReduce 的方法相比，新解決方案的<strong>處理速度提高了一倍以上</strong>，<strong>並節省了 3-5 倍的成本</strong>，這都要歸功於 Milvus 優化的索引和查詢執行。</p>
-<h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">上手操作：使用 Milvus 刪除 LLM 資料集<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
+<p>This integration delivered impressive results. By running MinHash LSH on fully-managed Milvus (<a href="https://zilliz.com/cloud">Zilliz Cloud</a>), we helped this user deduplicate <strong>10 billion documents</strong> efficiently. Compared to their previous MapReduce-based approach, the new solution <strong>more than doubled processing speed</strong> and achieved <strong>3-5x cost savings</strong>, thanks to Milvus’s optimized indexing and query execution.</p>
+<h2 id="Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="common-anchor-header">Hands-On: Deduplicating LLM Datasets Using Milvus<button data-href="#Hands-On-Deduplicating-LLM-Datasets-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,12 +151,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>讓我們捲起袖子，在 Milvus 2.6 中使用 MinHash LSH 來執行近似規模的重複資料刪除。</p>
-<h3 id="Prerequisite-Generating-MinHash-Signatures" class="common-anchor-header">先決條件：產生 MinHash 簽署</h3><p>Milvus 會處理<strong>預先產生的</strong>MinHash 簽名的索引和搜尋。您需要在預處理過程中使用<code translate="no">datasketch</code> 之類的工具或自訂實作來產生這些簽章。典型的步驟如下</p>
+    </button></h2><p>Let’s roll up our sleeves and use MinHash LSH in Milvus 2.6 to perform approximate deduplication at scale.</p>
+<h3 id="Prerequisite-Generating-MinHash-Signatures" class="common-anchor-header">Prerequisite: Generating MinHash Signatures</h3><p>Milvus handles the indexing and search of <strong>pre-generated</strong> MinHash signatures. You’ll need to generate these during preprocessing using tools like <code translate="no">datasketch</code> in Python or a custom implementation. The typical steps are:</p>
 <ol>
-<li><p>讀取原始文件</p></li>
-<li><p>將每個文件切分 (標記化或分塊)</p></li>
-<li><p>套用多個散列函數以產生 MinHash 簽章 (例如，大小為 128 的 uint64 陣列)</p></li>
+<li><p>Read raw documents</p></li>
+<li><p>Shingle (tokenize or chunk) each document</p></li>
+<li><p>Apply multiple hash functions to generate a MinHash signature (e.g., an uint64 array of size 128 )</p></li>
 </ol>
 <pre><code translate="no"><span class="hljs-keyword">from</span> datasketch <span class="hljs-keyword">import</span> MinHash
 
@@ -164,7 +167,7 @@ mh = MinHash(num_perm=<span class="hljs-number">128</span>)     <span class="hlj
     mh.update(token.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>))  <span class="hljs-comment"># Add shingles to MinHash</span>
 signature = mh.hashvalues  <span class="hljs-comment"># This is your MinHash signature (128-dimensional)</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-1-Create-a-Schema-in-Milvus" class="common-anchor-header">步驟 1：在 Milvus 中建立模式</h3><p>我們需要建立一個 Milvus 集合來儲存 MinHash 簽章及其對應的文件 ID。</p>
+<h3 id="Step-1-Create-a-Schema-in-Milvus" class="common-anchor-header">Step 1: Create a Schema in Milvus</h3><p>We need to create a Milvus collection to store the MinHash signatures and their corresponding document IDs.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> DataType
@@ -192,7 +195,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;input_id&quot;</span
 schema.add_field(field_name=<span class="hljs-string">&quot;minhash&quot;</span>, datatype=DataType.BINARY_VECTOR, dim=MINHASH_DIM * MINHASH_BIT_WIDTH)
 schema.add_field(field_name=<span class="hljs-string">&quot;id&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">200</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Create-the-MINHASHLSH-Index-and-Collection" class="common-anchor-header"><strong>步驟 2：建立 MINHASH_LSH 索引和集合</strong></h3><p>這是核心步驟。我們需要指定 JACCARD 為度量類型，並設定 LSH 相關的參數。</p>
+<h3 id="Step-2-Create-the-MINHASHLSH-Index-and-Collection" class="common-anchor-header"><strong>Step 2: Create the MINHASH_LSH Index and Collection</strong></h3><p>This is the core step. We need to specify JACCARD as the metric type and configure LSH-related parameters.</p>
 <pre><code translate="no">INDEX_FIELD_NAME = <span class="hljs-string">&quot;minhash_signature&quot;</span>
 <span class="hljs-comment"># Metric type, should be JACCARD for MinHash LSH</span>
 METRIC_TYPE = <span class="hljs-string">&quot;MHJACCARD&quot;</span>
@@ -219,8 +222,8 @@ client.create_collection(
     index_params=index_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>關於參數調整的說明：MinHash LSH 的有效性在很大程度上取決於參數的選擇。例如，在 MinHash 簽章產生過程中使用的散列函數 (即<code translate="no">MINHASH_DIM</code>) 會影響簽章的精確度和大小。在 LSH 階段，頻帶數 (<code translate="no">num_bands</code>) 和每頻帶的行數共同決定相似性臨界值的敏感度範圍，以及回復率和精確度之間的平衡。使用者需要根據其資料集特性和重複資料刪除需求進行實驗和微調。這通常是一個反覆的過程。</p>
-<h3 id="Step-3-Insert-MinHash-Signatures" class="common-anchor-header"><strong>步驟 3：插入 MinHash 簽署</strong></h3><p>假設您有一批文件及其對應的 MinHash 簽署。</p>
+<p>A Note on Parameter Tuning: The effectiveness of MinHash LSH heavily depends on parameter choices. For instance, the number of hash functions used during MinHash signature generation (i.e., <code translate="no">MINHASH_DIM</code>) affects the signature’s precision and size. In the LSH phase, the number of bands (<code translate="no">num_bands</code>) and rows per band together determine the sensitivity range of the similarity threshold and the balance between recall and precision. Users need to experiment and fine-tune based on their dataset characteristics and deduplication requirements. This is often an iterative process.</p>
+<h3 id="Step-3-Insert-MinHash-Signatures" class="common-anchor-header"><strong>Step 3: Insert MinHash Signatures</strong></h3><p>Let’s say you have a batch of documents and their corresponding MinHash signatures.</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert data in batches</span>
 batch_size = <span class="hljs-number">2000</span>
 total_records = base.shape[<span class="hljs-number">0</span>]
@@ -244,7 +247,7 @@ num_batches = (total_records + batch_size - <span class="hljs-number">1</span>) 
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Data insertion complete&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Search-for-Near-Duplicates" class="common-anchor-header">步驟 5：搜尋近乎重複的文件</h3><p>使用文件的 MinHash 簽署在文件集中搜尋相似的文件。</p>
+<h3 id="Step-5-Search-for-Near-Duplicates" class="common-anchor-header">Step 5: Search for Near-Duplicates</h3><p>Use a document’s MinHash signature to search for similar documents in the collection.</p>
 <pre><code translate="no"><span class="hljs-comment"># Perform search</span>
 search_vectors = [vec.tobytes() <span class="hljs-keyword">for</span> vec <span class="hljs-keyword">in</span> base[:<span class="hljs-number">10</span>]]
 results = client.search(
@@ -260,8 +263,8 @@ results = client.search(
     <span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> result:
         <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  - ID: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;entity&#x27;</span>][<span class="hljs-string">&#x27;id&#x27;</span>]}</span>, Distance: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Post-Processing-and-Clustering" class="common-anchor-header">步驟 6：後期處理與聚類</h3><p>傳回的結果是<strong>候選的近似重複</strong>。若要形成完整的重複資料群組，您可以在候選對上套用群組技術，例如<strong>Union-Find</strong>。每個產生的群組代表一組重複；保留一個有代表性的文件，並歸檔或移除其餘的文件。</p>
-<h2 id="Conclusion" class="common-anchor-header"><strong>結論</strong><button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="Step-6-Post-Processing-and-Clustering" class="common-anchor-header">Step 6: Post-Processing and Clustering</h3><p>The returned results are <strong>candidate near-duplicates</strong>. To form complete deduplication groups, you can apply clustering techniques like <strong>Union-Find</strong> on the candidate pairs. Each resulting group represents a set of duplicates; keep one representative document and archive or remove the rest.</p>
+<h2 id="Conclusion" class="common-anchor-header"><strong>Conclusion</strong><button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -276,8 +279,8 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 中的 MinHash LSH 是 AI 資料處理的一大躍進。一開始是用於 LLM 資料重複刪除的解決方案，現在則為更廣泛的使用個案打開了大門 - 網頁內容清理、目錄管理、剽竊偵測等。</p>
-<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">開始使用 Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+    </button></h2><p>MinHash LSH in Milvus 2.6 is a leap forward in AI data processing. What started as a solution for LLM data deduplication now opens doors to broader use cases—web content cleanup, catalog management, plagiarism detection, and more.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Getting Started with Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -292,6 +295,6 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 現已上市。除了 MinHash LSH 之外，它還引進了數十項新功能和效能最佳化，例如分層儲存、RabbitQ 量化方法，以及增強的全文檢索和多租戶功能，直接解決當今向量檢索最迫切的挑戰：在有效擴充的同時控制成本。</p>
-<p>準備好探索 Milvus 所提供的一切了嗎？請深入閱讀我們的<a href="https://milvus.io/docs/release_notes.md"> 發行說明</a>、瀏覽<a href="https://milvus.io/docs"> 完整的說明文件</a>，或查看我們的<a href="https://milvus.io/blog"> 功能部落格</a>。</p>
-<p>如果您有任何問題或有類似的使用案例，請隨時透過<a href="https://discord.com/invite/8uyFbECzPX">Discord 社群</a>聯絡我們，或在<a href="https://github.com/milvus-io/milvus"> GitHub</a>上提出問題 - 我們隨時準備幫助您充分利用 Milvus 2.6。</p>
+    </button></h2><p>Milvus 2.6 is available now. In addition to MinHash LSH, it introduces dozens of new features and performance optimizations such as tiered storage, RabbitQ quantization method, and enhanced full-text search and multitenancy, directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.</p>
+<p>Ready to explore everything Milvus offers? Dive into our<a href="https://milvus.io/docs/release_notes.md"> release notes</a>, browse the<a href="https://milvus.io/docs"> complete documentation</a>, or check out our<a href="https://milvus.io/blog"> feature blogs</a>.</p>
+<p>If you have any questions or have a similar use case, feel free to reach out to us through our <a href="https://discord.com/invite/8uyFbECzPX">Discord community</a> or file an issue on<a href="https://github.com/milvus-io/milvus"> GitHub</a> — we’re here to help you make the most of Milvus 2.6.</p>

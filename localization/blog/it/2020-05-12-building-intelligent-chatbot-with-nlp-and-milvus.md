@@ -1,18 +1,19 @@
 ---
 id: building-intelligent-chatbot-with-nlp-and-milvus.md
-title: Architettura generale
+title: Overall Architecture
 author: milvus
 date: 2020-05-12T22:33:34.726Z
-desc: Il bot QA di nuova generazione è qui
+desc: The Next-Gen QA Bot is here
 cover: assets.zilliz.com/header_ce3a0e103d.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus'
 ---
-<custom-h1>Costruire un sistema di QA intelligente con NLP e Milvus</custom-h1><p>Progetto Milvus：github.com/milvus-io/milvus</p>
-<p>Il sistema di risposta alle domande è comunemente utilizzato nel campo dell'elaborazione del linguaggio naturale. Viene utilizzato per rispondere a domande in forma di linguaggio naturale e ha un'ampia gamma di applicazioni. Le applicazioni tipiche includono: interazione vocale intelligente, servizio clienti online, acquisizione di conoscenze, chat emozionale personalizzata e altro ancora. La maggior parte dei sistemi di risposta alle domande può essere classificata in: sistemi di risposta alle domande generativi e di recupero, sistemi di risposta alle domande a turno singolo e a turno multiplo, sistemi di risposta alle domande aperti e sistemi di risposta alle domande specifici.</p>
-<p>Questo articolo si occupa principalmente di un sistema di AQ progettato per un settore specifico, che di solito viene chiamato robot intelligente per il servizio clienti. In passato, la costruzione di un robot di assistenza clienti richiedeva solitamente la conversione della conoscenza del dominio in una serie di regole e grafi di conoscenza. Il processo di costruzione si basa molto sull'intelligenza "umana". Con l'applicazione del deep learning nell'elaborazione del linguaggio naturale (NLP), la lettura automatica può trovare automaticamente le risposte alle domande corrispondenti direttamente dai documenti. Il modello linguistico di deep learning converte le domande e i documenti in vettori semantici per trovare la risposta corrispondente.</p>
-<p>Questo articolo utilizza il modello BERT open source di Google e Milvus, un motore di ricerca vettoriale open source, per costruire rapidamente un bot Q&amp;A basato sulla comprensione semantica.</p>
-<h2 id="Overall-Architecture" class="common-anchor-header">Architettura generale<button data-href="#Overall-Architecture" class="anchor-icon" translate="no">
+<custom-h1>Building an Intelligent QA System with NLP and Milvus</custom-h1><p>Milvus Project：github.com/milvus-io/milvus</p>
+<p>The question answering system is commonly used in the field of natural language processing. It is used to answer questions in the form of natural language and has a wide range of applications. Typical applications include: intelligent voice interaction, online customer service, knowledge acquisition, personalized emotional chatting, and more. Most question answering systems can be classified as: generative and retrieval question answering systems, single-round question answering and multi-round question answering systems, open question answering systems, and specific question answering systems.</p>
+<p>This article mainly deals with a QA system designed for a specific field, which is usually called an intelligent customer service robot. In the past, building a customer service robot usually required conversion of the domain knowledge into a series of rules and knowledge graphs. The construction process relies heavily on “human” intelligence. Once the scenes were changed, a lot of repetitive work would be required.
+With the application of deep learning in natural language processing (NLP), machine reading can automatically find answers to matching questions directly from documents. The deep learning language model converts the questions and documents to semantic vectors to find the matching answer.</p>
+<p>This article uses Google’s open source BERT model and Milvus, an open source vector search engine, to quickly build a Q&amp;A bot based on semantic understanding.</p>
+<h2 id="Overall-Architecture" class="common-anchor-header">Overall Architecture<button data-href="#Overall-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,25 +28,27 @@ canonicalUrl: 'https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Questo articolo implementa un sistema di risposta alle domande attraverso la corrispondenza di similarità semantica. Il processo generale di costruzione è il seguente:</p>
+    </button></h2><p>This article implements a question answering system through semantic similarity matching. The general construction process is as follows:</p>
 <ol>
-<li>Ottenere un gran numero di domande con risposte in un campo specifico (un set di domande standard).</li>
-<li>Utilizzare il modello BERT per convertire queste domande in vettori di caratteristiche e memorizzarle in Milvus. Milvus assegnerà contemporaneamente un ID vettore a ciascun vettore di caratteristiche.</li>
-<li>Memorizzare questi ID rappresentativi delle domande e le risposte corrispondenti in PostgreSQL.</li>
+<li>Obtain a large number of questions with answers in a specific field ( a standard question set).</li>
+<li>Use the BERT model to convert these questions into feature vectors and store them in Milvus. And Milvus will assign a vector ID to each feature vector at the same time.</li>
+<li>Store these representative question IDs and their corresponding answers in PostgreSQL.</li>
 </ol>
-<p>Quando un utente pone una domanda:</p>
+<p>When a user asks a question:</p>
 <ol>
-<li>Il modello BERT la converte in un vettore di caratteristiche.</li>
-<li>Milvus esegue una ricerca di similarità e recupera l'ID più simile alla domanda.</li>
-<li>PostgreSQL restituisce la risposta corrispondente.</li>
+<li>The BERT model converts it to a feature vector.</li>
+<li>Milvus performs a similarity search and retrieves the ID most similar to the question.</li>
+<li>PostgreSQL returns the corresponding answer.</li>
 </ol>
-<p>Il diagramma dell'architettura del sistema è il seguente (le linee blu rappresentano il processo di importazione e quelle gialle il processo di interrogazione):</p>
+<p>The system architecture diagram is as follows (the blue lines represent the import process and the yellow lines represent the query process):</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_system_architecture_milvus_bert_postgresql_63de466754.png" alt="1-system-architecture-milvus-bert-postgresql.png" class="doc-image" id="1-system-architecture-milvus-bert-postgresql.png" />
-   </span> <span class="img-wrapper"> <span>1-sistema-architettura-milvus-bert-postgresql.png</span> </span></p>
-<p>Di seguito, vi mostreremo come costruire un sistema di domande e risposte online passo dopo passo.</p>
-<h2 id="Steps-to-Build-the-QA-System" class="common-anchor-header">Passi per costruire il sistema Q&amp;A<button data-href="#Steps-to-Build-the-QA-System" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_system_architecture_milvus_bert_postgresql_63de466754.png" alt="1-system-architecture-milvus-bert-postgresql.png" class="doc-image" id="1-system-architecture-milvus-bert-postgresql.png" />
+    <span>1-system-architecture-milvus-bert-postgresql.png</span>
+  </span>
+</p>
+<p>Next, we will show you how to build an online Q&amp;A system step by step.</p>
+<h2 id="Steps-to-Build-the-QA-System" class="common-anchor-header">Steps to Build the Q&amp;A System<button data-href="#Steps-to-Build-the-QA-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,31 +63,39 @@ canonicalUrl: 'https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Prima di iniziare, è necessario installare Milvus e PostgreSQL. Per i passaggi specifici dell'installazione, consultare il sito ufficiale di Milvus.</p>
-<h3 id="1-Data-preparation" class="common-anchor-header">1. Preparazione dei dati</h3><p>I dati sperimentali presentati in questo articolo provengono da: https://github.com/chatopera/insuranceqa-corpus-zh.</p>
-<p>Il set di dati contiene coppie di domande e risposte relative al settore assicurativo. In questo articolo vengono estratte 20.000 coppie di domande e risposte. Grazie a questo set di dati di domande e risposte, è possibile costruire rapidamente un robot di assistenza clienti per il settore assicurativo.</p>
-<h3 id="2-Generate-feature-vectors" class="common-anchor-header">2. Generare vettori di caratteristiche</h3><p>Questo sistema utilizza un modello preaddestrato dal BERT. Scaricatelo dal link sottostante prima di avviare un servizio: https://storage.googleapis.com/bert_models/2018_10_18/cased_L-24_H-1024_A-16.zip.</p>
-<p>Il modello viene utilizzato per convertire il database delle domande in vettori di caratteristiche per la futura ricerca di somiglianze. Per ulteriori informazioni sul servizio BERT, vedere https://github.com/hanxiao/bert-as-service.</p>
+    </button></h2><p>Before you start, you need to install Milvus and PostgreSQL. For the specific installation steps, see the Milvus official website.</p>
+<h3 id="1-Data-preparation" class="common-anchor-header">1. Data preparation</h3><p>The experimental data in this article comes from: https://github.com/chatopera/insuranceqa-corpus-zh</p>
+<p>The data set contains question and answer data pairs related to the insurance industry. In this article we extracts 20,000 question and answer pairs from it. Through this set of question and answer data sets, you can quickly build a customer service robot for the insurance industry.</p>
+<h3 id="2-Generate-feature-vectors" class="common-anchor-header">2. Generate feature vectors</h3><p>This system uses a model that BERT has pre-trained. Download it from the link below before starting a service: https://storage.googleapis.com/bert_models/2018_10_18/cased_L-24_H-1024_A-16.zip</p>
+<p>Use this model to convert the question database to feature vectors for future similarity search. For more information about the BERT service, see https://github.com/hanxiao/bert-as-service.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_code_block_e1b2021a91.png" alt="2-code-block.png" class="doc-image" id="2-code-block.png" />
-   </span> <span class="img-wrapper"> <span>2-codice-blocco.png</span> </span></p>
-<h3 id="3-Import-to-Milvus-and-PostgreSQL" class="common-anchor-header">3. Importazione in Milvus e PostgreSQL</h3><p>Normalizzare e importare i vettori di caratteristiche generati in Milvus, quindi importare gli ID restituiti da Milvus e le risposte corrispondenti in PostgreSQL. Di seguito è riportata la struttura della tabella in PostgreSQL:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_code_block_e1b2021a91.png" alt="2-code-block.png" class="doc-image" id="2-code-block.png" />
+    <span>2-code-block.png</span>
+  </span>
+</p>
+<h3 id="3-Import-to-Milvus-and-PostgreSQL" class="common-anchor-header">3. Import to Milvus and PostgreSQL</h3><p>Normalize and import the generated feature vectors import to Milvus, and then import the IDs returned by Milvus and the corresponding answers to PostgreSQL. The following shows the table structure in PostgreSQL:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_import_milvus_postgresql_bb2a258c61.png" alt="3-import-milvus-postgresql.png" class="doc-image" id="3-import-milvus-postgresql.png" />
-   </span> <span class="img-wrapper"> <span>3-import-milvus-postgresql.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_import_milvus_postgresql_bb2a258c61.png" alt="3-import-milvus-postgresql.png" class="doc-image" id="3-import-milvus-postgresql.png" />
+    <span>3-import-milvus-postgresql.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_import_milvus_postgresql_2abc29a4c4.png" alt="4-import-milvus-postgresql.png" class="doc-image" id="4-import-milvus-postgresql.png" />
-   </span> <span class="img-wrapper"> <span>4-import-milvus-postgresql.png</span> </span></p>
-<h3 id="4-Retrieve-Answers" class="common-anchor-header">4. Recupero delle risposte</h3><p>L'utente inserisce una domanda e, dopo aver generato il vettore di caratteristiche tramite BERT, può trovare la domanda più simile nella libreria Milvus. Questo articolo utilizza la distanza del coseno per rappresentare la somiglianza tra due frasi. Poiché tutti i vettori sono normalizzati, più la distanza del coseno dei due vettori di caratteristiche è vicina a 1, maggiore è la somiglianza.</p>
-<p>In pratica, il sistema potrebbe non avere domande perfettamente corrispondenti nella libreria. Si può quindi impostare una soglia di 0,9. Se la distanza di somiglianza maggiore recuperata è inferiore a questa soglia, il sistema segnalerà di non includere le domande correlate.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_import_milvus_postgresql_2abc29a4c4.png" alt="4-import-milvus-postgresql.png" class="doc-image" id="4-import-milvus-postgresql.png" />
+    <span>4-import-milvus-postgresql.png</span>
+  </span>
+</p>
+<h3 id="4-Retrieve-Answers" class="common-anchor-header">4. Retrieve Answers</h3><p>The user inputs a question, and after generating the feature vector through BERT, they can find the most similar question in the Milvus library. This article uses the cosine distance to represent the similarity between two sentences. Because all vectors are normalized, the closer the cosine distance of the two feature vectors to 1, the higher the similarity.</p>
+<p>In practice, your system may not have perfectly matched questions in the library. Then, you can set a threshold of 0.9. If the greatest similarity distance retrieved is less than this threshold, the system will prompt that it does not include related questions.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_retrieve_answers_6424db1032.png" alt="4-retrieve-answers.png" class="doc-image" id="4-retrieve-answers.png" />
-   </span> <span class="img-wrapper"> <span>4-recupero-risposte.png</span> </span></p>
-<h2 id="System-Demonstration" class="common-anchor-header">Dimostrazione del sistema<button data-href="#System-Demonstration" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_retrieve_answers_6424db1032.png" alt="4-retrieve-answers.png" class="doc-image" id="4-retrieve-answers.png" />
+    <span>4-retrieve-answers.png</span>
+  </span>
+</p>
+<h2 id="System-Demonstration" class="common-anchor-header">System Demonstration<button data-href="#System-Demonstration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,17 +110,21 @@ canonicalUrl: 'https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Di seguito viene mostrato un esempio di interfaccia del sistema:</p>
+    </button></h2><p>The following shows an example interface of the system:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/5_milvus_QA_system_application_e5860cee42.png" alt="5-milvus-QA-system-application.png" class="doc-image" id="5-milvus-qa-system-application.png" />
-   </span> <span class="img-wrapper"> <span>5-milvus-QA-system-application.png</span> </span></p>
-<p>Inserite la vostra domanda nella finestra di dialogo e riceverete la risposta corrispondente:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/5_milvus_QA_system_application_e5860cee42.png" alt="5-milvus-QA-system-application.png" class="doc-image" id="5-milvus-qa-system-application.png" />
+    <span>5-milvus-QA-system-application.png</span>
+  </span>
+</p>
+<p>Enter your question in the dialog box and you will receive a corresponding answer:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/5_milvus_QA_system_application_2_8064237e2a.png" alt="5-milvus-QA-system-application-2.png" class="doc-image" id="5-milvus-qa-system-application-2.png" />
-   </span> <span class="img-wrapper"> <span>5-milvus-QA-system-application-2.png</span> </span></p>
-<h2 id="Summary" class="common-anchor-header">Riassunto<button data-href="#Summary" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/5_milvus_QA_system_application_2_8064237e2a.png" alt="5-milvus-QA-system-application-2.png" class="doc-image" id="5-milvus-qa-system-application-2.png" />
+    <span>5-milvus-QA-system-application-2.png</span>
+  </span>
+</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,7 +139,7 @@ canonicalUrl: 'https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dopo aver letto questo articolo, speriamo che sia facile costruire il proprio sistema Q&amp;A.</p>
-<p>Con il modello BERT, non è più necessario ordinare e organizzare preventivamente i corpora di testo. Allo stesso tempo, grazie alle elevate prestazioni e all'alta scalabilità del motore di ricerca vettoriale open source Milvus, il vostro sistema di QA può supportare un corpus di centinaia di milioni di testi.</p>
-<p>Milvus si è ufficialmente unito alla Linux AI (LF AI) Foundation per l'incubazione. Siete invitati a unirvi alla comunità di Milvus e a lavorare con noi per accelerare l'applicazione delle tecnologie AI!</p>
-<p>=&gt; Provate la nostra demo online qui: https://www.milvus.io/scenarios</p>
+    </button></h2><p>After reading this article, we hope you find it easy to build your own Q&amp;A System.</p>
+<p>With the BERT model, you no longer need to sort and organize the text corpora beforehand. At the same time, thanks to the high performance and high scalability of the open source vector search engine Milvus, your QA system can support a corpus of up to hundreds of millions of texts.</p>
+<p>Milvus has officially joined the Linux AI (LF AI) Foundation for incubation. You are welcome to join the Milvus community and work with us to accelerate the application of AI technologies!</p>
+<p>=&gt; Try our online demo here: https://www.milvus.io/scenarios</p>

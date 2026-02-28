@@ -1,54 +1,58 @@
 ---
 id: Milvus-Data-Migration-Tool.md
-title: Milvus 数据迁移工具介绍
+title: Introducing Milvus Data Migration Tool
 author: Zilliz
 date: 2021-03-15T10:19:51.125Z
-desc: 了解如何使用 Milvus 数据迁移工具大大提高数据管理效率，降低 DevOps 成本。
+desc: >-
+  Learn how to use Milvus data migration tool to greatly improve efficiency of
+  data management and reduce DevOps costs.
 cover: assets.zilliz.com/Generic_Tool_Announcement_97eb04a898.jpg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
 ---
-<custom-h1>Milvus 数据迁移工具介绍</custom-h1><p><em><strong>重要提示</strong>：Mivus 数据迁移工具已被弃用。从其他数据库向 Milvus 迁移数据时，我们建议您使用更先进的 Milvus 迁移工具。</em></p>
-<p>Milvus-migration 工具目前支持：</p>
+<custom-h1>Introducing Milvus Data Migration Tool</custom-h1><p><em><strong>Important Note</strong>: The Mivus Data Migration Tool has been deprecated. For data migration from other databases to Milvus, we recommend that you use the more advanced Milvus-migration Tool.</em></p>
+<p>The Milvus-migration tool currently supprots:</p>
 <ul>
-<li>Elasticsearch 到 Milvus 2.x</li>
-<li>Faiss 到 Milvus 2.x</li>
-<li>Milvus 1.x 到 Milvus 2.x</li>
-<li>Milvus 2.3.x 到 Milvus 2.3.x 或更高版本</li>
+<li>Elasticsearch to Milvus 2.x</li>
+<li>Faiss to Milvus 2.x</li>
+<li>Milvus 1.x to Milvus 2.x</li>
+<li>Milvus 2.3.x to Milvus 2.3.x or above</li>
 </ul>
-<p>我们将支持从 Pinecone、Chroma 和 Qdrant 等更多向量数据源迁移。敬请期待。</p>
-<p><strong>更多信息，请参阅<a href="https://milvus.io/docs/migrate_overview.md">Milvus-migration 文档</a>或其<a href="https://github.com/zilliztech/milvus-migration">GitHub 存储库</a>。</strong></p>
-<p>---------------------------------<strong>Mivus 数据迁移工具已被弃用</strong>----------------------</p>
-<h3 id="Overview" class="common-anchor-header">概述</h3><p><a href="https://github.com/milvus-io/milvus-tools">MilvusDM</a>（Milvus 数据迁移）是一款开源工具，专门用于使用 Milvus 导入和导出数据文件。MilvusDM 可通过以下方式大大提高数据管理效率并降低 DevOps 成本：</p>
+<p>We will support migration from more vector data sources such as Pinecone, Chroma, and Qdrant. Stay tuned.</p>
+<p><strong>For more information, see the <a href="https://milvus.io/docs/migrate_overview.md">Milvus-migration documentation</a> or its <a href="https://github.com/zilliztech/milvus-migration">GitHub repository</a>.</strong></p>
+<p>--------------------------------- <strong>Mivus Data Migration Tool has been deprecated</strong> ----------------------</p>
+<h3 id="Overview" class="common-anchor-header">Overview</h3><p><a href="https://github.com/milvus-io/milvus-tools">MilvusDM</a> (Milvus Data Migration) is an open-source tool designed specifically for importing and exporting data files with Milvus. MilvusDM can greatly improve data mangement efficiency and reduce DevOps costs in the following ways:</p>
 <ul>
-<li><p>从<a href="#faiss-to-milvus">Faiss 到 Milvus</a>：将未压缩的数据从 Faiss 导入 Milvus。</p></li>
-<li><p><a href="#hdf5-to-milvus">HDF5 到 Milvus</a>：将 HDF5 文件导入 Milvus。</p></li>
-<li><p><a href="#milvus-to-milvus">Milvus 到 Milvus</a>：从源 Milvus 迁移数据到不同的目标 Milvus。</p></li>
-<li><p><a href="#milvus-to-hdf5">Milvus 至 HDF5</a>：将 Milvus 中的数据保存为 HDF5 文件。</p></li>
+<li><p><a href="#faiss-to-milvus">Faiss to Milvus</a>: Import unzipped data from Faiss to Milvus.</p></li>
+<li><p><a href="#hdf5-to-milvus">HDF5 to Milvus</a>: Import HDF5 files to Milvus.</p></li>
+<li><p><a href="#milvus-to-milvus">Milvus to Milvus</a>: Migrate data from a source Milvus to a different target Milvus.</p></li>
+<li><p><a href="#milvus-to-hdf5">Milvus to HDF5</a>: Save data in Milvus as HDF5 files.</p></li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_1_199cbdebe7.png" alt="milvusdm blog 1.png" class="doc-image" id="milvusdm-blog-1.png" />
-   </span> <span class="img-wrapper"> <span>MilvusDM 博客 1.png</span> </span></p>
-<p>MilvusDM 托管在<a href="https://github.com/milvus-io/milvus-tools">Github</a>上，可以通过运行命令行<code translate="no">pip3 install pymilvusdm</code> 轻松安装。MilvusDM 允许你迁移特定 Collections 或分区中的数据。在下面的章节中，我们将介绍如何使用每种数据迁移类型。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_1_199cbdebe7.png" alt="milvusdm blog 1.png" class="doc-image" id="milvusdm-blog-1.png" />
+    <span>milvusdm blog 1.png</span>
+  </span>
+</p>
+<p>MilvusDM is hosted on <a href="https://github.com/milvus-io/milvus-tools">Github</a> and can be easily installed by running the command line <code translate="no">pip3 install pymilvusdm</code>. MilvusDM allows you to migrate data in a specific collection or partition. In the following sections, we will explain how to use each data migration type.</p>
 <p><br/></p>
-<h3 id="Faiss-to-Milvus" class="common-anchor-header">从 Faiss 迁移到 Milvus</h3><h4 id="Steps" class="common-anchor-header">步骤</h4><p>1.下载<strong>F2M.yaml</strong>：</p>
+<h3 id="Faiss-to-Milvus" class="common-anchor-header">Faiss to Milvus</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>F2M.yaml</strong>:</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/F2</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2.设置以下参数</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">data_path</code>:Faiss 中的数据路径（向量及其相应 ID）。</p></li>
-<li><p><code translate="no">dest_host</code>:Milvus 服务器地址。</p></li>
-<li><p><code translate="no">dest_port</code>:Milvus 服务器端口。</p></li>
-<li><p><code translate="no">mode</code>:可使用以下模式将数据导入 Milvus：</p>
+<li><p><code translate="no">data_path</code>: Data path (vectors and their corresponding IDs) in Faiss.</p></li>
+<li><p><code translate="no">dest_host</code>: Milvus server address.</p></li>
+<li><p><code translate="no">dest_port</code>: Milvus server port.</p></li>
+<li><p><code translate="no">mode</code>: Data can be imported to Milvus using the following modes:</p>
 <ul>
-<li><p>跳过：如果 Collections 或分区已经存在，则忽略数据。</p></li>
-<li><p>追加：如果 Collection 或分区已经存在，则添加数据。</p></li>
-<li><p>覆盖：如果 Collection 或分区已经存在，则在插入前删除数据。</p></li>
+<li><p>Skip: Ignore data if the collection or partition already exists.</p></li>
+<li><p>Append: Append data if the collection or partition already exists.</p></li>
+<li><p>Overwrite: Delete data before insertion if the collection or partition already exists.</p></li>
 </ul></li>
-<li><p><code translate="no">dest_collection_name</code>:用于导入数据的接收 Collections 名称。</p></li>
-<li><p><code translate="no">dest_partition_name</code>:接收数据导入的分区名称。</p></li>
-<li><p><code translate="no">collection_parameter</code>:特定于 Collections 的信息，如向量维度、索引文件大小和距离度量。</p></li>
+<li><p><code translate="no">dest_collection_name</code>: Name of receiving collection for data import.</p></li>
+<li><p><code translate="no">dest_partition_name</code>: Name of receiving partition for data import.</p></li>
+<li><p><code translate="no">collection_parameter</code>: Collection-specific information such as vector dimension, index file size, and distance metric.</p></li>
 </ul>
 <pre><code translate="no">F2M:
   milvus_version: <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
@@ -63,37 +67,37 @@ canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
     index_file_size: <span class="hljs-number">1024</span>
     metric_type: <span class="hljs-string">&#x27;L2&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3.运行<strong>F2M.yaml：</strong></p>
+<p>3.Run <strong>F2M.yaml:</strong></p>
 <pre><code translate="no">$ milvusdm --yaml F2M.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">示例代码</h4><p>1.读取 Faiss 文件以检索向量及其相应的 ID。</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.Read Faiss files to retrieve vectors and their corresponding IDs.</p>
 <pre><code translate="no">ids, vectors = faiss_data.read_faiss_data()
 <button class="copy-code-btn"></button></code></pre>
-<p>2.将检索到的数据插入 Milvus：</p>
+<p>2.Insert the retrieved data into Milvus:</p>
 <pre><code translate="no">insert_milvus.insert_data(vectors, <span class="hljs-variable language_">self</span>.dest_collection_name, <span class="hljs-variable language_">self</span>.collection_parameter, <span class="hljs-variable language_">self</span>.mode, ids, <span class="hljs-variable language_">self</span>.dest_partition_name)
 <button class="copy-code-btn"></button></code></pre>
 <p><br/></p>
-<h3 id="HDF5-to-Milvus" class="common-anchor-header">从 HDF5 到 Milvus</h3><h4 id="Steps" class="common-anchor-header">步骤</h4><p>1.下载<strong>H2M.yaml</strong>。</p>
+<h3 id="HDF5-to-Milvus" class="common-anchor-header">HDF5 to Milvus</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>H2M.yaml</strong>.</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/H2M.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2.设置以下参数</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">data_path</code>:HDF5 文件路径</p></li>
-<li><p><code translate="no">data_dir</code>:保存 HDF5 文件的目录。</p></li>
-<li><p><code translate="no">dest_host</code>:Milvus 服务器地址。</p></li>
-<li><p><code translate="no">dest_port</code>:Milvus 服务器端口。</p></li>
-<li><p><code translate="no">mode</code>:可使用以下模式将数据导入 Milvus：</p>
+<li><p><code translate="no">data_path</code>: Path to the HDF5 files.</p></li>
+<li><p><code translate="no">data_dir</code>: Directory holding the HDF5 files.</p></li>
+<li><p><code translate="no">dest_host</code>: Milvus server address.</p></li>
+<li><p><code translate="no">dest_port</code>: Milvus server port.</p></li>
+<li><p><code translate="no">mode</code>: Data can be imported to Milvus using the following modes:</p>
 <ul>
-<li><p>跳过：如果 Collections 或分区已经存在，则忽略数据。</p></li>
-<li><p>追加：如果 Collection 或分区已经存在，则添加数据。</p></li>
-<li><p>覆盖：如果 Collection 或分区已经存在，则在插入前删除数据。</p></li>
+<li><p>Skip: Ignore data if the collection or partition already exists.</p></li>
+<li><p>Append: Append data if the collection or partition already exists.</p></li>
+<li><p>Overwrite: Delete data before insertion if the collection or partition already exists.</p></li>
 </ul></li>
-<li><p><code translate="no">dest_collection_name</code>:用于导入数据的接收 Collections 名称。</p></li>
-<li><p><code translate="no">dest_partition_name</code>:接收数据导入的分区名称。</p></li>
-<li><p><code translate="no">collection_parameter</code>:特定于 Collections 的信息，如向量维度、索引文件大小和距离度量。</p></li>
+<li><p><code translate="no">dest_collection_name</code>: Name of receiving collection for data import.</p></li>
+<li><p><code translate="no">dest_partition_name</code>: Name of receiving partition for data import.</p></li>
+<li><p><code translate="no">collection_parameter</code>: Collection-specific information such as vector dimension, index file size, and distance metric.</p></li>
 </ul>
 <blockquote>
-<p>设置<code translate="no">data_path</code> 或<code translate="no">data_dir</code> 。<strong>不要</strong>同时设置。使用<code translate="no">data_path</code> 指定多个文件路径，或使用<code translate="no">data_dir</code> 指定存放数据文件的目录。</p>
+<p>Set either <code translate="no">data_path</code> or <code translate="no">data_dir</code>. Do <strong>not</strong> set both. Use <code translate="no">data_path</code> to specify multiple file paths, or <code translate="no">data_dir</code> to specify the directory holding your data file.</p>
 </blockquote>
 <pre><code translate="no">H2M:
   milvus-version: 1.0.0
@@ -111,31 +115,31 @@ canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
     index_file_size: 1024
     metric_type: <span class="hljs-string">&#x27;L2&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3.运行<strong>H2M.yaml：</strong></p>
+<p>3.Run <strong>H2M.yaml:</strong></p>
 <pre><code translate="no">$ milvusdm --yaml H2M.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">示例代码</h4><p>1.读取 HDF5 文件，检索向量及其对应的 ID：</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.Read the HDF5 files to retrieve vectors and their corresponding IDs:</p>
 <pre><code translate="no">vectors, ids = <span class="hljs-variable language_">self</span>.file.read_hdf5_data()
 <button class="copy-code-btn"></button></code></pre>
-<p>2.将检索到的数据插入 Milvus：</p>
+<p>2.Insert the retrieved data into Milvus:</p>
 <pre><code translate="no">ids = insert_milvus.insert_data(vectors, <span class="hljs-variable language_">self</span>.c_name, <span class="hljs-variable language_">self</span>.c_param, <span class="hljs-variable language_">self</span>.mode, ids,<span class="hljs-variable language_">self</span>.p_name)
 <button class="copy-code-btn"></button></code></pre>
 <p><br/></p>
-<h3 id="Milvus-to-Milvus" class="common-anchor-header">Milvus 到 Milvus</h3><h4 id="Steps" class="common-anchor-header">步骤</h4><p>1.下载<strong>M2M.yaml</strong>。</p>
+<h3 id="Milvus-to-Milvus" class="common-anchor-header">Milvus to Milvus</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>M2M.yaml</strong>.</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2M.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2.设置以下参数</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">source_milvus_path</code>:源 Milvus 工作路径。</p></li>
-<li><p><code translate="no">mysql_parameter</code>:源 Milvus MySQL 设置。如果不使用 MySQL，请将 mysql_parameter 设置为""。</p></li>
-<li><p><code translate="no">source_collection</code>:源 Milvus 中的 Collections 及其分区名称。</p></li>
-<li><p><code translate="no">dest_host</code>:Milvus 服务器地址。</p></li>
-<li><p><code translate="no">dest_port</code>:Milvus 服务器端口。</p></li>
-<li><p><code translate="no">mode</code>:可使用以下模式将数据导入 Milvus：</p>
+<li><p><code translate="no">source_milvus_path</code>: Source Milvus work path.</p></li>
+<li><p><code translate="no">mysql_parameter</code>: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as '’.</p></li>
+<li><p><code translate="no">source_collection</code>: Names of the collection and its partitions in the source Milvus.</p></li>
+<li><p><code translate="no">dest_host</code>: Milvus server address.</p></li>
+<li><p><code translate="no">dest_port</code>: Milvus server port.</p></li>
+<li><p><code translate="no">mode</code>: Data can be imported to Milvus using the following modes:</p>
 <ul>
-<li><p>跳过：如果 Collections 或分区已经存在，则忽略数据。</p></li>
-<li><p>追加：如果 Collection 或分区已经存在，则添加数据。</p></li>
-<li><p>覆盖：如果 Collection 或分区已经存在，则在插入数据前删除数据。如果 Collection 或分区已经存在，则在插入数据前删除数据。</p></li>
+<li><p>Skip: Ignore data if the collection or partition already exists.</p></li>
+<li><p>Append: Append data if the collection or partition already exists.</p></li>
+<li><p>Overwrite: If the collection or partition already exists, delete the data before inserting it.Delete data before insertion if the collection or partition already exists.</p></li>
 </ul></li>
 </ul>
 <pre><code translate="no">M2M:
@@ -155,26 +159,26 @@ canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
   dest_port: 19530
   mode: <span class="hljs-string">&#x27;skip&#x27;</span> <span class="hljs-comment"># &#x27;skip/append/overwrite&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3.运行<strong>M2M.yaml。</strong></p>
+<p>3.Run <strong>M2M.yaml.</strong></p>
 <pre><code translate="no">$ milvusdm --yaml M2M.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">示例代码</h4><p>1.根据指定的 Collections 或分区的元数据，读取本地硬盘上<strong>milvus/db</strong>下的文件，从源 Milvus 获取向量及其对应的 ID。</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.According to a specified collection or partition’s metadata, read the files under <strong>milvus/db</strong> on your local drive to retrieve vectors and their corresponding IDs from the source Milvus.</p>
 <pre><code translate="no">collection_parameter, _ = milvus_meta.get_collection_info(collection_name)
 r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(<span class="hljs-variable language_">self</span>.milvus_meta, collection_name, partition_tag)
 <button class="copy-code-btn"></button></code></pre>
-<p>2.将检索到的数据插入目标 Milvus。</p>
+<p>2.Insert the retrieved data into the target Milvus.</p>
 <pre><code translate="no">milvus_insert.insert_data(r_vectors, collection_name, collection_parameter, <span class="hljs-variable language_">self</span>.mode, r_ids, partition_tag)
 <button class="copy-code-btn"></button></code></pre>
 <p><br/></p>
-<h3 id="Milvus-to-HDF5" class="common-anchor-header">将 Milvus 转换为 HDF5</h3><h4 id="Steps" class="common-anchor-header">步骤</h4><p>1.下载<strong>M2H.yaml</strong>：</p>
+<h3 id="Milvus-to-HDF5" class="common-anchor-header">Milvus to HDF5</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>M2H.yaml</strong>:</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2H.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2.设置以下参数</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">source_milvus_path</code>:源 Milvus 工作路径。</p></li>
-<li><p><code translate="no">mysql_parameter</code>:源 Milvus MySQL 设置。如果不使用 MySQL，请将 mysql_parameter 设置为""。</p></li>
-<li><p><code translate="no">source_collection</code>:源 Milvus 中的 Collections 及其分区名称。</p></li>
-<li><p><code translate="no">data_dir</code>:保存 HDF5 文件的目录。</p></li>
+<li><p><code translate="no">source_milvus_path</code>: Source Milvus work path.</p></li>
+<li><p><code translate="no">mysql_parameter</code>: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as '’.</p></li>
+<li><p><code translate="no">source_collection</code>: Names of the collection and its partitions in the source Milvus.</p></li>
+<li><p><code translate="no">data_dir</code>: Directory for holding the saved HDF5 files.</p></li>
 </ul>
 <pre><code translate="no">M2H:
   milvus_version: <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
@@ -191,52 +195,54 @@ r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(<span class="hljs-variable 
       - <span class="hljs-string">&#x27;partition_2&#x27;</span>
   data_dir: <span class="hljs-string">&#x27;/home/user/data&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3.运行<strong>M2H.yaml</strong>：</p>
+<p>3.Run <strong>M2H.yaml</strong>:</p>
 <pre><code translate="no">$ milvusdm --yaml M2H.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">示例代码</h4><p>1.根据指定的 Collections 或分区的元数据，读取本地硬盘上<strong>milvus/db</strong>下的文件，检索向量及其相应的 ID。</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.According to a specified collection or partition’s metadata, read the files under <strong>milvus/db</strong> on your local drive to retrieve vectors and their corresponding IDs.</p>
 <pre><code translate="no">collection_parameter, version = milvus_meta.get_collection_info(collection_name)
 r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(<span class="hljs-variable language_">self</span>.milvus_meta, collection_name, partition_tag)
 <button class="copy-code-btn"></button></code></pre>
-<p>2.将检索到的数据保存为 HDF5 文件。</p>
+<p>2.Save the retrieved data as HDF5 files.</p>
 <pre><code translate="no">data_save.save_yaml(collection_name, partition_tag, collection_parameter, version, save_hdf5_name)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="MilvusDM-File-Structure" class="common-anchor-header">MilvusDM 文件结构</h3><p>下面的流程图显示了 MilvusDM 如何根据接收到的 YAML 文件执行不同的任务：</p>
+<h3 id="MilvusDM-File-Structure" class="common-anchor-header">MilvusDM File Structure</h3><p>The flow chart below shows how MilvusDM performs different tasks according to the YAML file it receives:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_2_7824b16e5e.png" alt="milvusdm blog 2.png" class="doc-image" id="milvusdm-blog-2.png" />
-   </span> <span class="img-wrapper"> <span>MilvusDM 博客 2.png</span> </span></p>
-<p>MilvusDM 文件结构：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_2_7824b16e5e.png" alt="milvusdm blog 2.png" class="doc-image" id="milvusdm-blog-2.png" />
+    <span>milvusdm blog 2.png</span>
+  </span>
+</p>
+<p>MilvusDM file structure:</p>
 <ul>
 <li><p>pymilvusdm</p>
 <ul>
-<li><p>核心</p>
+<li><p>core</p>
 <ul>
-<li><p><strong>milvus_client.py</strong>：在 Milvus 中执行客户端操作。</p></li>
-<li><p><strong>read_data.py：</strong>读取本地硬盘上的 HDF5 数据文件。(在此添加你的代码，以支持读取其他格式的数据文件）。</p></li>
-<li><p><strong>read_faiss_data.py</strong>：读取 Faiss 中的数据文件。</p></li>
-<li><p><strong>read_milvus_data.py</strong>：读取 Milvus 格式的数据文件。</p></li>
-<li><p><strong>read_milvus_meta.py：</strong>读取 Milvus 中的元数据。</p></li>
-<li><p><strong>data_too_milvus.py</strong>：根据 YAML 文件中的参数创建 Collections 或分区，并将向量和相应的向量 ID 导入 Milvus。</p></li>
-<li><p><strong>save_data.py</strong>：将<strong>数据保存</strong>为 HDF5<strong>格式</strong>：将数据保存为 HDF5 文件。</p></li>
-<li><p><strong>write_logs.py：</strong>在运行时写入日志。</p></li>
+<li><p><strong>milvus_client.py</strong>: Performs client operations in Milvus.</p></li>
+<li><p><strong>read_data.py</strong>: Reads the HDF5 data files on your local drive. (Add your code here to support reading data files in other formats.)</p></li>
+<li><p><strong>read_faiss_data.py</strong>: Reads the data files in Faiss.</p></li>
+<li><p><strong>read_milvus_data.py</strong>: Reads the data files in Milvus.</p></li>
+<li><p><strong>read_milvus_meta.py</strong>: Reads the metadata in Milvus.</p></li>
+<li><p><strong>data_to_milvus.py</strong>: Creates collections or partitions based on parameters in YAML files and imports the vectors and the corresponding vector IDs into Milvus.</p></li>
+<li><p><strong>save_data.py</strong>: Saves the data as HDF5 files.</p></li>
+<li><p><strong>write_logs.py</strong>: Writes logs during runtime.</p></li>
 </ul></li>
-<li><p><strong>faiss_to_milvus.py</strong>：将数据从 Faiss 导入 Milvus。</p></li>
-<li><p><strong>hdf5_to_milvus.py</strong>：将 HDF5 文件中的数据导入 Milvus。</p></li>
-<li><p><strong>milvus_to_milvus.py</strong>：将源 Milvus 中的数据迁移到目标 Milvus 中。</p></li>
-<li><p><strong>milvus_to_hdf5.py</strong>：导出 Milvus 中的数据并将其保存为 HDF5 文件。</p></li>
-<li><p><strong>main.py</strong>：根据接收到的 YAML 文件执行相应任务。</p></li>
-<li><p><strong>setting.py</strong>：与运行 MilvusDM 代码相关的配置。</p></li>
+<li><p><strong>faiss_to_milvus.py</strong>: Imports data from Faiss into Milvus.</p></li>
+<li><p><strong>hdf5_to_milvus.py</strong>: Imports data in HDF5 files into Milvus.</p></li>
+<li><p><strong>milvus_to_milvus.py</strong>: Migrates data from a source Milvus to the target Milvus.</p></li>
+<li><p><strong>milvus_to_hdf5.p</strong>y: Exports data in Milvus and saves them as HDF5 files.</p></li>
+<li><p><strong>main.py</strong>: Performs corresponding tasks according to the received YAML file.</p></li>
+<li><p><strong>setting.py</strong>: Configurations relating to running the MilvusDM code.</p></li>
 </ul></li>
-<li><p><strong>setup.py：</strong>创建<strong>pymilvusdm</strong>文件包并将其上传到 PyPI（Python 软件包索引）。</p></li>
+<li><p><strong>setup.py</strong>: Creates <strong>pymilvusdm</strong> file packages and uploads them to PyPI (Python Package Index).</p></li>
 </ul>
 <p><br/></p>
-<h3 id="Recap" class="common-anchor-header">回顾</h3><p>MilvusDM 主要处理数据在 Milvus 中的迁移，包括从 Faiss 迁移到 Milvus、从 HDF5 迁移到 Milvus、从 Milvus 迁移到 Milvus 以及从 Milvus 迁移到 HDF5。</p>
-<p>即将发布的版本计划提供以下功能：</p>
+<h3 id="Recap" class="common-anchor-header">Recap</h3><p>MilvusDM primarily handles migrating data in and out of Milvus, which includes Faiss to Milvus, HDF5 to Milvus, Milvus to Milvus, and Milvus to HDF5.</p>
+<p>The following features are planned for upcoming releases:</p>
 <ul>
-<li><p>将二进制数据从 Faiss 导入 Milvus。</p></li>
-<li><p>在源 Milvus 和目标 Milvus 之间迁移数据的 Blocklist 和 allowlist。</p></li>
-<li><p>将源 Milvus 中多个 Collections 或分区的数据合并并导入目标 Milvus 中的新 Collections。</p></li>
-<li><p>备份和恢复 Milvus 数据。</p></li>
+<li><p>Import binary data from Faiss to Milvus.</p></li>
+<li><p>Blocklist and allowlist for data migration between source Milvus and target Milvus.</p></li>
+<li><p>Merge and import data from multiple colletions or partitions in source Milvus into a new collection in target Milvus.</p></li>
+<li><p>Backup and recovery of the Milvus data.</p></li>
 </ul>
-<p>MilvusDM 项目在<a href="https://github.com/milvus-io/milvus-tools">Github</a> 上开源。欢迎为该项目做出任何贡献。给它一颗星🌟，并随时提交<a href="https://github.com/milvus-io/milvus-tools/issues">问题</a>或自己的代码！</p>
+<p>The MilvusDM project is open sourced on <a href="https://github.com/milvus-io/milvus-tools">Github</a>. Any and all contributions to the project are welcome. Give it a star 🌟, and feel free to file an <a href="https://github.com/milvus-io/milvus-tools/issues">issue</a> or submit your own code!</p>

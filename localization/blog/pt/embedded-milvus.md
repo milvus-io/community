@@ -1,37 +1,36 @@
 ---
 id: embedded-milvus.md
-title: >-
-  Usando o Embedded Milvus para instalar e executar instantaneamente o Milvus
-  com Python
+title: Using Embedded Milvus to Instantly Install and Run Milvus with Python
 author: Alex Gao
 date: 2022-08-15T00:00:00.000Z
-desc: >-
-  Uma versão do Milvus Python de fácil utilização que torna a instalação mais
-  flexível.
+desc: A Python user-friendly Milvus version that makes installation more flexible.
 cover: assets.zilliz.com/embeddded_milvus_1_8132468cac.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
 canonicalUrl: 'https://milvus.io/blog/embedded-milvus.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/embeddded_milvus_1_8132468cac.png" alt="Cover" class="doc-image" id="cover" />
-   </span> <span class="img-wrapper"> <span>Capa</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/embeddded_milvus_1_8132468cac.png" alt="Cover" class="doc-image" id="cover" />
+    <span>Cover</span>
+  </span>
+</p>
 <blockquote>
-<p>Este artigo tem a coautoria de <a href="https://github.com/soothing-rain/">Alex Gao</a> e <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is co-authored by <a href="https://github.com/soothing-rain/">Alex Gao</a> and <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>O Milvus é uma base de dados vetorial de código aberto para aplicações de IA. Ele fornece uma variedade de métodos de instalação, incluindo a construção a partir do código-fonte e a instalação do Milvus com o Docker Compose/Helm/APT/YUM/Ansible. Os utilizadores podem escolher um dos métodos de instalação, dependendo dos seus sistemas operativos e preferências. No entanto, existem muitos cientistas de dados e engenheiros de IA na comunidade Milvus que trabalham com Python e anseiam por um método de instalação muito mais simples do que os atualmente disponíveis.</p>
-<p>Por isso, lançámos o Milvus incorporado, uma versão Python de fácil utilização, juntamente com o Milvus 2.1 para capacitar mais programadores Python na nossa comunidade. Este artigo apresenta o que é o Milvus incorporado e fornece instruções sobre como o instalar e utilizar.</p>
-<p><strong>Saltar para:</strong></p>
+<p>Milvus is an open-source vector database for AI applications. It provides a variety of installation methods including building from source code, and installing Milvus with Docker Compose/Helm/APT/YUM/Ansible. Users can choose one of the installation methods depending on their operating systems and preferences. However, there are many data scientists and AI engineers in the Milvus community who work with Python and yearn for a much simpler installation method than the currently available ones.</p>
+<p>Therefore, we released embedded Milvus, a Python user-friendly version, along with Milvus 2.1 to empower more Python developers in our community. This article introduces what embedded Milvus is and provides instructions on how to install and use it.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#An-overview-of-embedded-Milvus">Uma visão geral do Milvus incorporado</a><ul>
-<li><a href="#When-to-use-embedded-Milvus">Quando usar o Milvus embutido?</a></li>
-<li><a href="#A-comparison-of-different-modes-of-Milvus">Uma comparação dos diferentes modos do Milvus</a></li>
+<li><a href="#An-overview-of-embedded-Milvus">An overview of embedded Milvus</a>
+<ul>
+<li><a href="#When-to-use-embedded-Milvus">When to use embedded Milvus?</a></li>
+<li><a href="#A-comparison-of-different-modes-of-Milvus">A comparison of different modes of Milvus</a></li>
 </ul></li>
-<li><a href="#How-to-install-embedded-Milvus">Como instalar o Milvus embutido</a></li>
-<li><a href="#Start-and-stop-embedded-Milvus">Iniciar e parar o Milvus incorporado</a></li>
+<li><a href="#How-to-install-embedded-Milvus">How to install embedded Milvus</a></li>
+<li><a href="#Start-and-stop-embedded-Milvus">Start and stop embedded Milvus</a></li>
 </ul>
-<h2 id="An-overview-of-embedded-Milvus" class="common-anchor-header">Uma visão geral do Milvus incorporado<button data-href="#An-overview-of-embedded-Milvus" class="anchor-icon" translate="no">
+<h2 id="An-overview-of-embedded-Milvus" class="common-anchor-header">An overview of embedded Milvus<button data-href="#An-overview-of-embedded-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,26 +45,28 @@ canonicalUrl: 'https://milvus.io/blog/embedded-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/milvus-io/embd-milvus">O Mil</a> vus embutido permite-lhe instalar e usar rapidamente o Milvus com Python. Pode abrir rapidamente uma instância do Milvus e permite-lhe iniciar e parar o serviço Milvus sempre que desejar. Todos os dados e registos são mantidos mesmo que se pare o Milvus incorporado.</p>
-<p>O Milvus incorporado não tem dependências internas e não requer a pré-instalação e execução de dependências de terceiros como etcd, MinIO, Pulsar, etc.</p>
-<p>Tudo o que faz com o Milvus embebido, e cada pedaço de código que escreve para ele pode ser migrado com segurança para outros modos do Milvus - standalone, cluster, versão cloud, etc. Isto reflecte uma das caraterísticas mais distintivas do Milvus incorporado - <strong>"Escreva uma vez, execute em qualquer lugar".</strong></p>
-<h3 id="When-to-use-embedded-Milvus" class="common-anchor-header">Quando usar o Milvus incorporado?</h3><p>O Milvus incorporado e <a href="https://milvus.io/docs/v2.1.x/install-pymilvus.md">o PyMilvus</a> são construídos para diferentes objectivos. Você pode considerar escolher o Milvus embutido nos seguintes cenários:</p>
+    </button></h2><p><a href="https://github.com/milvus-io/embd-milvus">Embedded Milvus</a> enables you to quickly install and use Milvus with Python. It can quickly bring up a Milvus instance and allows you to start and stop the Milvus service whenever you wish to. All data and logs are persisted even if you stop embedded Milvus.</p>
+<p>Embedded Milvus itself does not have any internal dependencies and do not require pre-installing and running any third-party dependencies like etcd, MinIO, Pulsar, etc.</p>
+<p>Everything you do with embedded Milvus, and every piece of code you write for it can be safely migrated to other Milvus modes - standalone, cluster, cloud version, etc. This reflects one of the most distinctive features of embedded Milvus - <strong>“Write once, run anywhere”</strong>.</p>
+<h3 id="When-to-use-embedded-Milvus" class="common-anchor-header">When to use embedded Milvus?</h3><p>Embedded Milvus and <a href="https://milvus.io/docs/v2.1.x/install-pymilvus.md">PyMilvus</a> are constructed for different purposes. You may consider choosing embedded Milvus in the following scenarios:</p>
 <ul>
-<li><p>Você quer usar o Milvus sem instalar o Milvus de nenhuma das formas fornecidas <a href="https://milvus.io/docs/v2.1.x/install_standalone-docker.md">aqui</a>.</p></li>
-<li><p>Você quer usar o Milvus sem manter um processo Milvus de longa duração na sua máquina.</p></li>
-<li><p>Quer usar o Milvus rapidamente sem iniciar um processo Milvus separado e outros componentes necessários como etcd, MinIO, Pulsar, etc.</p></li>
+<li><p>You want to use Milvus without installing Milvus in any of the ways provided <a href="https://milvus.io/docs/v2.1.x/install_standalone-docker.md">here</a>.</p></li>
+<li><p>You want to use Milvus without keeping a long-running Milvus process in your machine.</p></li>
+<li><p>You want to quickly use Milvus without starting a separate Milvus process and other required components like etcd, MinIO, Pulsar, etc.</p></li>
 </ul>
-<p>Sugere-se que <strong>NÃO</strong> use o Milvus incorporado:</p>
+<p>It is suggested that you should <strong>NOT</strong> use embedded Milvus:</p>
 <ul>
-<li><p>Num ambiente de produção.<em>(Para usar o Milvus em produção, considere o cluster Milvus ou <a href="https://zilliz.com/cloud">a nuvem Zilliz</a>, um serviço Milvus totalmente gerido</em>)<em>.</em></p></li>
-<li><p>Se tiver uma elevada exigência de desempenho.<em>(Em termos comparativos, o Milvus incorporado pode não fornecer o melhor desempenho</em>)<em>.</em></p></li>
+<li><p>In a production environment. (<em>To use Milvus for production, consider Milvus cluster or <a href="https://zilliz.com/cloud">Zilliz cloud</a>, a fully managed Milvus service.</em>)</p></li>
+<li><p>If you have a high demand for performance. (<em>Comparatively speaking, embedded Milvus might not provide the best performance.</em>)</p></li>
 </ul>
-<h3 id="A-comparison-of-different-modes-of-Milvus" class="common-anchor-header">Uma comparação entre os diferentes modos do Milvus</h3><p>A tabela abaixo compara vários modos de Milvus: autónomo, cluster, Milvus incorporado e o Zilliz Cloud, um serviço Milvus totalmente gerido.</p>
+<h3 id="A-comparison-of-different-modes-of-Milvus" class="common-anchor-header">A comparison of different modes of Milvus</h3><p>The table below compares several modes of Milvus: standalone, cluster, embedded Milvus, and the Zilliz Cloud, a fully managed Milvus service.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/comparison_ebcd7c5b07.jpeg" alt="comparison" class="doc-image" id="comparison" />
-   </span> <span class="img-wrapper"> <span>comparação</span> </span></p>
-<h2 id="How-to-install-embedded-Milvus" class="common-anchor-header">Como instalar o Milvus embebido?<button data-href="#How-to-install-embedded-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/comparison_ebcd7c5b07.jpeg" alt="comparison" class="doc-image" id="comparison" />
+    <span>comparison</span>
+  </span>
+</p>
+<h2 id="How-to-install-embedded-Milvus" class="common-anchor-header">How to install embedded Milvus?<button data-href="#How-to-install-embedded-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,19 +81,19 @@ canonicalUrl: 'https://milvus.io/blog/embedded-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de instalar o Milvus incorporado, é necessário garantir que tem instalado o Python 3.6 ou posterior. O Milvus incorporado suporta os seguintes sistemas operativos:</p>
+    </button></h2><p>Before installing embedded Milvus, you need to first ensure that you have installed Python 3.6 or later. Embedded Milvus supports the following operating systems:</p>
 <ul>
 <li><p>Ubuntu 18.04</p></li>
 <li><p>Mac x86_64 &gt;= 10.4</p></li>
 <li><p>Mac M1 &gt;= 11.0</p></li>
 </ul>
-<p>Se os requisitos forem cumpridos, pode executar <code translate="no">$ python3 -m pip install milvus</code> para instalar o Milvus incorporado. Também é possível adicionar a versão no comando para instalar uma versão específica do Milvus incorporado. Por exemplo, se quiser instalar a versão 2.1.0, execute <code translate="no">$ python3 -m pip install milvus==2.1.0</code>. E mais tarde, quando for lançada uma nova versão do Milvus incorporado, pode também executar <code translate="no">$ python3 -m pip install --upgrade milvus</code> para atualizar o Milvus incorporado para a versão mais recente.</p>
-<p>Se você é um usuário antigo do Milvus que já instalou o PyMilvus antes e quer instalar o Milvus embutido, você pode executar <code translate="no">$ python3 -m pip install --no-deps milvus</code>.</p>
-<p>Depois de executar o comando de instalação, é necessário criar uma pasta de dados para o Milvus incorporado em <code translate="no">/var/bin/e-milvus</code> executando o seguinte comando:</p>
+<p>If the requirements are met, you can run <code translate="no">$ python3 -m pip install milvus</code> to install embedded Milvus. You can also add the version in the command to install a specific version of embedded Milvus. For instance, if you want to install the 2.1.0 version, run <code translate="no">$ python3 -m pip install milvus==2.1.0</code>. And later when new version of embedded Milvus is released, you can also run <code translate="no">$ python3 -m pip install --upgrade milvus</code> to upgrade embedded Milvus to the latest version.</p>
+<p>If you are an old user of Milvus who has already installed PyMilvus before and wants to install embedded Milvus, you can run <code translate="no">$ python3 -m pip install --no-deps milvus</code>.</p>
+<p>After running the installation command, you need to create a data folder for embedded Milvus under <code translate="no">/var/bin/e-milvus</code> by running the following command:</p>
 <pre><code translate="no"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /var/bin/e-milvus
 <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> -R 777 /var/bin/e-milvus
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Start-and-stop-embedded-Milvus" class="common-anchor-header">Iniciar e parar o Milvus incorporado<button data-href="#Start-and-stop-embedded-Milvus" class="anchor-icon" translate="no">
+<h2 id="Start-and-stop-embedded-Milvus" class="common-anchor-header">Start and stop embedded Milvus<button data-href="#Start-and-stop-embedded-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -107,8 +108,8 @@ canonicalUrl: 'https://milvus.io/blog/embedded-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Quando a instalação for bem-sucedida, você poderá iniciar o serviço.</p>
-<p>Se estiver a executar o Milvus incorporado pela primeira vez, tem de importar o Milvus e configurar o Milvus incorporado primeiro.</p>
+    </button></h2><p>When the installation is successful, you can start the service.</p>
+<p>If you are running embedded Milvus for the first time you need to import Milvus and set up embedded Milvus first.</p>
 <pre><code translate="no">$ python3
 Python 3.9.10 (main, Jan 15 2022, 11:40:53)
 [Clang 13.0.0 (clang-1300.0.29.3)] on darwin
@@ -121,7 +122,7 @@ please <span class="hljs-keyword">do</span> the following <span class="hljs-keyw
 3. <span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$LD_LIBRARY_PATH</span>:/usr/lib:/usr/local/lib:/var/bin/e-milvus/lib/
 &gt;&gt;&gt;
 <button class="copy-code-btn"></button></code></pre>
-<p>Se já tiver iniciado o Milvus incorporado com êxito e voltar a reiniciá-lo, pode executar diretamente <code translate="no">milvus.start()</code> depois de importar o Milvus.</p>
+<p>If you have successfully started embedded Milvus before and comes back to restart it, you can directly run <code translate="no">milvus.start()</code> after importing Milvus.</p>
 <pre><code translate="no">$ python3
 Python <span class="hljs-number">3.9</span><span class="hljs-number">.10</span> (main, Jan <span class="hljs-number">15</span> <span class="hljs-number">2022</span>, <span class="hljs-number">11</span>:<span class="hljs-number">40</span>:<span class="hljs-number">53</span>)
 [Clang <span class="hljs-number">13.0</span><span class="hljs-number">.0</span> (clang-<span class="hljs-number">1300.0</span><span class="hljs-number">.29</span><span class="hljs-number">.3</span>)] on darwinType <span class="hljs-string">&quot;help&quot;</span>, <span class="hljs-string">&quot;copyright&quot;</span>, <span class="hljs-string">&quot;credits&quot;</span> <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;license&quot;</span> <span class="hljs-keyword">for</span> more information.
@@ -129,16 +130,16 @@ Python <span class="hljs-number">3.9</span><span class="hljs-number">.10</span> 
 <span class="hljs-meta">&gt;&gt;&gt; </span>milvus.start()
 &gt;&gt;&gt;
 <button class="copy-code-btn"></button></code></pre>
-<p>Verá o seguinte resultado se tiver iniciado com êxito o serviço Milvus incorporado.</p>
+<p>You will see the following output if you have successfully started the embedded Milvus service.</p>
 <pre><code translate="no">---<span class="hljs-title class_">Milvus</span> <span class="hljs-title class_">Proxy</span> successfully initialized and ready to serve!---
 <button class="copy-code-btn"></button></code></pre>
-<p>Após o início do serviço, pode iniciar outra janela de terminal e executar o código de exemplo de &quot;<a href="https://github.com/milvus-io/embd-milvus/blob/main/milvus/examples/hello_milvus.py">Hello Milvus</a>&quot; para brincar com o Milvus incorporado!</p>
+<p>After the service starts, you can start another terminal window and run the example code of &quot;<a href="https://github.com/milvus-io/embd-milvus/blob/main/milvus/examples/hello_milvus.py">Hello Milvus</a>&quot; to play around with embedded Milvus!</p>
 <pre><code translate="no"><span class="hljs-comment"># Download hello_milvus script</span>
 $ wget https://raw.githubusercontent.com/milvus-io/pymilvus/v2.1.0/examples/hello_milvus.py
 <span class="hljs-comment"># Run Hello Milvus </span>
 $ python3 hello_milvus.py
 <button class="copy-code-btn"></button></code></pre>
-<p>Quando terminar de usar o Milvus incorporado, recomendamos pará-lo graciosamente e limpar as variáveis de ambiente executando o seguinte comando ou pressionando Ctrl-D.</p>
+<p>When you are done with using embedded Milvus, we recommend stopping it gracefully and clean up the environment variables by run the following command or press Ctrl-D.</p>
 <pre><code translate="no">&gt;&gt;&gt; milvus.stop()
 <span class="hljs-keyword">if</span> you need to clean up the environment variables, run:
 <span class="hljs-built_in">export</span> LD_PRELOAD=
@@ -146,7 +147,7 @@ $ python3 hello_milvus.py
 &gt;&gt;&gt;
 &gt;&gt;&gt; <span class="hljs-built_in">exit</span>()
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Whats-next" class="common-anchor-header">O que vem a seguir<button data-href="#Whats-next" class="anchor-icon" translate="no">
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -161,12 +162,12 @@ $ python3 hello_milvus.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Com o lançamento oficial do Milvus 2.1, preparámos uma série de blogues que apresentam as novas funcionalidades. Leia mais nesta série de blogues:</p>
+    </button></h2><p>With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">Como utilizar dados de cadeias de caracteres para potenciar as suas aplicações de pesquisa por semelhança</a></li>
-<li><a href="https://milvus.io/blog/embedded-milvus.md">Usando o Embedded Milvus para instalar e executar instantaneamente o Milvus com Python</a></li>
-<li><a href="https://milvus.io/blog/in-memory-replicas.md">Aumente a taxa de transferência de leitura do seu banco de dados vetorial com réplicas na memória</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Entendendo o nível de consistência no banco de dados vetorial do Milvus</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Entendendo o nível de consistência no banco de dados vetorial do Milvus (Parte II)</a></li>
-<li><a href="https://milvus.io/blog/data-security.md">Como o banco de dados vetorial do Milvus garante a segurança dos dados?</a></li>
+<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">How to Use String Data to Empower Your Similarity Search Applications</a></li>
+<li><a href="https://milvus.io/blog/embedded-milvus.md">Using Embedded Milvus to Instantly Install and Run Milvus with Python</a></li>
+<li><a href="https://milvus.io/blog/in-memory-replicas.md">Increase Your Vector Database Read Throughput with In-Memory Replicas</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Understanding Consistency Level in the Milvus Vector Database</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Understanding Consistency Level in the Milvus Vector Database (Part II)</a></li>
+<li><a href="https://milvus.io/blog/data-security.md">How Does the Milvus Vector Database Ensure Data Security?</a></li>
 </ul>

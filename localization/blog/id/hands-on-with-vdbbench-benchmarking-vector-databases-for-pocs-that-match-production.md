@@ -1,15 +1,14 @@
 ---
 id: >-
   hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
-title: >-
-  Praktik Langsung dengan VDBBench: Membandingkan Basis Data Vektor untuk POC
-  yang Sesuai dengan Produksi
+title: >
+  Hands-On with VDBBench: Benchmarking Vector Databases for POCs That Match
+  Production
 author: Yifan Cai
 date: 2025-08-15T00:00:00.000Z
 desc: >-
-  Pelajari cara menguji basis data vektor dengan data produksi nyata menggunakan
-  VDBBench. Panduan langkah demi langkah untuk POC dataset khusus yang
-  memprediksi kinerja aktual.
+  Learn how to test vector databases with real production data using VDBBench.
+  Step-by-step guide to custom dataset POCs that predict actual performance.
 cover: assets.zilliz.com/vdbbench_cover_min_2f86466839.png
 tag: Tutorials
 recommend: false
@@ -23,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
 ---
-<p>Basis data vektor kini menjadi bagian inti dari infrastruktur AI, yang memberdayakan berbagai aplikasi yang didukung LLM untuk layanan pelanggan, pembuatan konten, pencarian, rekomendasi, dan banyak lagi.</p>
-<p>Dengan banyaknya pilihan di pasar, mulai dari database vektor yang dibuat khusus seperti Milvus dan Zilliz Cloud hingga database tradisional dengan pencarian vektor sebagai tambahan, <strong>memilih yang tepat tidaklah sesederhana membaca bagan tolok ukur</strong>.</p>
-<p>Sebagian besar tim menjalankan Proof of Concept (POC) sebelum berkomitmen, yang secara teori memang cerdas - tetapi dalam praktiknya, banyak tolok ukur vendor yang terlihat mengesankan di atas kertas runtuh dalam kondisi dunia nyata.</p>
-<p>Salah satu alasan utamanya adalah sebagian besar klaim performa didasarkan pada dataset yang sudah ketinggalan zaman dari tahun 2006-2012 (SIFT, GloVe, LAION) yang berperilaku sangat berbeda dengan penyematan modern. Sebagai contoh, SIFT menggunakan vektor 128 dimensi, sedangkan model AI saat ini menghasilkan dimensi yang jauh lebih tinggi - 3.072 untuk OpenAI terbaru, 1.024 untuk Cohere - pergeseran besar yang berdampak pada kinerja, biaya, dan skalabilitas.</p>
-<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">Solusinya: Uji dengan Data Anda, Bukan Tolok Ukur Kaleng<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
+<p>Vector databases are now a core part of AI infrastructure, powering various LLM-powered applications for customer service, content generation, search, recommendations, and more.</p>
+<p>With so many options in the market, from purpose-built vector databases like Milvus and Zilliz Cloud to traditional databases with vector search as an add-on, <strong>choosing the right one isn’t as simple as reading benchmark charts.</strong></p>
+<p>Most teams run a Proof of Concept (POC) before committing, which is smart in theory — but in practice, many vendor benchmarks that look impressive on paper collapse under real-world conditions.</p>
+<p>One of the main reasons is that most performance claims are based on outdated datasets from 2006–2012 (SIFT, GloVe, LAION) that behave very differently from modern embeddings. For example, SIFT uses 128-dimensional vectors, while today’s AI models produce far higher dimensions — 3,072 for OpenAI’s latest, 1,024 for Cohere’s —  a big shift that impacts performance, cost, and scalability.</p>
+<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">The Fix: Test with Your Data, Not Canned Benchmarks<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,19 +41,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Solusi paling sederhana dan efektif: jalankan evaluasi POC Anda dengan vektor yang benar-benar dihasilkan oleh aplikasi Anda. Itu berarti menggunakan model penyematan Anda, kueri nyata Anda, dan distribusi data Anda yang sebenarnya.</p>
-<p>Untuk itulah <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> - alat pembanding database vektor sumber terbuka - dibuat. Alat ini mendukung evaluasi dan perbandingan basis data vektor apa pun, termasuk Milvus, Elasticsearch, pgvector, dan banyak lagi, serta mensimulasikan beban kerja produksi yang sebenarnya.</p>
-<p><a href="https://github.com/zilliztech/VectorDBBench">Unduh VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> Lihat Papan Peringkat →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">Apa itu VDBBench</a></p>
-<p>VDBbench memungkinkan Anda:</p>
+    </button></h2><p>The simplest and most effective solution: run your POC evaluation with the vectors your application actually generates. That means using your embedding models, your real queries, and your actual data distribution.</p>
+<p>This is exactly what <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> — an open-source vector database benchmarking tool — is built for. It supports the evaluation and comparison of any vector database, including Milvus, Elasticsearch, pgvector, and more, and simulates real production workloads.</p>
+<p><a href="https://github.com/zilliztech/VectorDBBench">Download VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> View Leaderboard →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">What is VDBBench</a></p>
+<p>VDBbench lets you:</p>
 <ul>
-<li><p><strong>Menguji dengan data Anda sendiri</strong> dari model penyisipan Anda</p></li>
-<li><p>Mensimulasikan <strong>penyisipan, kueri, dan konsumsi streaming secara bersamaan</strong></p></li>
-<li><p>Mengukur <strong>latensi P95/P99, throughput berkelanjutan, dan akurasi pemanggilan</strong></p></li>
-<li><p>Tolok ukur di berbagai basis data dalam kondisi yang sama</p></li>
-<li><p>Memungkinkan <strong>pengujian dataset khusus</strong> sehingga hasilnya benar-benar sesuai dengan produksi</p></li>
+<li><p><strong>Test with your own data</strong> from your embedding models</p></li>
+<li><p>Simulate <strong>concurrent inserts, queries, and streaming ingestion</strong></p></li>
+<li><p>Measure <strong>P95/P99 latency, sustained throughput, and recall accuracy</strong></p></li>
+<li><p>Benchmark across multiple databases under identical conditions</p></li>
+<li><p>Allows <strong>custom dataset testing</strong> so results actually match production</p></li>
 </ul>
-<p>Selanjutnya, kami akan memandu Anda tentang cara menjalankan POC tingkat produksi dengan VDBBench dan data asli Anda - sehingga Anda bisa membuat pilihan yang tepat dan tahan lama.</p>
-<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">Cara Mengevaluasi VectorDB dengan Dataset Kustom Anda dengan VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
+<p>Next, we’ll walk you through how to run a production-grade POC with VDBBench and your real data — so you can make a confident, future-proof choice.</p>
+<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">How to Evaluate VectorDBs with Your Custom Datasets with VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,96 +68,96 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelum memulai, pastikan Anda telah menginstal Python 3.11 atau lebih tinggi. Anda akan membutuhkan data vektor dalam format CSV atau NPY, sekitar 2-3 jam untuk penyiapan dan pengujian lengkap, dan pengetahuan Python tingkat menengah untuk pemecahan masalah jika diperlukan.</p>
-<h3 id="Installation-and-Configuration" class="common-anchor-header">Instalasi dan Konfigurasi</h3><p>Jika Anda mengevaluasi satu basis data, jalankan perintah ini:</p>
+    </button></h2><p>Before getting started, ensure you have Python 3.11 or higher installed. You’ll need vector data in CSV or NPY format, approximately 2-3 hours for complete setup and testing, and intermediate Python knowledge for troubleshooting if needed.</p>
+<h3 id="Installation-and-Configuration" class="common-anchor-header">Installation and Configuration</h3><p>If you’re evaluating one database, run this command:</p>
 <pre><code translate="no">pip install vectordb-bench
 <button class="copy-code-btn"></button></code></pre>
-<p>Jika Anda ingin membandingkan semua database yang didukung, jalankan perintah ini:</p>
+<p>If you’re to compare all supported databases, run the command:</p>
 <pre><code translate="no">pip install vectordb-bench[<span class="hljs-built_in">all</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>Untuk klien basis data tertentu (misalnya: Elasticsearch):</p>
+<p>For specific database clients (eg: Elasticsearch):</p>
 <pre><code translate="no">pip install vectordb-bench[elastic]
 <button class="copy-code-btn"></button></code></pre>
-<p>Periksa <a href="https://github.com/zilliztech/VectorDBBench">halaman GitHub</a> ini untuk mengetahui semua basis data yang didukung dan perintah instalasinya.</p>
-<h3 id="Launching-VDBBench" class="common-anchor-header">Meluncurkan VDBBench</h3><p>Mulai <strong>VDBBench</strong> dengan:</p>
+<p>Check this <a href="https://github.com/zilliztech/VectorDBBench">GitHub page</a> for all the supported databases and their install commands.</p>
+<h3 id="Launching-VDBBench" class="common-anchor-header">Launching VDBBench</h3><p>Start <strong>VDBBench</strong> with:</p>
 <pre><code translate="no">init_bench
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran konsol yang diharapkan: 
+<p>Expected console output: 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_expected_console_output_66e1a218b7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Antarmuka web akan tersedia secara lokal:</p>
+<p>The web interface will be available locally:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_2e4dd7ea69.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Persiapan Data dan Konversi Format</h3><p>VDBBench membutuhkan file Parquet terstruktur dengan skema tertentu untuk memastikan pengujian yang konsisten di berbagai basis data dan set data.</p>
+<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Data Preparation and Format Conversion</h3><p>VDBBench requires structured Parquet files with specific schemas to ensure consistent testing across different databases and datasets.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Nama File</strong></th><th style="text-align:center"><strong>Tujuan</strong></th><th style="text-align:center"><strong>Diperlukan</strong></th><th style="text-align:center"><strong>Contoh Konten</strong></th></tr>
+<tr><th style="text-align:center"><strong>File Name</strong></th><th style="text-align:center"><strong>Purpose</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Content Example</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Koleksi vektor untuk penyisipan basis data</td><td style="text-align:center">✅</td><td style="text-align:center">ID vektor + data vektor (list[float])</td></tr>
-<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Koleksi vektor untuk kueri</td><td style="text-align:center">✅</td><td style="text-align:center">ID vektor + data vektor (list[float])</td></tr>
-<tr><td style="text-align:center">tetangga.parket</td><td style="text-align:center">Kebenaran Dasar untuk vektor kueri (daftar ID tetangga terdekat yang sebenarnya)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [daftar ID serupa top_k]</td></tr>
-<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Label (metadata yang mendeskripsikan entitas selain vektor)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
+<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Vector collection for database insertion</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Vector collection for queries</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">Ground Truth for query vectors (actual nearest neighbor ID list)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k similar ID list]</td></tr>
+<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Labels (metadata describing entities other than vectors)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
 </tbody>
 </table>
-<p>Spesifikasi File yang Diperlukan:</p>
+<p>Required File Specifications:</p>
 <ul>
-<li><p><strong>File Vektor Pelatihan (train.parquet)</strong> harus berisi kolom ID dengan bilangan bulat tambahan dan kolom vektor yang berisi array float32. Nama kolom dapat dikonfigurasi, tetapi kolom ID harus menggunakan tipe integer untuk pengindeksan yang tepat.</p></li>
-<li><p><strong>File Vektor Uji (test.parquet)</strong> mengikuti struktur yang sama dengan data pelatihan. Nama kolom ID harus "id" sementara nama kolom vektor dapat disesuaikan agar sesuai dengan skema data Anda.</p></li>
-<li><p><strong>File Kebenaran Dasar (neighbors.parquet</strong> ) berisi referensi tetangga terdekat untuk setiap kueri uji. File ini membutuhkan kolom ID yang sesuai dengan ID vektor uji dan kolom larik tetangga yang berisi ID tetangga terdekat yang benar dari set pelatihan.</p></li>
-<li><p><strong>File Label Skalar (scalar_labels.parquet</strong> ) bersifat opsional dan berisi label metadata yang terkait dengan vektor pelatihan, berguna untuk pengujian pencarian yang disaring.</p></li>
+<li><p><strong>Training Vector File (train.parquet)</strong> must contain an ID column with incremental integers and a vector column containing float32 arrays. Column names are configurable, but the ID column must use integer types for proper indexing.</p></li>
+<li><p><strong>Test Vector File (test.parquet)</strong> follows the same structure as the training data. The ID column name must be “id” while vector column names can be customized to match your data schema.</p></li>
+<li><p><strong>Ground Truth File (neighbors.parquet)</strong> contains the reference nearest neighbors for each test query. It requires an ID column corresponding to test vector IDs and a neighbors array column containing the correct nearest neighbor IDs from the training set.</p></li>
+<li><p><strong>Scalar Labels File (scalar_labels.parquet)</strong> is optional and contains metadata labels associated with training vectors, useful for filtered search testing.</p></li>
 </ul>
-<h3 id="Data-Format-Challenges" class="common-anchor-header">Tantangan Format Data</h3><p>Sebagian besar data vektor produksi ada dalam format yang tidak secara langsung sesuai dengan persyaratan VDBBench. File CSV biasanya menyimpan penyematan sebagai representasi string dari array, file NPY berisi matriks numerik mentah tanpa metadata, dan ekspor basis data sering kali menggunakan JSON atau format terstruktur lainnya.</p>
-<p>Mengonversi format-format ini secara manual melibatkan beberapa langkah rumit: mengurai representasi string menjadi larik numerik, menghitung tetangga terdekat dengan tepat menggunakan pustaka seperti FAISS, memisahkan set data dengan benar sambil mempertahankan konsistensi ID, dan memastikan semua tipe data cocok dengan spesifikasi Parket.</p>
-<h3 id="Automated-Format-Conversion" class="common-anchor-header">Konversi Format Otomatis</h3><p>Untuk menyederhanakan proses konversi, kami telah mengembangkan skrip Python yang menangani konversi format, penghitungan kebenaran dasar, dan penataan data yang tepat secara otomatis.</p>
-<p><strong>Format Masukan CSV:</strong></p>
+<h3 id="Data-Format-Challenges" class="common-anchor-header">Data Format Challenges</h3><p>Most production vector data exists in formats that don’t directly match VDBBench requirements. CSV files typically store embeddings as string representations of arrays, NPY files contain raw numerical matrices without metadata, and database exports often use JSON or other structured formats.</p>
+<p>Converting these formats manually involves several complex steps: parsing string representations into numerical arrays, computing exact nearest neighbors using libraries like FAISS, properly splitting datasets while maintaining ID consistency, and ensuring all data types match Parquet specifications.</p>
+<h3 id="Automated-Format-Conversion" class="common-anchor-header">Automated Format Conversion</h3><p>To streamline the conversion process, we’ve developed a Python script that handles format conversion, ground truth computation, and proper data structuring automatically.</p>
+<p><strong>CSV Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">id</span>,emb,label
 <span class="hljs-number">1</span>,<span class="hljs-string">&quot;[0.12,0.56,0.89,...]&quot;</span>,A
 <span class="hljs-number">2</span>,<span class="hljs-string">&quot;[0.33,0.48,0.90,...]&quot;</span>,B
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Format Masukan NPY:</strong></p>
+<p><strong>NPY Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 vectors = np.<span class="hljs-property">random</span>.<span class="hljs-title function_">rand</span>(<span class="hljs-number">10000</span>, <span class="hljs-number">768</span>).<span class="hljs-title function_">astype</span>(<span class="hljs-string">&#x27;float32&#x27;</span>)
 np.<span class="hljs-title function_">save</span>(<span class="hljs-string">&quot;vectors.npy&quot;</span>, vectors)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Implementasi Skrip Konversi</h3><p><strong>Instal dependensi yang diperlukan:</strong></p>
+<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Conversion Script Implementation</h3><p><strong>Install required dependencies:</strong></p>
 <pre><code translate="no">pip install numpy pandas faiss-cpu
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Jalankan konversi:</strong></p>
+<p><strong>Execute the conversion:</strong></p>
 <pre><code translate="no">python convert_to_vdb_format.py \
   --train data/train.csv \
   --<span class="hljs-built_in">test</span> data/test.csv \
   --out datasets/custom \
   --topk 10
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Referensi Parameter:</strong></p>
+<p><strong>Parameter Reference:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Nama Parameter</strong></th><th style="text-align:center"><strong>Diperlukan</strong></th><th style="text-align:center"><strong>Tipe</strong></th><th style="text-align:center"><strong>Deskripsi</strong></th><th style="text-align:center"><strong>Nilai Default</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Type</strong></th><th style="text-align:center"><strong>Description</strong></th><th style="text-align:center"><strong>Default Value</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Ya</td><td style="text-align:center">String</td><td style="text-align:center">Jalur data pelatihan, mendukung format CSV atau NPY. CSV harus berisi kolom emb, jika tidak ada kolom id akan dibuat secara otomatis</td><td style="text-align:center">Tidak ada</td></tr>
-<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Ya</td><td style="text-align:center">String</td><td style="text-align:center">Jalur data kueri, mendukung format CSV atau NPY. Format sama dengan data pelatihan</td><td style="text-align:center">Tidak ada</td></tr>
-<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Ya</td><td style="text-align:center">String</td><td style="text-align:center">Jalur direktori keluaran, menyimpan file parket yang dikonversi dan file indeks tetangga</td><td style="text-align:center">Tidak ada</td></tr>
-<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">Tidak ada</td><td style="text-align:center">String</td><td style="text-align:center">Jalur CSV label, harus berisi kolom label (diformat sebagai larik string), digunakan untuk menyimpan label</td><td style="text-align:center">Tidak ada</td></tr>
-<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">Tidak ada</td><td style="text-align:center">Integer</td><td style="text-align:center">Jumlah tetangga terdekat yang akan dikembalikan saat komputasi</td><td style="text-align:center">10</td></tr>
+<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Training data path, supports CSV or NPY format. CSV must contain emb column, if no id column will auto-generate</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Query data path, supports CSV or NPY format. Format same as training data</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Output directory path, saves converted parquet files and neighbor index files</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">No</td><td style="text-align:center">String</td><td style="text-align:center">Label CSV path, must contain labels column (formatted as string array), used for saving labels</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">No</td><td style="text-align:center">Integer</td><td style="text-align:center">Number of nearest neighbors to return when computing</td><td style="text-align:center">10</td></tr>
 </tbody>
 </table>
-<p><strong>Struktur Direktori Keluaran:</strong></p>
+<p><strong>Output Directory Structure:</strong></p>
 <pre><code translate="no">datasets/custom/
 ├── train.parquet        <span class="hljs-comment"># Training vectors</span>
 ├── test.parquet         <span class="hljs-comment"># Query vectors  </span>
 ├── neighbors.parquet    <span class="hljs-comment"># Ground Truth</span>
 └── scalar_labels.parquet <span class="hljs-comment"># Optional scalar labels</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Complete-Conversion-Script" class="common-anchor-header">Skrip Konversi Lengkap</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="Complete-Conversion-Script" class="common-anchor-header">Complete Conversion Script</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> argparse
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
@@ -242,88 +241,88 @@ name
     args = parser.parse_args()
     main(args.train, args.test, args.out, args.labels, args.topk)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Keluaran Proses Konversi:</strong> 
+<p><strong>Conversion Process Output:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_conversion_process_output_0827ba75c9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Verifikasi File yang Dihasilkan:</strong> 
+<p><strong>Generated Files Verification:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_f02cd2964e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Konfigurasi Dataset Khusus</h3><p>Buka bagian Konfigurasi Dataset Khusus di antarmuka web:</p>
+<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Custom Dataset Configuration</h3><p>Navigate to the Custom Dataset configuration section in the web interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_aa14b75b5d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Antarmuka konfigurasi menyediakan bidang untuk metadata dataset dan spesifikasi jalur file:</p>
+<p>The configuration interface provides fields for dataset metadata and file path specification:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/6_1b64832990.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Parameter Konfigurasi:</strong></p>
+<p><strong>Configuration Parameters:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Nama Parameter</strong></th><th style="text-align:center"><strong>Arti</strong></th><th style="text-align:center"><strong>Saran Konfigurasi</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Meaning</strong></th><th style="text-align:center"><strong>Configuration Suggestions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Nama</td><td style="text-align:center">Nama dataset (pengenal unik)</td><td style="text-align:center">Nama apa saja, misalnya, <code translate="no">my_custom_dataset</code></td></tr>
-<tr><td style="text-align:center">Jalur Folder</td><td style="text-align:center">Jalur direktori file dataset</td><td style="text-align:center">misalnya <code translate="no">/data/datasets/custom</code></td></tr>
-<tr><td style="text-align:center">redup</td><td style="text-align:center">Dimensi vektor</td><td style="text-align:center">Harus sesuai dengan file data, misalnya, 768</td></tr>
-<tr><td style="text-align:center">ukuran</td><td style="text-align:center">Jumlah vektor (opsional)</td><td style="text-align:center">Dapat dikosongkan, sistem akan mendeteksi secara otomatis</td></tr>
-<tr><td style="text-align:center">Jenis metrik</td><td style="text-align:center">Metode pengukuran kesamaan</td><td style="text-align:center">Umumnya menggunakan L2 (jarak Euclidean) atau IP (inner product)</td></tr>
-<tr><td style="text-align:center">nama file pelatihan</td><td style="text-align:center">Nama file set pelatihan (tanpa ekstensi .parquet)</td><td style="text-align:center">Jika <code translate="no">train.parquet</code>, isi <code translate="no">train</code>. Beberapa file menggunakan pemisahan koma, mis, <code translate="no">train1,train2</code></td></tr>
-<tr><td style="text-align:center">nama file uji coba</td><td style="text-align:center">Nama file set kueri (tanpa ekstensi .parquet)</td><td style="text-align:center">Jika <code translate="no">test.parquet</code>, isi <code translate="no">test</code></td></tr>
-<tr><td style="text-align:center">nama file kebenaran dasar</td><td style="text-align:center">Nama file Ground Truth (tanpa ekstensi .parquet)</td><td style="text-align:center">Jika <code translate="no">neighbors.parquet</code>, isi <code translate="no">neighbors</code></td></tr>
-<tr><td style="text-align:center">nama id data latih</td><td style="text-align:center">Nama kolom ID data pelatihan</td><td style="text-align:center">Biasanya <code translate="no">id</code></td></tr>
-<tr><td style="text-align:center">nama emb train</td><td style="text-align:center">Nama kolom vektor data pelatihan</td><td style="text-align:center">Jika nama kolom yang dihasilkan skrip adalah <code translate="no">emb</code>, isi <code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">nama emb uji</td><td style="text-align:center">Nama kolom vektor data uji</td><td style="text-align:center">Biasanya sama dengan nama train emb, mis, <code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">nama emb kebenaran tanah</td><td style="text-align:center">Nama kolom tetangga terdekat di Ground Truth</td><td style="text-align:center">Jika nama kolom adalah <code translate="no">neighbors_id</code>, isi <code translate="no">neighbors_id</code></td></tr>
-<tr><td style="text-align:center">nama file label skalar</td><td style="text-align:center">(Opsional) Nama file label (tanpa ekstensi .parket)</td><td style="text-align:center">Jika <code translate="no">scalar_labels.parquet</code> dibuat, isi <code translate="no">scalar_labels</code>, jika tidak, biarkan kosong</td></tr>
-<tr><td style="text-align:center">persentase label</td><td style="text-align:center">(Opsional) Rasio filter label</td><td style="text-align:center">misalnya, <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, biarkan kosong jika tidak ada pemfilteran label yang diperlukan</td></tr>
-<tr><td style="text-align:center">deskripsi</td><td style="text-align:center">Deskripsi set data</td><td style="text-align:center">Tidak dapat mencatat konteks bisnis atau metode pembuatan</td></tr>
+<tr><td style="text-align:center">Name</td><td style="text-align:center">Dataset name (unique identifier)</td><td style="text-align:center">Any name, e.g., <code translate="no">my_custom_dataset</code></td></tr>
+<tr><td style="text-align:center">Folder Path</td><td style="text-align:center">Dataset file directory path</td><td style="text-align:center">e.g., <code translate="no">/data/datasets/custom</code></td></tr>
+<tr><td style="text-align:center">dim</td><td style="text-align:center">Vector dimensions</td><td style="text-align:center">Must match data files, e.g., 768</td></tr>
+<tr><td style="text-align:center">size</td><td style="text-align:center">Vector count (optional)</td><td style="text-align:center">Can be left empty, system will auto-detect</td></tr>
+<tr><td style="text-align:center">metric type</td><td style="text-align:center">Similarity measurement method</td><td style="text-align:center">Commonly use L2 (Euclidean distance) or IP (inner product)</td></tr>
+<tr><td style="text-align:center">train file name</td><td style="text-align:center">Training set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">train.parquet</code>, fill <code translate="no">train</code>. Multiple files use comma separation, e.g., <code translate="no">train1,train2</code></td></tr>
+<tr><td style="text-align:center">test file name</td><td style="text-align:center">Query set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">test.parquet</code>, fill <code translate="no">test</code></td></tr>
+<tr><td style="text-align:center">ground truth file name</td><td style="text-align:center">Ground Truth filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">neighbors.parquet</code>, fill <code translate="no">neighbors</code></td></tr>
+<tr><td style="text-align:center">train id name</td><td style="text-align:center">Training data ID column name</td><td style="text-align:center">Usually <code translate="no">id</code></td></tr>
+<tr><td style="text-align:center">train emb name</td><td style="text-align:center">Training data vector column name</td><td style="text-align:center">If script-generated column name is <code translate="no">emb</code>, fill <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">test emb name</td><td style="text-align:center">Test data vector column name</td><td style="text-align:center">Usually same as train emb name, e.g., <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">ground truth emb name</td><td style="text-align:center">Nearest neighbor column name in Ground Truth</td><td style="text-align:center">If column name is <code translate="no">neighbors_id</code>, fill <code translate="no">neighbors_id</code></td></tr>
+<tr><td style="text-align:center">scalar labels file name</td><td style="text-align:center">(Optional) Label filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">scalar_labels.parquet</code> was generated, fill <code translate="no">scalar_labels</code>, otherwise leave empty</td></tr>
+<tr><td style="text-align:center">label percentages</td><td style="text-align:center">(Optional) Label filter ratio</td><td style="text-align:center">e.g., <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, leave empty if no label filtering needed</td></tr>
+<tr><td style="text-align:center">description</td><td style="text-align:center">Dataset description</td><td style="text-align:center">Cannot note business context or generation method</td></tr>
 </tbody>
 </table>
-<p>Simpan konfigurasi untuk melanjutkan penyiapan pengujian.</p>
-<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Eksekusi Tes dan Konfigurasi Basis Data</h3><p>Mengakses antarmuka konfigurasi pengujian:</p>
+<p>Save the configuration to proceed with the test setup.</p>
+<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Test Execution and Database Configuration</h3><p>Access the test configuration interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/7_3ecdcb1034.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Pemilihan dan Konfigurasi Basis Data (Milvus sebagai Contoh):</strong> 
+<p><strong>Database Selection and Configuration (Milvus as an Example):</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/8_356a2d8c39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Penetapan Dataset:</strong> 
+<p><strong>Dataset Assignment:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/9_dataset_assignment_85ba7b24ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Uji Metadata dan Pelabelan:</strong> 
+<p><strong>Test Metadata and Labeling:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/10_test_metadata_and_labeling_293f6f2b99.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Eksekusi Tes:</strong> 
+<p><strong>Test Execution:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/11_test_execution_76acb42c98.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Analisis Hasil dan Evaluasi Kinerja<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
+<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Results Analysis and Performance Evaluation<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -338,22 +337,22 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antarmuka hasil menyediakan analisis performa yang komprehensif:</p>
+    </button></h2><p>The results interface provides comprehensive performance analytics:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_993c536c20.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Test-Configuration-Summary" class="common-anchor-header">Ringkasan Konfigurasi Pengujian</h3><p>Evaluasi menguji tingkat konkurensi 1, 5, dan 10 operasi bersamaan (dibatasi oleh sumber daya perangkat keras yang tersedia), dimensi vektor 768, ukuran set data 3.000 vektor pelatihan dan 3.000 kueri pengujian, dengan pemfilteran label skalar yang dinonaktifkan untuk uji coba ini.</p>
-<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Pertimbangan Implementasi yang Penting</h3><ul>
-<li><p><strong>Konsistensi Dimensi:</strong> Ketidaksesuaian dimensi vektor antara dataset pelatihan dan pengujian akan menyebabkan kegagalan pengujian secara langsung. Verifikasi keselarasan dimensi selama persiapan data untuk menghindari kesalahan runtime.</p></li>
-<li><p><strong>Akurasi Kebenaran Dasar:</strong> Perhitungan kebenaran dasar yang salah akan membatalkan pengukuran tingkat recall. Skrip konversi yang disediakan menggunakan FAISS dengan jarak L2 untuk penghitungan tetangga terdekat yang tepat, memastikan hasil referensi yang akurat.</p></li>
-<li><p><strong>Persyaratan Skala Dataset:</strong> Dataset kecil (di bawah 10.000 vektor) dapat menghasilkan pengukuran QPS yang tidak konsisten karena pembangkitan beban yang tidak memadai. Pertimbangkan untuk menskalakan ukuran dataset untuk pengujian throughput yang lebih andal.</p></li>
-<li><p><strong>Alokasi Sumber Daya:</strong> Memori kontainer Docker dan batasan CPU dapat membatasi kinerja database secara artifisial selama pengujian. Pantau pemanfaatan sumber daya dan sesuaikan batas kontainer sesuai kebutuhan untuk pengukuran performa yang akurat.</p></li>
-<li><p><strong>Pemantauan Kesalahan:</strong> <strong>VDBBench</strong> dapat mencatat kesalahan pada output konsol yang tidak muncul di antarmuka web. Pantau log terminal selama eksekusi pengujian untuk informasi diagnostik yang lengkap.</p></li>
+<h3 id="Test-Configuration-Summary" class="common-anchor-header">Test Configuration Summary</h3><p>The evaluation tested concurrency levels of 1, 5, and 10 concurrent operations (constrained by available hardware resources), vector dimensions of 768, dataset size of 3,000 training vectors and 3,000 test queries, with scalar label filtering disabled for this test run.</p>
+<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Critical Implementation Considerations</h3><ul>
+<li><p><strong>Dimensional Consistency:</strong> Vector dimension mismatches between training and test datasets will cause immediate test failures. Verify dimensional alignment during data preparation to avoid runtime errors.</p></li>
+<li><p><strong>Ground Truth Accuracy:</strong> Incorrect ground truth calculations invalidate recall rate measurements. The provided conversion script uses FAISS with L2 distance for exact nearest neighbor computation, ensuring accurate reference results.</p></li>
+<li><p><strong>Dataset Scale Requirements:</strong> Small datasets (below 10,000 vectors) may produce inconsistent QPS measurements due to insufficient load generation. Consider scaling the dataset size for more reliable throughput testing.</p></li>
+<li><p><strong>Resource Allocation:</strong> Docker container memory and CPU constraints can artificially limit database performance during testing. Monitor resource utilization and adjust container limits as needed for accurate performance measurement.</p></li>
+<li><p><strong>Error Monitoring:</strong> <strong>VDBBench</strong> may log errors to console output that don’t appear in the web interface. Monitor terminal logs during test execution for complete diagnostic information.</p></li>
 </ul>
-<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Alat Tambahan: Pembuatan Data Uji<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
+<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Supplemental Tools: Test Data Generation<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -368,7 +367,7 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk pengembangan dan skenario pengujian standar, Anda dapat membuat set data sintetis dengan karakteristik yang terkontrol:</p>
+    </button></h2><p>For development and standardized testing scenarios, you can generate synthetic datasets with controlled characteristics:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_csv</span>(<span class="hljs-params">num_records: <span class="hljs-built_in">int</span>, dim: <span class="hljs-built_in">int</span>, filename: <span class="hljs-built_in">str</span></span>):
@@ -390,8 +389,8 @@ name
     generate_csv(num_records, dim, <span class="hljs-string">&quot;train.csv&quot;</span>)
     generate_csv(num_records, dim, <span class="hljs-string">&quot;test.csv&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Utilitas ini menghasilkan dataset dengan dimensi dan jumlah rekaman tertentu untuk skenario pembuatan prototipe dan pengujian dasar.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This utility generates datasets with specified dimensions and record counts for prototyping and baseline testing scenarios.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -406,12 +405,12 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Anda baru saja belajar cara membebaskan diri dari "teater benchmark" yang menyesatkan banyak keputusan database vektor. Dengan VDBBench dan dataset Anda sendiri, Anda dapat menghasilkan metrik QPS, latensi, dan recall tingkat produksi - tidak perlu lagi menebak-nebak dari data akademis yang sudah berusia puluhan tahun.</p>
-<p>Berhentilah mengandalkan tolok ukur kalengan yang tidak ada hubungannya dengan beban kerja Anda yang sebenarnya. Hanya dalam hitungan jam-bukan minggu-Anda akan melihat dengan tepat bagaimana kinerja database dengan vektor, kueri, dan batasan <em>Anda</em>. Itu berarti Anda bisa membuat keputusan dengan percaya diri, menghindari penulisan ulang yang menyakitkan di kemudian hari, dan mengirimkan sistem yang benar-benar berfungsi dalam produksi.</p>
+    </button></h2><p>You’ve just learned how to break free from the “benchmark theater” that’s misled countless vector database decisions. With VDBBench and your own dataset, you can generate production-grade QPS, latency, and recall metrics—no more guesswork from decades-old academic data.</p>
+<p>Stop relying on canned benchmarks that have nothing to do with your real workloads. In just hours—not weeks—you’ll see precisely how a database performs with <em>your</em> vectors, <em>your</em> queries, and <em>your</em> constraints. That means you can make the call with confidence, avoid painful rewrites later, and ship systems that actually work in production.</p>
 <ul>
-<li><p>Coba VDBBench dengan beban kerja Anda: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
-<li><p>Melihat hasil pengujian database vektor utama: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">Papan Peringkat VDBBench</a></p></li>
+<li><p>Try VDBBench with your workloads: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
+<li><p>View testing results of major vector databases: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
 </ul>
-<p>Ada pertanyaan atau ingin membagikan hasil pengujian Anda? Bergabunglah dengan percakapan di<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> atau terhubung dengan komunitas kami di <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
 <hr>
-<p><em>Ini adalah tulisan pertama dari seri Panduan POC VectorDB kami-metode praktis dan teruji oleh pengembang untuk membangun infrastruktur AI yang berkinerja di bawah tekanan dunia nyata. Nantikan artikel selanjutnya!</em></p>
+<p><em>This is the first post in our VectorDB POC Guide series—hands-on, developer-tested methods for building AI infrastructure that performs under real-world pressure. Stay tuned for more!</em></p>

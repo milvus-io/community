@@ -1,9 +1,11 @@
 ---
 id: 2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
-title: Zhentu - 基於 Milvus 的照片詐騙檢測器
+title: Zhentu - the Photo Fraud Detector Based on Milvus
 author: 'Yan Shi, Minwei Tang'
 date: 2022-06-20T00:00:00.000Z
-desc: Zhentu 的偵測系統是如何以 Milvus 作為向量搜尋引擎？
+desc: >-
+  How is Zhentu's detection system built with Milvus as its vector search
+  engine?
 cover: assets.zilliz.com/zhentu_0ae11c98ee.png
 tag: Scenarios
 tags: Use Cases of Milvus
@@ -11,25 +13,27 @@ canonicalUrl: >-
   https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zhentu_0ae11c98ee.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>封面圖片</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/zhentu_0ae11c98ee.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>本文作者為BestPay資深演算法工程師石焱、唐敏薇，翻譯：<a href="https://www.linkedin.cn/incareer/in/rosie-zhang-694528149">Rosie Zhang</a>。</p>
+<p>This article is written by Yan Shi and Minwei Tang, senior algorithm engineers at BestPay, and translated by <a href="https://www.linkedin.cn/incareer/in/rosie-zhang-694528149">Rosie Zhang</a>.</p>
 </blockquote>
-<p>近年來，隨著電子商務和在線交易在全球範圍內的普及，電子商務詐騙也隨之蓬勃發展。騙徒利用電腦生成的照片代替真實照片通過網上商業平台的身份驗證，製造大量虛假賬戶，套取商家的優惠資訊（如會員禮品、優惠券、代幣等），給消費者和商家都帶來了無法挽回的損失。</p>
-<p>面對大量的數據，傳統的風險控制方法已不再有效。為了解決這一問題，<a href="https://www.bestpay.com.cn">BestPay</a>基於深度學習（DL）和數位影像處理（DIP）技術，創建了一款照片詐騙檢測器，即 Zhentu（中文意思是檢測圖像）。Zhentu 適用於各種涉及圖像識別的場景，其中一個重要的分支是偽造營業執照的識別。如果用戶提交的營業執照照片與平台照片庫中已有的另一張照片非常相似，則該用戶很可能在某處盜用了該照片，或者偽造了營業執照以達到欺詐目的。</p>
-<p>傳統測量影像相似度的演算法，例如<a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio">PSNR</a>和 ORB，速度慢且不準確，只適用於離線任務。深度學習則能即時處理大規模的影像資料，是比對相似影像的終極方法。在 BestPay 研發團隊與<a href="https://milvus.io/">Milvus 社群</a>的共同努力下，Zhentu 開發了一套照片詐騙偵測系統。它的功能是透過深度學習模型將大量圖像資料轉換為特徵向量，並將其插入向量搜尋引擎<a href="https://milvus.io/">Milvus</a>。透過 Milvus，偵測系統能夠索引數以萬億計的向量，並在數千萬張圖片中有效檢索相似的照片。</p>
-<p><strong>跳到</strong></p>
+<p>In recent years, as e-commerce and online transactions become commonplace throughout the world, e-commerce fraud also flourished. By using computer-generated photos instead of real ones to pass identity verification on online business platforms, fraudsters create massive fake accounts and cash in on businesses’ special offers (e.g. membership gifts, coupons, tokens), which brings irretrievable losses to both consumers and businesses.</p>
+<p>Traditional risk control methods are no longer effective in the face of a substantial amount of data. To solve the problem, <a href="https://www.bestpay.com.cn">BestPay</a> created a photo fraud detector, namely Zhentu (meaning detecting images in Chinese), based on deep learning (DL) and digital image processing (DIP) technologies. Zhentu is applicable to various scenarios involving image recognition, with one important offshoot being the identification of fake business licenses. If the business license photo submitted by a user is very similar to another photo already existing in a platform’s photo library, it is likely that the user has stolen the photo somewhere or has forged a license for fraudulent purposes.</p>
+<p>Traditional algorithms for measuring image similarity, such as <a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio">PSNR</a> and ORB, are slow and inaccurate, only applicable to offline tasks. Deep learning, on the other hand, is capable of processing large-scale image data in real-time and is the ultimate method for matching similar images. With the joint efforts of BestPay’s R&amp;D team and <a href="https://milvus.io/">the Milvus community</a>, a photo fraud detection system is developed as part of Zhentu. It functions by converting massive amounts of image data into feature vectors through deep learning models and inserting them into <a href="https://milvus.io/">Milvus</a>, a vector search engine. With Milvus, the detection system is able to index trillions of vectors and efficiently retrieve similar photos among tens of millions of images.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#an-overview-of-zhentu">Zhentu 概觀</a></li>
-<li><a href="#system-structure">系統結構</a></li>
-<li><a href="#deployment"><strong>部署</strong></a></li>
-<li><a href="#real-world-performance"><strong>實際效能</strong></a></li>
-<li><a href="#reference"><strong>參考資料</strong></a></li>
-<li><a href="#about-bestpay"><strong>關於 BestPay</strong></a></li>
+<li><a href="#an-overview-of-zhentu">An overview of Zhentu</a></li>
+<li><a href="#system-structure">System structure</a></li>
+<li><a href="#deployment"><strong>Deployment</strong></a></li>
+<li><a href="#real-world-performance"><strong>Real-world performance</strong></a></li>
+<li><a href="#reference"><strong>Reference</strong></a></li>
+<li><a href="#about-bestpay"><strong>About BestPay</strong></a></li>
 </ul>
-<h2 id="An-overview-of-Zhentu" class="common-anchor-header">臻圖概述<button data-href="#An-overview-of-Zhentu" class="anchor-icon" translate="no">
+<h2 id="An-overview-of-Zhentu" class="common-anchor-header">An overview of Zhentu<button data-href="#An-overview-of-Zhentu" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,8 +48,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Zhentu是BestPay自主設計的多媒體視覺風險控制產品，深度整合了機器學習（ML）和神經網絡圖像識別技術。其內建的演算法可在使用者驗證時精準識別詐欺者，並在毫秒級反應。憑藉領先業界的技術和創新的解決方案，臻圖已獲得五項專利和兩項軟體著作權。目前已被多家銀行和金融機構採用，幫助提前識別潛在風險。</p>
-<h2 id="System-structure" class="common-anchor-header">系統架構<button data-href="#System-structure" class="anchor-icon" translate="no">
+    </button></h2><p>Zhentu is BestPay’s self-designed multimedia visual risk control product deeply integrated with machine learning (ML) and neural network image recognition technologies. Its built-in algorithm can accurately identify fraudsters during user authentication and respond at the millisecond level. With its industry-leading technology and innovative solution, Zhentu has won five patents and two software copyrights. It is now being used in a number of banks and financial institutions to help identify potential risks in advance.</p>
+<h2 id="System-structure" class="common-anchor-header">System structure<button data-href="#System-structure" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,19 +64,21 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>BestPay目前擁有超過1000萬張營業執照照片，隨著業務的成長，實際數量仍在成倍成長。為了從如此龐大的資料庫中快速檢索出類似照片，臻圖選擇了Milvus作為特徵向量相似度計算引擎。照片詐騙檢測系統的大體結構如下圖所示。</p>
+    </button></h2><p>BestPay currently has over 10 million business license photos, and the actual volume is still growing exponentially as the business grows. In order to quickly retrieve similar photos from such a large database, Zhentu has chosen Milvus as the feature vector similarity calculation engine. The general structure of the photo fraud detection system is shown in the diagram below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Structure_of_the_photo_fraud_detection_system_cf5d20d431.png" alt="img" class="doc-image" id="img" />
-   </span> <span class="img-wrapper"> <span>img</span> </span></p>
-<p>程序可分為四個步驟：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Structure_of_the_photo_fraud_detection_system_cf5d20d431.png" alt="img" class="doc-image" id="img" />
+    <span>img</span>
+  </span>
+</p>
+<p>The procedure can be divided into four steps:</p>
 <ol>
-<li><p>影像預處理。預處理包括降噪、去噪、對比度增強等，既保證原始資訊的完整性，又能去除影像訊號中的無用資訊。</p></li>
-<li><p>特徵向量萃取。使用經過特殊訓練的深度學習模型來萃取影像的特徵向量。將影像轉換成向量，以便進一步進行相似性搜尋，這是一項例行性的作業。</p></li>
-<li><p>歸一化。將擷取的特徵向量歸一化，有助於提高後續處理的效率。</p></li>
-<li><p>使用 Milvus 進行向量搜尋。將正規化的特徵向量插入 Milvus 資料庫，進行向量相似性搜尋。</p></li>
+<li><p>Image pre-processing. Pre-processing, including noise reduction, noise removal, and contrast enhancement, ensures both the integrity of the original information and the removal of useless information from the image signal.</p></li>
+<li><p>Feature vector extraction. A specially trained deep learning model is used to extract the feature vectors of the image. Converting images into vectors for further similarity search is a routine operation.</p></li>
+<li><p>Normalization. Normalizing the extracted feature vectors helps to improve the efficiency of the subsequent processing.</p></li>
+<li><p>Vector search with Milvus. Inserting the normalized feature vectors into Milvus database for vector similarity search.</p></li>
 </ol>
-<h2 id="Deployment" class="common-anchor-header"><strong>部署</strong><button data-href="#Deployment" class="anchor-icon" translate="no">
+<h2 id="Deployment" class="common-anchor-header"><strong>Deployment</strong><button data-href="#Deployment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -87,30 +93,32 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>以下簡述 Zhentu 照片詐騙偵測系統的部署方式。</p>
+    </button></h2><p>Here is a brief description of how Zhentu’s photo fraud detection system is deployed.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png" alt="Milvus system architecture" class="doc-image" id="milvus-system-architecture" />
-   </span> <span class="img-wrapper"> <span>Milvus 系統架構</span> </span></p>
-<p>我們將<a href="https://milvus.io/docs/v2.0.x/install_cluster-helm.md">Milvus 叢集</a>部署<a href="https://milvus.io/docs/v2.0.x/install_cluster-helm.md">在 Kubernetes 上</a>，以確保雲端服務的高可用性與即時同步。一般步驟如下：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png" alt="Milvus system architecture" class="doc-image" id="milvus-system-architecture" />
+    <span>Milvus system architecture</span>
+  </span>
+</p>
+<p>We deployed our <a href="https://milvus.io/docs/v2.0.x/install_cluster-helm.md">Milvus cluster on Kubernetes</a> to ensure high availability and real-time synchronization of cloud services. The general steps are as follows:</p>
 <ol>
-<li><p>檢視可用資源。執行指令<code translate="no">kubectl describe nodes</code> ，查看 Kubernetes 叢集可分配給已建立案例的資源。</p></li>
-<li><p>分配資源。執行指令<code translate="no">kubect`` -- apply xxx.yaml</code> ，使用 Helm 為 Milvus 叢集元件分配記憶體和 CPU 資源。</p></li>
-<li><p>套用新組態。執行指令<code translate="no">helm upgrade my-release milvus/milvus --reuse-values -fresources.yaml</code> 。</p></li>
-<li><p>將新組態套用至 Milvus 叢集。這樣部署的叢集不僅可以根據不同的業務需求調整系統容量，還能更好地滿足海量向量資料檢索的高性能要求。</p></li>
+<li><p>View available resources. Run the command <code translate="no">kubectl describe nodes</code> to see the resources that the Kubernetes cluster can allocate to the created cases.</p></li>
+<li><p>Allocate resources. Run the command <code translate="no">kubect`` -- apply xxx.yaml</code> to allocate memory and CPU resources for Milvus cluster components using Helm.</p></li>
+<li><p>Apply the new configuration. Run the command <code translate="no">helm upgrade my-release milvus/milvus --reuse-values -fresources.yaml</code>.</p></li>
+<li><p>Apply the new configuration to the Milvus cluster. The cluster deployed in this way not only allows us to adjust system capacity according to different business needs, but also better meets the high-performance requirements for massive vector data retrieval.</p></li>
 </ol>
-<p>您可以對<a href="https://milvus.io/docs/v2.0.x/configure-docker.md">Milvus 進行配置</a>，針對不同業務場景下的不同類型資料優化搜索性能，如以下兩個示例所示。</p>
-<p>在<a href="https://milvus.io/docs/v2.0.x/build_index.md">建立向量索引</a>時，我們根據系統的實際使用情境進行如下的參數設定：</p>
+<p>You can <a href="https://milvus.io/docs/v2.0.x/configure-docker.md">configure Milvus</a> to optimize search performance for different types of data from different business scenarios, as shown in the following two examples.</p>
+<p>In <a href="https://milvus.io/docs/v2.0.x/build_index.md">building the vector index</a>, we parameterize the index according to the actual scenario of the system as follows:</p>
 <pre><code translate="no" class="language-Python">index = {<span class="hljs-string">&quot;index_type&quot;</span>: <span class="hljs-string">&quot;IVF_PQ&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nlist&quot;</span>: <span class="hljs-number">2048</span>}, <span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;IP&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<p><a href="https://milvus.io/docs/v2.0.x/index.md#IVF_PQ">IVF_PQ</a>在量化向量的乘積之前，先執行 IVF 索引聚類。其特點是磁碟查詢速度快、記憶體消耗極低，符合 Zhentu 的實際應用需求。</p>
-<p>此外，我們設定最佳搜尋參數如下：</p>
+<p><a href="https://milvus.io/docs/v2.0.x/index.md#IVF_PQ">IVF_PQ</a> performs IVF index clustering before quantizing the product of vectors. It features high-speed disk query and very low memory consumption, which meets the needs of the real-world application of Zhentu.</p>
+<p>Besides, we set the optimal search parameters as follows:</p>
 <pre><code translate="no" class="language-Python">search_params = {<span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;IP&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: <span class="hljs-number">32</span>}}
 <button class="copy-code-btn"></button></code></pre>
-<p>由於向量在輸入 Milvus 前已經標準化，因此選擇內乘積 (IP) 來計算兩個向量之間的距離。實驗證明，使用 IP 比使用歐氏距離 (L2) 的召回率提高約 15%。</p>
-<p>以上的例子說明，我們可以根據不同的業務情境和效能需求，測試和設定 Milvus 的參數。</p>
-<p>此外，Milvus 不僅整合了不同的索引函式庫，也支援不同的索引類型和相似度計算方法。Milvus還提供了多國語言的官方SDK和豐富的API進行插入、查詢等操作，使我們的前端業務群組可以使用SDK對風控中心進行調用。</p>
-<h2 id="Real-world-performance" class="common-anchor-header"><strong>實際效能</strong><button data-href="#Real-world-performance" class="anchor-icon" translate="no">
+<p>As the vectors are already normalized before input into Milvus, the inner product (IP) is chosen to calculate the distance between two vectors. Experiments have proved that the recall rate is raised by about 15% using IP than using the Euclidean distance (L2).</p>
+<p>The above examples show that we can test and set Milvus’ parameters according to different business scenarios and performance requirements.</p>
+<p>In addition, Milvus not only integrates different index libraries, but also supports different index types and similarity calculation methods. Milvus also provides official SDKs in multiple languages and rich APIs for insertion, querying, etc., allowing our front-end business groups to use the SDKs to call on the risk control center.</p>
+<h2 id="Real-world-performance" class="common-anchor-header"><strong>Real-world performance</strong><button data-href="#Real-world-performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,8 +133,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>到目前為止，照片詐欺檢測系統一直在穩定運行，幫助企業識別潛在的詐欺者。2021 年，全年檢出假證超過 2 萬張。在查詢速度方面，在數千萬向量中單一向量查詢的時間小於 1 秒，批量查詢的平均時間小於 0.08 秒。Milvus 的高效能搜尋能同時滿足企業對準確性和並發性的需求。</p>
-<h2 id="Reference" class="common-anchor-header"><strong>參考資料</strong><button data-href="#Reference" class="anchor-icon" translate="no">
+    </button></h2><p>So far, the photo fraud detection system has been running steadily, helping businesses to identify potential fraudsters. In 2021, it detected over 20,000 fake licenses throughout the year. In terms of query speed, a single vector query among tens of millions of vectors takes less than 1 second, and the average time of batch query is less than 0.08 seconds. Milvus’ high-performance search meets businesses’ needs for both accuracy and concurrency.</p>
+<h2 id="Reference" class="common-anchor-header"><strong>Reference</strong><button data-href="#Reference" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -141,8 +149,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Aglave P, Kolkure V S. 使用定向快速和旋轉簡算法實現高性能特徵提取方法[J].Int.J. Res.Technol, 2015, 4: 394-397.</p>
-<h2 id="About-BestPay" class="common-anchor-header"><strong>關於BestPay</strong><button data-href="#About-BestPay" class="anchor-icon" translate="no">
+    </button></h2><p>Aglave P, Kolkure V S. Implementation of High Performance Feature Extraction Method Using Oriented Fast and Rotated Brief Algorithm[J]. Int. J. Res. Eng. Technol, 2015, 4: 394-397.</p>
+<h2 id="About-BestPay" class="common-anchor-header"><strong>About BestPay</strong><button data-href="#About-BestPay" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -157,4 +165,4 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>中國電信BestPay有限公司是中國電信的全資子公司。它經營支付和金融業務。BestPay致力於利用大數據、人工智能、雲計算等前沿技術賦能業務創新，提供智慧產品、風險控制解決方案等服務。截至 2016 年 1 月，這款名為 BestPay 的應用程式已吸引超過 2 億用戶，成為緊隨支付寶和微信支付的中國第三大支付平台運營商。</p>
+    </button></h2><p>China Telecom BestPay Co., Ltd is a wholly owned subsidiary of China Telecom. It operates the payment and finance businesses. BestPay is committed to using cutting-edge technologies such as big data, artificial intelligence and cloud computing to empower business innovation, providing intelligent products, risk control solutions and other services. Up to January 2016, the app called BestPay has attracted over 200 million users and become the third largest payment platform operator in China, closely following Alipay and WeChat Payment.</p>

@@ -1,9 +1,9 @@
 ---
 id: >-
   is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
-title: >-
-  Apakah MCP Sudah Ketinggalan Zaman? Alasan Sebenarnya Keterampilan Antropik
-  Dikirim-dan Cara Memasangkannya dengan Milvus
+title: >
+  Is MCP Already Outdated? The Real Reason Anthropic Shipped Skills—and How to
+  Pair Them with Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
 cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
@@ -14,24 +14,23 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Claude, Skills, MCP, Milvus, AI workflow'
 meta_title: 'Exploring Skills, MCP, and Milvus for Smarter AI Workflows'
 desc: >-
-  Pelajari bagaimana Skills bekerja untuk mengurangi konsumsi token, dan
-  bagaimana Skills dan MCP bekerja sama dengan Milvus untuk meningkatkan alur
-  kerja AI.
+  Learn how Skills works to reduce token consumption, and how Skills and MCP
+  work together with Milvus to enhance AI workflows.
 origin: >-
   https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
 ---
-<p>Selama beberapa minggu terakhir, perdebatan sengit yang mengejutkan terjadi di X dan Hacker News: <em>Apakah kita benar-benar membutuhkan server MCP lagi?</em> Beberapa pengembang mengklaim bahwa MCP terlalu banyak direkayasa, haus token, dan pada dasarnya tidak selaras dengan cara agen menggunakan alat. Yang lain membela MCP sebagai cara yang dapat diandalkan untuk mengekspos kemampuan dunia nyata ke model bahasa. Tergantung pada utas mana yang Anda baca, MCP adalah masa depan penggunaan alat - atau mati pada saat kedatangan.</p>
+<p>Over the past few weeks, a surprisingly heated argument has erupted across X and Hacker News: <em>Do we actually need MCP servers anymore?</em> Some developers claim MCP is over-engineered, token-hungry, and fundamentally misaligned with how agents should use tools. Others defend MCP as the reliable way to expose real-world capabilities to language models. Depending on which thread you read, MCP is either the future of tool use—or dead on arrival.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hackernews_c3236cca2c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Rasa frustrasi itu bisa dimengerti. MCP memberi Anda akses yang kuat ke sistem eksternal, tetapi juga memaksa model untuk memuat skema yang panjang, deskripsi yang bertele-tele, dan daftar alat yang luas. Hal itu menambah biaya yang nyata. Jika Anda mengunduh transkrip rapat dan kemudian memasukkannya ke alat lain, model dapat memproses ulang teks yang sama beberapa kali, meningkatkan penggunaan token tanpa manfaat yang jelas. Untuk tim yang beroperasi dalam skala besar, ini bukanlah sebuah ketidaknyamanan-ini adalah tagihan.</p>
-<p>Tetapi menyatakan MCP sudah usang adalah hal yang terlalu dini. Anthropic - tim yang sama yang menciptakan MCP - diam-diam memperkenalkan sesuatu yang baru: <a href="https://claude.com/blog/skills"><strong>Keterampilan</strong></a>. Skills adalah definisi Markdown/YAML ringan yang menjelaskan <em>bagaimana</em> dan <em>kapan</em> suatu alat harus digunakan. Alih-alih membuang skema penuh ke dalam jendela konteks, model ini pertama-tama membaca metadata ringkas dan menggunakannya untuk membuat rencana. Dalam praktiknya, Skills secara dramatis mengurangi overhead token dan memberikan kontrol lebih besar kepada pengembang atas orkestrasi alat.</p>
-<p>Jadi, apakah ini berarti Skills akan menggantikan MCP? Tidak sepenuhnya. Skills menyederhanakan perencanaan, tetapi MCP masih menyediakan kemampuan yang sebenarnya: membaca file, memanggil API, berinteraksi dengan sistem penyimpanan, atau menghubungkan ke infrastruktur eksternal seperti <a href="https://milvus.io/"><strong>Milvus</strong></a>, basis data vektor sumber terbuka yang mendukung pengambilan semantik yang cepat dalam skala besar, sehingga menjadikannya sebagai backend yang sangat penting ketika Skills Anda membutuhkan akses data yang sebenarnya.</p>
-<p>Artikel ini menguraikan apa yang dilakukan Skills dengan baik, di mana MCP masih penting, dan bagaimana keduanya cocok dengan arsitektur agen Anthropic yang terus berkembang. Kemudian kita akan membahas cara membuat Skills Anda sendiri yang terintegrasi dengan Milvus.</p>
-<h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">Apa itu Keterampilan Agen Anthropic dan Bagaimana Cara Kerjanya<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
+<p>The frustration is understandable. MCP gives you robust access to external systems, but it also forces the model to load long schemas, verbose descriptions, and sprawling tool lists. That adds real cost. If you download a meeting transcript and later feed it into another tool, the model may reprocess the same text multiple times, inflating token usage for no obvious benefit. For teams operating at scale, this isn’t an inconvenience—it’s a bill.</p>
+<p>But declaring MCP obsolete is premature. Anthropic—the same team that invented MCP—quietly introduced something new: <a href="https://claude.com/blog/skills"><strong>Skills</strong></a>. Skills are lightweight Markdown/YAML definitions that describe <em>how</em> and <em>when</em> a tool should be used. Instead of dumping full schemas into the context window, the model first reads compact metadata and uses that to plan. In practice, Skills dramatically reduce token overhead and give developers more control over tool orchestration.</p>
+<p>So, does this mean Skills will replace MCP? Not quite. Skills streamline planning, but MCP still provides the actual capabilities: reading files, calling APIs, interacting with storage systems, or plugging into external infrastructure like <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database that underpins fast semantic retrieval at scale, making it a critical backend when your Skills need real data access.</p>
+<p>This post breaks down what Skills do well, where MCP still matters, and how both fit into Anthropic’s evolving agent architecture. Then we’ll walk through how to build your own Skills that integrate cleanly with Milvus.</p>
+<h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">What Are Anthropic Agent Skills and How Do They Work<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,19 +45,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Masalah yang sudah berlangsung lama pada agen AI tradisional adalah instruksi yang hilang seiring dengan bertambahnya percakapan.</p>
-<p>Bahkan dengan perintah sistem yang dibuat dengan sangat hati-hati, perilaku model secara bertahap dapat berubah selama percakapan berlangsung. Setelah beberapa kali giliran, Claude mulai lupa atau kehilangan fokus pada instruksi awal.</p>
-<p>Masalahnya terletak pada struktur perintah sistem. Ini adalah injeksi statis satu kali yang bersaing untuk mendapatkan ruang di jendela konteks model, di samping riwayat percakapan, dokumen, dan input lainnya. Saat jendela konteks terisi, perhatian model terhadap perintah sistem menjadi semakin berkurang, yang menyebabkan hilangnya konsistensi dari waktu ke waktu.</p>
-<p>Keterampilan dirancang untuk mengatasi masalah ini. Keterampilan adalah folder yang berisi instruksi, skrip, dan sumber daya. Daripada mengandalkan prompt sistem statis, Skills memecah keahlian menjadi kumpulan instruksi modular, dapat digunakan kembali, dan persisten yang dapat ditemukan dan dimuat oleh Claude secara dinamis saat dibutuhkan untuk suatu tugas.</p>
-<p>Ketika Claude memulai sebuah tugas, pertama-tama ia melakukan pemindaian ringan terhadap semua Skill yang tersedia dengan hanya membaca metadata YAML mereka (hanya beberapa lusin token). Metadata ini memberikan informasi yang cukup bagi Claude untuk menentukan apakah sebuah Skill relevan dengan tugas saat ini. Jika demikian, Claude akan memperluas ke set instruksi lengkap (biasanya di bawah 5 ribu token), dan sumber daya atau skrip tambahan dimuat hanya jika diperlukan.</p>
-<p>Pengungkapan progresif ini memungkinkan Claude untuk menginisialisasi Skill hanya dengan 30-50 token, yang secara signifikan meningkatkan efisiensi dan mengurangi overhead konteks yang tidak perlu.</p>
+    </button></h2><p>A long-standing pain point of traditional AI agents is that instructions get washed out as the conversation grows.</p>
+<p>Even with the most carefully crafted system prompts, the model’s behavior can gradually drift over the course of the conversation. After several turns, Claude begins to forget or lose focus on the original instructions.</p>
+<p>The problem lies in the structure of the system prompt. It is a one-time, static injection that competes for space in the model’s context window, alongside conversation history, documents, and any other inputs. As the context window fills, the model’s attention to the system prompt becomes increasingly diluted, leading to a loss of consistency over time.</p>
+<p>Skills were designed to address this issue. Skills are folders containing instructions, scripts, and resources. Rather than relying on a static system prompt, Skills break down expertise into modular, reusable, and persistent instruction bundles that Claude can discover and load dynamically when needed for a task.</p>
+<p>When Claude begins a task, it first performs a lightweight scan of all available Skills by reading only their YAML metadata (just a few dozen tokens). This metadata provides just enough information for Claude to determine if a Skill is relevant to the current task. If so, Claude expands into the full set of instructions (usually under 5k tokens), and additional resources or scripts are loaded only if necessary.</p>
+<p>This progressive disclosure allows Claude to initialize a Skill with just 30–50 tokens, significantly improving efficiency and reducing unnecessary context overhead.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_skills_works_a8563f346c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="common-anchor-header">Bagaimana Keterampilan Dibandingkan dengan Permintaan, Proyek, MCP, dan Subagen<button data-href="#How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="anchor-icon" translate="no">
+<h2 id="How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="common-anchor-header">How Skills Compares to Prompts, Projects, MCP, and Subagents<button data-href="#How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,68 +72,68 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Lanskap perkakas model saat ini dapat terasa penuh sesak. Bahkan di dalam ekosistem agen Claude saja, ada beberapa komponen yang berbeda: Keterampilan, permintaan, Proyek, subagen, dan MCP.</p>
-<p>Setelah kita memahami apa itu Skills dan bagaimana cara kerjanya melalui bundel instruksi modular dan pemuatan dinamis, kita perlu mengetahui bagaimana Skills berhubungan dengan bagian lain dari ekosistem Claude, terutama MCP. Berikut ini adalah ringkasannya:</p>
-<h3 id="1-Skills" class="common-anchor-header">1. Keterampilan</h3><p>Skills adalah folder yang berisi instruksi, skrip, dan sumber daya. Claude menemukan dan memuatnya secara dinamis menggunakan pengungkapan progresif: pertama metadata, kemudian instruksi lengkap, dan akhirnya file yang diperlukan.</p>
-<p><strong>Paling baik untuk:</strong></p>
+    </button></h2><p>Today’s model tooling landscape can feel crowded. Even within Claude’s agentic ecosystem alone, there are several distinct components: Skills, prompts, Projects, subagents, and MCP.</p>
+<p>Now that we understand what Skills are and how they work through modular instruction bundles and dynamic loading, we need to know how Skills relate to other parts of the Claude ecosystem, especially MCP. Here is a summary:</p>
+<h3 id="1-Skills" class="common-anchor-header">1. Skills</h3><p>Skills are folders that contain instructions, scripts, and resources. Claude discovers and loads them dynamically using progressive disclosure: first metadata, then full instructions, and finally any required files.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Alur kerja organisasi (pedoman merek, prosedur kepatuhan)</p></li>
-<li><p>Keahlian domain (rumus Excel, analisis data)</p></li>
-<li><p>Preferensi pribadi (sistem pencatatan, pola pengkodean)</p></li>
-<li><p>Tugas profesional yang perlu digunakan kembali di berbagai percakapan (tinjauan keamanan kode berbasis OWASP)</p></li>
+<li><p>Organizational workflows (brand guidelines, compliance procedures)</p></li>
+<li><p>Domain expertise (Excel formulas, data analysis)</p></li>
+<li><p>Personal preferences (note-taking systems, coding patterns)</p></li>
+<li><p>Professional tasks that need to be reused across conversations (OWASP-based code security reviews)</p></li>
 </ul>
-<h3 id="2-Prompts" class="common-anchor-header">2. Perintah</h3><p>Prompts adalah instruksi bahasa alami yang Anda berikan kepada Claude dalam percakapan. Prompt bersifat sementara dan hanya ada dalam percakapan saat ini.</p>
-<p><strong>Paling baik untuk:</strong></p>
+<h3 id="2-Prompts" class="common-anchor-header">2. Prompts</h3><p>Prompts are the natural-language instructions you give Claude within a conversation. They are temporary and exist only in the current conversation.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Permintaan satu kali (meringkas artikel, memformat daftar)</p></li>
-<li><p>Penyempurnaan percakapan (menyesuaikan nada, menambahkan detail)</p></li>
-<li><p>Konteks langsung (menganalisis data spesifik, menafsirkan konten)</p></li>
-<li><p>Instruksi yang bersifat ad-hoc</p></li>
+<li><p>One-off requests (summarizing an article, formatting a list)</p></li>
+<li><p>Conversational refinement (adjusting tone, adding details)</p></li>
+<li><p>Immediate context (analyzing specific data, interpreting content)</p></li>
+<li><p>Ad-hoc instructions</p></li>
 </ul>
-<h3 id="3-Projects" class="common-anchor-header">3. Proyek</h3><p>Proyek adalah ruang kerja mandiri dengan riwayat percakapan dan basis pengetahuannya sendiri. Setiap proyek menawarkan jendela konteks 200 ribu. Ketika pengetahuan proyek Anda mendekati batas konteks, Claude bertransisi dengan mulus ke mode RAG, sehingga memungkinkan perluasan kapasitas efektif hingga 10x lipat.</p>
-<p><strong>Paling baik untuk:</strong></p>
+<h3 id="3-Projects" class="common-anchor-header">3. Projects</h3><p>Projects are self-contained workspaces with their own chat histories and knowledge bases. Each project offers a 200K context window. When your project knowledge approaches context limits, Claude transitions seamlessly into RAG mode, allowing up to a 10x expansion in effective capacity.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Konteks yang terus menerus (misalnya, semua percakapan yang terkait dengan peluncuran produk)</p></li>
-<li><p>Organisasi ruang kerja (konteks terpisah untuk inisiatif yang berbeda)</p></li>
-<li><p>Kolaborasi tim (pada paket Tim dan Enterprise)</p></li>
-<li><p>Instruksi khusus (nada atau perspektif khusus proyek)</p></li>
+<li><p>Persistent context (e.g., all conversations related to a product launch)</p></li>
+<li><p>Workspace organization (separate contexts for different initiatives)</p></li>
+<li><p>Team collaboration (on Team and Enterprise plans)</p></li>
+<li><p>Custom instructions (project-specific tone or perspective)</p></li>
 </ul>
-<h3 id="4-Subagents" class="common-anchor-header">4. Subagen</h3><p>Subagen adalah asisten AI khusus dengan jendela konteks mereka sendiri, petunjuk sistem khusus, dan izin alat tertentu. Mereka dapat bekerja secara mandiri dan mengembalikan hasil ke agen utama.</p>
-<p><strong>Paling baik untuk:</strong></p>
+<h3 id="4-Subagents" class="common-anchor-header">4. Subagents</h3><p>Subagents are specialized AI assistants with their own context windows, custom system prompts, and specific tool permissions. They can work independently and return results to the main agent.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Spesialisasi tugas (tinjauan kode, pembuatan tes, audit keamanan)</p></li>
-<li><p>Manajemen konteks (menjaga agar percakapan utama tetap fokus)</p></li>
-<li><p>Pemrosesan paralel (beberapa subagen yang bekerja pada aspek yang berbeda secara bersamaan)</p></li>
-<li><p>Pembatasan alat (misalnya, akses hanya-baca)</p></li>
+<li><p>Task specialization (code review, test generation, security audits)</p></li>
+<li><p>Context management (keep the main conversation focused)</p></li>
+<li><p>Parallel processing (multiple subagents working on different aspects simultaneously)</p></li>
+<li><p>Tool restriction (e.g., read-only access)</p></li>
 </ul>
-<h3 id="5-MCP-Model-Context-Protocol" class="common-anchor-header">5. MCP (Protokol Konteks Model)</h3><p>Model Context Protocol (MCP) adalah standar terbuka yang menghubungkan model AI ke alat dan sumber data eksternal.</p>
-<p><strong>Paling baik untuk:</strong></p>
+<h3 id="5-MCP-Model-Context-Protocol" class="common-anchor-header">5. MCP (Model Context Protocol)</h3><p>The Model Context Protocol (MCP) is an open standard that connects AI models to external tools and data sources.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Mengakses data eksternal (Google Drive, Slack, GitHub, database)</p></li>
-<li><p>Menggunakan alat bantu bisnis (sistem CRM, platform manajemen proyek)</p></li>
-<li><p>Menghubungkan ke lingkungan pengembangan (file lokal, IDE, kontrol versi)</p></li>
-<li><p>Berintegrasi dengan sistem khusus (alat dan sumber data berpemilik)</p></li>
+<li><p>Accessing external data (Google Drive, Slack, GitHub, databases)</p></li>
+<li><p>Using business tools (CRM systems, project management platforms)</p></li>
+<li><p>Connecting to development environments (Local files, IDEs, version control)</p></li>
+<li><p>Integrating with custom systems (proprietary tools and data sources)</p></li>
 </ul>
-<p>Berdasarkan penjelasan di atas, kita dapat melihat bahwa Skills dan MCP menangani tantangan yang berbeda dan bekerja sama untuk saling melengkapi.</p>
+<p>Based on the above, we can see that Skills and MCP address different challenges and work together to complement each other.</p>
 <table>
 <thead>
-<tr><th><strong>Dimensi</strong></th><th><strong>MCP</strong></th><th><strong>Keterampilan</strong></th></tr>
+<tr><th><strong>Dimension</strong></th><th><strong>MCP</strong></th><th><strong>Skills</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Nilai Inti</strong></td><td>Menghubungkan ke sistem eksternal (database, API, platform SaaS)</td><td>Mendefinisikan spesifikasi perilaku (cara memproses dan menyajikan data)</td></tr>
-<tr><td><strong>Pertanyaan yang Terjawab</strong></td><td>"Apa yang dapat diakses oleh Claude?"</td><td>"Apa yang harus dilakukan oleh Claude?"</td></tr>
-<tr><td><strong>Implementasi</strong></td><td>Protokol klien-server + Skema JSON</td><td>File penurunan harga + metadata YAML</td></tr>
-<tr><td><strong>Konsumsi Konteks</strong></td><td>Puluhan ribu token (akumulasi beberapa server)</td><td>30-50 token per operasi</td></tr>
-<tr><td><strong>Kasus Penggunaan</strong></td><td>Mengajukan kueri ke basis data besar, memanggil API GitHub</td><td>Menentukan strategi pencarian, menerapkan aturan pemfilteran, pemformatan keluaran</td></tr>
+<tr><td><strong>Core Value</strong></td><td>Connects to external systems (databases, APIs, SaaS platforms)</td><td>Defines behavior specifications (how to process and present data)</td></tr>
+<tr><td><strong>Questions Answered</strong></td><td>“What can Claude access?”</td><td>“What should Claude do?”</td></tr>
+<tr><td><strong>Implementation</strong></td><td>Client-server protocol + JSON Schema</td><td>Markdown file + YAML metadata</td></tr>
+<tr><td><strong>Context Consumption</strong></td><td>Tens of thousands of tokens (multiple server accumulations)</td><td>30-50 tokens per operation</td></tr>
+<tr><td><strong>Use Cases</strong></td><td>Querying large databases, calling GitHub APIs</td><td>Defining search strategies, applying filtering rules, output formatting</td></tr>
 </tbody>
 </table>
-<p>Mari kita ambil pencarian kode sebagai contoh.</p>
+<p>Let’s take code search as an example.</p>
 <ul>
-<li><p><strong>MCP (mis., konteks claude):</strong> Menyediakan kemampuan untuk mengakses basis data vektor Milvus.</p></li>
-<li><p><strong>Keterampilan:</strong> Mendefinisikan alur kerja, seperti memprioritaskan kode yang paling baru dimodifikasi, mengurutkan hasil berdasarkan relevansi, dan menyajikan data dalam tabel Penurunan Harga.</p></li>
+<li><p><strong>MCP (e.g., claude-context):</strong> Provides the ability to access the Milvus vector database.</p></li>
+<li><p><strong>Skills:</strong> Defines the workflow, such as prioritizing the most recently modified code, sorting results by relevance, and presenting the data in a Markdown table.</p></li>
 </ul>
-<p>MCP menyediakan kemampuan, sementara Keterampilan mendefinisikan prosesnya. Bersama-sama, keduanya membentuk pasangan yang saling melengkapi.</p>
-<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">Cara Membangun Keterampilan Khusus dengan Claude-Context dan Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
+<p>MCP provides the capability, while Skills define the process. Together, they form a complementary pair.</p>
+<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">How to Build Custom Skills with Claude-Context and Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -149,14 +148,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/claude-context">Claude-Context</a> adalah plugin MCP yang menambahkan fungsionalitas pencarian kode semantik ke dalam Claude Code, mengubah seluruh basis kode ke dalam konteks Claude.</p>
-<h3 id="Prerequisite" class="common-anchor-header">Prasyarat</h3><p>Persyaratan Sistem:</p>
+    </button></h2><p><a href="https://github.com/zilliztech/claude-context">Claude-Context</a> is an MCP plugin that adds semantic code search functionality to Claude Code, turning the entire codebase into Claude’s context.</p>
+<h3 id="Prerequisite" class="common-anchor-header">Prerequisite</h3><p>System Requirements:</p>
 <ul>
-<li><p><strong>Node.js</strong>: Versi &gt;= 20.0.0 dan &lt; 24.0.0</p></li>
-<li><p><strong>Kunci API OpenAI</strong> (untuk model penyematan)</p></li>
-<li><p><strong>Kunci API</strong><a href="https://zilliz.com.cn/"><strong>Zilliz Cloud</strong></a> (layanan Milvus yang dikelola)</p></li>
+<li><p><strong>Node.js</strong>: Version &gt;= 20.0.0 and &lt; 24.0.0</p></li>
+<li><p><strong>OpenAI API Key</strong> (for embedding models)</p></li>
+<li><p><a href="https://zilliz.com.cn/"><strong>Zilliz Cloud</strong></a> <strong>API Key</strong> (managed Milvus service)</p></li>
 </ul>
-<h3 id="Step-1-Configure-the-MCP-Service-claude-context" class="common-anchor-header">Langkah 1: Konfigurasikan Layanan MCP (claude-context)</h3><p>Jalankan perintah berikut di terminal:</p>
+<h3 id="Step-1-Configure-the-MCP-Service-claude-context" class="common-anchor-header">Step 1: Configure the MCP Service (claude-context)</h3><p>Run the following command in the terminal:</p>
 <pre><code translate="no">claude mcp add claude-context \
   -e OPENAI_API_KEY=sk-your-openai-api-key \
   -e MILVUS_ADDRESS=https:<span class="hljs-comment">//xxxxxxxxx-cn-hangzhou.cloud.zilliz.com.cn \</span>
@@ -164,7 +163,7 @@ origin: >-
   -e COLLECTION_NAME=medium_articles \
   -- npx <span class="hljs-meta">@zilliz</span>/claude-context-mcp<span class="hljs-meta">@latest</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Periksa Konfigurasi:</p>
+<p>Check the Configuration:</p>
 <pre><code translate="no">claude mcp list
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -173,12 +172,12 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Penyiapan MCP selesai. Claude sekarang dapat mengakses basis data vektor Milvus.</p>
-<h3 id="Step-2-Create-the-Skill" class="common-anchor-header">Langkah 2: Membuat Keterampilan</h3><p>Buat direktori Keterampilan:</p>
+<p>The MCP setup is complete. Claude can now access the Milvus vector database.</p>
+<h3 id="Step-2-Create-the-Skill" class="common-anchor-header">Step 2: Create the Skill</h3><p>Create the Skills directory:</p>
 <pre><code translate="no"><span class="hljs-built_in">mkdir</span> -p ~/.claude/skills/milvus-code-search
 <span class="hljs-built_in">cd</span> ~/.claude/skills/milvus-code-search
 <button class="copy-code-btn"></button></code></pre>
-<p>Buat file SKILL.md:</p>
+<p>Create the SKILL.md file:</p>
 <pre><code translate="no">---
 name: milvus-code-search
 description: A semantic code search <span class="hljs-keyword">and</span> architecture analysis skill designed <span class="hljs-keyword">for</span> the Milvus codebase
@@ -229,12 +228,12 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
 
 ---
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Restart-Claude-to-Apply-Skills" class="common-anchor-header">Langkah 3: Mulai ulang Claude untuk menerapkan keterampilan</h3><p>Jalankan perintah berikut untuk memulai ulang Claude:</p>
+<h3 id="Step-3-Restart-Claude-to-Apply-Skills" class="common-anchor-header">Step 3: Restart Claude to Apply Skills</h3><p>Run the following command to restart Claude:</p>
 <pre><code translate="no">claude
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Catatan:</strong> Setelah konfigurasi selesai, Anda dapat langsung menggunakan Skills untuk menanyakan basis kode Milvus.</p>
-<p>Di bawah ini adalah contoh cara kerjanya.</p>
-<p>Query: Bagaimana cara kerja Milvus QueryCoord?</p>
+<p><strong>Note:</strong> After the configuration is complete, you can immediately use the Skills to query the Milvus codebase.</p>
+<p>Below is an example of how it works.</p>
+<p>Query: How does Milvus QueryCoord work?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/code_a95429ddb0.png" alt="" class="doc-image" id="" />
@@ -253,7 +252,7 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -268,7 +267,7 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pada intinya, Skills bertindak sebagai mekanisme untuk merangkum dan mentransfer pengetahuan khusus. Dengan menggunakan Skills, AI dapat mewarisi pengalaman tim dan mengikuti praktik terbaik industri-apakah itu daftar periksa untuk tinjauan kode atau standar dokumentasi. Ketika pengetahuan tacit ini dibuat eksplisit melalui file Markdown, kualitas output yang dihasilkan AI dapat mengalami peningkatan yang signifikan.</p>
-<p>Ke depannya, kemampuan untuk memanfaatkan Skills secara efektif dapat menjadi pembeda utama dalam cara tim dan individu menggunakan AI untuk keuntungan mereka.</p>
-<p>Ketika Anda mengeksplorasi potensi AI dalam organisasi Anda, Milvus hadir sebagai alat penting untuk mengelola dan mencari data vektor berskala besar. Dengan memasangkan basis data vektor Milvus yang kuat dengan alat bantu AI seperti Skills, Anda tidak hanya dapat meningkatkan alur kerja Anda, tetapi juga kedalaman dan kecepatan wawasan berbasis data Anda.</p>
-<p>Ada pertanyaan atau ingin mendalami fitur apa pun? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami untuk mengobrol dengan teknisi kami dan teknisi AI lainnya di komunitas. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+    </button></h2><p>At its core, Skills act as a mechanism for encapsulating and transferring specialized knowledge. By using Skills, AI can inherit a team’s experience and follow industry best practices—whether that’s a checklist for code reviews or documentation standards. When this tacit knowledge is made explicit through Markdown files, the quality of AI-generated outputs can see a significant improvement.</p>
+<p>Looking ahead, the ability to leverage Skills effectively could become a key differentiator in how teams and individuals use AI to their advantage.</p>
+<p>As you explore the potential of AI in your organization, Milvus stands as a critical tool for managing and searching large-scale vector data. By pairing Milvus’ powerful vector database with AI tools like Skills, you can improve not only your workflows but also the depth and speed of your data-driven insights.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> to chat with our engineers and other AI engineers in the community. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

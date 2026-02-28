@@ -1,8 +1,8 @@
 ---
 id: faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md
-title: >-
-  Otimização do NVIDIA CAGRA no Milvus: uma abordagem híbrida GPU-CPU para uma
-  indexação mais rápida e consultas mais baratas
+title: >
+  Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster
+  Indexing and Cheaper Queries
 author: Marcelo Chen
 date: 2025-12-10T00:00:00.000Z
 cover: assets.zilliz.com/CAGRA_cover_7b9675965f.png
@@ -14,18 +14,18 @@ meta_keywords: 'Milvus2.6, CAGRA, GPU, CPU, graph-based index'
 meta_title: |
   Optimizing CAGRA in Milvus: A Hybrid GPU–CPU Approach
 desc: >-
-  Saiba como o GPU_CAGRA no Milvus 2.6 usa GPUs para construção rápida de
-  gráficos e CPUs para servir consultas escalonáveis.
+  Learn how GPU_CAGRA in Milvus 2.6 uses GPUs for fast graph construction and
+  CPUs for scalable query serving.
 origin: >-
   https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md
 ---
-<p>À medida que os sistemas de IA passam das experiências para a infraestrutura de produção, as bases de dados vectoriais já não lidam com milhões de embeddings. <strong>Os biliões são agora rotina e as dezenas de biliões são cada vez mais comuns.</strong> A esta escala, as escolhas algorítmicas afectam não só o desempenho e a recordação, mas também se traduzem diretamente no custo da infraestrutura.</p>
-<p>Isto leva a uma questão central para implementações em grande escala: <strong>como escolher o índice certo para fornecer uma recuperação e latência aceitáveis sem deixar que a utilização de recursos de computação fique fora de controlo?</strong></p>
-<p>Os índices baseados em gráficos, como <strong>NSW, HNSW, CAGRA e Vamana</strong>, tornaram-se a resposta mais amplamente adotada. Ao navegar em grafos de vizinhança pré-construídos, estes índices permitem uma pesquisa rápida do vizinho mais próximo à escala de mil milhões, evitando a pesquisa de força bruta e a comparação de cada vetor com a consulta.</p>
-<p>No entanto, o perfil de custos desta abordagem é desigual. <strong>Consultar um grafo é relativamente barato; construí-lo não é.</strong> Construir um gráfico de alta qualidade requer cálculos de distância em grande escala e refinamento iterativo em todo o conjunto de dados - cargas de trabalho que os recursos tradicionais da CPU lutam para lidar de forma eficiente à medida que os dados crescem.</p>
-<p>O CAGRA da NVIDIA aborda esse gargalo usando GPUs para acelerar a construção de gráficos por meio de paralelismo massivo. Embora isso reduza significativamente o tempo de construção, contar com GPUs para a construção de índices e para o atendimento de consultas introduz restrições de custo e escalabilidade mais altas em ambientes de produção.</p>
-<p>Para equilibrar estes compromissos, <a href="https://milvus.io/docs/release_notes.md#v261">o Milvus 2.6.1</a> <strong>adopta um design híbrido para os</strong> <strong>índices</strong> <a href="https://milvus.io/docs/gpu-cagra.md">GPU_CAGRA</a>: <strong>As GPUs são usadas apenas para a construção de gráficos, enquanto a execução de consultas é executada em CPUs.</strong> Isso preserva as vantagens de qualidade dos gráficos construídos por GPU e, ao mesmo tempo, mantém o serviço de consulta escalonável e econômico - o que o torna especialmente adequado para cargas de trabalho com atualizações de dados pouco frequentes, grandes volumes de consulta e sensibilidade estrita a custos.</p>
-<h2 id="What-Is-CAGRA-and-How-Does-It-Work" class="common-anchor-header">O que é o CAGRA e como ele funciona?<button data-href="#What-Is-CAGRA-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<p>As AI systems move from experiments to production infrastructure, vector databases are no longer dealing with millions of embeddings. <strong>Billions are now routine, and tens of billions are increasingly common.</strong> At this scale, algorithmic choices affect not only performance and recall, but also translate directly into infrastructure cost.</p>
+<p>This leads to a core question for large-scale deployments: <strong>how do you choose the right index to deliver acceptable recall and latency without letting compute resource usage spiral out of control?</strong></p>
+<p>Graph-based indexes such as <strong>NSW, HNSW, CAGRA, and Vamana</strong> have become the most widely adopted answer. By navigating pre-built neighborhood graphs, these indexes enable fast nearest-neighbor search at billion scale, avoiding brute-force scanning and comparison of every vector against the query.</p>
+<p>However, the cost profile of this approach is uneven. <strong>Querying a graph is relatively cheap; constructing it is not.</strong> Building a high-quality graph requires large-scale distance computations and iterative refinement across the entire dataset—workloads that traditional CPU resources struggle to handle efficiently as data grows.</p>
+<p>NVIDIA’s CAGRA addresses this bottleneck by using GPUs to accelerate graph construction through massive parallelism. While this significantly reduces build time, relying on GPUs for both index construction and query serving introduces higher cost and scalability constraints in production environments.</p>
+<p>To balance these tradeoffs, <a href="https://milvus.io/docs/release_notes.md#v261">Milvus 2.6.1</a> <strong>adopts a hybrid design for</strong> <a href="https://milvus.io/docs/gpu-cagra.md">GPU_CAGRA</a> <strong>indexes</strong>: <strong>GPUs are used only for graph construction, while query execution runs on CPUs.</strong> This preserves the quality advantages of GPU-built graphs while keeping query serving scalable and cost-efficient—making it especially well suited for workloads with infrequent data updates, large query volumes, and strict cost sensitivity.</p>
+<h2 id="What-Is-CAGRA-and-How-Does-It-Work" class="common-anchor-header">What Is CAGRA and How Does It Work?<button data-href="#What-Is-CAGRA-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,35 +40,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Os índices vetoriais baseados em grafos geralmente se enquadram em duas categorias principais:</p>
+    </button></h2><p>Graph-based vector indexes generally fall into two major categories:</p>
 <ul>
-<li><p><strong>Construção iterativa de grafos</strong>, representada pelo <strong>CAGRA</strong> (já suportado no Milvus).</p></li>
-<li><p><strong>Construção de gráficos baseada em inserção</strong>, representada pelo <strong>Vamana</strong> (atualmente em desenvolvimento no Milvus).</p></li>
+<li><p><strong>Iterative graph construction</strong>, represented by <strong>CAGRA</strong> (already supported in Milvus).</p></li>
+<li><p><strong>Insert-based graph construction</strong>, represented by <strong>Vamana</strong> (currently under development in Milvus).</p></li>
 </ul>
-<p>Essas duas abordagens diferem significativamente em seus objetivos de projeto e fundamentos técnicos, tornando cada uma adequada para diferentes escalas de dados e padrões de carga de trabalho.</p>
-<p><strong>O NVIDIA CAGRA (CUDA ANN Graph-based)</strong> é um algoritmo nativo da GPU para pesquisa aproximada do vizinho mais próximo (ANN), concebido para construir e consultar gráficos de proximidade em grande escala de forma eficiente. Ao aproveitar o paralelismo da GPU, o CAGRA acelera significativamente a construção de gráficos e oferece desempenho de consulta de alto rendimento em comparação com abordagens baseadas em CPU, como o HNSW.</p>
-<p>O CAGRA é construído com base no algoritmo <strong>NN-Descent (Nearest Neighbor Descent)</strong>, que constrói um grafo de k vizinhos mais próximos (kNN) por meio de refinamento iterativo. Em cada iteração, os vizinhos candidatos são avaliados e actualizados, convergindo gradualmente para relações de vizinhança de maior qualidade em todo o conjunto de dados.</p>
-<p>Depois de cada ronda de refinamento, o CAGRA aplica técnicas adicionais de poda do gráfico - como a <strong>poda de desvio de 2 saltos - para</strong>remover arestas redundantes, preservando a qualidade da pesquisa. Essa combinação de refinamento e poda iterativos resulta em um <strong>gráfico compacto, mas bem conectado</strong>, que é eficiente para percorrer no momento da consulta.</p>
-<p>Através do refinamento e da poda repetidos, o CAGRA produz uma estrutura de grafo que suporta <strong>uma pesquisa do vizinho mais próximo de alta recuperação e baixa latência em grande escala</strong>, o que o torna particularmente adequado para conjuntos de dados estáticos ou actualizados com pouca frequência.</p>
-<h3 id="Step-1-Building-the-Initial-Graph-with-NN-Descent" class="common-anchor-header">Etapa 1: Construindo o gráfico inicial com NN-Descent</h3><p>O NN-Descent é baseado em uma observação simples, mas poderosa: se o nó <em>u</em> é vizinho de <em>v</em> e o nó <em>w</em> é vizinho de <em>u</em>, então <em>w</em> muito provavelmente também é vizinho de <em>v</em>. Esta propriedade transitiva permite que o algoritmo descubra os verdadeiros vizinhos mais próximos de forma eficiente, sem comparar exaustivamente cada par de vectores.</p>
-<p>O CAGRA usa o NN-Descent como seu algoritmo principal de construção de grafos. O processo funciona da seguinte forma:</p>
-<p><strong>1. Inicialização aleatória:</strong> Cada nó começa com um pequeno conjunto de vizinhos selecionados aleatoriamente, formando um grafo inicial aproximado.</p>
-<p><strong>2. Expansão de vizinhos:</strong> Em cada iteração, um nó reúne os seus vizinhos actuais e os vizinhos destes para formar uma lista de candidatos. O algoritmo calcula as semelhanças entre o nó e todos os candidatos. Uma vez que a lista de candidatos de cada nó é independente, estes cálculos podem ser atribuídos a blocos de threads GPU separados e executados em paralelo a uma escala maciça.</p>
-<p><strong>3. Atualização da lista de candidatos:</strong> Se o algoritmo encontrar candidatos mais próximos do que os actuais vizinhos do nó, troca os vizinhos mais distantes e actualiza a lista kNN do nó. Ao longo de várias iterações, este processo produz um gráfico kNN aproximado de qualidade muito superior.</p>
-<p><strong>4. Verificação da convergência:</strong> À medida que as iterações avançam, ocorrem menos actualizações de vizinhos. Quando o número de conexões atualizadas cai abaixo de um limite definido, o algoritmo pára, indicando que o gráfico efetivamente se estabilizou.</p>
-<p>Como a expansão de vizinhos e a computação de similaridade para nós diferentes são totalmente independentes, o CAGRA mapeia a carga de trabalho NN-Descent de cada nó para um bloco de thread de GPU dedicado. Esse projeto permite um paralelismo maciço e torna a construção de gráficos muito mais rápida do que os métodos tradicionais baseados em CPU.</p>
-<h3 id="Step-2-Pruning-the-Graph-with-2-Hop-Detours" class="common-anchor-header">Etapa 2: podando o gráfico com desvios de 2 saltos</h3><p>Após a conclusão do NN-Descent, o gráfico resultante é preciso, mas excessivamente denso. O NN-Descent mantém intencionalmente vizinhos candidatos extras, e a fase de inicialização aleatória introduz muitas arestas fracas ou irrelevantes. Como resultado, cada nó geralmente acaba com um grau duas vezes - ou até várias vezes - maior do que o grau desejado.</p>
-<p>Para produzir um grafo compacto e eficiente, o CAGRA aplica a poda de desvio de 2 saltos.</p>
-<p>A ideia é simples: se o nó <em>A</em> pode alcançar o nó <em>B</em> indiretamente através de um vizinho partilhado <em>C</em> (formando um caminho A → C → B), e a distância deste caminho indireto é comparável à distância direta entre <em>A</em> e <em>B</em>, então a aresta direta A → B é considerada redundante e pode ser removida.</p>
+<p>These two approaches differ significantly in their design goals and technical foundations, making each suitable for different data scales and workload patterns.</p>
+<p><strong>NVIDIA CAGRA (CUDA ANN Graph-based)</strong> is a GPU-native algorithm for approximate nearest neighbor (ANN) search, designed for building and querying large-scale proximity graphs efficiently. By leveraging GPU parallelism, CAGRA significantly accelerates graph construction and delivers high-throughput query performance compared with CPU-based approaches such as HNSW.</p>
+<p>CAGRA is built on the <strong>NN-Descent (Nearest Neighbor Descent)</strong> algorithm, which constructs a k-nearest-neighbor (kNN) graph through iterative refinement. In each iteration, candidate neighbors are evaluated and updated, gradually converging toward higher-quality neighborhood relationships across the dataset.</p>
+<p>After each refinement round, CAGRA applies additional graph pruning techniques—such as <strong>2-hop detour pruning</strong>—to remove redundant edges while preserving search quality. This combination of iterative refinement and pruning results in a <strong>compact yet well-connected graph</strong> that is efficient to traverse at query time.</p>
+<p>Through repeated refinement and pruning, CAGRA produces a graph structure that supports <strong>high recall and low-latency nearest-neighbor search at large scale</strong>, making it particularly well suited for static or infrequently updated datasets.</p>
+<h3 id="Step-1-Building-the-Initial-Graph-with-NN-Descent" class="common-anchor-header">Step 1: Building the Initial Graph with NN-Descent</h3><p>NN-Descent is based on a simple but powerful observation: if node <em>u</em> is a neighbor of <em>v</em>, and node <em>w</em> is a neighbor of <em>u</em>, then <em>w</em> is very likely a neighbor of <em>v</em> as well. This transitive property allows the algorithm to discover true nearest neighbors efficiently, without exhaustively comparing every pair of vectors.</p>
+<p>CAGRA uses NN-Descent as its core graph construction algorithm. The process works as follows:</p>
+<p><strong>1. Random initialization:</strong> Each node starts with a small set of randomly selected neighbors, forming a rough initial graph.</p>
+<p><strong>2. Neighbor expansion:</strong> In each iteration, a node gathers its current neighbors and their neighbors to form a candidate list. The algorithm computes similarities between the node and all candidates. Because each node’s candidate list is independent, these computations can be assigned to separate GPU thread blocks and executed in parallel at a massive scale.</p>
+<p><strong>3. Candidate list update:</strong> If the algorithm finds candidates that are closer than the node’s current neighbors, it swaps out the more distant neighbors and updates the node’s kNN list. Over multiple iterations, this process produces a much higher-quality approximate kNN graph.</p>
+<p><strong>4. Convergence check:</strong> As iterations progress, fewer neighbor updates occur. Once the number of updated connections drops below a set threshold, the algorithm stops, indicating the graph has effectively stabilized.</p>
+<p>Because neighbor expansion and similarity computation for different nodes are fully independent, CAGRA maps each node’s NN-Descent workload to a dedicated GPU thread block. This design enables massive parallelism and makes graph construction orders of magnitude faster than traditional CPU-based methods.</p>
+<h3 id="Step-2-Pruning-the-Graph-with-2-Hop-Detours" class="common-anchor-header">Step 2: Pruning the Graph with 2-Hop Detours</h3><p>After NN-Descent completes, the resulting graph is accurate but overly dense. NN-Descent intentionally keeps extra candidate neighbors, and the random initialization phase introduces many weak or irrelevant edges. As a result, each node often ends up with a degree two times—or even several times—higher than the target degree.</p>
+<p>To produce a compact and efficient graph, CAGRA applies 2-hop detour pruning.</p>
+<p>The idea is straightforward: if node <em>A</em> can reach node <em>B</em> indirectly through a shared neighbor <em>C</em> (forming a path A → C → B), and the distance of this indirect path is comparable to the direct distance between <em>A</em> and <em>B</em>, then the direct edge A → B is considered redundant and can be removed.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_hop_detours_d15eae8702.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Uma das principais vantagens desta estratégia de poda é que a verificação da redundância de cada aresta depende apenas da informação local - as distâncias entre os dois pontos finais e os seus vizinhos partilhados. Como cada aresta pode ser avaliada independentemente, a etapa de poda é altamente paralelizável e se encaixa naturalmente na execução em lote da GPU.</p>
-<p>Como resultado, o CAGRA pode podar o gráfico de forma eficiente em GPUs, reduzindo a sobrecarga de armazenamento em <strong>40-50%</strong>, preservando a precisão da pesquisa e melhorando a velocidade de travessia durante a execução da consulta.</p>
-<h2 id="GPUCAGRA-in-Milvus-What’s-Different" class="common-anchor-header">GPU_CAGRA em Milvus: o que há de diferente?<button data-href="#GPUCAGRA-in-Milvus-What’s-Different" class="anchor-icon" translate="no">
+<p>A key advantage of this pruning strategy is that each edge’s redundancy check depends only on local information—the distances between the two endpoints and their shared neighbors. Because every edge can be evaluated independently, the pruning step is highly parallelizable and fits naturally onto GPU batch execution.</p>
+<p>As a result, CAGRA can prune the graph efficiently on GPUs, reducing storage overhead by <strong>40–50%</strong> while preserving search accuracy and improving traversal speed during query execution.</p>
+<h2 id="GPUCAGRA-in-Milvus-What’s-Different" class="common-anchor-header">GPU_CAGRA in Milvus: What’s Different?<button data-href="#GPUCAGRA-in-Milvus-What’s-Different" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,36 +83,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Embora as GPUs ofereçam grandes vantagens de desempenho para a construção de gráficos, os ambientes de produção enfrentam um desafio prático: Os recursos da GPU são muito mais caros e limitados do que os das CPUs. Se a construção de índices e a execução de consultas dependerem exclusivamente de GPUs, vários problemas operacionais surgirão rapidamente:</p>
+    </button></h2><p>While GPUs offer major performance advantages for graph construction, production environments face a practical challenge: GPU resources are far more expensive and limited than CPUs. If both index building and query execution depend solely on GPUs, several operational issues quickly emerge:</p>
 <ul>
-<li><p><strong>Baixa utilização de recursos:</strong> O tráfego de consultas é muitas vezes irregular e intermitente, deixando as GPUs inactivas durante longos períodos e desperdiçando a dispendiosa capacidade de computação.</p></li>
-<li><p><strong>Alto custo de implantação:</strong> Atribuir uma GPU a cada instância de serviço de consulta aumenta os custos de hardware, mesmo que a maioria das consultas não utilize totalmente o desempenho da GPU.</p></li>
-<li><p><strong>Escalabilidade limitada:</strong> O número de GPUs disponíveis limita diretamente o número de réplicas de serviço que pode executar, restringindo a sua capacidade de escalar com a procura.</p></li>
-<li><p><strong>Flexibilidade reduzida:</strong> Quando a criação e a consulta de índices dependem de GPUs, o sistema fica vinculado à disponibilidade de GPUs e não pode mudar facilmente as cargas de trabalho para CPUs.</p></li>
+<li><p><strong>Low resource utilization:</strong> Query traffic is often irregular and bursty, leaving GPUs idle for long periods and wasting expensive compute capacity.</p></li>
+<li><p><strong>High deployment cost:</strong> Assigning a GPU to every query-serving instance drives up hardware costs, even though most queries do not fully utilize GPU performance.</p></li>
+<li><p><strong>Limited scalability:</strong> The number of GPUs available directly caps how many service replicas you can run, restricting your ability to scale with demand.</p></li>
+<li><p><strong>Reduced flexibility:</strong> When both index building and querying depend on GPUs, the system becomes tied to GPU availability and cannot easily shift workloads to CPUs.</p></li>
 </ul>
-<p>Para resolver estas restrições, o Milvus 2.6.1 introduz um modo de implementação flexível para o índice GPU_CAGRA através do parâmetro <code translate="no">adapt_for_cpu</code>. Este modo permite um fluxo de trabalho híbrido: O CAGRA usa a GPU para construir um índice gráfico de alta qualidade, enquanto a execução da consulta é executada na CPU - normalmente usando o HNSW como algoritmo de pesquisa.</p>
-<p>Nesta configuração, as GPUs são usadas onde fornecem o maior valor - construção de índice rápida e de alta precisão - enquanto as CPUs lidam com cargas de trabalho de consulta em grande escala de uma forma muito mais económica e escalável.</p>
-<p>Como resultado, essa abordagem híbrida é particularmente adequada para cargas de trabalho em que:</p>
+<p>To address these constraints, Milvus 2.6.1 introduces a flexible deployment mode for the GPU_CAGRA index through the <code translate="no">adapt_for_cpu</code> parameter. This mode enables a hybrid workflow: CAGRA uses the GPU to build a high-quality graph index, while query execution runs on the CPU—typically using HNSW as the search algorithm.</p>
+<p>In this setup, GPUs are used where they deliver the most value—fast, high-accuracy index construction—while CPUs handle large-scale query workloads in a far more cost-effective and scalable manner.</p>
+<p>As a result, this hybrid approach is particularly well suited for workloads where:</p>
 <ul>
-<li><p><strong>As actualizações de dados são pouco frequentes</strong>, pelo que as reconstruções de índices são raras</p></li>
-<li><p><strong>O volume de consultas é elevado</strong>, exigindo muitas réplicas económicas</p></li>
-<li><p><strong>A sensibilidade aos custos é elevada</strong> e a utilização de GPU deve ser rigorosamente controlada</p></li>
+<li><p><strong>Data updates are infrequent</strong>, so index rebuilds are rare</p></li>
+<li><p><strong>Query volume is high</strong>, requiring many inexpensive replicas</p></li>
+<li><p><strong>Cost sensitivity is high</strong>, and GPU usage must be tightly controlled</p></li>
 </ul>
-<h3 id="Understanding-adaptforcpu" class="common-anchor-header">Compreensão <code translate="no">adapt_for_cpu</code></h3><p>No Milvus, o parâmetro <code translate="no">adapt_for_cpu</code> controla a forma como um índice CAGRA é serializado para o disco durante a construção do índice e como é desserializado para a memória no momento do carregamento. Ao alterar essa configuração no momento da construção e no momento do carregamento, o Milvus pode alternar de forma flexível entre a construção de índice baseada em GPU e a execução de consulta baseada em CPU.</p>
-<p>Diferentes combinações de <code translate="no">adapt_for_cpu</code> em tempo de construção e tempo de carga resultam em quatro modos de execução, cada um projetado para um cenário operacional específico.</p>
+<h3 id="Understanding-adaptforcpu" class="common-anchor-header">Understanding <code translate="no">adapt_for_cpu</code></h3><p>In Milvus, the <code translate="no">adapt_for_cpu</code> parameter controls how a CAGRA index is serialized to disk during index building and how it is deserialized into memory at load time. By changing this setting at build time and load time, Milvus can flexibly switch between GPU-based index construction and CPU-based query execution.</p>
+<p>Different combinations of <code translate="no">adapt_for_cpu</code> at build time and load time result in four execution modes, each designed for a specific operational scenario.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Tempo de construção (<code translate="no">adapt_for_cpu</code>)</strong></th><th style="text-align:center"><strong>Tempo de carregamento (<code translate="no">adapt_for_cpu</code>)</strong></th><th style="text-align:center"><strong>Lógica de execução</strong></th><th style="text-align:center"><strong>Cenário recomendado</strong></th></tr>
+<tr><th style="text-align:center"><strong>Build Time (<code translate="no">adapt_for_cpu</code>)</strong></th><th style="text-align:center"><strong>Load Time (<code translate="no">adapt_for_cpu</code>)</strong></th><th style="text-align:center"><strong>Execution Logic</strong></th><th style="text-align:center"><strong>Recommended Scenario</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>verdadeiro</strong></td><td style="text-align:center"><strong>verdadeiro</strong></td><td style="text-align:center">Construir com GPU_CAGRA → serializar como HNSW → desserializar como HNSW → <strong>consulta à CPU</strong></td><td style="text-align:center">Cargas de trabalho sensíveis ao custo; serviço de consultas em grande escala</td></tr>
-<tr><td style="text-align:center"><strong>verdadeiro</strong></td><td style="text-align:center"><strong>falso</strong></td><td style="text-align:center">Construir com GPU_CAGRA → serializar como HNSW → desserializar como HNSW → <strong>consulta à CPU</strong></td><td style="text-align:center">As consultas subsequentes voltam para a CPU quando ocorrem incompatibilidades de parâmetros</td></tr>
-<tr><td style="text-align:center"><strong>falso</strong></td><td style="text-align:center"><strong>verdadeiro</strong></td><td style="text-align:center">Construir com GPU_CAGRA → serializar como CAGRA → deserializar como HNSW → <strong>consulta à CPU</strong></td><td style="text-align:center">Mantém o índice CAGRA original para armazenamento enquanto permite uma pesquisa temporária na CPU</td></tr>
-<tr><td style="text-align:center"><strong>falso</strong></td><td style="text-align:center"><strong>falso</strong></td><td style="text-align:center">Construir com GPU_CAGRA → serializar como CAGRA → desserializar como CAGRA → <strong>consulta à GPU</strong></td><td style="text-align:center">Cargas de trabalho de desempenho crítico em que o custo é secundário</td></tr>
+<tr><td style="text-align:center"><strong>true</strong></td><td style="text-align:center"><strong>true</strong></td><td style="text-align:center">Build with GPU_CAGRA → serialize as HNSW → deserialize as HNSW → <strong>CPU querying</strong></td><td style="text-align:center">Cost-sensitive workloads; large-scale query serving</td></tr>
+<tr><td style="text-align:center"><strong>true</strong></td><td style="text-align:center"><strong>false</strong></td><td style="text-align:center">Build with GPU_CAGRA → serialize as HNSW → deserialize as HNSW → <strong>CPU querying</strong></td><td style="text-align:center">Ensuing queries fall back to the CPU when parameter mismatches occur</td></tr>
+<tr><td style="text-align:center"><strong>false</strong></td><td style="text-align:center"><strong>true</strong></td><td style="text-align:center">Build with GPU_CAGRA → serialize as CAGRA → deserialize as HNSW → <strong>CPU querying</strong></td><td style="text-align:center">Keeping the original CAGRA index for storage while enabling a temporary CPU search</td></tr>
+<tr><td style="text-align:center"><strong>false</strong></td><td style="text-align:center"><strong>false</strong></td><td style="text-align:center">Build with GPU_CAGRA → serialize as CAGRA → deserialize as CAGRA → <strong>GPU querying</strong></td><td style="text-align:center">Performance-critical workloads where cost is secondary</td></tr>
 </tbody>
 </table>
-<p><strong>Nota:</strong> O mecanismo <code translate="no">adapt_for_cpu</code> suporta apenas conversão unidirecional. Um índice CAGRA pode ser convertido em HNSW porque a estrutura do grafo CAGRA preserva todas as relações de vizinhança de que o HNSW necessita. No entanto, um índice HNSW não pode ser convertido de volta para CAGRA, pois não possui as informações estruturais adicionais necessárias para a consulta baseada em GPU. Como resultado, as definições de tempo de construção devem ser selecionadas cuidadosamente, tendo em consideração a implementação a longo prazo e os requisitos de consulta.</p>
-<h2 id="Putting-GPUCAGRA-to-the-Test" class="common-anchor-header">Colocando GPU_CAGRA à prova<button data-href="#Putting-GPUCAGRA-to-the-Test" class="anchor-icon" translate="no">
+<p><strong>Note:</strong> The <code translate="no">adapt_for_cpu</code> mechanism supports only one-way conversion. A CAGRA index can be converted into HNSW because the CAGRA graph structure preserves all neighbor relationships that HNSW needs. However, an HNSW index cannot be converted back to CAGRA, as it lacks the additional structural information needed for GPU-based querying. As a result, the build-time settings should be selected carefully, with consideration for long-term deployment and querying requirements.</p>
+<h2 id="Putting-GPUCAGRA-to-the-Test" class="common-anchor-header">Putting GPU_CAGRA to the Test<button data-href="#Putting-GPUCAGRA-to-the-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,29 +127,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para avaliar a eficácia do modelo de execução híbrido - usando GPUs para construção de índices e CPUs para execução de consultas - realizamos uma série de experiências controladas em um ambiente padronizado. A avaliação se concentra em três dimensões: <strong>desempenho da construção do índice</strong>, <strong>desempenho da consulta</strong> e <strong>precisão da recuperação</strong>.</p>
-<p><strong>Configuração experimental</strong></p>
-<p>As experiências foram realizadas em hardware padrão da indústria, amplamente adotado, para garantir que os resultados permanecem fiáveis e amplamente aplicáveis.</p>
+    </button></h2><p>To evaluate the effectiveness of the hybrid execution model—using GPUs for index construction and CPUs for query execution—we conducted a series of controlled experiments in a standardized environment. The evaluation focuses on three dimensions: <strong>index build performance</strong>, <strong>query performance</strong>, and <strong>recall accuracy</strong>.</p>
+<p><strong>Experimental Setup</strong></p>
+<p>The experiments were performed on widely adopted, industry-standard hardware to ensure the results remain reliable and broadly applicable.</p>
 <ul>
-<li><p>CPU: Processador MD EPYC 7R13 (16 cpus)</p></li>
+<li><p>CPU: MD EPYC 7R13 Processor(16 cpus)</p></li>
 <li><p>GPU: NVIDIA L4</p></li>
 </ul>
-<h3 id="1-Index-Build-Performance" class="common-anchor-header">1. Desempenho da construção do índice</h3><p>Comparamos o CAGRA construído na GPU com o HNSW construído na CPU, sob o mesmo grau de gráfico alvo de 64.</p>
+<h3 id="1-Index-Build-Performance" class="common-anchor-header">1. Index Build Performance</h3><p>We compare CAGRA built on the GPU with HNSW built on the CPU, under the same target graph degree of 64.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/cp1_a177200ab2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Principais conclusões</strong></p>
+<p><strong>Key Findings</strong></p>
 <ul>
-<li><p><strong>O CAGRA da GPU constrói índices de 12 a 15 vezes mais rápido que o HNSW da CPU.</strong> Tanto no Cohere1M quanto no Gist1M, o CAGRA baseado em GPU supera significativamente o HNSW baseado em CPU, destacando a eficiência do paralelismo da GPU durante a construção do gráfico.</p></li>
-<li><p><strong>O tempo de construção aumenta linearmente com as iterações NN-Descent.</strong> À medida que o número de iterações aumenta, o tempo de construção cresce de forma quase linear, reflectindo a natureza de refinamento iterativo do NN-Descent e proporcionando um compromisso previsível entre o custo de construção e a qualidade do gráfico.</p></li>
+<li><p><strong>GPU CAGRA builds indexes 12–15× faster than CPU HNSW.</strong> On both Cohere1M and Gist1M, GPU-based CAGRA significantly outperforms CPU-based HNSW, highlighting the efficiency of GPU parallelism during graph construction.</p></li>
+<li><p><strong>Build time increases linearly with NN-Descent iterations.</strong> As iteration counts rise, build time grows in a near-linear manner, reflecting the iterative refinement nature of NN-Descent and providing a predictable trade-off between build cost and graph quality.</p></li>
 </ul>
-<h3 id="2-Query-performance" class="common-anchor-header">2. Desempenho da consulta</h3><p>Nesta experiência, o gráfico CAGRA é construído uma vez na GPU e depois consultado usando dois caminhos de execução diferentes:</p>
+<h3 id="2-Query-performance" class="common-anchor-header">2. Query performance</h3><p>In this experiment, the CAGRA graph is built once on the GPU and then queried using two different execution paths:</p>
 <ul>
-<li><p><strong>Consulta na CPU</strong>: o índice é desserializado para o formato HNSW e pesquisado na CPU</p></li>
-<li><p><strong>Consulta na GPU</strong>: a pesquisa é executada diretamente no gráfico CAGRA utilizando a passagem baseada na GPU</p></li>
+<li><p><strong>CPU querying</strong>: the index is deserialized into HNSW format and searched on the CPU</p></li>
+<li><p><strong>GPU querying</strong>: search runs directly on the CAGRA graph using GPU-based traversal</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -157,21 +157,21 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>Principais conclusões</strong></p>
+<p><strong>Key Findings</strong></p>
 <ul>
-<li><p><strong>A taxa de transferência da pesquisa da GPU é de 5 a 6 vezes maior que a da CPU.</strong> Tanto no Cohere1M como no Gist1M, a travessia baseada em GPU proporciona QPS substancialmente mais elevados, realçando a eficiência da navegação paralela em grafos nas GPUs.</p></li>
-<li><p><strong>A recordação aumenta com as iterações NN-Descent e depois atinge um patamar.</strong> À medida que o número de iterações de construção cresce, a recuperação melhora tanto para consultas em CPU quanto em GPU. No entanto, para além de um certo ponto, as iterações adicionais produzem ganhos decrescentes, indicando que a qualidade do gráfico convergiu em grande medida.</p></li>
+<li><p><strong>GPU search throughput is 5–6× higher than CPU search.</strong> Across both Cohere1M and Gist1M, GPU-based traversal delivers substantially higher QPS, highlighting the efficiency of parallel graph navigation on GPUs.</p></li>
+<li><p><strong>Recall increases with NN-Descent iterations, then plateaus.</strong> As the number of build iterations grows, recall improves for both CPU and GPU querying. However, beyond a certain point, additional iterations yield diminishing gains, indicating that graph quality has largely converged.</p></li>
 </ul>
-<h3 id="3-Recall-accuracy" class="common-anchor-header">3. Precisão da recuperação</h3><p>Nesta experiência, tanto o CAGRA como o HNSW são consultados na CPU para comparar a recuperação em condições de consulta idênticas.</p>
+<h3 id="3-Recall-accuracy" class="common-anchor-header">3. Recall accuracy</h3><p>In this experiment, both CAGRA and HNSW are queried on the CPU to compare recall under identical query conditions.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/cp3_1a46a7bdda.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Principais conclusões</strong></p>
-<p><strong>O CAGRA alcança maior recall do que o HNSW em ambos os conjuntos de dados</strong>, mostrando que, mesmo quando um índice CAGRA é construído na GPU e desserializado para pesquisa na CPU, a qualidade do gráfico é bem preservada.</p>
-<h2 id="What’s-Next-Scaling-Index-Construction-with-Vamana" class="common-anchor-header">O que vem a seguir: Escalonando a construção de índices com a Vamana<button data-href="#What’s-Next-Scaling-Index-Construction-with-Vamana" class="anchor-icon" translate="no">
+<p><strong>Key Findings</strong></p>
+<p><strong>CAGRA achieves higher recall than HNSW on both datasets</strong>, showing that even when a CAGRA index is built on the GPU and deserialized for CPU search, the graph quality is well preserved.</p>
+<h2 id="What’s-Next-Scaling-Index-Construction-with-Vamana" class="common-anchor-header">What’s Next: Scaling Index Construction with Vamana<button data-href="#What’s-Next-Scaling-Index-Construction-with-Vamana" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -186,23 +186,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A abordagem híbrida GPU-CPU da Milvus oferece uma solução prática e econômica para as cargas de trabalho atuais de pesquisa vetorial em larga escala. Ao construir gráficos CAGRA de alta qualidade em GPUs e atender consultas em CPUs, ele combina a construção rápida de índices com a execução de consultas escalonável e acessível - particularmente<strong>adequada para cargas de trabalho com atualizações pouco frequentes, altos volumes de consulta e restrições rígidas de custo.</strong></p>
-<p>Em escalas ainda maiores - dezenas<strong>ou centenas de milhares de milhões de vectores -</strong>a própria construção de<strong>índices</strong>torna-se o gargalo. Quando o conjunto de dados completo não cabe mais na memória da GPU, o setor normalmente recorre a métodos <strong>de construção de gráficos baseados em inserção</strong>, como o <strong>Vamana</strong>. Em vez de construir o gráfico de uma só vez, o Vamana processa os dados em lotes, inserindo novos vectores de forma incremental, mantendo a conetividade global.</p>
-<p>Seu pipeline de construção segue três etapas principais:</p>
-<p><strong>1. Crescimento geométrico do lote</strong> - começando com pequenos lotes para formar um esqueleto do gráfico, depois aumentando o tamanho do lote para maximizar o paralelismo e, finalmente, usando grandes lotes para refinar os detalhes.</p>
-<p><strong>2. Inserção gulosa</strong> - cada novo nó é inserido navegando a partir de um ponto de entrada central, refinando iterativamente o seu conjunto de vizinhos.</p>
-<p><strong>3. Actualizações de arestas para trás</strong> - adição de ligações inversas para preservar a simetria e garantir uma navegação eficiente no grafo.</p>
-<p>A poda é integrada diretamente no processo de construção utilizando o critério α-RNG: se um candidato a vizinho <em>v</em> já estiver coberto por um vizinho existente <em>p′</em> (ou seja, <em>d(p′, v) &lt; α × d(p, v)</em>), então <em>v</em> é podado. O parâmetro α permite um controlo preciso da esparsidade e da precisão. A aceleração da GPU é conseguida através do paralelismo em lote e do escalonamento geométrico do lote, estabelecendo um equilíbrio entre a qualidade do índice e o rendimento.</p>
-<p>Em conjunto, estas técnicas permitem às equipas lidar com o rápido crescimento de dados e actualizações de índices em grande escala sem se depararem com limitações de memória da GPU.</p>
+    </button></h2><p>Milvus’s hybrid GPU–CPU approach offers a practical and cost-efficient solution for today’s large-scale vector search workloads. By building high-quality CAGRA graphs on GPUs and serving queries on CPUs, it combines fast index construction with scalable, affordable query execution—<strong>particularly well suited for workloads with infrequent updates, high query volumes, and strict cost constraints.</strong></p>
+<p>At even larger scales—<strong>tens or hundreds of billions of vectors</strong>—index construction itself becomes the bottleneck. When the full dataset no longer fits into GPU memory, the industry typically turns to <strong>insert-based graph construction</strong> methods such as <strong>Vamana</strong>. Instead of building the graph all at once, Vamana processes data in batches, incrementally inserting new vectors while maintaining global connectivity.</p>
+<p>Its construction pipeline follows three key stages:</p>
+<p><strong>1. Geometric batch growth</strong> — beginning with small batches to form a skeleton graph, then increasing batch size to maximize parallelism, and finally using large batches to refine details.</p>
+<p><strong>2. Greedy insertion</strong> — each new node is inserted by navigating from a central entry point, iteratively refining its neighbor set.</p>
+<p><strong>3. Backward edge updates</strong> — adding reverse connections to preserve symmetry and ensure efficient graph navigation.</p>
+<p>Pruning is integrated directly into the construction process using the α-RNG criterion: if a candidate neighbor <em>v</em> is already covered by an existing neighbor <em>p′</em> (i.e., <em>d(p′, v) &lt; α × d(p, v)</em>), then <em>v</em> is pruned. The parameter α allows precise control over sparsity and accuracy. GPU acceleration is achieved through in-batch parallelism and geometric batch scaling, striking a balance between index quality and throughput.</p>
+<p>Together, these techniques enable teams to handle rapid data growth and large-scale index updates without running into GPU memory limitations.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/One_more_thing_b458360e25.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>A equipa da Milvus está a desenvolver ativamente o suporte da Vamana, com um lançamento previsto para o primeiro semestre de 2026. Fique atento.</p>
-<p>Tem dúvidas ou quer um mergulho profundo em qualquer recurso do Milvus mais recente? Junte-se ao nosso<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou arquive problemas no<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Você também pode reservar uma sessão individual de 20 minutos para obter insights, orientações e respostas às suas perguntas por meio do<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Saiba mais sobre os recursos do Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>The Milvus team is actively building Vamana support, with a targeted release in the first half of 2026. Stay tuned.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -218,12 +218,12 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Apresentando Milvus 2.6: Pesquisa Vetorial Acessível em Escala de Bilhões</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Apresentando a função Embedding: Como o Milvus 2.6 agiliza a vetorização e a busca semântica</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding no Milvus: Filtragem JSON 88,9x mais rápida com flexibilidade</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Desbloqueando a verdadeira recuperação em nível de entidade: Novas capacidades de Array-of-Structs e MAX_SIM em Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH em Milvus: A arma secreta para combater duplicatas em dados de treinamento LLM </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Leve a compressão vetorial ao extremo: como o Milvus atende a 3× mais consultas com o RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Os benchmarks mentem - os bancos de dados vetoriais merecem um teste real </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Substituímos o Kafka/Pulsar por um Woodpecker para o Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus</a></p></li>
 </ul>

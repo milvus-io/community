@@ -1,9 +1,9 @@
 ---
 id: >-
   milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
-title: >-
-  Berhenti Membayar untuk Data Dingin: Pengurangan Biaya 80% dengan Pemuatan
-  Data Panas-Dingin Sesuai Permintaan di Penyimpanan Berjenjang Milvus
+title: >
+  Stop Paying for Cold Data: 80% Cost Reduction with On-Demand Hot–Cold Data
+  Loading in Milvus Tiered Storage
 author: Buqian Zheng
 date: 2025-12-15T00:00:00.000Z
 cover: assets.zilliz.com/tiered_storage_cover_38237a3bda.png
@@ -16,28 +16,27 @@ meta_title: >
   Milvus Tiered Storage: 80% Less Vector Search Cost with On-Demand Hot–Cold
   Data Loading
 desc: >-
-  Pelajari bagaimana Penyimpanan Berjenjang di Milvus memungkinkan pemuatan
-  sesuai permintaan untuk data panas dan dingin, memberikan pengurangan biaya
-  hingga 80% dan waktu pemuatan yang lebih cepat dalam skala besar.
+  Learn how Tiered Storage in Milvus enables on-demand loading for hot and cold
+  data, delivering up to 80% cost reduction and faster load times at scale.
 origin: >-
   https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
 ---
-<p><strong>Berapa banyak dari Anda yang masih membayar tagihan infrastruktur premium untuk data yang hampir tidak pernah disentuh oleh sistem Anda? Jujur saja - sebagian besar tim masih melakukannya.</strong></p>
-<p>Jika Anda menjalankan pencarian vektor dalam produksi, Anda mungkin pernah melihat hal ini secara langsung. Anda menyediakan memori dan SSD dalam jumlah besar agar semuanya tetap "siap untuk kueri," meskipun hanya sebagian kecil dari kumpulan data Anda yang benar-benar aktif. Dan Anda tidak sendirian. Kami telah melihat banyak kasus serupa juga:</p>
+<p><strong>How many of you are still paying premium infrastructure bills for data your system barely touches? Be honest — most teams are.</strong></p>
+<p>If you run vector search in production, you’ve probably seen this firsthand. You provision large amounts of memory and SSDs so everything stays “query-ready,” even though only a small slice of your dataset is actually active. And you’re not alone. We’ve seen a lot of similar cases as well:</p>
 <ul>
-<li><p><strong>Platform SaaS multi-penyewa:</strong> Ratusan penyewa yang bergabung, tetapi hanya 10-15% yang aktif pada hari tertentu. Sisanya hanya diam saja tetapi masih menghabiskan sumber daya.</p></li>
-<li><p><strong>Sistem rekomendasi e-commerce:</strong> Sejuta SKU, namun 8% produk teratas menghasilkan sebagian besar rekomendasi dan lalu lintas pencarian.</p></li>
-<li><p><strong>Pencarian AI:</strong> Arsip penyematan yang sangat banyak, meskipun 90% dari kueri pengguna mengenai item dari minggu lalu.</p></li>
+<li><p><strong>Multi-tenant SaaS platforms:</strong> Hundreds of onboarded tenants, but only 10–15% active on any given day. The rest sit cold but still occupy resources.</p></li>
+<li><p><strong>E-commerce recommendation systems:</strong> A million SKUs, yet the top 8% of products generate most of the recommendations and search traffic.</p></li>
+<li><p><strong>AI search:</strong> Vast archives of embeddings, even though 90% of user queries hit items from the past week.</p></li>
 </ul>
-<p>Ini adalah cerita yang sama di seluruh industri: <strong>kurang dari 10% data Anda sering ditanyakan, tetapi sering kali menghabiskan 80% penyimpanan dan memori Anda.</strong> Semua orang tahu bahwa ketidakseimbangan itu ada - tetapi sampai saat ini, belum ada cara arsitektural yang jelas untuk memperbaikinya.</p>
-<p><strong>Hal itu berubah dengan</strong> <a href="https://milvus.io/docs/release_notes.md">Milvus 2.6</a><strong>.</strong></p>
-<p>Sebelum rilis ini, Milvus (seperti kebanyakan basis data vektor) bergantung pada <strong>model muatan penuh</strong>: jika data perlu dicari, data tersebut harus dimuat ke simpul-simpul lokal. Tidak masalah apakah data itu diakses seribu kali dalam satu menit atau seperempat menit sekali - <strong>semuanya harus tetap panas.</strong> Pilihan desain tersebut memastikan kinerja yang dapat diprediksi, tetapi juga berarti cluster yang terlalu besar dan membayar sumber daya yang tidak layak untuk data dingin.</p>
-<p><a href="https://milvus.io/docs/tiered-storage-overview.md">Penyimpanan Berjenjang</a> <strong>adalah jawaban kami</strong>.</p>
-<p>Milvus 2.6 memperkenalkan arsitektur penyimpanan berjenjang baru dengan <strong>pemuatan sesuai permintaan yang sebenarnya</strong>, sehingga sistem dapat membedakan antara data panas dan data dingin secara otomatis:</p>
+<p>It’s the same story across industries: <strong>less than 10% of your data gets queried frequently, but it often consumes 80% of your storage and memory.</strong> Everyone knows the imbalance exists — but until recently, there hasn’t been a clean architectural way to fix it.</p>
+<p><strong>That changes with</strong> <a href="https://milvus.io/docs/release_notes.md">Milvus 2.6</a><strong>.</strong></p>
+<p>Before this release, Milvus (like most vector databases) depended on <strong>a full-load model</strong>: if data needed to be searchable, it had to be loaded onto local nodes. It didn’t matter whether that data was hit a thousand times a minute or once a quarter — <strong>it all had to stay hot.</strong> That design choice ensured predictable performance, but it also meant oversizing clusters and paying for resources that cold data simply didn’t deserve.</p>
+<p><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage</a> <strong>is our answer.</strong></p>
+<p>Milvus 2.6 introduces a new tiered storage architecture with <strong>true on-demand loading</strong>, letting the system differentiate between hot and cold data automatically:</p>
 <ul>
-<li><p>Segmen panas tetap tersimpan di dalam cache dekat dengan komputasi</p></li>
-<li><p>Segmen dingin disimpan dengan murah di penyimpanan objek jarak jauh</p></li>
-<li><p>Data ditarik ke node lokal <strong>hanya ketika kueri benar-benar membutuhkannya</strong></p></li>
+<li><p>Hot segments stay cached close to the compute</p></li>
+<li><p>Cold segments live cheaply in remote object storage</p></li>
+<li><p>Data is pulled into local nodes <strong>only when a query actually needs it</strong></p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -45,9 +44,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Hal ini mengubah struktur biaya Anda dari "berapa banyak data yang Anda miliki" menjadi <strong>"berapa banyak data yang benar-benar Anda gunakan."</strong> Dan dalam penerapan produksi awal, pergeseran sederhana ini menghasilkan <strong>pengurangan biaya penyimpanan dan memori hingga 80%.</strong></p>
-<p>Di bagian selanjutnya dari artikel ini, kami akan menjelaskan cara kerja Tiered Storage, membagikan hasil kinerja nyata, dan menunjukkan di mana perubahan ini memberikan dampak terbesar.</p>
-<h2 id="Why-Full-Loading-Breaks-Down-at-Scale" class="common-anchor-header">Mengapa Pemuatan Penuh Rusak pada Skala Besar<button data-href="#Why-Full-Loading-Breaks-Down-at-Scale" class="anchor-icon" translate="no">
+<p>This shifts your cost structure from “how much data you have” to <strong>“how much data you actually use.”</strong> And in early production deployments, this simple shift delivers <strong>up to an 80% reduction in storage and memory cost</strong>.</p>
+<p>In the rest of this post, we’ll walk through how Tiered Storage works, share real performance results, and show where this change delivers the biggest impact.</p>
+<h2 id="Why-Full-Loading-Breaks-Down-at-Scale" class="common-anchor-header">Why Full Loading Breaks Down at Scale<button data-href="#Why-Full-Loading-Breaks-Down-at-Scale" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,47 +61,47 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelum masuk ke dalam solusi, ada baiknya kita melihat lebih dekat mengapa <strong>mode beban penuh</strong> yang digunakan di Milvus 2.5 dan rilis sebelumnya menjadi faktor pembatas saat beban kerja meningkat.</p>
-<p>Pada Milvus 2.5 dan sebelumnya, ketika pengguna mengeluarkan permintaan <code translate="no">Collection.load()</code>, setiap QueryNode men-cache seluruh koleksi secara lokal, termasuk metadata, data lapangan, dan indeks. Komponen-komponen ini diunduh dari penyimpanan objek dan disimpan sepenuhnya dalam memori atau dipetakan dalam memori (mmap) ke disk lokal. Hanya setelah <em>semua</em> data ini tersedia secara lokal, koleksi ditandai sebagai dimuat dan siap untuk melayani kueri.</p>
-<p>Dengan kata lain, koleksi tidak dapat di-query hingga seluruh dataset-panas atau dingin-tersedia di dalam node.</p>
+    </button></h2><p>Before diving into the solution, it’s worth taking a closer look at why the <strong>full-load mode</strong> used in Milvus 2.5 and earlier releases became a limiting factor as workloads scaled.</p>
+<p>In Milvus 2.5 and earlier, when a user issued a <code translate="no">Collection.load()</code> request, each QueryNode cached the entire collection locally, including metadata, field data, and indexes. These components are downloaded from object storage and stored either fully in memory or memory-mapped (mmap) to local disk. Only after <em>all</em> of this data is available locally is the collection marked as loaded and ready to serve queries.</p>
+<p>In other words, the collection is not queryable until the full dataset—hot or cold—is present on the node.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_5_en_3adca38b7e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Catatan:</strong> Untuk jenis indeks yang menyematkan data vektor mentah, Milvus hanya memuat file indeks, bukan bidang vektor secara terpisah. Meskipun demikian, indeks harus dimuat secara penuh untuk melayani kueri, terlepas dari berapa banyak data yang sebenarnya diakses.</p>
-<p>Untuk melihat mengapa hal ini menjadi masalah, pertimbangkan sebuah contoh konkret:</p>
-<p>Misalkan Anda memiliki kumpulan data vektor berukuran sedang dengan:</p>
+<p><strong>Note:</strong> For index types that embed raw vector data, Milvus loads only the index files, not the vector field separately. Even so, the index must be fully loaded to serve queries, regardless of how much of the data is actually accessed.</p>
+<p>To see why this becomes problematic, consider a concrete example:</p>
+<p>Suppose you have a mid-sized vector dataset with:</p>
 <ul>
-<li><p><strong>100 juta vektor</strong></p></li>
-<li><p><strong>768 dimensi</strong> (penyematan BERT)</p></li>
-<li><p>presisi<strong>float32</strong> (4 byte per dimensi)</p></li>
-<li><p><strong>Indeks HNSW</strong></p></li>
+<li><p><strong>100 million vectors</strong></p></li>
+<li><p><strong>768 dimensions</strong> (BERT embeddings)</p></li>
+<li><p><strong>float32</strong> precision (4 bytes per dimension)</p></li>
+<li><p>An <strong>HNSW index</strong></p></li>
 </ul>
-<p>Dalam pengaturan ini, indeks HNSW saja-termasuk vektor mentah yang disematkan-menghabiskan sekitar 430 GB memori. Setelah menambahkan bidang skalar umum seperti ID pengguna, stempel waktu, atau label kategori, total penggunaan sumber daya lokal dengan mudah melebihi 500 GB.</p>
-<p>Ini berarti bahwa meskipun 80% data jarang atau tidak pernah ditanyakan, sistem masih harus menyediakan dan menyimpan lebih dari 500 GB memori lokal atau disk hanya untuk menjaga koleksi tetap online.</p>
-<p>Untuk beberapa beban kerja, perilaku ini dapat diterima:</p>
+<p>In this setup, the HNSW index alone—including the embedded raw vectors—consumes approximately 430 GB of memory. After adding common scalar fields such as user IDs, timestamps, or category labels, total local resource usage easily exceeds 500 GB.</p>
+<p>This means that even if 80% of the data is rarely or never queried, the system must still provision and hold more than 500 GB of local memory or disk just to keep the collection online.</p>
+<p>For some workloads, this behavior is acceptable:</p>
 <ul>
-<li><p>Jika hampir semua data sering diakses, memuat semuanya secara penuh akan menghasilkan latensi kueri serendah mungkin - dengan biaya tertinggi.</p></li>
-<li><p>Jika data dapat dibagi menjadi subset panas dan hangat, pemetaan memori data hangat ke disk dapat mengurangi sebagian tekanan memori.</p></li>
+<li><p>If nearly all data is frequently accessed, fully loading everything delivers the lowest possible query latency—at the highest cost.</p></li>
+<li><p>If data can be divided into hot and warm subsets, memory-mapping warm data to disk can partially reduce memory pressure.</p></li>
 </ul>
-<p>Namun, dalam beban kerja di mana 80% atau lebih data berada di bagian ekor panjang, kelemahan pemuatan penuh muncul dengan cepat, baik dalam hal <strong>kinerja</strong> maupun <strong>biaya</strong>.</p>
-<h3 id="Performance-bottlenecks" class="common-anchor-header">Kemacetan kinerja</h3><p>Dalam praktiknya, pemuatan penuh memengaruhi lebih dari sekadar kinerja kueri dan sering kali memperlambat alur kerja operasional rutin:</p>
+<p>However, in workloads where 80% or more of the data sits in the long tail, the drawbacks of full loading surface quickly, across both <strong>performance</strong> and <strong>cost</strong>.</p>
+<h3 id="Performance-bottlenecks" class="common-anchor-header">Performance bottlenecks</h3><p>In practice, full loading affects more than query performance and often slows down routine operational workflows:</p>
 <ul>
-<li><p><strong>Peningkatan bergulir yang lebih lama:</strong> Dalam cluster besar, peningkatan bergulir dapat memakan waktu berjam-jam atau bahkan sehari penuh, karena setiap node harus memuat ulang seluruh dataset sebelum tersedia kembali.</p></li>
-<li><p><strong>Pemulihan yang lebih lambat setelah kegagalan:</strong> Ketika QueryNode dimulai ulang, QueryNode tidak dapat melayani lalu lintas hingga semua data dimuat ulang, yang secara signifikan memperpanjang waktu pemulihan dan memperbesar dampak kegagalan node.</p></li>
-<li><p><strong>Iterasi dan eksperimen yang lebih lambat:</strong> Pemuatan penuh memperlambat alur kerja pengembangan, memaksa tim AI menunggu berjam-jam hingga data dimuat saat menguji set data atau konfigurasi indeks baru.</p></li>
+<li><p><strong>Longer rolling upgrades:</strong> In large clusters, rolling upgrades can take hours or even a full day, as each node must reload the entire dataset before becoming available again.</p></li>
+<li><p><strong>Slower recovery after failures:</strong> When a QueryNode restarts, it cannot serve traffic until all data is reloaded, significantly prolonging recovery time and amplifying the impact of node failures.</p></li>
+<li><p><strong>Slower iteration and experimentation:</strong> Full loading slows down development workflows, forcing AI teams to wait hours for data to load when testing new datasets or index configurations.</p></li>
 </ul>
-<h3 id="Cost-inefficiencies" class="common-anchor-header">Inefisiensi biaya</h3><p>Pemuatan penuh juga meningkatkan biaya infrastruktur. Misalnya, pada instance yang dioptimalkan untuk memori cloud utama, menyimpan 1 TB data secara lokal membutuhkan biaya sekitar<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>**70</mn><mn>.000 per</mn><mo>tahun∗∗</mo><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">berdasarkan harga kons</annotation><mrow><mi>ervatif</mi></mrow><annotation encoding="application/x-tex">(</annotation><mrow><mi>AWSr6i</mi><mo>:</mo></mrow></semantics></math></span></span><mtext> </mtext><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">70.000 per tahun**, berdasarkan harga konservatif (AWS r6i: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">70</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">000</span><span class="mord">per tahun</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span> ∗</span></span></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">berdasarkan harga</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal" style="margin-right:0.03588em;">konservatif</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex"></annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mopen">(</span><span class="mord mathnormal">AWSr6i</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">:</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span>:<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace nobreak"> </span> 5.74 / GB/bulan; GCP n4-highmem: ~5</span></span></span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>.</mn><mi>68/GB/bulan</mi><mo separator="true">;</mo><mi>AzureE-series</mi><mo>:</mo></mrow></semantics></math></span></span><mtext> </mtext> 5<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">.68/GB/bulan; Azure E-series: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span></span></span></span>5<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.</span><span class="mord mathnormal">68/GB/bulan</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">AzureE</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">seri</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span>:<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace nobreak"> </span> 5.67 / GB/bulan).</span></span></span></p>
-<p>Sekarang pertimbangkan pola akses yang lebih realistis, di mana 80% dari data tersebut adalah data dingin dan dapat disimpan di penyimpanan objek sebagai gantinya (dengan biaya sekitar $ 0,023 / GB / bulan):</p>
+<h3 id="Cost-inefficiencies" class="common-anchor-header">Cost inefficiencies</h3><p>Full loading also drives up infrastructure costs. For example, on mainstream cloud memory-optimized instances, storing 1 TB of data locally costs roughly **<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>70</mn><mo separator="true">,</mo><mn>000</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo>∗</mo><mo>∗</mo><mo separator="true">,</mo><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi><mi>d</mi><mi>o</mi><mi>n</mi><mi>c</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>e</mi><mi>p</mi><mi>r</mi><mi>i</mi><mi>c</mi><mi>i</mi><mi>n</mi><mi>g</mi><mo stretchy="false">(</mo><mi>A</mi><mi>W</mi><mi>S</mi><mi>r</mi><mn>6</mn><mi>i</mi><mo>:</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">70,000 per year**, based on conservative pricing (AWS r6i: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">70</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">000</span><span class="mord mathnormal">p</span><span class="mord mathnormal">erye</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∗</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">ba</span><span class="mord mathnormal">se</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">co</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.02778em;">ser</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">e</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">i</span><span class="mord mathnormal">c</span><span class="mord mathnormal">in</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord">6</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace nobreak"> </span></span></span></span>5.74 / GB / month; GCP n4-highmem: ~<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5.68</mn><mi mathvariant="normal">/</mi><mi>G</mi><mi>B</mi><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mo separator="true">;</mo><mi>A</mi><mi>z</mi><mi>u</mi><mi>r</mi><mi>e</mi><mi>E</mi><mo>−</mo><mi>s</mi><mi>e</mi><mi>r</mi><mi>i</mi><mi>e</mi><mi>s</mi><mo>:</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">5.68 / GB / month; Azure E-series: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">5.68/</span><span class="mord mathnormal" style="margin-right:0.05017em;">GB</span><span class="mord">/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord mathnormal">u</span><span class="mord mathnormal">re</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">ser</span><span class="mord mathnormal">i</span><span class="mord mathnormal">es</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace nobreak"> </span></span></span></span>5.67 / GB / month).</p>
+<p>Now consider a more realistic access pattern, where 80% of that data is cold and could be stored in object storage instead (at roughly $0.023 / GB / month):</p>
 <ul>
-<li><p>200 GB data panas × $5,68</p></li>
-<li><p>800 GB data dingin × $0,023</p></li>
+<li><p>200 GB hot data × $5.68</p></li>
+<li><p>800 GB cold data × $0.023</p></li>
 </ul>
-<p>Biaya tahunan: (200 × 5,68 + 800 × 0,023) × 12≈ $14<strong>.000</strong></p>
-<p>Itu adalah <strong>pengurangan 80%</strong> dalam total biaya penyimpanan, tanpa mengorbankan performa yang sebenarnya penting.</p>
-<h2 id="What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="common-anchor-header">Apa Itu Penyimpanan Berjenjang dan Bagaimana Cara Kerjanya?<button data-href="#What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<p>Annual cost: (200×5.68+800×0.023)×12≈<strong>$14,000</strong></p>
+<p>That’s an <strong>80% reduction</strong> in total storage cost, without sacrificing performance where it actually matters.</p>
+<h2 id="What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="common-anchor-header">What Is the Tiered Storage and How Does It Work?<button data-href="#What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -117,66 +116,66 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk menghilangkan trade-off, Milvus 2.6 memperkenalkan <strong>Penyimpanan Berjenjang</strong>, yang menyeimbangkan performa dan biaya dengan memperlakukan penyimpanan lokal sebagai cache, bukan sebagai wadah untuk seluruh dataset.</p>
-<p>Dalam model ini, QueryNodes hanya memuat metadata ringan saat startup. Data lapangan dan indeks diambil sesuai permintaan dari penyimpanan objek jarak jauh ketika kueri membutuhkannya, dan di-cache secara lokal jika sering diakses. Data yang tidak aktif dapat digusur untuk mengosongkan ruang.</p>
-<p>Hasilnya, data panas tetap berada di dekat lapisan komputasi untuk kueri latensi rendah, sementara data dingin tetap berada di penyimpanan objek hingga dibutuhkan. Hal ini mengurangi waktu muat, meningkatkan efisiensi sumber daya, dan memungkinkan QueryNodes untuk melakukan kueri terhadap set data yang jauh lebih besar daripada memori lokal atau kapasitas disk.</p>
-<p>Dalam praktiknya, Penyimpanan Berjenjang bekerja sebagai berikut:</p>
+    </button></h2><p>To remove the trade-off, Milvus 2.6 introduced <strong>Tiered Storage</strong>, which balances performance and cost by treating local storage as a cache rather than a container for the entire dataset.</p>
+<p>In this model, QueryNodes load only lightweight metadata at startup. Field data and indexes are fetched on demand from remote object storage when a query requires them, and cached locally if they are accessed frequently. Inactive data can be evicted to free up space.</p>
+<p>As a result, hot data stays close to the compute layer for low-latency queries, while cold data remains in object storage until needed. This reduces load time, improves resource efficiency, and allows QueryNodes to query datasets far larger than their local memory or disk capacity.</p>
+<p>In practice, Tiered Storage works as follows:</p>
 <ul>
-<li><p><strong>Menyimpan data yang penting secara lokal:</strong> Sekitar 20% data yang sering diakses tetap berada di node lokal, memastikan latensi rendah untuk 80% kueri yang paling penting.</p></li>
-<li><p><strong>Memuat data dingin sesuai permintaan:</strong> Sisa 80% data yang jarang diakses diambil hanya jika diperlukan, sehingga membebaskan sebagian besar memori lokal dan sumber daya disk.</p></li>
-<li><p><strong>Beradaptasi secara dinamis dengan penggusuran berbasis LRU:</strong> Milvus menggunakan strategi penggusuran LRU (Least Recently Used) untuk terus menyesuaikan data mana yang dianggap panas atau dingin. Data yang tidak aktif secara otomatis digusur untuk memberi ruang bagi data yang baru diakses.</p></li>
+<li><p><strong>Keep hot data local:</strong> Roughly 20% of frequently accessed data remains resident on local nodes, ensuring low latency for the 80% of queries that matter most.</p></li>
+<li><p><strong>Load cold data on demand:</strong> The remaining 80% of rarely accessed data is fetched only when needed, freeing up the majority of local memory and disk resources.</p></li>
+<li><p><strong>Adapt dynamically with LRU-based eviction:</strong> Milvus uses an LRU (Least Recently Used) eviction strategy to continuously adjust which data is considered hot or cold. Inactive data is automatically evicted to make room for newly accessed data.</p></li>
 </ul>
-<p>Dengan desain ini, Milvus tidak lagi dibatasi oleh kapasitas tetap dari memori lokal dan disk. Sebaliknya, sumber daya lokal berfungsi sebagai cache yang dikelola secara dinamis, di mana ruang terus menerus diambil kembali dari data yang tidak aktif dan dialokasikan kembali ke beban kerja yang aktif.</p>
-<p>Di balik tenda, perilaku ini diaktifkan oleh tiga mekanisme teknis inti:</p>
-<h3 id="1-Lazy-Load" class="common-anchor-header">1. Beban Malas</h3><p>Pada inisialisasi, Milvus hanya memuat metadata tingkat segmen yang minimal, sehingga koleksi dapat langsung di-query segera setelah dijalankan. Data lapangan dan file indeks tetap berada di penyimpanan jarak jauh dan diambil sesuai permintaan selama eksekusi kueri, sehingga menjaga memori lokal dan penggunaan disk tetap rendah.</p>
-<p><strong>Bagaimana pemuatan koleksi bekerja di Milvus 2.5</strong></p>
+<p>With this design, Milvus is no longer constrained by the fixed capacity of local memory and disk. Instead, local resources function as a dynamically managed cache, where space is continuously reclaimed from inactive data and reallocated to active workloads.</p>
+<p>Under the hood, this behavior is enabled by three core technical mechanisms:</p>
+<h3 id="1-Lazy-Load" class="common-anchor-header">1. Lazy Load</h3><p>At initialization, Milvus loads only minimal segment-level metadata, allowing collections to become queryable almost immediately after startup. Field data and index files remain in remote storage and are fetched on demand during query execution, keeping local memory and disk usage low.</p>
+<p><strong>How collection loading worked in Milvus 2.5</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_5_en_aa89de3570.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Cara kerja pemuatan malas di Milvus 2.6 dan yang lebih baru</strong></p>
+<p><strong>How lazy loading works in Milvus 2.6 and later</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_6_en_049fa45540.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Metadata yang dimuat selama inisialisasi terbagi dalam empat kategori utama:</p>
+<p>The metadata loaded during initialization falls into four key categories:</p>
 <ul>
-<li><p><strong>Statistik segmen</strong> (Informasi dasar seperti jumlah baris, ukuran segmen, dan metadata skema)</p></li>
-<li><p><strong>Stempel waktu</strong> (Digunakan untuk mendukung kueri penelusuran waktu)</p></li>
-<li><p><strong>Menyisipkan dan menghapus catatan</strong> (Diperlukan untuk menjaga konsistensi data selama eksekusi kueri)</p></li>
-<li><p><strong>Filter Bloom</strong> (Digunakan untuk pemfilteran awal yang cepat untuk menghilangkan segmen yang tidak relevan dengan cepat)</p></li>
+<li><p><strong>Segment statistics</strong> (Basic information such as row count, segment size, and schema metadata)</p></li>
+<li><p><strong>Timestamps</strong> (Used to support time-travel queries)</p></li>
+<li><p><strong>Insert and delete records</strong> (Required to maintain data consistency during query execution)</p></li>
+<li><p><strong>Bloom filters</strong> (Used for fast pre-filtering to quickly eliminate irrelevant segments)</p></li>
 </ul>
-<h3 id="2-Partial-Load" class="common-anchor-header">2. Pemuatan Sebagian</h3><p>Sementara Lazy loading mengontrol <em>kapan</em> data dimuat, partial loading mengontrol <em>berapa banyak</em> data yang dimuat. Setelah kueri atau pencarian dimulai, QueryNode melakukan pemuatan parsial, hanya mengambil potongan data yang diperlukan atau file indeks dari penyimpanan objek.</p>
-<p><strong>Indeks vektor: Pemuatan yang sadar penyewa</strong></p>
-<p>Salah satu kemampuan yang paling berdampak yang diperkenalkan di Milvus 2.6+ adalah pemuatan indeks vektor yang sadar-penyewa, yang dirancang khusus untuk beban kerja multi-penyewa.</p>
-<p>Ketika sebuah kueri mengakses data dari satu penyewa, Milvus hanya memuat bagian dari indeks vektor milik penyewa tersebut, dan melewatkan data indeks untuk semua penyewa lainnya. Hal ini membuat sumber daya lokal tetap terfokus pada penyewa yang aktif.</p>
-<p>Desain ini memberikan beberapa manfaat:</p>
+<h3 id="2-Partial-Load" class="common-anchor-header">2. Partial Load</h3><p>While Lazy loading controls <em>when</em> data is loaded, partial loading controls <em>how much</em> data is loaded. Once queries or searches begin, the QueryNode performs a partial load, fetching only the required data chunks or index files from object storage.</p>
+<p><strong>Vector indexes: Tenant-aware loading</strong></p>
+<p>One of the most impactful capabilities introduced in Milvus 2.6+ is tenant-aware loading of vector indexes, designed specifically for multi-tenant workloads.</p>
+<p>When a query accesses data from a single tenant, Milvus loads only the portion of the vector index belonging to that tenant, skipping index data for all other tenants. This keeps local resources focused on active tenants.</p>
+<p>This design provides several benefits:</p>
 <ul>
-<li><p>Indeks vektor untuk penyewa yang tidak aktif tidak menggunakan memori lokal atau disk</p></li>
-<li><p>Data indeks untuk penyewa aktif tetap tersimpan di cache untuk akses latensi rendah</p></li>
-<li><p>Kebijakan penggusuran LRU tingkat penyewa memastikan penggunaan cache yang adil di seluruh penyewa</p></li>
+<li><p>Vector indexes for inactive tenants do not consume local memory or disk</p></li>
+<li><p>Index data for active tenants stays cached for low-latency access</p></li>
+<li><p>A tenant-level LRU eviction policy ensures fair cache usage across tenants</p></li>
 </ul>
-<p><strong>Bidang skalar: Pemuatan parsial tingkat kolom</strong></p>
-<p>Pemuatan parsial juga berlaku untuk <strong>bidang skalar</strong>, yang memungkinkan Milvus memuat hanya kolom yang secara eksplisit direferensikan oleh kueri.</p>
-<p>Pertimbangkan sebuah koleksi dengan <strong>50 kolom skema</strong>, seperti <code translate="no">id</code>, <code translate="no">vector</code>, <code translate="no">title</code>, <code translate="no">description</code>, <code translate="no">category</code>, <code translate="no">price</code>, <code translate="no">stock</code>, dan <code translate="no">tags</code>, dan Anda hanya perlu mengembalikan tiga kolom -<code translate="no">id</code>, <code translate="no">title</code>, dan <code translate="no">price</code>.</p>
+<p><strong>Scalar fields: Column-level partial loading</strong></p>
+<p>Partial loading also applies to <strong>scalar fields</strong>, allowing Milvus to load only the columns explicitly referenced by a query.</p>
+<p>Consider a collection with <strong>50 schema fields</strong>, such as <code translate="no">id</code>, <code translate="no">vector</code>, <code translate="no">title</code>, <code translate="no">description</code>, <code translate="no">category</code>, <code translate="no">price</code>, <code translate="no">stock</code>, and <code translate="no">tags</code>, and you only need to return three fields—<code translate="no">id</code>, <code translate="no">title</code>, and <code translate="no">price</code>.</p>
 <ul>
-<li><p>Dalam <strong>Milvus 2.5</strong>, semua 50 bidang skalar dimuat terlepas dari persyaratan kueri.</p></li>
-<li><p>Pada <strong>Milvus 2.6+</strong>, hanya tiga field yang diminta yang dimuat. Sisa 47 field yang lain tidak dimuat dan hanya diambil secara malas jika akan diakses kemudian.</p></li>
+<li><p>In <strong>Milvus 2.5</strong>, all 50 scalar fields are loaded regardless of query requirements.</p></li>
+<li><p>In <strong>Milvus 2.6+</strong>, only the three requested fields are loaded. The remaining 47 fields stay unloaded and are fetched lazily only if they are accessed later.</p></li>
 </ul>
-<p>Penghematan sumber daya bisa sangat besar. Jika setiap bidang skalar menempati 20 GB:</p>
+<p>The resource savings can be substantial. If each scalar field occupies 20 GB:</p>
 <ul>
-<li><p>Memuat semua bidang membutuhkan <strong>1.000 GB</strong> (50 × 20 GB)</p></li>
-<li><p>Memuat hanya tiga bidang yang diperlukan menggunakan <strong>60 GB</strong></p></li>
+<li><p>Loading all fields requires <strong>1,000 GB</strong> (50 × 20 GB)</p></li>
+<li><p>Loading only the three required fields uses <strong>60 GB</strong></p></li>
 </ul>
-<p>Ini merupakan <strong>pengurangan 94%</strong> dalam pemuatan data skalar, tanpa memengaruhi kebenaran kueri atau hasil.</p>
-<p><strong>Catatan:</strong> Pemuatan parsial yang sadar penyewa untuk bidang skalar dan indeks vektor akan secara resmi diperkenalkan dalam rilis yang akan datang. Setelah tersedia, fitur ini akan semakin mengurangi latensi pemuatan dan meningkatkan performa kueri dingin dalam penerapan multi-penyewa yang besar.</p>
-<h3 id="3-LRU-Based-Cache-Eviction" class="common-anchor-header">3. Penggusuran Cache Berbasis LRU</h3><p>Pemuatan malas dan pemuatan parsial secara signifikan mengurangi jumlah data yang dibawa ke dalam memori dan disk lokal. Namun, dalam sistem yang berjalan lama, cache masih akan bertambah seiring dengan diaksesnya data baru dari waktu ke waktu. Ketika kapasitas lokal tercapai, penggusuran cache berbasis LRU mulai berlaku.</p>
-<p>Penggusuran LRU (Least Recently Used) mengikuti aturan sederhana: data yang belum pernah diakses akan digusur terlebih dahulu. Hal ini membebaskan ruang lokal untuk data yang baru diakses sambil menjaga data yang sering digunakan tetap berada di cache.</p>
-<h2 id="Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="common-anchor-header">Evaluasi Kinerja: Penyimpanan Berjenjang vs Pemuatan Penuh<button data-href="#Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="anchor-icon" translate="no">
+<p>This represents a <strong>94% reduction</strong> in scalar data loading, without affecting query correctness or results.</p>
+<p><strong>Note:</strong> Tenant-aware partial loading for scalar fields and vector indexes will be officially introduced in an upcoming release. Once available, it will further reduce load latency and improve cold-query performance in large multi-tenant deployments.</p>
+<h3 id="3-LRU-Based-Cache-Eviction" class="common-anchor-header">3. LRU-Based Cache Eviction</h3><p>Lazy loading and partial loading significantly reduce how much data is brought into local memory and disk. However, in long-running systems, the cache will still grow as new data is accessed over time. When local capacity is reached, LRU-based cache eviction takes effect.</p>
+<p>LRU (Least Recently Used) eviction follows a simple rule: data that has not been accessed recently is evicted first. This frees up local space for newly accessed data while keeping frequently used data resident in the cache.</p>
+<h2 id="Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="common-anchor-header">Performance Evaluation: Tiered Storage vs. Full Loading<button data-href="#Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -191,91 +190,91 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk mengevaluasi dampak dunia nyata dari <strong>Penyimpanan Berjenjang</strong>, kami menyiapkan lingkungan pengujian yang sangat mirip dengan beban kerja produksi. Kami membandingkan Milvus dengan dan tanpa Penyimpanan Bertingkat di lima dimensi: waktu muat, penggunaan sumber daya, performa kueri, kapasitas efektif, dan efisiensi biaya.</p>
-<h3 id="Experimental-setup" class="common-anchor-header">Penyiapan eksperimental</h3><p><strong>Kumpulan data</strong></p>
+    </button></h2><p>To evaluate the real-world impact of <strong>Tiered Storage</strong>, we set up a test environment that closely mirrors production workloads. We compared Milvus with and without Tiered Storage across five dimensions: load time, resource usage, query performance, effective capacity, and cost efficiency.</p>
+<h3 id="Experimental-setup" class="common-anchor-header">Experimental setup</h3><p><strong>Dataset</strong></p>
 <ul>
-<li><p>100 juta vektor dengan 768 dimensi (penyematan BERT)</p></li>
-<li><p>Ukuran indeks vektor: sekitar 430 GB</p></li>
-<li><p>10 bidang skalar, termasuk ID, stempel waktu, dan kategori</p></li>
+<li><p>100 million vectors with 768 dimensions (BERT embeddings)</p></li>
+<li><p>Vector index size: approximately 430 GB</p></li>
+<li><p>10 scalar fields, including ID, timestamp, and category</p></li>
 </ul>
-<p><strong>Konfigurasi perangkat keras</strong></p>
+<p><strong>Hardware configuration</strong></p>
 <ul>
-<li><p>1 QueryNode dengan 4 vCPU, memori 32 GB, dan SSD NVMe 1 TB</p></li>
-<li><p>Jaringan 10 Gbps</p></li>
-<li><p>Cluster penyimpanan objek MinIO sebagai backend penyimpanan jarak jauh</p></li>
+<li><p>1 QueryNode with 4 vCPUs, 32 GB memory, and 1 TB NVMe SSD</p></li>
+<li><p>10 Gbps network</p></li>
+<li><p>MinIO object storage cluster as the remote storage backend</p></li>
 </ul>
-<p><strong>Pola akses</strong></p>
-<p>Kueri mengikuti distribusi akses panas-dingin yang realistis:</p>
+<p><strong>Access pattern</strong></p>
+<p>Queries follow a realistic hot–cold access distribution:</p>
 <ul>
-<li><p>80% dari kueri menargetkan data dari 30 hari terakhir (≈20% dari total data)</p></li>
-<li><p>15% data target dari 30-90 hari (≈30% dari total data)</p></li>
-<li><p>5% data target yang lebih tua dari 90 hari (≈50% dari total data)</p></li>
+<li><p>80% of queries target data from the most recent 30 days (≈20% of total data)</p></li>
+<li><p>15% target data from 30–90 days (≈30% of total data)</p></li>
+<li><p>5% target data older than 90 days (≈50% of total data)</p></li>
 </ul>
-<h3 id="Key-results" class="common-anchor-header">Hasil utama</h3><p><strong>1. Waktu muat 33× lebih cepat</strong></p>
+<h3 id="Key-results" class="common-anchor-header">Key results</h3><p><strong>1. 33× faster load time</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Tahap</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Penyimpanan Berjenjang)</strong></th><th style="text-align:center"><strong>Percepatan</strong></th></tr>
+<tr><th style="text-align:center"><strong>Stage</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Speedup</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Pengunduhan data</td><td style="text-align:center">22 menit</td><td style="text-align:center">28 detik</td><td style="text-align:center">47×</td></tr>
-<tr><td style="text-align:center">Pemuatan indeks</td><td style="text-align:center">3 menit</td><td style="text-align:center">17 detik</td><td style="text-align:center">10.5×</td></tr>
-<tr><td style="text-align:center"><strong>Total</strong></td><td style="text-align:center"><strong>25 menit</strong></td><td style="text-align:center"><strong>45 detik</strong></td><td style="text-align:center"><strong>33×</strong></td></tr>
+<tr><td style="text-align:center">Data download</td><td style="text-align:center">22 minutes</td><td style="text-align:center">28 seconds</td><td style="text-align:center">47×</td></tr>
+<tr><td style="text-align:center">Index loading</td><td style="text-align:center">3 minutes</td><td style="text-align:center">17 seconds</td><td style="text-align:center">10.5×</td></tr>
+<tr><td style="text-align:center"><strong>Total</strong></td><td style="text-align:center"><strong>25 minutes</strong></td><td style="text-align:center"><strong>45 seconds</strong></td><td style="text-align:center"><strong>33×</strong></td></tr>
 </tbody>
 </table>
-<p>Pada Milvus 2.5, memuat koleksi membutuhkan waktu <strong>25 menit</strong>. Dengan Penyimpanan Berjenjang di Milvus 2.6+, beban kerja yang sama dapat diselesaikan hanya dalam waktu <strong>45 detik</strong>, yang menunjukkan peningkatan efisiensi beban secara bertahap.</p>
-<p><strong>2. Pengurangan 80% dalam Penggunaan Sumber Daya Lokal</strong></p>
+<p>In Milvus 2.5, loading the collection took <strong>25 minutes</strong>. With Tiered Storage in Milvus 2.6+, the same workload completes in just <strong>45 seconds</strong>, representing a step-change improvement in load efficiency.</p>
+<p><strong>2. 80% Reduction in Local Resource Usage</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Tahap</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Penyimpanan Berjenjang)</strong></th><th style="text-align:center"><strong>Pengurangan</strong></th></tr>
+<tr><th style="text-align:center"><strong>Stage</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Reduction</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Setelah memuat</td><td style="text-align:center">430 GB</td><td style="text-align:center">12 GB</td><td style="text-align:center">-97%</td></tr>
-<tr><td style="text-align:center">Setelah 1 jam</td><td style="text-align:center">430 GB</td><td style="text-align:center">68 GB</td><td style="text-align:center">-84%</td></tr>
-<tr><td style="text-align:center">Setelah 24 jam</td><td style="text-align:center">430 GB</td><td style="text-align:center">85 GB</td><td style="text-align:center">-80%</td></tr>
-<tr><td style="text-align:center">Kondisi stabil</td><td style="text-align:center">430 GB</td><td style="text-align:center">85-95 GB</td><td style="text-align:center">~80%</td></tr>
+<tr><td style="text-align:center">After load</td><td style="text-align:center">430 GB</td><td style="text-align:center">12 GB</td><td style="text-align:center">–97%</td></tr>
+<tr><td style="text-align:center">After 1 hour</td><td style="text-align:center">430 GB</td><td style="text-align:center">68 GB</td><td style="text-align:center">–84%</td></tr>
+<tr><td style="text-align:center">After 24 hours</td><td style="text-align:center">430 GB</td><td style="text-align:center">85 GB</td><td style="text-align:center">–80%</td></tr>
+<tr><td style="text-align:center">Steady state</td><td style="text-align:center">430 GB</td><td style="text-align:center">85–95 GB</td><td style="text-align:center">~80%</td></tr>
 </tbody>
 </table>
-<p>Pada Milvus 2.5, penggunaan sumber daya lokal tetap konstan pada <strong>430 GB</strong>, terlepas dari beban kerja atau waktu proses. Sebaliknya, Milvus 2.6+ dimulai dengan hanya <strong>12 GB</strong> segera setelah pemuatan.</p>
-<p>Saat kueri berjalan, data yang sering diakses di-cache secara lokal dan penggunaan sumber daya secara bertahap meningkat. Setelah kurang lebih 24 jam, sistem menjadi stabil pada <strong>85-95 GB</strong>, yang mencerminkan kumpulan data panas yang bekerja. Dalam jangka panjang, hal ini menghasilkan <strong> pengurangan ~ 80%</strong> dalam memori lokal dan penggunaan disk, tanpa mengorbankan ketersediaan kueri.</p>
-<p><strong>3. Dampak mendekati nol pada kinerja data panas</strong></p>
+<p>In Milvus 2.5, local resource usage remains constant at <strong>430 GB</strong>, regardless of workload or runtime. In contrast, Milvus 2.6+ starts with just <strong>12 GB</strong> immediately after loading.</p>
+<p>As queries run, frequently accessed data is cached locally and resource usage gradually increases. After approximately 24 hours, the system stabilizes at <strong>85–95 GB</strong>, reflecting the working set of hot data. Over the long term, this results in an <strong>~80% reduction</strong> in local memory and disk usage, without sacrificing query availability.</p>
+<p><strong>3. Near-zero impact on hot data performance</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Jenis kueri</strong></th><th style="text-align:center"><strong>Milvus 2.5 Latensi P99</strong></th><th style="text-align:center"><strong>Latensi Milvus 2.6+ P99</strong></th><th style="text-align:center"><strong>Perubahan</strong></th></tr>
+<tr><th style="text-align:center"><strong>Query type</strong></th><th style="text-align:center"><strong>Milvus 2.5 P99 latency</strong></th><th style="text-align:center"><strong>Milvus 2.6+ P99 latency</strong></th><th style="text-align:center"><strong>Change</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Kueri data panas</td><td style="text-align:center">15 ms</td><td style="text-align:center">16 ms</td><td style="text-align:center">+6.7%</td></tr>
-<tr><td style="text-align:center">Kueri data hangat</td><td style="text-align:center">15 ms</td><td style="text-align:center">28 ms</td><td style="text-align:center">+86%</td></tr>
-<tr><td style="text-align:center">Kueri data dingin (akses pertama)</td><td style="text-align:center">15 ms</td><td style="text-align:center">120 ms</td><td style="text-align:center">+700%</td></tr>
-<tr><td style="text-align:center">Kueri data dingin (di-cache)</td><td style="text-align:center">15 ms</td><td style="text-align:center">18 ms</td><td style="text-align:center">+20%</td></tr>
+<tr><td style="text-align:center">Hot data queries</td><td style="text-align:center">15 ms</td><td style="text-align:center">16 ms</td><td style="text-align:center">+6.7%</td></tr>
+<tr><td style="text-align:center">Warm data queries</td><td style="text-align:center">15 ms</td><td style="text-align:center">28 ms</td><td style="text-align:center">+86%</td></tr>
+<tr><td style="text-align:center">Cold data queries (first access)</td><td style="text-align:center">15 ms</td><td style="text-align:center">120 ms</td><td style="text-align:center">+700%</td></tr>
+<tr><td style="text-align:center">Cold data queries (cached)</td><td style="text-align:center">15 ms</td><td style="text-align:center">18 ms</td><td style="text-align:center">+20%</td></tr>
 </tbody>
 </table>
-<p>Untuk data panas, yang menyumbang sekitar 80% dari semua kueri, latensi P99 meningkat hanya 6,7%, sehingga hampir tidak ada dampak yang terlihat dalam produksi.</p>
-<p>Kueri data dingin menunjukkan latensi yang lebih tinggi pada akses pertama karena pemuatan sesuai permintaan dari penyimpanan objek. Namun, setelah di-cache, latensinya hanya meningkat 20%. Mengingat frekuensi akses data dingin yang rendah, pertukaran ini umumnya dapat diterima untuk sebagian besar beban kerja di dunia nyata.</p>
-<p><strong>4. 4.3× Kapasitas Efektif Lebih Besar</strong></p>
-<p>Dengan anggaran perangkat keras yang sama-delapan server dengan memori masing-masing 64 GB (total 512 GB)-Milvus 2.5 dapat memuat paling banyak 512 GB data, setara dengan sekitar 136 juta vektor.</p>
-<p>Dengan Penyimpanan Berjenjang yang diaktifkan di Milvus 2.6+, perangkat keras yang sama dapat mendukung data sebesar 2,2 TB, atau sekitar 590 juta vektor. Ini merupakan peningkatan 4,3 kali lipat dalam kapasitas efektif, memungkinkan set data yang jauh lebih besar untuk dilayani tanpa memperluas memori lokal.</p>
-<p><strong>5. Pengurangan Biaya 80,1%</strong></p>
-<p>Dengan menggunakan set data vektor 2 TB di lingkungan AWS sebagai contoh, dan dengan asumsi 20% dari data tersebut panas (400 GB), perbandingan biayanya adalah sebagai berikut:</p>
+<p>For hot data, which accounts for roughly 80% of all queries, P99 latency increases by only 6.7%, resulting in virtually no perceptible impact in production.</p>
+<p>Cold data queries show higher latency on first access due to on-demand loading from object storage. However, once cached, their latency increases by only 20%. Given the low access frequency of cold data, this trade-off is generally acceptable for most real-world workloads.</p>
+<p><strong>4. 4.3× Larger Effective Capacity</strong></p>
+<p>Under the same hardware budget—eight servers with 64 GB of memory each (512 GB total)—Milvus 2.5 can load at most 512 GB of data, equivalent to approximately 136 million vectors.</p>
+<p>With Tiered Storage enabled in Milvus 2.6+, the same hardware can support 2.2 TB of data, or roughly 590 million vectors. This represents a 4.3× increase in effective capacity, enabling significantly larger datasets to be served without expanding local memory.</p>
+<p><strong>5. 80.1% Cost Reduction</strong></p>
+<p>Using a 2 TB vector dataset in an AWS environment as an example, and assuming 20% of the data is hot (400 GB), the cost comparison is as follows:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Item</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Penyimpanan Berjenjang)</strong></th><th style="text-align:center"><strong>Penghematan</strong></th></tr>
+<tr><th style="text-align:center"><strong>Item</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Savings</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Biaya bulanan</td><td style="text-align:center">$11,802</td><td style="text-align:center">$2,343</td><td style="text-align:center">$9,459</td></tr>
-<tr><td style="text-align:center">Biaya tahunan</td><td style="text-align:center">$141,624</td><td style="text-align:center">$28,116</td><td style="text-align:center">$113,508</td></tr>
-<tr><td style="text-align:center">Tingkat tabungan</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><strong>80.1%</strong></td></tr>
+<tr><td style="text-align:center">Monthly cost</td><td style="text-align:center">$11,802</td><td style="text-align:center">$2,343</td><td style="text-align:center">$9,459</td></tr>
+<tr><td style="text-align:center">Annual cost</td><td style="text-align:center">$141,624</td><td style="text-align:center">$28,116</td><td style="text-align:center">$113,508</td></tr>
+<tr><td style="text-align:center">Savings rate</td><td style="text-align:center">–</td><td style="text-align:center">–</td><td style="text-align:center"><strong>80.1%</strong></td></tr>
 </tbody>
 </table>
-<h3 id="Benchmark-Summary" class="common-anchor-header">Ringkasan Tolok Ukur</h3><p>Di semua pengujian, Tiered Storage memberikan peningkatan yang konsisten dan terukur:</p>
+<h3 id="Benchmark-Summary" class="common-anchor-header">Benchmark Summary</h3><p>Across all tests, Tiered Storage delivers consistent and measurable improvements:</p>
 <ul>
-<li><p><strong>Waktu muat 33× lebih cepat:</strong> Waktu pemuatan koleksi berkurang dari <strong>25 menit menjadi 45 detik</strong>.</p></li>
-<li><p><strong>Penggunaan sumber daya lokal 80% lebih rendah:</strong> Dalam operasi kondisi stabil, penggunaan memori dan disk lokal turun sekitar <strong>80%</strong>.</p></li>
-<li><p><strong>Dampak mendekati nol pada kinerja data panas:</strong> Latensi P99 untuk data panas meningkat <strong>kurang dari 10%</strong>, mempertahankan kinerja kueri dengan latensi rendah.</p></li>
-<li><p><strong>Latensi terkendali untuk data dingin:</strong> Data dingin memiliki latensi yang lebih tinggi pada akses pertama, tetapi hal ini dapat diterima karena frekuensi akses yang rendah.</p></li>
-<li><p><strong>Kapasitas efektif 4,3 kali lebih tinggi:</strong> Perangkat keras yang sama dapat melayani <strong>4-5 kali lebih banyak data</strong> tanpa memori tambahan.</p></li>
-<li><p><strong>Pengurangan biaya lebih dari 80%:</strong> Biaya infrastruktur tahunan berkurang <strong>lebih dari 80%.</strong></p></li>
+<li><p><strong>33× faster load times:</strong> Collection load time is reduced from <strong>25 minutes to 45 seconds</strong>.</p></li>
+<li><p><strong>80% lower local resource usage:</strong> In steady-state operation, memory and local disk usage drop by approximately <strong>80%</strong>.</p></li>
+<li><p><strong>Near-zero impact on hot data performance:</strong> P99 latency for hot data increases by <strong>less than 10%</strong>, preserving low-latency query performance.</p></li>
+<li><p><strong>Controlled latency for cold data:</strong> Cold data incurs higher latency on first access, but this is acceptable given its low access frequency.</p></li>
+<li><p><strong>4.3× higher effective capacity:</strong> The same hardware can serve <strong>4–5× more data</strong> without additional memory.</p></li>
+<li><p><strong>Over 80% cost reduction:</strong> Annual infrastructure costs are reduced by <strong>more than 80%</strong>.</p></li>
 </ul>
-<h2 id="When-to-Use-Tiered-Storage-in-Milvus" class="common-anchor-header">Kapan Menggunakan Penyimpanan Berjenjang di Milvus<button data-href="#When-to-Use-Tiered-Storage-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="When-to-Use-Tiered-Storage-in-Milvus" class="common-anchor-header">When to Use Tiered Storage in Milvus<button data-href="#When-to-Use-Tiered-Storage-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -290,48 +289,48 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Berdasarkan hasil benchmark dan kasus produksi di dunia nyata, kami mengelompokkan kasus penggunaan Tiered Storage ke dalam tiga kategori untuk membantu Anda memutuskan apakah Tiered Storage cocok untuk beban kerja Anda.</p>
-<h3 id="Best-Fit-Use-Cases" class="common-anchor-header">Kasus Penggunaan yang Paling Sesuai</h3><p><strong>1. Platform pencarian vektor multi-penyewa</strong></p>
+    </button></h2><p>Based on benchmark results and real-world production cases, we group Tiered Storage use cases into three categories to help you decide whether it is a good fit for your workload.</p>
+<h3 id="Best-Fit-Use-Cases" class="common-anchor-header">Best-Fit Use Cases</h3><p><strong>1. Multi-tenant vector search platforms</strong></p>
 <ul>
-<li><p><strong>Karakteristik:</strong> Jumlah penyewa yang banyak dengan aktivitas yang sangat tidak merata; pencarian vektor adalah beban kerja inti.</p></li>
-<li><p><strong>Pola akses:</strong> Kurang dari 20% penyewa menghasilkan lebih dari 80% kueri vektor.</p></li>
-<li><p><strong>Manfaat yang diharapkan:</strong> Pengurangan biaya 70-80%; Ekspansi kapasitas 3-5 kali lipat.</p></li>
+<li><p><strong>Characteristics:</strong> Large number of tenants with highly uneven activity; vector search is the core workload.</p></li>
+<li><p><strong>Access pattern:</strong> Fewer than 20% of tenants generate over 80% of vector queries.</p></li>
+<li><p><strong>Expected benefits:</strong> 70–80% cost reduction; 3–5× capacity expansion.</p></li>
 </ul>
-<p><strong>2. Sistem rekomendasi e-commerce (beban kerja penelusuran vektor)</strong></p>
+<p><strong>2. E-commerce recommendation systems (vector search workloads)</strong></p>
 <ul>
-<li><p><strong>Karakteristik:</strong> Popularitas yang kuat condong di antara produk teratas dan produk ekor panjang.</p></li>
-<li><p><strong>Pola akses:</strong> 10% produk teratas menyumbang ~ 80% dari lalu lintas penelusuran vektor.</p></li>
-<li><p><strong>Manfaat yang diharapkan:</strong> Tidak perlu kapasitas ekstra selama acara puncak; Pengurangan biaya 60-70%.</p></li>
+<li><p><strong>Characteristics:</strong> Strong popularity skew between top products and the long tail.</p></li>
+<li><p><strong>Access pattern:</strong> Top 10% of products account for ~80% of vector search traffic.</p></li>
+<li><p><strong>Expected benefits:</strong> No need for extra capacity during peak events; 60–70% cost reduction</p></li>
 </ul>
-<p><strong>3. Kumpulan data berskala besar dengan pemisahan panas-dingin yang jelas (dominan vektor)</strong></p>
+<p><strong>3. Large-scale datasets with clear hot–cold separation (vector-dominant)</strong></p>
 <ul>
-<li><p><strong>Karakteristik:</strong> Dataset berskala TB atau lebih besar, dengan akses yang sangat bias terhadap data terbaru.</p></li>
-<li><p><strong>Pola akses:</strong> Distribusi klasik 80/20: 20% data melayani 80% kueri</p></li>
-<li><p><strong>Manfaat yang diharapkan:</strong> Pengurangan biaya sebesar 75-85</p></li>
+<li><p><strong>Characteristics:</strong> TB-scale or larger datasets, with access heavily biased toward recent data.</p></li>
+<li><p><strong>Access pattern:</strong> A classic 80/20 distribution: 20% of data serves 80% of queries</p></li>
+<li><p><strong>Expected benefits:</strong> 75–85% cost reduction</p></li>
 </ul>
-<h3 id="Good-Fit-Use-Cases" class="common-anchor-header">Kasus Penggunaan yang Sesuai</h3><p><strong>1. Beban kerja yang sensitif terhadap biaya</strong></p>
+<h3 id="Good-Fit-Use-Cases" class="common-anchor-header">Good-Fit Use Cases</h3><p><strong>1. Cost-sensitive workloads</strong></p>
 <ul>
-<li><p><strong>Karakteristik</strong> Anggaran yang ketat dengan beberapa toleransi untuk pertukaran kinerja kecil.</p></li>
-<li><p><strong>Pola akses:</strong> Permintaan vektor relatif terkonsentrasi.</p></li>
-<li><p><strong>Manfaat yang diharapkan:</strong> Pengurangan biaya 50-70%; Data dingin dapat menimbulkan latensi ~500 ms pada akses pertama, yang harus dievaluasi terhadap persyaratan SLA.</p></li>
+<li><p><strong>Characteristics:</strong> Tight budgets with some tolerance for minor performance trade-offs.</p></li>
+<li><p><strong>Access pattern:</strong> Vector queries are relatively concentrated.</p></li>
+<li><p><strong>Expected benefits:</strong> 50–70% cost reduction; Cold data may incur ~500 ms latency on first access, which should be evaluated against SLA requirements.</p></li>
 </ul>
-<p><strong>2. Penyimpanan data historis dan pencarian arsip</strong></p>
+<p><strong>2. Historical data retention and archival search</strong></p>
 <ul>
-<li><p><strong>Karakteristik:</strong> Volume vektor historis yang besar dengan frekuensi kueri yang sangat rendah.</p></li>
-<li><p><strong>Pola akses:</strong> Sekitar 90% dari kueri menargetkan data terbaru.</p></li>
-<li><p><strong>Manfaat yang diharapkan:</strong> Mempertahankan set data historis lengkap; Menjaga biaya infrastruktur tetap dapat diprediksi dan dikendalikan</p></li>
+<li><p><strong>Characteristics:</strong> Large volumes of historical vectors with very low query frequency.</p></li>
+<li><p><strong>Access pattern:</strong> Around 90% of queries target recent data.</p></li>
+<li><p><strong>Expected benefits:</strong> Retain full historical datasets; Keep infrastructure costs predictable and controlled</p></li>
 </ul>
-<h3 id="Poor-Fit-Use-Cases" class="common-anchor-header">Kasus Penggunaan yang Tidak Sesuai</h3><p><strong>1. Beban kerja data panas yang seragam</strong></p>
+<h3 id="Poor-Fit-Use-Cases" class="common-anchor-header">Poor-Fit Use Cases</h3><p><strong>1. Uniformly hot data workloads</strong></p>
 <ul>
-<li><p><strong>Karakteristik:</strong> Semua data diakses pada frekuensi yang sama, tanpa perbedaan panas-dingin yang jelas.</p></li>
-<li><p><strong>Mengapa tidak cocok:</strong> Manfaat cache yang terbatas; Menambah kompleksitas sistem tanpa keuntungan yang berarti</p></li>
+<li><p><strong>Characteristics:</strong> All data is accessed at a similar frequency, with no clear hot–cold distinction.</p></li>
+<li><p><strong>Why unfit:</strong> Limited cache benefit; Added system complexity without meaningful gains</p></li>
 </ul>
-<p><strong>2. Beban kerja dengan latensi sangat rendah</strong></p>
+<p><strong>2. Ultra–low-latency workloads</strong></p>
 <ul>
-<li><p><strong>Karakteristik:</strong> Sistem yang sangat sensitif terhadap latensi, seperti perdagangan finansial atau penawaran waktu nyata</p></li>
-<li><p><strong>Mengapa tidak cocok:</strong> Variasi latensi yang kecil sekalipun tidak dapat diterima; Pemuatan penuh memberikan kinerja yang lebih dapat diprediksi</p></li>
+<li><p><strong>Characteristics:</strong> Extremely latency-sensitive systems, such as financial trading or real-time bidding</p></li>
+<li><p><strong>Why unfit:</strong> Even small latency variations are unacceptable; Full loading provides more predictable performance</p></li>
 </ul>
-<h2 id="Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="common-anchor-header">Mulai Cepat: Cobalah Penyimpanan Berjenjang di Milvus 2.6+<button data-href="#Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="anchor-icon" translate="no">
+<h2 id="Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="common-anchor-header">Quick Start: Try Tiered Storage in Milvus 2.6+<button data-href="#Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -360,7 +359,7 @@ queryNode.segcore.tieredStorage:
 <span class="hljs-comment"># Launch Milvus</span>
 $ docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -375,14 +374,14 @@ $ docker-compose up -d
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Penyimpanan Berjenjang di Milvus 2.6 mengatasi ketidaksesuaian yang umum terjadi antara bagaimana data vektor disimpan dan bagaimana data tersebut diakses. Di sebagian besar sistem produksi, hanya sebagian kecil data yang sering dimintakan, namun model pemuatan tradisional memperlakukan semua data sama panasnya. Dengan beralih ke pemuatan sesuai permintaan dan mengelola memori lokal dan disk sebagai cache, Milvus menyelaraskan konsumsi sumber daya dengan perilaku kueri yang sebenarnya daripada asumsi kasus terburuk.</p>
-<p>Pendekatan ini memungkinkan sistem untuk menskalakan ke set data yang lebih besar tanpa peningkatan sumber daya lokal secara proporsional, sambil menjaga kinerja hot-query sebagian besar tidak berubah. Data dingin tetap dapat diakses saat dibutuhkan, dengan latensi yang dapat diprediksi dan dibatasi, sehingga pertukaran menjadi eksplisit dan dapat dikontrol. Ketika pencarian vektor bergerak lebih dalam ke lingkungan produksi yang sensitif terhadap biaya, multi-penyewa, dan telah berjalan lama, Tiered Storage memberikan fondasi praktis untuk beroperasi secara efisien dalam skala besar.</p>
-<p>Untuk informasi lebih lanjut tentang Penyimpanan Berjenjang, lihat dokumentasi di bawah ini:</p>
+    </button></h2><p>Tiered Storage in Milvus 2.6 addresses a common mismatch between how vector data is stored and how it is actually accessed. In most production systems, only a small fraction of data is queried frequently, yet traditional loading models treat all data as equally hot. By shifting to on-demand loading and managing local memory and disk as a cache, Milvus aligns resource consumption with real query behavior rather than worst-case assumptions.</p>
+<p>This approach allows systems to scale to larger datasets without proportional increases in local resources, while keeping hot-query performance largely unchanged. Cold data remains accessible when needed, with predictable and bounded latency, making the trade-off explicit and controllable. As vector search moves deeper into cost-sensitive, multi-tenant, and long-running production environments, Tiered Storage provides a practical foundation for operating efficiently at scale.</p>
+<p>For more information about the Tiered Storage, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/tiered-storage-overview.md">Penyimpanan Berjenjang | Dokumentasi Milvus</a></li>
+<li><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage | Milvus Documentation</a></li>
 </ul>
-<p>Ada pertanyaan atau ingin mendalami fitur-fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Pelajari Lebih Lanjut tentang Fitur Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -398,15 +397,15 @@ $ docker-compose up -d
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Memperkenalkan Milvus 2.6: Pencarian Vektor yang Terjangkau dalam Skala Miliaran</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Memperkenalkan Fungsi Penyematan: Bagaimana Milvus 2.6 Menyederhanakan Vektorisasi dan Pencarian Semantik</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Penghancuran JSON di Milvus: Pemfilteran JSON 88,9x Lebih Cepat dengan Fleksibilitas</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Membuka Pengambilan Tingkat Entitas yang Sebenarnya: Kemampuan Array-of-Structs dan MAX_SIM Baru di Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Menyatukan Pemfilteran Geospasial dan Pencarian Vektor dengan Bidang Geometri dan RTREE di Milvus 2.6</a></p></li>
-<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Memperkenalkan AISAQ di Milvus: Pencarian Vektor Berskala Miliaran Baru Saja Menjadi 3.200× Lebih Murah dalam Memori</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Mengoptimalkan NVIDIA CAGRA di Milvus: Pendekatan Hibrida GPU-CPU untuk Pengindeksan yang Lebih Cepat dan Kueri yang Lebih Murah</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH di Milvus: Senjata Rahasia untuk Memerangi Duplikasi dalam Data Pelatihan LLM </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Membawa Kompresi Vektor ke Tingkat Ekstrem: Bagaimana Milvus Melayani Kueri 3× Lebih Banyak dengan RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmark Bohong - DB Vektor Layak Mendapat Ujian Nyata </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Kami Mengganti Kafka/Pulsar dengan Burung Pelatuk untuk Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6</a></p></li>
+<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200× Cheaper on Memory</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster Indexing and Cheaper Queries</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus</a></p></li>
 </ul>

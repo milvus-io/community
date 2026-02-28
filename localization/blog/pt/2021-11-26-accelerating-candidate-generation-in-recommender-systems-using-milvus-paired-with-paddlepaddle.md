@@ -2,25 +2,25 @@
 id: >-
   2021-11-26-accelerating-candidate-generation-in-recommender-systems-using-milvus-paired-with-paddlepaddle.md
 title: >-
-  Aceleração da geração de candidatos em sistemas de recomendação usando Milvus
-  emparelhado com PaddlePaddle
+  Accelerating Candidate Generation in Recommender Systems Using Milvus paired
+  with PaddlePaddle
 author: Yunmei
 date: 2021-11-26T00:00:00.000Z
-desc: o fluxo de trabalho mínimo de um sistema de recomendação
+desc: the minimal workflow of a recommender system
 cover: assets.zilliz.com/Candidate_generation_9baf7beb86.png
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/accelerating-candidate-generation-in-recommender-systems-using-milvus-paired-with-paddlepaddle
 ---
-<p>Se tem experiência no desenvolvimento de um sistema de recomendação, é provável que tenha sido vítima de pelo menos uma das seguintes situações:</p>
+<p>If you have experience developing a recommender system, you are likely to have fallen victim to at least one of the following:</p>
 <ul>
-<li>O sistema é extremamente lento no retorno dos resultados devido à enorme quantidade de conjuntos de dados.</li>
-<li>Os dados recentemente inseridos não podem ser processados em tempo real para pesquisa ou consulta.</li>
-<li>A implementação do sistema de recomendação é assustadora.</li>
+<li>The system is extremely slow when returning results due to the tremendous amount of datasets.</li>
+<li>Newly inserted data cannot be processed in real time for search or query.</li>
+<li>Deployment of the recommender system is daunting.</li>
 </ul>
-<p>Este artigo tem como objetivo abordar as questões acima mencionadas e fornecer algumas ideias, apresentando um projeto de sistema de recomendação de produtos que utiliza o Milvus, uma base de dados vetorial de código aberto, emparelhada com o PaddlePaddle, uma plataforma de aprendizagem profunda.</p>
-<p>Este artigo tem como objetivo descrever brevemente o fluxo de trabalho mínimo de um sistema de recomendação. Em seguida, apresenta os principais componentes e os detalhes de implementação deste projeto.</p>
-<h2 id="The-basic-workflow-of-a-recommender-system" class="common-anchor-header">O fluxo de trabalho básico de um sistema de recomendação<button data-href="#The-basic-workflow-of-a-recommender-system" class="anchor-icon" translate="no">
+<p>This article aims to address the issues mentioned above and provide some insights for you by introducing a product recommender system project that uses Milvus, an open-source vector database, paired with PaddlePaddle, a deep learning platform.</p>
+<p>This article sets out to briefly describe the minimal workflow of a recommender system. Then it moves on to introduce the main components and the implementation details of this project.</p>
+<h2 id="The-basic-workflow-of-a-recommender-system" class="common-anchor-header">The basic workflow of a recommender system<button data-href="#The-basic-workflow-of-a-recommender-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,18 +35,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de nos debruçarmos sobre o projeto propriamente dito, vamos primeiro analisar o fluxo de trabalho básico de um sistema de recomendação. Um sistema de recomendação pode apresentar resultados personalizados de acordo com os interesses e as necessidades únicas do utilizador. Para fazer essas recomendações personalizadas, o sistema passa por duas fases, a geração de candidatos e a classificação.</p>
+    </button></h2><p>Before going deep into the project itself, let’s first take a look at the basic workflow of a recommender system. A recommender system can return personalized results according to unique user interest and needs. To make such personalized recommendations, the system goes through two stages, candidate generation and ranking.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_29e27eb9b1.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>A primeira fase é a geração de candidatos, que devolve os dados mais relevantes ou semelhantes, como um produto ou um vídeo que corresponda ao perfil do utilizador. Durante a geração de candidatos, o sistema compara as caraterísticas do utilizador com os dados armazenados na sua base de dados e recupera os dados semelhantes. Em seguida, durante a classificação, o sistema pontua e reordena os dados recuperados. Finalmente, os resultados no topo da lista são mostrados aos utilizadores.</p>
-<p>No nosso caso de um sistema de recomendação de produtos, o sistema começa por comparar o perfil do utilizador com as caraterísticas dos produtos em stock para filtrar uma lista de produtos que satisfaçam as necessidades do utilizador. Em seguida, o sistema pontua os produtos com base na sua semelhança com o perfil do utilizador, classifica-os e, finalmente, devolve os 10 melhores produtos ao utilizador.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_29e27eb9b1.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>The first stage is candidate generation, which returns the most relevant or similar data, such as a product or a video that matches the user profile. During candidate generation, the system compares the user trait with the data stored in its database, and retrieves those similar ones. Then during ranking, the system scores and reorders the retrieved data. Finally, those results on the top of the list are shown to users.</p>
+<p>In our case of a product recommender system, it first compares the user profile with the characteristics of the products in inventory to filter out a list of products catering to the user’s needs. Then the system scores the products based on their similarity to user profile, ranks them, and finally returns the top 10 products to the user.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_5850ba2c46.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<h2 id="System-architecture" class="common-anchor-header">Arquitetura do sistema<button data-href="#System-architecture" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_5850ba2c46.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<h2 id="System-architecture" class="common-anchor-header">System architecture<button data-href="#System-architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,36 +65,40 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O sistema de recomendação de produtos deste projeto utiliza três componentes: MIND, PaddleRec e Milvus.</p>
-<h3 id="MIND" class="common-anchor-header">MIND</h3><p>O<a href="https://arxiv.org/pdf/1904.08030">MIND</a>, abreviatura de &quot;Multi-Interest Network with Dynamic Routing for Recommendation at Tmall&quot; (rede de interesses múltiplos com encaminhamento dinâmico para recomendação no Tmall), é um algoritmo desenvolvido pelo Alibaba Group. Antes de o MIND ser proposto, a maioria dos modelos de IA predominantes para recomendação utilizavam um único vetor para representar os interesses variados de um utilizador. No entanto, um único vetor está longe de ser suficiente para representar os interesses exactos de um utilizador. Por conseguinte, o algoritmo MIND foi proposto para transformar os múltiplos interesses de um utilizador em vários vectores.</p>
-<p>Especificamente, o MIND adopta uma <a href="https://arxiv.org/pdf/2005.09347">rede de interesses múltiplos</a> com encaminhamento dinâmico para processar os interesses múltiplos de um utilizador durante a fase de geração de candidatos. A rede de interesses múltiplos é uma camada de extrator de interesses múltiplos baseada no mecanismo de encaminhamento de cápsulas. Pode ser utilizada para combinar os comportamentos anteriores de um utilizador com os seus múltiplos interesses, de modo a obter um perfil de utilizador preciso.</p>
-<p>O diagrama seguinte ilustra a estrutura de rede do MIND.</p>
+    </button></h2><p>The product recommender system in this project uses three components: MIND, PaddleRec, and Milvus.</p>
+<h3 id="MIND" class="common-anchor-header">MIND</h3><p><a href="https://arxiv.org/pdf/1904.08030">MIND</a>, short for &quot;Multi-Interest Network with Dynamic Routing for Recommendation at Tmall&quot;, is an algorithm developed by Alibaba Group. Before MIND was proposed, most of the prevalent AI models for recommendation used a single vector to represent a user’s varied interests. However, a single vector is far from sufficient to represent the exact interests of a user. Therefore, MIND algorithm was proposed to turn a user’s multiple interests into several vectors.</p>
+<p>Specifically, MIND adopts a <a href="https://arxiv.org/pdf/2005.09347">multi-interest network</a> with dynamic routing for processing multiple interests of one user during the candidate generation stage. The multi-interest network is a layer of multi-interest extractor built on capsule routing mechanism. It can be used to combine a user’s past behaviors with his or her multiple interests, to provide an accurate user profile.</p>
+<p>The following diagram illustrates the network structure of MIND.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_9e6f284ea2.png" alt="4.png" class="doc-image" id="4.png" />
-   </span> <span class="img-wrapper"> <span>4.png</span> </span></p>
-<p>Para representar as caraterísticas dos utilizadores, o MIND utiliza os comportamentos e os interesses dos utilizadores como entradas e, em seguida, alimenta-os na camada de incorporação para gerar vectores de utilizadores, incluindo vectores de interesses e vectores de comportamento dos utilizadores. Em seguida, os vectores de comportamento dos utilizadores são introduzidos na camada de extração de interesses múltiplos para gerar cápsulas de interesses dos utilizadores. Depois de concatenar as cápsulas de interesse do utilizador com os embeddings do comportamento do utilizador e utilizar várias camadas ReLU para os transformar, o MIND produz vários vectores de representação do utilizador. Este projeto definiu que o MIND produzirá, em última análise, quatro vectores de representação do utilizador.</p>
-<p>Por outro lado, as caraterísticas dos produtos passam pela camada de incorporação e são convertidas em vectores de itens esparsos. Em seguida, cada vetor de item passa por uma camada de agrupamento para se tornar um vetor denso.</p>
-<p>Quando todos os dados são convertidos em vectores, é introduzida uma camada de atenção adicional sensível às etiquetas para orientar o processo de formação.</p>
-<h3 id="PaddleRec" class="common-anchor-header">PaddleRec</h3><p><a href="https://github.com/PaddlePaddle/PaddleRec/blob/release/2.2.0/README_EN.md">A PaddleRec</a> é uma biblioteca de modelos de pesquisa em grande escala para recomendação. Faz parte do ecossistema Baidu <a href="https://github.com/PaddlePaddle/Paddle">PaddlePaddle</a>. O objetivo do PaddleRec é fornecer aos programadores uma solução integrada para criar um sistema de recomendação de forma fácil e rápida.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_9e6f284ea2.png" alt="4.png" class="doc-image" id="4.png" />
+    <span>4.png</span>
+  </span>
+</p>
+<p>To represent the trait of users, MIND takes user behaviors and user interests as inputs, and then feeds them into the embedding layer to generate user vectors, including user interest vectors and user behavior vectors. Then user behavior vectors are fed into the multi-interest extractor layer to generate users interest capsules. After concatenating the user interest capsules with user behavior embeddings and using several ReLU layers to transform them, MIND outputs several user representation vectors. This project has defined that MIND will ultimately output four user representation vectors.</p>
+<p>On the other hand, product traits go through the embedding layer and are converted into sparse item vectors. Then each item vector goes through a pooling layer to become a dense vector.</p>
+<p>When all data are converted into vectors, an extra label-aware attention layer is introduced to guide the training process.</p>
+<h3 id="PaddleRec" class="common-anchor-header">PaddleRec</h3><p><a href="https://github.com/PaddlePaddle/PaddleRec/blob/release/2.2.0/README_EN.md">PaddleRec</a> is a large-scale search model library for recommendation. It is part of the Baidu <a href="https://github.com/PaddlePaddle/Paddle">PaddlePaddle</a> ecosystem. PaddleRec aims to provide developers with an integrated solution to build a recommendation system in an easy and rapid way.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/5_35f7526ea7.png" alt="5.png" class="doc-image" id="5.png" />
-   </span> <span class="img-wrapper"> <span>5.png</span> </span></p>
-<p>Como mencionado no parágrafo inicial, os engenheiros que desenvolvem sistemas de recomendação têm frequentemente de enfrentar os desafios de uma fraca usabilidade e de uma implantação complicada do sistema. No entanto, o PaddleRec pode ajudar os programadores nos seguintes aspectos:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/5_35f7526ea7.png" alt="5.png" class="doc-image" id="5.png" />
+    <span>5.png</span>
+  </span>
+</p>
+<p>As mentioned in the opening paragraph, engineers developing recommender systems often have to face the challenges of poor usability and complicated deployment of the system. However, PaddleRec can help developers in the following aspects:</p>
 <ul>
-<li><p>Facilidade de uso: PaddleRec é uma biblioteca de código aberto que encapsula vários modelos populares na indústria, incluindo modelos para geração de candidatos, classificação, reranking, multitarefa e muito mais. Com o PaddleRec, pode testar instantaneamente a eficácia do modelo e melhorar a sua eficiência através da iteração. O PaddleRec oferece uma maneira fácil de treinar modelos para sistemas distribuídos com excelente desempenho. Ele é otimizado para o processamento de dados em larga escala de vetores esparsos. Pode facilmente escalar o PaddleRec horizontalmente e acelerar a sua velocidade de computação. Portanto, você pode criar rapidamente ambientes de treinamento no Kubernetes usando o PaddleRec.</p></li>
-<li><p>Suporte para implantação: O PaddleRec fornece soluções de implantação online para seus modelos. Os modelos estão imediatamente prontos para utilização após a formação, apresentando flexibilidade e elevada disponibilidade.</p></li>
+<li><p>Ease of use: PaddleRec is an open-source library that encapsulates various popular models in the industry, including models for candidate generation, ranking, reranking, multitasking, and more. With PaddleRec, you can instantly test the effectiveness of the model and improve its efficiency through iteration. PaddleRec offers you an easy way to train models for distributed systems with excellent performance. It is optimized for large-scale data processing of sparse vectors. You can easily scale PaddleRec horizontally and accelerate its computing speed. Therefore, you can quickly build training environments on Kubernetes using PaddleRec.</p></li>
+<li><p>Support for deployment: PaddleRec provides online deployment solutions for its models. The models are immediately ready for use after training, featuring flexibility and high availability.</p></li>
 </ul>
-<h3 id="Milvus" class="common-anchor-header">Milvus</h3><p><a href="https://milvus.io/docs/v2.0.x/overview.md">Milvus</a> é um banco de dados vetorial com uma arquitetura nativa da nuvem. É de código aberto no <a href="https://github.com/milvus-io">GitHub</a> e pode ser utilizada para armazenar, indexar e gerir vectores de incorporação maciços gerados por redes neurais profundas e outros modelos de aprendizagem automática (ML). O Milvus encapsula várias bibliotecas de pesquisa de vizinho mais próximo (ANN) aproximado de primeira classe, incluindo Faiss, NMSLIB e Annoy. Também pode escalar o Milvus de acordo com as suas necessidades. O serviço Milvus é altamente disponível e suporta processamento unificado em lote e fluxo. O Milvus está empenhado em simplificar o processo de gestão de dados não estruturados e em proporcionar uma experiência de utilizador consistente em diferentes ambientes de implementação. Possui as seguintes caraterísticas:</p>
+<h3 id="Milvus" class="common-anchor-header">Milvus</h3><p><a href="https://milvus.io/docs/v2.0.x/overview.md">Milvus</a> is a vector database featuring a cloud-native architecture. It is open sourced on <a href="https://github.com/milvus-io">GitHub</a> and can be used to store, index, and manage massive embedding vectors generated by deep neural networks and other machine learning (ML) models. Milvus encapsulates several first-class approximate nearest neighbor (ANN) search libraries including Faiss, NMSLIB, and Annoy. You can also scale out Milvus according to your need. The Milvus service is highly available and supports unified batch and stream processing. Milvus is committed to simplifying the process of managing unstructured data and providing a consistent user experience in different deployment environments. It has the following features:</p>
 <ul>
-<li><p>Elevado desempenho na realização de pesquisas vectoriais em conjuntos de dados maciços.</p></li>
-<li><p>Uma comunidade de programadores que dá prioridade ao suporte multilingue e à cadeia de ferramentas.</p></li>
-<li><p>Escalabilidade na nuvem e elevada fiabilidade, mesmo em caso de interrupção.</p></li>
-<li><p>Pesquisa híbrida conseguida através do emparelhamento da filtragem escalar com a pesquisa de semelhanças vectoriais.</p></li>
+<li><p>High performance when conducting vector search on massive datasets.</p></li>
+<li><p>A developer-first community that offers multi-language support and toolchain.</p></li>
+<li><p>Cloud scalability and high reliability even in the event of a disruption.</p></li>
+<li><p>Hybrid search achieved by pairing scalar filtering with vector similarity search.</p></li>
 </ul>
-<p>O Milvus é utilizado para a pesquisa por semelhança de vectores e para a gestão de vectores neste projeto porque pode resolver o problema das actualizações frequentes de dados, mantendo a estabilidade do sistema.</p>
-<h2 id="System-implementation" class="common-anchor-header">Implementação do sistema<button data-href="#System-implementation" class="anchor-icon" translate="no">
+<p>Milvus is used for vector similarity search and vector management in this project because it can solve the problem of frequent data updates while maintaining system stability.</p>
+<h2 id="System-implementation" class="common-anchor-header">System implementation<button data-href="#System-implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,41 +113,42 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para construir o sistema de recomendação de produtos deste projeto, é necessário seguir as seguintes etapas:</p>
+    </button></h2><p>To build the product recommender system in this project, you need to go through the following steps:</p>
 <ol>
-<li>Processamento de dados</li>
-<li>Treino do modelo</li>
-<li>Teste do modelo</li>
-<li>Geração de candidatos a itens de produtos<ol>
-<li>Armazenamento de dados: os vectores de itens são obtidos através do modelo treinado e armazenados no Milvus.</li>
-<li>Pesquisa de dados: quatro vectores de utilizadores gerados pelo MIND são introduzidos no Milvus para pesquisa de semelhança de vectores.</li>
-<li>Classificação dos dados: cada um dos quatro vectores tem os seus próprios <code translate="no">top_k</code> vectores de itens semelhantes, e os quatro conjuntos de <code translate="no">top_k</code> vectores são classificados para obter uma lista final de <code translate="no">top_k</code> vectores mais semelhantes.</li>
+<li>Data processing</li>
+<li>Model training</li>
+<li>Model testing</li>
+<li>Generating product item candidates
+<ol>
+<li>Data storage: item vectors are obtained through the trained model and are stored in Milvus.</li>
+<li>Data search: four user vectors generated by MIND are fed into Milvus for vector similarity search.</li>
+<li>Data ranking: each of the four vectors has its own <code translate="no">top_k</code> similar item vectors, and four sets of <code translate="no">top_k</code> vectors are ranked to return a final list of <code translate="no">top_k</code> most similar vectors.</li>
 </ol></li>
 </ol>
-<p>O código-fonte deste projeto está alojado na plataforma <a href="https://aistudio.baidu.com/aistudio/projectdetail/2250360?contributionType=1&amp;shared=1">Baidu AI Studio</a>. A secção seguinte apresenta uma explicação detalhada do código-fonte deste projeto.</p>
-<h3 id="Step-1-Data-processing" class="common-anchor-header">Passo 1. Processamento de dados</h3><p>O conjunto de dados original provém do conjunto de dados de livros da Amazon fornecido pela <a href="https://github.com/THUDM/ComiRec">ComiRec</a>. No entanto, este projeto utiliza os dados que são descarregados e processados pelo PaddleRec. Consulte o <a href="https://github.com/PaddlePaddle/PaddleRec/tree/release/2.1.0/datasets/AmazonBook">conjunto de dados AmazonBook</a> no projeto PaddleRec para mais informações.</p>
-<p>Espera-se que o conjunto de dados para treino apareça no seguinte formato, com cada coluna a representar:</p>
+<p>The source code of this project is hosted on the  <a href="https://aistudio.baidu.com/aistudio/projectdetail/2250360?contributionType=1&amp;shared=1">Baidu AI Studio</a> platform. The following section is a detailed explanation of the source code for this project.</p>
+<h3 id="Step-1-Data-processing" class="common-anchor-header">Step 1. Data processing</h3><p>The original dataset comes from the Amazon book dataset provided by <a href="https://github.com/THUDM/ComiRec">ComiRec</a>. However, this project uses the data that is downloaded from and processed by PaddleRec. Refer to the <a href="https://github.com/PaddlePaddle/PaddleRec/tree/release/2.1.0/datasets/AmazonBook">AmazonBook dataset</a> in the PaddleRec project for more information.</p>
+<p>The dataset for training is expected to appear in the following format, with each column representing:</p>
 <ul>
-<li><code translate="no">Uid</code>: ID do utilizador.</li>
-<li><code translate="no">item_id</code>: ID do item do produto que foi clicado pelo utilizador.</li>
-<li><code translate="no">Time</code>: O carimbo de data/hora ou a ordem do clique.</li>
+<li><code translate="no">Uid</code>: User ID.</li>
+<li><code translate="no">item_id</code>: ID of the product item that has been clicked by the user.</li>
+<li><code translate="no">Time</code>: The timestamp or order of click.</li>
 </ul>
-<p>Espera-se que o conjunto de dados para teste apareça no seguinte formato, com cada coluna representando:</p>
+<p>The dataset for testing is expected to appear in the following format, with each column representing:</p>
 <ul>
-<li><p><code translate="no">Uid</code>: ID do utilizador.</p></li>
-<li><p><code translate="no">hist_item</code>: ID do item de produto no comportamento histórico de cliques do utilizador. Quando há vários <code translate="no">hist_item</code>, eles são ordenados de acordo com o carimbo de data/hora.</p></li>
-<li><p><code translate="no">eval_item</code>: A sequência real em que o utilizador clica nos produtos.</p></li>
+<li><p><code translate="no">Uid</code>: User ID.</p></li>
+<li><p><code translate="no">hist_item</code>: ID of the product item in historical user click behavior. When there are multiple <code translate="no">hist_item</code>, they are sorted according to the timestamp.</p></li>
+<li><p><code translate="no">eval_item</code>: The actual sequence in which the user clicks the products.</p></li>
 </ul>
-<h3 id="Step-2-Model-training" class="common-anchor-header">Passo 2. Treino do modelo</h3><p>O treino do modelo utiliza os dados processados na etapa anterior e adopta o modelo de geração de candidatos, MIND, baseado no PaddleRec.</p>
-<h4 id="1-Model-input" class="common-anchor-header">1. <strong>Entrada</strong> <strong>do modelo</strong> </h4><p>Em <code translate="no">dygraph_model.py</code>, execute o seguinte código para processar os dados e transformá-los em entrada de modelo. Este processo ordena os itens clicados pelo mesmo utilizador nos dados originais de acordo com o carimbo de data/hora e combina-os para formar uma sequência. Em seguida, seleciona aleatoriamente um <code translate="no">item``_``id</code> da sequência como <code translate="no">target_item</code> e extrai os 10 itens anteriores a <code translate="no">target_item</code> como <code translate="no">hist_item</code> para a entrada do modelo. Se a sequência não for suficientemente longa, pode ser definida como 0. <code translate="no">seq_len</code> deve ser o comprimento real da sequência <code translate="no">hist_item</code>.</p>
+<h3 id="Step-2-Model-training" class="common-anchor-header">Step 2. Model training</h3><p>Model training uses the processed data in the previous step and adopts the candidate generation model, MIND, built on PaddleRec.</p>
+<h4 id="1-Model-input" class="common-anchor-header">1. <strong>Model</strong> <strong>input</strong></h4><p>In <code translate="no">dygraph_model.py</code>, run the following code to process the data and turn them into model input. This process sorts the items clicked by the same user in the original data according to the timestamp, and combines them to form a sequence. Then, randomly select an <code translate="no">item``_``id</code> from the sequence as the <code translate="no">target_item</code>, and extract the 10 items before <code translate="no">target_item</code> as the <code translate="no">hist_item</code> for model input. If the sequence is not long enough, it can be set as 0. <code translate="no">seq_len</code> should be the actual length of the <code translate="no">hist_item</code> sequence.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_feeds_train</span>(<span class="hljs-params">self, batch_data</span>):
     hist_item = paddle.to_tensor(batch_data[<span class="hljs-number">0</span>], dtype=<span class="hljs-string">&quot;int64&quot;</span>)
     target_item = paddle.to_tensor(batch_data[<span class="hljs-number">1</span>], dtype=<span class="hljs-string">&quot;int64&quot;</span>)
     seq_len = paddle.to_tensor(batch_data[<span class="hljs-number">2</span>], dtype=<span class="hljs-string">&quot;int64&quot;</span>)
     <span class="hljs-keyword">return</span> [hist_item, target_item, seq_len]
 <button class="copy-code-btn"></button></code></pre>
-<p>Consulte o script <code translate="no">/home/aistudio/recommend/model/mind/mind_reader.py</code> para obter o código de leitura do conjunto de dados original.</p>
-<h4 id="2-Model-networking" class="common-anchor-header">2. <strong>Modelo de rede</strong></h4><p>O código seguinte é um extrato de <code translate="no">net.py</code>. <code translate="no">class Mind_Capsual_Layer</code> define a camada de extração de múltiplos interesses baseada no mecanismo de encaminhamento de cápsulas de interesse. A função <code translate="no">label_aware_attention()</code> implementa a técnica de atenção com reconhecimento de etiquetas no algoritmo MIND. A função <code translate="no">forward()</code> em <code translate="no">class MindLayer</code> modela as caraterísticas do utilizador e gera os vectores de peso correspondentes.</p>
+<p>Refer to the script <code translate="no">/home/aistudio/recommend/model/mind/mind_reader.py</code> for the code of reading the original dataset.</p>
+<h4 id="2-Model-networking" class="common-anchor-header">2. <strong>Model networking</strong></h4><p>The following code is an extract of <code translate="no">net.py</code>. <code translate="no">class Mind_Capsual_Layer</code> defines the multi-interest extractor layer built on the interest capsule routing mechanism. The function <code translate="no">label_aware_attention()</code> implements the label-aware attention technique in the MIND algorithm. The <code translate="no">forward()</code> function in the <code translate="no">class MindLayer</code> models the user characteristics and generates corresponding weight vectors.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Mind_Capsual_Layer</span>(nn.Layer):
     <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):
         <span class="hljs-built_in">super</span>(Mind_Capsual_Layer, <span class="hljs-variable language_">self</span>).__init__()
@@ -186,15 +195,15 @@ canonicalUrl: >-
             user_emb, labels, <span class="hljs-variable language_">self</span>.item_emb.weight,
             <span class="hljs-variable language_">self</span>.embedding_bias), W, user_cap, cap_weights, cap_mask
 <button class="copy-code-btn"></button></code></pre>
-<p>Consultar o guião <code translate="no">/home/aistudio/recommend/model/mind/net.py</code> para conhecer a estrutura específica da rede MIND.</p>
-<h4 id="3-Model-optimization" class="common-anchor-header">3. <strong>Otimização do modelo</strong></h4><p>Este projeto utiliza <a href="https://arxiv.org/pdf/1412.6980">o algoritmo Adam</a> como optimizador do modelo.</p>
+<p>Refer to the script <code translate="no">/home/aistudio/recommend/model/mind/net.py</code> for the specific network structure of MIND.</p>
+<h4 id="3-Model-optimization" class="common-anchor-header">3. <strong>Model optimization</strong></h4><p>This project uses <a href="https://arxiv.org/pdf/1412.6980">Adam algorithm</a> as the model optimizer.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_optimizer</span>(<span class="hljs-params">self, dy_model, config</span>):
     lr = config.get(<span class="hljs-string">&quot;hyper_parameters.optimizer.learning_rate&quot;</span>, <span class="hljs-number">0.001</span>)
     optimizer = paddle.optimizer.Adam(
         learning_rate=lr, parameters=dy_model.parameters())
     <span class="hljs-keyword">return</span> optimizer
 <button class="copy-code-btn"></button></code></pre>
-<p>Além disso, o PaddleRec escreve hiperparâmetros em <code translate="no">config.yaml</code>, pelo que basta modificar este ficheiro para ver uma comparação clara entre a eficácia dos dois modelos e melhorar a eficiência do modelo. Ao treinar o modelo, o mau efeito do modelo pode resultar do subajuste ou sobreajuste do modelo. Por conseguinte, é possível melhorá-lo modificando o número de rondas de treino. Neste projeto, basta alterar o parâmetro epochs em <code translate="no">config.yaml</code> para encontrar o número ideal de rondas de formação. Além disso, pode também alterar o optimizador do modelo, <code translate="no">optimizer.class</code>, ou <code translate="no">learning_rate</code> para depuração. O seguinte mostra parte dos parâmetros em <code translate="no">config.yaml</code>.</p>
+<p>In addition, PaddleRec writes hyperparameters in <code translate="no">config.yaml</code>, so you just need to modify this file to see a clear comparison between the effectiveness of the two models to improve model efficiency. When training the model, the poor model effect can result from model underfitting or overfitting. You can therefore improve it by modifying the number of rounds of training. In this project,  you only need to change the parameter epochs in <code translate="no">config.yaml</code> to find the perfect number of rounds of training. In addition, you can also change the model optimizer, <code translate="no">optimizer.class</code>,or <code translate="no">learning_rate</code> for debugging. The following shows part of the parameters in <code translate="no">config.yaml</code>.</p>
 <pre><code translate="no" class="language-YAML">runner:
   use_gpu: <span class="hljs-literal">True</span>
   use_auc: <span class="hljs-literal">False</span>
@@ -210,24 +219,24 @@ hyper_parameters:
     <span class="hljs-keyword">class</span>: Adam
     learning_rate: <span class="hljs-number">0.005</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Consulte o guião <code translate="no">/home/aistudio/recommend/model/mind/dygraph_model.py</code> para uma implementação detalhada.</p>
-<h4 id="4-Model-training" class="common-anchor-header">4. <strong>Treino do modelo</strong></h4><p>Execute o seguinte comando para iniciar o treino do modelo.</p>
+<p>Refer to the script <code translate="no">/home/aistudio/recommend/model/mind/dygraph_model.py</code> for detailed implementation.</p>
+<h4 id="4-Model-training" class="common-anchor-header">4. <strong>Model training</strong></h4><p>Run the following command to start model training.</p>
 <pre><code translate="no" class="language-Bash">python -u trainer.py -m mind/config.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>Consulte <code translate="no">/home/aistudio/recommend/model/trainer.py</code> para obter o projeto de treino do modelo.</p>
-<h3 id="Step-3-Model-testing" class="common-anchor-header">Passo 3. Teste do modelo</h3><p>Esta etapa utiliza o conjunto de dados de teste para verificar o desempenho, como a taxa de recuperação do modelo treinado.</p>
-<p>Durante o teste do modelo, todos os vectores de itens são carregados a partir do modelo e, em seguida, importados para Milvus, a base de dados de vectores de código aberto. Leia o conjunto de dados de teste através do script <code translate="no">/home/aistudio/recommend/model/mind/mind_infer_reader.py</code>. Carregue o modelo na etapa anterior e introduza o conjunto de dados de teste no modelo para obter quatro vectores de interesse do utilizador. Procurar os 50 vectores de itens mais semelhantes aos quatro vectores de interesse em Milvus. Pode recomendar os resultados devolvidos aos utilizadores.</p>
-<p>Execute o seguinte comando para testar o modelo.</p>
+<p>Refer to <code translate="no">/home/aistudio/recommend/model/trainer.py</code> for the model training project.</p>
+<h3 id="Step-3-Model-testing" class="common-anchor-header">Step 3. Model testing</h3><p>This step uses test dataset to verify the performance, such as the recall rate of the trained model.</p>
+<p>During model testing, all item vectors are loaded from the model, and then imported into Milvus, the open-source vector database. Read the test dataset through the script <code translate="no">/home/aistudio/recommend/model/mind/mind_infer_reader.py</code>. Load the model in the previous step, and feed the test dataset into the model to obtain four interest vectors of the user. Search for the most similar 50 item vectors to the four interest vectors in Milvus. You can recommend the returned results to users.</p>
+<p>Run the following command to test the model.</p>
 <pre><code translate="no" class="language-Bash">python -u infer.py -m mind/config.yaml -top_n 50
 <button class="copy-code-btn"></button></code></pre>
-<p>Durante o teste do modelo, o sistema fornece vários indicadores para avaliar a eficácia do modelo, tais como Recall@50, NDCG@50 e HitRate@50. Este artigo apenas apresenta a modificação de um parâmetro. No entanto, no seu próprio cenário de aplicação, é necessário treinar mais épocas para obter um melhor efeito do modelo.  Também é possível melhorar a eficácia do modelo utilizando diferentes optimizadores, definindo diferentes taxas de aprendizagem e aumentando o número de rondas de teste. Recomenda-se que guarde vários modelos com efeitos diferentes e, em seguida, escolha o que tem o melhor desempenho e se adequa melhor à sua aplicação.</p>
-<h3 id="Step-4-Generating-product-item-candidates" class="common-anchor-header">Passo 4. Geração de candidatos a itens de produtos</h3><p>Para construir o serviço de geração de candidatos a produtos, este projeto utiliza o modelo treinado nos passos anteriores, emparelhado com o Milvus. Durante a geração de candidatos, o FASTAPI é utilizado para fornecer a interface. Quando o serviço é iniciado, é possível executar comandos diretamente no terminal através de <code translate="no">curl</code>.</p>
-<p>Execute o seguinte comando para gerar candidatos preliminares.</p>
+<p>During model testing, the system provides several indicators for evaluating model effectiveness, such as Recall@50, NDCG@50, and HitRate@50. This article only introduces modifying one parameter. However, in your own application scenario, you need to train more epochs for better model effect.  You can also improve model effectiveness by using different optimizers, setting different learning rates, and increasing the number of rounds of testing. It is recommended that you save several models with different effects, and then choose the one with the best performance and best fits your application.</p>
+<h3 id="Step-4-Generating-product-item-candidates" class="common-anchor-header">Step 4. Generating product item candidates</h3><p>To build the product candidate generation service, this project uses the trained model in the previous steps, paired with Milvus. During candidate generation, FASTAPI is used to provide the interface. When the service starts, you can directly run commands in the terminal via <code translate="no">curl</code>.</p>
+<p>Run the following command to generate preliminary candidates.</p>
 <pre><code translate="no" class="language-Bash">uvicorn main:app
 <button class="copy-code-btn"></button></code></pre>
-<p>O serviço fornece quatro tipos de interfaces:</p>
+<p>The service provides four types of interfaces:</p>
 <ul>
-<li><strong>Inserir</strong>: Execute o seguinte comando para ler os vectores de itens do seu modelo e inseri-los numa coleção em Milvus.</li>
+<li><strong>Insert</strong> : Run the following command to read the item vectors from your model and insert them into a collection in Milvus.</li>
 </ul>
 <pre><code translate="no" class="language-Nginx">curl -X <span class="hljs-string">&#x27;POST&#x27;</span> \
   <span class="hljs-string">&#x27;http://127.0.0.1:8000/rec/insert_data&#x27;</span> \
@@ -235,7 +244,7 @@ hyper_parameters:
   -d <span class="hljs-string">&#x27;&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Gerar candidatos preliminares</strong>: Introduza a sequência em que os produtos são clicados pelo utilizador e descubra o próximo produto em que o utilizador pode clicar. Também pode gerar candidatos a itens de produtos em lotes para vários utilizadores de uma só vez. <code translate="no">hist_item</code> no comando seguinte é um vetor bidimensional e cada linha representa uma sequência de produtos em que o utilizador clicou no passado. É possível definir o comprimento da sequência. Os resultados devolvidos são também conjuntos de vectores bidimensionais, cada linha representando os <code translate="no">item id</code>s devolvidos para os utilizadores.</li>
+<li><strong>Generate preliminary candidates</strong>: Input the sequence in which products are clicked by the user, and find out the next product that the user may click. You can also generate product item candidates in batches for several users at one go. <code translate="no">hist_item</code> in the following command is a two-dimensional vector, and each row represents a sequence of the products that the user has clicked in the past. You can define the length of the sequence. The returned results are also sets of two-dimensional vectors, each row representing the returned <code translate="no">item id</code>s for users.</li>
 </ul>
 <pre><code translate="no" class="language-Ada">curl -X <span class="hljs-string">&#x27;POST&#x27;</span> \
   <span class="hljs-string">&#x27;http://127.0.0.1:8000/rec/recall&#x27;</span> \
@@ -247,7 +256,7 @@ hyper_parameters:
 }&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Consultar o número total de</strong> <strong>itens do produto</strong>: Execute o seguinte comando para retornar o número total de vetores de itens armazenados no banco de dados Milvus.</li>
+<li><strong>Query the total number of</strong> <strong>product items</strong>: Run the following command to return the total number of item vectors stored in the Milvus database.</li>
 </ul>
 <pre><code translate="no" class="language-Nginx">curl -X <span class="hljs-string">&#x27;POST&#x27;</span> \
   <span class="hljs-string">&#x27;http://127.0.0.1:8000/rec/count&#x27;</span> \
@@ -255,23 +264,27 @@ hyper_parameters:
   -d <span class="hljs-string">&#x27;&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Eliminar</strong>: Execute o seguinte comando para eliminar todos os dados armazenados na base de dados Milvus.</li>
+<li><strong>Delete</strong>: Run the following command to delete all data stored in the Milvus database .</li>
 </ul>
 <pre><code translate="no" class="language-Nginx">curl -X <span class="hljs-string">&#x27;POST&#x27;</span> \
   <span class="hljs-string">&#x27;http://127.0.0.1:8000/qa/drop&#x27;</span> \
   -H <span class="hljs-string">&#x27;accept: application/json&#x27;</span> \
   -d <span class="hljs-string">&#x27;&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Se executar o serviço de geração de candidatos no seu servidor local, pode também aceder às interfaces acima referidas em <code translate="no">127.0.0.1:8000/docs</code>. Pode experimentar clicando nas quatro interfaces e introduzindo os valores dos parâmetros. Em seguida, clique em "Try it out" para obter o resultado da recomendação.</p>
+<p>If you run the candidate generation service on your local server, you can also access the above interfaces at <code translate="no">127.0.0.1:8000/docs</code>. You can play around by clicking on the four interfaces and entering the value for the parameters. Then click “Try it out” to get the recommendation result.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/6_43e41086f8.png" alt="6.png" class="doc-image" id="6.png" />
-   </span> <span class="img-wrapper"> <span>6.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/6_43e41086f8.png" alt="6.png" class="doc-image" id="6.png" />
+    <span>6.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/7_f016a3221d.png" alt="7.png" class="doc-image" id="7.png" />
-   </span> <span class="img-wrapper"> <span>7.png</span> </span></p>
-<h2 id="Recap" class="common-anchor-header">Recapitulação<button data-href="#Recap" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/7_f016a3221d.png" alt="7.png" class="doc-image" id="7.png" />
+    <span>7.png</span>
+  </span>
+</p>
+<h2 id="Recap" class="common-anchor-header">Recap<button data-href="#Recap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -286,11 +299,11 @@ hyper_parameters:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Este artigo centra-se principalmente na primeira fase da geração de candidatos na construção de um sistema de recomendação. Também fornece uma solução para acelerar este processo, combinando o Milvus com o algoritmo MIND e o PaddleRec e, por conseguinte, abordou a questão proposta no parágrafo inicial.</p>
-<p>E se o sistema for extremamente lento a devolver resultados devido à enorme quantidade de conjuntos de dados? Milvus, a base de dados vetorial de código aberto, foi concebida para uma pesquisa de semelhanças extremamente rápida em conjuntos de dados vectoriais densos que contêm milhões, milhares de milhões ou mesmo triliões de vectores.</p>
-<p>E se os dados recentemente inseridos não puderem ser processados em tempo real para pesquisa ou consulta? Pode utilizar o Milvus, uma vez que este suporta o processamento unificado de fluxos e lotes e permite-lhe pesquisar e consultar dados recentemente inseridos em tempo real. Além disso, o modelo MIND é capaz de converter o novo comportamento do utilizador em tempo real e inserir os vectores do utilizador no Milvus instantaneamente.</p>
-<p>E se a implementação complicada for demasiado intimidante? PaddleRec, uma biblioteca poderosa que pertence ao ecossistema PaddlePaddle, pode fornecer-lhe uma solução integrada para implementar o seu sistema de recomendação ou outras aplicações de uma forma fácil e rápida.</p>
-<h2 id="About-the-author" class="common-anchor-header">Sobre o autor<button data-href="#About-the-author" class="anchor-icon" translate="no">
+    </button></h2><p>This article mainly focuses on the first stage of candidate generation in building a recommender system. It also provides a solution to accelerating this process by combining Milvus with the MIND algorithm and PaddleRec and therefore has addressed the issue proposed in the opening paragraph.</p>
+<p>What if the system is extremely slow when returning results due to the tremendous amount of datasets? Milvus, the open-source vector database, is designed for blazing-fast similarity search on dense vector datasets containing millions, billions, or even trillions of vectors.</p>
+<p>What if newly inserted data cannot be processed in real time for search or query? You can use Milvus as it supports unified batch and stream processing and enables you to search and query newly inserted data in real time. Also, the MIND model is capable of converting new user behavior in real-time and inserting the user vectors into Milvus instantaneously.</p>
+<p>What if the complicated deployment is too intimidating? PaddleRec, a powerful library that belongs to the PaddlePaddle ecosystem, can provide you with an integrated solution to deploy your recommendation system or other applications in an easy and rapid way.</p>
+<h2 id="About-the-author" class="common-anchor-header">About the author<button data-href="#About-the-author" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -305,8 +318,8 @@ hyper_parameters:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Yunmei Li, engenheira de dados da Zilliz, licenciou-se em ciências informáticas na Universidade de Ciência e Tecnologia de Huazhong. Desde que se juntou à Zilliz, tem trabalhado na exploração de soluções para o projeto de código aberto Milvus e tem ajudado os utilizadores a aplicar o Milvus em cenários do mundo real. O seu foco principal é a PNL e os sistemas de recomendação, e gostaria de aprofundar ainda mais o seu foco nestas duas áreas. Gosta de passar tempo sozinha e de ler.</p>
-<h2 id="Looking-for-more-resources" class="common-anchor-header">Está à procura de mais recursos?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
+    </button></h2><p>Yunmei Li, Zilliz Data Engineer, graduated from Huazhong University of Science and Technology with a degree in computer science. Since joining Zilliz, she has been working on exploring solutions for the open source project Milvus and helping users to apply Milvus in real-world scenarios. Her main focus is on NLP and recommendation systems, and she would like to further deepen her focus in these two areas. She likes to spend time alone and read.</p>
+<h2 id="Looking-for-more-resources" class="common-anchor-header">Looking for more resources?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -322,21 +335,24 @@ hyper_parameters:
         ></path>
       </svg>
     </button></h2><ul>
-<li>Mais casos de utilizador sobre a criação de um sistema de recomendação:<ul>
-<li><a href="https://milvus.io/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md">Criação de um sistema de recomendação de produtos personalizados com a Vipshop com Milvus</a></li>
-<li><a href="https://milvus.io/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus.md">Criar uma aplicação de planeamento de guarda-roupa e roupa com Milvus</a></li>
-<li><a href="https://milvus.io/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app.md">Criação de um sistema inteligente de recomendação de notícias dentro da aplicação Sohu News</a></li>
-<li><a href="https://milvus.io/blog/music-recommender-system-item-based-collaborative-filtering-milvus.md">Filtragem colaborativa baseada em itens para um sistema de recomendação de música</a></li>
-<li><a href="https://milvus.io/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser.md">Criar com a Milvus: Recomendação de notícias com recurso a IA no navegador móvel da Xiaomi</a></li>
+<li>More user cases of building a recommender system:
+<ul>
+<li><a href="https://milvus.io/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md">Building a Personalized Product Recommender System with Vipshop with Milvus</a></li>
+<li><a href="https://milvus.io/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus.md">Building a Wardrobe and Outfit Planning App with Milvus</a></li>
+<li><a href="https://milvus.io/blog/building-an-intelligent-news-recommendation-system-inside-sohu-news-app.md">Building an Intelligent News Recommendation System Inside Sohu News App</a></li>
+<li><a href="https://milvus.io/blog/music-recommender-system-item-based-collaborative-filtering-milvus.md">Item-based Collaborative Filtering for Music Recommender System</a></li>
+<li><a href="https://milvus.io/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser.md">Making with Milvus: AI-Powered News Recommendation Inside Xiaomi’s Mobile Browser</a></li>
 </ul></li>
-<li>Mais projectos Milvus em colaboração com outras comunidades:<ul>
-<li><a href="https://milvus.io/blog/2021-09-26-onnx.md">Combinar modelos de IA para pesquisa de imagens utilizando ONNX e Milvus</a></li>
-<li><a href="https://milvus.io/blog/graph-based-recommendation-system-with-milvus.md">Criação de um sistema de recomendação baseado em gráficos com os conjuntos de dados Milvus, PinSage, DGL e Movielens</a></li>
-<li><a href="https://milvus.io/blog/building-a-milvus-cluster-based-on-juicefs.md">Construir um cluster Milvus baseado em JuiceFS</a></li>
+<li>More Milvus projects in collaboration with other communities:
+<ul>
+<li><a href="https://milvus.io/blog/2021-09-26-onnx.md">Combine AI Models for Image Search Using ONNX and Milvus</a></li>
+<li><a href="https://milvus.io/blog/graph-based-recommendation-system-with-milvus.md">Building a Graph-based recommendation system with Milvus, PinSage, DGL, and Movielens Datasets</a></li>
+<li><a href="https://milvus.io/blog/building-a-milvus-cluster-based-on-juicefs.md">Building a Milvus Cluster Based on JuiceFS</a></li>
 </ul></li>
-<li>Envolva-se com a nossa comunidade de código aberto:<ul>
-<li>Encontre ou contribua para o Milvus no <a href="https://bit.ly/307b7jC">GitHub</a></li>
-<li>Interagir com a comunidade através do <a href="https://bit.ly/3qiyTEk">Fórum</a></li>
-<li>Conecte-se conosco no <a href="https://bit.ly/3ob7kd8">Twitter</a></li>
+<li>Engage with our open-source community:
+<ul>
+<li>Find or contribute to Milvus on <a href="https://bit.ly/307b7jC">GitHub</a></li>
+<li>Interact with the community via <a href="https://bit.ly/3qiyTEk">Forum</a></li>
+<li>Connect with us on <a href="https://bit.ly/3ob7kd8">Twitter</a></li>
 </ul></li>
 </ul>

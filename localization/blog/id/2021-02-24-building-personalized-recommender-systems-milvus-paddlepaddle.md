@@ -1,15 +1,15 @@
 ---
 id: building-personalized-recommender-systems-milvus-paddlepaddle.md
-title: Latar Belakang Pendahuluan
+title: Background Introduction
 author: Shiyu Chen
 date: 2021-02-24T23:12:34.209Z
-desc: Cara membangun sistem rekomendasi yang didukung oleh deep learning
+desc: How to build a deep learning powered recommender system
 cover: assets.zilliz.com/header_e6c4a8aee6.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/building-personalized-recommender-systems-milvus-paddlepaddle
 ---
-<custom-h1>Membangun Sistem Rekomendasi yang Dipersonalisasi dengan Milvus dan PaddlePaddle</custom-h1><h2 id="Background-Introduction" class="common-anchor-header">Latar Belakang Pendahuluan<button data-href="#Background-Introduction" class="anchor-icon" translate="no">
+<custom-h1>Building Personalized Recommender Systems with Milvus and PaddlePaddle</custom-h1><h2 id="Background-Introduction" class="common-anchor-header">Background Introduction<button data-href="#Background-Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,10 +24,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dengan terus berkembangnya teknologi jaringan dan skala e-commerce yang terus berkembang, jumlah dan variasi barang tumbuh dengan cepat dan pengguna harus menghabiskan banyak waktu untuk menemukan barang yang ingin mereka beli. Ini adalah kelebihan informasi. Untuk mengatasi masalah ini, sistem rekomendasi muncul.</p>
-<p>Sistem rekomendasi adalah bagian dari Sistem Penyaringan Informasi, yang dapat digunakan di berbagai bidang seperti film, musik, e-commerce, dan rekomendasi aliran Feed. Sistem rekomendasi menemukan kebutuhan dan minat pengguna yang dipersonalisasi dengan menganalisis dan menambang perilaku pengguna, dan merekomendasikan informasi atau produk yang mungkin menarik bagi pengguna. Tidak seperti mesin pencari, sistem rekomendasi tidak mengharuskan pengguna untuk mendeskripsikan kebutuhan mereka secara akurat, tetapi memodelkan perilaku historis mereka untuk secara proaktif memberikan informasi yang sesuai dengan minat dan kebutuhan pengguna.</p>
-<p>Pada artikel ini kami menggunakan PaddlePaddle, sebuah platform deep learning dari Baidu, untuk membangun sebuah model dan menggabungkan Milvus, sebuah mesin pencari dengan kemiripan vektor, untuk membangun sebuah sistem rekomendasi yang dipersonalisasi yang dapat dengan cepat dan akurat memberikan informasi yang menarik kepada pengguna.</p>
-<h2 id="Data-Preparation" class="common-anchor-header">Persiapan Data<button data-href="#Data-Preparation" class="anchor-icon" translate="no">
+    </button></h2><p>With the continuous development of network technology and the ever-expanding scale of e-commerce, the number and variety of goods grow rapidly and users need to spend a lot of time to find the goods they want to buy. This is information overload. In order to solve this problem, recommendation system came into being.</p>
+<p>The recommendation system is a subset of the Information Filtering System, which can be used in a range of areas such as movies, music, e-commerce, and Feed stream recommendations. The recommendation system discovers the user’s personalized needs and interests by analyzing and mining user behaviors, and recommends information or products that may be of interest to the user. Unlike search engines, recommendation system do not require users to accurately describe their needs, but model their historical behavior to proactively provide information that meets user interests and needs.</p>
+<p>In this article we use PaddlePaddle, a deep learning platform from Baidu, to build a model and combine Milvus, a vector similarity search engine, to build a personalized recommendation system that can quickly and accurately provide users with interesting information.</p>
+<h2 id="Data-Preparation" class="common-anchor-header">Data Preparation<button data-href="#Data-Preparation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,21 +42,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kami menggunakan MovieLens Million Dataset (ml-1m) [1] sebagai contoh. Dataset ml-1m berisi 1.000.000 ulasan dari 4.000 film oleh 6.000 pengguna, yang dikumpulkan oleh laboratorium GroupLens Research. Data asli termasuk data fitur film, fitur pengguna, dan peringkat pengguna film, Anda dapat merujuk ke ml-1m-README [2] .</p>
-<p>Dataset ml-1m mencakup 3 artikel .dat: movies.dat、users.dat dan ratings.dat.movies.dat termasuk fitur film, lihat contoh di bawah ini:</p>
+    </button></h2><p>We take MovieLens Million Dataset (ml-1m) [1] as an example. The ml-1m dataset contains 1,000,000 reviews of 4,000 movies by 6,000 users, collected by the GroupLens Research lab. The original data includes feature data of the movie, user feature, and user rating of the movie, you can refer to ml-1m-README [2] .</p>
+<p>ml-1m dataset includes 3 .dat articles: movies.dat、users.dat and ratings.dat.movies.dat includes movie’s features, see example below:</p>
 <pre><code translate="no">MovieID::Title::Genres
 1::ToyStory(1995)::Animation|Children's|Comedy
 </code></pre>
-<p>Ini berarti id filmnya adalah 1, dan judulnya adalah 《Toy Story》, yang dibagi menjadi tiga kategori. Ketiga kategori ini adalah animasi, anak-anak, dan komedi.</p>
-<p>users.dat berisi fitur-fitur pengguna, lihat contoh di bawah ini:</p>
+<p>This means that the movie id is 1, and the title is 《Toy Story》, which is divided into three categories. These three categories are animation, children, and comedy.</p>
+<p>users.dat includes user’s features, see example below:</p>
 <pre><code translate="no">UserID::Gender::Age::Occupation::Zip-code
 1::F::1::10::48067
 </code></pre>
-<p>Ini berarti ID pengguna adalah 1, perempuan, dan berusia kurang dari 18 tahun. ID pekerjaannya adalah 10.</p>
-<p>ratings.dat berisi fitur rating film, lihat contoh di bawah ini:</p>
-<p>UserID::MovieID::Rating::Timestamp 1::1193::5::978300760</p>
-<p>Artinya, pengguna 1 mengevaluasi film 1193 sebagai 5 poin.</p>
-<h2 id="Fusion-Recommendation-Model" class="common-anchor-header">Model Rekomendasi Fusion<button data-href="#Fusion-Recommendation-Model" class="anchor-icon" translate="no">
+<p>This means that the user ID is 1, female, and younger than 18 years old. The occupation ID is 10.</p>
+<p>ratings.dat includes the feature of movie rating, see example below:</p>
+<p>UserID::MovieID::Rating::Timestamp
+1::1193::5::978300760</p>
+<p>That is, the user 1 evaluates the movie 1193 as 5 points.</p>
+<h2 id="Fusion-Recommendation-Model" class="common-anchor-header">Fusion Recommendation Model<button data-href="#Fusion-Recommendation-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,20 +72,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam sistem rekomendasi film yang dipersonalisasi, kami menggunakan Fusion Recommendation Model [3] yang telah diimplementasikan oleh PaddlePaddle. Model ini dibuat dari praktik industrinya.</p>
-<p>Pertama, ambil fitur pengguna dan fitur film sebagai input ke jaringan saraf, di mana:</p>
+    </button></h2><p>In the film personalized recommendation system we used the Fusion Recommendation Model [3] which PaddlePaddle has implemented. This model is created from its industrial practice.</p>
+<p>First, take user features and movie features as input to the neural network, where:</p>
 <ul>
-<li>Fitur pengguna menggabungkan empat informasi atribut: ID pengguna, jenis kelamin, pekerjaan, dan usia.</li>
-<li>Fitur film memasukkan tiga informasi atribut: ID film, ID jenis film, dan nama film.</li>
+<li>The user features incorporate four attribute information: user ID, gender, occupation, and age.</li>
+<li>The movie feature incorporate three attribute information: movie ID, movie type ID, and movie name.</li>
 </ul>
-<p>Untuk fitur pengguna, petakan ID pengguna ke representasi vektor dengan ukuran dimensi 256, masukkan lapisan yang terhubung penuh, dan lakukan pemrosesan serupa untuk tiga atribut lainnya. Kemudian representasi fitur dari keempat atribut tersebut terhubung sepenuhnya dan ditambahkan secara terpisah.</p>
-<p>Untuk fitur film, ID film diproses dengan cara yang mirip dengan ID pengguna. ID jenis film secara langsung dimasukkan ke dalam lapisan yang terhubung penuh dalam bentuk vektor, dan nama film diwakili oleh vektor dengan panjang tetap menggunakan jaringan syaraf tiruan. Representasi fitur dari ketiga atribut tersebut kemudian dihubungkan sepenuhnya dan ditambahkan secara terpisah.</p>
-<p>Setelah mendapatkan representasi vektor dari pengguna dan film, hitung kemiripan kosinus dari keduanya sebagai skor dari sistem rekomendasi yang dipersonalisasi. Terakhir, kuadrat dari perbedaan antara skor kemiripan dan skor sebenarnya dari pengguna digunakan sebagai fungsi kerugian dari model regresi.</p>
+<p>For the user feature, map the user ID to a vector representation with a dimension size of 256, enter the fully connected layer, and do similar processing for the other three attributes. Then the feature representations of the four attributes are fully connected and added separately.</p>
+<p>For movie features, the movie ID is processed in a manner similar to the user ID. The movie type ID is directly input into the fully connected layer in the form of a vector, and the movie name is represented by a fixed-length vector using a text convolutional neural network. The feature representations of the three attributes are then fully connected and added separately.</p>
+<p>After obtaining the vector representation of the user and the movie, calculate the cosine similarity of them as the score of the personalized recommendation system. Finally, the square of the difference between the similarity score and the user’s true score is used as the loss function of the regression model.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_user_film_personalized_recommender_Milvus_9ec39f501d.jpg" alt="1-user-film-personalized-recommender-Milvus.jpg" class="doc-image" id="1-user-film-personalized-recommender-milvus.jpg" />
-   </span> <span class="img-wrapper"> <span>1-pengguna-film-personalisasi-pemberi-rekomendasi-Milvus.jpg</span> </span></p>
-<h2 id="System-Overview" class="common-anchor-header">Gambaran Umum Sistem<button data-href="#System-Overview" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_user_film_personalized_recommender_Milvus_9ec39f501d.jpg" alt="1-user-film-personalized-recommender-Milvus.jpg" class="doc-image" id="1-user-film-personalized-recommender-milvus.jpg" />
+    <span>1-user-film-personalized-recommender-Milvus.jpg</span>
+  </span>
+</p>
+<h2 id="System-Overview" class="common-anchor-header">System Overview<button data-href="#System-Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,15 +102,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dikombinasikan dengan model rekomendasi fusi PaddlePaddle, vektor fitur film yang dihasilkan oleh model disimpan di mesin pencari kesamaan vektor Milvus, dan fitur pengguna digunakan sebagai vektor target untuk dicari. Pencarian kemiripan dilakukan di Milvus untuk mendapatkan hasil pencarian sebagai film yang direkomendasikan untuk pengguna.</p>
+    </button></h2><p>Combined with PaddlePaddle’s fusion recommendation model, the movie feature vector generated by the model is stored in the Milvus vector similarity search engine, and the user feature is used as the target vector to be searched. Similarity search is performed in Milvus to obtain the query result as the recommended movies for the user.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_system_overview_5652afdca7.jpg" alt="2-system-overview.jpg" class="doc-image" id="2-system-overview.jpg" />
-   </span> <span class="img-wrapper"> <span>2-sistem-overview.jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_system_overview_5652afdca7.jpg" alt="2-system-overview.jpg" class="doc-image" id="2-system-overview.jpg" />
+    <span>2-system-overview.jpg</span>
+  </span>
+</p>
 <blockquote>
-<p>Metode inner product (IP) disediakan dalam Milvus untuk menghitung jarak vektor. Setelah menormalkan data, inner product similarity konsisten dengan hasil cosine similarity pada model rekomendasi fusion.</p>
+<p>The inner product (IP) method is provided in Milvus to calculate the vector distance. After normalizing the data, the inner product similarity is consistent with the cosine similarity result in the fusion recommendation model.</p>
 </blockquote>
-<h2 id="Application-of-Personal-Recommender-System" class="common-anchor-header">Penerapan Sistem Rekomendasi Pribadi<button data-href="#Application-of-Personal-Recommender-System" class="anchor-icon" translate="no">
+<h2 id="Application-of-Personal-Recommender-System" class="common-anchor-header">Application of Personal Recommender System<button data-href="#Application-of-Personal-Recommender-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -122,26 +127,26 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ada tiga langkah dalam membangun sistem rekomendasi personal dengan Milvus, detail cara pengoperasiannya dapat dilihat di Mivus Bootcamp [4].</p>
-<h3 id="Step-1Model-Training" class="common-anchor-header">Langkah 1: Pelatihan Model</h3><pre><code translate="no"># run train.py
+    </button></h2><p>There are three steps in building a personalized recommendation system with Milvus, details on how to operate please refer to Mivus Bootcamp [4].</p>
+<h3 id="Step-1Model-Training" class="common-anchor-header">Step 1：Model Training</h3><pre><code translate="no"># run train.py
     $ python train.py
 </code></pre>
-<p>Menjalankan perintah ini akan menghasilkan model recommender_system.inference.model dalam direktori, yang dapat mengubah data film dan data pengguna menjadi vektor fitur, dan menghasilkan data aplikasi untuk disimpan dan diambil oleh Milvus.</p>
-<h3 id="Step-2Data-Preprocessing" class="common-anchor-header">Langkah 2: Pemrosesan Data</h3><pre><code translate="no"># Data preprocessing, -f followed by the parameter raw movie data file name
+<p>Running this command will generate a model recommender_system.inference.model in the directory, which can convert movie data and user data into feature vectors, and generate application data for Milvus to store and retrieve.</p>
+<h3 id="Step-2Data-Preprocessing" class="common-anchor-header">Step 2：Data Preprocessing</h3><pre><code translate="no"># Data preprocessing, -f followed by the parameter raw movie data file name
     $ python get_movies_data.py -f movies_origin.txt
 </code></pre>
-<p>Menjalankan perintah ini akan menghasilkan data uji movies_data.txt dalam direktori untuk mencapai pra-pemrosesan data film.</p>
-<h3 id="Step-3Implementing-Personal-Recommender-System-with-Milvus" class="common-anchor-header">Langkah 3：Menerapkan Sistem Rekomendasi Pribadi dengan Milvus</h3><pre><code translate="no"># Implementing personal recommender system based on user conditions
+<p>Running this command will generate test data movies_data.txt in the directory to achieve pre-processing of movie data.</p>
+<h3 id="Step-3Implementing-Personal-Recommender-System-with-Milvus" class="common-anchor-header">Step 3：Implementing Personal Recommender System with Milvus</h3><pre><code translate="no"># Implementing personal recommender system based on user conditions
     $ python infer_milvus.py -a &lt;age&gt;-g &lt;gender&gt;-j &lt;job&gt;[-i]
 </code></pre>
-<p>Menjalankan perintah ini akan mengimplementasikan rekomendasi yang dipersonalisasi untuk pengguna tertentu.</p>
-<p>Proses utamanya adalah:</p>
+<p>Running this command will implement personalized recommendations for specified users.</p>
+<p>The main process is:</p>
 <ul>
-<li>Melalui load_inference_model, data film diproses oleh model untuk menghasilkan vektor fitur film.</li>
-<li>Muat vektor fitur film ke dalam Milvus melalui milvus.insert.</li>
-<li>Menurut usia / jenis kelamin / pekerjaan pengguna yang ditentukan oleh parameter, diubah menjadi vektor fitur pengguna, milvus.search_vectors digunakan untuk pencarian kemiripan, dan hasil dengan kemiripan tertinggi antara pengguna dan film dikembalikan.</li>
+<li>Through the load_inference_model, the movie data is processed by the model to generate a movie feature vector.</li>
+<li>Load the movie feature vector into Milvus via milvus.insert.</li>
+<li>According to the user’s age / gender / occupation specified by the parameters, it is converted into a user feature vector, milvus.search_vectors is used for similarity retrieval, and the result with the highest similarity between the user and the movie is returned.</li>
 </ul>
-<p>Prediksi lima film teratas yang diminati pengguna:</p>
+<p>Prediction of the top five movies that the user is interested in:</p>
 <pre><code translate="no">TopIdsTitleScore
 03030Yojimbo2.9444923996925354
 13871Shane2.8583481907844543
@@ -149,7 +154,7 @@ canonicalUrl: >-
 31809Hana-bi2.826111316680908
 43184Montana2.8119677305221558 
 </code></pre>
-<h2 id="Summary" class="common-anchor-header">Ringkasan<button data-href="#Summary" class="anchor-icon" translate="no">
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,9 +169,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dengan memasukkan informasi pengguna dan informasi film ke dalam model rekomendasi fusi, kita bisa mendapatkan skor yang cocok, lalu mengurutkan skor semua film berdasarkan pengguna untuk merekomendasikan film yang mungkin menarik bagi pengguna. <strong>Artikel ini menggabungkan Milvus dan PaddlePaddle untuk membangun sistem rekomendasi yang dipersonalisasi. Milvus, sebuah mesin pencari vektor, digunakan untuk menyimpan semua data fitur film, dan kemudian pencarian kemiripan dilakukan pada fitur-fitur pengguna di Milvus.</strong> Hasil pencarian adalah peringkat film yang direkomendasikan oleh sistem kepada pengguna.</p>
-<p>Mesin pencari kemiripan vektor Milvus [5] kompatibel dengan berbagai platform deep learning, yang dapat mencari miliaran vektor hanya dengan respon milidetik. Anda dapat menjelajahi lebih banyak kemungkinan aplikasi AI dengan Milvus dengan mudah!</p>
-<h2 id="Reference" class="common-anchor-header">Referensi<button data-href="#Reference" class="anchor-icon" translate="no">
+    </button></h2><p>By inputing user information and movie information to the fusion recommendation model we can get matching scores, and then sort the scores of all movies based on the user to recommend movies that may be of interest to the user. <strong>This article combines Milvus and PaddlePaddle to build a personalized recommendation system. Milvus, a vector search engine, is used to store all movie feature data, and then similarity retrieval is performed on user features in Milvus.</strong> The search result is the movie ranking recommended by the system to the user.</p>
+<p>Milvus [5] vector similarity search engine is compatible with various deep learning platforms, searching billions of vectors with only millisecond response. You can explore more possibilities of AI applications with Milvus with ease!</p>
+<h2 id="Reference" class="common-anchor-header">Reference<button data-href="#Reference" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -184,7 +189,7 @@ canonicalUrl: >-
     </button></h2><ol>
 <li>MovieLens Million Dataset (ml-1m): http://files.grouplens.org/datasets/movielens/ml-1m.zip</li>
 <li>ml-1m-README: http://files.grouplens.org/datasets/movielens/ml-1m-README.txt</li>
-<li>Model Rekomendasi Fusion oleh PaddlePaddle: https://www.paddlepaddle.org.cn/documentation/docs/zh/beginners_guide/basics/recommender_system/index.html#id7</li>
+<li>Fusion Recommendation Model by PaddlePaddle: https://www.paddlepaddle.org.cn/documentation/docs/zh/beginners_guide/basics/recommender_system/index.html#id7</li>
 <li>Bootcamp: https://github.com/milvus-io/bootcamp/tree/master/solutions/recommendation_system</li>
 <li>Milvus: https://milvus.io/</li>
 </ol>

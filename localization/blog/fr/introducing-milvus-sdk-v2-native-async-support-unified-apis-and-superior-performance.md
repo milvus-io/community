@@ -1,15 +1,15 @@
 ---
 id: >-
   introducing-milvus-sdk-v2-native-async-support-unified-apis-and-superior-performance.md
-title: >-
-  Présentation de Milvus SDK v2 : Prise en charge native de l'asynchronisme, API
-  unifiées et performances supérieures
+title: >
+  Introducing Milvus SDK v2: Native Async Support, Unified APIs, and Superior
+  Performance
 author: Ken Zhang
 date: 2025-04-16T00:00:00.000Z
 desc: >-
-  Découvrez Milvus SDK v2, réimaginé pour les développeurs ! Profitez d'une API
-  unifiée, d'un support asynchrone natif et de performances accrues pour vos
-  projets de recherche vectorielle.
+  Experience Milvus SDK v2, reimagined for developers! Enjoy a unified API,
+  native async support, and enhanced performance for your vector search
+  projects.
 cover: assets.zilliz.com/Introducing_Milvus_SDK_v2_05c9e5e8b2.png
 tag: Engineering
 tags: 'Milvus SDK v2, Async Support, Milvus vector database'
@@ -31,8 +31,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vous avez parlé et nous vous avons écouté ! Milvus SDK v2 est une réimagination complète de notre expérience de développeur, construite directement à partir de vos commentaires. Avec une API unifiée pour Python, Java, Go et Node.js, la prise en charge asynchrone native que vous avez demandée, un cache de schéma améliorant les performances et une interface MilvusClient simplifiée, Milvus SDK v2 rend le développement de la <a href="https://zilliz.com/learn/vector-similarity-search">recherche vectorielle</a> plus rapide et plus intuitif que jamais. Que vous construisiez des applications <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>, des systèmes de recommandation ou des solutions de <a href="https://zilliz.com/learn/what-is-computer-vision">vision par ordinateur</a>, cette mise à jour axée sur la communauté transformera la façon dont vous travaillez avec Milvus.</p>
-<h2 id="Why-We-Built-It-Addressing-Community-Pain-Points" class="common-anchor-header">Pourquoi nous l'avons créée : Répondre aux problèmes de la communauté<button data-href="#Why-We-Built-It-Addressing-Community-Pain-Points" class="anchor-icon" translate="no">
+    </button></h2><p>You spoke, and we listened! Milvus SDK v2 is a complete reimagining of our developer experience, built directly from your feedback. With a unified API across Python, Java, Go, and Node.js, native async support that you’ve been asking for, a performance-boosting Schema Cache, and a simplified MilvusClient interface, Milvus SDK v2 makes <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> development faster and more intuitive than ever. Whether you’re building <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> applications, recommendation systems, or <a href="https://zilliz.com/learn/what-is-computer-vision">computer vision</a> solutions, this community-driven update will transform how you work with Milvus.</p>
+<h2 id="Why-We-Built-It-Addressing-Community-Pain-Points" class="common-anchor-header">Why We Built It: Addressing Community Pain Points<button data-href="#Why-We-Built-It-Addressing-Community-Pain-Points" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,13 +47,13 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Au fil des ans, Milvus est devenu la <a href="https://milvus.io/blog/what-is-a-vector-database.md">base de données vectorielle de</a> choix pour des milliers d'applications d'IA. Cependant, au fur et à mesure que notre communauté grandissait, nous avons régulièrement entendu parler de plusieurs limitations de notre SDK v1 :</p>
-<p><strong>"La gestion d'une concurrence élevée est trop complexe.</strong> L'absence de support asynchrone natif dans certains SDK oblige les développeurs à s'appuyer sur des threads ou des callbacks, ce qui rend le code plus difficile à gérer et à déboguer, en particulier dans des scénarios tels que le chargement de données par lots et les requêtes parallèles.</p>
-<p><strong>"Les performances se dégradent avec l'échelle.</strong> Sans cache de schéma, la v1 validait plusieurs fois les schémas pendant les opérations, ce qui créait des goulets d'étranglement pour les charges de travail à fort volume. Dans les cas d'utilisation nécessitant un traitement vectoriel massif, ce problème a entraîné une augmentation de la latence et une réduction du débit.</p>
-<p><strong>"Les interfaces incohérentes entre les langages créent une courbe d'apprentissage abrupte".</strong> Les SDK des différentes langues mettaient en œuvre les interfaces à leur manière, ce qui compliquait le développement inter-langues.</p>
-<p><strong>"L'API RESTful manque de fonctionnalités essentielles.</strong> Des fonctionnalités essentielles telles que la gestion des partitions et la construction d'index n'étaient pas disponibles, ce qui obligeait les développeurs à passer d'un SDK à l'autre.</p>
-<p>Il ne s'agissait pas seulement de demandes de fonctionnalités, mais de véritables obstacles à votre flux de développement. SDK v2 est notre promesse d'éliminer ces obstacles et de vous permettre de vous concentrer sur l'essentiel : créer des applications d'IA étonnantes.</p>
-<h2 id="The-Solution-Milvus-SDK-v2" class="common-anchor-header">La solution : Milvus SDK v2<button data-href="#The-Solution-Milvus-SDK-v2" class="anchor-icon" translate="no">
+    </button></h2><p>Over the years, Milvus has become the <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector database</a> of choice for thousands of AI applications. However, as our community grew, we consistently heard about several limitations with our SDK v1:</p>
+<p><strong>“Handling high concurrency is too complex.”</strong> The lack of native async support in some language SDKs forced developers to rely on threads or callbacks, making code harder to manage and debug, especially in scenarios like batch data loading and parallel queries.</p>
+<p><strong>“Performance degrades with scale.”</strong> Without a Schema Cache, v1 repeatedly validated schemas during operations, creating bottlenecks for high-volume workloads. In use cases requiring massive vector processing, this problem resulted in increased latency and reduced throughput.</p>
+<p><strong>“Inconsistent interfaces between languages create a steep learning curve.”</strong> Different language SDKs implemented interfaces in their own ways, complicating cross-language development.</p>
+<p><strong>“The RESTful API is missing essential features.”</strong> Critical functionalities like partition management and index construction were unavailable, forcing developers to switch between different SDKs.</p>
+<p>These weren’t just feature requests — they were real obstacles in your development workflow. SDK v2 is our promise to remove these barriers and let you focus on what matters: building amazing AI applications.</p>
+<h2 id="The-Solution-Milvus-SDK-v2" class="common-anchor-header">The Solution: Milvus SDK v2<button data-href="#The-Solution-Milvus-SDK-v2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,61 +68,61 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus SDK v2 est le résultat d'une refonte complète axée sur l'expérience du développeur, disponible dans plusieurs langues :</p>
+    </button></h2><p>Milvus SDK v2 is the result of a complete redesign focused on developer experience, available across multiple languages:</p>
 <ul>
-<li><p><a href="https://milvus.io/api-reference/pymilvus/v2.5.x/About.md">SDK Python v2 (pymilvus.MilvusClient)</a></p></li>
+<li><p><a href="https://milvus.io/api-reference/pymilvus/v2.5.x/About.md">Python SDK v2 (pymilvus.MilvusClient)</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-sdk-java">Java v2</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus/tree/client/v2.5.1/client">Go v2</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-sdk-node">NodeJS</a></p></li>
 <li><p><a href="https://milvus.io/api-reference/restful/v2.5.x/About.md">RESTful v2</a></p></li>
 </ul>
-<h3 id="1-Native-Asynchronous-Support-From-Complex-to-Concurrent" class="common-anchor-header">1. Support asynchrone natif : De la complexité à la simultanéité</h3><p>L'ancienne façon de gérer la concurrence impliquait des objets Future encombrants et des modèles de rappel. La version 2 du SDK introduit une véritable fonctionnalité asynchrone/attente, en particulier dans Python avec <code translate="no">AsyncMilvusClient</code> (depuis la version 2.5.3). Avec les mêmes paramètres que le MilvusClient synchrone, vous pouvez facilement exécuter des opérations telles que l'insertion, l'interrogation et la recherche en parallèle.</p>
-<p>Cette approche simplifiée remplace les anciens modèles encombrants de Future et de callback, ce qui permet d'obtenir un code plus propre et plus efficace. La logique concurrente complexe, comme les insertions de vecteurs par lots ou les requêtes multiples parallèles, peut désormais être mise en œuvre sans effort à l'aide d'outils tels que <code translate="no">asyncio.gather</code>.</p>
-<h3 id="2-Schema-Cache-Boosting-Performance-Where-It-Counts" class="common-anchor-header">2. Schema Cache : Accroître les performances là où cela compte</h3><p>Le SDK v2 introduit un cache de schéma qui stocke les schémas de collection localement après la recherche initiale, éliminant ainsi les requêtes réseau répétées et la surcharge de l'unité centrale pendant les opérations.</p>
-<p>Pour les scénarios d'insertion et d'interrogation à haute fréquence, cette mise à jour se traduit par :</p>
+<h3 id="1-Native-Asynchronous-Support-From-Complex-to-Concurrent" class="common-anchor-header">1. Native Asynchronous Support: From Complex to Concurrent</h3><p>The old way of handling concurrency involved cumbersome Future objects and callback patterns. SDK v2 introduces true async/await functionality, particularly in Python with <code translate="no">AsyncMilvusClient</code> (since v2.5.3). With the same parameters as the synchronous MilvusClient, you can easily run operations like insert, query, and search in parallel.</p>
+<p>This simplified approach replaces the old cumbersome Future and callback patterns, leading to cleaner and more efficient code. Complex concurrent logic, like batch vector inserts or parallel multi-queries, can now be effortlessly implemented using tools like <code translate="no">asyncio.gather</code>.</p>
+<h3 id="2-Schema-Cache-Boosting-Performance-Where-It-Counts" class="common-anchor-header">2. Schema Cache: Boosting Performance Where It Counts</h3><p>SDK v2 introduces a Schema Cache that stores collection schemas locally after the initial fetch, eliminating repeated network requests and CPU overhead during operations.</p>
+<p>For high-frequency insert and query scenarios, this update translates to:</p>
 <ul>
-<li><p>une réduction du trafic réseau entre le client et le serveur</p></li>
-<li><p>Une latence plus faible pour les opérations</p></li>
-<li><p>Diminution de l'utilisation de l'unité centrale côté serveur</p></li>
-<li><p>une meilleure mise à l'échelle en cas de forte concurrence.</p></li>
+<li><p>Reduced network traffic between client and server</p></li>
+<li><p>Lower latency for operations</p></li>
+<li><p>Decreased server-side CPU usage</p></li>
+<li><p>Better scaling under high concurrency</p></li>
 </ul>
-<p>Ces avantages sont particulièrement précieux pour les applications telles que les systèmes de recommandation en temps réel ou les fonctions de recherche en direct, pour lesquelles les millisecondes comptent.</p>
-<h3 id="3-A-Unified-and-Streamlined-API-Experience" class="common-anchor-header">3. Une expérience API unifiée et rationalisée</h3><p>Milvus SDK v2 introduit une expérience API unifiée et plus complète dans tous les langages de programmation pris en charge. En particulier, l'API RESTful a été considérablement améliorée pour offrir une quasi-parité de fonctionnalités avec l'interface gRPC.</p>
-<p>Dans les versions précédentes, l'API RESTful était à la traîne par rapport à gRPC, ce qui limitait ce que les développeurs pouvaient faire sans changer d'interface. Ce n'est plus le cas. Désormais, les développeurs peuvent utiliser l'API RESTful pour effectuer pratiquement toutes les opérations de base, telles que la création de collections, la gestion des partitions, la création d'index et l'exécution de requêtes, sans avoir à recourir à gRPC ou à d'autres méthodes.</p>
-<p>Cette approche unifiée garantit aux développeurs une expérience cohérente dans différents environnements et cas d'utilisation. Elle réduit la courbe d'apprentissage, simplifie l'intégration et améliore la convivialité générale.</p>
-<p>Remarque : pour la plupart des utilisateurs, l'API RESTful offre un moyen plus rapide et plus facile de démarrer avec Milvus. Toutefois, si votre application exige des performances élevées ou des fonctionnalités avancées telles que les itérateurs, le client gRPC reste l'option de choix pour un maximum de flexibilité et de contrôle.</p>
+<p>This is particularly valuable for applications like real-time recommendation systems or live search features where milliseconds matter.</p>
+<h3 id="3-A-Unified-and-Streamlined-API-Experience" class="common-anchor-header">3. A Unified and Streamlined API Experience</h3><p>Milvus SDK v2 introduces a unified and more complete API experience across all supported programming languages. Particularly, the RESTful API has been significantly enhanced to offer near feature parity with the gRPC interface.</p>
+<p>In earlier versions, the RESTful API lagged behind gRPC, limiting what developers could do without switching interfaces. That’s no longer the case. Now, developers can use the RESTful API to perform virtually all core operations—such as creating collections, managing partitions, building indexes, and running queries—without needing to fall back on gRPC or other methods.</p>
+<p>This unified approach ensures a consistent developer experience across different environments and use cases. It reduces the learning curve, simplifies integration, and improves overall usability.</p>
+<p>Note: For most users, the RESTful API offers a faster and easier way to get started with Milvus. However, if your application demands high-performance or advanced features like iterators, the gRPC client remains the go-to option for maximum flexibility and control.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/RES_Tful_8520a80a8e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="4-Aligned-SDK-Design-Across-All-Languages" class="common-anchor-header">4. Conception harmonisée du SDK dans toutes les langues</h3><p>Avec Milvus SDK v2, nous avons normalisé la conception de nos SDK dans tous les langages de programmation pris en charge afin d'offrir aux développeurs une expérience plus cohérente.</p>
-<p>Que vous construisiez avec Python, Java, Go ou Node.js, chaque SDK suit désormais une structure unifiée centrée sur la classe MilvusClient. Cette refonte apporte une cohérence dans le nommage des méthodes, le formatage des paramètres et les schémas d'utilisation généraux pour chaque langage que nous prenons en charge. (Voir : <a href="https://github.com/milvus-io/milvus/discussions/33979">Mise à jour de l'exemple de code du SDK MilvusClient - Discussion GitHub #33979</a>)</p>
+<h3 id="4-Aligned-SDK-Design-Across-All-Languages" class="common-anchor-header">4. Aligned SDK Design Across All Languages</h3><p>With Milvus SDK v2, we’ve standardized the design of our SDKs across all supported programming languages to deliver a more consistent developer experience.</p>
+<p>Whether you’re building with Python, Java, Go, or Node.js, each SDK now follows a unified structure centered around the MilvusClient class. This redesign brings consistent method naming, parameter formatting, and overall usage patterns to every language we support. (See: <a href="https://github.com/milvus-io/milvus/discussions/33979">MilvusClient SDK code example update · GitHub Discussion #33979</a>)</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Milvus_Client_9a4a6da9e3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Désormais, une fois que vous êtes familiarisé avec Milvus dans une langue, vous pouvez facilement passer à une autre sans avoir à réapprendre le fonctionnement du SDK. Cet alignement simplifie non seulement l'intégration, mais rend également le développement multilingue beaucoup plus fluide et intuitif.</p>
-<h3 id="5-A-Simpler-Smarter-PyMilvus-Python-SDK-with-MilvusClient" class="common-anchor-header">5. Un PyMilvus (SDK Python) plus simple et plus intelligent avec <code translate="no">MilvusClient</code></h3><p>Dans la version précédente, PyMilvus s'appuyait sur une conception de type ORM qui introduisait un mélange d'approches orientées objet et procédurales. Les développeurs devaient définir des objets <code translate="no">FieldSchema</code>, construire une classe <code translate="no">CollectionSchema</code>, puis instancier une classe <code translate="no">Collection</code> - tout cela pour créer une collection. Ce processus était non seulement fastidieux, mais il entraînait également une courbe d'apprentissage plus abrupte pour les nouveaux utilisateurs.</p>
-<p>Avec la nouvelle interface <code translate="no">MilvusClient</code>, les choses sont beaucoup plus simples. Vous pouvez désormais créer une collection en une seule étape à l'aide de la méthode <code translate="no">create_collection()</code>. Elle vous permet de définir rapidement le schéma en passant des paramètres tels que <code translate="no">dimension</code> et <code translate="no">metric_type</code>, ou vous pouvez toujours utiliser un objet de schéma personnalisé si nécessaire.</p>
-<p>Mieux encore, <code translate="no">create_collection()</code> prend en charge la création d'index dans le cadre du même appel. Si des paramètres d'index sont fournis, Milvus construit automatiquement l'index et charge les données en mémoire, sans qu'il soit nécessaire d'effectuer des appels <code translate="no">create_index()</code> ou <code translate="no">load()</code> distincts. Une seule méthode permet de tout faire : <em>créer une collection → construire un index → charger une collection.</em></p>
-<p>Cette approche rationalisée réduit la complexité de la configuration et facilite grandement le démarrage de Milvus, en particulier pour les développeurs qui souhaitent un chemin rapide et efficace vers le prototypage ou la production.</p>
-<p>Le nouveau module <code translate="no">MilvusClient</code> offre des avantages évidents en termes de convivialité, de cohérence et de performances. Bien que l'ancienne interface ORM reste disponible pour l'instant, nous prévoyons de la supprimer progressivement à l'avenir (voir <a href="https://docs.zilliz.com/reference/python/ORM#:~:text=About%20to%20Deprecate">référence</a>). Nous recommandons vivement la mise à jour vers le nouveau SDK pour profiter pleinement des améliorations.</p>
-<h3 id="6-Clearer-and-More-Comprehensive-Documentation" class="common-anchor-header">6. Documentation plus claire et plus complète</h3><p>Nous avons restructuré la documentation du produit afin de fournir une <a href="https://milvus.io/docs">référence API</a> plus complète et plus claire. Nos guides de l'utilisateur comprennent désormais des exemples de code multilingues, ce qui vous permet de démarrer rapidement et de comprendre facilement les fonctionnalités de Milvus. En outre, l'assistant Ask AI disponible sur notre site de documentation peut présenter de nouvelles fonctionnalités, expliquer des mécanismes internes et même aider à générer ou à modifier des exemples de code, ce qui rend votre parcours dans la documentation plus fluide et plus agréable.</p>
+<p>Now, once you’re familiar with Milvus in one language, you can easily switch to another without having to relearn how the SDK works. This alignment not only simplifies onboarding but also makes multi-language development much smoother and more intuitive.</p>
+<h3 id="5-A-Simpler-Smarter-PyMilvus-Python-SDK-with-MilvusClient" class="common-anchor-header">5. A Simpler, Smarter PyMilvus (Python SDK) with <code translate="no">MilvusClient</code></h3><p>In the previous version, PyMilvus relied on an ORM-style design that introduced a mix of object-oriented and procedural approaches. Developers had to define <code translate="no">FieldSchema</code> objects, build a <code translate="no">CollectionSchema</code>, and then instantiate a <code translate="no">Collection</code> class—all just to create a collection. This process was not only verbose but also introduced a steeper learning curve for new users.</p>
+<p>With the new <code translate="no">MilvusClient</code> interface, things are much simpler. You can now create a collection in a single step using the <code translate="no">create_collection()</code> method. It allows you to quickly define the schema by passing parameters like <code translate="no">dimension</code> and <code translate="no">metric_type</code>, or you can still use a custom schema object if needed.</p>
+<p>Even better, <code translate="no">create_collection()</code> supports index creation as part of the same call. If index parameters are provided, Milvus will automatically build the index and load the data into memory—no need for separate <code translate="no">create_index()</code> or <code translate="no">load()</code> calls. One method does it all: <em>create collection → build index → load collection.</em></p>
+<p>This streamlined approach reduces setup complexity and makes it much easier to get started with Milvus, especially for developers who want a quick and efficient path to prototyping or production.</p>
+<p>The new <code translate="no">MilvusClient</code> module offers clear advantages in usability, consistency, and performance. While the legacy ORM interface remains available for now, we plan to phase it out in the future (see <a href="https://docs.zilliz.com/reference/python/ORM#:~:text=About%20to%20Deprecate">reference</a>). We strongly recommend upgrading to the new SDK to take full advantage of the improvements.</p>
+<h3 id="6-Clearer-and-More-Comprehensive-Documentation" class="common-anchor-header">6. Clearer and More Comprehensive Documentation</h3><p>We have restructured the product documentation to provide a more complete and clearer <a href="https://milvus.io/docs">API Reference</a>. Our User Guides now include multi-language sample code, enabling you to get started quickly and understand Milvus’ features with ease. Additionally, the Ask AI assistant available on our documentation site can introduce new features, explain internal mechanisms, and even help generate or modify sample code, making your journey through the documentation smoother and more enjoyable.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Ask_AI_Assistant_b044d4621a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="7-Milvus-MCP-Server-Designed-for-the-Future-of-AI-Integration" class="common-anchor-header">7. Milvus MCP Server : Conçu pour l'avenir de l'intégration de l'IA</h3><p>Le <a href="https://github.com/zilliztech/mcp-server-milvus">serveur MCP</a>, construit au-dessus du SDK Milvus, est notre réponse à un besoin croissant dans l'écosystème de l'IA : l'intégration transparente entre les grands modèles de langage<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM)</a>, les <a href="https://milvus.io/blog/what-is-a-vector-database.md">bases de données vectorielles</a> et les outils ou sources de données externes. Il met en œuvre le protocole de contexte de modèle (MCP), fournissant une interface unifiée et intelligente pour orchestrer les opérations Milvus et au-delà.</p>
-<p>À mesure que <a href="https://zilliz.com/blog/top-10-ai-agents-to-watch-in-2025">les agents d'intelligence artificielle</a> gagnent en capacité - non seulement en générant du code, mais aussi en gérant de manière autonome des services dorsaux - la demande d'une infrastructure plus intelligente, axée sur les API, augmente. Le serveur MCP a été conçu en tenant compte de cet avenir. Il permet des interactions intelligentes et automatisées avec les clusters Milvus, en rationalisant des tâches telles que le déploiement, la maintenance et la gestion des données.</p>
-<p>Plus important encore, il jette les bases d'un nouveau type de collaboration entre machines. Avec le serveur MCP, les agents d'intelligence artificielle peuvent appeler des API pour créer dynamiquement des collections, exécuter des requêtes, créer des index et bien plus encore, le tout sans intervention humaine.</p>
-<p>En bref, le serveur MCP transforme Milvus non pas en une simple base de données, mais en un backend entièrement programmable et prêt pour l'IA, ouvrant la voie à des applications intelligentes, autonomes et évolutives.</p>
-<h2 id="Getting-Started-with-Milvus-SDK-v2-Sample-Code" class="common-anchor-header">Démarrage avec Milvus SDK v2 : Exemples de code<button data-href="#Getting-Started-with-Milvus-SDK-v2-Sample-Code" class="anchor-icon" translate="no">
+<h3 id="7-Milvus-MCP-Server-Designed-for-the-Future-of-AI-Integration" class="common-anchor-header">7. Milvus MCP Server: Designed for the Future of AI Integration</h3><p>The <a href="https://github.com/zilliztech/mcp-server-milvus">MCP Server</a>, built on top of the Milvus SDK, is our answer to a growing need in the AI ecosystem: seamless integration between large language models (<a href="https://zilliz.com/glossary/large-language-models-(llms)">LLMs</a>), <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector databases</a>, and external tools or data sources. It implements the Model Context Protocol (MCP), providing a unified and intelligent interface for orchestrating Milvus operations and beyond.</p>
+<p>As <a href="https://zilliz.com/blog/top-10-ai-agents-to-watch-in-2025">AI agents</a> become more capable—not just generating code but autonomously managing backend services—the demand for smarter, API-driven infrastructure is rising. The MCP Server was designed with this future in mind. It enables intelligent and automated interactions with Milvus clusters, streamlining tasks like deployment, maintenance, and data management.</p>
+<p>More importantly, it lays the groundwork for a new kind of machine-to-machine collaboration. With the MCP Server, AI agents can call APIs to dynamically create collections, run queries, build indexes, and more—all without human intervention.</p>
+<p>In short, the MCP Server transforms Milvus into not just a database, but a fully programmable, AI-ready backend—paving the way for intelligent, autonomous, and scalable applications.</p>
+<h2 id="Getting-Started-with-Milvus-SDK-v2-Sample-Code" class="common-anchor-header">Getting Started with Milvus SDK v2: Sample Code<button data-href="#Getting-Started-with-Milvus-SDK-v2-Sample-Code" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -137,8 +137,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Les exemples ci-dessous montrent comment utiliser la nouvelle interface PyMilvus (Python SDK v2) pour créer une collection et effectuer des opérations asynchrones. Comparé à l'approche de type ORM de la version précédente, ce code est plus propre, plus cohérent et plus facile à utiliser.</p>
-<h3 id="1-Creating-a-Collection-Defining-Schemas-Building-Indexes-and-Loading-Data-with-MilvusClient" class="common-anchor-header">1. Création d'une collection, définition de schémas, construction d'index et chargement de données à l'aide de l'interface Python <code translate="no">MilvusClient</code></h3><p>L'extrait de code Python ci-dessous montre comment créer une collection, définir son schéma, créer des index et charger des données, le tout en un seul appel :</p>
+    </button></h2><p>The examples below show how to use the new PyMilvus (Python SDK v2) interface to create a collection and perform asynchronous operations. Compared to the ORM-style approach in the previous version, this code is cleaner, more consistent, and easier to work with.</p>
+<h3 id="1-Creating-a-Collection-Defining-Schemas-Building-Indexes-and-Loading-Data-with-MilvusClient" class="common-anchor-header">1. Creating a Collection, Defining Schemas, Building Indexes, and Loading Data with <code translate="no">MilvusClient</code></h3><p>The Python code snippet below demonstrates how to create a collection, define its schema, build indexes, and load data—all in one call:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 <span class="hljs-comment"># 1. Connect to Milvus (initialize the client)</span>
@@ -166,15 +166,15 @@ client.create_collection(
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Collection created and loaded with index!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Le paramètre <code translate="no">index_params</code> de la méthode <code translate="no">create_collection</code> élimine le besoin d'appels distincts pour <code translate="no">create_index</code> et <code translate="no">load_collection</code>- tout se fait automatiquement.</p>
-<p>En outre, <code translate="no">MilvusClient</code> prend en charge un mode de création rapide de tables. Par exemple, une collection peut être créée en une seule ligne de code en spécifiant uniquement les paramètres requis :</p>
+<p>The <code translate="no">create_collection</code> method’s <code translate="no">index_params</code> parameter eliminates the need for separate calls for <code translate="no">create_index</code> and <code translate="no">load_collection</code>—everything happens automatically.</p>
+<p>In addition, <code translate="no">MilvusClient</code> supports a quick table creation mode. For example, a collection can be created in a single line of code by specifying only the required parameters:</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_collection</span>(
     collection_name=<span class="hljs-string">&quot;test_collection&quot;</span>,
     dimension=<span class="hljs-number">128</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><em>(Note de comparaison : dans l'ancienne approche ORM, vous deviez créer un <code translate="no">Collection(schema)</code>, puis appeler séparément <code translate="no">collection.create_index()</code> et <code translate="no">collection.load()</code>; maintenant, MilvusClient rationalise l'ensemble du processus).</em></p>
-<h3 id="2-Performing-High-Concurrency-Asynchronous-Inserts-with-AsyncMilvusClient" class="common-anchor-header">2. Exécution d'insertions asynchrones à haute concordance avec le logiciel MilvusClient <code translate="no">AsyncMilvusClient</code></h3><p>L'exemple suivant montre comment utiliser <code translate="no">AsyncMilvusClient</code> pour effectuer des opérations d'insertion simultanées à l'aide de <code translate="no">async/await</code>:</p>
+<p><em>(Comparison note: In the old ORM approach, you had to create a <code translate="no">Collection(schema)</code>, then separately call <code translate="no">collection.create_index()</code> and <code translate="no">collection.load()</code>; now, MilvusClient streamlines the entire process.)</em></p>
+<h3 id="2-Performing-High-Concurrency-Asynchronous-Inserts-with-AsyncMilvusClient" class="common-anchor-header">2. Performing High-Concurrency Asynchronous Inserts with <code translate="no">AsyncMilvusClient</code></h3><p>The following example shows how to use the <code translate="no">AsyncMilvusClient</code> to perform concurrent insert operations using <code translate="no">async/await</code>:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> asyncio
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> AsyncMilvusClient
 
@@ -204,9 +204,9 @@ client.create_collection(
 <span class="hljs-comment"># Execute asynchronous tasks</span>
 asyncio.run(insert_vectors_concurrently())
 <button class="copy-code-btn"></button></code></pre>
-<p>Dans cet exemple, <code translate="no">AsyncMilvusClient</code> est utilisé pour insérer simultanément des données en planifiant plusieurs tâches d'insertion avec <code translate="no">asyncio.gather</code>. Cette approche tire pleinement parti des capacités de traitement simultané du backend de Milvus. Contrairement aux insertions synchrones, ligne par ligne, de la version 1, cette prise en charge asynchrone native augmente considérablement le débit.</p>
-<p>De même, vous pouvez modifier le code pour effectuer des requêtes ou des recherches simultanées, par exemple en remplaçant l'appel d'insertion par <code translate="no">client.search(&quot;example_collection&quot;, data=[query_vec], limit=5)</code>. L'interface asynchrone du SDK Milvus v2 garantit que chaque requête est exécutée de manière non bloquante, ce qui permet d'exploiter pleinement les ressources du client et du serveur.</p>
-<h2 id="Migration-Made-Easy" class="common-anchor-header">Une migration facilitée<button data-href="#Migration-Made-Easy" class="anchor-icon" translate="no">
+<p>In this example, <code translate="no">AsyncMilvusClient</code> is used to concurrently insert data by scheduling multiple insertion tasks with <code translate="no">asyncio.gather</code>. This approach takes full advantage of Milvus’ backend concurrent processing capabilities. Unlike the synchronous, line-by-line insertions in v1, this native asynchronous support dramatically increases throughput.</p>
+<p>Similarly, you can modify the code to perform concurrent queries or searches—for example, by replacing the insert call with <code translate="no">client.search(&quot;example_collection&quot;, data=[query_vec], limit=5)</code>. Milvus SDK v2’s asynchronous interface ensures that each request is executed in a non-blocking manner, fully leveraging both client and server resources.</p>
+<h2 id="Migration-Made-Easy" class="common-anchor-header">Migration Made Easy<button data-href="#Migration-Made-Easy" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -221,8 +221,8 @@ asyncio.run(insert_vectors_concurrently())
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nous savons que vous avez investi du temps dans le SDK v1, c'est pourquoi nous avons conçu le SDK v2 en tenant compte de vos applications existantes. Le SDK v2 inclut une compatibilité ascendante, de sorte que les interfaces existantes de type v1/ORM continueront à fonctionner pendant un certain temps. Mais nous recommandons vivement de passer au SDK v2 dès que possible, car la prise en charge de la v1 prendra fin avec la publication de Milvus 3.0 (fin 2025).</p>
-<p>Le passage au SDK v2 permet de bénéficier d'une expérience de développement plus cohérente et plus moderne, avec une syntaxe simplifiée, une meilleure prise en charge de l'asynchronisme et des performances améliorées. C'est également sur ce SDK que se concentreront toutes les nouvelles fonctionnalités et le support de la communauté à l'avenir. En effectuant la mise à niveau dès maintenant, vous êtes prêt pour la suite et vous avez accès à ce que Milvus a de mieux à offrir.</p>
+    </button></h2><p>We know you’ve invested time in SDK v1, so we’ve designed SDK v2 with your existing applications in mind. SDK v2 includes backward compatibility, so existing v1/ORM-style interfaces will continue to work for a while. But we strongly recommend upgrading to SDK v2 as soon as possible—support for v1 will end with the release of Milvus 3.0 (end of 2025).</p>
+<p>Moving to SDK v2 unlocks a more consistent, modern developer experience with simplified syntax, better async support, and improved performance. It’s also where all new features and community support are focused going forward. Upgrading now ensures you’re ready for what’s next and gives you access to the best Milvus has to offer.</p>
 <h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -238,5 +238,5 @@ asyncio.run(insert_vectors_concurrently())
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus SDK v2 apporte des améliorations significatives par rapport à v1 : des performances accrues, une interface unifiée et cohérente dans plusieurs langages de programmation et une prise en charge asynchrone native qui simplifie les opérations à haute teneur en devises. Avec une documentation plus claire et des exemples de code plus intuitifs, Milvus SDK v2 est conçu pour rationaliser votre processus de développement, en facilitant et en accélérant la création et le déploiement d'applications d'IA.</p>
-<p>Pour des informations plus détaillées, veuillez vous référer à notre dernière <a href="https://milvus.io/docs/install-pymilvus.md#Install-Milvus-Python-SDK">référence API</a> officielle <a href="https://milvus.io/docs/install-pymilvus.md#Install-Milvus-Python-SDK">et à nos guides de l'utilisateur</a>. Si vous avez des questions ou des suggestions concernant le nouveau SDK, n'hésitez pas à nous faire part de vos commentaires sur <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> et <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>. Nous attendons avec impatience vos commentaires pour continuer à améliorer Milvus.</p>
+    </button></h2><p>Milvus SDK v2 brings significant improvements over v1: enhanced performance, a unified and consistent interface across multiple programming languages, and native asynchronous support that simplifies high-concurrency operations. With clearer documentation and more intuitive code examples, Milvus SDK v2 is designed to streamline your development process, making it easier and faster to build and deploy AI applications.</p>
+<p>For more detailed information, please refer to our latest official <a href="https://milvus.io/docs/install-pymilvus.md#Install-Milvus-Python-SDK">API Reference and User Guides</a>. If you have any questions or suggestions regarding the new SDK, feel free to provide feedback on <a href="https://github.com/milvus-io/milvus/discussions">GitHub</a> and <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>. We look forward to your input as we continue to enhance Milvus.</p>

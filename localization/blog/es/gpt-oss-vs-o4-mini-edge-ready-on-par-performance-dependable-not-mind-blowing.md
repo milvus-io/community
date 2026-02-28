@@ -1,14 +1,14 @@
 ---
 id: >-
   gpt-oss-vs-o4-mini-edge-ready-on-par-performance-dependable-not-mind-blowing.md
-title: >-
-  GPT-oss frente a o4-mini: rendimiento a la altura de las circunstancias,
-  fiable pero no alucinante
+title: >
+  GPT-oss vs o4-mini: Edge-Ready, On-Par Performance — Dependable, Not
+  Mind-Blowing
 author: Lumina Wang
 date: 2025-08-07T00:00:00.000Z
-desc: >-
-  OpenAI acapara la atención al abrir dos modelos de razonamiento: gpt-oss-120b
-  y gpt-oss-20b, con licencia permisiva Apache 2.0.
+desc: >
+  OpenAI steals the spotlight by open-sourcing two reasoning models:
+  gpt-oss-120b and gpt-oss-20b, permissively licensed under Apache 2.0.
 cover: >-
   assets.zilliz.com/gpt_oss_vs_o4_mini_edge_ready_on_par_performance_dependable_not_mind_blowing_2bd27838c1.png
 tag: Engineering
@@ -21,10 +21,10 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/gpt-oss-vs-o4-mini-edge-ready-on-par-performance-dependable-not-mind-blowing.md
 ---
-<p>El mundo de la IA está que arde. En pocas semanas, Anthropic presentó Claude 4.1 Opus, DeepMind sorprendió a todos con el simulador mundial Genie 3 y, ahora, OpenAI roba el centro de atención al abrir dos modelos de razonamiento: <a href="https://huggingface.co/openai/gpt-oss-120b">gpt-oss-120b</a> y <a href="https://huggingface.co/openai/gpt-oss-20b">gpt-oss-20b</a>, con licencia permisiva bajo Apache 2.0.</p>
-<p>Tras su lanzamiento, estos modelos se dispararon instantáneamente al puesto número 1 de tendencias en Hugging Face, y por una buena razón. Esta es la primera vez desde 2019 que OpenAI ha lanzado modelos de peso abierto que están realmente listos para la producción. El movimiento no es accidental: después de años de impulsar el acceso exclusivo a la API, OpenAI está respondiendo claramente a la presión de los líderes de código abierto como DeepSeek, LLaMA de Meta y Qwen, que han estado dominando tanto los puntos de referencia como los flujos de trabajo de los desarrolladores.</p>
-<p>En este artículo, analizaremos en qué se diferencia GPT-oss, cómo se compara con modelos abiertos líderes como DeepSeek R1 y Qwen 3, y por qué debería interesar a los desarrolladores. También explicaremos cómo construir un sistema RAG con capacidad de razonamiento utilizando GPT-oss y Milvus, la base de datos vectorial de código abierto más popular.</p>
-<h2 id="What-Makes-GPT-oss-Special-and-Why-You-Should-Care" class="common-anchor-header">¿Qué hace especial a GPT-oss y por qué debería importarte?<button data-href="#What-Makes-GPT-oss-Special-and-Why-You-Should-Care" class="anchor-icon" translate="no">
+<p>The AI world has been running hot. In just a few weeks, Anthropic dropped Claude 4.1 Opus, DeepMind stunned everyone with Genie 3 world simulator—and now, OpenAI steals the spotlight by open-sourcing two reasoning models: <a href="https://huggingface.co/openai/gpt-oss-120b">gpt-oss-120b</a> and <a href="https://huggingface.co/openai/gpt-oss-20b">gpt-oss-20b</a>, permissively licensed under Apache 2.0.</p>
+<p>After launch, these models instantly shot to the #1 trending spot on Hugging Face—and for good reason. This is the first time since 2019 that OpenAI has released open-weight models that are actually production-ready. The move isn’t accidental—after years of pushing API-only access, OpenAI is clearly responding to the pressure from open-source leaders like DeepSeek, Meta’s LLaMA, and Qwen, who’ve been dominating both benchmarks and developer workflows.</p>
+<p>In this post, we’ll explore what makes GPT-oss different, how it compares to leading open models like DeepSeek R1 and Qwen 3, and why developers should care. We’ll also walk through building a reasoning-capable RAG system using GPT-oss and Milvus, the most popular open-source vector database.</p>
+<h2 id="What-Makes-GPT-oss-Special-and-Why-You-Should-Care" class="common-anchor-header">What Makes GPT-oss Special and Why You Should Care?<button data-href="#What-Makes-GPT-oss-Special-and-Why-You-Should-Care" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,56 +39,56 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GPT-oss no es sólo otro programa de reducción de peso. Ofrece prestaciones en cinco áreas clave que importan a los desarrolladores:</p>
-<h3 id="1-Built-for-Edge-Deployment" class="common-anchor-header">1: Construido para el despliegue Edge</h3><p>GPT-oss se presenta en dos variantes de tamaño estratégico:</p>
+    </button></h2><p>GPT-oss isn’t just another weight drop. It delivers in five key areas that matter to developers:</p>
+<h3 id="1-Built-for-Edge-Deployment" class="common-anchor-header">1: Built for Edge Deployment</h3><p>GPT-oss comes in two strategically sized variants:</p>
 <ul>
-<li><p>gpt-oss-120b: 117B totales, 5,1B activos por token</p></li>
-<li><p>gpt-oss-20b: 21B totales, 3,6B activos por token</p></li>
+<li><p>gpt-oss-120b: 117B total, 5.1B active per token</p></li>
+<li><p>gpt-oss-20b: 21B total, 3.6B active per token</p></li>
 </ul>
-<p>Gracias a la arquitectura Mixture-of-Experts (MoE), sólo un subconjunto de parámetros está activo durante la inferencia. Esto hace que ambos modelos sean ligeros en relación con su tamaño:</p>
+<p>Using Mixture-of-Experts (MoE) architecture, only a subset of parameters is active during inference. This makes both models lightweight to run relative to their size:</p>
 <ul>
-<li><p>gpt-oss-120b se ejecuta en una sola GPU de 80 GB (H100)</p></li>
-<li><p>gpt-oss-20b ocupa sólo 16 GB de VRAM, lo que significa que puede ejecutarse en portátiles de gama alta o dispositivos de última generación.</p></li>
+<li><p>gpt-oss-120b runs on a single 80GB GPU (H100)</p></li>
+<li><p>gpt-oss-20b fits in just 16GB VRAM, meaning it runs on high-end laptops or edge devices</p></li>
 </ul>
-<p>Según las pruebas de OpenAI, gpt-oss-20b es el modelo más rápido de OpenAI para inferencia, ideal para despliegues de baja latencia o agentes de razonamiento offline.</p>
-<h3 id="2-Strong-Benchmark-Performance" class="common-anchor-header">2: Gran rendimiento en pruebas de referencia</h3><p>Según las evaluaciones de OpenAI</p>
+<p>According to OpenAI’s tests, gpt-oss-20b is the fastest OpenAI model for inference—ideal for low-latency deployments or offline reasoning agents.</p>
+<h3 id="2-Strong-Benchmark-Performance" class="common-anchor-header">2: Strong Benchmark Performance</h3><p>According to OpenAI’s evaluations:</p>
 <ul>
-<li><p><strong>gpt-oss-120b</strong> rinde casi en paridad con o4-mini en razonamiento, uso de herramientas y codificación competitiva (Codeforces, MMLU, TauBench)</p></li>
-<li><p><strong>gpt-oss-20b</strong> compite con o3-mini e incluso lo supera en razonamiento matemático y sanitario.</p></li>
+<li><p><strong>gpt-oss-120b</strong> performs near-parity with o4-mini on reasoning, tool use, and competition coding (Codeforces, MMLU, TauBench)</p></li>
+<li><p><strong>gpt-oss-20b</strong> competes with o3-mini, and even outperforms it in math and healthcare reasoning</p></li>
 </ul>
-<h3 id="3-Cost-Efficient-Training" class="common-anchor-header">3: Formación rentable</h3><p>OpenAI afirma tener un rendimiento equivalente al de o3-mini y o4-mini, pero con unos costes de formación drásticamente inferiores:</p>
+<h3 id="3-Cost-Efficient-Training" class="common-anchor-header">3: Cost-Efficient Training</h3><p>OpenAI claims performance equivalent to o3-mini and o4-mini, but with dramatically lower training costs:</p>
 <ul>
-<li><p><strong>gpt-oss-120b</strong>: 2,1 millones de horas H100 → ~10 millones de dólares</p></li>
-<li><p><strong>gpt-oss-20b</strong>: 210.000 horas H100 → ~1 millón de dólares</p></li>
+<li><p><strong>gpt-oss-120b</strong>: 2.1 million H100-hours → ~$10M</p></li>
+<li><p><strong>gpt-oss-20b</strong>: 210K H100-hours → ~$1M</p></li>
 </ul>
-<p>Compárese con los presupuestos de varios cientos de millones de dólares de modelos como GPT-4. GPT-oss demuestra que las opciones eficientes de escalado y arquitectura pueden ofrecer un rendimiento competitivo sin una enorme huella de carbono.</p>
-<h3 id="4-True-Open-Source-Freedom" class="common-anchor-header">4: Verdadera libertad de código abierto</h3><p>GPT-oss utiliza la licencia Apache 2.0, lo que significa que</p>
+<p>Compare that to the multi-hundred-million-dollar budgets behind models like GPT-4. GPT-oss proves that efficient scaling and architecture choices can deliver competitive performance without a massive carbon footprint.</p>
+<h3 id="4-True-Open-Source-Freedom" class="common-anchor-header">4: True Open-Source Freedom</h3><p>GPT-oss uses Apache 2.0 licensing, which means:</p>
 <ul>
-<li><p>Uso comercial permitido</p></li>
-<li><p>plenos derechos de modificación y redistribución</p></li>
-<li><p>Sin restricciones de uso ni cláusulas de copyleft</p></li>
+<li><p>Commercial use allowed</p></li>
+<li><p>Full modification and redistribution rights</p></li>
+<li><p>No usage restrictions or copyleft clauses</p></li>
 </ul>
-<p>Se trata realmente de código abierto, no de una versión exclusiva para investigación. Puede adaptarlo a su uso específico, implantarlo en producción con pleno control y crear productos comerciales a partir de él. Entre sus principales características se incluyen la profundidad de razonamiento configurable (baja/media/alta), la visibilidad completa de la cadena de pensamiento y la llamada a herramientas nativas con soporte de salida estructurada.</p>
-<h3 id="5-Potential-GPT-5-Preview" class="common-anchor-header">5: Posible avance de GPT-5</h3><p>OpenAI no lo ha revelado todo, pero los detalles de la arquitectura sugieren que podría ser un avance de <strong>GPT-5</strong>:</p>
+<p>This is really open source, not a research-only release. You can fine-tune for domain-specific use, deploy in production with full control, and build commercial products around it. Key features include configurable reasoning depth (low/medium/high), full chain-of-thought visibility, and native tool calling with structured output support.</p>
+<h3 id="5-Potential-GPT-5-Preview" class="common-anchor-header">5: Potential GPT-5 Preview</h3><p>OpenAI hasn’t disclosed everything—but architecture details suggest this may preview the direction of <strong>GPT-5</strong>:</p>
 <ul>
-<li><p>Utiliza MoE con 4 expertos por entrada</p></li>
-<li><p>Alterna atención densa + atención dispersa local (patrón GPT-3).</p></li>
-<li><p>Presenta más cabezas de atención.</p></li>
-<li><p>Curiosamente, las unidades de sesgo de GPT-2 han regresado.</p></li>
+<li><p>Uses MoE with 4 experts per input</p></li>
+<li><p>Follows alternating dense + local sparse attention (GPT-3 pattern)</p></li>
+<li><p>Features more attention heads</p></li>
+<li><p>Interestingly, bias units from GPT-2 have made a comeback</p></li>
 </ul>
-<p>Si estás atento a las señales sobre lo que viene, GPT-oss puede ser la pista pública más clara hasta el momento.</p>
-<h3 id="Core-Specifications" class="common-anchor-header">Especificaciones del núcleo</h3><table>
+<p>If you’re watching for signals on what comes next, GPT-oss may be the clearest public hint yet.</p>
+<h3 id="Core-Specifications" class="common-anchor-header">Core Specifications</h3><table>
 <thead>
 <tr><th></th><th></th><th></th><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Modelo</strong></td><td><strong>Parámetros totales</strong></td><td><strong>Parámetros activos</strong></td><td><strong>Expertos</strong></td><td><strong>Contexto Longitud</strong></td><td><strong>VRAM Req</strong></td></tr>
+<tr><td><strong>Model</strong></td><td><strong>Total Params</strong></td><td><strong>Active Params</strong></td><td><strong>Experts</strong></td><td><strong>Context Length</strong></td><td><strong>VRAM Req</strong></td></tr>
 <tr><td>gpt-oss-120b</td><td>117B</td><td>5.1B</td><td>128</td><td>128k</td><td>80GB</td></tr>
-<tr><td>gpt-oss-20b</td><td>21B</td><td>3.6B</td><td>32</td><td>128k</td><td>16 GB</td></tr>
+<tr><td>gpt-oss-20b</td><td>21B</td><td>3.6B</td><td>32</td><td>128k</td><td>16GB</td></tr>
 </tbody>
 </table>
-<p>Ambos modelos utilizan el tokenizador o200k_harmony y admiten una longitud de contexto de 128.000 tokens (aproximadamente 96.000-100.000 palabras).</p>
-<h2 id="GPT-oss-vs-Other-Reasoning-Models" class="common-anchor-header">GPT-oss frente a otros modelos de razonamiento<button data-href="#GPT-oss-vs-Other-Reasoning-Models" class="anchor-icon" translate="no">
+<p>Both models use the o200k_harmony tokenizer and support 128,000-token context length (roughly 96,000-100,000 words).</p>
+<h2 id="GPT-oss-vs-Other-Reasoning-Models" class="common-anchor-header">GPT-oss vs. Other Reasoning Models<button data-href="#GPT-oss-vs-Other-Reasoning-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -103,27 +103,27 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A continuación se muestra cómo GPT-oss se compara con los modelos internos de OpenAI y con los principales competidores de código abierto:</p>
+    </button></h2><p>Here’s how GPT-oss stacks up against OpenAI’s internal models and top open-source competitors:</p>
 <table>
 <thead>
 <tr><th></th><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Modelo</strong></td><td><strong>Parámetros (Activo)</strong></td><td><strong>Memoria</strong></td><td><strong>Puntos fuertes</strong></td></tr>
-<tr><td><strong>gpt-oss-120b</strong></td><td>117B (5,1B activa)</td><td>80GB</td><td>GPU única, razonamiento abierto</td></tr>
-<tr><td><strong>gpt-oss-20b</strong></td><td>21B (3,6B activos)</td><td>16 GB</td><td>Despliegue en el borde, inferencia rápida</td></tr>
-<tr><td><strong>DeepSeek R1</strong></td><td>671B (~37B activos)</td><td>Distribuido</td><td>Líder en pruebas comparativas, rendimiento demostrado</td></tr>
-<tr><td><strong>o4-mini (API)</strong></td><td>Propietario</td><td>Sólo API</td><td>Razonamiento sólido (cerrado)</td></tr>
-<tr><td><strong>o3-mini (API)</strong></td><td>Propietario</td><td>Sólo API</td><td>Razonamiento ligero (cerrado)</td></tr>
+<tr><td><strong>Model</strong></td><td><strong>Parameters (Active)</strong></td><td><strong>Memory</strong></td><td><strong>Strengths</strong></td></tr>
+<tr><td><strong>gpt-oss-120b</strong></td><td>117B (5.1B active)</td><td>80GB</td><td>Single-GPU, open reasoning</td></tr>
+<tr><td><strong>gpt-oss-20b</strong></td><td>21B (3.6B active)</td><td>16GB</td><td>Edge deployment, fast inference</td></tr>
+<tr><td><strong>DeepSeek R1</strong></td><td>671B (~37B active)</td><td>Distributed</td><td>Benchmark leader, proven performance</td></tr>
+<tr><td><strong>o4-mini (API)</strong></td><td>Proprietary</td><td>API only</td><td>Strong reasoning (closed)</td></tr>
+<tr><td><strong>o3-mini (API)</strong></td><td>Proprietary</td><td>API only</td><td>Lightweight reasoning (closed)</td></tr>
 </tbody>
 </table>
-<p>Basándonos en varios modelos de evaluación comparativa, esto es lo que hemos encontrado:</p>
+<p>Based on various benchmarking models, here is what we found:</p>
 <ul>
-<li><p><strong>GPT-oss frente a los modelos propios de OpenAI:</strong> gpt-oss-120b iguala a o4-mini en competición matemática (AIME), codificación (Codeforces) y uso de herramientas (TauBench). El modelo 20b tiene un rendimiento similar a o3-mini a pesar de ser mucho más pequeño.</p></li>
-<li><p><strong>GPT-oss frente a DeepSeek R1:</strong> DeepSeek R1 domina en rendimiento puro, pero requiere una infraestructura distribuida. GPT-oss ofrece un despliegue más sencillo, sin necesidad de una configuración distribuida para el modelo 120b.</p></li>
+<li><p><strong>GPT-oss vs. OpenAI’s Own Models:</strong> gpt-oss-120b matches o4-mini on competition math (AIME), coding (Codeforces), and tool use (TauBench). The 20b model performs similarly to o3-mini despite being much smaller.</p></li>
+<li><p><strong>GPT-oss vs. DeepSeek R1:</strong> DeepSeek R1 dominates in pure performance but requires distributed infrastructure. GPT-oss offers simpler deployment—no distributed setup needed for the 120b model.</p></li>
 </ul>
-<p>En resumen, GPT-oss ofrece la mejor combinación de rendimiento, acceso abierto e implantación. DeepSeek R1 gana en rendimiento puro, pero GPT-oss logra el equilibrio óptimo para la mayoría de los desarrolladores.</p>
-<h2 id="Hands-on-Building-with-GPT-oss-+-Milvus" class="common-anchor-header">Práctico: Construir con GPT-oss + Milvus<button data-href="#Hands-on-Building-with-GPT-oss-+-Milvus" class="anchor-icon" translate="no">
+<p>In summary, GPT-oss offers the best combination of performance, open access, and deployability. DeepSeek R1 wins on pure performance, but GPT-oss strikes the optimal balance for most developers.</p>
+<h2 id="Hands-on-Building-with-GPT-oss-+-Milvus" class="common-anchor-header">Hands-on: Building with GPT-oss + Milvus<button data-href="#Hands-on-Building-with-GPT-oss-+-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,11 +138,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ahora que hemos visto lo que GPT-oss aporta, es hora de ponerlo en práctica.</p>
-<p>En las siguientes secciones, recorreremos un tutorial práctico para construir un sistema RAG con capacidad de razonamiento utilizando gpt-oss-20b y Milvus, todo ejecutado localmente, sin necesidad de clave API.</p>
-<h3 id="Environment-Setup" class="common-anchor-header">Configuración del entorno</h3><pre><code translate="no">! pip install --upgrade <span class="hljs-string">&quot;pymilvus[model]&quot;</span> openai requests tqdm
+    </button></h2><p>Now that we’ve seen what GPT-oss brings to the table, it’s time to put it to use.</p>
+<p>In the following sections, we’ll walk through a hands-on tutorial for building a reasoning-capable RAG system using gpt-oss-20b and Milvus, all running locally, no API key required.</p>
+<h3 id="Environment-Setup" class="common-anchor-header">Environment Setup</h3><pre><code translate="no">! pip install --upgrade <span class="hljs-string">&quot;pymilvus[model]&quot;</span> openai requests tqdm
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Dataset-Preparation" class="common-anchor-header">Preparación del conjunto de datos</h3><p>Utilizaremos la documentación de Milvus como base de conocimiento:</p>
+<h3 id="Dataset-Preparation" class="common-anchor-header">Dataset Preparation</h3><p>We’ll use Milvus documentation as our knowledge base:</p>
 <pre><code translate="no"><span class="hljs-comment"># Download and prepare Milvus docs</span>
 ! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
@@ -154,7 +154,7 @@ text_lines = []
         file_text = file.read()
     text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Model-Setup" class="common-anchor-header">Configuración del modelo</h3><p>Acceda a GPT-oss a través de <a href="https://openrouter.ai/openai/gpt-oss-20b:free">OpenRouter</a> (o ejecútelo localmente). <a href="https://openrouter.ai/openai/gpt-oss-20b:free"><strong>OpenRouter</strong></a> es una plataforma que permite a los desarrolladores acceder y cambiar entre varios modelos de IA (como GPT-4, Claude, Mistral) a través de una única API unificada. Resulta útil para comparar modelos o crear aplicaciones que funcionen con distintos proveedores de IA. La serie GPT-oss ya está disponible en OpenRouter.</p>
+<h3 id="Model-Setup" class="common-anchor-header">Model Setup</h3><p>Access GPT-oss through <a href="https://openrouter.ai/openai/gpt-oss-20b:free">OpenRouter</a> (or run locally). <a href="https://openrouter.ai/openai/gpt-oss-20b:free"><strong>OpenRouter</strong></a> is a platform that lets developers access and switch between multiple AI models (like GPT-4, Claude, Mistral) through a single, unified API. It’s useful for comparing models or building apps that work with different AI providers. Now GPT-oss series have been available on OpenRouter now.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_46b575811f.png" alt="" class="doc-image" id="" />
@@ -183,7 +183,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 [-0.04836066  0.07163023 -0.01130064 -0.03789345 -0.03320649 -0.01318448
  -0.03041712 -0.02269499 -0.02317863 -0.00426028]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Set-up-Milvus-vector-database" class="common-anchor-header">Configurar la base de datos vectorial Milvus</h3><pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
+<h3 id="Set-up-Milvus-vector-database" class="common-anchor-header">Set up Milvus vector database</h3><pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 <span class="hljs-comment"># Initialize Milvus client</span>
 milvus_client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>, token=<span class="hljs-string">&quot;root:Milvus&quot;</span>)
@@ -201,13 +201,13 @@ milvus_client.create_collection(
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Acerca de la configuración de parámetros MilvusClient:</p>
+<p>About MilvusClient parameter settings:</p>
 <ul>
-<li><p>Establecer el URI a un archivo local (por ejemplo, <code translate="no">./milvus.db</code>) es el método más conveniente, ya que utiliza automáticamente Milvus Lite para almacenar todos los datos en ese archivo.</p></li>
-<li><p>Para datos a gran escala, puede configurar un servidor Milvus más potente en Docker o Kubernetes. En este caso, utilice el URI del servidor (por ejemplo, <code translate="no">http://localhost:19530</code>) como su URI.</p></li>
-<li><p>Si desea utilizar <a href="https://zilliz.com/cloud">Zilliz Cloud </a>(el servicio gestionado de Milvus), ajuste el URI y el token, que se corresponden con el Public Endpoint y la clave API en Zilliz Cloud.</p></li>
+<li><p>Setting the URI to a local file (e.g., <code translate="no">./milvus.db</code>) is the most convenient method as it automatically uses Milvus Lite to store all data in that file.</p></li>
+<li><p>For large-scale data, you can set up a more powerful Milvus server on Docker or Kubernetes. In this case, use the server’s URI (e.g., <code translate="no">http://localhost:19530</code>) as your URI.</p></li>
+<li><p>If you want to use <a href="https://zilliz.com/cloud">Zilliz Cloud </a>(the managed service of Milvus), adjust the URI and token, which correspond to the Public Endpoint and API key in Zilliz Cloud.</p></li>
 </ul>
-<h3 id="Adding-Documents-to-the-Collection" class="common-anchor-header">Añadir documentos a la colección</h3><p>Ahora crearemos incrustaciones para nuestros trozos de texto y los añadiremos a Milvus:</p>
+<h3 id="Adding-Documents-to-the-Collection" class="common-anchor-header">Adding Documents to the Collection</h3><p>Now we’ll create embeddings for our text chunks and add them to Milvus:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 data = []
@@ -218,15 +218,15 @@ doc_embeddings = embedding_model.encode_documents(text_lines)
 
 milvus_client.insert(collection_name=collection_name, data=data)
 <button class="copy-code-btn"></button></code></pre>
-<p>Salida:</p>
+<p>Output:</p>
 <pre><code translate="no">Creating embeddings: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 72/72 [00:00&lt;00:00, 1222631.13it/s]
 {<span class="hljs-string">&#x27;insert_count&#x27;</span>: 72, <span class="hljs-string">&#x27;ids&#x27;</span>: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], <span class="hljs-string">&#x27;cost&#x27;</span>: 0}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="RAG-Query-Pipeline" class="common-anchor-header">Canal de consulta RAG</h3><p>Ahora viene la parte emocionante: vamos a configurar nuestro sistema RAG para responder preguntas.</p>
-<p>Especifiquemos una pregunta común sobre Milvus:</p>
+<h3 id="RAG-Query-Pipeline" class="common-anchor-header">RAG Query Pipeline</h3><p>Now for the exciting part - let’s set up our RAG system to answer questions.</p>
+<p>Let’s specify a common question about Milvus:</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Busquemos esta pregunta en la colección y obtengamos los 3 primeros resultados semánticamente coincidentes:</p>
+<p>Search for this question in the collection and retrieve the top 3 semantically matching results:</p>
 <pre><code translate="no">search_res = milvus_client.search(
     collection_name=collection_name,
     data=embedding_model.encode_queries(
@@ -237,7 +237,7 @@ milvus_client.insert(collection_name=collection_name, data=data)
     output_fields=[<span class="hljs-string">&quot;text&quot;</span>],  <span class="hljs-comment"># Return the text field</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Veamos los resultados de la búsqueda para esta consulta:</p>
+<p>Let’s look at the search results for this query:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 
 retrieved_lines_with_distances = [
@@ -260,12 +260,12 @@ retrieved_lines_with_distances = [
     ]
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Using-the-GPT-oss-to-Build-a-RAG-Response" class="common-anchor-header">Utilizar la GPT-oss para construir una respuesta RAG</h3><p>Convierta los documentos recuperados a formato de cadena:</p>
+<h3 id="Using-the-GPT-oss-to-Build-a-RAG-Response" class="common-anchor-header">Using the GPT-oss to Build a RAG Response</h3><p>Convert the retrieved documents to string format:</p>
 <pre><code translate="no">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Proporcionar un prompt de sistema y un prompt de usuario para el modelo de lenguaje grande:</p>
+<p>Provide system prompt and user prompt for the large language model:</p>
 <pre><code translate="no">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 Human: You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -279,7 +279,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Utilizar el último modelo gpt-oss para generar una respuesta basada en el prompt:</p>
+<p>Use the latest gpt-oss model to generate a response based on the prompt:</p>
 <pre><code translate="no">response = openai_client.chat.completions.create(
     model=<span class="hljs-string">&quot;openai/gpt-oss-120b&quot;</span>,
     messages=[
@@ -303,7 +303,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 
 Together, <span class="hljs-function">these two storage <span class="hljs-title">mechanisms</span> (<span class="hljs-params"><span class="hljs-built_in">object</span> storage <span class="hljs-keyword">for</span> the actual data <span class="hljs-keyword">and</span> etcd <span class="hljs-keyword">for</span> metadata</span>) make up Milvus’s data‑storage architecture.
 </span><button class="copy-code-btn"></button></code></pre>
-<h2 id="Final-Thoughts-on-GPT-oss" class="common-anchor-header">Reflexiones finales sobre GPT-oss<button data-href="#Final-Thoughts-on-GPT-oss" class="anchor-icon" translate="no">
+<h2 id="Final-Thoughts-on-GPT-oss" class="common-anchor-header">Final Thoughts on GPT-oss<button data-href="#Final-Thoughts-on-GPT-oss" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -318,14 +318,14 @@ Together, <span class="hljs-function">these two storage <span class="hljs-title"
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GPT-oss es la admisión silenciosa de OpenAI de que el código abierto ya no puede ser ignorado. No supera a DeepSeek R1 ni a Qwen 3 ni a muchos otros modelos, pero aporta algo que ellos no tienen: El proceso de entrenamiento de OpenAI, aplicado a un modelo que se puede inspeccionar y ejecutar localmente.</p>
-<p><strong>¿Rendimiento? Sólido. No es alucinante, pero es fiable.</strong> El modelo 20B que se ejecuta en hardware de consumo, o incluso móvil con LM Studio, es el tipo de ventaja práctica que realmente importa a los desarrolladores. Es más un "esto funciona" que un "vaya, esto lo cambia todo". Y, sinceramente, eso está bien.</p>
-<p><strong>Donde se queda corto es en el soporte multilingüe.</strong> Si trabajas en otro idioma que no sea el inglés, encontrarás frases extrañas, problemas de ortografía y confusión general. Está claro que el modelo se ha entrenado pensando primero en el inglés. Si la cobertura global es importante, es probable que tengas que perfeccionarlo con un conjunto de datos multilingües.</p>
-<p>Lo más interesante, sin embargo, es el momento. El teaser de OpenAI en X -con un "5" en la palabra "LIVESTREAM"- parece un montaje. Puede que GPT-oss no sea el acto principal, pero podría ser un anticipo de lo que está por llegar en GPT-5. Los mismos ingredientes, diferente escala. Mismos ingredientes, diferente escala. Esperemos.</p>
+    </button></h2><p>GPT-oss is OpenAI’s quiet admission that open-source can’t be ignored anymore. It doesn’t blow DeepSeek R1 or Qwen 3 or many other models out of the water, but it does bring something they don’t: OpenAI’s training pipeline, applied to a model you can actually inspect and run locally.</p>
+<p><strong>Performance? Solid. Not mind-blowing, but dependable.</strong> The 20B model running on consumer hardware—or even mobile with LM Studio—is the kind of practical advantage that actually matters to developers. It’s more “this just works” than “wow, this changes everything.” And honestly, that’s fine.</p>
+<p><strong>Where it falls short is multilingual support.</strong> If you’re working in anything other than English, you’ll hit weird phrasing, spelling issues, and general confusion. The model was clearly trained with an English-first lens. If global coverage matters, you’re probably going to need to fine-tune it with a multilingual dataset.</p>
+<p>What’s most interesting, though, is the timing. OpenAI’s teaser on X—with a “5” dropped into the word “LIVESTREAM”—feels like a setup. GPT-oss might not be the main act, but it could be a preview of what’s coming in GPT-5. Same ingredients, different scale. Let’s wait.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_0fed950b8e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>La verdadera victoria es tener más opciones de alta calidad.</strong> La competencia impulsa la innovación, y la reincorporación de OpenAI al desarrollo de código abierto beneficia a todos. Pruebe GPT-oss en función de sus requisitos específicos, pero elija en función de lo que realmente funciona para su caso de uso, no del reconocimiento de la marca.</p>
+<p><strong>The real win is having more high-quality choices.</strong> Competition drives innovation, and OpenAI re-entering open-source development benefits everyone. Test GPT-oss against your specific requirements, but choose based on what actually works for your use case, not brand recognition.</p>

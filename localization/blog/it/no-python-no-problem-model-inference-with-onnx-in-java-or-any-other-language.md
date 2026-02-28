@@ -1,14 +1,14 @@
 ---
 id: >-
   no-python-no-problem-model-inference-with-onnx-in-java-or-any-other-language.md
-title: >-
-  Nessun Python, nessun problema: inferenza di modelli con ONNX in Java o in
-  qualsiasi altro linguaggio
+title: >
+  No Python, No Problem: Model Inference with ONNX in Java, or Any Other
+  Language
 author: Stefan Webb
 date: 2025-05-30T00:00:00.000Z
 desc: >-
-  ONNX (Open Neural Network Exchange) è un ecosistema di strumenti per
-  l'inferenza di modelli di reti neurali, indipendente dalla piattaforma.
+  ONNX (Open Neural Network Exchange) is a platform-agnostic ecosystem of tools
+  for performing neural network model inference.
 cover: assets.zilliz.com/No_Python_No_Problem_7fe97dad46.png
 tag: Engineering
 recommend: false
@@ -23,17 +23,17 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/no-python-no-problem-model-inference-with-onnx-in-java-or-any-other-language.md
 ---
-<p>Costruire applicazioni di IA generativa non è mai stato così facile. Un ricco ecosistema di strumenti, modelli di IA e set di dati consente anche agli ingegneri del software non specializzati di costruire chatbot, generatori di immagini e altro ancora. Questi strumenti, per la maggior parte, sono realizzati per Python e si basano su PyTorch. Ma se non avete accesso a Python in produzione e dovete usare Java, Golang, Rust, C++ o un altro linguaggio?</p>
-<p>Ci limiteremo all'inferenza del modello, compresi i modelli embedding e i modelli foundation; altre attività, come l'addestramento e la messa a punto del modello, non vengono in genere completate al momento della distribuzione. Quali sono le opzioni per l'inferenza dei modelli senza Python? La soluzione più ovvia è quella di utilizzare un servizio online di fornitori come Anthropic o Mistral. In genere forniscono un SDK per linguaggi diversi da Python e, se non lo facessero, basterebbero delle semplici chiamate API REST. Ma cosa succede se la nostra soluzione deve essere interamente locale, ad esempio per questioni di conformità o di privacy?</p>
-<p>Un'altra soluzione è quella di eseguire un server Python in locale. Il problema iniziale era l'impossibilità di eseguire Python in produzione, quindi questo esclude l'uso di un server Python locale. Altre soluzioni locali simili saranno probabilmente soggette a restrizioni legali, di sicurezza o tecniche. <em>Abbiamo bisogno di una soluzione completamente contenuta che ci permetta di richiamare il modello direttamente da Java o da un altro linguaggio non Python.</em></p>
+<p>It has never been easier to build Generative AI applications. A rich ecosystem of tools, AI models, and datasets allows even non-specialized software engineers to build impressive chatbots, image generators, and more. This tooling, for the most part, is made for Python and builds on top of PyTorch. But what about when you don’t have access to Python in production and need to use Java, Golang, Rust, C++, or another language?</p>
+<p>We will restrict ourselves to model inference, including both embedding models and foundation models; other tasks, such as model training and fine-tuning, are not typically completed at deployment time. What are our options for model inference without Python? The most obvious solution is to utilize an online service from providers like Anthropic or Mistral. They typically provide an SDK for languages other than Python, and if they didn’t, it would require only simple REST API calls. But what if our solution has to be entirely local due to, for example, compliance or privacy concerns?</p>
+<p>Another solution is to run a Python server locally. The original problem was posed as being unable to run Python in production, so that rules out using a local Python server. Related local solutions will likely suffer similar legal, security-based, or technical restrictions. <em>We need a fully contained solution that allows us to call the model directly from Java or another non-Python language.</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/A_Python_metamorphoses_into_an_Onyx_butterfly_a65c340c47.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 1: Un Python si trasforma in una farfalla Onyx.</em></p>
-<h2 id="What-is-ONNX-Open-Neural-Network-Exchange" class="common-anchor-header">Che cos'è ONNX (Open Neural Network Exchange)?<button data-href="#What-is-ONNX-Open-Neural-Network-Exchange" class="anchor-icon" translate="no">
+<p><em>Figure 1: A Python metamorphoses into an Onyx butterfly.</em></p>
+<h2 id="What-is-ONNX-Open-Neural-Network-Exchange" class="common-anchor-header">What is ONNX (Open Neural Network Exchange)?<button data-href="#What-is-ONNX-Open-Neural-Network-Exchange" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,24 +48,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/onnx/onnx">ONNX</a> (Open Neural Network Exchange) è un ecosistema di strumenti per l'inferenza di modelli di reti neurali, indipendente dalla piattaforma. È stato inizialmente sviluppato dal team PyTorch di Meta (allora Facebook), con ulteriori contributi da parte di Microsoft, IBM, Huawei, Intel, AMD, Arm e Qualcomm. Attualmente è un progetto open-source di proprietà della Linux Foundation for AI and Data. ONNX è il metodo de facto per la distribuzione di modelli di reti neurali indipendenti dalla piattaforma.</p>
+    </button></h2><p><a href="https://github.com/onnx/onnx">ONNX</a> (Open Neural Network Exchange) is a platform-agnostic ecosystem of tools for performing neural network model inference. It was initially developed by the PyTorch team at Meta (then Facebook), with further contributions from Microsoft, IBM, Huawei, Intel, AMD, Arm, and Qualcomm. Currently, it is an open-source project owned by the Linux Foundation for AI and Data. ONNX is the de facto method for distributing platform-agnostic neural network models.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/A_partial_ONNX_computational_graph_for_a_NN_transformer_11deebefe0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 2: Grafico computazionale (parziale) di ONNX per un trasformatore NN</em></p>
-<p><strong>Di solito usiamo "ONNX" in senso stretto per riferirci al suo formato di file.</strong> Un file di modello ONNX rappresenta un grafico computazionale, che spesso include i valori dei pesi di una funzione matematica, e lo standard definisce le operazioni comuni per le reti neurali. Si può pensare che sia simile al grafico computazionale creato quando si usa l'autodiff con PyTorch. Da un altro punto di vista, il formato di file ONNX funge da <em>rappresentazione intermedia</em> (IR) per le reti neurali, proprio come la compilazione del codice nativo, che prevede anch'essa una fase IR. Si veda l'illustrazione qui sopra che visualizza un grafo computazionale ONNX.</p>
+<p><em>Figure 2: A (partial) ONNX computational graph for a NN transformer</em></p>
+<p><strong>We typically use “ONNX” in a narrower sense to refer to its file format.</strong> An ONNX model file represents a computational graph, often including the weight values of a mathematical function, and the standard defines common operations for neural networks. You can think of it similarly to the computational graph created when you use autodiff with PyTorch. From another perspective, the ONNX file format serves as an <em>intermediate representation</em> (IR) for neural networks, much like native code compilation, which also involves an IR step. See the illustration above visualizing an ONNX computational graph.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/An_IR_allows_many_combinations_of_front_ends_and_back_ends_a05e259849.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 3: Una IR consente molte combinazioni di front-end e back-end.</em></p>
-<p>Il formato di file ONNX è solo una parte dell'ecosistema ONNX, che comprende anche librerie per la manipolazione di grafi computazionali e librerie per il caricamento e l'esecuzione di file di modelli ONNX. Queste librerie coprono diversi linguaggi e piattaforme. Poiché ONNX è solo un IR (Intermediate Representation Language), è possibile applicare ottimizzazioni specifiche per una determinata piattaforma hardware prima di eseguirlo con codice nativo. La figura precedente illustra le combinazioni di front-end e back-end.</p>
-<h2 id="ONNX-Workflow" class="common-anchor-header">Flusso di lavoro ONNX<button data-href="#ONNX-Workflow" class="anchor-icon" translate="no">
+<p><em>Figure 3: An IR allows many combinations of front-ends and back-ends</em></p>
+<p>The ONNX file format is just one part of the ONNX ecosystem, which also includes libraries for manipulating computational graphs and libraries for loading and running ONNX model files. These libraries span languages and platforms. Since ONNX is just an IR (Intermediate Representation Language), optimizations specific to a given hardware platform can be applied before running it with native code. See the figure above illustrating combinations of front-ends and back-ends.</p>
+<h2 id="ONNX-Workflow" class="common-anchor-header">ONNX Workflow<button data-href="#ONNX-Workflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,8 +80,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A scopo di discussione, esamineremo la possibilità di richiamare un modello di text embedding da Java, per esempio, in preparazione all'ingestione di dati nel database vettoriale open-source <a href="https://milvus.io/">Milvus</a>. Quindi, se vogliamo richiamare il nostro modello di incorporazione o di fondazione da Java, è semplice usare la libreria ONNX sul file del modello corrispondente? Sì, ma è necessario procurarsi i file sia per il modello che per l'encoder del tokenizer (e il decoder per i modelli di fondazione). Possiamo produrli noi stessi usando Python offline, cioè prima della produzione, come spieghiamo ora.</p>
-<h2 id="Exporting-NN-Models-from-Python" class="common-anchor-header">Esportare i modelli NN da Python<button data-href="#Exporting-NN-Models-from-Python" class="anchor-icon" translate="no">
+    </button></h2><p>For discussion purposes, we will investigate calling a text embedding model from Java, for example, in preparation for data ingestion to the open-source vector database <a href="https://milvus.io/">Milvus</a>. So, if we are to call our embedding or foundation model from Java, is it as simple as using the ONNX library on the corresponding model file? Yes, but we will need to procure files for both the model and the tokenizer encoder (and decoder for foundation models). We can produce these ourselves using Python offline, that is, before production, which we now explain.</p>
+<h2 id="Exporting-NN-Models-from-Python" class="common-anchor-header">Exporting NN Models from Python<button data-href="#Exporting-NN-Models-from-Python" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,18 +96,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Apriamo un modello di text embedding comune, <code translate="no">all-MiniLM-L6-v2</code>, da Python usando la libreria sentence-transformers di HuggingFace. Utilizzeremo la libreria HF indirettamente tramite la libreria util di .txtai, poiché abbiamo bisogno di un wrapper attorno a sentence-transformers che esporti anche i livelli di pooling e normalizzazione dopo la funzione di trasformazione. (Questi livelli prendono le incorporazioni di token dipendenti dal contesto, cioè l'output del trasformatore, e le trasformano in un'unica incorporazione di testo).</p>
+    </button></h2><p>Let’s open a common text embedding model, <code translate="no">all-MiniLM-L6-v2</code>, from Python using HuggingFace’s sentence-transformers library. We will use the HF library indirectly via .txtai’s util library since we need a wrapper around sentence-transformers that also exports the pooling and normalization layers after the transformer function. (These layers take the context-dependent token embeddings, that is, the output of the transformer, and transform it into a single text embedding.)</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> txtai.pipeline <span class="hljs-keyword">import</span> HFOnnx
 
 path = <span class="hljs-string">&quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span>
 onnx_model = HFOnnx()
 model = onnx_model(path, <span class="hljs-string">&quot;pooling&quot;</span>, <span class="hljs-string">&quot;model.onnx&quot;</span>, <span class="hljs-literal">True</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Indichiamo alla libreria di esportare <code translate="no">sentence-transformers/all-MiniLM-L6-v2</code> dall'hub del modello HuggingFace come ONNX, specificando il compito come text embedding e abilitando la quantizzazione del modello. La chiamata a <code translate="no">onnx_model()</code> scaricherà il modello dall'hub del modello, se non esiste già localmente, convertirà i tre livelli in ONNX e combinerà i loro grafi computazionali.</p>
-<p>Siamo pronti a eseguire l'inferenza in Java? Non è così veloce. Il modello inserisce un elenco di token (o un elenco di elenchi per più di un campione) corrispondente alla tokenizzazione del testo che vogliamo incorporare. Pertanto, a meno che non si riesca a eseguire tutta la tokenizzazione prima della produzione, sarà necessario eseguire il tokenizzatore da Java.</p>
-<p>Ci sono alcune opzioni per farlo. Una consiste nell'implementare o trovare un'implementazione del tokenizer per il modello in questione in Java o in un altro linguaggio e richiamarla da Java come libreria statica o a collegamento dinamico. Una soluzione più semplice è quella di convertire il tokenizer in un file ONNX e usarlo da Java, così come si usa il file ONNX del modello.</p>
-<p>Il semplice ONNX, tuttavia, non contiene le operazioni necessarie per implementare il grafo computazionale di un tokenizer. Per questo motivo, Microsoft ha creato una libreria per aumentare ONNX, chiamata ONNXRuntime-Extensions. Essa definisce operazioni utili per ogni tipo di pre e postelaborazione dei dati, non solo per i tokenizer di testo.</p>
-<p>Ecco come esportare il nostro tokenizzatore come file ONNX:</p>
+<p>We instruct the library to export <code translate="no">sentence-transformers/all-MiniLM-L6-v2</code> from the HuggingFace model hub as ONNX, specifying the task as text embedding and enabling model quantization. Calling <code translate="no">onnx_model()</code> will download the model from the model hub if it does not already exist locally, convert the three layers to ONNX, and combine their computational graphs.</p>
+<p>Are we ready now to perform inference in Java? Not quite so fast. The model inputs a list of tokens (or a list of lists for more than one sample) corresponding to the tokenization of the text we wish to embed. Therefore, unless we can perform all tokenization before production time, we will need to run the tokenizer from within Java.</p>
+<p>There are a few options for this. One involves either implementing or finding an implementation of the tokenizer for the model in question in Java or another language, and calling it from Java as a static or dynamically linked library. An easier solution is to convert the tokenizer to an ONNX file and use it from Java, just as we use the model ONNX file.</p>
+<p>Plain ONNX, however, does not contain the necessary operations to implement the computational graph of a tokenizer. For this reason, Microsoft created a library to augment ONNX called ONNXRuntime-Extensions. It defines useful operations for all manner of data pre- and postprocessing, not only text tokenizers.</p>
+<p>Here is how we export our tokenizer as an ONNX file:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> onnxruntime_extensions <span class="hljs-keyword">import</span> gen_processing_models
 <span class="hljs-keyword">from</span> sentence_transformers <span class="hljs-keyword">import</span> SentenceTransformer
 
@@ -118,8 +118,8 @@ onnx_tokenizer_path = <span class="hljs-string">&quot;tokenizer.onnx&quot;</span
 <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(tokenizer_path, <span class="hljs-string">&quot;wb&quot;</span>) <span class="hljs-keyword">as</span> f:
   f.write(tok_encode.SerializeToString())
 <button class="copy-code-btn"></button></code></pre>
-<p>Abbiamo scartato il decodificatore del tokenizer, poiché l'incorporazione di frasi non lo richiede. Ora abbiamo due file: <code translate="no">tokenizer.onnx</code> per la tokenizzazione del testo e <code translate="no">model.onnx</code> per l'incorporazione di stringhe di token.</p>
-<h2 id="Model-Inference-in-Java" class="common-anchor-header">Inferenza del modello in Java<button data-href="#Model-Inference-in-Java" class="anchor-icon" translate="no">
+<p>We have discarded the decoder of the tokenizer, since embedding sentences doesn’t require it. Now, we have two files: <code translate="no">tokenizer.onnx</code> for tokenizing text, and <code translate="no">model.onnx</code> for embedding strings of tokens.</p>
+<h2 id="Model-Inference-in-Java" class="common-anchor-header">Model Inference in Java<button data-href="#Model-Inference-in-Java" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,7 +134,7 @@ onnx_tokenizer_path = <span class="hljs-string">&quot;tokenizer.onnx&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'esecuzione del nostro modello da Java è ora banale. Ecco alcune linee di codice importanti dell'esempio completo:</p>
+    </button></h2><p>Running our model from within Java is now trivial. Here are some of the important lines of code from the full example:</p>
 <pre><code translate="no" class="language-java"><span class="hljs-comment">// Imports required for Java/ONNX integration</span>
 <span class="hljs-keyword">import</span> ai.onnxruntime.*;
 <span class="hljs-keyword">import</span> ai.onnxruntime.extensions.*;
@@ -156,8 +156,8 @@ sess_opt.registerCustomOpLibrary(OrtxPackage.getLibraryPath());
 <span class="hljs-type">var</span> <span class="hljs-variable">results</span> <span class="hljs-operator">=</span> session.run(inputs).get(<span class="hljs-string">&quot;embeddings&quot;</span>);
 <span class="hljs-type">float</span>[][] embeddings = (<span class="hljs-type">float</span>[][]) results.get().getValue();
 <button class="copy-code-btn"></button></code></pre>
-<p>Un esempio completo e funzionante si trova nella sezione delle risorse.</p>
-<h2 id="Summary" class="common-anchor-header">Sintesi<button data-href="#Summary" class="anchor-icon" translate="no">
+<p>A full working example can be found in the resources section.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,11 +172,11 @@ sess_opt.registerCustomOpLibrary(OrtxPackage.getLibraryPath());
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In questo post abbiamo visto come sia possibile esportare modelli open source dall'hub dei modelli di HuggingFace e utilizzarli direttamente da linguaggi diversi da Python. Notiamo, tuttavia, alcuni avvertimenti:</p>
-<p>In primo luogo, le librerie ONNX e le estensioni runtime hanno diversi livelli di supporto delle funzionalità. Potrebbe non essere possibile utilizzare tutti i modelli in tutte le lingue fino al rilascio di un futuro aggiornamento dell'SDK. Le librerie runtime ONNX per Python, C++, Java e JavaScript sono le più complete.</p>
-<p>In secondo luogo, l'hub HuggingFace contiene ONNX pre-esportati, ma questi modelli non includono i livelli finali di pooling e normalizzazione. È necessario sapere come funziona <code translate="no">sentence-transformers</code> se si intende utilizzare direttamente <code translate="no">torch.onnx</code>.</p>
-<p>Ciononostante, ONNX gode dell'appoggio dei principali leader del settore ed è in procinto di diventare un mezzo senza attriti per l'IA generativa multipiattaforma.</p>
-<h2 id="Resources" class="common-anchor-header">Risorse<button data-href="#Resources" class="anchor-icon" translate="no">
+    </button></h2><p>We have seen in this post how it is possible to export open-source models from HuggingFace’s model hub and use them directly from languages other than Python. We note, however, some caveats:</p>
+<p>First, the ONNX libraries and runtime extensions have varying levels of feature support. It may not be possible to use all models across all languages until a future SDK update is released. The ONNX runtime libraries for Python, C++, Java, and JavaScript are the most comprehensive.</p>
+<p>Second, the HuggingFace hub contains pre-exported ONNX, but these models don’t include the final pooling and normalization layers. You should be aware of how <code translate="no">sentence-transformers</code> works if you intend to use <code translate="no">torch.onnx</code> directly.</p>
+<p>Nevertheless, ONNX has the backing of major industry leaders and is on a trajectory to become a frictionless means of cross-platform Generative AI.</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -192,7 +192,7 @@ sess_opt.registerCustomOpLibrary(OrtxPackage.getLibraryPath());
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://github.com/milvus-io/bootcamp/tree/master/tutorials/quickstart/onnx_example">Esempi di codice ONNX in Python e Java</a></p></li>
+<li><p><a href="https://github.com/milvus-io/bootcamp/tree/master/tutorials/quickstart/onnx_example">Example onnx code in Python and Java</a></p></li>
 <li><p><a href="https://onnx.ai/">https://onnx.ai/</a></p></li>
 <li><p><a href="https://onnxruntime.ai/">https://onnxruntime.ai/</a></p></li>
 <li><p><a href="https://onnxruntime.ai/docs/extensions/">https://onnxruntime.ai/docs/extensions/</a></p></li>

@@ -1,128 +1,141 @@
 ---
 id: AI-applications-with-Milvus.md
-title: Comment créer 4 applications d'IA populaires avec Milvus
+title: How to Make 4 Popular AI Applications with Milvus
 author: milvus
 date: 2021-04-08T04:14:03.700Z
 desc: >-
-  Milvus accélère le développement d'applications d'apprentissage automatique et
-  les opérations d'apprentissage automatique (MLOps). Avec Milvus, vous pouvez
-  développer rapidement un produit minimum viable (MVP) tout en maintenant les
-  coûts à des limites inférieures.
+  Milvus accelerates machine learning application development and machine
+  learning operations (MLOps). With Milvus, you can rapidly develop a minimum
+  viable product (MVP) while keeping costs at lower limits.
 cover: assets.zilliz.com/blog_cover_4a9807b9e0.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/AI-applications-with-Milvus'
 ---
-<custom-h1>Comment créer 4 applications d'IA populaires avec Milvus</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_4a9807b9e0.png" alt="blog cover.png" class="doc-image" id="blog-cover.png" />
-   </span> <span class="img-wrapper"> <span>blog cover.png</span> </span></p>
-<p><a href="https://milvus.io/">Milvus</a> est une base de données vectorielles open-source. Il prend en charge l'ajout, la suppression, la mise à jour et la recherche en temps quasi réel d'ensembles de données vectorielles massifs créés en extrayant des vecteurs de caractéristiques à partir de données non structurées à l'aide de modèles d'IA. Grâce à un ensemble complet d'API intuitives et à la prise en charge de plusieurs bibliothèques d'index largement adoptées (par exemple, Faiss, NMSLIB et Annoy), Milvus accélère le développement d'applications d'apprentissage automatique et les opérations d'apprentissage automatique (MLOps). Avec Milvus, vous pouvez développer rapidement un produit minimum viable (MVP) tout en maintenant les coûts à des limites inférieures.</p>
-<p>La question &quot;Quelles sont les ressources disponibles pour développer une application d'IA avec Milvus ?&quot; est fréquemment posée dans la communauté Milvus. Zilliz, la <a href="https://zilliz.com/">société</a> à l'origine de Milvus, a développé un certain nombre de démonstrations qui s'appuient sur Milvus pour effectuer des recherches de similitudes à la vitesse de l'éclair qui alimentent des applications intelligentes. Le code source des solutions Milvus est disponible sur <a href="https://github.com/zilliz-bootcamp">zilliz-bootcamp</a>. Les scénarios interactifs suivants démontrent le traitement du langage naturel (NLP), la recherche d'images inversées, la recherche audio et la vision par ordinateur.</p>
-<p>N'hésitez pas à essayer les solutions pour acquérir une expérience pratique avec des scénarios spécifiques ! Partagez vos propres scénarios d'application via :</p>
+<custom-h1>How to Make 4 Popular AI Applications with Milvus</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/blog_cover_4a9807b9e0.png" alt="blog cover.png" class="doc-image" id="blog-cover.png" />
+    <span>blog cover.png</span>
+  </span>
+</p>
+<p><a href="https://milvus.io/">Milvus</a> is an open-source vector database. It supports adding, deleting, updating, and near real-time search of massive vector datasets created by extracting feature vectors from unstructured data using AI models. With a comprehensive set of intuitive APIs, and support for multiple widely adopted index libraries (e.g., Faiss, NMSLIB, and Annoy), Milvus accelerates machine learning application development and machine learning operations (MLOps). With Milvus, you can rapidly develop a minimum viable product (MVP) while keeping costs at lower limits.</p>
+<p>&quot;What resources are available for developing an AI application with Milvus?” is commonly asked in the Milvus community. Zilliz, the <a href="https://zilliz.com/">company</a> behind Milvus, developed a number of demos that leverage Milvus to conduct lightening-fast similarity search that powers intelligent applications. Source code of Milvus solutions can be found at <a href="https://github.com/zilliz-bootcamp">zilliz-bootcamp</a>. The following interactive scenarios demonstrate natural language processing (NLP), reverse image search, audio search, and computer vision.</p>
+<p>Feel free to try out the solutions to gain some hands-on experience with specific scenarios! Share your own application scenarios via:</p>
 <ul>
 <li><a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a></li>
 <li><a href="https://github.com/milvus-io/milvus/discussions">GitHub</a></li>
 </ul>
 <p><br/></p>
-<p><strong>Aller à :</strong></p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#natural-language-processing-chatbots">Traitement du langage naturel (chatbots)</a></li>
-<li><a href="#reverse-image-search-systems">Recherche inversée d'images</a></li>
-<li><a href="#audio-search-systems">Recherche audio</a></li>
-<li><a href="#video-object-detection-computer-vision">Détection d'objets vidéo (vision par ordinateur)</a></li>
+<li><a href="#natural-language-processing-chatbots">Natural language processing (chatbots)</a></li>
+<li><a href="#reverse-image-search-systems">Reverse image search</a></li>
+<li><a href="#audio-search-systems">Audio search</a></li>
+<li><a href="#video-object-detection-computer-vision">Video object detection (computer vision)</a></li>
 </ul>
 <p><br/></p>
-<h3 id="Natural-language-processing-chatbots" class="common-anchor-header">Traitement du langage naturel (chatbots)</h3><p>Milvus peut être utilisé pour créer des chatbots qui utilisent le traitement du langage naturel pour simuler un opérateur en direct, répondre aux questions, diriger les utilisateurs vers des informations pertinentes et réduire les coûts de main-d'œuvre. Pour démontrer ce scénario d'application, Zilliz a construit un chatbot alimenté par l'IA qui comprend le langage sémantique en combinant Milvus avec <a href="https://en.wikipedia.org/wiki/BERT_(language_model)">BERT</a>, un modèle d'apprentissage automatique (ML) développé pour le pré-entraînement NLP.</p>
-<p>👉Source <a href="https://github.com/zilliz-bootcamp/intelligent_question_answering_v2">code：zilliz-bootcamp/intelligent_question_answering_v2</a></p>
+<h3 id="Natural-language-processing-chatbots" class="common-anchor-header">Natural language processing (chatbots)</h3><p>Milvus can be used to build chatbots that use natural language processing to simulate a live operator, answer questions, route users to relevant information, and reduce labor costs. To demonstrate this application scenario, Zilliz built an AI-powered chatbot that understands semantic language by combining Milvus with <a href="https://en.wikipedia.org/wiki/BERT_(language_model)">BERT</a>, a machine learning (ML) model developed for NLP pre-training.</p>
+<p>👉Source code：<a href="https://github.com/zilliz-bootcamp/intelligent_question_answering_v2">zilliz-bootcamp/intelligent_question_answering_v2</a></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_c301a9e4bd.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<h4 id="How-to-use" class="common-anchor-header">Comment l'utiliser</h4><ol>
-<li><p>Téléchargez un jeu de données qui comprend des paires question-réponse. Formatez les questions et les réponses dans deux colonnes distinctes. Un <a href="https://zilliz.com/solutions/qa">échantillon de données</a> peut également être téléchargé.</p></li>
-<li><p>Après avoir saisi votre question, une liste de questions similaires sera extraite de l'ensemble de données téléchargé.</p></li>
-<li><p>Dévoilez la réponse en sélectionnant la question la plus similaire à la vôtre.</p></li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_c301a9e4bd.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<h4 id="How-to-use" class="common-anchor-header">How to use</h4><ol>
+<li><p>Upload a dataset that includes question-answer pairs. Format questions and answers in two separate columns. Alternatively, a <a href="https://zilliz.com/solutions/qa">sample dataset</a> is available for download.</p></li>
+<li><p>After typing in your question, a list of similar questions will be retrieved from the uploaded dataset.</p></li>
+<li><p>Reveal the answer by selecting the question most similar to your own.</p></li>
 </ol>
-<p>👉Video<a href="https://www.youtube.com/watch?v=ANgoyvgAxgU">：[Demo] QA System Powered by Milvus</a></p>
-<h4 id="How-it-works" class="common-anchor-header">Comment cela fonctionne-t-il ?</h4><p>Les questions sont converties en vecteurs de caractéristiques à l'aide du modèle BERT de Google, puis Milvus est utilisé pour gérer et interroger l'ensemble de données.</p>
-<p><strong>Traitement des données :</strong></p>
+<p>👉Video：<a href="https://www.youtube.com/watch?v=ANgoyvgAxgU">[Demo] QA System Powered by Milvus</a></p>
+<h4 id="How-it-works" class="common-anchor-header">How it works</h4><p>Questions are converted into feature vectors using Google’s BERT model, then Milvus is used to manage and query the dataset.</p>
+<p><strong>Data processing:</strong></p>
 <ol>
-<li>BERT est utilisé pour convertir les paires question-réponse téléchargées en vecteurs de caractéristiques à 768 dimensions. Les vecteurs sont ensuite importés dans Milvus et des identifiants individuels leur sont attribués.</li>
-<li>Les vecteurs d'identification des questions et des réponses correspondantes sont stockés dans PostgreSQL.</li>
+<li>BERT is used to convert the uploaded question-answer pairs into 768-dimensional feature vectors. The vectors are then imported to Milvus and assigned individual IDs.</li>
+<li>Question, and corresponding answer, vector IDs are stored in PostgreSQL.</li>
 </ol>
-<p><strong>Recherche de questions similaires :</strong></p>
+<p><strong>Searching for similar questions:</strong></p>
 <ol>
-<li>BERT est utilisé pour extraire les vecteurs de caractéristiques de la question d'entrée d'un utilisateur.</li>
-<li>Milvus récupère les ID des vecteurs pour les questions les plus similaires à la question d'entrée.</li>
-<li>Le système recherche les réponses correspondantes dans PostgreSQL.</li>
+<li>BERT is used to extract feature vectors from a user’s input question.</li>
+<li>Milvus retrieves vector IDs for questions that are most similar to the input question.</li>
+<li>The system looks up the corresponding answers in PostgreSQL.</li>
 </ol>
 <p><br/></p>
-<h3 id="Reverse-image-search-systems" class="common-anchor-header">Systèmes de recherche d'images inversées</h3><p>La recherche d'images inversées transforme le commerce électronique grâce à des recommandations de produits personnalisées et à des outils de recherche de produits similaires qui peuvent stimuler les ventes. Dans ce scénario d'application, Zilliz a construit un système de recherche d'images inversées en combinant Milvus avec <a href="https://towardsdatascience.com/how-to-use-a-pre-trained-model-vgg-for-image-classification-8dd7c4a4a517">VGG</a>, un modèle ML qui peut extraire des caractéristiques d'image.</p>
-<p>👉Source <a href="https://github.com/zilliz-bootcamp/image_search">code：zilliz-bootcamp/image_search</a></p>
+<h3 id="Reverse-image-search-systems" class="common-anchor-header">Reverse image search systems</h3><p>Reverse image search is transforming e-commerce through personalized product recommendations and similar product lookup tools that can boost sales. In this application scenario, Zilliz built a reverse image search system by combining Milvus with <a href="https://towardsdatascience.com/how-to-use-a-pre-trained-model-vgg-for-image-classification-8dd7c4a4a517">VGG</a>, an ML model that can extract image features.</p>
+<p>👉Source code：<a href="https://github.com/zilliz-bootcamp/image_search">zilliz-bootcamp/image_search</a></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_09000e2e2e.jpeg" alt="2.jpeg" class="doc-image" id="2.jpeg" />
-   </span> <span class="img-wrapper"> <span>2.jpeg</span> </span></p>
-<h4 id="How-to-use" class="common-anchor-header">Comment l'utiliser</h4><ol>
-<li>Téléchargez un ensemble de données d'images zippé composé uniquement d'images .jpg (les autres types de fichiers d'images ne sont pas acceptés). Vous pouvez également télécharger un <a href="https://zilliz.com/solutions/image-search">exemple d'ensemble de données</a>.</li>
-<li>Téléchargez une image à utiliser comme entrée de recherche pour trouver des images similaires.</li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_09000e2e2e.jpeg" alt="2.jpeg" class="doc-image" id="2.jpeg" />
+    <span>2.jpeg</span>
+  </span>
+</p>
+<h4 id="How-to-use" class="common-anchor-header">How to use</h4><ol>
+<li>Upload a zipped image dataset comprised of .jpg images only (other image file types are not accepted). Alternatively, a <a href="https://zilliz.com/solutions/image-search">sample dataset</a> is available for download.</li>
+<li>Upload an image to use as the search input for finding similar images.</li>
 </ol>
-<p>👉Vidéo : <a href="https://www.youtube.com/watch?v=mTO8YdQObKY">[Démo] Recherche d'images par Milvus</a></p>
-<h4 id="How-it-works" class="common-anchor-header">Fonctionnement</h4><p>Les images sont converties en vecteurs de caractéristiques à 512 dimensions à l'aide du modèle VGG, puis Milvus est utilisé pour gérer et interroger l'ensemble de données.</p>
-<p><strong>Traitement des données :</strong></p>
+<p>👉Video: <a href="https://www.youtube.com/watch?v=mTO8YdQObKY">[Demo] Image Search Powered by Milvus</a></p>
+<h4 id="How-it-works" class="common-anchor-header">How it works</h4><p>Images are converted into 512-dimensional feature vectors using the VGG model, then Milvus is used to manage and query the dataset.</p>
+<p><strong>Data processing:</strong></p>
 <ol>
-<li>Le modèle VGG est utilisé pour convertir l'ensemble de données d'images téléchargées en vecteurs de caractéristiques. Les vecteurs sont ensuite importés dans Milvus et des identifiants individuels leur sont attribués.</li>
-<li>Les vecteurs de caractéristiques d'images et les chemins d'accès aux fichiers d'images correspondants sont stockés dans CacheDB.</li>
+<li>The VGG model is used to convert the uploaded image dataset to feature vectors. The vectors are then imported to Milvus and assigned individual IDs.</li>
+<li>Image feature vectors, and corresponding image file paths, are stored in CacheDB.</li>
 </ol>
-<p><strong>Recherche d'images similaires :</strong></p>
+<p><strong>Searching for similar images:</strong></p>
 <ol>
-<li>VGG est utilisé pour convertir l'image téléchargée par un utilisateur en vecteurs de caractéristiques.</li>
-<li>Les ID des vecteurs des images les plus similaires à l'image d'entrée sont extraits de Milvus.</li>
-<li>Le système recherche les chemins d'accès aux fichiers d'images correspondants dans CacheDB.</li>
+<li>VGG is used to convert a user’s uploaded image into feature vectors.</li>
+<li>Vector IDs of images most similar to the input image are retrieved from Milvus.</li>
+<li>The system looks up the corresponding image file paths in CacheDB.</li>
 </ol>
 <p><br/></p>
-<h3 id="Audio-search-systems" class="common-anchor-header">Systèmes de recherche audio</h3><p>La recherche de parole, de musique, d'effets sonores et d'autres types de recherche audio permet d'interroger rapidement des volumes massifs de données audio et de retrouver des sons similaires. Les applications comprennent l'identification d'effets sonores similaires, la réduction des atteintes à la propriété intellectuelle, etc. Pour démontrer ce scénario d'application, Zilliz a construit un système de recherche de similarité audio très efficace en combinant Milvus avec <a href="https://arxiv.org/abs/1912.10211">PANNs - un</a>réseau neuronal audio préentraîné à grande échelle construit pour la reconnaissance des formes audio.</p>
-<p>👉Source <a href="https://github.com/zilliz-bootcamp/audio_search">code：zilliz-bootcamp/audio_search</a> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_419bac3dd2.png" alt="3.png" class="doc-image" id="3.png" /><span>3.png</span> </span></p>
-<h4 id="How-to-use" class="common-anchor-header">Comment l'utiliser</h4><ol>
-<li>Téléchargez un ensemble de données audio zippé composé uniquement de fichiers .wav (les autres types de fichiers audio ne sont pas acceptés). Vous pouvez également télécharger un <a href="https://zilliz.com/solutions/audio-search">échantillon de données</a>.</li>
-<li>Téléchargez un fichier .wav à utiliser comme entrée de recherche pour trouver des fichiers audio similaires.</li>
+<h3 id="Audio-search-systems" class="common-anchor-header">Audio search systems</h3><p>Speech, music, sound effects, and other types of audio search makes it possible to quickly query massive volumes of audio data and surface similar sounds. Applications include identifying similar sound effects, minimizing IP infringement, and more. To demonstrate this application scenario, Zilliz built a highly efficient audio similarity search system by combining Milvus with <a href="https://arxiv.org/abs/1912.10211">PANNs</a>—a large-scale pretrained audio neural networks built for audio pattern recognition.</p>
+<p>👉Source code：<a href="https://github.com/zilliz-bootcamp/audio_search">zilliz-bootcamp/audio_search</a>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_419bac3dd2.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<h4 id="How-to-use" class="common-anchor-header">How to use</h4><ol>
+<li>Upload a zipped audio dataset comprised of .wav files only (other audio file types are not accepted). Alternatively, a <a href="https://zilliz.com/solutions/audio-search">sample dataset</a> is available for download.</li>
+<li>Upload a .wav file to use as the search input for finding similar audio.</li>
 </ol>
-<p>👉Vidéo : <a href="https://www.youtube.com/watch?v=0eQHeqriCXw">[Démo] Recherche audio optimisée par Milvus</a></p>
-<h4 id="How-it-works" class="common-anchor-header">Fonctionnement</h4><p>L'audio est converti en vecteurs de caractéristiques à l'aide de PANN, des réseaux neuronaux audio pré-entraînés à grande échelle conçus pour la reconnaissance des formes audio. Milvus est ensuite utilisé pour gérer et interroger l'ensemble de données.</p>
-<p><strong>Traitement des données :</strong></p>
+<p>👉Video: <a href="https://www.youtube.com/watch?v=0eQHeqriCXw">[Demo] Audio Search Powered by Milvus</a></p>
+<h4 id="How-it-works" class="common-anchor-header">How it works</h4><p>Audio is converted into feature vectors using PANNs, large-scale pre-trained audio neural networks built for audio pattern recognition. Then Milvus is used to manage and query the dataset.</p>
+<p><strong>Data processing:</strong></p>
 <ol>
-<li>PANNs convertit l'audio de l'ensemble de données téléchargé en vecteurs de caractéristiques. Les vecteurs sont ensuite importés dans Milvus et des identifiants individuels leur sont attribués.</li>
-<li>Les ID des vecteurs de caractéristiques audio et les chemins d'accès aux fichiers .wav correspondants sont stockés dans PostgreSQL.</li>
+<li>PANNs converts audio from the uploaded dataset to feature vectors. The vectors are then imported to Milvus and assigned individual IDs.</li>
+<li>Audio feature vector IDs and their corresponding .wav file paths are stored in PostgreSQL.</li>
 </ol>
-<p><strong>Recherche de fichiers audio similaires :</strong></p>
+<p><strong>Searching for similar audio:</strong></p>
 <ol>
-<li>PANNs est utilisé pour convertir le fichier audio téléchargé par un utilisateur en vecteurs de caractéristiques.</li>
-<li>Les ID des vecteurs audio les plus similaires au fichier téléchargé sont récupérés dans Milvus en calculant la distance du produit intérieur (PI).</li>
-<li>Le système recherche les chemins d'accès aux fichiers audio correspondants dans MySQL.</li>
+<li>PANNs is used to convert a user’s uploaded audio file into feature vectors.</li>
+<li>Vector IDs of audio most similar to the uploaded file are retrieved from Milvus by calculating inner product (IP) distance.</li>
+<li>The system looks up the corresponding audio file paths in MySQL.</li>
 </ol>
 <p><br/></p>
-<h3 id="Video-object-detection-computer-vision" class="common-anchor-header">Détection d'objets vidéo (vision par ordinateur)</h3><p>La détection d'objets vidéo trouve des applications dans la vision artificielle, la recherche d'images, la conduite autonome, etc. Pour démontrer ce scénario d'application, Zilliz a construit un système de détection d'objets vidéo en combinant Milvus avec des technologies et des algorithmes, notamment <a href="https://en.wikipedia.org/wiki/OpenCV">OpenCV</a>, <a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b">YOLOv3</a> et <a href="https://www.mathworks.com/help/deeplearning/ref/resnet50.html">ResNet50</a>.</p>
-<p>👉Code source : <a href="https://github.com/zilliz-bootcamp/video_analysis">zilliz-bootcamp/video_analysis</a></p>
+<h3 id="Video-object-detection-computer-vision" class="common-anchor-header">Video object detection (computer vision)</h3><p>Video object detection has applications in computer vision, image retrieval, autonomous driving, and more. To demonstrate this application scenario, Zilliz built a video object detection system by combining Milvus with technologies and algorithms including <a href="https://en.wikipedia.org/wiki/OpenCV">OpenCV</a>, <a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b">YOLOv3</a>, and <a href="https://www.mathworks.com/help/deeplearning/ref/resnet50.html">ResNet50</a>.</p>
+<p>👉Source code: <a href="https://github.com/zilliz-bootcamp/video_analysis">zilliz-bootcamp/video_analysis</a></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_54b4ceb2ad.png" alt="4.png" class="doc-image" id="4.png" />
-   </span> <span class="img-wrapper"> <span>4.png</span> </span></p>
-<h4 id="How-to-use" class="common-anchor-header">Mode d'emploi</h4><ol>
-<li>Téléchargez un ensemble de données d'images zippé composé uniquement de fichiers .jpg (les autres types de fichiers d'images ne sont pas acceptés). Veillez à ce que chaque fichier image soit nommé par l'objet qu'il représente. Un <a href="https://zilliz.com/solutions/video-obj-analysis">échantillon de données</a> peut également être téléchargé.</li>
-<li>Téléchargez une vidéo à utiliser pour l'analyse.</li>
-<li>Cliquez sur le bouton de lecture pour visionner la vidéo téléchargée avec les résultats de la détection d'objets affichés en temps réel.</li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_54b4ceb2ad.png" alt="4.png" class="doc-image" id="4.png" />
+    <span>4.png</span>
+  </span>
+</p>
+<h4 id="How-to-use" class="common-anchor-header">How to use</h4><ol>
+<li>Upload a zipped image dataset comprised of .jpg files only (other image file types are not accepted). Ensure that each image file is named by the object it depicts. Alternatively, a <a href="https://zilliz.com/solutions/video-obj-analysis">sample dataset</a> is available for download.</li>
+<li>Upload a video to use for analysis.</li>
+<li>Click the play button to view the uploaded video with object detection results shown in real time.</li>
 </ol>
-<p>👉Vidéo : <a href="https://www.youtube.com/watch?v=m9rosLClByc">[Démo] Système de détection d'objets vidéo développé par Milvus</a></p>
-<h4 id="How-it-works" class="common-anchor-header">Fonctionnement</h4><p>Les images d'objets sont converties en vecteurs de caractéristiques à 2048 dimensions à l'aide de ResNet50. Milvus est ensuite utilisé pour gérer et interroger l'ensemble de données.</p>
-<p><strong>Traitement des données :</strong></p>
+<p>👉Video: <a href="https://www.youtube.com/watch?v=m9rosLClByc">[Demo] Video Object Detection System Powered by Milvus</a></p>
+<h4 id="How-it-works" class="common-anchor-header">How it works</h4><p>Object images are converted into 2048-dimensional feature vectors using ResNet50. Then Milvus is used to manage and query the dataset.</p>
+<p><strong>Data processing:</strong></p>
 <ol>
-<li>ResNet50 convertit les images d'objets en vecteurs de caractéristiques à 2048 dimensions. Les vecteurs sont ensuite importés dans Milvus et des identifiants individuels leur sont attribués.</li>
-<li>Les ID des vecteurs de caractéristiques audio et les chemins d'accès aux fichiers d'images correspondants sont stockés dans MySQL.</li>
+<li>ResNet50 converts object images to 2048-dimensional feature vectors. The vectors are then imported to Milvus and assigned individual IDs.</li>
+<li>Audio feature vector IDs and their corresponding image file paths are stored in MySQL.</li>
 </ol>
-<p><strong>Détection d'objets dans la vidéo :</strong></p>
+<p><strong>Detecting objects in video:</strong></p>
 <ol>
-<li>OpenCV est utilisé pour découper la vidéo.</li>
-<li>YOLOv3 est utilisé pour détecter les objets dans la vidéo.</li>
-<li>ResNet50 convertit les images d'objets détectés en vecteurs de caractéristiques à 2048 dimensions.</li>
+<li>OpenCV is used to trim the video.</li>
+<li>YOLOv3 is used to detect objects in the video.</li>
+<li>ResNet50 converts detected object images into 2048-dimensional feature vectors.</li>
 </ol>
-<p>Milvus recherche les images d'objets les plus similaires dans l'ensemble de données téléchargé. Les noms d'objets correspondants et les chemins d'accès aux fichiers d'images sont extraits de MySQL.</p>
+<p>Milvus searches for the most similar object images in the uploaded dataset. Corresponding object names and image file paths are retrieved from MySQL.</p>

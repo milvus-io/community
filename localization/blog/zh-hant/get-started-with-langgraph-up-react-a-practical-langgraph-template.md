@@ -1,9 +1,12 @@
 ---
 id: get-started-with-langgraph-up-react-a-practical-langgraph-template.md
-title: 開始使用 langgraph-up-react：實用的 LangGraph 模板
+title: |
+  Getting Started with langgraph-up-react: A Practical LangGraph Template
 author: Min Yin
 date: 2025-09-11T00:00:00.000Z
-desc: 介紹 langgraph-up-react，一個可立即使用的 LangGraph + ReAct 模版，用於 ReAct 代理。
+desc: >-
+  introducing langgraph-up-react, a ready-to-use LangGraph + ReAct template for
+  ReAct agents.
 cover: assets.zilliz.com/Chat_GPT_Image_Sep_12_2025_12_09_04_PM_804305620a.png
 tag: Tutorials
 recommend: false
@@ -15,10 +18,10 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/get-started-with-langgraph-up-react-a-practical-langgraph-template.md
 ---
-<p>AI 代理正在成為應用 AI 的核心模式。越來越多的專案正在超越單一提示，並將模型連線到決策迴圈中。這是令人興奮的，但這也意味著管理狀態、協調工具、處理分支以及加入人為交接--這些都不是一眼就能看出來的。</p>
-<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a>是這一層的最佳選擇。它是一個 AI 框架，提供迴圈、條件、持續性、人為迴圈控制以及串流等足夠的結構，可以將構想變成真正的多重代理應用程式。然而，LangGraph 有著陡峭的學習曲線。它的文件移動很快，抽象的東西需要時間來習慣，而且從一個簡單的示範跳到一個感覺像產品的東西可能會令人沮喪。</p>
-<p>最近，我開始使用<a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react - 一個</strong></a>可立即使用的 LangGraph + ReAct 模板，用於 ReAct 代理。它簡化了設定，提供合理的預設值，並讓您專注於行為而非模板。在這篇文章中，我將介紹如何使用這個範本開始使用 LangGraph。</p>
-<h2 id="Understanding-ReAct-Agents" class="common-anchor-header">瞭解 ReAct 代理<button data-href="#Understanding-ReAct-Agents" class="anchor-icon" translate="no">
+<p>AI agents are becoming a core pattern in applied AI. More projects are moving past single prompts and wiring models into decision-making loops. That’s exciting, but it also means managing state, coordinating tools, handling branches, and adding human handoffs—things that aren’t immediately obvious.</p>
+<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a> is a strong choice for this layer. It is an AI framework that provides loops, conditionals, persistence, human-in-the-loop controls, and streaming—enough structure to turn an idea into a real multi-agent app. However, LangGraph has a steep learning curve. Its documentation moves quickly, the abstractions take time to get used to, and jumping from a simple demo to something that feels like a product can be frustrating.</p>
+<p>Recently, I started using <a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react</strong></a>—a ready-to-use LangGraph + ReAct template for ReAct agents. It trims setup, ships with sane defaults, and lets you focus on behavior instead of boilerplate. In this post, I’ll walk through how to get started with LangGraph using this template.</p>
+<h2 id="Understanding-ReAct-Agents" class="common-anchor-header">Understanding ReAct Agents<button data-href="#Understanding-ReAct-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,16 +36,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在深入瞭解模板本身之前，我們應該先瞭解一下我們要建立的代理類型。目前最常見的模式之一是<strong>ReAct (Reason + Act)</strong>架構，最早是在 Google 2022 年的論文<em>「</em><a href="https://arxiv.org/abs/2210.03629"><em>ReAct：Synergizing Reasoning and Acting in Language Model</em></a><em>s</em><a href="https://arxiv.org/abs/2210.03629"><em>"中首次提出。</em></a></p>
-<p>這個想法很直接：ReAct 並非將推理與行動分開處理，而是將兩者結合為一個回饋迴圈，看起來很像人類解決問題的過程。代理對問題進行<strong>推理</strong>，透過呼叫工具或 API 來<strong>採取行動</strong>，<strong>然後觀察</strong>結果，再決定下一步該怎麼做。這個簡單的循環 - 推理 → 行動 → 觀察 - 讓代理可以動態地適應，而不是遵循固定的腳本。</p>
-<p>以下是各個環節的組合方式：</p>
+    </button></h2><p>Before diving into the template itself, it’s worth looking at the kind of agent we’ll be building. One of the most common patterns today is the <strong>ReAct (Reason + Act)</strong> framework, first introduced in Google’s 2022 paper <em>“</em><a href="https://arxiv.org/abs/2210.03629"><em>ReAct: Synergizing Reasoning and Acting in Language Models.</em></a><em>”</em></p>
+<p>The idea is straightforward: instead of treating reasoning and action as separate, ReAct combines them into a feedback loop that looks a lot like human problem solving. The agent <strong>reasons</strong> about the problem, <strong>acts</strong> by calling a tool or API, and then <strong>observes</strong> the result before deciding what to do next. This simple cycle—reason → act → observe—lets agents adapt dynamically instead of following a fixed script.</p>
+<p>Here’s how the pieces fit together:</p>
 <ul>
-<li><p><strong>原因</strong>：模型將問題分解成步驟、規劃策略，甚至可以在中途糾正錯誤。</p></li>
-<li><p><strong>行動</strong>：根據其推理，代理程式會呼叫工具 - 不論是搜尋引擎、計算機或您自訂的 API。</p></li>
-<li><p><strong>觀察</strong>：代理程式會觀察工具的輸出、篩選結果，並將結果回饋到下一輪推理中。</p></li>
+<li><p><strong>Reason</strong>: The model breaks problems into steps, plans strategies, and can even correct mistakes mid-way.</p></li>
+<li><p><strong>Act</strong>: Based on its reasoning, the agent calls tools—whether that’s a search engine, a calculator, or your own custom API.</p></li>
+<li><p><strong>Observe</strong>: The agent looks at the tool’s output, filters the results, and feeds that back into its next round of reasoning.</p></li>
 </ul>
-<p>這個循環很快就成為現代 AI 代理的骨幹。您會在 ChatGPT 外掛程式、RAG 管道、智慧型助理，甚至是機器人中看到它的蹤跡。在我們的案例中，它是<code translate="no">langgraph-up-react</code> 模板的基礎。</p>
-<h2 id="Understanding-LangGraph" class="common-anchor-header">瞭解 LangGraph<button data-href="#Understanding-LangGraph" class="anchor-icon" translate="no">
+<p>This loop has quickly become the backbone of modern AI agents. You’ll see traces of it in ChatGPT plugins, RAG pipelines, intelligent assistants, and even robotics. In our case, it’s the foundation that the <code translate="no">langgraph-up-react</code> template builds on.</p>
+<h2 id="Understanding-LangGraph" class="common-anchor-header">Understanding LangGraph<button data-href="#Understanding-LangGraph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,20 +60,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>既然我們已經瞭解了 ReAct 模式，下一個問題就是：在實際上要如何實作這樣的東西？開箱即用的語言模型大多無法很好地處理多步推理。每次呼叫都是無狀態的：模型產生一個答案，一旦完成就忘記一切。這使得我們很難將中間的結果繼承下去，或是根據先前的結果調整之後的步驟。</p>
-<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a>填補了這個缺口。它不再將每個提示視為一次性的，而是讓您有辦法將複雜的任務分成幾個步驟，記住每個步驟所發生的事情，並根據目前的狀態決定下一步要做什麼。換句話說，它將代理程式的推理過程轉換成結構化、可重複的方式，而不是一連串的臨時提示。</p>
-<p>您可以將它想像成<strong>AI 推理的流程圖</strong>：</p>
+    </button></h2><p>Now that we’ve looked at the ReAct pattern, the next question is: how do you actually implement something like that in practice? Out of the box, most language models don’t handle multi-step reasoning very well. Each call is stateless: the model generates an answer and forgets everything as soon as it’s done. That makes it hard to carry intermediate results forward or adjust later steps based on earlier ones.</p>
+<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a> closes this gap. Instead of treating every prompt as a one-off, it gives you a way to break complex tasks into steps, remember what happened at each point, and decide what to do next based on the current state. In other words, it turns an agent’s reasoning process into something structured and repeatable, rather than a chain of ad-hoc prompts.</p>
+<p>You can think of it like a <strong>flowchart for AI reasoning</strong>:</p>
 <ul>
-<li><p><strong>分析</strong>使用者查詢</p></li>
-<li><p>為工作<strong>選擇</strong>正確的工具</p></li>
-<li><p>透過呼叫工具來<strong>執行</strong>任務</p></li>
-<li><p><strong>處理</strong>結果</p></li>
-<li><p><strong>檢查</strong>任務是否完成；若未完成，則返回並繼續推理</p></li>
-<li><p><strong>輸出</strong>最終答案</p></li>
+<li><p><strong>Analyze</strong> the user query</p></li>
+<li><p><strong>Select</strong> the right tool for the job</p></li>
+<li><p><strong>Execute</strong> the task by calling the tool</p></li>
+<li><p><strong>Process</strong> the results</p></li>
+<li><p><strong>Check</strong> if the task is complete; if not, loop back and continue reasoning</p></li>
+<li><p><strong>Output</strong> the final answer</p></li>
 </ul>
-<p>在這個過程中，LangGraph 會處理<strong>記憶體儲存</strong>，因此先前步驟的結果不會遺失，而且它會與<strong>外部工具庫</strong>（API、資料庫、搜尋、計算器、檔案系統等）整合。</p>
-<p>這就是它被稱為<em>LangGraph</em> 的原因：<strong>Lang (Language) + Graph - 一個</strong>組織<strong>語言</strong>模型如何隨著時間思考與行動的框架。</p>
-<h2 id="Understanding-langgraph-up-react" class="common-anchor-header">瞭解 LangGraph 向上反應<button data-href="#Understanding-langgraph-up-react" class="anchor-icon" translate="no">
+<p>Along the way, LangGraph handles <strong>memory storage</strong> so results from earlier steps aren’t lost, and it integrates with an <strong>external tool library</strong> (APIs, databases, search, calculators, file systems, etc.).</p>
+<p>That’s why it’s called <em>LangGraph</em>: <strong>Lang (Language) + Graph</strong>—a framework for organizing how language models think and act over time.</p>
+<h2 id="Understanding-langgraph-up-react" class="common-anchor-header">Understanding langgraph-up-react<button data-href="#Understanding-langgraph-up-react" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -85,17 +88,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>LangGraph 功能強大，但也有開銷。設定狀態管理、設計節點和邊緣、處理錯誤，以及在模型和工具中佈線，這些都需要時間。調試多步驟的流程也會很痛苦 - 當某些東西發生故障時，問題可能出在任何節點或轉換。隨著專案的成長，即使是微小的變更也會波及整個程式碼庫，讓一切變得緩慢。</p>
-<p>這就是成熟的範本可以發揮巨大作用的地方。與其從零開始，範本給您一個經過驗證的結構、預先建立的工具，以及可以運作的腳本。您可以跳過模板，直接專注於代理程式邏輯。</p>
-<p><a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react</strong></a>就是這樣一個範本。它的設計是用來幫助您快速建立一個 LangGraph ReAct 代理，並具備以下功能：</p>
+    </button></h2><p>LangGraph is powerful, but it comes with overhead. Setting up state management, designing nodes and edges, handling errors, and wiring in models and tools all take time. Debugging multi-step flows can also be painful—when something breaks, the issue might be in any node or transition. As projects grow, even small changes can ripple through the codebase and slow everything down.</p>
+<p>This is where a mature template makes a huge difference. Instead of starting from scratch, a template gives you a proven structure, pre-built tools, and scripts that just work. You skip the boilerplate and focus directly on the agent logic.</p>
+<p><a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react</strong></a> is one such template. It’s designed to help you spin up a LangGraph ReAct agent quickly, with:</p>
 <ul>
-<li><p><strong>內建工具生態系統</strong>：開箱即用的適配器與公用程式</p></li>
-<li><p>⚡<strong>快速啟動</strong>：簡單組態，數分鐘內即可啟用代理程式</p></li>
-<li><p>🧪<strong>包含測試</strong>：單元測試和整合測試，讓您在擴充時更有信心</p></li>
-<li><p><strong>生產就緒的設定</strong>：可節省部署時間的架構模式和腳本</p></li>
+<li><p>🔧 <strong>Built-in tool ecosystem</strong>: adapters and utilities ready to use out of the box</p></li>
+<li><p>⚡ <strong>Quick start</strong>: simple configuration and a working agent in minutes</p></li>
+<li><p>🧪 <strong>Testing included</strong>: unit tests and integration tests for confidence as you extend</p></li>
+<li><p>📦 <strong>Production-ready setup</strong>: architecture patterns and scripts that save time when deploying</p></li>
 </ul>
-<p>簡而言之，它會處理所有的模板，讓您可以專注於建立能實際解決您業務問題的代理程式。</p>
-<h2 id="Getting-Started-with-the-langgraph-up-react-Template" class="common-anchor-header">開始使用 langgraph-up-react 模版<button data-href="#Getting-Started-with-the-langgraph-up-react-Template" class="anchor-icon" translate="no">
+<p>In short, it takes care of the boilerplate so you can focus on building agents that actually solve your business problems.</p>
+<h2 id="Getting-Started-with-the-langgraph-up-react-Template" class="common-anchor-header">Getting Started with the langgraph-up-react Template<button data-href="#Getting-Started-with-the-langgraph-up-react-Template" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,30 +113,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>執行範本非常簡單直接。以下是逐步的設定過程：</p>
+    </button></h2><p>Getting the template running is straightforward. Here’s the setup process step by step:</p>
 <ol>
-<li>安裝環境依賴</li>
+<li>Install environment dependencies</li>
 </ol>
 <pre><code translate="no">curl -<span class="hljs-title class_">LsSf</span> <span class="hljs-attr">https</span>:<span class="hljs-comment">//astral.sh/uv/install.sh | sh</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>克隆專案</li>
+<li>Clone the project</li>
 </ol>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/webup/langgraph-up-react.git
 <span class="hljs-built_in">cd</span> langgraph-up-react
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>安裝相依性</li>
+<li>Install dependencies</li>
 </ol>
 <pre><code translate="no">uv <span class="hljs-built_in">sync</span> --dev
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>設定環境</li>
+<li>Configure environment</li>
 </ol>
-<p>複製範例配置並加入您的金鑰：</p>
+<p>Copy the example config and add your keys:</p>
 <pre><code translate="no"><span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>編輯 .env 並至少設定一個模型提供者加上您的 Tavily API 金鑰：</p>
+<p>Edit .env and set at least one model provider plus your Tavily API key:</p>
 <pre><code translate="no">TAVILY_API_KEY=your-tavily-api-key      <span class="hljs-comment"># Required for web search  </span>
 DASHSCOPE_API_KEY=your-dashscope-api-key  <span class="hljs-comment"># Qwen (default recommended)  </span>
 OPENAI_API_KEY=your-openai-api-key        <span class="hljs-comment"># OpenAI or compatible platforms  </span>
@@ -142,7 +145,7 @@ REGION=us                <span class="hljs-comment"># Optional: region flag  </s
 ENABLE_DEEPWIKI=true      <span class="hljs-comment"># Optional: enable document tools  </span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>啟動專案</li>
+<li>Start the project</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment"># Start development server (without UI)</span>
 make dev
@@ -150,14 +153,14 @@ make dev
 <span class="hljs-comment"># Start development server with LangGraph Studio UI</span>
 make dev_ui
 <button class="copy-code-btn"></button></code></pre>
-<p>您的開發伺服器現在已經啟動，並準備好進行測試。</p>
+<p>Your dev server will now be up and ready for testing.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/template_set_up_a42d1819ed.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="What-Can-You-Build-with-langgraph-up-react" class="common-anchor-header">使用 langgraph-up-react 可以建立什麼？<button data-href="#What-Can-You-Build-with-langgraph-up-react" class="anchor-icon" translate="no">
+<h2 id="What-Can-You-Build-with-langgraph-up-react" class="common-anchor-header">What Can You Build with langgraph-up-react?<button data-href="#What-Can-You-Build-with-langgraph-up-react" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,12 +175,12 @@ make dev_ui
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一旦模板開始運行，您實際上可以做什麼？以下是兩個具體的範例，說明如何將它應用在實際的專案中。</p>
-<h3 id="Enterprise-Knowledge-Base-QA-Agentic-RAG" class="common-anchor-header">企業知識庫 Q&amp;A (Agentic RAG)</h3><p>常見的使用案例是公司知識的內部問答助手。想想產品手冊、技術文件、常見問題 - 有用但分散的資訊。使用<code translate="no">langgraph-up-react</code> ，您可以創建一個代理，在<a href="https://milvus.io/"><strong>Milvus</strong></a>向量資料庫中索引這些文件，檢索最相關的段落，並根據上下文生成準確的答案。</p>
-<p>在部署方面，Milvus 提供彈性的選項：<strong>Lite</strong>適用於快速原型設計，<strong>Standalone</strong>適用於中型生產工作負載，<strong>Distributed</strong>適用於企業規模系統。您也需要調整索引參數 (例如 HNSW) 以平衡速度與精確度，並設定延遲與召回監控，以確保系統在負載下仍能保持可靠。</p>
-<h3 id="Multi-Agent-Collaboration" class="common-anchor-header">多代理協作</h3><p>另一個強大的使用案例是多代理體協作。您可以定義幾個共同工作的專門代理，而不是一個代理嘗試做所有的事情。舉例來說，在軟體開發工作流程中，產品經理代理分解需求，建築師代理草擬設計，開發人員代理編寫程式碼，測試代理驗證結果。</p>
-<p>這種協調方式突顯了 LangGraph 的優勢：狀態管理、分支以及代理之間的協調。我們會在稍後的文章中詳細介紹這個設定，但重點是<code translate="no">langgraph-up-react</code> 讓我們不用花費數週的時間在腳手架上，就能實用地嘗試這些模式。</p>
-<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>So what can you actually do once the template is up and running? Here are two concrete examples that show how it can be applied in real projects.</p>
+<h3 id="Enterprise-Knowledge-Base-QA-Agentic-RAG" class="common-anchor-header">Enterprise Knowledge Base Q&amp;A (Agentic RAG)</h3><p>A common use case is an internal Q&amp;A assistant for company knowledge. Think product manuals, technical docs, FAQs—information that’s useful but scattered. With <code translate="no">langgraph-up-react</code>, you can create an agent that indexes these documents in a <a href="https://milvus.io/"><strong>Milvus</strong></a> vector database, retrieves the most relevant passages, and generates accurate answers grounded in context.</p>
+<p>For deployment, Milvus offers flexible options: <strong>Lite</strong> for quick prototyping, <strong>Standalone</strong> for mid-sized production workloads, and <strong>Distributed</strong> for enterprise-scale systems. You’ll also want to tune index parameters (e.g., HNSW) to balance speed and accuracy, and set up monitoring for latency and recall to ensure the system remains reliable under load.</p>
+<h3 id="Multi-Agent-Collaboration" class="common-anchor-header">Multi-Agent Collaboration</h3><p>Another powerful use case is multi-agent collaboration. Instead of one agent trying to do everything, you define several specialized agents that work together. In a software development workflow, for example, a Product Manager Agent breaks down requirements, an Architect Agent drafts the design, a Developer Agent writes code, and a Testing Agent validates the results.</p>
+<p>This orchestration highlights LangGraph’s strengths—state management, branching, and coordination across agents. We’ll cover this setup in more detail in a later article, but the key point is that <code translate="no">langgraph-up-react</code> makes it practical to try these patterns without spending weeks on scaffolding.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -192,6 +195,6 @@ make dev_ui
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>建立可靠的代理不只是巧妙的提示--而是結構化推理、管理狀態，並將所有東西連結成一個您可以實際維護的系統。LangGraph 為您提供了這樣的框架，而<code translate="no">langgraph-up-react</code> 則透過處理模板降低了障礙，讓您可以專注於代理的行為。</p>
-<p>有了這個範本，您就可以啟動知識庫問答系統或多代理工作流程等專案，而不會在設定上迷失方向。這是一個起點，可以節省時間、避免常見的陷阱，並讓 LangGraph 的實驗變得更順利。</p>
-<p>在下一篇文章中，我將深入介紹實作教學，逐步說明如何使用 LangGraph、<code translate="no">langgraph-up-react</code> 和 Milvus 向量資料庫，擴充範本並針對實際使用個案建立工作代理。敬請期待。</p>
+    </button></h2><p>Building reliable agents isn’t just about clever prompts—it’s about structuring reasoning, managing state, and wiring everything into a system you can actually maintain. LangGraph gives you the framework to do that, and <code translate="no">langgraph-up-react</code> lowers the barrier by handling the boilerplate so you can focus on agent behavior.</p>
+<p>With this template, you can spin up projects like knowledge base Q&amp;A systems or multi-agent workflows without getting lost in setup. It’s a starting point that saves time, avoids common pitfalls, and makes experimenting with LangGraph far smoother.</p>
+<p>In the next post, I’ll go deeper into a hands-on tutorial—showing step by step how to extend the template and build a working agent for a real use case using LangGraph, <code translate="no">langgraph-up-react</code>, and Milvus vector database. Stay tuned.</p>

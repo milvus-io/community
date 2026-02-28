@@ -1,32 +1,32 @@
 ---
 id: deep-dive-7-query-expression.md
-title: In che modo il database comprende ed esegue la query?
+title: How Does the Database Understand and Execute Your Query?
 author: Milvus
 date: 2022-05-05T00:00:00.000Z
-desc: >-
-  Una query vettoriale è il processo di recupero di vettori tramite un filtro
-  scalare.
+desc: A vector query is the process of retrieving vectors via scalar filtering.
 cover: assets.zilliz.com/Deep_Dive_7_baae830823.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-7-query-expression.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deep_Dive_7_baae830823.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Immagine di copertina</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deep_Dive_7_baae830823.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Questo articolo è stato trascritto da <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>Una <a href="https://milvus.io/docs/v2.0.x/query.md">query vettoriale</a> in Milvus è il processo di recupero di vettori tramite un filtro scalare basato su un'espressione booleana. Con il filtraggio scalare, gli utenti possono limitare i risultati delle loro interrogazioni con determinate condizioni applicate agli attributi dei dati. Ad esempio, se un utente interroga i film usciti nel periodo 1990-2010 e con un punteggio superiore a 8,5, solo i film i cui attributi (anno di uscita e punteggio) soddisfano la condizione.</p>
-<p>Questo post si propone di esaminare come viene completata una query in Milvus, dall'inserimento di un'espressione di query alla generazione del piano di query e all'esecuzione della stessa.</p>
-<p><strong>Vai a:</strong></p>
+<p>A <a href="https://milvus.io/docs/v2.0.x/query.md">vector query</a> in Milvus is the process of retrieving vectors via scalar filtering based on boolean expression. With scalar filtering, users can limit their query results with certain conditions applied on attributes of data. For instance, if a user queries for films released during 1990-2010 and with scores higher than 8.5, only films whose attributes (release year and score) fulfill the condition.</p>
+<p>This post aims to examine how a query is completed in Milvus from the input of a query expression to query plan generation and query execution.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#Query-expression">Espressione di query</a></li>
-<li><a href="#Plan-AST-generation">Generazione del piano AST</a></li>
-<li><a href="#Query-execution">Esecuzione della query</a></li>
+<li><a href="#Query-expression">Query expression</a></li>
+<li><a href="#Plan-AST-generation">Plan AST generation</a></li>
+<li><a href="#Query-execution">Query execution</a></li>
 </ul>
-<h2 id="Query-expression" class="common-anchor-header">Espressione della query<button data-href="#Query-expression" class="anchor-icon" translate="no">
+<h2 id="Query-expression" class="common-anchor-header">Query expression<button data-href="#Query-expression" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,39 +41,47 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-7-query-expression.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'espressione di una query con filtraggio degli attributi in Milvus adotta la sintassi EBNF (Extended Backus-Naur form). L'immagine seguente mostra le regole di espressione in Milvus.</p>
+    </button></h2><p>Expression of query with attribute filtering in Milvus adopts the EBNF(Extended Backus–Naur form) syntax. The image below is the expression rules in Milvus.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Expression_Syntax_966493a5be.png" alt="Expression Syntax" class="doc-image" id="expression-syntax" />
-   </span> <span class="img-wrapper"> <span>Sintassi dell'espressione</span> </span></p>
-<p>Le espressioni logiche possono essere create utilizzando la combinazione di operatori logici binari, operatori logici unari, espressioni logiche e singole espressioni. Poiché la sintassi EBNF è di per sé ricorsiva, un'espressione logica può essere il risultato della combinazione o parte di un'espressione logica più grande. Un'espressione logica può contenere molte sottoespressioni logiche. La stessa regola si applica a Milvus. Se un utente ha bisogno di filtrare gli attributi dei risultati con molte condizioni, può creare il proprio insieme di condizioni di filtraggio combinando diversi operatori logici ed espressioni.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Expression_Syntax_966493a5be.png" alt="Expression Syntax" class="doc-image" id="expression-syntax" />
+    <span>Expression Syntax</span>
+  </span>
+</p>
+<p>Logical expressions can be created using the combination of binary logical operators, unary logical operators, logical expressions, and single expressions. Since EBNF syntax is itself recursive, a logical expression can be the outcome of the combination or part of a bigger logical expression. A logical expression can contain many sub-logical expressions. The same rule applies in Milvus. If a user needs to filter the attributes of the results with many conditions, the user can create his own set of filtering conditions by combining different logical operators and expressions.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Boolean_expression_1_dce12f8483.png" alt="Boolean expression" class="doc-image" id="boolean-expression" />
-   </span> <span class="img-wrapper"> <span>Espressione booleana</span> </span></p>
-<p>L'immagine qui sopra mostra una parte delle <a href="https://milvus.io/docs/v2.0.x/boolean.md">regole delle espressioni booleane</a> in Milvus. Gli operatori logici unari possono essere aggiunti a un'espressione. Attualmente Milvus supporta solo l'operatore logico unario &quot;not&quot;, che indica che il sistema deve prendere i vettori i cui valori del campo scalare non soddisfano i risultati del calcolo. Gli operatori logici binari includono &quot;and&quot; e &quot;or&quot;. Le espressioni singole includono le espressioni di termine e le espressioni di confronto.</p>
-<p>In Milvus sono supportati anche i calcoli aritmetici di base, come addizione, sottrazione, moltiplicazione e divisione, durante un'interrogazione. L'immagine seguente mostra la precedenza delle operazioni. Gli operatori sono elencati dall'alto verso il basso in ordine decrescente.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Boolean_expression_1_dce12f8483.png" alt="Boolean expression" class="doc-image" id="boolean-expression" />
+    <span>Boolean expression</span>
+  </span>
+</p>
+<p>The image above shows part of the <a href="https://milvus.io/docs/v2.0.x/boolean.md">Boolean expression rules</a> in Milvus. Unary logical operators can be added to an expression. Currently Milvus only supports the unary logical operator &quot;not&quot;, which indicates that the system needs to take the vectors whose scalar field values do not satisfy the calculation results. Binary logical operators include “and” and &quot;or&quot;. Single expressions include term expressions and compare expressions.</p>
+<p>Basic arithmetic calculation like addition, subtraction, multiplication, and division is also supported during a query in Milvus. The following image demonstrates the precedence of the operations. Operators are listed from top to bottom in descending precedence.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Precedence_b8cfbdf17b.png" alt="Precedence" class="doc-image" id="precedence" />
-   </span> <span class="img-wrapper"> <span>Precedenza</span> </span></p>
-<h3 id="How-a-query-expression-on-certain-films-is-processed-in-Milvus" class="common-anchor-header">Come viene elaborata in Milvus un'espressione di interrogazione su determinati film?</h3><p>Supponiamo che in Milvus ci sia un'abbondanza di dati di film e che l'utente voglia interrogare alcuni film. Ad esempio, ogni film memorizzato in Milvus ha i seguenti cinque campi: ID film, anno di uscita, tipo di film, colonna sonora e poster. In questo esempio, il tipo di dati dell'ID del film e dell'anno di uscita è int64, mentre i punteggi dei film sono dati in virgola mobile. Inoltre, le locandine dei film sono memorizzate nel formato di vettori a virgola mobile e il tipo di film nel formato di dati stringa. In particolare, il supporto per i dati di tipo stringa è una novità di Milvus 2.1.</p>
-<p>Per esempio, se un utente vuole interrogare i film con un punteggio superiore a 8,5. I film devono essere usciti da un decennio prima del 2000 a un decennio dopo il 2000 o devono essere di tipo commedia o film d'azione, l'utente deve inserire la seguente espressione di predicato: <code translate="no">score &gt; 8.5 &amp;&amp; (2000 - 10 &lt; release_year &lt; 2000 + 10 || type in [comedy,action])</code>.</p>
-<p>Una volta ricevuta l'espressione della query, il sistema la eseguirà con la seguente precedenza:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Precedence_b8cfbdf17b.png" alt="Precedence" class="doc-image" id="precedence" />
+    <span>Precedence</span>
+  </span>
+</p>
+<h3 id="How-a-query-expression-on-certain-films-is-processed-in-Milvus" class="common-anchor-header">How a query expression on certain films is processed in Milvus?</h3><p>Suppose there is an abundance of film data stored in Milvus and the user wants to query certain films. As an example, each film data stored in Milvus has the following five fields: film ID, release year, film type, score, and poster. In this example, the data type of film ID and release year is int64, while film scores are float point data. Also, film posters are stored in the format of float-point vectors, and film type in the format of string data. Notably, support for string data type is a new feature in Milvus 2.1.</p>
+<p>For instance, if a user want to query the movies with scores higher than 8.5. The films should also be  released during a decade before 2000 to a decade after 2000 or their types should be either comedy or action movie, the user need to input the following predicate expression: <code translate="no">score &gt; 8.5 &amp;&amp; (2000 - 10 &lt; release_year &lt; 2000 + 10 || type in [comedy,action])</code>.</p>
+<p>Upon receiving the query expression, the system will execute it in the following precedence:</p>
 <ol>
-<li>Ricerca di film con punteggio superiore a 8,5. I risultati della query sono chiamati &quot;risultato1&quot;.</li>
-<li>Calcolare 2000 - 10 per ottenere "risultato2" (1990).</li>
-<li>Calcolare 2000 + 10 per ottenere "risultato3" (2010).</li>
-<li>Cercare i film con il valore di <code translate="no">release_year</code> maggiore di &quot;risultato2&quot; e minore di &quot;risultato3&quot;. In altre parole, il sistema deve cercare i film usciti tra il 1990 e il 2010. I risultati dell'interrogazione sono chiamati &quot;risultato4&quot;.</li>
-<li>Interrogare i film che sono commedie o film d'azione. I risultati della query sono chiamati &quot;risultato5&quot;.</li>
-<li>Combinare "risultato4" e "risultato5" per ottenere film che sono usciti tra il 1990 e il 2010 o che appartengono alla categoria delle commedie o dei film d'azione. I risultati sono chiamati &quot;risultato6&quot;.</li>
-<li>Prendete la parte comune di "risultato1" e "risultato6" per ottenere i risultati finali che soddisfano tutte le condizioni.</li>
+<li>Query for films with scores higher than 8.5. The query results are called &quot;result1&quot;.</li>
+<li>Calculate 2000 - 10 to get “result2” (1990).</li>
+<li>Calculate 2000 + 10 to get “result3” (2010).</li>
+<li>Query for films with the value of <code translate="no">release_year</code> greater than “result2” and smaller than &quot;result3&quot;. That is to say, the system needs to query for films released between 1990 and 2010. The query results are called &quot;result4&quot;.</li>
+<li>Query for films that are either comedies or action movies. The query results are called &quot;result5&quot;.</li>
+<li>Combine “result4” and “result5” to obtain films that are either released between 1990 and 2010 or belong to the category of comedy or action movie. The results are called &quot;result6&quot;.</li>
+<li>Take the common part in “result1” and “result6” to obtain the final results satisfying all the conditions.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_16_00972a6e5d.png" alt="Film example" class="doc-image" id="film-example" />
-   </span> <span class="img-wrapper"> <span>Esempio di film</span> </span></p>
-<h2 id="Plan-AST-generation" class="common-anchor-header">Generazione di piani AST<button data-href="#Plan-AST-generation" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_16_00972a6e5d.png" alt="Film example" class="doc-image" id="film-example" />
+    <span>Film example</span>
+  </span>
+</p>
+<h2 id="Plan-AST-generation" class="common-anchor-header">Plan AST generation<button data-href="#Plan-AST-generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,23 +96,29 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-7-query-expression.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus utilizza lo strumento open-source <a href="https://www.antlr.org/">ANTLR</a> (ANother Tool for Language Recognition) per la generazione di piani AST (abstract syntax tree). ANTLR è un potente generatore di parser per la lettura, l'elaborazione, l'esecuzione o la traduzione di file di testo o binari. Più specificamente, ANTLR può generare un parser per costruire e percorrere alberi di parsing basati su regole o sintassi predefinite. L'immagine seguente è un esempio in cui l'espressione di input è &quot;SP=100;&quot;. LEXER, la funzionalità di riconoscimento linguistico integrata in ANTLR, genera quattro token per l'espressione di input: &quot;SP&quot;, &quot;=&quot;, &quot;100&quot; e &quot;;&quot;. Quindi lo strumento analizza ulteriormente i quattro token per generare l'albero di parsè corrispondente.</p>
+    </button></h2><p>Milvus leverages the open-source tool <a href="https://www.antlr.org/">ANTLR</a> (ANother Tool for Language Recognition) for plan AST (abstract syntax tree) generation. ANTLR is a powerful parser generator for reading, processing, executing, or translating structure text or binary files. More specifically, ANTLR can generate a parser for building and walking parse trees based on pre-defined syntax or rules. The following image is an example in which the input expression is &quot;SP=100;&quot;. LEXER, the built-in language recognition functionality in ANTLR, generates four tokens for the input expression - &quot;SP&quot;, &quot;=&quot;, &quot;100&quot;, and &quot;;&quot;. Then the tool will further parse the four tokens to generate the corresponding parse tree.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/parse_tree_b2c3fb0b36.png" alt="parse tree" class="doc-image" id="parse-tree" />
-   </span> <span class="img-wrapper"> <span>albero di parsè</span> </span></p>
-<p>Il meccanismo del walker è una parte fondamentale dello strumento ANTLR. È progettato per percorrere tutti gli alberi di parsing per esaminare se ogni nodo rispetta le regole sintattiche o per rilevare alcune parole sensibili. Alcune delle API rilevanti sono elencate nell'immagine seguente. Poiché ANTLR parte dal nodo radice e scende attraverso ogni sotto-nodo fino in fondo, non è necessario differenziare l'ordine di percorrenza dell'albero di parses.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/parse_tree_b2c3fb0b36.png" alt="parse tree" class="doc-image" id="parse-tree" />
+    <span>parse tree</span>
+  </span>
+</p>
+<p>The walker mechanism is a crucial part in the ANTLR tool. It is designed to walk through all the parse trees to examine whether each node obeys the syntax rules, or to detect certain sensitive words. Some of the relevant APIs are listed in the image below. Since ANTLR starts from the root node and goes down all the way through each sub-node to the bottom, there is no need to differentiate the order of how to walk through the parse tree.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/parse_tree_walker_9a27942502.png" alt="parse tree walker" class="doc-image" id="parse-tree-walker" />
-   </span> <span class="img-wrapper"> <span>camminatore dell'albero di parsè</span> </span></p>
-<p>Milvus genera il PlanAST per le query in modo simile ad ANTLR. Tuttavia, l'uso di ANTLR richiede la ridefinizione di regole sintattiche piuttosto complicate. Pertanto, Milvus adotta una delle regole più diffuse, quella delle espressioni booleane, e dipende dal pacchetto <a href="https://github.com/antonmedv/expr">Expr</a>, disponibile su GitHub, per interrogare e analizzare la sintassi delle espressioni di query.</p>
-<p>Durante una query con filtraggio degli attributi, Milvus genera un albero del piano primitivo irrisolto usando ant-parser, il metodo di parsing fornito da Expr, quando riceve l'espressione della query. Il piano primitivo ottenuto è un semplice albero binario. L'albero del piano viene poi perfezionato da Expr e dall'ottimizzatore integrato in Milvus. L'ottimizzatore di Milvus è molto simile al meccanismo del walker già citato. Poiché la funzionalità di ottimizzazione dell'albero del piano fornita da Expr è piuttosto sofisticata, l'onere dell'ottimizzatore integrato in Milvus viene alleggerito in larga misura. Infine, l'analizzatore analizza l'albero del piano ottimizzato in modo ricorsivo per generare un AST del piano nella struttura dei <a href="https://developers.google.com/protocol-buffers">buffer di protocollo</a> (protobuf).</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/parse_tree_walker_9a27942502.png" alt="parse tree walker" class="doc-image" id="parse-tree-walker" />
+    <span>parse tree walker</span>
+  </span>
+</p>
+<p>Milvus generates the PlanAST for query in a similar way to the ANTLR. However, using ANTLR requires redefining rather complicated syntax rules. Therefore, Milvus adopts one of the most prevalent rules - Boolean expression rules, and depends on the <a href="https://github.com/antonmedv/expr">Expr</a> package open sourced on GitHub to query and parse the syntax of query expressions.</p>
+<p>During a query with attribute filtering, Milvus will generate a primitive unsolved plan tree using ant-parser, the parsing method provided by Expr, upon receiving the query expression. The primitive plan tree we will get is a simple binary tree. Then the plan tree is fine-tuned by Expr and the built-in optimizer in Milvus. The optimizer in Milvus is quite similar to the aforementioned walker mechanism. Since the plan tree optimization functionality provided by Expr is pretty sophisticated, the burden of the Milvus built-in optimizer is alleviated to a great extent. Ultimately, the analyzer analyzes the optimized plan tree in a recursive way to generate a plan AST in the structure of <a href="https://developers.google.com/protocol-buffers">protocol buffers</a> (protobuf).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/plan_AST_workflow_3e50b7a0d4.png" alt="plan AST workflow" class="doc-image" id="plan-ast-workflow" />
-   </span> <span class="img-wrapper"> <span>Flusso di lavoro del piano AST</span> </span></p>
-<h2 id="Query-execution" class="common-anchor-header">Esecuzione della query<button data-href="#Query-execution" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/plan_AST_workflow_3e50b7a0d4.png" alt="plan AST workflow" class="doc-image" id="plan-ast-workflow" />
+    <span>plan AST workflow</span>
+  </span>
+</p>
+<h2 id="Query-execution" class="common-anchor-header">Query execution<button data-href="#Query-execution" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -119,27 +133,35 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-7-query-expression.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'esecuzione di una query è in fondo l'esecuzione del piano AST generato nelle fasi precedenti.</p>
-<p>In Milvus, un piano AST è definito in una struttura proto. L'immagine sottostante rappresenta un messaggio con la struttura protobuf. Esistono sei tipi di espressioni, tra cui l'espressione binaria e l'espressione unaria, che possono avere anche l'espressione logica binaria e l'espressione logica unaria.</p>
+    </button></h2><p>Query execution is at root the execution of the plan AST generated in the previous steps.</p>
+<p>In Milvus, a plan AST is defined in a proto structure. The image below is a message with the protobuf structure. There are six types of expressions, among which binary expression and unary expression can further have binary logical expression and unary logical expression.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Protobuf1_232132dcf2.png" alt="protobuf1" class="doc-image" id="protobuf1" />
-   </span> <span class="img-wrapper"> <span>protobuf1</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Protobuf1_232132dcf2.png" alt="protobuf1" class="doc-image" id="protobuf1" />
+    <span>protobuf1</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/protobuf2_193f92f033.png" alt="protobuf2" class="doc-image" id="protobuf2" />
-   </span> <span class="img-wrapper"> <span>protobuf2</span> </span></p>
-<p>L'immagine seguente è un'immagine UML dell'espressione di query. Mostra la classe base e la classe derivata di ogni espressione. Ogni classe è dotata di un metodo per accettare i parametri del visitatore. Questo è un tipico modello di progettazione del visitatore. Milvus utilizza questo pattern per eseguire il piano AST, in quanto il suo principale vantaggio è che gli utenti non devono fare nulla alle espressioni primitive, ma possono accedere direttamente a uno dei metodi del pattern per modificare la classe dell'espressione di query e i relativi elementi.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/protobuf2_193f92f033.png" alt="protobuf2" class="doc-image" id="protobuf2" />
+    <span>protobuf2</span>
+  </span>
+</p>
+<p>The image below is a UML image of the query expression. It demonstrates the basic class and derivative class of each expression. Each class comes with a method to accept visitor parameters. This is a typical visitor design pattern. Milvus uses this pattern to execute the plan AST as its biggest advantage is that users do not have to do anything to the primitive expressions but can directly access one of the methods in the patterns to modify certain query expression class and relevant elements.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/UML_1238bc30e1.png" alt="UML" class="doc-image" id="uml" />
-   </span> <span class="img-wrapper"> <span>UML</span> </span></p>
-<p>Quando si esegue un piano AST, Milvus riceve prima un nodo di piano di tipo proto. Poi ottiene un nodo di piano di tipo segcore tramite il parser interno C++ proto. Una volta ottenuti i due tipi di nodi di piano, Milvus accetta una serie di accessi alle classi e poi modifica ed esegue la struttura interna dei nodi di piano. Infine, Milvus cerca tra tutti i nodi del piano di esecuzione per ottenere i risultati filtrati. I risultati finali sono presentati nel formato di una bitmask. Una bitmask è un array di numeri di bit ("0" e "1"). I dati che soddisfano le condizioni del filtro sono contrassegnati da "1" nella bitmask, mentre quelli che non soddisfano i requisiti sono contrassegnati da "0" nella bitmask.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/UML_1238bc30e1.png" alt="UML" class="doc-image" id="uml" />
+    <span>UML</span>
+  </span>
+</p>
+<p>When executing a plan AST, Milvus first receives a proto-type plan node. Then a segcore-type plan node is obtained via the internal C++ proto parser. Upon obtaining the two types of plan nodes, Milvus accepts a series of class access and then modifies and executes in the internal structure of the plan nodes. Finally, Milvus searches through all the execution plan nodes to obtain the filtered results. The final results are output in the format of a bitmask. A bitmask is an array of bit numbers (“0” and “1”). Those data satisfying filter conditions are marked as “1” in the bitmask, while those do not meet the requirements are marked as “0” in the bitmask.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/execute_workflow_d89f1ee925.png" alt="execute workflow" class="doc-image" id="execute-workflow" />
-   </span> <span class="img-wrapper"> <span>eseguire il flusso di lavoro</span> </span></p>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Informazioni sulla serie Deep Dive<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/execute_workflow_d89f1ee925.png" alt="execute workflow" class="doc-image" id="execute-workflow" />
+    <span>execute workflow</span>
+  </span>
+</p>
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -154,14 +176,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-7-query-expression.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con l'<a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">annuncio ufficiale della disponibilità generale</a> di Milvus 2.0, abbiamo organizzato questa serie di blog Milvus Deep Dive per fornire un'interpretazione approfondita dell'architettura e del codice sorgente di Milvus. Gli argomenti trattati in questa serie di blog includono:</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Panoramica dell'architettura Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">API e SDK Python</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Elaborazione dei dati</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Gestione dei dati</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Interrogazione in tempo reale</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Motore di esecuzione scalare</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">Sistema QA</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Motore di esecuzione vettoriale</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

@@ -1,6 +1,7 @@
 ---
 id: conversational-memory-in-langchain.md
-title: LangChainにおける会話記憶
+title: |
+  Conversational Memory in LangChain
 author: Yujian Tang
 date: 2023-06-06T00:00:00.000Z
 cover: assets.zilliz.com/Conversational_Memory_in_Lang_Chain_7c1b4b7ba9.png
@@ -17,16 +18,16 @@ canonicalUrl: 'https://milvus.io/blog/conversational-memory-in-langchain.md'
     <span></span>
   </span>
 </p>
-<p>LangChainは、LLMアプリケーションを構築するための堅牢なフレームワークです。しかし、そのパワーは複雑さを伴います。LangChainはLLMをプロンプトする多くの方法と、会話記憶のような重要な機能を提供します。会話記憶は、LLMがあなたのチャットを記憶するためのコンテキストを提供します。</p>
-<p>この投稿では、LangChainとmilvusで会話メモリを使う方法を見ていきます。この記事に従うには、<code translate="no">pip</code> 、4つのライブラリとOpenAI APIキーをインストールする必要があります。必要な4つのライブラリは<code translate="no">pip install langchain milvus pymilvus python-dotenv</code> を実行することでインストールできる。または、この記事の<a href="https://colab.research.google.com/drive/11p-u8nKqrQYePlXR0HiSrUapmKLD0QN9?usp=sharing">CoLab Notebookの</a>最初のブロックを実行する。</p>
-<p>この記事では、以下について学びます：</p>
+<p>LangChain is a robust framework for building LLM applications. However, with that power comes quite a bit of complexity. LangChain provides many ways to prompt an LLM and essential features like conversational memory. Conversational memory offers context for the LLM to remember your chat.</p>
+<p>In this post, we look at how to use conversational memory with LangChain and Milvus. To follow along, you need to <code translate="no">pip</code> install four libraries and an OpenAI API key. The four libraries you need can be installed by running <code translate="no">pip install langchain milvus pymilvus python-dotenv</code>. Or executing the first block in the <a href="https://colab.research.google.com/drive/11p-u8nKqrQYePlXR0HiSrUapmKLD0QN9?usp=sharing">CoLab Notebook</a> for this article.</p>
+<p>In this post, we’ll learn about:</p>
 <ul>
-<li>LangChainを使った会話記憶</li>
-<li>会話コンテキストの設定</li>
-<li>LangChainで会話記憶を促す</li>
-<li>LangChain会話記憶のまとめ</li>
+<li>Conversational Memory with LangChain</li>
+<li>Setting Up Conversation Context</li>
+<li>Prompting the Conversational Memory with LangChain</li>
+<li>LangChain Conversational Memory Summary</li>
 </ul>
-<h2 id="Conversational-Memory-with-LangChain" class="common-anchor-header">LangChainによる会話記憶<button data-href="#Conversational-Memory-with-LangChain" class="anchor-icon" translate="no">
+<h2 id="Conversational-Memory-with-LangChain" class="common-anchor-header">Conversational Memory with LangChain<button data-href="#Conversational-Memory-with-LangChain" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,9 +42,9 @@ canonicalUrl: 'https://milvus.io/blog/conversational-memory-in-langchain.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>デフォルトの状態では、LLMとの対話は単一のプロンプトを通して行われます。コンテキストのためのメモリ、つまり "会話メモリ "を追加することは、一つのプロンプトを通して全てを送信する必要がなくなることを意味します。LangChainはLLMとの会話を保存し、後でその情報を取り出すことができます。</p>
-<p>ベクターストアを使った持続的会話記憶のセットアップには、LangChainの6つのモジュールが必要です。まず、<code translate="no">OpenAIEmbeddings</code> と<code translate="no">OpenAI</code> LLMを手に入れなければなりません。ベクトルストア・バックエンドを使うには、<code translate="no">VectorStoreRetrieverMemory</code> とLangChainバージョンの<code translate="no">Milvus</code> も必要です。次に、会話を保存してクエリするために、<code translate="no">ConversationChain</code> と<code translate="no">PromptTemplate</code> が必要です。</p>
-<p><code translate="no">os</code> 、<code translate="no">dotenv</code> 、<code translate="no">openai</code> ライブラリは、主に運用目的で使用します。OpenAIのAPIキーをロードして使用するために使用します。最後のセットアップステップは、ローカルの<a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>インスタンスをスピンアップすることである。Milvus Pythonパッケージの<code translate="no">default_server</code> 。</p>
+    </button></h2><p>In the default state, you interact with an LLM through single prompts. Adding memory for context, or “conversational memory” means you no longer have to send everything through one prompt. LangChain offers the ability to store the conversation you’ve already had with an LLM to retrieve that information later.</p>
+<p>To set up persistent conversational memory with a vector store, we need six modules from LangChain. First, we must get the <code translate="no">OpenAIEmbeddings</code> and the <code translate="no">OpenAI</code> LLM. We also need <code translate="no">VectorStoreRetrieverMemory</code> and the LangChain version of <code translate="no">Milvus</code> to use a vector store backend. Then we need <code translate="no">ConversationChain</code> and <code translate="no">PromptTemplate</code> to save our conversation and query it.</p>
+<p>The <code translate="no">os</code>, <code translate="no">dotenv</code>, and <code translate="no">openai</code> libraries are mainly for operational purposes. We use them to load and use the OpenAI API key. The final setup step is to spin up a local <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> instance. We do this through using the <code translate="no">default_server</code> from the Milvus Python package.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.<span class="hljs-property">embeddings</span>.<span class="hljs-property">openai</span> <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAIEmbeddings</span>
 <span class="hljs-keyword">from</span> langchain.<span class="hljs-property">llms</span> <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
 <span class="hljs-keyword">from</span> langchain.<span class="hljs-property">memory</span> <span class="hljs-keyword">import</span> <span class="hljs-title class_">VectorStoreRetrieverMemory</span>
@@ -63,7 +64,7 @@ openai.<span class="hljs-property">api_key</span> = os.<span class="hljs-title f
 <span class="hljs-keyword">from</span> milvus <span class="hljs-keyword">import</span> default_server
 default_server.<span class="hljs-title function_">start</span>()
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Setting-Up-Conversation-Context" class="common-anchor-header">会話コンテキストのセットアップ<button data-href="#Setting-Up-Conversation-Context" class="anchor-icon" translate="no">
+<h2 id="Setting-Up-Conversation-Context" class="common-anchor-header">Setting Up Conversation Context<button data-href="#Setting-Up-Conversation-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,9 +79,9 @@ default_server.<span class="hljs-title function_">start</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>これで前提条件がすべて整ったので、会話メモリの作成に進むことができる。最初のステップは、LangChainを使ってMilvusサーバーへの接続を作成することです。次に、空の辞書を使ってLangChain Milvusコレクションを作成します。さらに、上記で作成したエンベッディングとMilvus Liteサーバへの接続情報を渡します。</p>
-<p>ベクターデータベースを会話記憶に使うには、ベクターデータベースをリトリーバとしてインスタンス化する必要があります。この場合、上位1つの結果のみを取得し、<code translate="no">k=1</code> 。最後の会話記憶のセットアップステップでは、先ほどセットアップしたレトリーバーとベクトルデータベースの接続を通して、<code translate="no">VectorStoreRetrieverMemory</code> オブジェクトを会話記憶として使用します。</p>
-<p>会話メモリを使うには、そのメモリにコンテキストが必要です。そこで、メモリにコンテキストを与えてみましょう。この例では、5つの情報を与える。好きなスナック（チョコレート）、スポーツ（水泳）、ビール（ギネス）、デザート（チーズケーキ）、ミュージシャン（テイラー・スウィフト）。各エントリーは、<code translate="no">save_context</code> 機能を使ってメモリーに保存される。</p>
+    </button></h2><p>Now that we have all our prerequisites set up, we can proceed to create our conversational memory. Our first step is to create a connection to the Milvus server using LangChain. Next, we use an empty dictionary to create our LangChain Milvus collection. In addition, we pass in the embeddings we created above and the connection details for the Milvus Lite server.</p>
+<p>To use the vector database for conversational memory, we need to instantiate it as a retriever. We only retrieve the top 1 result for this case, setting <code translate="no">k=1</code>. The last conversational memory setup step is using the <code translate="no">VectorStoreRetrieverMemory</code> object as our conversational memory through the retriever and vector database connection we just set up.</p>
+<p>To use our conversational memory, it has to have some context in it. So let’s give the memory some context. For this example, we give five pieces of information. Let’s store my favorite snack (chocolate), sport (swimming), beer (Guinness), dessert (cheesecake), and musician (Taylor Swift). Each entry is saved to the memory through the <code translate="no">save_context</code> function.</p>
 <pre><code translate="no">vectordb = Milvus.from_documents(
    {},
    embeddings,
@@ -102,7 +103,7 @@ about_me = [
 <span class="hljs-keyword">for</span> example <span class="hljs-keyword">in</span> about_me:
    memory.save_context({<span class="hljs-string">&quot;input&quot;</span>: example[<span class="hljs-string">&quot;input&quot;</span>]}, {<span class="hljs-string">&quot;output&quot;</span>: example[<span class="hljs-string">&quot;output&quot;</span>]})
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Prompting-the-Conversational-Memory-with-LangChain" class="common-anchor-header">LangChainで会話メモリをプロンプトする<button data-href="#Prompting-the-Conversational-Memory-with-LangChain" class="anchor-icon" translate="no">
+<h2 id="Prompting-the-Conversational-Memory-with-LangChain" class="common-anchor-header">Prompting the Conversational Memory with LangChain<button data-href="#Prompting-the-Conversational-Memory-with-LangChain" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -117,9 +118,9 @@ about_me = [
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>会話メモリーの使い方を見てみましょう。まず、LangChainを使ってOpenAI LLMに接続します。LLMに創造性を求めないことを示すために、温度を0にします。</p>
-<p>次に、テンプレートを作成します。LLMが人間とフレンドリーな会話をしていることを伝え、2つの変数を挿入する。<code translate="no">history</code> 変数は会話の記憶からコンテキストを提供する。<code translate="no">input</code> 変数は現在の入力を提供する。これらの変数を挿入するために、<code translate="no">PromptTemplate</code> オブジェクトを使います。</p>
-<p><code translate="no">ConversationChain</code> オブジェクトを使って、プロンプト、LLM、メモリーを結合する。これで、いくつかのプロンプトを与えて、会話の記憶をチェックする準備ができた。まずLLMに、私たちの名前がポケモンシリーズの主なライバルであるゲイリーであることを伝えます（会話メモリ内の他のすべては、私についての事実です）。</p>
+    </button></h2><p>It’s time to look at how we can use our conversational memory. Let’s start by connecting to the OpenAI LLM through LangChain. We use a temperature of 0 to indicate that we don’t want our LLM to be creative.</p>
+<p>Next, we create a template. We tell the LLM that it is engaged in a friendly conversation with a human and inserts two variables. The <code translate="no">history</code> variable provides the context from the conversational memory. The <code translate="no">input</code> variable provides the current input. We use the <code translate="no">PromptTemplate</code> object to insert these variables.</p>
+<p>We use the <code translate="no">ConversationChain</code> object to combine our prompt, LLM, and memory. Now we are ready to check the memory of our conversation by giving it some prompts. We start by telling the LLM that our name is Gary, the main rival in the Pokemon series (everything else in the conversational memory is a fact about me).</p>
 <pre><code translate="no">llm = OpenAI(temperature=<span class="hljs-number">0</span>) <span class="hljs-comment"># Can be any valid LLM</span>
 _DEFAULT_TEMPLATE = <span class="hljs-string">&quot;&quot;&quot;The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
 
@@ -145,44 +146,44 @@ conversation_with_summary = ConversationChain(
 )
 conversation_with_summary.predict(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;Hi, my name is Gary, what&#x27;s up?&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>下の画像は、LLMからの予想される反応を示している。この例では、自分の名前は「AI」だと答えている。</p>
+<p>The image below shows what an expected response from the LLM could look like. In this example, it has responded by saying its name is “AI”.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Conversational_Memory_in_Lang_Chain_graphics_1_2bf386d22a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>では、ここまでの記憶をテストしてみよう。先ほど作成した<code translate="no">ConversationChain</code> オブジェクトを使い、私の好きなミュージシャンを検索します。</p>
+<p>Now let’s test out the memory so far. We use the <code translate="no">ConversationChain</code> object we created earlier and query for my favorite musician.</p>
 <pre><code translate="no">conversation_with_summary.predict(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;who is my favorite musician?&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>下の画像は、Conversation Chainからの予想される応答である。verboseオプションを使ったので、関連する会話も表示されている。予想通り、私の好きなアーティストがTaylor Swiftであることが返されているのがわかる。</p>
+<p>The image below shows an expected response from the Conversation Chain. Since we used the verbose option, it also shows us the relevant conversation. We can see that it returns that my favorite artist is Taylor Swift, as expected.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Conversational_Memory_in_Lang_Chain_graphics_2_8355206f3e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>次に、私の好きなデザート、チーズケーキを調べてみましょう。</p>
+<p>Next, let’s check for my favorite dessert - cheesecake.</p>
 <pre><code translate="no">conversation_with_summary.predict(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;Whats my favorite dessert?&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>私の好きなデザートを問い合わせると、カンバセーションチェーンは再びmilvusから正しい情報を選んでいることがわかる。私の好きなデザートはチーズケーキです。</p>
+<p>When we query for my favorite dessert, we can see that the Conversation Chain once again picks the correct information from Milvus. It finds that my favorite dessert is cheesecake, as I told it earlier.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Conversational_Memory_in_Lang_Chain_graphics_3_66a5c9690f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>さて、先ほどの情報を照会できることを確認したところで、もうひとつ、会話の最初に提供した情報を確認してみよう。私たちはAIに自分の名前をゲイリーと告げて会話を始めた。</p>
+<p>Now that we’ve confirmed that we can query for the information we gave earlier, let’s check for one more thing - the information we provided at the beginning of our conversation. We started our conversation by telling the AI that our name was Gary.</p>
 <pre><code translate="no">conversation_with_summary.predict(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;What&#x27;s my name?&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>最終的なチェックでは、会話チェーンが私たちの名前に関するビットをベクターストアの会話メモリーに保存したことを返す。私たちがゲイリーと名乗ったことが返されます。</p>
+<p>Our final check yields that the conversation chain stored the bit about our name in our vector store conversational memory. It returns that we said our name is Gary.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Conversational_Memory_in_Lang_Chain_graphics_4_f446f49672.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="LangChain-Conversational-Memory-Summary" class="common-anchor-header">LangChain会話メモリのまとめ<button data-href="#LangChain-Conversational-Memory-Summary" class="anchor-icon" translate="no">
+<h2 id="LangChain-Conversational-Memory-Summary" class="common-anchor-header">LangChain Conversational Memory Summary<button data-href="#LangChain-Conversational-Memory-Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -197,5 +198,5 @@ conversation_with_summary.predict(<span class="hljs-built_in">input</span>=<span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>このチュートリアルではLangChainで会話型メモリを使う方法を学びました。LangChainはMilvusのようなベクトルストア・バックエンドにアクセスして、永続的な会話型メモリを提供します。プロンプトに履歴を注入し、<code translate="no">ConversationChain</code> オブジェクトに履歴コンテキストを保存することで、会話メモリを使うことができます。</p>
-<p>このチュートリアルの例では、Conversation Chainに私に関する5つの事実を伝え、ポケモンの主なライバルであるゲイリーになりすました。そして、会話チェーンに、保存しておいた先験的知識、つまり好きなミュージシャンとデザートについての質問を投げかけました。会話チェーンはこの2つの質問に正しく答え、関連するエントリーを表示した。最後に、会話の最初に答えた私たちの名前について質問すると、私たちが "ゲイリー "と答えたことを正しく返してくれた。</p>
+    </button></h2><p>In this tutorial, we learned how to use conversational memory in LangChain. LangChain offers access to vector store backends like Milvus for persistent conversational memory. We can use conversational memory by injecting history into our prompts and saving historical context in the <code translate="no">ConversationChain</code> object.</p>
+<p>For this example tutorial, we gave the Conversation Chain five facts about me and pretended to be the main rival in Pokemon, Gary. Then, we pinged the Conversation Chain with questions about the a priori knowledge we stored - my favorite musician and dessert. It answered both of these questions correctly and surfaced the relevant entries. Finally, we asked it about our name as given at the beginning of the conversation, and it correctly returned that we said our name was “Gary.”</p>

@@ -1,9 +1,11 @@
 ---
 id: multimodal-semantic-search-with-images-and-text.md
-title: 画像とテキストによるマルチモーダル意味検索
+title: Multimodal Semantic Search with Images and Text
 author: Stefan Webb
 date: 2025-02-3
-desc: 基本的なキーワードマッチングを超え、テキストと画像の関係を理解するマルチモーダルAIを使用したセマンティック検索アプリの構築方法を学ぶ。
+desc: >-
+  Learn how to build a semantic search app using multimodal AI that understands
+  text-image relationships, beyond basic keyword matching.
 cover: >-
   assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png
 tag: Engineering
@@ -12,17 +14,17 @@ recommend: true
 canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md'
 ---
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/bxE0_QYX_sU?si=PkOHFcZto-rda1Fv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>人間として、私たちは感覚を通して世界を解釈する。私たちは音を聞き、画像、映像、テキストを目にし、しばしば互いに重ね合わせる。私たちは、このような複数のモダリティとそれらの関係を通して世界を理解する。人工知能が人間の能力に真に匹敵し、あるいはそれを超えるためには、複数のレンズを通して同時に世界を理解する、これと同じ能力を開発しなければならない。</p>
-<p>この投稿とそれに付随するビデオ（上）と<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">ノートブックでは</a>、テキストと画像の両方を一緒に処理できるモデルにおける最近のブレークスルーを紹介する。単純なキーワード・マッチングを超えたセマンティック検索アプリケーションを構築することで、ユーザーが求めているものと、彼らが検索しているビジュアル・コンテンツとの関係を理解し、これを実証します。</p>
-<p>このプロジェクトが特にエキサイティングなのは、Milvusベクトル・データベース、HuggingFaceの機械学習ライブラリ、アマゾンのカスタマー・レビューのデータセットなど、すべてオープンソースのツールで構築されていることだ。ほんの10年前であれば、このようなものを構築するにはかなりの専有リソースが必要だっただろうと考えると、驚くべきことだ。今日、これらの強力なコンポーネントは自由に利用でき、実験する好奇心さえあれば誰でも革新的な方法で組み合わせることができる。</p>
-<custom-h1>概要</custom-h1><p>
+<p>As humans, we interpret the world through our senses. We hear sounds, we see images, video, and text, often layered on top of each other. We understand the world through these multiple modalities and the relationship between them. For artificial intelligence to truly match or exceed human capabilities, it must develop this same ability to understand the world through multiple lenses simultaneously.</p>
+<p>In this post and accompanying video (above) and <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">notebook</a>, we’ll showcase recent breakthroughs in models that can process both text and images together. We’ll demonstrate this by building a semantic search application that goes beyond simple keyword matching - it understands the relationship between what users are asking for and the visual content they’re searching through.</p>
+<p>What makes this project particularly exciting is that it’s built entirely with open-source tools: the Milvus vector database, HuggingFace’s machine learning libraries, and a dataset of Amazon customer reviews. It’s remarkable to think that just a decade ago, building something like this would have required significant proprietary resources. Today, these powerful components are freely available and can be combined in innovative ways by anyone with the curiosity to experiment.</p>
+<custom-h1>Overview</custom-h1><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/overview_97a124bc9a.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>我々のマルチモーダル検索アプリケーションは、<em>retrieve-and-rerank</em>タイプである。RAG（<em>retrieval-augmented-generation</em>）をご存知であれば、非常によく似ているが、最終的な出力は、大規模言語ビジョンモデル（LLVM）によって再ランク付けされた画像のリストである。ユーザーの検索クエリにはテキストと画像の両方が含まれ、ターゲットはベクトル・データベースにインデックスされた画像セットである。このアーキテクチャには、<em>インデックス作成</em>、<em>検索</em>、<em>再ランク付け</em>（「生成」のようなもの）という3つのステップがある。</p>
-<h2 id="Indexing" class="common-anchor-header">インデックス作成<button data-href="#Indexing" class="anchor-icon" translate="no">
+<p>Our multimodal search application is of the type <em>retrieve-and-rerank.</em> If you are familiar with <em>retrieval-augmented-generation</em> (RAG) it is very similar, only that the final output is a list of images that were reranked by a large language-vision model (LLVM). The user’s search query contains both text and image, and the target is a set of images indexed in a vector database. The architecture has three steps - <em>indexing</em>, <em>retrieval</em>, and <em>reranking</em> (akin to “generation”) - which we summarize in turn.</p>
+<h2 id="Indexing" class="common-anchor-header">Indexing<button data-href="#Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,17 +39,17 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>検索アプリケーションは、検索する何かを持っていなければならない。私たちの場合、「Amazon Reviews 2023」データセットの小さなサブセットを使用する。このデータセットには、あらゆる種類の商品に関するAmazonのカスタマーレビューのテキストと画像の両方が含まれている。私たちが構築しているこのようなセマンティック検索は、eコマースサイトの便利な追加機能として想像できるだろう。このノートブックは、適切なデータベースと推論を導入することで、本番サイズまで拡張することができる。</p>
-<p>我々のパイプラインの最初の "マジック "は、埋め込みモデルの選択である。私たちは、最近開発された<a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGEと</a>呼ばれるマルチモーダルモデルを使用しています。このモデルは、テキストと画像を一緒に、またはどちらか一方を別々に、同じ空間に埋め込むことができます。このようなモデルは、例えば<a href="https://github.com/google-deepmind/magiclens">MagicLensの</a>ように、最近も開発されている。</p>
+    </button></h2><p>Our search application must have something to search. In our case, we use a small subset of the “Amazon Reviews 2023” dataset, which contains both text and images from Amazon customer reviews across all types of products. You can imagine a semantic search like that that we are building as being a useful addition to an ecommerce website. We use 900 images and discard the text, although observe that this notebook can scale to production-size with the right database and inference deployments.</p>
+<p>The first piece of “magic” in our pipeline is the choice of embedding model. We use a recently developed multimodal model called <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE</a> that is able to embed text and images jointly, or either separately, into the same space with a single model where points that are close are semantically similar. Other such models have been developed recently, for instance <a href="https://github.com/google-deepmind/magiclens">MagicLens</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/indexing_1937241be5.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>上の図は、[ライオンの横向きの画像]と "この正面図 "というテキストを埋め込んだ場合の埋め込みは、[ライオンの正面向きの画像]とテキストを埋め込まない場合の埋め込みに近いことを示しています。同じモデルを、テキスト＋画像の入力にも、画像のみの入力にも（テキストのみの入力にも）用いる。<em>このようにして、モデルは、クエリテキストがクエリ画像とどのように関連しているかというユーザーの意図を理解することができる。</em></p>
-<p>我々は、対応するテキストなしで900の商品画像を埋め込み、<a href="https://milvus.io/docs">milvusを</a>使用してベクトルデータベースに埋め込みを保存する。</p>
-<h2 id="Retrieval" class="common-anchor-header">検索<button data-href="#Retrieval" class="anchor-icon" translate="no">
+<p>The figure above illustrates: the embedding for [an image of a lion side-on] plus the text “front view of this”, is close to an embedding for [an image of a lion front-on] without text. The same model is used for both text plus image inputs and image-only inputs (as well as text-only inputs). <em>In this way, the model is able to understand the user’s intent in how the query text relates to the query image.</em></p>
+<p>We embed our 900 product images without corresponding text and store the embeddings in a vector database using <a href="https://milvus.io/docs">Milvus</a>.</p>
+<h2 id="Retrieval" class="common-anchor-header">Retrieval<button data-href="#Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,16 +64,16 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>データベースが構築されたので、ユーザークエリを提供することができる。あるユーザーが次のようなクエリを持ってきたとしよう：「というクエリに[Leopardの画像]を加えたとする。つまり、ヒョウ柄のスマホケースを探しているのです。</p>
-<p>ユーザーのクエリのテキストは、"ヒョウの皮 "ではなく、"これ "と言っていることに注意してください。私たちの埋め込みモデルは、"this "とそれが指すものを結びつけることができるに違いない。これは、以前のモデルの反復がこのようなオープンエンドの指示を扱うことができなかったことを考えると、印象的な偉業である。<a href="https://arxiv.org/abs/2403.19651">MagicLensの論文では</a>、さらに例を挙げている。</p>
+    </button></h2><p>Now that our database is built, we can serve a user query. Imagine a user comes along with the query: “a phone case with this” plus [an image of a Leopard]. That is, they are searching for phone cases with Leopard skin prints.</p>
+<p>Note that the text of the user’s query said “this” rather than “a Leopard’s skin”. Our embedding model must be able to connect “this” to what it refers to, which is an impressive feat given that the previous iteration of models were not able to handle such open-ended instructions. The <a href="https://arxiv.org/abs/2403.19651">MagicLens paper</a> gives further examples.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Retrieval_ad64f48e49.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>クエリーテキストと画像を共同で埋め込み、ベクトルデータベースの類似性検索を実行し、上位9件を返す。結果をヒョウのクエリー画像とともに上図に示す。上位のヒットはクエリに最も関連するものではないようだ。7番目の結果が最も関連性が高いようで、それはヒョウの皮がプリントされた携帯電話カバーである。</p>
-<h2 id="Generation" class="common-anchor-header">世代<button data-href="#Generation" class="anchor-icon" translate="no">
+<p>We embed the query text and image jointly and perform a similarity search of our vector database, returning the top nine hits. The results are shown in the figure above, along with the query image of the leopard. It appears that the top hit is not the one that is most relevant to the query. The seventh result appears to be most relevant - it is a phone cover with a leopard skin print.</p>
+<h2 id="Generation" class="common-anchor-header">Generation<button data-href="#Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,20 +88,20 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一番上の結果が最も関連性の高いものではないという点で、検索は失敗したようだ。しかし、再ランク付けのステップでこれを修正することができる。多くのRAGパイプラインにおいて、検索されたアイテムの再ランク付けは重要なステップであることはご存知だろう。我々は<a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Visionを</a>リランカーモデルとして使用する。</p>
-<p>まず、LLVMにクエリー画像のキャプションを生成するよう依頼する。LLVMは次のように出力する：</p>
-<p><em>「この画像はヒョウの顔のクローズアップで、斑点のある毛と緑色の目に焦点が当てられている。</em></p>
-<p>次に、このキャプションと、9つの結果とクエリ画像を含む1つの画像を与え、モデルに結果の再ランク付けを依頼するテキストプロンプトを作成し、答えをリストとして与え、最も一致するものを選択する理由を提供する。</p>
+    </button></h2><p>It appears our search has failed in that the top result is not the most relevant. However, we can fix this with a reranking step. You may be familiar with reranking of retrieved items as being an important step in many RAG pipelines. We use <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision</a> as the re-ranker model.</p>
+<p>We first ask a LLVM to generate a caption of the query image. The LLVM outputs:</p>
+<p><em>“The image shows a close-up of a leopard’s face with a focus on its spotted fur and green eyes.”</em></p>
+<p>We then feed this caption, a single image with the nine results and query image, and construct a text prompt asking the model to re-rank the results, giving the answer as a list and providing a reason for the choice of the top match.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Generation_b016a6c26a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>出力は上の図のように視覚化され、最も関連性の高いアイテムがトップマッチになりました：</p>
-<p><em>"最も適切なアイテムはヒョウをテーマにしたもので、同じようなテーマのスマホケースを求めるユーザーのクエリ指示にマッチしています。"</em></p>
-<p>我々のLLVMリランカーは、画像とテキストを横断して理解を行い、検索結果の関連性を向上させることができた。<em>興味深い成果として、再ランカーは8つの結果しか与えず、1つ落としていることがある。これはガードレールと構造化出力の必要性を強調している。</em></p>
-<h2 id="Summary" class="common-anchor-header">まとめ<button data-href="#Summary" class="anchor-icon" translate="no">
+<p>The output is visualized in the figure above - the most relevant item is now the top match - and the reason given is:</p>
+<p><em>“The most suitable item is the one with the leopard theme, which matches the user’s query instruction for a phone case with a similar theme.”</em></p>
+<p>Our LLVM re-ranker was able to perform understanding across images and text, and improve the relevance of the search results. <em>One interesting artifact is that the re-ranker only gave eight results and has dropped one, which highlights the need for guardrails and structured output.</em></p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,10 +116,10 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この投稿とそれに付随する<a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">ビデオと</a> <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">ノートブックでは</a>、テキストと画像を横断するマルチモーダルな意味検索のためのアプリケーションを構築した。埋め込みモデルは、テキストと画像を同じ空間に合同または別個に埋め込むことができ、基礎モデルはテキストと画像を入力し、それに対してテキストを生成することができた。<em>重要なのは、埋め込みモデルは、自由形式の指示というユーザーの意図をクエリー画像に関連付けることができ、そうすることで、ユーザーが結果を入力画像にどのように関連付けたいかを指定できたことである。</em></p>
-<p>これは、近い将来に起こることのほんの一例に過ぎない。画像、ビデオ、音声、分子、ソーシャルネットワーク、表データ、時系列データなど、その可能性は無限である。</p>
-<p>そして、これらのシステムの中核にあるのが、システムの外部「メモリ」を保持するベクトル・データベースである。Milvusはこの目的に最適である。<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Milvusは</a>オープンソースで、十分な機能を備えており（<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Milvus 2.5の全文検索についてはこちらの記事を</a>参照）、ウェブスケールのトラフィックと100ミリ秒以下のレイテンシで数十億のベクトルまで効率的にスケールする。<a href="https://milvus.io/docs">Milvusのドキュメントで</a>詳細を確認し、私たちの<a href="https://milvus.io/discord">Discord</a>コミュニティに参加し、次回の<a href="https://lu.ma/unstructured-data-meetup">Unstructured Data meetupで</a>お会いできることを楽しみにしています。それではまた！</p>
-<h2 id="Resources" class="common-anchor-header">リソース<button data-href="#Resources" class="anchor-icon" translate="no">
+    </button></h2><p>In this post and the accompanying <a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">video</a> and <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">notebook</a>, we have constructed an application for multimodal semantic search across text and images. The embedding model was able to embed text and images jointly or separately into the same space, and the foundation model was able to input text and image while generating text in response. <em>Importantly, the embedding model was able to relate the user’s intent of an open-ended instruction to the query image and in that way specify how the user wanted the results to relate to the input image.</em></p>
+<p>This is just a taste of what is to come in the near future. We will see many applications of multimodal search, multimodal understanding and reasoning, and so on across diverse modalities: image, video, audio, molecules, social networks, tabular data, time-series, the potential is boundless.</p>
+<p>And at the core of these systems is a vector database holding the system’s external “memory”. Milvus is an excellent choice for this purpose. It is open-source, fully featured (see <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">this article on full-text search in Milvus 2.5</a>) and scales efficiently to the billions of vectors with web-scale traffic and sub-100ms latency. Find out more at the <a href="https://milvus.io/docs">Milvus docs</a>, join our <a href="https://milvus.io/discord">Discord</a> community, and hope to see you at our next <a href="https://lu.ma/unstructured-data-meetup">Unstructured Data meetup</a>. Until then!</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -133,13 +135,13 @@ canonicalUrl: 'https://milvus.io/blog/multimodal-semantic-search-with-images-and
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>ノートブック「<a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">Amazon ReviewsとLLVM Rerankingによるマルチモーダル検索</a>"</p></li>
-<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Youtube AWS Developersビデオ</a></p></li>
-<li><p><a href="https://milvus.io/docs">Milvusドキュメント</a></p></li>
-<li><p><a href="https://lu.ma/unstructured-data-meetup">非構造化データミートアップ</a></p></li>
-<li><p>埋め込みモデル<a href="https://huggingface.co/BAAI/bge-visualized">可視化されたBGEモデルカード</a></p></li>
-<li><p>他の埋め込みモデル<a href="https://github.com/google-deepmind/magiclens">MagicLensモデルレポ</a></p></li>
-<li><p>LLVM：<a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Visionモデルカード</a></p></li>
-<li><p>論文"<a href="https://arxiv.org/abs/2403.19651">MagicLens：オープンエンド命令による自己教師付き画像検索</a>"</p></li>
-<li><p>データセット<a href="https://amazon-reviews-2023.github.io/">アマゾンレビュー2023</a></p></li>
+<li><p>Notebook: <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/quickstart/multimodal_retrieval_amazon_reviews.ipynb">“Multimodal Search with Amazon Reviews and LLVM Reranking</a>”</p></li>
+<li><p><a href="https://www.youtube.com/watch?v=bxE0_QYX_sU">Youtube AWS Developers video</a></p></li>
+<li><p><a href="https://milvus.io/docs">Milvus documentation</a></p></li>
+<li><p><a href="https://lu.ma/unstructured-data-meetup">Unstructured Data meetup</a></p></li>
+<li><p>Embedding model: <a href="https://huggingface.co/BAAI/bge-visualized">Visualized BGE model card</a></p></li>
+<li><p>Alt. embedding model: <a href="https://github.com/google-deepmind/magiclens">MagicLens model repo</a></p></li>
+<li><p>LLVM: <a href="https://huggingface.co/microsoft/Phi-3-vision-128k-instruct">Phi-3 Vision model card</a></p></li>
+<li><p>Paper: “<a href="https://arxiv.org/abs/2403.19651">MagicLens: Self-Supervised Image Retrieval with Open-Ended Instructions</a>”</p></li>
+<li><p>Dataset: <a href="https://amazon-reviews-2023.github.io/">Amazon Reviews 2023</a></p></li>
 </ul>

@@ -1,6 +1,8 @@
 ---
 id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
-title: RAGコンテキストの刈り込みとトークン保存のためのセマンティックハイライトモデルの構築方法
+title: >
+  How We Built a Semantic Highlighting Model for RAG Context Pruning and Token
+  Saving
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
 cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
@@ -14,11 +16,13 @@ meta_keywords: >-
 meta_title: |
   Semantic Highlighting for RAG Context Pruning and Token Saving
 desc: >-
-  Zillizが、エンコーダのみのアーキテクチャ、LLM推論、大規模なバイリンガルトレーニングデータを使用して、RAGノイズフィルタリング、コンテキスト刈り込み、トークン保存のためのセマンティックハイライトモデルを構築した方法を学びます。
+  Learn how Zilliz built a semantic highlighting model for RAG noise filtering,
+  context pruning, and token saving using encoder-only architectures, LLM
+  reasoning, and large-scale bilingual training data.
 origin: >-
   https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 ---
-<h2 id="The-Problem-RAG-Noise-and-Token-Waste" class="common-anchor-header">問題：RAGのノイズとトークンの無駄<button data-href="#The-Problem-RAG-Noise-and-Token-Waste" class="anchor-icon" translate="no">
+<h2 id="The-Problem-RAG-Noise-and-Token-Waste" class="common-anchor-header">The Problem: RAG Noise and Token Waste<button data-href="#The-Problem-RAG-Noise-and-Token-Waste" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,11 +37,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>ベクトル検索は</strong>、エンタープライズアシスタント、AIエージェント、カスタマーサポートボットなどのRAGシステムの強固な基盤です。重要な文書を確実に見つけることができる。しかし、検索だけではコンテキストの問題を解決することはできない。よくチューニングされたインデックスでさえ、広範囲に関連するチャンクを返すが、そのチャンクの中にある文章のうち、実際にクエリに答えるものはごく一部である。</p>
-<p>本番システムでは、このギャップはすぐに現れる。一つのクエリで何十ものドキュメントが取り込まれるかもしれない。実際のシグナルを含む文章はほんの一握りで、残りはトークンの使用量を増大させ、推論を遅らせ、LLMの気を散らせるコンテキストである。エージェントワークフローでは、クエリ自体が多段階推論の出力であり、検索されたテキストのごく一部にしかマッチしないため、問題はさらに明白になる。</p>
-<p>このため、<em>有用な文章を</em> <em><strong>識別してハイライト</strong></em> <em>し、残りを無視する</em>ことができるモデルの明確な必要性が生じる<em>。基本的には</em>、文章レベルの関連性フィルタリング、または多くのチームが<a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>コンテキストの刈り込みと</strong></a>呼ぶものである。目的は単純で、重要な部分を残し、LLMに到達する前にノイズを取り除くことです。</p>
-<p>従来のキーワードベースのハイライトでは、この問題は解決できない。例えば、ユーザーが "Pythonコードの実行効率を上げるには？"と質問した場合、キーワードハイライターは "Python "と "efficiency "を選び出しますが、質問の答えである "Use NumPy vectorized operations instead of loops "は見逃してしまいます。代わりに必要なのは、文字列のマッチングではなく、意味の理解なのです。</p>
-<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">RAGノイズフィルタとコンテキスト刈り込みのためのセマンティックハイライトモデル<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Vector search</strong> is a solid foundation for RAG systems—enterprise assistants, AI agents, customer support bots, and more. It reliably finds the documents that matter. But retrieval alone doesn’t solve the context problem. Even well-tuned indexes return chunks that are broadly relevant, while only a small fraction of the sentences inside those chunks actually answer the query.</p>
+<p>In production systems, this gap shows up immediately. A single query may pull in dozens of documents, each thousands of tokens long. Only a handful of sentences contain the actual signal; the rest is context that bloats token usage, slows inference, and often distracts the LLM. The problem becomes even more obvious in agent workflows, where the queries themselves are the output of multi-step reasoning and only match small parts of the retrieved text.</p>
+<p>This creates a clear need for a model that can <em><strong>identify and highlight</strong></em> <em>the useful sentences and ignore the rest</em>—essentially, sentence-level relevance filtering, or what many teams refer to as <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>context pruning</strong></a>. The goal is simple: keep the parts that matter and drop the noise before it ever reaches the LLM.</p>
+<p>Traditional keyword-based highlighting can’t solve this problem. For example, if a user asks, “How do I improve Python code execution efficiency?”, a keyword highlighter will pick out “Python” and “efficiency,” but miss the sentence that actually answers the question—“Use NumPy vectorized operations instead of loops”—because it shares no keywords with the query. What we need instead is semantic understanding, not string matching.</p>
+<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">A Semantic Highlighting Model for RAG Noise Filtering and Context Pruning<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,35 +56,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAGビルダーがこれを簡単に行えるように、私たちは、検索されたドキュメントの中でクエリと意味的に一致する文章を特定し、ハイライトする<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>セマンティックハイライティングモデルを</strong></a>トレーニングし、オープンソース化しました。このモデルは現在、英語と中国語の両方で最先端の性能を発揮し、既存のRAGパイプラインに直接組み込むことができるように設計されています。</p>
+    </button></h2><p>To make this easy for RAG builders, we trained and open-sourced a <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>Semantic Highlighting model</strong></a> that identifies and highlights the sentences in retrieved documents that are more semantically aligned with the query. The model currently delivers the state-of-the-art performance on both English and Chinese and is designed to slot directly into existing RAG pipelines.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/context_pruning_80f7b16280.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>モデルの詳細</strong></p>
+<p><strong>Model Details</strong></p>
 <ul>
 <li><p><strong>HuggingFace:</strong> <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p><strong>ライセンス</strong>MIT (商用フレンドリー)</p></li>
-<li><p><strong>アーキテクチャ</strong>BGE-M3 Reranker v2に基づく0.6Bエンコーダのみのモデル</p></li>
-<li><p><strong>コンテキストウィンドウ</strong>8192トークン</p></li>
-<li><p><strong>対応言語</strong>英語と中国語</p></li>
+<li><p><strong>License:</strong> MIT (commercial-friendly)</p></li>
+<li><p><strong>Architecture:</strong> 0.6B encoder-only model based on BGE-M3 Reranker v2</p></li>
+<li><p><strong>Context Window:</strong> 8192 tokens</p></li>
+<li><p><strong>Supported Languages:</strong> English and Chinese</p></li>
 </ul>
-<p>セマンティックハイライトは、長い検索文書の有用な部分のみを選択するために必要な関連性シグナルを提供する。実際には、このモデルによって以下のことが可能になります：</p>
+<p>Semantic Highlighting provides the relevance signals needed to select only the useful parts of long retrieved documents. In practice, this model enables:</p>
 <ul>
-<li><p>文書のどの部分が実際に重要であるかを示す、<strong>解釈可能性の向上</strong></p></li>
-<li><p>ハイライトされた文章のみをLLMに送ることで、<strong>トークンのコストを70～80%削減</strong></p></li>
-<li><p>無関係な文脈を見ずに済むため、<strong>回答の質が向上する</strong>。</p></li>
-<li><p>エンジニアが文レベルのマッチを直接検査できるため、<strong>デバッグが容易</strong></p></li>
+<li><p><strong>Improved interpretability</strong>, showing which parts of a document actually matter</p></li>
+<li><p><strong>70–80% reduction in token cost</strong> by sending only highlighted sentences to the LLM</p></li>
+<li><p><strong>Better answer quality</strong>, since the model sees less irrelevant context</p></li>
+<li><p><strong>Easier debugging</strong>, because engineers can inspect sentence-level matches directly</p></li>
 </ul>
-<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">評価結果SOTAパフォーマンスの達成</h3><p>英語と中国語にまたがる複数のデータセットで、セマンティックハイライティングモデルをドメイン内とドメイン外の両方の条件で評価しました。</p>
-<p>ベンチマークスイートは以下の通りです：</p>
+<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">Evaluation Results: Achieving SOTA Performance</h3><p>We evaluated our Semantic Highlighting model across multiple datasets spanning both English and Chinese, in both in-domain and out-of-domain conditions.</p>
+<p>The benchmark suites include:</p>
 <ul>
-<li><p><strong>英語マルチスパンQA:</strong>multispanqa</p></li>
-<li><p><strong>英語圏外ウィキペディア：</strong>wikitext2</p></li>
-<li><p><strong>中国語マルチスパンQA:</strong>multispanqa_zh</p></li>
-<li><p><strong>中国語のアウトオブドメイン・ウィキペディア：</strong>wikitext2_zh</p></li>
+<li><p><strong>English multi-span QA:</strong> multispanqa</p></li>
+<li><p><strong>English out-of-domain Wikipedia:</strong> wikitext2</p></li>
+<li><p><strong>Chinese multi-span QA:</strong> multispanqa_zh</p></li>
+<li><p><strong>Chinese out-of-domain Wikipedia:</strong> wikitext2_zh</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -88,15 +92,15 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>評価モデルは以下の通り：</p>
+<p>Evaluated models include:</p>
 <ul>
-<li><p>オープンプロヴァンスシリーズ</p></li>
-<li><p>ネイバーのProvence/XProvenceシリーズ</p></li>
-<li><p>OpenSearchのセマンティックハイライト</p></li>
-<li><p>学習済みバイリンガルモデル：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p>Open Provence series</p></li>
+<li><p>Naver’s Provence/XProvence series</p></li>
+<li><p>OpenSearch’s semantic-highlighter</p></li>
+<li><p>Our trained bilingual model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 </ul>
-<p>4つのデータセットすべてにおいて、私たちのモデルはトップランキングを達成しています。さらに重要なことは、英語と中国語の両方で一貫して優れた結果を出す<em>唯一の</em>モデルであるということです。競合モデルは、英語だけに焦点を当てるか、中国語テキストで明らかなパフォーマンス低下を示しています。</p>
-<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">セマンティックハイライティングモデルの構築方法<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Across all four datasets, our model achieves the top ranking. More importantly, it is the <em>only</em> model that performs consistently well on both English and Chinese. Competing models either focus exclusively on English or show clear performance drops on Chinese text.</p>
+<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">How We Built This Semantic Highlighting Model<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -111,21 +115,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>このタスクのためのモデルをトレーニングすることは難しいことではありません。初期の問題を処理し、SOTAに近いパフォーマンスを提供する<em>優れた</em>モデルをトレーニングすることが、本当の仕事になります。私たちのアプローチは次の2点に重点を置いています：</p>
+    </button></h2><p>Training a model for this task isn’t the hard part; training a <em>good</em> model that handles the earlier problems and delivers near-SOTA performance is where the real work happens. Our approach focused on two things:</p>
 <ul>
-<li><p><strong>モデル・アーキテクチャ：</strong>高速推論のためにエンコーダのみの設計を使用する。</p></li>
-<li><p><strong>トレーニングデータ：</strong>推論可能なLLMを使用して高品質の関連性ラベルを生成し、ローカル推論フレームワークでデータ生成をスケールする。</p></li>
+<li><p><strong>Model architecture:</strong> use an encoder-only design for fast inference.</p></li>
+<li><p><strong>Training data:</strong> generate high-quality relevance labels using reasoning-capable LLMs and scale data generation with local inference frameworks.</p></li>
 </ul>
-<h3 id="Model-Architecture" class="common-anchor-header">モデルアーキテクチャ</h3><p>コンテキスト刈り込みを<strong>トークンレベルの関連性スコアリングタスクとして</strong>扱う、軽量な<strong>エンコーダのみの</strong>ネットワークとしてモデルを構築した。この設計は、ICLR 2025でNaverによって紹介されたコンテキスト・プルーニング・アプローチである<a href="https://arxiv.org/html/2501.16214v1">Provenceに</a>触発されたもので、プルーニングを "正しいチャンクを選択する "から "すべてのトークンをスコアリングする "ことに置き換える。この枠組みは、きめ細かなシグナルが不可欠なセマンティック・ハイライトと自然に合致する。</p>
-<p>エンコーダのみのモデルは最新のアーキテクチャではないが、ここでは非常に実用的である。本番のRAGシステムでは、このスピードの優位性は、より大きなデコーダーモデルを使うよりもはるかに重要である。</p>
-<p>トークン・レベルの関連性スコアを計算したら、それを<strong>文レベルの</strong>スコアに集約する。このステップにより、ノイズの多いトークン信号が安定した解釈可能な関連性メトリックに変わる。設定可能な閾値以上の文はハイライトされ、それ以外はフィルタリングされる。これにより、クエリにとって実際に重要なセンテンスを選択するためのシンプルで信頼性の高いメカニズムが出来上がる。</p>
-<h3 id="Inference-Process" class="common-anchor-header">推論プロセス</h3><p>実行時、我々のセマンティックハイライティングモデルはシンプルなパイプラインに従う：</p>
+<h3 id="Model-Architecture" class="common-anchor-header">Model Architecture</h3><p>We built the model as a lightweight <strong>encoder-only</strong> network that treats context pruning as a <strong>token-level relevance scoring task</strong>. This design is inspired by <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, a context-pruning approach introduced by Naver at ICLR 2025, which reframes pruning from “choose the right chunk” to “score every token.” That framing aligns naturally with semantic highlighting, where fine-grained signals are essential.</p>
+<p>Encoder-only models aren’t the newest architecture, but they remain extremely practical here: they’re fast, easy to scale, and can produce relevance scores for all token positions in parallel. For a production RAG system, that speed advantage matters far more than using a larger decoder model.</p>
+<p>Once we compute token-level relevance scores, we aggregate them into <strong>sentence-level</strong> scores. This step turns noisy token signals into a stable, interpretable relevance metric. Sentences above a configurable threshold are highlighted; everything else is filtered out. This produces a simple and reliable mechanism for selecting the sentences that actually matter to the query.</p>
+<h3 id="Inference-Process" class="common-anchor-header">Inference Process</h3><p>At runtime, our semantic highlighting model follows a simple pipeline:</p>
 <ol>
-<li><p><strong>入力-</strong>プロセスはユーザーのクエリーから始まる。取得された文書は関連性評価のためのコンテキスト候補として扱われる。</p></li>
-<li><p><strong>モデル処理-</strong>クエリとコンテキストは1つのシーケンスに連結される：[BOS] + クエリ + コンテキスト</p></li>
-<li><p><strong>トークンのスコアリング -</strong>コンテキスト内の各トークンは、クエリとの関連性の強さを反映する0から1の間の関連性スコアが割り当てられる。</p></li>
-<li><p><strong>文の集約 -</strong>トークンのスコアは文レベルで集約され、通常は平均化され、各文の関連性スコアが生成されます。</p></li>
-<li><p><strong>しきい値フィルタリング -</strong>設定可能なしきい値以上のスコアを持つ文はハイライトされ保持され、スコアの低い文は下流のLLMに渡される前にフィルタリングされる。</p></li>
+<li><p><strong>Input—</strong> The process starts with a user query. Retrieved documents are treated as candidate context for relevance evaluation.</p></li>
+<li><p><strong>Model Processing—</strong> The query and context are concatenated into a single sequence: [BOS] + Query + Context</p></li>
+<li><p><strong>Token Scoring—</strong> Each token in the context is assigned a relevance score between 0 and 1, reflecting how strongly it is related to the query.</p></li>
+<li><p><strong>Sentence Aggregation—</strong> Token scores are aggregated at the sentence level, typically by averaging, to produce a relevance score for each sentence.</p></li>
+<li><p><strong>Threshold Filtering—</strong> Sentences with scores above a configurable threshold are highlighted and retained, while low-scoring sentences are filtered out before being passed to the downstream LLM.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -133,16 +137,16 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">ベースモデルBGE-M3 Reranker v2</h3><p>ベースモデルとしてBGE-M3 Reranker v2を選択した理由はいくつかある：</p>
+<h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">Base Model: BGE-M3 Reranker v2</h3><p>We selected BGE-M3 Reranker v2 as our base model for several reasons:</p>
 <ol>
-<li><p>トークンや文のスコアリングに適したエンコーダアーキテクチャを採用している。</p></li>
-<li><p>英語と中国語の両方に最適化された多言語をサポート</p></li>
-<li><p>長いRAG文書に適した8192個のトークンコンテキストウィンドウを提供</p></li>
-<li><p>0.6Bのパラメータを維持し、計算量を増やすことなく十分な強度を確保</p></li>
-<li><p>ベースモデルに十分な世界知識を確保</p></li>
-<li><p>関連性判定タスクと密接に連携するリランキング用に学習済み</p></li>
+<li><p>It employs an Encoder architecture suitable for token and sentence scoring</p></li>
+<li><p>Supports multiple languages with optimization for both English and Chinese</p></li>
+<li><p>Provides an 8192-token context window appropriate for longer RAG documents</p></li>
+<li><p>Maintains 0.6B parameters—strong enough without being computationally heavy</p></li>
+<li><p>Ensures sufficient world knowledge in the base model</p></li>
+<li><p>Trained for reranking, which closely aligns with relevance judgment tasks</p></li>
 </ol>
-<h2 id="Training-Data-LLM-Annotation-with-Reasoning" class="common-anchor-header">トレーニングデータ推論を伴うLLMアノテーション<button data-href="#Training-Data-LLM-Annotation-with-Reasoning" class="anchor-icon" translate="no">
+<h2 id="Training-Data-LLM-Annotation-with-Reasoning" class="common-anchor-header">Training Data: LLM Annotation with Reasoning<button data-href="#Training-Data-LLM-Annotation-with-Reasoning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -157,41 +161,41 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>モデル・アーキテクチャが完成したら、次の課題は、実際に信頼できるモデルを訓練するためのデータセットを構築することだった。私たちはまず、Open Provenceがどのようにこれを処理しているかを見ることから始めた。彼らのアプローチは、公開されたQAデータセットと小さなLLMを使って、どの文が関連性があるかをラベル付けする。スケールもよく、自動化も簡単なので、私たちにとって良いベースラインとなった。</p>
-<p>LLMに文レベルのラベルを直接出力させると、結果は必ずしも安定しない。LLMに文レベルのラベルを直接出力させると、結果が常に安定しないのだ。あるラベルは正しくても、あるラベルは疑わしい。完全に手作業でアノテーションを行うという選択肢もなかった。手作業でラベル付けできる量をはるかに超えるデータが必要だったのだ。</p>
-<p>スケーラビリティを犠牲にすることなく安定性を向上させるために、LLMは出力するラベルごとに短い推論スニペットを提供しなければならない。各トレーニング例には、クエリ、ドキュメント、センテンススパン、センテンスが関連または無関係である理由の簡単な説明が含まれる。この小さな調整により、アノテーションの一貫性が高まり、データセットの検証やデバッグの際に参照できる具体的な情報が得られた。</p>
-<p>理由を含めることは、驚くほど価値があることがわかった：</p>
+    </button></h2><p>Once we finalized the model architecture, the next challenge was building a dataset that would actually train a reliable model. We started by looking at how Open Provence handles this. Their approach uses public QA datasets and a small LLM to label which sentences are relevant. It scales well and is easy to automate, which made it a good baseline for us.</p>
+<p>But we quickly ran into the same issue they describe: if you ask an LLM to output sentence-level labels directly, the results aren’t always stable. Some labels are correct, others are questionable, and it’s hard to clean things up afterward. Fully manual annotation wasn’t an option either—we needed far more data than we could ever label by hand.</p>
+<p>To improve stability without sacrificing scalability, we made one change: the LLM must provide a short reasoning snippet for every label it outputs. Each training example includes the query, the document, the sentence spans, and a brief explanation of why a sentence is relevant or irrelevant. This small adjustment made the annotations much more consistent and gave us something concrete to reference when validating or debugging the dataset.</p>
+<p>Including the reasoning turned out to be surprisingly valuable:</p>
 <ul>
-<li><p><strong>アノテーションの質の向上：</strong>理由を書き出すことでセルフチェックができ、ランダムなラベルや一貫性のないラベルを減らすことができる。</p></li>
-<li><p><strong>観察可能性の向上：</strong>ラベルをブラックボックスとして扱うのではなく、<em>なぜ</em>その文章が選択されたかを見ることができる。</p></li>
-<li><p><strong>より簡単なデバッグ：</strong>何かが間違っているように見えるとき、プロンプト、ドメイン、アノテーションロジックのどれが問題かを簡単に見つけることができます。</p></li>
-<li><p><strong>再利用可能なデータ：</strong>将来的に異なるラベリングモデルに切り替えたとしても、推論トレースは再ラベリングや監査に役立ちます。</p></li>
+<li><p><strong>Higher annotation quality:</strong> Writing out the reasoning works as a self-check, which reduces random or inconsistent labels.</p></li>
+<li><p><strong>Better observability:</strong> We can see <em>why</em> a sentence was selected instead of treating the label as a black box.</p></li>
+<li><p><strong>Easier debugging:</strong> When something looks wrong, the reasoning makes it easy to spot whether the issue is the prompt, the domain, or the annotation logic.</p></li>
+<li><p><strong>Reusable data:</strong> Even if we switch to a different labeling model in the future, the reasoning traces remain useful for re-labeling or auditing.</p></li>
 </ul>
-<p>アノテーションのワークフローは以下のようになる：</p>
+<p>The annotation workflow looks like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/annotation_data_generation_ff93eb18f4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8Bによるアノテーション</h3><p>アノテーションのためにQwen3 8Bを選択した理由は、Qwen3 8Bが出力による「思考モード」をネイティブにサポートしており、一貫性のある推論トレースの抽出が非常に容易だからである。小さなモデルでは安定したラベルが得られず、大きなモデルはこの種のパイプラインには遅く、不必要に高価でした。Qwen3 8Bは、品質、スピード、コストの間で適切なバランスを保っている。</p>
-<p>我々は、クラウドAPIではなく、<strong>ローカルのvLLMサービスを使って</strong>全てのアノテーションを実行した。これにより、高いスループット、予測可能なパフォーマンス、より低いコスト、つまりGPU時間とAPIトークン料金を交換することができ、何百万ものサンプルを生成する場合、より良い取引となった。</p>
-<h3 id="Dataset-Scale" class="common-anchor-header">データセットのスケール</h3><p>合計で<strong>500万以上のバイリンガルのトレーニングサンプルを</strong>構築し、英語と中国語でほぼ均等に分けた。</p>
+<h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B for Annotation</h3><p>For annotation, we chose Qwen3 8B because it natively supports a “thinking mode” via outputs, making it much easier to extract consistent reasoning traces. Smaller models didn’t give us stable labels, and larger models were slower and unnecessarily expensive for this kind of pipeline. Qwen3 8B hit the right balance between quality, speed, and cost.</p>
+<p>We ran all annotations using a <strong>local vLLM service</strong> instead of cloud APIs. This gave us high throughput, predictable performance, and much lower cost—essentially trading GPU time for API token fees, which is the better deal when generating millions of samples.</p>
+<h3 id="Dataset-Scale" class="common-anchor-header">Dataset Scale</h3><p>In total, we built <strong>over 5 million bilingual training samples</strong>, split roughly evenly between English and Chinese.</p>
 <ul>
-<li><p><strong>英語のソース</strong>MS MARCO、Natural Questions、GooAQ</p></li>
-<li><p><strong>中国語ソース</strong>DuReader、中国語ウィキペディア、mmarco_chinese</p></li>
+<li><p><strong>English sources:</strong> MS MARCO, Natural Questions, GooAQ</p></li>
+<li><p><strong>Chinese sources:</strong> DuReader, Chinese Wikipedia, mmarco_chinese</p></li>
 </ul>
-<p>データセットの一部は、Open Provenceのようなプロジェクトで使われている既存のデータを再注釈したものである。残りは、まずクエリとコンテキストのペアを作成し、推論ベースのパイプラインでラベル付けすることで、生のコーパスから生成されました。</p>
-<p>すべての注釈付きトレーニングデータは、コミュニティの発展とトレーニングの参考のためにHuggingFaceでも利用可能です：<a href="https://huggingface.co/zilliz/datasets">Zillizデータセット</a></p>
+<p>Part of the dataset comes from re-annotating existing data used by projects like Open Provence. The rest was generated from raw corpora by first creating query–context pairs and then labeling them with our reasoning-based pipeline.</p>
+<p>All annotated training data is also available on HuggingFace for community development and training reference: <a href="https://huggingface.co/zilliz/datasets">Zilliz Datasets</a></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zilliz_datasets_dd91330d4d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Training-Method" class="common-anchor-header">トレーニング方法</h3><p>モデルのアーキテクチャとデータセットの準備ができたら、<strong>8×A100 GPUで</strong>モデルを3エポック訓練しました。</p>
-<p><strong>注：</strong>訓練は、セマンティックハイライトタスクを担当する<strong>Pruning Headのみを</strong>対象とした。<strong>Rerankヘッドを</strong>トレーニングしなかったのは、プルーニングの目的のみに集中することで、文レベルの関連性スコアリングでより良い結果が得られたからである。</p>
-<h2 id="Real-World-Case-Study" class="common-anchor-header">実際のケーススタディ<button data-href="#Real-World-Case-Study" class="anchor-icon" translate="no">
+<h3 id="Training-Method" class="common-anchor-header">Training Method</h3><p>Once the model architecture and dataset were ready, we trained the model on <strong>8× A100 GPUs</strong> for three epochs, which took roughly <strong>9 hours</strong> end-to-end.</p>
+<p><strong>Note:</strong> The training only targeted the <strong>Pruning Head</strong>, which is responsible for the semantic highlighting task. We did not train the <strong>Rerank Head</strong>, since focusing solely on the pruning objective yielded better results for sentence-level relevance scoring.</p>
+<h2 id="Real-World-Case-Study" class="common-anchor-header">Real-World Case Study<button data-href="#Real-World-Case-Study" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -206,9 +210,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベンチマークはストーリーの一部しか語らないので、よくあるエッジケース、つまり検索されたテキストに正解と非常に魅力的なディストラクターの両方が含まれている場合にモデルがどのように振る舞うかを示す実際の例を紹介します。</p>
-<p><strong>クエリ</strong> <em>The Killing of a Sacred Deer（聖なる鹿殺し）を書いたのは誰ですか？</em></p>
-<p><strong>コンテキスト（5文）：</strong></p>
+    </button></h2><p>Benchmarks only tell part of the story, so here’s a real example that shows how the model behaves on a common edge case: when the retrieved text contains both the correct answer and a very tempting distractor.</p>
+<p><strong>Query:</strong> <em>Who wrote The Killing of a Sacred Deer?</em></p>
+<p><strong>Context (5 sentences):</strong></p>
 <pre><code translate="no">1\. The Killing of a Sacred Deer is a 2017 psychological horror film directed by Yorgos Lanthimos,
 
    with a screenplay by Lanthimos and Efthymis Filippou.
@@ -225,42 +229,42 @@ origin: >-
 
 5\. He introduces the boy to his family, who then mysteriously fall ill.
 <button class="copy-code-btn"></button></code></pre>
-<p>正解：文1（「脚本：ランティモスとエフティミス・フィリッポウ」と明示されている）</p>
-<p>この例文には罠がある：文3は「エウリピデス」が原作を書いたと述べている。しかし、設問は「誰が映画『聖なる鹿殺し』を書いたか」を尋ねており、答えは映画の脚本家であって、数千年前のギリシャの劇作家ではないはずだ。</p>
-<h3 id="Model-results" class="common-anchor-header">模範解答結果</h3><table>
+<p>Correct answer: Sentence 1 (explicitly states “screenplay by Lanthimos and Efthymis Filippou”)</p>
+<p>This example has a trap: Sentence 3 mentions that “Euripides” wrote the original play. But the question asks “who wrote the film The Killing of a Sacred Deer,” and the answer should be the film’s screenwriters, not the Greek playwright from thousands of years ago.</p>
+<h3 id="Model-results" class="common-anchor-header">Model results</h3><table>
 <thead>
-<tr><th>模範解答</th><th>正しい答えを見つけたか？</th><th>予測</th></tr>
+<tr><th>Model</th><th>Finds correct answer?</th><th>Prediction</th></tr>
 </thead>
 <tbody>
-<tr><td>我々のモデル</td><td>✓</td><td>文1（正解）と文3を選択</td></tr>
-<tr><td>XProvence v1</td><td>✗</td><td>文3のみを選択、正解を逃す</td></tr>
-<tr><td>XProvence v2</td><td>✗</td><td>センテンス3のみ選択、正解を逃す</td></tr>
+<tr><td>Our Model</td><td>✓</td><td>Selected sentences 1 (correct) and 3</td></tr>
+<tr><td>XProvence v1</td><td>✗</td><td>Only selected sentence 3, missed correct answer</td></tr>
+<tr><td>XProvence v2</td><td>✗</td><td>Only selected sentence 3, missed correct answer</td></tr>
 </tbody>
 </table>
-<p><strong>キーセンテンスのスコア比較</strong></p>
+<p><strong>Key Sentence Score Comparison:</strong></p>
 <table>
 <thead>
-<tr><th>文</th><th>モデル</th><th>XProvence v1</th><th>XProvence v2</th></tr>
+<tr><th>Sentence</th><th>Our Model</th><th>XProvence v1</th><th>XProvence v2</th></tr>
 </thead>
 <tbody>
-<tr><td>センテンス1（映画脚本、正解）</td><td>0.915</td><td>0.133</td><td>0.081</td></tr>
-<tr><td>センテンス3（オリジナル劇、ディストラクター）</td><td>0.719</td><td>0.947</td><td>0.802</td></tr>
+<tr><td>Sentence 1 (film screenplay, correct answer)</td><td>0.915</td><td>0.133</td><td>0.081</td></tr>
+<tr><td>Sentence 3 (original play, distractor)</td><td>0.719</td><td>0.947</td><td>0.802</td></tr>
 </tbody>
 </table>
-<p>XProvenceモデル：</p>
+<p>XProvence models:</p>
 <ul>
-<li><p>エウリピデス」と「戯曲」に強く惹かれ、センテンス3に満点に近いスコア（0.947と0.802）を与える。</p></li>
-<li><p>実際の回答（文1）を完全に無視し、極端に低いスコア（0.133と0.081）を与える。</p></li>
-<li><p>しきい値を0.5から0.2に下げても、正解を見つけることができない。</p></li>
+<li><p>Strongly attracted to “Euripides” and “play,” giving sentence 3 near-perfect scores (0.947 and 0.802)</p></li>
+<li><p>Completely ignores the actual answer (sentence 1), giving extremely low scores (0.133 and 0.081)</p></li>
+<li><p>Even when lowering the threshold from 0.5 to 0.2, it still can’t find the correct answer</p></li>
 </ul>
-<p>我々のモデル</p>
+<p>Our model:</p>
 <ul>
-<li><p>文1に最も高いスコアを与える (0.915)</p></li>
-<li><p>文3は背景と関連しているため、まだある程度の関連性を付与 (0.719)</p></li>
-<li><p>0.2程度のマージンで2つを明確に分離</p></li>
+<li><p>Correctly gives sentence 1 the highest score (0.915)</p></li>
+<li><p>Still assigns sentence 3 some relevance (0.719) because it’s related to the background</p></li>
+<li><p>Clearly separates the two with a ~0.2 margin</p></li>
 </ul>
-<p>この例は、表面的なキーワードのマッチングではなく、<strong>クエリの意図を</strong>理解するというモデルの核となる強みを示しています。この文脈では、"Who wrote<em>The Killing of a Sacred Deer</em>"は古代ギリシャの戯曲ではなく映画を指しています。私たちのモデルは、他のモデルが強い語彙的な手がかりに気を取られている間に、それを拾う。</p>
-<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">使ってみて感想をお聞かせください<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
+<p>This example shows the model’s core strength: understanding <strong>query intent</strong> rather than just matching surface-level keywords. In this context, “Who wrote <em>The Killing of a Sacred Deer</em>” refers to the film, not the ancient Greek play. Our model picks up on that, while others get distracted by strong lexical cues.</p>
+<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Try It Out and Tell Us What You Think<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -275,16 +279,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>私たちの<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>モデルは、現在MITライセンスの下で完全にオープンソース化されており、実運用に使用する準備ができています。あなたのRAGパイプラインに組み込んだり、あなた自身のドメイン用に微調整したり、この上に新しいツールを構築することができます。コミュニティからの貢献やフィードバックも歓迎します。</p>
+    </button></h2><p>Our <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a> model is now fully open-sourced under the MIT license and ready for production use. You can plug it into your RAG pipeline, fine-tune it for your own domain, or build new tools on top of it. We also welcome contributions and feedback from the community.</p>
 <ul>
-<li><p><strong>HuggingFaceからダウンロード</strong>：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p><strong>全ての注釈付き学習データ</strong> <a href="https://huggingface.co/zilliz/datasets">: https://huggingface.co/zilliz/datasets</a></p></li>
+<li><p><strong>Download from HuggingFace</strong>: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p><strong>All annotated training data</strong>: <a href="https://huggingface.co/zilliz/datasets">https://huggingface.co/zilliz/datasets</a></p></li>
 </ul>
-<h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">MilvusとZilliz Cloudで利用可能なセマンティックハイライト</h3><p>セマンティックハイライトは<a href="https://milvus.io/">Milvusと</a> <a href="https://zilliz.com/cloud">Zilliz Cloud</a>(フルマネージドMilvus)にも直接組み込まれており、各文書が<em>なぜ</em>検索されたかを明確に表示します。チャンク全体をスキャンする代わりに、クエリに関連する特定の文章を即座に見ることができます。これによって、検索が理解しやすくなり、デバッグが非常に速くなります。また、RAGパイプラインでは、下流のLLMが何を重視するかが明確になり、迅速な設計と品質チェックに役立ちます。</p>
-<p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>フルマネージドZilliz Cloudのセマンティックハイライトを無料でお試しください。</strong></a></p>
-<p>バグレポート、改善アイデア、ワークフローへの統合中に発見したことなど、ぜひお聞かせください。</p>
-<p>より詳しくお聞きになりたい場合は、お気軽に<a href="https://discord.com/invite/8uyFbECzPX">Discordチャンネルに</a>ご参加いただくか、20分間の<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワーを</a>ご予約ください。他のビルダーとおしゃべりしたり、メモを交換したりするのはいつでも大歓迎です。</p>
-<h2 id="Acknowledgements" class="common-anchor-header">謝辞<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
+<h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Semantic Highlighting Available in Milvus and Zilliz Cloud</h3><p>Semantic highlighting is also built directly into <a href="https://milvus.io/">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed Milvus), giving users a clear view of <em>why</em> each document was retrieved. Instead of scanning entire chunks, you immediately see the specific sentences that relate to your query — even when the wording doesn’t match exactly. This makes retrieval easier to understand and much faster to debug. For RAG pipelines, it also clarifies what the downstream LLM is expected to focus on, which helps with prompt design and quality checks.</p>
+<p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>Try Semantic Highlighting in a fully managed Zilliz Cloud for free</strong></a></p>
+<p>We’d love to hear how it works for you—bug reports, improvement ideas, or anything you discover while integrating it into your workflow.</p>
+<p>If you want to talk through anything in more detail, feel free to join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session. We’re always happy to chat with other builders and swap notes.</p>
+<h2 id="Acknowledgements" class="common-anchor-header">Acknowledgements<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -299,16 +303,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この作品は、多くの素晴らしいアイデアとオープンソースの貢献の上に成り立っており、このモデルを可能にしたプロジェクトに注目したい。</p>
+    </button></h2><p>This work builds on a lot of great ideas and open-source contributions, and we want to highlight the projects that made this model possible.</p>
 <ul>
-<li><p><strong>Provenceは</strong>、軽量エンコーダーモデルを使ったコンテキスト刈り込みのための、クリーンで実用的なフレームを導入した。</p></li>
-<li><p><strong>Open Provenceは</strong>、寛容なライセンスの下で、トレーニングパイプライン、データ処理、モデルヘッドなど、堅実でよく設計されたコードベースを提供した。これは私たちに実験のための強力な出発点を与えてくれた。</p></li>
+<li><p><strong>Provence</strong> introduced a clean and practical framing for context pruning using lightweight encoder models.</p></li>
+<li><p><strong>Open Provence</strong> provided a solid, well-engineered codebase—training pipelines, data processing, and model heads—under a permissive license. It gave us a strong starting point for experimentation.</p></li>
 </ul>
-<p>その基盤の上に、私たちはいくつかの貢献を加えた：</p>
+<p>On top of that foundation, we added several contributions of our own:</p>
 <ul>
-<li><p><strong>LLM推論を用いて</strong>、より質の高い関連性ラベルを生成する<strong>。</strong></p></li>
-<li><p>実際のRAGワークロードに合わせた<strong>約500万個の</strong>バイリンガルトレーニングサンプルの作成</p></li>
-<li><p>ロングコンテキストの関連性スコアリングに適したベースモデルの選択<strong>（BGE-M3 Reranker v2）</strong></p></li>
-<li><p>セマンティックハイライト用にモデルを特化させるために<strong>Pruning Headのみを</strong>トレーニングする</p></li>
+<li><p>Using <strong>LLM reasoning</strong> to generate higher-quality relevance labels</p></li>
+<li><p>Creating <strong>nearly 5 million</strong> bilingual training samples aligned with real RAG workloads</p></li>
+<li><p>Choosing a base model better suited for long-context relevance scoring (<strong>BGE-M3 Reranker v2</strong>)</p></li>
+<li><p>Training only the <strong>Pruning Head</strong> to specialize the model for semantic highlighting</p></li>
 </ul>
-<p>ProvenceとOpen Provenceのチームが、自分たちの仕事をオープンに公開してくれたことに感謝する。彼らの貢献は我々の開発を大幅に加速させ、このプロジェクトを可能にした。</p>
+<p>We’re grateful to the Provence and Open Provence teams for publishing their work openly. Their contributions significantly accelerated our development and made this project possible.</p>

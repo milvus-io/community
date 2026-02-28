@@ -1,15 +1,14 @@
 ---
 id: >-
   hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
-title: >-
-  التدريب العملي مع VDBBench: قياس أداء قواعد بيانات المتجهات لقواعد بيانات
-  المتجهات من أجل قواعد بيانات العمليات الأولية التي تتطابق مع الإنتاج
+title: >
+  Hands-On with VDBBench: Benchmarking Vector Databases for POCs That Match
+  Production
 author: Yifan Cai
 date: 2025-08-15T00:00:00.000Z
 desc: >-
-  تعرف على كيفية اختبار قواعد البيانات المتجهة باستخدام بيانات إنتاج حقيقية
-  باستخدام VDBBench. دليل تفصيلي لمجموعة البيانات المخصصة POCs التي تتنبأ
-  بالأداء الفعلي.
+  Learn how to test vector databases with real production data using VDBBench.
+  Step-by-step guide to custom dataset POCs that predict actual performance.
 cover: assets.zilliz.com/vdbbench_cover_min_2f86466839.png
 tag: Tutorials
 recommend: false
@@ -23,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
 ---
-<p>تُعد قواعد البيانات المتجهة الآن جزءًا أساسيًا من البنية التحتية للذكاء الاصطناعي، حيث تعمل على تشغيل العديد من التطبيقات التي تعمل بنظام LLM لخدمة العملاء وتوليد المحتوى والبحث والتوصيات وغيرها.</p>
-<p>مع وجود العديد من الخيارات في السوق، بدءًا من قواعد البيانات المتجهة المصممة لهذا الغرض مثل Milvus وZilliz Cloud إلى قواعد البيانات التقليدية مع البحث المتجه كإضافة، فإن <strong>اختيار الخيار المناسب ليس بسيطًا مثل قراءة المخططات المعيارية.</strong></p>
-<p>تقوم معظم الفرق بتشغيل إثبات المفهوم (POC) قبل الالتزام، وهو أمر ذكي من الناحية النظرية - ولكن من الناحية العملية، فإن العديد من معايير البائعين التي تبدو رائعة على الورق تنهار في ظل ظروف العالم الحقيقي.</p>
-<p>يتمثل أحد الأسباب الرئيسية في أن معظم ادعاءات الأداء تستند إلى مجموعات بيانات قديمة من 2006-2012 (SIFT و GloVe و LAION) التي تتصرف بشكل مختلف تمامًا عن التضمينات الحديثة. على سبيل المثال، تستخدم SIFT متجهات ذات 128 بُعدًا، في حين أن نماذج الذكاء الاصطناعي الحالية تنتج أبعادًا أعلى بكثير - 3072 لأحدث نماذج OpenAI، و1024 لنماذج Cohere - وهو تحول كبير يؤثر على الأداء والتكلفة وقابلية التوسع.</p>
-<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">الحل: اختبر ببياناتك وليس بالمعايير المعلبة<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
+<p>Vector databases are now a core part of AI infrastructure, powering various LLM-powered applications for customer service, content generation, search, recommendations, and more.</p>
+<p>With so many options in the market, from purpose-built vector databases like Milvus and Zilliz Cloud to traditional databases with vector search as an add-on, <strong>choosing the right one isn’t as simple as reading benchmark charts.</strong></p>
+<p>Most teams run a Proof of Concept (POC) before committing, which is smart in theory — but in practice, many vendor benchmarks that look impressive on paper collapse under real-world conditions.</p>
+<p>One of the main reasons is that most performance claims are based on outdated datasets from 2006–2012 (SIFT, GloVe, LAION) that behave very differently from modern embeddings. For example, SIFT uses 128-dimensional vectors, while today’s AI models produce far higher dimensions — 3,072 for OpenAI’s latest, 1,024 for Cohere’s —  a big shift that impacts performance, cost, and scalability.</p>
+<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">The Fix: Test with Your Data, Not Canned Benchmarks<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,19 +41,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>الحل الأبسط والأكثر فاعلية: قم بإجراء تقييم POC الخاص بك باستخدام المتجهات التي يولدها تطبيقك بالفعل. وهذا يعني استخدام نماذج التضمين الخاصة بك، واستفساراتك الحقيقية، وتوزيع بياناتك الفعلي.</p>
-<p>هذا هو بالضبط ما تم تصميم <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> - أداة قياس أداء قاعدة البيانات المتجهة مفتوحة المصدر - من أجله. وهي تدعم تقييم ومقارنة أي قاعدة بيانات متجهة، بما في ذلك Milvus وElasticsearch وpgvector وغيرها، وتحاكي أعباء عمل الإنتاج الحقيقي.</p>
-<p><a href="https://github.com/zilliztech/VectorDBBench">تنزيل VDBBench 1.0 → →</a><a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> عرض لوحة المتصدرين →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">ما هو VDBBench</a></p>
-<p>يتيح لك VDBench:</p>
+    </button></h2><p>The simplest and most effective solution: run your POC evaluation with the vectors your application actually generates. That means using your embedding models, your real queries, and your actual data distribution.</p>
+<p>This is exactly what <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> — an open-source vector database benchmarking tool — is built for. It supports the evaluation and comparison of any vector database, including Milvus, Elasticsearch, pgvector, and more, and simulates real production workloads.</p>
+<p><a href="https://github.com/zilliztech/VectorDBBench">Download VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> View Leaderboard →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">What is VDBBench</a></p>
+<p>VDBbench lets you:</p>
 <ul>
-<li><p><strong>الاختبار باستخدام بياناتك الخاصة</strong> من نماذج التضمين الخاصة بك</p></li>
-<li><p>محاكاة <strong>عمليات الإدراج المتزامنة والاستعلامات واستيعاب التدفق المتزامن</strong></p></li>
-<li><p>قياس <strong>زمن الاستجابة P95/P99، والإنتاجية المستدامة، ودقة الاسترجاع</strong></p></li>
-<li><p>قياس الأداء عبر قواعد بيانات متعددة في ظروف متطابقة</p></li>
-<li><p>يسمح <strong>باختبار مجموعة بيانات مخصصة</strong> بحيث تتطابق النتائج مع الإنتاج بالفعل</p></li>
+<li><p><strong>Test with your own data</strong> from your embedding models</p></li>
+<li><p>Simulate <strong>concurrent inserts, queries, and streaming ingestion</strong></p></li>
+<li><p>Measure <strong>P95/P99 latency, sustained throughput, and recall accuracy</strong></p></li>
+<li><p>Benchmark across multiple databases under identical conditions</p></li>
+<li><p>Allows <strong>custom dataset testing</strong> so results actually match production</p></li>
 </ul>
-<p>بعد ذلك، سنرشدك إلى كيفية تشغيل اختبار POC على مستوى الإنتاج باستخدام VDBBench وبياناتك الحقيقية - حتى تتمكن من اتخاذ قرار واثق ومثبت في المستقبل.</p>
-<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">كيفية تقييم VectorDBs مع مجموعات بياناتك المخصصة باستخدام VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
+<p>Next, we’ll walk you through how to run a production-grade POC with VDBBench and your real data — so you can make a confident, future-proof choice.</p>
+<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">How to Evaluate VectorDBs with Your Custom Datasets with VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,96 +68,96 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قبل البدء، تأكد من تثبيت Python 3.11 أو أعلى. ستحتاج إلى بيانات متجهة بصيغة CSV أو NPY، وحوالي 2-3 ساعات لإكمال الإعداد والاختبار، ومعرفة متوسطة بلغة Python لاستكشاف الأخطاء وإصلاحها إذا لزم الأمر.</p>
-<h3 id="Installation-and-Configuration" class="common-anchor-header">التثبيت والتهيئة</h3><p>إذا كنت تقوم بتقييم قاعدة بيانات واحدة، فقم بتشغيل هذا الأمر:</p>
+    </button></h2><p>Before getting started, ensure you have Python 3.11 or higher installed. You’ll need vector data in CSV or NPY format, approximately 2-3 hours for complete setup and testing, and intermediate Python knowledge for troubleshooting if needed.</p>
+<h3 id="Installation-and-Configuration" class="common-anchor-header">Installation and Configuration</h3><p>If you’re evaluating one database, run this command:</p>
 <pre><code translate="no">pip install vectordb-bench
 <button class="copy-code-btn"></button></code></pre>
-<p>إذا كنت ستقارن جميع قواعد البيانات المدعومة، فقم بتشغيل الأمر:</p>
+<p>If you’re to compare all supported databases, run the command:</p>
 <pre><code translate="no">pip install vectordb-bench[<span class="hljs-built_in">all</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>لعملاء قواعد بيانات محددة (مثل: Elasticsearch):</p>
+<p>For specific database clients (eg: Elasticsearch):</p>
 <pre><code translate="no">pip install vectordb-bench[elastic]
 <button class="copy-code-btn"></button></code></pre>
-<p>راجع <a href="https://github.com/zilliztech/VectorDBBench">صفحة GitHub</a> هذه لمعرفة جميع قواعد البيانات المدعومة وأوامر التثبيت الخاصة بها.</p>
-<h3 id="Launching-VDBBench" class="common-anchor-header">تشغيل VDBBench</h3><p>ابدأ تشغيل <strong>VDBBench</strong> باستخدام:</p>
+<p>Check this <a href="https://github.com/zilliztech/VectorDBBench">GitHub page</a> for all the supported databases and their install commands.</p>
+<h3 id="Launching-VDBBench" class="common-anchor-header">Launching VDBBench</h3><p>Start <strong>VDBBench</strong> with:</p>
 <pre><code translate="no">init_bench
 <button class="copy-code-btn"></button></code></pre>
-<p>مخرجات وحدة التحكم المتوقعة: 
+<p>Expected console output: 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_expected_console_output_66e1a218b7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ستكون واجهة الويب متاحة محليًا:</p>
+<p>The web interface will be available locally:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_2e4dd7ea69.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">إعداد البيانات وتحويل التنسيق</h3><p>يتطلب VDBBench ملفات باركيه منظمة مع مخططات محددة لضمان اختبار متسق عبر قواعد البيانات ومجموعات البيانات المختلفة.</p>
+<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Data Preparation and Format Conversion</h3><p>VDBBench requires structured Parquet files with specific schemas to ensure consistent testing across different databases and datasets.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>اسم الملف</strong></th><th style="text-align:center"><strong>الغرض</strong></th><th style="text-align:center"><strong>مطلوب</strong></th><th style="text-align:center"><strong>مثال على المحتوى</strong></th></tr>
+<tr><th style="text-align:center"><strong>File Name</strong></th><th style="text-align:center"><strong>Purpose</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Content Example</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">مجموعة متجهات لإدراج قاعدة البيانات</td><td style="text-align:center">✅</td><td style="text-align:center">معرف المتجه + بيانات المتجه (قائمة[عائمة])</td></tr>
-<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">مجموعة المتجهات للاستعلامات</td><td style="text-align:center">✅</td><td style="text-align:center">معرف المتجه + بيانات المتجه (قائمة[عائم])</td></tr>
-<tr><td style="text-align:center">الجيران.باركيه</td><td style="text-align:center">الحقيقة الأساسية لمتجهات الاستعلام (قائمة معرّفات الجيران الفعلية الأقرب إلى الجيران)</td><td style="text-align:center">✅</td><td style="text-align:center">معرف الاستعلام_id -&gt; [قائمة معرفات الجيران المتشابهة]</td></tr>
-<tr><td style="text-align:center">عددية_ملصقات.باركيه</td><td style="text-align:center">تسميات (بيانات وصفية تصف كيانات أخرى غير المتجهات)</td><td style="text-align:center">❌</td><td style="text-align:center">المعرف -&gt; التسمية</td></tr>
+<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Vector collection for database insertion</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Vector collection for queries</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">Ground Truth for query vectors (actual nearest neighbor ID list)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k similar ID list]</td></tr>
+<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Labels (metadata describing entities other than vectors)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
 </tbody>
 </table>
-<p>مواصفات الملف المطلوب:</p>
+<p>Required File Specifications:</p>
 <ul>
-<li><p>يجب أن يحتوي<strong>ملف متجه التدريب (train.parquet)</strong> على عمود معرّف يحتوي على أعداد صحيحة متزايدة وعمود متجه يحتوي على مصفوفات عائمة 32. أسماء الأعمدة قابلة للتكوين، ولكن يجب أن يستخدم عمود المعرف أنواع الأعداد الصحيحة للفهرسة المناسبة.</p></li>
-<li><p>يتبع<strong>ملف متجه الاختبار (test.parquet)</strong> نفس بنية بيانات التدريب. يجب أن يكون اسم عمود المعرف هو "معرف" بينما يمكن تخصيص أسماء أعمدة المتجهات لتتناسب مع مخطط البيانات.</p></li>
-<li><p><strong>ملف الحقيقة الأساسية (neighbors.parquet)</strong> يحتوي على أقرب الجيران المرجعيين لكل استعلام اختبار. ويتطلب عمود معرّف يتوافق مع معرّفات متجهات الاختبار وعمود صفيف الجيران الذي يحتوي على معرّفات أقرب الجيران الصحيحة من مجموعة التدريب.</p></li>
-<li><p><strong>ملف التسميات القياسية (Scalar_labels.parquet)</strong> اختياري ويحتوي على تسميات البيانات الوصفية المرتبطة بمتجهات التدريب، وهو مفيد لاختبار البحث المصفى.</p></li>
+<li><p><strong>Training Vector File (train.parquet)</strong> must contain an ID column with incremental integers and a vector column containing float32 arrays. Column names are configurable, but the ID column must use integer types for proper indexing.</p></li>
+<li><p><strong>Test Vector File (test.parquet)</strong> follows the same structure as the training data. The ID column name must be “id” while vector column names can be customized to match your data schema.</p></li>
+<li><p><strong>Ground Truth File (neighbors.parquet)</strong> contains the reference nearest neighbors for each test query. It requires an ID column corresponding to test vector IDs and a neighbors array column containing the correct nearest neighbor IDs from the training set.</p></li>
+<li><p><strong>Scalar Labels File (scalar_labels.parquet)</strong> is optional and contains metadata labels associated with training vectors, useful for filtered search testing.</p></li>
 </ul>
-<h3 id="Data-Format-Challenges" class="common-anchor-header">تحديات تنسيق البيانات</h3><p>توجد معظم بيانات متجهات الإنتاج بتنسيقات لا تتطابق مباشرةً مع متطلبات VDBBench. عادةً ما تخزن ملفات CSV التضمينات كتمثيلات سلسلة من المصفوفات، وتحتوي ملفات NPY على مصفوفات رقمية خام بدون بيانات وصفية، وغالبًا ما تستخدم صادرات قواعد البيانات JSON أو تنسيقات منظمة أخرى.</p>
-<p>ينطوي تحويل هذه التنسيقات يدويًا على عدة خطوات معقدة: تحليل تمثيلات السلاسل إلى مصفوفات عددية، وحساب أقرب الجيران بالضبط باستخدام مكتبات مثل FAISS، وتقسيم مجموعات البيانات بشكل صحيح مع الحفاظ على اتساق المعرف، وضمان تطابق جميع أنواع البيانات مع مواصفات الباركيه.</p>
-<h3 id="Automated-Format-Conversion" class="common-anchor-header">التحويل الآلي للتنسيق</h3><p>لتبسيط عملية التحويل، قمنا بتطوير برنامج نصي من لغة Python يتعامل مع تحويل التنسيق وحساب الحقيقة الأساسية وهيكلة البيانات بشكل صحيح تلقائيًا.</p>
-<p><strong>تنسيق إدخال CSV:</strong></p>
+<h3 id="Data-Format-Challenges" class="common-anchor-header">Data Format Challenges</h3><p>Most production vector data exists in formats that don’t directly match VDBBench requirements. CSV files typically store embeddings as string representations of arrays, NPY files contain raw numerical matrices without metadata, and database exports often use JSON or other structured formats.</p>
+<p>Converting these formats manually involves several complex steps: parsing string representations into numerical arrays, computing exact nearest neighbors using libraries like FAISS, properly splitting datasets while maintaining ID consistency, and ensuring all data types match Parquet specifications.</p>
+<h3 id="Automated-Format-Conversion" class="common-anchor-header">Automated Format Conversion</h3><p>To streamline the conversion process, we’ve developed a Python script that handles format conversion, ground truth computation, and proper data structuring automatically.</p>
+<p><strong>CSV Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">id</span>,emb,label
 <span class="hljs-number">1</span>,<span class="hljs-string">&quot;[0.12,0.56,0.89,...]&quot;</span>,A
 <span class="hljs-number">2</span>,<span class="hljs-string">&quot;[0.33,0.48,0.90,...]&quot;</span>,B
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>تنسيق إدخال NPY:</strong></p>
+<p><strong>NPY Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 vectors = np.<span class="hljs-property">random</span>.<span class="hljs-title function_">rand</span>(<span class="hljs-number">10000</span>, <span class="hljs-number">768</span>).<span class="hljs-title function_">astype</span>(<span class="hljs-string">&#x27;float32&#x27;</span>)
 np.<span class="hljs-title function_">save</span>(<span class="hljs-string">&quot;vectors.npy&quot;</span>, vectors)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Conversion-Script-Implementation" class="common-anchor-header">تنفيذ البرنامج النصي للتحويل</h3><p><strong>تثبيت التبعيات المطلوبة:</strong></p>
+<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Conversion Script Implementation</h3><p><strong>Install required dependencies:</strong></p>
 <pre><code translate="no">pip install numpy pandas faiss-cpu
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>تنفيذ التحويل:</strong></p>
+<p><strong>Execute the conversion:</strong></p>
 <pre><code translate="no">python convert_to_vdb_format.py \
   --train data/train.csv \
   --<span class="hljs-built_in">test</span> data/test.csv \
   --out datasets/custom \
   --topk 10
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>مرجع المعلمة:</strong></p>
+<p><strong>Parameter Reference:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>اسم المعلمة</strong></th><th style="text-align:center"><strong>مطلوب</strong></th><th style="text-align:center"><strong>النوع</strong></th><th style="text-align:center"><strong>الوصف</strong></th><th style="text-align:center"><strong>القيمة الافتراضية</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Type</strong></th><th style="text-align:center"><strong>Description</strong></th><th style="text-align:center"><strong>Default Value</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">نعم</td><td style="text-align:center">سلسلة</td><td style="text-align:center">مسار بيانات التدريب، يدعم تنسيق CSV أو NPY. يجب أن يحتوي ملف CSV على عمود معرف، إذا لم يكن هناك عمود معرف سيتم إنشاؤه تلقائيًا</td><td style="text-align:center">لا يوجد</td></tr>
-<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">نعم</td><td style="text-align:center">سلسلة</td><td style="text-align:center">مسار بيانات الاستعلام، يدعم تنسيق CSV أو NPY. نفس تنسيق بيانات التدريب</td><td style="text-align:center">لا يوجد</td></tr>
-<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">نعم</td><td style="text-align:center">سلسلة</td><td style="text-align:center">مسار دليل الإخراج، يحفظ ملفات الباركيه المحولة وملفات الفهرس المجاور</td><td style="text-align:center">لا يوجد</td></tr>
-<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">لا يوجد</td><td style="text-align:center">سلسلة</td><td style="text-align:center">مسار ملف CSV للتسمية، يجب أن يحتوي على عمود التسميات (منسق كمصفوفة سلاسل)، يُستخدم لحفظ التسميات</td><td style="text-align:center">لا يوجد</td></tr>
-<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">لا يوجد</td><td style="text-align:center">عدد صحيح</td><td style="text-align:center">عدد أقرب الجيران المراد إرجاعه عند الحساب</td><td style="text-align:center">10</td></tr>
+<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Training data path, supports CSV or NPY format. CSV must contain emb column, if no id column will auto-generate</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Query data path, supports CSV or NPY format. Format same as training data</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Output directory path, saves converted parquet files and neighbor index files</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">No</td><td style="text-align:center">String</td><td style="text-align:center">Label CSV path, must contain labels column (formatted as string array), used for saving labels</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">No</td><td style="text-align:center">Integer</td><td style="text-align:center">Number of nearest neighbors to return when computing</td><td style="text-align:center">10</td></tr>
 </tbody>
 </table>
-<p><strong>هيكل دليل الإخراج:</strong></p>
+<p><strong>Output Directory Structure:</strong></p>
 <pre><code translate="no">datasets/custom/
 ├── train.parquet        <span class="hljs-comment"># Training vectors</span>
 ├── test.parquet         <span class="hljs-comment"># Query vectors  </span>
 ├── neighbors.parquet    <span class="hljs-comment"># Ground Truth</span>
 └── scalar_labels.parquet <span class="hljs-comment"># Optional scalar labels</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Complete-Conversion-Script" class="common-anchor-header">إكمال البرنامج النصي للتحويل</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="Complete-Conversion-Script" class="common-anchor-header">Complete Conversion Script</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> argparse
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
@@ -242,88 +241,88 @@ name
     args = parser.parse_args()
     main(args.train, args.test, args.out, args.labels, args.topk)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>ناتج عملية التحويل:</strong> 
+<p><strong>Conversion Process Output:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_conversion_process_output_0827ba75c9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>التحقق من الملفات التي تم إنشاؤها:</strong> 
+<p><strong>Generated Files Verification:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_f02cd2964e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">تكوين مجموعة البيانات المخصصة</h3><p>انتقل إلى قسم تكوين مجموعة البيانات المخصصة في واجهة الويب:</p>
+<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Custom Dataset Configuration</h3><p>Navigate to the Custom Dataset configuration section in the web interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_aa14b75b5d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>توفر واجهة التكوين حقولاً لبيانات تعريف مجموعة البيانات ومواصفات مسار الملف:</p>
+<p>The configuration interface provides fields for dataset metadata and file path specification:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/6_1b64832990.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>معلمات التكوين:</strong></p>
+<p><strong>Configuration Parameters:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>اسم المعلمة</strong></th><th style="text-align:center"><strong>المعنى</strong></th><th style="text-align:center"><strong>اقتراحات التكوين</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Meaning</strong></th><th style="text-align:center"><strong>Configuration Suggestions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">الاسم</td><td style="text-align:center">اسم مجموعة البيانات (معرّف فريد)</td><td style="text-align:center">أي اسم، على سبيل المثال, <code translate="no">my_custom_dataset</code></td></tr>
-<tr><td style="text-align:center">مسار المجلد</td><td style="text-align:center">مسار دليل ملف مجموعة البيانات</td><td style="text-align:center">على سبيل المثال, <code translate="no">/data/datasets/custom</code></td></tr>
-<tr><td style="text-align:center">خافت</td><td style="text-align:center">أبعاد المتجه</td><td style="text-align:center">يجب أن تتطابق مع ملفات البيانات، على سبيل المثال، 768</td></tr>
-<tr><td style="text-align:center">الحجم</td><td style="text-align:center">عدد المتجهات (اختياري)</td><td style="text-align:center">يمكن تركه فارغًا، وسيقوم النظام بالكشف التلقائي</td></tr>
-<tr><td style="text-align:center">نوع القياس</td><td style="text-align:center">طريقة قياس التشابه</td><td style="text-align:center">عادةً ما تستخدم L2 (المسافة الإقليدية) أو IP (المنتج الداخلي)</td></tr>
-<tr><td style="text-align:center">اسم ملف التدريب</td><td style="text-align:center">اسم ملف مجموعة التدريب (بدون امتداد .parquet)</td><td style="text-align:center">إذا <code translate="no">train.parquet</code> ، املأ <code translate="no">train</code>. تستخدم الملفات المتعددة فاصلة، على سبيل المثال, <code translate="no">train1,train2</code></td></tr>
-<tr><td style="text-align:center">اسم ملف الاختبار</td><td style="text-align:center">اسم ملف مجموعة الاستعلام (بدون امتداد .parquet)</td><td style="text-align:center">إذا <code translate="no">test.parquet</code> ، املأ <code translate="no">test</code></td></tr>
-<tr><td style="text-align:center">اسم ملف الحقيقة الأرضية</td><td style="text-align:center">اسم ملف الحقيقة الأرضية (بدون امتداد .parquet)</td><td style="text-align:center">إذا <code translate="no">neighbors.parquet</code> ، املأ <code translate="no">neighbors</code></td></tr>
-<tr><td style="text-align:center">اسم معرف التدريب</td><td style="text-align:center">اسم عمود معرف بيانات التدريب</td><td style="text-align:center">عادةً <code translate="no">id</code></td></tr>
-<tr><td style="text-align:center">اسم متجه بيانات التدريب</td><td style="text-align:center">اسم عمود متجه بيانات التدريب</td><td style="text-align:center">إذا كان اسم العمود الذي تم إنشاؤه بواسطة البرنامج النصي هو <code translate="no">emb</code> ، قم بتعبئة <code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">اسم عمود متجه بيانات الاختبار</td><td style="text-align:center">اسم عمود متجه بيانات الاختبار</td><td style="text-align:center">عادةً ما يكون نفس اسم عمود متجه بيانات التدريب، على سبيل المثال, <code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">اسم عمود متجه بيانات الاختبار</td><td style="text-align:center">اسم عمود الجار الأقرب في الحقيقة الأرضية</td><td style="text-align:center">إذا كان اسم العمود هو <code translate="no">neighbors_id</code> ، املأ <code translate="no">neighbors_id</code></td></tr>
-<tr><td style="text-align:center">اسم ملف التسميات القياسية</td><td style="text-align:center">(اختياري) اسم ملف التسمية (بدون امتداد .parquet)</td><td style="text-align:center">إذا تم إنشاء <code translate="no">scalar_labels.parquet</code> ، قم بتعبئة <code translate="no">scalar_labels</code> ، وإلا اتركه فارغًا</td></tr>
-<tr><td style="text-align:center">نسب التسميات</td><td style="text-align:center">(اختياري) نسبة مرشح التسمية</td><td style="text-align:center">على سبيل المثال، <code translate="no">0.001</code> ،<code translate="no">0.02</code> ، ،<code translate="no">0.5</code> ، اتركها فارغة إذا لم تكن هناك حاجة إلى تصفية التسمية</td></tr>
-<tr><td style="text-align:center">الوصف</td><td style="text-align:center">وصف مجموعة البيانات</td><td style="text-align:center">لا يمكن ملاحظة سياق العمل أو طريقة الإنشاء</td></tr>
+<tr><td style="text-align:center">Name</td><td style="text-align:center">Dataset name (unique identifier)</td><td style="text-align:center">Any name, e.g., <code translate="no">my_custom_dataset</code></td></tr>
+<tr><td style="text-align:center">Folder Path</td><td style="text-align:center">Dataset file directory path</td><td style="text-align:center">e.g., <code translate="no">/data/datasets/custom</code></td></tr>
+<tr><td style="text-align:center">dim</td><td style="text-align:center">Vector dimensions</td><td style="text-align:center">Must match data files, e.g., 768</td></tr>
+<tr><td style="text-align:center">size</td><td style="text-align:center">Vector count (optional)</td><td style="text-align:center">Can be left empty, system will auto-detect</td></tr>
+<tr><td style="text-align:center">metric type</td><td style="text-align:center">Similarity measurement method</td><td style="text-align:center">Commonly use L2 (Euclidean distance) or IP (inner product)</td></tr>
+<tr><td style="text-align:center">train file name</td><td style="text-align:center">Training set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">train.parquet</code>, fill <code translate="no">train</code>. Multiple files use comma separation, e.g., <code translate="no">train1,train2</code></td></tr>
+<tr><td style="text-align:center">test file name</td><td style="text-align:center">Query set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">test.parquet</code>, fill <code translate="no">test</code></td></tr>
+<tr><td style="text-align:center">ground truth file name</td><td style="text-align:center">Ground Truth filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">neighbors.parquet</code>, fill <code translate="no">neighbors</code></td></tr>
+<tr><td style="text-align:center">train id name</td><td style="text-align:center">Training data ID column name</td><td style="text-align:center">Usually <code translate="no">id</code></td></tr>
+<tr><td style="text-align:center">train emb name</td><td style="text-align:center">Training data vector column name</td><td style="text-align:center">If script-generated column name is <code translate="no">emb</code>, fill <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">test emb name</td><td style="text-align:center">Test data vector column name</td><td style="text-align:center">Usually same as train emb name, e.g., <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">ground truth emb name</td><td style="text-align:center">Nearest neighbor column name in Ground Truth</td><td style="text-align:center">If column name is <code translate="no">neighbors_id</code>, fill <code translate="no">neighbors_id</code></td></tr>
+<tr><td style="text-align:center">scalar labels file name</td><td style="text-align:center">(Optional) Label filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">scalar_labels.parquet</code> was generated, fill <code translate="no">scalar_labels</code>, otherwise leave empty</td></tr>
+<tr><td style="text-align:center">label percentages</td><td style="text-align:center">(Optional) Label filter ratio</td><td style="text-align:center">e.g., <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, leave empty if no label filtering needed</td></tr>
+<tr><td style="text-align:center">description</td><td style="text-align:center">Dataset description</td><td style="text-align:center">Cannot note business context or generation method</td></tr>
 </tbody>
 </table>
-<p>احفظ التكوين لمتابعة إعداد الاختبار.</p>
-<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">تنفيذ الاختبار وتكوين قاعدة البيانات</h3><p>الوصول إلى واجهة تكوين الاختبار:</p>
+<p>Save the configuration to proceed with the test setup.</p>
+<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Test Execution and Database Configuration</h3><p>Access the test configuration interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/7_3ecdcb1034.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>اختيار قاعدة البيانات وتكوينها (ميلفوس كمثال):</strong> 
+<p><strong>Database Selection and Configuration (Milvus as an Example):</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/8_356a2d8c39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>تعيين مجموعة البيانات:</strong> 
+<p><strong>Dataset Assignment:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/9_dataset_assignment_85ba7b24ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>اختبار البيانات الوصفية والتوسيم:</strong> 
+<p><strong>Test Metadata and Labeling:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/10_test_metadata_and_labeling_293f6f2b99.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>تنفيذ الاختبار:</strong> 
+<p><strong>Test Execution:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/11_test_execution_76acb42c98.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">تحليل النتائج وتقييم الأداء<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
+<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Results Analysis and Performance Evaluation<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -338,22 +337,22 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>توفر واجهة النتائج تحليلات شاملة للأداء:</p>
+    </button></h2><p>The results interface provides comprehensive performance analytics:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_993c536c20.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Test-Configuration-Summary" class="common-anchor-header">ملخص تكوين الاختبار</h3><p>اختبر التقييم مستويات التزامن من 1 و5 و10 عمليات متزامنة (مقيدة بموارد الأجهزة المتاحة)، وأبعاد المتجهات 768، وحجم مجموعة البيانات 3000 متجه تدريبي و3000 استعلام اختبار، مع تعطيل تصفية التسمية القياسية لهذا الاختبار.</p>
-<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">اعتبارات التنفيذ الحرجة</h3><ul>
-<li><p><strong>تناسق الأبعاد:</strong> سيؤدي عدم تطابق أبعاد المتجهات بين مجموعتي بيانات التدريب والاختبار إلى فشل فوري في الاختبار. تحقق من محاذاة الأبعاد أثناء إعداد البيانات لتجنب أخطاء وقت التشغيل.</p></li>
-<li><p><strong>دقة الحقيقة الأرضية:</strong> تؤدي حسابات الحقيقة الأرضية غير الصحيحة إلى إبطال قياسات معدل الاسترجاع. يستخدم البرنامج النصي للتحويل المقدم البرنامج النصي FAISS مع مسافة L2 لحساب أقرب جار دقيق، مما يضمن نتائج مرجعية دقيقة.</p></li>
-<li><p><strong>متطلبات مقياس مجموعة البيانات:</strong> قد تنتج مجموعات البيانات الصغيرة (أقل من 10000 ناقل) قياسات غير متسقة لمعدل الاسترجاع بسبب عدم كفاية توليد الأحمال. ضع في اعتبارك توسيع حجم مجموعة البيانات لإجراء اختبار إنتاجية أكثر موثوقية.</p></li>
-<li><p><strong>تخصيص الموارد:</strong> يمكن أن تحدّ قيود ذاكرة حاوية Docker وقيود وحدة المعالجة المركزية بشكل مصطنع من أداء قاعدة البيانات أثناء الاختبار. راقب استخدام الموارد واضبط حدود الحاوية حسب الحاجة لقياس الأداء بدقة.</p></li>
-<li><p><strong>مراقبة الأخطاء:</strong> قد يقوم <strong>VDBBench</strong> بتسجيل الأخطاء في مخرجات وحدة التحكم التي لا تظهر في واجهة الويب. مراقبة السجلات الطرفية أثناء تنفيذ الاختبار للحصول على معلومات تشخيصية كاملة.</p></li>
+<h3 id="Test-Configuration-Summary" class="common-anchor-header">Test Configuration Summary</h3><p>The evaluation tested concurrency levels of 1, 5, and 10 concurrent operations (constrained by available hardware resources), vector dimensions of 768, dataset size of 3,000 training vectors and 3,000 test queries, with scalar label filtering disabled for this test run.</p>
+<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Critical Implementation Considerations</h3><ul>
+<li><p><strong>Dimensional Consistency:</strong> Vector dimension mismatches between training and test datasets will cause immediate test failures. Verify dimensional alignment during data preparation to avoid runtime errors.</p></li>
+<li><p><strong>Ground Truth Accuracy:</strong> Incorrect ground truth calculations invalidate recall rate measurements. The provided conversion script uses FAISS with L2 distance for exact nearest neighbor computation, ensuring accurate reference results.</p></li>
+<li><p><strong>Dataset Scale Requirements:</strong> Small datasets (below 10,000 vectors) may produce inconsistent QPS measurements due to insufficient load generation. Consider scaling the dataset size for more reliable throughput testing.</p></li>
+<li><p><strong>Resource Allocation:</strong> Docker container memory and CPU constraints can artificially limit database performance during testing. Monitor resource utilization and adjust container limits as needed for accurate performance measurement.</p></li>
+<li><p><strong>Error Monitoring:</strong> <strong>VDBBench</strong> may log errors to console output that don’t appear in the web interface. Monitor terminal logs during test execution for complete diagnostic information.</p></li>
 </ul>
-<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">الأدوات التكميلية: توليد بيانات الاختبار<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
+<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Supplemental Tools: Test Data Generation<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -368,7 +367,7 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بالنسبة لسيناريوهات التطوير والاختبارات الموحدة، يمكنك إنشاء مجموعات بيانات اصطناعية بخصائص مضبوطة:</p>
+    </button></h2><p>For development and standardized testing scenarios, you can generate synthetic datasets with controlled characteristics:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_csv</span>(<span class="hljs-params">num_records: <span class="hljs-built_in">int</span>, dim: <span class="hljs-built_in">int</span>, filename: <span class="hljs-built_in">str</span></span>):
@@ -390,8 +389,8 @@ name
     generate_csv(num_records, dim, <span class="hljs-string">&quot;train.csv&quot;</span>)
     generate_csv(num_records, dim, <span class="hljs-string">&quot;test.csv&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>تنشئ هذه الأداة مجموعات بيانات بأبعاد محددة وأعداد سجلات محددة لسيناريوهات اختبار النماذج الأولية والاختبار الأساسي.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This utility generates datasets with specified dimensions and record counts for prototyping and baseline testing scenarios.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -406,12 +405,12 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد تعلمت للتو كيفية التحرر من "المسرح المعياري" الذي ضلل عددًا لا يحصى من قرارات قواعد البيانات المتجهة. باستخدام VDBBench ومجموعة البيانات الخاصة بك، يمكنك إنشاء مقاييس QPS على مستوى الإنتاج، والكمون والاسترجاع - لا مزيد من التخمين من البيانات الأكاديمية التي تعود إلى عقود من الزمن.</p>
-<p>توقف عن الاعتماد على المعايير المعلبة التي لا علاقة لها بأعباء عملك الحقيقية. في غضون ساعات فقط - وليس أسابيع - سترى بالضبط كيفية أداء قاعدة البيانات مع <em>ناقلاتك</em> <em>واستعلاماتك</em> <em>وقيودك</em>. هذا يعني أنه يمكنك إجراء المكالمة بثقة، وتجنب إعادة الكتابة المؤلمة لاحقًا، وشحن الأنظمة التي تعمل بالفعل في الإنتاج.</p>
+    </button></h2><p>You’ve just learned how to break free from the “benchmark theater” that’s misled countless vector database decisions. With VDBBench and your own dataset, you can generate production-grade QPS, latency, and recall metrics—no more guesswork from decades-old academic data.</p>
+<p>Stop relying on canned benchmarks that have nothing to do with your real workloads. In just hours—not weeks—you’ll see precisely how a database performs with <em>your</em> vectors, <em>your</em> queries, and <em>your</em> constraints. That means you can make the call with confidence, avoid painful rewrites later, and ship systems that actually work in production.</p>
 <ul>
-<li><p>جرب VDBBench مع أعباء العمل الخاصة بك: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
-<li><p>عرض نتائج اختبار قواعد البيانات المتجهة الرئيسية: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">لوحة المتصدرين VDBBench</a></p></li>
+<li><p>Try VDBBench with your workloads: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
+<li><p>View testing results of major vector databases: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
 </ul>
-<p>هل لديك أسئلة أو تريد مشاركة نتائجك؟ انضم إلى المحادثة على<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> أو تواصل مع مجتمعنا على <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
 <hr>
-<p><em>هذا هو المنشور الأول في سلسلة دليل VectorDB POC Guide - وهو عبارة عن طرق عملية تم اختبارها من قبل المطورين لبناء بنية تحتية للذكاء الاصطناعي تعمل تحت ضغط العالم الحقيقي. ترقبوا المزيد!</em></p>
+<p><em>This is the first post in our VectorDB POC Guide series—hands-on, developer-tested methods for building AI infrastructure that performs under real-world pressure. Stay tuned for more!</em></p>

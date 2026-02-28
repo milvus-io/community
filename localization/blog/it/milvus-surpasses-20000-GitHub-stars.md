@@ -1,6 +1,6 @@
 ---
 id: milvus-surpasses-20000-github-stars.md
-title: 'Una pietra miliare stellare: Milvus supera le 20.000 stelle su GitHub'
+title: 'A Stellar Milestone: Milvus Surpasses 20,000 Stars on GitHub'
 author: Yujian Tang
 date: 2023-06-29T00:00:00.000Z
 cover: assets.zilliz.com/Milvus_hit_20_000_stars_284ed694d2.png
@@ -17,16 +17,16 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-github-stars.md'
     <span></span>
   </span>
 </p>
-<p>Tiriamo fuori i coriandoli e festeggiamo!</p>
-<p><a href="https://github.com/milvus-io/milvus">Milvus</a> ha raggiunto una pietra miliare stellare, superando le 20.000 stelle su GitHub! Non avremmo potuto raggiungerlo senza il sostegno e il feedback dei nostri fedeli fan e membri della comunità. Grazie di cuore.</p>
-<p>Per condividere la gioia, abbiamo messo insieme un elenco di argomenti critici della più ampia comunità di Milvus, tra cui:</p>
+<p>Let’s break out the confetti and celebrate!</p>
+<p><a href="https://github.com/milvus-io/milvus">Milvus</a> has achieved a stellar milestone - surpassing 20,000 stars on GitHub! We couldn’t have achieved it without the support and feedback of our loyal fans and community members. Thank you so much.</p>
+<p>To share the joy, we’ve put together a list of critical topics from the broader Milvus community, including:</p>
 <ul>
-<li>Sei progetti di rilievo che utilizzano Milvus</li>
-<li>Cinque integrazioni con altri progetti open-source</li>
-<li>Cinque casi d'uso noti di Milvus</li>
-<li>Cinque eccellenti funzionalità in arrivo</li>
+<li>Six prominent projects that utilize Milvus</li>
+<li>Five integrations with other open-source projects</li>
+<li>Five well-known use cases of Milvus</li>
+<li>Five excellent upcoming features</li>
 </ul>
-<h2 id="Six-LLM-projects-that-utilize-Milvus" class="common-anchor-header">Sei progetti LLM che utilizzano Milvus<button data-href="#Six-LLM-projects-that-utilize-Milvus" class="anchor-icon" translate="no">
+<h2 id="Six-LLM-projects-that-utilize-Milvus" class="common-anchor-header">Six LLM projects that utilize Milvus<button data-href="#Six-LLM-projects-that-utilize-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,13 +41,13 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="PaperGPT" class="common-anchor-header">PaperGPT</h3><p><a href="http://papergpt.bio">PaperGPT</a> è uno strumento di ricerca per documenti biomedici alimentato da un LLM e da un database vettoriale. Sfrutta il database PubMed e tecnologie come SentenceTransformers e Zilliz Cloud per una ricerca efficiente.</p>
-<h3 id="NoticeAI" class="common-anchor-header">NoticeAI</h3><p>NoticeAI aiuta le aziende ad automatizzare il processo di assistenza ai clienti. Utilizza Milvus e LangChain per tracciare le domande dell'assistenza clienti, aggiornare la base di conoscenze e decidere se coinvolgere o meno un umano.</p>
-<h3 id="Searchanythingio" class="common-anchor-header">Cerca.anything.io</h3><p><a href="http://search.anything.io">Search Anything</a> sfrutta LLM e Milvus per fornire una migliore esperienza di ricerca. Prende una descrizione testuale da un utente e trova le immagini corrispondenti sul web.</p>
-<h3 id="IkuStudies" class="common-anchor-header">IkuStudies</h3><p><a href="https://ikustudies.xyz/">IkuStudies</a> è un progetto che permette agli utenti di cercare omofoni in 28 lingue. Utilizza Milvus come archivio vettoriale per trovare le somiglianze tra le parole.</p>
-<h3 id="AssistLink-AI" class="common-anchor-header">AssistLink AI</h3><p><a href="https://www.linkedin.com/company/assistlink/about/">AssistLink AI</a> è una startup con sede a Seattle che utilizza Milvus e LLaMa 65bn per memorizzare variabili per un sistema di assistenza governativa.</p>
-<h3 id="OSS-Chat" class="common-anchor-header">Chat OSS</h3><p><a href="http://osschat.io">OSS Chat</a> consente di chattare con software open-source. Utilizza Milvus per iniettare la conoscenza del dominio sui progetti open-source e utilizza <a href="https://zilliz.com/blog/Caching-LLM-Queries-for-performance-improvements">GPTCache</a> per memorizzare le domande più frequenti e ridurre i costi di LLaMa.</p>
-<h2 id="Five-AI-projects-Milvus-integrates-with" class="common-anchor-header">Cinque progetti di AI con cui Milvus si integra<button data-href="#Five-AI-projects-Milvus-integrates-with" class="anchor-icon" translate="no">
+    </button></h2><h3 id="PaperGPT" class="common-anchor-header">PaperGPT</h3><p><a href="http://papergpt.bio">PaperGPT</a> is a search tool for biomedical papers powered by an LLM and a vector database. It leverages the PubMed database and technologies like SentenceTransformers and Zilliz Cloud for efficient search.</p>
+<h3 id="NoticeAI" class="common-anchor-header">NoticeAI</h3><p>NoticeAI helps companies automate their customer support process. It utilizes Milvus and LangChain to track customer support questions, update the knowledge base, and decide whether or not to involve a human.</p>
+<h3 id="Searchanythingio" class="common-anchor-header">Search.anything.io</h3><p><a href="http://search.anything.io">Search Anything</a> leverages LLMs and Milvus to provide a better search experience. It takes a text description from a user and finds the corresponding images on the web.</p>
+<h3 id="IkuStudies" class="common-anchor-header">IkuStudies</h3><p><a href="https://ikustudies.xyz/">IkuStudies</a> is a project allowing users to search through homophones in 28 languages. It uses Milvus as the vector store to find similarities between the words.</p>
+<h3 id="AssistLink-AI" class="common-anchor-header">AssistLink AI</h3><p><a href="https://www.linkedin.com/company/assistlink/about/">AssistLink AI</a> is a Seattle-based startup that uses Milvus and LLaMa 65bn to store variables for a Government Assistance system.</p>
+<h3 id="OSS-Chat" class="common-anchor-header">OSS Chat</h3><p><a href="http://osschat.io">OSS Chat</a> allows you to chat with open-source software. It uses Milvus to inject domain knowledge about open-source projects and uses <a href="https://zilliz.com/blog/Caching-LLM-Queries-for-performance-improvements">GPTCache</a> to cache frequently asked questions to reduce LLM costs.</p>
+<h2 id="Five-AI-projects-Milvus-integrates-with" class="common-anchor-header">Five AI projects Milvus integrates with<button data-href="#Five-AI-projects-Milvus-integrates-with" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,12 +62,12 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="LlamaIndex" class="common-anchor-header">LlamaIndex</h3><p><a href="https://github.com/jerryjliu/llama_index">LlamaIndex</a> è un framework di dati per applicazioni LLM che fornisce connettori di dati per collegare fonti di dati esterne con un LLM. LlamaIndex consente di iniettare i propri dati privati o le conoscenze specifiche del dominio direttamente nell'applicazione LLM.</p>
-<h3 id="LangChainLangChainJS" class="common-anchor-header">LangChain/LangChainJS</h3><p><a href="https://github.com/hwchase17/langchain">LangChain</a> è una libreria progettata per accelerare lo sviluppo di applicazioni LLM, offrendo funzionalità quali la gestione dei prompt, le catene, la generazione ad incremento di dati, la memoria e altro ancora.</p>
-<h3 id="ChatGPT-Retrieval-Plugin" class="common-anchor-header">Plugin di recupero ChatGPT</h3><p>Il <a href="https://github.com/openai/chatgpt-retrieval-plugin">ChatGPT Retrieval Plugin</a> di OpenAI consente la ricerca semantica e il recupero di documenti personali o organizzativi utilizzando query in linguaggio naturale. Gli sviluppatori possono distribuire il loro plugin e registrarlo con ChatGPT.</p>
-<h3 id="Haystack" class="common-anchor-header">Haystack</h3><p><a href="https://github.com/deepset-ai/haystack">Haystack</a> è un framework NLP end-to-end per la creazione di applicazioni NLP basate su LLM, modelli di trasformazione, ricerca vettoriale e altre tecnologie per compiti quali la risposta a domande, la ricerca semantica di documenti e la costruzione di processi decisionali complessi.</p>
-<h3 id="GPTCache" class="common-anchor-header">GPTCache</h3><p>Le chiamate alle API LLM possono essere sia costose che lente. <a href="https://github.com/zilliztech/gptcache">GPTCache</a> può ovviare a entrambi i problemi fornendo una cache semantica per le query LLM.</p>
-<h2 id="Five-well-known-use-cases-of-Milvus" class="common-anchor-header">Cinque casi d'uso noti di Milvus<button data-href="#Five-well-known-use-cases-of-Milvus" class="anchor-icon" translate="no">
+    </button></h2><h3 id="LlamaIndex" class="common-anchor-header">LlamaIndex</h3><p><a href="https://github.com/jerryjliu/llama_index">LlamaIndex</a> is a data framework for LLM applications that provides data connectors to link external data sources with an LLM. LlamaIndex enables you to inject your private data or domain-specific knowledge directly into your LLM application.</p>
+<h3 id="LangChainLangChainJS" class="common-anchor-header">LangChain/LangChainJS</h3><p><a href="https://github.com/hwchase17/langchain">LangChain</a> is a library designed to accelerate LLM application development, offering features such as prompt management, chains, data-augmented generation, memory, and more.</p>
+<h3 id="ChatGPT-Retrieval-Plugin" class="common-anchor-header">ChatGPT Retrieval Plugin</h3><p>The <a href="https://github.com/openai/chatgpt-retrieval-plugin">ChatGPT Retrieval Plugin</a> from OpenAI enables semantic search and retrieval of personal or organizational documents using natural language queries, allowing developers to deploy their plugin and register it with ChatGPT.</p>
+<h3 id="Haystack" class="common-anchor-header">Haystack</h3><p><a href="https://github.com/deepset-ai/haystack">Haystack</a> is an end-to-end NLP framework for building NLP applications powered by LLMs, transformer models, vector search, and other technologies for tasks such as question answering, semantic document search, and building complex decision-making.</p>
+<h3 id="GPTCache" class="common-anchor-header">GPTCache</h3><p>LLM API calls can be both expensive and slow. <a href="https://github.com/zilliztech/gptcache">GPTCache</a> can remedy both problems by providing a semantic cache for LLM queries.</p>
+<h2 id="Five-well-known-use-cases-of-Milvus" class="common-anchor-header">Five well-known use cases of Milvus<button data-href="#Five-well-known-use-cases-of-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -82,12 +82,12 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="LLM-augmentation" class="common-anchor-header">Aumento di LLM</h3><p>Gli LLM o le applicazioni LLM hanno tre problemi principali: mancanza di dati specifici del dominio, dati obsoleti e costi elevati. Milvus può risolvere tutti e tre questi problemi, consentendo di iniettare dati esterni e di fungere da cache per le interrogazioni più frequenti.</p>
-<h3 id="Anomaly-detection" class="common-anchor-header">Rilevamento delle anomalie</h3><p>I dati anomali sono significativamente diversi dagli altri in un determinato set. I database vettoriali come Milvus sono utili per condurre ricerche di similarità, facilitando l'identificazione di tali dati anomali.</p>
-<h3 id="Recommender-systems" class="common-anchor-header">Sistemi di raccomandazione</h3><p>Un sistema di raccomandazione consiglia alle persone articoli simili a quelli che già apprezzano. È un classico esempio di Milvus che accelera questo processo eseguendo ricerche di similarità.</p>
-<h3 id="Semantic-search" class="common-anchor-header">Ricerca semantica</h3><p>La ricerca per parole chiave non è sufficiente quando si vuole cercare nel testo cose con significati simili. È qui che entra in gioco la ricerca semantica e che Milvus può aiutare. Milvus permette di confrontare le intenzioni che stanno dietro al testo, non solo le parole in sé.</p>
-<h3 id="Automatic-data-labeling" class="common-anchor-header">Etichettatura automatica dei dati</h3><p>Avete dati etichettati e avete bisogno di contrassegnarne altri? Memorizzando le rappresentazioni vettoriali in Milvus, è possibile rilevare automaticamente i punti più simili nei nuovi dati e applicare le etichette appropriate.</p>
-<h2 id="Five-awesome-upcoming-features" class="common-anchor-header">Cinque fantastiche funzionalità in arrivo<button data-href="#Five-awesome-upcoming-features" class="anchor-icon" translate="no">
+    </button></h2><h3 id="LLM-augmentation" class="common-anchor-header">LLM augmentation</h3><p>LLMs or LLM applications have three major problems: lack of domain-specific data, outdated data, and high costs. Milvus can solve all three of these problems by allowing you to inject external data and serve as a cache for frequent queries.</p>
+<h3 id="Anomaly-detection" class="common-anchor-header">Anomaly detection</h3><p>Anomalous data is significantly different from the rest in a given set. Vector databases like Milvus are beneficial for conducting similarity searches, making it easier to identify such anomalous data.</p>
+<h3 id="Recommender-systems" class="common-anchor-header">Recommender systems</h3><p>A recommender system recommends people items similar to what they already enjoy. It is a classic example of Milvus accelerating this process by performing similarity searches.</p>
+<h3 id="Semantic-search" class="common-anchor-header">Semantic search</h3><p>Keyword search doesn’t do it when you want to search text to find things with similar meanings. That’s where semantic search comes in and where Milvus can help. Milvus allows you to compare the intentions behind the text, not just the words themselves.</p>
+<h3 id="Automatic-data-labeling" class="common-anchor-header">Automatic data labeling</h3><p>Got labeled data and need to mark more? By storing the vector representations in Milvus, you can automatically detect the most similar data points in your new data and apply the appropriate labels.</p>
+<h2 id="Five-awesome-upcoming-features" class="common-anchor-header">Five awesome upcoming features<button data-href="#Five-awesome-upcoming-features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,12 +102,12 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="NVIDIA-GPU-support" class="common-anchor-header">Supporto GPU NVIDIA</h3><p>Il supporto per le GPU è in arrivo in Milvus 2.3 ed è già disponibile nella <a href="https://github.com/milvus-io/milvus/releases/tag/v2.3.0-beta">versione beta</a> più <a href="https://github.com/milvus-io/milvus/releases/tag/v2.3.0-beta">recente</a>!</p>
-<h3 id="Delete-by-Expression" class="common-anchor-header">Eliminazione per espressione</h3><p>In Milvus è già possibile eseguire filtri scalari/metadati tramite espressioni booleane. È in arrivo anche la funzione Cancella per espressione.</p>
-<h3 id="Change-Data-Capture-CDC" class="common-anchor-header">Cattura dei dati di modifica (CDC)</h3><p>Il CDC è una tecnica per catturare e tenere traccia delle modifiche apportate all'istanza di Milvus in tempo reale.</p>
-<h3 id="Range-Search" class="common-anchor-header">Ricerca per intervallo</h3><p>La ricerca per intervallo, nota in alcuni ambienti anche come ricerca epsilon, consente di trovare tutti i vettori entro una certa distanza dal vettore interrogato.</p>
-<h3 id="Fast-Scan" class="common-anchor-header">Scansione veloce</h3><p>La quantizzazione a 4 bit e il FastScan sono stati aggiunti di recente a FAISS e arriveranno anche in Milvus.</p>
-<h2 id="Looking-forward-to-Milvus-reaching-even-greater-heights" class="common-anchor-header">Non vediamo l'ora che Milvus raggiunga vette ancora più alte!<button data-href="#Looking-forward-to-Milvus-reaching-even-greater-heights" class="anchor-icon" translate="no">
+    </button></h2><h3 id="NVIDIA-GPU-support" class="common-anchor-header">NVIDIA GPU support</h3><p>GPU support is coming in Milvus 2.3 and is already available in the most <a href="https://github.com/milvus-io/milvus/releases/tag/v2.3.0-beta">recent beta release</a>!</p>
+<h3 id="Delete-by-Expression" class="common-anchor-header">Delete by Expression</h3><p>You can already perform scalar/metadata filtering via boolean expressions in Milvus. The Delete by Expression feature is also coming.</p>
+<h3 id="Change-Data-Capture-CDC" class="common-anchor-header">Change Data Capture (CDC)</h3><p>CDC is a technique to capture and track changes made to your Milvus instance in real-time.</p>
+<h3 id="Range-Search" class="common-anchor-header">Range Search</h3><p>Range search, also known in some circles as epsilon search, will allow you to find all vectors within a certain distance of your query vector.</p>
+<h3 id="Fast-Scan" class="common-anchor-header">Fast Scan</h3><p>4-bit quantization and FastScan were added to FAISS recently and will also be coming to Milvus.</p>
+<h2 id="Looking-forward-to-Milvus-reaching-even-greater-heights" class="common-anchor-header">Looking forward to Milvus reaching even greater heights!<button data-href="#Looking-forward-to-Milvus-reaching-even-greater-heights" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -122,4 +122,4 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Desideriamo ringraziare di cuore i nostri utenti, i membri della comunità, i partner dell'ecosistema e gli osservatori delle stelle per il loro continuo supporto, feedback e contributo. Non vediamo l'ora che Milvus raggiunga vette ancora più alte!</p>
+    </button></h2><p>We would like to give our most enormous thanks to our users, community members, ecosystem partners, and stargazers for your continued support, feedback, and contribution. Looking forward to Milvus reaching even greater heights!</p>

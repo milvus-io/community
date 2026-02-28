@@ -1,15 +1,15 @@
 ---
 id: >-
   hands-on-with-qwen-3-and-milvus-building-rag-with-the-latest-hybrid-inference-models.md
-title: >-
-  Utilização prática do Qwen 3 e do Milvus: criar RAG com os modelos de
-  inferência híbridos mais recentes
+title: >
+  Hands-on with Qwen 3 and Milvus: Building RAG with the Latest Hybrid Inference
+  Models
 author: Lumina Wang
 date: 2025-04-30T00:00:00.000Z
 desc: >-
-  Partilhe as principais capacidades dos modelos Qwen 3 e guie-o através de um
-  processo de emparelhamento do Qwen 3 com o Milvus para construir um sistema
-  local de geração aumentada de recuperação (RAG) consciente dos custos.
+  Share the key capabilities of Qwen 3 models and guide you through a process of
+  pairing Qwen 3 with Milvus to build a local, cost-aware retrieval-augmented
+  generation (RAG) system.
 cover: assets.zilliz.com/build_RAG_with_qwen_3_and_milvus_64b9f2ad4d.jpeg
 tag: Tutorials
 recommend: false
@@ -28,11 +28,11 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Como programador que procura constantemente ferramentas práticas de IA, não pude ignorar o burburinho em torno do mais recente lançamento da Alibaba Cloud: a família de modelos<a href="https://qwenlm.github.io/blog/qwen3/"> Qwen 3</a>, uma linha robusta de oito modelos de inferência híbrida concebidos para redefinir o equilíbrio entre inteligência e eficiência. Em apenas 12 horas, o projeto ganhou <strong>mais de 17.000 estrelas no GitHub</strong> e atingiu um pico de <strong>23.000 downloads</strong> por hora no Hugging Face.</p>
-<p>Então, o que é que está diferente desta vez? Em suma, os modelos Qwen 3 combinam raciocínio (respostas lentas e ponderadas) e não raciocínio (respostas rápidas e eficientes) numa única arquitetura, incluem diversas opções de modelos, formação e desempenho melhorados e oferecem mais funcionalidades prontas para a empresa.</p>
-<p>Neste post, vou resumir as principais capacidades dos modelos Qwen 3 a que deve prestar atenção e guiá-lo através de um processo de emparelhamento do Qwen 3 com o Milvus para construir um sistema local de geração aumentada de recuperação (RAG) consciente dos custos - completo com código prático e dicas para otimizar o desempenho versus latência.</p>
-<p>Vamos mergulhar.</p>
-<h2 id="Whats-Exciting-About-Qwen-3" class="common-anchor-header">O que há de excitante no Qwen 3?<button data-href="#Whats-Exciting-About-Qwen-3" class="anchor-icon" translate="no">
+<p>As a developer constantly seeking practical AI tools, I couldn’t ignore the buzz surrounding Alibaba Cloud’s latest release: the<a href="https://qwenlm.github.io/blog/qwen3/"> Qwen 3</a> model family, a robust lineup of eight hybrid inference models designed to redefine the balance between intelligence and efficiency. In just 12 hours, the project garnered <strong>over 17,000 GitHub stars</strong> and reached a peak of <strong>23,000 downloads</strong> per hour on Hugging Face.</p>
+<p>So what’s different this time? In short, Qwen 3 models combine both reasoning (slow, thoughtful responses) and non-reasoning (fast, efficient answers) in a single architecture, include diverse model options, enhanced training and performance, and deliver more enterprise-ready features.</p>
+<p>In this post, I’ll summarize the key capabilities of Qwen 3 models you should pay attention to and guide you through a process of pairing Qwen 3 with Milvus to build a local, cost-aware retrieval-augmented generation (RAG) system—complete with hands-on code and tips for optimizing performance versus latency.</p>
+<p>Let’s dive in.</p>
+<h2 id="Whats-Exciting-About-Qwen-3" class="common-anchor-header">What’s Exciting About Qwen 3?<button data-href="#Whats-Exciting-About-Qwen-3" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,45 +47,45 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Depois de testar e investigar o Qwen 3, fica claro que não se trata apenas de números maiores numa folha de especificações. É sobre como as escolhas de design do modelo realmente ajudam os desenvolvedores a criar melhores aplicativos GenAI - mais rápido, mais inteligente e com mais controle. Aqui está o que se destaca.</p>
-<h3 id="1-Hybrid-Thinking-Modes-Smart-When-You-Need-Them-Speed-When-You-Don’t" class="common-anchor-header">1. Modos de pensamento híbridos: Inteligente quando é necessário, rápido quando não é necessário</h3><p>Uma das caraterísticas mais inovadoras do Qwen 3 é sua <strong>arquitetura de inferência híbrida</strong>. Ela oferece um controle refinado sobre a quantidade de "pensamento" que o modelo faz em cada tarefa. Afinal, nem todas as tarefas precisam de raciocínio complicado.</p>
+    </button></h2><p>After testing and digging into Qwen 3, it’s clear that it’s not just about bigger numbers on a spec sheet. It’s about how the model’s design choices actually help developers build better GenAI applications — faster, smarter, and with more control. Here’s what stands out.</p>
+<h3 id="1-Hybrid-Thinking-Modes-Smart-When-You-Need-Them-Speed-When-You-Don’t" class="common-anchor-header">1. Hybrid Thinking Modes: Smart When You Need Them, Speed When You Don’t</h3><p>One of the most innovative features in Qwen 3 is its <strong>hybrid inference architecture</strong>. It gives you fine-grained control over how much “thinking” the model does on a task-by-task basis. Not all tasks need complicated reasoning, after all.</p>
 <ul>
-<li><p>Para problemas complexos que requerem uma análise profunda, pode utilizar todo o poder de raciocínio, mesmo que seja mais lento.</p></li>
-<li><p>Para consultas simples do dia a dia, pode mudar para um modo mais rápido e leve.</p></li>
-<li><p>Pode até definir um <strong>"orçamento de raciocínio</strong> " - limitando a quantidade de computação ou tokens que uma sessão consome.</p></li>
+<li><p>For complex problems that require deep analysis, you can tap into full reasoning power — even if it’s slower.</p></li>
+<li><p>For everyday simple queries, you can switch into a faster, lighter mode.</p></li>
+<li><p>You can even set a <strong>“thinking budget”</strong> — capping how much compute or tokens a session burns.</p></li>
 </ul>
-<p>Esta não é apenas uma funcionalidade de laboratório. Aborda diretamente o compromisso diário dos programadores: fornecer respostas de alta qualidade sem aumentar os custos de infraestrutura ou a latência do utilizador.</p>
-<h3 id="2-A-Versatile-Lineup-MoE-and-Dense-Models-for-Different-Needs" class="common-anchor-header">2. Uma linha versátil: Modelos MoE e Densos para Diferentes Necessidades</h3><p>O Qwen 3 oferece uma ampla gama de modelos projetados para atender a diferentes necessidades operacionais:</p>
+<p>This isn’t just a lab feature either. It directly addresses the daily trade-off developers juggle: delivering high-quality responses without blowing up infrastructure costs or user latency.</p>
+<h3 id="2-A-Versatile-Lineup-MoE-and-Dense-Models-for-Different-Needs" class="common-anchor-header">2. A Versatile Lineup: MoE and Dense Models for Different Needs</h3><p>Qwen 3 provides a wide range of models designed to match different operational needs:</p>
 <ul>
-<li><p><strong>Dois modelos MoE (Mixture of Experts)</strong>:</p>
+<li><p><strong>Two MoE (Mixture of Experts) models</strong>:</p>
 <ul>
-<li><p><strong>Qwen3-235B-A22B</strong>: 235 bilhões de parâmetros totais, 22 bilhões ativos por consulta</p></li>
-<li><p><strong>Qwen3-30B-A3B</strong>: 30 mil milhões no total, 3 mil milhões activos</p></li>
+<li><p><strong>Qwen3-235B-A22B</strong>: 235 billion total parameters, 22 billion active per query</p></li>
+<li><p><strong>Qwen3-30B-A3B</strong>: 30 billion total, 3 billion active</p></li>
 </ul></li>
-<li><p><strong>Seis modelos densos</strong>: variando de um ágil 0.6B a um robusto 32B de parâmetros</p></li>
+<li><p><strong>Six Dense models</strong>: ranging from a nimble 0.6B to a hefty 32B parameters</p></li>
 </ul>
-<p><em>Breve enquadramento técnico: Os modelos densos (como o GPT-3 ou o BERT) activam sempre todos os parâmetros, o que os torna mais pesados, mas por vezes mais previsíveis.</em> <a href="https://zilliz.com/learn/what-is-mixture-of-experts"><em>Os modelos MoE</em></a> <em>activam apenas uma fração da rede de cada vez, o que os torna muito mais eficientes à escala.</em></p>
-<p>Na prática, essa linha versátil de modelos significa que você pode:</p>
+<p><em>Quick tech background: Dense models (like GPT-3 or BERT) always activate all parameters, making them heavier but sometimes more predictable.</em> <a href="https://zilliz.com/learn/what-is-mixture-of-experts"><em>MoE models</em></a> <em>activate only a fraction of the network at a time, making them much more efficient at scale.</em></p>
+<p>In practice, this versatile lineup of models means you can:</p>
 <ul>
-<li><p>Usar modelos densos para cargas de trabalho apertadas e previsíveis (como dispositivos incorporados)</p></li>
-<li><p>Utilizar modelos MoE quando necessita de capacidades pesadas sem aumentar a sua fatura na nuvem</p></li>
+<li><p>Use dense models for tight, predictable workloads (like embedded devices)</p></li>
+<li><p>Use MoE models when you need heavyweight capabilities without melting your cloud bill</p></li>
 </ul>
-<p>Com esta gama, pode personalizar a sua implementação - desde configurações leves e prontas para o edge até implementações poderosas à escala da nuvem - sem ficar preso a um único tipo de modelo.</p>
-<h3 id="3-Focused-on-Efficiency-and-Real-World-Deployment" class="common-anchor-header">3. Focado na eficiência e na implantação no mundo real</h3><p>Em vez de se concentrar apenas no tamanho do modelo de escala, o Qwen 3 se concentra na eficiência do treinamento e na praticidade da implantação:</p>
+<p>With this range, you can tailor your deployment — from lightweight, edge-ready setups to powerful cloud-scale deployments — without being locked into a single model type.</p>
+<h3 id="3-Focused-on-Efficiency-and-Real-World-Deployment" class="common-anchor-header">3. Focused on Efficiency and Real-World Deployment</h3><p>Instead of focusing solely on scaling model size, Qwen 3 focuses on training efficiency and deployment practicality:</p>
 <ul>
-<li><p><strong>Treinado em 36 trilhões de tokens</strong> - o dobro do que o Qwen 2.5 usou</p></li>
-<li><p><strong>Expandido para 235B parâmetros</strong> - mas gerido de forma inteligente através de técnicas MoE, equilibrando a capacidade com as exigências de recursos.</p></li>
-<li><p><strong>Optimizado para implementação</strong> - a quantização dinâmica (de FP4 para INT8) permite-lhe executar até o maior modelo Qwen 3 numa infraestrutura modesta - por exemplo, implementação em quatro GPUs H20.</p></li>
+<li><p><strong>Trained on 36 trillion tokens</strong> — double what Qwen 2.5 used</p></li>
+<li><p><strong>Expanded to 235B parameters</strong> — but smartly managed through MoE techniques, balancing capability with resource demands.</p></li>
+<li><p><strong>Optimized for deployment</strong> — dynamic quantization (down from FP4 to INT8) lets you run even the biggest Qwen 3 model on modest infrastructure — for example, deployment on four H20 GPUs.</p></li>
 </ul>
-<p>O objetivo aqui é claro: proporcionar um desempenho superior sem exigir um investimento desproporcionado em infra-estruturas.</p>
-<h3 id="4-Built-for-Real-Integration-MCP-Support-and-Multilingual-Capabilities" class="common-anchor-header">4. Construído para integração real: Suporte MCP e Capacidades Multilingues</h3><p>O Qwen 3 foi projetado tendo em mente a integração, não apenas o desempenho isolado do modelo:</p>
+<p>The goal here is clear: deliver stronger performance without requiring disproportionate infrastructure investment.</p>
+<h3 id="4-Built-for-Real-Integration-MCP-Support-and-Multilingual-Capabilities" class="common-anchor-header">4. Built for Real Integration: MCP Support and Multilingual Capabilities</h3><p>Qwen 3 is designed with integration in mind, not just isolated model performance:</p>
 <ul>
-<li><p><strong>A compatibilidade com MCP (Model Context Protocol)</strong> permite uma integração perfeita com bancos de dados externos, APIs e ferramentas, reduzindo a sobrecarga de engenharia para aplicações complexas.</p></li>
-<li><p><strong>O Qwen-Agent</strong> melhora a chamada de ferramentas e a orquestração do fluxo de trabalho, apoiando a construção de sistemas de IA mais dinâmicos e acionáveis.</p></li>
-<li><p>O<strong>suporte multilíngue em 119 idiomas e dialetos</strong> torna o Qwen 3 uma forte escolha para aplicativos que visam mercados globais e multilíngues.</p></li>
+<li><p><strong>MCP (Model Context Protocol) compatibility</strong> enables seamless integration with external databases, APIs, and tools, reducing engineering overhead for complex applications.</p></li>
+<li><p><strong>Qwen-Agent</strong> enhances tool calling and workflow orchestration, supporting the building of more dynamic, actionable AI systems.</p></li>
+<li><p><strong>Multilingual support across 119 languages and dialects</strong> makes Qwen 3 a strong choice for applications targeting global and multilingual markets.</p></li>
 </ul>
-<p>Esses recursos coletivamente tornam mais fácil para os desenvolvedores construir sistemas de nível de produção sem a necessidade de engenharia personalizada extensa em torno do modelo.</p>
-<h2 id="Qwen-3-Now-Supported-in-DeepSearcher" class="common-anchor-header">Qwen 3 agora é suportado no DeepSearcher<button data-href="#Qwen-3-Now-Supported-in-DeepSearcher" class="anchor-icon" translate="no">
+<p>These features collectively make it easier for developers to build production-grade systems without needing extensive custom engineering around the model.</p>
+<h2 id="Qwen-3-Now-Supported-in-DeepSearcher" class="common-anchor-header">Qwen 3 Now Supported in DeepSearcher<button data-href="#Qwen-3-Now-Supported-in-DeepSearcher" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,10 +100,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> é um projeto de código aberto para recuperação profunda e geração de relatórios, projetado como uma alternativa local ao Deep Research da OpenAI. Ele ajuda os desenvolvedores a criar sistemas que apresentam informações de alta qualidade e conscientes do contexto de fontes de dados privadas ou específicas do domínio.</p>
-<p>O DeepSearcher agora suporta a arquitetura de inferência híbrida do Qwen 3, permitindo que os desenvolvedores alternem o raciocínio dinamicamente - aplicando inferência mais profunda apenas quando agrega valor e ignorando-a quando a velocidade é mais importante.</p>
-<p>Por baixo do capô, o DeepSearcher integra-se com o<a href="https://milvus.io"> Milvus</a>, um banco de dados vetorial de alto desempenho desenvolvido por engenheiros da Zilliz, para fornecer pesquisa semântica rápida e precisa sobre dados locais. Combinado com a flexibilidade do modelo, ele oferece aos desenvolvedores maior controle sobre o comportamento do sistema, o custo e a experiência do usuário.</p>
-<h2 id="Hands-on-Tutorial-Building-a-RAG-System-with-Qwen-3-and-Milvus" class="common-anchor-header">Tutorial prático: Construindo um sistema RAG com Qwen 3 e Milvus<button data-href="#Hands-on-Tutorial-Building-a-RAG-System-with-Qwen-3-and-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> is an open-source project for deep retrieval and report generation, designed as a local-first alternative to OpenAI’s Deep Research. It helps developers build systems that surface high-quality, context-aware information from private or domain-specific data sources.</p>
+<p>DeepSearcher now supports Qwen 3’s hybrid inference architecture, allowing developers to toggle reasoning dynamically — applying deeper inference only when it adds value, and skipping it when speed is more important.</p>
+<p>Under the hood, DeepSearcher integrates with<a href="https://milvus.io"> Milvus</a>, a high-performance vector database developed by Zilliz engineers, to provide fast and accurate semantic search over local data. Combined with model flexibility, it gives developers greater control over system behavior, cost, and user experience.</p>
+<h2 id="Hands-on-Tutorial-Building-a-RAG-System-with-Qwen-3-and-Milvus" class="common-anchor-header">Hands-on Tutorial: Building a RAG System with Qwen 3 and Milvus<button data-href="#Hands-on-Tutorial-Building-a-RAG-System-with-Qwen-3-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,15 +118,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vamos colocar estes modelos Qwen 3 para trabalhar construindo um sistema RAG usando o banco de dados vetorial Milvus.</p>
-<h3 id="Set-up-the-environment" class="common-anchor-header">Configure o ambiente.</h3><pre><code translate="no"><span class="hljs-comment"># Install required packages</span>
+    </button></h2><p>Let’s put these Qwen 3 models to work by building a RAG system using the Milvus vector database.</p>
+<h3 id="Set-up-the-environment" class="common-anchor-header">Set up the environment.</h3><pre><code translate="no"><span class="hljs-comment"># Install required packages</span>
 pip install --upgrade pymilvus openai requests tqdm
 <span class="hljs-comment"># Set up API key</span>
 <span class="hljs-keyword">import</span> os
 os.environ[<span class="hljs-string">&quot;DASHSCOPE_API_KEY&quot;</span>] = <span class="hljs-string">&quot;YOUR_DASHSCOPE_API_KEY&quot;</span> <span class="hljs-comment"># Get this from Alibaba Cloud DashScope</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Nota: É necessário obter a chave API da Alibaba Cloud.</p>
-<h3 id="Data-Preparation" class="common-anchor-header">Preparação de dados</h3><p>Usaremos as páginas de documentação do Milvus como nossa principal base de conhecimento.</p>
+<p>Note: You will need to obtain the API Key from Alibaba Cloud.</p>
+<h3 id="Data-Preparation" class="common-anchor-header">Data Preparation</h3><p>We will use the Milvus documentation pages as our primary knowledge base.</p>
 <pre><code translate="no"><span class="hljs-comment"># Download and extract Milvus documentation</span>
 !wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 !unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
@@ -140,7 +140,7 @@ text_lines = []
         file_text = file.read()
         text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Setting-Up-Models" class="common-anchor-header">Configuração de modelos</h3><p>Usaremos a API compatível com OpenAI do DashScope para acessar o Qwen 3:</p>
+<h3 id="Setting-Up-Models" class="common-anchor-header">Setting Up Models</h3><p>We’ll use DashScope’s OpenAI-compatible API to access Qwen 3:</p>
 <pre><code translate="no"><span class="hljs-comment"># Set up OpenAI client to access Qwen 3</span>
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 
@@ -153,18 +153,18 @@ openai_client = OpenAI(
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model <span class="hljs-keyword">as</span> milvus_model
 embedding_model = milvus_model.DefaultEmbeddingFunction()
 <button class="copy-code-btn"></button></code></pre>
-<p>Vamos gerar uma incorporação de teste e imprimir suas dimensões e os primeiros elementos:</p>
+<p>Let’s generate a test embedding and print its dimensions and first few elements:</p>
 <pre><code translate="no">test_embedding = embedding_model.encode_queries([<span class="hljs-string">&quot;This is a test&quot;</span>])[<span class="hljs-number">0</span>]
 embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 <span class="hljs-built_in">print</span>(embedding_dim)
 <span class="hljs-built_in">print</span>(test_embedding[:<span class="hljs-number">10</span>])
 <button class="copy-code-btn"></button></code></pre>
-<p>Saída:</p>
+<p>Output:</p>
 <pre><code translate="no">768
 [-0.04836066 0.07163023 -0.01130064 -0.03789345 -0.03320649 -0.01318448
  -0.03041712 -0.02269499 -0.02317863 -0.00426028]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Creating-a-Milvus-Collection" class="common-anchor-header">Criando uma coleção Milvus</h3><p>Vamos configurar a nossa base de dados vetorial Milvus:</p>
+<h3 id="Creating-a-Milvus-Collection" class="common-anchor-header">Creating a Milvus Collection</h3><p>Let’s set up our Milvus vector database:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 <span class="hljs-comment"># Initialize Milvus client (using local storage for simplicity)</span>
@@ -185,13 +185,13 @@ milvus_client.create_collection(
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>, <span class="hljs-comment"># Strong consistency level</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Sobre as configurações dos parâmetros do MilvusClient:</p>
+<p>About MilvusClient parameter settings:</p>
 <ul>
-<li><p>Definir o URI para um ficheiro local (por exemplo, <code translate="no">./milvus.db</code>) é o método mais conveniente, uma vez que utiliza automaticamente o Milvus Lite para armazenar todos os dados nesse ficheiro.</p></li>
-<li><p>Para dados em grande escala, pode configurar um servidor Milvus mais poderoso no Docker ou Kubernetes. Nesse caso, use o URI do servidor (por exemplo, <code translate="no">http://localhost:19530</code>) como seu URI.</p></li>
-<li><p>Se pretender utilizar <a href="https://zilliz.com/cloud">o Zilliz Cloud </a>(o serviço gerido do Milvus), ajuste o URI e o token, que correspondem ao Ponto de extremidade público e à chave da API no Zilliz Cloud.</p></li>
+<li><p>Setting the URI to a local file (e.g., <code translate="no">./milvus.db</code>) is the most convenient method as it automatically uses Milvus Lite to store all data in that file.</p></li>
+<li><p>For large-scale data, you can set up a more powerful Milvus server on Docker or Kubernetes. In this case, use the server’s URI (e.g., <code translate="no">http://localhost:19530</code>) as your URI.</p></li>
+<li><p>If you want to use <a href="https://zilliz.com/cloud">Zilliz Cloud </a>(the managed service of Milvus), adjust the URI and token, which correspond to the Public Endpoint and API key in Zilliz Cloud.</p></li>
 </ul>
-<h3 id="Adding-Documents-to-the-Collection" class="common-anchor-header">Adicionar documentos à coleção</h3><p>Agora vamos criar embeddings para os nossos pedaços de texto e adicioná-los ao Milvus:</p>
+<h3 id="Adding-Documents-to-the-Collection" class="common-anchor-header">Adding Documents to the Collection</h3><p>Now we’ll create embeddings for our text chunks and add them to Milvus:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 data = []
@@ -206,11 +206,11 @@ milvus_client.insert(collection_name=collection_name, data=data)
 <pre><code translate="no">Creating embeddings: 100%|██████████████████████████████████████████████████| 72/72 [00:00&lt;00:00, 381300.36it/s]
 {<span class="hljs-string">&#x27;insert_count&#x27;</span>: 72, <span class="hljs-string">&#x27;ids&#x27;</span>: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], <span class="hljs-string">&#x27;cost&#x27;</span>: 0}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Building-the-RAG-Query-System" class="common-anchor-header">Construir o sistema de consulta RAG</h3><p>Agora a parte emocionante - vamos configurar o nosso sistema RAG para responder a perguntas.</p>
-<p>Vamos especificar uma pergunta comum sobre o Milvus:</p>
+<h3 id="Building-the-RAG-Query-System" class="common-anchor-header">Building the RAG Query System</h3><p>Now for the exciting part - let’s set up our RAG system to answer questions.</p>
+<p>Let’s specify a common question about Milvus:</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Procurar esta pergunta na coleção e obter os 3 principais resultados semanticamente correspondentes:</p>
+<p>Search for this question in the collection and retrieve the top 3 semantically matching results:</p>
 <pre><code translate="no">search_res = milvus_client.search(
     collection_name=collection_name,
     data=embedding_model.encode_queries([question]), <span class="hljs-comment"># Convert the question to an embedding vector</span>
@@ -219,7 +219,7 @@ milvus_client.insert(collection_name=collection_name, data=data)
     output_fields=[<span class="hljs-string">&quot;text&quot;</span>], <span class="hljs-comment"># Return the text field</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Vamos ver os resultados da pesquisa para esta consulta:</p>
+<p>Let’s look at the search results for this query:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 retrieved_lines_with_distances = [
     (res[<span class="hljs-string">&quot;entity&quot;</span>][<span class="hljs-string">&quot;text&quot;</span>], res[<span class="hljs-string">&quot;distance&quot;</span>]) <span class="hljs-keyword">for</span> res <span class="hljs-keyword">in</span> search_res[<span class="hljs-number">0</span>]
@@ -242,12 +242,12 @@ retrieved_lines_with_distances = [
     ]
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Using-the-LLM-to-Build-a-RAG-Response" class="common-anchor-header">Utilizar o LLM para construir uma resposta RAG</h3><p>Converta os documentos recuperados para o formato de cadeia de caracteres:</p>
+<h3 id="Using-the-LLM-to-Build-a-RAG-Response" class="common-anchor-header">Using the LLM to Build a RAG Response</h3><p>Convert the retrieved documents to string format:</p>
 <pre><code translate="no">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Fornecer prompt do sistema e prompt do utilizador para o modelo de linguagem grande:</p>
+<p>Provide system prompt and user prompt for the large language model:</p>
 <pre><code translate="no">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -264,7 +264,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Usar o modelo Qwen mais recente para gerar uma resposta com base no prompt:</p>
+<p>Use the latest Qwen model to generate a response based on the prompt:</p>
 <pre><code translate="no">completion = openai_client.chat.completions.create(
     <span class="hljs-comment"># Model list: https://help.aliyun.com/zh/model-studio/getting-started/models</span>
     model=<span class="hljs-string">&quot;qwen-plus-2025-04-28&quot;</span>,
@@ -279,7 +279,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 <span class="hljs-built_in">print</span>(completion.choices[<span class="hljs-number">0</span>].message.content)
 
 <button class="copy-code-btn"></button></code></pre>
-<p>Saída:</p>
+<p>Output:</p>
 <pre><code translate="no">In Milvus, data <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> two main categories: **inserted data** <span class="hljs-keyword">and</span> **metadata**.
 
 - **Inserted Data**: <span class="hljs-function">This includes vector <span class="hljs-title">data</span> (<span class="hljs-params">like Binary, Float32, Float16, <span class="hljs-keyword">and</span> BFloat16 types</span>), scalar data, <span class="hljs-keyword">and</span> collection-specific schema. These are stored <span class="hljs-keyword">in</span> persistent storage <span class="hljs-keyword">as</span> **incremental logs**. Milvus supports various <span class="hljs-built_in">object</span> storage backends <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> purpose, including:
@@ -294,7 +294,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 - **Metadata**: Metadata generated within Milvus <span class="hljs-keyword">is</span> stored separately. Each Milvus module maintains its own metadata, which <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> [etcd](<span class="hljs-params">https://etcd.io/</span>), a distributed key-<span class="hljs-keyword">value</span> store.
 When data <span class="hljs-keyword">is</span> inserted <span class="hljs-keyword">into</span> Milvus, it <span class="hljs-keyword">is</span> first loaded <span class="hljs-keyword">into</span> a message queue. It <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> immediately written to disk. A `<span class="hljs-title">flush</span>()` operation ensures that all data <span class="hljs-keyword">in</span> the queue <span class="hljs-keyword">is</span> written to persistent storage immediately.
 </span><button class="copy-code-btn"></button></code></pre>
-<h2 id="Comparing-Reasoning-vs-Non-Reasoning-Modes-A-Practical-Test" class="common-anchor-header">Comparação entre os modos de raciocínio e não raciocínio: Um teste prático<button data-href="#Comparing-Reasoning-vs-Non-Reasoning-Modes-A-Practical-Test" class="anchor-icon" translate="no">
+<h2 id="Comparing-Reasoning-vs-Non-Reasoning-Modes-A-Practical-Test" class="common-anchor-header">Comparing Reasoning vs. Non-Reasoning Modes: A Practical Test<button data-href="#Comparing-Reasoning-vs-Non-Reasoning-Modes-A-Practical-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -309,8 +309,8 @@ When data <span class="hljs-keyword">is</span> inserted <span class="hljs-keywor
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Executei um teste comparando os dois modos de inferência em um problema de matemática:</p>
-<p><strong>Problema:</strong> A pessoa A e a pessoa B começam a correr a partir do mesmo local. A sai primeiro e corre durante 2 horas a 5km/h. B segue-a a 15km/h. Quanto tempo demorará B a alcançá-lo?</p>
+    </button></h2><p>I ran a test comparing the two inference modes on a math problem:</p>
+<p><strong>Problem:</strong> Person A and Person B start running from the same location. A leaves first and runs for 2 hours at 5km/h. B follows at 15km/h. How long will it take B to catch up?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/math_problem_0123815455.png" alt="" class="doc-image" id="" />
@@ -354,13 +354,13 @@ answer_content = <span class="hljs-string">&quot;&quot;</span>
 end_time = time.time()
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n\nTotal runtime：<span class="hljs-subst">{end_time - start_time:<span class="hljs-number">.2</span>f}</span>seconds&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Com o modo de raciocínio ativado:</strong></p>
+<p><strong>With reasoning mode enabled:</strong></p>
 <ul>
-<li><p>Tempo de processamento: ~74,83 segundos</p></li>
-<li><p>Análise profunda, análise de problemas, vários caminhos de solução</p></li>
-<li><p>Saída de markdown de alta qualidade com fórmulas</p></li>
+<li><p>Processing time: ~74.83 seconds</p></li>
+<li><p>Deep analysis, problem parsing, multiple solution paths</p></li>
+<li><p>High-quality markdown output with formulas</p></li>
 </ul>
-<p>(A imagem abaixo é uma captura de ecrã da visualização da resposta markdown do modelo, para conveniência do leitor)</p>
+<p>(The image below is a screenshot of the visualization of the model’s markdown response, for the reader’s convenience)</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/screenshot_with_reasoning_1_d231b6ad54.png" alt="" class="doc-image" id="" />
@@ -373,22 +373,22 @@ end_time = time.time()
     <span></span>
   </span>
 </p>
-<p><strong>Modo sem raciocínio:</strong></p>
-<p>No código, só precisa de definir <code translate="no">&quot;enable_thinking&quot;: False</code></p>
-<p>Resultados do modo sem raciocínio neste problema:</p>
+<p><strong>Non-Reasoning Mode:</strong></p>
+<p>In the code, you only need to set <code translate="no">&quot;enable_thinking&quot;: False</code></p>
+<p>Results of non-reasoning mode on this problem:</p>
 <ul>
-<li>Tempo de processamento: ~74,83 segundos</li>
-<li>Análise profunda, análise de problemas, vários caminhos de solução</li>
-<li>Saída de markdown de alta qualidade com fórmulas</li>
+<li>Processing time: ~74.83 seconds</li>
+<li>Deep analysis, problem parsing, multiple solution paths</li>
+<li>High-quality markdown output with formulas</li>
 </ul>
-<p>(A imagem abaixo é uma captura de ecrã da visualização da resposta markdown do modelo, para conveniência do leitor)</p>
+<p>(The image below is a screenshot of the visualization of the model’s markdown response, for the reader’s convenience)</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/screenshot_without_reasoning_e1f6b82e56.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,6 +403,6 @@ end_time = time.time()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O Qwen 3 introduz uma arquitetura de modelo flexível que se alinha bem com as necessidades do mundo real do desenvolvimento GenAI. Com uma gama de tamanhos de modelos (incluindo variantes densas e MoE), modos de inferência híbridos, integração MCP e suporte multilingue, dá aos programadores mais opções para ajustar o desempenho, a latência e o custo, dependendo do caso de utilização.</p>
-<p>Em vez de enfatizar apenas a escala, o Qwen 3 foca na adaptabilidade. Isso o torna uma escolha prática para a construção de pipelines RAG, <a href="https://zilliz.com/blog/what-exactly-are-ai-agents-why-openai-and-langchain-are-fighting-over-their-definition">agentes de IA</a> e aplicativos de produção que exigem recursos de raciocínio e operação econômica.</p>
-<p>Quando emparelhado com infra-estruturas como<a href="https://milvus.io"> Milvus</a> - uma base de dados vetorial de código aberto de alto desempenho - as capacidades do Qwen 3 tornam-se ainda mais úteis, permitindo uma pesquisa rápida e semântica e uma integração suave com sistemas de dados locais. Em conjunto, oferecem uma base sólida para aplicações GenAI inteligentes e reactivas em escala.</p>
+    </button></h2><p>Qwen 3 introduces a flexible model architecture that aligns well with the real-world needs of GenAI development. With a range of model sizes (including both dense and MoE variants), hybrid inference modes, MCP integration, and multilingual support, it gives developers more options to tune for performance, latency, and cost, depending on the use case.</p>
+<p>Rather than emphasizing scale alone, Qwen 3 focuses on adaptability. This makes it a practical choice for building RAG pipelines, <a href="https://zilliz.com/blog/what-exactly-are-ai-agents-why-openai-and-langchain-are-fighting-over-their-definition">AI agents</a>, and production applications that require both reasoning capabilities and cost-efficient operation.</p>
+<p>When paired with infrastructure like<a href="https://milvus.io"> Milvus</a> — a high-performance open-source vector database — Qwen 3’s capabilities become even more useful, enabling fast, semantic search and smooth integration with local data systems. Together, they offer a strong foundation for intelligent, responsive GenAI applications at scale.</p>

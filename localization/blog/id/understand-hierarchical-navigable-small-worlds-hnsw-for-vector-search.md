@@ -1,12 +1,12 @@
 ---
 id: understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md
-title: Memahami Hierarchical Navigable Small Worlds (HNSW) untuk Pencarian Vektor
+title: |
+  Understanding Hierarchical Navigable Small Worlds (HNSW) for Vector Search
 author: Stefan Webb
 date: 2025-05-21T00:00:00.000Z
 desc: >-
-  HNSW (Hierarchical Navigable Small World) adalah algoritme yang efisien untuk
-  perkiraan pencarian tetangga terdekat dengan menggunakan struktur graf
-  berlapis.
+  HNSW (Hierarchical Navigable Small World) is an efficient algorithm for
+  approximate nearest neighbor search using a layered graph structure.
 cover: assets.zilliz.com/Chat_GPT_Image_May_26_2025_11_56_17_AM_1a84d31090.png
 tag: Engineering
 recommend: false
@@ -18,17 +18,17 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md
 ---
-<p>Operasi utama dari <a href="https://milvus.io/blog/what-is-a-vector-database.md">basis data vektor</a> adalah <em>pencarian kemiripan</em>, yang melibatkan pencarian tetangga terdekat dalam basis data dengan vektor kueri, misalnya, dengan jarak Euclidean. Metode naif akan menghitung jarak dari vektor kueri ke setiap vektor yang tersimpan di dalam basis data dan mengambil K yang paling dekat. Namun, hal ini jelas tidak sesuai dengan ukuran database. Dalam praktiknya, pencarian kemiripan naif hanya praktis untuk basis data dengan kurang dari 1 juta vektor. Bagaimana kita dapat meningkatkan skala pencarian kita ke 10 juta dan 100 juta, atau bahkan ke miliaran vektor?</p>
+<p>The key operation of <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector databases</a> is <em>similarity search</em>, which involves finding the nearest neighbors in the database to a query vector, for example, by Euclidean distance. A naive method would calculate the distance from the query vector to every vector stored in the database and take the top-K closest. However, this clearly does not scale as the size of the database grows. In practice, a naive similarity search is practical only for databases with fewer than around 1 million vectors. How are we to scale our search to the 10s and 100s of millions, or even to the billions of vectors?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Descending_a_hierarchy_of_vector_search_indices_cf9fb8060a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Gambar: Menuruni hirarki indeks pencarian vektor</em></p>
-<p>Banyak algoritme dan struktur data yang telah dikembangkan untuk menskalakan pencarian kemiripan dalam ruang vektor berdimensi tinggi hingga kompleksitas waktu sub-linear. Dalam artikel ini, kami akan menjelaskan dan mengimplementasikan sebuah metode yang populer dan efektif yang disebut Hierarchical Navigable Small Worlds (HNSW), yang sering kali menjadi pilihan default untuk set data vektor berukuran sedang. Metode ini termasuk dalam keluarga metode pencarian yang membangun sebuah grafik di atas vektor, di mana simpul menunjukkan vektor dan sisi menunjukkan kemiripan di antara vektor-vektor tersebut. Pencarian dilakukan dengan menavigasi grafik, dalam kasus yang paling sederhana, dengan rakus melintasi ke tetangga simpul saat ini yang paling dekat dengan kueri dan mengulangi sampai minimum lokal tercapai.</p>
-<p>Kami akan menjelaskan secara lebih rinci bagaimana graf pencarian dibangun, bagaimana graf memungkinkan pencarian, dan pada akhirnya, menautkan ke implementasi HNSW, karya Anda sendiri, dalam bahasa pemrograman Python yang sederhana.</p>
-<h2 id="Navigable-Small-Worlds" class="common-anchor-header">Dunia Kecil yang Dapat Dijelajahi<button data-href="#Navigable-Small-Worlds" class="anchor-icon" translate="no">
+<p><em>Figure: Descending a hierarchy of vector search indices</em></p>
+<p>Many algorithms and data structures have been developed to scale similarity search in high-dimensional vector spaces to sub-linear time complexity. In this article, we’ll explain and implement a popular and effective method called Hierarchical Navigable Small Worlds (HNSW), which is frequently the default choice for medium-sized vector datasets. It belongs to the family of search methods that construct a graph over the vectors, where vertices denote vectors and edges denote similarity between them. Search is performed by navigating the graph, in the simplest case, greedily traversing to the neighbor of the current node that is closest to the query and repeating until a local minimum is reached.</p>
+<p>We will explain in more detail how the search graph is constructed, how the graph enables search, and at the end, link to an HNSW implementation, by yours truly, in simple Python.</p>
+<h2 id="Navigable-Small-Worlds" class="common-anchor-header">Navigable Small Worlds<button data-href="#Navigable-Small-Worlds" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -49,9 +49,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><em>Gambar: Grafik NSW yang dibuat dari 100 titik 2D yang ditempatkan secara acak.</em></p>
-<p>Seperti yang telah disebutkan, HNSW membuat grafik pencarian secara offline sebelum kita dapat melakukan kueri. Algoritma ini dibangun di atas pekerjaan sebelumnya, sebuah metode yang disebut Navigable Small Worlds (NSW). Kami akan menjelaskan NSW terlebih dahulu dan kemudian akan sangat mudah untuk beralih ke <em>Hierarchical</em> NSW. Ilustrasi di atas adalah sebuah grafik pencarian yang dibangun untuk NSW atas vektor 2 dimensi. Pada semua contoh di bawah ini, kami membatasi diri kami pada vektor 2 dimensi agar dapat memvisualisasikannya.</p>
-<h2 id="Constructing-the-Graph" class="common-anchor-header">Membangun Graf<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
+<p><em>Figure: NSW graph created from 100 randomly located 2D points.</em></p>
+<p>As mentioned, HNSW constructs a search graph offline before we can perform a query. The algorithm builds on top of prior work, a method called Navigable Small Worlds (NSW). We will explain NSW first and it will then be trivial to go from there to <em>Hierarchical</em> NSW. The illustration above is of a constructed search graph for NSW over 2-dimensional vectors. In all examples below, we restrict ourselves to 2-dimensional vectors so as to be able to visualize them.</p>
+<h2 id="Constructing-the-Graph" class="common-anchor-header">Constructing the Graph<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,9 +66,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebuah NSW adalah sebuah graf dimana simpul-simpulnya merepresentasikan vektor-vektor dan sisi-sisinya dibangun secara heuristik dari kemiripan antara vektor-vektor sehingga sebagian besar vektor-vektor dapat dijangkau dari mana saja melalui sejumlah kecil lompatan. Inilah yang disebut dengan properti "dunia kecil" yang memungkinkan navigasi cepat. Lihat gambar di atas.</p>
-<p>Graf diinisialisasi kosong. Kita melakukan iterasi melalui vektor-vektor, menambahkan setiap vektor ke dalam graf secara bergantian. Untuk setiap vektor, dimulai dari sebuah simpul entri acak, kita dengan rakus mencari simpul R terdekat yang dapat dijangkau dari titik entri <em>pada graf yang</em> telah <em>dibuat</em>. R node ini kemudian dihubungkan ke sebuah node baru yang mewakili vektor yang sedang dimasukkan, secara opsional memangkas setiap node tetangga yang sekarang memiliki lebih dari R tetangga. Mengulangi proses ini untuk semua vektor akan menghasilkan graf NSW. Lihat ilustrasi di atas yang memvisualisasikan algoritma, dan lihat sumber-sumber di akhir artikel untuk analisis teoritis tentang sifat-sifat graf yang dibangun seperti ini.</p>
-<h2 id="Searching-the-Graph" class="common-anchor-header">Mencari Graf<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
+    </button></h2><p>An NSW is a graph where the vertices represent vectors and the edges are constructed heuristically from the similarity between vectors so that most vectors are reachable from anywhere via a small number of hops. This is the so-called “small world” property that permits quick navigation. See the above figure.</p>
+<p>The graph is initialized to be empty. We iterate through the vectors, adding each to the graph in turn. For each vector, starting at a random entry node, we greedily find the closest R nodes reachable from the entry point <em>in the graph so far constructed</em>. These R nodes are then connected to a new node representing the vector being inserted, optionally pruning any neighboring nodes that now have more than R neighbors. Repeating this process for all vectors will result in the NSW graph. See the above illustration visualizing the algorithm, and refer to the resources at the end of the article for a theoretical analysis of the properties of a graph constructed like this.</p>
+<h2 id="Searching-the-Graph" class="common-anchor-header">Searching the Graph<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,22 +83,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kita telah melihat algoritma pencarian dari penggunaannya dalam konstruksi graf. Akan tetapi, dalam kasus ini, simpul kueri disediakan oleh pengguna, dan bukannya menjadi simpul untuk dimasukkan ke dalam graf. Dimulai dari sebuah catatan entri acak, kami dengan rakus menavigasi ke tetangganya yang paling dekat dengan kueri, mempertahankan satu set dinamis dari vektor-vektor terdekat yang ditemui sejauh ini. Lihat ilustrasi di atas. Perhatikan bahwa kita dapat meningkatkan akurasi pencarian dengan memulai pencarian dari beberapa titik entri acak dan menggabungkan hasilnya, serta mempertimbangkan beberapa tetangga pada setiap langkah. Namun, peningkatan ini harus dibayar dengan peningkatan latensi.</p>
-<custom-h1>Menambahkan Hirarki</custom-h1><p>
+    </button></h2><p>We have already seen the search algorithm from its use in graph construction. In this case, however, the query node is provided by the user, rather than being one for insertion into the graph. Starting from a random entry note, we greedily navigate to its neighbor closest to the query, maintaining a dynamic set of the closest vectors encountered so far. See the illustration above. Note that we can enhance search accuracy by initiating searches from multiple random entry points and aggregating the results, along with considering multiple neighbors at each step. However, these improvements come at the cost of increased latency.</p>
+<custom-h1>Adding Hierarchy</custom-h1><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/adding_hierarchy_0101234812.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Sejauh ini, kami telah menjelaskan algoritme NSW dan struktur data yang dapat membantu kami meningkatkan pencarian dalam ruang dimensi tinggi. Meskipun demikian, metode ini memiliki kekurangan yang serius, termasuk kegagalan dalam dimensi rendah, konvergensi pencarian yang lambat, dan kecenderungan untuk terjebak dalam minimum lokal.</p>
-<p>Para penulis HNSW memperbaiki kekurangan-kekurangan ini dengan tiga modifikasi pada NSW:</p>
+<p>So far, we have described the NSW algorithm and data structure that can help us scale up search in high-dimensional space. Nonetheless, the method suffers serious shortcomings, including failure in low dimensions, slow search convergence, and a tendency to be trapped in local minima.</p>
+<p>The authors of HNSW fix these shortcomings with three modifications to NSW:</p>
 <ul>
-<li><p>Pemilihan eksplisit dari simpul-simpul entri selama konstruksi dan pencarian;</p></li>
-<li><p>Pemisahan sisi-sisi dengan skala yang berbeda; dan,</p></li>
-<li><p>Penggunaan heuristik tingkat lanjut untuk memilih tetangga.</p></li>
+<li><p>Explicit selection of the entry nodes during construction and search;</p></li>
+<li><p>Separation of edges by different scales; and,</p></li>
+<li><p>Use of an advanced heuristic to select the neighbors.</p></li>
 </ul>
-<p>Dua yang pertama direalisasikan dengan ide yang sederhana: membangun <em>sebuah hirarki graf pencarian</em>. Alih-alih sebuah graf tunggal, seperti pada NSW, HNSW membangun sebuah hirarki graf. Setiap graf, atau lapisan, dicari secara individual dengan cara yang sama seperti NSW. Lapisan teratas, yang dicari pertama kali, berisi sangat sedikit simpul, dan lapisan yang lebih dalam secara progresif mencakup lebih banyak simpul, dengan lapisan terbawah mencakup semua simpul. Ini berarti bahwa lapisan teratas berisi lompatan yang lebih panjang melintasi ruang vektor, sehingga memungkinkan pencarian yang lebih baik. Lihat di atas untuk sebuah ilustrasi.</p>
-<h2 id="Constructing-the-Graph" class="common-anchor-header">Membangun Graf<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
+<p>The first two are realized with a simple idea: building <em>a hierarchy of search graphs</em>. Instead of a single graph, as in NSW, HNSW constructs a hierarchy of graphs. Each graph, or layer, is individually searched in the same way as NSW. The top layer, which is searched first, contains very few nodes, and deeper layers progressively include more and more nodes, with the bottom layer including all nodes. This means that the top layers contain longer hops across the vector space, permitting a sort of course-to-fine search. See above for an illustration.</p>
+<h2 id="Constructing-the-Graph" class="common-anchor-header">Constructing the Graph<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -113,10 +113,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Algoritma konstruksi bekerja sebagai berikut: kita menetapkan sejumlah lapisan, <em>L</em>, terlebih dahulu. Nilai l = 1 akan berhubungan dengan lapisan yang paling kasar, di mana pencarian dimulai, dan l = L akan berhubungan dengan lapisan yang paling padat, di mana pencarian selesai. Kita melakukan iterasi melalui setiap vektor yang akan disisipkan dan mengambil sampel dari lapisan penyisipan mengikuti <a href="https://en.wikipedia.org/wiki/Geometric_distribution">distribusi geometris</a> terpotong (baik menolak <em>l &gt; L</em> atau mengatur <em>l' =</em> min_(l, L)_). Katakanlah kita mengambil sampel <em>1 &lt; l &lt; L</em> untuk vektor saat ini. Kita melakukan pencarian serakah pada lapisan teratas, L, sampai kita mencapai minimum lokalnya. Kemudian, kita mengikuti sebuah sisi dari minimum lokal pada lapisan ke-L ke vektor yang sesuai pada lapisan ke-l dan menggunakannya sebagai titik masuk untuk mencari lapisan ke-l secara serakah.</p>
-<p>Proses ini diulangi sampai kita mencapai lapisan ke-l. Kita kemudian mulai membuat node untuk vektor yang akan disisipkan, menghubungkannya dengan tetangga terdekat yang ditemukan oleh pencarian serakah di lapisan ke-l yang telah dibuat sejauh ini, menavigasi ke lapisan ke-(l-1) dan mengulanginya hingga kita telah menyisipkan vektor tersebut ke dalam lapisan ke-(l-1). Animasi di atas memperjelas hal ini</p>
-<p>Kita dapat melihat bahwa metode konstruksi graf hirarkis ini menggunakan pemilihan eksplisit yang cerdas dari simpul penyisipan untuk setiap vektor. Kami mencari lapisan di atas lapisan penyisipan yang dibangun sejauh ini, mencari secara efisien dari jarak yang dekat. Sejalan dengan itu, metode ini memisahkan tautan dengan skala yang berbeda di setiap lapisan: lapisan teratas memberikan lompatan skala panjang di ruang pencarian, dengan skala yang semakin menurun ke lapisan bawah. Kedua modifikasi ini membantu menghindari terjebak dalam minima yang kurang optimal dan mempercepat konvergensi pencarian dengan mengorbankan memori tambahan.</p>
-<h2 id="Searching-the-Graph" class="common-anchor-header">Mencari Grafik<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
+    </button></h2><p>The construction algorithm works as follows: we fix a number of layers, <em>L</em>, in advance. The value l=1 will correspond to the coarsest layer, where search begins, and l=L will correspond to the densest layer, where search finishes. We iterate through each vector to be inserted and sample an insertion layer following a truncated <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> (either rejecting <em>l &gt; L</em> or setting <em>l’ =</em> min_(l, L)_). Say we sample <em>1 &lt; l &lt; L</em> for the current vector. We perform a greedy search on the top layer, L, until we reach its local minimum. Then, we follow an edge from the local minimum in the _L_th layer to the corresponding vector in the _(L-1)_th layer and use it as the entry point to greedily search the _(L-1)_th layer.</p>
+<p>This process is repeated until we reach the _l_th layer. We then begin to create nodes for the vector to be inserted, connecting it to its closest neighbors found by greedy search in the _l_th layer so far constructed, navigating to the _(l-1)_th layer and repeating until we have inserted the vector into the _1_st layer. An animation above makes this clear</p>
+<p>We can see that this hierarchical graph construction method uses a clever explicit selection of the insertion node for each vector. We search the layers above the insertion layer constructed so far, searching efficiently from course-to-fine distances. Relatedly, the method separates links by different scales in each layer: the top layer affords long-scale hops across the search space, with the scale diminishing down to the bottom layer. Both of these modifications help avoid being trapped in sub-optimal minima and hasten search convergence at the cost of additional memory.</p>
+<h2 id="Searching-the-Graph" class="common-anchor-header">Searching the Graph<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -131,8 +131,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Prosedur pencarian bekerja sama seperti langkah konstruksi graf dalam. Mulai dari lapisan teratas, kita dengan rakus menavigasi ke simpul atau simpul-simpul yang paling dekat dengan kueri. Kemudian kita mengikuti simpul-simpul tersebut ke lapisan berikutnya dan mengulangi prosesnya. Jawaban kita didapatkan dari daftar tetangga terdekat <em>R</em> di lapisan paling bawah, seperti yang diilustrasikan oleh animasi di atas.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>The search procedure works much like the inner graph construction step. Starting from the top layer, we greedily navigate to the node or nodes closest to the query. Then we follow that node(s) down to the next layer and repeat the process. Our answer is obtained by the list of <em>R</em> closest neighbors in the bottom layer, as illustrated by the animation above this.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,13 +147,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Basis data vektor seperti Milvus menyediakan implementasi HNSW yang sangat dioptimalkan dan disetel, dan sering kali menjadi indeks pencarian default terbaik untuk set data yang muat di memori.</p>
-<p>Kami telah membuat sketsa gambaran umum tingkat tinggi tentang bagaimana dan mengapa HNSW bekerja, lebih memilih visualisasi dan intuisi daripada teori dan matematika. Akibatnya, kami telah menghilangkan deskripsi yang tepat tentang algoritma konstruksi dan pencarian<a href="https://arxiv.org/abs/1603.09320">[Malkov dan Yashushin, 2016</a>; Alg 1-3], analisis kompleksitas pencarian dan konstruksi<a href="https://arxiv.org/abs/1603.09320">[Malkov dan Yashushin, 2016</a>; §4.2], dan rincian yang kurang penting seperti heuristik untuk memilih simpul tetangga secara lebih efektif selama konstruksi<a href="https://arxiv.org/abs/1603.09320">[Malkov dan Yashushin, 2016</a>; Alg 5]. Selain itu, kami telah menghilangkan diskusi tentang hyperparameter algoritma, maknanya dan bagaimana mereka mempengaruhi pertukaran latensi/kecepatan/memori<a href="https://arxiv.org/abs/1603.09320">[Malkov dan Yashushin, 2016</a>; §4.1]. Pemahaman akan hal ini penting untuk menggunakan HNSW dalam praktiknya.</p>
-<p>Sumber-sumber di bawah ini berisi bacaan lebih lanjut tentang topik-topik ini dan implementasi pedagogis Python lengkap (ditulis oleh saya sendiri) untuk NSW dan HNSW, termasuk kode untuk menghasilkan animasi dalam artikel ini.</p>
-<custom-h1>Sumber daya</custom-h1><ul>
-<li><p>GitHub: "<a href="https://github.com/stefanwebb/hnsw-illustrated">HNSW-Ilustrasi: Implementasi kecil dari Hierarchical Navigable Small Worlds (HNSW), sebuah algoritma pencarian vektor, untuk tujuan pembelajaran</a>"</p></li>
-<li><p><a href="https://milvus.io/docs/hnsw.md#HNSW">HNSW | Dokumentasi Milvus</a></p></li>
-<li><p><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">Memahami Hierarchical Navigable Small Worlds (HNSW) - Zilliz Learn</a></p></li>
-<li><p>Makalah HNSW: "<a href="https://arxiv.org/abs/1603.09320">Pencarian tetangga terdekat yang efisien dan kuat menggunakan graf Hierarchical Navigable Small World</a>"</p></li>
-<li><p>Makalah NSW: "<a href="https://publications.hse.ru/pubs/share/folder/x5p6h7thif/128296059.pdf">Perkiraan algoritma tetangga terdekat berdasarkan graf dunia kecil yang dapat dinavigasi</a>"</p></li>
+    </button></h2><p>Vector databases like Milvus provide highly optimized and tuned implementations of HNSW, and it is often the best default search index for datasets that fit in memory.</p>
+<p>We have sketched a high-level overview of how and why HNSW works, preferring visualizations and intuition over theory and mathematics. Consequently, we have omitted an exact description of the construction and search algorithms[<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; Alg 1-3], analysis of search and construction complexity [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; §4.2], and less essential details like a heuristic for more effectively choosing neighbor nodes during construction [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; Alg 5]. Moreover, we have omitted discussion of the algorithm’s hyperparameters, their meaning and how they affect the latency/speed/memory trade-off [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; §4.1]. An understanding of this is important for using HNSW in practice.</p>
+<p>The resources below contain further reading on these topics and a full Python pedagogical implementation (written by myself) for NSW and HNSW, including code to produce the animations in this article.</p>
+<custom-h1>Resources</custom-h1><ul>
+<li><p>GitHub: “<a href="https://github.com/stefanwebb/hnsw-illustrated">HNSW-Illustrated: A small implementation of Hierarchical Navigable Small Worlds (HNSW), a vector search algorithm, for learning purposes</a>”</p></li>
+<li><p><a href="https://milvus.io/docs/hnsw.md#HNSW">HNSW | Milvus Documentation</a></p></li>
+<li><p><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">Understanding Hierarchical Navigable Small Worlds (HNSW) - Zilliz Learn</a></p></li>
+<li><p>HNSW paper: “<a href="https://arxiv.org/abs/1603.09320">Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs</a>”</p></li>
+<li><p>NSW paper: “<a href="https://publications.hse.ru/pubs/share/folder/x5p6h7thif/128296059.pdf">Approximate nearest neighbor algorithm based on navigable small world graphs</a>”</p></li>
 </ul>

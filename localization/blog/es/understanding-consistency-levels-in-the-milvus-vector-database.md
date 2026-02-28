@@ -1,11 +1,11 @@
 ---
 id: understanding-consistency-levels-in-the-milvus-vector-database.md
-title: Comprender el nivel de coherencia en la base de datos de vectores Milvus
+title: Understanding Consistency Level in the Milvus Vector Database
 author: Chenglong Li
 date: 2022-08-29T00:00:00.000Z
 desc: >-
-  Conozca los cuatro niveles de consistencia - fuerte, estancamiento limitado,
-  sesión y eventual - soportados en la base de datos vectorial Milvus.
+  Learn about the four levels of consistency - strong, bounded staleness,
+  session, and eventual supported in the Milvus vector database.
 cover: assets.zilliz.com/1280_X1280_0e0d4bc107.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
@@ -13,26 +13,29 @@ canonicalUrl: >-
   https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1280_X1280_0e0d4bc107.png" alt="Cover_image" class="doc-image" id="cover_image" />
-   </span> <span class="img-wrapper"> <span>Imagen_de_portada</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1280_X1280_0e0d4bc107.png" alt="Cover_image" class="doc-image" id="cover_image" />
+    <span>Cover_image</span>
+  </span>
+</p>
 <blockquote>
-<p>Este artículo ha sido escrito por <a href="https://github.com/JackLCL">Chenglong Li</a> y transcrito por <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is written by <a href="https://github.com/JackLCL">Chenglong Li</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>¿Te has preguntado alguna vez por qué a veces los datos que has borrado de la base de datos vectorial de Mlivus siguen apareciendo en los resultados de búsqueda?</p>
-<p>Una razón muy probable es que no haya configurado el nivel de consistencia adecuado para su aplicación. El nivel de consistencia en una base de datos vectorial distribuida es crítico, ya que determina en qué momento una escritura de datos concreta puede ser leída por el sistema.</p>
-<p>Por lo tanto, este artículo pretende desmitificar el concepto de consistencia y profundizar en los niveles de consistencia soportados por la base de datos vectorial Milvus.</p>
-<p><strong>Ir a:</strong></p>
+<p>Have you ever wondered why sometimes the data you have deleted from the Mlivus vector database still appear in the search results?</p>
+<p>A very likely reason is that you have not set the appropriate consistency level for your application. Consistency level in a distributed vector database is critical as it determines at which point a particular data write can be read by the system.</p>
+<p>Therefore, this article aims to demystify the concept of consistency and delve into the levels of consistency supported by the Milvus vector database.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#What-is-consistency">Qué es la consistencia</a></li>
-<li><a href="#Four-levels-of-consistency-in-the-Milvus-vector-database">Cuatro niveles de consistencia en la base de datos vectorial Milvus</a><ul>
-<li><a href="#Strong">Fuerte</a></li>
-<li><a href="#Bounded-staleness">Estancamiento limitado</a></li>
-<li><a href="#Session">Sesión</a></li>
+<li><a href="#What-is-consistency">What is consistency</a></li>
+<li><a href="#Four-levels-of-consistency-in-the-Milvus-vector-database">Four levels of consistency in the Milvus vector database</a>
+<ul>
+<li><a href="#Strong">Strong</a></li>
+<li><a href="#Bounded-staleness">Bounded staleness</a></li>
+<li><a href="#Session">Session</a></li>
 <li><a href="#Eventual">Eventual</a></li>
 </ul></li>
 </ul>
-<h2 id="What-is-consistency" class="common-anchor-header">Qué es la consistencia<button data-href="#What-is-consistency" class="anchor-icon" translate="no">
+<h2 id="What-is-consistency" class="common-anchor-header">What is consistency<button data-href="#What-is-consistency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,12 +50,12 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de empezar, es necesario aclarar la connotación de consistencia en este artículo, ya que la palabra "consistencia" es un término sobrecargado en la industria informática. La consistencia en una base de datos distribuida se refiere específicamente a la propiedad que asegura que cada nodo o réplica tiene la misma visión de los datos cuando escribe o lee datos en un momento dado. Por tanto, aquí hablamos de consistencia como en el <a href="https://en.wikipedia.org/wiki/CAP_theorem">teorema CAP</a>.</p>
-<p>Para dar servicio a las grandes empresas en línea del mundo moderno, se suelen adoptar múltiples réplicas. Por ejemplo, el gigante del comercio electrónico Amazon replica los datos de sus pedidos o SKU en varios centros de datos, zonas o incluso países para garantizar una alta disponibilidad del sistema en caso de caída o fallo del mismo. Esto plantea un reto al sistema: la coherencia de los datos en las múltiples réplicas. Sin consistencia, es muy probable que el artículo eliminado de su cesta de Amazon reaparezca, lo que causaría una muy mala experiencia al usuario.</p>
-<p>De ahí que necesitemos distintos niveles de coherencia de datos para distintas aplicaciones. Y por suerte, Milvus, una base de datos para IA, ofrece flexibilidad en el nivel de consistencia y puede establecer el nivel de consistencia que mejor se adapte a su aplicación.</p>
-<h3 id="Consistency-in-the-Milvus-vector-database" class="common-anchor-header">Consistencia en la base de datos vectorial Milvus</h3><p>El concepto de nivel de consistencia se introdujo por primera vez con el lanzamiento de Milvus 2.0. La versión 1.0 de Milvus no era una base de datos vectorial distribuida, por lo que entonces no incluíamos niveles ajustables de consistencia. Milvus 1.0 vacía los datos cada segundo, lo que significa que los nuevos datos son visibles casi inmediatamente después de su inserción y Milvus lee la vista de datos más actualizada en el momento exacto en que llega una solicitud de búsqueda o consulta de similitud vectorial.</p>
-<p>Sin embargo, Milvus fue refactorizado en su versión 2.0 y <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus 2.0 es una base de datos vectorial distribuida</a> basada en un mecanismo pub-sub. El teorema <a href="https://en.wikipedia.org/wiki/PACELC_theorem">PACELC</a> señala que un sistema distribuido debe establecer un equilibrio entre consistencia, disponibilidad y latencia. Además, diferentes niveles de consistencia sirven para diferentes escenarios. Por lo tanto, el concepto de consistencia se introdujo en <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">Milvus 2.0</a> y admite el ajuste de los niveles de consistencia.</p>
-<h2 id="Four-levels-of-consistency-in-the-Milvus-vector-database" class="common-anchor-header">Cuatro niveles de consistencia en la base de datos vectorial Milvus<button data-href="#Four-levels-of-consistency-in-the-Milvus-vector-database" class="anchor-icon" translate="no">
+    </button></h2><p>Before getting started, we need to first clarify the connotation of consistency in this article as the word “consistency” is an overloaded term in the computing industry. Consistency in a distributed database specifically refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time. Therefore, here we are talking about consistency as in the <a href="https://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a>.</p>
+<p>For serving massive online businesses in the modern world, multiple replicas are commonly adopted. For instance, online e-commerce giant Amazon replicates its orders or SKU data across multiple data centers, zones, or even countries to ensure high system availability in the event of a system crash or failure. This poses a challenge to the system - data consistency across multiple replicas. Without consistency, it is very likely that the deleted item in your Amazon cart reappears, causing very bad user experience.</p>
+<p>Hence, we need different data consistency levels for different applications. And luckily, Milvus, a database for AI, offers flexibility in consistency level and you can set the consistency level that best suits your application.</p>
+<h3 id="Consistency-in-the-Milvus-vector-database" class="common-anchor-header">Consistency in the Milvus vector database</h3><p>The concept of consistency level was first introduced with the release of Milvus 2.0. The 1.0 version of Milvus was not a distributed vector database so we did not involve tunable levels of consistency then. Milvus 1.0 flushes data every second, meaning that new data are almost immediately visible upon their insertion and Milvus reads the most updated data view at the exact time point when a vector similarity search or query request comes.</p>
+<p>However, Milvus was refactored in its 2.0 version and <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus 2.0 is a distributed vector database</a> based on a pub-sub mechanism. The <a href="https://en.wikipedia.org/wiki/PACELC_theorem">PACELC</a> theorem points out that a distributed system must trade off among consistency, availability, and latency. Furthermore, different levels of consistency serve for different scenarios. Therefore, the concept of consistency was introduced in <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">Milvus 2.0</a> and it supports tuning levels of consistency.</p>
+<h2 id="Four-levels-of-consistency-in-the-Milvus-vector-database" class="common-anchor-header">Four levels of consistency in the Milvus vector database<button data-href="#Four-levels-of-consistency-in-the-Milvus-vector-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,32 +70,40 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus admite cuatro niveles de consistencia: fuerte, estancamiento limitado, sesión y eventual. Y un usuario de Milvus puede especificar el nivel de consistencia cuando <a href="https://milvus.io/docs/v2.1.x/create_collection.md">crea una colección</a> o realiza una <a href="https://milvus.io/docs/v2.1.x/search.md">búsqueda</a> o <a href="https://milvus.io/docs/v2.1.x/query.md">consulta</a> <a href="https://milvus.io/docs/v2.1.x/search.md">de similitud vectorial</a>. Esta sección continuará explicando en qué se diferencian estos cuatro niveles de consistencia y para qué escenario son los más adecuados.</p>
-<h3 id="Strong" class="common-anchor-header">Fuerte</h3><p>Fuerte es el nivel de coherencia más alto y estricto. Garantiza que los usuarios puedan leer la última versión de los datos.</p>
+    </button></h2><p>Milvus supports four levels of consistency:  strong, bounded staleness, session, and eventual. And a Milvus user can specify the consistency level when <a href="https://milvus.io/docs/v2.1.x/create_collection.md">creating a collection</a> or conducting a <a href="https://milvus.io/docs/v2.1.x/search.md">vector similarity search</a> or <a href="https://milvus.io/docs/v2.1.x/query.md">query</a>. This section will continue to explain how these four levels of consistency are different and which scenario are they best suited for.</p>
+<h3 id="Strong" class="common-anchor-header">Strong</h3><p>Strong is the highest and the most strict level of consistency. It ensures that users can read the latest version of data.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Consistency_Strong_5d791eb8b2.png" alt="Strong" class="doc-image" id="strong" />
-   </span> <span class="img-wrapper"> <span>Fuerte</span> </span></p>
-<p>Según el teorema PACELC, si el nivel de consistencia se establece en fuerte, la latencia aumentará. Por lo tanto, recomendamos elegir un nivel de consistencia fuerte durante las pruebas funcionales para garantizar la precisión de los resultados de las pruebas. Y la consistencia fuerte también es la más adecuada para aplicaciones que tienen una demanda estricta de consistencia de datos a costa de la velocidad de búsqueda. Un ejemplo puede ser un sistema financiero en línea que se ocupe del pago y la facturación de pedidos.</p>
-<h3 id="Bounded-staleness" class="common-anchor-header">Estancamiento limitado</h3><p>El estancamiento limitado, como su nombre indica, permite la inconsistencia de los datos durante un cierto periodo de tiempo. Sin embargo, por lo general, los datos siempre son globalmente coherentes fuera de ese periodo de tiempo.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Consistency_Strong_5d791eb8b2.png" alt="Strong" class="doc-image" id="strong" />
+    <span>Strong</span>
+  </span>
+</p>
+<p>According to the PACELC theorem, if the consistency level is set to strong, the latency will increase. Therefore, we recommend choosing strong consistency during functional testings to ensure the accuracy of the test results. And strong consistency is also best suited for applications that have strict demand for data consistency at the cost of search speed. An example can be an online financial system dealing with order payments and billing.</p>
+<h3 id="Bounded-staleness" class="common-anchor-header">Bounded staleness</h3><p>Bounded staleness, as its name suggests, allows data inconsistency during a certain period of time. However, generally, the data are always globally consistent out of that period of time.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Consistency_Bounded_c034bc6e51.png" alt="Bounded_staleness" class="doc-image" id="bounded_staleness" />
-   </span> <span class="img-wrapper"> <span>Estancamiento_limitado</span> </span></p>
-<p>El estancamiento limitado es adecuado para escenarios que necesitan controlar la latencia de la búsqueda y pueden aceptar la invisibilidad esporádica de los datos. Por ejemplo, en sistemas de recomendación como los motores de recomendación de vídeo, la invisibilidad de datos de vez en cuando tiene un impacto realmente pequeño en la tasa de recuperación general, pero puede aumentar significativamente el rendimiento del sistema de recomendación. Un ejemplo puede ser una aplicación para seguir el estado de tus pedidos online.</p>
-<h3 id="Session" class="common-anchor-header">Sesión</h3><p>La sesión garantiza que todas las escrituras de datos puedan percibirse inmediatamente en lecturas durante la misma sesión. En otras palabras, cuando se escriben datos a través de un cliente, los datos recién insertados se convierten instantáneamente en lecturas.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Consistency_Bounded_c034bc6e51.png" alt="Bounded_staleness" class="doc-image" id="bounded_staleness" />
+    <span>Bounded_staleness</span>
+  </span>
+</p>
+<p>Bounded staleness is suitable for scenarios that needs to control search latency and can accept sporadic data invisibility. For instance, in recommender systems like video recommendation engines, data invisibility once in a while has really small impact on the overall recall rate, but can significantly boost the performance of the recommender system. An example can be an app for tracking the status of your online orders.</p>
+<h3 id="Session" class="common-anchor-header">Session</h3><p>Session ensures that all data writes can be immediately perceived in reads during the same session. In other words, when you write data via one client, the newly inserted data instantaneously become searchable.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Consistency_Session_6dc4782212.png" alt="Session" class="doc-image" id="session" />
-   </span> <span class="img-wrapper"> <span>Sesión</span> </span></p>
-<p>Recomendamos elegir sesión como nivel de consistencia para aquellos escenarios en los que la demanda de consistencia de datos en la misma sesión es alta. Un ejemplo puede ser la eliminación de los datos de una entrada de libro del sistema de la biblioteca, y después de confirmar la eliminación y actualizar la página (una sesión diferente), el libro ya no debería ser visible en los resultados de búsqueda.</p>
-<h3 id="Eventual" class="common-anchor-header">Eventual</h3><p>No hay un orden garantizado de lecturas y escrituras, y las réplicas convergen eventualmente al mismo estado dado que no se realizan más operaciones de escritura. Bajo consistencia eventual, las réplicas comienzan a trabajar en las peticiones de lectura con los últimos valores actualizados. La consistencia eventual es el nivel más débil de los cuatro.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Consistency_Session_6dc4782212.png" alt="Session" class="doc-image" id="session" />
+    <span>Session</span>
+  </span>
+</p>
+<p>We recommend choosing session as the consistency level for those scenarios where the demand of data consistency in the same session is high. An example can be deleting the data of a book entry from the library system, and after confirmation of the deletion and refreshing the page (a different session), the book should no longer be visible in search results.</p>
+<h3 id="Eventual" class="common-anchor-header">Eventual</h3><p>There is no guaranteed order of reads and writes, and replicas eventually converge to the same state given that no further write operations are done. Under eventual consistency, replicas start working on read requests with the latest updated values. Eventual consistency is the weakest level among the four.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Consistency_Eventual_7c66dd5b6f.png" alt="Eventual" class="doc-image" id="eventual" />
-   </span> <span class="img-wrapper"> <span>Eventual</span> </span></p>
-<p>Sin embargo, según el teorema PACELC, la latencia de búsqueda puede reducirse enormemente si se sacrifica la consistencia. Por lo tanto, la consistencia eventual es la más adecuada para situaciones en las que no hay una gran demanda de consistencia de datos, pero se requiere un rendimiento de búsqueda rapidísimo. Un ejemplo puede ser la recuperación de reseñas y valoraciones de productos de Amazon con consistencia eventual.</p>
-<h2 id="Endnote" class="common-anchor-header">Nota final<button data-href="#Endnote" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Consistency_Eventual_7c66dd5b6f.png" alt="Eventual" class="doc-image" id="eventual" />
+    <span>Eventual</span>
+  </span>
+</p>
+<p>However, according to the PACELC theorem, search latency can be tremendously shortened upon sacrificing consistency. Therefore, eventual consistency is best suited for scenarios that do not have high demand for data consistency but requires blazing-fast search performance. An example can be retrieving reviews and ratings of Amazon products with eventual consistency.</p>
+<h2 id="Endnote" class="common-anchor-header">Endnote<button data-href="#Endnote" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -107,9 +118,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Volviendo a la pregunta planteada al principio de este artículo, los datos borrados siguen apareciendo como resultados de búsqueda porque el usuario no ha elegido el nivel de consistencia adecuado. El valor por defecto para el nivel de consistencia es "bounded staleness" (<code translate="no">Bounded</code>) en la base de datos vectorial Milvus. Por lo tanto, la lectura de datos podría retrasarse y Milvus podría leer la vista de datos antes de que usted realizara operaciones de borrado durante una búsqueda o consulta de similitud. Sin embargo, este problema es sencillo de resolver. Todo lo que tiene que hacer es <a href="https://milvus.io/docs/v2.1.x/tune_consistency.md">ajustar el nivel de coherencia</a> al crear una colección o realizar una búsqueda o consulta de similitud vectorial. Muy sencillo.</p>
-<p>En la próxima entrada, desvelaremos el mecanismo que hay detrás y explicaremos cómo la base de datos vectorial Milvus alcanza diferentes niveles de consistencia. Permanezca atento.</p>
-<h2 id="Whats-next" class="common-anchor-header">Lo que viene a continuación<button data-href="#Whats-next" class="anchor-icon" translate="no">
+    </button></h2><p>So going back to the question raised at the beginning of this article, deleted data are still returned as search results because the user has not chosen the proper level of consistency. The default value for consistency level is bounded staleness (<code translate="no">Bounded</code>) in the Milvus vector database. Therefore, the data read might lag behind and Milvus might happen to read the data view before you conducted delete operations during a similarity search or query. However, this issue is simple to solve. All you need to do is <a href="https://milvus.io/docs/v2.1.x/tune_consistency.md">tune the consistency level</a> when creating a collection or conducting vector similarity search or query. Simple!</p>
+<p>In the next post, we will unveil the mechanism behind and explain how the Milvus vector database achieves different levels of consistency. Stay tuned!</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,12 +135,12 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con el lanzamiento oficial de Milvus 2.1, hemos preparado una serie de blogs presentando las nuevas características. Lea más en esta serie de blogs:</p>
+    </button></h2><p>With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">Cómo utilizar datos de cadenas para potenciar sus aplicaciones de búsqueda por similitud</a></li>
-<li><a href="https://milvus.io/blog/embedded-milvus.md">Uso de Milvus integrado para instalar y ejecutar Milvus con Python de forma instantánea</a></li>
-<li><a href="https://milvus.io/blog/in-memory-replicas.md">Aumente el rendimiento de lectura de su base de datos vectorial con réplicas en memoria</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Comprender el nivel de consistencia en la base de datos vectorial Milvus</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Comprender el nivel de consistencia en la base de datos vectorial de Milvus (Parte II)</a></li>
-<li><a href="https://milvus.io/blog/data-security.md">¿Cómo Garantiza la Seguridad de los Datos la Base de Datos Vectorial de Milvus?</a></li>
+<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">How to Use String Data to Empower Your Similarity Search Applications</a></li>
+<li><a href="https://milvus.io/blog/embedded-milvus.md">Using Embedded Milvus to Instantly Install and Run Milvus with Python</a></li>
+<li><a href="https://milvus.io/blog/in-memory-replicas.md">Increase Your Vector Database Read Throughput with In-Memory Replicas</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Understanding Consistency Level in the Milvus Vector Database</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Understanding Consistency Level in the Milvus Vector Database (Part II)</a></li>
+<li><a href="https://milvus.io/blog/data-security.md">How Does the Milvus Vector Database Ensure Data Security?</a></li>
 </ul>

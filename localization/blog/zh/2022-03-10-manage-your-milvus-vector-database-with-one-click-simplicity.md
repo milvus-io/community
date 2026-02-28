@@ -1,9 +1,9 @@
 ---
 id: 2022-03-10-manage-your-milvus-vector-database-with-one-click-simplicity.md
-title: 一键式轻松管理 Milvus 向量数据库
+title: Manage Your Milvus Vector Database with One-click Simplicity
 author: Zhen Chen
 date: 2022-03-10T00:00:00.000Z
-desc: Attu - Milvus 2.0 的图形用户界面工具。
+desc: Attu - a GUI tool for Milvus 2.0.
 cover: assets.zilliz.com/Attu_3ff9a76156.png
 tag: Engineering
 tags: 'Data science, Database, Technology, Artificial Intelligence, Vector Management'
@@ -11,25 +11,29 @@ canonicalUrl: >-
   https://zilliz.com/blog/manage-your-milvus-vector-database-with-one-click-simplicity
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Attu_3ff9a76156.png" alt="Binlog Cover Image" class="doc-image" id="binlog-cover-image" />
-   </span> <span class="img-wrapper"> <span>Binlog 封面图片</span> </span></p>
-<p><a href="https://github.com/czhen-zilliz">陈震</a>撰稿，<a href="https://github.com/LocoRichard">王立晨</a>誊写。</p>
-<p style="font-size: 12px;color: #4c5a67">点击<a href="https://zilliz.com/blog/manage-your-milvus-vector-database-with-one-click-simplicity">此处</a>查看原文。</p> 
-<p>面对快速增长的非结构化数据处理需求，Milvus 2.0脱颖而出。它是一款面向人工智能的向量数据库系统，专为海量生产场景而设计。除了这些 Milvus SDK 和 Milvus CLI（Milvus 的命令行界面）之外，有没有一种工具能让用户更直观地操作 Milvus 呢？答案是肯定的。Zilliz 发布了一款专门针对 Milvus 的图形用户界面--Attu。在本文中，我们将逐步向您展示如何使用 Attu 进行向量相似性搜索。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Attu_3ff9a76156.png" alt="Binlog Cover Image" class="doc-image" id="binlog-cover-image" />
+    <span>Binlog Cover Image</span>
+  </span>
+</p>
+<p>Draft by <a href="https://github.com/czhen-zilliz">Zhen Chen</a> and transcreation by <a href="https://github.com/LocoRichard">Lichen Wang</a>.</p>
+<p style="font-size: 12px;color: #4c5a67">Click <a href="https://zilliz.com/blog/manage-your-milvus-vector-database-with-one-click-simplicity">here</a> to check the original post.</p> 
+<p>In the face of rapidly growing demand for unstructured data processing, Milvus 2.0 stands out. It is an AI-oriented vector database system designed for massive production scenarios. Apart from all these Milvus SDKs and Milvus CLI, a command-line interface for Milvus, is there a tool that allows users to operate Milvus more intuitively? The anwer is YES. Zilliz has announced a graphical user interface - Attu - specifically for Milvus. In this article, we would like to show you step by step how to perform a vector similarity search with Attu.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/map_aa1cda30d4.png" alt="Attu island" class="doc-image" id="attu-island" />
-   </span> <span class="img-wrapper"> <span>Attu 岛</span> </span></p>
-<p>与 Milvus CLI 的简单易用相比，Attu 的功能更多：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/map_aa1cda30d4.png" alt="Attu island" class="doc-image" id="attu-island" />
+    <span>Attu island</span>
+  </span>
+</p>
+<p>In comparison with Milvus CLI which brings the uttermost simplicity of usage, Attu features more:</p>
 <ul>
-<li>适用于 Windows 操作系统、macOS 和 Linux 操作系统的安装程序；</li>
-<li>直观的图形用户界面，更易于使用 Milvus；</li>
-<li>涵盖 Milvus 的主要功能；</li>
-<li>可扩展自定义功能的插件；</li>
-<li>完整的系统拓扑信息，便于理解和管理 Milvus 实例。</li>
+<li>Installers for Windows OS, macOS, and Linux OS;</li>
+<li>Intuitive GUI for easier usage of Milvus;</li>
+<li>Coverage of major functionalities of Milvus;</li>
+<li>Plugins for expansion of customized functionalities;</li>
+<li>Complete system topology information for easier understanding and administration of Milvus instance.</li>
 </ul>
-<h2 id="Installation" class="common-anchor-header">安装<button data-href="#Installation" class="anchor-icon" translate="no">
+<h2 id="Installation" class="common-anchor-header">Installation<button data-href="#Installation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,21 +48,25 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>你可以在<a href="https://github.com/zilliztech/attu/releases">GitHub</a> 上找到 Attu 的最新版本。Attu 提供适用于不同操作系统的可执行安装程序。它是一个开源项目，欢迎大家为其贡献力量。</p>
+    </button></h2><p>You can find the newest release of Attu at <a href="https://github.com/zilliztech/attu/releases">GitHub</a>. Attu offers executable installers for different operating systems. It is an open-source project and welcomes contribution from everyone.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/installation_bbe62873af.png" alt="Installation" class="doc-image" id="installation" />
-   </span> <span class="img-wrapper"> <span>安装</span> </span></p>
-<p>您也可以通过 Docker 安装 Attu。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/installation_bbe62873af.png" alt="Installation" class="doc-image" id="installation" />
+    <span>Installation</span>
+  </span>
+</p>
+<p>You can also install Attu via Docker.</p>
 <pre><code translate="no" class="language-shell">docker run -p <span class="hljs-number">8000</span>:<span class="hljs-number">3000</span> -e <span class="hljs-variable constant_">HOST_URL</span>=<span class="hljs-attr">http</span>:<span class="hljs-comment">//{ attu IP }:8000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:latest</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">attu IP</code> 是 Attu 运行环境的 IP 地址， 是 Milvus 运行环境的 IP 地址。<code translate="no">milvus server IP</code> </p>
-<p>成功安装 Attu 后，在界面中输入 Milvus IP 和端口，即可启动 Attu。</p>
+<p><code translate="no">attu IP</code> is the IP address of the environment where Attu runs, and <code translate="no">milvus server IP</code> is IP address of the environment where Milvus runs.</p>
+<p>Having installed Attu successfully, you can input the Milvus IP and Port in the interface to start Attu.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/connect_1fde46d9d5.png" alt="Connect Milvus with Attu" class="doc-image" id="connect-milvus-with-attu" />
-   </span> <span class="img-wrapper"> <span>用 Attu 连接 Milvus</span> </span></p>
-<h2 id="Feature-overview" class="common-anchor-header">功能概览<button data-href="#Feature-overview" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/connect_1fde46d9d5.png" alt="Connect Milvus with Attu" class="doc-image" id="connect-milvus-with-attu" />
+    <span>Connect Milvus with Attu</span>
+  </span>
+</p>
+<h2 id="Feature-overview" class="common-anchor-header">Feature overview<button data-href="#Feature-overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -74,32 +82,42 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/overview_591e230514.png" alt="Overview page" class="doc-image" id="overview-page" />
-   </span> <span class="img-wrapper"> <span>概述页面</span> </span></p>
-<p>Attu 界面由<strong>概述</strong>页、<strong>Collection</strong>页、<strong>向量搜索</strong>页和<strong>系统视图</strong>页组成，分别对应左侧导航面板上的四个图标。</p>
-<p><strong>概览</strong>页面显示已加载的 Collections。而<strong>Collection</strong>页面则列出所有 Collection，并显示它们是否已加载或释放。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/overview_591e230514.png" alt="Overview page" class="doc-image" id="overview-page" />
+    <span>Overview page</span>
+  </span>
+</p>
+<p>Attu interface consists of <strong>Overview</strong> page, <strong>Collection</strong> page, <strong>Vector Search</strong> page, and <strong>System View</strong> page, corresponding to the four icons on the left-side navigation pane respectively.</p>
+<p>The <strong>Overview</strong> page shows the loaded collections. While the <strong>Collection</strong> page lists all the collections and indicates if they are loaded or released.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/collection_42656fe308.png" alt="Collection page" class="doc-image" id="collection-page" />
-   </span> <span class="img-wrapper"> <span>Collections 页面</span> </span></p>
-<p><strong>向量搜索</strong>和<strong>系统视图</strong>页面是 Attu 的插件。本博客的最后一部分将介绍插件的概念和用法。</p>
-<p>你可以在向量<strong>搜索</strong>页面进行向量相似性搜索。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/collection_42656fe308.png" alt="Collection page" class="doc-image" id="collection-page" />
+    <span>Collection page</span>
+  </span>
+</p>
+<p>The <strong>Vector Search</strong> and <strong>System View</strong> pages are plugins of Attu. The concepts and usage of the plugins will be introduced in the final part of the blog.</p>
+<p>You can perform vector similarity search in <strong>Vector Search</strong> page.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/vector_search_be7365687c.png" alt="Vector Search page" class="doc-image" id="vector-search-page" />
-   </span> <span class="img-wrapper"> <span>向量搜索页面</span> </span></p>
-<p>在<strong>系统视图</strong>页面，你可以查看 Milvus 的拓扑结构。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/vector_search_be7365687c.png" alt="Vector Search page" class="doc-image" id="vector-search-page" />
+    <span>Vector Search page</span>
+  </span>
+</p>
+<p>In <strong>System View</strong> page, you can check the topological structure of Milvus.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/system_view_e1df15023d.png" alt="System View page" class="doc-image" id="system-view-page" />
-   </span> <span class="img-wrapper"> <span>系统视图页面</span> </span></p>
-<p>你还可以通过点击节点来查看每个节点的详细信息。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/system_view_e1df15023d.png" alt="System View page" class="doc-image" id="system-view-page" />
+    <span>System View page</span>
+  </span>
+</p>
+<p>You can also check the detailed information of each node by clicking the node.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/node_view_5bbc25f9b2.png" alt="Node view" class="doc-image" id="node-view" />
-   </span> <span class="img-wrapper"> <span>节点视图</span> </span></p>
-<h2 id="Demonstration" class="common-anchor-header">演示<button data-href="#Demonstration" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/node_view_5bbc25f9b2.png" alt="Node view" class="doc-image" id="node-view" />
+    <span>Node view</span>
+  </span>
+</p>
+<h2 id="Demonstration" class="common-anchor-header">Demonstration<button data-href="#Demonstration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,77 +132,101 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>让我们用一个测试数据集来探索 Attu。</p>
-<p>请查看我们的<a href="https://github.com/zilliztech/attu/tree/main/examples">GitHub 仓库</a>，获取以下测试中使用的数据集。</p>
-<p>首先，创建一个名为 test 的 Collection，其中包含以下四个字段：</p>
+    </button></h2><p>Let’s explore Attu with a test dataset.</p>
+<p>Check our <a href="https://github.com/zilliztech/attu/tree/main/examples">GitHub repo</a> for the dataset used in the following test.</p>
+<p>First, create a collection named test with the following four fields:</p>
 <ul>
-<li>字段名称：id，主键字段</li>
-<li>字段名称：向量，向量字段，浮点型向量，维度：128</li>
-<li>字段名称：品牌，标量字段，Int64</li>
-<li>字段名称：颜色，标量字段，Int64</li>
+<li>Field Name: id, primary key field</li>
+<li>Field Name: vector, vector field, float vector, Dimension: 128</li>
+<li>Field Name: brand, scalar field, Int64</li>
+<li>Field Name: color, scalar field, Int64</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/create_collection_95dfa15354.png" alt="Create a collection" class="doc-image" id="create-a-collection" />
-   </span> <span class="img-wrapper"> <span>创建 Collections</span> </span></p>
-<p>创建成功后加载 Collections 以进行搜索。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/create_collection_95dfa15354.png" alt="Create a collection" class="doc-image" id="create-a-collection" />
+    <span>Create a collection</span>
+  </span>
+</p>
+<p>Load the collection for search after it was successfully created.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/load_collection_fec39171df.png" alt="Load the collection" class="doc-image" id="load-the-collection" />
-   </span> <span class="img-wrapper"> <span>加载 Collections</span> </span></p>
-<p>现在您可以在 "<strong>概览</strong>"页面检查新创建的 Collections。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/load_collection_fec39171df.png" alt="Load the collection" class="doc-image" id="load-the-collection" />
+    <span>Load the collection</span>
+  </span>
+</p>
+<p>You can now check the newly created collection in the <strong>Overview</strong> page.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/check_collection_163b05477e.png" alt="Check the collection" class="doc-image" id="check-the-collection" />
-   </span> <span class="img-wrapper"> <span>检查 Collections</span> </span></p>
-<p>将测试数据集导入 Milvus。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/check_collection_163b05477e.png" alt="Check the collection" class="doc-image" id="check-the-collection" />
+    <span>Check the collection</span>
+  </span>
+</p>
+<p>Import the test dataset into Milvus.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/import_data_1_f73d71be85.png" alt="Import data" class="doc-image" id="import-data" />
-   </span> <span class="img-wrapper"> <span>导入数据</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/import_data_1_f73d71be85.png" alt="Import data" class="doc-image" id="import-data" />
+    <span>Import data</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/import_data_2_4b3c3c3c25.png" alt="Import data" class="doc-image" id="import-data" />
-   </span> <span class="img-wrapper"> <span>导入数据</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/import_data_2_4b3c3c3c25.png" alt="Import data" class="doc-image" id="import-data" />
+    <span>Import data</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/import_data_3_0def4e8550.png" alt="Import data" class="doc-image" id="import-data" />
-   </span> <span class="img-wrapper"> <span>导入数据</span> </span></p>
-<p>在 "概览 "或 "集合 "页面点击集合名称，进入查询界面，检查导入的数据。</p>
-<p>添加过滤器，指定表达式<code translate="no">id != 0</code> ，单击<strong>应用过滤器</strong>，然后单击<strong>查询</strong>。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/import_data_3_0def4e8550.png" alt="Import data" class="doc-image" id="import-data" />
+    <span>Import data</span>
+  </span>
+</p>
+<p>Click the collection name in Overview or Collection page to enter query interface to check the imported data.</p>
+<p>Add filter, specify the expression <code translate="no">id != 0</code>, click <strong>Apply Filter</strong>, and click <strong>Query</strong>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_data_24d9f71ccc.png" alt="Query data" class="doc-image" id="query-data" />
-   </span> <span class="img-wrapper"> <span>查询数据</span> </span></p>
-<p>您会发现所有 50 个实体条目都已成功导入。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_data_24d9f71ccc.png" alt="Query data" class="doc-image" id="query-data" />
+    <span>Query data</span>
+  </span>
+</p>
+<p>You will find all fifty entries of entities are imported successfully.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_result_bcbbd17084.png" alt="Query result" class="doc-image" id="query-result" />
-   </span> <span class="img-wrapper"> <span>查询结果</span> </span></p>
-<p>让我们试试向量相似性搜索。</p>
-<p>从<code translate="no">search_vectors.csv</code> 中复制一个向量并将其粘贴到<strong>向量值字</strong>段中。选择 Collections 和字段。点击<strong>搜索</strong>。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_result_bcbbd17084.png" alt="Query result" class="doc-image" id="query-result" />
+    <span>Query result</span>
+  </span>
+</p>
+<p>Let’s try vector similarity search.</p>
+<p>Copy one vector from the <code translate="no">search_vectors.csv</code> and paste it in <strong>Vector Value</strong> field. Choose the collection and field. Click <strong>Search</strong>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/search_data_5af3a1db53.png" alt="Search data" class="doc-image" id="search-data" />
-   </span> <span class="img-wrapper"> <span>搜索数据</span> </span></p>
-<p>然后可以查看搜索结果。无需编译任何脚本，就能轻松使用 Milvus 进行搜索。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/search_data_5af3a1db53.png" alt="Search data" class="doc-image" id="search-data" />
+    <span>Search data</span>
+  </span>
+</p>
+<p>You can then check the search result. Without compiling any scripts, you can search with Milvus easily.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/search_result_961886efab.png" alt="Search result" class="doc-image" id="search-result" />
-   </span> <span class="img-wrapper"> <span>搜索结果</span> </span></p>
-<p>最后，让我们查看<strong>系统视图</strong>页面。</p>
-<p>通过封装在 Milvus Node.js SDK 中的 Metrics API，您可以查看系统状态、节点关系和节点状态。</p>
-<p>作为 Attu 的独家功能，系统概览页面包含完整的系统拓扑图。点击每个节点，即可查看其状态（每 10 秒刷新一次）。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/search_result_961886efab.png" alt="Search result" class="doc-image" id="search-result" />
+    <span>Search result</span>
+  </span>
+</p>
+<p>Finally, let’s check the <strong>System View</strong> page.</p>
+<p>With Metrics API encapsulated in Milvus Node.js SDK, you can check the system status, node relations, and node status.</p>
+<p>As an exclusive feature of Attu, System Overview page includes a complete system topological graph. By clicking on each node, you can check its status (refresh every 10 seconds).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/topological_graph_d0c5c17586.png" alt="Milvus node topological graph" class="doc-image" id="milvus-node-topological-graph" />
-   </span> <span class="img-wrapper"> <span>Milvus 节点拓扑图</span> </span></p>
-<p>点击每个节点可进入<strong>节点列表视图</strong>。您可以查看协调节点的所有子节点。通过排序，您可以快速识别 CPU 或内存使用率高的节点，并找到系统问题所在。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/topological_graph_d0c5c17586.png" alt="Milvus node topological graph" class="doc-image" id="milvus-node-topological-graph" />
+    <span>Milvus node topological graph</span>
+  </span>
+</p>
+<p>Click on each node to enter the <strong>Node List View</strong>. You can check all child nodes of a coord node. By sorting, you can identify the nodes with high CPU or memory usage quickly, and locate the problem with the system.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/node_list_64fc610a8d.png" alt="Milvus node list" class="doc-image" id="milvus-node-list" />
-   </span> <span class="img-wrapper"> <span>Milvus 节点列表</span> </span></p>
-<h2 id="Whats-more" class="common-anchor-header">更多信息<button data-href="#Whats-more" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/node_list_64fc610a8d.png" alt="Milvus node list" class="doc-image" id="milvus-node-list" />
+    <span>Milvus node list</span>
+  </span>
+</p>
+<h2 id="Whats-more" class="common-anchor-header">What’s more<button data-href="#Whats-more" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -199,16 +241,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>如前所述，<strong>向量搜索</strong>和<strong>系统视图</strong>页面是 Attu 的插件。我们鼓励用户根据自己的应用场景在 Attu 中开发自己的插件。在源代码中，有一个专门为插件代码而建的文件夹。</p>
+    </button></h2><p>As mentioned earlier, the <strong>Vector Search</strong> and <strong>System View</strong> pages are plugins of Attu. We encourage users to develop their own plugins in Attu to suit their application scenarios. In the source code, there is folder built specifically for plugin codes.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/plugins_a2d98e4e5b.png" alt="Plugins" class="doc-image" id="plugins" />
-   </span> <span class="img-wrapper"> <span>插件</span> </span></p>
-<p>您可以参考任何一个插件，了解如何构建插件。通过设置以下配置文件，即可将插件添加到 Attu。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/plugins_a2d98e4e5b.png" alt="Plugins" class="doc-image" id="plugins" />
+    <span>Plugins</span>
+  </span>
+</p>
+<p>You can refer to any of the plugin to learn how to build a plugin. By setting the following config file, you can add the plugin to Attu.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/add_plugins_e3ef53cc0d.png" alt="Add plugins to Attu" class="doc-image" id="add-plugins-to-attu" />
-   </span> <span class="img-wrapper"> <span>向 Attu 添加插件</span> </span></p>
-<p>详细说明可参阅<a href="https://github.com/zilliztech/attu/tree/main/doc">Attu GitHub Repo</a>和<a href="https://milvus.io/docs/v2.0.x/attu.md">Milvus 技术文档</a>。</p>
-<p>Attu 是一个开源项目。欢迎所有贡献。如果您在使用 Attu 时遇到任何问题，也可以<a href="https://github.com/zilliztech/attu/issues">提交问题</a>。</p>
-<p>我们衷心希望 Attu 能为您带来更好的 Milvus 用户体验。如果您喜欢 Attu，或对使用有任何反馈意见，请填写 Attu<a href="https://wenjuan.feishu.cn/m/cfm?t=suw4QnODU1ui-ok7r">用户调查表</a>，帮助我们优化 Attu，以获得更好的用户体验。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/add_plugins_e3ef53cc0d.png" alt="Add plugins to Attu" class="doc-image" id="add-plugins-to-attu" />
+    <span>Add plugins to Attu</span>
+  </span>
+</p>
+<p>You can see <a href="https://github.com/zilliztech/attu/tree/main/doc">Attu GitHub Repo</a> and <a href="https://milvus.io/docs/v2.0.x/attu.md">Milvus Technical Document</a> for detailed instruction.</p>
+<p>Attu is an open-source project. All contributions are welcome. You can also <a href="https://github.com/zilliztech/attu/issues">file an issue</a> if you had any problem with Attu.</p>
+<p>We sincerely hope that Attu can bring you a better user experience with Milvus. And if you like Attu, or have some feedbacks about the usage, you can complete this <a href="https://wenjuan.feishu.cn/m/cfm?t=suw4QnODU1ui-ok7r">Attu User Survey</a> to help us optimize Attu for a better user experience.</p>

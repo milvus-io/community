@@ -1,32 +1,31 @@
 ---
 id: how-to-filter-efficiently-without-killing-recall.md
 title: >-
-  Векторный поиск в реальном мире: как эффективно фильтровать, не убивая
-  запоминание
+  Vector Search in the Real World: How to Filter Efficiently Without Killing
+  Recall
 author: Chris Gao and Patrick Xu
 date: 2025-05-12T00:00:00.000Z
 desc: >-
-  В этом блоге рассматриваются популярные методы фильтрации в векторном поиске,
-  а также инновационные оптимизации, которые мы встроили в Milvus и Zilliz
-  Cloud.
+  This blog explores popular filtering techniques in vector search, along with
+  the innovative optimizations we built into Milvus and Zilliz Cloud.
 cover: assets.zilliz.com/Filter_Efficiently_Without_Killing_Recall_1c355c229c.png
 tag: Engineering
 tags: 'Vector search, filtering vector search, vector search with filtering'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md'
 ---
-<p>Многие думают, что векторный поиск - это просто реализация алгоритма ANN (Approximate Nearest Neighbor) и на этом все заканчивается. Но если вы используете векторный поиск в производстве, вы знаете правду: он быстро становится сложным.</p>
-<p>Представьте, что вы создаете поисковую систему по товарам. Пользователь может спросить: "<em>Покажите мне туфли, похожие на эту фотографию, но только красного цвета и стоимостью менее 100 долларов</em>". Для выполнения этого запроса необходимо применить фильтр метаданных к результатам поиска по семантическому сходству. Звучит так же просто, как применение фильтра к результатам векторного поиска? Ну, не совсем.</p>
-<p>Что произойдет, если условие фильтрации будет очень избирательным? Вы можете получить недостаточно результатов. А простое увеличение параметра <strong>topK</strong> векторного поиска может быстро снизить производительность и потребовать значительно больше ресурсов для обработки того же объема поиска.</p>
+<p>Many people think vector search is simply about implementing an ANN (Approximate Nearest Neighbor) algorithm and calling it a day. But if you run vector search in production, you know the truth: it gets complicated fast.</p>
+<p>Imagine you’re building a product search engine. A user might ask, “<em>Show me shoes similar to this photo, but only in red and under $100</em>.” Serving this query requires applying a metadata filter to the semantic similarity search results. Sounds as simple as applying a filter after your vector search returns? Well, not quite.</p>
+<p>What happens when your filtering condition is highly selective? You might not return enough results. And simply increasing the vector search’s <strong>topK</strong> parameter may quickly degrade performance and consume significantly more resources to handle the same search volume.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Show_me_shoes_similar_to_this_photo_but_only_in_red_and_under_100_0862a41a60.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Под капотом эффективная фильтрация метаданных довольно сложна. Векторная база данных должна сканировать индекс графа, применять фильтры метаданных и при этом отвечать в рамках жесткого бюджета задержки, скажем, 20 миллисекунд. Обслуживание тысяч таких запросов в секунду без разорения требует вдумчивого проектирования и тщательной оптимизации.</p>
-<p>В этом блоге мы рассмотрим популярные методы фильтрации в векторном поиске, а также инновационные оптимизации, которые мы встроили в векторную базу данных <a href="https://milvus.io/docs/overview.md">Milvus</a> и ее полностью управляемый облачный сервис<a href="https://zilliz.com/cloud">(Zilliz Cloud</a>). Мы также поделимся эталонным тестом, демонстрирующим, насколько выше производительность полностью управляемой Milvus при бюджете облака в 1000 долларов по сравнению с другими векторными базами данных.</p>
-<h2 id="Graph-Index-Optimization" class="common-anchor-header">Оптимизация графических индексов<button data-href="#Graph-Index-Optimization" class="anchor-icon" translate="no">
+<p>Under the hood, efficient metadata filtering is pretty challenging. Your vector database needs to scan the graph index, apply metadata filters, and still respond within a tight latency budget, say, 20 milliseconds. Serving thousands of such queries per second without going bankrupt requires thoughtful engineering and careful optimization.</p>
+<p>This blog explores popular filtering techniques in vector search, along with the innovative optimizations we built into the <a href="https://milvus.io/docs/overview.md">Milvus</a> vector database and its fully managed cloud service (<a href="https://zilliz.com/cloud">Zilliz Cloud</a>). We’ll also share a benchmark test demonstrating how much more performance the fully-managed Milvus can achieve with a $1000 cloud budget over the other vector databases.</p>
+<h2 id="Graph-Index-Optimization" class="common-anchor-header">Graph Index Optimization<button data-href="#Graph-Index-Optimization" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,42 +40,42 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Векторные базы данных нуждаются в эффективных методах индексирования для работы с большими наборами данных. Без индексов база данных должна сравнивать ваш запрос с каждым вектором в наборе данных (грубое сканирование), что становится чрезвычайно медленным по мере роста ваших данных.</p>
-<p><strong>Milvus</strong> поддерживает различные типы индексов для решения этой проблемы производительности. Наиболее популярными являются индексы на основе графов: HNSW (работает полностью в памяти) и DiskANN (эффективно использует как память, так и SSD). Эти индексы организуют векторы в сетевую структуру, где окрестности векторов соединены на карте, что позволяет быстро переходить к релевантным результатам поиска, проверяя лишь небольшую часть всех векторов. <strong>Zilliz Cloud</strong>, полностью управляемый сервис Milvus, делает еще один шаг вперед, представляя Cardinal, продвинутую собственную систему векторного поиска, которая еще больше улучшает эти индексы для еще большей производительности.</p>
-<p>Однако, когда мы добавляем требования к фильтрации (например, "показывать только товары стоимостью менее 100 долларов"), возникает новая проблема. Стандартный подход заключается в создании <em>битового набора</em> - списка, отмечающего, какие векторы соответствуют критериям фильтра. Во время поиска система учитывает только те векторы, которые отмечены в этом битовом наборе. Такой подход кажется логичным, но он создает серьезную проблему: <strong>нарушение связности</strong>. Когда многие векторы отфильтровываются, тщательно выстроенные пути в нашем графовом индексе нарушаются.</p>
-<p>Вот простой пример этой проблемы: на диаграмме ниже точка A соединяется с B, C и D, но B, C и D не соединяются друг с другом напрямую. Если наш фильтр удалит точку A (возможно, это слишком дорого), то даже если B, C и D имеют отношение к нашему поиску, путь между ними будет прерван. В результате образуются "острова" несвязанных векторов, которые становятся недоступными во время поиска, что снижает качество результатов (recall).</p>
+    </button></h2><p>Vector databases need efficient indexing methods to handle large datasets. Without indexes, a database must compare your query against every vector in the dataset (brute-force scanning), which becomes extremely slow as your data grows.</p>
+<p><strong>Milvus</strong> supports various index types to solve this performance challenge. The most popular ones are graph-based index types: HNSW (runs entirely in memory) and DiskANN (efficiently uses both memory and SSD). These indexes organize vectors into a network structure where neighborhoods of vectors are connected on a map, allowing searches to quickly navigate to relevant results while checking only a small fraction of all vectors. <strong>Zilliz Cloud</strong>, the fully-managed Milvus service, takes one step further by introducing Cardinal, an advanced proprietary vector search engine, further enhancing these indexes for even better performance.</p>
+<p>However, when we add filtering requirements (like “only show products less than $100”), a new problem emerges. The standard approach is creating a <em>bitset</em> - a list marking which vectors meet the filter criteria. During search, the system only considers vectors marked as valid in this bitset. This approach seems logical, but it creates a serious problem: <strong>broken connectivity</strong>. When many vectors get filtered out, the carefully constructed paths in our graph index get disrupted.</p>
+<p>Here’s a simple example of the problem: In the diagram below, Point A connects to B, C and D, but B, C, and D don’t directly connect to each other. If our filter removes point A (perhaps it’s too expensive), then even if B, C, and D are relevant to our search, the path between them is broken. This creates “islands” of disconnected vectors that become unreachable during search, hurting the quality of results (recall).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/simple_example_of_the_problem_0f09b36639.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Существует два распространенных подхода к фильтрации при обходе графа: исключить все отфильтрованные точки заранее или включить все и применить фильтр после. Как показано на диаграмме ниже, ни один из этих подходов не является идеальным. Полный пропуск отфильтрованных точек может привести к тому, что при коэффициенте фильтрации, близком к единице, запоминаемость будет падать (синяя линия), а посещение каждой точки, независимо от ее метаданных, увеличивает пространство поиска и значительно снижает производительность (красная линия).</p>
+<p>There are two common approaches to filtering during graph traversal: exclude all filtered-out points upfront, or include everything and apply the filter afterward. As illustrated in the diagram below, neither approach is ideal. Skipping filtered points entirely can cause recall to collapse as the filtering ratio nears 1 (blue line), while visiting every point regardless of its metadata bloats the search space and slows down performance significantly (red line).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Filtering_ratio_911e32783b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Исследователи предложили несколько подходов, чтобы найти баланс между запоминанием и производительностью:</p>
+<p>Researchers have proposed several approaches to strike a balance between recall and performance:</p>
 <ol>
-<li><strong>Альфа-стратегия:</strong> Представляет собой вероятностный подход: даже если вектор не соответствует фильтру, мы все равно можем посетить его во время поиска с некоторой вероятностью. Эта вероятность (альфа) зависит от коэффициента фильтрации - насколько строгим является фильтр. Это помогает поддерживать важные связи в графе, не посещая слишком много нерелевантных векторов.</li>
+<li><strong>Alpha Strategy:</strong> This introduces a probabilistic approach: even though a vector doesn’t match the filter, we might still visit it during search with some probability. This probability (alpha) depends on the filtering ratio - how strict the filter is. This helps maintain essential connections in the graph without visiting too many irrelevant vectors.</li>
 </ol>
 <ol start="2">
-<li><strong>Метод ACORN [1]:</strong> В стандартном HNSW обрезка ребер используется во время построения индекса, чтобы создать разреженный граф и ускорить поиск. Метод ACORN намеренно пропускает этот шаг обрезки, чтобы сохранить больше ребер и усилить связность, что очень важно, когда фильтры могут исключить много узлов. В некоторых случаях ACORN также расширяет список соседей каждого узла, собирая дополнительных приблизительных ближайших соседей, что еще больше укрепляет граф. Более того, алгоритм обхода заглядывает на два шага вперед (т. е. проверяет соседей соседей), что повышает шансы найти правильные пути даже при высоком коэффициенте фильтрации.</li>
+<li><strong>ACORN Method [1]:</strong> In standard HNSW, edge pruning is used during index construction to create a sparse graph and speed up search. The ACORN method deliberately skips this pruning step to retain more edges and strengthen connectivity—crucial when filters might exclude many nodes. In some cases, ACORN also expands each node’s neighbor list by gathering additional approximate nearest neighbors, further reinforcing the graph. Moreover, its traversal algorithm looks two steps ahead (i.e., examines neighbors of neighbors), improving the chances of finding valid paths even under high filtering ratios.</li>
 </ol>
 <ol start="3">
-<li><strong>Динамически выбираемые соседи:</strong> Метод, усовершенствованный по сравнению с Alpha Strategy. Вместо того чтобы полагаться на вероятностный пропуск, этот подход адаптивно выбирает следующие узлы во время поиска. Он предлагает больше контроля, чем Альфа-стратегия.</li>
+<li><strong>Dynamically Selected Neighbors:</strong> A method improves over Alpha Strategy. Instead of relying on probabilistic skipping, this approach adaptively selects the next nodes during search. It offers more control than Alpha Strategy.</li>
 </ol>
-<p>В Milvus мы реализовали стратегию Alpha наряду с другими методами оптимизации. Например, она динамически переключает стратегии при обнаружении чрезвычайно избирательных фильтров: когда, скажем, около 99 % данных не соответствуют выражению фильтрации, стратегия "включить все" приведет к значительному удлинению путей обхода графа, что приведет к снижению производительности и появлению изолированных "островков" данных. В таких случаях Milvus автоматически возвращается к грубому сканированию, полностью обходя графовый индекс для повышения эффективности. В Cardinal, векторном поисковом движке, на котором работает полностью управляемый Milvus (Zilliz Cloud), мы пошли дальше, реализовав динамическую комбинацию методов обхода "включить все" и "исключить все", которая интеллектуально адаптируется на основе статистики данных для оптимизации производительности запросов.</p>
-<p>Наши эксперименты на наборе данных Cohere 1M (размерность = 768) с использованием экземпляра AWS r7gd.4xlarge демонстрируют эффективность этого подхода. На графике ниже синяя линия представляет нашу стратегию динамического комбинирования, а красная линия - базовый подход, который обходит все отфильтрованные точки на графике.</p>
+<p>In Milvus, we implemented the Alpha strategy alongside other optimization techniques. For example, it dynamically switches strategies when detecting extremely selective filters: when, say, approximately 99% of the data doesn’t match the filtering expression, the “include-all” strategy would cause graph traversal paths to lengthen significantly, resulting in performance degradation and isolated “islands” of data. In such cases, Milvus automatically falls back to a brute-force scan, bypassing the graph index entirely for better efficiency. In Cardinal, the vector search engine powering fully-managed Milvus (Zilliz Cloud), we’ve taken this further by implementing a dynamic combination of “include-all” and “exclude-all” traversal methods that intelligently adapts based on data statistics to optimize query performance.</p>
+<p>Our experiments on the Cohere 1M dataset (dimension = 768) using an AWS r7gd.4xlarge instance demonstrate the effectiveness of this approach. In the chart below, the blue line represents our dynamic combination strategy, while the red line illustrates the baseline approach that traverses all filtered points in the graph.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Graph_2_067a13500b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Metadata-Aware-Indexing" class="common-anchor-header">Индексирование с учетом метаданных<button data-href="#Metadata-Aware-Indexing" class="anchor-icon" translate="no">
+<h2 id="Metadata-Aware-Indexing" class="common-anchor-header">Metadata-Aware Indexing<button data-href="#Metadata-Aware-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,17 +90,17 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Еще одна проблема связана с тем, как метаданные и векторные вкрапления соотносятся друг с другом. В большинстве приложений свойства метаданных элемента (например, цена товара) имеют минимальную связь с тем, что на самом деле представляет вектор (семантическое значение или визуальные характеристики). Например, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">платье</annotation><mrow><mi>90dressanda90</mi></mrow><annotation encoding="application/x-tex">и</annotation></semantics></math></span></span>пояс <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">90dressanda90</span></span></span></span>имеют одинаковую цену, но обладают совершенно разными визуальными характеристиками. Такое несоответствие делает сочетание фильтрации с векторным поиском по сути неэффективным.</p>
-<p>Чтобы решить эту проблему, мы разработали векторные <strong>индексы с учетом метаданных</strong>. Вместо того чтобы иметь один граф для всех векторов, он строит специализированные "подграфы" для различных значений метаданных. Например, если в ваших данных есть поля "цвет" и "форма", то для этих полей создаются отдельные структуры графов.</p>
-<p>При поиске с фильтром типа "цвет = синий" используется подграф для конкретного цвета, а не основной граф. Это намного быстрее, потому что подграф уже организован вокруг метаданных, по которым вы фильтруете.</p>
-<p>На рисунке ниже основной индекс графа называется <strong>базовым графом</strong>, а специализированные графы, построенные для конкретных полей метаданных, называются <strong>графами столбцов</strong>. Чтобы эффективно управлять использованием памяти, граф ограничивает количество связей, которые может иметь каждая точка (out-degree). Если поиск не включает никаких фильтров метаданных, по умолчанию используется базовый граф. При применении фильтров он переключается на соответствующий граф, что обеспечивает значительное преимущество в скорости.</p>
+    </button></h2><p>Another challenge comes from how metadata and vector embeddings relate to each other. In most applications, an item’s metadata properties (e.g., a product’s price) have minimal connection to what the vector actually represents (the semantic meaning or visual features). For example, a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>d</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">90 dress and a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">90</span><span class="mord mathnormal">d</span><span class="mord mathnormal">ress</span><span class="mord mathnormal">an</span><span class="mord mathnormal">d</span><span class="mord mathnormal">a</span></span></span></span>90 belt share the same price point but exhibit completely different visual characteristics. This disconnect makes combining filtering with vector search inherently inefficient.</p>
+<p>To solve this problem, we’ve developed <strong>metadata-aware vector indexes</strong>. Instead of having just one graph for all vectors, it builds specialized “subgraphs” for different metadata values. For example, if your data has fields for “color” and “shape,” it creates separate graph structures for these fields.</p>
+<p>When you search with a filter like “color = blue,” it uses the color-specific subgraph rather than the main graph. This is much faster because the subgraph is already organized around the metadata you’re filtering by.</p>
+<p>In the figure below, the main graph index is called the <strong>base graph</strong>, while the specialized graphs built for specific metadata fields are called <strong>column graphs</strong>. To manage memory usage effectively, it limits how many connections each point can have (out-degree). When a search doesn’t include any metadata filters, it defaults to the base graph. When filters are applied, it switches to the appropriate column graph, offering a significant speed advantage.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Metadata_Aware_Indexing_7c3e0707d9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Iterative-Filtering" class="common-anchor-header">Итеративная фильтрация<button data-href="#Iterative-Filtering" class="anchor-icon" translate="no">
+<h2 id="Iterative-Filtering" class="common-anchor-header">Iterative Filtering<button data-href="#Iterative-Filtering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,14 +115,14 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Иногда узким местом становится сама фильтрация, а не векторный поиск. Особенно это касается сложных фильтров, таких как условия JSON или детальное сравнение строк. Традиционный подход (сначала фильтр, потом поиск) может быть чрезвычайно медленным, поскольку системе приходится оценивать эти дорогостоящие фильтры на потенциально миллионах записей, прежде чем начать векторный поиск.</p>
-<p>Вы можете подумать: "Почему бы не выполнить сначала векторный поиск, а затем отфильтровать верхние результаты?" Такой подход иногда работает, но у него есть существенный недостаток: если ваш фильтр строгий и отсеивает большинство результатов, то после фильтрации вы можете получить слишком мало (или ноль) результатов.</p>
-<p>Чтобы решить эту дилемму, мы создали <strong>итеративную фильтрацию</strong> в Milvus и Zilliz Cloud, вдохновившись<a href="https://www.usenix.org/system/files/osdi23-zhang-qianxi_1.pdf"> VBase</a>. Вместо подхода "все или ничего" итеративная фильтрация работает пакетно:</p>
+    </button></h2><p>Sometimes the filtering itself becomes the bottleneck, not the vector search. This happens especially with complex filters like JSON conditions or detailed string comparisons. The traditional approach (filter first, then search) can be extremely slow because the system has to evaluate these expensive filters on potentially millions of records before even starting the vector search.</p>
+<p>You might think: “Why not do vector search first, then filter the top results?” This approach works sometimes, but has a major flaw: if your filter is strict and filters out most results, you might end up with too few (or zero) results after filtering.</p>
+<p>To solve this dilemma, we created <strong>Iterative Filtering</strong> in Milvus and Zilliz Cloud, inspired by<a href="https://www.usenix.org/system/files/osdi23-zhang-qianxi_1.pdf"> VBase</a>. Instead of an all-or-nothing approach, Iterative Filtering works in batches:</p>
 <ol>
-<li><p>Получаем партию наиболее близких векторных совпадений</p></li>
-<li><p>Примените фильтры к этой партии</p></li>
-<li><p>Если отфильтрованных результатов недостаточно, получаем другую партию.</p></li>
-<li><p>Повторяйте, пока не наберется необходимое количество результатов.</p></li>
+<li><p>Get a batch of the closest vector matches</p></li>
+<li><p>Apply filters to this batch</p></li>
+<li><p>If we don’t have enough filtered results, get another batch</p></li>
+<li><p>Repeat until we have the required number of results</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -131,8 +130,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
     <span></span>
   </span>
 </p>
-<p>Такой подход значительно сокращает количество дорогостоящих операций фильтрации, обеспечивая при этом получение достаточного количества высококачественных результатов. Дополнительную информацию о включении итеративной фильтрации можно найти на этой <a href="https://docs.zilliz.com/docs/filtered-search#iterative-filtering">странице документации по итеративной фильтрации</a>.</p>
-<h2 id="External-Filtering" class="common-anchor-header">Внешняя фильтрация<button data-href="#External-Filtering" class="anchor-icon" translate="no">
+<p>This approach dramatically reduces how many expensive filter operations we need to perform while still ensuring we get enough high-quality results. For more information on enabling iterative filtering, please refer to this <a href="https://docs.zilliz.com/docs/filtered-search#iterative-filtering">iterative filtering doc page</a>.</p>
+<h2 id="External-Filtering" class="common-anchor-header">External Filtering<button data-href="#External-Filtering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,22 +146,22 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Многие реальные приложения разделяют свои данные по разным системам - векторы в векторной базе данных и метаданные в традиционных базах данных. Например, многие организации хранят описания товаров и отзывы пользователей в виде векторов в Milvus для семантического поиска, а состояние запасов, цены и другие структурированные данные - в традиционных базах данных, таких как PostgreSQL или MongoDB.</p>
-<p>Такое разделение имеет смысл с архитектурной точки зрения, но создает проблемы для фильтрованного поиска. Типичный рабочий процесс выглядит следующим образом:</p>
+    </button></h2><p>Many real-world applications split their data across different systems - vectors in a vector database and metadata in traditional databases. For example, many organizations store product descriptions and user reviews as vectors in Milvus for semantic search, while keeping inventory status, pricing, and other structured data in traditional databases like PostgreSQL or MongoDB.</p>
+<p>This separation makes sense architecturally but creates a challenge for filtered searches. The typical workflow becomes:</p>
 <ul>
-<li><p>Запросить реляционную базу данных для поиска записей, соответствующих критериям фильтра (например, "товары на складе стоимостью менее 50 долларов").</p></li>
-<li><p>Получить идентификаторы совпадений и отправить их в Milvus для фильтрации векторного поиска</p></li>
-<li><p>Выполните семантический поиск только по тем векторам, которые соответствуют этим идентификаторам.</p></li>
+<li><p>Query your relational database for records matching filter criteria (e.g., “in-stock items under $50”)</p></li>
+<li><p>Get the matching IDs and send them to Milvus to filter the vector search</p></li>
+<li><p>Perform semantic search only on vectors that match these IDs</p></li>
 </ul>
-<p>Звучит просто, но когда количество строк переваливает за миллионы, это становится узким местом. Передача больших списков идентификаторов потребляет пропускную способность сети, а выполнение массивных выражений фильтрации в Milvus увеличивает накладные расходы.</p>
-<p>Чтобы решить эту проблему, мы представили <strong>внешнюю фильтрацию</strong> в Milvus - легкое решение на уровне SDK, которое использует API поискового итератора и меняет традиционный рабочий процесс.</p>
+<p>This sounds simple—but when the number of rows grows beyond millions, it becomes a bottleneck. Transferring large lists of IDs consumes network bandwidth, and executing massive filter expressions in Milvus adds overhead.</p>
+<p>To address this, we introduced <strong>External Filtering</strong> in Milvus, a lightweight SDK-level solution that uses the search iterator API and reverses the traditional workflow.</p>
 <ul>
-<li><p>Сначала выполняется векторный поиск, извлекаются группы наиболее семантически релевантных кандидатов</p></li>
-<li><p>Применяет пользовательскую функцию фильтрации к каждой партии на стороне клиента</p></li>
-<li><p>Автоматически извлекает дополнительные партии, пока не будет получено достаточное количество отфильтрованных результатов.</p></li>
+<li><p>Performs vector search first, retrieving batches of the most semantically relevant candidates</p></li>
+<li><p>Applies your custom filter function to each batch on the client side</p></li>
+<li><p>Automatically fetches more batches until you have enough filtered results</p></li>
 </ul>
-<p>Такой пакетный итеративный подход значительно снижает сетевой трафик и накладные расходы на обработку, поскольку вы работаете только с наиболее перспективными кандидатами, полученными в результате векторного поиска.</p>
-<p>Вот пример использования внешней фильтрации в pymilvus:</p>
+<p>This batched, iterative approach significantly reduces both network traffic and processing overhead, since you’re only working with the most promising candidates from the vector search.</p>
+<p>Here’s an example of how to use External Filtering in pymilvus:</p>
 <pre><code translate="no">vector_to_search = rng.random((<span class="hljs-number">1</span>, DIM), np.float32)
 expr = <span class="hljs-string">f&quot;10 &lt;= <span class="hljs-subst">{AGE}</span> &lt;= 25&quot;</span>
 valid_ids = [<span class="hljs-number">1</span>, <span class="hljs-number">12</span>, <span class="hljs-number">123</span>, <span class="hljs-number">1234</span>]
@@ -188,8 +187,8 @@ search_iterator = milvus_client.search_iterator(
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(res)):
         <span class="hljs-built_in">print</span>(res[i])
 <button class="copy-code-btn"></button></code></pre>
-<p>В отличие от итеративной фильтрации, которая работает с итераторами на уровне сегментов, внешняя фильтрация работает на глобальном уровне запроса. Такая конструкция минимизирует оценку метаданных и позволяет избежать выполнения больших фильтров внутри Milvus, что приводит к более низкой и быстрой сквозной производительности.</p>
-<h2 id="AutoIndex" class="common-anchor-header">Автоиндекс<button data-href="#AutoIndex" class="anchor-icon" translate="no">
+<p>Unlike Iterative Filtering, which operates on segment-level iterators, External Filtering works at the global query level. This design minimizes metadata evaluation and avoids executing large filters within Milvus, resulting in leaner and faster end-to-end performance.</p>
+<h2 id="AutoIndex" class="common-anchor-header">AutoIndex<button data-href="#AutoIndex" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -204,18 +203,18 @@ search_iterator = milvus_client.search_iterator(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Векторный поиск всегда предполагает компромисс между точностью и скоростью - чем больше векторов вы проверяете, тем лучше результаты, но тем медленнее запрос. Когда вы добавляете фильтры, этот баланс становится еще более сложным.</p>
-<p>В Zilliz Cloud мы создали <strong>AutoIndex</strong> - оптимизатор на основе ML, который автоматически настраивает этот баланс за вас. Вместо того чтобы вручную настраивать сложные параметры, AutoIndex использует машинное обучение для определения оптимальных настроек для ваших конкретных данных и шаблонов запросов.</p>
-<p>Чтобы понять, как это работает, нужно немного узнать об архитектуре Milvus, поскольку Zilliz построен поверх Milvus: Запросы распределяются между несколькими экземплярами QueryNode. Каждый узел обрабатывает часть ваших данных (сегмент), выполняет поиск, а затем результаты объединяются вместе.</p>
-<p>AutoIndex анализирует статистику этих сегментов и вносит интеллектуальные коррективы. При низком коэффициенте фильтрации диапазон запросов к индексу расширяется, чтобы повысить запоминаемость. При высоком коэффициенте фильтрации диапазон запросов сужается, чтобы избежать напрасной траты усилий на маловероятных кандидатов. Эти решения принимаются с помощью статистических моделей, которые предсказывают наиболее эффективную стратегию поиска для каждого конкретного сценария фильтрации.</p>
-<p>AutoIndex выходит за рамки параметров индексирования. Он также помогает выбрать оптимальную стратегию оценки фильтра. Разбор выражений фильтра и выборка данных сегмента позволяют оценить стоимость оценки. Если он обнаруживает высокую стоимость оценки, то автоматически переключается на более эффективные методы, такие как итеративная фильтрация. Благодаря этой динамической настройке вы всегда используете оптимальную стратегию для каждого запроса.</p>
+    </button></h2><p>Vector search always involves a tradeoff between accuracy and speed - the more vectors you check, the better your results but the slower your query. When you add filters, this balance becomes even trickier to get right.</p>
+<p>In Zilliz Cloud, we’ve created <strong>AutoIndex</strong> - an ML-based optimizer that automatically fine-tunes this balance for you. Instead of manually configuring complex parameters, AutoIndex uses machine learning to determine the optimal settings for your specific data and query patterns.</p>
+<p>To understand how this works, it helps to know a bit about Milvus’s architecture since Zilliz is built on top of Milvus: Queries are distributed across multiple QueryNode instances. Each node handles a portion of your data (a segment), performs its search, and then results are merged together.</p>
+<p>AutoIndex analyzes statistics from these segments and makes intelligent adjustments. For low filtering ratio, the index query range is widened to increase recall. For high filtering ratio, the query range is narrowed to avoid wasted effort on unlikely candidates. These decisions are guided by statistical models that predict the most effective search strategy for each specific filtering scenario.</p>
+<p>AutoIndex goes beyond indexing parameters. It also helps select the best filter evaluation strategy. By parsing filter expressions and sampling segment data, it can estimate evaluation cost. If it detects high evaluation costs, it automatically switches to more efficient techniques such as Iterative Filtering. This dynamic adjustment ensures you’re always using the best-fit strategy for each query.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Autoindex_3f37988d5c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Performance-on-a-1000-Budget" class="common-anchor-header">Производительность при бюджете в 1000 долларов<button data-href="#Performance-on-a-1000-Budget" class="anchor-icon" translate="no">
+<h2 id="Performance-on-a-1000-Budget" class="common-anchor-header">Performance on a $1,000 Budget<button data-href="#Performance-on-a-1000-Budget" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,22 +229,22 @@ search_iterator = milvus_client.search_iterator(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Хотя теоретические улучшения важны, для большинства разработчиков важна реальная производительность. Мы хотели проверить, как эти оптимизации отразятся на реальной производительности приложений при реальных бюджетных ограничениях.</p>
-<p>Мы провели сравнительный анализ нескольких решений для векторных баз данных с практическим бюджетом в 1000 долларов в месяц - разумная сумма, которую многие компании выделяют на инфраструктуру векторного поиска. Для каждого решения мы выбрали самую высокопроизводительную конфигурацию экземпляра, возможную при данном бюджетном ограничении.</p>
-<p>В нашем тестировании использовались:</p>
+    </button></h2><p>While theoretical improvements are important, real-world performance is what matters to most developers. We wanted to test how these optimizations translate to actual application performance under realistic budget constraints.</p>
+<p>We benchmarked several vector database solutions with a practical $1,000 monthly budget - a reasonable amount that many companies would allocate to vector search infrastructure. For each solution, we selected the highest-performing instance configuration possible within this budget constraint.</p>
+<p>Our testing used:</p>
 <ul>
-<li><p>Набор данных Cohere 1M с 1 миллионом 768-мерных векторов.</p></li>
-<li><p>смесь реальных рабочих нагрузок поиска с фильтрацией и без фильтрации.</p></li>
-<li><p>Инструмент бенчмарка vdb-bench с открытым исходным кодом для последовательных сравнений.</p></li>
+<li><p>The Cohere 1M dataset with 1 million 768-dimensional vectors</p></li>
+<li><p>A mix of real-world filtered and unfiltered search workloads</p></li>
+<li><p>The open-source vdb-bench benchmark tool for consistent comparisons</p></li>
 </ul>
-<p>Все конкурирующие решения (анонимизированные как "VDB A", "VDB B" и "VDB C") были настроены оптимально в рамках бюджета. Результаты показали, что полностью управляемый Milvus (Zilliz Cloud) неизменно достигал самой высокой пропускной способности как для фильтрованных, так и для нефильтрованных запросов. При том же бюджете в 1000 долларов наши методы оптимизации обеспечивают наибольшую производительность при конкурентоспособной цене.</p>
+<p>The competing solutions (anonymized as “VDB A,” “VDB B,” and “VDB C”) were all configured optimally within the budget. The results showed that fully-managed Milvus (Zilliz Cloud) consistently achieved the highest throughput across both filtered and unfiltered queries. With the same $1000 budge, our optimization techniques deliver the most performance at competitive recall.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Performance_on_a_1_000_Budget_5ebefaec48.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -260,18 +259,18 @@ search_iterator = milvus_client.search_iterator(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Векторный поиск с фильтрацией может показаться простым на первый взгляд - просто добавьте в запрос предложение фильтрации, и все готово. Однако, как мы показали в этом блоге, достижение высокой производительности и точных результатов в масштабе требует сложных инженерных решений. Milvus и Zilliz Cloud решают эти проблемы с помощью нескольких инновационных подходов:</p>
+    </button></h2><p>Vector search with filtering might look simple on the surface - just add a filter clause to your query and you’re done. However, as we’ve demonstrated in this blog, achieving both high performance and accurate results at scale requires sophisticated engineering solutions. Milvus and Zilliz Cloud address these challenges through several innovative approaches:</p>
 <ul>
-<li><p><strong>Оптимизация графических индексов</strong>: Сохраняет пути между похожими элементами, даже когда фильтры удаляют соединительные узлы, предотвращая проблему "островов", которая снижает качество результатов.</p></li>
-<li><p><strong>Индексирование с учетом метаданных</strong>: Создает специализированные пути для общих условий фильтрации, что значительно ускоряет поиск без потери точности.</p></li>
-<li><p><strong>Итеративная фильтрация</strong>: Обрабатывает результаты партиями, применяя сложные фильтры только к наиболее перспективным кандидатам, а не ко всему набору данных.</p></li>
-<li><p><strong>Автоиндекс</strong>: Использует машинное обучение для автоматической настройки параметров поиска на основе ваших данных и запросов, обеспечивая баланс между скоростью и точностью без необходимости ручной настройки.</p></li>
-<li><p><strong>Внешняя фильтрация</strong>: Эффективно соединяет векторный поиск с внешними базами данных, устраняя узкие места в сети и сохраняя качество результатов.</p></li>
+<li><p><strong>Graph Index Optimization</strong>: Preserves paths between similar items even when filters remove connecting nodes, preventing the “islands” problem that reduces result quality.</p></li>
+<li><p><strong>Metadata-Aware Indexing</strong>: Creates specialized paths for common filter conditions, making filtered searches significantly faster without sacrificing accuracy.</p></li>
+<li><p><strong>Iterative Filtering</strong>: Processes results in batches, applying complex filters only to the most promising candidates instead of the entire dataset.</p></li>
+<li><p><strong>AutoIndex</strong>: Uses machine learning to automatically tune search parameters based on your data and queries, balancing speed and accuracy without manual configuration.</p></li>
+<li><p><strong>External Filtering</strong>: Bridges vector search with external databases efficiently, eliminating network bottlenecks while maintaining result quality.</p></li>
 </ul>
-<p>Milvus и Zilliz Cloud продолжают развиваться, предлагая новые возможности, которые еще больше повышают производительность фильтрованного поиска. Такие функции, как<a href="https://docs.zilliz.com/docs/use-partition-key"> Partition Key</a>, позволяют еще эффективнее организовать данные на основе шаблонов фильтрации, а передовые методы маршрутизации подграфов еще больше расширяют границы производительности.</p>
-<p>Объем и сложность неструктурированных данных продолжают расти в геометрической прогрессии, создавая новые проблемы для поисковых систем во всем мире. Наша команда постоянно расширяет границы возможного с помощью векторных баз данных, чтобы обеспечить более быстрый и масштабируемый поиск на основе искусственного интеллекта.</p>
-<p>Если ваши приложения испытывают проблемы с производительностью при использовании векторного поиска с фильтрацией, мы приглашаем вас присоединиться к нашему активному сообществу разработчиков на сайте <a href="https://milvus.io/community">milvus.io/community</a>, где вы можете поделиться проблемами, получить рекомендации экспертов и узнать о новых передовых методах.</p>
-<h2 id="References" class="common-anchor-header">Ссылки<button data-href="#References" class="anchor-icon" translate="no">
+<p>Milvus and Zilliz Cloud continue to evolve with new capabilities that further improve filtered search performance. Features like<a href="https://docs.zilliz.com/docs/use-partition-key"> Partition Key</a> allow for even more efficient data organization based on filtering patterns, and advanced subgraph routing techniques are pushing performance boundaries even further.</p>
+<p>The volume and complexity of unstructured data continue to grow exponentially, creating new challenges for search systems everywhere. Our team is constantly pushing the boundaries of what’s possible with vector databases to deliver faster, more scalable AI-powered search.</p>
+<p>If your applications are hitting performance bottlenecks with filtered vector search, we invite you to join our active developer community at <a href="https://milvus.io/community">milvus.io/community</a> - where you can share challenges, access expert guidance, and discover emerging best practices.</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

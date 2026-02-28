@@ -1,6 +1,7 @@
 ---
 id: gpt-5-review-accuracy-up-prices-down-code-strong-but-bad-for-creativity.md
-title: GPT-5 評論：精確度提升、價格下調、程式碼強大 - 但對創意不利
+title: |
+  GPT-5 Review: Accuracy Up, Prices Down, Code Strong — But Bad for Creativity
 author: Lumina Wang
 date: 2025-08-08T00:00:00.000Z
 cover: assets.zilliz.com/gpt_5_review_7df71f395a.png
@@ -11,13 +12,15 @@ tags: 'Milvus, vector database, OpenAI, gpt-5'
 meta_keywords: 'Milvus, gpt-5, openai, chatgpt'
 meta_title: |
   GPT-5 Review: Accuracy Up, Prices Down, Code Strong, Bad Creativity
-desc: 對開發人員來說，尤其是那些建立代理和 RAG 管道的人，這個版本可能是迄今為止最有用的升級。
+desc: >-
+  for developers, especially those building agents and RAG pipelines, this
+  release may quietly be the most useful upgrade yet.
 origin: >-
   https://milvus.io/blog/gpt-5-review-accuracy-up-prices-down-code-strong-but-bad-for-creativity.md
 ---
-<p><strong>經過幾個月的揣測，OpenAI 終於發佈了</strong> <a href="https://openai.com/gpt-5/"><strong>GPT-5</strong></a><strong>。</strong>這個模型並不如 GPT-4 般有創意，但對於開發人員，尤其是那些建立代理和 RAG 管道的人來說，這個版本可能是迄今為止最有用的升級。</p>
-<p><strong>對於建置者而言，TL;DR：</strong>GPT-5 統一了架構、增強了多模式 I/O、減少了事實上的錯誤率、將上下文擴展至 400k tokens，並讓大規模使用變得更經濟實惠。然而，創造力與文學風格卻明顯退步。</p>
-<h2 id="What’s-New-Under-the-Hood" class="common-anchor-header">引擎蓋下的新功能？<button data-href="#What’s-New-Under-the-Hood" class="anchor-icon" translate="no">
+<p><strong>After months of speculation, OpenAI has finally shipped</strong> <a href="https://openai.com/gpt-5/"><strong>GPT-5</strong></a><strong>.</strong> The model isn’t the creative lightning strike that GPT-4 was, but for developers, especially those building agents and RAG pipelines, this release may quietly be the most useful upgrade yet.</p>
+<p><strong>TL;DR for builders:</strong> GPT-5 unifies architectures, supercharges multimodal I/O, slashes factual error rates, extends context to 400k tokens, and makes large-scale usage affordable. However, the creativity and literary flair have taken a noticeable step back.</p>
+<h2 id="What’s-New-Under-the-Hood" class="common-anchor-header">What’s New Under the Hood?<button data-href="#What’s-New-Under-the-Hood" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,16 +36,16 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><strong>統一核心</strong>- 將 GPT 數位系列與 o 系列推理模型合併，在單一架構中提供長鏈推理加上多模態。</p></li>
-<li><p><strong>全頻譜多模式</strong>- 輸入/輸出文字、影像、音訊和視訊，全部都在同一個模型中。</p></li>
-<li><p><strong>大幅提升精確度</strong>：</p>
+<li><p><strong>Unified core</strong> — Merges GPT digital series with o-series reasoning models, delivering long-chain reasoning plus multimodal in a single architecture.</p></li>
+<li><p><strong>Full-spectrum multimodal</strong> — Input/output across text, image, audio, and video, all within the same model.</p></li>
+<li><p><strong>Massive accuracy gains</strong>:</p>
 <ul>
-<li><p><code translate="no">gpt-5-main</code>:與 GPT-4o 相比，事實錯誤減少 44%。</p></li>
-<li><p><code translate="no">gpt-5-thinking</code>：與 GPT-4o 相比，事實錯誤減少 78%。</p></li>
+<li><p><code translate="no">gpt-5-main</code>: 44% fewer factual errors vs. GPT-4o.</p></li>
+<li><p><code translate="no">gpt-5-thinking</code>: 78% fewer factual errors vs. o3.</p></li>
 </ul></li>
-<li><p><strong>領域技能提升</strong>- 在代碼產生、數學推理、健康諮詢和結構化寫作方面更強；幻覺顯著減少。</p></li>
+<li><p><strong>Domain skill boosts</strong> — Stronger in code generation, mathematical reasoning, health consultation, and structured writing; hallucinations reduced significantly.</p></li>
 </ul>
-<p>除了 GPT-5，OpenAI 還發布了<strong>另外三個變體</strong>，每個<strong>變體</strong>都針對不同的需求進行了優化：</p>
+<p>Alongside GPT-5, OpenAI also released <strong>three additional variants</strong>, each optimized for different needs:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt_5_family_99a9bee18a.png" alt="" class="doc-image" id="" />
@@ -51,16 +54,16 @@ origin: >-
 </p>
 <table>
 <thead>
-<tr><th><strong>模型</strong></th><th><strong>說明</strong></th><th><strong>輸入 / $ 每 100 萬字元</strong></th><th><strong>輸出 / $ 每 1M 代幣</strong></th><th><strong>知識更新</strong></th></tr>
+<tr><th><strong>Model</strong></th><th><strong>Description</strong></th><th><strong>Input / $ per 1M tokens</strong></th><th><strong>Output / $ per 1M tokens</strong></th><th><strong>Knowledge Update</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>gpt-5</td><td>主要模型，長鏈推理 + 全多模態</td><td>$1.25</td><td>$10.00</td><td>2024-10-01</td></tr>
-<tr><td>gpt-5 聊天</td><td>等同於 gpt-5，用於 ChatGPT 會話</td><td>-</td><td>-</td><td>2024-10-01</td></tr>
-<tr><td>gpt-5-mini</td><td>便宜 60%，保留 ~90% 的程式效能</td><td>$0.25</td><td>$2.00</td><td>2024-05-31</td></tr>
-<tr><td>gpt-5-nano</td><td>邊緣/離線、32K 上下文、延遲 &lt;40ms</td><td>$0.05</td><td>$0.40</td><td>2024-05-31</td></tr>
+<tr><td>gpt-5</td><td>Main model, long-chain reasoning + full multimodal</td><td>$1.25</td><td>$10.00</td><td>2024-10-01</td></tr>
+<tr><td>gpt-5-chat</td><td>Equivalent to gpt-5, used in ChatGPT conversations</td><td>—</td><td>—</td><td>2024-10-01</td></tr>
+<tr><td>gpt-5-mini</td><td>60% cheaper, retains ~90% of programming performance</td><td>$0.25</td><td>$2.00</td><td>2024-05-31</td></tr>
+<tr><td>gpt-5-nano</td><td>Edge/offline, 32K context, latency &lt;40ms</td><td>$0.05</td><td>$0.40</td><td>2024-05-31</td></tr>
 </tbody>
 </table>
-<p>GPT-5 打破了 25 個基準類別的記錄 - 從程式碼修補、多模態推理到醫療任務 - 精確度持續提升。</p>
+<p>GPT-5 broke records across 25 benchmark categories — from code repair to multimodal reasoning to medical tasks — with consistent accuracy improvements.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/benchmark_1_8ebf1bed4b.png" alt="" class="doc-image" id="" />
@@ -73,7 +76,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Why-Developers-Should-Care--Especially-for-RAG--Agents" class="common-anchor-header">開發人員應該關心的原因 - 尤其是 RAG 與代理商<button data-href="#Why-Developers-Should-Care--Especially-for-RAG--Agents" class="anchor-icon" translate="no">
+<h2 id="Why-Developers-Should-Care--Especially-for-RAG--Agents" class="common-anchor-header">Why Developers Should Care — Especially for RAG &amp; Agents<button data-href="#Why-Developers-Should-Care--Especially-for-RAG--Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,11 +91,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我們的實際測試顯示，這個版本對於 Retrieval-Augmented Generation 和代理程式驅動的工作流程來說，是一場靜悄悄的革命。</p>
+    </button></h2><p>Our hands-on tests suggest this release is a quiet revolution for Retrieval-Augmented Generation and agent-driven workflows.</p>
 <ol>
-<li><p><strong>降價</strong>讓實驗變得可行 - API<strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>輸入</mi></mrow></semantics></math></span></span></strong>成本<strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>：</mo></mrow><annotation encoding="application/x-tex">每百</annotation><mrow><mn>萬個代幣 1.</mn><mo>25</mo><mn>∗∗</mn><mo separator="true">;</mo><mi>輸出成本</mi><mo>：</mo><mo>∗</mo></mrow></semantics></math></span></span></strong>∗<strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">每百萬個代幣</annotation></semantics></math></span></span></strong> 1<strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">.25**;輸出成本：**</annotation></semantics></math></span></span></strong><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span> 1<strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.</span><span class="mord mathnormal">25permilliontokens</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span></span></span></span></strong><span class="mspace" style="margin-right:0.2222em;"></span> <strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span> ∗</span></span></span></strong> <strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">outputcost</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span></strong>:<strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4653em;"></span> ∗∗</span></span></span></strong> <strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">10</span></span></span></span></strong>。</p></li>
-<li><p><strong>400k 上下文視窗</strong>(相較於 o3/4o 的 128<strong>k</strong>)，可讓您在複雜的多步驟代理工作流程中維持狀態，而無需切換上下文。</p></li>
-<li><p><strong>更少的幻覺和更好的工具使用</strong>- 支援多步驟鏈狀工具呼叫、處理複雜的非標準任務，並提高執行可靠性。</p></li>
+<li><p><strong>Price cuts</strong> make experimentation viable — API input cost: <strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.25</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi><mi>s</mi><mo>∗</mo><mo>∗</mo><mo separator="true">;</mo><mi>o</mi><mi>u</mi><mi>t</mi><mi>p</mi><mi>u</mi><mi>t</mi><mi>c</mi><mi>o</mi><mi>s</mi><mi>t</mi><mo>:</mo><mo>∗</mo><mo>∗</mo></mrow><annotation encoding="application/x-tex">1.25 per million tokens**; output cost: **</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">1.25</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">mi</span><span class="mord mathnormal" style="margin-right:0.01968em;">ll</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span><span class="mord">∗</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">tp</span><span class="mord mathnormal">u</span><span class="mord mathnormal">t</span><span class="mord mathnormal">cos</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4653em;"></span><span class="mord">∗</span><span class="mord">∗</span></span></span></span>10</strong>.</p></li>
+<li><p><strong>A 400k context window</strong> (vs. 128k in o3/4o) allows you to maintain state across complex multi-step agent workflows without context chopping.</p></li>
+<li><p><strong>Fewer hallucinations &amp; better tool use</strong> — Supports multi-step chained tool calls, handles complex non-standard tasks, and improves execution reliability.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -100,7 +103,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Not-Without-Flaws" class="common-anchor-header">並非沒有缺點<button data-href="#Not-Without-Flaws" class="anchor-icon" translate="no">
+<h2 id="Not-Without-Flaws" class="common-anchor-header">Not Without Flaws<button data-href="#Not-Without-Flaws" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -115,11 +118,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>儘管有技術上的進步，GPT-5 仍顯示出明顯的限制。</p>
-<p>在發佈會上，OpenAI 的主題演講中有一張幻燈片奇異地計算出<em>52.8 &gt; 69.1 = 30.8</em>，而在我們自己的測試中，該模型自信地重複了教科書上對飛機升空的錯誤解釋「伯努利效應」，提醒我們<strong>它仍然是一個模式學習者，而非真正的領域專家。</strong></p>
-<p><strong>在 STEM 表現更銳利的同時，創造力的深度卻在下滑。</strong>許多長期使用者注意到文學風格的衰退：詩歌感覺較平淡、哲學對話較不細緻、長篇敘述較機械化。這樣的取捨是很明顯的 - 在技術領域上有更高的事實正確性和更強的推理能力，但卻犧牲了藝術性、探索性的語調，而這種語調曾經讓 GPT 幾近人性化。</p>
-<p>有鑑於此，讓我們來看看 GPT-5 在實際測試中的表現如何。</p>
-<h2 id="Coding-Tests" class="common-anchor-header">編碼測試<button data-href="#Coding-Tests" class="anchor-icon" translate="no">
+    </button></h2><p>Despite its technical advances, GPT-5 still shows clear limits.</p>
+<p>At launch, OpenAI’s keynote featured a slide that bizarrely calculated <em>52.8 &gt; 69.1 = 30.8</em>, and in our own tests, the model confidently repeated the textbook-but-wrong “Bernoulli effect” explanation for airplane lift—reminding us <strong>it’s still a pattern learner, not a true domain expert.</strong></p>
+<p><strong>While STEM performance has sharpened, creative depth has slipped.</strong> Many long-time users note a decline in literary flair: poetry feels flatter, philosophical conversations less nuanced, and long-form narratives more mechanical. The trade-off is clear—higher factual accuracy and stronger reasoning in technical domains, but at the expense of the artful, exploratory tone that once made GPT feel almost human.</p>
+<p>With that in mind, let’s see how GPT-5 actually performs in our hands-on tests.</p>
+<h2 id="Coding-Tests" class="common-anchor-header">Coding Tests<button data-href="#Coding-Tests" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,29 +137,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我從一個簡單的任務開始：寫一個 HTML 腳本，讓使用者可以上傳一張圖片，然後用滑鼠移動它。GPT-5 暫停了大約 9 秒鐘，然後產生了可以很好處理互動的工作程式碼。我覺得這是個好的開始。</p>
+    </button></h2><p>I started with a simple task: write an HTML script that allows users to upload an image and move it with the mouse. GPT-5 paused for about nine seconds, then produced working code that handled the interaction well. It felt like a good start.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt52_7b04c9b41b.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>第二個任務更困難：在旋轉的六角形中實作多邊球碰撞偵測，並可調整旋轉速度、彈性和球數。GPT-5 在大約 13 秒內產生了第一個版本。程式碼包含了所有預期的功能，但是有 bug 而且無法執行。</p>
+<p>The second task was harder: implement polygon–ball collision detection inside a rotating hexagon, with adjustable rotation speed, elasticity, and ball count. GPT-5 generated the first version in around thirteen seconds. The code included all expected features, but it had bugs and wouldn’t run.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_6_3e6a34572a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>之後我使用編輯器的<strong>修正</strong>錯誤選項，GPT-5 修正了錯誤，因此六角形得以呈現。然而，小球從未出現 - 產卵邏輯遺失或不正確，這表示儘管設定完整，程式的核心功能卻不存在。</p>
+<p>I then used the editor’s <strong>Fix bug</strong> option, and GPT-5 corrected the errors so the hexagon rendered. However, the balls never appeared — the spawn logic was missing or incorrect, meaning the core function of the program was absent despite the otherwise complete setup.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt51_6489df9914.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>總而言之，</strong>GPT-5 可以產生乾淨、結構良好的互動程式碼，並從簡單的執行時錯誤中復原。但在複雜的情況下，它仍有遺漏重要邏輯的風險，因此在部署之前，人為的審查和反覆是必要的。</p>
-<h2 id="Reasoning-Test" class="common-anchor-header">推理測試<button data-href="#Reasoning-Test" class="anchor-icon" translate="no">
+<p><strong>In summary,</strong> GPT-5 can produce clean, well-structured interactive code and recover from simple runtime errors. But in complex scenarios, it still risks omitting essential logic, so human review and iteration are necessary before deployment.</p>
+<h2 id="Reasoning-Test" class="common-anchor-header">Reasoning Test<button data-href="#Reasoning-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,16 +174,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我提出了一個涉及商品顏色、價格和位置線索的多步邏輯謎題--大多數人需要花幾分鐘才能解決。</p>
+    </button></h2><p>I posed a multi-step logic puzzle involving item colors, prices, and positional clues—something that would take most humans several minutes to solve.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/reasoning_test_7ea15ed25b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>問題：</strong> <em>藍色物品是什麼，它的價格是多少？</em></p>
-<p>GPT-5 在短短 9 秒內就提供了正確的答案，並提供了清晰且邏輯合理的解釋。這項測試強化了模型在結構化推理和快速演繹方面的優勢。</p>
-<h2 id="Writing-Test" class="common-anchor-header">寫作測試<button data-href="#Writing-Test" class="anchor-icon" translate="no">
+<p><strong>Question:</strong> <em>What is the blue item and what is its price?</em></p>
+<p>GPT-5 delivered the correct answer in just 9 seconds, with a clear and logically sound explanation. This test reinforced the model’s strength in structured reasoning and rapid deduction.</p>
+<h2 id="Writing-Test" class="common-anchor-header">Writing Test<button data-href="#Writing-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -195,16 +198,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我經常向 ChatGPT 求助部落格、社群媒體文章和其他書面內容，因此文字產生是我最關心的能力之一。在這次測試中，我要求 GPT-5 以一篇關於 Milvus 2.6 多語種分析器的部落格為基礎，建立一篇 LinkedIn 帖子。</p>
+    </button></h2><p>I often turn to ChatGPT for help with blogs, social media posts, and other written content, so text generation is one of the capabilities I care about most. For this test, I asked GPT-5 to create a LinkedIn post based on a blog about Milvus 2.6’s multilingual analyzer.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Writing_Test_4fe5fef775.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>輸出的內容組織得很好，也點出了原始部落格的所有重點，但感覺太正式、太可預測，更像是企業的新聞稿，而不是要在社群飼料上引起興趣的東西。它缺乏溫暖、節奏和個性，而這些都讓一篇文章感覺人性化和吸引人。</p>
-<p>好的一面是，隨附的插圖非常出色：清晰、符合品牌，與 Zilliz 的科技風格完美結合。從視覺上來看，這是非常正確的，只是文字需要更多的創意能量來配合。</p>
-<h2 id="Longer-Context-Window--Death-of-RAG-and-VectorDB" class="common-anchor-header">更長的上下文視窗 = RAG 和 VectorDB 之死？<button data-href="#Longer-Context-Window--Death-of-RAG-and-VectorDB" class="anchor-icon" translate="no">
+<p>The output was well-organized and hit all the key points from the original blog, but it felt too formal and predictable—more like a corporate press release than something meant to spark interest on a social feed. It lacked the warmth, rhythm, and personality that make a post feel human and inviting.</p>
+<p>On the upside, the accompanying illustrations were excellent: clear, on-brand, and perfectly aligned with Zilliz’s tech style. Visually, it was spot-on; the writing just needs a bit more creative energy to match.</p>
+<h2 id="Longer-Context-Window--Death-of-RAG-and-VectorDB" class="common-anchor-header">Longer Context Window = Death of RAG and VectorDB?<button data-href="#Longer-Context-Window--Death-of-RAG-and-VectorDB" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -219,11 +222,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>去年，當<a href="https://zilliz.com/blog/will-retrieval-augmented-generation-RAG-be-killed-by-long-context-LLMs">Google 推出<strong>Gemini 1.5 Pro</strong></a>超長的 10M-token 上下文視窗時，我們曾討論過這個話題。當時，有些人很快就預測 RAG 的末日，甚至是資料庫的末日。快進到今天：RAG 不僅還活著，而且正蓬勃發展。在實務上，它與<a href="https://milvus.io/"><strong>Milvus</strong></a>和<a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a> 等向量資料庫一起，變得<em>更有</em>能力和生產力。</p>
-<p>現在，隨著 GPT-5 的上下文長度擴充，以及更先進的工具呼叫功能，問題又冒了出來：<em>我們是否仍然需要向量資料庫來進行上下文擷取，甚至是專用的代理/RAG 管線？</em></p>
-<p><strong>簡短的答案是：絕對需要。我們仍然需要它們。</strong></p>
-<p>較長的上下文很有用，但不能取代結構化檢索。多代理系統仍將成為長期架構趨勢，而且這些系統通常需要幾乎無限制的上下文。此外，在安全管理隱私、非結構化資料時，向量資料庫永遠是最後的把關者。</p>
-<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>We tackled this topic last year when <a href="https://zilliz.com/blog/will-retrieval-augmented-generation-RAG-be-killed-by-long-context-LLMs">Google launched <strong>Gemini 1.5 Pro</strong></a> with its ultra-long 10M-token context window. At the time, some people were quick to predict the end of RAG—and even the end of databases altogether. Fast-forward to today: not only is RAG still alive, it’s thriving. In practice, it’s become <em>more</em> capable and productive, along with vector databases like <a href="https://milvus.io/"><strong>Milvus</strong></a> and <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>.</p>
+<p>Now, with GPT-5’s expanded context length and more advanced tool-calling capabilities, the question has popped up again: <em>Do we still need vector databases for context ingestion, or even dedicated agents/RAG pipelines?</em></p>
+<p><strong>The short answer: absolutely yes. We still need them.</strong></p>
+<p>Longer context is useful, but it’s not a replacement for structured retrieval. Multi-agent systems are still on track to be a long-term architectural trend—and these systems often need virtually unlimited context. Plus, when it comes to managing private, unstructured data securely, a vector database will always be the final gatekeeper.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -238,7 +241,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在觀看了 OpenAI 的發佈會，並親自上手測試之後，我覺得 GPT-5 並不像是一個戲劇性的躍進，而更像是過去優勢的精煉融合，再加上一些適當的升級。這並非一件壞事，而是大型模型開始遇到架構和資料品質限制的跡象。</p>
-<p>俗語有云：<em>嚴厲的批評來自過高的期望</em>。圍繞 GPT-5 的任何失望大多來自 OpenAI 為自己設定的極高標準。事實上，更高的準確度、更低的價格以及整合的多模態支援仍然是很有價值的優點。對於建立代理與 RAG 管道的開發人員而言，這可能是目前最有用的升級。</p>
-<p>有些朋友開玩笑說要為 GPT-4o 做「線上紀念」，聲稱他們以前聊天夥伴的個性已經一去不返了。我並不介意這種改變，GPT-5 也許不那麼熱情健談，但它直接、不拖泥帶水的風格讓人感覺耳目一新。</p>
-<p><strong>您呢？</strong>與我們分享您的想法-加入我們的<a href="https://discord.com/invite/8uyFbECzPX">Discord</a>，或加入<a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a>和<a href="https://x.com/milvusio">X</a> 上的對話。</p>
+    </button></h2><p>After watching OpenAI’s launch event and running my own hands-on tests, GPT-5 feels less like a dramatic leap forward and more like a refined blend of past strengths with a few well-placed upgrades. That’s not a bad thing—it’s a sign of the architectural and data-quality limits large models are starting to encounter.</p>
+<p>As the saying goes, <em>severe criticism comes from high expectations</em>. Any disappointment around GPT-5 mostly comes from the very high bar OpenAI set for itself. And really—better accuracy, lower prices, and integrated multimodal support are still valuable wins. For developers building agents and RAG pipelines, this may actually be the most useful upgrade so far.</p>
+<p>Some friends have been joking about making “online memorials” for GPT-4o, claiming their old chat companion’s personality is gone forever. I don’t mind the change—GPT-5 might be less warm and chatty, but its direct, no-nonsense style feels refreshingly straightforward.</p>
+<p><strong>What about you?</strong> Share your thoughts with us—join our <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, or join the conversation on <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> and <a href="https://x.com/milvusio">X</a>.</p>

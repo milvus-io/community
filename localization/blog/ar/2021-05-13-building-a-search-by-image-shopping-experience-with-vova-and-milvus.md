@@ -1,72 +1,86 @@
 ---
 id: building-a-search-by-image-shopping-experience-with-vova-and-milvus.md
-title: بناء تجربة بحث حسب الصورة في التسوق باستخدام VOVA وMilvus
+title: Building a Search by Image Shopping Experience with VOVA and Milvus
 author: milvus
 date: 2021-05-13T08:44:05.528Z
 desc: >-
-  اكتشف كيف تم استخدام قاعدة بيانات Milvus، وهي قاعدة بيانات متجهة مفتوحة
-  المصدر، من قِبل منصة التجارة الإلكترونية VOVA لتشغيل التسوق بالصور.
+  Discover how Milvus, an open-source vector database, was used by e-commerce
+  platform VOVA to power shopping by image.
 cover: assets.zilliz.com/vova_thumbnail_db2d6c0c9c.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/building-a-search-by-image-shopping-experience-with-vova-and-milvus
 ---
-<custom-h1>بناء تجربة بحث حسب الصورة في التسوق باستخدام VOVA وMilvus</custom-h1><p>الانتقال إلى:</p>
+<custom-h1>Building a Search by Image Shopping Experience with VOVA and Milvus</custom-h1><p>Jump to:</p>
 <ul>
-<li><a href="#building-a-search-by-image-shopping-experience-with-vova-and-milvus">بناء تجربة البحث عن طريق البحث بالصور في التسوق باستخدام VOVA و Milvus</a><ul>
-<li><a href="#how-does-image-search-work">كيف يعمل البحث بالصور</a>- <a href="#system-process-of-vovas-search-by-image-functionality"><em>عملية نظام البحث عن طريق وظيفة البحث بالصور في VOVA.</em></a></li>
-<li><a href="#target-detection-using-the-yolo-model">اكتشاف الهدف باستخدام نموذج YOLO</a>- <a href="#yolo-network-architecture"><em>بنية شبكة YOLO.</em></a></li>
-<li><a href="#image-feature-vector-extraction-with-resnet">استخراج متجه ميزة الصورة باستخدام ResNet</a>- <a href="#resnet-structure"><em>بنية شبكة ResNet.</em></a></li>
-<li><a href="#vector-similarity-search-powered-by-milvus">البحث بالتشابه المتجهي المدعوم من ميلفوس</a>- <a href="#mishards-architecture-in-milvus"><em>بنية ميشاردز في ميلفوس.</em></a></li>
-<li><a href="#vovas-shop-by-image-tool">أداة التسوق عن طريق الصور في VOVA</a>- <a href="#screenshots-of-vovas-search-by-image-shopping-tool"><em>لقطات شاشة لأداة التسوق عن طريق الصور في VOVA.</em></a></li>
-<li><a href="#reference">المرجع</a></li>
+<li><a href="#building-a-search-by-image-shopping-experience-with-vova-and-milvus">Building a Search by Image Shopping Experience with VOVA and Milvus</a>
+<ul>
+<li><a href="#how-does-image-search-work">How does image search work?</a>
+- <a href="#system-process-of-vovas-search-by-image-functionality"><em>System process of VOVA’s search by image functionality.</em></a></li>
+<li><a href="#target-detection-using-the-yolo-model">Target detection using the YOLO model</a>
+- <a href="#yolo-network-architecture"><em>YOLO network architecture.</em></a></li>
+<li><a href="#image-feature-vector-extraction-with-resnet">Image feature vector extraction with ResNet</a>
+- <a href="#resnet-structure"><em>ResNet structure.</em></a></li>
+<li><a href="#vector-similarity-search-powered-by-milvus">Vector similarity search powered by Milvus</a>
+- <a href="#mishards-architecture-in-milvus"><em>Mishards architecture in Milvus.</em></a></li>
+<li><a href="#vovas-shop-by-image-tool">VOVA’s shop by image tool</a>
+- <a href="#screenshots-of-vovas-search-by-image-shopping-tool"><em>Screenshots of VOVA’s search by image shopping tool.</em></a></li>
+<li><a href="#reference">Reference</a></li>
 </ul></li>
 </ul>
-<p>ارتفع التسوق عبر الإنترنت في عام 2020، <a href="https://www.digitalcommerce360.com/2021/02/15/ecommerce-during-coronavirus-pandemic-in-charts/">بزيادة 44%</a> في جزء كبير منه بسبب جائحة فيروس كورونا. نظرًا لسعي الناس إلى التباعد الاجتماعي وتجنب الاتصال بالغرباء، أصبح التسليم بدون اتصال خيارًا مرغوبًا بشكل لا يصدق للعديد من المستهلكين. أدت هذه الشعبية أيضاً إلى شراء الناس مجموعة أكبر من السلع عبر الإنترنت، بما في ذلك السلع المتخصصة التي قد يصعب وصفها باستخدام البحث التقليدي بالكلمات المفتاحية.</p>
-<p>ولمساعدة المستخدمين على التغلب على قيود الاستعلامات القائمة على الكلمات المفتاحية، يمكن للشركات إنشاء محركات بحث بالصور تسمح للمستخدمين باستخدام الصور بدلاً من الكلمات للبحث. لا يسمح ذلك للمستخدمين بالعثور على العناصر التي يصعب وصفها فحسب، بل يساعدهم أيضًا على التسوق للأشياء التي يواجهونها في الحياة الواقعية. تساعد هذه الوظيفة في بناء تجربة مستخدم فريدة من نوعها وتوفر راحة عامة يقدرها العملاء.</p>
-<p>VOVA هي منصة ناشئة للتجارة الإلكترونية تركز على القدرة على تحمل التكاليف وتقديم تجربة تسوق إيجابية لمستخدميها، مع قوائم تغطي ملايين المنتجات وتدعم 20 لغة و35 عملة رئيسية. ولتعزيز تجربة التسوق لمستخدميها، استخدمت الشركة شركة Milvus لبناء وظيفة البحث عن الصور في منصة التجارة الإلكترونية الخاصة بها. يستكشف المقال كيف نجحت VOVA في بناء محرك بحث عن الصور باستخدام Milvus.</p>
+<p>Online shopping surged in 2020, <a href="https://www.digitalcommerce360.com/2021/02/15/ecommerce-during-coronavirus-pandemic-in-charts/">up 44%</a> in large part due to the coronavirus pandemic. As people sought to socially distance and avoid contact with strangers, no-contact delivery became an incredibly desirable option for many consumers. This popularity has also led to people buying a greater variety of goods online, including niche items that can be hard to describe using a traditional keyword search.</p>
+<p>To help users overcome the limitations of keyword-based queries, companies can build image search engines that allow users to use images instead of words for search. Not only does this allow users to find items that are difficult to describe, but it also helps them shop for things they encounter in real life. This functionality helps build a unique user experience and offers general convenience that customers appreciate.</p>
+<p>VOVA is an emerging e-commerce platform that focuses on affordability and offering a positive shopping experience to its users, with listings covering millions of products and support for 20 languages and 35 major currencies. To enhance the shopping experience for its users, the company used Milvus to build image search functionality into its e-commerce platform. The article explores how VOVA successfully built an image search engine with Milvus.</p>
 <p><br/></p>
-<h3 id="How-does-image-search-work" class="common-anchor-header">كيف يعمل البحث عن الصور؟</h3><p>يبحث نظام التسوق عن طريق الصور في VOVA في مخزون الشركة عن صور المنتجات المشابهة للصور التي يقوم المستخدم بتحميلها. يوضح الرسم البياني التالي مرحلتي عملية النظام، مرحلة استيراد البيانات (باللون الأزرق) ومرحلة الاستعلام (باللون البرتقالي):</p>
+<h3 id="How-does-image-search-work" class="common-anchor-header">How does image search work?</h3><p>VOVA’s shop by image system searches the company’s inventory for product images that are similar to user uploads. The following chart shows the two stages of the system process, the data import stage (blue) and the query stage (orange):</p>
 <ol>
-<li>استخدام نموذج YOLO للكشف عن الأهداف من الصور التي تم تحميلها;</li>
-<li>استخدام ResNet لاستخراج متجهات السمات من الأهداف المكتشفة;</li>
-<li>استخدام ميلفوس للبحث عن تشابه المتجهات.</li>
+<li>Use the YOLO model to detect targets from uploaded photos;</li>
+<li>Use ResNet to extract feature vectors from the detected targets;</li>
+<li>Use Milvus for vector similarity search.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Vova_1_47ee6f2da9.png" alt="Vova-1.png" class="doc-image" id="vova-1.png" />
-   </span> <span class="img-wrapper"> <span>Vova-1.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Vova_1_47ee6f2da9.png" alt="Vova-1.png" class="doc-image" id="vova-1.png" />
+    <span>Vova-1.png</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="Target-detection-using-the-YOLO-model" class="common-anchor-header">اكتشاف الأهداف باستخدام نموذج YOLO</h3><p>تدعم تطبيقات VOVA للأجهزة المحمولة على نظامي Android و iOS حاليًا البحث عن الصور. تستخدم الشركة نظاماً متقدماً ومتطوراً للكشف عن الأهداف في الوقت الحقيقي يسمى YOLO (أنت تنظر مرة واحدة فقط) لاكتشاف الأهداف في الصور التي يرفعها المستخدم. نموذج YOLO هو حالياً في نسخته الخامسة.</p>
-<p>YOLO هو نموذج من مرحلة واحدة، باستخدام شبكة عصبية تلافيفية واحدة فقط (CNN) للتنبؤ بفئات ومواقع الأهداف المختلفة. وهو صغير الحجم ومضغوط ومناسب تماماً للاستخدام المحمول.</p>
-<p>يستخدم YOLO الطبقات التلافيفية لاستخراج الميزات والطبقات المتصلة بالكامل للحصول على القيم المتوقعة. وبالاستلهام من نموذج GooLeNet، تشتمل شبكة YOLO على 24 طبقة تلافيفية وطبقتين متصلتين بالكامل.</p>
-<p>وكما يظهر في الرسم التوضيحي التالي، يتم تحويل صورة مُدخَلة مقاس 448 × 448 بواسطة عدد من الطبقات التلافيفية وطبقات التجميع إلى موتر ذي 7 × 7 × 1024 بُعدًا (كما هو موضح في المكعب الثالث إلى الأخير أدناه)، ثم يتم تحويلها بواسطة طبقتين متصلتين بالكامل إلى مخرج موتر ذي 7 × 7 × 30 بُعدًا.</p>
-<p>المخرجات المتوقعة من YOLO P عبارة عن موتر ثنائي الأبعاد، ويكون شكله [دفعة،7 × 7 × 7 × 30]. باستخدام التقطيع، P[:,0:0:7×7×20] هو احتمال الفئة، P[:,7×7×7×20:7×7×(20+2)] هو الثقة، و P[:,7×7×(20+2)]:] هو النتيجة المتوقعة للمربع المحدود.</p>
-<p>![vova-2.png](https://assets.zilliz.com/vova_2_1ccf38f721.png &quot;بنية شبكة YOLO.)</p>
+<h3 id="Target-detection-using-the-YOLO-model" class="common-anchor-header">Target detection using the YOLO model</h3><p>VOVA’s mobile apps on Android and iOS currently support image search. The company uses a state-of-the-art, real-time object detection system called YOLO (You only look once) to detect objects in user uploaded images. The YOLO model is currently in its fifth iteration.</p>
+<p>YOLO is a one-stage model, using only one convolutional neural network (CNN) to predict categories and positions of different targets. It is small, compact, and well suited for mobile use.</p>
+<p>YOLO uses convolutional layers to extract features and fully-connected layers to obtain predicted values. Drawing inspiration from the GooLeNet model, YOLO’s CNN includes 24 convolutional layers and two fully-connected layers.</p>
+<p>As the following illustration shows, a 448 × 448 input image is converted by a number of convolutional layers and pooling layers to a 7 × 7 × 1024-dimensional tensor (depicted in the third to last cube below), and then converted by two fully-connected layers to a 7 × 7 × 30-dimensional tensor output.</p>
+<p>The predicted output of YOLO P is a two-dimensional tensor, whose shape is [batch,7 ×7 ×30]. Using slicing, P[:,0:7×7×20] is the category probability, P[:,7×7×20:7×7×(20+2)] is the confidence, and P[:,7×7×(20+2)]:] is the predicted result of the bounding box.</p>
+<p>![vova-2.png](https://assets.zilliz.com/vova_2_1ccf38f721.png &quot;YOLO network architecture.)</p>
 <p><br/></p>
-<h3 id="Image-feature-vector-extraction-with-ResNet" class="common-anchor-header">استخراج متجه ميزة الصورة باستخدام ResNet</h3><p>اعتمدت VOVA نموذج الشبكة العصبية المتبقية (ResNet) لاستخراج متجهات السمات من مكتبة صور المنتج الشاملة والصور التي قام المستخدم بتحميلها. تعتبر شبكة ResNet محدودة لأنه كلما زاد عمق شبكة التعلم، تقل دقة الشبكة. تُصوّر الصورة أدناه شبكة ResNet التي تُشغّل نموذج VGG19 (وهو متغير من نموذج VGG) المعدّل ليشمل وحدة متبقية من خلال آلية الدائرة القصيرة. تم اقتراح نموذج VGG في عام 2014 ويتضمن 14 طبقة فقط، في حين ظهرت شبكة ResNet بعد ذلك بعام ويمكن أن يصل عدد طبقاتها إلى 152 طبقة.</p>
-<p>من السهل تعديل بنية ResNet وتوسيع نطاقها. من خلال تغيير عدد القنوات في الكتلة وعدد الكتل المكدسة، يمكن تعديل عرض الشبكة وعمقها بسهولة للحصول على شبكات ذات قدرات تعبيرية مختلفة. هذا يحل بشكل فعال تأثير انحطاط الشبكة، حيث تنخفض الدقة مع زيادة عمق التعلم. مع وجود بيانات تدريب كافية، يمكن الحصول على نموذج مع تحسين الأداء التعبيري مع تعميق الشبكة تدريجيًا. من خلال التدريب على النموذج، يتم استخراج الميزات لكل صورة وتحويلها إلى متجهات عائمة ذات 256 بُعدًا.</p>
+<h3 id="Image-feature-vector-extraction-with-ResNet" class="common-anchor-header">Image feature vector extraction with ResNet</h3><p>VOVA adopted the residual neural network (ResNet) model to extract feature vectors from an extensive product image library and user uploaded photos. ResNet is limited because as the depth of a learning network increases, the accuracy of the network decreases. The image below depicts ResNet running the VGG19 model (a variant of the VGG model) modified to include a residual unit through the short circuit mechanism. VGG was proposed in 2014 and includes just 14 layers, while ResNet came out a year later and can have up to 152.</p>
+<p>The ResNet structure is easy to modify and scale. By changing the number of channels in the block and the number of stacked blocks, the width and depth of the network can be easily adjusted to obtain networks with different expressive capabilities. This effectively solves the network degeneration effect, where accuracy declines as the depth of learning increases. With sufficient training data, a model with improving expressive performance can be obtained while gradually deepening the network. Through model training, features are extracted for each picture and converted to 256-dimensional floating point vectors.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/vova_3_df4b810281.png" alt="vova-3.png" class="doc-image" id="vova-3.png" />
-   </span> <span class="img-wrapper"> <span>vova-3.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/vova_3_df4b810281.png" alt="vova-3.png" class="doc-image" id="vova-3.png" />
+    <span>vova-3.png</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="Vector-similarity-search-powered-by-Milvus" class="common-anchor-header">بحث تشابه المتجهات المدعوم من ميلفوس</h3><p>تشتمل قاعدة بيانات VOVA لصور المنتجات على 30 مليون صورة وهي تنمو بسرعة. لاسترداد صور المنتجات الأكثر تشابهًا بسرعة من مجموعة البيانات الضخمة هذه، يتم استخدام Milvus لإجراء بحث التشابه المتجه. وبفضل عدد من التحسينات، يوفر Milvus نهجًا سريعًا ومبسطًا لإدارة البيانات المتجهة وبناء تطبيقات التعلم الآلي. يوفر Milvus التكامل مع مكتبات الفهارس الشائعة (مثل Faiss و Annoy)، ويدعم أنواعًا متعددة من الفهارس ومقاييس المسافة، ولديه حزم SDK بلغات متعددة، ويوفر واجهات برمجة تطبيقات غنية لإدارة بيانات المتجهات.</p>
-<p>يمكن لـ Milvus إجراء بحث تشابه على مجموعات بيانات تريليون متجه في أجزاء من الثانية، مع وقت استعلام أقل من 1.5 ثانية عندما يكون nq = 1 ومتوسط وقت استعلام دفعي أقل من 0.08 ثانية. ولإنشاء محرك البحث عن الصور الخاص بها، أشارت VOVA إلى تصميم Mishards، وهو حل البرمجيات الوسيطة للتجزئة من Milvus (انظر الرسم البياني أدناه للاطلاع على تصميم النظام الخاص به)، لتنفيذ مجموعة خوادم متاحة بشكل كبير. ومن خلال الاستفادة من قابلية التوسع الأفقي لمجموعة خوادم Milvus، تم تلبية متطلبات المشروع للحصول على أداء استعلام عالٍ على مجموعات البيانات الضخمة.</p>
+<h3 id="Vector-similarity-search-powered-by-Milvus" class="common-anchor-header">Vector similarity search powered by Milvus</h3><p>VOVA’s product image database includes 30 million pictures and is growing rapidly. To quickly retrieve the most similar product images from this massive dataset, Milvus is used to conduct vector similarity search. Thanks to a number of optimizations, Milvus offers a fast and streamlined approach to managing vector data and building machine learning applications. Milvus offers integration with popular index libraries (e.g., Faiss, Annoy), supports multiple index types and distance metrics, has SDKs in multiple languages, and provides rich APIs for managing vector data.</p>
+<p>Milvus can conduct similarity search on trillion-vector datasets in milliseconds, with a query time under 1.5 seconds when nq=1 and an average batch query time under 0.08 seconds. To build its image search engine, VOVA referred to the design of Mishards, Milvus’ sharding middleware solution (see the chart below for its system design), to implement a highly available server cluster. By leveraging the horizontal scalability of a Milvus cluster, the project requirement for high query performance on massive datasets was met.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/vova_4_e305f1955c.png" alt="vova-4.png" class="doc-image" id="vova-4.png" />
-   </span> <span class="img-wrapper"> <span>vova-4.png</span> </span></p>
-<h3 id="VOVAs-shop-by-image-tool" class="common-anchor-header">أداة تسوق VOVA حسب الصورة</h3><p>تُظهر لقطات الشاشة أدناه أداة تسوق VOVA للبحث عن طريق الصور على تطبيق الشركة على نظام أندرويد.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/vova_4_e305f1955c.png" alt="vova-4.png" class="doc-image" id="vova-4.png" />
+    <span>vova-4.png</span>
+  </span>
+</p>
+<h3 id="VOVAs-shop-by-image-tool" class="common-anchor-header">VOVA’s shop by image tool</h3><p>The screenshots below show the VOVA search by image shopping tool on the company’s Android app.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/vova_5_c4c25a3bae.png" alt="vova-5.png" class="doc-image" id="vova-5.png" />
-   </span> <span class="img-wrapper"> <span>vova-5.png</span> </span></p>
-<p>مع تزايد عدد المستخدمين الذين يبحثون عن المنتجات ويرفعون الصور، ستستمر VOVA في تحسين النماذج التي تشغل النظام. بالإضافة إلى ذلك، ستقوم الشركة بتضمين وظائف جديدة لـ Milvus يمكنها تعزيز تجربة التسوق عبر الإنترنت لمستخدميها.</p>
-<h3 id="Reference" class="common-anchor-header">المرجع</h3><p><strong>يولو</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/vova_5_c4c25a3bae.png" alt="vova-5.png" class="doc-image" id="vova-5.png" />
+    <span>vova-5.png</span>
+  </span>
+</p>
+<p>As more users search for products and upload photos, VOVA will continue to optimize the models that power the system. Additionally, the company will incorporate new Milvus functionality that can further enhance the online shopping experience of its users.</p>
+<h3 id="Reference" class="common-anchor-header">Reference</h3><p><strong>YOLO:</strong></p>
 <p>https://arxiv.org/pdf/1506.02640.pdf</p>
 <p>https://arxiv.org/pdf/1612.08242.pdf</p>
-<p><strong>ريس نت</strong></p>
+<p><strong>ResNet:</strong></p>
 <p>https://arxiv.org/abs/1512.03385</p>
-<p><strong>ميلفوس</strong></p>
+<p><strong>Milvus:</strong></p>
 <p>https://milvus.io/docs</p>

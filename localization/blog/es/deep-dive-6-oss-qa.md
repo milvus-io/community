@@ -1,34 +1,34 @@
 ---
 id: deep-dive-6-oss-qa.md
-title: >-
-  Aseguramiento de la calidad del software de código abierto (OSS): estudio de
-  caso de Milvus
+title: Open Source Software (OSS) Quality Assurance - A Milvus Case Study
 author: Wenxing Zhu
 date: 2022-04-25T00:00:00.000Z
 desc: >-
-  La garantía de calidad es un proceso que consiste en determinar si un producto
-  o servicio cumple determinados requisitos.
+  Quality assurance is a process of determining whether a product or service
+  meets certain requirements.
 cover: assets.zilliz.com/Deep_Dive_6_c2cd44801d.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deep_Dive_6_c2cd44801d.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Imagen de portada</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deep_Dive_6_c2cd44801d.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Este artículo ha sido escrito por <a href="https://github.com/zhuwenxing">Wenxing Zhu</a> y transcrito por <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is written by <a href="https://github.com/zhuwenxing">Wenxing Zhu</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>La garantía de calidad (GC) es un proceso sistemático para determinar si un producto o servicio cumple ciertos requisitos. Un sistema de GC es una parte indispensable del proceso de I+D porque, como su nombre indica, garantiza la calidad del producto.</p>
-<p>Este post presenta el marco de control de calidad adoptado en el desarrollo de la base de datos vectorial Milvus, con el objetivo de proporcionar una guía para que los desarrolladores y usuarios contribuyan a participar en el proceso. También cubrirá los principales módulos de prueba en Milvus, así como los métodos y herramientas que se pueden aprovechar para mejorar la eficiencia de las pruebas de control de calidad.</p>
-<p><strong>Ir a:</strong></p>
+<p>Quality assurance (QA) is a systematic process of determining whether a product or service meets certain requirements. A QA system is an indispensable part of the R&amp;D process because, as its name suggests, it ensures that quality of the product.</p>
+<p>This post introduces the QA framework adopted in developing the Milvus vector database, aiming to provide a guideline for contributing developers and users to participate in the process. It will also cover the major test modules in Milvus as well as methods and tools that can be leveraged to improve the efficiency of QA testings.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#A-general-introduction-to-the-Milvus-QA-system">Introducción general al sistema de control de calidad Milvus</a></li>
-<li><a href="#Test-modules-in-Milvus">Módulos de prueba en Milvus</a></li>
-<li><a href="#Tools-and-methods-for-better-QA-efficiency">Herramientas y métodos para mejorar la eficacia del control de calidad</a></li>
+<li><a href="#A-general-introduction-to-the-Milvus-QA-system">A general introduction to the Milvus QA system</a></li>
+<li><a href="#Test-modules-in-Milvus">Test modules in Milvus</a></li>
+<li><a href="#Tools-and-methods-for-better-QA-efficiency">Tools and methods for better QA efficiency</a></li>
 </ul>
-<h2 id="A-general-introduction-to-the-Milvus-QA-system" class="common-anchor-header">Introducción general al sistema Milvus QA<button data-href="#A-general-introduction-to-the-Milvus-QA-system" class="anchor-icon" translate="no">
+<h2 id="A-general-introduction-to-the-Milvus-QA-system" class="common-anchor-header">A general introduction to the Milvus QA system<button data-href="#A-general-introduction-to-the-Milvus-QA-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,45 +43,53 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">arquitectura del sistema</a> es fundamental para realizar pruebas de garantía de calidad. Cuanto más familiarizado esté un ingeniero de control de calidad con el sistema, más probabilidades tendrá de elaborar un plan de pruebas razonable y eficaz.</p>
+    </button></h2><p>The <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">system architecture</a> is critical to conducting QA testings. The more a QA engineer is familiar with the system, the more likely he or she is going to come up with a reasonable and efficient testing plan.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_feaccc489d.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
-   </span> <span class="img-wrapper"> <span>Arquitectura de Milvus</span> </span></p>
-<p>Milvus 2.0 adopta una <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-cloud-native-first-approach">arquitectura nativa en la nube, distribuida y en capas</a>, siendo el SDK la <a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">entrada principal para que los datos</a> fluyan en Milvus. Los usuarios de Milvus utilizan el SDK con mucha frecuencia, por lo que las pruebas funcionales en el lado del SDK son muy necesarias. Además, las pruebas funcionales del SDK pueden ayudar a detectar los problemas internos que puedan existir en el sistema Milvus. Aparte de las pruebas funcionales, también se llevarán a cabo otros tipos de pruebas en la base de datos vectorial, incluidas pruebas unitarias, pruebas de despliegue, pruebas de fiabilidad, pruebas de estabilidad y pruebas de rendimiento.</p>
-<p>Una arquitectura distribuida y nativa de la nube aporta tanto comodidad como desafíos a las pruebas de control de calidad. A diferencia de los sistemas que se despliegan y ejecutan localmente, una instancia de Milvus desplegada y ejecutada en un clúster Kubernetes puede garantizar que las pruebas de software se lleven a cabo en las mismas circunstancias que el desarrollo de software. Sin embargo, el inconveniente es que la complejidad de la arquitectura distribuida conlleva más incertidumbres que pueden hacer que las pruebas de control de calidad del sistema sean aún más difíciles y extenuantes. Por ejemplo, Milvus 2.0 utiliza microservicios de diferentes componentes, lo que conlleva un mayor número de <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">servicios y nodos</a>, y una mayor posibilidad de que se produzca un error en el sistema. En consecuencia, se necesita un plan de control de calidad más sofisticado y exhaustivo para mejorar la eficacia de las pruebas.</p>
-<h3 id="QA-testings-and-issue-management" class="common-anchor-header">Pruebas de control de calidad y gestión de problemas</h3><p>La garantía de calidad en Milvus implica tanto la realización de pruebas como la gestión de los problemas que surgen durante el desarrollo del software.</p>
-<h4 id="QA-testings" class="common-anchor-header">Pruebas de control de calidad</h4><p>Milvus lleva a cabo diferentes tipos de pruebas de control de calidad según las características de Milvus y las necesidades de los usuarios en orden de prioridad, como se muestra en la siguiente imagen.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_feaccc489d.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
+    <span>Milvus architecture</span>
+  </span>
+</p>
+<p>Milvus 2.0 adopts a <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-cloud-native-first-approach">cloud-native, distributed, and layered architecture</a>, with SDK being the <a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">main entrance for data</a> to flow in Milvus. The Milvus users leverage the SDK very frequently, hence functional testing on the SDK side is much needed. Also, function tests on SDK can help detect the internal issues that might exist within the Milvus system. Apart from function tests, other types of tests will also be conducted on the vector database, including unit tests, deployment tests, reliability tests, stability tests, and performance tests.</p>
+<p>A cloud-native and distributed architecture brings both convenience and challenges to QA testings. Unlike systems that are deployed and run locally, a Milvus instance deployed and run on a Kubernetes cluster can ensure that software testing is carried out under the same circumstance as software development. However, the downside is that the complexity of distributed architecture brings more uncertainties that can make QA testing of the system even harder and strenuous. For instance, Milvus 2.0 uses microservices of different components, and this leads to an increased number of <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">services and nodes</a>, and a greater possibility of a system error. Consequently, a more sophisticated and comprehensive QA plan is needed for better testing efficiency.</p>
+<h3 id="QA-testings-and-issue-management" class="common-anchor-header">QA testings and issue management</h3><p>QA in Milvus involves both conducting tests and managing issues emerged during software development.</p>
+<h4 id="QA-testings" class="common-anchor-header">QA testings</h4><p>Milvus conducts different types of QA testing according to Milvus features and user needs in order of priority as shown in the image below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_14_2aff081d41.png" alt="QA testing priority" class="doc-image" id="qa-testing-priority" />
-   </span> <span class="img-wrapper"> <span>Prioridad de las pruebas de control de calidad</span> </span></p>
-<p>En Milvus, las pruebas de control de calidad se llevan a cabo sobre los siguientes aspectos en el siguiente orden de prioridad:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_14_2aff081d41.png" alt="QA testing priority" class="doc-image" id="qa-testing-priority" />
+    <span>QA testing priority</span>
+  </span>
+</p>
+<p>QA testings are conducted on the following aspects in Milvus in the following priority:</p>
 <ol>
-<li><strong>Funciones</strong>: Verificar si las funciones y características funcionan como se diseñaron originalmente.</li>
-<li><strong>Despliegue</strong>: Comprobar si un usuario puede desplegar, reinstalar y actualizar tanto la versión independiente de Mivus como el clúster de Milvus con diferentes métodos (Docker Compose, Helm, APT o YUM, etc.).</li>
-<li><strong>Rendimiento</strong>:  Pruebe el rendimiento de la inserción, indexación, búsqueda vectorial y consulta de datos en Milvus.</li>
-<li><strong>Estabilidad</strong>: Compruebe si Milvus puede funcionar de forma estable durante 5-10 días con un nivel normal de carga de trabajo.</li>
-<li><strong>Fiabilidad</strong>: Compruebe si Milvus puede seguir funcionando parcialmente en caso de que se produzca algún error en el sistema.</li>
-<li><strong>Configuración</strong>: Verificar si Milvus funciona como se espera bajo cierta configuración.</li>
-<li><strong>Compatibilidad</strong>: Compruebe si Milvus es compatible con diferentes tipos de hardware o software.</li>
+<li><strong>Function</strong>: Verify if the functions and features work as originally designed.</li>
+<li><strong>Deployment</strong>: Check if a user can deploy, reinstall, and upgrade both Mivus standalone version and Milvus cluster with different methods (Docker Compose, Helm, APT or YUM, etc.).</li>
+<li><strong>Performance</strong>:  Test the performance of data insertion, indexing, vector search and query in Milvus.</li>
+<li><strong>Stability</strong>: Check if Milvus can run stably for 5-10 days under a normal level of workload.</li>
+<li><strong>Reliability</strong>: Test if Milvus can still partly function if certain system error occurs.</li>
+<li><strong>Configuration</strong>: Verify if Milvus works as expected under certain configuration.</li>
+<li><strong>Compatibility</strong>: Test if Milvus is compatible with different types of hardware or software.</li>
 </ol>
-<h4 id="Issue-management" class="common-anchor-header">Gestión de problemas</h4><p>Durante el desarrollo de software pueden surgir muchos problemas. Los autores de los problemas pueden ser los propios ingenieros de control de calidad o usuarios de Milvus de la comunidad de código abierto. El equipo de control de calidad es responsable de resolver las incidencias.</p>
+<h4 id="Issue-management" class="common-anchor-header">Issue management</h4><p>Many issues may emerge during software development. The author of the templated issues can be QA engineers themselves or Milvus users from the open-source community. The QA team is responsible for figuring out the issues.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Issue_management_workflow_12c726efa1.png" alt="Issue management workflow" class="doc-image" id="issue-management-workflow" />
-   </span> <span class="img-wrapper"> <span>Flujo de trabajo de la gestión de incidencias</span> </span></p>
-<p>Cuando se crea una <a href="https://github.com/milvus-io/milvus/issues">incidencia</a>, primero se somete a un triaje. Durante el triaje, se examinarán las nuevas incidencias para garantizar que se proporcionan detalles suficientes sobre las mismas. Si se confirma la incidencia, los desarrolladores la aceptarán e intentarán solucionarla. Una vez finalizado el desarrollo, el autor de la incidencia debe comprobar si se ha solucionado. En caso afirmativo, la incidencia se cerrará.</p>
-<h3 id="When-is-QA-needed" class="common-anchor-header">¿Cuándo es necesaria la GC?</h3><p>Un error común es creer que la garantía de calidad y el desarrollo son independientes entre sí. Sin embargo, la verdad es que para garantizar la calidad del sistema se necesitan los esfuerzos tanto de los desarrolladores como de los ingenieros de control de calidad. Por lo tanto, el control de calidad debe participar en todo el ciclo de vida.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Issue_management_workflow_12c726efa1.png" alt="Issue management workflow" class="doc-image" id="issue-management-workflow" />
+    <span>Issue management workflow</span>
+  </span>
+</p>
+<p>When an <a href="https://github.com/milvus-io/milvus/issues">issue</a> is created, it will go through triage first. During triage, new issues will be examined to ensure that sufficient details of the issues are provided. If the issue is confirmed, it will be accepted by the developers and they will try to fix the issues. Once development is done, the issue author needs to verify if it is fixed. If yes, the issue will be ultimately closed.</p>
+<h3 id="When-is-QA-needed" class="common-anchor-header">When is QA needed?</h3><p>One common misconception is that QA and development are independent from each other. However, the truth is to ensure the quality of the system, efforts are needed from both developers and QA engineers. Therefore, QA needs to be involved throughout the whole lifecycle.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/QA_lifecycle_375f4fd8a8.png" alt="QA lifecycle" class="doc-image" id="qa-lifecycle" />
-   </span> <span class="img-wrapper"> <span>Ciclo de vida de la GC</span> </span></p>
-<p>Como se muestra en la figura anterior, un ciclo de vida completo de I+D de software incluye tres etapas.</p>
-<p>Durante la fase inicial, los desarrolladores publican la documentación del diseño, mientras que los ingenieros de control de calidad elaboran planes de pruebas, definen criterios de lanzamiento y asignan tareas de control de calidad. Los desarrolladores y los ingenieros de control de calidad deben estar familiarizados tanto con la documentación de diseño como con el plan de pruebas para que ambos equipos compartan una comprensión mutua del objetivo de la versión (en términos de características, rendimiento, estabilidad, convergencia de errores, etc.).</p>
-<p>Durante la fase de I+D, las pruebas de desarrollo y control de calidad interactúan con frecuencia para desarrollar y verificar características y funciones, así como para corregir errores y problemas notificados por la <a href="https://slack.milvus.io/">comunidad de</a> código abierto.</p>
-<p>Durante la etapa final, si se cumplen los criterios de lanzamiento, se publicará una nueva imagen Docker de la nueva versión de Milvus. Para el lanzamiento oficial se necesita una nota de lanzamiento centrada en las nuevas características y los errores corregidos, así como una etiqueta de lanzamiento. A continuación, el equipo de control de calidad también publicará un informe de pruebas sobre esta versión.</p>
-<h2 id="Test-modules-in-Milvus" class="common-anchor-header">Módulos de prueba en Milvus<button data-href="#Test-modules-in-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/QA_lifecycle_375f4fd8a8.png" alt="QA lifecycle" class="doc-image" id="qa-lifecycle" />
+    <span>QA lifecycle</span>
+  </span>
+</p>
+<p>As shown in the figure above, a complete software R&amp;D lifecycle includes three stages.</p>
+<p>During the initial stage, the developers publish design documentation while QA engineers come up with test plans, define release criteria, and assign QA tasks. Developers and QA engineers need to be familiar with both the design doc and test plan so that a mutual understanding of the objective of the release (in terms of features, performance, stability, bug convergence, etc.) is shared among the two teams.</p>
+<p>During R&amp;D, development and QA testings interact frequently to develop and verify features and functions, and fix bugs and issues reported by the open-source <a href="https://slack.milvus.io/">community</a> as well.</p>
+<p>During the final stage, if the release criteria is met, a new Docker image of the new Milvus version will be released. A release note focusing on new features and fixed bugs and a release tag is needed for the official release. Then the QA team will also publish a testing report on this release.</p>
+<h2 id="Test-modules-in-Milvus" class="common-anchor-header">Test modules in Milvus<button data-href="#Test-modules-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,49 +104,57 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hay varios módulos de prueba en Milvus y esta sección explicará cada módulo en detalle.</p>
-<h3 id="Unit-test" class="common-anchor-header">Prueba unitaria</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Unit_test_7d3d422345.png" alt="Unit test" class="doc-image" id="unit-test" />
-   </span> <span class="img-wrapper"> <span>Pruebas unitarias</span> </span></p>
-<p>Las pruebas unitarias pueden ayudar a identificar errores de software en una fase temprana y proporcionar un criterio de verificación para la reestructuración del código. De acuerdo con los criterios de aceptación de Milvus pull request (PR), la <a href="https://app.codecov.io/gh/milvus-io/milvus/">cobertura</a> de la prueba unitaria del código debe ser del 80%.</p>
-<h3 id="Function-test" class="common-anchor-header">Pruebas funcionales</h3><p>Las pruebas de función en Milvus se organizan principalmente en torno a <a href="https://github.com/milvus-io/pymilvus">PyMilvus</a> y SDKs. El propósito principal de las pruebas de función es verificar si las interfaces pueden trabajar como fueron diseñadas. Las pruebas de función tienen dos facetas:</p>
+    </button></h2><p>There are several test modules in Milvus and this section will explain each module in detail.</p>
+<h3 id="Unit-test" class="common-anchor-header">Unit test</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Unit_test_7d3d422345.png" alt="Unit test" class="doc-image" id="unit-test" />
+    <span>Unit test</span>
+  </span>
+</p>
+<p>Unit tests can help identify software bugs at an early stage and provide a verification criteria for code restructuring. According to the Milvus pull request (PR) acceptance criteria, the <a href="https://app.codecov.io/gh/milvus-io/milvus/">coverage</a> of code unit test should be 80%.</p>
+<h3 id="Function-test" class="common-anchor-header">Function test</h3><p>Function tests in Milvus are mainly organized around <a href="https://github.com/milvus-io/pymilvus">PyMilvus</a> and SDKs. The main purpose of function tests are to verify if the interfaces can work as designed. Function tests have two facets:</p>
 <ul>
-<li>Probar si los SDKs pueden devolver los resultados esperados cuando se pasan los parámetros correctos.</li>
-<li>Probar si los SDK pueden gestionar errores y devolver mensajes de error razonables cuando se pasan parámetros incorrectos.</li>
+<li>Test if SDKs can return expected results when correct parameters are passed.</li>
+<li>Test if SDKs can handle errors and return reasonable error messages when incorrect parameters are passed.</li>
 </ul>
-<p>La siguiente figura muestra el marco actual para las pruebas de funciones, que se basa en el marco general <a href="https://pytest.org/">pytest</a>. Este marco añade una envoltura a PyMilvus y potencia las pruebas con una interfaz de pruebas automatizada.</p>
+<p>The figure below depicts the current framework for function tests which is based on the mainstream <a href="https://pytest.org/">pytest</a> framework. This framework adds a wrapper to PyMilvus and empowers testing with an automated testing interface.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Function_test_41f837d3e7.png" alt="Function test" class="doc-image" id="function-test" />
-   </span> <span class="img-wrapper"> <span>Prueba de funciones</span> </span></p>
-<p>Teniendo en cuenta que se necesita un método de pruebas compartido y que algunas funciones deben reutilizarse, se adopta el marco de pruebas anterior, en lugar de utilizar directamente la interfaz de PyMilvus. También se incluye en el marco un módulo "check" para facilitar la comprobación de los valores esperados y reales.</p>
-<p>En el directorio <code translate="no">tests/python_client/testcases</code> se incorporan hasta 2.700 casos de pruebas de funciones, que cubren por completo casi todas las interfaces de PyMilvus. Estas pruebas de funciones supervisan estrictamente la calidad de cada RP.</p>
-<h3 id="Deployment-test" class="common-anchor-header">Prueba de despliegue</h3><p>Milvus viene en dos modos: <a href="https://milvus.io/docs/v2.0.x/install_standalone-docker.md">standalone</a> y <a href="https://milvus.io/docs/v2.0.x/install_cluster-docker.md">cluster</a>. Y hay dos formas principales de desplegar Milvus: usando Docker Compose o Helm. Y después de desplegar Milvus, los usuarios también pueden reiniciar o actualizar el servicio Milvus. Hay dos categorías principales de prueba de despliegue: prueba de reinicio y prueba de actualización.</p>
-<p>La prueba de reinicio se refiere al proceso de probar la persistencia de los datos, es decir, si los datos siguen estando disponibles después de un reinicio. La prueba de actualización se refiere al proceso de comprobar la compatibilidad de los datos para evitar situaciones en las que se introduzcan en Milvus formatos de datos incompatibles. Ambos tipos de pruebas de despliegue comparten el mismo flujo de trabajo, como se ilustra en la imagen siguiente.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Function_test_41f837d3e7.png" alt="Function test" class="doc-image" id="function-test" />
+    <span>Function test</span>
+  </span>
+</p>
+<p>Considering a shared testing method is needed and some functions need to be reused, the above testing framework is adopted, rather than using the PyMilvus interface directly. A “check” module is also included in the framework to bring convenience to the verification of expected and actual values.</p>
+<p>As many as 2,700 function test cases are incorporated into the <code translate="no">tests/python_client/testcases</code> directory, fully covering almost all the PyMilvus interfaces. These function tests strictly supervise the quality of each PR.</p>
+<h3 id="Deployment-test" class="common-anchor-header">Deployment test</h3><p>Milvus comes in two modes: <a href="https://milvus.io/docs/v2.0.x/install_standalone-docker.md">standalone</a> and <a href="https://milvus.io/docs/v2.0.x/install_cluster-docker.md">cluster</a>. And there are two major ways to deploy Milvus: using Docker Compose or Helm. And after deploying Milvus, users can also restart or upgrade the Milvus service. There are two main categories of deployment test: restart test and upgrade test.</p>
+<p>Restart test refers to the process of testing data persistence, i.e. whether data are still available after a restart. Upgrade test refers to the process of testing data compatibility to prevent situations where incompatible formats of data are inserted into Milvus. Both the two types of deployment tests share the same workflow as illustrated in the image below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deployment_test_342ab3b3f5.png" alt="Deployment test" class="doc-image" id="deployment-test" />
-   </span> <span class="img-wrapper"> <span>Prueba de despliegue</span> </span></p>
-<p>En una prueba de reinicio, los dos despliegues utilizan la misma imagen docker. Sin embargo, en una prueba de actualización, el primer despliegue utiliza una imagen Docker de una versión anterior, mientras que el segundo despliegue utiliza una imagen Docker de una versión posterior. Los resultados de la prueba y los datos se guardan en el archivo <code translate="no">Volumes</code> o en la <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">reclamación de volumen persistente</a> (PVC).</p>
-<p>Al ejecutar la primera prueba, se crean varias colecciones y se realizan diferentes operaciones en cada una de ellas. Al ejecutar la segunda prueba, el objetivo principal será comprobar si las colecciones creadas siguen estando disponibles para operaciones CRUD y si se pueden seguir creando nuevas colecciones.</p>
-<h3 id="Reliability-test" class="common-anchor-header">Prueba de fiabilidad</h3><p>Las pruebas de fiabilidad de los sistemas distribuidos nativos de la nube suelen adoptar un método de ingeniería del caos cuyo objetivo es cortar de raíz los errores y los fallos del sistema. En otras palabras, en una prueba de ingeniería del caos, creamos a propósito fallos del sistema para identificar los problemas en las pruebas de presión y solucionar los fallos del sistema antes de que realmente empiecen a hacer daño. Durante una prueba de caos en Milvus, elegimos <a href="https://chaos-mesh.org/">Chaos Mesh</a> como herramienta para crear un caos. Hay varios tipos de fallos que es necesario crear:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deployment_test_342ab3b3f5.png" alt="Deployment test" class="doc-image" id="deployment-test" />
+    <span>Deployment test</span>
+  </span>
+</p>
+<p>In a restart test, the two deployments uses the same docker image. However in an upgrade test, the first deployment uses a docker image of a previous version while the second deployment uses a docker image of a later version. The test results and data are saved in the <code translate="no">Volumes</code> file or <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">persistent volume claim</a> (PVC).</p>
+<p>When running the first test, multiple collections are created and different operations are made to each of the collection. When running the second test, the main focus will be on verifying if the created collections are still available for CRUD operations, and if new collections can be further created.</p>
+<h3 id="Reliability-test" class="common-anchor-header">Reliability test</h3><p>Testings on the reliability of cloud-native distributed system usually adopt a chaos engineering method whose purpose is to nip errors and system failures in the bud. In other words, in an chaos engineering test, we purposefully create system failures to identify issues in pressure tests and fix system failures before they really start to do hazards. During a chaos test in Milvus, we choose <a href="https://chaos-mesh.org/">Chaos Mesh</a> as the tool to create a chaos. There are several types of failures that needs to be created:</p>
 <ul>
-<li><strong>Pod kill</strong>: una simulación del escenario en el que los nodos están caídos.</li>
-<li><strong>Pod failure</strong>: Prueba si uno de los nodos trabajadores falla y si todo el sistema puede seguir funcionando.</li>
-<li><strong>Memory stress</strong>: una simulación de gran consumo de recursos de memoria y CPU de los nodos de trabajo.</li>
-<li><strong>Partición de red</strong>: Dado que Milvus <a href="https://milvus.io/docs/v2.0.x/four_layers.md">separa el almacenamiento de la computación</a>, el sistema depende en gran medida de la comunicación entre varios componentes. Se necesita una simulación del escenario en el que la comunicación entre los diferentes pods está particionada para probar la interdependencia de los diferentes componentes de Milvus.</li>
+<li><strong>Pod kill</strong>: a simulation of the scenario where nodes are down.</li>
+<li><strong>Pod failure</strong>: Test if one of the worker node pods fails whether the whole system can still continue to work.</li>
+<li><strong>Memory stress</strong>: a simulation of heavy memory and CPU resources consumption from the work nodes.</li>
+<li><strong>Network partition</strong>: Since Milvus <a href="https://milvus.io/docs/v2.0.x/four_layers.md">separates storage from computing</a>, the system relies heavily on the communication between various components. A simulation of the scenario where the communication between different pods are partitioned is needed to test the interdependency of different Milvus components.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Reliability_test_a7331b91f4.png" alt="Reliability test" class="doc-image" id="reliability-test" />
-   </span> <span class="img-wrapper"> <span>Prueba de fiabilidad</span> </span></p>
-<p>La figura anterior muestra el marco de pruebas de fiabilidad en Milvus que puede automatizar las pruebas de caos. El flujo de trabajo de una prueba de fiabilidad es el siguiente:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Reliability_test_a7331b91f4.png" alt="Reliability test" class="doc-image" id="reliability-test" />
+    <span>Reliability test</span>
+  </span>
+</p>
+<p>The figure above demonstrates the reliability test framework in Milvus that can automate chaos tests. The workflow of a reliability test is as follows:</p>
 <ol>
-<li>Inicializar un cluster Milvus leyendo las configuraciones de despliegue.</li>
-<li>Cuando el cluster esté listo, ejecute <code translate="no">test_e2e.py</code> para probar si las características de Milvus están disponibles.</li>
-<li>Ejecute <code translate="no">hello_milvus.py</code> para probar la persistencia de los datos. Cree una colección llamada "hello_milvus" para la inserción, vaciado, creación de índices, búsqueda vectorial y consulta de datos. Esta colección no se liberará ni se eliminará durante la prueba.</li>
-<li>Cree un objeto de monitorización que iniciará seis hilos que ejecutarán las operaciones de creación, inserción, vaciado, indexación, búsqueda y consulta.</li>
+<li>Initialize a Milvus cluster by reading the deployment configurations.</li>
+<li>When the cluster is ready, run <code translate="no">test_e2e.py</code> to test if the Milvus features are available.</li>
+<li>Run <code translate="no">hello_milvus.py</code> to test data persistence. Create a collection named “hello_milvus” for data insertion, flush, index building, vector search and query. This collection will not be released or dropped during the test.</li>
+<li>Create a monitoring object which will start six threads executing create, insert, flush, index, search and query operations.</li>
 </ol>
 <pre><code translate="no">checkers = {
     Op.create: CreateChecker(),
@@ -150,39 +166,41 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
 }
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>Realice la primera afirmación: todas las operaciones se realizan correctamente, como se esperaba.</li>
-<li>Introduzca un fallo del sistema en Milvus utilizando Chaos Mesh para analizar el archivo yaml que define el fallo. Un fallo puede ser matar el nodo de consulta cada cinco segundos, por ejemplo.</li>
-<li>Haga la segunda afirmación mientras introduce un fallo del sistema - Juzgue si los resultados devueltos de las operaciones en Milvus durante un fallo del sistema coinciden con las expectativas.</li>
-<li>Elimine el fallo mediante Chaos Mesh.</li>
-<li>Cuando se recupere el servicio Milvus (lo que significa que todos los pods están listos), haga la tercera afirmación - todas las operaciones tienen éxito como se esperaba.</li>
-<li>Ejecute <code translate="no">test_e2e.py</code> para comprobar si las funciones de Milvus están disponibles. Algunas de las operaciones durante el caos podrían bloquearse debido a la tercera aserción. E incluso después de eliminar el caos, algunas operaciones podrían seguir bloqueadas, lo que impediría que la tercera afirmación tuviera el éxito esperado. Este paso pretende facilitar la tercera aserción y sirve como estándar para comprobar si el servicio Milvus se ha recuperado.</li>
-<li>Ejecute <code translate="no">hello_milvus.py</code>, cargue la colección creada y realice operaciones CRUP en la colección. A continuación, compruebe si los datos existentes antes del fallo del sistema siguen estando disponibles tras la recuperación del fallo.</li>
-<li>Recopile los registros.</li>
+<li>Make the first assertion - all operations are successful as expected.</li>
+<li>Introduce a system failure to Milvus by using Chaos Mesh to parse the yaml file which defines the failure. A failure can be killing the query node every five seconds for instance.</li>
+<li>Make the second assertion while introducing a system failure - Judge whether the returned results of the operations in Milvus during a system failure matches the expectation.</li>
+<li>Eliminate the failure via Chaos Mesh.</li>
+<li>When the Milvus service is recovered (meaning all pods are ready), make the third assertion - all operations are successful as expected.</li>
+<li>Run <code translate="no">test_e2e.py</code> to test if the Milvus features are available. Some of the operations during the chaos might be blocked due to the third assertion. And even after the chaos is eliminated, some operations might continue to be blocked, hampering the third assertion from being successful as expected. This step aims to facilitate the third assertion and serves as a standard for checking if the Milvus service has recovered.</li>
+<li>Run <code translate="no">hello_milvus.py</code>, load the created collection, and conduct CRUP operations on the collection. Then, check if the data existing before the system failure are still available after failure recovery.</li>
+<li>Collect logs.</li>
 </ol>
-<h3 id="Stability-and-performance-test" class="common-anchor-header">Prueba de estabilidad y rendimiento</h3><p>En la siguiente figura se describen los objetivos, los escenarios de prueba y las métricas de las pruebas de estabilidad y rendimiento.</p>
+<h3 id="Stability-and-performance-test" class="common-anchor-header">Stability and performance test</h3><p>The figure below describes the purposes, test scenarios, and metrics of stability and performance test.</p>
 <table>
 <thead>
-<tr><th></th><th>Prueba de estabilidad</th><th>Prueba de rendimiento</th></tr>
+<tr><th></th><th>Stability test</th><th>Performance test</th></tr>
 </thead>
 <tbody>
-<tr><td>Propósitos</td><td>- Garantizar que Milvus puede funcionar sin problemas durante un periodo de tiempo fijo con una carga de trabajo normal. <br> - Asegurarse de que los recursos se consumen de forma estable cuando se inicia el servicio Milvus.</td><td>- Probar el rendimiento de todas las interfaces de Milvus. <br> - Encontrar la configuración óptima con la ayuda de pruebas de rendimiento.  <br> - Servir de referencia para futuras versiones. <br> - Encontrar el cuello de botella que impide un mejor rendimiento.</td></tr>
-<tr><td>Escenarios</td><td>- Escenario de lectura intensiva fuera de línea en el que los datos apenas se actualizan tras su inserción y el porcentaje de procesamiento de cada tipo de solicitud es: solicitud de búsqueda 90%, solicitud de inserción 5%, otros 5%. <br> - Escenario de escritura intensiva en línea, en el que los datos se insertan y buscan simultáneamente y el porcentaje de procesamiento de cada tipo de solicitud es: solicitud de inserción 50%, solicitud de búsqueda 40%, otras 10%.</td><td>- Inserción de datos <br> - Creación de índices <br> - Búsqueda vectorial</td></tr>
-<tr><td>Métricas</td><td>- Consumo de memoria <br> - Consumo de CPU <br> - Latencia IO <br> - Estado de los pods Milvus <br> - Tiempo de respuesta del servicio Milvus <br> etc.</td><td>- El rendimiento durante la inserción de datos <br> - El tiempo que se tarda en construir un índice <br> - Tiempo de respuesta durante una búsqueda vectorial <br> - Consulta por segundo (QPS) <br> - Solicitud por segundo  <br> - Tasa de recuperación <br> etc.</td></tr>
+<tr><td>Purposes</td><td>- Ensure that Milvus can work smoothly for a fixed period of time under normal workload. <br> - Make sure resources are consumed stably when the Milvus service starts.</td><td>- Test the performance of alll Milvus interfaces. <br> - Find the optimal configuration with the help of performance tests.  <br> - Serve as the benchmark for future releases. <br> - Find the bottleneck that hampers a better performance.</td></tr>
+<tr><td>Scenarios</td><td>- Offline read-intensive scenario where data are barely updated after insertion and the percentage of processing each type of request is: search request 90%, insert request 5%, others 5%. <br> - Online write-intensive scenario where data are inserted and searched simultaneously and the percentage of processing each type of request is: insert request 50%, search request 40%, others 10%.</td><td>- Data insertion <br> - Index building <br> - Vector search</td></tr>
+<tr><td>Metrics</td><td>- Memory usage <br> - CPU consumption <br> - IO latency <br> - The status of Milvus pods <br> - Response time of the Milvus service <br> etc.</td><td>- Data throughput during data insertion <br> - The time it takes to build an index <br> - Response time during a vector search <br> - Query per second (QPS) <br> - Request per second  <br> - Recall rate <br> etc.</td></tr>
 </tbody>
 </table>
-<p>Tanto la prueba de estabilidad como la de rendimiento comparten el mismo conjunto de flujo de trabajo:</p>
+<p>Both stability test and performance test share the same set of workflow:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Stability_and_performance_test_6ed8532697.png" alt="Stability and performance test" class="doc-image" id="stability-and-performance-test" />
-   </span> <span class="img-wrapper"> <span>Prueba de estabilidad y rendimiento</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Stability_and_performance_test_6ed8532697.png" alt="Stability and performance test" class="doc-image" id="stability-and-performance-test" />
+    <span>Stability and performance test</span>
+  </span>
+</p>
 <ol>
-<li>Analizar y actualizar las configuraciones y definir las métricas. El <code translate="no">server-configmap</code> corresponde a la configuración de Milvus standalone o cluster mientras que <code translate="no">client-configmap</code> corresponde a las configuraciones de los casos de prueba.</li>
-<li>Configurar el servidor y el cliente.</li>
-<li>Preparación de los datos</li>
-<li>Solicitar la interacción entre el servidor y el cliente.</li>
-<li>Informe y visualización de métricas.</li>
+<li>Parse and update configurations, and define metrics. The <code translate="no">server-configmap</code> corresponds to the configuration of Milvus standalone or cluster while <code translate="no">client-configmap</code> corresponds to the test case configurations.</li>
+<li>Configure the server and the client.</li>
+<li>Data preparation</li>
+<li>Request interaction between the server and the client.</li>
+<li>Report and display metrics.</li>
 </ol>
-<h2 id="Tools-and-methods-for-better-QA-efficiency" class="common-anchor-header">Herramientas y métodos para mejorar la eficacia del control de calidad<button data-href="#Tools-and-methods-for-better-QA-efficiency" class="anchor-icon" translate="no">
+<h2 id="Tools-and-methods-for-better-QA-efficiency" class="common-anchor-header">Tools and methods for better QA efficiency<button data-href="#Tools-and-methods-for-better-QA-efficiency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -197,42 +215,48 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En la sección de pruebas de módulos, podemos ver que el procedimiento para la mayoría de las pruebas es de hecho casi el mismo, e implica principalmente la modificación de las configuraciones del servidor y del cliente de Milvus, y el paso de parámetros de la API. Cuando hay múltiples configuraciones, cuanto más variada es la combinación de las diferentes configuraciones, más escenarios de pruebas pueden cubrir estos experimentos y pruebas. En consecuencia, la reutilización de códigos y procedimientos es tanto más crítica para el proceso de mejora de la eficacia de las pruebas.</p>
-<h3 id="SDK-test-framework" class="common-anchor-header">Marco de pruebas SDK</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/SDK_test_framework_8219e28f4c.png" alt="SDK test framework" class="doc-image" id="sdk-test-framework" />
-   </span> <span class="img-wrapper"> <span>Marco de pruebas del SDK</span> </span></p>
-<p>Para acelerar el proceso de pruebas, podemos añadir un envoltorio <code translate="no">API_request</code> al marco de pruebas original, y configurarlo como algo similar a la pasarela API. Esta pasarela de API se encargará de recoger todas las solicitudes de API y luego las pasará a Milvus para recibir colectivamente las respuestas. Estas respuestas se devolverán después al cliente. Tal diseño hace que la captura de cierta información de registro como parámetros y resultados devueltos sea mucho más fácil. Además, el componente de comprobación del marco de pruebas SDK puede verificar y examinar los resultados de Milvus. Y todos los métodos de comprobación pueden definirse dentro de este componente comprobador.</p>
-<p>Con el marco de pruebas SDK, algunos procesos cruciales de inicialización pueden ser envueltos en una sola función. Al hacerlo, se pueden eliminar grandes trozos de códigos tediosos.</p>
-<p>También cabe destacar que cada caso de prueba individual está relacionado con su colección única para garantizar el aislamiento de los datos.</p>
-<p>Al ejecutar los casos de prueba,<code translate="no">pytest-xdist</code>, la extensión pytest, puede aprovecharse para ejecutar todos los casos de prueba individuales en paralelo, lo que aumenta enormemente la eficiencia.</p>
-<h3 id="GitHub-action" class="common-anchor-header">Acción GitHub</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Git_Hub_action_c3c1bed591.png" alt="GitHub action" class="doc-image" id="github-action" />
-    Acción </span> <span class="img-wrapper"> <span>GitHub</span> </span></p>
-<p><a href="https://docs.github.com/en/actions">GitHub Action</a> también se adopta para mejorar la eficiencia de la GC por sus siguientes características:</p>
+    </button></h2><p>From the module testing section, we can see that the procedure for most of the testings are in fact almost the same, mainly involving modifying Milvus server and client configurations, and passing API parameters. When there are multiple configurations, the more varied the combination of different configurations, the more testing scenarios these experiments and tests can cover. As a result, the reuse of codes and procedures is all the more critical to the process of enhancing testing efficiency.</p>
+<h3 id="SDK-test-framework" class="common-anchor-header">SDK test framework</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/SDK_test_framework_8219e28f4c.png" alt="SDK test framework" class="doc-image" id="sdk-test-framework" />
+    <span>SDK test framework</span>
+  </span>
+</p>
+<p>To accelerate the testing process, we can add an <code translate="no">API_request</code> wrapper to the original testing framework, and set it as something similar to the API gateway. This API gateway will be in charge of collecting all API requests and then pass them to Milvus to collectively receive responses. These responses will be passed back to the client afterwards. Such a design makes capturing certain log information like parameters, and returned results much more easier. In addition, the checker component in the SDK test framework can verify and examine the results from Milvus. And all checking methods can be defining within this checker component.</p>
+<p>With the SDK test framework, some crucial initialization processes can be wrapped into one single function. By doing so, large chunks of tedious codes can be eliminated.</p>
+<p>It is also noteworthy that each individual test case is related to its unique collection to ensure data isolation.</p>
+<p>When executing test cases,<code translate="no">pytest-xdist</code>, the pytest extension, can be leveraged to execute all individual test cases in parallel, greatly boosting the efficiency.</p>
+<h3 id="GitHub-action" class="common-anchor-header">GitHub action</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Git_Hub_action_c3c1bed591.png" alt="GitHub action" class="doc-image" id="github-action" />
+    <span>GitHub action</span>
+  </span>
+</p>
+<p><a href="https://docs.github.com/en/actions">GitHub Action</a> is also adopted to improve QA efficiency for its following characteristics:</p>
 <ul>
-<li>Es una herramienta nativa de CI/CD profundamente integrada con GitHub.</li>
-<li>Viene con un entorno de máquina uniformemente configurado y herramientas de desarrollo de software comunes preinstaladas, incluyendo Docker, Docker Compose, etc.</li>
-<li>Soporta múltiples sistemas operativos y versiones incluyendo Ubuntu, MacOs, Windows-server, etc.</li>
-<li>Tiene un mercado que ofrece ricas extensiones y funciones out-of-box.</li>
-<li>Su matriz soporta trabajos concurrentes, y la reutilización del mismo flujo de pruebas para mejorar la eficiencia.</li>
+<li>It is a native CI/CD tool deeply integrated with GitHub.</li>
+<li>It comes with a uniformly configured machine environment and pre-installed common software development tools including Docker, Docker Compose, etc.</li>
+<li>It supports multiple operating systems and versions including Ubuntu, MacOs, Windows-server, etc.</li>
+<li>It has a marketplace that offers rich extensions and out-of-box functions.</li>
+<li>Its matrix supports concurrent jobs, and reusing the same test flow to improve efficiency</li>
 </ul>
-<p>Aparte de las características anteriores, otra razón para adoptar GitHub action es que las pruebas de despliegue y las pruebas de fiabilidad requieren un entorno independiente y aislado. Y GitHub Action es ideal para las comprobaciones de inspección diarias en conjuntos de datos a pequeña escala.</p>
-<h3 id="Tools-for-benchmark-tests" class="common-anchor-header">Herramientas para pruebas de referencia</h3><p>Para que las pruebas de control de calidad sean más eficientes, se utilizan varias herramientas.</p>
+<p>Apart from the characteristics above, another reason for adopting GitHub action is that deployment tests and reliability tests require independent and isolated environment. And GitHub Action is ideal for daily inspection checks on small-scale datasets.</p>
+<h3 id="Tools-for-benchmark-tests" class="common-anchor-header">Tools for benchmark tests</h3><p>To make QA tests more efficient, a number of tools are used.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_13_fbc71dfe4f.png" alt="QA tools" class="doc-image" id="qa-tools" />
-   </span> <span class="img-wrapper"> <span>Herramientas de control de calidad</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_13_fbc71dfe4f.png" alt="QA tools" class="doc-image" id="qa-tools" />
+    <span>QA tools</span>
+  </span>
+</p>
 <ul>
-<li><a href="https://argoproj.github.io/">Argo</a>: un conjunto de herramientas de código abierto para Kubernetes que permite ejecutar flujos de trabajo y gestionar clústeres mediante la programación de tareas. También permite ejecutar varias tareas en paralelo.</li>
-<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">Kubernetes dashboard</a>: interfaz de usuario de Kubernetes basada en web para visualizar <code translate="no">server-configmap</code> y <code translate="no">client-configmap</code>.</li>
-<li><a href="https://en.wikipedia.org/wiki/Network-attached_storage">NAS</a>: el almacenamiento conectado a la red (NAS) es un servidor de almacenamiento de datos informáticos a nivel de archivo para guardar conjuntos de datos de referencia de RNA comunes.</li>
-<li><a href="https://www.influxdata.com/">InfluxDB</a> y <a href="https://www.mongodb.com/">MongoDB</a>: bases de datos para guardar los resultados de las pruebas de referencia.</li>
-<li><a href="https://grafana.com/">Grafana</a>: Una solución de análisis y monitorización de código abierto para monitorizar las métricas de recursos del servidor y las métricas de rendimiento del cliente.</li>
-<li><a href="https://redash.io/">Redash</a>: Un servicio que ayuda a visualizar tus datos y crear gráficos para pruebas de benchmark.</li>
+<li><a href="https://argoproj.github.io/">Argo</a>: a set of open-source tools for Kubernetes to run workflows and manage clusters by scheduling tasks. It can also enable running multiple tasks in parallel.</li>
+<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">Kubernetes dashboard</a>: a web-based Kubernetes user interface for visualizing <code translate="no">server-configmap</code>  and <code translate="no">client-configmap</code>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Network-attached_storage">NAS</a>: Network attached storage (NAS) is a file-level computer data storage server for keeping common ANN-benchmark datasets.</li>
+<li><a href="https://www.influxdata.com/">InfluxDB</a> and <a href="https://www.mongodb.com/">MongoDB</a>: Databases for saving results of benchmark tests.</li>
+<li><a href="https://grafana.com/">Grafana</a>: An open-source analytics and monitoring solution for monitoring server resource metrics and client performance metrics.</li>
+<li><a href="https://redash.io/">Redash</a>: A service that helps visualize your data and create charts for benchmark tests.</li>
 </ul>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Acerca de la serie Deep Dive<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -247,14 +271,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con el <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">anuncio oficial de la disponibilidad general</a> de Milvus 2.0, hemos organizado esta serie de blogs Milvus Deep Dive para ofrecer una interpretación en profundidad de la arquitectura y el código fuente de Milvus. Los temas tratados en esta serie de blogs incluyen</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Visión general de la arquitectura de Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">API y SDK de Python</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Procesamiento de datos</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Gestión de datos</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Consultas en tiempo real</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Motor de ejecución escalar</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">Sistema de control de calidad</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Motor de ejecución vectorial</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

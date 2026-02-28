@@ -1,10 +1,14 @@
 ---
 id: >-
   hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
-title: 亲身体验 VDBBench：为向量数据库设定基准，使 POC 与生产相匹配
+title: >
+  Hands-On with VDBBench: Benchmarking Vector Databases for POCs That Match
+  Production
 author: Yifan Cai
 date: 2025-08-15T00:00:00.000Z
-desc: 了解如何使用 VDBBench 使用真实生产数据测试向量数据库。预测实际性能的自定义数据集 POC 分步指南。
+desc: >-
+  Learn how to test vector databases with real production data using VDBBench.
+  Step-by-step guide to custom dataset POCs that predict actual performance.
 cover: assets.zilliz.com/vdbbench_cover_min_2f86466839.png
 tag: Tutorials
 recommend: false
@@ -18,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
 ---
-<p>向量数据库现已成为人工智能基础设施的核心部分，为客户服务、内容生成、搜索、推荐等各种由 LLM 驱动的应用提供动力。</p>
-<p>市场上有如此多的选择，从 Milvus 和 Zilliz Cloud 等专门构建的向量数据库到将向量搜索作为附加功能的传统数据库，<strong>选择合适的</strong>数据库<strong>并不像阅读基准图那么简单。</strong></p>
-<p>大多数团队在承诺之前都会进行概念验证 (POC)，这在理论上是明智之举，但在实践中，许多在纸面上看起来令人印象深刻的供应商基准在实际条件下都会崩溃。</p>
-<p>其中一个主要原因是，大多数性能声称都是基于 2006-2012 年的过时数据集（SIFT、GloVe、LAION），这些数据集的行为与现代嵌入式数据集截然不同。例如，SIFT 使用的是 128 维向量，而当今的人工智能模型所产生的维数要高得多--OpenAI 最新的模型是 3,072 维，Cohere 的模型是 1,024 维--这是一个影响性能、成本和可扩展性的重大转变。</p>
-<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">解决之道：用你的数据测试，而不是照本宣科的基准测试<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
+<p>Vector databases are now a core part of AI infrastructure, powering various LLM-powered applications for customer service, content generation, search, recommendations, and more.</p>
+<p>With so many options in the market, from purpose-built vector databases like Milvus and Zilliz Cloud to traditional databases with vector search as an add-on, <strong>choosing the right one isn’t as simple as reading benchmark charts.</strong></p>
+<p>Most teams run a Proof of Concept (POC) before committing, which is smart in theory — but in practice, many vendor benchmarks that look impressive on paper collapse under real-world conditions.</p>
+<p>One of the main reasons is that most performance claims are based on outdated datasets from 2006–2012 (SIFT, GloVe, LAION) that behave very differently from modern embeddings. For example, SIFT uses 128-dimensional vectors, while today’s AI models produce far higher dimensions — 3,072 for OpenAI’s latest, 1,024 for Cohere’s —  a big shift that impacts performance, cost, and scalability.</p>
+<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">The Fix: Test with Your Data, Not Canned Benchmarks<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,19 +41,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最简单有效的解决方案是：使用应用程序实际生成的向量进行 POC 评估。这意味着要使用您的 Embeddings 模型、真实查询和实际数据分布。</p>
-<p>这正是开源向量数据库基准测试工具<a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a>的功能所在。它支持对任何向量数据库（包括 Milvus、Elasticsearch、pgvector 等）进行评估和比较，并模拟真实的生产工作负载。</p>
-<p><a href="https://github.com/zilliztech/VectorDBBench">下载 VDBBench 1.0 →</a>|<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> 查看排行榜 →</a>|<a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">什么是 VDBBench</a></p>
-<p>VDBbench 可让您</p>
+    </button></h2><p>The simplest and most effective solution: run your POC evaluation with the vectors your application actually generates. That means using your embedding models, your real queries, and your actual data distribution.</p>
+<p>This is exactly what <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> — an open-source vector database benchmarking tool — is built for. It supports the evaluation and comparison of any vector database, including Milvus, Elasticsearch, pgvector, and more, and simulates real production workloads.</p>
+<p><a href="https://github.com/zilliztech/VectorDBBench">Download VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> View Leaderboard →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">What is VDBBench</a></p>
+<p>VDBbench lets you:</p>
 <ul>
-<li><p><strong>使用</strong>嵌入模型中<strong>自己的数据进行测试</strong></p></li>
-<li><p>模拟<strong>并发插入、查询和流式摄取</strong></p></li>
-<li><p>测量<strong>P95/P99 延迟、持续吞吐量和召回准确性</strong></p></li>
-<li><p>在相同条件下对多个数据库进行基准测试</p></li>
-<li><p>允许<strong>自定义数据集测试</strong>，使结果与生产实际相匹配</p></li>
+<li><p><strong>Test with your own data</strong> from your embedding models</p></li>
+<li><p>Simulate <strong>concurrent inserts, queries, and streaming ingestion</strong></p></li>
+<li><p>Measure <strong>P95/P99 latency, sustained throughput, and recall accuracy</strong></p></li>
+<li><p>Benchmark across multiple databases under identical conditions</p></li>
+<li><p>Allows <strong>custom dataset testing</strong> so results actually match production</p></li>
 </ul>
-<p>接下来，我们将指导你如何使用VDBBench和你的真实数据运行生产级POC--这样你就可以做出一个自信的、面向未来的选择。</p>
-<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">如何使用VDBBench用自定义数据集评估VectorDB<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
+<p>Next, we’ll walk you through how to run a production-grade POC with VDBBench and your real data — so you can make a confident, future-proof choice.</p>
+<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">How to Evaluate VectorDBs with Your Custom Datasets with VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,96 +68,96 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在开始之前，请确保您已安装 Python 3.11 或更高版本。您需要 CSV 或 NPY 格式的向量数据、大约 2-3 个小时的完整设置和测试时间，以及必要时排除故障所需的 Python 中级知识。</p>
-<h3 id="Installation-and-Configuration" class="common-anchor-header">安装和配置</h3><p>如果要评估一个数据库，请运行此命令：</p>
+    </button></h2><p>Before getting started, ensure you have Python 3.11 or higher installed. You’ll need vector data in CSV or NPY format, approximately 2-3 hours for complete setup and testing, and intermediate Python knowledge for troubleshooting if needed.</p>
+<h3 id="Installation-and-Configuration" class="common-anchor-header">Installation and Configuration</h3><p>If you’re evaluating one database, run this command:</p>
 <pre><code translate="no">pip install vectordb-bench
 <button class="copy-code-btn"></button></code></pre>
-<p>如果要比较所有支持的数据库，请运行该命令：</p>
+<p>If you’re to compare all supported databases, run the command:</p>
 <pre><code translate="no">pip install vectordb-bench[<span class="hljs-built_in">all</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>对于特定的数据库客户端（例如：Elasticsearch），请执行以下命令</p>
+<p>For specific database clients (eg: Elasticsearch):</p>
 <pre><code translate="no">pip install vectordb-bench[elastic]
 <button class="copy-code-btn"></button></code></pre>
-<p>查看此<a href="https://github.com/zilliztech/VectorDBBench">GitHub 页面</a>，了解所有支持的数据库及其安装命令。</p>
-<h3 id="Launching-VDBBench" class="common-anchor-header">启动 VDBBench</h3><p>用以下命令启动<strong>VDBBench</strong></p>
+<p>Check this <a href="https://github.com/zilliztech/VectorDBBench">GitHub page</a> for all the supported databases and their install commands.</p>
+<h3 id="Launching-VDBBench" class="common-anchor-header">Launching VDBBench</h3><p>Start <strong>VDBBench</strong> with:</p>
 <pre><code translate="no">init_bench
 <button class="copy-code-btn"></button></code></pre>
-<p>预期控制台输出： 
+<p>Expected console output: 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_expected_console_output_66e1a218b7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>网络界面将在本地可用：</p>
+<p>The web interface will be available locally:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_2e4dd7ea69.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">数据准备和格式转换</h3><p>VDBBench 需要具有特定 Schema 的结构化 Parquet 文件，以确保在不同数据库和数据集之间进行一致的测试。</p>
+<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Data Preparation and Format Conversion</h3><p>VDBBench requires structured Parquet files with specific schemas to ensure consistent testing across different databases and datasets.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>文件名</strong></th><th style="text-align:center"><strong>目的</strong></th><th style="text-align:center"><strong>要求</strong></th><th style="text-align:center"><strong>内容 示例</strong></th></tr>
+<tr><th style="text-align:center"><strong>File Name</strong></th><th style="text-align:center"><strong>Purpose</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Content Example</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">用于插入数据库的向量 Collections</td><td style="text-align:center">✅</td><td style="text-align:center">向量 ID + 向量数据 (list[float])</td></tr>
-<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">用于查询的向量 Collections</td><td style="text-align:center">✅</td><td style="text-align:center">向量 ID + 向量数据 (list[float])</td></tr>
-<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">查询向量的地面实况（实际近邻 ID 列表）</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k 类似 ID 列表］</td></tr>
-<tr><td style="text-align:center">标量标签</td><td style="text-align:center">标签（描述向量以外实体的元数据）</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; 标签</td></tr>
+<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Vector collection for database insertion</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Vector collection for queries</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">Ground Truth for query vectors (actual nearest neighbor ID list)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k similar ID list]</td></tr>
+<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Labels (metadata describing entities other than vectors)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
 </tbody>
 </table>
-<p>所需文件规格：</p>
+<p>Required File Specifications:</p>
 <ul>
-<li><p><strong>训练矢量文件 (train.parquet)</strong>必须包含一个带有增量整数的 ID 列和一个包含 float32 数组的向量列。列名可配置，但 ID 列必须使用整数类型，以便正确索引。</p></li>
-<li><p><strong>测试向量文件 (test.parquet)</strong>采用与训练数据相同的结构。ID 列名必须为 "id"，而向量列名可根据数据 Schema 定制。</p></li>
-<li><p><strong>地面实况文件（neakers.parquet）</strong>包含每个测试查询的参考近邻。它需要一个与测试向量 ID 相对应的 ID 列和一个包含训练集中正确近邻 ID 的 neighbors 数组列。</p></li>
-<li><p><strong>标量标签文件（scalar_labels.parquet）</strong>是可选的，它包含与训练向量相关的元数据标签，对筛选搜索测试很有用。</p></li>
+<li><p><strong>Training Vector File (train.parquet)</strong> must contain an ID column with incremental integers and a vector column containing float32 arrays. Column names are configurable, but the ID column must use integer types for proper indexing.</p></li>
+<li><p><strong>Test Vector File (test.parquet)</strong> follows the same structure as the training data. The ID column name must be “id” while vector column names can be customized to match your data schema.</p></li>
+<li><p><strong>Ground Truth File (neighbors.parquet)</strong> contains the reference nearest neighbors for each test query. It requires an ID column corresponding to test vector IDs and a neighbors array column containing the correct nearest neighbor IDs from the training set.</p></li>
+<li><p><strong>Scalar Labels File (scalar_labels.parquet)</strong> is optional and contains metadata labels associated with training vectors, useful for filtered search testing.</p></li>
 </ul>
-<h3 id="Data-Format-Challenges" class="common-anchor-header">数据格式挑战</h3><p>大多数生产向量数据的格式并不直接符合 VDBBench 的要求。CSV 文件通常以数组的字符串形式存储 Embeddings，NPY 文件包含没有元数据的原始数值矩阵，而数据库导出通常使用 JSON 或其他结构化格式。</p>
-<p>手动转换这些格式涉及多个复杂步骤：将字符串表示解析为数字数组，使用 FAISS 等库计算精确近邻，在保持 ID 一致的同时适当拆分数据集，以及确保所有数据类型符合 Parquet 规范。</p>
-<h3 id="Automated-Format-Conversion" class="common-anchor-header">自动格式转换</h3><p>为了简化转换过程，我们开发了一个 Python 脚本，可以自动处理格式转换、地面实况计算和适当的数据结构。</p>
-<p><strong>CSV 输入格式：</strong></p>
+<h3 id="Data-Format-Challenges" class="common-anchor-header">Data Format Challenges</h3><p>Most production vector data exists in formats that don’t directly match VDBBench requirements. CSV files typically store embeddings as string representations of arrays, NPY files contain raw numerical matrices without metadata, and database exports often use JSON or other structured formats.</p>
+<p>Converting these formats manually involves several complex steps: parsing string representations into numerical arrays, computing exact nearest neighbors using libraries like FAISS, properly splitting datasets while maintaining ID consistency, and ensuring all data types match Parquet specifications.</p>
+<h3 id="Automated-Format-Conversion" class="common-anchor-header">Automated Format Conversion</h3><p>To streamline the conversion process, we’ve developed a Python script that handles format conversion, ground truth computation, and proper data structuring automatically.</p>
+<p><strong>CSV Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">id</span>,emb,label
 <span class="hljs-number">1</span>,<span class="hljs-string">&quot;[0.12,0.56,0.89,...]&quot;</span>,A
 <span class="hljs-number">2</span>,<span class="hljs-string">&quot;[0.33,0.48,0.90,...]&quot;</span>,B
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>NPY 输入格式</strong></p>
+<p><strong>NPY Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 vectors = np.<span class="hljs-property">random</span>.<span class="hljs-title function_">rand</span>(<span class="hljs-number">10000</span>, <span class="hljs-number">768</span>).<span class="hljs-title function_">astype</span>(<span class="hljs-string">&#x27;float32&#x27;</span>)
 np.<span class="hljs-title function_">save</span>(<span class="hljs-string">&quot;vectors.npy&quot;</span>, vectors)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Conversion-Script-Implementation" class="common-anchor-header">转换脚本实现</h3><p><strong>安装所需的依赖项：</strong></p>
+<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Conversion Script Implementation</h3><p><strong>Install required dependencies:</strong></p>
 <pre><code translate="no">pip install numpy pandas faiss-cpu
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>执行转换：</strong></p>
+<p><strong>Execute the conversion:</strong></p>
 <pre><code translate="no">python convert_to_vdb_format.py \
   --train data/train.csv \
   --<span class="hljs-built_in">test</span> data/test.csv \
   --out datasets/custom \
   --topk 10
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>参数参考：</strong></p>
+<p><strong>Parameter Reference:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>参数名称</strong></th><th style="text-align:center"><strong>需要</strong></th><th style="text-align:center"><strong>类型</strong></th><th style="text-align:center"><strong>说明</strong></th><th style="text-align:center"><strong>默认值</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Type</strong></th><th style="text-align:center"><strong>Description</strong></th><th style="text-align:center"><strong>Default Value</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">是</td><td style="text-align:center">字符串</td><td style="text-align:center">训练数据路径，支持 CSV 或 NPY 格式。CSV 必须包含 emb 列，如果没有 id 列将自动生成</td><td style="text-align:center">无</td></tr>
-<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">有</td><td style="text-align:center">字符串</td><td style="text-align:center">查询数据路径，支持 CSV 或 NPY 格式。格式与训练数据相同</td><td style="text-align:center">无</td></tr>
-<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">有</td><td style="text-align:center">字符串</td><td style="text-align:center">输出目录路径，保存转换后的 parquet 文件和邻接索引文件</td><td style="text-align:center">无</td></tr>
-<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">无</td><td style="text-align:center">字符串</td><td style="text-align:center">标签 CSV 路径，必须包含标签列（格式为字符串数组），用于保存标签</td><td style="text-align:center">无</td></tr>
-<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">无</td><td style="text-align:center">整数</td><td style="text-align:center">计算时返回的最近邻数</td><td style="text-align:center">10</td></tr>
+<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Training data path, supports CSV or NPY format. CSV must contain emb column, if no id column will auto-generate</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Query data path, supports CSV or NPY format. Format same as training data</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Output directory path, saves converted parquet files and neighbor index files</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">No</td><td style="text-align:center">String</td><td style="text-align:center">Label CSV path, must contain labels column (formatted as string array), used for saving labels</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">No</td><td style="text-align:center">Integer</td><td style="text-align:center">Number of nearest neighbors to return when computing</td><td style="text-align:center">10</td></tr>
 </tbody>
 </table>
-<p><strong>输出目录结构：</strong></p>
+<p><strong>Output Directory Structure:</strong></p>
 <pre><code translate="no">datasets/custom/
 ├── train.parquet        <span class="hljs-comment"># Training vectors</span>
 ├── test.parquet         <span class="hljs-comment"># Query vectors  </span>
 ├── neighbors.parquet    <span class="hljs-comment"># Ground Truth</span>
 └── scalar_labels.parquet <span class="hljs-comment"># Optional scalar labels</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Complete-Conversion-Script" class="common-anchor-header">完整转换脚本</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="Complete-Conversion-Script" class="common-anchor-header">Complete Conversion Script</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> argparse
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
@@ -237,88 +241,88 @@ name
     args = parser.parse_args()
     main(args.train, args.test, args.out, args.labels, args.topk)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>转换过程输出：</strong>
+<p><strong>Conversion Process Output:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_conversion_process_output_0827ba75c9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>生成的文件 验证：</strong>
+<p><strong>Generated Files Verification:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_f02cd2964e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">自定义数据集配置</h3><p>导航至 Web 界面中的自定义数据集配置部分：</p>
+<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Custom Dataset Configuration</h3><p>Navigate to the Custom Dataset configuration section in the web interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_aa14b75b5d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>配置界面提供了数据集元数据和文件路径规范字段：</p>
+<p>The configuration interface provides fields for dataset metadata and file path specification:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/6_1b64832990.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>配置参数：</strong></p>
+<p><strong>Configuration Parameters:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>参数名称</strong></th><th style="text-align:center"><strong>参数名称</strong></th><th style="text-align:center"><strong>配置建议</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Meaning</strong></th><th style="text-align:center"><strong>Configuration Suggestions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">数据集名称</td><td style="text-align:center">数据集名称（唯一标识符）</td><td style="text-align:center">任何名称，例如<code translate="no">my_custom_dataset</code></td></tr>
-<tr><td style="text-align:center">文件夹路径</td><td style="text-align:center">数据集文件目录路径</td><td style="text-align:center">例如<code translate="no">/data/datasets/custom</code></td></tr>
-<tr><td style="text-align:center">尺寸</td><td style="text-align:center">向量尺寸</td><td style="text-align:center">必须与数据文件匹配，例如 768</td></tr>
-<tr><td style="text-align:center">大小</td><td style="text-align:center">向量数量（可选）</td><td style="text-align:center">可留空，系统将自动检测</td></tr>
-<tr><td style="text-align:center">度量类型</td><td style="text-align:center">相似度测量方法</td><td style="text-align:center">常用 L2（欧氏距离）或 IP（内积）</td></tr>
-<tr><td style="text-align:center">训练文件名</td><td style="text-align:center">训练集文件名（不带 .parquet 扩展名）</td><td style="text-align:center">如果<code translate="no">train.parquet</code> ，则填写<code translate="no">train</code> 。多个文件使用逗号分隔，如<code translate="no">train1,train2</code></td></tr>
-<tr><td style="text-align:center">测试文件名</td><td style="text-align:center">查询集文件名（不带 .parquet 扩展名）</td><td style="text-align:center">如果<code translate="no">test.parquet</code> ，则填写<code translate="no">test</code></td></tr>
-<tr><td style="text-align:center">地面实况文件名</td><td style="text-align:center">地面实况文件名（不带 .parquet 扩展名）</td><td style="text-align:center">如果<code translate="no">neighbors.parquet</code> ，请填写<code translate="no">neighbors</code></td></tr>
-<tr><td style="text-align:center">训练 ID 名称</td><td style="text-align:center">训练数据 ID 列名称</td><td style="text-align:center">通常<code translate="no">id</code></td></tr>
-<tr><td style="text-align:center">train emb 名称</td><td style="text-align:center">训练数据向量列名</td><td style="text-align:center">如果脚本生成的列名为<code translate="no">emb</code> ，则填写<code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">test emb 名称</td><td style="text-align:center">测试数据向量列名</td><td style="text-align:center">通常与 train emb 名称相同，例如<code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">地面实况 emb 名称</td><td style="text-align:center">地面实况中的最近邻列名</td><td style="text-align:center">如果列名为<code translate="no">neighbors_id</code> ，则填写<code translate="no">neighbors_id</code></td></tr>
-<tr><td style="text-align:center">标量标签文件名</td><td style="text-align:center">(可选）标签文件名（不带 .parquet 扩展名）</td><td style="text-align:center">如果生成了<code translate="no">scalar_labels.parquet</code> ，则填写<code translate="no">scalar_labels</code> ，否则留空</td></tr>
-<tr><td style="text-align:center">标签百分比</td><td style="text-align:center">(可选） 标签过滤比率</td><td style="text-align:center">例如，<code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, 如果不需要标签过滤，则留空</td></tr>
-<tr><td style="text-align:center">描述</td><td style="text-align:center">数据集描述</td><td style="text-align:center">不能注明业务上下文或生成方法</td></tr>
+<tr><td style="text-align:center">Name</td><td style="text-align:center">Dataset name (unique identifier)</td><td style="text-align:center">Any name, e.g., <code translate="no">my_custom_dataset</code></td></tr>
+<tr><td style="text-align:center">Folder Path</td><td style="text-align:center">Dataset file directory path</td><td style="text-align:center">e.g., <code translate="no">/data/datasets/custom</code></td></tr>
+<tr><td style="text-align:center">dim</td><td style="text-align:center">Vector dimensions</td><td style="text-align:center">Must match data files, e.g., 768</td></tr>
+<tr><td style="text-align:center">size</td><td style="text-align:center">Vector count (optional)</td><td style="text-align:center">Can be left empty, system will auto-detect</td></tr>
+<tr><td style="text-align:center">metric type</td><td style="text-align:center">Similarity measurement method</td><td style="text-align:center">Commonly use L2 (Euclidean distance) or IP (inner product)</td></tr>
+<tr><td style="text-align:center">train file name</td><td style="text-align:center">Training set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">train.parquet</code>, fill <code translate="no">train</code>. Multiple files use comma separation, e.g., <code translate="no">train1,train2</code></td></tr>
+<tr><td style="text-align:center">test file name</td><td style="text-align:center">Query set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">test.parquet</code>, fill <code translate="no">test</code></td></tr>
+<tr><td style="text-align:center">ground truth file name</td><td style="text-align:center">Ground Truth filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">neighbors.parquet</code>, fill <code translate="no">neighbors</code></td></tr>
+<tr><td style="text-align:center">train id name</td><td style="text-align:center">Training data ID column name</td><td style="text-align:center">Usually <code translate="no">id</code></td></tr>
+<tr><td style="text-align:center">train emb name</td><td style="text-align:center">Training data vector column name</td><td style="text-align:center">If script-generated column name is <code translate="no">emb</code>, fill <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">test emb name</td><td style="text-align:center">Test data vector column name</td><td style="text-align:center">Usually same as train emb name, e.g., <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">ground truth emb name</td><td style="text-align:center">Nearest neighbor column name in Ground Truth</td><td style="text-align:center">If column name is <code translate="no">neighbors_id</code>, fill <code translate="no">neighbors_id</code></td></tr>
+<tr><td style="text-align:center">scalar labels file name</td><td style="text-align:center">(Optional) Label filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">scalar_labels.parquet</code> was generated, fill <code translate="no">scalar_labels</code>, otherwise leave empty</td></tr>
+<tr><td style="text-align:center">label percentages</td><td style="text-align:center">(Optional) Label filter ratio</td><td style="text-align:center">e.g., <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, leave empty if no label filtering needed</td></tr>
+<tr><td style="text-align:center">description</td><td style="text-align:center">Dataset description</td><td style="text-align:center">Cannot note business context or generation method</td></tr>
 </tbody>
 </table>
-<p>保存配置，继续进行测试设置。</p>
-<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">测试执行和数据库配置</h3><p>访问测试配置界面：</p>
+<p>Save the configuration to proceed with the test setup.</p>
+<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Test Execution and Database Configuration</h3><p>Access the test configuration interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/7_3ecdcb1034.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>数据库选择和配置（以 Milvus 为例）：</strong>
+<p><strong>Database Selection and Configuration (Milvus as an Example):</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/8_356a2d8c39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>数据集分配：</strong>
+<p><strong>Dataset Assignment:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/9_dataset_assignment_85ba7b24ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>测试元数据和标签</strong>
+<p><strong>Test Metadata and Labeling:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/10_test_metadata_and_labeling_293f6f2b99.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>测试执行</strong>
+<p><strong>Test Execution:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/11_test_execution_76acb42c98.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">结果分析和性能评估<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
+<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Results Analysis and Performance Evaluation<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,22 +337,22 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>结果界面提供全面的性能分析：</p>
+    </button></h2><p>The results interface provides comprehensive performance analytics:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_993c536c20.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Test-Configuration-Summary" class="common-anchor-header">测试配置摘要</h3><p>评估测试了 1、5 和 10 个并发操作的并发级别（受可用硬件资源限制）、768 个向量维度、3,000 个训练向量和 3,000 次测试查询的数据集大小，本次测试运行禁用了标量标签过滤。</p>
-<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">关键实施考虑因素</h3><ul>
-<li><p><strong>维度一致性：</strong>训练数据集和测试数据集之间的向量维度不匹配会导致测试立即失败。请在数据准备过程中验证维度一致性，以避免运行时出错。</p></li>
-<li><p><strong>地面实况准确性：</strong>不正确的地面实况计算会使召回率测量失效。提供的转换脚本使用带有 L2 距离的 FAISS 进行精确近邻计算，确保参考结果的准确性。</p></li>
-<li><p><strong>数据集规模要求：</strong>小数据集（低于 10,000 个向量）可能会因负载生成不足而产生不一致的 QPS 测量结果。请考虑扩大数据集规模，以进行更可靠的吞吐量测试。</p></li>
-<li><p><strong>资源分配：</strong>Docker 容器的内存和 CPU 限制会在测试过程中人为限制数据库性能。监控资源利用率，并根据需要调整容器限制，以实现准确的性能测量。</p></li>
-<li><p><strong>错误监控：</strong> <strong>VDBBench</strong>可能会将错误记录到控制台输出中，而这些错误不会出现在 Web 界面中。请在测试执行期间监控终端日志，以获取完整的诊断信息。</p></li>
+<h3 id="Test-Configuration-Summary" class="common-anchor-header">Test Configuration Summary</h3><p>The evaluation tested concurrency levels of 1, 5, and 10 concurrent operations (constrained by available hardware resources), vector dimensions of 768, dataset size of 3,000 training vectors and 3,000 test queries, with scalar label filtering disabled for this test run.</p>
+<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Critical Implementation Considerations</h3><ul>
+<li><p><strong>Dimensional Consistency:</strong> Vector dimension mismatches between training and test datasets will cause immediate test failures. Verify dimensional alignment during data preparation to avoid runtime errors.</p></li>
+<li><p><strong>Ground Truth Accuracy:</strong> Incorrect ground truth calculations invalidate recall rate measurements. The provided conversion script uses FAISS with L2 distance for exact nearest neighbor computation, ensuring accurate reference results.</p></li>
+<li><p><strong>Dataset Scale Requirements:</strong> Small datasets (below 10,000 vectors) may produce inconsistent QPS measurements due to insufficient load generation. Consider scaling the dataset size for more reliable throughput testing.</p></li>
+<li><p><strong>Resource Allocation:</strong> Docker container memory and CPU constraints can artificially limit database performance during testing. Monitor resource utilization and adjust container limits as needed for accurate performance measurement.</p></li>
+<li><p><strong>Error Monitoring:</strong> <strong>VDBBench</strong> may log errors to console output that don’t appear in the web interface. Monitor terminal logs during test execution for complete diagnostic information.</p></li>
 </ul>
-<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">补充工具：测试数据生成<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
+<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Supplemental Tools: Test Data Generation<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -363,7 +367,7 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>对于开发和标准化测试场景，您可以生成具有受控特征的合成数据集：</p>
+    </button></h2><p>For development and standardized testing scenarios, you can generate synthetic datasets with controlled characteristics:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_csv</span>(<span class="hljs-params">num_records: <span class="hljs-built_in">int</span>, dim: <span class="hljs-built_in">int</span>, filename: <span class="hljs-built_in">str</span></span>):
@@ -385,8 +389,8 @@ name
     generate_csv(num_records, dim, <span class="hljs-string">&quot;train.csv&quot;</span>)
     generate_csv(num_records, dim, <span class="hljs-string">&quot;test.csv&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>该实用程序可生成具有指定尺寸和记录数的数据集，用于原型开发和基线测试场景。</p>
-<h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This utility generates datasets with specified dimensions and record counts for prototyping and baseline testing scenarios.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -401,12 +405,12 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>您刚刚了解了如何摆脱 "基准剧场 "的束缚，这种束缚曾误导了无数的向量数据库决策。有了 VDBBench 和您自己的数据集，您就可以生成生产级的 QPS、延迟和召回指标，而不再需要从几十年前的学术数据中进行猜测。</p>
-<p>不再依赖与实际工作负载毫无关系的罐装基准。只需几小时，而不是几周，您就能准确了解数据库在使用<em>您的</em>向量、查询和约束条件时<em>的</em>性能。这意味着您可以自信地做出决定，避免日后痛苦的重写，并开发出能在生产中实际运行的系统。</p>
+    </button></h2><p>You’ve just learned how to break free from the “benchmark theater” that’s misled countless vector database decisions. With VDBBench and your own dataset, you can generate production-grade QPS, latency, and recall metrics—no more guesswork from decades-old academic data.</p>
+<p>Stop relying on canned benchmarks that have nothing to do with your real workloads. In just hours—not weeks—you’ll see precisely how a database performs with <em>your</em> vectors, <em>your</em> queries, and <em>your</em> constraints. That means you can make the call with confidence, avoid painful rewrites later, and ship systems that actually work in production.</p>
 <ul>
-<li><p>使用您的工作负载试用 VDBBench<a href="https://github.com/zilliztech/VectorDBBench">：https://github.com/zilliztech/VectorDBBench</a></p></li>
-<li><p>查看主要向量数据库的测试结果：<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench 排行榜</a></p></li>
+<li><p>Try VDBBench with your workloads: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
+<li><p>View testing results of major vector databases: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
 </ul>
-<p>有问题或想分享您的结果？加入<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a>上的对话或在<a href="https://discord.com/invite/FG6hMJStWu">Discord</a> 上与我们的社区联系。</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
 <hr>
-<p><em>这是我们的《VectorDB POC 指南》系列的第一篇文章--经过开发人员亲身测试的方法，用于构建在真实世界压力下运行的人工智能基础架构。更多内容，敬请期待！</em></p>
+<p><em>This is the first post in our VectorDB POC Guide series—hands-on, developer-tested methods for building AI infrastructure that performs under real-world pressure. Stay tuned for more!</em></p>

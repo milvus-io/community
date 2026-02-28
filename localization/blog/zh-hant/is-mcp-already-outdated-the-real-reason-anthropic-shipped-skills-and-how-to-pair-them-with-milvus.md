@@ -1,7 +1,9 @@
 ---
 id: >-
   is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
-title: MCP 已經過時了嗎？Anthropic運送技能的真正原因-以及如何搭配Milvus
+title: >
+  Is MCP Already Outdated? The Real Reason Anthropic Shipped Skills—and How to
+  Pair Them with Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
 cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
@@ -11,22 +13,24 @@ publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Claude, Skills, MCP, Milvus, AI workflow'
 meta_title: 'Exploring Skills, MCP, and Milvus for Smarter AI Workflows'
-desc: 瞭解 Skills 如何減少代用幣消耗，以及 Skills 和 MCP 如何與 Milvus 合作強化 AI 工作流程。
+desc: >-
+  Learn how Skills works to reduce token consumption, and how Skills and MCP
+  work together with Milvus to enhance AI workflows.
 origin: >-
   https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
 ---
-<p>在過去幾個星期，X 和 Hacker News 上爆發了一場令人驚訝的激烈爭論：<em>我們真的還需要 MCP 伺服器嗎？</em>有些開發人員聲稱 MCP 過度工程化、渴求代幣，而且與代理應該如何使用工具根本不符。其他人則為 MCP 辯護，認為 MCP 是讓語言模型曝露真實世界功能的可靠方法。視您閱讀的主題而定，MCP 不是工具使用的未來，就是死路一條。</p>
+<p>Over the past few weeks, a surprisingly heated argument has erupted across X and Hacker News: <em>Do we actually need MCP servers anymore?</em> Some developers claim MCP is over-engineered, token-hungry, and fundamentally misaligned with how agents should use tools. Others defend MCP as the reliable way to expose real-world capabilities to language models. Depending on which thread you read, MCP is either the future of tool use—or dead on arrival.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hackernews_c3236cca2c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>這種挫折感是可以理解的。MCP 可以讓您強大地存取外部系統，但也會強迫模型載入冗長的模式、煩瑣的描述，以及龐大的工具清單。這會增加實際成本。如果您下載會議謄本，之後再將其輸入到其他工具中，模型可能會多次重新處理相同的文字，這樣會增加代幣的使用量，卻沒有明顯的好處。對於規模運作的團隊而言，這並非不便，而是帳單。</p>
-<p>但宣稱 MCP 已經過時還言之尚早。Anthropic (發明 MCP 的同一個團隊) 悄悄地推出了新的東西：<a href="https://claude.com/blog/skills"><strong>Skills</strong></a>。Skills 是輕量級的 Markdown/YAML 定義，說明工具應該<em>如何</em>以及<em>何時</em>使用。該模型不會將完整的模式傾倒到上下文視窗中，而是會先讀取精簡的元資料，然後再利用這些元資料進行規劃。在實踐中，Skills 大幅降低了符記開銷，並讓開發人員對工具協調有更多控制。</p>
-<p>那麼，這是否意味著 Skills 將取代 MCP？不完全是。Skills 可簡化規劃，但 MCP 仍會提供實際功能：讀取檔案、呼叫 API、與儲存系統互動，或插入<a href="https://milvus.io/"><strong>Milvus</strong></a> 等外部基礎架構，<a href="https://milvus.io/"><strong>Milvus</strong></a> 是一個開放原始碼向量資料庫，可支援大規模的快速語意檢索，因此當您的 Skills 需要真正的資料存取時，它是一個重要的後端。</p>
-<p>這篇文章將分別說明 Skills 的優點、MCP 仍然重要的地方，以及兩者如何融入 Anthropic 不斷演進的代理體架構。接下來，我們將介紹如何建立您自己的 Skills，並與 Milvus 整合。</p>
-<h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">Anthropic Agent Skills 是什麼？<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
+<p>The frustration is understandable. MCP gives you robust access to external systems, but it also forces the model to load long schemas, verbose descriptions, and sprawling tool lists. That adds real cost. If you download a meeting transcript and later feed it into another tool, the model may reprocess the same text multiple times, inflating token usage for no obvious benefit. For teams operating at scale, this isn’t an inconvenience—it’s a bill.</p>
+<p>But declaring MCP obsolete is premature. Anthropic—the same team that invented MCP—quietly introduced something new: <a href="https://claude.com/blog/skills"><strong>Skills</strong></a>. Skills are lightweight Markdown/YAML definitions that describe <em>how</em> and <em>when</em> a tool should be used. Instead of dumping full schemas into the context window, the model first reads compact metadata and uses that to plan. In practice, Skills dramatically reduce token overhead and give developers more control over tool orchestration.</p>
+<p>So, does this mean Skills will replace MCP? Not quite. Skills streamline planning, but MCP still provides the actual capabilities: reading files, calling APIs, interacting with storage systems, or plugging into external infrastructure like <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database that underpins fast semantic retrieval at scale, making it a critical backend when your Skills need real data access.</p>
+<p>This post breaks down what Skills do well, where MCP still matters, and how both fit into Anthropic’s evolving agent architecture. Then we’ll walk through how to build your own Skills that integrate cleanly with Milvus.</p>
+<h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">What Are Anthropic Agent Skills and How Do They Work<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,19 +45,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>傳統 AI 代理程式長久以來的痛點是，指令會隨著對話的增加而消失。</p>
-<p>即使有最精心製作的系統提示，模型的行為也會在對話過程中逐漸偏移。在幾個回合之後，Claude 開始忘記或不專注於原本的指示。</p>
-<p>問題在於系統提示的結構。它是一次性的靜態注入，在模型的上下文視窗中與對話記錄、文件和任何其他輸入一起競爭空間。當上下文視窗填滿時，模型對系統提示的注意力就會變得越來越少，導致隨著時間的推移而失去一致性。</p>
-<p>技能就是為了解決這個問題而設計的。技能是包含指令、腳本和資源的資料夾。與其依賴於靜態的系統提示，技能將專門知識分解成模組化、可重複使用且持久的指令包，Claude 可以在任務需要時發現並動態載入這些指令包。</p>
-<p>當 Claude 開始執行任務時，它會首先讀取所有可用 Skills 的 YAML 元資料 (只有幾十個符記)，對所有可用的 Skills 執行輕量級掃描。這些元資料提供了足夠的資訊，讓 Claude 判斷某個 Skill 是否與目前的任務相關。如果是的話，Claude 會擴展到完整的指令集 (通常少於 5k tokens)，只有在必要時才會載入其他資源或腳本。</p>
-<p>這種循序漸進的揭露方式讓 Claude 只需 30-50 個指令碼即可初始化一個 Skill，大幅提升效率並減少不必要的上下文開銷。</p>
+    </button></h2><p>A long-standing pain point of traditional AI agents is that instructions get washed out as the conversation grows.</p>
+<p>Even with the most carefully crafted system prompts, the model’s behavior can gradually drift over the course of the conversation. After several turns, Claude begins to forget or lose focus on the original instructions.</p>
+<p>The problem lies in the structure of the system prompt. It is a one-time, static injection that competes for space in the model’s context window, alongside conversation history, documents, and any other inputs. As the context window fills, the model’s attention to the system prompt becomes increasingly diluted, leading to a loss of consistency over time.</p>
+<p>Skills were designed to address this issue. Skills are folders containing instructions, scripts, and resources. Rather than relying on a static system prompt, Skills break down expertise into modular, reusable, and persistent instruction bundles that Claude can discover and load dynamically when needed for a task.</p>
+<p>When Claude begins a task, it first performs a lightweight scan of all available Skills by reading only their YAML metadata (just a few dozen tokens). This metadata provides just enough information for Claude to determine if a Skill is relevant to the current task. If so, Claude expands into the full set of instructions (usually under 5k tokens), and additional resources or scripts are loaded only if necessary.</p>
+<p>This progressive disclosure allows Claude to initialize a Skill with just 30–50 tokens, significantly improving efficiency and reducing unnecessary context overhead.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_skills_works_a8563f346c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="common-anchor-header">Skills 與 Prompts、Projects、MCP 及 Subagents 的比較<button data-href="#How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="anchor-icon" translate="no">
+<h2 id="How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="common-anchor-header">How Skills Compares to Prompts, Projects, MCP, and Subagents<button data-href="#How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,68 +72,68 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>現今的模型工具環境可能會讓人覺得很擁擠。即使僅在 Claude 的代理生態系統中，就有數個截然不同的元件：Skills、prompts、Projects、subagents 和 MCP。</p>
-<p>既然我們瞭解了什麼是 Skills，以及它們如何透過模組化指令束和動態載入來運作，我們就需要知道 Skills 與 Claude 生態系統的其他部分，尤其是 MCP，有什麼關係。以下是摘要：</p>
-<h3 id="1-Skills" class="common-anchor-header">1.技能</h3><p>Skills 是包含指令、腳本和資源的資料夾。Claude 使用漸進式揭露方式動態發現並載入它們：首先是元資料，然後是完整的指令，最後是任何所需的檔案。</p>
-<p><strong>最適合</strong></p>
+    </button></h2><p>Today’s model tooling landscape can feel crowded. Even within Claude’s agentic ecosystem alone, there are several distinct components: Skills, prompts, Projects, subagents, and MCP.</p>
+<p>Now that we understand what Skills are and how they work through modular instruction bundles and dynamic loading, we need to know how Skills relate to other parts of the Claude ecosystem, especially MCP. Here is a summary:</p>
+<h3 id="1-Skills" class="common-anchor-header">1. Skills</h3><p>Skills are folders that contain instructions, scripts, and resources. Claude discovers and loads them dynamically using progressive disclosure: first metadata, then full instructions, and finally any required files.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>組織工作流程 (品牌準則、合規程序)</p></li>
-<li><p>專業領域 (Excel 公式、資料分析)</p></li>
-<li><p>個人偏好 (筆記系統、編碼模式)</p></li>
-<li><p>需要在不同對話中重複使用的專業任務 (基於 OWASP 的程式碼安全檢閱)</p></li>
+<li><p>Organizational workflows (brand guidelines, compliance procedures)</p></li>
+<li><p>Domain expertise (Excel formulas, data analysis)</p></li>
+<li><p>Personal preferences (note-taking systems, coding patterns)</p></li>
+<li><p>Professional tasks that need to be reused across conversations (OWASP-based code security reviews)</p></li>
 </ul>
-<h3 id="2-Prompts" class="common-anchor-header">2.提示</h3><p>提示是您在會話中給予 Claude 的自然語言指示。它們是臨時的，只存在於目前的會話中。</p>
-<p><strong>最適用於</strong></p>
+<h3 id="2-Prompts" class="common-anchor-header">2. Prompts</h3><p>Prompts are the natural-language instructions you give Claude within a conversation. They are temporary and exist only in the current conversation.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>一次性要求（總結一篇文章、格式化一份清單）</p></li>
-<li><p>會話改進（調整語氣、增加細節）</p></li>
-<li><p>即時情境 (分析特定資料、詮釋內容)</p></li>
-<li><p>臨時指示</p></li>
+<li><p>One-off requests (summarizing an article, formatting a list)</p></li>
+<li><p>Conversational refinement (adjusting tone, adding details)</p></li>
+<li><p>Immediate context (analyzing specific data, interpreting content)</p></li>
+<li><p>Ad-hoc instructions</p></li>
 </ul>
-<h3 id="3-Projects" class="common-anchor-header">3.專案</h3><p>專案是獨立的工作區，有自己的聊天記錄和知識庫。每個專案提供 200K 的上下文視窗。當您的專案知識接近上下文限制時，Claude 會無縫轉換為 RAG 模式，讓有效容量擴充 10 倍。</p>
-<p><strong>最適合</strong></p>
+<h3 id="3-Projects" class="common-anchor-header">3. Projects</h3><p>Projects are self-contained workspaces with their own chat histories and knowledge bases. Each project offers a 200K context window. When your project knowledge approaches context limits, Claude transitions seamlessly into RAG mode, allowing up to a 10x expansion in effective capacity.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>持久性上下文 (例如：與產品發表相關的所有對話)</p></li>
-<li><p>工作區組織 (不同的計畫有不同的情境)</p></li>
-<li><p>團隊協作（在團隊和企業計畫中）</p></li>
-<li><p>自訂指示 (專案特定的語氣或角度)</p></li>
+<li><p>Persistent context (e.g., all conversations related to a product launch)</p></li>
+<li><p>Workspace organization (separate contexts for different initiatives)</p></li>
+<li><p>Team collaboration (on Team and Enterprise plans)</p></li>
+<li><p>Custom instructions (project-specific tone or perspective)</p></li>
 </ul>
-<h3 id="4-Subagents" class="common-anchor-header">4.子代理</h3><p>副代理是專門的 AI 助手，擁有自己的情境視窗、自訂系統提示和特定工具權限。他們可以獨立工作，並將結果回傳給主代理。</p>
-<p><strong>最適合</strong></p>
+<h3 id="4-Subagents" class="common-anchor-header">4. Subagents</h3><p>Subagents are specialized AI assistants with their own context windows, custom system prompts, and specific tool permissions. They can work independently and return results to the main agent.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>任務專業化 (程式碼檢閱、測試產生、安全稽核)</p></li>
-<li><p>情境管理 (保持主會談專注)</p></li>
-<li><p>平行處理 (多個子代理同時處理不同方面)</p></li>
-<li><p>工具限制 (例如：唯讀存取)</p></li>
+<li><p>Task specialization (code review, test generation, security audits)</p></li>
+<li><p>Context management (keep the main conversation focused)</p></li>
+<li><p>Parallel processing (multiple subagents working on different aspects simultaneously)</p></li>
+<li><p>Tool restriction (e.g., read-only access)</p></li>
 </ul>
-<h3 id="5-MCP-Model-Context-Protocol" class="common-anchor-header">5.MCP（模型上下文通訊協定）</h3><p>Model Context Protocol (MCP) 是一個開放標準，可將 AI 模型連接到外部工具和資料來源。</p>
-<p><strong>最適用於</strong></p>
+<h3 id="5-MCP-Model-Context-Protocol" class="common-anchor-header">5. MCP (Model Context Protocol)</h3><p>The Model Context Protocol (MCP) is an open standard that connects AI models to external tools and data sources.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>存取外部資料 (Google Drive、Slack、GitHub、資料庫)</p></li>
-<li><p>使用業務工具 (CRM 系統、專案管理平台)</p></li>
-<li><p>連接開發環境（本機檔案、IDE、版本控制）</p></li>
-<li><p>整合自訂系統（專屬工具和資料來源）</p></li>
+<li><p>Accessing external data (Google Drive, Slack, GitHub, databases)</p></li>
+<li><p>Using business tools (CRM systems, project management platforms)</p></li>
+<li><p>Connecting to development environments (Local files, IDEs, version control)</p></li>
+<li><p>Integrating with custom systems (proprietary tools and data sources)</p></li>
 </ul>
-<p>基於以上所述，我們可以看到 Skills 與 MCP 可解決不同的挑戰，並共同發揮相輔相成的作用。</p>
+<p>Based on the above, we can see that Skills and MCP address different challenges and work together to complement each other.</p>
 <table>
 <thead>
-<tr><th><strong>維度</strong></th><th><strong>MCP</strong></th><th><strong>技能</strong></th></tr>
+<tr><th><strong>Dimension</strong></th><th><strong>MCP</strong></th><th><strong>Skills</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>核心價值</strong></td><td>連接外部系統（資料庫、API、SaaS 平台）</td><td>定義行為規格（如何處理及呈現資料）</td></tr>
-<tr><td><strong>回答問題</strong></td><td>"Claude 可以存取什麼？</td><td>"Claude 應該做什麼？</td></tr>
-<tr><td><strong>實作</strong></td><td>用戶端伺服器通訊協定 + JSON 模式</td><td>Markdown 檔案 + YAML 元資料</td></tr>
-<tr><td><strong>內容消耗</strong></td><td>數以萬計的代幣 (多台伺服器累積)</td><td>每次操作 30-50 個令牌</td></tr>
-<tr><td><strong>使用案例</strong></td><td>查詢大型資料庫、呼叫 GitHub API</td><td>定義搜尋策略、套用過濾規則、輸出格式化</td></tr>
+<tr><td><strong>Core Value</strong></td><td>Connects to external systems (databases, APIs, SaaS platforms)</td><td>Defines behavior specifications (how to process and present data)</td></tr>
+<tr><td><strong>Questions Answered</strong></td><td>“What can Claude access?”</td><td>“What should Claude do?”</td></tr>
+<tr><td><strong>Implementation</strong></td><td>Client-server protocol + JSON Schema</td><td>Markdown file + YAML metadata</td></tr>
+<tr><td><strong>Context Consumption</strong></td><td>Tens of thousands of tokens (multiple server accumulations)</td><td>30-50 tokens per operation</td></tr>
+<tr><td><strong>Use Cases</strong></td><td>Querying large databases, calling GitHub APIs</td><td>Defining search strategies, applying filtering rules, output formatting</td></tr>
 </tbody>
 </table>
-<p>讓我們以程式碼搜尋為例。</p>
+<p>Let’s take code search as an example.</p>
 <ul>
-<li><p><strong>MCP (例如 claude-context)：</strong>提供存取 Milvus 向量資料庫的能力。</p></li>
-<li><p><strong>技能：</strong>定義工作流程，例如優先處理最近修改的程式碼、依相關性排序結果，以及以 Markdown 表格呈現資料。</p></li>
+<li><p><strong>MCP (e.g., claude-context):</strong> Provides the ability to access the Milvus vector database.</p></li>
+<li><p><strong>Skills:</strong> Defines the workflow, such as prioritizing the most recently modified code, sorting results by relevance, and presenting the data in a Markdown table.</p></li>
 </ul>
-<p>MCP 提供能力，而 Skills 定義流程。兩者相輔相成。</p>
-<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">如何使用 Claude-Context 和 Milvus 建立自訂技能<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
+<p>MCP provides the capability, while Skills define the process. Together, they form a complementary pair.</p>
+<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">How to Build Custom Skills with Claude-Context and Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,14 +148,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/claude-context">Claude-Context</a>是一個 MCP 外掛，可為 Claude Code 增加語意程式碼搜尋功能，將整個程式碼庫轉換成 Claude 的上下文。</p>
-<h3 id="Prerequisite" class="common-anchor-header">先決條件</h3><p>系統需求：</p>
+    </button></h2><p><a href="https://github.com/zilliztech/claude-context">Claude-Context</a> is an MCP plugin that adds semantic code search functionality to Claude Code, turning the entire codebase into Claude’s context.</p>
+<h3 id="Prerequisite" class="common-anchor-header">Prerequisite</h3><p>System Requirements:</p>
 <ul>
-<li><p><strong>Node.js</strong>：版本 &gt;= 20.0.0 且 &lt; 24.0.0</p></li>
-<li><p><strong>OpenAI API 金鑰</strong>(用於嵌入模型)</p></li>
-<li><p><a href="https://zilliz.com.cn/"><strong>Zilliz Cloud</strong></a> <strong>API 金鑰</strong>(管理的 Milvus 服務)</p></li>
+<li><p><strong>Node.js</strong>: Version &gt;= 20.0.0 and &lt; 24.0.0</p></li>
+<li><p><strong>OpenAI API Key</strong> (for embedding models)</p></li>
+<li><p><a href="https://zilliz.com.cn/"><strong>Zilliz Cloud</strong></a> <strong>API Key</strong> (managed Milvus service)</p></li>
 </ul>
-<h3 id="Step-1-Configure-the-MCP-Service-claude-context" class="common-anchor-header">步驟 1：配置 MCP 服務 (claude-context)</h3><p>在終端執行下列指令：</p>
+<h3 id="Step-1-Configure-the-MCP-Service-claude-context" class="common-anchor-header">Step 1: Configure the MCP Service (claude-context)</h3><p>Run the following command in the terminal:</p>
 <pre><code translate="no">claude mcp add claude-context \
   -e OPENAI_API_KEY=sk-your-openai-api-key \
   -e MILVUS_ADDRESS=https:<span class="hljs-comment">//xxxxxxxxx-cn-hangzhou.cloud.zilliz.com.cn \</span>
@@ -159,7 +163,7 @@ origin: >-
   -e COLLECTION_NAME=medium_articles \
   -- npx <span class="hljs-meta">@zilliz</span>/claude-context-mcp<span class="hljs-meta">@latest</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>檢查設定：</p>
+<p>Check the Configuration:</p>
 <pre><code translate="no">claude mcp list
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -168,12 +172,12 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>MCP 設定完成。Claude 現在可以存取 Milvus 向量資料庫。</p>
-<h3 id="Step-2-Create-the-Skill" class="common-anchor-header">步驟 2：建立技能</h3><p>建立 Skills 目錄：</p>
+<p>The MCP setup is complete. Claude can now access the Milvus vector database.</p>
+<h3 id="Step-2-Create-the-Skill" class="common-anchor-header">Step 2: Create the Skill</h3><p>Create the Skills directory:</p>
 <pre><code translate="no"><span class="hljs-built_in">mkdir</span> -p ~/.claude/skills/milvus-code-search
 <span class="hljs-built_in">cd</span> ~/.claude/skills/milvus-code-search
 <button class="copy-code-btn"></button></code></pre>
-<p>建立 SKILL.md 檔案：</p>
+<p>Create the SKILL.md file:</p>
 <pre><code translate="no">---
 name: milvus-code-search
 description: A semantic code search <span class="hljs-keyword">and</span> architecture analysis skill designed <span class="hljs-keyword">for</span> the Milvus codebase
@@ -224,12 +228,12 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
 
 ---
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Restart-Claude-to-Apply-Skills" class="common-anchor-header">步驟 3：重新啟動 Claude 以套用技能</h3><p>執行下列指令重新啟動 Claude：</p>
+<h3 id="Step-3-Restart-Claude-to-Apply-Skills" class="common-anchor-header">Step 3: Restart Claude to Apply Skills</h3><p>Run the following command to restart Claude:</p>
 <pre><code translate="no">claude
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>注意：</strong>配置完成後，您可以立即使用 Skills 來查詢 Milvus 程式碼庫。</p>
-<p>以下是如何運作的範例。</p>
-<p>查詢：Milvus QueryCoord 如何運作？</p>
+<p><strong>Note:</strong> After the configuration is complete, you can immediately use the Skills to query the Milvus codebase.</p>
+<p>Below is an example of how it works.</p>
+<p>Query: How does Milvus QueryCoord work?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/code_a95429ddb0.png" alt="" class="doc-image" id="" />
@@ -248,7 +252,7 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -263,7 +267,7 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在其核心，Skills 是一種封裝與傳輸專門知識的機制。透過使用 Skills，AI 可以繼承團隊的經驗，並遵循業界的最佳實務 - 不論是程式碼檢閱的核對清單或文件標準。當這些隱性知識透過 Markdown 檔案變得明確時，AI 所產生的輸出品質就會有顯著的改善。</p>
-<p>展望未來，有效運用 Skills 的能力將成為團隊與個人如何運用 AI 發揮優勢的關鍵差異。</p>
-<p>當您在組織中探索 AI 的潛力時，Milvus 是管理和搜尋大型向量資料的重要工具。將 Milvus 強大的向量資料庫與 Skills 等人工智慧工具搭配使用，不僅能改善您的工作流程，還能提升資料驅動洞察力的深度與速度。</p>
-<p>對任何功能有問題或想要深入瞭解？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>，與我們的工程師和社群中的其他 AI 工程師交談。您也可以透過<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 預約 20 分鐘的一對一會議，以獲得深入的見解、指導和問題解答。</p>
+    </button></h2><p>At its core, Skills act as a mechanism for encapsulating and transferring specialized knowledge. By using Skills, AI can inherit a team’s experience and follow industry best practices—whether that’s a checklist for code reviews or documentation standards. When this tacit knowledge is made explicit through Markdown files, the quality of AI-generated outputs can see a significant improvement.</p>
+<p>Looking ahead, the ability to leverage Skills effectively could become a key differentiator in how teams and individuals use AI to their advantage.</p>
+<p>As you explore the potential of AI in your organization, Milvus stands as a critical tool for managing and searching large-scale vector data. By pairing Milvus’ powerful vector database with AI tools like Skills, you can improve not only your workflows but also the depth and speed of your data-driven insights.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> to chat with our engineers and other AI engineers in the community. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

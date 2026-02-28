@@ -1,6 +1,7 @@
 ---
 id: how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md
-title: 如何使用 Agno 和 Milvus 建立生產就緒的多動態系統
+title: |
+  How to Build Production-Ready Multi-Agent Systems with Agno and Milvus
 author: Min Yin
 date: 2026-02-10T00:00:00.000Z
 cover: assets.zilliz.com/cover_b5fc8a3c48.png
@@ -13,16 +14,18 @@ meta_keywords: >-
   AgentOS deployment, LLM agent architecture
 meta_title: |
   How to Build Production-Ready Multi-Agent Systems with Agno and Milvus
-desc: 學習如何使用 Agno、AgentOS 和 Milvus 為實際工作負載建立、部署和擴充生產就緒的多重代理系統。
+desc: >
+  Learn how to build, deploy, and scale production-ready multi-agent systems
+  using Agno, AgentOS, and Milvus for real-world workloads.
 origin: >-
   https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md
 ---
-<p>如果您一直在建立人工智慧代理程式，您很可能會碰壁：您的示範運作得很好，但要將它導入生產卻是另一回事。</p>
-<p>在之前的文章中，我們已經介紹過代理程式的記憶體管理和重排。現在，讓我們來解決更大的挑戰，建立能真正在生產中運作的代理程式。</p>
-<p>現實的情況是：生產環境非常混亂。單一代理很少能勝任，這就是為什麼多代理系統無處不在的原因。但目前可用的框架往往分為兩大陣營：輕量級的框架雖然演示效果很好，但在實際負載下就會崩潰；強大的框架則需要花很長的時間來學習和建構。</p>
-<p>我最近一直在嘗試<a href="https://github.com/agno-agi/agno">Agno</a>，它似乎找到了一個合理的中間落腳點--既注重生產準備，又不會過於複雜。這個專案在幾個月內就獲得超過 37,000 個 GitHub stars，顯示其他開發人員也覺得它很有用。</p>
-<p>在這篇文章中，我將分享我在使用 Agno 與<a href="https://milvus.io/">Milvus</a>作為記憶體層來建置多機體系統時所學到的知識。我們將探討 Agno 與 LangGraph 等替代方案的比較，並介紹您可以自行嘗試的完整實作。</p>
-<h2 id="What-Is-Agno" class="common-anchor-header">Agno 是什麼？<button data-href="#What-Is-Agno" class="anchor-icon" translate="no">
+<p>If you’ve been building AI agents, you’ve probably hit this wall: your demo works great, but getting it into production is a whole different story.</p>
+<p>We’ve covered agent memory management and reranking in earlier posts. Now let’s tackle the bigger challenge—building agents that actually hold up in production.</p>
+<p>Here’s the reality: production environments are messy. A single agent rarely cuts it, which is why multi-agent systems are everywhere. But the frameworks available today tend to fall into two camps: lightweight ones that demo well but break under real load, or powerful ones that take forever to learn and build with.</p>
+<p>I’ve been experimenting with <a href="https://github.com/agno-agi/agno">Agno</a> recently, and it seems to strike a reasonable middle ground—focused on production readiness without excessive complexity. The project has gained over 37,000 GitHub stars in a few months, suggesting other developers find it useful as well.</p>
+<p>In this post, I’ll share what I learned while building a multi-agent system using Agno with <a href="https://milvus.io/">Milvus</a> as the memory layer. We’ll look at how Agno compares to alternatives such as LangGraph and walk through a complete implementation you can try yourself.</p>
+<h2 id="What-Is-Agno" class="common-anchor-header">What Is Agno?<button data-href="#What-Is-Agno" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,29 +40,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/agno-agi/agno">Agno</a>是專為生產使用而建立的多代理框架。它有兩個不同的層次：</p>
+    </button></h2><p><a href="https://github.com/agno-agi/agno">Agno</a> is a multi-agent framework built specifically for production use. It has two distinct layers:</p>
 <ul>
-<li><p><strong>Agno 框架層</strong>：您定義代理程式邏輯的地方</p></li>
-<li><p><strong>AgentOS 運行層</strong>：將這個邏輯轉換成您可以實際部署的 HTTP 服務。</p></li>
+<li><p><strong>Agno framework layer</strong>: Where you define your agent logic</p></li>
+<li><p><strong>AgentOS runtime layer</strong>: Turns that logic into HTTP services you can actually deploy</p></li>
 </ul>
-<p>可以這樣想：框架層定義您的代理應該做<em>什麼</em>，而 AgentOS 則處理<em>如何</em>執行和服務這些工作。</p>
-<h3 id="The-Framework-Layer" class="common-anchor-header">框架層</h3><p>這就是您要直接處理的工作。它引入了三個核心概念：</p>
+<p>Think of it this way: the framework layer defines <em>what</em> your agents should do, while AgentOS handles <em>how</em> that work gets executed and served.</p>
+<h3 id="The-Framework-Layer" class="common-anchor-header">The Framework Layer</h3><p>This is what you work with directly. It introduces three core concepts:</p>
 <ul>
-<li><p><strong>代理</strong>：處理特定類型的任務</p></li>
-<li><p><strong>團隊</strong>：協調多個代理解決複雜的問題</p></li>
-<li><p><strong>工作流程</strong>：定義執行順序和結構</p></li>
+<li><p><strong>Agent</strong>: Handles a specific type of task</p></li>
+<li><p><strong>Team</strong>: Coordinates multiple agents to solve complex problems</p></li>
+<li><p><strong>Workflow</strong>: Defines execution order and structure</p></li>
 </ul>
-<p>有一點我很欣賞：您不需要學習新的 DSL 或繪製流程圖。代理行為是使用標準 Python 函式呼叫來定義的。該架構處理 LLM 調用、工具執行和記憶體管理。</p>
-<h3 id="The-AgentOS-Runtime-Layer" class="common-anchor-header">AgentOS 運行時層</h3><p>AgentOS 旨在透過同步執行來處理大量的請求量，其無狀態架構讓擴充變得簡單直接。</p>
-<p>主要功能包括</p>
+<p>One thing I appreciated: you don’t need to learn a new DSL or draw flowcharts. Agent behavior is defined using standard Python function calls. The framework handles LLM invocation, tool execution, and memory management.</p>
+<h3 id="The-AgentOS-Runtime-Layer" class="common-anchor-header">The AgentOS Runtime Layer</h3><p>AgentOS is designed for high request volumes through async execution, and its stateless architecture makes scaling straightforward.</p>
+<p>Key features include:</p>
 <ul>
-<li><p>內建 FastAPI 整合功能，可將代理體顯示為 HTTP 端點</p></li>
-<li><p>會話管理與串流回應</p></li>
-<li><p>監控端點</p></li>
-<li><p>支援橫向擴充</p></li>
+<li><p>Built-in FastAPI integration for exposing agents as HTTP endpoints</p></li>
+<li><p>Session management and streaming responses</p></li>
+<li><p>Monitoring endpoints</p></li>
+<li><p>Horizontal scaling support</p></li>
 </ul>
-<p>實際上，AgentOS 會處理大部分的基礎架構工作，讓您可以專注於代理程式邏輯本身。</p>
-<p>Agno 架構的高階視圖如下。</p>
+<p>In practice, AgentOS handles most of the infrastructure work, which lets you focus on the agent logic itself.</p>
+<p>A high-level view of Agno’s architecture is shown below.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_dfbf444ee6.png" alt="" class="doc-image" id="" />
@@ -81,24 +84,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>為了瞭解 Agno 的優勢，讓我們將它與 LangGraph 作一比較 - LangGraph 是使用最廣泛的多代理程式框架之一。</p>
-<p><a href="https://www.langchain.com/langgraph"><strong>LangGraph</strong></a>使用基於圖的狀態機。您可以將整個代理工作流程建模為圖形：步驟是節點，執行路徑是邊緣。當您的流程是固定且嚴格有序時，這個方法會很有效。但對於開放式或對話式的情境來說，可能會覺得有限制。隨著互動變得越來越動態，維護一個乾淨的圖形就變得越來越困難。</p>
-<p><strong>Agno</strong>採取了不同的方法。它不是一個純粹的協調層，而是一個端到端的系統。定義您的代理行為，AgentOS 就會自動將其顯示為生產就緒的 HTTP 服務，並內建監控、可擴充性和多輪對話支援。不需要單獨的 API 閘道，不需要自訂會話管理，也不需要額外的作業工具。</p>
-<p>以下是快速比較：</p>
+    </button></h2><p>To understand where Agno fits, let’s compare it with LangGraph—one of the most widely used multi-agent frameworks.</p>
+<p><a href="https://www.langchain.com/langgraph"><strong>LangGraph</strong></a> uses a graph-based state machine. You model your entire agent workflow as a graph: steps are nodes, execution paths are edges. This works well when your process is fixed and strictly ordered. But for open-ended or conversational scenarios, it can feel restrictive. As interactions get more dynamic, maintaining a clean graph gets harder.</p>
+<p><strong>Agno</strong> takes a different approach. Instead of being a pure orchestration layer, it’s an end-to-end system. Define your agent behavior, and AgentOS automatically exposes it as a production-ready HTTP service—with monitoring, scalability, and multi-turn conversation support built in. No separate API gateway, no custom session management, no extra operational tooling.</p>
+<p>Here’s a quick comparison:</p>
 <table>
 <thead>
-<tr><th>尺寸</th><th>LangGraph</th><th>Agno</th></tr>
+<tr><th>Dimension</th><th>LangGraph</th><th>Agno</th></tr>
 </thead>
 <tbody>
-<tr><td>協調模型</td><td>使用節點和邊緣明確定義圖形</td><td>以 Python 定義的宣告式工作流程</td></tr>
-<tr><td>狀態管理</td><td>由開發人員定義和管理的自訂狀態類別</td><td>內建記憶體系統</td></tr>
-<tr><td>除錯與可觀察性</td><td>LangSmith (付費)</td><td>AgentOS UI (開放原始碼)</td></tr>
-<tr><td>執行時模型</td><td>整合至現有的執行時</td><td>基於 FastAPI 的獨立服務</td></tr>
-<tr><td>部署複雜性</td><td>需要透過 LangServe 進行額外設定</td><td>開箱即用</td></tr>
+<tr><td>Orchestration model</td><td>Explicit graph definition using nodes and edges</td><td>Declarative workflows defined in Python</td></tr>
+<tr><td>State management</td><td>Custom state classes defined and managed by developers</td><td>Built-in memory system</td></tr>
+<tr><td>Debugging &amp; observability</td><td>LangSmith (paid)</td><td>AgentOS UI (open source)</td></tr>
+<tr><td>Runtime model</td><td>Integrated into an existing runtime</td><td>Standalone FastAPI-based service</td></tr>
+<tr><td>Deployment complexity</td><td>Requires additional setup via LangServe</td><td>Works out of the box</td></tr>
 </tbody>
 </table>
-<p>LangGraph 提供您更多的彈性與精細的控制。Agno 優化了更快的生產時間。正確的選擇取決於您的專案階段、現有的基礎架構，以及您需要的客製化程度。如果您不確定，使用兩者執行小型概念驗證可能是最可靠的決定方式。</p>
-<h2 id="Choosing-Milvus-for-the-Agent-Memory-Layer" class="common-anchor-header">為代理程式記憶體層選擇 Milvus<button data-href="#Choosing-Milvus-for-the-Agent-Memory-Layer" class="anchor-icon" translate="no">
+<p>LangGraph gives you more flexibility and fine-grained control. Agno optimizes for faster time-to-production. The right choice depends on your project stage, existing infrastructure, and the level of customization you need. If you’re unsure, running a small proof of concept with both is probably the most reliable way to decide.</p>
+<h2 id="Choosing-Milvus-for-the-Agent-Memory-Layer" class="common-anchor-header">Choosing Milvus for the Agent Memory Layer<button data-href="#Choosing-Milvus-for-the-Agent-Memory-Layer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -113,22 +116,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一旦您選擇了框架，下一個決定就是如何儲存記憶體和知識。我們使用 Milvus 來處理這個問題。<a href="https://milvus.io/">Milvus</a>是專為 AI 工作負載打造的最流行開源向量資料庫，在<a href="https://github.com/milvus-io/milvus">GitHub 上</a>擁有超過<a href="https://github.com/milvus-io/milvus">42,000+ 顆</a>星星。</p>
-<p><strong>Agno 原生支援 Milvus。</strong> <code translate="no">agno.vectordb.milvus</code> 模組包裝了生產功能，例如連線管理、自動重試、批次寫入和嵌入產生。您不需要自行建立連線池或處理網路故障，幾行 Python 就能提供您一個工作向量記憶體層。</p>
-<p><strong>Milvus 可根據您的需求進行擴充。</strong>它支援三種<a href="https://milvus.io/docs/install-overview.md">部署模式：</a></p>
+    </button></h2><p>Once you’ve chosen a framework, the next decision is how to store memory and knowledge. We use Milvus for this. <a href="https://milvus.io/">Milvus</a> is the most popular open-source vector database built for AI workloads with more than <a href="https://github.com/milvus-io/milvus">42,000+ GitHub</a> stars.</p>
+<p><strong>Agno has native Milvus support.</strong> The <code translate="no">agno.vectordb.milvus</code> module wraps production features like connection management, automatic retries, batch writes, and embedding generation. You don’t need to build connection pools or handle network failures yourself—a few lines of Python give you a working vector memory layer.</p>
+<p><strong>Milvus scales with your needs.</strong> It supports three <a href="https://milvus.io/docs/install-overview.md">deployment modes:</a></p>
 <ul>
-<li><p><strong>Milvus Lite</strong>：輕量、以檔案為基礎 - 非常適合本地開發與測試</p></li>
-<li><p><strong>獨立</strong>：單一伺服器部署，適用於生產工作負載</p></li>
-<li><p><strong>分散式</strong>：適用於大規模方案的完整集群</p></li>
+<li><p><strong>Milvus Lite</strong>: Lightweight, file-based—great for local development and testing</p></li>
+<li><p><strong>Standalone</strong>: Single-server deployment for production workloads</p></li>
+<li><p><strong>Distributed</strong>: Full cluster for high-scale scenarios</p></li>
 </ul>
-<p>您可以從 Milvus Lite 開始，在本地驗證您的代理程式記憶體，然後隨著流量成長移至獨立或分散式，而無需變更您的應用程式碼。當您在早期階段快速迭代，但需要明確的擴充路徑時，這種靈活性尤其有用。</p>
+<p>You can start with Milvus Lite to validate your agent memory locally, then move to standalone or distributed as traffic grows—without changing your application code. This flexibility is especially useful when you’re iterating quickly in early stages but need a clear path to scale later.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_1_1en_e0294d0ffa.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="common-anchor-header">逐步進行：使用 Milvus 建立生產就緒的 Agno 代理程式<button data-href="#Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="anchor-icon" translate="no">
+<h2 id="Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="common-anchor-header">Step-by-Step: Building a Production-Ready Agno Agent with Milvus<button data-href="#Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,13 +146,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>讓我們從頭開始建立一個可投入生產的代理程式。</p>
-<p>我們將從一個簡單的單一代理範例開始，以展示完整的工作流程。然後，我們會將它擴展成一個多代理系統。AgentOS 會自動將一切打包為可呼叫的 HTTP 服務。</p>
-<h3 id="1-Deploying-Milvus-Standalone-with-Docker" class="common-anchor-header">1.使用 Docker 部署 Milvus Standalone</h3><p><strong>(1) 下載部署檔案</strong></p>
+    </button></h2><p>Let’s build a production-ready agent from scratch.</p>
+<p>We’ll start with a simple single-agent example to show the full workflow. Then we’ll expand it into a multi-agent system. AgentOS will automatically package everything as a callable HTTP service.</p>
+<h3 id="1-Deploying-Milvus-Standalone-with-Docker" class="common-anchor-header">1. Deploying Milvus Standalone with Docker</h3><p><strong>(1) Download the Deployment Files</strong></p>
 <pre><code translate="no">**wget** **
 &lt;https://github.com/Milvus-io/Milvus/releases/download/v2.****5****.****12****/Milvus-standalone-docker-compose.yml&gt; -O docker-compose.yml**
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) 啟動 Milvus 服務</strong></p>
+<p><strong>(2) Start the Milvus Service</strong></p>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">docker-compose ps -a
@@ -160,7 +163,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="2-Core-Implementation" class="common-anchor-header">2.核心執行</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="2-Core-Implementation" class="common-anchor-header">2. Core Implementation</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
 <span class="hljs-keyword">from</span> agno.os <span class="hljs-keyword">import</span> AgentOS
 <span class="hljs-keyword">from</span> agno.agent <span class="hljs-keyword">import</span> Agent
@@ -210,7 +213,7 @@ app = agent_os.get_app()
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;💡 Please upload documents to the knowledge base in the UI\n&quot;</span>)
     agent_os.serve(app=<span class="hljs-string">&quot;knowledge_agent:app&quot;</span>, port=<span class="hljs-number">7777</span>, reload=<span class="hljs-literal">False</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(1) 執行代理程式</strong></p>
+<p><strong>(1) Running the Agent</strong></p>
 <pre><code translate="no">**python** **knowledge_agent.py**
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -219,29 +222,29 @@ app = agent_os.get_app()
     <span></span>
   </span>
 </p>
-<h3 id="3-Connecting-to-the-AgentOS-Console" class="common-anchor-header">3.連接至 AgentOS 主控台</h3><p>https://os.agno.com/</p>
-<p><strong>(1) 建立帳號並登入</strong></p>
+<h3 id="3-Connecting-to-the-AgentOS-Console" class="common-anchor-header">3. Connecting to the AgentOS Console</h3><p>https://os.agno.com/</p>
+<p><strong>(1) Create an Account and Sign In</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_db0af51e58.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(2) 將您的代理程式連接到 AgentOS</strong></p>
+<p><strong>(2) Connect Your Agent to AgentOS</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_0a8c6f9436.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(3) 設定暴露的連接埠和 Agent 名稱</strong></p>
+<p><strong>(3) Configure the Exposed Port and Agent Name</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_3844011799.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(4) 在 Milvus 中新增文件並建立索引</strong></p>
+<p><strong>(4) Add Documents and Index Them in Milvus</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_776ea7ca11.png" alt="" class="doc-image" id="" />
@@ -266,17 +269,17 @@ app = agent_os.get_app()
     <span></span>
   </span>
 </p>
-<p><strong>(5) 測試代理端到端</strong></p>
+<p><strong>(5) Test the Agent End to End</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/_6e61038ba5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>在這個設定中，Milvus 處理高效能的語意檢索。當知識庫助理收到技術問題時，它會呼叫<code translate="no">search_knowledge</code> 工具來嵌入查詢，從 Milvus 擷取最相關的文件塊，並使用這些結果作為回應的基礎。</p>
-<p>Milvus 提供三種部署選項，讓您可以選擇適合您作業需求的架構，同時在所有部署模式中保持應用程式層級 API 的一致性。</p>
-<p>上面的示範展示了核心的擷取與產生流程。然而，若要將此設計轉移到生產環境中，有幾個架構層面需要更詳細的討論。</p>
-<h2 id="How-Retrieval-Results-Are-Shared-Across-Agents" class="common-anchor-header">擷取結果如何在代理之間分享<button data-href="#How-Retrieval-Results-Are-Shared-Across-Agents" class="anchor-icon" translate="no">
+<p>In this setup, Milvus handles high-performance semantic retrieval. When the knowledge-base assistant receives a technical question, it invokes the <code translate="no">search_knowledge</code> tool to embed the query, retrieves the most relevant document chunks from Milvus, and uses those results as the basis for its response.</p>
+<p>Milvus offers three deployment options, allowing you to choose an architecture that fits your operational requirements while keeping the application-level APIs consistent across all deployment modes.</p>
+<p>The demo above shows the core retrieval and generation flow. To move this design into a production environment, however, several architectural aspects need to be discussed in more detail.</p>
+<h2 id="How-Retrieval-Results-Are-Shared-Across-Agents" class="common-anchor-header">How Retrieval Results Are Shared Across Agents<button data-href="#How-Retrieval-Results-Are-Shared-Across-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -291,13 +294,13 @@ app = agent_os.get_app()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agno 的團隊模式有一個<code translate="no">share_member_interactions=True</code> 選項，允許後來的代理繼承先前代理的完整互動歷史。實際上，這表示當第一個代理從 Milvus 擷取資訊時，後續代理可以重複使用這些結果，而不需要再次執行相同的搜尋。</p>
+    </button></h2><p>Agno’s Team mode has a <code translate="no">share_member_interactions=True</code> option that allows later agents to inherit the full interaction history of earlier agents. In practice, this means that when the first agent retrieves information from Milvus, subsequent agents can reuse those results instead of running the same search again.</p>
 <ul>
-<li><p><strong>好處</strong>擷取成本可在整個團隊中攤薄。一個向量搜尋可支援多個代理，減少多餘的查詢。</p></li>
-<li><p><strong>缺點：</strong>擷取品質會被放大。如果初始搜尋返回不完整或不準確的結果，這個錯誤就會傳播給依賴它的每個代理程式。</p></li>
+<li><p><strong>The upside:</strong> Retrieval costs are amortized across the team. One vector search supports multiple agents, reducing redundant queries.</p></li>
+<li><p><strong>The downside:</strong> Retrieval quality gets amplified. If the initial search returns incomplete or inaccurate results, that error propagates to every agent that depends on it.</p></li>
 </ul>
-<p>這就是為什麼在多重代理系統中，檢索的準確性更加重要。糟糕的檢索不僅會降低一個代理程式的回應，還會影響整個團隊。</p>
-<p>以下是一個團隊設定的範例：</p>
+<p>This is why retrieval accuracy matters even more in multi-agent systems. A bad retrieval doesn’t just degrade one agent’s response—it affects the entire team.</p>
+<p>Here’s an example Team setup:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> agno.team <span class="hljs-keyword">import</span> Team
 analyst = Agent(
     name=<span class="hljs-string">&quot;Data Analyst&quot;</span>,
@@ -318,7 +321,7 @@ team = Team(
     share_member_interactions=<span class="hljs-literal">True</span>,  *<span class="hljs-comment"># Share knowledge retrieval results*</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Why-Agno-and-Milvus-Are-Layered-Separately" class="common-anchor-header">為什麼 Agno 和 Milvus 是分層的<button data-href="#Why-Agno-and-Milvus-Are-Layered-Separately" class="anchor-icon" translate="no">
+<h2 id="Why-Agno-and-Milvus-Are-Layered-Separately" class="common-anchor-header">Why Agno and Milvus Are Layered Separately<button data-href="#Why-Agno-and-Milvus-Are-Layered-Separately" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,15 +336,15 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在此架構中，<strong>Agno</strong>位於對話與協調層。它負責管理對話流程、協調代理、維護會話狀態，並將會話歷史記錄在關係資料庫中。系統的實際領域知識（例如產品文件和技術報告）則分開處理，並以向量嵌入的方式儲存在<strong>Milvus</strong> 中。這種明確的區分使會話邏輯和知識儲存完全解耦。</p>
-<p>為什麼這在操作上很重要？</p>
+    </button></h2><p>In this architecture, <strong>Agno</strong> sits at the conversation and orchestration layer. It is responsible for managing dialogue flow, coordinating agents, and maintaining conversational state, with session history persisted in a relational database. The system’s actual domain knowledge—such as product documentation and technical reports—is handled separately and stored as vector embeddings in <strong>Milvus</strong>. This clear division keeps conversational logic and knowledge storage fully decoupled.</p>
+<p>Why this matters operationally:</p>
 <ul>
-<li><p><strong>獨立擴充</strong>：隨著 Agno 需求的成長，增加更多的 Agno 實體。當查詢量增加時，透過增加查詢節點來擴充 Milvus。每層都是獨立擴充。</p></li>
-<li><p><strong>不同的硬體需求</strong>：Agno 需要 CPU 和記憶體（LLM 推論、工作流程執行）。Milvus 則針對高吞吐量向量擷取 (磁碟 I/O，有時使用 GPU 加速) 進行最佳化。將它們分開可避免資源爭用。</p></li>
-<li><p><strong>成本最佳化</strong>：您可以為每一層獨立調整和分配資源。</p></li>
+<li><p><strong>Independent scaling</strong>: As Agno demand grows, add more Agno instances. As query volume grows, expand Milvus by adding query nodes. Each layer scales in isolation.</p></li>
+<li><p><strong>Different hardware needs</strong>: Agno is CPU- and memory-bound (LLM inference, workflow execution). Milvus is optimized for high-throughput vector retrieval (disk I/O, sometimes GPU acceleration). Separating them prevents resource contention.</p></li>
+<li><p><strong>Cost optimization</strong>: You can tune and allocate resources for each layer independently.</p></li>
 </ul>
-<p>這種分層方式可讓您擁有更有效率、更有彈性、更適合生產的架構。</p>
-<h2 id="What-to-Monitor-When-Using-Agno-with-Milvus" class="common-anchor-header">使用 Agno 與 Milvus 時需要監控的事項<button data-href="#What-to-Monitor-When-Using-Agno-with-Milvus" class="anchor-icon" translate="no">
+<p>This layered approach gives you a more efficient, resilient, and production-ready architecture.</p>
+<h2 id="What-to-Monitor-When-Using-Agno-with-Milvus" class="common-anchor-header">What to Monitor When Using Agno with Milvus<button data-href="#What-to-Monitor-When-Using-Agno-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -356,14 +359,14 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agno 有內建的評估功能，但加入 Milvus 會擴大您需要監控的項目。根據我們的經驗，請專注於三個領域：</p>
+    </button></h2><p>Agno has built-in evaluation capabilities, but adding Milvus expands what you should watch. Based on our experience, focus on three areas:</p>
 <ul>
-<li><p><strong>檢索品質</strong>：Milvus 所傳回的文件是否真的與查詢相關，或只是在向量層面上表面相似？</p></li>
-<li><p><strong>答案忠實性</strong>：最終的回應是以擷取的內容為基礎，還是 LLM 產生了無依據的主張？</p></li>
-<li><p><strong>端對端延遲細分</strong>：不要只追蹤總回應時間。按階段進行細分 - 嵌入式產生、向量搜尋、上下文組合、LLM 推論 - 因此您可以找出發生緩慢的地方。</p></li>
+<li><p><strong>Retrieval quality</strong>: Are the documents Milvus returns actually relevant to the query, or just superficially similar at the vector level?</p></li>
+<li><p><strong>Answer faithfulness</strong>: Is the final response grounded in the retrieved content, or is the LLM generating unsupported claims?</p></li>
+<li><p><strong>End-to-end latency breakdown</strong>: Don’t just track total response time. Break it down by stage—embedding generation, vector search, context assembly, LLM inference—so you can identify where slowdowns occur.</p></li>
 </ul>
-<p><strong>一個實例：</strong>當您的 Milvus 收集從 100 萬個向量增加到 1,000 萬個向量時，您可能會發現檢索延遲逐漸增加。這通常是調整索引參數 (如<code translate="no">nlist</code> 和<code translate="no">nprobe</code>) 或考慮從單機轉換為分散式部署的訊號。</p>
-<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><strong>A practical example:</strong> When your Milvus collection grows from 1 million to 10 million vectors, you might notice retrieval latency creeping up. That’s usually a signal to tune index parameters (like <code translate="no">nlist</code> and <code translate="no">nprobe</code>) or consider moving from standalone to a distributed deployment.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -378,7 +381,7 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>建立生產就緒的代理系統需要的不只是將 LLM 呼叫和擷取示範連結起來。您需要清楚的架構邊界、獨立擴充的基礎架構，以及及早發現問題的可觀察性。</p>
-<p>在這篇文章中，我介紹了 Agno 與 Milvus 的合作方式：Agno 用於多代理體協調，Milvus 用於可擴充的記憶體與語意檢索。將這些層級分開，您就可以從原型轉移至生產階段，而無須重寫核心邏輯，並可視需要擴充每個元件。</p>
-<p>如果您正在嘗試類似設定，我很想聽聽您的想法。</p>
-<p><strong>對 Milvus 有問題嗎？</strong>加入我們的<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack 頻道</a>或預約 20 分鐘的<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours 課程</a>。</p>
+    </button></h2><p>Building production-ready agent systems takes more than wiring together LLM calls and retrieval demos. You need clear architectural boundaries, infrastructure that scales independently, and observability to catch issues early.</p>
+<p>In this post, I walked through how Agno and Milvus can work together: Agno for multi-agent orchestration, Milvus for scalable memory and semantic retrieval. By keeping these layers separate, you can move from prototype to production without rewriting core logic—and scale each component as needed.</p>
+<p>If you’re experimenting with similar setups, I’d be curious to hear what’s working for you.</p>
+<p><strong>Questions about Milvus?</strong> Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session.</p>

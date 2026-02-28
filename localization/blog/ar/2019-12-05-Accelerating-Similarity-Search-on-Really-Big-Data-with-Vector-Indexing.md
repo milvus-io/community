@@ -1,146 +1,173 @@
 ---
 id: Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing.md
-title: تسريع البحث عن التشابه في البيانات الضخمة حقًا باستخدام فهرسة المتجهات
+title: Accelerating Similarity Search on Really Big Data with Vector Indexing
 author: milvus
 date: 2019-12-05T08:33:04.230Z
 desc: >-
-  بدون فهرسة المتجهات، ستكون العديد من التطبيقات الحديثة للذكاء الاصطناعي بطيئة
-  بشكل مستحيل. تعرف على كيفية اختيار الفهرس المناسب لتطبيق التعلم الآلي التالي.
+  Without vector indexing, many modern applications of AI would be impossibly
+  slow. Learn how to select the right index for your next machine learning
+  application.
 cover: assets.zilliz.com/4_1143e443aa.jpg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing
 ---
-<custom-h1>تسريع البحث عن التشابه على البيانات الضخمة حقًا باستخدام فهرسة المتجهات</custom-h1><p>من الرؤية الحاسوبية إلى اكتشاف الأدوية الجديدة، تعمل محركات البحث عن التشابه المتجهي على تشغيل العديد من تطبيقات الذكاء الاصطناعي الشائعة. إن أحد المكونات الضخمة التي تجعل من الممكن الاستعلام بكفاءة عن مجموعات البيانات التي تبلغ مليون أو مليار أو حتى تريليون متجه التي تعتمد عليها محركات البحث عن التشابه هو الفهرسة، وهي عملية تنظيم البيانات التي تسرّع البحث في البيانات الضخمة بشكل كبير. يغطي هذا المقال الدور الذي تلعبه الفهرسة في جعل البحث عن التشابه المتجه فعالاً، وأنواع الفهرسة المختلفة للملفات المقلوبة المتجهة (IVF)، ونصائح حول الفهرس الذي يجب استخدامه في سيناريوهات مختلفة.</p>
-<p><strong>الانتقال إلى:</strong></p>
+<custom-h1>Accelerating Similarity Search on Really Big Data with Vector Indexing</custom-h1><p>From computer vision to new drug discovery, vector similarity search engines power many popular artificial intelligence (AI) applications. A huge component of what makes it possible to efficiently query the million-, billion-, or even trillion-vector datasets that similarity search engines rely on is indexing, a process of organizing data that drastically accelerates big data search. This article covers the role indexing plays in making vector similarity search efficient, different vector inverted file (IVF) index types, and advice on which index to use in different scenarios.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#accelerating-similarity-search-on-really-big-data-with-vector-indexing">تسريع البحث عن التشابه في البيانات الضخمة حقًا باستخدام الفهرسة المتجهة</a><ul>
-<li><a href="#how-does-vector-indexing-accelerate-similarity-search-and-machine-learning">كيف تعمل فهرسة المتجهات على تسريع البحث عن التشابه والتعلم الآلي؟</a></li>
-<li><a href="#what-are-different-types-of-ivf-indexes-and-which-scenarios-are-they-best-suited-for">ما هي الأنواع المختلفة من فهارس الفهرسة المتجهة وما هي السيناريوهات الأنسب لها؟</a></li>
-<li><a href="#flat-good-for-searching-relatively-small-million-scale-datasets-when-100-recall-is-required">الفهرسة المسطحة: جيد للبحث في مجموعات البيانات الصغيرة نسبيًا (بمقياس مليون) عندما يكون الاستدعاء بنسبة 100%.</a><ul>
-<li><a href="#flat-performance-test-results">نتائج اختبار أداء FLAT:</a><ul>
-<li><a href="#query-time-test-results-for-the-flat-index-in-milvus"><em>نتائج اختبار وقت الاستعلام لفهرس FLAT في Milvus.</em></a></li>
-</ul></li>
-<li><a href="#key-takeaways">النتائج الرئيسية:</a></li>
-</ul></li>
-<li><a href="#ivf_flat-improves-speed-at-the-expense-of-accuracy-and-vice-versa">IVF_FLAT: يحسن السرعة على حساب الدقة (والعكس صحيح).</a><ul>
-<li><a href="#ivf_flat-performance-test-results">نتائج اختبار أداء IVF_FLAT:</a><ul>
-<li><a href="#query-time-test-results-for-ivf_flat-index-in-milvus"><em>نتائج اختبار وقت الاستعلام لمؤشر IVF_FLAT في Milvus.</em></a></li>
-</ul></li>
-<li><a href="#key-takeaways-1">النتائج الرئيسية:</a><ul>
-<li><a href="#recall-rate-test-results-for-the-ivf_flat-index-in-milvus"><em>نتائج اختبار معدل الاسترجاع لمؤشر IVF_FLAT في Milvus.</em></a></li>
-</ul></li>
-<li><a href="#key-takeaways-2">النتائج الرئيسية:</a></li>
-</ul></li>
-<li><a href="#ivf_sq8-faster-and-less-resource-hungry-than-ivf_flat-but-also-less-accurate">IVF_SQ8: أسرع وأقل استهلاكًا للموارد من IVF_FFLAT، ولكنه أيضًا أقل دقة.</a><ul>
-<li><a href="#ivf_sq8-performance-test-results">نتائج اختبار أداء IVF_SQ8:</a><ul>
-<li><a href="#query-time-test-results-for-ivf_sq8-index-in-milvus"><em>نتائج اختبار وقت الاستعلام لفهرس IVF_SQ8 في Milvus.</em></a></li>
-</ul></li>
-<li><a href="#key-takeaways-3">النتائج الرئيسية:</a><ul>
-<li><a href="#recall-rate-test-results-for-ivf_sq8-index-in-milvus"><em>نتائج اختبار معدل الاسترجاع لمؤشر IVF_SQ8 في Milvus.</em></a></li>
-</ul></li>
-<li><a href="#key-takeaways-4">النتائج الرئيسية:</a></li>
-</ul></li>
-<li><a href="#ivf_sq8h-new-hybrid-gpucpu-approach-that-is-even-faster-than-ivf_sq8">IVF_SQ8H: نهج هجين جديد لوحدة معالجة الرسومات/وحدة المعالجة المركزية أسرع من IVF_SQ8.</a><ul>
-<li><a href="#ivf_sq8h-performance-test-results">نتائج اختبار أداء IVF_SQ8H:</a><ul>
-<li><a href="#query-time-test-results-for-ivf_sq8h-index-in-milvus"><em>نتائج اختبار وقت الاستعلام لفهرس IVF_SQ8H في Milvus.</em></a></li>
-</ul></li>
-<li><a href="#key-takeaways-5">الوجبات الرئيسية:</a></li>
-</ul></li>
-<li><a href="#learn-more-about-milvus-a-massive-scale-vector-data-management-platform">تعرف على المزيد حول Milvus، منصة إدارة البيانات المتجهة واسعة النطاق.</a></li>
-<li><a href="#methodology">المنهجية</a><ul>
-<li><a href="#performance-testing-environment">بيئة اختبار الأداء</a></li>
-<li><a href="#relevant-technical-concepts">المفاهيم التقنية ذات الصلة</a></li>
-<li><a href="#resources">الموارد</a></li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="How-does-vector-indexing-accelerate-similarity-search-and-machine-learning" class="common-anchor-header">كيف تعمل فهرسة المتجهات على تسريع البحث عن التشابه والتعلم الآلي؟</h3><p>تعمل محركات البحث عن التشابه من خلال مقارنة المدخلات بقاعدة بيانات للعثور على العناصر الأكثر تشابهًا مع المدخلات. الفهرسة هي عملية تنظيم البيانات بكفاءة، وتلعب دورًا رئيسيًا في جعل البحث عن التشابه مفيدًا من خلال تسريع الاستعلامات التي تستغرق وقتًا طويلاً على مجموعات البيانات الكبيرة بشكل كبير. بعد فهرسة مجموعة بيانات متجهة ضخمة، يمكن توجيه الاستعلامات إلى مجموعات أو مجموعات فرعية من البيانات التي من المرجح أن تحتوي على متجهات مشابهة لاستعلام الإدخال. من الناحية العملية، يعني هذا عمليًا التضحية بدرجة معينة من الدقة لتسريع الاستعلامات على البيانات المتجهة الضخمة حقًا.</p>
-<p>يمكن تشبيه ذلك بقاموس، حيث يتم فرز الكلمات أبجديًا. عند البحث عن كلمة ما، من الممكن الانتقال بسرعة إلى قسم يحتوي فقط على كلمات تحمل نفس الحرف الأول من الكلمة - مما يسرّع بشكل كبير من عملية البحث عن تعريف الكلمة المدخلة.</p>
-<h3 id="What-are-different-types-of-IVF-indexes-and-which-scenarios-are-they-best-suited-for" class="common-anchor-header">ما هي الأنواع المختلفة من فهارس IVF وما هي السيناريوهات الأنسب لها؟</h3><p>هناك العديد من الفهارس المصممة للبحث عن التشابه المتجهي عالي الأبعاد، ولكل منها مقايضات في الأداء والدقة ومتطلبات التخزين. تغطي هذه المقالة العديد من أنواع فهارس الفهرس المتجهية الشائعة ونقاط قوتها وضعفها، بالإضافة إلى نتائج اختبار الأداء لكل نوع من الفهارس. يقيس اختبار الأداء وقت الاستعلام ومعدلات الاستدعاء لكل نوع من أنواع الفهارس في <a href="https://milvus.io/">Milvus،</a> وهي منصة مفتوحة المصدر لإدارة البيانات المتجهة. للحصول على معلومات إضافية حول بيئة الاختبار، راجع قسم المنهجية في أسفل هذه المقالة.</p>
-<h3 id="FLAT-Good-for-searching-relatively-small-million-scale-datasets-when-100-recall-is-required" class="common-anchor-header">مسطح: جيد للبحث في مجموعات البيانات الصغيرة نسبيًا (بمقياس مليون) عندما يكون الاستدعاء مطلوبًا بنسبة 100%.</h3><p>بالنسبة لتطبيقات البحث عن تشابه المتجهات التي تتطلب دقة مثالية وتعتمد على مجموعات بيانات صغيرة نسبيًا (بمقياس مليون)، يعد فهرس FLAT خيارًا جيدًا. لا يقوم FLAT بضغط المتجهات، وهو الفهرس الوحيد الذي يمكن أن يضمن نتائج بحث دقيقة. يمكن أيضًا استخدام النتائج من FLAT كنقطة مقارنة للنتائج التي تنتجها الفهارس الأخرى التي لديها أقل من 100% من الاستدعاء.</p>
-<p>يتميز FLAT بالدقة لأنه يتبع نهجًا شاملًا في البحث، مما يعني أنه لكل استعلام تتم مقارنة المدخلات المستهدفة بكل متجه في مجموعة البيانات. هذا يجعل من FLAT أبطأ فهرس في قائمتنا، وهو غير مناسب للاستعلام عن بيانات المتجهات الضخمة. لا توجد معلمات لفهرس FLAT في Milvus، ولا يتطلب استخدامه تدريبًا على البيانات أو تخزينًا إضافيًا.</p>
-<h4 id="FLAT-performance-test-results" class="common-anchor-header">نتائج اختبار أداء FLAT:</h4><p>تم إجراء اختبار أداء وقت استعلام FLAT في Milvus باستخدام مجموعة بيانات مكونة من مليوني متجه ذي 128 بُعدًا.</p>
-<p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_2_f34fb95d65.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_2.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_2.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه على البيانات الضخمة حقًا باستخدام فهرسة المتجهات_2.png</span> </span></p>
-<h4 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية</h4><ul>
-<li>مع زيادة nq (عدد المتجهات المستهدفة للاستعلام)، يزداد وقت الاستعلام.</li>
-<li>باستخدام فهرس FLAT في Milvus، يمكننا أن نرى أن وقت الاستعلام يرتفع بشكل حاد بمجرد أن يتجاوز nq 200.</li>
-<li>بشكل عام، يكون فهرس FLAT أسرع وأكثر اتساقًا عند تشغيل Milvus على وحدة معالجة الرسومات مقابل وحدة المعالجة المركزية. ومع ذلك، تكون استعلامات FLAT على وحدة المعالجة المركزية أسرع عندما يكون nq أقل من 20.</li>
-</ul>
-<h3 id="IVFFLAT-Improves-speed-at-the-expense-of-accuracy-and-vice-versa" class="common-anchor-header">IVF_FLAT: يحسن السرعة على حساب الدقة (والعكس صحيح).</h3><p>تتمثل إحدى الطرق الشائعة لتسريع عملية البحث عن التشابه على حساب الدقة في إجراء بحث تقريبي لأقرب جار (ANN). تقلل خوارزميات ANN من متطلبات التخزين والحمل الحسابي من خلال تجميع المتجهات المتشابهة معًا، مما يؤدي إلى بحث أسرع عن المتجهات. IVF_FLAT هو نوع فهرس الملفات المقلوب الأساسي ويعتمد على شكل من أشكال بحث ANN.</p>
-<p>يقسم IVF_FLAT بيانات المتجهات إلى عدد من الوحدات العنقودية (nlist)، ثم يقارن المسافات بين متجه الإدخال المستهدف ومركز كل مجموعة. اعتمادًا على عدد المجموعات التي تم تعيين النظام للاستعلام عنها (nprobe)، يتم إرجاع نتائج بحث التشابه بناءً على المقارنات بين المدخلات المستهدفة والمتجهات في المجموعة (المجموعات) الأكثر تشابهًا فقط - مما يقلل بشكل كبير من وقت الاستعلام.</p>
-<p>من خلال ضبط nprobe، يمكن إيجاد توازن مثالي بين الدقة والسرعة لسيناريو معين. تُظهر نتائج اختبار أداء IVF_FLAT الخاص بنا أن وقت الاستعلام يزداد بشكل حاد مع زيادة عدد متجهات المدخلات المستهدفة (nq) وعدد المجموعات المطلوب البحث عنها (nprobe). لا يقوم IVF_FLAT بضغط بيانات المتجهات، ومع ذلك، تتضمن ملفات الفهرس بيانات وصفية تزيد بشكل هامشي من متطلبات التخزين مقارنةً بمجموعة بيانات المتجهات الخام غير المفهرسة.</p>
-<h4 id="IVFFLAT-performance-test-results" class="common-anchor-header">نتائج اختبار أداء IVF_FLAT:</h4><p>تم إجراء اختبار أداء وقت الاستعلام IVF_FLAT في Milvus باستخدام مجموعة بيانات SIFT العامة 1B SIFT، والتي تحتوي على مليار متجه ذي 128 بُعدًا.</p>
-<p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_3_92055190d7.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_3.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_3.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه على البيانات الضخمة حقاً باستخدام فهرسة المتجهات_3.png</span> </span></p>
-<h4 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية</h4><ul>
-<li>عند التشغيل على وحدة المعالجة المركزية، يزداد وقت الاستعلام عن فهرس IVF_FLAT في Milvus مع كل من nprobe و nq. هذا يعني أنه كلما زاد عدد متجهات الإدخال التي يحتويها الاستعلام، أو كلما زاد عدد المجموعات التي يبحث فيها الاستعلام، كلما زاد وقت الاستعلام.</li>
-<li>على GPU، يُظهر الفهرس تباينًا أقل في الوقت مقابل التغييرات في nq و nprobe. ويرجع ذلك إلى أن بيانات الفهرس كبيرة، كما أن نسخ البيانات من ذاكرة وحدة المعالجة المركزية إلى ذاكرة وحدة معالجة الرسومات يمثل معظم إجمالي وقت الاستعلام.</li>
-<li>في جميع السيناريوهات، باستثناء عندما يكون nq = 1,000 و nprobe = 32، يكون فهرس IVF_FLAT أكثر كفاءة عند تشغيله على وحدة المعالجة المركزية.</li>
-</ul>
-<p>تم إجراء اختبار أداء استرجاع IVF_FLAT في Milvus باستخدام كل من مجموعة بيانات SIFT العامة 1M SIFT، والتي تحتوي على مليون متجه 128 بُعدًا، ومجموعة بيانات glove-200-angular-ular، والتي تحتوي على أكثر من مليون متجه 200 بُعد، لبناء الفهرس (nq = 16,384).</p>
-<p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_4_8c8a6b628e.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_4.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_4.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه في البيانات الضخمة حقًا باستخدام فهرسة المتجهات_4.png</span> </span></p>
-<h4 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية:</h4><ul>
-<li>يمكن تحسين فهرس IVF_FLAT من أجل الدقة، وتحقيق معدل استرجاع أعلى من 0.99 على مجموعة بيانات SIFT 1M SIFT عندما يكون nprobe = 256.</li>
-</ul>
-<h3 id="IVFSQ8-Faster-and-less-resource-hungry-than-IVFFLAT-but-also-less-accurate" class="common-anchor-header">IVF_SQ8: أسرع وأقل استهلاكًا للموارد من IVF_FLAT، ولكنه أيضًا أقل دقة.</h3><p>لا يقوم IVF_SQLAT بإجراء أي ضغط، لذا فإن ملفات الفهرس التي ينتجها تكون بنفس حجم بيانات المتجه الأصلية غير المفهرسة تقريبًا. على سبيل المثال، إذا كان حجم مجموعة بيانات SIFT 1B الأصلية 476 جيجابايت، فإن ملفات فهرس IVF_FLAT الخاصة بها ستكون أكبر قليلاً (حوالي 470 جيجابايت). سيؤدي تحميل جميع ملفات الفهرس في الذاكرة إلى استهلاك 470 جيجابايت من مساحة التخزين.</p>
-<p>عندما تكون موارد ذاكرة القرص أو وحدة المعالجة المركزية أو وحدة معالجة الرسومات محدودة، فإن IVF_SQ8 هو خيار أفضل من IVF_FLAT. يمكن لهذا النوع من الفهرس تحويل كل FLOAT (4 بايت) إلى UINT8 (1 بايت) عن طريق إجراء تكميم قياسي. يقلل هذا من استهلاك القرص ووحدة المعالجة المركزية وذاكرة وحدة معالجة الرسومات بنسبة 70-75%. بالنسبة لمجموعة بيانات SIFT 1B، تتطلب ملفات فهرس IVF_SQ8 مساحة تخزين 140 جيجابايت فقط.</p>
-<h4 id="IVFSQ8-performance-test-results" class="common-anchor-header">نتائج اختبار أداء IVF_SQ8:</h4><p>تم إجراء اختبار وقت الاستعلام IVF_SQ8 في Milvus باستخدام مجموعة بيانات 1B SIFT العامة، والتي تحتوي على مليار متجه 128 بُعدًا، لبناء الفهرس.</p>
-<p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_5_467fafbec4.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_5.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_5.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه على البيانات الضخمة حقًا باستخدام فهرسة المتجهات_5.png</span> </span></p>
-<h4 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية</h4><ul>
-<li>من خلال تقليل حجم ملف الفهرس، يوفر IVF_SQ8 تحسينات ملحوظة في الأداء مقارنةً ب IVF_SQL8. يتبع IVF_SQ8 منحنى أداء مماثل لمنحنى أداء IVF_FLAT، مع زيادة وقت الاستعلام مع nq و nprobe.</li>
-<li>على غرار IVF_SQ8، يشهد IVF_SQ8 أداءً أسرع عند التشغيل على وحدة المعالجة المركزية وعندما يكون nq و nprobe أصغر.</li>
-</ul>
-<p>تم إجراء اختبار أداء الاستدعاء IVF_SQ8 في Milvus باستخدام كلٍ من مجموعة بيانات SIFT العامة 1M SIFT، والتي تحتوي على مليون متجه ذي 128 بُعد، ومجموعة بيانات glove-200-angular، والتي تحتوي على أكثر من مليون متجه ذي 200 بُعد، لبناء الفهرس (nlist = 16,384).</p>
-<p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_6_b1e0e5b6a5.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_6.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_6.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه على البيانات الضخمة حقًا باستخدام فهرسة المتجهات_6.png</span> </span></p>
-<h4 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية:</h4><ul>
-<li>على الرغم من ضغط البيانات الأصلية، لا يشهد IVF_SQ8 انخفاضًا كبيرًا في دقة الاستعلام. عبر إعدادات nprobe المختلفة، فإن IVF_SQ8 لديه معدل استرجاع أقل بنسبة 1% على الأكثر من IVF_FLAT.</li>
-</ul>
-<h3 id="IVFSQ8H-New-hybrid-GPUCPU-approach-that-is-even-faster-than-IVFSQ8" class="common-anchor-header">IVF_SQ8H: نهج هجين جديد لوحدة معالجة الرسومات/وحدة المعالجة المركزية أسرع من IVF_SQ8.</h3><p>IVF_SQ8H هو نوع فهرس جديد يعمل على تحسين أداء الاستعلام مقارنةً ب IVF_SQ8. عندما يتم الاستعلام عن فهرس IVF_SQ8 الذي يعمل على وحدة المعالجة المركزية، يتم قضاء معظم الوقت الإجمالي للاستعلام في العثور على مجموعات nprobe الأقرب إلى متجه الإدخال المستهدف. ولتقليل وقت الاستعلام، يقوم IVF_SQ8 بنسخ البيانات الخاصة بعمليات التكميم الخشنة، والتي تكون أصغر من ملفات الفهرس، إلى ذاكرة وحدة معالجة الرسومات، مما يسرع بشكل كبير من عمليات التكميم الخشنة. ثم يحدد gpu_search_threshold_threshold الجهاز الذي يقوم بتشغيل الاستعلام. عندما تكون nq &gt;= gpu_search_threshold، تقوم وحدة معالجة الرسومات بتشغيل الاستعلام؛ وإلا فإن وحدة المعالجة المركزية تقوم بتشغيل الاستعلام.</p>
-<p>IVF_SQ8H هو نوع فهرس هجين يتطلب أن تعمل وحدة المعالجة المركزية ووحدة معالجة الرسومات معًا. لا يمكن استخدامه إلا مع Milvus الممكّن لوحدة معالجة الرسومات.</p>
-<h4 id="IVFSQ8H-performance-test-results" class="common-anchor-header">نتائج اختبار أداء IVF_SQ8H:</h4><p>تم إجراء اختبار أداء وقت الاستعلام IVF_SQ8H في Milvus باستخدام مجموعة بيانات SIFT العامة 1B SIFT، والتي تحتوي على مليار متجه 128 بُعدًا، لبناء الفهرس.</p>
-<p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_7_b70bfe8bce.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_7.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_7.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه في البيانات الضخمة حقًا باستخدام فهرسة المتجهات_7.png</span> </span></p>
-<h4 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية</h4><ul>
-<li>عندما تكون nq أقل من أو تساوي 1,000، فإن IVF_SQ8H تشهد أزمنة استعلام أسرع من IVFSQ8 بضعف سرعة IVFSQ8 تقريبًا.</li>
-<li>عندما يكون nq = 2000، تكون أزمنة الاستعلام لـ IVFSQ8H و IVF_SQ8 هي نفسها. ومع ذلك، إذا كانت معلمة gpu_search_threshold_threshold أقل من 2000، سيتفوق IVF_SQ8H على IVF_SQ8.</li>
-<li>يتطابق معدل استدعاء الاستعلام في IVF_SQ8H مع IVF_SQ8، مما يعني تحقيق وقت استعلام أقل دون خسارة في دقة البحث.</li>
-</ul>
-<h3 id="Learn-more-about-Milvus-a-massive-scale-vector-data-management-platform" class="common-anchor-header">تعرّف على المزيد حول Milvus، منصة إدارة بيانات المتجهات واسعة النطاق.</h3><p>Milvus عبارة عن منصة إدارة بيانات المتجهات التي يمكنها تشغيل تطبيقات البحث عن التشابه في مجالات تشمل الذكاء الاصطناعي والتعلم العميق وحسابات المتجهات التقليدية وغيرها. للحصول على معلومات إضافية حول Milvus، اطلع على الموارد التالية:</p>
+<li><a href="#accelerating-similarity-search-on-really-big-data-with-vector-indexing">Accelerating Similarity Search on Really Big Data with Vector Indexing</a>
 <ul>
-<li>Milvus متاح بموجب ترخيص مفتوح المصدر على <a href="https://github.com/milvus-io/milvus">GitHub</a>.</li>
-<li>أنواع الفهارس الإضافية، بما في ذلك الفهارس المستندة إلى الرسم البياني والشجرة، مدعومة في Milvus. للاطلاع على قائمة شاملة بأنواع الفهارس المدعومة، راجع <a href="https://milvus.io/docs/v0.11.0/index.md">وثائق الفهارس المتجهة</a> في ملفوس.</li>
-<li>لمعرفة المزيد عن الشركة التي أطلقت Milvus، تفضل بزيارة <a href="https://zilliz.com/">Zilliz.com.</a></li>
-<li>دردش مع مجتمع Milvus أو احصل على المساعدة في حل مشكلة على <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-</ul>
-<h3 id="Methodology" class="common-anchor-header">المنهجية</h3><h4 id="Performance-testing-environment" class="common-anchor-header">بيئة اختبار الأداء</h4><p>تكوين الخادم المستخدم في اختبارات الأداء المشار إليها في هذه المقالة هو كما يلي:</p>
+<li><a href="#how-does-vector-indexing-accelerate-similarity-search-and-machine-learning">How does vector indexing accelerate similarity search and machine learning?</a></li>
+<li><a href="#what-are-different-types-of-ivf-indexes-and-which-scenarios-are-they-best-suited-for">What are different types of IVF indexes and which scenarios are they best suited for?</a></li>
+<li><a href="#flat-good-for-searching-relatively-small-million-scale-datasets-when-100-recall-is-required">FLAT: Good for searching relatively small (million-scale) datasets when 100% recall is required.</a>
 <ul>
-<li>Intel ® Xeon ® Platinum 8163 @ 2.50 جيجا هرتز، 24 نواة</li>
-<li>GeForce GTX GTX 2080Ti × 4</li>
-<li>ذاكرة 768 جيجابايت</li>
+<li><a href="#flat-performance-test-results">FLAT performance test results:</a>
+<ul>
+<li><a href="#query-time-test-results-for-the-flat-index-in-milvus"><em>Query time test results for the FLAT index in Milvus.</em></a></li>
+</ul></li>
+<li><a href="#key-takeaways">Key takeaways:</a></li>
+</ul></li>
+<li><a href="#ivf_flat-improves-speed-at-the-expense-of-accuracy-and-vice-versa">IVF_FLAT: Improves speed at the expense of accuracy (and vice versa).</a>
+<ul>
+<li><a href="#ivf_flat-performance-test-results">IVF_FLAT performance test results:</a>
+<ul>
+<li><a href="#query-time-test-results-for-ivf_flat-index-in-milvus"><em>Query time test results for IVF_FLAT index in Milvus.</em></a></li>
+</ul></li>
+<li><a href="#key-takeaways-1">Key takeaways:</a>
+<ul>
+<li><a href="#recall-rate-test-results-for-the-ivf_flat-index-in-milvus"><em>Recall rate test results for the IVF_FLAT index in Milvus.</em></a></li>
+</ul></li>
+<li><a href="#key-takeaways-2">Key takeaways:</a></li>
+</ul></li>
+<li><a href="#ivf_sq8-faster-and-less-resource-hungry-than-ivf_flat-but-also-less-accurate">IVF_SQ8: Faster and less resource hungry than IVF_FLAT, but also less accurate.</a>
+<ul>
+<li><a href="#ivf_sq8-performance-test-results">IVF_SQ8 performance test results:</a>
+<ul>
+<li><a href="#query-time-test-results-for-ivf_sq8-index-in-milvus"><em>Query time test results for IVF_SQ8 index in Milvus.</em></a></li>
+</ul></li>
+<li><a href="#key-takeaways-3">Key takeaways:</a>
+<ul>
+<li><a href="#recall-rate-test-results-for-ivf_sq8-index-in-milvus"><em>Recall rate test results for IVF_SQ8 index in Milvus.</em></a></li>
+</ul></li>
+<li><a href="#key-takeaways-4">Key takeaways:</a></li>
+</ul></li>
+<li><a href="#ivf_sq8h-new-hybrid-gpucpu-approach-that-is-even-faster-than-ivf_sq8">IVF_SQ8H: New hybrid GPU/CPU approach that is even faster than IVF_SQ8.</a>
+<ul>
+<li><a href="#ivf_sq8h-performance-test-results">IVF_SQ8H performance test results:</a>
+<ul>
+<li><a href="#query-time-test-results-for-ivf_sq8h-index-in-milvus"><em>Query time test results for IVF_SQ8H index in Milvus.</em></a></li>
+</ul></li>
+<li><a href="#key-takeaways-5">Key takeaways:</a></li>
+</ul></li>
+<li><a href="#learn-more-about-milvus-a-massive-scale-vector-data-management-platform">Learn more about Milvus, a massive-scale vector data management platform.</a></li>
+<li><a href="#methodology">Methodology</a>
+<ul>
+<li><a href="#performance-testing-environment">Performance testing environment</a></li>
+<li><a href="#relevant-technical-concepts">Relevant technical concepts</a></li>
+<li><a href="#resources">Resources</a></li>
+</ul></li>
+</ul></li>
 </ul>
-<h4 id="Relevant-technical-concepts" class="common-anchor-header">المفاهيم التقنية ذات الصلة</h4><p>على الرغم من أنها ليست ضرورية لفهم هذه المقالة، إليك بعض المفاهيم التقنية المفيدة لتفسير نتائج اختبارات أداء الفهرس:</p>
+<h3 id="How-does-vector-indexing-accelerate-similarity-search-and-machine-learning" class="common-anchor-header">How does vector indexing accelerate similarity search and machine learning?</h3><p>Similarity search engines work by comparing an input to a database to find objects that are most similar to the input. Indexing is the process of efficiently organizing data, and it plays a major role in making similarity search useful by dramatically accelerating time-consuming queries on large datasets. After a massive vector dataset is indexed, queries can be routed to clusters, or subsets of data, that are most likely to contain vectors similar to an input query. In practice, this means a certain degree of accuracy is sacrificed to speed up queries on really big vector data.</p>
+<p>An analogy can be drawn to a dictionary, where words are sorted alphabetically. When looking up a word, it is possible to quickly navigate to a section that only contains words with the same initial — drastically accelerating the search for the input word’s definition.</p>
+<h3 id="What-are-different-types-of-IVF-indexes-and-which-scenarios-are-they-best-suited-for" class="common-anchor-header">What are different types of IVF indexes and which scenarios are they best suited for?</h3><p>There are numerous indexes designed for high-dimensional vector similarity search, and each one comes with tradeoffs in performance, accuracy, and storage requirements. This article covers several common IVF index types, their strengths and weaknesses, as well as performance test results for each index type. Performance testing quantifies query time and recall rates for each index type in <a href="https://milvus.io/">Milvus</a>, an open-source vector data management platform. For additional information on the testing environment, see the methodology section at the bottom of this article.</p>
+<h3 id="FLAT-Good-for-searching-relatively-small-million-scale-datasets-when-100-recall-is-required" class="common-anchor-header">FLAT: Good for searching relatively small (million-scale) datasets when 100% recall is required.</h3><p>For vector similarity search applications that require perfect accuracy and depend on relatively small (million-scale) datasets, the FLAT index is a good choice. FLAT does not compress vectors, and is the only index that can guarantee exact search results. Results from FLAT can also be used as a point of comparison for results produced by other indexes that have less than 100% recall.</p>
+<p>FLAT is accurate because it takes an exhaustive approach to search, which means for each query the target input is compared to every vector in a dataset. This makes FLAT the slowest index on our list, and poorly suited for querying massive vector data. There are no parameters for the FLAT index in Milvus, and using it does not require data training or additional storage.</p>
+<h4 id="FLAT-performance-test-results" class="common-anchor-header">FLAT performance test results:</h4><p>FLAT query time performance testing was conducted in Milvus using a dataset comprised of 2 million 128-dimensional vectors.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_8_a6c1de937f.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_8.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_8.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_تسريع البحث عن التشابه على البيانات الضخمة حقًا باستخدام فهرسة المتجهات_8.png</span> </span></p>
-<h4 id="Resources" class="common-anchor-header">المصادر</h4><p>تم استخدام المصادر التالية لهذه المقالة:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_2_f34fb95d65.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_2.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_2.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_2.png</span>
+  </span>
+</p>
+<h4 id="Key-takeaways" class="common-anchor-header">Key takeaways:</h4><ul>
+<li>As nq (the number of target vectors for a query) increases, query time increases.</li>
+<li>Using the FLAT index in Milvus, we can see that query time rises sharply once nq exceeds 200.</li>
+<li>In general, the FLAT index is faster and more consistent when running Milvus on GPU vs. CPU. However, FLAT queries on CPU are faster when nq is below 20.</li>
+</ul>
+<h3 id="IVFFLAT-Improves-speed-at-the-expense-of-accuracy-and-vice-versa" class="common-anchor-header">IVF_FLAT: Improves speed at the expense of accuracy (and vice versa).</h3><p>A common way to accelerate the similarity search process at the expense of accuracy is to conduct an approximate nearest neighbor (ANN) search. ANN algorithms decrease storage requirements and computation load by clustering similar vectors together, resulting in faster vector search. IVF_FLAT is the most basic inverted file index type and relies on a form of ANN search.</p>
+<p>IVF_FLAT divides vector data into a number of cluster units (nlist), and then compares distances between the target input vector and the center of each cluster. Depending on the number of clusters the system is set to query (nprobe), similarity search results are returned based on comparisons between the target input and the vectors in the most similar cluster(s) only — drastically reducing query time.</p>
+<p>By adjusting nprobe, an ideal balance between accuracy and speed can be found for a given scenario. Results from our IVF_FLAT performance test demonstrate that query time increases sharply as both the number of target input vectors (nq), and the number of clusters to search (nprobe), increase. IVF_FLAT does not compress vector data however, index files include metadata that marginally increases storage requirements compared to the raw non-indexed vector dataset.</p>
+<h4 id="IVFFLAT-performance-test-results" class="common-anchor-header">IVF_FLAT performance test results:</h4><p>IVF_FLAT query time performance testing was conducted in Milvus using the public 1B SIFT dataset, which contains 1 billion 128-dimensional vectors.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_3_92055190d7.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_3.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_3.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_3.png</span>
+  </span>
+</p>
+<h4 id="Key-takeaways" class="common-anchor-header">Key takeaways:</h4><ul>
+<li>When running on CPU, query time for the IVF_FLAT index in Milvus increases with both nprobe and nq. This means the more input vectors a query contains, or the more clusters a query searches, the longer query time will be.</li>
+<li>On GPU, the index shows less time variance against changes in nq and nprobe. This is because the index data is large, and copying data from CPU memory to GPU memory accounts for the majority of total query time.</li>
+<li>In all scenarios, except when nq = 1,000 and nprobe = 32, the IVF_FLAT index is more efficient when running on CPU.</li>
+</ul>
+<p>IVF_FLAT recall performance testing was conducted in Milvus using both the public 1M SIFT dataset, which contains 1 million 128-dimensional vectors, and the glove-200-angular dataset, which contains 1+ million 200-dimensional vectors, for index building (nlist = 16,384).</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_4_8c8a6b628e.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_4.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_4.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_4.png</span>
+  </span>
+</p>
+<h4 id="Key-takeaways" class="common-anchor-header">Key takeaways:</h4><ul>
+<li>The IVF_FLAT index can be optimized for accuracy, achieving a recall rate above 0.99 on the 1M SIFT dataset when nprobe = 256.</li>
+</ul>
+<h3 id="IVFSQ8-Faster-and-less-resource-hungry-than-IVFFLAT-but-also-less-accurate" class="common-anchor-header">IVF_SQ8: Faster and less resource hungry than IVF_FLAT, but also less accurate.</h3><p>IVF_FLAT does not perform any compression, so the index files it produces are roughly the same size as the original, raw non-indexed vector data. For example, if the original 1B SIFT dataset is 476 GB, its IVF_FLAT index files will be slightly larger (~470 GB). Loading all the index files into memory will consume 470 GB of storage.</p>
+<p>When disk, CPU, or GPU memory resources are limited, IVF_SQ8 is a better option than IVF_FLAT. This index type can convert each FLOAT (4 bytes) to UINT8 (1 byte) by performing scalar quantization. This reduces disk, CPU, and GPU memory consumption by 70–75%. For the 1B SIFT dataset, the IVF_SQ8 index files require just 140 GB of storage.</p>
+<h4 id="IVFSQ8-performance-test-results" class="common-anchor-header">IVF_SQ8 performance test results:</h4><p>IVF_SQ8 query time testing was conducted in Milvus using the public 1B SIFT dataset, which contains 1 billion 128-dimensional vectors, for index building.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_5_467fafbec4.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_5.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_5.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_5.png</span>
+  </span>
+</p>
+<h4 id="Key-takeaways" class="common-anchor-header">Key takeaways:</h4><ul>
+<li>By reducing index file size, IVF_SQ8 offers marked performance improvements over IVF_FLAT. IVF_SQ8 follows a similar performance curve to IVF_FLAT, with query time increasing with nq and nprobe.</li>
+<li>Similar to IVF_FLAT, IVF_SQ8 sees faster performance when running on CPU and when nq and nprobe are smaller.</li>
+</ul>
+<p>IVF_SQ8 recall performance testing was conducted in Milvus using both the public 1M SIFT dataset, which contains 1 million 128-dimensional vectors, and the glove-200-angular dataset, which contains 1+ million 200-dimensional vectors, for index building (nlist = 16,384).</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_6_b1e0e5b6a5.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_6.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_6.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_6.png</span>
+  </span>
+</p>
+<h4 id="Key-takeaways" class="common-anchor-header">Key takeaways:</h4><ul>
+<li>Despite compressing the original data, IVF_SQ8 does not see a significant decrease in query accuracy. Across various nprobe settings, IVF_SQ8 has at most a 1% lower recall rate than IVF_FLAT.</li>
+</ul>
+<h3 id="IVFSQ8H-New-hybrid-GPUCPU-approach-that-is-even-faster-than-IVFSQ8" class="common-anchor-header">IVF_SQ8H: New hybrid GPU/CPU approach that is even faster than IVF_SQ8.</h3><p>IVF_SQ8H is a new index type that improves query performance compared to IVF_SQ8. When an IVF_SQ8 index running on CPU is queried, most of the total query time is spent finding nprobe clusters that are nearest to the target input vector. To reduce query time, IVF_SQ8 copies the data for coarse quantizer operations, which is smaller than the index files, to GPU memory — greatly accelerating coarse quantizer operations. Then gpu_search_threshold determines which device runs the query. When nq &gt;= gpu_search_threshold, GPU runs the query; otherwise, CPU runs the query.</p>
+<p>IVF_SQ8H is a hybrid index type that requires the CPU and GPU to work together. It can only be used with GPU-enabled Milvus.</p>
+<h4 id="IVFSQ8H-performance-test-results" class="common-anchor-header">IVF_SQ8H performance test results:</h4><p>IVF_SQ8H query time performance testing was conducted in Milvus using the public 1B SIFT dataset, which contains 1 billion 128-dimensional vectors, for index building.</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_7_b70bfe8bce.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_7.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_7.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_7.png</span>
+  </span>
+</p>
+<h4 id="Key-takeaways" class="common-anchor-header">Key takeaways:</h4><ul>
+<li>When nq is less than or equal to 1,000, IVF_SQ8H sees query times nearly twice as fast as IVFSQ8.</li>
+<li>When nq = 2000, query times for IVFSQ8H and IVF_SQ8 are the same. However, if the gpu_search_threshold parameter is lower than 2000, IVF_SQ8H will outperform IVF_SQ8.</li>
+<li>IVF_SQ8H’s query recall rate is identical to IVF_SQ8’s, meaning less query time is achieved with no loss in search accuracy.</li>
+</ul>
+<h3 id="Learn-more-about-Milvus-a-massive-scale-vector-data-management-platform" class="common-anchor-header">Learn more about Milvus, a massive-scale vector data management platform.</h3><p>Milvus is a vector data management platform that can power similarity search applications in fields spanning artificial intelligence, deep learning, traditional vector calculations, and more. For additional information about Milvus, check out the following resources:</p>
 <ul>
-<li>"<a href="https://books.google.com/books/about/Encyclopedia_of_Database_Systems.html?id=YdT3wQEACAAJ">موسوعة أنظمة قواعد البيانات</a>"، لينغ ليو و م. تامر أوزسو.</li>
+<li>Milvus is available under an open-source license on <a href="https://github.com/milvus-io/milvus">GitHub</a>.</li>
+<li>Additional index types, including graph- and tree-based indexes, are supported in Milvus. For a comprehensive list of supported index types, see <a href="https://milvus.io/docs/v0.11.0/index.md">documentation for vector indexes</a> in Milvus.</li>
+<li>To learn more about the company that launched Milvus, visit <a href="https://zilliz.com/">Zilliz.com</a>.</li>
+<li>Chat with the Milvus community or get help with a problem on <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+</ul>
+<h3 id="Methodology" class="common-anchor-header">Methodology</h3><h4 id="Performance-testing-environment" class="common-anchor-header">Performance testing environment</h4><p>The server configuration used across performance tests referenced in this article is as follows:</p>
+<ul>
+<li>Intel ® Xeon ® Platinum 8163 @ 2.50GHz, 24 cores</li>
+<li>GeForce GTX 2080Ti x 4</li>
+<li>768 GB memory</li>
+</ul>
+<h4 id="Relevant-technical-concepts" class="common-anchor-header">Relevant technical concepts</h4><p>Although not required for understanding this article, here are a few technical concepts that are helpful for interpreting the results from our index performance tests:</p>
+<p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Accelerating_Similarity_Search_on_Really_Big_Data_with_Vector_Indexing_8_a6c1de937f.png" alt="Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_8.png" class="doc-image" id="blog_accelerating-similarity-search-on-really-big-data-with-vector-indexing_8.png" />
+    <span>Blog_Accelerating Similarity Search on Really Big Data with Vector Indexing_8.png</span>
+  </span>
+</p>
+<h4 id="Resources" class="common-anchor-header">Resources</h4><p>The following sources were used for this article:</p>
+<ul>
+<li>“<a href="https://books.google.com/books/about/Encyclopedia_of_Database_Systems.html?id=YdT3wQEACAAJ">Encyclopedia of database systems</a>,” Ling Liu and M. Tamer Özsu.</li>
 </ul>

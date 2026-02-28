@@ -1,11 +1,11 @@
 ---
 id: how-to-deploy-open-source-milvus-vector-database-on-amazon-eks.md
-title: オープンソースのMilvusベクターデータベースをAmazon EKSにデプロイする方法
+title: How to Deploy the Open-Source Milvus Vector Database on Amazon EKS
 author: AWS
 date: 2024-08-09T00:00:00.000Z
 desc: >-
-  Amazon
-  EKS、S3、MSK、ELBなどのマネージドサービスを使用してAWS上にMilvusベクトルデータベースをデプロイするためのステップバイステップガイドです。
+  A step-by-step guide on deploying the Milvus vector database on AWS using
+  managed services such as Amazon EKS, S3, MSK, and ELB.
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Amazon EKS, RAG'
@@ -13,8 +13,8 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/how-to-deploy-open-source-milvus-vector-database-on-amazon-eks.md
 ---
-<p><em>この投稿は元々<a href="https://aws.amazon.com/cn/blogs/china/build-open-source-vector-database-milvus-based-on-amazon-eks/"><em>AWSの</em></a>ウェブサイトに掲載されたもので、許可を得て翻訳・編集し、ここに再掲載している。</em></p>
-<h2 id="An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="common-anchor-header">ベクトル埋め込みとベクトルデータベースの概要<button data-href="#An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="anchor-icon" translate="no">
+<p><em>This post was originally published on the <a href="https://aws.amazon.com/cn/blogs/china/build-open-source-vector-database-milvus-based-on-amazon-eks/"><em>AWS website</em></a> and is translated, edited, and reposted here with permission.</em></p>
+<h2 id="An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="common-anchor-header">An Overview of Vector Embeddings and Vector Databases<button data-href="#An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,18 +29,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/learn/generative-ai">ジェネレーティブAI（GenAI）</a>、特に大規模言語モデル<a href="https://zilliz.com/glossary/large-language-models-(llms)">（LLM</a>）の台頭は、<a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベースへの</a>関心を著しく高め、GenAIのエコシステムにおいて不可欠なコンポーネントとして確立しました。その結果、ベクターデータベースはますます多くの<a href="https://milvus.io/use-cases">ユースケースで</a>採用されるようになっている。</p>
-<p><a href="https://venturebeat.com/data-infrastructure/report-80-of-global-datasphere-will-be-unstructured-by-2025/">IDCのレポートでは</a>、2025年までにビジネスデータの80％以上が非構造化データになり、テキスト、画像、音声、動画などの形式で存在すると予測しています。この膨大な<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非構造化データを</a>大規模に理解し、処理し、保存し、照会することは、重要な課題である。GenAIやディープラーニングにおける一般的な手法は、非構造化データをベクトル埋め込みに変換し、<a href="https://milvus.io/intro">Milvusや</a> <a href="https://zilliz.com/cloud">Zilliz Cloud</a>（フルマネージドMilvus）のようなベクトルデータベースに保存、インデックス化し、<a href="https://zilliz.com/learn/vector-similarity-search">ベクトルの類似</a>性や意味的類似性を検索することだ。</p>
-<p>しかし、<a href="https://zilliz.com/glossary/vector-embeddings">ベクトル埋め込みとは</a>一体何なのだろうか？簡単に言えば、高次元空間における浮動小数点数の数値表現である。<a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">2つのベクトル間の距離は</a>その関連性を示し、近ければ近いほど関連性が高く、逆もまた然りです。これは、類似したベクトルは類似した元のデータに対応することを意味し、従来のキーワード検索や完全一致検索とは異なります。</p>
+    </button></h2><p>The rise of <a href="https://zilliz.com/learn/generative-ai">Generative AI (GenAI)</a>, particularly large language models (<a href="https://zilliz.com/glossary/large-language-models-(llms)">LLMs</a>), has significantly boosted interest in <a href="https://zilliz.com/learn/what-is-vector-database">vector databases</a>, establishing them as an essential component within the GenAI ecosystem. As a result, vector databases are being adopted in increasing <a href="https://milvus.io/use-cases">use cases</a>.</p>
+<p>An <a href="https://venturebeat.com/data-infrastructure/report-80-of-global-datasphere-will-be-unstructured-by-2025/">IDC Report</a> predicts that by 2025, over 80% of business data will be unstructured, existing in formats such as text, images, audio, and videos. Understanding, processing, storing, and querying this vast amount of <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> at scale presents a significant challenge. The common practice in GenAI and deep learning is to transform unstructured data into vector embeddings, store, and index them in a vector database like <a href="https://milvus.io/intro">Milvus</a> or <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed Milvus) for <a href="https://zilliz.com/learn/vector-similarity-search">vector similarity</a> or semantic similarity searches.</p>
+<p>But what exactly are <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a>? Simply put, they are numerical representations of floating-point numbers in a high-dimensional space. The <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">distance between two vectors</a> indicates their relevance: the closer they are, the more relevant they are to each other, and vice versa. This means that similar vectors correspond to similar original data, which differs from traditional keyword or exact searches.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_2_How_to_perform_a_vector_search_f38e8533a2.png" alt="How to perform a vector similarity search" class="doc-image" id="how-to-perform-a-vector-similarity-search" />
-   </span> <span class="img-wrapper"> <span>ベクトル類似検索の実行方法</span> </span></p>
-<p><em>図1：ベクトル類似検索の実行方法</em></p>
-<p>ベクトル埋め込みデータを格納し、インデックスを付け、検索する機能は、ベクトルデータベースの中核をなす機能です。現在、主流のベクトルデータベースは2つのカテゴリに分類されます。最初のカテゴリーは、Amazon OpenSearch Serviceの<a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">KNN</a>プラグインやAmazon RDS for<a href="https://zilliz.com/comparison/milvus-vs-pgvector">PostgreSQLの</a>pgvector拡張など、既存のリレーショナルデータベース製品を拡張したものです。2つ目のカテゴリーは、Milvus、Zilliz Cloud（フルマネージドMilvus）、<a href="https://zilliz.com/comparison/pinecone-vs-zilliz-vs-milvus">Pinecone</a>、<a href="https://zilliz.com/comparison/milvus-vs-weaviate">Weaviate</a>、<a href="https://zilliz.com/comparison/milvus-vs-qdrant">Qdrant</a>、<a href="https://zilliz.com/blog/milvus-vs-chroma">Chromaの</a>ような有名な例を含む、特化したベクトルデータベース製品で構成される。</p>
-<p>埋め込み技術とベクトルデータベースは、画像類似検索、ビデオ重複排除と分析、自然言語処理、推薦システム、ターゲット広告、パーソナライズされた検索、インテリジェントな顧客サービス、詐欺検出など、様々な<a href="https://zilliz.com/vector-database-use-cases">AI主導のユースケースに</a>幅広く応用されています。</p>
-<p><a href="https://milvus.io/docs/quickstart.md">Milvusは</a>、数あるベクトルデータベースの中でも最も人気のあるオープンソースの選択肢の1つである。この投稿ではMilvusを紹介し、AWS EKS上でのMilvusのデプロイの実践を探る。</p>
-<h2 id="What-is-Milvus" class="common-anchor-header">Milvusとは？<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_2_How_to_perform_a_vector_search_f38e8533a2.png" alt="How to perform a vector similarity search" class="doc-image" id="how-to-perform-a-vector-similarity-search" />
+    <span>How to perform a vector similarity search</span>
+  </span>
+</p>
+<p><em>Figure 1:  How to perform a vector similarity search</em></p>
+<p>The ability to store, index, and search vector embeddings is the core functionality of vector databases. Currently, mainstream vector databases fall into two categories. The first category extends existing relational database products, such as Amazon OpenSearch Service with the <a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">KNN</a> plugin and Amazon RDS for <a href="https://zilliz.com/comparison/milvus-vs-pgvector">PostgreSQL</a> with the pgvector extension. The second category comprises specialized vector database products, including well-known examples like Milvus, Zilliz Cloud (the fully managed Milvus), <a href="https://zilliz.com/comparison/pinecone-vs-zilliz-vs-milvus">Pinecone</a>, <a href="https://zilliz.com/comparison/milvus-vs-weaviate">Weaviate</a>, <a href="https://zilliz.com/comparison/milvus-vs-qdrant">Qdrant</a>, and <a href="https://zilliz.com/blog/milvus-vs-chroma">Chroma</a>.</p>
+<p>Embedding techniques and vector databases have broad applications across various <a href="https://zilliz.com/vector-database-use-cases">AI-driven use cases</a>, including image similarity search, video deduplication and analysis, natural language processing, recommendation systems, targeted advertising, personalized search, intelligent customer service, and fraud detection.</p>
+<p><a href="https://milvus.io/docs/quickstart.md">Milvus</a> is one of the most popular open-source options among the numerous vector databases. This post introduces Milvus and explores the practice of deploying Milvus on AWS EKS.</p>
+<h2 id="What-is-Milvus" class="common-anchor-header">What is Milvus?<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,36 +57,38 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/intro">Milvusは</a>柔軟性、信頼性が高く、高速なクラウドネイティブのオープンソースベクターデータベースです。ベクトル類似検索とAIアプリケーションを強力にサポートし、あらゆる組織がベクトルデータベースにアクセスできるように努めています。Milvusは、ディープニューラルネットワークやその他の機械学習（ML）モデルによって生成された10億以上のベクトル埋め込みを保存、インデックス付け、管理することができます。</p>
-<p>Milvusは2019年10月に<a href="https://github.com/milvus-io/milvus/blob/master/LICENSE">オープンソースのApache License 2.0の</a>下でリリースされた。現在、<a href="https://lfaidata.foundation/">LF AI &amp; Data Foundationの</a>卒業プロジェクトとなっている。このブログを書いている時点で、Milvusは<a href="https://hub.docker.com/r/milvusdb/milvus">5000万以上のDocker Pull</a>ダウンロードに達しており、NVIDIA、AT&amp;T、IBM、eBay、Shopee、Walmartなど<a href="https://milvus.io/">多くの顧客に</a>利用されている。</p>
-<h3 id="Milvus-Key-Features" class="common-anchor-header">Milvusの主な特徴</h3><p>クラウドネイティブなベクターデータベースとして、Milvusは以下の主な特徴を誇っている：</p>
+    </button></h2><p><a href="https://milvus.io/intro">Milvus</a> is a highly flexible, reliable, and blazing-fast cloud-native, open-source vector database. It powers vector similarity search and AI applications and strives to make vector databases accessible to every organization. Milvus can store, index, and manage a billion+ vector embeddings generated by deep neural networks and other machine learning (ML) models.</p>
+<p>Milvus was released under the <a href="https://github.com/milvus-io/milvus/blob/master/LICENSE">open-source Apache License 2.0</a> in October 2019. It is currently a graduate project under <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>. At the time of writing this blog, Milvus had reached more than <a href="https://hub.docker.com/r/milvusdb/milvus">50 million Docker pull</a> downloads and was used by <a href="https://milvus.io/">many customers</a>, such as NVIDIA, AT&amp;T, IBM, eBay, Shopee, and Walmart.</p>
+<h3 id="Milvus-Key-Features" class="common-anchor-header">Milvus Key Features</h3><p>As a cloud-native vector database, Milvus boasts the following key features:</p>
 <ul>
-<li><p>億スケールのベクトルデータセットをミリ秒単位で検索する高いパフォーマンス。</p></li>
-<li><p>多言語サポートとツールチェーン</p></li>
-<li><p>水平スケーラビリティと障害発生時の高い信頼性</p></li>
-<li><p>スカラーフィルタリングとベクトル類似検索を組み合わせた<a href="https://zilliz.com/blog/a-review-of-hybrid-search-in-milvus">ハイブリッド検索</a>。</p></li>
+<li><p>High performance and millisecond search on billion-scale vector datasets.</p></li>
+<li><p>Multi-language support and toolchain.</p></li>
+<li><p>Horizontal scalability and high reliability even in the event of a disruption.</p></li>
+<li><p><a href="https://zilliz.com/blog/a-review-of-hybrid-search-in-milvus">Hybrid search</a>, achieved by pairing scalar filtering with vector similarity search.</p></li>
 </ul>
-<h3 id="Milvus-Architecture" class="common-anchor-header">Milvusのアーキテクチャ</h3><p>Milvusは、データフローと制御フローを分離するという原則に従っている。システムは図のように4つのレベルに分かれている：</p>
+<h3 id="Milvus-Architecture" class="common-anchor-header">Milvus Architecture</h3><p>Milvus follows the principle of separating data flow and control flow. The system breaks down into four levels, as shown in the diagram:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_Overview_fd10aeffb8.png" alt="Milvus Architecture" class="doc-image" id="milvus-architecture" />
-   </span> <span class="img-wrapper"> <span>Milvusアーキテクチャ</span> </span></p>
-<p><em>図2 Milvusアーキテクチャ</em></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_Overview_fd10aeffb8.png" alt="Milvus Architecture" class="doc-image" id="milvus-architecture" />
+    <span>Milvus Architecture</span>
+  </span>
+</p>
+<p><em>Figure 2 Milvus Architecture</em></p>
 <ul>
-<li><p><strong>アクセス層：</strong>アクセスレイヤーはステートレスプロキシ群で構成され、システムのフロントレイヤーとして、またユーザーに対するエンドポイントとして機能する。</p></li>
-<li><p><strong>コーディネータサービス：</strong>コーディネータサービスは、ワーカーノードにタスクを割り当てる。</p></li>
-<li><p><strong>ワーカーノード：</strong>ワーカーノードは、コーディネータサービスからの指示に従い、ユーザートリガーのDML/DDLコマンドを実行するダムエグゼキュータです。</p></li>
-<li><p><strong>ストレージ：</strong>ストレージはデータの永続化を担当する。メタストレージ、ログブローカー、オブジェクトストレージから構成される。</p></li>
+<li><p><strong>Access layer:</strong> The access layer is composed of a group of stateless proxies and serves as the system’s front layer and endpoint to users.</p></li>
+<li><p><strong>Coordinator service:</strong> The coordinator service assigns tasks to the worker nodes.</p></li>
+<li><p><strong>Worker nodes:</strong> The worker nodes are dumb executors that follow instructions from the coordinator service and execute user-triggered DML/DDL commands.</p></li>
+<li><p><strong>Storage:</strong> Storage is responsible for data persistence. It comprises a meta storage, log broker, and object storage.</p></li>
 </ul>
-<h3 id="Milvus-Deployment-Options" class="common-anchor-header">Milvusの展開オプション</h3><p>Milvusは3つの実行モードをサポートしています：<a href="https://milvus.io/docs/install-overview.md">Milvus Lite、スタンドアロン、分散</a>です。</p>
+<h3 id="Milvus-Deployment-Options" class="common-anchor-header">Milvus Deployment Options</h3><p>Milvus supports three running modes: <a href="https://milvus.io/docs/install-overview.md">Milvus Lite, Standalone, and Distributed</a>.</p>
 <ul>
-<li><p><strong>Milvus Liteは</strong>ローカルアプリケーションにインポート可能なPythonライブラリです。Milvusの軽量版として、Jupyter Notebookでの迅速なプロトタイピングや、リソースの限られたスマートデバイスでの実行に最適です。</p></li>
-<li><p><strong>Milvus Standaloneは</strong>シングルマシンサーバーデプロイメントです。実運用ワークロードがあるがKubernetesを使用したくない場合、十分なメモリを持つシングルマシン上でMilvus Standaloneを実行することは良い選択肢です。</p></li>
-<li><p><strong>Milvus Distributedは</strong>Kubernetesクラスタ上にデプロイすることができる。より大きなデータセット、より高い可用性、スケーラビリティをサポートし、本番環境により適しています。</p></li>
+<li><p><strong>Milvus Lite</strong> is a Python library that can be imported into local applications. As a lightweight version of Milvus, it is ideal for quick prototyping in Jupyter Notebooks or running on smart devices with limited resources.</p></li>
+<li><p><strong>Milvus Standalone i</strong>s a single-machine server deployment. If you have a production workload but prefer not to use Kubernetes, running Milvus Standalone on a single machine with sufficient memory is a good option.</p></li>
+<li><p><strong>Milvus Distributed</strong> can be deployed on Kubernetes clusters. It supports larger datasets, higher availability, and scalability, and is more suitable for production environments.</p></li>
 </ul>
-<p>Milvusは最初からKubernetesをサポートするように設計されており、AWS上で簡単にデプロイできる。マネージドKubernetesとしてAmazon Elastic Kubernetes Service (Amazon EKS)を、オブジェクトストレージとしてAmazon S3を、メッセージストレージとしてAmazon Managed Streaming for Apache Kafka (Amazon MSK)を、ロードバランサーとしてAmazon Elastic Load Balancing (Amazon ELB)を使用することで、信頼性と弾力性のあるMilvusデータベースクラスタを構築することができます。</p>
-<p>次に、EKSやその他のサービスを利用したMilvusクラスタのデプロイについて、ステップバイステップで説明します。</p>
-<h2 id="Deploying-Milvus-on-AWS-EKS" class="common-anchor-header">AWS EKS上でのMilvusのデプロイ<button data-href="#Deploying-Milvus-on-AWS-EKS" class="anchor-icon" translate="no">
+<p>Milvus is designed from the start to support Kubernetes, and can be easily deployed on AWS. We can use Amazon Elastic Kubernetes Service (Amazon EKS) as the managed Kubernetes, Amazon S3 as the Object Storage, Amazon Managed Streaming for Apache Kafka (Amazon MSK) as the Message storage, and Amazon Elastic Load Balancing (Amazon ELB) as the Load Balancer to build a reliable, elastic Milvus database cluster.</p>
+<p>Next, we’ll provide step-by-step guidance on deploying a Milvus cluster using EKS and other services.</p>
+<h2 id="Deploying-Milvus-on-AWS-EKS" class="common-anchor-header">Deploying Milvus on AWS EKS<button data-href="#Deploying-Milvus-on-AWS-EKS" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,35 +103,38 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">前提条件</h3><p>AWS CLIを使用してEKSクラスタを作成し、Milvusデータベースをデプロイします。以下の前提条件が必要です：</p>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>We’ll use AWS CLI to create an EKS cluster and deploy a Milvus database. The following prerequisites are required:</p>
 <ul>
-<li><p><a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"> AWS CLIが</a>インストールされ、適切な権限で設定されたPC/MacまたはAmazon EC2インスタンス。Amazon Linux 2またはAmazon Linux 2023を使用している場合、AWS CLIツールはデフォルトでインストールされています。</p></li>
-<li><p>Helm、Kubectl、eksctlなどの<a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">EKSツールがインストールされている</a>こと。</p></li>
-<li><p>Amazon S3バケット。</p></li>
-<li><p>Amazon MSKインスタンス。</p></li>
+<li><p>A PC/Mac or Amazon EC2 instance with<a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"> AWS CLI</a> installed and configured with appropriate permissions. The AWS CLI tools are installed by default if you use Amazon Linux 2 or Amazon Linux 2023.</p></li>
+<li><p><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">EKS tools installed</a>, including Helm, Kubectl, eksctl, etc.</p></li>
+<li><p>An Amazon S3 bucket.</p></li>
+<li><p>An Amazon MSK instance.</p></li>
 </ul>
-<h3 id="Considerations-when-creating-MSK" class="common-anchor-header">MSKを作成する際の考慮事項</h3><ul>
-<li>Milvusの最新安定版（v2.3.13）はKafkaの<code translate="no">autoCreateTopics</code> 機能に依存しています。そのため、MSKを作成する際には、カスタム設定を使用し、<code translate="no">auto.create.topics.enable</code> プロパティをデフォルトの<code translate="no">false</code> から<code translate="no">true</code> に変更する必要があります。また、MSKのメッセージスループットを向上させるためには、<code translate="no">message.max.bytes</code> と<code translate="no">replica.fetch.max.bytes</code> の値を大きくすることが推奨されます。詳細については、<a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html">カスタムMSK設定を</a>参照してください。</li>
+<h3 id="Considerations-when-creating-MSK" class="common-anchor-header">Considerations when creating MSK</h3><ul>
+<li>The latest stable version of Milvus (v2.3.13) depends on Kafka’s <code translate="no">autoCreateTopics</code> feature. So when creating MSK, we need to use a custom configuration and change the <code translate="no">auto.create.topics.enable</code> property from the default <code translate="no">false</code> to <code translate="no">true</code>. In addition, to increase the message throughput of MSK, it is recommended that the values of <code translate="no">message.max.bytes</code> and <code translate="no">replica.fetch.max.bytes</code> be increased. See <a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html">Custom MSK configurations</a> for details.</li>
 </ul>
 <pre><code translate="no">auto.create.topics.enable=true
 message.<span class="hljs-built_in">max</span>.<span class="hljs-built_in">bytes</span>=<span class="hljs-number">10485880</span>
 replica.fetch.<span class="hljs-built_in">max</span>.<span class="hljs-built_in">bytes</span>=<span class="hljs-number">20971760</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>milvusはMSKのIAMロールベース認証をサポートしていません。そのため、MSKを作成する際は、セキュリティ設定で<code translate="no">SASL/SCRAM authentication</code> オプションを有効にし、AWS Secrets Managerで<code translate="no">username</code> 、<code translate="no">password</code> 。詳しくは、<a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-password.html">AWS Secrets Manager によるサインイン認証</a>を参照。</li>
+<li>Milvus does not support MSK’s IAM role-based authentication. So, when creating MSK, enable <code translate="no">SASL/SCRAM authentication</code> option in the security configuration, and configure <code translate="no">username</code> and <code translate="no">password</code> in the AWS Secrets Manager. See <a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-password.html">Sign-in credentials authentication with AWS Secrets Manager</a> for details.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_3_Security_settings_enable_SASL_SCRAM_authentication_9cf7cdde00.png" alt="Figure 3 Security settings enable SASL SCRAM authentication.png" class="doc-image" id="figure-3-security-settings-enable-sasl-scram-authentication.png" />
-   </span> <span class="img-wrapper"> <span>図 3 セキュリティ設定 SASL SCRAM 認証を有効にする.png</span> </span></p>
-<p><em>図 3: セキュリティ設定: SASL/SCRAM 認証を有効にする</em></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_3_Security_settings_enable_SASL_SCRAM_authentication_9cf7cdde00.png" alt="Figure 3 Security settings enable SASL SCRAM authentication.png" class="doc-image" id="figure-3-security-settings-enable-sasl-scram-authentication.png" />
+    <span>Figure 3 Security settings enable SASL SCRAM authentication.png</span>
+  </span>
+</p>
+<p><em>Figure 3: Security settings: enable SASL/SCRAM authentication</em></p>
 <ul>
-<li>EKSクラスタのセキュリティグループまたはIPアドレス範囲からMSKセキュリティグループへのアクセスを有効にする必要があります。</li>
+<li>We need to enable access to the MSK security group from the EKS cluster’s security group or IP address range.</li>
 </ul>
-<h3 id="Creating-an-EKS-Cluster" class="common-anchor-header">EKSクラスタの作成</h3><p>コンソール、CloudFormation、eksctlなど、EKSクラスタを作成する方法はたくさんあります。この記事では、eksctlを使用してEKSクラスタを作成する方法を紹介します。</p>
-<p><code translate="no">eksctl</code> は、Amazon EKS上でKubernetesクラスタを作成・管理するためのシンプルなコマンドラインツールです。Amazon EKS用のノードを持つ新しいクラスタを作成するための最速かつ最も簡単な方法を提供します。詳細はeksctlの<a href="https://eksctl.io/">ウェブサイトを</a>参照してください。</p>
+<h3 id="Creating-an-EKS-Cluster" class="common-anchor-header">Creating an EKS Cluster</h3><p>There are many ways to create an EKS cluster, such as via the console, CloudFormation, eksctl, etc. This post will show how to create an EKS cluster using eksctl.</p>
+<p><code translate="no">eksctl</code> is a simple command-line tool for creating and managing Kubernetes clusters on Amazon EKS. It provides the fastest and easiest way to create a new cluster with nodes for Amazon EKS. See eksctl’s <a href="https://eksctl.io/">website</a> for more information.</p>
 <ol>
-<li>まず、以下のコード・スニペットで<code translate="no">eks_cluster.yaml</code> ファイルを作成します。<code translate="no">cluster-name</code> をクラスタ名に置き換え、<code translate="no">region-code</code> をクラスタを作成する AWS リージョンに置き換え、<code translate="no">private-subnet-idx</code> をプライベートサブネットに置き換えてください。 注：この設定ファイルは、プライベートサブネットを指定して既存の VPC に EKS クラスタを作成します。新しいVPCを作成する場合は、VPCとサブネットの構成を削除すると、<code translate="no">eksctl</code> 。</li>
+<li>First, create an <code translate="no">eks_cluster.yaml</code> file with the following code snippet. Replace <code translate="no">cluster-name</code> with your cluster name, replace <code translate="no">region-code</code> with the AWS region where you want to create the cluster and replace <code translate="no">private-subnet-idx</code> with your private subnets.
+Note: This configuration file creates an EKS cluster in an existing VPC by specifying private subnets. If you want to create a new VPC, remove the VPC and subnets configuration, and then the <code translate="no">eksctl</code> will automatically create a new one.</li>
 </ol>
 <pre><code translate="no">apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
@@ -184,28 +191,28 @@ addons:
    ebsCSIController: true
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>次に、<code translate="no">eksctl</code> コマンドを実行して EKS クラスターを作成します。</li>
+<li>Then, run the <code translate="no">eksctl</code> command to create the EKS cluster.</li>
 </ol>
 <pre><code translate="no">eksctl create cluster -f eks_cluster.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>このコマンドにより、以下のリソースが作成されます：</p>
+<p>This command will create the following resources:</p>
 <ul>
-<li><p>指定したバージョンのEKSクラスター。</p></li>
-<li><p>3台のm6i.2xlarge EC2インスタンスを持つ管理ノードグループ。</p></li>
-<li><p><a href="https://docs.aws.amazon.com/en_us/eks/latest/userguide/enable-iam-roles-for-service-accounts.html">IAM OIDC IDプロバイダーと</a>、後で<strong>AWSロードバランサーコントローラーを</strong>インストールするときに使用する<code translate="no">aws-load-balancer-controller</code> というServiceAccount。</p></li>
-<li><p>名前空間<code translate="no">milvus</code> と、この名前空間内の ServiceAccount<code translate="no">milvus-s3-access-sa</code> 。この名前空間は、後でMilvusのオブジェクトストレージとしてS3を設定する際に使用します。</p>
-<p>注意: ここでは簡単のため、<code translate="no">milvus-s3-access-sa</code> に S3 のフルアクセス権限を付与しています。本番環境では、最小特権の原則に従い、Milvusに使用する特定のS3バケットのみにアクセス権を付与することをお勧めします。</p></li>
-<li><p><code translate="no">vpc-cni</code>,<code translate="no">coredns</code>,<code translate="no">kube-proxy</code> はEKSに必要なコアアドオンです。<code translate="no">aws-ebs-csi-driver</code> はEKSクラスタがAmazon EBSボリュームのライフサイクルを管理するためのAWS EBS CSIドライバです。</p></li>
+<li><p>An EKS cluster with the specified version.</p></li>
+<li><p>A managed node group with three m6i.2xlarge EC2 instances.</p></li>
+<li><p>An <a href="https://docs.aws.amazon.com/en_us/eks/latest/userguide/enable-iam-roles-for-service-accounts.html">IAM OIDC identity provider</a> and a ServiceAccount called <code translate="no">aws-load-balancer-controller</code>, which we will use later when installing the <strong>AWS Load Balancer Controller</strong>.</p></li>
+<li><p>A namespace <code translate="no">milvus</code> and a ServiceAccount <code translate="no">milvus-s3-access-sa</code> within this namespace. This namespace will be used later when configuring S3 as the object storage for Milvus.</p>
+<p>Note: For simplicity, the <code translate="no">milvus-s3-access-sa</code> here is granted full S3 access permissions. In production deployments, it’s recommended to follow the principle of least privilege and only grant access to the specific S3 bucket used for Milvus.</p></li>
+<li><p>Multiple add-ons, where <code translate="no">vpc-cni</code>, <code translate="no">coredns</code>, <code translate="no">kube-proxy</code> are core add-ons required by EKS. <code translate="no">aws-ebs-csi-driver</code> is the AWS EBS CSI driver that allows EKS clusters to manage the lifecycle of Amazon EBS volumes.</p></li>
 </ul>
-<p>あとは、クラスタの作成が完了するのを待つだけです。</p>
-<p>クラスタの作成が完了するまで待ちます。クラスタ作成プロセス中に、<code translate="no">kubeconfig</code> ファイルが自動的に作成または更新されます。以下のコマンドを実行して手動で更新することもできます。<code translate="no">region-code</code> 」をクラスタが作成されるAWSリージョンに、「<code translate="no">cluster-name</code> 」をクラスタ名に置き換えてください。</p>
+<p>Now, we just need to wait for the cluster creation to complete.</p>
+<p>Wait for the cluster creation to complete. During the cluster creation process, the <code translate="no">kubeconfig</code> file will be automatically created or updated. You can also manually update it by running the following command. Make sure to replace <code translate="no">region-code</code> with the AWS region where your cluster is being created, and replace <code translate="no">cluster-name</code> with the name of your cluster.</p>
 <pre><code translate="no">aws eks update-kubeconfig --region &lt;region-code&gt; --name &lt;cluster-name&gt;
 <button class="copy-code-btn"></button></code></pre>
-<p>クラスタが作成されたら、以下のコマンドを実行してノードを表示できます：</p>
+<p>Once the cluster is created, you can view nodes by running:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> nodes -A -o wide
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>ストレージタイプとしてGP3を設定した<code translate="no">ebs-sc</code> StorageClassを作成し、デフォルトのStorageClassとして設定します。Milvusはメタストレージとしてetcdを使用し、PVCの作成と管理にこのStorageClassが必要です。</li>
+<li>Create a <code translate="no">ebs-sc</code> StorageClass configured with GP3 as the storage type, and set it as the default StorageClass. Milvus uses etcd as its Meta Storage and needs this StorageClass to create and manage PVCs.</li>
 </ol>
 <pre><code translate="no">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: storage.k8s.io/v1
@@ -220,20 +227,20 @@ parameters:
  <span class="hljs-built_in">type</span>: gp3
 EOF
 <button class="copy-code-btn"></button></code></pre>
-<p>その後、元の<code translate="no">gp2</code> StorageClassをnon-defaultに設定する：</p>
+<p>Then, set the original <code translate="no">gp2</code> StorageClass to non-default:</p>
 <pre><code translate="no">kubectl patch storage<span class="hljs-keyword">class</span> <span class="hljs-title class_">gp2</span> -p <span class="hljs-string">&#x27;{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;false&quot;}}}&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>AWS Load Balancer Controllerをインストールする。このコントローラは後でMilvus ServiceとAttu Ingressで使うので、事前にインストールしておこう。</li>
+<li>Install the AWS Load Balancer Controller. We will use this controller later for the Milvus Service and Attu Ingress, so let’s install it beforehand.</li>
 </ol>
 <ul>
-<li>まず、<code translate="no">eks-charts</code> のレポを追加し、アップデートする。</li>
+<li>First, add the <code translate="no">eks-charts</code> repo and update it.</li>
 </ul>
 <pre><code translate="no">helm repo <span class="hljs-keyword">add</span> eks https:<span class="hljs-comment">//aws.github.io/eks-charts</span>
 helm repo update
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>次に、AWS Load Balancer Controllerをインストールします。<code translate="no">cluster-name</code> はクラスタ名に置き換えてください。<code translate="no">aws-load-balancer-controller</code> という名前の ServiceAccount は、前のステップで EKS クラスタを作成したときに既に作成されている。</li>
+<li>Next, install the AWS Load Balancer Controller. Replace <code translate="no">cluster-name</code> with your cluster name. The ServiceAccount named <code translate="no">aws-load-balancer-controller</code> was already created when we created the EKS cluster in previous steps.</li>
 </ul>
 <pre><code translate="no">helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
  -n kube-system \
@@ -242,26 +249,26 @@ helm repo update
  --<span class="hljs-built_in">set</span> serviceAccount.name=aws-load-balancer-controller
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>コントローラーが正常にインストールされたか確認する。</li>
+<li>Verify if the controller was installed successfully.</li>
 </ul>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment -n kube-system aws-load-balancer-controller
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>出力は以下のようになるはずです：</li>
+<li>The output should look like:</li>
 </ul>
 <pre><code translate="no">NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
 aws-load-balancer-controller   2/2     2            2           12m
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Deploying-a-Milvus-Cluster" class="common-anchor-header">Milvusクラスタのデプロイ</h3><p>MilvusはOperatorやHelmなど複数のデプロイ方法をサポートしています。Operatorはよりシンプルですが、Helmはより直接的で柔軟です。この例ではHelmを使用してMilvusをデプロイします。</p>
-<p>Helmを使ってMilvusをデプロイする場合、<code translate="no">values.yaml</code> ファイルを使って設定をカスタマイズすることができます。<a href="https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml">values.yamlを</a>クリックするとすべてのオプションが表示されます。デフォルトでは、Milvusはクラスタ内のminioとpulsarをそれぞれオブジェクトストレージとメッセージストレージとして作成します。これを本番環境に適したものにするため、いくつかの設定変更を行います。</p>
+<h3 id="Deploying-a-Milvus-Cluster" class="common-anchor-header">Deploying a Milvus Cluster</h3><p>Milvus supports multiple deployment methods, such as Operator and Helm. Operator is simpler, but Helm is more direct and flexible. We’ll use Helm to deploy Milvus in this example.</p>
+<p>When deploying Milvus with Helm, you can customize the configuration via the <code translate="no">values.yaml</code> file. Click <a href="https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml">values.yaml</a> to view all the options. By default, Milvus creates in-cluster minio and pulsar as the Object Storage and Message Storage, respectively. We will make some configuration changes to make it more suitable for production.</p>
 <ol>
-<li>まず、Milvus Helmレポを追加し、更新します。</li>
+<li>First, add the Milvus Helm repo and update it.</li>
 </ol>
 <pre><code translate="no">helm repo <span class="hljs-keyword">add</span> milvus https:<span class="hljs-comment">//zilliztech.github.io/milvus-helm/</span>
 helm repo update
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>以下のコード・スニペットで<code translate="no">milvus_cluster.yaml</code> 。このコードスニペットは、オブジェクトストレージとしてAmazon S3、メッセージキューとしてAmazon MSKを設定するなど、Milvusの設定をカスタマイズします。詳細な説明とコンフィギュレーションガイダンスは後ほど提供します。</li>
+<li>Create a <code translate="no">milvus_cluster.yaml</code> file with the following code snippet. This code snippet customizes Milvus’s configuration, such as configuring Amazon S3 as the object storage and Amazon MSK as the message queue. We’ll provide detailed explanations and configuration guidance later.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment">#####################################</span>
 <span class="hljs-comment"># Section 1</span>
@@ -414,30 +421,32 @@ indexNode:
       cpu: <span class="hljs-number">4</span>
       memory: 8Gi
 <button class="copy-code-btn"></button></code></pre>
-<p>このコードには6つのセクションがあります。以下の指示に従って、対応する設定を変更してください。</p>
-<p><strong>セクション1</strong>：オブジェクトストレージとしてS3を設定する。serviceAccountはMilvusにS3へのアクセスを許可します（この場合、<code translate="no">milvus-s3-access-sa</code> 、EKSクラスタ作成時に作成したものです）。<code translate="no">&lt;region-code&gt;</code> はクラスタが配置されている AWS リージョンに置き換えてください。<code translate="no">&lt;bucket-name&gt;</code> をS3バケットの名前に、<code translate="no">&lt;root-path&gt;</code> をS3バケットのプレフィックスに置き換えてください（このフィールドは空のままでも構いません）。</p>
-<p><strong>セクション2</strong>：MSKをメッセージストレージとして構成する。<code translate="no">&lt;broker-list&gt;</code> を、MSKのSASL/SCRAM認証タイプに対応するエンドポイントアドレスに置き換える。<code translate="no">&lt;username&gt;</code> と<code translate="no">&lt;password&gt;</code> を MSK アカウントのユーザー名とパスワードに置き換える。<code translate="no">&lt;broker-list&gt;</code> は、下図のように MSK クライアント情報から取得できる。</p>
+<p>The code contains six sections. Follow the following instructions to change the corresponding configurations.</p>
+<p><strong>Section 1</strong>: Configure S3 as Object Storage. The serviceAccount grants Milvus access to S3 (in this case, it is <code translate="no">milvus-s3-access-sa</code>, which was created when we created the EKS cluster). Make sure to replace <code translate="no">&lt;region-code&gt;</code> with the AWS region where your cluster is located. Replace <code translate="no">&lt;bucket-name&gt;</code> with the name of your S3 bucket and <code translate="no">&lt;root-path&gt;</code> with the prefix for the S3 bucket (this field can be left empty).</p>
+<p><strong>Section 2</strong>: Configure MSK as Message Storage. Replace <code translate="no">&lt;broker-list&gt;</code> with the endpoint addresses corresponding to the SASL/SCRAM authentication type of MSK. Replace <code translate="no">&lt;username&gt;</code> and <code translate="no">&lt;password&gt;</code> with the MSK account username and password. You can get the <code translate="no">&lt;broker-list&gt;</code> from MSK client information, as shown in the image below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_4_Configure_MSK_as_the_Message_Storage_of_Milvus_a9e602e0b9.png" alt="Figure 4 Configure MSK as the Message Storage of Milvus.png" class="doc-image" id="figure-4-configure-msk-as-the-message-storage-of-milvus.png" />
-   </span> <span class="img-wrapper"> <span>図4 MilvusのメッセージストレージとしてMSKを設定する.png</span> </span></p>
-<p><em>図4: MSKをMilvusのメッセージストレージとして設定する。</em></p>
-<p><strong>セクション3:</strong>Milvusサービスを公開し、クラスタ外部からのアクセスを可能にする。MilvusエンドポイントはデフォルトでClusterIPタイプのサービスを使用しており、EKSクラスタ内でのみアクセス可能です。必要に応じて、LoadBalancerタイプに変更してEKSクラスタ外部からのアクセスを許可することができます。ロードバランサータイプのサービスは、ロードバランサとしてAmazon NLBを使用します。セキュリティのベストプラクティスに従い、<code translate="no">aws-load-balancer-scheme</code> はデフォルトで内部モードとして設定されており、Milvusへのイントラネットアクセスのみが許可されます。<a href="https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html">NLBの設定手順を見るには</a>クリックしてください。</p>
-<p><strong>セクション4:</strong>オープンソースのmilvus管理ツールである<a href="https://github.com/zilliztech/attu">Attuを</a>インストールし、設定します。直感的なGUIでmilvusと簡単に対話することができます。Attuを有効にし、AWS ALBを使用してイングレスを構成し、Attuがインターネット経由でアクセスできるように<code translate="no">internet-facing</code> タイプに設定します。ALB設定のガイドは<a href="https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html">こちらのドキュメントを</a>クリックしてください。</p>
-<p><strong>セクション5:</strong>Milvus Core ComponentsのHAデプロイを有効にする。Milvusには複数の独立したコンポーネントが含まれています。例えば、コーディネータサービスは制御層として機能し、ルート、クエリ、データ、インデックスの各コンポーネントの調整を行います。アクセス層のProxyはデータベースアクセスのエンドポイントとして機能します。これらのコンポーネントのデフォルトは1つのポッド・レプリカのみです。Milvusの可用性を向上させるためには、これらのサービスコンポーネントの複数のレプリカをデプロイすることが特に必要です。</p>
-<p><strong>注意:</strong>Root、Query、Data、およびIndexコーディネータコンポーネントのマルチレプリカデプロイメントには、<code translate="no">activeStandby</code> オプションを有効にする必要があります。</p>
-<p><strong>セクション6:</strong>Milvusコンポーネントのリソース割り当てを調整し、ワークロードの要件を満たす。Milvusのウェブサイトでは、データ量、ベクトルサイズ、インデックスタイプなどに基づいて構成案を生成する<a href="https://milvus.io/tools/sizing/">サイジングツールも</a>提供しています。また、ワンクリックでHelm設定ファイルを生成することもできます。以下の構成は、100万個の1024次元ベクトルとHNSWインデックスタイプに対するツールによる提案です。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_4_Configure_MSK_as_the_Message_Storage_of_Milvus_a9e602e0b9.png" alt="Figure 4 Configure MSK as the Message Storage of Milvus.png" class="doc-image" id="figure-4-configure-msk-as-the-message-storage-of-milvus.png" />
+    <span>Figure 4 Configure MSK as the Message Storage of Milvus.png</span>
+  </span>
+</p>
+<p><em>Figure 4: Configure MSK as the Message Storage of Milvus</em></p>
+<p><strong>Section 3:</strong> Expose Milvus service and enable access from outside the cluster. Milvus endpoint used ClusterIP type service by default, which is only accessible within the EKS cluster. If needed, you can change it to LoadBalancer type to allow access from outside the EKS cluster. The LoadBalancer type Service uses Amazon NLB as the load balancer. According to security best practices, <code translate="no">aws-load-balancer-scheme</code> is configured as internal mode by default here, which means only intranet access to Milvus is allowed. Click to <a href="https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html">view the NLB configuration instructions</a>.</p>
+<p><strong>Section 4:</strong> Install and configure <a href="https://github.com/zilliztech/attu">Attu</a>, an open-source milvus administration tool. It has an intuitive GUI that allows you to easily interact with Milvus. We enable Attu, configure ingress using AWS ALB, and set it to <code translate="no">internet-facing</code> type so that Attu can be accessed via the Internet. Click <a href="https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html">this document</a> for the guide to ALB configuration.</p>
+<p><strong>Section 5:</strong> Enable HA deployment of Milvus Core Components. Milvus contains multiple independent and decoupled components. For example, the coordinator service acts as the control layer, handling coordination for the Root, Query, Data, and Index components. The Proxy in the access layer serves as the database access endpoint. These components default to only 1 pod replica. Deploying multiple replicas of these service components is especially necessary to improve Milvus availability.</p>
+<p><strong>Note:</strong> The multi-replica deployment of the Root, Query, Data, and Index coordinator components requires the <code translate="no">activeStandby</code> option enabled.</p>
+<p><strong>Section 6:</strong> Adjust resource allocation for Milvus components to meet your workloads’ requirements. The Milvus website also provides a <a href="https://milvus.io/tools/sizing/">sizing tool</a> to generate configuration suggestions based on data volume, vector dimensions, index types, etc. It can also generate a Helm configuration file with just one click. The following configuration is the suggestion given by the tool for 1 million 1024 dimensions vectors and HNSW index type.</p>
 <ol>
-<li>Helmを使用してMilvus（名前空間<code translate="no">milvus</code> に配置）を作成します。注:<code translate="no">&lt;demo&gt;</code> はカスタム名で置き換えることができます。</li>
+<li>Use Helm to create Milvus (deployed in namespace <code translate="no">milvus</code>). Note: You can replace <code translate="no">&lt;demo&gt;</code> with a custom name.</li>
 </ol>
 <pre><code translate="no">helm install &lt;demo&gt; milvus/milvus -n milvus -f milvus_cluster.yaml
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>以下のコマンドを実行し、デプロイ状況を確認します。</li>
+<li>Run the following command to check the deployment status.</li>
 </ol>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment -n milvus
 <button class="copy-code-btn"></button></code></pre>
-<p>以下の出力は、MilvusコンポーネントがすべてAVAILABLEであり、コーディネーションコンポーネントで複数のレプリカが有効になっていることを示しています。</p>
+<p>The following output shows that Milvus components are all AVAILABLE, and coordination components have multiple replicas enabled.</p>
 <pre><code translate="no">NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
 demo-milvus-attu         1/1     1            1           5m27s
 demo-milvus-datacoord    2/2     2            2           5m27s
@@ -449,16 +458,16 @@ demo-milvus-querycoord   2/2     2            2           5m27s
 demo-milvus-querynode    1/1     1            1           5m27s
 demo-milvus-rootcoord    2/2     2            2           5m27s
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Accessing-and-Managing-Milvus" class="common-anchor-header">Milvusへのアクセスと管理</h3><p>ここまでで、Milvusベクトルデータベースのデプロイは成功しました。次に、エンドポイントを通してMilvusにアクセスする。MilvusはKubernetesサービス経由でエンドポイントを公開している。AttuはKubernetes Ingress経由でエンドポイントを公開する。</p>
-<h4 id="Accessing-Milvus-endpoints" class="common-anchor-header"><strong>Milvusエンドポイントへのアクセス</strong></h4><p>以下のコマンドを実行して、サービスのエンドポイントを取得します：</p>
+<h3 id="Accessing-and-Managing-Milvus" class="common-anchor-header">Accessing and Managing Milvus</h3><p>So far, we have successfully deployed the Milvus vector database. Now, we can access Milvus through endpoints. Milvus exposes endpoints via Kubernetes services. Attu exposes endpoints via Kubernetes Ingress.</p>
+<h4 id="Accessing-Milvus-endpoints" class="common-anchor-header"><strong>Accessing Milvus endpoints</strong></h4><p>Run the following command to get service endpoints:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> svc -n milvus
 <button class="copy-code-btn"></button></code></pre>
-<p>いくつかのサービスを見ることができる。Milvusは2つのポート、ポート<code translate="no">19530</code> とポート<code translate="no">9091</code> をサポートしています：</p>
+<p>You can view several services. Milvus supports two ports, port <code translate="no">19530</code> and port <code translate="no">9091</code>:</p>
 <ul>
-<li>ポート<code translate="no">19530</code> は gRPC および RESTful API 用です。異なるMilvus SDKやHTTPクライアントでMilvusサーバに接続する場合のデフォルトポートです。</li>
-<li>ポート<code translate="no">9091</code> はKubernetes内のメトリクス収集、pprofプロファイリング、ヘルスプローブ用の管理ポートです。</li>
+<li>Port <code translate="no">19530</code> is for gRPC and RESTful API. It is the default port when you connect to a Milvus server with different Milvus SDKs or HTTP clients.</li>
+<li>Port <code translate="no">9091</code> is a management port for metrics collection, pprof profiling, and health probes within Kubernetes.</li>
 </ul>
-<p><code translate="no">demo-milvus</code> サービスはデータベースアクセスエンドポイントを提供し、クライアントからの接続を確立するために使用される。サービスのロードバランサーとしてNLBを使用します。サービスのエンドポイントは、<code translate="no">EXTERNAL-IP</code> 列から取得できます。</p>
+<p>The <code translate="no">demo-milvus</code> service provides a database access endpoint, which is used to establish a connection from clients. It uses NLB as the service load balancer. You can get the service endpoint from the <code translate="no">EXTERNAL-IP</code> column.</p>
 <pre><code translate="no">NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP                                               PORT(S)                          AGE
 demo-etcd                ClusterIP      <span class="hljs-number">172.20</span><span class="hljs-number">.103</span><span class="hljs-number">.138</span>   &lt;none&gt;                                                    <span class="hljs-number">2379</span>/TCP,<span class="hljs-number">2380</span>/TCP                62m
 demo-etcd-headless       ClusterIP      <span class="hljs-literal">None</span>             &lt;none&gt;                                                    <span class="hljs-number">2379</span>/TCP,<span class="hljs-number">2380</span>/TCP                62m
@@ -471,26 +480,30 @@ demo-milvus-querycoord   ClusterIP      <span class="hljs-number">172.20</span><
 demo-milvus-querynode    ClusterIP      <span class="hljs-literal">None</span>             &lt;none&gt;                                                    <span class="hljs-number">9091</span>/TCP                         62m
 demo-milvus-rootcoord    ClusterIP      <span class="hljs-number">172.20</span><span class="hljs-number">.173</span><span class="hljs-number">.98</span>    &lt;none&gt;                                                    <span class="hljs-number">53100</span>/TCP,<span class="hljs-number">9091</span>/TCP               62m
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Managing-Milvus-using-Attu" class="common-anchor-header"><strong>Attuを使用したMilvusの管理</strong></h4><p>前述の通り、Milvusを管理するためにAttuをインストールしました。以下のコマンドを実行してエンドポイントを取得します：</p>
+<h4 id="Managing-Milvus-using-Attu" class="common-anchor-header"><strong>Managing Milvus using Attu</strong></h4><p>As described before, we have installed Attu to manage Milvus. Run the following command to get the endpoint:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> ingress -n milvus
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">demo-milvus-attu</code> というIngressが表示されます。<code translate="no">ADDRESS</code> の列がアクセスURLです。</p>
+<p>You can see an Ingress called <code translate="no">demo-milvus-attu</code>, where the <code translate="no">ADDRESS</code> column is the access URL.</p>
 <pre><code translate="no">NAME            CLASS   HOSTS   ADDRESS                                     PORTS   AGE
 demo-milvus-attu   &lt;none&gt;   *       k8s-attu-xxxx.us-west-2.elb.amazonaws.com   80      27s
 <button class="copy-code-btn"></button></code></pre>
-<p>Ingressのアドレスをブラウザで開くと、以下のページが表示されます。<strong>Connect</strong>をクリックしてログインします。</p>
+<p>Open the Ingress address in a browser and see the following page. Click <strong>Connect</strong> to log in.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_5_Log_in_to_your_Attu_account_bde25a6da5.png" alt="Figure 5 Log in to your Attu account.png" class="doc-image" id="figure-5-log-in-to-your-attu-account.png" />
-   </span> <span class="img-wrapper"> <span>図 5 Attu アカウントへのログイン.png</span> </span></p>
-<p><em>図 5: Attu アカウントへのログイン</em></p>
-<p>ログイン後、Attu を通して Milvus データベースを管理することができます。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_5_Log_in_to_your_Attu_account_bde25a6da5.png" alt="Figure 5 Log in to your Attu account.png" class="doc-image" id="figure-5-log-in-to-your-attu-account.png" />
+    <span>Figure 5 Log in to your Attu account.png</span>
+  </span>
+</p>
+<p><em>Figure 5: Log in to your Attu account</em></p>
+<p>After logging in, you can manage Milvus databases through Attu.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_6_The_Attu_interface_3e818e6833.png" alt="Figure 6 The Attu interface.png" class="doc-image" id="figure-6-the-attu-interface.png" />
-   </span> <span class="img-wrapper"> <span>図 6 Attu インターフェース.png</span> </span></p>
-<p>図 6: Attu インターフェース</p>
-<h2 id="Testing-the-Milvus-vector-database" class="common-anchor-header">Milvusベクトルデータベースのテスト<button data-href="#Testing-the-Milvus-vector-database" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_6_The_Attu_interface_3e818e6833.png" alt="Figure 6 The Attu interface.png" class="doc-image" id="figure-6-the-attu-interface.png" />
+    <span>Figure 6 The Attu interface.png</span>
+  </span>
+</p>
+<p>Figure 6: The Attu interface</p>
+<h2 id="Testing-the-Milvus-vector-database" class="common-anchor-header">Testing the Milvus vector database<button data-href="#Testing-the-Milvus-vector-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -505,17 +518,17 @@ demo-milvus-attu   &lt;none&gt;   *       k8s-attu-xxxx.us-west-2.elb.amazonaws.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusの<a href="https://milvus.io/docs/example_code.md">サンプルコードを使って</a>Milvusデータベースが正しく動作しているかテストします。まず、<code translate="no">hello_milvus.py</code> サンプルコードを以下のコマンドでダウンロードする：</p>
+    </button></h2><p>We will use the Milvus <a href="https://milvus.io/docs/example_code.md">example code</a> to test if the Milvus database is working properly. First, download the <code translate="no">hello_milvus.py</code> example code using the following command:</p>
 <pre><code translate="no">wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/pymilvus/master/examples/hello_milvus.py</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>サンプルコードのホストをMilvusサービスのエンドポイントに変更する。</p>
+<p>Modify the host in the example code to the Milvus service endpoint.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(fmt.<span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;start connecting to Milvus&quot;</span>))
 connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<span class="hljs-string">&quot;milvus-nlb-xxx.elb.us-west-2.amazonaws.com&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>コードを実行してください：</p>
+<p>Run the code:</p>
 <pre><code translate="no">python3 hello_milvus.py
 <button class="copy-code-btn"></button></code></pre>
-<p>システムが以下の結果を返した場合、Milvusが正常に動作していることを示す。</p>
+<p>If the system returns the following result, then it indicates that Milvus is running normally.</p>
 <pre><code translate="no">=== start connecting to <span class="hljs-title class_">Milvus</span>     ===
 <span class="hljs-title class_">Does</span> collection hello_milvus exist <span class="hljs-keyword">in</span> <span class="hljs-title class_">Milvus</span>: <span class="hljs-title class_">False</span>
 === <span class="hljs-title class_">Create</span> collection <span class="hljs-string">`hello_milvus`</span> ===
@@ -524,7 +537,7 @@ connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<
 === <span class="hljs-title class_">Start</span> <span class="hljs-title class_">Creating</span> index <span class="hljs-variable constant_">IVF_FLAT</span>  ===
 === <span class="hljs-title class_">Start</span> loading                  ===
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">まとめ<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -539,9 +552,9 @@ connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この記事では、最も人気のあるオープンソースのベクトルデータベースの1つである<a href="https://milvus.io/intro">Milvusを</a>紹介し、より高い弾力性と信頼性を実現するためにAmazon EKS、S3、MSK、ELBなどのマネージドサービスを使用してAWS上でMilvusをデプロイするためのガイドを提供します。</p>
-<p>様々なGenAIシステム、特にRAG（Retrieval Augmented Generation）のコアコンポーネントとして、MilvusはAmazon Sagemaker、PyTorch、HuggingFace、LlamaIndex、LangChainを含む様々な主流のGenAIモデルやフレームワークをサポートし、統合しています。今すぐMilvusでGenAIイノベーションの旅を始めましょう！</p>
-<h2 id="References" class="common-anchor-header">参考文献<button data-href="#References" class="anchor-icon" translate="no">
+    </button></h2><p>This post introduces <a href="https://milvus.io/intro">Milvus</a>, one of the most popular open-source vector databases, and provides a guide on deploying Milvus on AWS using managed services such as Amazon EKS, S3, MSK, and ELB to achieve greater elasticity and reliability.</p>
+<p>As a core component of various GenAI systems, particularly Retrieval Augmented Generation (RAG), Milvus supports and integrates with a variety of mainstream GenAI models and frameworks, including Amazon Sagemaker, PyTorch, HuggingFace, LlamaIndex, and LangChain. Start your GenAI innovation journey with Milvus today!</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -557,8 +570,8 @@ connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">Amazon EKSユーザーガイド</a></li>
-<li><a href="https://milvus.io/">Milvus公式ウェブサイト</a></li>
-<li><a href="https://github.com/milvus-io/milvus">Milvus GitHubリポジトリ</a></li>
-<li><a href="https://eksctl.io/">eksctl 公式ウェブサイト</a></li>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">Amazon EKS User Guide</a></li>
+<li><a href="https://milvus.io/">Milvus Official Website</a></li>
+<li><a href="https://github.com/milvus-io/milvus">Milvus GitHub Repository</a></li>
+<li><a href="https://eksctl.io/">eksctl Official Website</a></li>
 </ul>

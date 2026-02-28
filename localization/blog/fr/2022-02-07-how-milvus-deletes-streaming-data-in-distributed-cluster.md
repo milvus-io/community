@@ -1,17 +1,17 @@
 ---
 id: 2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md
-title: Utilisation
+title: Usage
 author: Lichen Wang
 date: 2022-02-07T00:00:00.000Z
 desc: >-
-  La conception cardinale de la fonction de suppression dans Milvus 2.0, la base
-  de données vectorielles la plus avancée au monde.
+  The cardinal design behind the deletion function in Milvus 2.0, the world's
+  most advanced vector database.
 cover: assets.zilliz.com/Delete_9f40bbfa94.png
 tag: Engineering
 ---
-<custom-h1>Comment Milvus supprime les données en continu dans un cluster distribué</custom-h1><p>Doté d'un traitement unifié par lots et en continu et d'une architecture cloud-native, Milvus 2.0 représente un défi plus important que son prédécesseur lors du développement de la fonction DELETE. Grâce à sa conception avancée de désagrégation du stockage et du calcul et au mécanisme flexible de publication/abonnement, nous sommes fiers d'annoncer que nous y sommes parvenus. Dans Milvus 2.0, vous pouvez supprimer une entité dans une collection donnée avec sa clé primaire afin que l'entité supprimée ne soit plus répertoriée dans le résultat d'une recherche ou d'une requête.</p>
-<p>Veuillez noter que l'opération DELETE dans Milvus se réfère à la suppression logique, alors que le nettoyage physique des données a lieu pendant le compactage des données. La suppression logique permet non seulement d'améliorer considérablement les performances de recherche limitées par la vitesse d'E/S, mais aussi de faciliter la récupération des données. Les données supprimées logiquement peuvent toujours être récupérées à l'aide de la fonction Time Travel.</p>
-<h2 id="Usage" class="common-anchor-header">Utilisation<button data-href="#Usage" class="anchor-icon" translate="no">
+<custom-h1>How Milvus Deletes Streaming Data in a Distributed Cluster</custom-h1><p>Featuring unified batch-and-stream processing and cloud-native architecture, Milvus 2.0 poses a greater challenge than its predecessor did during the development of the DELETE function. Thanks to its advanced storage-computation disaggregation design and the flexible publication/subscription mechanism, we are proud to announce that we made it happen. In Milvus 2.0, you can delete an entity in a given collection with its primary key so that the deleted entity will no longer be listed in the result of a search or a query.</p>
+<p>Please note that the DELETE operation in Milvus refers to logical deletion, whereas physical data cleanup occurs during the Data Compaction. Logical deletion not only greatly boosts the search performance constrained by the I/O speed, but also facilitates data recovery. Logically deleted data can still be retrieved with the help of the Time Travel function.</p>
+<h2 id="Usage" class="common-anchor-header">Usage<button data-href="#Usage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,7 +26,7 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Essayons d'abord la fonction DELETE dans Milvus 2.0. (L'exemple suivant utilise PyMilvus 2.0.0 sur Milvus 2.0.0).</p>
+    </button></h2><p>Let’s try out the DELETE function in Milvus 2.0 first. (The following example uses PyMilvus 2.0.0 on Milvus 2.0.0).</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, utility, Collection, DataType, FieldSchema, CollectionSchema
 <span class="hljs-comment"># Connect to Milvus</span>
 connections.connect(
@@ -81,7 +81,7 @@ post_del_res = collection.query(
 )
 <span class="hljs-built_in">print</span>(post_del_res)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Implementation" class="common-anchor-header">Mise en œuvre<button data-href="#Implementation" class="anchor-icon" translate="no">
+<h2 id="Implementation" class="common-anchor-header">Implementation<button data-href="#Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,28 +96,32 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans une instance Milvus, un nœud de données est principalement responsable de l'empaquetage des données en continu (journaux dans le courtier de journaux) en tant que données historiques (instantanés de journaux) et de leur vidage automatique vers le stockage d'objets. Un nœud d'interrogation exécute les demandes de recherche sur des données complètes, c'est-à-dire à la fois des données en continu et des données historiques.</p>
-<p>Pour tirer le meilleur parti de la capacité d'écriture de données des nœuds parallèles d'une grappe, Milvus adopte une stratégie de partage basée sur le hachage de clés primaires afin de répartir uniformément les opérations d'écriture entre les différents nœuds de travail. En d'autres termes, le proxy achemine les messages DML (Data Manipulation Language) (c'est-à-dire les demandes) d'une entité vers le même nœud de données et le même nœud d'interrogation. Ces messages sont publiés via le canal DML et consommés par le nœud de données et le nœud d'interrogation séparément afin de fournir des services de recherche et d'interrogation ensemble.</p>
-<h3 id="Data-node" class="common-anchor-header">Nœud de données</h3><p>Après avoir reçu les messages INSERT de données, le nœud de données insère les données dans un segment croissant, qui est un nouveau segment créé pour recevoir des données en continu dans la mémoire. Si le nombre de lignes de données ou la durée du segment croissant atteint le seuil, le nœud de données le scelle pour empêcher toute entrée de données. Le nœud de données évacue ensuite le segment scellé, qui contient les données historiques, vers le stockage d'objets. Pendant ce temps, le nœud de données génère un filtre bloom basé sur les clés primaires des nouvelles données, et l'envoie dans le stockage d'objets avec le segment scellé, en sauvegardant le filtre bloom dans le journal binaire des statistiques (binlog), qui contient les informations statistiques du segment.</p>
+    </button></h2><p>In a Milvus instance, a data node is mainly responsible for packing streaming data (logs in log broker) as historical data (log snapshots) and automatically flushing them to object storage. A query node executes search requests on full data, i.e. both streaming data and historical data.</p>
+<p>To make the most of the data writing capacity of parallel nodes in a cluster, Milvus adopts a sharding strategy based on primary key hashing to distribute writing operations evenly to different worker nodes. That is to say, proxy will route the Data Manipulation Language (DML) messages (i.e. requests) of an entity to the same data node and query node. These messages are published through the DML-Channel and consumed by the data node and query node separately to provide search and query services together.</p>
+<h3 id="Data-node" class="common-anchor-header">Data node</h3><p>Having received data INSERT messages, the data node inserts the data in a growing segment, which is a new segment created to receive streaming data in memory. If either the data row count or the duration of the growing segment reaches the threshold, the data node seals it to prevent any incoming data. The data node then flushes the sealed segment, which contains the historical data, to the object storage. Meanwhile, the data node generates a bloom filter based on the primary keys of the new data, and flushed it to the object storage together with the sealed segment, saving the bloom filter as a part of the statistics binary log (binlog), which contains the statistical information of the segment.</p>
 <blockquote>
-<p>Un filtre de Bloom est une structure de données probabiliste composée d'un long vecteur binaire et d'une série de fonctions de mappage aléatoires. Il peut être utilisé pour tester si un élément est membre d'un ensemble, mais peut renvoyer des résultats faussement positifs.           -- Wikipedia</p>
+<p>A bloom filter is a probabilistic data structure that consists of a long binary vector and a series of random mapping functions. It can be used to test whether an element is a member of a set, but might return false positive matches.           —— Wikipedia</p>
 </blockquote>
-<p>Lorsque des messages de suppression de données arrivent, le nœud de données met en mémoire tampon tous les filtres Bloom dans le shard correspondant, et les fait correspondre aux clés primaires fournies dans les messages pour récupérer tous les segments (à la fois les segments en croissance et les segments scellés) qui pourraient inclure les entités à supprimer. Après avoir repéré les segments correspondants, le nœud de données les met en mémoire tampon pour générer les binlogs Delta afin d'enregistrer les opérations de suppression, puis renvoie ces binlogs ainsi que les segments vers le stockage d'objets.</p>
+<p>When data DELETE messages come in, data node buffers all bloom filters in the corresponding shard, and matches them with the primary keys provided in the messages to retrieve all segments (from both growing and sealed ones) that possibly include the entities to delete. Having pinpointed the corresponding segments, data node buffers them in memory to generate the Delta binlogs to record the delete operations, and then flushes those binlogs together with the segments back to the object storage.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
-   </span> <span class="img-wrapper"> <span>Nœud de données</span> </span></p>
-<p>Étant donné qu'un canal DML n'est attribué qu'à un seul shard, les nœuds de requête supplémentaires ajoutés au cluster ne pourront pas s'abonner au canal DML. Pour s'assurer que tous les nœuds de requête peuvent recevoir les messages DELETE, les nœuds de données filtrent les messages DELETE du canal DML et les transmettent au canal Delta pour notifier les opérations de suppression à tous les nœuds de requête.</p>
-<h3 id="Query-node" class="common-anchor-header">Nœud de requête</h3><p>Lors du chargement d'une collection à partir du stockage d'objets, le nœud d'interrogation obtient d'abord le point de contrôle de chaque tesson, qui marque les opérations DML depuis la dernière opération de vidage. Sur la base du point de contrôle, le nœud d'interrogation charge tous les segments scellés avec leur binlog Delta et leurs filtres Bloom. Une fois toutes les données chargées, le nœud de requête s'abonne à DML-Channel, Delta-Channel et Query-Channel.</p>
-<p>Si d'autres messages INSERT de données arrivent après le chargement de la collection en mémoire, le nœud d'interrogation identifie d'abord les segments croissants en fonction des messages et met à jour les filtres de floraison correspondants en mémoire à des fins d'interrogation uniquement. Ces filtres de floraison dédiés à la requête ne seront pas évacués vers le stockage d'objets une fois la requête terminée.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
+    <span>Data Node</span>
+  </span>
+</p>
+<p>Since one shard is only assigned with one DML-Channel, extra query nodes added to the cluster will not be able to subscribe to the DML-Channel. To ensure that all query nodes can receive the DELETE messages, data nodes filter the DELETE messages from the DML-Channel, and forward them to Delta-Channel to notify all query nodes of the delete operations.</p>
+<h3 id="Query-node" class="common-anchor-header">Query node</h3><p>When loading a collection from object storage, the query node first obtains each shard’s checkpoint, which marks the DML operations since the last flush operation. Based on the checkpoint, the query node loads all sealed segments together with their Delta binlog and bloom filters. With all data loaded, the query node then subscribes to DML-Channel, Delta-Channel, and Query-Channel.</p>
+<p>If more data INSERT messages come after the collection is loaded to memory, query node first pinpoints the growing segments according to the messages, and updates corresponding bloom filters in memory for query purposes only. Those query-dedicated bloom filters will not be flushed to object storage after the query is finished.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
-   </span> <span class="img-wrapper"> <span>Nœud de requête</span> </span></p>
-<p>Comme indiqué ci-dessus, seul un certain nombre de nœuds de requête peuvent recevoir des messages DELETE du canal DML, ce qui signifie qu'ils sont les seuls à pouvoir exécuter les requêtes DELETE dans des segments croissants. Les nœuds de requête qui se sont abonnés au canal DML filtrent d'abord les messages DELETE dans les segments croissants, localisent les entités en faisant correspondre les clés primaires fournies avec les filtres de Bloom des segments croissants dédiés aux requêtes, puis enregistrent les opérations de suppression dans les segments correspondants.</p>
-<p>Les nœuds de requête qui ne peuvent pas s'abonner au canal DML sont uniquement autorisés à traiter des demandes de recherche ou de requête sur des segments scellés, car ils ne peuvent s'abonner qu'au canal Delta et recevoir les messages DELETE transmis par les nœuds de données. Après avoir collecté tous les messages DELETE dans les segments scellés du canal Delta, les nœuds de requête localisent les entités en faisant correspondre les clés primaires fournies avec les filtres Bloom des segments scellés, puis enregistrent les opérations de suppression dans les segments correspondants.</p>
-<p>Enfin, lors d'une recherche ou d'une interrogation, les nœuds d'interrogation génèrent un jeu de bits basé sur les enregistrements de suppression afin d'omettre les entités supprimées et de rechercher parmi les entités restantes de tous les segments, quel que soit l'état du segment. Enfin, le niveau de cohérence influe sur la visibilité des données supprimées. Avec un niveau de cohérence fort (comme le montre l'exemple de code précédent), les entités supprimées sont immédiatement invisibles après la suppression. Si le niveau de cohérence limité est adopté, il y aura plusieurs secondes de latence avant que les entités supprimées ne deviennent invisibles.</p>
-<h2 id="Whats-next" class="common-anchor-header">Quelles sont les prochaines étapes ?<button data-href="#Whats-next" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
+    <span>Query Node</span>
+  </span>
+</p>
+<p>As mentioned above, only a certain number of query nodes can receive DELETE messages from the DML-Channel, meaning only they can execute the DELETE requests in growing segments. For those query nodes which have subscribed to the DML-Channel, they first filter the DELETE messages in the growing segments, locate the entities by matching the provided primary keys with those query-dedicated bloom filters of the growing segments, and then record the delete operations in the corresponding segments.</p>
+<p>Query nodes that cannot subscribe to the DML-Channel are only allowed to process search or query requests on sealed segments because they can only subscribe to the Delta-Channel, and receive the DELETE messages forwarded by data nodes. Having collected all DELETE messages in the sealed segments from Delta-Channel, the query nodes locate the entities by matching the provided primary keys with the bloom filters of the sealed segments, and then record the delete operations in the corresponding segments.</p>
+<p>Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there will be several seconds of latency before the deleted entities become invisible.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next?<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,10 +136,10 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans la série de blogs sur les nouvelles fonctionnalités de la version 2.0, nous nous efforcerons d'expliquer la conception des nouvelles fonctionnalités. En savoir plus sur cette série de blogs !</p>
+    </button></h2><p>In the 2.0 new feature series blog, we aim to explain the design of the new features. Read more in this blog series!</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">Comment Milvus supprime les données en continu dans un cluster distribué</a></li>
-<li><a href="https://milvus.io/blog/2022-2-21-compact.md">Comment compacter les données dans Milvus ?</a></li>
-<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">Comment Milvus équilibre la charge des requêtes entre les nœuds ?</a></li>
-<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">Comment Bitset permet la polyvalence de la recherche par similarité vectorielle</a></li>
+<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">How Milvus Deletes Streaming Data in a Distributed Cluster</a></li>
+<li><a href="https://milvus.io/blog/2022-2-21-compact.md">How to Compact Data in Milvus?</a></li>
+<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">How Milvus Balances Query Load across Nodes?</a></li>
+<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">How Bitset Enables the Versatility of Vector Similarity Search</a></li>
 </ul>

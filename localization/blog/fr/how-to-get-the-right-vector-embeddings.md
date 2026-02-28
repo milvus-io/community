@@ -1,11 +1,11 @@
 ---
 id: how-to-get-the-right-vector-embeddings.md
-title: Comment obtenir les bons Vector Embeddings ?
+title: How to Get the Right Vector Embeddings
 author: Yujian Tang
 date: 2023-12-08T00:00:00.000Z
 desc: >-
-  Une introduction complète aux encastrements vectoriels et à la manière de les
-  générer avec des modèles open-source populaires.
+  A comprehensive introduction to vector embeddings and how to generate them
+  with popular open-source models.
 cover: assets.zilliz.com/How_to_Get_the_Right_Vector_Embedding_d9ebcacbbb.png
 tag: Engineering
 tags: >-
@@ -20,16 +20,18 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
     <span></span>
   </span>
 </p>
-<p><em>Cet article a été publié à l'origine dans <a href="https://thenewstack.io/how-to-get-the-right-vector-embeddings/">The New Stack</a> et est repris ici avec permission.</em></p>
-<p><strong>Une introduction complète aux vector embeddings et à la manière de les générer avec des modèles open source populaires.</strong></p>
+<p><em>This article was originally published in <a href="https://thenewstack.io/how-to-get-the-right-vector-embeddings/">The New Stack</a> and is reposted here with permission.</em></p>
+<p><strong>A comprehensive introduction to vector embeddings and how to generate them with popular open source models.</strong></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/how_to_get_right_vector_embeddings_e0838623b7.png" alt="Image by Денис Марчук from Pixabay" class="doc-image" id="image-by-денис-марчук-from-pixabay" />
-   </span> <span class="img-wrapper"> <span>Image par Денис Марчук de Pixabay</span> </span></p>
-<p>Les encastrements vectoriels sont essentiels lorsque l'on travaille sur la <a href="https://zilliz.com/blog/vector-similarity-search">similarité sémantique</a>. Cependant, un vecteur est simplement une série de nombres ; un encastrement vectoriel est une série de nombres représentant des données d'entrée. L'intégration vectorielle permet de structurer des <a href="https://zilliz.com/blog/introduction-to-unstructured-data">données non structurées</a> ou de travailler avec n'importe quel type de données en les convertissant en une série de nombres. Cette approche nous permet d'effectuer des opérations mathématiques sur les données d'entrée, plutôt que de nous appuyer sur des comparaisons qualitatives.</p>
-<p>Les encastrements vectoriels ont une grande influence sur de nombreuses tâches, en particulier sur la <a href="https://zilliz.com/glossary/semantic-search">recherche sémantique</a>. Toutefois, il est essentiel d'obtenir les encastrements vectoriels appropriés avant de les utiliser. Par exemple, si vous utilisez un modèle d'image pour vectoriser du texte, ou vice versa, vous obtiendrez probablement de mauvais résultats.</p>
-<p>Dans cet article, nous allons apprendre ce que signifient les embeddings vectoriels, comment générer les embeddings vectoriels appropriés pour vos applications en utilisant différents modèles et comment utiliser au mieux les embeddings vectoriels avec des bases de données vectorielles telles que <a href="https://milvus.io/">Milvus</a> et <a href="https://zilliz.com/">Zilliz Cloud</a>.</p>
-<h2 id="How-are-vector-embeddings-created" class="common-anchor-header">Comment les incrustations vectorielles sont-elles créées ?<button data-href="#How-are-vector-embeddings-created" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/how_to_get_right_vector_embeddings_e0838623b7.png" alt="Image by Денис Марчук from Pixabay" class="doc-image" id="image-by-денис-марчук-from-pixabay" />
+    <span>Image by Денис Марчук from Pixabay</span>
+  </span>
+</p>
+<p>Vector embeddings are critical when working with  <a href="https://zilliz.com/blog/vector-similarity-search">semantic similarity</a>. However, a vector is simply a series of numbers; a vector embedding is a series of numbers representing input data. Using vector embeddings, we can structure  <a href="https://zilliz.com/blog/introduction-to-unstructured-data">unstructured data</a>  or work with any type of data by converting it into a series of numbers. This approach allows us to perform mathematical operations on the input data, rather than relying on qualitative comparisons.</p>
+<p>Vector embeddings are influential for many tasks, particularly for  <a href="https://zilliz.com/glossary/semantic-search">semantic search</a>. However, it is crucial to obtain the appropriate vector embeddings before using them. For instance, if you use an image model to vectorize text, or vice versa, you will probably get poor results.</p>
+<p>In this post, we will learn what vector embeddings mean, how to generate the right vector embeddings for your applications using different models and how to make the best use of vector embeddings with vector databases like  <a href="https://milvus.io/">Milvus</a>  and  <a href="https://zilliz.com/">Zilliz Cloud</a>.</p>
+<h2 id="How-are-vector-embeddings-created" class="common-anchor-header">How are vector embeddings created?<button data-href="#How-are-vector-embeddings-created" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -50,10 +52,10 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
     <span></span>
   </span>
 </p>
-<p>Maintenant que nous comprenons l'importance des embeddings vectoriels, apprenons comment ils fonctionnent. Un vector embedding est la représentation interne des données d'entrée dans un modèle d'apprentissage profond, également connu sous le nom de modèles d'intégration ou de réseau neuronal profond. Comment extraire ces informations ?</p>
-<p>Nous obtenons des vecteurs en supprimant la dernière couche et en prenant la sortie de l'avant-dernière couche. La dernière couche d'un réseau neuronal produit généralement la prédiction du modèle, nous prenons donc la sortie de l'avant-dernière couche. L'intégration vectorielle correspond aux données transmises à la couche prédictive d'un réseau neuronal.</p>
-<p>La dimensionnalité d'un vecteur intégré est équivalente à la taille de l'avant-dernière couche du modèle et est donc interchangeable avec la taille ou la longueur du vecteur. Les dimensions courantes des vecteurs sont 384 (générées par Sentence Transformers Mini-LM), 768 (par Sentence Transformers MPNet), 1 536 (par OpenAI) et 2 048 (par ResNet-50).</p>
-<h2 id="What-does-a-vector-embedding-mean" class="common-anchor-header">Que signifie l'intégration vectorielle ?<button data-href="#What-does-a-vector-embedding-mean" class="anchor-icon" translate="no">
+<p>Now that we understand the importance of vector embeddings, let’s learn how they work. A vector embedding is the internal representation of input data in a deep learning model, also known as embedding models or a deep neural network. So, how do we extract this information?</p>
+<p>We obtain vectors by removing the last layer and taking the output from the second-to-last layer. The last layer of a neural network usually outputs the model’s prediction, so we take the output of the second-to-last layer. The vector embedding is the data fed to a neural network’s predictive layer.</p>
+<p>The dimensionality of a vector embedding is equivalent to the size of the second-to-last layer in the model and, thus, interchangeable with the vector’s size or length. Common vector dimensionalities include 384 (generated by Sentence Transformers Mini-LM), 768 (by Sentence Transformers MPNet), 1,536 (by OpenAI) and 2,048 (by ResNet-50).</p>
+<h2 id="What-does-a-vector-embedding-mean" class="common-anchor-header">What does a vector embedding mean?<button data-href="#What-does-a-vector-embedding-mean" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,9 +70,9 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Quelqu'un m'a demandé un jour ce que signifiait chaque dimension d'un vector embedding. La réponse courte est : rien. Une seule dimension d'un vecteur intégré ne signifie rien, car elle est trop abstraite pour que l'on puisse en déterminer la signification. Cependant, lorsque nous prenons toutes les dimensions ensemble, elles fournissent la signification sémantique des données d'entrée.</p>
-<p>Les dimensions du vecteur sont des représentations abstraites de haut niveau de différents attributs. Les attributs représentés dépendent des données d'apprentissage et du modèle lui-même. Les modèles de texte et d'image génèrent des encastrements différents parce qu'ils sont formés pour des types de données fondamentalement différents. Même des modèles de texte différents génèrent des encastrements différents. Ils diffèrent parfois par leur taille, mais aussi par les attributs qu'ils représentent. Par exemple, un modèle formé sur des données juridiques apprendra des choses différentes d'un modèle formé sur des données de soins de santé. J'ai exploré ce sujet dans mon article sur <a href="https://zilliz.com/blog/comparing-different-vector-embeddings">la comparaison des vector embeddings</a>.</p>
-<h2 id="Generate-the-right-vector-embeddings" class="common-anchor-header">Générer les bons vector embeddings<button data-href="#Generate-the-right-vector-embeddings" class="anchor-icon" translate="no">
+    </button></h2><p>Someone once asked me about the meaning of each dimension in a vector embedding. The short answer is nothing. A single dimension in a vector embedding does not mean anything, as it is too abstract to determine its meaning. However, when we take all dimensions together, they provide the semantic meaning of the input data.</p>
+<p>The dimensions of the vector are high-level, abstract representations of different attributes. The represented attributes depend on the training data and the model itself. Text and image models generate different embeddings because they’re trained for fundamentally different data types. Even different text models generate different embeddings. Sometimes they differ in size; other times, they differ in the attributes they represent. For instance, a model trained on legal data will learn different things than one trained on health-care data. I explored this topic in my post  <a href="https://zilliz.com/blog/comparing-different-vector-embeddings">comparing vector embeddings</a>.</p>
+<h2 id="Generate-the-right-vector-embeddings" class="common-anchor-header">Generate the right vector embeddings<button data-href="#Generate-the-right-vector-embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -85,11 +87,11 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Comment obtenir les bons embeddings vectoriels ? Tout commence par l'identification du type de données que vous souhaitez intégrer. Cette section couvre l'intégration de cinq types de données différents : images, texte, audio, vidéos et données multimodales. Tous les modèles présentés ici sont open source et proviennent de Hugging Face ou PyTorch.</p>
-<h3 id="Image-embeddings" class="common-anchor-header">Intégration d'images</h3><p>La reconnaissance d'images a pris son essor en 2012 après l'apparition d'AlexNet. Depuis, le domaine de la vision par ordinateur a connu de nombreuses avancées. Le dernier modèle notable de reconnaissance d'images est ResNet-50, un réseau résiduel profond à 50 couches basé sur l'ancienne architecture ResNet-34.</p>
-<p>Les réseaux neuronaux résiduels (ResNet) résolvent le problème de la disparition du gradient dans les réseaux neuronaux convolutionnels profonds à l'aide de connexions raccourcies. Ces connexions permettent à la sortie des couches précédentes d'aller directement aux couches suivantes sans passer par toutes les couches intermédiaires, évitant ainsi le problème du gradient de fuite. Cette conception rend ResNet moins complexe que VGGNet (Visual Geometry Group), un réseau neuronal convolutionnel précédemment très performant.</p>
-<p>Je recommande deux implémentations de ResNet-50 à titre d'exemple : <a href="https://huggingface.co/microsoft/resnet-50">ResNet 50 sur Hugging Face</a> et <a href="https://pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html">ResNet 50 sur PyTorch Hub</a>. Bien que les réseaux soient les mêmes, le processus d'obtention des embeddings diffère.</p>
-<p>L'exemple de code ci-dessous montre comment utiliser PyTorch pour obtenir des embeddings vectoriels. Tout d'abord, nous chargeons le modèle depuis PyTorch Hub. Ensuite, nous supprimons la dernière couche et appelons <code translate="no">.eval()</code> pour demander au modèle de se comporter comme s'il était en cours d'exécution pour l'inférence. Ensuite, la fonction <code translate="no">embed</code> génère l'intégration vectorielle.</p>
+    </button></h2><p>How do you obtain the proper vector embeddings? It all starts with identifying the type of data you wish to embed. This section covers embedding five different types of data: images, text, audio, videos and multimodal data. All models we introduce here are open source and come from Hugging Face or PyTorch.</p>
+<h3 id="Image-embeddings" class="common-anchor-header">Image embeddings</h3><p>Image recognition took off in 2012 after AlexNet hit the scene. Since then, the field of computer vision has witnessed numerous advancements. The latest notable image recognition model is ResNet-50, a 50-layer deep residual network based on the former ResNet-34 architecture.</p>
+<p>Residual neural networks (ResNet) solve the vanishing gradient problem in deep convolutional neural networks using shortcut connections. These connections allow the output from earlier layers to go to later layers directly without passing through all the intermediate layers, thus avoiding the vanishing gradient problem. This design makes ResNet less complex than VGGNet (Visual Geometry Group), a previously top-performing convolutional neural network.</p>
+<p>I recommend two ResNet-50 implementations as examples:  <a href="https://huggingface.co/microsoft/resnet-50">ResNet 50 on Hugging Face</a>  and  <a href="https://pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html">ResNet 50 on PyTorch Hub</a>. While the networks are the same, the process of obtaining embeddings differs.</p>
+<p>The code sample below demonstrates how to use PyTorch to obtain vector embeddings. First, we load the model from PyTorch Hub. Next, we remove the last layer and call  <code translate="no">.eval()</code>  to instruct the model to behave like it’s running for inference. Then, the  <code translate="no">embed</code>  function generates the vector embedding.</p>
 <pre><code translate="no"><span class="hljs-comment"># Load the embedding model with the last layer removed</span>
 model = torch.hub.load(<span class="hljs-string">&#x27;pytorch/vision:v0.10.0&#x27;</span>, <span class="hljs-string">&#x27;resnet50&#x27;</span>, pretrained=<span class="hljs-literal">True</span>) model = torch.nn.Sequential(*(<span class="hljs-built_in">list</span>(model.children())[:-<span class="hljs-number">1</span>]))
 model.<span class="hljs-built_in">eval</span>()
@@ -100,7 +102,7 @@ model.<span class="hljs-built_in">eval</span>()
 output = model(torch.stack(data[<span class="hljs-number">0</span>])).squeeze()
 <span class="hljs-keyword">return</span> output
 <button class="copy-code-btn"></button></code></pre>
-<p>HuggingFace utilise une configuration légèrement différente. Le code ci-dessous montre comment obtenir un encapsulage vectoriel à partir de Hugging Face. Tout d'abord, nous avons besoin d'un extracteur de caractéristiques et d'un modèle de la bibliothèque <code translate="no">transformers</code>. Nous utiliserons l'extracteur de caractéristiques pour obtenir des entrées pour le modèle et utiliserons le modèle pour obtenir des sorties et extraire le dernier état caché.</p>
+<p>HuggingFace uses a slightly different setup. The code below demonstrates how to obtain a vector embedding from Hugging Face. First, we need a feature extractor and model from the  <code translate="no">transformers</code>  library. We will use the feature extractor to get inputs for the model and use the model to obtain outputs and extract the last hidden state.</p>
 <pre><code translate="no"><span class="hljs-comment"># Load model directly</span>
 <span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoFeatureExtractor, AutoModelForImageClassification
 
@@ -123,28 +125,28 @@ inputs = extractor(images=image, return_tensors=<span class="hljs-string">&quot;
 outputs = model(**inputs)
 vector_embeddings = outputs[<span class="hljs-number">1</span>][-<span class="hljs-number">1</span>].squeeze()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Text-embeddings" class="common-anchor-header">Incrustations de texte</h3><p>Les ingénieurs et les chercheurs ont expérimenté le langage naturel et l'IA depuis l'invention de l'IA. Parmi les premières expériences, on peut citer</p>
+<h3 id="Text-embeddings" class="common-anchor-header">Text embeddings</h3><p>Engineers and researchers have been experimenting with natural language and AI since the invention of AI. Some of the earliest experiments include:</p>
 <ul>
-<li>ELIZA, le premier chatbot thérapeute de l'IA.</li>
-<li>La chambre chinoise de John Searle, une expérience de pensée qui examine si la capacité de traduire entre le chinois et l'anglais nécessite une compréhension de la langue.</li>
-<li>Traductions entre l'anglais et le russe basées sur des règles.</li>
+<li>ELIZA, the first AI therapist chatbot.</li>
+<li>John Searle’s Chinese Room, a thought experiment that examines whether the ability to translate between Chinese and English requires an understanding of the language.</li>
+<li>Rule-based translations between English and Russian.</li>
 </ul>
-<p>Le fonctionnement de l'IA sur le langage naturel a évolué de manière significative par rapport à son intégration basée sur des règles. En commençant par les réseaux neuronaux primaires, nous avons ajouté des relations de récurrence par le biais des RNN pour suivre les étapes dans le temps. Ensuite, nous avons utilisé des transformateurs pour résoudre le problème de la transduction des séquences.</p>
-<p>Les transformateurs se composent d'un encodeur, qui code une entrée dans une matrice représentant l'état, d'une matrice d'attention et d'un décodeur. Le décodeur décode l'état et la matrice d'attention afin de prédire le prochain jeton correct pour terminer la séquence de sortie. Le GPT-3, le modèle linguistique le plus populaire à ce jour, comprend des décodeurs stricts. Ils codent l'entrée et prédisent le(s) bon(s) mot(s) suivant(s).</p>
-<p>Voici deux modèles de la bibliothèque <code translate="no">sentence-transformers</code> de Hugging Face que vous pouvez utiliser en plus des embeddings d'OpenAI :</p>
+<p>AI’s operation on natural language has evolved significantly from its rule-based embeddings. Starting with primary neural networks, we added recurrence relations through RNNs to keep track of steps in time. From there, we used transformers to solve the sequence transduction problem.</p>
+<p>Transformers consist of an encoder, which encodes an input into a matrix representing the state, an attention matrix and a decoder. The decoder decodes the state and attention matrix to predict the correct next token to finish the output sequence. GPT-3, the most popular language model to date, comprises strict decoders. They encode the input and predict the right next token(s).</p>
+<p>Here are two models from the  <code translate="no">sentence-transformers</code>  library by Hugging Face that you can use in addition to OpenAI’s embeddings:</p>
 <ul>
-<li><a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">MiniLM-L6-v2</a>: un modèle à 384 dimensions</li>
-<li><a href="https://huggingface.co/sentence-transformers/all-mpnet-base-v2">MPNet-Base-V2</a>: un modèle à 768 dimensions</li>
+<li><a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">MiniLM-L6-v2</a>: a 384-dimensional model</li>
+<li><a href="https://huggingface.co/sentence-transformers/all-mpnet-base-v2">MPNet-Base-V2</a>: a 768-dimensional model</li>
 </ul>
-<p>Vous pouvez accéder aux embeddings des deux modèles de la même manière.</p>
+<p>You can access embeddings from both models in the same way.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> sentence_transformers <span class="hljs-keyword">import</span> SentenceTransformer
 
 
 model = SentenceTransformer(<span class="hljs-string">&quot;&lt;model-name&gt;&quot;</span>)
 vector_embeddings = model.encode(“&lt;<span class="hljs-built_in">input</span>&gt;”)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Multimodal-embeddings" class="common-anchor-header">Encastrements multimodaux</h3><p>Les modèles multimodaux sont moins bien développés que les modèles d'image ou de texte. Ils relient souvent les images au texte.</p>
-<p>L'exemple open source le plus utile est <a href="https://huggingface.co/openai/clip-vit-large-patch14">CLIP VIT</a>, un modèle image-texte. Vous pouvez accéder aux embeddings de CLIP VIT de la même manière que vous le feriez avec un modèle d'image, comme le montre le code ci-dessous.</p>
+<h3 id="Multimodal-embeddings" class="common-anchor-header">Multimodal embeddings</h3><p>Multimodal models are less well-developed than image or text models. They often relate images to text.</p>
+<p>The most useful open source example is <a href="https://huggingface.co/openai/clip-vit-large-patch14">CLIP VIT</a>, an image-to-text model. You can access CLIP VIT’s embeddings in the same way as you would an image model, as shown in the code below.</p>
 <pre><code translate="no"><span class="hljs-comment"># Load model directly</span>
 <span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoProcessor, AutoModelForZeroShotImageClassification
 
@@ -165,7 +167,7 @@ inputs = extractor(images=image, return_tensors=<span class="hljs-string">&quot;
 outputs = model(**inputs)
 vector_embeddings = outputs[<span class="hljs-number">1</span>][-<span class="hljs-number">1</span>].squeeze()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Audio-embeddings" class="common-anchor-header">Incrustations audio</h3><p>L'IA pour l'audio a reçu moins d'attention que l'IA pour le texte ou les images. Le cas d'utilisation le plus courant pour l'audio est la conversion de la parole en texte dans des secteurs tels que les centres d'appel, la technologie médicale et l'accessibilité. Un modèle open source populaire pour la conversion de la parole au texte est <a href="https://huggingface.co/openai/whisper-large-v2">Whisper d'OpenAI</a>. Le code ci-dessous montre comment obtenir des embeddings vectoriels à partir du modèle parole-texte.</p>
+<h3 id="Audio-embeddings" class="common-anchor-header">Audio embeddings</h3><p>AI for audio has received less attention than AI for text or images. The most common use case for audio is speech-to-text for industries such as call centers, medical technology and accessibility. One popular open source model for speech-to-text is  <a href="https://huggingface.co/openai/whisper-large-v2">Whisper from OpenAI</a>. The code below shows how to obtain vector embeddings from the speech-to-text model.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 from transformers <span class="hljs-keyword">import</span> AutoFeatureExtractor, WhisperModel
 from datasets <span class="hljs-keyword">import</span> <span class="hljs-type">load_dataset</span>
@@ -179,8 +181,8 @@ input_features = inputs.<span class="hljs-type">input_features</span>
 <span class="hljs-variable">decoder_input_ids</span> <span class="hljs-operator">=</span> torch.tensor([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]]) * model.config.<span class="hljs-type">decoder_start_token_id</span>
 <span class="hljs-variable">vector_embedding</span> <span class="hljs-operator">=</span> model(input_features, decoder_input_ids=decoder_input_ids).last_hidden_state
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Video-embeddings" class="common-anchor-header">Encastrements vidéo</h3><p>Les encastrements vidéo sont plus complexes que les encastrements audio ou d'images. Une approche multimodale est nécessaire lorsque l'on travaille avec des vidéos, car elles contiennent du son et des images synchronisés. Un modèle vidéo populaire est le <a href="https://huggingface.co/deepmind/multimodal-perceiver">perceur multimodal</a> de DeepMind. Ce <a href="https://github.com/NielsRogge/Transformers-Tutorials/blob/master/Perceiver/Perceiver_for_Multimodal_Autoencoding.ipynb">tutoriel</a> montre comment utiliser ce modèle pour classer une vidéo.</p>
-<p>Pour obtenir les embeddings de l'entrée, utilisez <code translate="no">outputs[1][-1].squeeze()</code> à partir du code présenté dans le notebook au lieu de supprimer les sorties. Je mets en évidence cet extrait de code dans la fonction <code translate="no">autoencode</code>.</p>
+<h3 id="Video-embeddings" class="common-anchor-header">Video embeddings</h3><p>Video embeddings are more complex than audio or image embeddings. A multimodal approach is necessary when working with videos, as they include synchronized audio and images. One popular video model is the  <a href="https://huggingface.co/deepmind/multimodal-perceiver">multimodal perceiver</a>  from DeepMind. This  <a href="https://github.com/NielsRogge/Transformers-Tutorials/blob/master/Perceiver/Perceiver_for_Multimodal_Autoencoding.ipynb">notebook tutorial</a>  shows how to use the model to classify a video.</p>
+<p>To get the embeddings of the input, use  <code translate="no">outputs[1][-1].squeeze()</code>  from the code shown in the notebook instead of deleting the outputs. I highlight this code snippet in the  <code translate="no">autoencode</code>  function.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">autoencode_video</span>(<span class="hljs-params">images, audio</span>):
      <span class="hljs-comment"># only create entire video once as inputs</span>
      inputs = {<span class="hljs-string">&#x27;image&#x27;</span>: torch.from_numpy(np.moveaxis(images, -<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)).<span class="hljs-built_in">float</span>().to(device),
@@ -222,7 +224,7 @@ input_features = inputs.<span class="hljs-type">input_features</span>
 
      <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="common-anchor-header">Stockage, indexation et recherche d'embeddings vectoriels avec des bases de données vectorielles<button data-href="#Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="anchor-icon" translate="no">
+<h2 id="Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="common-anchor-header">Storing, indexing, and searching vector embeddings with vector databases<button data-href="#Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -237,12 +239,12 @@ input_features = inputs.<span class="hljs-type">input_features</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Maintenant que nous comprenons ce que sont les encastrements vectoriels et comment les générer à l'aide de différents modèles d'encastrement puissants, la question suivante est de savoir comment les stocker et en tirer parti. Les bases de données vectorielles sont la réponse.</p>
-<p>Les bases de données vectorielles telles que <a href="https://zilliz.com/what-is-milvus">Milvus</a> et <a href="https://zilliz.com/cloud">Zilliz Cloud</a> sont spécialement conçues pour le stockage, l'indexation et la recherche dans des ensembles massifs de données non structurées par le biais d'incrustations vectorielles. Elles constituent également l'une des infrastructures les plus critiques pour les différentes piles d'IA.</p>
-<p>Les bases de données vectorielles utilisent généralement l'algorithme <a href="https://zilliz.com/glossary/anns">ANN (Approximate Nearest Neighbor)</a> pour calculer la distance spatiale entre le vecteur de la requête et les vecteurs stockés dans la base de données. Plus les deux vecteurs sont proches, plus ils sont pertinents. L'algorithme trouve ensuite les k premiers voisins les plus proches et les fournit à l'utilisateur.</p>
-<p>Les bases de données vectorielles sont populaires dans des cas d'utilisation tels que la <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">génération augmentée de recherche LLM</a> (RAG), les systèmes de questions-réponses, les systèmes de recommandation, les recherches sémantiques et les recherches de similitudes d'images, de vidéos et d'audio.</p>
-<p>Pour en savoir plus sur les encastrements vectoriels, les données non structurées et les bases de données vectorielles, commencez par la série <a href="https://zilliz.com/blog?tag=39&amp;page=1">Base de données vectorielles 101</a>.</p>
-<h2 id="Summary" class="common-anchor-header">Résumé<button data-href="#Summary" class="anchor-icon" translate="no">
+    </button></h2><p>Now that we understand what vector embeddings are and how to generate them using various powerful embedding models, the next question is how to store and take advantage of them. Vector databases are the answer.</p>
+<p>Vector databases like  <a href="https://zilliz.com/what-is-milvus">Milvus</a>  and  <a href="https://zilliz.com/cloud">Zilliz Cloud</a>  are purposely built for storing, indexing, and searching across massive datasets of unstructured data through vector embeddings. They are also one of the most critical infrastructures for various AI stacks.</p>
+<p>Vector databases usually use the  <a href="https://zilliz.com/glossary/anns">Approximate Nearest Neighbor (ANN)</a>  algorithm to calculate the spatial distance between the query vector and vectors stored in the database. The closer the two vectors are located, the more relevant they are. Then the algorithm finds the top k nearest neighbors and delivers them to the user.</p>
+<p>Vector databases are popular in use cases such as  <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">LLM retrieval augmented generation</a>  (RAG), question and answer systems, recommender systems, semantic searches, and image, video and audio similarity searches.</p>
+<p>To learn more about vector embeddings, unstructured data, and vector databases, consider starting with the  <a href="https://zilliz.com/blog?tag=39&amp;page=1">Vector Database 101</a>  series.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -257,5 +259,5 @@ input_features = inputs.<span class="hljs-type">input_features</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Les vecteurs sont un outil puissant pour travailler avec des données non structurées. Ils permettent de comparer mathématiquement différents éléments de données non structurées sur la base de la similarité sémantique. Le choix du bon modèle d'incorporation de vecteurs est essentiel pour construire un moteur de recherche vectoriel pour n'importe quelle application.</p>
-<p>Dans ce billet, nous avons appris que les vector embeddings sont la représentation interne des données d'entrée dans un réseau neuronal. Par conséquent, ils dépendent fortement de l'architecture du réseau et des données utilisées pour former le modèle. Les différents types de données (tels que les images, le texte et l'audio) requièrent des modèles spécifiques. Heureusement, de nombreux modèles open source pré-entraînés sont disponibles. Dans cet article, nous avons abordé les modèles pour les cinq types de données les plus courants : images, texte, multimodal, audio et vidéo. De plus, si vous souhaitez utiliser au mieux les embeddings vectoriels, les bases de données vectorielles sont l'outil le plus populaire.</p>
+    </button></h2><p>Vectors are a powerful tool for working with unstructured data. Using vectors, we can mathematically compare different pieces of unstructured data based on semantic similarity. Choosing the right vector-embedding model is critical for building a vector search engine for any application.</p>
+<p>In this post, we learned that vector embeddings are the internal representation of input data in a neural network. As a result, they depend highly on the network architecture and the data used to train the model. Different data types (such as images, text, and audio) require specific models. Fortunately, many pretrained open source models are available for use. In this post, we covered models for the five most common types of data: images, text, multimodal, audio, and video. In addition, if you want to make the best use of vector embeddings, vector databases are the most popular tool.</p>

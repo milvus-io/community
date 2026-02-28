@@ -1,20 +1,21 @@
 ---
 id: milvus-2025-roadmap-tell-us-what-you-think.md
-title: Milvus 2025 ロードマップ - ご意見をお聞かせください。
+title: |
+  Milvus 2025 Roadmap - Tell Us What You Think
 author: 'Fendy Feng, Field Zhang'
 date: 2025-03-27T00:00:00.000Z
 desc: >-
-  2025年には、Milvus 2.6とMilvus
-  3.0という2つのメジャーバージョンと、その他多くの技術的特徴を展開します。皆様のご意見、ご感想をお待ちしております。
+  In 2025, we’re rolling out two major versions, Milvus 2.6 and Milvus 3.0, and
+  many other technical features. We welcome you to share your thoughts with us.
 cover: assets.zilliz.com/2025_roadmap_04e6c5d1c3.png
 tag: Announcements
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think.md'
 ---
-<p>Milvusユーザーの皆様、ご協力者の皆様、こんにちは！</p>
-<p><a href="https://milvus.io/docs/roadmap.md"><strong>Milvus 2025ロードマップを</strong></a>皆様と共有できることを嬉しく思います。この技術計画では、Milvusが皆様のベクトル検索ニーズに対してより強力なものとなるよう、主要な機能や改善点をハイライトしています。</p>
-<p>しかし、これはほんの始まりに過ぎません！皆様からのフィードバックがMilvusを形作り、現実の課題に対応できるように進化させていきます。皆様のご意見をお聞かせいただき、ロードマップの改良にお役立てください。</p>
-<h2 id="The-Current-Landscape" class="common-anchor-header">現在の状況<button data-href="#The-Current-Landscape" class="anchor-icon" translate="no">
+<p>Hey, Milvus users and contributors!</p>
+<p>We’re excited to share our <a href="https://milvus.io/docs/roadmap.md"><strong>Milvus 2025 roadmap</strong></a> with you. 🚀 This technical plan highlights the key features and improvements we’re building to make Milvus even more powerful for your vector search needs.</p>
+<p>But this is just the beginning—we want your insights! Your feedback helps shape Milvus, ensuring it evolves to meet real-world challenges. Let us know what you think and help us refine the roadmap as we move forward.</p>
+<h2 id="The-Current-Landscape" class="common-anchor-header">The Current Landscape<button data-href="#The-Current-Landscape" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,9 +30,9 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>過去1年間、多くの皆様がMilvusを使用して、モデル統合、全文検索、ハイブリッド検索など、Milvusの人気機能の多くを活用した印象的なRAGおよびエージェントアプリケーションを構築されているのを目の当たりにしてきました。皆様の実装は、現実世界のベクトル検索要件に対する貴重な洞察を与えてくれました。</p>
-<p>AI技術の進化に伴い、基本的なベクトル検索から、インテリジェントエージェント、自律システム、具現化AIにまたがる複雑なマルチモーダルアプリケーションまで、お客様のユースケースはより高度になっています。このような技術的課題から、Milvusはロードマップを作成し、お客様のニーズに応えるべく開発を続けています。</p>
-<h2 id="Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="common-anchor-header">2025年に2つのメジャーリリースMilvus 2.6とMilvus 3.0<button data-href="#Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="anchor-icon" translate="no">
+    </button></h2><p>Over the past year, we’ve seen many of you build impressive RAG and agent applications with Milvus, leveraging many of our popular features, such as our model integration, full-text search, and hybrid search. Your implementations have provided valuable insights into real-world vector search requirements.</p>
+<p>As AI technologies evolve, your use cases are becoming more sophisticated - from basic vector search to complex multimodal applications spanning intelligent agents, autonomous systems, and embodied AI. These technical challenges are informing our roadmap as we continue to develop Milvus to meet your needs.</p>
+<h2 id="Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="common-anchor-header">Two Major Releases in 2025: Milvus 2.6 and Milvus 3.0<button data-href="#Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,24 +47,24 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>2025年には2つのメジャーバージョンをリリースします：Milvus 2.6（CY25年中頃）とMilvus 3.0（2025年末）です。</p>
-<p><strong>Milvus 2.6は</strong>、皆様からご要望の多かったコアアーキテクチャの改善に重点を置いています：</p>
+    </button></h2><p>In 2025, we’re rolling out two major versions: Milvus 2.6 (Middle of CY25) and Milvus 3.0 (end of 2025).</p>
+<p><strong>Milvus 2.6</strong> focuses on core architecture improvements you’ve been asking for:</p>
 <ul>
-<li><p>より少ない依存関係でよりシンプルなデプロイメント（デプロイメントの頭痛の種にさようなら！）。</p></li>
-<li><p>データ取り込みパイプラインの高速化</p></li>
-<li><p>ストレージコストの削減（お客様の生産コストに関する懸念をお聞きしています。）</p></li>
-<li><p>大規模なデータ操作（削除/変更）の処理向上</p></li>
-<li><p>より効率的なスカラー検索と全文検索</p></li>
-<li><p>最新のエンベッディングモデルのサポート</p></li>
+<li><p>Simpler deployment with fewer dependencies (goodbye, deployment headaches!)</p></li>
+<li><p>Faster data ingestion pipelines</p></li>
+<li><p>Lower storage costs (we hear your production cost concerns)</p></li>
+<li><p>Better handling of large-scale data operations (delete/modify)</p></li>
+<li><p>More efficient scalar and full-text search</p></li>
+<li><p>Support for the latest embedding models you’re working with</p></li>
 </ul>
-<p><strong>Milvus3.0は</strong>、ベクターデータレイクシステムを導入し、より大きなアーキテクチャの進化を遂げました：</p>
+<p><strong>Milvus 3.0</strong> is our bigger architectural evolution, introducing a vector data lake system for:</p>
 <ul>
-<li><p>シームレスなAIサービス統合</p></li>
-<li><p>次のレベルの検索機能</p></li>
-<li><p>より堅牢なデータ管理</p></li>
-<li><p>膨大なオフラインデータセットの取り扱い向上</p></li>
+<li><p>Seamless AI service integration</p></li>
+<li><p>Next-level search capabilities</p></li>
+<li><p>More robust data management</p></li>
+<li><p>Better handling of those massive offline datasets you’re working with</p></li>
 </ul>
-<h2 id="Technical-Features-Were-Planning---We-Need-Your-Feedback" class="common-anchor-header">私たちが計画している技術的な特徴 - ご意見をお聞かせください<button data-href="#Technical-Features-Were-Planning---We-Need-Your-Feedback" class="anchor-icon" translate="no">
+<h2 id="Technical-Features-Were-Planning---We-Need-Your-Feedback" class="common-anchor-header">Technical Features We’re Planning - We Need Your Feedback<button data-href="#Technical-Features-Were-Planning---We-Need-Your-Feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,28 +79,28 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>以下は、Milvusに追加を予定している主な技術機能です。</p>
+    </button></h2><p>Below are key technical features we are planning to add to Milvus.</p>
 <table>
 <thead>
-<tr><th><strong>主要機能エリア</strong></th><th><strong>技術的特徴</strong></th></tr>
+<tr><th><strong>Key Feature Area</strong></th><th><strong>Technical Features</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>AIによる非構造化データ処理</strong></td><td>- データイン/アウト：主要なモデルサービスとのネイティブ統合による生テキストの取り込み<br>- オリジナルデータの取り扱い：生データ処理のためのテキスト/URL参照サポート<br>- テンソルのサポート：ベクトルリストの実装（ColBERT/CoPali/Videoシナリオ用）<br>- 拡張データ型：DateTime、Map、要件に基づくGISサポート<br>- 反復検索：ユーザーのフィードバックによるクエリーベクトルの改良</td></tr>
-<tr><td><strong>検索品質とパフォーマンスの向上</strong></td><td>- 高度なマッチング: フレーズマッチとマルチマッチ機能<br>- Analyzerのアップグレード：Analyzerの機能強化により、トークナイザーのサポートが拡張され、観測可能性が向上<br>- JSONの最適化：インデックスの改善によるフィルタリングの高速化<br>- 実行ソート：スカラーフィールドに基づく結果の順序付け<br>- 高度な再ランカー：モデルベースの再ランク付けとカスタムスコアリング関数<br>- 反復検索：ユーザーからのフィードバックによるクエリーベクトルの改良</td></tr>
-<tr><td><strong>データ管理の柔軟性</strong></td><td>- スキーマ変更：フィールドの追加/削除、varchar長さの変更<br>- スカラー集計: count/distinct/min/max操作<br>- UDFのサポート：ユーザー定義関数のサポート<br>- データのバージョン管理：スナップショットベースのロールバックシステム<br>- データ・クラスタリング：コンフィギュレーションによるコロケーション<br>- データサンプリング：サンプリングデータに基づく高速結果取得</td></tr>
-<tr><td><strong>アーキテクチャの改善</strong></td><td>- ストリームノード：インクリメンタルなデータ取り込みの簡素化<br>- MixCoord：統一されたコーディネーター・アーキテクチャ<br>- ログストアの独立性：パルサーのような外部依存を削減<br>- PK重複排除：グローバルな主キー重複排除</td></tr>
-<tr><td><strong>コスト効率とアーキテクチャの改善</strong></td><td>- 階層ストレージ：ホット／コールド・データ分離によるストレージ・コストの削減<br>- データ消去ポリシー：ユーザーが独自のデータ消去ポリシーを定義可能<br>- 一括更新：フィールド固有の値の変更、ETLなどをサポート<br>- Large TopK: 巨大なデータセットを返す<br>- VTS GA：さまざまなデータソースに接続<br>- 高度な量子化：量子化技術に基づくメモリ消費とパフォーマンスの最適化<br>- リソースの弾力性：書き込み負荷、読み取り負荷、バックグラウンド・タスク負荷の変化に対応するため、リソースを動的に拡張します。</td></tr>
+<tr><td><strong>AI-Driven Unstructured Data Processing</strong></td><td>- Data-In/Out: Native integration with major model services for raw text ingestion<br>- Original Data Handling: Text/URL reference support for raw data processing<br>- Tensor Support: Vector list implementation (for ColBERT/CoPali/Video scenarios)<br>- Extended Data Types: DateTime, Map, GIS support based on requirements<br>- Iterative Search: Query vector refinement through user‘s feedback</td></tr>
+<tr><td><strong>Search Quality &amp; Performance Improvements</strong></td><td>- Advanced Matching: phrase_match &amp; multi_match capabilities<br>- Analyzer Upgrade: Enhance Analyzer with expanded tokenizer support and improved observability<br>- JSON Optimization: Faster filtering through improved indexing<br>- Execution Sorting: Scalar field-based result ordering<br>- Advanced Reranker: Model-based reranking &amp; custom scoring functions<br>- Iterative Search: Query vector refinement through user‘s feedback</td></tr>
+<tr><td><strong>Data Management Flexibility</strong></td><td>- Schema Change: Add/delete field, modify varchar length<br>- Scalar Aggregations: count/distinct/min/max operations<br>- Support UDF: Support user-defined function<br>- Data Versioning: Snapshot-based rollback system<br>- Data Clustering: Co-location through configuration<br>- Data Sampling: Fast get results based on sampling data</td></tr>
+<tr><td><strong>Architectural Improvements</strong></td><td>- Stream Node: Simplified incremental data ingestion<br>- MixCoord: Unified coordinator architecture<br>- Logstore Independence: Reduced external dependencies like pulsar<br>- PK Deduplication: Global primary key deduplication</td></tr>
+<tr><td><strong>Cost Efficiency &amp; Architecture Improvements</strong></td><td>- Tiered Storage: Hot/cold data separation for lower storage cost<br>- Data Evict Policy: Users can define their own data evict policy<br>- Bulk Updates: Support field-specific value modifications, ETL, etc<br>- Large TopK: Returns massive datasets<br>- VTS GA: Connect to different sources of data<br>- Advanced Quantization: Optimize memory consumption and performance based on quantization techniques<br>- Resource Elasticity: Dynamically scale resources to accommodate varying write loads, read loads, and background task loads</td></tr>
 </tbody>
 </table>
-<p>このロードマップを実施するにあたり、以下の点についてご意見・ご感想をお寄せいただければ幸いです：</p>
+<p>As we implement this roadmap, we’d appreciate your thoughts and feedback on the following:</p>
 <ol>
-<li><p><strong>機能の優先順位：</strong>ロードマップの中で、あなたの仕事に最も影響を与える機能はどれですか？</p></li>
-<li><p><strong>実装のアイデア：</strong>これらの機能に対して有効だと思われる具体的なアプローチがあれば教えてください。</p></li>
-<li><p><strong>ユースケースの整合性：</strong>これらの計画されている機能は、現在および将来のユースケースとどのように整合していますか？</p></li>
-<li><p><strong>パフォーマンスに関する考慮事項：</strong>あなたの特定のニーズに対して、私たちがフォーカスすべきパフォーマンス面があれば教えてください。</p></li>
+<li><p><strong>Feature priorities:</strong> Which features in our roadmap would have the most impact on your work?</p></li>
+<li><p><strong>Implementation ideas:</strong> Any specific approaches you think would work well for these features?</p></li>
+<li><p><strong>Use case alignment:</strong> How do these planned features align with your current and future use cases?</p></li>
+<li><p><strong>Performance considerations:</strong> Any performance aspects we should focus on for your specific needs?</p></li>
 </ol>
-<p><strong>皆様の洞察は、Milvusをより良いものにするための一助となります。<a href="https://github.com/milvus-io/milvus/discussions/40263"> Milvusディスカッションフォーラム</a>または<a href="https://discord.com/invite/8uyFbECzPX">Discordチャンネルにて</a>、お気軽にご意見をお聞かせください。</strong></p>
-<h2 id="Welcome-to-Contribute-to-Milvus" class="common-anchor-header">Milvusへの貢献を歓迎します。<button data-href="#Welcome-to-Contribute-to-Milvus" class="anchor-icon" translate="no">
+<p><strong>Your insights help us make Milvus better for everyone. Feel free to share your thoughts on our<a href="https://github.com/milvus-io/milvus/discussions/40263"> Milvus Discussion Forum</a> or our <a href="https://discord.com/invite/8uyFbECzPX">Discord Channel</a>.</strong></p>
+<h2 id="Welcome-to-Contribute-to-Milvus" class="common-anchor-header">Welcome to Contribute to Milvus<button data-href="#Welcome-to-Contribute-to-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,11 +115,11 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>オープンソースプロジェクトとして、Milvusは常に皆様の貢献をお待ちしております：</p>
+    </button></h2><p>As an open-source project, Milvus always welcomes your contributions:</p>
 <ul>
-<li><p><strong>フィードバックを共有しましょう：</strong> <a href="https://github.com/milvus-io/milvus/issues">GitHubのissue</a>ページから問題を報告したり、機能を提案してください<a href="https://github.com/milvus-io/milvus/issues">。</a></p></li>
-<li><p><strong>コードへの貢献</strong>プルリクエストの提出 (<a href="https://github.com/milvus-io/milvus/blob/82915a9630ab0ff40d7891b97c367ede5726ff7c/CONTRIBUTING.md">コントリビューターガイドを</a>参照)</p></li>
-<li><p><strong>情報を広める:</strong>Milvusの経験を共有し、<a href="https://github.com/milvus-io/milvus">GitHubリポジトリに投稿してください。</a></p></li>
+<li><p><strong>Share feedback:</strong> Report issues or suggest features through our <a href="https://github.com/milvus-io/milvus/issues">GitHub issue page</a></p></li>
+<li><p><strong>Code contributions:</strong> Submit pull requests (see our <a href="https://github.com/milvus-io/milvus/blob/82915a9630ab0ff40d7891b97c367ede5726ff7c/CONTRIBUTING.md">Contributor’s Guide</a>)</p></li>
+<li><p><strong>Spread the word:</strong> Share your Milvus experiences and <a href="https://github.com/milvus-io/milvus">star our GitHub repository</a></p></li>
 </ul>
-<p>Milvusの次の章を皆さんと一緒に作り上げていくことに興奮しています。あなたのコード、アイデア、フィードバックがこのプロジェクトを前進させます！</p>
-<p>- Milvusチーム</p>
+<p>We’re excited to build this next chapter of Milvus with you. Your code, ideas, and feedback drive this project forward!</p>
+<p>– The Milvus Team</p>

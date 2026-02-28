@@ -1,37 +1,45 @@
 ---
 id: >-
   2021-12-10-image-based-trademark-similarity-search-system-a-smarter-solution-to-ip-protection.md
-title: Milvus 在知识产权保护领域：利用 Milvus 建立商标相似性检索系统
+title: >-
+  Milvus in IP Protection：Building a Trademark Similarity Search System with
+  Milvus
 author: Zilliz
 date: 2021-12-10T00:00:00.000Z
-desc: 了解如何在知识产权保护行业中应用向量相似性搜索。
+desc: Learn how to apply vector similarity search in the industry of IP protection.
 cover: assets.zilliz.com/IP_protection_0a33547579.png
 tag: Scenarios
 ---
-<p>近年来，随着人们对知识产权侵权意识的不断增强，知识产权保护问题成为人们关注的焦点。最引人注目的是跨国科技巨头<a href="https://en.wikipedia.org/wiki/Apple_Inc._litigation">苹果公司</a>（Apple Inc.除了这些最臭名昭著的案件外，苹果公司还在 2009 年以商标侵权为由对澳大利亚连锁超市<a href="https://www.smh.com.au/business/apple-bites-over-woolworths-logo-20091005-ghzr.html">Woolworths Limited 的商标申请提出异议</a>。  苹果公司公司认为，澳大利亚品牌的徽标（一个风格化的 &quot;w&quot;）与他们自己的苹果徽标相似。因此，苹果公司对 Woolworths 申请销售带有该标志的一系列产品（包括电子设备）提出异议。故事的结局是伍尔沃斯修改了徽标，苹果撤回了反对意见。</p>
+<p>In recent years, the issue of IP protection has come under the limelight as people’s awareness of IP infringement is ever-increasing. Most notably, the multi-national technology giant Apple Inc. has been actively <a href="https://en.wikipedia.org/wiki/Apple_Inc._litigation">filing lawsuits against various companies for IP infringement</a>, including trademark, patent, and design infringement. Apart from those most notorious cases, Apple Inc. also <a href="https://www.smh.com.au/business/apple-bites-over-woolworths-logo-20091005-ghzr.html">disputed a trademark application by Woolworths Limited</a>, an Australian supermarket chain, on the grounds of trademark infringement in 2009.  Apple. Inc argued that the logo of the Australian brand, a stylized &quot;w&quot;, resembles their own logo of an apple. Therefore, Apple Inc. took objection to the range of products, including electronic devices, that Woolworths applied to sell with the logo. The story ends with Woolworths amending its logo and Apple withdrawing its opposition.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Logo_of_Woolworths_b04ece5b20.png" alt="Logo of Woolworths.png" class="doc-image" id="logo-of-woolworths.png" />
-   </span> <span class="img-wrapper"> <span>伍尔沃斯的徽标.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Logo_of_Woolworths_b04ece5b20.png" alt="Logo of Woolworths.png" class="doc-image" id="logo-of-woolworths.png" />
+    <span>Logo of Woolworths.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Logo_of_Apple_Inc_181e5bd5f8.png" alt="Logo of Apple Inc.png" class="doc-image" id="logo-of-apple-inc.png" />
-   </span> <span class="img-wrapper"> <span>苹果公司的徽标.png</span> </span></p>
-<p>随着品牌文化意识的不断增强，公司正在密切关注任何可能损害其知识产权（IP）的威胁。知识产权侵权包括</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Logo_of_Apple_Inc_181e5bd5f8.png" alt="Logo of Apple Inc.png" class="doc-image" id="logo-of-apple-inc.png" />
+    <span>Logo of Apple Inc.png</span>
+  </span>
+</p>
+<p>With the ever-increasing awareness of brand culture, companies are keeping a closer eye on any threats that will harm their intellectual properties (IP) rights. IP infringement includes:</p>
 <ul>
-<li>版权侵权</li>
-<li>专利侵权</li>
-<li>商标侵权</li>
-<li>外观设计侵权</li>
-<li>抢注</li>
+<li>Copyright infringement</li>
+<li>Patent infringement</li>
+<li>Trademark infringement</li>
+<li>Design infringement</li>
+<li>Cybersquatting</li>
 </ul>
-<p>上述苹果公司与伍尔沃斯公司之间的纠纷主要涉及商标侵权，准确地说，是两家公司的商标形象相似。为了避免成为另一个伍尔沃斯，无论是在商标申请之前，还是在商标申请审查期间，详尽的商标近似检索都是申请人的关键步骤。最常见的方法是在<a href="https://tmsearch.uspto.gov/search/search-information">美国专利商标局（USPTO）数据库</a>中进行检索，该数据库包含所有有效和无效的商标注册和申请。尽管用户界面并不迷人，但这一搜索过程也因其基于文本的性质而存在很大缺陷，因为它依赖文字和商标设计代码（设计特征的手工注释标签）来搜索图像。</p>
+<p>The aforementioned dispute between Apple and Woolworths is mainly over trademark infringement, precisely the similarity between the trademark images of the two entities. To refrain from becoming another Woolworths, an exhaustive trademark similarity search is a crucial step for applicants both prior to the filing as well as during the review of trademark applications. The most common resort is through a search on the <a href="https://tmsearch.uspto.gov/search/search-information">United States Patent and Trademark Office (USPTO) database</a> that contains all of the active and inactive trademark registrations and applications. Despite the not so charming UI, this search process is also deeply flawed by its text-based nature as it relies on words and Trademark Design codes (which are hand annotated labels of design features) to search for images.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image_8_b2fff6ca11.png" alt="8.png" class="doc-image" id="8.png" />
-   </span> <span class="img-wrapper"> <span>8.png</span> </span></p>
-<p>因此，本文意在展示如何利用开源向量数据库<a href="https://milvus.io">Milvus</a> 建立一个高效的基于图像的商标相似性搜索系统。</p>
-<h2 id="A-vector-similarity-search-system-for-trademarks" class="common-anchor-header">商标向量相似性搜索系统<button data-href="#A-vector-similarity-search-system-for-trademarks" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image_8_b2fff6ca11.png" alt="8.png" class="doc-image" id="8.png" />
+    <span>8.png</span>
+  </span>
+</p>
+<p>This article thereby intends to showcase how to build an efficient image-based trademark similarity search system using <a href="https://milvus.io">Milvus</a>, an open-source vector database.</p>
+<h2 id="A-vector-similarity-search-system-for-trademarks" class="common-anchor-header">A vector similarity search system for trademarks<button data-href="#A-vector-similarity-search-system-for-trademarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,38 +54,46 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>要建立商标向量相似性搜索系统，需要经过以下步骤：</p>
+    </button></h2><p>To build a vector similarity search system for trademarks, you need to go through the following steps:</p>
 <ol>
-<li>准备一个庞大的商标数据集。系统可能会使用这样<a href="https://developer.uspto.gov/product/trademark-24-hour-box-and-supplemental">的</a>数据集）。</li>
-<li>使用数据集和数据驱动模型或人工智能算法训练图像特征提取模型。</li>
-<li>使用步骤 2 中训练好的模型或算法将徽标转换成向量。</li>
-<li>在开源向量数据库 Milvus 中存储向量并进行向量相似性搜索。</li>
+<li>Prepare a massive dataset of logos. Likely, the system can use a dataset like <a href="https://developer.uspto.gov/product/trademark-24-hour-box-and-supplemental">this</a>,).</li>
+<li>Train an image feature extraction model using the dataset and data-driven models or AI algorithms.</li>
+<li>Convert logos into vectors using the trained model or algorithm in Step 2.</li>
+<li>Store the vectors and conduct vector similarity searches in Milvus, the open-source vector database.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/trademark_system_e9700df555.png" alt="Nike.png" class="doc-image" id="nike.png" />
-   </span> <span class="img-wrapper"> <span>耐克.png</span> </span></p>
-<p>在下面的章节中，让我们仔细了解一下构建商标向量相似性搜索系统的两个主要步骤：使用人工智能模型进行图像特征提取，以及使用 Milvus 进行向量相似性搜索。在我们的案例中，我们使用卷积神经网络（CNN）VGG16 提取图像特征并将其转换为嵌入向量。</p>
-<h3 id="Using-VGG16-for-image-feature-extraction" class="common-anchor-header">使用 VGG16 提取图像特征</h3><p><a href="https://medium.com/@mygreatlearning/what-is-vgg16-introduction-to-vgg16-f2d63849f615">VGG16</a>是为大规模图像识别而设计的卷积神经网络。该模型在图像识别中速度快、精度高，可应用于各种尺寸的图像。以下是 VGG16 架构的两幅图示。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/trademark_system_e9700df555.png" alt="Nike.png" class="doc-image" id="nike.png" />
+    <span>Nike.png</span>
+  </span>
+</p>
+<p>In the following sections, let’s take a closer look at the two major steps in building a vector similarity search system for trademarks: using AI models for image feature extraction, and using Milvus for vector similarity search. In our case, we used VGG16, a convolutional neural network (CNN), to extract image features and convert them into embedding vectors.</p>
+<h3 id="Using-VGG16-for-image-feature-extraction" class="common-anchor-header">Using VGG16 for image feature extraction</h3><p><a href="https://medium.com/@mygreatlearning/what-is-vgg16-introduction-to-vgg16-f2d63849f615">VGG16</a> is a CNN designed for large-scale image recognition. The model is quick and accurate in image recognition and can be applied to images of all sizes. The following are two illustrations of the VGG16 architecture.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/vgg16_layers_9e621f62cc.png" alt="9.png" class="doc-image" id="9.png" />
-   </span> <span class="img-wrapper"> <span>9.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/vgg16_layers_9e621f62cc.png" alt="9.png" class="doc-image" id="9.png" />
+    <span>9.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/vgg16_architecture_992614e882.png" alt="10.png" class="doc-image" id="10.png" />
-   </span> <span class="img-wrapper"> <span>10.png</span> </span></p>
-<p>VGG16 模型，顾名思义，是一个有 16 层的 CNN。包括 VGG16 和 VGG19 在内的所有 VGG 模型都包含 5 个 VGG 块，每个 VGG 块中都有一个或多个卷积层。在每个块的末端，连接一个最大池化层，以减小输入图像的大小。每个卷积层内的核数相同，但每个 VGG 块内的核数加倍。因此，模型中的内核数量从第一个区块的 64 个增长到第四和第五个区块的 512 个。所有卷积核的<em>大小</em>都是<em>33，而池化核的大小都是 22</em>。这有利于保留输入图像的更多信息。</p>
-<p>因此，在这种情况下，VGG16 是一种适合海量数据集图像识别的模型。你可以使用 Python、Tensorflow 和 Keras 在 VGG16 的基础上训练图像特征提取模型。</p>
-<h3 id="Using-Milvus-for-vector-similarity-search" class="common-anchor-header">使用 Milvus 进行向量相似性搜索</h3><p>使用 VGG16 模型提取图像特征并将徽标图像转换为嵌入向量后，您需要从海量数据集中搜索相似向量。</p>
-<p>Milvus 是一个云原生数据库，具有高扩展性和高弹性的特点。此外，作为一个数据库，它还能确保数据的一致性。对于这样一个商标相似性搜索系统来说，最新的商标注册等新数据会实时上传到系统中。而这些新上传的数据需要立即可供搜索。因此，本文采用了开源向量数据库 Milvus 来进行向量相似性搜索。</p>
-<p>在插入徽标向量时，可以根据<a href="https://en.wikipedia.org/wiki/International_(Nice)_Classification_of_Goods_and_Services">国际（尼斯）商品和服务分类（</a>一种用于注册商标的商品和服务分类系统）在 Milvus 中为不同类型的徽标向量创建 Collections。例如，您可以在 Milvus 中将一组服装品牌徽标向量插入名为 &quot;服装 &quot;的 Collections 中，并将另一组技术品牌徽标向量插入名为 &quot;技术 &quot;的不同 Collections 中。通过这样做，您可以大大提高向量相似性搜索的效率和速度。</p>
-<p>Milvus 不仅支持向量相似性搜索的多种索引，还提供丰富的 API 和工具，为 DevOps 提供便利。下图是<a href="https://milvus.io/docs/v2.0.x/architecture_overview.md">Milvus 架构</a>示意图。您可以通过阅读 Milvus 的<a href="https://milvus.io/docs/v2.0.x/overview.md">介绍</a>了解更多信息。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/vgg16_architecture_992614e882.png" alt="10.png" class="doc-image" id="10.png" />
+    <span>10.png</span>
+  </span>
+</p>
+<p>The VGG16 model, as its name suggests, is a CNN with 16 layers. All VGG models, including VGG16 and VGG19, contain 5 VGG blocks, with one or more convolutional layers in each VGG block. And at the end of each block, a max pooling layer is connected to reduce the size of the input image. The number of kernels is equivalent within each convolutional layer but doubles in each VGG block. Therefore, the number of kernels in the model grows from 64 in the first block, to 512 in the fourth and fifth blocks. All the convolutional kernels are 3<em>3-sized while the pooling kernels are all 2</em>2-sized. This is conducive to preserving more information about the input image.</p>
+<p>Therefore, VGG16 is a suitable model for image recognition of massive datasets in this case. You can use Python, Tensorflow, and Keras to train an image feature extraction model on the basis of VGG16.</p>
+<h3 id="Using-Milvus-for-vector-similarity-search" class="common-anchor-header">Using Milvus for vector similarity search</h3><p>After using the VGG16 model to extract image features and convert logo images into embedding vectors, you need to search for similar vectors from a massive dataset.</p>
+<p>Milvus is a cloud-native database featuring high scalability and elasticity. Also, as a database, it can ensure data consistency. For a trademark similarity search system like this, new data like the latest trademark registrations are uploaded to the system in real time. And these newly uploaded data need to be available for search immediately. Therefore, this article adopts Milvus, the open-source vector database, to conduct vector similarity search.</p>
+<p>When inserting the logo vectors, you can create collections in Milvus for different types of logo vectors according to the <a href="https://en.wikipedia.org/wiki/International_(Nice)_Classification_of_Goods_and_Services">International (Nice) Classification of Goods and Services</a>, a system of classifying goods and services for registering trademarks. For example, you can insert a group of vectors of clothing brand logos into a collection named “clothing” in Milvus and insert another group of vectors of technological brand logos into a different collection named &quot;technology&quot;. By doing so, you can greatly increase the efficiency and speed of your vector similarity search.</p>
+<p>Milvus not only supports multiple indexes for vector similarity search, but also provides rich APIs and tools to facilitate DevOps. The following diagram is an illustration of the <a href="https://milvus.io/docs/v2.0.x/architecture_overview.md">Milvus architecture</a>. You can learn more about Milvus by reading its <a href="https://milvus.io/docs/v2.0.x/overview.md">introduction</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png" alt="11.png" class="doc-image" id="11.png" />
-   </span> <span class="img-wrapper"> <span>11.png</span> </span></p>
-<h2 id="Looking-for-more-resources" class="common-anchor-header">寻找更多资源？<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png" alt="11.png" class="doc-image" id="11.png" />
+    <span>11.png</span>
+  </span>
+</p>
+<h2 id="Looking-for-more-resources" class="common-anchor-header">Looking for more resources?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -93,18 +109,18 @@ tag: Scenarios
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>使用 Milvus 为其他应用场景构建更多向量相似性搜索系统：</p>
+<li><p>Build more vector similarity search systems for other application scenarios with Milvus:</p>
 <ul>
-<li><a href="https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md">基于 Milvus 的 DNA 序列分类</a></li>
-<li><a href="https://milvus.io/blog/audio-retrieval-based-on-milvus.md">基于 Milvus 的音频检索</a></li>
-<li><a href="https://milvus.io/blog/building-video-search-system-with-milvus.md">构建视频搜索系统的 4 个步骤</a></li>
-<li><a href="https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md">利用NLP和Milvus构建智能质量保证系统</a></li>
-<li><a href="https://milvus.io/blog/molecular-structure-similarity-with-milvus.md">加速新药发现</a></li>
+<li><a href="https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md">DNA Sequence Classification based on Milvus</a></li>
+<li><a href="https://milvus.io/blog/audio-retrieval-based-on-milvus.md">Audio Retrieval Based on Milvus</a></li>
+<li><a href="https://milvus.io/blog/building-video-search-system-with-milvus.md">4 Steps to Building a Video Search System</a></li>
+<li><a href="https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md">Building an Intelligent QA System with NLP and Milvus</a></li>
+<li><a href="https://milvus.io/blog/molecular-structure-similarity-with-milvus.md">Accelerating New Drug Discovery</a></li>
 </ul></li>
-<li><p>参与我们的开源社区：</p>
+<li><p>Engage with our open-source community:</p>
 <ul>
-<li>在<a href="https://bit.ly/307b7jC">GitHub</a> 上查找 Milvus 或为其做出贡献。</li>
-<li>通过<a href="https://bit.ly/3qiyTEk">论坛</a>与社区互动。</li>
-<li>在<a href="https://bit.ly/3ob7kd8">Twitter</a> 上与我们联系。</li>
+<li>Find or contribute to Milvus on <a href="https://bit.ly/307b7jC">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://bit.ly/3qiyTEk">Forum</a>.</li>
+<li>Connect with us on <a href="https://bit.ly/3ob7kd8">Twitter</a>.</li>
 </ul></li>
 </ul>

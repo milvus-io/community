@@ -1,8 +1,8 @@
 ---
 id: reflections-on-chatgpt-and-claude-memory-systems.md
-title: >-
-  تأملات في ChatGPT وأنظمة ذاكرة كلود: ما يتطلبه الأمر لتمكين استرجاع المحادثات
-  عند الطلب
+title: >
+  Reflections on ChatGPT and Claude’s Memory Systems: What It Takes to Enable
+  On-Demand Conversational Retrieval
 author: Min Yin
 date: 2026-01-09T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_VS_Claude_cover_555fdac36d.png
@@ -14,17 +14,18 @@ meta_keywords: 'ChatGPT, Claude, memory systems, on-demand retrieval, conversati
 meta_title: |
   Milvus 2.6 Makes Claude-Style On-Demand Retrieval Practical
 desc: >-
-  اكتشف كيف يقوم كل من ChatGPT وكلود بتصميم الذاكرة بشكل مختلف، وسبب صعوبة
-  استرجاع المحادثة عند الطلب، وكيف يتيح Milvus 2.6 ذلك على نطاق الإنتاج.
+  Explore how ChatGPT and Claude design memory differently, why on-demand
+  conversational retrieval is hard, and how Milvus 2.6 enables it at production
+  scale.
 origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems.md'
 ---
-<p>في أنظمة وكلاء الذكاء الاصطناعي عالية الجودة، يكون تصميم الذاكرة أكثر تعقيدًا بكثير مما يبدو للوهلة الأولى. في جوهره، يجب أن يجيب على ثلاثة أسئلة أساسية: كيف يجب تخزين سجل المحادثة؟ متى يجب استرجاع السياق السابق؟ وما الذي يجب استرجاعه بالضبط؟</p>
-<p>تشكل هذه الاختيارات بشكل مباشر زمن استجابة الوكيل، واستخدام الموارد، وفي النهاية سقف قدراته.</p>
-<p>تبدو النماذج مثل ChatGPT و Claude "مدركة للذاكرة" بشكل متزايد كلما استخدمناها أكثر. فهي تتذكر التفضيلات، وتتكيف مع الأهداف طويلة المدى، وتحافظ على الاستمرارية عبر الجلسات. وبهذا المعنى، فهي تعمل بالفعل كوكلاء ذكاء اصطناعي مصغرين. ومع ذلك، فإن أنظمة الذاكرة الخاصة بهم مبنية على افتراضات معمارية مختلفة تمامًا.</p>
-<p>تكشف تحليلات الهندسة العكسية الحديثة <a href="https://manthanguptaa.in/posts/claude_memory/">لآليات ذاكرة</a> <a href="https://manthanguptaa.in/posts/chatgpt_memory/">ChatGPT</a>وذاكرة <a href="https://manthanguptaa.in/posts/claude_memory/">كلود</a> عن تباين واضح. حيث تعتمد <strong>ChatGPT</strong> على حقن السياق المحسوب مسبقاً والتخزين المؤقت متعدد الطبقات لتوفير استمرارية خفيفة الوزن ويمكن التنبؤ بها. على النقيض من ذلك، يعتمد <strong>Claude</strong> على أسلوب RAG، والاسترجاع عند الطلب مع تحديثات ديناميكية للذاكرة لتحقيق التوازن بين عمق الذاكرة والكفاءة.</p>
-<p>هاتان الطريقتان ليستا مجرد تفضيلات تصميمية - بل تتشكلان من خلال قدرة البنية التحتية. يقدّم <a href="https://milvus.io/docs/release_notes.md#v268"><strong>ميلفوس 2.6</strong></a> مزيجًا من الاسترجاع الهجين الكثيف والمتناثر، والتصفية العددية الفعّالة، والتخزين المتدرج الذي تتطلبه ذاكرة التخاطب عند الطلب، مما يجعل الاسترجاع الانتقائي سريعًا واقتصاديًا بما يكفي لنشره في أنظمة العالم الحقيقي.</p>
-<p>في هذا المنشور، سنستعرض كيفية عمل نظامي ذاكرة ChatGPT وذاكرة كلود في الواقع، وسبب اختلافهما من الناحية المعمارية، وكيف أن التطورات الحديثة في أنظمة مثل Milvus تجعل الاسترجاع التخاطبي عند الطلب عملياً على نطاق واسع.</p>
-<h2 id="ChatGPT’s-Memory-System" class="common-anchor-header">نظام ذاكرة ChatGPT<button data-href="#ChatGPT’s-Memory-System" class="anchor-icon" translate="no">
+<p>In high-quality AI agent systems, memory design is far more complex than it first appears. At its core, it must answer three fundamental questions: How should conversation history be stored? When should past context be retrieved? And what, exactly, should be retrieved?</p>
+<p>These choices directly shape an agent’s response latency, resource usage, and—ultimately—its capability ceiling.</p>
+<p>Models like ChatGPT and Claude feel increasingly “memory-aware” the more we use them. They remember preferences, adapt to long-term goals, and maintain continuity across sessions. In that sense, they already function as mini AI agents. Yet beneath the surface, their memory systems are built on very different architectural assumptions.</p>
+<p>Recent reverse-engineering analyses of <a href="https://manthanguptaa.in/posts/chatgpt_memory/">ChatGPT</a>’s and <a href="https://manthanguptaa.in/posts/claude_memory/">Claude’s memory mechanisms</a> reveal a clear contrast. <strong>ChatGPT</strong> relies on precomputed context injection and layered caching to deliver lightweight, predictable continuity. <strong>Claude,</strong> by contrast, adopts RAG-style, on-demand retrieval with dynamic memory updates to balance memory depth and efficiency.</p>
+<p>These two approaches are not just design preferences—they are shaped by infrastructure capability. <a href="https://milvus.io/docs/release_notes.md#v268"><strong>Milvus 2.6</strong></a> introduces the combination of hybrid dense–sparse retrieval, efficient scalar filtering, and tiered storage that on-demand conversational memory requires, making selective retrieval fast and economical enough to deploy in real-world systems.</p>
+<p>In this post, we’ll walk through how ChatGPT’s and Claude’s memory systems actually work, why they diverged architecturally, and how recent advances in systems like Milvus make on-demand conversational retrieval practical at scale.</p>
+<h2 id="ChatGPT’s-Memory-System" class="common-anchor-header">ChatGPT’s Memory System<button data-href="#ChatGPT’s-Memory-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,35 +40,35 @@ origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بدلًا من الاستعلام عن قاعدة بيانات متجهة أو استرجاع المحادثات السابقة ديناميكيًا في وقت الاستدلال، يبني ChatGPT "ذاكرته" من خلال تجميع مجموعة ثابتة من مكونات السياق وإدخالها مباشرةً في كل مطالبة. يتم إعداد كل مكون مسبقاً ويحتل موقعاً معروفاً في المطالبة.</p>
-<p>يحافظ هذا التصميم على التخصيص واستمرارية المحادثة كما هي مع جعل زمن الاستجابة واستخدام الرمز المميز وسلوك النظام أكثر قابلية للتنبؤ. بعبارة أخرى، الذاكرة ليست شيئًا يبحث عنه النموذج سريعًا - بل هي شيء يقوم النظام بتجميعه وتسليمه للنموذج في كل مرة يولد فيها استجابة.</p>
-<p>على مستوى عالٍ، تتكون مطالبة ChatGPT الكاملة من الطبقات التالية، مرتبة من الأكثر عمومية إلى الأكثر فورية:</p>
-<p>[0] تعليمات النظام</p>
-<p>[1] تعليمات المطور</p>
-<p>[2] البيانات الوصفية للجلسة (سريعة الزوال)</p>
-<p>[3] ذاكرة المستخدم (حقائق طويلة الأمد)</p>
-<p>[4] ملخص المحادثات الأخيرة (المحادثات السابقة، العناوين + مقتطفات)</p>
-<p>[5] رسائل الجلسة الحالية (هذه المحادثة)</p>
-<p>[6] رسالتك الأخيرة</p>
-<p>من بين هذه المكونات، تشكل المكونات من [2] إلى [5] الذاكرة الفعالة للنظام، وكل منها يؤدي دورًا مميزًا.</p>
-<h3 id="Session-Metadata" class="common-anchor-header">البيانات الوصفية للجلسة</h3><p>تمثل البيانات الوصفية لجلسة العمل معلومات قصيرة الأجل وغير ثابتة يتم حقنها مرة واحدة في بداية المحادثة ويتم تجاهلها عند انتهاء الجلسة. ويتمثل دورها في مساعدة النموذج على التكيف مع سياق الاستخدام الحالي بدلاً من تخصيص السلوك على المدى الطويل.</p>
-<p>تلتقط هذه الطبقة إشارات حول البيئة المباشرة للمستخدم وأنماط الاستخدام الأخيرة. تتضمن الإشارات النموذجية ما يلي:</p>
+    </button></h2><p>Instead of querying a vector database or dynamically retrieving past conversations at inference time, ChatGPT constructs its “memory” by assembling a fixed set of context components and injecting them directly into every prompt. Each component is prepared ahead of time and occupies a known position in the prompt.</p>
+<p>This design keeps personalization and conversational continuity intact while making latency, token usage, and system behavior more predictable. In other words, memory is not something the model searches for on the fly—it is something the system packages and hands to the model every time it generates a response.</p>
+<p>At a high level, a complete ChatGPT prompt consists of the following layers, ordered from most global to most immediate:</p>
+<p>[0] System Instructions</p>
+<p>[1] Developer Instructions</p>
+<p>[2] Session Metadata (ephemeral)</p>
+<p>[3] User Memory (long-term facts)</p>
+<p>[4] Recent Conversations Summary (past chats, titles + snippets)</p>
+<p>[5] Current Session Messages (this chat)</p>
+<p>[6] Your latest message</p>
+<p>Among these, components [2] through [5] form the effective memory of the system, each serving a distinct role.</p>
+<h3 id="Session-Metadata" class="common-anchor-header">Session Metadata</h3><p>Session metadata represents short-lived, non-persistent information that is injected once at the beginning of a conversation and discarded when the session ends. Its role is to help the model adapt to the current usage context rather than to personalize behavior long term.</p>
+<p>This layer captures signals about the user’s immediate environment and recent usage patterns. Typical signals include:</p>
 <ul>
-<li><p><strong>معلومات الجهاز</strong> - على سبيل المثال، ما إذا كان المستخدم على الهاتف المحمول أو سطح المكتب</p></li>
-<li><p><strong>سمات الحساب</strong> - مثل فئة الاشتراك (على سبيل المثال، ChatGPT Go)، وعمر الحساب، وتكرار الاستخدام الإجمالي</p></li>
-<li><p><strong>المقاييس السلوكية</strong> - بما في ذلك الأيام النشطة على مدار الأيام 1 و7 و30 يوماً الماضية، ومتوسط طول المحادثة، وتوزيع استخدام النموذج (على سبيل المثال، 49% من الطلبات التي تم التعامل معها بواسطة GPT-5)</p></li>
+<li><p><strong>Device information</strong> — for example, whether the user is on mobile or desktop</p></li>
+<li><p><strong>Account attributes</strong> — such as subscription tier (for example, ChatGPT Go), account age, and overall usage frequency</p></li>
+<li><p><strong>Behavioral metrics</strong> — including active days over the past 1, 7, and 30 days, average conversation length, and model usage distribution (for example, 49% of requests handled by GPT-5)</p></li>
 </ul>
-<h3 id="User-Memory" class="common-anchor-header">ذاكرة المستخدم</h3><p>ذاكرة المستخدم هي طبقة الذاكرة الثابتة والقابلة للتحرير التي تتيح التخصيص عبر المحادثات. وهي تخزن معلومات مستقرة نسبيًا - مثل اسم المستخدم، ودوره أو أهدافه المهنية، والمشاريع الجارية، والنتائج السابقة، وتفضيلات التعلم - ويتم إدخالها في كل محادثة جديدة للحفاظ على الاستمرارية مع مرور الوقت.</p>
-<p>يمكن تحديث هذه الذاكرة بطريقتين:</p>
+<h3 id="User-Memory" class="common-anchor-header">User Memory</h3><p>User memory is the persistent, editable layer of memory that enables personalization across conversations. It stores relatively stable information—such as a user’s name, role or career goals, ongoing projects, past outcomes, and learning preferences—and is injected into each new conversation to preserve continuity over time.</p>
+<p>This memory can be updated in two ways:</p>
 <ul>
-<li><p>تحدث<strong>التحديثات الصريحة</strong> عندما يدير المستخدمون الذاكرة مباشرةً بتعليمات مثل "تذكر هذا" أو "احذف هذا من الذاكرة".</p></li>
-<li><p>تحدث<strong>التحديثات الضمنية</strong> عندما يحدد النظام المعلومات التي تفي بمعايير التخزين الخاصة بـ OpenAI - مثل اسم مؤكد أو مسمى وظيفي - ويحفظها تلقائيًا، مع مراعاة الموافقة الافتراضية للمستخدم وإعدادات الذاكرة.</p></li>
+<li><p><strong>Explicit updates</strong> occur when users directly manage memory with instructions like “remember this” or “remove this from memory.”</p></li>
+<li><p><strong>Implicit updates</strong> occur when the system identifies information that meets OpenAI’s storage criteria—such as a confirmed name or job title—and saves it automatically, subject to the user’s default consent and memory settings.</p></li>
 </ul>
-<h3 id="Recent-Conversation-Summary" class="common-anchor-header">ملخص المحادثة الأخيرة</h3><p>ملخص المحادثة الأخيرة عبارة عن طبقة سياق خفيف الوزن وعابر للجلسات يحافظ على الاستمرارية دون إعادة تشغيل أو استرجاع تاريخ المحادثة الكامل. بدلًا من الاعتماد على الاسترجاع الديناميكي، كما هو الحال في الأساليب التقليدية القائمة على RAG، يتم حساب هذا الملخص مسبقًا وإدخاله مباشرةً في كل محادثة جديدة.</p>
-<p>تلخص هذه الطبقة رسائل المستخدم فقط، باستثناء الردود المساعدة. وهي محدودة الحجم عن قصد - عادةً ما تكون حوالي 15 مدخلاً - وتحتفظ فقط بإشارات عالية المستوى حول الاهتمامات الحديثة بدلاً من المحتوى التفصيلي. ونظراً لأنها لا تعتمد على التضمينات أو البحث عن التشابه، فإنها تحافظ على كل من زمن الاستجابة واستهلاك الرمز المميز منخفضاً.</p>
-<h3 id="Current-Session-Messages" class="common-anchor-header">رسائل الجلسة الحالية</h3><p>تحتوي رسائل الجلسة الحالية على سجل الرسائل الكامل للمحادثة الجارية وتوفر السياق قصير المدى اللازم للردود المتماسكة والمتناسقة خطوة بخطوة. تتضمن هذه الطبقة كلاً من مدخلات المستخدم وردود المساعد، ولكن فقط أثناء بقاء الجلسة نشطة.</p>
-<p>ولأن النموذج يعمل ضمن حد رمز ثابت، لا يمكن أن ينمو هذا السجل إلى ما لا نهاية. عندما يتم الوصول إلى الحد الأقصى، يقوم النظام بإسقاط الرسائل الأقدم لإفساح المجال للرسائل الأحدث. يؤثر هذا الاقتطاع على الجلسة الحالية فقط: تبقى ذاكرة المستخدم طويلة المدى وملخص المحادثة الأخيرة سليمة.</p>
-<h2 id="Claude’s-Memory-System" class="common-anchor-header">نظام ذاكرة كلود<button data-href="#Claude’s-Memory-System" class="anchor-icon" translate="no">
+<h3 id="Recent-Conversation-Summary" class="common-anchor-header">Recent Conversation Summary</h3><p>The recent conversation summary is a lightweight, cross-session context layer that preserves continuity without replaying or retrieving full chat histories. Instead of relying on dynamic retrieval, as in traditional RAG-based approaches, this summary is precomputed and injected directly into every new conversation.</p>
+<p>This layer summarizes user messages only, excluding assistant replies. It is intentionally limited in size—typically around 15 entries—and retains only high-level signals about recent interests rather than detailed content. Because it does not rely on embeddings or similarity search, it keeps both latency and token consumption low.</p>
+<h3 id="Current-Session-Messages" class="common-anchor-header">Current Session Messages</h3><p>Current session messages contain the full message history of the ongoing conversation and provide the short-term context needed for coherent, turn-by-turn responses. This layer includes both user inputs and assistant replies, but only while the session remains active.</p>
+<p>Because the model operates within a fixed token limit, this history cannot grow indefinitely. When the limit is reached, the system drops the earliest messages to make room for newer ones. This truncation affects only the current session: long-term user memory and the recent conversation summary remain intact.</p>
+<h2 id="Claude’s-Memory-System" class="common-anchor-header">Claude’s Memory System<button data-href="#Claude’s-Memory-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -82,40 +83,40 @@ origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يتبع كلود نهجًا مختلفًا لإدارة الذاكرة. فبدلاً من حقن حزمة كبيرة وثابتة من مكونات الذاكرة في كل مطالبة - كما يفعل ChatGPT - يجمع كلود بين ذاكرة المستخدم الدائمة مع أدوات عند الطلب والاسترجاع الانتقائي. يتم جلب السياق التاريخي فقط عندما يرى النموذج أنه ذو صلة، مما يسمح للنظام بمقايضة عمق السياق مقابل التكلفة الحسابية.</p>
-<p>سياق موجه كلود منظم على النحو التالي:</p>
-<p>[0] موجه النظام (تعليمات ثابتة)</p>
-<p>[1] ذكريات المستخدم</p>
-<p>[2] تاريخ المحادثة</p>
-<p>[3] الرسالة الحالية</p>
-<p>تكمن الاختلافات الرئيسية بين Claude و ChatGPT في <strong>كيفية استرجاع سجل المحادثة</strong> <strong>وكيفية تحديث ذاكرة المستخدم وصيانتها</strong>.</p>
-<h3 id="User-Memories" class="common-anchor-header">ذكريات المستخدم</h3><p>في Claude، تشكّل ذكريات المستخدم طبقة سياق طويلة الأجل مشابهة في غرضها لذاكرة المستخدم في ChatGPT، ولكن مع تركيز أقوى على التحديثات التلقائية التي تعتمد على الخلفية. يتم تخزين هذه الذكريات بتنسيق منظم (مغلفة بعلامات على غرار XML) وهي مصممة للتطور تدريجيًا بمرور الوقت بأقل تدخل من المستخدم.</p>
-<p>يدعم كلود مسارين للتحديث:</p>
+    </button></h2><p>Claude takes a different approach to memory management. Rather than injecting a large, fixed bundle of memory components into every prompt—as ChatGPT does—Claude combines persistent user memory with on-demand tools and selective retrieval. Historical context is fetched only when the model judges it to be relevant, allowing the system to trade off contextual depth against computational cost.</p>
+<p>Claude’s prompt context is structured as follows:</p>
+<p>[0] System Prompt (static instructions)</p>
+<p>[1] User Memories</p>
+<p>[2] Conversation History</p>
+<p>[3] Current Message</p>
+<p>The key differences between Claude and ChatGPT lie in <strong>how conversation history is retrieved</strong> and <strong>how user memory is updated and maintained</strong>.</p>
+<h3 id="User-Memories" class="common-anchor-header">User Memories</h3><p>In Claude, user memories form a long-term context layer similar in purpose to ChatGPT’s user memory, but with a stronger emphasis on automatic, background-driven updates. These memories are stored in a structured format (wrapped in XML-style tags) and are designed to evolve gradually over time with minimal user intervention.</p>
+<p>Claude supports two update paths:</p>
 <ul>
-<li><p><strong>التحديثات الضمنية</strong> - يقوم النظام بتحليل محتوى المحادثة بشكل دوري وتحديث الذاكرة في الخلفية. لا يتم تطبيق هذه التحديثات في الوقت الحقيقي، ويتم تشذيب الذكريات المرتبطة بالمحادثات المحذوفة تدريجيًا كجزء من التحسين المستمر.</p></li>
-<li><p><strong>التحديثات الصريحة</strong> - يمكن للمستخدمين إدارة الذاكرة بشكل مباشر من خلال أوامر مثل "تذكّر هذا" أو "احذف هذا"، والتي يتم تنفيذها عبر أداة مخصصة <code translate="no">memory_user_edits</code>.</p></li>
+<li><p><strong>Implicit updates</strong> — The system periodically analyzes conversation content and updates memory in the background. These updates are not applied in real time, and memories associated with deleted conversations are gradually pruned as part of ongoing optimization.</p></li>
+<li><p><strong>Explicit updates</strong> — Users can directly manage memory through commands such as “remember this” or “delete this,” which are executed via a dedicated <code translate="no">memory_user_edits</code> tool.</p></li>
 </ul>
-<p>بالمقارنة مع ChatGPT، يضع Claude مسؤولية أكبر على النظام نفسه لتنقيح الذاكرة طويلة المدى وتحديثها وتشذيبها. وهذا يقلل من حاجة المستخدمين إلى تنظيم ما يتم تخزينه بنشاط.</p>
-<h3 id="Conversation-History" class="common-anchor-header">تاريخ المحادثة</h3><p>بالنسبة لتاريخ المحادثة، لا يعتمد كلود على ملخص ثابت يتم حقنه في كل مطالبة. بدلاً من ذلك، فإنه يسترجع السياق السابق فقط عندما يقرر النموذج أنه ضروري، باستخدام ثلاث آليات مختلفة. هذا يتجنب نقل تاريخ غير ذي صلة إلى الأمام ويحافظ على استخدام الرمز المميز تحت السيطرة.</p>
+<p>Compared with ChatGPT, Claude places greater responsibility on the system itself to refine, update, and prune long-term memory. This reduces the need for users to actively curate what is stored.</p>
+<h3 id="Conversation-History" class="common-anchor-header">Conversation History</h3><p>For conversation history, Claude does not rely on a fixed summary that is injected into every prompt. Instead, it retrieves past context only when the model decides it is necessary, using three distinct mechanisms. This avoids carrying irrelevant history forward and keeps token usage under control.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>المكوّن</strong></th><th style="text-align:center"><strong>الغرض</strong></th><th style="text-align:center"><strong>كيفية استخدامه</strong></th></tr>
+<tr><th style="text-align:center"><strong>Component</strong></th><th style="text-align:center"><strong>Purpose</strong></th><th style="text-align:center"><strong>How It’s Used</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>النافذة المتجددة (المحادثة الحالية)</strong></td><td style="text-align:center">يخزّن سجل الرسائل الكامل للمحادثة الحالية (وليس ملخصًا)، على غرار سياق جلسة الدردشة في ChatGPT</td><td style="text-align:center">يتم حقنه تلقائيًا. حد الرمز المميز هو 190 ألف تقريبًا؛ يتم إسقاط الرسائل القديمة بمجرد الوصول إلى الحد الأقصى</td></tr>
-<tr><td style="text-align:center"><code translate="no">conversation_search</code> <strong>أداة</strong></td><td style="text-align:center">البحث في المحادثات السابقة حسب الموضوع أو الكلمة المفتاحية، وإرجاع روابط المحادثة، والعناوين، ومقتطفات رسائل المستخدم/المساعد</td><td style="text-align:center">يتم تشغيلها عندما يحدد النموذج أن هناك حاجة إلى تفاصيل تاريخية. تشمل المعلمات <code translate="no">query</code> (مصطلحات البحث) و <code translate="no">max_results</code> (1-10)</td></tr>
-<tr><td style="text-align:center"><code translate="no">recent_chats</code> <strong>الأداة</strong></td><td style="text-align:center">استرجاع المحادثات الحديثة ضمن نطاق زمني محدد (على سبيل المثال، "الأيام الثلاثة الماضية")، مع تنسيق النتائج بنفس تنسيق <code translate="no">conversation_search</code></td><td style="text-align:center">يتم تشغيلها عندما يكون السياق الحديث ذو صلة بالنطاق الزمني. تتضمن المعلمات <code translate="no">n</code> (عدد النتائج)، <code translate="no">sort_order</code> ، والنطاق الزمني</td></tr>
+<tr><td style="text-align:center"><strong>Rolling Window (Current Conversation)</strong></td><td style="text-align:center">Stores the full message history of the current conversation (not a summary), similar to ChatGPT’s session context</td><td style="text-align:center">Injected automatically. Token limit is ~190K; older messages are dropped once the limit is reached</td></tr>
+<tr><td style="text-align:center"><code translate="no">conversation_search</code> <strong>tool</strong></td><td style="text-align:center">Searches past conversations by topic or keyword, returning conversation links, titles, and user/assistant message excerpts</td><td style="text-align:center">Triggered when the model determines that historical details are needed. Parameters include <code translate="no">query</code> (search terms) and <code translate="no">max_results</code> (1–10)</td></tr>
+<tr><td style="text-align:center"><code translate="no">recent_chats</code> <strong>tool</strong></td><td style="text-align:center">Retrieves recent conversations within a specified time range (for example, “past 3 days”), with results formatted the same as <code translate="no">conversation_search</code></td><td style="text-align:center">Triggered when the recent, time-scoped context is relevant. Parameters include <code translate="no">n</code> (number of results), <code translate="no">sort_order</code>, and time range</td></tr>
 </tbody>
 </table>
-<p>من بين هذه المكونات، <code translate="no">conversation_search</code> جدير بالملاحظة بشكل خاص. ويمكنه إظهار النتائج ذات الصلة حتى بالنسبة للاستعلامات ذات الصياغة الفضفاضة أو متعددة اللغات، مما يشير إلى أنه يعمل على المستوى الدلالي بدلاً من الاعتماد على مطابقة الكلمات الرئيسية البسيطة. من المحتمل أن يتضمن ذلك استرجاعًا قائمًا على التضمين أو نهجًا هجينًا يقوم أولاً بترجمة أو تطبيع الاستعلام إلى صيغة قانونية ثم تطبيق استرجاع الكلمات المفتاحية أو الاسترجاع الهجين.</p>
-<p>بشكل عام، يتميز نهج كلود للاسترجاع عند الطلب بالعديد من نقاط القوة الملحوظة:</p>
+<p>Among these components, <code translate="no">conversation_search</code> is especially noteworthy. It can surface relevant results even for loosely phrased or multilingual queries, indicating that it operates at a semantic level rather than relying on simple keyword matching. This likely involves embedding-based retrieval, or a hybrid approach that first translates or normalizes the query into a canonical form and then applies keyword or hybrid retrieval.</p>
+<p>Overall, Claude’s on-demand retrieval approach has several notable strengths:</p>
 <ul>
-<li><p><strong>الاسترجاع ليس تلقائيًا</strong>: يتم تشغيل استدعاءات الأداة من خلال حكم النموذج نفسه. على سبيل المثال، عندما يشير المستخدم إلى <em>"المشروع الذي ناقشناه في المرة السابقة"،</em> قد يقرر كلود استدعاء <code translate="no">conversation_search</code> لاسترجاع السياق ذي الصلة.</p></li>
-<li><p><strong>سياق أكثر ثراءً عند الحاجة</strong>: يمكن أن تتضمن النتائج المسترجعة <strong>مقتطفات من ردود المساعد،</strong> في حين أن ملخصات ChatGPT تلتقط رسائل المستخدم فقط. وهذا يجعل كلود أكثر ملاءمة لحالات الاستخدام التي تتطلب سياق محادثة أعمق أو أكثر دقة.</p></li>
-<li><p><strong>كفاءة أفضل بشكل افتراضي</strong>: نظراً لأن السياق التاريخي لا يتم حقنه إلا إذا كانت هناك حاجة إليه، يتجنب النظام نقل كميات كبيرة من السجل غير ذي الصلة إلى الأمام، مما يقلل من استهلاك الرموز غير الضرورية.</p></li>
+<li><p><strong>Retrieval is not automatic</strong>: Tool calls are triggered by the model’s own judgment. For example, when a user refers to <em>“the project we discussed last time,”</em> Claude may decide to invoke <code translate="no">conversation_search</code> to retrieve the relevant context.</p></li>
+<li><p><strong>Richer context when needed</strong>: Retrieved results can include <strong>assistant response excerpts</strong>, whereas ChatGPT’s summaries only capture user messages. This makes Claude better suited for use cases that require deeper or more precise conversational context.</p></li>
+<li><p><strong>Better efficiency by default</strong>: Because historical context is not injected unless needed, the system avoids carrying large amounts of irrelevant history forward, reducing unnecessary token consumption.</p></li>
 </ul>
-<p>المفاضلات واضحة بنفس القدر. يؤدي إدخال الاسترجاع عند الطلب إلى زيادة تعقيد النظام: يجب إنشاء الفهارس وصيانتها، وتنفيذ الاستعلامات، وترتيب النتائج، وأحيانًا إعادة ترتيبها. كما يصبح وقت الاستجابة من النهاية إلى النهاية أقل قابلية للتنبؤ من السياق المحسوب مسبقًا والمُدخل دائمًا. بالإضافة إلى ذلك، يجب أن يتعلم النموذج تحديد متى يكون الاسترجاع ضروريًا. إذا فشل هذا الحكم، فقد لا يتم جلب السياق ذي الصلة على الإطلاق.</p>
-<h2 id="The-Constraints-Behind-Claude-Style-On-Demand-Retrieval" class="common-anchor-header">القيود الكامنة وراء الاسترجاع عند الطلب على نمط كلود<button data-href="#The-Constraints-Behind-Claude-Style-On-Demand-Retrieval" class="anchor-icon" translate="no">
+<p>The trade-offs are equally clear. Introducing on-demand retrieval increases system complexity: indexes must be built and maintained, queries executed, results ranked, and sometimes re-ranked. End-to-end latency also becomes less predictable than with precomputed, always-injected context. In addition, the model must learn to decide when retrieval is necessary. If that judgment fails, relevant context may never be fetched at all.</p>
+<h2 id="The-Constraints-Behind-Claude-Style-On-Demand-Retrieval" class="common-anchor-header">The Constraints Behind Claude-Style On-Demand Retrieval<button data-href="#The-Constraints-Behind-Claude-Style-On-Demand-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,19 +131,19 @@ origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إن اعتماد نموذج الاسترجاع عند الطلب يجعل قاعدة بيانات المتجهات جزءًا مهمًا من البنية. يضع استرجاع المحادثة متطلبات عالية بشكل غير عادي على كل من التخزين وتنفيذ الاستعلام، ويجب على النظام تلبية أربعة قيود في نفس الوقت.</p>
+    </button></h2><p>Adopting an on-demand retrieval model makes the vector database a critical part of the architecture. Conversation retrieval places unusually high demands on both storage and query execution, and the system must meet four constraints at the same time.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/constraints_b6ed74e454.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="1-Low-Latency-Tolerance" class="common-anchor-header">1. تحمل الكمون المنخفض</h3><p>في أنظمة المحادثة، يجب أن يبقى زمن انتقال P99 عادةً أقل من 20 مللي ثانية تقريبًا. التأخير الذي يتجاوز ذلك يمكن ملاحظته على الفور للمستخدمين. هذا لا يترك مجالًا كبيرًا لعدم الكفاءة: يجب تحسين البحث المتجه وتصفية البيانات الوصفية وترتيب النتائج بعناية. يمكن أن يؤدي الاختناق في أي نقطة إلى تدهور تجربة المحادثة بأكملها.</p>
-<h3 id="2-Hybrid-Search-Requirement" class="common-anchor-header">2. متطلبات البحث الهجين</h3><p>غالبًا ما تشمل استعلامات المستخدم أبعادًا متعددة. ويجمع طلب مثل <em>"مناقشات حول RAG من الأسبوع الماضي"</em> بين الصلة الدلالية والتصفية المستندة إلى الوقت. إذا كانت قاعدة البيانات تدعم البحث المتجه فقط، فقد تعرض 1000 نتيجة متشابهة دلاليًا، فقط لتقوم تصفية طبقة التطبيق بتقليلها إلى عدد قليل - مما يؤدي إلى إهدار معظم العمليات الحسابية. ولكي تكون قاعدة البيانات عملية، يجب أن تدعم قاعدة البيانات أصلاً الاستعلامات المتجهة والقياسية المدمجة.</p>
-<h3 id="3-Storage–Compute-Separation" class="common-anchor-header">3. الفصل بين التخزين والحساب</h3><p>يُظهر سجل المحادثات نمطًا واضحًا من الوصول الساخن والبارد. حيث يتم الاستعلام عن المحادثات الحديثة بشكل متكرر، بينما نادرًا ما يتم لمس المحادثات القديمة. إذا كان يجب أن تبقى جميع المتجهات في الذاكرة، فإن تخزين عشرات الملايين من المحادثات سيستهلك مئات الجيجابايت من ذاكرة الوصول العشوائي - وهي تكلفة غير عملية على نطاق واسع. ولكي يكون النظام قابلاً للتطبيق، يجب أن يدعم النظام الفصل بين التخزين والحوسبة مع الاحتفاظ بالبيانات الساخنة في الذاكرة والبيانات الباردة في تخزين الكائنات، مع تحميل المتجهات عند الطلب.</p>
-<h3 id="4-Diverse-Query-Patterns" class="common-anchor-header">4. أنماط استعلام متنوعة</h3><p>لا يتبع استرجاع المحادثات نمط وصول واحد. فبعض الاستعلامات دلالية بحتة (على سبيل المثال، <em>"تحسين الأداء الذي ناقشناه")</em>، والبعض الآخر زمني بحت (<em>"جميع المحادثات من الأسبوع الماضي")</em>، والعديد منها يجمع بين قيود متعددة (<em>"المناقشات المتعلقة ب Python التي تشير إلى FastAPI في الأشهر الثلاثة الأخيرة")</em>. يجب على مخطط استعلامات قاعدة البيانات تكييف استراتيجيات التنفيذ مع أنواع الاستعلامات المختلفة، بدلاً من الاعتماد على بحث واحد يناسب الجميع، بحث بالقوة الغاشمة.</p>
-<p>تحدد هذه التحديات الأربعة معًا القيود الأساسية لاسترجاع المحادثة. يجب على أي نظام يسعى لتنفيذ الاسترجاع عند الطلب على غرار كلود أن يعالجها جميعًا بطريقة منسقة.</p>
-<h2 id="Why-Milvus-26-Works-Well-for-Conversational-Retrieval" class="common-anchor-header">لماذا يعمل ميلفوس 2.6 بشكل جيد للاسترجاع التحادثي<button data-href="#Why-Milvus-26-Works-Well-for-Conversational-Retrieval" class="anchor-icon" translate="no">
+<h3 id="1-Low-Latency-Tolerance" class="common-anchor-header">1. Low Latency Tolerance</h3><p>In conversational systems, P99 latency typically needs to stay under ~20 ms. Delays beyond that are immediately noticeable to users. This leaves little room for inefficiency: vector search, metadata filtering, and result ranking must all be carefully optimized. A bottleneck at any point can degrade the entire conversational experience.</p>
+<h3 id="2-Hybrid-Search-Requirement" class="common-anchor-header">2. Hybrid Search Requirement</h3><p>User queries often span multiple dimensions. A request like <em>“discussions about RAG from the past week”</em> combines semantic relevance with time-based filtering. If a database only supports vector search, it may return 1,000 semantically similar results, only for application-layer filtering to reduce them to a handful—wasting most of the computation. To be practical, the database must natively support combined vector and scalar queries.</p>
+<h3 id="3-Storage–Compute-Separation" class="common-anchor-header">3. Storage–Compute Separation</h3><p>Conversation history exhibits a clear hot–cold access pattern. Recent conversations are queried frequently, while older ones are rarely touched. If all vectors had to stay in memory, storing tens of millions of conversations would consume hundreds of gigabytes of RAM—an impractical cost at scale. To be viable, the system must support storage–compute separation, keeping hot data in memory and cold data in object storage, with vectors loaded on demand.</p>
+<h3 id="4-Diverse-Query-Patterns" class="common-anchor-header">4. Diverse Query Patterns</h3><p>Conversation retrieval does not follow a single access pattern. Some queries are purely semantic (for example, <em>“the performance optimization we discussed”</em>), others are purely temporal (<em>“all conversations from last week”</em>), and many combine multiple constraints (<em>“Python-related discussions mentioning FastAPI in the last three months”</em>). The database query planner must adapt execution strategies to different query types, rather than relying on a one-size-fits-all, brute-force search.</p>
+<p>Together, these four challenges define the core constraints of conversational retrieval. Any system seeking to implement Claude-style, on-demand retrieval must address all of them in a coordinated way.</p>
+<h2 id="Why-Milvus-26-Works-Well-for-Conversational-Retrieval" class="common-anchor-header">Why Milvus 2.6 Works Well for Conversational Retrieval<button data-href="#Why-Milvus-26-Works-Well-for-Conversational-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -157,26 +158,26 @@ origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تتماشى خيارات التصميم في <a href="https://milvus.io/docs/release_notes.md#v268">Milvus 2.6</a> بشكل وثيق مع المتطلبات الأساسية للاسترجاع التحادثي عند الطلب. فيما يلي تفصيل للقدرات الرئيسية وكيفية ارتباطها باحتياجات الاسترجاع التخاطبي الحقيقي.</p>
+    </button></h2><p>The design choices in <a href="https://milvus.io/docs/release_notes.md#v268">Milvus 2.6</a> align closely with the core requirements of on-demand conversational retrieval. Below is a breakdown of the key capabilities and how they map to real conversational retrieval needs.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_2_6_ce379ff42d.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Hybrid-Retrieval-with-Dense-and-Sparse-Vectors" class="common-anchor-header">الاسترجاع الهجين مع المتجهات الكثيفة والمتناثرة</h3><p>يدعم برنامج Milvus 2.6 أصلاً تخزين المتجهات الكثيفة والمتناثرة في نفس المجموعة ودمج نتائجها تلقائيًا في وقت الاستعلام. تلتقط المتجهات الكثيفة (على سبيل المثال، التضمينات ذات 768 بُعدًا التي تم إنشاؤها بواسطة نماذج مثل BGE-M3) التشابه الدلالي، بينما تحافظ المتجهات المتفرقة (التي ينتجها عادةً BM25) على إشارات الكلمات الرئيسية الدقيقة.</p>
-<p>بالنسبة إلى استعلام مثل <em>"مناقشات حول RAG من الأسبوع الماضي"، يقوم</em> برنامج Milvus بتنفيذ الاسترجاع الدلالي واسترجاع الكلمات المفتاحية بالتوازي، ثم يدمج النتائج من خلال إعادة الترتيب. مقارنةً باستخدام أي من النهجين بمفرده، توفر هذه الاستراتيجية الهجينة استرجاعًا أعلى بكثير في سيناريوهات المحادثة الحقيقية.</p>
-<h3 id="Storage–Compute-Separation-and-Query-Optimization" class="common-anchor-header">الفصل بين التخزين والحساب وتحسين الاستعلامات</h3><p>يدعم Milvus 2.6 التخزين المتدرج بطريقتين:</p>
+<h3 id="Hybrid-Retrieval-with-Dense-and-Sparse-Vectors" class="common-anchor-header">Hybrid Retrieval with Dense and Sparse Vectors</h3><p>Milvus 2.6 natively supports storing dense and sparse vectors within the same collection and automatically fusing their results at query time. Dense vectors (for example, 768-dimensional embeddings generated by models like BGE-M3) capture semantic similarity, while sparse vectors (typically produced by BM25) preserve exact keyword signals.</p>
+<p>For a query such as <em>“discussions about RAG from last week,”</em> Milvus executes semantic retrieval and keyword retrieval in parallel, then merges the results through reranking. Compared to using either approach alone, this hybrid strategy delivers significantly higher recall in real conversational scenarios.</p>
+<h3 id="Storage–Compute-Separation-and-Query-Optimization" class="common-anchor-header">Storage–Compute Separation and Query Optimization</h3><p>Milvus 2.6 supports tiered storage in two ways:</p>
 <ul>
-<li><p>البيانات الساخنة في الذاكرة، والبيانات الباردة في تخزين الكائنات</p></li>
-<li><p>الفهارس في الذاكرة، والبيانات المتجهة الخام في تخزين الكائنات</p></li>
+<li><p>Hot data in memory, cold data in object storage</p></li>
+<li><p>Indexes in memory, raw vector data in object storage</p></li>
 </ul>
-<p>باستخدام هذا التصميم، يمكن تحقيق تخزين مليون مدخل محادثة باستخدام 2 جيجابايت تقريبًا من الذاكرة و8 جيجابايت من تخزين الكائنات. مع الضبط المناسب، يمكن أن يظل زمن انتقال P99 أقل من 20 مللي ثانية، حتى مع تمكين الفصل بين التخزين والحساب.</p>
-<h3 id="JSON-Shredding-and-Fast-Scalar-Filtering" class="common-anchor-header">تمزيق JSON والتصفية السريعة للكمية الحجمية</h3><p>يتيح الإصدار Milvus 2.6 من Milvus 2.6 إمكانية تمزيق JSON Shredding افتراضيًا، مما يؤدي إلى تسطيح حقول JSON المتداخلة في التخزين العمودي. يحسن هذا من أداء التصفية العددية بمقدار 3-5 أضعاف وفقًا للمعايير الرسمية (تختلف المكاسب الفعلية حسب نمط الاستعلام).</p>
-<p>يتطلب استرجاع المحادثة غالبًا التصفية حسب البيانات الوصفية مثل معرّف المستخدم أو معرّف الجلسة أو النطاق الزمني. باستخدام تمزيق JSON Shredding، يمكن تنفيذ استعلامات مثل <em>"جميع المحادثات من المستخدم "أ" في الأسبوع الماضي"</em> مباشرةً على فهارس الأعمدة، دون تحليل كرات JSON الكاملة بشكل متكرر.</p>
-<h3 id="Open-Source-Control-and-Operational-Flexibility" class="common-anchor-header">تحكم مفتوح المصدر ومرونة تشغيلية</h3><p>باعتباره نظامًا مفتوح المصدر، يوفر ميلفوس مستوى من التحكم المعماري والتشغيلي لا توفره الحلول المغلقة ذات الصندوق الأسود. يمكن للفرق ضبط معلمات الفهرس، وتطبيق استراتيجيات تصنيف البيانات، وتخصيص عمليات النشر الموزعة لتتناسب مع أعباء العمل الخاصة بهم.</p>
-<p>تُقلل هذه المرونة من عائق الدخول: يمكن للفرق الصغيرة والمتوسطة الحجم بناء أنظمة استرجاع محادثة بملايين إلى عشرات الملايين دون الاعتماد على ميزانيات بنية تحتية ضخمة.</p>
-<h2 id="Why-ChatGPT-and-Claude-Took-Different-Paths" class="common-anchor-header">لماذا اتخذ كل من ChatGPT وكلود مسارات مختلفة<button data-href="#Why-ChatGPT-and-Claude-Took-Different-Paths" class="anchor-icon" translate="no">
+<p>With this design, storing one million conversation entries can be achieved with roughly 2 GB of memory and 8 GB of object storage. With proper tuning, P99 latency can remain below 20 ms, even with storage–compute separation enabled.</p>
+<h3 id="JSON-Shredding-and-Fast-Scalar-Filtering" class="common-anchor-header">JSON Shredding and Fast Scalar Filtering</h3><p>Milvus 2.6 enables JSON Shredding by default, flattening nested JSON fields into columnar storage. This improves scalar filtering performance by 3–5× according to official benchmarks (actual gains vary by query pattern).</p>
+<p>Conversational retrieval often requires filtering by metadata such as user ID, session ID, or time range. With JSON Shredding, queries like <em>“all conversations from user A in the past week”</em> can be executed directly on columnar indexes, without repeatedly parsing full JSON blobs.</p>
+<h3 id="Open-Source-Control-and-Operational-Flexibility" class="common-anchor-header">Open-Source Control and Operational Flexibility</h3><p>As an open-source system, Milvus offers a level of architectural and operational control that closed, black-box solutions do not. Teams can tune index parameters, apply data tiering strategies, and customize distributed deployments to match their workloads.</p>
+<p>This flexibility lowers the barrier to entry: small and mid-sized teams can build million- to tens-of-millions-scale conversational retrieval systems without relying on oversized infrastructure budgets.</p>
+<h2 id="Why-ChatGPT-and-Claude-Took-Different-Paths" class="common-anchor-header">Why ChatGPT and Claude Took Different Paths<button data-href="#Why-ChatGPT-and-Claude-Took-Different-Paths" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -191,12 +192,12 @@ origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>على مستوى عالٍ، يكمن الفرق بين نظامي ذاكرة ChatGPT وClaude في كيفية تعامل كل منهما مع النسيان. يفضل ChatGPT النسيان الاستباقي: بمجرد أن تتجاوز الذاكرة الحدود الثابتة، يتم إسقاط السياق القديم. هذا يقايض الاكتمال بالبساطة وسلوك النظام الذي يمكن التنبؤ به. يفضل كلود النسيان المتأخر. من الناحية النظرية، يمكن أن ينمو سجل المحادثة دون حدود، مع تفويض الاسترجاع إلى نظام استرجاع عند الطلب.</p>
-<p>إذن لماذا اختار النظامان مسارين مختلفين؟ في ظل القيود التقنية الموضحة أعلاه، تصبح الإجابة واضحة: <strong>لا تكون كل بنية قابلة للتطبيق إلا إذا كانت البنية التحتية الأساسية قادرة على دعمها</strong>.</p>
-<p>لو تمت تجربة نهج كلود في عام 2020، لكان من المحتمل أن يكون غير عملي. في ذلك الوقت، كانت قواعد البيانات المتجهة غالبًا ما تتكبد مئات المللي ثانية من زمن الاستجابة، وكانت الاستعلامات الهجينة غير مدعومة بشكل جيد، وكان استخدام الموارد يتزايد بشكل باهظ مع نمو البيانات. في ظل هذه الظروف، كان من الممكن أن يتم رفض الاسترجاع عند الطلب باعتباره إفراطًا في الهندسة.</p>
-<p>بحلول عام 2025، تغير المشهد. فالتقدم في البنية التحتية - مدفوعًا بأنظمة مثل <strong>Milvus 2.6 -</strong>جعل الفصل بين التخزين والحساب، وتحسين الاستعلام، والاسترجاع الهجين الكثيف والمتناثر، وتقطيع JSON Shredding قابلاً للتطبيق في الإنتاج. تقلل هذه التطورات من زمن الاستجابة وتتحكم في التكاليف وتجعل الاسترجاع الانتقائي عمليًا على نطاق واسع. نتيجة لذلك، لم تصبح الأدوات عند الطلب والذاكرة القائمة على الاسترجاع عند الطلب ممكنة فحسب، بل أصبحت جذابة بشكل متزايد، خاصةً كأساس لأنظمة على غرار الوكيل.</p>
-<p>في نهاية المطاف، تتبع خيارات الهندسة المعمارية ما تتيحه البنية التحتية.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>At a high level, the difference between ChatGPT’s and Claude’s memory systems comes down to how each handles forgetting. ChatGPT favors proactive forgetting: once memory exceeds fixed limits, older context is dropped. This trades completeness for simplicity and predictable system behavior. Claude favors delayed forgetting. In theory, conversation history can grow without bound, with recall delegated to an on-demand retrieval system.</p>
+<p>So why did the two systems choose different paths? With the technical constraints laid out above, the answer becomes clear: <strong>each architecture is only viable if the underlying infrastructure can support it</strong>.</p>
+<p>If Claude’s approach had been attempted in 2020, it would likely have been impractical. At the time, vector databases often incurred hundreds of milliseconds of latency, hybrid queries were poorly supported, and resource usage scaled prohibitively as data grew. Under those conditions, on-demand retrieval would have been dismissed as over-engineering.</p>
+<p>By 2025, the landscape has changed. Advances in infrastructure—driven by systems such as <strong>Milvus 2.6</strong>—have made storage–compute separation, query optimization, dense–sparse hybrid retrieval, and JSON Shredding viable in production. These advances reduce latency, control costs, and make selective retrieval practical at scale. As a result, on-demand tools and retrieval-based memory have become not only feasible, but increasingly attractive, especially as a foundation for agent-style systems.</p>
+<p>Ultimately, architecture choices follow what the infrastructure makes possible.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -211,7 +212,7 @@ origin: 'https://milvus.io/blog/reflections-on-chatgpt-and-claude-memory-systems
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في أنظمة العالم الحقيقي، لا يكون تصميم الذاكرة خيارًا ثنائيًا بين السياق المحسوب مسبقًا والاسترجاع عند الطلب. عادةً ما تكون البنى الأكثر فعالية هي البنى الهجينة التي تجمع بين كلا النهجين.</p>
-<p>يتمثل أحد الأنماط الشائعة في حقن منعطفات المحادثة الحديثة من خلال نافذة سياق منزلقة، وتخزين تفضيلات المستخدم المستقرة كذاكرة ثابتة، واسترجاع السجل الأقدم عند الطلب عبر البحث المتجه. مع نضوج المنتج، يمكن أن يتحول هذا التوازن تدريجيًا - من السياق المحسوب مسبقًا بشكل أساسي إلى الاسترجاع بشكل متزايد - دون الحاجة إلى إعادة تعيين معمارية معطلة.</p>
-<p>حتى عند البدء بنهج محسوب مسبقًا، من المهم التصميم مع وضع الترحيل في الاعتبار. يجب تخزين الذاكرة بمعرّفات وطوابع زمنية وفئات ومراجع مصدر واضحة. عندما يصبح الاسترجاع قابلاً للتطبيق، يمكن إنشاء التضمينات للذاكرة الموجودة وإضافتها إلى قاعدة بيانات المتجهات إلى جانب البيانات الوصفية نفسها، مما يسمح بإدخال منطق الاسترجاع بشكل تدريجي وبأقل قدر من التعطيل.</p>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة في أحدث إصدار من ميلفوس؟ انضم إلى <a href="https://discord.com/invite/8uyFbECzPX">قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على <a href="https://github.com/milvus-io/milvus">GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات عن أسئلتك من خلال <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">ساعات عمل Milvus المكتبية</a>.</p>
+    </button></h2><p>In real-world systems, memory design is not a binary choice between precomputed context and on-demand retrieval. The most effective architectures are typically hybrid, combining both approaches.</p>
+<p>A common pattern is to inject recent conversation turns through a sliding context window, store stable user preferences as fixed memory, and retrieve older history on demand via vector search. As a product matures, this balance can shift gradually—from primarily precomputed context to increasingly retrieval-driven—without requiring a disruptive architectural reset.</p>
+<p>Even when starting with a precomputed approach, it is important to design with migration in mind. Memory should be stored with clear identifiers, timestamps, categories, and source references. When retrieval becomes viable, embeddings can be generated for existing memory and added to a vector database alongside the same metadata, allowing retrieval logic to be introduced incrementally and with minimal disruption.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> or file issues on <a href="https://github.com/milvus-io/milvus">GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>

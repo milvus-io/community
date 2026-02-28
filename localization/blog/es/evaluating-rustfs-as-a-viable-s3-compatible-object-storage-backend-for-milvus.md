@@ -1,9 +1,9 @@
 ---
 id: >-
   evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
-title: >-
-  MinIO deja de aceptar cambios de la comunidad: Evaluación de RustFS como
-  backend de almacenamiento de objetos compatible con S3 para Milvus
+title: >
+  MinIO Stops Accepting Community Changes: Evaluating RustFS as a Viable
+  S3-Compatible Object Storage Backend for Milvus 
 author: Min Yin
 date: 2026-01-14T00:00:00.000Z
 cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
@@ -15,24 +15,23 @@ meta_keywords: 'object storage, S3 compatible storage, MinIO, RustFS, Milvus'
 meta_title: |
   Evaluating RustFS for Milvus S3-Compatible Object Storage
 desc: >-
-  Aprenda cómo Milvus se basa en el almacenamiento de objetos compatible con S3
-  y cómo implementar RustFS como reemplazo de MinIO en Milvus a través de un
-  recorrido práctico.
+  Learn how Milvus relies on S3-compatible object storage, and how to deploy
+  RustFS as a MinIO replacement in Milvus through a hands-on walkthrough.
 origin: >-
   https://milvus.io/blog/evaluating-rustfs-as-a-viable-s3-compatible-object-storage-backend-for-milvus.md
 ---
-<p><em>Este post está escrito por Min Yin, uno de los colaboradores más activos de la comunidad de Milvus, y se publica aquí con permiso.</em></p>
-<p><a href="https://github.com/minio/minio">MinIO</a> es un sistema de almacenamiento de objetos de código abierto, de alto rendimiento y compatible con S3, ampliamente utilizado en IA/ML, análisis y otras cargas de trabajo intensivas en datos. Para muchos despliegues de <a href="https://milvus.io/">Milvus</a>, también ha sido la opción por defecto para el almacenamiento de objetos. Recientemente, sin embargo, el equipo MinIO actualizó su <a href="https://github.com/minio/minio?tab=readme-ov-file">GitHub README</a> para indicar que <strong><em>este proyecto ya no acepta nuevos cambios</em></strong><em>.</em></p>
+<p><em>This post is written by Min Yin, one of the most active community contributors of Milvus, and is published here with permission.</em></p>
+<p><a href="https://github.com/minio/minio">MinIO</a> is an open-source, high-performance, and S3-compatible object storage system widely used in AI/ML, analytics, and other data-intensive workloads. For many <a href="https://milvus.io/">Milvus</a> deployments, it has also been the default choice for object storage. Recently, however, the MinIO team updated its <a href="https://github.com/minio/minio?tab=readme-ov-file">GitHub README</a> to state that <strong><em>this project is no longer accepting new changes</em></strong><em>.</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/minio_7b7df16860.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>En realidad, en los últimos años, MinIO ha cambiado gradualmente su atención hacia ofertas comerciales, ha endurecido su modelo de licencia y distribución y ha reducido el desarrollo activo en el repositorio de la comunidad. El paso del proyecto de código abierto al modo de mantenimiento es el resultado natural de esa transición más amplia.</p>
-<p>Para los usuarios de Milvus que dependen de MinIO por defecto, este cambio es difícil de ignorar. El almacenamiento de objetos se encuentra en el corazón de la capa de persistencia de Milvus, y su fiabilidad a lo largo del tiempo depende no sólo de lo que funciona hoy, sino de si el sistema sigue evolucionando junto con las cargas de trabajo que soporta.</p>
-<p>Con este telón de fondo, este artículo explora <a href="https://github.com/rustfs/rustfs">RustFS</a> como una alternativa potencial. RustFS es un sistema de almacenamiento de objetos basado en Rust y compatible con S3 que hace hincapié en la seguridad de la memoria y en el diseño de sistemas modernos. Todavía está en fase experimental, y esta discusión no es una recomendación de producción.</p>
-<h2 id="The-Milvus-Architecture-and-Where-the-Object-Storage-Component-Sits" class="common-anchor-header">La arquitectura de Milvus y dónde se sitúa el componente de almacenamiento de objetos<button data-href="#The-Milvus-Architecture-and-Where-the-Object-Storage-Component-Sits" class="anchor-icon" translate="no">
+<p>Actually, over the past few years, MinIO has gradually shifted its attention toward commercial offerings, tightened its licensing and distribution model, and scaled back active development in the community repository. Moving the open-source project into maintenance mode is the natural outcome of that broader transition.</p>
+<p>For Milvus users who rely on MinIO by default, this change is hard to ignore. Object storage sits at the heart of Milvus’s persistence layer, and its reliability over time depends not just on what works today but on whether the system continues to evolve alongside the workloads it supports.</p>
+<p>Against this backdrop, this article explores <a href="https://github.com/rustfs/rustfs">RustFS</a> as a potential alternative. RustFS is a Rust-based, S3-compatible object storage system that emphasizes memory safety and modern systems design. It is still experimental, and this discussion is not a production recommendation.</p>
+<h2 id="The-Milvus-Architecture-and-Where-the-Object-Storage-Component-Sits" class="common-anchor-header">The Milvus Architecture and Where the Object Storage Component Sits<button data-href="#The-Milvus-Architecture-and-Where-the-Object-Storage-Component-Sits" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,16 +46,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 adopta una arquitectura almacenamiento-computación totalmente desacoplada. En este modelo, la capa de almacenamiento se compone de tres componentes independientes, cada uno de los cuales desempeña una función distinta.</p>
-<p>Etcd almacena metadatos, Pulsar o Kafka gestiona los registros de streaming, y el almacenamiento de objetos (normalmente MinIO o un servicio compatible con S3) proporciona una persistencia duradera para los datos vectoriales y los archivos de índice. Debido a que el almacenamiento y la computación están separados, Milvus puede escalar los nodos de computación de forma independiente mientras confía en un backend de almacenamiento compartido y fiable.</p>
+    </button></h2><p>Milvus 2.6 adopts a fully decoupled storage–compute architecture. In this model, the storage layer is composed of three independent components, each serving a distinct role.</p>
+<p>Etcd stores metadata, Pulsar or Kafka handles streaming logs, and object storage—typically MinIO or an S3-compatible service—provides durable persistence for vector data and index files. Because storage and compute are separated, Milvus can scale compute nodes independently while relying on a shared, reliable storage backend.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_architecture_fe897f1098.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="The-Role-of-Object-Storage-in-Milvus" class="common-anchor-header">El papel del almacenamiento de objetos en Milvus</h3><p>El almacenamiento de objetos es la capa de almacenamiento duradero en Milvus. Los datos vectoriales en bruto se conservan como binlogs, y las estructuras de índice como HNSW e IVF_FLAT también se almacenan allí.</p>
-<p>Este diseño hace que los nodos de cálculo sean apátridas. Los nodos de consulta no almacenan datos localmente, sino que cargan segmentos e índices del almacenamiento de objetos bajo demanda. Como resultado, los nodos pueden escalar libremente hacia arriba o hacia abajo, recuperarse rápidamente de los fallos y soportar el equilibrio de carga dinámica en todo el clúster sin reequilibrio de datos en la capa de almacenamiento.</p>
+<h3 id="The-Role-of-Object-Storage-in-Milvus" class="common-anchor-header">The Role of Object Storage in Milvus</h3><p>Object storage is the durable storage layer in Milvus. Raw vector data is persisted as binlogs, and index structures such as HNSW and IVF_FLAT are stored there as well.</p>
+<p>This design makes compute nodes stateless. Query Nodes do not store data locally; instead, they load segments and indexes from object storage on demand. As a result, nodes can scale up or down freely, recover quickly from failures, and support dynamic load balancing across the cluster without data rebalancing at the storage layer.</p>
 <pre><code translate="no">my-milvus-bucket/
 ├── files/                          <span class="hljs-comment"># rootPath (default)</span>
 │   ├── insert_log/                 <span class="hljs-comment"># insert binlogs</span>
@@ -85,8 +84,8 @@ origin: >-
 │           ├── index_file_1
 │           └── ...
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Why-Milvus-Uses-the-S3-API" class="common-anchor-header">Por qué Milvus utiliza la API de S3</h3><p>En lugar de definir un protocolo de almacenamiento personalizado, Milvus utiliza la API S3 como su interfaz de almacenamiento de objetos. S3 se ha convertido en el estándar de facto para el almacenamiento de objetos: los principales proveedores de nube como AWS S3, Alibaba Cloud OSS y Tencent Cloud COS lo soportan de forma nativa, mientras que los sistemas de código abierto como MinIO, Ceph RGW, SeaweedFS y RustFS son totalmente compatibles.</p>
-<p>Al estandarizar en la API de S3, Milvus puede confiar en SDKs Go maduros y bien probados en lugar de mantener integraciones separadas para cada backend de almacenamiento. Esta abstracción también ofrece a los usuarios flexibilidad de despliegue: MinIO para desarrollo local, almacenamiento de objetos en la nube en producción, o Ceph y RustFS para entornos privados. Mientras esté disponible un punto final compatible con S3, Milvus no necesita saber -o no le importa- qué sistema de almacenamiento se utiliza por debajo.</p>
+<h3 id="Why-Milvus-Uses-the-S3-API" class="common-anchor-header">Why Milvus Uses the S3 API</h3><p>Rather than defining a custom storage protocol, Milvus uses the S3 API as its object storage interface. S3 has become the de facto standard for object storage: major cloud providers such as AWS S3, Alibaba Cloud OSS, and Tencent Cloud COS support it natively, while open-source systems like MinIO, Ceph RGW, SeaweedFS, and RustFS are fully compatible.</p>
+<p>By standardizing on the S3 API, Milvus can rely on mature, well-tested Go SDKs instead of maintaining separate integrations for each storage backend. This abstraction also gives users deployment flexibility: MinIO for local development, cloud object storage in production, or Ceph and RustFS for private environments. As long as an S3-compatible endpoint is available, Milvus does not need to know—or care—what storage system is used underneath.</p>
 <pre><code translate="no"><span class="hljs-comment"># Milvus configuration file milvus.yaml</span>
 minio:
  address: localhost
@@ -96,7 +95,7 @@ minio:
  useSSL: false
  bucketName: milvus-bucket
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Evaluating-RustFS-as-an-S3-Compatible-Object-Storage-Backend-for-Milvus" class="common-anchor-header">Evaluación de RustFS como backend de almacenamiento de objetos compatible con S3 para Milvus<button data-href="#Evaluating-RustFS-as-an-S3-Compatible-Object-Storage-Backend-for-Milvus" class="anchor-icon" translate="no">
+<h2 id="Evaluating-RustFS-as-an-S3-Compatible-Object-Storage-Backend-for-Milvus" class="common-anchor-header">Evaluating RustFS as an S3-Compatible Object Storage Backend for Milvus<button data-href="#Evaluating-RustFS-as-an-S3-Compatible-Object-Storage-Backend-for-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -111,30 +110,30 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Project-Overview" class="common-anchor-header">Visión general del proyecto</h3><p>RustFS es un sistema distribuido de almacenamiento de objetos escrito en Rust. Actualmente se encuentra en fase alfa (versión 1.0.0-alpha.68) y pretende combinar la simplicidad operativa de MinIO con los puntos fuertes de Rust en cuanto a seguridad de memoria y rendimiento. Más detalles en <a href="https://github.com/rustfs/rustfs">GitHub</a>.</p>
-<p>RustFS todavía está en desarrollo activo, y su modo distribuido aún no se ha publicado oficialmente. Como resultado, RustFS no se recomienda para la producción o cargas de trabajo de misión crítica en esta etapa.</p>
-<h3 id="Architecture-Design" class="common-anchor-header">Diseño de la arquitectura</h3><p>RustFS sigue un diseño conceptualmente similar a MinIO. Un servidor HTTP expone una API compatible con S3, mientras que un Gestor de Objetos gestiona los metadatos de los objetos y un Motor de Almacenamiento es responsable de la gestión de los bloques de datos. En la capa de almacenamiento, RustFS se basa en sistemas de archivos estándar como XFS o ext4.</p>
-<p>Para su modo distribuido previsto, RustFS pretende utilizar etcd para la coordinación de metadatos, con múltiples nodos RustFS formando un clúster. Este diseño se alinea estrechamente con las arquitecturas comunes de almacenamiento de objetos, haciendo que RustFS resulte familiar a los usuarios con experiencia en MinIO.</p>
+    </button></h2><h3 id="Project-Overview" class="common-anchor-header">Project Overview</h3><p>RustFS is a distributed object storage system written in Rust. It is currently in the alpha stage (version 1.0.0-alpha.68) and aims to combine the operational simplicity of MinIO with Rust’s strengths in memory safety and performance. More details are available on <a href="https://github.com/rustfs/rustfs">GitHub</a>.</p>
+<p>RustFS is still under active development, and its distributed mode has not yet been officially released. As a result, RustFS is not recommended for production or mission-critical workloads at this stage.</p>
+<h3 id="Architecture-Design" class="common-anchor-header">Architecture Design</h3><p>RustFS follows a design that is conceptually similar to MinIO. An HTTP server exposes an S3-compatible API, while an Object Manager handles object metadata, and a Storage Engine is responsible for data block management. At the storage layer, RustFS relies on standard file systems such as XFS or ext4.</p>
+<p>For its planned distributed mode, RustFS intends to use etcd for metadata coordination, with multiple RustFS nodes forming a cluster. This design aligns closely with common object storage architectures, making RustFS familiar to users with MinIO experience.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/architecture_design_852f73b2c8.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Compatibility-with-Milvus" class="common-anchor-header">Compatibilidad con Milvus</h3><p>Antes de considerar RustFS como un backend alternativo de almacenamiento de objetos, es necesario evaluar si cumple con los requisitos centrales de almacenamiento de Milvus.</p>
+<h3 id="Compatibility-with-Milvus" class="common-anchor-header">Compatibility with Milvus</h3><p>Before considering RustFS as an alternative object storage backend, it is necessary to evaluate whether it meets Milvus’s core storage requirements.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Requisitos de Milvus</strong></th><th style="text-align:center"><strong>API S3</strong></th><th style="text-align:center"><strong>Compatibilidad con RustFS</strong></th></tr>
+<tr><th style="text-align:center"><strong>Milvus Requirement</strong></th><th style="text-align:center"><strong>S3 API</strong></th><th style="text-align:center"><strong>RustFS Support</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Persistencia de datos vectoriales</td><td style="text-align:center"><code translate="no">PutObject</code>, <code translate="no">GetObject</code></td><td style="text-align:center">✅ Totalmente compatible</td></tr>
-<tr><td style="text-align:center">Gestión de archivos de índice</td><td style="text-align:center"><code translate="no">ListObjects</code>, <code translate="no">DeleteObject</code></td><td style="text-align:center">✅ Totalmente compatible</td></tr>
-<tr><td style="text-align:center">Operaciones de fusión de segmentos</td><td style="text-align:center">Carga multiparte</td><td style="text-align:center">✅ Totalmente compatible</td></tr>
-<tr><td style="text-align:center">Garantías de coherencia</td><td style="text-align:center">Lectura y escritura sólidas</td><td style="text-align:center">Consistencia fuerte (nodo único)</td></tr>
+<tr><td style="text-align:center">Vector data persistence</td><td style="text-align:center"><code translate="no">PutObject</code>, <code translate="no">GetObject</code></td><td style="text-align:center">✅ Fully supported</td></tr>
+<tr><td style="text-align:center">Index file management</td><td style="text-align:center"><code translate="no">ListObjects</code>, <code translate="no">DeleteObject</code></td><td style="text-align:center">✅ Fully supported</td></tr>
+<tr><td style="text-align:center">Segment merge operations</td><td style="text-align:center">Multipart Upload</td><td style="text-align:center">✅ Fully supported</td></tr>
+<tr><td style="text-align:center">Consistency guarantees</td><td style="text-align:center">Strong read-after-write</td><td style="text-align:center">✅ Strong consistency (single-node)</td></tr>
 </tbody>
 </table>
-<p>Sobre la base de esta evaluación, la implementación actual de la API S3 de RustFS satisface los requisitos funcionales básicos de Milvus. Esto la hace adecuada para pruebas prácticas en entornos que no sean de producción.</p>
-<h2 id="Hands-On-Replacing-MinIO-with-RustFS-in-Milvus" class="common-anchor-header">Práctica: Sustitución de MinIO por RustFS en Milvus<button data-href="#Hands-On-Replacing-MinIO-with-RustFS-in-Milvus" class="anchor-icon" translate="no">
+<p>Based on this evaluation, RustFS’s current S3 API implementation satisfies Milvus’s baseline functional requirements. This makes it suitable for practical testing in non-production environments.</p>
+<h2 id="Hands-On-Replacing-MinIO-with-RustFS-in-Milvus" class="common-anchor-header">Hands-On: Replacing MinIO with RustFS in Milvus<button data-href="#Hands-On-Replacing-MinIO-with-RustFS-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -149,25 +148,25 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El objetivo de este ejercicio es reemplazar el servicio predeterminado de almacenamiento de objetos MinIO e implementar Milvus 2.6.7 utilizando RustFS como backend de almacenamiento de objetos.</p>
-<h3 id="Prerequisites" class="common-anchor-header">Requisitos previos</h3><ol>
-<li><p>Docker y Docker Compose están instalados (versión ≥ 20.10), y el sistema puede extraer imágenes y ejecutar contenedores normalmente.</p></li>
-<li><p>Hay un directorio local disponible para el almacenamiento de datos de objetos, como <code translate="no">/volume/data/</code> (o una ruta personalizada).</p></li>
-<li><p>El puerto 9000 del host está abierto para el acceso externo, o un puerto alternativo está configurado en consecuencia.</p></li>
-<li><p>El contenedor RustFS se ejecuta como usuario no root (<code translate="no">rustfs</code>). Asegúrese de que el directorio de datos del host pertenece al UID 10001.</p></li>
+    </button></h2><p>The goal of this exercise is to replace the default MinIO object storage service and deploy Milvus 2.6.7 using RustFS as the object storage backend.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><ol>
+<li><p>Docker and Docker Compose are installed (version ≥ 20.10), and the system can pull images and run containers normally.</p></li>
+<li><p>A local directory is available for object data storage, such as <code translate="no">/volume/data/</code> (or a custom path).</p></li>
+<li><p>The host port 9000 is open for external access, or an alternative port is configured accordingly.</p></li>
+<li><p>The RustFS container runs as a non-root user (<code translate="no">rustfs</code>). Ensure the host data directory is owned by UID 10001.</p></li>
 </ol>
-<h3 id="Step-1-Create-the-Data-Directory-and-Set-Permissions" class="common-anchor-header">Paso 1: Crear el directorio de datos y establecer los permisos</h3><pre><code translate="no"><span class="hljs-comment"># Create the project directory</span>
+<h3 id="Step-1-Create-the-Data-Directory-and-Set-Permissions" class="common-anchor-header">Step 1: Create the Data Directory and Set Permissions</h3><pre><code translate="no"><span class="hljs-comment"># Create the project directory</span>
 <span class="hljs-built_in">mkdir</span> -p milvus-rustfs &amp;&amp; <span class="hljs-built_in">cd</span> milvus-rustfs
 <span class="hljs-comment"># Create the data directory</span>
 <span class="hljs-built_in">mkdir</span> -p volumes/{rustfs, etcd, milvus}
 <span class="hljs-comment"># Update permissions for the RustFS directory</span>
 <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R 10001:10001 volumes/rustfs
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Descargar el archivo oficial Docker Compose</strong></p>
+<p><strong>Download the Official Docker Compose File</strong></p>
 <pre><code translate="no">wget https://github.com/milvus-io/milvus/releases/download/v2.6.7/milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Modify-the-Object-Storage-Service" class="common-anchor-header">Paso 2: Modificar el Servicio de Almacenamiento de Objetos</h3><p><strong>Definir el Servicio RustFS</strong></p>
-<p>Nota: Asegúrese de que la clave de acceso y la clave secreta coinciden con las credenciales configuradas en el servicio Milvus.</p>
+<h3 id="Step-2-Modify-the-Object-Storage-Service" class="common-anchor-header">Step 2: Modify the Object Storage Service</h3><p><strong>Define the RustFS Service</strong></p>
+<p>Note: Make sure the access key and secret key match the credentials configured in the Milvus service.</p>
 <pre><code translate="no">rustfs:
  container_name: milvus-rustfs
  image: registry.cn-hangzhou.aliyuncs.com/rustfs/rustfs: latest
@@ -192,8 +191,8 @@ minio:
  timeout: 20s
  retries: 3
 </span><button class="copy-code-btn"></button></code></pre>
-<p><strong>Complete la configuración</strong></p>
-<p>Nota: La configuración de almacenamiento de Milvus actualmente asume valores predeterminados estilo MinIO y aún no permite valores personalizados de clave de acceso o clave secreta. Cuando utilice RustFS como reemplazo, debe utilizar las mismas credenciales por defecto esperadas por Milvus.</p>
+<p><strong>Complete Configuration</strong></p>
+<p>Note: Milvus’s storage configuration currently assumes MinIO-style defaults and does not yet allow custom access key or secret key values. When using RustFS as a replacement, it must use the same default credentials expected by Milvus.</p>
 <pre><code translate="no">version: ‘3.5’
 services:
  etcd:
@@ -267,10 +266,10 @@ networks:
  default:
  name: milvus
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Inicie los Servicios</strong></p>
+<p><strong>Start the Services</strong></p>
 <pre><code translate="no">docker-compose -f docker-compose.yaml up -d
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Compruebe el estado del servicio</strong></p>
+<p><strong>Check Service Status</strong></p>
 <pre><code translate="no">docker-compose ps -a
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -279,10 +278,10 @@ networks:
     <span></span>
   </span>
 </p>
-<p><strong>Acceda a la interfaz web de RustFS</strong></p>
-<p>Abra la interfaz web de RustFS en su navegador: <a href="http://localhost:9001">http://localhost:9001</a></p>
-<p>Inicie sesión utilizando las credenciales por defecto: el nombre de usuario y la contraseña son minioadmin.</p>
-<p><strong>Pruebe el servicio Milvus</strong></p>
+<p><strong>Access the RustFS Web UI</strong></p>
+<p>Open the RustFS web interface in your browser: <a href="http://localhost:9001">http://localhost:9001</a></p>
+<p>Log in using the default credentials: username and password are both minioadmin.</p>
+<p><strong>Test the Milvus Service</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, Collection, FieldSchema, CollectionSchema, DataType
 <span class="hljs-comment"># connect to Milvus</span>
 connections.connect(
@@ -314,13 +313,34 @@ The following metrics were evaluated: Insert throughput, Index build time, Cold 
 Note: Only the core parts of the test code are shown below.
 
 <button class="copy-code-btn"></button></code></pre>
-<p>def milvus_load_bench(dim=768, rows=1_000_000, batch=5000): collection = Collection(...) # Insert test t0 = time.perf_counter() for i in range(0, rows, batch): collection.insert([rng.random((batch, dim), dtype=np.float32).tolist()]) insert_time = time.perf_counter() - t0 # Index build collection.flush() collection.create_index(field_name=&quot;embedding&quot;, index_params={&quot;index_type&quot;: &quot;HNSW&quot;, ...}) # Prueba de carga (arranque en frío + dos arranques en caliente) collection.release() load_times = [] for i in range(3): if i &gt; 0: collection.release(); time.sleep(2) collection.load() load_times.append(...) # Prueba de consulta search_times = [] for _ in range(3): collection.search(queries, limit=10, ...)</p>
+<p>def milvus_load_bench(dim=768, rows=1_000_000, batch=5000):
+collection = Collection(…)
+# Insert test
+t0 = time.perf_counter()
+for i in range(0, rows, batch):
+collection.insert([rng.random((batch, dim), dtype=np.float32).tolist()])
+insert_time = time.perf_counter() - t0
+# Index build
+collection.flush()
+collection.create_index(field_name=&quot;embedding&quot;,
+index_params={&quot;index_type&quot;: &quot;HNSW&quot;, …})
+# Load test (cold start + two warm starts)
+collection.release()
+load_times = []
+for i in range(3):
+if i &gt; 0: collection.release(); time.sleep(2)
+collection.load()
+load_times.append(…)
+# Query test
+search_times = []
+for _ in range(3):
+collection.search(queries, limit=10, …)</p>
 <pre><code translate="no">
 **Test Command**
 
 <button class="copy-code-btn"></button></code></pre>
 <custom-h1>RustFS: --port 19530 --s3-endpoint http://localhost:9000 --s3-bucket bench</custom-h1><custom-h1>MinIO: --port 19531 --s3-endpoint http://localhost:9001 --s3-bucket a-bucket</custom-h1><p>python bench.py milvus-load-bench --dim 768 --rows 1000000 --batch 5000 <br>
--index-type HNSW --repeat-load 3 --release-before-load --do-search --drop-after</p>
+–index-type HNSW --repeat-load 3 --release-before-load --do-search --drop-after</p>
 <pre><code translate="no">
 **Performance Results**
 

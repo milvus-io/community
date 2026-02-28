@@ -1,9 +1,9 @@
 ---
 id: >-
   milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md
-title: >-
-  Penjelasan Milvus RBAC: Amankan Basis Data Vektor Anda dengan Kontrol Akses
-  Berbasis Peran
+title: >
+  Milvus RBAC Explained: Secure Your Vector Database with Role-Based Access
+  Control 
 author: Juan Xu
 date: 2025-12-31T00:00:00.000Z
 cover: assets.zilliz.com/RBAC_in_Milvus_Cover_1fe181b31d.png
@@ -15,24 +15,23 @@ meta_keywords: 'Milvus, RBAC, access control, vector database security'
 meta_title: |
   Milvus RBAC Guide: How to Control Access to Your Vector Database
 desc: >-
-  Pelajari mengapa RBAC penting, cara kerja RBAC di Milvus, cara mengonfigurasi
-  kontrol akses, dan bagaimana RBAC memungkinkan akses yang paling tidak
-  memiliki hak istimewa, pemisahan peran yang jelas, dan operasi produksi yang
-  aman.
+  Learn why RBAC matters, how RBAC in Milvus works, how to configure access
+  control, and how it enables least-privilege access, clear role separation, and
+  safe production operations.
 origin: >-
   https://milvus.io/blog/milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md
 ---
-<p>Ketika membangun sistem database, para insinyur menghabiskan sebagian besar waktu mereka untuk performa: jenis indeks, pemanggilan, latensi, throughput, dan penskalaan. Namun, ketika sebuah sistem sudah melampaui satu laptop pengembang, pertanyaan lain menjadi sama pentingnya: <strong>siapa yang bisa melakukan apa di dalam cluster Milvus Anda</strong>? Dengan kata lain-kontrol akses.</p>
-<p>Di seluruh industri, banyak insiden operasional yang berasal dari kesalahan izin yang sederhana. Sebuah skrip berjalan di lingkungan yang salah. Akun layanan memiliki akses yang lebih luas dari yang dimaksudkan. Kredensial admin yang digunakan bersama berakhir di CI. Masalah-masalah ini biasanya muncul sebagai pertanyaan yang sangat praktis:</p>
+<p>When building a database system, engineers spend most of their time on performance: index types, recall, latency, throughput, and scaling. But once a system moves beyond a single developer’s laptop, another question becomes just as critical: <strong>who can do what inside your Milvus cluster</strong>? In other words—access control.</p>
+<p>Across the industry, many operational incidents stem from simple permission mistakes. A script runs against the wrong environment. A service account has broader access than intended. A shared admin credential ends up in CI. These issues usually surface as very practical questions:</p>
 <ul>
-<li><p>Apakah pengembang diizinkan untuk menghapus koleksi produksi?</p></li>
-<li><p>Mengapa akun uji coba dapat membaca data vektor produksi?</p></li>
-<li><p>Mengapa beberapa layanan masuk dengan peran admin yang sama?</p></li>
-<li><p>Dapatkah pekerjaan analitik memiliki akses hanya-baca tanpa hak tulis?</p></li>
+<li><p>Are developers allowed to delete production collections?</p></li>
+<li><p>Why can a test account read production vector data?</p></li>
+<li><p>Why are multiple services logging in with the same admin role?</p></li>
+<li><p>Can analytics jobs have read-only access with zero write privileges?</p></li>
 </ul>
-<p><a href="https://milvus.io/">Milvus</a> menjawab tantangan-tantangan ini dengan <a href="https://milvus.io/docs/rbac.md">kontrol akses berbasis peran (RBAC)</a>. Alih-alih memberikan hak superadmin kepada setiap pengguna atau mencoba menerapkan pembatasan dalam kode aplikasi, RBAC memungkinkan Anda menentukan izin yang tepat di lapisan database. Setiap pengguna atau layanan mendapatkan kemampuan yang dibutuhkannya-tidak lebih.</p>
-<p>Tulisan ini menjelaskan cara kerja RBAC di Milvus, cara mengonfigurasinya, dan cara menerapkannya dengan aman di lingkungan produksi.</p>
-<h2 id="Why-Access-Control-Matters-When-Using-Milvus" class="common-anchor-header">Mengapa Kontrol Akses Penting Saat Menggunakan Milvus<button data-href="#Why-Access-Control-Matters-When-Using-Milvus" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus</a> addresses these challenges with <a href="https://milvus.io/docs/rbac.md">role-based access control (RBAC)</a>. Instead of giving every user superadmin rights or trying to enforce restrictions in application code, RBAC lets you define precise permissions at the database layer. Each user or service gets exactly the capabilities it needs—nothing more.</p>
+<p>This post explains how RBAC works in Milvus, how to configure it, and how to apply it safely in production environments.</p>
+<h2 id="Why-Access-Control-Matters-When-Using-Milvus" class="common-anchor-header">Why Access Control Matters When Using Milvus<button data-href="#Why-Access-Control-Matters-When-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,23 +46,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika tim kecil, dan aplikasi AI mereka hanya melayani sejumlah pengguna, infrastruktur biasanya sederhana. Beberapa insinyur mengelola sistem; Milvus hanya digunakan untuk pengembangan atau pengujian; dan alur kerja operasional sangat mudah. Pada tahap awal ini, kontrol akses jarang terasa mendesak-karena risiko yang ada masih kecil dan setiap kesalahan bisa dengan mudah dibalik.</p>
-<p>Ketika Milvus memasuki tahap produksi dan jumlah pengguna, layanan, dan operator bertambah, model penggunaan berubah dengan cepat. Skenario yang umum terjadi meliputi:</p>
+    </button></h2><p>When teams are small, and their AI applications serve only a limited number of users, infrastructure is usually simple. A few engineers manage the system; Milvus is used only for development or testing; and operational workflows are straightforward. In this early stage, access control rarely feels urgent—because the risk surface is small and any mistakes can be easily reversed.</p>
+<p>As Milvus moves into production and the number of users, services, and operators grows, the usage model changes quickly. Common scenarios include:</p>
 <ul>
-<li><p>Beberapa sistem bisnis yang berbagi instance Milvus yang sama</p></li>
-<li><p>Beberapa tim mengakses koleksi vektor yang sama</p></li>
-<li><p>Data pengujian, pementasan, dan produksi yang hidup berdampingan dalam satu cluster</p></li>
-<li><p>Peran yang berbeda membutuhkan tingkat akses yang berbeda, mulai dari kueri hanya-baca hingga menulis dan kontrol operasional</p></li>
+<li><p>Multiple business systems sharing the same Milvus instance</p></li>
+<li><p>Multiple teams accessing the same vector collections</p></li>
+<li><p>Test, staging, and production data coexisting in a single cluster</p></li>
+<li><p>Different roles needing different levels of access, from read-only queries to writes and operational control</p></li>
 </ul>
-<p>Tanpa batas akses yang terdefinisi dengan baik, pengaturan ini menciptakan risiko yang dapat diprediksi:</p>
+<p>Without well-defined access boundaries, these setups create predictable risks:</p>
 <ul>
-<li><p>Alur kerja pengujian mungkin secara tidak sengaja menghapus koleksi produksi</p></li>
-<li><p>Pengembang mungkin secara tidak sengaja memodifikasi indeks yang digunakan oleh layanan live</p></li>
-<li><p>Penggunaan akun <code translate="no">root</code> secara luas membuat tindakan tidak mungkin dilacak atau diaudit</p></li>
-<li><p>Aplikasi yang disusupi dapat memperoleh akses tak terbatas ke semua data vektor</p></li>
+<li><p>Test workflows might accidentally delete production collections</p></li>
+<li><p>Developers might unintentionally modify indexes used by live services</p></li>
+<li><p>Widespread use of the <code translate="no">root</code> account makes actions impossible to trace or audit</p></li>
+<li><p>A compromised application might gain unrestricted access to all vector data</p></li>
 </ul>
-<p>Seiring dengan meningkatnya penggunaan, mengandalkan konvensi informal atau akun admin bersama tidak lagi dapat dipertahankan. Model akses yang konsisten dan dapat ditegakkan menjadi sangat penting - dan inilah yang disediakan oleh Milvus RBAC.</p>
-<h2 id="What-is-RBAC-in-Milvus" class="common-anchor-header">Apa yang dimaksud dengan RBAC di Milvus<button data-href="#What-is-RBAC-in-Milvus" class="anchor-icon" translate="no">
+<p>As usage grows, relying on informal conventions or shared admin accounts is no longer sustainable. A consistent, enforceable access model becomes essential—and this is exactly what Milvus RBAC provides.</p>
+<h2 id="What-is-RBAC-in-Milvus" class="common-anchor-header">What is RBAC in Milvus<button data-href="#What-is-RBAC-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,28 +77,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/rbac.md">RBAC (Role-Based Access Control)</a> adalah model perizinan yang mengontrol akses berdasarkan <strong>peran</strong>, bukannya berdasarkan pengguna individual. Di Milvus, RBAC memungkinkan Anda menentukan dengan tepat operasi mana yang diizinkan untuk dilakukan oleh pengguna atau layanan - dan pada sumber daya tertentu. Ini menyediakan cara yang terstruktur dan terukur untuk mengelola keamanan seiring pertumbuhan sistem Anda dari satu pengembang menjadi lingkungan produksi yang lengkap.</p>
-<p>Milvus RBAC dibangun di sekitar komponen inti berikut ini:</p>
+    </button></h2><p><a href="https://milvus.io/docs/rbac.md">RBAC (Role-Based Access Control)</a> is a permission model that controls access based on <strong>roles</strong> rather than individual users. In Milvus, RBAC lets you define exactly which operations a user or service is allowed to perform—and on which specific resources. It provides a structured, scalable way to manage security as your system grows from a single developer to a complete production environment.</p>
+<p>Milvus RBAC is built around the following core components:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/users_roles_privileges_030620f913.png" alt="Users Roles Privileges" class="doc-image" id="users-roles-privileges" />
-   </span> <span class="img-wrapper"> <span>Hak Istimewa Peran Pengguna</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/users_roles_privileges_030620f913.png" alt="Users Roles Privileges" class="doc-image" id="users-roles-privileges" />
+    <span>Users Roles Privileges</span>
+  </span>
+</p>
 <ul>
-<li><p><strong>Sumber daya</strong>: Entitas yang sedang diakses. Di Milvus, sumber daya mencakup <strong>instance</strong>, <strong>database</strong>, dan <strong>koleksi</strong>.</p></li>
-<li><p><strong>Privilege</strong>: Operasi spesifik yang diizinkan pada sumber daya-misalnya, membuat koleksi, menyisipkan data, atau menghapus entitas.</p></li>
-<li><p><strong>Privilege Group</strong>: Sekumpulan hak istimewa terkait yang sudah ditentukan sebelumnya, seperti "hanya-baca" atau "tulis".</p></li>
-<li><p><strong>Peran</strong>: Kombinasi hak istimewa dan sumber daya yang digunakan. Peran menentukan operasi <em>apa yang</em> dapat dilakukan dan <em>di mana</em>.</p></li>
-<li><p><strong>Pengguna</strong>: Sebuah identitas dalam Milvus. Setiap pengguna memiliki ID unik dan diberikan satu atau lebih peran.</p></li>
+<li><p><strong>Resource</strong>: The entity being accessed. In Milvus, resources include the <strong>instance</strong>, <strong>database</strong>, and <strong>collection</strong>.</p></li>
+<li><p><strong>Privilege</strong>: A specific allowed operation on a resource—for example, creating a collection, inserting data, or deleting entities.</p></li>
+<li><p><strong>Privilege Group</strong>: A predefined set of related privileges, such as “read-only” or “write.”</p></li>
+<li><p><strong>Role</strong>: A combination of privileges and the resources they apply to. A role determines <em>what</em> operations can be performed and <em>where</em>.</p></li>
+<li><p><strong>User</strong>: An identity in Milvus. Each user has a unique ID and is assigned one or more roles.</p></li>
 </ul>
-<p>Komponen-komponen ini membentuk hierarki yang jelas:</p>
+<p>These components form a clear hierarchy:</p>
 <ol>
-<li><p><strong>Pengguna diberi peran</strong></p></li>
-<li><p><strong>Peran menentukan hak istimewa</strong></p></li>
-<li><p><strong>Hak istimewa berlaku untuk sumber daya tertentu</strong></p></li>
+<li><p><strong>Users are assigned roles</strong></p></li>
+<li><p><strong>Roles define privileges</strong></p></li>
+<li><p><strong>Privileges apply to specific resources</strong></p></li>
 </ol>
-<p>Prinsip desain utama dalam Milvus adalah bahwa hak <strong>akses tidak pernah diberikan secara langsung kepada pengguna</strong>. Semua akses melalui peran. Pengarahan ini menyederhanakan administrasi, mengurangi kesalahan konfigurasi, dan membuat perubahan izin dapat diprediksi.</p>
-<p>Model ini berskala bersih dalam penerapan nyata. Ketika beberapa pengguna berbagi peran, memperbarui hak istimewa peran akan langsung memperbarui izin untuk semuanya-tanpa mengubah setiap pengguna satu per satu. Ini adalah satu titik kontrol yang selaras dengan cara infrastruktur modern mengelola akses.</p>
-<h2 id="How-RBAC-Works-in-Milvus" class="common-anchor-header">Cara Kerja RBAC di Milvus<button data-href="#How-RBAC-Works-in-Milvus" class="anchor-icon" translate="no">
+<p>A key design principle in Milvus is that <strong>permissions are never assigned directly to users</strong>. All access goes through roles. This indirection simplifies administration, reduces configuration errors, and makes permission changes predictable.</p>
+<p>This model scales cleanly in real deployments. When multiple users share a role, updating the role’s privileges instantly updates permissions for all of them—without modifying each user individually. It’s a single point of control aligned with how modern infrastructure manages access.</p>
+<h2 id="How-RBAC-Works-in-Milvus" class="common-anchor-header">How RBAC Works in Milvus<button data-href="#How-RBAC-Works-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,18 +115,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika klien mengirimkan permintaan ke Milvus, sistem akan mengevaluasinya melalui serangkaian langkah otorisasi. Setiap langkah harus dilalui sebelum operasi diizinkan untuk dilanjutkan:</p>
+    </button></h2><p>When a client sends a request to Milvus, the system evaluates it through a series of authorization steps. Each step must pass before the operation is allowed to proceed:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/how_rbac_works_afe48bc717.png" alt="How RBAC Works in Milvus" class="doc-image" id="how-rbac-works-in-milvus" />
-   </span> <span class="img-wrapper"> <span>Cara Kerja RBAC di Milvus</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/how_rbac_works_afe48bc717.png" alt="How RBAC Works in Milvus" class="doc-image" id="how-rbac-works-in-milvus" />
+    <span>How RBAC Works in Milvus</span>
+  </span>
+</p>
 <ol>
-<li><p><strong>Autentikasi permintaan:</strong> Milvus pertama-tama memverifikasi identitas pengguna. Jika autentikasi gagal, permintaan akan ditolak dengan kesalahan autentikasi.</p></li>
-<li><p><strong>Periksa penetapan peran:</strong> Setelah autentikasi, Milvus memeriksa apakah pengguna memiliki setidaknya satu peran yang ditetapkan. Jika tidak ada peran yang ditemukan, permintaan akan ditolak dengan kesalahan izin ditolak.</p></li>
-<li><p><strong>Verifikasi hak istimewa yang diperlukan:</strong> Milvus kemudian mengevaluasi apakah peran pengguna memberikan hak istimewa yang diperlukan pada sumber daya target. Jika pemeriksaan hak istimewa gagal, permintaan ditolak dengan kesalahan izin ditolak.</p></li>
-<li><p><strong>Jalankan operasi:</strong> Jika semua pemeriksaan lolos, Milvus akan mengeksekusi operasi yang diminta dan mengembalikan hasilnya.</p></li>
+<li><p><strong>Authenticate the request:</strong> Milvus first verifies the user identity. If authentication fails, the request is rejected with an authentication error.</p></li>
+<li><p><strong>Check role assignment:</strong> After authentication, Milvus checks whether the user has at least one role assigned. If no role is found, the request is rejected with a permission denied error.</p></li>
+<li><p><strong>Verify required privileges:</strong> Milvus then evaluates whether the user’s role grants the required privilege on the target resource. If the privilege check fails, the request is rejected with a permission denied error.</p></li>
+<li><p><strong>Execute the operation:</strong> If all checks pass, Milvus executes the requested operation and returns the result.</p></li>
 </ol>
-<h2 id="How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="common-anchor-header">Cara Mengonfigurasi Kontrol Akses melalui RBAC di Milvus<button data-href="#How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="common-anchor-header">How to Configure Access Control via RBAC in Milvus<button data-href="#How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -140,28 +143,28 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Prerequisites" class="common-anchor-header">1. Prasyarat</h3><p>Sebelum aturan RBAC dapat dievaluasi dan ditegakkan, otentikasi pengguna harus diaktifkan sehingga setiap permintaan ke Milvus dapat dikaitkan dengan identitas pengguna tertentu.</p>
-<p>Berikut adalah dua metode penerapan standar.</p>
+    </button></h2><h3 id="1-Prerequisites" class="common-anchor-header">1. Prerequisites</h3><p>Before RBAC rules can be evaluated and enforced, user authentication must be enabled so that every request to Milvus can be associated with a specific user identity.</p>
+<p>Here are two standard deployment methods.</p>
 <ul>
-<li><strong>Menerapkan dengan Docker Compose</strong></li>
+<li><strong>Deploying with Docker Compose</strong></li>
 </ul>
-<p>Jika Milvus diterapkan menggunakan Docker Compose, edit berkas konfigurasi <code translate="no">milvus.yaml</code> dan aktifkan otorisasi dengan mengatur <code translate="no">common.security.authorizationEnabled</code> ke <code translate="no">true</code>:</p>
+<p>If Milvus is deployed using Docker Compose, edit the <code translate="no">milvus.yaml</code> configuration file and enable authorization by setting <code translate="no">common.security.authorizationEnabled</code> to <code translate="no">true</code>:</p>
 <pre><code translate="no"><span class="hljs-attr">common</span>:
   <span class="hljs-attr">security</span>:
     <span class="hljs-attr">authorizationEnabled</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Menerapkan dengan Helm Charts</strong></li>
+<li><strong>Deploying with Helm Charts</strong></li>
 </ul>
-<p>Jika Milvus diterapkan menggunakan Helm Charts, edit berkas <code translate="no">values.yaml</code> dan tambahkan konfigurasi berikut di bawah <code translate="no">extraConfigFiles.user.yaml</code>:</p>
+<p>If Milvus is deployed using Helm Charts, edit the <code translate="no">values.yaml</code> file and add the following configuration under <code translate="no">extraConfigFiles.user.yaml</code>:</p>
 <pre><code translate="no"><span class="hljs-attr">extraConfigFiles</span>:
   user.<span class="hljs-property">yaml</span>: |+
     <span class="hljs-attr">common</span>:
       <span class="hljs-attr">security</span>:
         <span class="hljs-attr">authorizationEnabled</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Initialization" class="common-anchor-header">2. Inisialisasi</h3><p>Secara default, Milvus membuat pengguna <code translate="no">root</code> bawaan ketika sistem dijalankan. Kata sandi default untuk pengguna ini adalah <code translate="no">Milvus</code>.</p>
-<p>Sebagai langkah keamanan awal, gunakan user <code translate="no">root</code> untuk terhubung ke Milvus dan segera ubah kata sandi default. Sangat disarankan untuk menggunakan kata sandi yang rumit untuk mencegah akses yang tidak sah.</p>
+<h3 id="2-Initialization" class="common-anchor-header">2. Initialization</h3><p>By default, Milvus creates a built-in <code translate="no">root</code> user when the system starts. The default password for this user is <code translate="no">Milvus</code>.</p>
+<p>As an initial security step, use the <code translate="no">root</code> user to connect to Milvus and change the default password immediately. It is strongly recommended to use a complex password to prevent unauthorized access.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-comment"># Connect to Milvus using the default root user</span>
 client = MilvusClient(
@@ -175,31 +178,31 @@ client.update_password(
     new_password=<span class="hljs-string">&quot;xgOoLudt3Kc#Pq68&quot;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Core-Operations" class="common-anchor-header">3. Operasi Inti</h3><p><strong>Membuat Pengguna</strong></p>
-<p>Untuk penggunaan sehari-hari, disarankan untuk membuat pengguna khusus daripada menggunakan akun <code translate="no">root</code>.</p>
+<h3 id="3-Core-Operations" class="common-anchor-header">3. Core Operations</h3><p><strong>Create Users</strong></p>
+<p>For daily usage, it is recommended to create dedicated users instead of using the <code translate="no">root</code> account.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>, password=<span class="hljs-string">&quot;P@ssw0rd&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Membuat Peran</strong></p>
-<p>Milvus menyediakan peran <code translate="no">admin</code> bawaan dengan hak administratif penuh. Namun, untuk sebagian besar skenario produksi, disarankan untuk membuat peran khusus untuk mencapai kontrol akses yang lebih baik.</p>
+<p><strong>Create Roles</strong></p>
+<p>Milvus provides a built-in <code translate="no">admin</code> role with full administrative privileges. For most production scenarios, however, it is recommended to create custom roles to achieve finer-grained access control.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Membuat Grup Hak Istimewa</strong></p>
-<p>Grup hak istimewa adalah kumpulan beberapa hak istimewa. Untuk menyederhanakan manajemen izin, hak istimewa terkait dapat dikelompokkan dan diberikan bersama-sama.</p>
-<p>Milvus menyertakan grup hak istimewa bawaan berikut ini:</p>
+<p><strong>Create Privilege Groups</strong></p>
+<p>A privilege group is a collection of multiple privileges. To simplify permission management, related privileges can be grouped and granted together.</p>
+<p>Milvus includes the following built-in privilege groups:</p>
 <ul>
 <li><p><code translate="no">COLL_RO</code>, <code translate="no">COLL_RW</code>, <code translate="no">COLL_ADMIN</code></p></li>
 <li><p><code translate="no">DB_RO</code>, <code translate="no">DB_RW</code>, <code translate="no">DB_ADMIN</code></p></li>
 <li><p><code translate="no">Cluster_RO</code>, <code translate="no">Cluster_RW</code>, <code translate="no">Cluster_ADMIN</code></p></li>
 </ul>
-<p>Menggunakan grup hak istimewa bawaan ini dapat secara signifikan mengurangi kerumitan desain izin dan meningkatkan konsistensi di seluruh peran.</p>
-<p>Anda dapat menggunakan grup hak istimewa bawaan secara langsung atau membuat grup hak istimewa khusus sesuai kebutuhan.</p>
+<p>Using these built-in privilege groups can significantly reduce the complexity of permission design and improve consistency across roles.</p>
+<p>You can either use the built-in privilege groups directly or create custom privilege groups as needed.</p>
 <pre><code translate="no"><span class="hljs-comment"># Create a privilege group</span>
 client.create_privilege_group(group_name=<span class="hljs-string">&#x27;privilege_group_1&#x27;</span>）
 <span class="hljs-comment"># Add privileges to the privilege group</span>
 client.add_privileges_to_group(group_name=<span class="hljs-string">&#x27;privilege_group_1&#x27;</span>, privileges=[<span class="hljs-string">&#x27;Query&#x27;</span>, <span class="hljs-string">&#x27;Search&#x27;</span>])
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Memberikan Hak Istimewa atau Grup Hak Istimewa ke Peran</strong></p>
-<p>Setelah peran dibuat, hak istimewa atau grup hak istimewa dapat diberikan ke peran tersebut. Sumber daya target untuk hak istimewa ini dapat ditentukan pada tingkat yang berbeda, termasuk instance, database, atau Koleksi individual.</p>
+<p><strong>Grant Privileges or Privilege Groups to Roles</strong></p>
+<p>After a role is created, privileges or privilege groups can be granted to the role. The target resources for these privileges can be specified at different levels, including the instance, database, or individual Collections.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">grant_privilege_v2</span>(
     role_name=<span class="hljs-string">&quot;role_a&quot;</span>,
     privilege=<span class="hljs-string">&quot;Search&quot;</span>,
@@ -219,17 +222,17 @@ client.<span class="hljs-title function_">grant_privilege_v2</span>(
     db_name=<span class="hljs-string">&#x27;*&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Memberikan Peran kepada Pengguna</strong></p>
-<p>Setelah peran diberikan kepada pengguna, pengguna dapat mengakses sumber daya dan melakukan operasi yang ditentukan oleh peran tersebut. Satu pengguna dapat diberikan satu atau beberapa peran, tergantung pada cakupan akses yang diperlukan.</p>
+<p><strong>Grant Roles to Users</strong></p>
+<p>Once roles are assigned to a user, the user can access resources and perform the operations defined by those roles. A single user can be granted one or multiple roles, depending on the required access scope.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">grant_role</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>, role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Inspect-and-Revoke-Access" class="common-anchor-header">4. Memeriksa dan Mencabut Akses</h3><p><strong>Memeriksa Peran yang Ditugaskan ke Pengguna</strong></p>
+<h3 id="4-Inspect-and-Revoke-Access" class="common-anchor-header">4. Inspect and Revoke Access</h3><p><strong>Inspect Roles Assigned to a User</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">describe_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Memeriksa Hak Istimewa yang Ditugaskan ke Peran</strong></p>
+<p><strong>Inspect Privileges Assigned to a Role</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">describe_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Mencabut Hak Istimewa dari Peran</strong></p>
+<p><strong>Revoke Privileges from a Role</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">revoke_privilege_v2</span>(
     role_name=<span class="hljs-string">&quot;role_a&quot;</span>,
     privilege=<span class="hljs-string">&quot;Search&quot;</span>,
@@ -243,17 +246,17 @@ client.<span class="hljs-title function_">revoke_privilege_v2</span>(
     db_name=<span class="hljs-string">&#x27;default&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Mencabut Peran dari Pengguna</strong></p>
+<p><strong>Revoke Roles from a User</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">revoke_role</span>(
     user_name=<span class="hljs-string">&#x27;user_1&#x27;</span>,
     role_name=<span class="hljs-string">&#x27;role_a&#x27;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Menghapus Pengguna dan Peran</strong></p>
+<p><strong>Delete Users and Roles</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">drop_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>)
 client.<span class="hljs-title function_">drop_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">Contoh: Desain Kontrol Akses untuk Sistem RAG yang Didukung Milvus<button data-href="#Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
+<h2 id="Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">Example: Access Control Design for a Milvus-Powered RAG System<button data-href="#Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -268,16 +271,16 @@ client.<span class="hljs-title function_">drop_role</span>(role_name=<span class
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pertimbangkan sistem Retrieval-Augmented Generation (RAG) yang dibangun di atas Milvus.</p>
-<p>Dalam sistem ini, komponen dan pengguna yang berbeda memiliki tanggung jawab yang terpisah dengan jelas, dan masing-masing membutuhkan tingkat akses yang berbeda.</p>
+    </button></h2><p>Consider a Retrieval-Augmented Generation (RAG) system built on top of Milvus.</p>
+<p>In this system, different components and users have clearly separated responsibilities, and each requires a different level of access.</p>
 <table>
 <thead>
-<tr><th>Aktor</th><th>Tanggung Jawab</th><th>Akses yang Dibutuhkan</th></tr>
+<tr><th>Actor</th><th>Responsibility</th><th>Required Access</th></tr>
 </thead>
 <tbody>
-<tr><td>Administrator Platform</td><td>Operasi dan konfigurasi sistem</td><td>Administrasi tingkat instansi</td></tr>
-<tr><td>Layanan Konsumsi Vektor</td><td>Konsumsi dan pembaruan data vektor</td><td>Akses baca dan tulis</td></tr>
-<tr><td>Layanan Pencarian</td><td>Pencarian dan pengambilan vektor</td><td>Akses hanya-baca</td></tr>
+<tr><td>Platform Administrator</td><td>System operations and configuration</td><td>Instance-level administration</td></tr>
+<tr><td>Vector Ingestion Service</td><td>Vector data ingestion and updates</td><td>Read and write access</td></tr>
+<tr><td>Search Service</td><td>Vector search and retrieval</td><td>Read-only access</td></tr>
 </tbody>
 </table>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
@@ -318,7 +321,7 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_admin&quot;</spa
 client.grant_role(user_name=<span class="hljs-string">&quot;rag_reader&quot;</span>, role_name=<span class="hljs-string">&quot;role_read_only&quot;</span>)
 client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</span>, role_name=<span class="hljs-string">&quot;role_read_write&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="common-anchor-header">Kiat Cepat: Cara Mengoperasikan Kontrol Akses dengan Aman dalam Produksi<button data-href="#Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="anchor-icon" translate="no">
+<h2 id="Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="common-anchor-header">Quick Tips: How to Operate Access Control Safely in Production<button data-href="#Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,21 +336,21 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk memastikan kontrol akses tetap efektif dan dapat dikelola dalam sistem produksi yang sudah berjalan lama, ikuti panduan praktis berikut ini.</p>
-<p><strong>1. Ubah</strong> <strong>kata sandi</strong><strong>default</strong> <code translate="no">root</code> <strong>dan batasi penggunaan</strong> <strong>akun</strong> <code translate="no">root</code> </p>
-<p>Perbarui kata sandi default <code translate="no">root</code> segera setelah inisialisasi dan batasi penggunaannya hanya untuk tugas-tugas administratif. Hindari menggunakan atau berbagi akun root untuk operasi rutin. Sebaliknya, buatlah pengguna dan peran khusus untuk akses sehari-hari untuk mengurangi risiko dan meningkatkan akuntabilitas.</p>
-<p><strong>2. Mengisolasi instance Milvus secara fisik di seluruh lingkungan</strong></p>
-<p>Menerapkan instance Milvus yang terpisah untuk pengembangan, pementasan, dan produksi. Isolasi fisik memberikan batas keamanan yang lebih kuat daripada kontrol akses logis saja dan secara signifikan mengurangi risiko kesalahan lintas lingkungan.</p>
-<p><strong>3. Ikuti prinsip hak istimewa yang paling sedikit</strong></p>
-<p>Berikan hanya izin yang diperlukan untuk setiap peran:</p>
+    </button></h2><p>To ensure access control remains effective and manageable in long-running production systems, follow these practical guidelines.</p>
+<p><strong>1. Change the default</strong> <code translate="no">root</code> <strong>password and limit the use of</strong> <code translate="no">root</code> <strong>account</strong></p>
+<p>Update the default <code translate="no">root</code> password immediately after initialization and restrict its use to administrative tasks only. Avoid using or sharing the root account for routine operations. Instead, create dedicated users and roles for day-to-day access to reduce risk and improve accountability.</p>
+<p><strong>2. Physically isolate Milvus instances across environments</strong></p>
+<p>Deploy separate Milvus instances for development, staging, and production. Physical isolation provides a stronger safety boundary than logical access control alone and significantly reduces the risk of cross-environment mistakes.</p>
+<p><strong>3. Follow the principle of least privilege</strong></p>
+<p>Grant only the permissions required for each role:</p>
 <ul>
-<li><p><strong>Lingkungan pengembangan:</strong> izin bisa lebih longgar untuk mendukung iterasi dan pengujian</p></li>
-<li><p><strong>Lingkungan produksi:</strong> izin harus dibatasi secara ketat pada apa yang diperlukan</p></li>
-<li><p><strong>Audit rutin:</strong> tinjau izin yang ada secara berkala untuk memastikan bahwa izin tersebut masih diperlukan</p></li>
+<li><p><strong>Development environments:</strong> permissions can be more permissive to support iteration and testing</p></li>
+<li><p><strong>Production environments:</strong> permissions should be strictly limited to what is necessary</p></li>
+<li><p><strong>Regular audits:</strong> periodically review existing permissions to ensure they are still required</p></li>
 </ul>
-<p><strong>4. Secara aktif mencabut izin ketika tidak lagi diperlukan</strong></p>
-<p>Kontrol akses bukanlah pengaturan sekali jadi-ini membutuhkan pemeliharaan berkelanjutan. Cabut peran dan hak istimewa dengan segera ketika pengguna, layanan, atau tanggung jawab berubah. Hal ini mencegah izin yang tidak terpakai terakumulasi dari waktu ke waktu dan menjadi risiko keamanan yang tersembunyi.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><strong>4. Actively revoke permissions when they are no longer needed</strong></p>
+<p>Access control is not a one-time setup—it requires ongoing maintenance. Revoke roles and privileges promptly when users, services, or responsibilities change. This prevents unused permissions from accumulating over time and becoming hidden security risks.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -362,13 +365,13 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mengonfigurasi kontrol akses di Milvus tidaklah rumit, tetapi sangat penting untuk mengoperasikan sistem dengan aman dan andal dalam produksi. Dengan model RBAC yang dirancang dengan baik, Anda bisa:</p>
+    </button></h2><p>Configuring access control in Milvus is not inherently complex, but it is essential for operating the system safely and reliably in production. With a well-designed RBAC model, you can:</p>
 <ul>
-<li><p><strong>Mengurangi risiko</strong> dengan mencegah operasi yang tidak disengaja atau merusak</p></li>
-<li><p><strong>Meningkatkan keamanan</strong> dengan memberlakukan akses yang paling tidak memiliki hak istimewa ke data vektor</p></li>
-<li><p><strong>Menstandarkan operasi</strong> melalui pemisahan tanggung jawab yang jelas</p></li>
-<li><p>Melakukan penskalaan<strong>dengan percaya diri</strong>, meletakkan fondasi untuk penerapan multi-penyewa dan skala besar</p></li>
+<li><p><strong>Reduce risk</strong> by preventing accidental or destructive operations</p></li>
+<li><p><strong>Improve security</strong> by enforcing least-privilege access to vector data</p></li>
+<li><p><strong>Standardize operations</strong> through a clear separation of responsibilities</p></li>
+<li><p><strong>Scale with confidence</strong>, laying the foundation for multi-tenant and large-scale deployments</p></li>
 </ul>
-<p>Kontrol akses bukanlah fitur opsional atau tugas sekali pakai. Ini adalah bagian mendasar untuk mengoperasikan Milvus dengan aman dalam jangka panjang.</p>
-<p>👉 Mulailah membangun garis dasar keamanan yang solid dengan <a href="https://milvus.io/docs/rbac.md">RBAC</a> untuk penerapan Milvus Anda.</p>
-<p>Ada pertanyaan atau ingin mendalami fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>Access control is not an optional feature or a one-time task. It is a foundational part of operating Milvus safely over the long term.</p>
+<p>👉 Start building a solid security baseline with <a href="https://milvus.io/docs/rbac.md">RBAC</a> for your Milvus deployment.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

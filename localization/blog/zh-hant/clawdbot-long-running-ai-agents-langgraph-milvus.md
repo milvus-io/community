@@ -1,6 +1,8 @@
 ---
 id: clawdbot-long-running-ai-agents-langgraph-milvus.md
-title: 為什麼 Clawdbot 會成為病毒 - 以及如何使用 LangGraph 和 Milvus 建立生產就緒的長期運行代理程式
+title: >
+  Why Clawdbot Went Viral — And How to Build Production-Ready Long-Running
+  Agents with LangGraph and Milvus
 author: Min Yin
 date: 2026-02-03T00:00:00.000Z
 cover: >-
@@ -12,10 +14,12 @@ tags: 'AI Agent, Langgraph, Milvus, vector database, Clawdbot'
 meta_keywords: 'Clawdbot, LangGraph, Milvus, AI Agents, Openclaw'
 meta_title: |
   Build Clawdbot-Style AI Agents with LangGraph & Milvus
-desc: Clawdbot 証明了人們希望人工智能能夠行動。了解如何使用雙機構架構、Milvus 和 LangGraph 建立可生產的長期運行代理。
+desc: >
+  Clawdbot proved people want AI that acts. Learn how to build production-ready
+  long-running agents with two-agent architecture, Milvus, and LangGraph.
 origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md'
 ---
-<h2 id="Clawdbot-now-OpenClaw-went-viral" class="common-anchor-header">Clawdbot (現更名為 OpenClaw) 在網路上掀起熱潮<button data-href="#Clawdbot-now-OpenClaw-went-viral" class="anchor-icon" translate="no">
+<h2 id="Clawdbot-now-OpenClaw-went-viral" class="common-anchor-header">Clawdbot (now OpenClaw) went viral<button data-href="#Clawdbot-now-OpenClaw-went-viral" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,16 +40,16 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
     <span></span>
   </span>
 </p>
-<p><a href="https://openclaw.ai/">Clawdbot</a>(現已更名為 OpenClaw) 上週在網際網路上掀起一股風潮。這個由 Peter Steinberger 打造的開放原始碼 AI 助手在短短幾天內就在<a href="https://github.com/openclaw/openclaw">GitHub</a>上獲得了<a href="https://github.com/openclaw/openclaw">110,000+ 顆星星</a>。用戶張貼了它自主檢查航班、管理電子郵件和控制智能家居設備的視頻。OpenAI 的創辦工程師 Andrej Karpathy 對它大加讚賞。Tech 創辦人兼投資人 David Sacks 在推特上對它大加讚賞。人們稱之為 「真實的 Jarvis」。</p>
+<p><a href="https://openclaw.ai/">Clawdbot</a>, now renamed to OpenClaw, took the internet by storm last week. The open-source AI assistant built by Peter Steinberger hit <a href="https://github.com/openclaw/openclaw">110,000+ GitHub stars</a> in just a few days. Users posted videos of it autonomously checking them into flights, managing emails, and controlling smart home devices. Andrej Karpathy, the founding engineer at OpenAI, praised it. David Sacks, a Tech founder and  investor, tweeted about it. People called it “Jarvis, but real.”</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/David_Stacks_replace_NYC_with_Mac_and_clawdbot_two_agent_p2_2f62f6ad49.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>接著是安全警告。</p>
-<p>研究人員發現了數百個外露的管理面板。殭屍預設以 root 存取權限執行。沒有沙箱。提示注入漏洞可能會讓攻擊者劫持代理程式。安全噩夢。</p>
-<h2 id="Clawdbot-went-viral-for-a-reason" class="common-anchor-header">Clawdbot 病毒式傳播的原因<button data-href="#Clawdbot-went-viral-for-a-reason" class="anchor-icon" translate="no">
+<p>Then came the security warnings.</p>
+<p>Researchers found hundreds of exposed admin panels. The bot runs with root access by default. There’s no sandboxing. Prompt injection vulnerabilities could let attackers hijack the agent. A security nightmare.</p>
+<h2 id="Clawdbot-went-viral-for-a-reason" class="common-anchor-header">Clawdbot went viral for a reason<button data-href="#Clawdbot-went-viral-for-a-reason" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,9 +64,9 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Clawdbot 病毒式傳播是有原因的。</strong>它可在本機或您自己的伺服器上執行。它連接到人們已經在使用的訊息應用程式-WhatsApp、Slack、Telegram、iMessage。它能長時間記住上下文，而不是每次回覆後就忘記一切。它可以管理行事曆、總結電子郵件，並跨應用程式自動執行任務。</p>
-<p>使用者會感覺到它是一個不需動手、永遠在線的個人 AI，而不只是一個提示與回應的工具。它的開放原始碼、自我託管模式吸引了想要控制和客製化的開發人員。此外，與現有工作流程整合的易用性，也讓它更容易分享與推薦。</p>
-<h2 id="Two-challenges-for-building-long-running-agents" class="common-anchor-header">建立長期運作代理程式的兩大挑戰<button data-href="#Two-challenges-for-building-long-running-agents" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Clawdbot went viral for a reason.</strong> It runs locally or on your own server. It connects to messaging apps people already use—WhatsApp, Slack, Telegram, iMessage. It remembers context over time instead of forgetting everything after each reply. It manages calendars, summarizes emails, and automates tasks across apps.</p>
+<p>Users get the sense of a hands-off, always-on personal AI—not just a prompt-and-response tool. Its open-source, self-hosted model appeals to developers who want control and customization. And the ease of integrating with existing workflows makes it easy to share and recommend.</p>
+<h2 id="Two-challenges-for-building-long-running-agents" class="common-anchor-header">Two challenges for building long-running agents<button data-href="#Two-challenges-for-building-long-running-agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,21 +81,21 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Clawdbot 的受歡迎程度證明人們需要的是能</strong> <em>行動</em><strong>的人工智能，</strong><strong>而不只是回答問題。</strong>但任何能長時間執行並完成實際任務的代理程式，無論是 Clawdbot 或是您自己建立的程式，都必須解決兩個技術難題：<strong>記憶體</strong>與<strong>驗證</strong>。</p>
-<p><strong>記憶體問題</strong>有多種表現方式：</p>
+    </button></h2><p><strong>Clawdbot’s popularity proves people want AI that</strong> <em>acts</em><strong>, not just answers.</strong> But any agent that runs over long periods and completes real tasks—whether Clawdbot or something you build yourself—has to solve two technical challenges: <strong>memory</strong> and <strong>verification</strong>.</p>
+<p><strong>The memory problem</strong> shows up in multiple ways:</p>
 <ul>
-<li><p>代理程式會在任務中途耗盡上下文視窗，留下半成品</p></li>
-<li><p>他們忽略了完整的任務清單並過早宣告「完成」。</p></li>
-<li><p>他們無法在工作階段之間交接上下文，因此每個新的工作階段都要從頭開始</p></li>
+<li><p>Agents exhaust their context window mid-task and leave behind half-finished work</p></li>
+<li><p>They lose sight of the full task list and declare “done” too early</p></li>
+<li><p>They can’t hand off context between sessions, so each new session starts from scratch</p></li>
 </ul>
-<p>所有這些問題都有相同的根源：代理程式沒有持久性記憶體。上下文視窗是有限的，跨會話檢索也是有限的，而且進度也不是以代理可以存取的方式來追蹤。</p>
-<p><strong>驗證問題則</strong>不同。即使記憶體正常運作，代理程式仍會在快速的單元測試後，將任務標示為已完成，而不檢查該功能是否真的能端對端運作。</p>
-<p>Clawdbot 可以解決這兩個問題。Clawdbot 可以解決這兩個問題，它可以在本機儲存跨會話的記憶體，並使用模組化的「技能」來自動化瀏覽器、檔案和外部服務。這個方法很有效。但它不適合生產。對於企業用途而言，您需要結構、可稽核性與安全性，而 Clawdbot 並無提供這些功能。</p>
-<p>這篇文章涵蓋了生產就緒解決方案的相同問題。</p>
-<p>在記憶體方面，我們使用以<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic 的研究</a>為基礎的<strong>雙機構架構</strong>：一個初始化代理將專案分割成可驗證的功能，另一個編碼代理則以乾淨的交接方式逐一處理專案。對於跨會話的語意回憶，我們使用<a href="https://milvus.io/">Milvus</a>，這是一個向量資料庫，可讓代理以意義（而非關鍵字）進行搜尋。</p>
-<p>在驗證方面，我們使用<strong>瀏覽器自動化</strong>。代理程式不會信任單元測試，而是以真實使用者的方式測試功能。</p>
-<p>我們將介紹這些概念，然後顯示使用<a href="https://github.com/langchain-ai/langgraph">LangGraph</a>和 Milvus 的工作實作。</p>
-<h2 id="How-the-Two-Agent-Architecture-Prevents-Context-Exhaustion" class="common-anchor-header">雙代理架構如何防止上下文耗盡<button data-href="#How-the-Two-Agent-Architecture-Prevents-Context-Exhaustion" class="anchor-icon" translate="no">
+<p>All of these stem from the same root: agents have no persistent memory. Context windows are finite, cross-session retrieval is limited, and progress isn’t tracked in a way agents can access.</p>
+<p><strong>The verification problem</strong> is different. Even when memory works, agents still mark tasks as completed after a quick unit test—without checking whether the feature actually works end-to-end.</p>
+<p>Clawdbot addresses both. It stores memory locally across sessions and uses modular “skills” to automate browsers, files, and external services. The approach works. But it’s not production-ready. For enterprise use, you need structure, auditability, and security that Clawdbot doesn’t provide out of the box.</p>
+<p>This article covers the same problems with production-ready solutions.</p>
+<p>For memory, we use a <strong>two-agent architecture</strong> based on <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic’s research</a>: an initializer agent that breaks projects into verifiable features, and a coding agent that works through them one at a time with clean handoffs. For semantic recall across sessions, we use <a href="https://milvus.io/">Milvus</a>, a vector database that lets agents search by meaning, not keywords.</p>
+<p>For verification, we use <strong>browser automation</strong>. Instead of trusting unit tests, the agent tests features the way a real user would.</p>
+<p>We’ll walk through the concepts, then show a working implementation using <a href="https://github.com/langchain-ai/langgraph">LangGraph</a> and Milvus.</p>
+<h2 id="How-the-Two-Agent-Architecture-Prevents-Context-Exhaustion" class="common-anchor-header">How the Two-Agent Architecture Prevents Context Exhaustion<button data-href="#How-the-Two-Agent-Architecture-Prevents-Context-Exhaustion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,34 +110,34 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>每個 LLM 都有一個上下文視窗：限制它一次可以處理多少文字。當代理處理複雜的任務時，這個視窗就會被程式碼、錯誤訊息、會話歷程和文件填滿。一旦視窗填滿，代理程式就會停止或開始遺忘先前的上下文。對於長時間執行的任務，這是不可避免的。</p>
-<p>考慮給代理一個簡單的提示「建立 claude.ai 的複製檔」。這個專案需要驗證、聊天介面、對話歷史、串流回應以及其他數十種功能。單一代理會嘗試一次解決所有問題。在實作聊天介面的中途，上下文視窗填滿了。會話結束時，程式碼只寫了一半，沒有任何文件說明嘗試了什麼，也沒有說明哪些有效哪些無效。下一個 session 繼承了一個爛攤子。即使有上下文壓縮，新的代理程式還是得猜測上一個階段在做什麼、調試它沒有寫的程式碼，並找出要繼續的地方。在取得任何新進展之前，就已經浪費了數小時。</p>
-<h3 id="The-Two-Fold-Agent-Solution" class="common-anchor-header">雙重代理解決方案</h3><p>Anthropic 的解決方案在他們的工程文章<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">「Effective harnesses for long-running agents」</a>中描述<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">，</a>就是使用兩種不同的提示模式：第一個會話使用<strong>初始化提示</strong>，後續會話使用<strong>編碼提示</strong>。</p>
-<p>技術上來說，這兩種模式使用相同的底層代理程式、系統提示、工具和線束。唯一的差別在於初始使用者提示。但由於它們的角色不同，將它們視為兩個獨立的代理是一個有用的心智模型。我們稱之為雙代理體架構。</p>
+    </button></h2><p>Every LLM has a context window: a limit on how much text it can process at once. When an agent works on a complex task, this window fills up with code, error messages, conversation history, and documentation. Once the window is full, the agent either stops or begins to forget earlier context. For long-running tasks, this is inevitable.</p>
+<p>Consider an agent given a simple prompt: “Build a clone of claude.ai.” The project requires authentication, chat interfaces, conversation history, streaming responses, and dozens of other features. A single agent will try to tackle everything at once. Midway through implementing the chat interface, the context window fills up. The session ends with half-written code, no documentation of what was attempted, and no indication of what works and what doesn’t. The next session inherits a mess. Even with context compaction, the new agent has to guess what the previous session was doing, debug code it didn’t write, and figure out where to resume. Hours are wasted before any new progress is made.</p>
+<h3 id="The-Two-Fold-Agent-Solution" class="common-anchor-header">The Two-Fold Agent Solution</h3><p>Anthropic’s solution, described in their engineering post <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">“Effective harnesses for long-running agents”</a>, is to use two different prompting modes: <strong>an initializer prompt</strong> for the first session and <strong>a coding prompt</strong> for subsequent sessions.</p>
+<p>Technically, both modes use the same underlying agent, system prompt, tools, and harness. The only difference is the initial user prompt. But because they serve distinct roles, thinking of them as two separate agents is a useful mental model. We call this the two-agent architecture.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/two_agent_p3_f9dd23fed9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>初始化器會設定增量進度的環境。</strong>它接受一個模糊的請求，並做三件事：</p>
+<p><strong>The initializer sets up the environment for incremental progress.</strong> It takes a vague request and does three things:</p>
 <ul>
-<li><p><strong>將專案分割為具體、可驗證的功能。</strong>不是模糊的需求，例如「製作一個聊天介面」，而是具體、可測試的步驟：「使用者點選新聊天按鈕 → 新對話出現在側邊欄 → 聊天區顯示歡迎狀態」。Anthropic 的 claude.ai 克隆範例有超過 200 個這樣的功能。</p></li>
-<li><p><strong>建立進度追蹤檔案。</strong>此檔案記錄每個功能的完成狀態，因此任何階段都能看到已完成與剩餘的功能。</p></li>
-<li><p><strong>撰寫設定腳本，並進行初始的 git commit。</strong> <code translate="no">init.sh</code> 之類的腳本可以讓未來的工作階段快速啟動開發環境。git 提交建立了一個乾淨的基線。</p></li>
+<li><p><strong>Breaks the project into specific, verifiable features.</strong> Not vague requirements like “make a chat interface,” but concrete, testable steps: “user clicks New Chat button → new conversation appears in sidebar → chat area shows welcome state.” Anthropic’s claude.ai clone example had over 200 such features.</p></li>
+<li><p><strong>Creates a progress tracking file.</strong> This file records the completion status of every feature, so any session can see what’s done and what’s left.</p></li>
+<li><p><strong>Writes setup scripts and makes an initial git commit.</strong> Scripts like <code translate="no">init.sh</code> let future sessions spin up the dev environment quickly. The git commit establishes a clean baseline.</p></li>
 </ul>
-<p>初始化程序不僅僅是規劃。它建立了基礎架構，讓未來的工作階段可以立即開始工作。</p>
-<p><strong>編碼代理</strong>處理每個後續階段。它</p>
+<p>The initializer doesn’t just plan. It creates infrastructure that lets future sessions start working immediately.</p>
+<p><strong>The coding agent</strong> handles every subsequent session. It:</p>
 <ul>
-<li><p>讀取進度檔和 git 日誌以瞭解目前的狀態</p></li>
-<li><p>執行基本的端對端測試，確認應用程式仍可正常運作</p></li>
-<li><p>挑選一個功能進行開發</p></li>
-<li><p>執行該功能、徹底測試、提交到 git 並附上說明資訊，以及更新進度檔案</p></li>
+<li><p>Reads the progress file and git logs to understand the current state</p></li>
+<li><p>Runs a basic end-to-end test to confirm the app still works</p></li>
+<li><p>Picks one feature to work on</p></li>
+<li><p>Implements the feature, tests it thoroughly, commits to git with a descriptive message, and updates the progress file</p></li>
 </ul>
-<p>當會議結束時，程式碼庫已處於可合併的狀態：無重大錯誤、程式碼井然有序、文件清晰。沒有半途而廢的工作，也沒有什麼神秘的事情。下一個工作階段會從這個階段結束的地方繼續進行。</p>
-<h3 id="Use-JSON-for-Feature-Tracking-Not-Markdown" class="common-anchor-header">使用 JSON 來追蹤功能，而非 Markdown</h3><p><strong>一個值得注意的實作細節：功能清單應該是 JSON，而不是 Markdown。</strong></p>
-<p>編輯 JSON 時，AI 模型傾向於以手術方式修改特定欄位。編輯 Markdown 時，它們通常會重寫整個部分。對於 200 多項功能的清單，Markdown 編輯可能會意外損壞您的進度追蹤。</p>
-<p>一個 JSON 項目看起來是這樣的：</p>
+<p>When the session ends, the codebase is in a mergeable state: no major bugs, orderly code, clear documentation. There’s no half-finished work and no mystery about what was done. The next session picks up exactly where this one stopped.</p>
+<h3 id="Use-JSON-for-Feature-Tracking-Not-Markdown" class="common-anchor-header">Use JSON for Feature Tracking, Not Markdown</h3><p><strong>One implementation detail worth noting: the feature list should be JSON, not Markdown.</strong></p>
+<p>When editing JSON, AI models tend to surgically modify specific fields. When editing Markdown, they often rewrite entire sections. With a list of 200+ features, Markdown edits can accidentally corrupt your progress tracking.</p>
+<p>A JSON entry looks like this:</p>
 <pre><code translate="no">json
 {
   <span class="hljs-string">&quot;category&quot;</span>: <span class="hljs-string">&quot;functional&quot;</span>,
@@ -148,8 +152,8 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
   <span class="hljs-string">&quot;passes&quot;</span>: <span class="hljs-literal">false</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>每個功能都有明確的驗證步驟。<code translate="no">passes</code> 欄位會追蹤完成度。此外，也建議使用「刪除或編輯測試是不可接受的，因為這可能會導致功能缺失或錯誤」等措辭強烈的指示，以防止代理藉由刪除困難的功能來玩弄系統。</p>
-<h2 id="How-Milvus-Gives-Agents-Semantic-Memory-Across-Sessions" class="common-anchor-header">Milvus 如何賦予代理跨會話的語意記憶力<button data-href="#How-Milvus-Gives-Agents-Semantic-Memory-Across-Sessions" class="anchor-icon" translate="no">
+<p>Each feature has clear verification steps. The <code translate="no">passes</code> field tracks completion. Strongly-worded instructions like “It is unacceptable to remove or edit tests because this could lead to missing or buggy functionality” are also recommended to prevent the agent from gaming the system by deleting difficult features.</p>
+<h2 id="How-Milvus-Gives-Agents-Semantic-Memory-Across-Sessions" class="common-anchor-header">How Milvus Gives Agents Semantic Memory Across Sessions<button data-href="#How-Milvus-Gives-Agents-Semantic-Memory-Across-Sessions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,12 +168,12 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>雙代理架構解決了上下文耗盡的問題，但卻無法解決遺忘的問題。</strong>即使會話之間的交接很乾淨，代理程式還是會遺忘它所學到的東西。除非進度檔案中出現這些確切的字詞，否則代理無法想起「JWT 掃描標記」與「使用者驗證」的關係。隨著專案的成長，在數百個 git commit 中搜尋會變得很慢。關鍵字匹配會遺漏對人類來說顯而易見的關聯。</p>
-<p><strong>這就是向量資料庫的用武之地。</strong>向量資料庫不是儲存文字和搜尋關鍵字，而是將文字轉換成表示意義的數字。當您搜尋「使用者驗證」時，它會找到有關「JWT 更新代幣」和「登入會話處理」的條目。這並不是因為字詞匹配，而是因為概念在語義上很接近。代理可以詢問「我以前有沒有看過這樣的東西？」，並得到有用的答案。</p>
-<p><strong>實際上，這是以向量的方式將進度記錄和 git 提交嵌入資料庫。</strong>當編碼會話開始時，代理會以目前的任務查詢資料庫。資料庫會以毫秒為單位回傳相關的歷史記錄：之前嘗試過的項目、成功的項目、失敗的項目。代理程式不會從頭開始。它從上下文開始。</p>
-<p><a href="https://milvus.io/"><strong>Milvus</strong></a> <strong>非常適合這個使用個案。</strong>它是開放原始碼，專為生產規模的向量搜尋而設計，處理數以十億計的向量不費吹灰之力。對於小型專案或本機開發，<a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>可直接嵌入 SQLite 等應用程式。不需要集群設定。當專案成長時，您可以移轉至分散式 Milvus，而無需變更程式碼。對於產生嵌入，您可以使用外部模型（如<a href="https://www.sbert.net/">SentenceTransformer）</a>進行細緻的控制，或參考這些<a href="https://milvus.io/docs/embeddings.md">內建的嵌入函數</a>進行更簡單的設定。Milvus 也支援<a href="https://milvus.io/docs/hybridsearch.md">混合搜尋</a>，結合向量相似性與傳統過濾功能，因此您可以在單次呼叫中查詢「尋找最近一週的類似認證問題」。</p>
-<p><strong>這也解決了傳輸問題。</strong>向量資料庫持續存在於任何單一會話之外，因此知識會隨著時間累積。會話 50 可以存取在會話 1 到 49 中學到的所有知識。此專案會發展機構記憶。</p>
-<h2 id="Verifying-Completion-with-Automated-Testing" class="common-anchor-header">使用自動測試來驗證完成度<button data-href="#Verifying-Completion-with-Automated-Testing" class="anchor-icon" translate="no">
+    </button></h2><p><strong>The two-agent architecture solves context exhaustion, but it doesn’t solve forgetting.</strong> Even with clean handoffs between sessions, the agent loses track of what it learned. It can’t recall that “JWT refresh tokens” relates to “user authentication” unless those exact words appear in the progress file. As the project grows, searching through hundreds of git commits becomes slow. Keyword matching misses connections that would be obvious to a human.</p>
+<p><strong>This is where vector databases come in.</strong> Instead of storing text and searching for keywords, a vector database converts text into numerical representations of meaning. When you search “user authentication,” it finds entries about “JWT refresh tokens” and “login session handling.” Not because the words match, but because the concepts are semantically close. The agent can ask “have I seen something like this before?” and get a useful answer.</p>
+<p><strong>In practice, this works by embedding progress records and git commits into the database as vectors.</strong> When a coding session starts, the agent queries the database with its current task. The database returns relevant history in milliseconds: what was tried before, what worked, what failed. The agent doesn’t start from scratch. It starts with context.</p>
+<p><a href="https://milvus.io/"><strong>Milvus</strong></a> <strong>is a good fit for this use case.</strong> It’s open source and designed for production-scale vector search, handling billions of vectors without breaking a sweat. For smaller projects or local development, <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> can be embedded directly into an application like SQLite. No cluster setup required. When the project grows, you can migrate to distributed Milvus without changing your code. For generating embeddings, you can use external models like <a href="https://www.sbert.net/">SentenceTransformer</a> for fine-grained control, or reference these <a href="https://milvus.io/docs/embeddings.md">built-in embedding functions</a> for simpler setups. Milvus also supports <a href="https://milvus.io/docs/hybridsearch.md">hybrid search</a>, combining vector similarity with traditional filtering, so you can query “find similar authentication issues from the last week” in a single call.</p>
+<p><strong>This also solves the transfer problem.</strong> The vector database persists outside of any single session, so knowledge accumulates over time. Session 50 has access to everything learned in sessions 1 through 49. The project develops institutional memory.</p>
+<h2 id="Verifying-Completion-with-Automated-Testing" class="common-anchor-header">Verifying Completion with Automated Testing<button data-href="#Verifying-Completion-with-Automated-Testing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -184,12 +188,12 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>即使有雙代理體架構和長期記憶，代理體仍可能過早宣告勝利。這就是驗證問題。</strong></p>
-<p>以下是一個常見的失敗模式：編碼階段完成了一個功能，執行了快速的單元測試，看到它通過了，就把<code translate="no">&quot;passes&quot;: false</code> 翻到<code translate="no">&quot;passes&quot;: true</code> 。但是單元測試通過並不代表功能真的可以運作。API 可能會傳回正確的資料，但 UI 卻因為 CSS bug 而無法顯示。進度檔說 「完成」，但使用者什麼都看不到。</p>
-<p><strong>解決方案是讓代理程式像真實使用者一樣進行測試。</strong>功能清單中的每個功能都有具體的驗證步驟：「用戶點擊新聊天按鈕 → 新對話出現在側邊欄 → 聊天區顯示歡迎狀態」。代理應實際驗證這些步驟。與其僅執行程式碼層級的測試，不如使用 Puppeteer 等瀏覽器自動化工具來模擬實際使用情況。它會打開頁面、點選按鈕、填寫表單，並檢查正確的元素是否出現在螢幕上。只有當全流程通過時，代理才會標記功能完成。</p>
-<p><strong>這可以捕捉單元測試遺漏的問題</strong>。聊天功能可能有完美的後端邏輯和正確的 API 回應。但如果前端沒有渲染回覆，使用者就什麼都看不到。瀏覽器自動化可以截取結果，並驗證螢幕上顯示的內容是否與應該顯示的內容相符。只有當功能真正能端對端運作時，<code translate="no">passes</code> 欄位才會變成<code translate="no">true</code> 。</p>
-<p><strong>不過，這也有其限制。</strong>有些瀏覽器原生功能無法透過 Puppeteer 等工具自動化。檔案擷取器和系統確認對話框就是常見的例子。<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic 指出</a>，依賴瀏覽器原生警示模組的功能往往會有較多錯誤，因為代理無法透過 Puppeteer 看到它們。實際的解決方案是繞過這些限制來設計。盡可能使用自訂 UI 元件取代原生對話框，讓代理可以測試功能清單中的每個驗證步驟。</p>
-<h2 id="Putting-It-Together-LangGraph-for-Session-State-Milvus-for-Long-Term-Memory" class="common-anchor-header">結合起來：會話狀態的 LangGraph、長期記憶的 Milvus<button data-href="#Putting-It-Together-LangGraph-for-Session-State-Milvus-for-Long-Term-Memory" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Even with the two-agent architecture and long-term memory, agents can still declare victory too early. This is the verification problem.</strong></p>
+<p>Here’s a common failure mode: A coding session finishes a feature, runs a quick unit test, sees it pass, and flips <code translate="no">&quot;passes&quot;: false</code> to <code translate="no">&quot;passes&quot;: true</code>. But a passing unit test doesn’t mean the feature actually works. The API might return correct data while the UI displays nothing because of a CSS bug. The progress file says “complete” while users see nothing.</p>
+<p><strong>The solution is to make the agent test like a real user.</strong> Each feature in the feature list has concrete verification steps: “user clicks New Chat button → new conversation appears in sidebar → chat area shows welcome state.” The agent should verify these steps literally. Instead of running only code-level tests, it uses browser automation tools like Puppeteer to simulate actual usage. It opens the page, clicks buttons, fills forms, and checks that the right elements appear on screen. Only when the full flow passes does the agent mark the feature complete.</p>
+<p><strong>This catches problems that unit tests miss</strong>. A chat feature might have perfect backend logic and correct API responses. But if the frontend doesn’t render the reply, users see nothing. Browser automation can screenshot the result and verify that what appears on screen matches what should appear. The <code translate="no">passes</code> field only becomes <code translate="no">true</code> when the feature genuinely works end-to-end.</p>
+<p><strong>There are limitations, however.</strong> Some browser-native features can’t be automated by tools like Puppeteer. File pickers and system confirmation dialogs are common examples. <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic noted</a> that features relying on browser-native alert modals tended to be buggier because the agent couldn’t see them through Puppeteer. The practical workaround is to design around these limitations. Use custom UI components instead of native dialogs wherever possible, so the agent can test every verification step in the feature list.</p>
+<h2 id="Putting-It-Together-LangGraph-for-Session-State-Milvus-for-Long-Term-Memory" class="common-anchor-header">Putting It Together: LangGraph for Session State, Milvus for Long-Term Memory<button data-href="#Putting-It-Together-LangGraph-for-Session-State-Milvus-for-Long-Term-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -204,8 +208,8 @@ origin: 'https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>上述概念透過兩個工具結合到一個可運作的系統中：會話狀態的 LangGraph 和長期記憶體的 Milvus。</strong>LangGraph 管理單一會話中發生的事情：正在處理的功能、已完成的功能、下一步的功能。Milvus 可儲存跨會話的可搜尋歷史：之前做了什麼、遇到什麼問題、什麼解決方案奏效。兩者結合起來，就能讓代理擁有短期和長期的記憶。</p>
-<p><strong>關於此實作的說明：</strong>下面的程式碼是一個簡化的示範。它在單一腳本中展示了核心模式，但並沒有完全複製前面描述的會話分離。在生產設定中，每個編碼階段都是單獨的調用，可能會在不同的機器上或不同的時間進行。LangGraph 中的<code translate="no">MemorySaver</code> 和<code translate="no">thread_id</code> 透過在調用之間持久化狀態來實現這一點。要清楚看到恢復行為，您可以執行一次腳本，停止腳本，然後以相同的<code translate="no">thread_id</code> 再執行一次。第二次執行會從第一次離開的地方繼續。</p>
+    </button></h2><p><strong>The concepts above come together in a working system using two tools: LangGraph for session state and Milvus for long-term memory.</strong> LangGraph manages what’s happening within a single session: which feature is being worked on, what’s completed, what’s next. Milvus stores searchable history across sessions: what was done before, what problems were encountered, and what solutions worked. Together, they give agents both short-term and long-term memory.</p>
+<p><strong>A note on this implementation:</strong> The code below is a simplified demonstration. It shows the core patterns in a single script, but it doesn’t fully replicate the session separation described earlier. In a production setup, each coding session would be a separate invocation, potentially on different machines or at different times. The <code translate="no">MemorySaver</code> and <code translate="no">thread_id</code> in LangGraph enable this by persisting state between invocations. To see the resume behavior clearly, you run the script once, stop it, then run it again with the same <code translate="no">thread_id</code>. The second run would pick up where the first left off.</p>
 <p>Python</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> sentence_transformers <span class="hljs-keyword">import</span> SentenceTransformer
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
@@ -455,31 +459,31 @@ app = workflow.<span class="hljs-built_in">compile</span>(checkpointer=MemorySav
 **The key insight <span class="hljs-keyword">is</span> <span class="hljs-keyword">in</span> the last part.** By using the same `thread_id`, LangGraph automatically restores the checkpoint <span class="hljs-keyword">from</span> the previous session. Session <span class="hljs-number">2</span> picks up exactly where session <span class="hljs-number">1</span> stopped — no manual state transfer, no lost progress.
 
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Conclusion" class="common-anchor-header">結論</h3><p>AI 代理之所以無法完成長時間執行的任務，是因為它們缺乏持久記憶體和適當的驗證。Clawdbot 因解決了這些問題而大受歡迎，但它的方法並不適用於生產。</p>
-<p>這篇文章涵蓋了三種解決方案：</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>AI agents fail at long-running tasks because they lack persistent memory and proper verification. Clawdbot went viral by solving these problems, but its approach isn’t production-ready.</p>
+<p>This article covered three solutions that are:</p>
 <ul>
-<li><p><strong>雙代理架構：</strong>初始化程式會將專案分割成可驗證的功能；編碼代理程式會以乾淨的交接方式，一次完成一個功能。這可以防止上下文耗盡，並使進度可追蹤。</p></li>
-<li><p><strong>語意記憶的向量資料庫：</strong> <a href="https://milvus.io/">Milvus</a>將進度記錄和 git 提交儲存為嵌入式資料，因此程式代理可以依據意義而非關鍵字進行搜尋。會話 50 會記住會話 1 所學到的東西。</p></li>
-<li><p><strong>瀏覽器自動化實作驗證：</strong>單元測試驗證程式碼的執行。Puppeteer 透過測試使用者在螢幕上看到的內容來檢查功能是否真正運作。</p></li>
+<li><p><strong>Two-agent architecture:</strong> An initializer breaks projects into verifiable features; a coding agent works through them one at a time with clean handoffs. This prevents context exhaustion and makes progress trackable.</p></li>
+<li><p><strong>Vector database for semantic memory:</strong> <a href="https://milvus.io/">Milvus</a> stores progress records and git commits as embeddings, so agents can search by meaning, not keywords. Session 50 remembers what session 1 learned.</p></li>
+<li><p><strong>Browser automation for real verification:</strong> Unit tests verify that the code runs. Puppeteer checks if features actually work by testing what users see on screen.</p></li>
 </ul>
-<p>這些模式並不限於軟體開發。科學研究、財務建模、法律文件審查，任何跨越多個階段且需要可靠交接的任務都能受惠。</p>
-<p>核心原則：</p>
+<p>These patterns aren’t limited to software development. Scientific research, financial modeling, legal document review—any task that spans multiple sessions and requires reliable handoffs can benefit.</p>
+<p>The core principles:</p>
 <ul>
-<li><p>使用初始化器將工作分割成可驗證的區塊</p></li>
-<li><p>以結構化、機器可讀的格式追蹤進度</p></li>
-<li><p>將經驗儲存於向量資料庫，以便進行語意檢索</p></li>
-<li><p>使用實際測試來驗證完成度，而不只是單元測試</p></li>
-<li><p>設計乾淨的會話邊界，讓工作可以安全地暫停或恢復</p></li>
+<li><p>Use an initializer to break work into verifiable chunks</p></li>
+<li><p>Track progress in a structured, machine-readable format</p></li>
+<li><p>Store experience in a vector database for semantic retrieval</p></li>
+<li><p>Verify completion with real-world testing, not just unit tests</p></li>
+<li><p>Design for clean session boundaries so work can pause and resume safely</p></li>
 </ul>
-<p>工具已經存在。模式已被證實。剩下的就是應用它們。</p>
-<p><strong>準備好開始了嗎？</strong></p>
+<p>The tools exist. The patterns are proven. What remains is applying them.</p>
+<p><strong>Ready to get started?</strong></p>
 <ul>
-<li><p>探索<a href="https://milvus.io/">Milvus</a>和<a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>，為您的代理程式加入語意記憶體。</p></li>
-<li><p>參考 LangGraph 來管理會話狀態</p></li>
-<li><p>閱讀<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic</a>對於長時間運作的代理程式束<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">的完整研究</a>。</p></li>
+<li><p>Explore <a href="https://milvus.io/">Milvus</a> and <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> for adding semantic memory to your agents</p></li>
+<li><p>Check out LangGraph for managing session state</p></li>
+<li><p>Read <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic’s full research</a> on long-running agent harnesses</p></li>
 </ul>
-<p><strong>有問題或想分享您正在建立的東西？</strong></p>
+<p><strong>Have questions or want to share what you’re building?</strong></p>
 <ul>
-<li><p>加入<a href="https://milvus.io/slack">Milvus Slack 社群</a>，與其他開發人員聯繫。</p></li>
-<li><p>參加<a href="https://milvus.io/office-hours">Milvus 辦公時間</a>，與團隊進行即時問答</p></li>
+<li><p>Join the <a href="https://milvus.io/slack">Milvus Slack community</a> to connect with other developers</p></li>
+<li><p>Attend <a href="https://milvus.io/office-hours">Milvus Office Hours</a> for live Q&amp;A with the team</p></li>
 </ul>

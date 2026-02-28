@@ -1,10 +1,15 @@
 ---
 id: >-
   milvus-introduced-mmap-for-redefined-data-management-increased-storage-capability.md
-title: Milvus 推出 MMap，重新定义数据管理并提高存储能力
+title: >-
+  Milvus Introduced MMap for Redefined Data Management and Increased Storage
+  Capability
 author: Yang Cen
 date: 2023-11-15T00:00:00.000Z
-desc: Milvus MMap 功能使用户能够在有限的内存中处理更多数据，在性能、成本和系统限制之间取得微妙的平衡。
+desc: >-
+  The Milvus MMap feature empowers users to handle more data within limited
+  memory, striking a delicate balance between performance, cost, and system
+  limits.
 cover: assets.zilliz.com/Exploring_M_Map_5086d652bd.png
 tag: Engineering
 tags: >-
@@ -20,8 +25,8 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><a href="https://zilliz.com/what-is-milvus">Milvus</a>是开源<a href="https://zilliz.com/blog/what-is-a-real-vector-database">向量数据库</a>中速度最快的解决方案，可满足用户对密集型性能的需求。然而，用户需求的多样性反映了他们所处理的数据的多样性。有些用户优先考虑预算友好型解决方案和大容量存储，而不是纯粹的速度。Milvus 了解这些需求，推出了 MMap 功能，重新定义了我们处理大数据量的方式，同时承诺在不牺牲功能的情况下实现成本效益。</p>
-<h2 id="What-is-MMap" class="common-anchor-header">什么是 MMap？<button data-href="#What-is-MMap" class="anchor-icon" translate="no">
+<p><a href="https://zilliz.com/what-is-milvus">Milvus</a> is the fastest solution in open-source <a href="https://zilliz.com/blog/what-is-a-real-vector-database">vector databases</a>, catering to users with intensive performance requirements. However, the diversity of user needs mirrors the data they work with. Some prioritize budget-friendly solutions and expansive storage over sheer speed. Understanding this spectrum of demands, Milvus introduces the MMap feature, redefining how we handle large data volumes while promising cost efficiency without sacrificing functionality.</p>
+<h2 id="What-is-MMap" class="common-anchor-header">What is MMap?<button data-href="#What-is-MMap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,8 +41,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MMap 是内存映射文件的简称，它在操作系统中的文件和内存之间架起了一座桥梁。这项技术允许 Milvus 将大型文件直接映射到系统内存空间，将文件转化为连续的内存块。这种整合消除了显式读取或写入操作的需要，从根本上改变了 Milvus Operator 管理数据的方式。它确保了大文件或用户需要随机访问文件的情况下的无缝访问和高效存储。</p>
-<h2 id="Who-benefits-from-MMap" class="common-anchor-header">谁能从 MMap 中受益？<button data-href="#Who-benefits-from-MMap" class="anchor-icon" translate="no">
+    </button></h2><p>MMap, short for memory-mapped files, bridges the gap between files and memory within operating systems. This technology allows Milvus to map large files directly into the system’s memory space, transforming files into contiguous memory blocks. This integration eliminates the need for explicit read or write operations, fundamentally changing how Milvus manages data. It ensures seamless access and efficient storage for large files or situations where users need to access files randomly.</p>
+<h2 id="Who-benefits-from-MMap" class="common-anchor-header">Who benefits from MMap?<button data-href="#Who-benefits-from-MMap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,9 +57,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>由于向量数据的存储要求，向量数据库需要大量内存容量。有了 MMap 功能，在有限的内存中处理更多数据就成为现实。但是，这种能力的提高需要付出性能代价。系统会智能地管理内存，根据负载和使用情况驱逐部分数据。这种驱逐允许 Milvus 在相同内存容量下处理更多数据。</p>
-<p>在测试过程中，我们发现在内存充足的情况下，所有数据在预热期后都会驻留在内存中，从而保持了系统性能。但是，随着数据量的增加，性能会逐渐下降。<strong>因此，我们建议对性能波动不太敏感的用户使用 MMap 功能。</strong></p>
-<h2 id="Enabling-MMap-in-Milvus-a-simple-configuration" class="common-anchor-header">在 Milvus 中启用 MMap：简单配置<button data-href="#Enabling-MMap-in-Milvus-a-simple-configuration" class="anchor-icon" translate="no">
+    </button></h2><p>Vector databases demand substantial memory capacity due to the storage requirements of vector data. With the MMap feature, processing more data within limited memory becomes a reality. However, this increased capability comes at a performance cost. The system intelligently manages memory, evicting some data based on load and usage. This eviction allows Milvus to process more data within the same memory capacity.</p>
+<p>During our tests, we observed that with ample memory, all data resides in memory after a warm-up period, preserving system performance. However, as data volume grows, performance gradually decreases. <strong>Therefore, we recommend the MMap feature for users less sensitive to performance fluctuations.</strong></p>
+<h2 id="Enabling-MMap-in-Milvus-a-simple-configuration" class="common-anchor-header">Enabling MMap in Milvus: a simple configuration<button data-href="#Enabling-MMap-in-Milvus-a-simple-configuration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,14 +74,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在 Milvus 中启用 MMap 非常简单。您只需修改<code translate="no">milvus.yaml</code> 文件：在<code translate="no">queryNode</code> 配置下添加<code translate="no">mmapDirPath</code> 项，并将有效路径设为其值。</p>
+    </button></h2><p>Enabling MMap in Milvus is remarkably straightforward. All you need to do is modify the <code translate="no">milvus.yaml</code> file: add the <code translate="no">mmapDirPath</code> item under the <code translate="no">queryNode</code> configuration and set a valid path as its value.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/enabling_mmap_a2df88276b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Striking-the-balance-performance-storage-and-system-limits" class="common-anchor-header">取得平衡：性能、存储和系统限制<button data-href="#Striking-the-balance-performance-storage-and-system-limits" class="anchor-icon" translate="no">
+<h2 id="Striking-the-balance-performance-storage-and-system-limits" class="common-anchor-header">Striking the balance: performance, storage, and system limits<button data-href="#Striking-the-balance-performance-storage-and-system-limits" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,10 +96,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>数据访问模式对性能有很大影响。Milvus 的 MMap 功能可根据位置优化数据访问。MMap 使 Milvus 能够将顺序访问数据段的标量数据直接写入磁盘。字符串等长度可变的数据会被扁平化，并使用内存中的偏移数组进行索引。这种方法确保了数据访问的本地性，并消除了单独存储每个变长数据的开销。对向量索引的优化非常细致。MMap 有选择地用于向量数据，同时在内存中保留邻接表，在不影响性能的情况下节省了大量内存。</p>
-<p>此外，MMap 还能最大限度地减少内存使用量，从而提高数据处理效率。与以前的 Milvus 版本不同的是，QueryNode 会复制整个数据集，而 MMap 在开发过程中采用了简化的无复制流式处理。这种优化大大减少了内存开销。</p>
-<p><strong>我们的内部测试结果表明，启用 MMap 后，Milvus 可以高效处理双倍的数据量。</strong></p>
-<h2 id="The-road-ahead-continuous-innovation-and-user-centric-enhancements" class="common-anchor-header">未来之路：持续创新和以用户为中心的增强功能<button data-href="#The-road-ahead-continuous-innovation-and-user-centric-enhancements" class="anchor-icon" translate="no">
+    </button></h2><p>Data access patterns significantly impact performance. Milvus’s MMap feature optimizes data access based on locality. MMap enables Milvus to write scalar data directly to the disk for sequentially accessed data segments. Variable-length data such as strings undergoes flattening and is indexed using an offsets array in memory. This approach ensures data access locality and eliminates the overhead of storing each variable-length data separately. Optimizations for vector indexes are meticulous. MMap is selectively employed for vector data while retaining adjacency lists in memory, conserving significant memory without compromising performance.</p>
+<p>In addition, MMap maximizes data processing by minimizing memory usage. Unlike previous Milvus versions where QueryNode copied entire datasets, MMap adopts a streamlined, copy-free streaming process during development. This optimization drastically reduces memory overhead.</p>
+<p><strong>Our internal testing results show that Milvus can efficiently handle double the data volume when enabling MMap.</strong></p>
+<h2 id="The-road-ahead-continuous-innovation-and-user-centric-enhancements" class="common-anchor-header">The road ahead: continuous innovation and user-centric enhancements<button data-href="#The-road-ahead-continuous-innovation-and-user-centric-enhancements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -109,8 +114,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>虽然 MMap 功能还处于测试阶段，但 Milvus 团队致力于不断改进。未来的更新将完善系统的内存使用情况，使 Milvus 能够在单个节点上支持更大的数据量。用户可以预期对 MMap 功能进行更细粒度的控制，实现对 Collections 的动态更改和高级字段加载模式。这些增强功能提供了前所未有的灵活性，使用户能够根据具体要求定制数据处理策略。</p>
-<h2 id="Conclusion-redefining-data-processing-excellence-with-Milvus-MMap" class="common-anchor-header">结论：用 Milvus MMap 重新定义卓越的数据处理能力<button data-href="#Conclusion-redefining-data-processing-excellence-with-Milvus-MMap" class="anchor-icon" translate="no">
+    </button></h2><p>While the MMap feature is in its beta phase, Milvus’s team is committed to continuous improvement. Future updates will refine the system’s memory usage, enabling Milvus to support even more extensive data volumes on a single node. Users can anticipate more granular control over the MMap feature, enabling dynamic changes to collections and advanced field loading modes. These enhancements provide unprecedented flexibility, allowing users to tailor their data processing strategies to specific requirements.</p>
+<h2 id="Conclusion-redefining-data-processing-excellence-with-Milvus-MMap" class="common-anchor-header">Conclusion: redefining data processing excellence with Milvus MMap<button data-href="#Conclusion-redefining-data-processing-excellence-with-Milvus-MMap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,5 +130,5 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3 的 MMap 功能标志着数据处理技术的重大飞跃。通过在性能、成本和系统限制之间取得微妙的平衡，Milvus 使用户能够高效、经济地处理海量数据。随着 Milvus 的不断发展，它将继续走在创新解决方案的前沿，重新定义数据管理的极限。</p>
-<p>Milvus 将继续向无与伦比的卓越数据处理迈进，敬请期待更多突破性发展。</p>
+    </button></h2><p>Milvus 2.3’s MMap feature marks a significant leap in data processing technology. By striking a delicate balance between performance, cost, and system limits, Milvus empowers users to handle vast amounts of data efficiently and cost-effectively. As Milvus continues to evolve, it remains at the forefront of innovative solutions, redefining the boundaries of what’s achievable in data management.</p>
+<p>Stay tuned for more groundbreaking developments as Milvus continues its journey toward unparalleled data processing excellence.</p>

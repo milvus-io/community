@@ -1,64 +1,66 @@
 ---
 id: Whats-Inside-Milvus-1.0.md
-title: Что внутри Milvus 1.0?
+title: What's Inside Milvus 1.0?
 author: milvus
 date: 2021-04-29T08:46:04.019Z
 desc: >-
-  Milvus v1.0 уже доступен. Узнайте об основах Milvus, а также о ключевых
-  возможностях Milvus v1.0.
+  Milvus v1.0 is available now. Learn about the Milvus fundamentals as well as
+  key features of Milvus v1.0.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Whats-Inside-Milvus-1.0'
 ---
-<custom-h1>Что внутри Milvus 1.0?</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
-   </span> <span class="img-wrapper"> <span>Milvus.jpeg</span> </span></p>
-<p>Milvus - это векторная база данных с открытым исходным кодом, предназначенная для управления массивными миллионными, миллиардными и даже триллионными векторными наборами данных. Milvus находит широкое применение, охватывая открытие новых лекарств, компьютерное зрение, автономное вождение, рекомендательные системы, чат-боты и многое другое.</p>
-<p>В марте 2021 года компания Zilliz, создавшая Milvus, выпустила первую версию платформы с долгосрочной поддержкой - Milvus v1.0. После нескольких месяцев всестороннего тестирования стабильная, готовая к производству версия самой популярной в мире базы данных векторов готова к работе в прайм-тайм. В этой статье блога рассматриваются некоторые основы Milvus, а также ключевые особенности версии 1.0.</p>
+<custom-h1>What’s Inside Milvus 1.0?</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
+    <span>Milvus.jpeg</span>
+  </span>
+</p>
+<p>Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more.</p>
+<p>In March, 2021 Zilliz, the company behind Milvus, released the platform’s first long-term support version—Milvus v1.0. After months of extensive testing, a stable, production ready version of the world’s most popular vector database is ready for prime time. This blog article covers some Milvus fundamentals as well as key features of v1.0.</p>
 <p><br/></p>
-<h3 id="Milvus-distributions" class="common-anchor-header">Дистрибутивы Milvus</h3><p>Milvus доступен в дистрибутивах с поддержкой только CPU и GPU. В первом случае для создания индексов и поиска используется исключительно CPU, а во втором - гибридный поиск и создание индексов с использованием CPU и GPU, что еще больше ускоряет работу Milvus. Например, при использовании гибридного дистрибутива CPU может использоваться для поиска, а GPU - для построения индексов, что еще больше повышает эффективность запросов.</p>
-<p>Оба дистрибутива Milvus доступны в Docker. Вы можете либо скомпилировать Milvus из Docker (если ваша операционная система это поддерживает), либо скомпилировать Milvus из исходного кода на Linux (другие операционные системы не поддерживаются).</p>
+<h3 id="Milvus-distributions" class="common-anchor-header">Milvus distributions</h3><p>Milvus is available in CPU-only and GPU-enabled distributions. The former relies exclusively on CPU for index building and search; the latter enables CPU and GPU hybrid search and index building that further accelerates Milvus. For example, using the hybrid distribution, CPU can be used for search and GPU for index building, further improving query efficiency.</p>
+<p>Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported).</p>
 <p><br/></p>
-<h3 id="Embedding-vectors" class="common-anchor-header">Встраивание векторов</h3><p>Векторы хранятся в Milvus в виде сущностей. Каждая сущность имеет одно поле идентификатора вектора и одно поле вектора. Milvus v1.0 поддерживает только целочисленные идентификаторы векторов. При создании коллекции в Milvus идентификаторы векторов могут быть сгенерированы автоматически или заданы вручную. Milvus гарантирует уникальность автоматически сгенерированных идентификаторов векторов, однако, заданные вручную идентификаторы могут быть продублированы в Milvus. При ручном определении идентификаторов пользователи несут ответственность за то, чтобы все идентификаторы были уникальными.</p>
+<h3 id="Embedding-vectors" class="common-anchor-header">Embedding vectors</h3><p>Vectors are stored in Milvus as entities. Each entity has one vector ID field and one vector field. Milvus v1.0 supports integer vector IDs only. When creating a collection within Milvus, vector IDs can be automatically generated or manually defined. Milvus ensures auto-generated vector IDs are unique however, manually defined IDs can be duplicated within Milvus. If manually defining IDs, users are responsible for making sure all IDs are unique.</p>
 <p><br/></p>
-<h3 id="Partitions" class="common-anchor-header">Разделы</h3><p>Milvus поддерживает создание разделов в коллекции. В ситуациях, когда данные вставляются регулярно и исторические данные не имеют большого значения (например, потоковые данные), разделы можно использовать для ускорения поиска векторного сходства. В одной коллекции может быть до 4 096 разделов. Задание поиска вектора в определенном разделе сужает поиск и может значительно сократить время запроса, особенно для коллекций, содержащих более триллиона векторов.</p>
+<h3 id="Partitions" class="common-anchor-header">Partitions</h3><p>Milvus supports creating partitions in a collection. In situations where data is inserted regularly and historical data isn’t significant (e.g., streaming data), partitions can be used to accelerate vector similarity search. One collection can have up to 4,096 partitions. Specifying a vector search within a specific partition narrows the search and may significantly reduce query time, particularly for collections that contain more than a trillion vectors.</p>
 <p><br/></p>
-<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Оптимизация индексных алгоритмов</h3><p>Milvus построен на основе множества широко распространенных библиотек индексов, включая Faiss, NMSLIB и Annoy. Milvus - это гораздо больше, чем просто обертка для этих индексных библиотек. Вот некоторые из основных усовершенствований, которые были сделаны в базовых библиотеках:</p>
+<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Index algorithm optimizations</h3><p>Milvus is built on top of multiple widely-adopted index libraries, including Faiss, NMSLIB, and Annoy. Milvus is far more than a basic wrapper for these index libraries. Here are some of the major enhancements that have been made to the underlying libraries:</p>
 <ul>
-<li>Оптимизация производительности индексов IVF с использованием алгоритма k-means Элькана.</li>
-<li>Оптимизация FLAT-поиска.</li>
-<li>Поддержка гибридного индекса IVF_SQ8H, который позволяет уменьшить размер индексного файла до 75 % без потери точности данных. IVF_SQ8H построен на базе IVF_SQ8, имеет идентичный отзыв, но гораздо более высокую скорость запросов. Он был разработан специально для Milvus, чтобы использовать возможности параллельной обработки данных на графических процессорах и потенциал синергии между совместной обработкой данных на CPU и GPU.</li>
-<li>Динамическая совместимость наборов инструкций.</li>
+<li>IVF index performance optimizations using the Elkan k-means algorithm.</li>
+<li>FLAT search optimizations.</li>
+<li>IVF_SQ8H hybrid index support, which can reduce index file sizes by up to 75% without sacrificing data accuracy. IVF_SQ8H is built upon IVF_SQ8, with identical recall but much faster query speed. It was designed specifically for Milvus to harnesses the parallel processing capacity of GPUs, and the potential for synergy between CPU/GPU co-processing.</li>
+<li>Dynamic instruction set compatibility.</li>
 </ul>
 <p><br/></p>
-<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Поиск, создание индексов и другие оптимизации Milvus</h3><p>Для повышения производительности поиска и создания индексов в Milvus были внесены следующие оптимизации.</p>
+<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Search, index building, and other Milvus optimizations</h3><p>The following optimizations have been made to Milvus to improve search and index building performance.</p>
 <ul>
-<li>Производительность поиска оптимизирована в ситуациях, когда количество запросов (nq) меньше количества потоков процессора.</li>
-<li>Milvus объединяет поисковые запросы от клиента, которые имеют одинаковые topK и параметры поиска.</li>
-<li>Формирование индекса приостанавливается при поступлении поисковых запросов.</li>
-<li>При запуске Milvus автоматически предварительно загружает коллекции в память.</li>
-<li>Для ускорения поиска векторного сходства может быть назначено несколько GPU-устройств.</li>
+<li>Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads.</li>
+<li>Milvus combines search requests from a client that take the same topK and search parameters.</li>
+<li>Index building is suspended when search requests come in.</li>
+<li>Milvus automatically preloads collections to memory at start.</li>
+<li>Multiple GPU devices can be assigned to accelerate vector similarity search.</li>
 </ul>
 <p><br/></p>
-<h3 id="Distance-metrics" class="common-anchor-header">Метрики расстояний</h3><p>Milvus - это векторная база данных, созданная для ускорения поиска векторного сходства. Платформа была создана с учетом потребностей MLOps и приложений ИИ производственного уровня. Milvus поддерживает широкий спектр метрик расстояний для расчета сходства, таких как евклидово расстояние (L2), внутреннее произведение (IP), расстояние Жаккара, Танимото, расстояние Хэмминга, надстройка и подструктура. Последние две метрики широко используются в молекулярном поиске и поиске новых лекарств с помощью искусственного интеллекта.</p>
+<h3 id="Distance-metrics" class="common-anchor-header">Distance metrics</h3><p>Milvus is a vector database built to power vector similarity search. The platform was built with MLOps and production level AI applications in mind. Milvus supports a wide range of distance metrics for calculating similarity, such as Euclidean distance (L2), inner product (IP), Jaccard distance, Tanimoto, Hamming distance, superstructure, and substructure. The last two metrics are commonly used in molecular search and AI-powered new drug discovery.</p>
 <p><br/></p>
-<h3 id="Logging" class="common-anchor-header">Поворот журнала</h3><p>Milvus поддерживает ротацию журналов. В файле конфигурации системы milvus.yaml можно задать размер одного файла журнала, количество файлов журнала и вывод журнала в stdout.</p>
+<h3 id="Logging" class="common-anchor-header">Logging</h3><p>Milvus supports log rotation. In the system configuration file, milvus.yaml, you can set the size of a single log file, the number of log files, and log output to stdout.</p>
 <p><br/></p>
-<h3 id="Distributed-solution" class="common-anchor-header">Распределенное решение</h3><p>Mishards, промежуточное ПО для шардинга Milvus, является распределенным решением для Milvus. Имея один узел записи и неограниченное количество узлов чтения, Mishards раскрывает вычислительный потенциал серверного кластера. Его возможности включают перенаправление запросов, разделение чтения/записи, динамическое/горизонтальное масштабирование и многое другое.</p>
+<h3 id="Distributed-solution" class="common-anchor-header">Distributed solution</h3><p>Mishards, a Milvus sharding middleware, is the distributed solution for Milvus With one write node and an unlimited number of read nodes, Mishards unleashes the computational potential of server cluster. Its features include request forwarding, read/write splitting, dynamic/horizontal scaling, and more.</p>
 <p><br/></p>
-<h3 id="Monitoring" class="common-anchor-header">Мониторинг</h3><p>Milvus совместим с Prometheus, набором инструментов для мониторинга и оповещения систем с открытым исходным кодом. Milvus добавляет поддержку Pushgateway в Prometheus, что позволяет Prometheus получать недолговечные пакетные метрики. Система мониторинга и оповещений работает следующим образом:</p>
+<h3 id="Monitoring" class="common-anchor-header">Monitoring</h3><p>Milvus is compatible with Prometheus, an open-source system monitoring and alerts toolkit. Milvus adds support for Pushgateway in Prometheus, making it possible for Prometheus to acquire short-lived batch metrics. The monitoring and alerts system works as follows:</p>
 <ul>
-<li>Сервер Milvus отправляет настраиваемые данные метрик на Pushgateway.</li>
-<li>Pushgateway обеспечивает безопасную отправку эфемерных метрических данных в Prometheus.</li>
-<li>Prometheus продолжает получать данные из Pushgateway.</li>
-<li>Alertmanager используется для установки порога оповещения для различных показателей и отправки оповещений по электронной почте или сообщениями.</li>
+<li>The Milvus server pushes customized metrics data to Pushgateway.</li>
+<li>Pushgateway ensures ephemeral metric data is safely sent to Prometheus.</li>
+<li>Prometheus continues pulling data from Pushgateway.</li>
+<li>Alertmanager is used to set the alert threshold for different indicators and send alerts via email or message.</li>
 </ul>
 <p><br/></p>
-<h3 id="Metadata-management" class="common-anchor-header">Управление метаданными</h3><p>По умолчанию Milvus использует SQLite для управления метаданными. SQLite реализован в Milvus и не требует настройки. В производственной среде рекомендуется использовать MySQL для управления метаданными.</p>
+<h3 id="Metadata-management" class="common-anchor-header">Metadata management</h3><p>Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management.</p>
 <p><br/></p>
-<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Участвуйте в работе нашего сообщества разработчиков с открытым исходным кодом:</h3><ul>
-<li>Найдите Milvus на <a href="https://github.com/milvus-io/milvus/">GitHub</a> и внесите в него свой вклад.</li>
-<li>Взаимодействуйте с сообществом через <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Общайтесь с нами в <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

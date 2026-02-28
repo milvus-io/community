@@ -1,6 +1,8 @@
 ---
 id: introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md
-title: 'Milvus 2.5를 소개합니다: 전체 텍스트 검색, 더욱 강력해진 메타데이터 필터링, 사용성 개선!'
+title: >-
+  Introducing Milvus 2.5: Full-Text Search, More Powerful Metadata Filtering,
+  and Usability Improvements!
 author: 'Ken Zhang, Stefan Webb, Jiang Chen'
 date: 2024-12-17T00:00:00.000Z
 cover: assets.zilliz.com/Introducing_Milvus_2_5_e4968e1cdb.png
@@ -12,7 +14,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md
 ---
-<h2 id="Overview" class="common-anchor-header">개요<button data-href="#Overview" class="anchor-icon" translate="no">
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,18 +29,18 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>어휘 또는 키워드 검색이라고도 하는 <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">전체 텍스트 검색이라는</a> 강력한 새 기능을 도입한 Milvus의 최신 버전 2.5를 선보이게 되어 기쁘게 생각합니다. 검색을 처음 사용하는 경우, 전체 텍스트 검색을 사용하면 Google에서 검색하는 방식과 유사하게 문서 내에서 특정 단어나 구문을 검색하여 문서를 찾을 수 있습니다. 이는 정확한 단어만 일치시키는 것이 아니라 검색의 의미를 이해하는 기존의 시맨틱 검색 기능을 보완합니다.</p>
-<p>문서 유사성에는 업계 표준인 BM25 메트릭을 사용하며, 스파스 벡터를 기반으로 구현되어 보다 효율적인 저장과 검색이 가능합니다. 이 용어가 익숙하지 않은 분들을 위해 설명하자면, 스파스 벡터는 대부분의 값이 0인 텍스트를 표현하는 방법으로, 저장 및 처리 효율이 매우 높습니다. 몇 개의 셀에만 숫자가 들어 있고 나머지는 비어 있는 거대한 스프레드시트를 상상해 보세요. 이 접근 방식은 벡터를 핵심 검색 개체로 삼는 Milvus의 제품 철학에 잘 맞습니다.</p>
-<p>이 구현에서 주목할 만한 또 다른 측면은 사용자가 텍스트를 스파스 벡터로 수동 변환하는 대신 <em>직접</em> 텍스트를 삽입하고 쿼리할 수 있는 기능입니다. 이로써 Milvus는 비정형 데이터의 완전한 처리에 한 걸음 더 다가서게 되었습니다.</p>
-<p>하지만 이것은 시작에 불과합니다. 2.5 버전 출시와 함께 <a href="https://milvus.io/docs/roadmap.md">Milvus 제품 로드맵을</a> 업데이트했습니다. 향후 Milvus의 제품 반복 버전에서는 다음 네 가지 핵심 방향으로 Milvus의 기능을 발전시키는 데 초점을 맞출 것입니다:</p>
+    </button></h2><p>We are thrilled to present the latest version of Milvus, 2.5, which introduces a powerful new capability: <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">full-text search</a>, also known as lexical or keyword search. If you are new to search, full-text search allows you to find documents by searching for specific words or phrases within them, similar to how you search in Google. This complements our existing semantic search capabilities, which understand the meaning behind your search rather than just matching exact words.</p>
+<p>We use the industry-standard BM25 metric for document similarity, and our implemention is based on sparse vectors, allowing for more efficient storage and retrieval. For those unfamiliar with the term, sparse vectors are a way to represent text where most values are zero, making them very efficient to store and process—imagine a huge spreadsheet where only a few cells contain numbers, and the rest are empty. This approach fits well into Milvus’s product philosophy where the vector is the core search entity.</p>
+<p>An additional noteworthy aspect of our implementation is the capability to insert and query text <em>directly</em> rather than having users first manually convert text into sparse vectors. This takes Milvus one step closer towards fully processing unstructured data.</p>
+<p>But this is just the beginning. With the release of 2.5, we updated the <a href="https://milvus.io/docs/roadmap.md">Milvus product roadmap</a>. In future product iterations of Milvus, our focus will be on evolving Milvus’s capabilities in four key directions:</p>
 <ul>
-<li>간소화된 비정형 데이터 처리;</li>
-<li>검색 품질 및 효율성 향상</li>
-<li>보다 쉬운 데이터 관리</li>
-<li>알고리즘 및 설계 발전을 통한 비용 절감</li>
+<li>Streamlined unstructured data processing;</li>
+<li>Better search quality and efficiency;</li>
+<li>Easier data management;</li>
+<li>Lowering costs through algorithmic and design advances</li>
 </ul>
-<p>우리의 목표는 AI 시대에 정보를 효율적으로 저장하고 효과적으로 검색할 수 있는 데이터 인프라를 구축하는 것입니다.</p>
-<h2 id="Full-text-Search-via-Sparse-BM25" class="common-anchor-header">Sparse-BM25를 통한 전체 텍스트 검색<button data-href="#Full-text-Search-via-Sparse-BM25" class="anchor-icon" translate="no">
+<p>Our aim is to build data infrastructure that can both efficiently store and effectively retrieve information in the AI era.</p>
+<h2 id="Full-text-Search-via-Sparse-BM25" class="common-anchor-header">Full-text Search via Sparse-BM25<button data-href="#Full-text-Search-via-Sparse-BM25" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -53,27 +55,27 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>일반적으로 시맨틱 검색은 문맥 인식과 의도 이해가 더 뛰어나지만, 사용자가 특정 고유 명사, 일련 번호 또는 완전히 일치하는 구문을 검색해야 하는 경우 키워드 매칭을 통한 전체 텍스트 검색이 더 정확한 결과를 산출하는 경우가 많습니다.</p>
-<p>예를 들어 설명해 보겠습니다:</p>
+    </button></h2><p>Although semantic search typically has better contexual awareness and intent understanding, when a user needs to search for specific proper nouns, serial numbers, or a completely-matching phrase, full-text retrieval with keyword matching often produces more accurate results.</p>
+<p>To illustrate this with an example:</p>
 <ul>
-<li>"재생 에너지 솔루션에 관한 문서 찾기"와 같은 질문에는 시맨틱 검색이 더 효과적입니다.</li>
-<li>&quot; <em>테슬라 모델 3 2024에</em> 관한 문서 찾기&quot;와 같이 필요할 때는 전체 텍스트 검색이 더 좋습니다.</li>
+<li>Semantic search excels when you ask: “Find documents about renewable energy solutions”</li>
+<li>Full-text search is better when you need: &quot;Find documents mentioning <em>Tesla Model 3 2024</em>&quot;</li>
 </ul>
-<p>이전 버전(Milvus 2.4)에서는 사용자가 검색하기 전에 자신의 컴퓨터에서 별도의 도구(PyMilvus의 BM25EmbeddingFunction 모듈)를 사용해 텍스트를 사전 처리해야 했습니다. 이 방식은 증가하는 데이터 세트를 잘 처리하지 못하고, 추가 설정 단계가 필요하며, 전체 프로세스를 필요 이상으로 복잡하게 만드는 등 몇 가지 한계가 있었습니다. 기술적인 측면에서는 한 대의 기계에서만 작동할 수 있다는 점, BM25 채점에 사용되는 어휘 및 기타 말뭉치 통계는 말뭉치가 변경될 때 업데이트할 수 없다는 점, 클라이언트 측에서 텍스트를 벡터로 변환하는 작업이 직관적이지 않다는 점이 가장 큰 한계였습니다.</p>
-<p>Milvus 2.5는 모든 것을 간소화합니다. 이제 텍스트로 직접 작업할 수 있습니다:</p>
+<p>In our previous version (Milvus 2.4), users had to pre-process their text using a separate tool (the BM25EmbeddingFunction module to the PyMilvus) on their own machines before they could search it This approach had several limitations: it couldn’t handle growing datasets well, required extra setup steps, and made the whole process more complicated than necessary. For the technically minded, the key limitations were that it could only work on a single machine; the vocabulary and other corpus statistics used for BM25 scoring couldn’t be updated as the corpus changed; and converting text to vectors on the client side is less intuitive working withtext directly.</p>
+<p>Milvus 2.5 simplifies everything. Now you can work with your text directly:</p>
 <ul>
-<li>원본 텍스트 문서를 그대로 저장</li>
-<li>자연어 쿼리를 사용한 검색</li>
-<li>결과를 읽기 쉬운 형태로 다시 가져오기</li>
+<li>Store your original text documents as they are</li>
+<li>Search using natural language queries</li>
+<li>Get results back in readable form</li>
 </ul>
-<p>Milvus는 복잡한 벡터 변환을 모두 자동으로 처리하여 텍스트 데이터로 더 쉽게 작업할 수 있습니다. 이를 "문서 입력, 문서 출력" 방식이라고 하는데, 사용자는 가독성 있는 텍스트로 작업하고 나머지는 저희가 처리합니다.</p>
-<h3 id="Techical-Implementation" class="common-anchor-header">기술적 구현</h3><p>기술적인 세부 사항에 관심이 있는 분들을 위해 Milvus 2.5는 내장된 Sparse-BM25 구현을 통해 다음과 같은 전체 텍스트 검색 기능을 추가했습니다:</p>
+<p>Behind the scenes, Milvus handles all the complex vector conversions automatically making it easier to work with text data. This is what we call our “Doc in, Doc out” approach—you work with readable text, and we handle the rest.</p>
+<h3 id="Techical-Implementation" class="common-anchor-header">Techical Implementation</h3><p>For those interested in the technical details, Milvus 2.5 adds the full-text search capability through its built-in Sparse-BM25 implementation, including:</p>
 <ul>
-<li><strong>탄티비 기반의 토큰화</strong>: Milvus는 이제 번성하는 탄티비 에코시스템과 통합됩니다.</li>
-<li><strong>원시 문서를 수집하고 검색할 수 있는 기능</strong>: 텍스트 데이터의 직접 수집 및 쿼리 지원</li>
-<li><strong>BM25 관련성 점수</strong>: 스파스 벡터를 기반으로 구현된 BM25 스코어링 내재화</li>
+<li><strong>A Tokenizer built on tantivy</strong>: Milvus now integrates with the thriving tantivy ecosystem</li>
+<li><strong>Capability to ingest and retrieve raw documents</strong>: Support for direct ingestion and query of text data</li>
+<li><strong>BM25 relevance scoring</strong>: Internalize BM25 scoring, implemented based on sparse vector</li>
 </ul>
-<p>저희는 잘 발달된 탠티비 생태계와 협력하여 탠티비에서 Milvus 텍스트 토큰화기를 구축하기로 결정했습니다. 앞으로 Milvus는 더 많은 토큰라이저를 지원하고 토큰화 프로세스를 공개하여 사용자가 검색 품질을 더 잘 이해할 수 있도록 도울 것입니다. 또한, 전체 텍스트 검색의 성능을 더욱 최적화하기 위해 딥 러닝 기반 토큰라이저와 스템머 전략을 연구할 예정입니다. 아래는 토큰화기를 사용하고 구성하기 위한 샘플 코드입니다:</p>
+<p>We chose to work with the well-developed tantivy ecosystem and build the Milvus text tokenizer on tantivy. In the future, Milvus will support more tokenizers and expose the tokenization process to help users better understand the retrieval quality. We will also explore deep learning-based tokenizers and stemmer strategies to further optimize the performance of full-text search. Below is sample code for using and configuring the tokenizer:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Tokenizer configuration</span>
 schema.add_field(
     field_name=<span class="hljs-string">&#x27;text&#x27;</span>,
@@ -84,7 +86,7 @@ schema.add_field(
     enable_match=<span class="hljs-literal">True</span>, <span class="hljs-comment"># Build an inverted index for Text_Match</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>수집 스키마에서 토큰화기를 구성한 후, 사용자는 add_function 메서드를 통해 텍스트를 bm25 함수에 등록할 수 있습니다. 이 함수는 Milvus 서버 내부에서 실행됩니다. 이후 추가, 삭제, 수정, 쿼리와 같은 모든 데이터 흐름은 벡터 표현이 아닌 원시 텍스트 문자열에 대한 연산을 통해 완료할 수 있습니다. 새로운 API로 텍스트를 수집하고 전체 텍스트 검색을 수행하는 방법은 아래 코드 예시를 참조하세요:</p>
+<p>After configuring the tokenizer in the collection schema, users can register the text to bm25 function via add_function method. This will run internally in the Milvus server. All subsequent data flows such as additions, deletions, modifications, and queries can be completed by operating on the raw text string, as opposed to the vector representation. See below code example for how to ingest text and conduct full-text search with the new API:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Define the mapping relationship between raw text data and vectors on the schema</span>
 bm25_function = Function(
     name=<span class="hljs-string">&quot;text_bm25_emb&quot;</span>,
@@ -109,13 +111,13 @@ MilvusClient.search(
     limit=<span class="hljs-number">3</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>쿼리와 문서를 <strong>스파스-BM25라는</strong> 스파스 벡터로 표현하는 BM25 연관성 점수 구현을 채택했습니다. 이를 통해 다음과 같은 스파스 벡터를 기반으로 한 많은 최적화가 가능해졌습니다:</p>
-<p>Milvus는 전체 텍스트 검색을 벡터 데이터베이스 아키텍처에 통합하는 최첨단 <strong>Sparse-BM25 구현을</strong> 통해 하이브리드 검색 기능을 달성합니다. 용어 빈도를 기존의 역 인덱스 대신 희소 벡터로 표현함으로써 Sparse-BM25는 <strong>그래프 인덱싱</strong>, <strong>제품 양자화(PQ)</strong>, <strong>스칼라 양자화(SQ)</strong>와 같은 고급 최적화를 가능하게 합니다. 이러한 최적화는 메모리 사용량을 최소화하고 검색 성능을 가속화합니다. 역 인덱스 접근 방식과 유사하게, Milvus는 원시 텍스트를 입력으로 받아 내부적으로 스파스 벡터를 생성하는 것을 지원합니다. 이를 통해 모든 토큰화기와 함께 작동하고 동적으로 변화하는 말뭉치에 표시되는 모든 단어를 파악할 수 있습니다.</p>
-<p>또한 휴리스틱 기반 가지치기는 가치가 낮은 스파스 벡터를 폐기하여 정확도 저하 없이 효율성을 더욱 향상시킵니다. 스파스 벡터를 사용하는 이전 접근 방식과 달리, BM25 점수의 정확도가 아니라 증가하는 말뭉치에 적응할 수 있습니다.</p>
+<p>We have adopted an implementation of BM25 relevance scoring that represents queries and documents as sparse vectors, called <strong>Sparse-BM25</strong>. This unlocks many optimizations based on sparse vector, such as:</p>
+<p>Milvus achieves hybrid search capabilities through its cutting-edge <strong>Sparse-BM25 implementation</strong>, which integrates full-text search into the vector database architecture. By representing term frequencies as sparse vectors instead of traditional inverted indexes, Sparse-BM25 enables advanced optimizations, such as <strong>graph indexing</strong>, <strong>product quantization (PQ)</strong>, and <strong>scalar quantization (SQ)</strong>. These optimizations minimize memory usage and accelerate search performance. Similar to inverted index approach, Milvus supports taking raw text as input and generating sparse vectors internally. This make it able to work with any tokenizer and grasp any word shown in the dynamicly changing corpus.</p>
+<p>Additionally, heuristic-based pruning discards low-value sparse vectors, further enhancing efficiency without compromising accuracy. Unlike previous approach using sparse vector, it can adapt to a growing corpus, not the accuracy of BM25 scoring.</p>
 <ol>
-<li>스파스 벡터에 그래프 인덱스를 구축하는 것은 긴 텍스트가 포함된 쿼리에서 반전 인덱스보다 더 나은 성능을 발휘하는데, 반전 인덱스는 쿼리의 토큰 매칭을 완료하는 데 더 많은 단계가 필요하기 때문입니다;</li>
-<li>벡터 양자화 및 휴리스틱 기반 가지치기와 같이 검색 품질에 약간의 영향만 미치면서 검색 속도를 높이는 근사화 기법을 활용합니다;</li>
-<li>시맨틱 검색과 전체 텍스트 검색을 수행하기 위한 인터페이스와 데이터 모델을 통합하여 사용자 경험을 향상시킵니다.</li>
+<li>Building graph indexes on the sparse vector, which performs better than inverted index on queries with long text as inverted index needs more steps to finish matching the tokens in the query;</li>
+<li>Leveraging approximation techniques to speed up search with only minor impact on retrieval quality, such as vector quantization and heuristic based pruning;</li>
+<li>Unifying the interface and data model for performing semantic search and full-text search, thus enhancing the user experience.</li>
 </ol>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Creating an index on the sparse column</span>
 index_params.add_index(
@@ -129,8 +131,8 @@ search_params = {
     <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;drop_ratio_search&#x27;</span>: <span class="hljs-number">0.6</span>}, <span class="hljs-comment"># WAND search parameter configuration can speed up search</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>요약하자면, Milvus 2.5는 시맨틱 검색을 넘어 전체 텍스트 검색을 도입함으로써 검색 기능을 확장하여 사용자가 고품질의 AI 애플리케이션을 더 쉽게 구축할 수 있도록 지원합니다. 이는 스파스-BM25 검색의 초기 단계에 불과하며, 앞으로 더 많은 최적화를 시도할 수 있을 것으로 예상됩니다.</p>
-<h2 id="Text-Matching-Search-Filters" class="common-anchor-header">텍스트 매칭 검색 필터<button data-href="#Text-Matching-Search-Filters" class="anchor-icon" translate="no">
+<p>In summary, Milvus 2.5 has expanded its search capability beyond semantic search by introducing full-text retrieval, making it easier for users to build high quality AI applications. These are just initial steps in the space of Sparse-BM25 search and we anticipate that there will be further optimization measures to try in the future.</p>
+<h2 id="Text-Matching-Search-Filters" class="common-anchor-header">Text Matching Search Filters<button data-href="#Text-Matching-Search-Filters" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -145,14 +147,14 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.5와 함께 출시된 두 번째 텍스트 검색 기능은 사용자가 특정 텍스트 문자열이 포함된 항목으로 검색을 필터링할 수 있는 <strong>텍스트 일치입니다</strong>. 이 기능 역시 토큰화를 기반으로 구축되었으며 <code translate="no">enable_match=True</code> 에서 활성화됩니다.</p>
-<p>텍스트 일치를 사용하면 쿼리 텍스트의 처리가 토큰화 후 OR 논리를 기반으로 한다는 점에 주목할 필요가 있습니다. 예를 들어, 아래 예에서는 '벡터' 또는 '데이터베이스'가 포함된 모든 문서('텍스트' 필드 사용)를 반환합니다.</p>
+    </button></h2><p>A second text search feature released with Milvus 2.5 is <strong>Text Match</strong>, which allows the user to filter the search to entries containing a specific text string. This feature is also built on the basis of tokenization and is activated with <code translate="no">enable_match=True</code>.</p>
+<p>It is worth noting that with Text Match, the processing of the query text is based on the logic of OR after tokenization. For example, in the example below, the result will return all documents (using the ‘text’ field) that contain either ‘vector’ or 'database’.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-built_in">filter</span> = <span class="hljs-string">&quot;TEXT_MATCH(text, &#x27;vector database&#x27;)&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>시나리오에서 '벡터'와 '데이터베이스'를 모두 일치시켜야 하는 경우, 목표를 달성하려면 두 개의 개별 텍스트 매치를 작성하고 AND로 오버레이해야 합니다.</p>
+<p>If your scenario requires matching both ‘vector’ and 'database’, then you need to write two separate Text Matches and overlay them with AND to achieve your goal.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-built_in">filter</span> = <span class="hljs-string">&quot;TEXT_MATCH(text, &#x27;vector&#x27;) and TEXT_MATCH(text, &#x27;database&#x27;)&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Significant-Enhancement-in-Scalar-Filtering-Performance" class="common-anchor-header">스칼라 필터링 성능의 대폭적인 향상<button data-href="#Significant-Enhancement-in-Scalar-Filtering-Performance" class="anchor-icon" translate="no">
+<h2 id="Significant-Enhancement-in-Scalar-Filtering-Performance" class="common-anchor-header">Significant Enhancement in Scalar Filtering Performance<button data-href="#Significant-Enhancement-in-Scalar-Filtering-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -167,11 +169,11 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>우리가 스칼라 필터링 성능에 중점을 둔 것은 벡터 검색과 메타데이터 필터링을 결합하면 다양한 시나리오에서 쿼리 성능과 정확도를 크게 향상시킬 수 있다는 사실을 발견한 데서 비롯되었습니다. 이러한 시나리오는 자율 주행의 코너 케이스 식별과 같은 이미지 검색 애플리케이션부터 기업 지식 베이스의 복잡한 RAG 시나리오에 이르기까지 다양합니다. 따라서 기업 사용자가 대규모 데이터 애플리케이션 시나리오에서 구현하기에 매우 적합합니다.</p>
-<p>실제로는 필터링하는 데이터의 양, 데이터 구성 방식, 검색 방식 등 여러 가지 요소가 성능에 영향을 미칠 수 있습니다. 이 문제를 해결하기 위해 Milvus 2.5에서는 비트맵 인덱스, 배열 반전 인덱스, 그리고 바차르 텍스트 필드를 토큰화한 후의 반전 인덱스 등 세 가지 새로운 유형의 인덱스가 도입되었습니다. 이러한 새로운 인덱스는 실제 사용 사례에서 성능을 크게 향상시킬 수 있습니다.</p>
-<p>구체적으로 설명하면 다음과 같습니다:</p>
+    </button></h2><p>Our emphasis on scalar filtering performance originates from our discovery that the combination of vector retrieval and metadata filtering can greatly improve query performance and accuracy in various scenarios. These scenarios range from image search applications such as corner case identification in autonomous driving to complex RAG scenarios in enterprise knowledge bases. Thus, it is highly suitable for enterprise users to implement in large-scale data application scenarios.</p>
+<p>In practice, many factors like how much data you’re filtering, how your data is organized, and how you’re searching can affect performance. To address this, Milvus 2.5 introduces three new types of indexes—BitMap Index, Array Inverted Index, and the Inverted Index after tokenizing the Varchar text field. These new indexes can significantly improve performance in real-world use cases.</p>
+<p>Specifically:</p>
 <ol>
-<li><strong>비트맵 인덱스는</strong> 태그 필터링을 가속화하는 데 사용할 수 있으며(일반적인 연산자에는 in, array_contains 등이 포함됨), 필드 카테고리 데이터(데이터 카디널리티)가 적은 시나리오에 적합합니다. 원칙은 데이터 행이 열에 특정 값을 가지고 있는지 여부를 1은 예, 0은 아니오로 판단한 다음 비트맵 목록을 유지하는 것입니다. 다음 차트는 고객의 비즈니스 시나리오를 기반으로 수행한 성능 테스트 비교를 보여줍니다. 이 시나리오에서 데이터 볼륨은 5억 개, 데이터 카테고리는 20개, 값의 분포 비율(1%, 5%, 10%, 50%)이 다르며 필터링 양에 따라 성능도 달라집니다. 50% 필터링을 사용하면 비트맵 인덱스를 통해 6.8배의 성능 향상을 달성할 수 있습니다. 카디널리티가 증가함에 따라 비트맵 인덱스에 비해 반전 인덱스가 더 균형 잡힌 성능을 보인다는 점에 주목할 필요가 있습니다.</li>
+<li><strong>BitMap Index</strong> can be used to accelerate tag filtering (common operators include in, array_contains, etc.), and is suitable for scenarios with fewer field category data (data cardinality). The principle is to determine whether a row of data has a certain value on a column, with 1 for yes and 0 for no, and then maintain a BitMap list. The following chart shows the performance test comparison we conducted based on a customer’s business scenario. In this scenario, the data volume is 500 million, the data category is 20, different values have different distribution proportions (1%, 5%, 10%, 50%), and the performance under different filtering amounts also varies. With 50% filtering, we can achieve a 6.8-fold performance gain through BitMap Index. It’s worth noting that as cardinality increases, compared to BitMap Index, Inverted Index will show more balanced performance.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -180,7 +182,7 @@ search_params = {
   </span>
 </p>
 <ol start="2">
-<li><strong>텍스트</strong> 일치는 텍스트 필드가 토큰화된 후 반전 인덱스를 기반으로 합니다. 그 성능은 2.4에서 제공한 와일드카드 일치(즉, + %와 같은) 함수를 훨씬 뛰어넘습니다. 내부 테스트 결과에 따르면, 텍스트 일치는 특히 동시 쿼리 시나리오에서 최대 400배의 QPS 증가를 달성할 수 있는 등 그 장점이 매우 분명합니다.</li>
+<li><strong>Text Match</strong> is based on the Inverted Index after the text field is tokenized. Its performance far exceeds the Wildcard Match (i.e., like + %) function we provided in 2.4. According to our internal test results, the advantages of Text Match are very clear, especially in concurrent query scenarios, where it can achieve up to a 400-fold QPS increase.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -188,8 +190,8 @@ search_params = {
     <span></span>
   </span>
 </p>
-<p>JSON 데이터 처리와 관련해서는 구문 분석 속도를 높이기 위해 사용자가 지정한 키에 대한 역 인덱스 구축과 모든 키에 대한 기본 위치 정보 기록을 2.5.x 후속 버전에 도입할 계획입니다. 이 두 가지 영역 모두 JSON과 동적 필드의 쿼리 성능을 크게 향상시킬 것으로 기대합니다. 향후 릴리즈 노트와 기술 블로그에서 더 많은 정보를 소개할 예정이니 기대해 주세요!</p>
-<h2 id="New-Management-Interface" class="common-anchor-header">새로운 관리 인터페이스<button data-href="#New-Management-Interface" class="anchor-icon" translate="no">
+<p>In terms of JSON data processing, we plan to introduce in subsequent versions of 2.5.x the building of inverted indices for user-specified keys and default location information recording for all keys to speed up parsing. We expect both of these areas to significantly enhance the query performance of JSON and Dynamic Field. We plan to showcase more information in future release notes and technical blogs, so stay tuned!</p>
+<h2 id="New-Management-Interface" class="common-anchor-header">New Management Interface<button data-href="#New-Management-Interface" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -204,16 +206,16 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>데이터베이스를 관리하는 데 컴퓨터 공학 학위가 필요하지는 않지만, 데이터베이스 관리자에게는 강력한 도구가 필요하다는 것을 잘 알고 있습니다. 그렇기 때문에 포트 9091/webui의 클러스터 주소에서 액세스할 수 있는 새로운 웹 기반 인터페이스인 <strong>클러스터 관리 웹UI를</strong> 도입했습니다. 이 통합 가시성 도구는 다음을 제공합니다:</p>
+    </button></h2><p>Managing a database shouldn’t require a computer science degree, but we know database administrators need powerful tools. That’s why we’ve introduced the <strong>Cluster Management WebUI</strong>, a new web-based interface accessible at your cluster’s address on port 9091/webui. This observability tool provides:</p>
 <ul>
-<li>클러스터 전체 메트릭을 보여주는 실시간 모니터링 대시보드</li>
-<li>노드별 상세 메모리 및 성능 분석</li>
-<li>세그먼트 정보 및 느린 쿼리 추적</li>
-<li>시스템 상태 표시기 및 노드 상태</li>
-<li>복잡한 시스템 문제를 위한 사용하기 쉬운 문제 해결 도구</li>
+<li>Real-time monitoring dashboards showing cluster-wide metrics</li>
+<li>Detailed memory and performance analytics per node</li>
+<li>Segment information and slow query tracking</li>
+<li>System health indicators and node status</li>
+<li>Easy-to-use troubleshooting tools for complex system issues</li>
 </ul>
-<p>이 인터페이스는 아직 베타 버전이지만, 데이터베이스 관리자의 사용자 피드백을 바탕으로 활발히 개발 중입니다. 향후 업데이트에는 AI 지원 진단, 더 많은 대화형 관리 기능, 향상된 클러스터 관찰 기능이 포함될 예정입니다.</p>
-<h2 id="Documentation-and-Developer-Experience" class="common-anchor-header">문서 및 개발자 환경<button data-href="#Documentation-and-Developer-Experience" class="anchor-icon" translate="no">
+<p>While this interface is still in beta, we’re actively developing it based on user feedback from database administrators. Future updates will include AI-assisted diagnostics, more interactive management features, and enhanced cluster observability capabilities.</p>
+<h2 id="Documentation-and-Developer-Experience" class="common-anchor-header">Documentation and Developer Experience<button data-href="#Documentation-and-Developer-Experience" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -228,18 +230,18 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>숙련된 사용자를 위해 깊이를 유지하면서 Milvus의 접근성을 높이기 위해 <strong>문서와</strong> <strong>SDK/API</strong> 환경을 완전히 개편했습니다. 개선 사항은 다음과 같습니다:</p>
+    </button></h2><p>We’ve completely revamped our <strong>documentation</strong> and <strong>SDK/API</strong> experience to make Milvus more accessible while maintaining depth for experienced users. The improvements include:</p>
 <ul>
-<li>기본 개념부터 고급 개념까지 보다 명확하게 진행되도록 재구성된 문서 시스템</li>
-<li>실제 구현을 보여주는 대화형 튜토리얼 및 실제 예제</li>
-<li>실용적인 코드 샘플이 포함된 포괄적인 API 레퍼런스</li>
-<li>일반적인 작업을 간소화하는 더욱 사용자 친화적인 SDK 디자인</li>
-<li>복잡한 개념을 쉽게 이해할 수 있는 그림 가이드</li>
-<li>빠른 답변을 제공하는 AI 기반 문서화 도우미(ASK AI)</li>
+<li>A restructured documentation system with clearer progression from basic to advanced concepts</li>
+<li>Interactive tutorials and real-world examples that showcase practical implementations</li>
+<li>Comprehensive API references with practical code samples</li>
+<li>A more user-friendly SDK design that simplifies common operations</li>
+<li>Illustrated guides that make complex concepts easier to understand</li>
+<li>An AI-powered documentation assistant (ASK AI) for quick answers</li>
 </ul>
-<p>업데이트된 SDK/API는 보다 직관적인 인터페이스와 문서와의 더 나은 통합을 통해 개발자 경험을 개선하는 데 중점을 두었습니다. 2.5.x 시리즈로 작업할 때 이러한 개선 사항을 체감하실 수 있을 것입니다.</p>
-<p>하지만 문서와 SDK 개발은 지속적인 과정이라는 것을 잘 알고 있습니다. 커뮤니티의 피드백을 바탕으로 콘텐츠 구조와 SDK 디자인을 계속 최적화해 나갈 것입니다. Discord 채널에 참여하여 제안 사항을 공유하고 개선에 도움을 주세요.</p>
-<h2 id="Summary" class="common-anchor-header"><strong>요약</strong><button data-href="#Summary" class="anchor-icon" translate="no">
+<p>The updated SDK/API focuses on improving developer experience through more intuitive interfaces and better integration with the documentation. We believe you’ll notice these improvements when working with the 2.5.x series.</p>
+<p>However, we know documentation and SDK development is an ongoing process. We’ll continue optimizing both the content structure and SDK design based on community feedback. Join our Discord channel to share your suggestions and help us improve further.</p>
+<h2 id="Summary" class="common-anchor-header"><strong>Summary</strong><button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -254,4 +256,4 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.5에는 질리즈뿐만 아니라 오픈소스 커뮤니티가 기여한 13개의 새로운 기능과 여러 시스템 수준의 최적화가 포함되어 있습니다. 이 글에서는 그 중 일부만 다루었으며, 자세한 내용은 <a href="https://milvus.io/docs/release_notes.md">릴리즈 노트와</a> <a href="https://milvus.io/docs">공식 문서를</a> 참조하시기 바랍니다!</p>
+    </button></h2><p>Milvus 2.5 contains 13 new features and several system-level optimizations, contributed not just by Zilliz but the open-source community. We have only touched on a few of them in this post and encourage you to visit our <a href="https://milvus.io/docs/release_notes.md">release note</a> and <a href="https://milvus.io/docs">official documents</a> for more information!</p>

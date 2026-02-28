@@ -1,6 +1,7 @@
 ---
 id: talk-to-your-vector-database-managing-milvus-via-natural-language.md
-title: ベクターデータベースに話しかける：自然言語によるmilvusの管理
+title: |
+  Talk to Your Vector Database: Managing Milvus via Natural Language
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
@@ -12,20 +13,20 @@ meta_keywords: 'Cursor, Claude Code, Gemini CLI, Code search, MCP'
 meta_title: |
   Talk to Your Vector Database: Managing Milvus via Natural Language
 desc: >-
-  Milvus MCP Serverは、MCPを通じてMilvusとClaude
-  CodeやCursorなどのAIコーディングアシスタントを直接接続します。Milvusを自然言語で管理することができます。
+  Milvus MCP Server connects Milvus directly to AI coding assistants like Claude
+  Code and Cursor through MCP. You can manage Milvus via natural language.
 origin: >-
   https://milvus.io/blog/talk-to-your-vector-database-managing-milvus-via-natural-language.md
 ---
-<p>AIアシスタントに<em>「ベクターデータベースの全てのコレクションを表示</em>」や<em>「このテキストに似たドキュメントを検索</em>」と伝えるだけで、実際に動作してくれたらと思ったことはありませんか？</p>
-<p><a href="http://github.com/zilliztech/mcp-server-milvus"><strong>Milvus MCP Serverは</strong></a>、モデルコンテキストプロトコル(MCP)を介して、MilvusベクトルデータベースをClaude DesktopやCursor IDEのようなAIコーディングアシスタントに直接接続することで、これを可能にします。<code translate="no">pymilvus</code> 、コードを書く代わりに、自然言語による会話を通じてMilvus全体を管理することができます。</p>
+<p>Ever wished you could just tell your AI assistant, <em>“Show me all collections in my vector database”</em> or <em>“Find documents similar to this text”</em> and have it actually work?</p>
+<p>The <a href="http://github.com/zilliztech/mcp-server-milvus"><strong>Milvus MCP Server</strong></a> makes this possible by connecting your Milvus vector database directly to AI coding assistants like Claude Desktop and Cursor IDE through Model Context Protocol (MCP). Instead of writing <code translate="no">pymilvus</code> code, you can manage your entire Milvus through natural language conversations.</p>
 <ul>
-<li><p>Milvus MCPサーバーなし：pymilvus SDKを使用したPythonスクリプトによるベクトル検索</p></li>
-<li><p>Milvus MCP Serverあり："Find documents similar to this text in my collection."（私のコレクションからこのテキストに似た文書を検索する</p></li>
+<li><p>Without Milvus MCP Server: Writing Python scripts with pymilvus SDK to search vectors</p></li>
+<li><p>With Milvus MCP Server: “Find documents similar to this text in my collection.”</p></li>
 </ul>
-<p>👉<strong>GitHubリポジトリ:</strong><a href="https://github.com/zilliztech/mcp-server-milvus"> github.com/zilliztech/mcp-server-milvus</a></p>
-<p>そして、もしあなたが<a href="https://zilliz.com/cloud">Zilliz Cloud</a>(マネージドMilvus)を使っているのであれば、私たちはあなたもカバーしています。このブログの最後に、Zilliz Cloudとシームレスに動作するマネージドオプション、<strong>Zilliz MCP Serverも</strong>ご紹介します。それでは、さっそく見ていきましょう。</p>
-<h2 id="What-Youll-Get-with-Milvus-MCP-Server" class="common-anchor-header">Milvus MCP Serverで得られるもの<button data-href="#What-Youll-Get-with-Milvus-MCP-Server" class="anchor-icon" translate="no">
+<p>👉 <strong>GitHub Repository:</strong><a href="https://github.com/zilliztech/mcp-server-milvus"> github.com/zilliztech/mcp-server-milvus</a></p>
+<p>And if you’re using <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (managed Milvus), we’ve got you covered too. At the end of this blog, we’ll also introduce the <strong>Zilliz MCP Server</strong>, a managed option that works seamlessly with Zilliz Cloud. Let’s dive in.</p>
+<h2 id="What-Youll-Get-with-Milvus-MCP-Server" class="common-anchor-header">What You’ll Get with Milvus MCP Server<button data-href="#What-Youll-Get-with-Milvus-MCP-Server" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,23 +41,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus MCP Serverは、AIアシスタントに以下の機能を提供します：</p>
+    </button></h2><p>The Milvus MCP Server gives your AI assistant the following capabilities:</p>
 <ul>
-<li><p>ベクターコレクションの<strong>リストと探索</strong></p></li>
-<li><p>意味的類似性を用いた<strong>ベクトルの検索</strong></p></li>
-<li><p>カスタムスキーマによる<strong>新しいコレクションの作成</strong></p></li>
-<li><p>ベクトルデータの<strong>挿入と管理</strong></p></li>
-<li><p>コードを書かずに<strong>複雑なクエリを実行</strong></p></li>
-<li><p>その他</p></li>
+<li><p><strong>List and explore</strong> vector collections</p></li>
+<li><p><strong>Search vectors</strong> using semantic similarity</p></li>
+<li><p><strong>Create new collections</strong> with custom schemas</p></li>
+<li><p><strong>Insert and manage</strong> vector data</p></li>
+<li><p><strong>Run complex queries</strong> without writing code</p></li>
+<li><p>And more</p></li>
 </ul>
-<p>まるでデータベースの専門家と会話しているかのような自然な会話。機能の全リストは<a href="https://github.com/zilliztech/mcp-server-milvus?tab=readme-ov-file#available-tools">こちらのレポを</a>ご覧ください。</p>
+<p>All through natural conversation, as if you’re talking to a database expert. Check out <a href="https://github.com/zilliztech/mcp-server-milvus?tab=readme-ov-file#available-tools">this repo</a> for the complete list of capabilities.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/demo_adedb25430.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Quick-Start-Guide" class="common-anchor-header">クイックスタートガイド<button data-href="#Quick-Start-Guide" class="anchor-icon" translate="no">
+<h2 id="Quick-Start-Guide" class="common-anchor-header">Quick Start Guide<button data-href="#Quick-Start-Guide" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,34 +72,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">前提条件</h3><p><strong>必須</strong></p>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p><strong>Required:</strong></p>
 <ul>
-<li><p>Python 3.10以上</p></li>
-<li><p>実行中のMilvusインスタンス（ローカルまたはリモート）</p></li>
-<li><p><a href="https://github.com/astral-sh/uv">uvパッケージマネージャ</a>（推奨）</p></li>
+<li><p>Python 3.10 or higher</p></li>
+<li><p>A running Milvus instance (local or remote)</p></li>
+<li><p><a href="https://github.com/astral-sh/uv">uv package manager</a> (recommended)</p></li>
 </ul>
-<p><strong>サポートされているAIアプリケーション</strong></p>
+<p><strong>Supported AI Applications:</strong></p>
 <ul>
-<li><p>クロードデスクトップ</p></li>
-<li><p>カーソルIDE</p></li>
-<li><p>MCP互換アプリケーション</p></li>
+<li><p>Claude Desktop</p></li>
+<li><p>Cursor IDE</p></li>
+<li><p>Any MCP-compatible application</p></li>
 </ul>
-<h3 id="Tech-Stack-We’ll-Use" class="common-anchor-header">使用する技術スタック</h3><p>このチュートリアルでは、以下の技術スタックを使用します：</p>
+<h3 id="Tech-Stack-We’ll-Use" class="common-anchor-header">Tech Stack We’ll Use</h3><p>In this tutorial, we’ll use the following tech stack:</p>
 <ul>
-<li><p><strong>言語ランタイム：</strong> <a href="https://www.python.org/">Python 3.11</a></p></li>
-<li><p><strong>パッケージマネージャ</strong>UV</p></li>
-<li><p><strong>IDE：</strong>カーソル</p></li>
-<li><p><strong>MCP サーバ:</strong>mcp-server-milvus</p></li>
-<li><p><strong>LLM:</strong>Claude 3.7</p></li>
-<li><p><strong>ベクターデータベース：</strong>Milvus</p></li>
+<li><p><strong>Language Runtime:</strong> <a href="https://www.python.org/">Python 3.11</a></p></li>
+<li><p><strong>Package Manager:</strong> UV</p></li>
+<li><p><strong>IDE:</strong> Cursor</p></li>
+<li><p><strong>MCP Server:</strong> mcp-server-milvus</p></li>
+<li><p><strong>LLM:</strong> Claude 3.7</p></li>
+<li><p><strong>Vector Database:</strong> Milvus</p></li>
 </ul>
-<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">ステップ1: 依存関係のインストール</h3><p>まず、uvパッケージマネージャをインストールします：</p>
+<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Step 1: Install Dependencies</h3><p>First, install the uv package manager:</p>
 <pre><code translate="no">curl -<span class="hljs-title class_">LsSf</span> <span class="hljs-attr">https</span>:<span class="hljs-comment">//astral.sh/uv/install.sh | sh</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>または</p>
+<p>Or:</p>
 <pre><code translate="no">pip3 install uv -i <span class="hljs-attr">https</span>:<span class="hljs-comment">//mirrors.aliyun.com/pypi/simple</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>インストールの確認</p>
+<p>Verify installation:</p>
 <pre><code translate="no">uv --version
 uvx --version
 <button class="copy-code-btn"></button></code></pre>
@@ -108,18 +109,18 @@ uvx --version
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Set-Up-Milvus" class="common-anchor-header">ステップ2：Milvusのセットアップ</h3><p><a href="https://milvus.io/">Milvusは</a>、<a href="https://zilliz.com/">Zillizによって</a>作成されたAIワークロードのためのオープンソースのベクトルデータベースネイティブです。数百万から数十億のベクトルレコードを扱えるように設計されており、GitHubで36,000以上のスターを獲得している。この基盤の上に、ZillizはMilvusのフルマネージドサービス<a href="https://zilliz.com/cloud">であるZilliz Cloudも</a>提供しています<a href="https://zilliz.com/cloud">。</a>Milvusはクラウドネイティブアーキテクチャで、使いやすさ、コスト効率、セキュリティのために設計されています。</p>
-<p>Milvusの導入要件については、<a href="https://milvus.io/docs/prerequisite-docker.md">docサイトのこちらのガイドを</a>ご覧ください。</p>
-<p><strong>最小要件</strong></p>
+<h3 id="Step-2-Set-Up-Milvus" class="common-anchor-header">Step 2: Set Up Milvus</h3><p><a href="https://milvus.io/">Milvus</a> is an open-source vector database native for AI workloads, created by <a href="https://zilliz.com/">Zilliz</a>. Designed to handle millions to billions of vector records, it has gained over 36,000 stars on GitHub. Building on this foundation, Zilliz also offers <a href="https://zilliz.com/cloud">Zilliz Cloud</a>—a fully managed service of Milvus engineered for usability, cost-efficiency, and security with a cloud-native architecture.</p>
+<p>For Milvus deployment requirements, visit <a href="https://milvus.io/docs/prerequisite-docker.md">this guide on the doc site</a>.</p>
+<p><strong>Minimum requirements:</strong></p>
 <ul>
-<li><p><strong>ソフトウェア</strong>Docker、Docker Compose</p></li>
-<li><p><strong>RAM:</strong>16GB以上</p></li>
-<li><p><strong>ディスク:</strong>100GB 以上</p></li>
+<li><p><strong>Software:</strong> Docker, Docker Compose</p></li>
+<li><p><strong>RAM:</strong> 16GB+</p></li>
+<li><p><strong>Disk:</strong> 100GB+</p></li>
 </ul>
-<p>デプロイ用YAMLファイルをダウンロードする：</p>
+<p>Download the deployment YAML file:</p>
 <pre><code translate="no">[root@Milvus ~]# wget https://github.com/milvus-io/milvus/releases/download/v2.5.4/milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvusを起動します：</p>
+<p>Start Milvus:</p>
 <pre><code translate="no">[<span class="hljs-meta">root@Milvus ~</span>]<span class="hljs-meta"># docker-compose up -d</span>
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">[<span class="hljs-meta">root@Milvus ~</span>]<span class="hljs-meta"># docker ps -a</span>
@@ -130,34 +131,34 @@ uvx --version
     <span></span>
   </span>
 </p>
-<p>Milvusインスタンスが<code translate="no">http://localhost:19530</code> 。</p>
-<h3 id="Step-3-Install-the-MCP-Server" class="common-anchor-header">ステップ3: MCPサーバのインストール</h3><p>MCPサーバをクローンしてテストします：</p>
+<p>Your Milvus instance will be available at <code translate="no">http://localhost:19530</code>.</p>
+<h3 id="Step-3-Install-the-MCP-Server" class="common-anchor-header">Step 3: Install the MCP Server</h3><p>Clone and test the MCP server:</p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/zilliztech/mcp-server-milvus.git
 <span class="hljs-built_in">cd</span> mcp-server-milvus
 
 <span class="hljs-comment"># Test the server locally</span>
 uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 <button class="copy-code-btn"></button></code></pre>
-<p>Cursorにサーバを登録する前に、依存関係をインストールし、ローカルで検証することをお勧めします：</p>
+<p>We recommend installing dependencies and verifying locally before registering the server in Cursor:</p>
 <pre><code translate="no">uv run src/mcp_server_milvus/server.<span class="hljs-property">py</span> --milvus-uri <span class="hljs-attr">http</span>:<span class="hljs-comment">//192.168.4.48:19530</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>サーバーが正常に起動したら、AIツールの設定は完了です。</p>
+<p>If you see the server start successfully, you’re ready to configure your AI tool.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Step_3_Install_the_MCP_Server_9ce01351e6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Configure-Your-AI-Assistant" class="common-anchor-header">ステップ4：AIアシスタントの設定</h3><p><strong>オプション A: Claude Desktop</strong></p>
+<h3 id="Step-4-Configure-Your-AI-Assistant" class="common-anchor-header">Step 4: Configure Your AI Assistant</h3><p><strong>Option A: Claude Desktop</strong></p>
 <ol>
-<li><h4 id="Install-Claude-Desktop-from-claudeaidownloadhttpclaudeaidownload" class="common-anchor-header"><code translate="no">[claude.ai/download](http://claude.ai/download)</code> からClaude Desktopをインストールします。</h4></li>
-<li><p>設定ファイルを開きます：</p></li>
+<li><h4 id="Install-Claude-Desktop-from-claudeaidownloadhttpclaudeaidownload" class="common-anchor-header">Install Claude Desktop from <code translate="no">[claude.ai/download](http://claude.ai/download)</code>.</h4></li>
+<li><p>Open the configuration file:</p></li>
 </ol>
 <ul>
-<li>macOS<code translate="no">~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
-<li>設定ファイルを開きます：<code translate="no">%APPDATA%\Claude\claude_desktop_config.json</code></li>
+<li>macOS: <code translate="no">~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+<li>Windows: <code translate="no">%APPDATA%\Claude\claude_desktop_config.json</code></li>
 </ul>
-<p>この設定を追加します：</p>
+<p>Add this configuration:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;milvus&quot;</span>: {
@@ -175,15 +176,15 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 }
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>クロードデスクトップを再起動する</li>
+<li>Restart Claude Desktop</li>
 </ol>
-<p><strong>オプション B: カーソル IDE</strong></p>
+<p><strong>Option B: Cursor IDE</strong></p>
 <ol>
-<li><p>カーソル設定を開く → 機能 → MCP</p></li>
-<li><p>新しいグローバルMCPサーバーを追加する (<code translate="no">.cursor/mcp.json</code> が作成されます)</p></li>
-<li><p>この設定を追加します：</p></li>
+<li><p>Open Cursor Settings → Features → MCP</p></li>
+<li><p>Add new global MCP server (this creates <code translate="no">.cursor/mcp.json</code>)</p></li>
+<li><p>Add this configuration:</p></li>
 </ol>
-<p>注意: 実際のファイル構造に合わせてパスを調整してください。</p>
+<p>Note: Adjust paths to your actual file structure.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;milvus&quot;</span>: {
@@ -206,26 +207,26 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
     <span></span>
   </span>
 </p>
-<p><strong>パラメータ</strong></p>
+<p><strong>Parameters:</strong></p>
 <ul>
-<li><code translate="no">/PATH/TO/uv</code> はuv実行ファイルへのパスです。</li>
-<li><code translate="no">--directory</code> クローンされたプロジェクトのパス</li>
-<li><code translate="no">--milvus-uri</code> はMilvusサーバのエンドポイントです。</li>
+<li><code translate="no">/PATH/TO/uv</code> is the path to the uv executable</li>
+<li><code translate="no">--directory</code> is the path to the cloned project</li>
+<li><code translate="no">--milvus-uri</code> is your Milvus server endpoint</li>
 </ul>
 <ol start="4">
-<li>カーソルを再起動するか、ウィンドウをリロードします。</li>
+<li>Restart the Cursor or reload the window</li>
 </ol>
-<p><code translate="no">uv</code> P<strong>ro tip:</strong>macOS/Linuxでは<code translate="no">which uv</code> 、Windowsでは<code translate="no">where uv</code> 。</p>
-<h3 id="Step-5-See-It-in-Action" class="common-anchor-header">ステップ 5: 実際に操作してみる</h3><p>設定が完了したら、以下の自然言語コマンドを試してみてください：</p>
+<p><strong>Pro tip:</strong> Find your <code translate="no">uv</code> path with <code translate="no">which uv</code> on macOS/Linux or <code translate="no">where uv</code>  on Windows.</p>
+<h3 id="Step-5-See-It-in-Action" class="common-anchor-header">Step 5: See It in Action</h3><p>Once configured, try these natural language commands:</p>
 <ul>
-<li><p><strong>データベースを調べる：</strong>"Milvusデータベースにどんなコレクションがありますか？"</p></li>
-<li><p><strong>新しいコレクションを作成する：</strong>"タイトル(文字列)、コンテンツ(文字列)、埋め込み用の768次元ベクトルフィールドを持つ'articles'というコレクションを作成する"</p></li>
-<li><p><strong>類似コンテンツを検索する：</strong>"私の記事コレクションの中で、'機械学習アプリケーション'に最も似ている5つの記事を見つける"</p></li>
-<li><p><strong>データを挿入する：</strong>"AI Trends 2024 "というタイトルと "Artificial intelligence continues to evolve... "というコンテンツを持つ新しい記事を記事コレクションに追加する"</p></li>
+<li><p><strong>Explore your database:</strong> “What collections do I have in my Milvus database?”</p></li>
+<li><p><strong>Create a new collection:</strong> “Create a collection called ‘articles’ with fields for title (string), content (string), and a 768-dimension vector field for embeddings.”</p></li>
+<li><p><strong>Search for similar content:</strong> “Find the five most similar articles to ‘machine learning applications’ in my articles collection.”</p></li>
+<li><p><strong>Insert data:</strong> “Add a new article with title ‘AI Trends 2024’ and content ‘Artificial intelligence continues to evolve…’ to the articles collection”</p></li>
 </ul>
-<p><strong>以前は30分以上のコーディングが必要だったものが、今では数秒の会話で済むようになった。</strong></p>
-<p>定型文を書いたり、APIを学んだりすることなく、Milvusをリアルタイムでコントロールし、自然言語でアクセスすることができます。</p>
-<h2 id="Troubleshooting" class="common-anchor-header">トラブルシューティング<button data-href="#Troubleshooting" class="anchor-icon" translate="no">
+<p><strong>What used to require 30+ minutes of coding now takes seconds of conversation.</strong></p>
+<p>You get real-time control and natural language access to Milvus—without writing boilerplate or learning the API.</p>
+<h2 id="Troubleshooting" class="common-anchor-header">Troubleshooting<button data-href="#Troubleshooting" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -240,10 +241,10 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MCPツールが表示されない場合、AIアプリケーションを完全に再起動し、<code translate="no">which uv</code> でUVパスを確認し、<code translate="no">uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530</code> でサーバーを手動でテストしてください。</p>
-<p>接続エラーについては、Milvusが起動していることを<code translate="no">docker ps | grep milvus</code> で確認し、<code translate="no">localhost</code> の代わりに<code translate="no">127.0.0.1</code> を使用してみて、ポート 19530 がアクセス可能であることを確認してください。</p>
-<p>認証の問題が発生した場合、Milvusが認証を必要とする場合は環境変数<code translate="no">MILVUS_TOKEN</code> を設定し、試行する操作のパーミッションを確認してください。</p>
-<h2 id="Managed-Alternative-Zilliz-MCP-Server" class="common-anchor-header">管理された代替手段Zilliz MCPサーバ<button data-href="#Managed-Alternative-Zilliz-MCP-Server" class="anchor-icon" translate="no">
+    </button></h2><p>If MCP tools don’t appear, restart your AI application completely, verify the UV path with <code translate="no">which uv</code>, and test the server manually with <code translate="no">uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530</code>.</p>
+<p>For connection errors, check that Milvus is running with <code translate="no">docker ps | grep milvus</code>, try using <code translate="no">127.0.0.1</code> instead of <code translate="no">localhost</code>, and verify port 19530 is accessible.</p>
+<p>If you encounter authentication issues, set the <code translate="no">MILVUS_TOKEN</code> environment variable if your Milvus requires authentication, and verify your permissions for the operations you’re attempting.</p>
+<h2 id="Managed-Alternative-Zilliz-MCP-Server" class="common-anchor-header">Managed Alternative: Zilliz MCP Server<button data-href="#Managed-Alternative-Zilliz-MCP-Server" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -258,23 +259,23 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>オープンソースの<strong>Milvus MCP Serverは</strong>、ローカルまたはセルフホストでMilvusを導入するための素晴らしいソリューションです。しかし、Milvusのクリエイターによって構築されたエンタープライズグレードのフルマネージドサービスで<a href="https://zilliz.com/cloud">あるZilliz Cloudを</a>使用しているのであれば、<a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Zilliz MCP Serverという</strong></a>代替手段があります。</p>
-<p><a href="https://zilliz.com/cloud">Zilliz Cloudは</a>、スケーラブルでパフォーマンスが高く、セキュアなクラウドネイティブベクターデータベースを提供することで、Milvusインスタンスを管理するためのオーバーヘッドを排除します。<strong>Zilliz MCP Serverは</strong>Zilliz Cloudと直接統合し、その機能をMCP互換ツールとして公開します。つまり、Claude、Cursor、または他のMCP対応環境のAIアシスタントが、自然言語を使用してZilliz Cloudワークスペースを照会、管理、オーケストレーションできるようになります。</p>
+    </button></h2><p>The open-source <strong>Milvus MCP Server</strong> is a great solution for local or self-hosted deployments of Milvus. But if you’re using <a href="https://zilliz.com/cloud">Zilliz Cloud</a>—the fully managed, enterprise-grade service built by the creators of Milvus—there’s a purpose-built alternative: the <a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Zilliz MCP Server</strong></a>.</p>
+<p><a href="https://zilliz.com/cloud">Zilliz Cloud</a> eliminates the overhead of managing your own Milvus instance by offering a scalable, performant, and secure cloud-native vector database. The <strong>Zilliz MCP Server</strong> integrates directly with Zilliz Cloud and exposes its capabilities as MCP-compatible tools. This means your AI assistant—whether in Claude, Cursor, or another MCP-aware environment—can now query, manage, and orchestrate your Zilliz Cloud workspace using natural language.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zilliz_mcp_abe1ca1271.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>定型的なコードは必要ありません。タブを切り替える必要もありません。手動でRESTやSDKコールを書くこともありません。リクエストを言うだけで、あとはアシスタントにお任せください。</p>
-<h3 id="🚀-Getting-Started-with-Zilliz-MCP-Server" class="common-anchor-header">🚀 Zilliz MCPサーバーを始める</h3><p>ZillizのMCPサーバーを使えば、自然言語で簡単にベクターインフラを構築することができます：</p>
+<p>No boilerplate code. No switching tabs. No manually writing REST or SDK calls. Just say your request and let your assistant handle the rest.</p>
+<h3 id="🚀-Getting-Started-with-Zilliz-MCP-Server" class="common-anchor-header">🚀 Getting Started with Zilliz MCP Server</h3><p>If you’re ready for production-ready vector infrastructure with the ease of natural language, getting started takes just a few steps:</p>
 <ol>
-<li><p><a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloudにサインアップする</strong></a>。</p></li>
-<li><p>GitHub<a href="http://github.com/zilliztech/zilliz-mcp-server">リポジトリから<strong>Zilliz MCP Serverをインストール</strong> </a>します。</p></li>
-<li><p><strong>MCP対応アシスタント</strong>（Claude、Cursorなど）をZilliz Cloudインスタンスに接続するように<strong>設定</strong>する。</p></li>
+<li><p><a href="https://cloud.zilliz.com/signup"><strong>Sign up for Zilliz Cloud</strong></a> – free tier available.</p></li>
+<li><p><a href="http://github.com/zilliztech/zilliz-mcp-server"><strong>Install the Zilliz MCP Server</strong> </a>from the GitHub repository.</p></li>
+<li><p><strong>Configure your MCP-compatible assistant</strong> (Claude, Cursor, etc.) to connect to your Zilliz Cloud instance.</p></li>
 </ol>
-<p>これで、プロダクショングレードのインフラを備えたパワフルなベクター検索に、わかりやすい英語でアクセスできるようになります。</p>
-<h2 id="Wrapping-Up" class="common-anchor-header">まとめ<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
+<p>This gives you the best of both worlds: powerful vector search with production-grade infrastructure, now accessible through plain English.</p>
+<h2 id="Wrapping-Up" class="common-anchor-header">Wrapping Up<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -289,11 +290,11 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>以上、Milvusを自然言語対応の<em>ベクターデータベースに</em>する方法をご紹介しました。もうSDKのドキュメントを読み漁ったり、コレクションや検索を実行するために定型文を書いたりする必要はありません。</p>
-<p>Milvusをローカルで動かしていても、Zillizクラウドを使っていても、MCPサーバーはAIアシスタントにプロのようにベクターデータを管理するツールボックスを提供します。やりたいことを入力するだけで、あとはClaudeやCursorにお任せください。</p>
-<p>AI開発ツールを起動し、「どんなコレクションがありますか？ベクタークエリーを手で書くことに戻りたいとは思わなくなるはずだ。</p>
+    </button></h2><p>And that’s it—you’ve just learned how to turn Milvus into a natural language-friendly vector database you can literally <em>talk to</em>. No more digging through SDK docs or writing boilerplate just to spin up a collection or run a search.</p>
+<p>Whether you’re running Milvus locally or using Zilliz Cloud, the MCP Server gives your AI assistant a toolbox to manage your vector data like a pro. Just type what you want to do, and let Claude or Cursor handle the rest.</p>
+<p>So go ahead—fire up your AI dev tool, ask “what collections do I have?” and see it in action. You’ll never want to go back to writing vector queries by hand.</p>
 <ul>
-<li><p>ローカルのセットアップ？オープンソースの<a href="https://github.com/zilliztech/mcp-server-milvus"> Milvus MCPサーバーを</a>ご利用ください。</p></li>
-<li><p>マネージドサービスをご希望ですか？Zilliz Cloudにサインアップし、<a href="https://github.com/zilliztech/zilliz-mcp-server"> Zilliz MCP Serverを</a>ご利用ください。</p></li>
+<li><p>Local setup? Use the open-source<a href="https://github.com/zilliztech/mcp-server-milvus"> Milvus MCP Server</a></p></li>
+<li><p>Prefer a managed service? Sign up for Zilliz Cloud and use the<a href="https://github.com/zilliztech/zilliz-mcp-server"> Zilliz MCP Server</a></p></li>
 </ul>
-<p>ツールは揃った。あとはAIにタイピングを任せましょう。</p>
+<p>You’ve got the tools. Now let your AI do the typing.</p>

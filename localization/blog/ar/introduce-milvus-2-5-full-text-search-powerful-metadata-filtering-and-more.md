@@ -1,8 +1,8 @@
 ---
 id: introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md
 title: >-
-  نقدم لك Milvus 2.5: بحث بالنص الكامل، وتصفية أكثر قوة للبيانات الوصفية،
-  وتحسينات في سهولة الاستخدام!
+  Introducing Milvus 2.5: Full-Text Search, More Powerful Metadata Filtering,
+  and Usability Improvements!
 author: 'Ken Zhang, Stefan Webb, Jiang Chen'
 date: 2024-12-17T00:00:00.000Z
 cover: assets.zilliz.com/Introducing_Milvus_2_5_e4968e1cdb.png
@@ -14,7 +14,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md
 ---
-<h2 id="Overview" class="common-anchor-header">نظرة عامة<button data-href="#Overview" class="anchor-icon" translate="no">
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,18 +29,18 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يسعدنا تقديم أحدث إصدار من ميلفوس، الإصدار 2.5، والذي يقدم إمكانية جديدة قوية: البحث في <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">النص</a> الكامل، والمعروف أيضًا باسم البحث المعجمي أو البحث بالكلمات الرئيسية. إذا كنت جديدًا في مجال البحث، فإن البحث في النص الكامل يتيح لك العثور على المستندات من خلال البحث عن كلمات أو عبارات محددة داخلها، على غرار طريقة البحث في جوجل. وهذا يكمل إمكانات البحث الدلالي الموجودة لدينا، والتي تفهم المعنى الكامن وراء بحثك بدلاً من مجرد مطابقة الكلمات الدقيقة.</p>
-<p>نحن نستخدم مقياس BM25 القياسي في هذا المجال لتشابه المستندات، ويستند تطبيقنا على متجهات متناثرة، مما يسمح بتخزين واسترجاع أكثر كفاءة. بالنسبة لأولئك الذين ليسوا على دراية بالمصطلح، فإن المتجهات المتفرقة هي طريقة لتمثيل النص حيث تكون معظم القيم صفرية، مما يجعلها فعالة للغاية في التخزين والمعالجة - تخيل جدول بيانات ضخم حيث تحتوي بعض الخلايا فقط على أرقام، والباقي فارغة. يتناسب هذا النهج جيدًا مع فلسفة منتج Milvus حيث يكون المتجه هو كيان البحث الأساسي.</p>
-<p>من الجوانب الإضافية الجديرة بالملاحظة في تطبيقنا هو القدرة على إدراج النص والاستعلام عنه <em>مباشرةً</em> بدلاً من أن يقوم المستخدمون أولاً بتحويل النص يدويًا إلى متجهات متفرقة. وهذا يأخذ Milvus خطوة أخرى نحو معالجة البيانات غير المنظمة بشكل كامل.</p>
-<p>لكن هذه هي البداية فقط. مع إصدار الإصدار 2.5، قمنا بتحديث <a href="https://milvus.io/docs/roadmap.md">خارطة طريق منتج Milvus</a>. في التكرارات المستقبلية لمنتج Milvus، سينصب تركيزنا على تطوير قدرات Milvus في أربعة اتجاهات رئيسية:</p>
+    </button></h2><p>We are thrilled to present the latest version of Milvus, 2.5, which introduces a powerful new capability: <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">full-text search</a>, also known as lexical or keyword search. If you are new to search, full-text search allows you to find documents by searching for specific words or phrases within them, similar to how you search in Google. This complements our existing semantic search capabilities, which understand the meaning behind your search rather than just matching exact words.</p>
+<p>We use the industry-standard BM25 metric for document similarity, and our implemention is based on sparse vectors, allowing for more efficient storage and retrieval. For those unfamiliar with the term, sparse vectors are a way to represent text where most values are zero, making them very efficient to store and process—imagine a huge spreadsheet where only a few cells contain numbers, and the rest are empty. This approach fits well into Milvus’s product philosophy where the vector is the core search entity.</p>
+<p>An additional noteworthy aspect of our implementation is the capability to insert and query text <em>directly</em> rather than having users first manually convert text into sparse vectors. This takes Milvus one step closer towards fully processing unstructured data.</p>
+<p>But this is just the beginning. With the release of 2.5, we updated the <a href="https://milvus.io/docs/roadmap.md">Milvus product roadmap</a>. In future product iterations of Milvus, our focus will be on evolving Milvus’s capabilities in four key directions:</p>
 <ul>
-<li>تبسيط معالجة البيانات غير المهيكلة;</li>
-<li>تحسين جودة البحث وكفاءته;</li>
-<li>إدارة أسهل للبيانات;</li>
-<li>خفض التكاليف من خلال التطورات الخوارزمية والتصميمية</li>
+<li>Streamlined unstructured data processing;</li>
+<li>Better search quality and efficiency;</li>
+<li>Easier data management;</li>
+<li>Lowering costs through algorithmic and design advances</li>
 </ul>
-<p>هدفنا هو بناء بنية تحتية للبيانات يمكنها تخزين المعلومات واسترجاعها بكفاءة وفعالية في عصر الذكاء الاصطناعي.</p>
-<h2 id="Full-text-Search-via-Sparse-BM25" class="common-anchor-header">البحث في النص الكامل عن طريق البحث الدلالي المتفرّق BM25<button data-href="#Full-text-Search-via-Sparse-BM25" class="anchor-icon" translate="no">
+<p>Our aim is to build data infrastructure that can both efficiently store and effectively retrieve information in the AI era.</p>
+<h2 id="Full-text-Search-via-Sparse-BM25" class="common-anchor-header">Full-text Search via Sparse-BM25<button data-href="#Full-text-Search-via-Sparse-BM25" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,27 +55,27 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>على الرغم من أن البحث الدلالي عادةً ما يكون لديه وعي أفضل بالمحتوى وفهم أفضل للهدف، إلا أنه عندما يحتاج المستخدم إلى البحث عن أسماء علم محددة أو أرقام تسلسلية أو عبارة مطابقة تمامًا، فإن استرجاع النص الكامل مع مطابقة الكلمات الرئيسية غالبًا ما ينتج نتائج أكثر دقة.</p>
-<p>لتوضيح ذلك بمثال:</p>
+    </button></h2><p>Although semantic search typically has better contexual awareness and intent understanding, when a user needs to search for specific proper nouns, serial numbers, or a completely-matching phrase, full-text retrieval with keyword matching often produces more accurate results.</p>
+<p>To illustrate this with an example:</p>
 <ul>
-<li>يتفوق البحث الدلالي عندما تطلب: "البحث عن مستندات حول حلول الطاقة المتجددة"</li>
-<li>يكون البحث عن النص الكامل أفضل عندما تحتاج إلى: &quot;البحث عن مستندات تشير إلى <em>تسلا موديل 3 2024</em>&quot;</li>
+<li>Semantic search excels when you ask: “Find documents about renewable energy solutions”</li>
+<li>Full-text search is better when you need: &quot;Find documents mentioning <em>Tesla Model 3 2024</em>&quot;</li>
 </ul>
-<p>في نسختنا السابقة (Milvus 2.4)، كان على المستخدمين معالجة نصهم مسبقًا باستخدام أداة منفصلة (وحدة BM25EmbeddingFunction إلى PyMilvus) على أجهزتهم الخاصة قبل أن يتمكنوا من البحث فيه كان لهذا النهج عدة قيود: لم يتمكن من التعامل مع مجموعات البيانات المتزايدة بشكل جيد، وتطلب خطوات إعداد إضافية، وجعل العملية برمتها أكثر تعقيدًا من اللازم. بالنسبة للمهتمين بالتقنية، كانت القيود الرئيسية هي أنه لا يمكن أن يعمل إلا على جهاز واحد؛ لا يمكن تحديث المفردات وإحصائيات المجموعة الأخرى المستخدمة لتسجيل BM25 مع تغير المجموعة؛ وتحويل النص إلى متجهات من جانب العميل أقل سهولة في العمل مع النص مباشرة.</p>
-<p>يبسط ميلفوس 2.5 كل شيء. يمكنك الآن العمل مع النص مباشرةً:</p>
+<p>In our previous version (Milvus 2.4), users had to pre-process their text using a separate tool (the BM25EmbeddingFunction module to the PyMilvus) on their own machines before they could search it This approach had several limitations: it couldn’t handle growing datasets well, required extra setup steps, and made the whole process more complicated than necessary. For the technically minded, the key limitations were that it could only work on a single machine; the vocabulary and other corpus statistics used for BM25 scoring couldn’t be updated as the corpus changed; and converting text to vectors on the client side is less intuitive working withtext directly.</p>
+<p>Milvus 2.5 simplifies everything. Now you can work with your text directly:</p>
 <ul>
-<li>تخزين مستنداتك النصية الأصلية كما هي</li>
-<li>البحث باستخدام استعلامات اللغة الطبيعية</li>
-<li>الحصول على النتائج في شكل مقروء</li>
+<li>Store your original text documents as they are</li>
+<li>Search using natural language queries</li>
+<li>Get results back in readable form</li>
 </ul>
-<p>خلف الكواليس، يتعامل Milvus مع جميع تحويلات المتجهات المعقدة تلقائيًا مما يسهل العمل مع البيانات النصية. هذا ما نطلق عليه نهج "إدخال المستند وإخراج المستند" - أنت تعمل بنص قابل للقراءة، ونحن نتعامل مع الباقي.</p>
-<h3 id="Techical-Implementation" class="common-anchor-header">التنفيذ التقني</h3><p>بالنسبة للمهتمين بالتفاصيل التقنية، يضيف ميلفوس 2.5 إمكانية البحث في النص الكامل من خلال تطبيق Sparse-BM25 المدمج الخاص به، بما في ذلك:</p>
+<p>Behind the scenes, Milvus handles all the complex vector conversions automatically making it easier to work with text data. This is what we call our “Doc in, Doc out” approach—you work with readable text, and we handle the rest.</p>
+<h3 id="Techical-Implementation" class="common-anchor-header">Techical Implementation</h3><p>For those interested in the technical details, Milvus 2.5 adds the full-text search capability through its built-in Sparse-BM25 implementation, including:</p>
 <ul>
-<li><strong>أداة ترميز مبنية على تانتيفي</strong>: يتكامل ميلفوس الآن مع منظومة تانتيفي المزدهرة</li>
-<li><strong>القدرة على استيعاب واسترجاع المستندات الخام</strong>: دعم الاستيعاب المباشر للبيانات النصية والاستعلام عنها</li>
-<li><strong>تسجيل ملاءمة BM25</strong>: استيعاب تسجيل BM25، الذي يتم تنفيذه استنادًا إلى المتجهات المتفرقة</li>
+<li><strong>A Tokenizer built on tantivy</strong>: Milvus now integrates with the thriving tantivy ecosystem</li>
+<li><strong>Capability to ingest and retrieve raw documents</strong>: Support for direct ingestion and query of text data</li>
+<li><strong>BM25 relevance scoring</strong>: Internalize BM25 scoring, implemented based on sparse vector</li>
 </ul>
-<p>لقد اخترنا العمل مع نظام tantivy البيئي المتطور وبناء أداة ترميز النص Milvus على tantivy. في المستقبل، ستدعم Milvus المزيد من أدوات الترميز في المستقبل وستعرض عملية الترميز لمساعدة المستخدمين على فهم جودة الاسترجاع بشكل أفضل. سنستكشف أيضًا أدوات الترميز القائمة على التعلّم العميق واستراتيجيات الجذع لتحسين أداء البحث في النص الكامل. فيما يلي نموذج كود لاستخدام أداة الترميز وتكوينها:</p>
+<p>We chose to work with the well-developed tantivy ecosystem and build the Milvus text tokenizer on tantivy. In the future, Milvus will support more tokenizers and expose the tokenization process to help users better understand the retrieval quality. We will also explore deep learning-based tokenizers and stemmer strategies to further optimize the performance of full-text search. Below is sample code for using and configuring the tokenizer:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Tokenizer configuration</span>
 schema.add_field(
     field_name=<span class="hljs-string">&#x27;text&#x27;</span>,
@@ -86,7 +86,7 @@ schema.add_field(
     enable_match=<span class="hljs-literal">True</span>, <span class="hljs-comment"># Build an inverted index for Text_Match</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>بعد تكوين أداة الرمز المميز في مخطط المجموعة، يمكن للمستخدمين تسجيل النص في دالة bm25 عبر طريقة إضافة_وظيفة. سيتم تشغيل هذا داخليًا في خادم Milvus. يمكن إكمال جميع تدفقات البيانات اللاحقة مثل الإضافات والحذف والتعديلات والاستعلامات من خلال العمل على السلسلة النصية الخام، بدلاً من التمثيل المتجه. انظر المثال البرمجي أدناه لمعرفة كيفية استيعاب النص وإجراء بحث في النص الكامل باستخدام واجهة برمجة التطبيقات الجديدة:</p>
+<p>After configuring the tokenizer in the collection schema, users can register the text to bm25 function via add_function method. This will run internally in the Milvus server. All subsequent data flows such as additions, deletions, modifications, and queries can be completed by operating on the raw text string, as opposed to the vector representation. See below code example for how to ingest text and conduct full-text search with the new API:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Define the mapping relationship between raw text data and vectors on the schema</span>
 bm25_function = Function(
     name=<span class="hljs-string">&quot;text_bm25_emb&quot;</span>,
@@ -111,13 +111,13 @@ MilvusClient.search(
     limit=<span class="hljs-number">3</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>لقد اعتمدنا تطبيقًا لتسجيل الصلة BM25 الذي يمثل الاستعلامات والمستندات كمتجهات متناثرة، يُطلق عليه <strong>Sparse-BM25</strong>. وهذا يفتح العديد من التحسينات القائمة على المتجهات المتناثرة، مثل:</p>
-<p>يحقق Milvus إمكانات البحث الهجين من خلال <strong>تطبيق Sparse-BM25</strong> المتطور، الذي يدمج البحث عن النص الكامل في بنية قاعدة البيانات المتجهة. من خلال تمثيل ترددات المصطلحات كمتجهات متناثرة بدلاً من الفهارس المقلوبة التقليدية، يتيح Sparse-BM25 تحسينات متقدمة، مثل <strong>فهرسة الرسم البياني</strong> <strong>وتكميم المنتج (PQ</strong> <strong>) والتكميم الكمي القياسي (SQ)</strong>. تعمل هذه التحسينات على تقليل استخدام الذاكرة وتسريع أداء البحث. على غرار نهج الفهرس المقلوب، يدعم Milvus أخذ النص الخام كمدخلات وتوليد متجهات متفرقة داخليًا. وهذا يجعله قادرًا على العمل مع أي أداة ترميز واستيعاب أي كلمة تظهر في مجموعة النصوص المتغيرة ديناميكيًا.</p>
-<p>بالإضافة إلى ذلك، يتجاهل التقليم القائم على الاستدلال المتجهات المتفرقة منخفضة القيمة، مما يعزز الكفاءة دون المساس بالدقة. على عكس النهج السابق الذي يستخدم المتجهات المتناثرة، فإنه يمكن أن يتكيف مع مجموعة متزايدة من المتحولات، وليس دقة تسجيل BM25.</p>
+<p>We have adopted an implementation of BM25 relevance scoring that represents queries and documents as sparse vectors, called <strong>Sparse-BM25</strong>. This unlocks many optimizations based on sparse vector, such as:</p>
+<p>Milvus achieves hybrid search capabilities through its cutting-edge <strong>Sparse-BM25 implementation</strong>, which integrates full-text search into the vector database architecture. By representing term frequencies as sparse vectors instead of traditional inverted indexes, Sparse-BM25 enables advanced optimizations, such as <strong>graph indexing</strong>, <strong>product quantization (PQ)</strong>, and <strong>scalar quantization (SQ)</strong>. These optimizations minimize memory usage and accelerate search performance. Similar to inverted index approach, Milvus supports taking raw text as input and generating sparse vectors internally. This make it able to work with any tokenizer and grasp any word shown in the dynamicly changing corpus.</p>
+<p>Additionally, heuristic-based pruning discards low-value sparse vectors, further enhancing efficiency without compromising accuracy. Unlike previous approach using sparse vector, it can adapt to a growing corpus, not the accuracy of BM25 scoring.</p>
 <ol>
-<li>بناء فهارس بيانية على المتجه المتناثر، والتي تعمل بشكل أفضل من الفهرس المقلوب على الاستعلامات ذات النص الطويل حيث يحتاج الفهرس المقلوب إلى مزيد من الخطوات لإنهاء مطابقة الرموز في الاستعلام;</li>
-<li>الاستفادة من تقنيات التقريب لتسريع البحث مع تأثير طفيف فقط على جودة الاسترجاع، مثل تكميم المتجه والتشذيب القائم على الاستدلال;</li>
-<li>توحيد الواجهة ونموذج البيانات لإجراء البحث الدلالي والبحث في النص الكامل، وبالتالي تحسين تجربة المستخدم.</li>
+<li>Building graph indexes on the sparse vector, which performs better than inverted index on queries with long text as inverted index needs more steps to finish matching the tokens in the query;</li>
+<li>Leveraging approximation techniques to speed up search with only minor impact on retrieval quality, such as vector quantization and heuristic based pruning;</li>
+<li>Unifying the interface and data model for performing semantic search and full-text search, thus enhancing the user experience.</li>
 </ol>
 <pre><code translate="no" class="language-Python"><span class="hljs-comment"># Creating an index on the sparse column</span>
 index_params.add_index(
@@ -131,8 +131,8 @@ search_params = {
     <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;drop_ratio_search&#x27;</span>: <span class="hljs-number">0.6</span>}, <span class="hljs-comment"># WAND search parameter configuration can speed up search</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>باختصار، وسّع برنامج Milvus 2.5 من قدرته على البحث إلى ما هو أبعد من البحث الدلالي من خلال تقديم استرجاع النص الكامل، مما يسهل على المستخدمين بناء تطبيقات ذكاء اصطناعي عالية الجودة. هذه مجرد خطوات أولية في مجال البحث المتناثر-بم 25، ونتوقع أن يكون هناك المزيد من إجراءات التحسين التي يمكن تجربتها في المستقبل.</p>
-<h2 id="Text-Matching-Search-Filters" class="common-anchor-header">مرشحات بحث مطابقة النص<button data-href="#Text-Matching-Search-Filters" class="anchor-icon" translate="no">
+<p>In summary, Milvus 2.5 has expanded its search capability beyond semantic search by introducing full-text retrieval, making it easier for users to build high quality AI applications. These are just initial steps in the space of Sparse-BM25 search and we anticipate that there will be further optimization measures to try in the future.</p>
+<h2 id="Text-Matching-Search-Filters" class="common-anchor-header">Text Matching Search Filters<button data-href="#Text-Matching-Search-Filters" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,14 +147,14 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>الميزة الثانية للبحث النصي التي تم إصدارها مع الإصدار 2.5 من ميلفوس هي ميزة <strong>مطابقة</strong> النص، والتي تسمح للمستخدم بتصفية البحث إلى إدخالات تحتوي على سلسلة نصية محددة. هذه الميزة مبنية أيضًا على أساس الترميز ويتم تنشيطها باستخدام <code translate="no">enable_match=True</code>.</p>
-<p>تجدر الإشارة إلى أنه مع خاصية مطابقة النص، تعتمد معالجة نص الاستعلام على منطق OR بعد الترميز. على سبيل المثال، في المثال أدناه، ستُرجع النتيجة جميع المستندات (باستخدام حقل "نص") التي تحتوي إما على "متجه" أو "قاعدة بيانات".</p>
+    </button></h2><p>A second text search feature released with Milvus 2.5 is <strong>Text Match</strong>, which allows the user to filter the search to entries containing a specific text string. This feature is also built on the basis of tokenization and is activated with <code translate="no">enable_match=True</code>.</p>
+<p>It is worth noting that with Text Match, the processing of the query text is based on the logic of OR after tokenization. For example, in the example below, the result will return all documents (using the ‘text’ field) that contain either ‘vector’ or 'database’.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-built_in">filter</span> = <span class="hljs-string">&quot;TEXT_MATCH(text, &#x27;vector database&#x27;)&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>إذا كان السيناريو الخاص بك يتطلب مطابقة كلٍ من "المتجه" و"قاعدة البيانات"، فأنت بحاجة إلى كتابة مطابقتين نصيتين منفصلتين وتراكبهما باستخدام "و" لتحقيق هدفك.</p>
+<p>If your scenario requires matching both ‘vector’ and 'database’, then you need to write two separate Text Matches and overlay them with AND to achieve your goal.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-built_in">filter</span> = <span class="hljs-string">&quot;TEXT_MATCH(text, &#x27;vector&#x27;) and TEXT_MATCH(text, &#x27;database&#x27;)&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Significant-Enhancement-in-Scalar-Filtering-Performance" class="common-anchor-header">تحسين كبير في أداء التصفية العددية<button data-href="#Significant-Enhancement-in-Scalar-Filtering-Performance" class="anchor-icon" translate="no">
+<h2 id="Significant-Enhancement-in-Scalar-Filtering-Performance" class="common-anchor-header">Significant Enhancement in Scalar Filtering Performance<button data-href="#Significant-Enhancement-in-Scalar-Filtering-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -169,11 +169,11 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ينشأ تركيزنا على أداء التصفية العددية من اكتشافنا أن الجمع بين استرجاع المتجهات وتصفية البيانات الوصفية يمكن أن يحسن أداء الاستعلام ودقته بشكل كبير في سيناريوهات مختلفة. وتتراوح هذه السيناريوهات من تطبيقات البحث عن الصور مثل تحديد حالة الزاوية في القيادة الذاتية إلى سيناريوهات RAG المعقدة في قواعد المعرفة المؤسسية. وبالتالي، فهي مناسبة للغاية لمستخدمي المؤسسات لتنفيذها في سيناريوهات تطبيقات البيانات واسعة النطاق.</p>
-<p>في الممارسة العملية، يمكن أن تؤثر العديد من العوامل مثل كمية البيانات التي تقوم بترشيحها، وكيفية تنظيم بياناتك، وكيفية البحث على الأداء. لمعالجة هذا الأمر، يقدم الإصدار Milvus 2.5 ثلاثة أنواع جديدة من الفهارس - فهرس خريطة البت وفهرس المصفوفة المقلوب والفهرس المقلوب بعد ترميز حقل نص Varchar. يمكن لهذه الفهارس الجديدة تحسين الأداء بشكل كبير في حالات الاستخدام في العالم الحقيقي.</p>
-<p>على وجه التحديد:</p>
+    </button></h2><p>Our emphasis on scalar filtering performance originates from our discovery that the combination of vector retrieval and metadata filtering can greatly improve query performance and accuracy in various scenarios. These scenarios range from image search applications such as corner case identification in autonomous driving to complex RAG scenarios in enterprise knowledge bases. Thus, it is highly suitable for enterprise users to implement in large-scale data application scenarios.</p>
+<p>In practice, many factors like how much data you’re filtering, how your data is organized, and how you’re searching can affect performance. To address this, Milvus 2.5 introduces three new types of indexes—BitMap Index, Array Inverted Index, and the Inverted Index after tokenizing the Varchar text field. These new indexes can significantly improve performance in real-world use cases.</p>
+<p>Specifically:</p>
 <ol>
-<li>يمكن استخدام<strong>فهرس BitMap</strong> لتسريع تصفية العلامات (المشغلات الشائعة تشمل في، صفيف_يتضمن، إلخ)، وهي مناسبة للسيناريوهات التي تحتوي على عدد أقل من بيانات فئة الحقل (عددية البيانات). ويتمثل المبدأ في تحديد ما إذا كان صف البيانات يحتوي على قيمة معينة في عمود ما، مع تحديد 1 لـ نعم و0 لـ لا، ثم الاحتفاظ بقائمة BitMap. يوضح الرسم البياني التالي مقارنة اختبار الأداء الذي أجريناه بناءً على سيناريو عمل أحد العملاء. في هذا السيناريو، يبلغ حجم البيانات 500 مليون، وفئة البيانات 20، والقيم المختلفة لها نسب توزيع مختلفة (1%، 5%، 10%، 50%)، ويختلف الأداء في ظل كميات التصفية المختلفة أيضًا. مع التصفية بنسبة 50%، يمكننا تحقيق مكاسب في الأداء بنسبة 6.8 أضعاف من خلال فهرس BitMap. تجدر الإشارة إلى أنه مع زيادة الكاردينالية، مقارنةً بفهرس BitMap، سيُظهر الفهرس المقلوب أداءً أكثر توازناً.</li>
+<li><strong>BitMap Index</strong> can be used to accelerate tag filtering (common operators include in, array_contains, etc.), and is suitable for scenarios with fewer field category data (data cardinality). The principle is to determine whether a row of data has a certain value on a column, with 1 for yes and 0 for no, and then maintain a BitMap list. The following chart shows the performance test comparison we conducted based on a customer’s business scenario. In this scenario, the data volume is 500 million, the data category is 20, different values have different distribution proportions (1%, 5%, 10%, 50%), and the performance under different filtering amounts also varies. With 50% filtering, we can achieve a 6.8-fold performance gain through BitMap Index. It’s worth noting that as cardinality increases, compared to BitMap Index, Inverted Index will show more balanced performance.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -182,7 +182,7 @@ search_params = {
   </span>
 </p>
 <ol start="2">
-<li>تعتمد<strong>مطابقة النص</strong> على الفهرس المقلوب بعد ترميز حقل النص. يتجاوز أداؤها بكثير وظيفة مطابقة أحرف البدل (أي مثل + %) التي قدمناها في 2.4. وفقًا لنتائج اختبارنا الداخلي، فإن مزايا Text Match واضحة جدًا، خاصةً في سيناريوهات الاستعلام المتزامن، حيث يمكنها تحقيق زيادة تصل إلى 400 ضعف في الثانية في الثانية.</li>
+<li><strong>Text Match</strong> is based on the Inverted Index after the text field is tokenized. Its performance far exceeds the Wildcard Match (i.e., like + %) function we provided in 2.4. According to our internal test results, the advantages of Text Match are very clear, especially in concurrent query scenarios, where it can achieve up to a 400-fold QPS increase.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -190,8 +190,8 @@ search_params = {
     <span></span>
   </span>
 </p>
-<p>فيما يتعلق بمعالجة بيانات JSON، نخطط لتقديم في الإصدارات اللاحقة من الإصدار 2.5.x بناء مؤشرات مقلوبة للمفاتيح التي يحددها المستخدم وتسجيل معلومات الموقع الافتراضي لجميع المفاتيح لتسريع التحليل. نتوقع أن يؤدي هذان المجالان إلى تحسين أداء الاستعلام في JSON و Dynamic Field بشكل كبير. نخطط لعرض المزيد من المعلومات في مذكرات الإصدار المستقبلية والمدونات التقنية، لذا ترقبوا معنا!</p>
-<h2 id="New-Management-Interface" class="common-anchor-header">واجهة إدارة جديدة<button data-href="#New-Management-Interface" class="anchor-icon" translate="no">
+<p>In terms of JSON data processing, we plan to introduce in subsequent versions of 2.5.x the building of inverted indices for user-specified keys and default location information recording for all keys to speed up parsing. We expect both of these areas to significantly enhance the query performance of JSON and Dynamic Field. We plan to showcase more information in future release notes and technical blogs, so stay tuned!</p>
+<h2 id="New-Management-Interface" class="common-anchor-header">New Management Interface<button data-href="#New-Management-Interface" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -206,16 +206,16 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا ينبغي أن تتطلب إدارة قاعدة البيانات شهادة في علوم الكمبيوتر، لكننا نعلم أن مسؤولي قواعد البيانات يحتاجون إلى أدوات قوية. لهذا السبب قدمنا <strong>واجهة إدارة المجموعة WebUI،</strong> وهي واجهة جديدة قائمة على الويب يمكن الوصول إليها على عنوان مجموعتك على المنفذ 9091/webui. توفر أداة المراقبة هذه</p>
+    </button></h2><p>Managing a database shouldn’t require a computer science degree, but we know database administrators need powerful tools. That’s why we’ve introduced the <strong>Cluster Management WebUI</strong>, a new web-based interface accessible at your cluster’s address on port 9091/webui. This observability tool provides:</p>
 <ul>
-<li>لوحات معلومات المراقبة في الوقت الحقيقي التي تعرض مقاييس على مستوى المجموعة</li>
-<li>تحليلات مفصلة للذاكرة والأداء لكل عقدة</li>
-<li>معلومات الشرائح وتتبع الاستعلامات البطيئة</li>
-<li>مؤشرات صحة النظام وحالة العقدة</li>
-<li>أدوات استكشاف الأخطاء وإصلاحها سهلة الاستخدام لمشاكل النظام المعقدة</li>
+<li>Real-time monitoring dashboards showing cluster-wide metrics</li>
+<li>Detailed memory and performance analytics per node</li>
+<li>Segment information and slow query tracking</li>
+<li>System health indicators and node status</li>
+<li>Easy-to-use troubleshooting tools for complex system issues</li>
 </ul>
-<p>على الرغم من أن هذه الواجهة لا تزال في مرحلة تجريبية، إلا أننا نعمل بنشاط على تطويرها بناءً على ملاحظات المستخدمين من مسؤولي قواعد البيانات. ستتضمن التحديثات المستقبلية تشخيصات مدعومة بالذكاء الاصطناعي، والمزيد من ميزات الإدارة التفاعلية، وقدرات مراقبة محسّنة للعقد.</p>
-<h2 id="Documentation-and-Developer-Experience" class="common-anchor-header">التوثيق وتجربة المطورين<button data-href="#Documentation-and-Developer-Experience" class="anchor-icon" translate="no">
+<p>While this interface is still in beta, we’re actively developing it based on user feedback from database administrators. Future updates will include AI-assisted diagnostics, more interactive management features, and enhanced cluster observability capabilities.</p>
+<h2 id="Documentation-and-Developer-Experience" class="common-anchor-header">Documentation and Developer Experience<button data-href="#Documentation-and-Developer-Experience" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,18 +230,18 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد قمنا بتجديد <strong>وثائقنا</strong> وتجربة <strong>SDK/API</strong> بالكامل لجعل الوصول إلى Milvus أكثر سهولة مع الحفاظ على العمق للمستخدمين ذوي الخبرة. تشمل التحسينات ما يلي:</p>
+    </button></h2><p>We’ve completely revamped our <strong>documentation</strong> and <strong>SDK/API</strong> experience to make Milvus more accessible while maintaining depth for experienced users. The improvements include:</p>
 <ul>
-<li>نظام توثيق معاد هيكلته مع تقدم أوضح من المفاهيم الأساسية إلى المفاهيم المتقدمة</li>
-<li>برامج تعليمية تفاعلية وأمثلة واقعية تعرض تطبيقات عملية</li>
-<li>مراجع شاملة لواجهة برمجة التطبيقات مع عينات من التعليمات البرمجية العملية</li>
-<li>تصميم SDK أكثر سهولة في الاستخدام يبسط العمليات الشائعة</li>
-<li>أدلة مصورة تجعل المفاهيم المعقدة أسهل في الفهم</li>
-<li>مساعد التوثيق المدعوم بالذكاء الاصطناعي (ASK AI) للحصول على إجابات سريعة</li>
+<li>A restructured documentation system with clearer progression from basic to advanced concepts</li>
+<li>Interactive tutorials and real-world examples that showcase practical implementations</li>
+<li>Comprehensive API references with practical code samples</li>
+<li>A more user-friendly SDK design that simplifies common operations</li>
+<li>Illustrated guides that make complex concepts easier to understand</li>
+<li>An AI-powered documentation assistant (ASK AI) for quick answers</li>
 </ul>
-<p>تركز SDK/API المحدثة على تحسين تجربة المطورين من خلال واجهات أكثر سهولة وتكامل أفضل مع الوثائق. نعتقد أنك ستلاحظ هذه التحسينات عند العمل مع سلسلة 2.5.x.</p>
-<p>ومع ذلك، نحن نعلم أن التوثيق وتطوير SDK عملية مستمرة. سنواصل تحسين كل من بنية المحتوى وتصميم SDK بناءً على ملاحظات المجتمع. انضم إلى قناة Discord الخاصة بنا لمشاركة اقتراحاتك ومساعدتنا على التحسين أكثر.</p>
-<h2 id="Summary" class="common-anchor-header"><strong>الملخص</strong><button data-href="#Summary" class="anchor-icon" translate="no">
+<p>The updated SDK/API focuses on improving developer experience through more intuitive interfaces and better integration with the documentation. We believe you’ll notice these improvements when working with the 2.5.x series.</p>
+<p>However, we know documentation and SDK development is an ongoing process. We’ll continue optimizing both the content structure and SDK design based on community feedback. Join our Discord channel to share your suggestions and help us improve further.</p>
+<h2 id="Summary" class="common-anchor-header"><strong>Summary</strong><button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -256,4 +256,4 @@ search_params = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يحتوي ميلفوس 2.5 على 13 ميزة جديدة والعديد من التحسينات على مستوى النظام، ليس فقط بمساهمة من Zilliz بل من مجتمع المصادر المفتوحة. لقد تطرقنا إلى عدد قليل منها فقط في هذا المنشور ونشجعك على زيارة <a href="https://milvus.io/docs/release_notes.md">مذكرة الإصدار</a> <a href="https://milvus.io/docs">والوثائق الرسمية</a> لمزيد من المعلومات!</p>
+    </button></h2><p>Milvus 2.5 contains 13 new features and several system-level optimizations, contributed not just by Zilliz but the open-source community. We have only touched on a few of them in this post and encourage you to visit our <a href="https://milvus.io/docs/release_notes.md">release note</a> and <a href="https://milvus.io/docs">official documents</a> for more information!</p>

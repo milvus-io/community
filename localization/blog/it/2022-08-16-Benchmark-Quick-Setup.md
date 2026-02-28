@@ -1,23 +1,23 @@
 ---
 id: 2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md
-title: Guida rapida al benchmarking di Milvus 2.1
+title: A Quick Guide to Benchmarking Milvus 2.1
 author: Yanliang Qiao
 date: 2022-08-16T00:00:00.000Z
-desc: >-
-  Seguite la nostra guida passo-passo per eseguire un benchmark Milvus 2.1 da
-  soli.
+desc: Follow our step-by-step guide to perform a Milvus 2.1 benchmark by yourself.
 cover: assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
 canonicalUrl: 'https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png" alt="Cover" class="doc-image" id="cover" />
-   </span> <span class="img-wrapper"> <span>Copertina</span> </span></p>
-<p>Di recente, abbiamo aggiornato il <a href="https://milvus.io/docs/v2.1.x/benchmark.md">rapporto di benchmark di Milvus 2.1</a>. I test con un set di dati di 1 milione di vettori hanno dimostrato che il QPS può essere aumentato drasticamente unendo query di <a href="https://milvus.io/docs/v2.1.x/benchmark.md#Terminology">piccole</a> dimensioni.</p>
-<p>Ecco alcuni semplici script per riprodurre facilmente i test.</p>
-<h2 id="Procedures" class="common-anchor-header">Procedure<button data-href="#Procedures" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png" alt="Cover" class="doc-image" id="cover" />
+    <span>Cover</span>
+  </span>
+</p>
+<p>Recently, we have updated the <a href="https://milvus.io/docs/v2.1.x/benchmark.md">benchmark report of Milvus 2.1</a>. Tests with a dataset of 1 million vectors have proved that QPS can be dramatically increased by merging small-<a href="https://milvus.io/docs/v2.1.x/benchmark.md#Terminology">nq</a> queries.</p>
+<p>Here are some simple scripts for you to easily reproduce the tests.</p>
+<h2 id="Procedures" class="common-anchor-header">Procedures<button data-href="#Procedures" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,41 +33,41 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-M
         ></path>
       </svg>
     </button></h2><ol>
-<li><p>Distribuire un Milvus standalone o un cluster. In questo caso, l'indirizzo IP del server Milvus è 10.100.31.105.</p></li>
-<li><p>Distribuire un client. In questo caso, utilizziamo Ubuntu 18.04 e Python 3.8.13 per la distribuzione. Eseguire il seguente codice per installare PyMilvus 2.1.1.</p></li>
+<li><p>Deploy a Milvus standalone or cluster. In this case, the IP address of the Milvus server is 10.100.31.105.</p></li>
+<li><p>Deploy a client. In this case, we use Ubuntu 18.04 and Python 3.8.13 for the deployment. Run the following code to install PyMilvus 2.1.1.</p></li>
 </ol>
 <pre><code translate="no">pip install pymilvus==2.1.1
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li><p>Scaricare e copiare i seguenti file nella stessa directory di lavoro del client. In questo caso, la directory di lavoro è <code translate="no">/go_ben</code>.</p>
+<li><p>Download and copy the following files to the same working directory as the client. In this case, the working directory is <code translate="no">/go_ben</code>.</p>
 <ul>
 <li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/collection_prepare.py"><code translate="no">collection_prepare.py</code></a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/go_benchmark.py"><code translate="no">go_benchmark.py</code></a></p></li>
-<li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark"><code translate="no">benchmark</code></a> (per Ubuntu) o <a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac"><code translate="no">benchmark-mac</code></a> (per macOS)</p></li>
+<li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark"><code translate="no">benchmark</code></a> (for Ubuntu) or <a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac"><code translate="no">benchmark-mac</code></a> (for macOS)</p></li>
 </ul>
-<p><strong>Nota:</strong></p>
+<p><strong>Note:</strong></p>
 <ul>
-<li><p><code translate="no">benchmark</code> e <code translate="no">benchmark-mac</code> sono file eseguibili sviluppati e compilati usando Go SDK 2.1.1. Vengono utilizzati solo per condurre una ricerca concorrente.</p></li>
-<li><p>Per gli utenti di Ubuntu, scaricare <code translate="no">benchmark</code>; per gli utenti di macOS, scaricare <code translate="no">benchmark-mac</code>.</p></li>
-<li><p>Per accedere a <code translate="no">benchmark</code> o <code translate="no">benchmark-mac</code> sono necessari i permessi di esecuzione.</p></li>
-<li><p>Gli utenti Mac devono fidarsi del file <code translate="no">benchmark-mac</code> configurando Sicurezza e privacy nelle Preferenze di sistema.</p></li>
-<li><p>Le impostazioni sulla ricerca concorrente possono essere trovate e modificate nel codice sorgente di <code translate="no">go_benchmark.py</code>.</p></li>
+<li><p><code translate="no">benchmark</code> and <code translate="no">benchmark-mac</code> are executable files developed and compiled using Go SDK 2.1.1. They are only used to conduct a concurrent search.</p></li>
+<li><p>For Ubuntu users, please download <code translate="no">benchmark</code>; for macOS users, please download <code translate="no">benchmark-mac</code>.</p></li>
+<li><p>Executable permissions are required to access <code translate="no">benchmark</code> or <code translate="no">benchmark-mac</code>.</p></li>
+<li><p>Mac users need to trust the <code translate="no">benchmark-mac</code> file by configuring Security &amp; Privacy in System Preferences.</p></li>
+<li><p>Settings on concurrent search can be found and modified in the <code translate="no">go_benchmark.py</code> source code.</p></li>
 </ul></li>
 </ol>
 <ol start="4">
-<li>Creare una collezione e inserire i dati vettoriali.</li>
+<li>Create a collection and insert vector data.</li>
 </ol>
 <pre><code translate="no">root@milvus-pytest:/go_ben<span class="hljs-comment"># python collection_prepare.py 10.100.31.105 </span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>Aprire <code translate="no">/tmp/collection_prepare.log</code> per verificare il risultato dell'esecuzione.</li>
+<li>Open <code translate="no">/tmp/collection_prepare.log</code> to check the running result.</li>
 </ol>
 <pre><code translate="no">...
 08/11/2022 17:33:34 PM - INFO - Build index costs 263.626
 08/11/2022 17:33:54 PM - INFO - Collection prepared completed
 <button class="copy-code-btn"></button></code></pre>
 <ol start="6">
-<li>Chiamare <code translate="no">benchmark</code> (o <code translate="no">benchmark-mac</code> su macOS) per eseguire una ricerca concorrente.</li>
+<li>Call <code translate="no">benchmark</code> (or <code translate="no">benchmark-mac</code> on macOS) to conduct a concurrent search.</li>
 </ol>
 <pre><code translate="no">root@milvus-pytest:/go_ben<span class="hljs-meta"># python go_benchmark.py 10.100.31.105 ./benchmark</span>
 [<span class="hljs-meta">write_json_file</span>] <span class="hljs-function">Remove <span class="hljs-title">file</span>(<span class="hljs-params">search_vector_file.json</span>).
@@ -85,18 +85,19 @@ Params of go_benchmark: [&#x27;./benchmark&#x27;, &#x27;locust&#x27;, &#x27;-u&#
 Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: True, <span class="hljs-string">&#x27;err_code&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;err_message&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>} 
 <button class="copy-code-btn"></button></code></pre>
 <ol start="7">
-<li>Aprire il file <code translate="no">go_log_file.log</code> nella directory corrente per controllare il log dettagliato della ricerca. Di seguito sono riportate le informazioni sulla ricerca che si possono trovare nel registro di ricerca.<ul>
-<li><p>reqs: numero di richieste di ricerca dal momento in cui si verifica la concomitanza al momento attuale (l'arco di tempo corrente)</p></li>
-<li><p>fails: numero di richieste non riuscite come percentuale delle richieste nell'intervallo di tempo corrente</p></li>
-<li><p>Avg: tempo medio di risposta della richiesta nell'intervallo di tempo corrente (unità: millisecondi)</p></li>
-<li><p>Min: tempo minimo di risposta alla richiesta nell'intervallo di tempo corrente (unità: millisecondi)</p></li>
-<li><p>Max: tempo massimo di risposta alla richiesta nell'intervallo di tempo corrente (unità: millisecondi)</p></li>
-<li><p>Mediana: tempo di risposta mediano della richiesta nell'intervallo di tempo corrente (unità: millisecondi)</p></li>
-<li><p>req/s: numero di richieste al secondo, ovvero QPS</p></li>
-<li><p>failures/s: numero medio di richieste fallite al secondo nell'intervallo di tempo corrente.</p></li>
+<li>Open the <code translate="no">go_log_file.log</code> file under the current directory to check the detailed search log. The following is the search information you can find in the search log.
+<ul>
+<li><p>reqs: number of search requests from the moment when concurrency happens to the current moment (the current time-span)</p></li>
+<li><p>fails: number of failed requests as a percentage of reqs in the current time-span</p></li>
+<li><p>Avg: average request response time in the current time-span (unit: milliseconds)</p></li>
+<li><p>Min: minimum request response time in the current time-span (unit: milliseconds)</p></li>
+<li><p>Max: maximum request response time in the current time-span (unit: milliseconds)</p></li>
+<li><p>Median: median request response time in the current time-span (unit: milliseconds)</p></li>
+<li><p>req/s: number of requests per second, i.e. QPS</p></li>
+<li><p>failures/s: average number of failed requests per second in the current time-span</p></li>
 </ul></li>
 </ol>
-<h2 id="Downloading-Scripts-and-Executable-Files" class="common-anchor-header">Scaricare gli script e i file eseguibili<button data-href="#Downloading-Scripts-and-Executable-Files" class="anchor-icon" translate="no">
+<h2 id="Downloading-Scripts-and-Executable-Files" class="common-anchor-header">Downloading Scripts and Executable Files<button data-href="#Downloading-Scripts-and-Executable-Files" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,10 +115,10 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
     </button></h2><ul>
 <li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/collection_prepare.py">collection_prepare.py</a></p></li>
 <li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/go_benchmark.py">go_benchmark.py</a></p></li>
-<li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark">benchmark</a> per Ubuntu</p></li>
-<li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac">benchmark-mac</a> per macOS</p></li>
+<li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark">benchmark</a> for Ubuntu</p></li>
+<li><p><a href="https://github.com/milvus-io/milvus-tools/blob/main/benchmark/benchmark-mac">benchmark-mac</a> for macOS</p></li>
 </ul>
-<h2 id="Whats-next" class="common-anchor-header">Il prossimo passo<button data-href="#Whats-next" class="anchor-icon" translate="no">
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,11 +133,11 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con il rilascio ufficiale di Milvus 2.1, abbiamo preparato una serie di blog che introducono le nuove funzionalità. Per saperne di più, leggete questa serie di blog:</p>
+    </button></h2><p>With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">Come utilizzare i dati delle stringhe per potenziare le applicazioni di ricerca per similarità</a></li>
-<li><a href="https://milvus.io/blog/embedded-milvus.md">Utilizzo di Milvus incorporato per installare ed eseguire immediatamente Milvus con Python</a></li>
-<li><a href="https://milvus.io/blog/in-memory-replicas.md">Aumentare la velocità di lettura del database vettoriale con le repliche in memoria</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Capire il livello di consistenza nel database vettoriale Milvus</a></li>
-<li><a href="https://milvus.io/blog/data-security.md">In che modo il database vettoriale Milvus garantisce la sicurezza dei dati?</a></li>
+<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">How to Use String Data to Empower Your Similarity Search Applications</a></li>
+<li><a href="https://milvus.io/blog/embedded-milvus.md">Using Embedded Milvus to Instantly Install and Run Milvus with Python</a></li>
+<li><a href="https://milvus.io/blog/in-memory-replicas.md">Increase Your Vector Database Read Throughput with In-Memory Replicas</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Understanding Consistency Level in the Milvus Vector Database</a></li>
+<li><a href="https://milvus.io/blog/data-security.md">How Does the Milvus Vector Database Ensure Data Security?</a></li>
 </ul>

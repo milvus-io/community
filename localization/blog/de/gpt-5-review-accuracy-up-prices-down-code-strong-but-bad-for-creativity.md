@@ -1,8 +1,7 @@
 ---
 id: gpt-5-review-accuracy-up-prices-down-code-strong-but-bad-for-creativity.md
-title: >-
-  GPT-5 Testbericht: Höhere Genauigkeit, niedrigere Preise, starker Code - aber
-  schlecht für die Kreativität
+title: |
+  GPT-5 Review: Accuracy Up, Prices Down, Code Strong — But Bad for Creativity
 author: Lumina Wang
 date: 2025-08-08T00:00:00.000Z
 cover: assets.zilliz.com/gpt_5_review_7df71f395a.png
@@ -14,14 +13,14 @@ meta_keywords: 'Milvus, gpt-5, openai, chatgpt'
 meta_title: |
   GPT-5 Review: Accuracy Up, Prices Down, Code Strong, Bad Creativity
 desc: >-
-  Für Entwickler, insbesondere für diejenigen, die Agenten und RAG-Pipelines
-  erstellen, ist diese Version möglicherweise das bisher nützlichste Upgrade.
+  for developers, especially those building agents and RAG pipelines, this
+  release may quietly be the most useful upgrade yet.
 origin: >-
   https://milvus.io/blog/gpt-5-review-accuracy-up-prices-down-code-strong-but-bad-for-creativity.md
 ---
-<p><strong>Nach monatelangen Spekulationen hat OpenAI endlich</strong> <a href="https://openai.com/gpt-5/"><strong>GPT-5</strong></a><strong>ausgeliefert</strong><strong>.</strong> Das Modell ist nicht der kreative Blitzschlag, der GPT-4 war, aber für Entwickler, insbesondere für diejenigen, die Agenten und RAG-Pipelines erstellen, könnte diese Version im Stillen das bisher nützlichste Upgrade sein.</p>
-<p><strong>TL;DR für Entwickler:</strong> GPT-5 vereinheitlicht die Architekturen, verbessert die multimodale E/A, reduziert die Fehlerrate, erweitert den Kontext auf 400k Token und macht den Einsatz in großem Maßstab erschwinglich. Die Kreativität und das literarische Gespür haben jedoch einen deutlichen Rückschritt gemacht.</p>
-<h2 id="What’s-New-Under-the-Hood" class="common-anchor-header">Was ist das Neue unter der Haube?<button data-href="#What’s-New-Under-the-Hood" class="anchor-icon" translate="no">
+<p><strong>After months of speculation, OpenAI has finally shipped</strong> <a href="https://openai.com/gpt-5/"><strong>GPT-5</strong></a><strong>.</strong> The model isn’t the creative lightning strike that GPT-4 was, but for developers, especially those building agents and RAG pipelines, this release may quietly be the most useful upgrade yet.</p>
+<p><strong>TL;DR for builders:</strong> GPT-5 unifies architectures, supercharges multimodal I/O, slashes factual error rates, extends context to 400k tokens, and makes large-scale usage affordable. However, the creativity and literary flair have taken a noticeable step back.</p>
+<h2 id="What’s-New-Under-the-Hood" class="common-anchor-header">What’s New Under the Hood?<button data-href="#What’s-New-Under-the-Hood" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,16 +36,16 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><strong>Vereinheitlichter Kern</strong> - Verschmelzung der digitalen GPT-Reihe mit den Schlussfolgerungsmodellen der o-Reihe, wodurch langkettige Schlussfolgerungen und multimodale Schlussfolgerungen in einer einzigen Architektur möglich sind.</p></li>
-<li><p><strong>Multimodales Gesamtspektrum</strong> - Eingabe/Ausgabe von Text, Bild, Audio und Video, alles innerhalb desselben Modells.</p></li>
-<li><p><strong>Massive Genauigkeitssteigerung</strong>:</p>
+<li><p><strong>Unified core</strong> — Merges GPT digital series with o-series reasoning models, delivering long-chain reasoning plus multimodal in a single architecture.</p></li>
+<li><p><strong>Full-spectrum multimodal</strong> — Input/output across text, image, audio, and video, all within the same model.</p></li>
+<li><p><strong>Massive accuracy gains</strong>:</p>
 <ul>
-<li><p><code translate="no">gpt-5-main</code>: 44% weniger sachliche Fehler im Vergleich zu GPT-4o.</p></li>
-<li><p><code translate="no">gpt-5-thinking</code>78% weniger sachliche Fehler im Vergleich zu o3.</p></li>
+<li><p><code translate="no">gpt-5-main</code>: 44% fewer factual errors vs. GPT-4o.</p></li>
+<li><p><code translate="no">gpt-5-thinking</code>: 78% fewer factual errors vs. o3.</p></li>
 </ul></li>
-<li><p><strong>Steigerung der Fähigkeiten in den Bereichen</strong> Codegenerierung, mathematisches Denken, Gesundheitsberatung und strukturiertes Schreiben; deutlich weniger Halluzinationen.</p></li>
+<li><p><strong>Domain skill boosts</strong> — Stronger in code generation, mathematical reasoning, health consultation, and structured writing; hallucinations reduced significantly.</p></li>
 </ul>
-<p>Neben GPT-5 hat OpenAI auch <strong>drei weitere Varianten</strong> veröffentlicht, die jeweils für unterschiedliche Anforderungen optimiert sind:</p>
+<p>Alongside GPT-5, OpenAI also released <strong>three additional variants</strong>, each optimized for different needs:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt_5_family_99a9bee18a.png" alt="" class="doc-image" id="" />
@@ -55,16 +54,16 @@ origin: >-
 </p>
 <table>
 <thead>
-<tr><th><strong>Modell</strong></th><th><strong>Beschreibung</strong></th><th><strong>Eingabe / $ pro 1M Token</strong></th><th><strong>Ausgabe / $ pro 1M Token</strong></th><th><strong>Wissen aktualisieren</strong></th></tr>
+<tr><th><strong>Model</strong></th><th><strong>Description</strong></th><th><strong>Input / $ per 1M tokens</strong></th><th><strong>Output / $ per 1M tokens</strong></th><th><strong>Knowledge Update</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>gpt-5</td><td>Hauptmodell, langkettige Argumentation + vollständige Multimodalität</td><td>$1.25</td><td>$10.00</td><td>2024-10-01</td></tr>
-<tr><td>gpt-5-chat</td><td>Äquivalent zu gpt-5, verwendet in ChatGPT-Gesprächen</td><td>-</td><td>-</td><td>2024-10-01</td></tr>
-<tr><td>gpt-5-mini</td><td>60% billiger, behält ~90% der Programmierleistung</td><td>$0.25</td><td>$2.00</td><td>2024-05-31</td></tr>
-<tr><td>gpt-5-nano</td><td>Edge/Offline, 32K Kontext, Latenz &lt;40ms</td><td>$0.05</td><td>$0.40</td><td>2024-05-31</td></tr>
+<tr><td>gpt-5</td><td>Main model, long-chain reasoning + full multimodal</td><td>$1.25</td><td>$10.00</td><td>2024-10-01</td></tr>
+<tr><td>gpt-5-chat</td><td>Equivalent to gpt-5, used in ChatGPT conversations</td><td>—</td><td>—</td><td>2024-10-01</td></tr>
+<tr><td>gpt-5-mini</td><td>60% cheaper, retains ~90% of programming performance</td><td>$0.25</td><td>$2.00</td><td>2024-05-31</td></tr>
+<tr><td>gpt-5-nano</td><td>Edge/offline, 32K context, latency &lt;40ms</td><td>$0.05</td><td>$0.40</td><td>2024-05-31</td></tr>
 </tbody>
 </table>
-<p>GPT-5 brach Rekorde in 25 Benchmark-Kategorien - von der Code-Reparatur über multimodales Reasoning bis hin zu medizinischen Aufgaben - mit beständigen Genauigkeitsverbesserungen.</p>
+<p>GPT-5 broke records across 25 benchmark categories — from code repair to multimodal reasoning to medical tasks — with consistent accuracy improvements.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/benchmark_1_8ebf1bed4b.png" alt="" class="doc-image" id="" />
@@ -77,7 +76,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Why-Developers-Should-Care--Especially-for-RAG--Agents" class="common-anchor-header">Warum es für Entwickler wichtig sein sollte - besonders für RAG und Agenten<button data-href="#Why-Developers-Should-Care--Especially-for-RAG--Agents" class="anchor-icon" translate="no">
+<h2 id="Why-Developers-Should-Care--Especially-for-RAG--Agents" class="common-anchor-header">Why Developers Should Care — Especially for RAG &amp; Agents<button data-href="#Why-Developers-Should-Care--Especially-for-RAG--Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -92,11 +91,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Unsere praktischen Tests deuten darauf hin, dass diese Version eine stille Revolution für Retrieval-Augmented Generation und agentengesteuerte Arbeitsabläufe darstellt.</p>
+    </button></h2><p>Our hands-on tests suggest this release is a quiet revolution for Retrieval-Augmented Generation and agent-driven workflows.</p>
 <ol>
-<li><p><strong>Preissenkungen</strong> machen Experimente möglich - API-Inputkosten: <strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1,25 pro Million</mn><mi>Token</mi><mo separator="true">∗∗;</mo><mi>Outputkosten</mi><mo>:∗∗1</mo></mrow><annotation encoding="application/x-tex">,25 pro Million Token**; Outputkosten: **</annotation></semantics></math></span></span></strong><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span> 1 <strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.</span><span class="mord mathnormal">25proMillionToken</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span></span></span></span></strong><span class="mspace" style="margin-right:0.2222em;"></span> <strong><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span><span class="mpunct"> ∗;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">outputcost</span><span class="mspace" style="margin-right:0.2778em;"></span></span>:<span class="base"><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4653em;"></span><span class="mord">∗∗10</span></span></span></span></strong>.</p></li>
-<li><p><strong>Ein 400k-Kontextfenster</strong> (im Vergleich zu 128k in o3/4o) ermöglicht es Ihnen, den Status über komplexe mehrstufige Agenten-Workflows hinweg beizubehalten, ohne dass der Kontext unterbrochen wird.</p></li>
-<li><p><strong>Weniger Halluzinationen und bessere Werkzeugnutzung</strong> - Unterstützt mehrstufige verkettete Werkzeugaufrufe, bewältigt komplexe Nicht-Standardaufgaben und verbessert die Ausführungssicherheit.</p></li>
+<li><p><strong>Price cuts</strong> make experimentation viable — API input cost: <strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.25</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi><mi>s</mi><mo>∗</mo><mo>∗</mo><mo separator="true">;</mo><mi>o</mi><mi>u</mi><mi>t</mi><mi>p</mi><mi>u</mi><mi>t</mi><mi>c</mi><mi>o</mi><mi>s</mi><mi>t</mi><mo>:</mo><mo>∗</mo><mo>∗</mo></mrow><annotation encoding="application/x-tex">1.25 per million tokens**; output cost: **</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">1.25</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">mi</span><span class="mord mathnormal" style="margin-right:0.01968em;">ll</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span><span class="mord">∗</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">tp</span><span class="mord mathnormal">u</span><span class="mord mathnormal">t</span><span class="mord mathnormal">cos</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4653em;"></span><span class="mord">∗</span><span class="mord">∗</span></span></span></span>10</strong>.</p></li>
+<li><p><strong>A 400k context window</strong> (vs. 128k in o3/4o) allows you to maintain state across complex multi-step agent workflows without context chopping.</p></li>
+<li><p><strong>Fewer hallucinations &amp; better tool use</strong> — Supports multi-step chained tool calls, handles complex non-standard tasks, and improves execution reliability.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -104,7 +103,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Not-Without-Flaws" class="common-anchor-header">Nicht ohne Schwächen<button data-href="#Not-Without-Flaws" class="anchor-icon" translate="no">
+<h2 id="Not-Without-Flaws" class="common-anchor-header">Not Without Flaws<button data-href="#Not-Without-Flaws" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -119,11 +118,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Trotz seiner technischen Fortschritte zeigt GPT-5 immer noch deutliche Grenzen auf.</p>
-<p>Auf der Keynote von OpenAI wurde eine Folie gezeigt, auf der bizarrerweise <em>52,8 &gt; 69,1 = 30,8</em> berechnet wurde, und in unseren eigenen Tests wiederholte das Modell selbstbewusst die aus dem Lehrbuch stammende, aber falsche Erklärung des "Bernoulli-Effekts" für den Auftrieb eines Flugzeugs - was uns daran erinnert, dass <strong>es immer noch ein Musterschüler und kein echter Fachmann ist.</strong></p>
-<p><strong>Während sich die MINT-Leistung verbessert hat, ist die kreative Tiefe gesunken.</strong> Viele langjährige Nutzer stellen einen Rückgang des literarischen Flairs fest: Gedichte wirken flacher, philosophische Gespräche weniger nuanciert und lange Erzählungen mechanischer. Der Nachteil liegt auf der Hand: Die höhere sachliche Genauigkeit und die stärkere Argumentation in technischen Bereichen gehen auf Kosten des kunstvollen, forschenden Tons, der GPT einst fast menschlich erscheinen ließ.</p>
-<p>Sehen wir uns nun an, wie GPT-5 in unseren praktischen Tests abschneidet.</p>
-<h2 id="Coding-Tests" class="common-anchor-header">Codierung der Tests<button data-href="#Coding-Tests" class="anchor-icon" translate="no">
+    </button></h2><p>Despite its technical advances, GPT-5 still shows clear limits.</p>
+<p>At launch, OpenAI’s keynote featured a slide that bizarrely calculated <em>52.8 &gt; 69.1 = 30.8</em>, and in our own tests, the model confidently repeated the textbook-but-wrong “Bernoulli effect” explanation for airplane lift—reminding us <strong>it’s still a pattern learner, not a true domain expert.</strong></p>
+<p><strong>While STEM performance has sharpened, creative depth has slipped.</strong> Many long-time users note a decline in literary flair: poetry feels flatter, philosophical conversations less nuanced, and long-form narratives more mechanical. The trade-off is clear—higher factual accuracy and stronger reasoning in technical domains, but at the expense of the artful, exploratory tone that once made GPT feel almost human.</p>
+<p>With that in mind, let’s see how GPT-5 actually performs in our hands-on tests.</p>
+<h2 id="Coding-Tests" class="common-anchor-header">Coding Tests<button data-href="#Coding-Tests" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,29 +137,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ich begann mit einer einfachen Aufgabe: Schreiben Sie ein HTML-Skript, das es dem Benutzer ermöglicht, ein Bild hochzuladen und es mit der Maus zu bewegen. GPT-5 pausierte etwa neun Sekunden lang und produzierte dann einen funktionierenden Code, der die Interaktion gut bewältigte. Das war schon mal ein guter Anfang.</p>
+    </button></h2><p>I started with a simple task: write an HTML script that allows users to upload an image and move it with the mouse. GPT-5 paused for about nine seconds, then produced working code that handled the interaction well. It felt like a good start.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt52_7b04c9b41b.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Die zweite Aufgabe war schwieriger: die Erkennung von Kollisionen zwischen Polygonen und Kugeln in einem rotierenden Sechseck, mit einstellbarer Rotationsgeschwindigkeit, Elastizität und Kugelanzahl. GPT-5 erstellte die erste Version in etwa dreizehn Sekunden. Der Code enthielt alle erwarteten Funktionen, war aber fehlerhaft und ließ sich nicht ausführen.</p>
+<p>The second task was harder: implement polygon–ball collision detection inside a rotating hexagon, with adjustable rotation speed, elasticity, and ball count. GPT-5 generated the first version in around thirteen seconds. The code included all expected features, but it had bugs and wouldn’t run.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_6_3e6a34572a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Ich habe dann die Option <strong>Fehler beheben</strong> des Editors verwendet, und GPT-5 hat die Fehler korrigiert, so dass das Sechseck gerendert wurde. Die Kugeln erschienen jedoch nie - die Spawn-Logik fehlte oder war fehlerhaft, d. h. die Kernfunktion des Programms war trotz des ansonsten vollständigen Setups nicht vorhanden.</p>
+<p>I then used the editor’s <strong>Fix bug</strong> option, and GPT-5 corrected the errors so the hexagon rendered. However, the balls never appeared — the spawn logic was missing or incorrect, meaning the core function of the program was absent despite the otherwise complete setup.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt51_6489df9914.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Zusammenfassend lässt sich sagen, dass</strong> GPT-5 sauberen, gut strukturierten interaktiven Code erzeugen und einfache Laufzeitfehler beheben kann. In komplexen Szenarien besteht jedoch immer noch die Gefahr, dass wesentliche Logik ausgelassen wird, so dass eine menschliche Überprüfung und Iteration vor dem Einsatz erforderlich ist.</p>
-<h2 id="Reasoning-Test" class="common-anchor-header">Test des logischen Denkens<button data-href="#Reasoning-Test" class="anchor-icon" translate="no">
+<p><strong>In summary,</strong> GPT-5 can produce clean, well-structured interactive code and recover from simple runtime errors. But in complex scenarios, it still risks omitting essential logic, so human review and iteration are necessary before deployment.</p>
+<h2 id="Reasoning-Test" class="common-anchor-header">Reasoning Test<button data-href="#Reasoning-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,16 +174,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ich habe ein mehrstufiges Logikrätsel gestellt, das Farben, Preise und Positionsangaben von Artikeln enthält - etwas, für dessen Lösung die meisten Menschen mehrere Minuten benötigen würden.</p>
+    </button></h2><p>I posed a multi-step logic puzzle involving item colors, prices, and positional clues—something that would take most humans several minutes to solve.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/reasoning_test_7ea15ed25b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Frage:</strong> <em>Was ist der blaue Gegenstand und wie hoch ist sein Preis?</em></p>
-<p>GPT-5 lieferte die richtige Antwort in nur 9 Sekunden, mit einer klaren und logisch fundierten Erklärung. Dieser Test bestätigte die Stärke des Modells in Bezug auf strukturiertes Denken und schnelle Schlussfolgerungen.</p>
-<h2 id="Writing-Test" class="common-anchor-header">Schriftlicher Test<button data-href="#Writing-Test" class="anchor-icon" translate="no">
+<p><strong>Question:</strong> <em>What is the blue item and what is its price?</em></p>
+<p>GPT-5 delivered the correct answer in just 9 seconds, with a clear and logically sound explanation. This test reinforced the model’s strength in structured reasoning and rapid deduction.</p>
+<h2 id="Writing-Test" class="common-anchor-header">Writing Test<button data-href="#Writing-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -199,16 +198,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ich wende mich oft an ChatGPT, wenn ich Hilfe bei Blogs, Beiträgen in sozialen Medien und anderen schriftlichen Inhalten benötige, daher ist die Texterstellung eine der Fähigkeiten, auf die ich am meisten Wert lege. Für diesen Test bat ich GPT-5, einen LinkedIn-Beitrag auf der Grundlage eines Blogs über den mehrsprachigen Analysator von Milvus 2.6 zu erstellen.</p>
+    </button></h2><p>I often turn to ChatGPT for help with blogs, social media posts, and other written content, so text generation is one of the capabilities I care about most. For this test, I asked GPT-5 to create a LinkedIn post based on a blog about Milvus 2.6’s multilingual analyzer.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Writing_Test_4fe5fef775.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Das Ergebnis war gut organisiert und traf alle wichtigen Punkte des ursprünglichen Blogs, aber es fühlte sich zu förmlich und vorhersehbar an - eher wie eine Pressemitteilung eines Unternehmens als etwas, das Interesse in einem sozialen Feed wecken sollte. Es fehlte die Wärme, der Rhythmus und die Persönlichkeit, die einen Beitrag menschlich und einladend wirken lassen.</p>
-<p>Positiv zu vermerken ist, dass die begleitenden Illustrationen hervorragend waren: klar, markengerecht und perfekt auf den technischen Stil von Zilliz abgestimmt. Visuell war es genau richtig; der Text braucht nur ein bisschen mehr kreative Energie, um zu passen.</p>
-<h2 id="Longer-Context-Window--Death-of-RAG-and-VectorDB" class="common-anchor-header">Längeres Kontextfenster = Tod von RAG und VectorDB?<button data-href="#Longer-Context-Window--Death-of-RAG-and-VectorDB" class="anchor-icon" translate="no">
+<p>The output was well-organized and hit all the key points from the original blog, but it felt too formal and predictable—more like a corporate press release than something meant to spark interest on a social feed. It lacked the warmth, rhythm, and personality that make a post feel human and inviting.</p>
+<p>On the upside, the accompanying illustrations were excellent: clear, on-brand, and perfectly aligned with Zilliz’s tech style. Visually, it was spot-on; the writing just needs a bit more creative energy to match.</p>
+<h2 id="Longer-Context-Window--Death-of-RAG-and-VectorDB" class="common-anchor-header">Longer Context Window = Death of RAG and VectorDB?<button data-href="#Longer-Context-Window--Death-of-RAG-and-VectorDB" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -223,11 +222,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wir haben uns mit diesem Thema letztes Jahr beschäftigt, als <a href="https://zilliz.com/blog/will-retrieval-augmented-generation-RAG-be-killed-by-long-context-LLMs">Google <strong>Gemini 1.5 Pro</strong></a> mit seinem ultralangen Kontextfenster mit 10 Millionen Token <a href="https://zilliz.com/blog/will-retrieval-augmented-generation-RAG-be-killed-by-long-context-LLMs">auf den Markt brachte</a>. Damals sagten einige Leute schnell das Ende von RAG und sogar das Ende von Datenbanken insgesamt voraus. Heute ist RAG nicht nur noch am Leben, sondern floriert. In der Praxis <em>ist</em> sie leistungsfähiger und produktiver geworden, zusammen mit Vektordatenbanken wie <a href="https://milvus.io/"><strong>Milvus</strong></a> und <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>.</p>
-<p>Jetzt, mit der erweiterten Kontextlänge von GPT-5 und den fortschrittlicheren Funktionen zum Aufrufen von Werkzeugen, stellt sich die Frage erneut: <em>Brauchen wir noch Vektordatenbanken für die Kontexterfassung oder sogar spezielle Agenten/RAG-Pipelines?</em></p>
-<p><strong>Die kurze Antwort: absolut ja. Wir brauchen sie immer noch.</strong></p>
-<p>Längerer Kontext ist nützlich, aber er ist kein Ersatz für strukturierte Abfragen. Multi-Agenten-Systeme sind immer noch auf dem besten Weg, ein langfristiger architektonischer Trend zu werden - und diese Systeme benötigen oft einen praktisch unbegrenzten Kontext. Und wenn es darum geht, private, unstrukturierte Daten sicher zu verwalten, wird eine Vektordatenbank immer die letzte Instanz sein.</p>
-<h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>We tackled this topic last year when <a href="https://zilliz.com/blog/will-retrieval-augmented-generation-RAG-be-killed-by-long-context-LLMs">Google launched <strong>Gemini 1.5 Pro</strong></a> with its ultra-long 10M-token context window. At the time, some people were quick to predict the end of RAG—and even the end of databases altogether. Fast-forward to today: not only is RAG still alive, it’s thriving. In practice, it’s become <em>more</em> capable and productive, along with vector databases like <a href="https://milvus.io/"><strong>Milvus</strong></a> and <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>.</p>
+<p>Now, with GPT-5’s expanded context length and more advanced tool-calling capabilities, the question has popped up again: <em>Do we still need vector databases for context ingestion, or even dedicated agents/RAG pipelines?</em></p>
+<p><strong>The short answer: absolutely yes. We still need them.</strong></p>
+<p>Longer context is useful, but it’s not a replacement for structured retrieval. Multi-agent systems are still on track to be a long-term architectural trend—and these systems often need virtually unlimited context. Plus, when it comes to managing private, unstructured data securely, a vector database will always be the final gatekeeper.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -242,7 +241,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem ich mir die OpenAI-Veranstaltung zur Markteinführung angesehen und meine eigenen praktischen Tests durchgeführt habe, fühlt sich GPT-5 weniger wie ein dramatischer Sprung nach vorn an, sondern eher wie eine raffinierte Mischung aus den Stärken der Vergangenheit mit ein paar gut platzierten Upgrades. Das ist nichts Schlechtes - es ist ein Zeichen für die Grenzen der Architektur und der Datenqualität, an die große Modelle allmählich stoßen.</p>
-<p>Wie das Sprichwort sagt, <em>kommt schwere Kritik von hohen Erwartungen</em>. Jegliche Enttäuschung über GPT-5 kommt hauptsächlich von der sehr hohen Messlatte, die OpenAI für sich selbst gesetzt hat. Und wirklich - bessere Genauigkeit, niedrigere Preise und integrierte multimodale Unterstützung sind immer noch wertvolle Gewinne. Für Entwickler, die Agenten und RAG-Pipelines erstellen, ist dies vielleicht sogar das bisher nützlichste Upgrade.</p>
-<p>Einige Freunde haben sich darüber lustig gemacht, "Online-Gedenkstätten" für GPT-4o zu erstellen und zu behaupten, die Persönlichkeit ihres alten Chat-Begleiters sei für immer verschwunden. Mir macht die Veränderung nichts aus - GPT-5 ist vielleicht weniger warmherzig und gesprächig, aber sein direkter, schnörkelloser Stil wirkt erfrischend geradlinig.</p>
-<p><strong>Wie sieht es bei Ihnen aus?</strong> Teilen Sie uns Ihre Meinung mit - nehmen Sie an unserem <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> teil oder beteiligen Sie sich an der Diskussion auf <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> und <a href="https://x.com/milvusio">X</a>.</p>
+    </button></h2><p>After watching OpenAI’s launch event and running my own hands-on tests, GPT-5 feels less like a dramatic leap forward and more like a refined blend of past strengths with a few well-placed upgrades. That’s not a bad thing—it’s a sign of the architectural and data-quality limits large models are starting to encounter.</p>
+<p>As the saying goes, <em>severe criticism comes from high expectations</em>. Any disappointment around GPT-5 mostly comes from the very high bar OpenAI set for itself. And really—better accuracy, lower prices, and integrated multimodal support are still valuable wins. For developers building agents and RAG pipelines, this may actually be the most useful upgrade so far.</p>
+<p>Some friends have been joking about making “online memorials” for GPT-4o, claiming their old chat companion’s personality is gone forever. I don’t mind the change—GPT-5 might be less warm and chatty, but its direct, no-nonsense style feels refreshingly straightforward.</p>
+<p><strong>What about you?</strong> Share your thoughts with us—join our <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, or join the conversation on <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> and <a href="https://x.com/milvusio">X</a>.</p>

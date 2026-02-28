@@ -1,29 +1,32 @@
 ---
 id: data-security.md
-title: Bagaimana Basis Data Vektor Milvus Memastikan Keamanan Data?
+title: How Does the Milvus Vector Database Ensure Data Security?
 author: Angela Ni
 date: 2022-09-05T00:00:00.000Z
-desc: Pelajari tentang autentikasi dan enkripsi pengguna saat transit di Milvus.
+desc: Learn about user authentication and encryption in transit in Milvus.
 cover: assets.zilliz.com/Security_192e35a790.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
 canonicalUrl: 'https://milvus.io/blog/data-security.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Security_192e35a790.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Gambar sampul depan</span> </span></p>
-<p>Dengan mempertimbangkan keamanan data Anda sepenuhnya, otentikasi pengguna dan koneksi keamanan lapisan transport (TLS) sekarang secara resmi tersedia di Milvus 2.1. Tanpa otentikasi pengguna, siapa pun dapat mengakses semua data dalam basis data vektor Anda dengan SDK. Namun, mulai dari Milvus 2.1, hanya mereka yang memiliki nama pengguna dan kata sandi yang valid yang dapat mengakses basis data vektor Milvus. Selain itu, di Milvus 2.1 keamanan data lebih terlindungi oleh TLS, yang memastikan komunikasi yang aman dalam jaringan komputer.</p>
-<p>Artikel ini bertujuan untuk menganalisis bagaimana Milvus database vektor memastikan keamanan data dengan otentikasi pengguna dan koneksi TLS dan menjelaskan bagaimana Anda dapat memanfaatkan kedua fitur ini sebagai pengguna yang ingin memastikan keamanan data saat menggunakan database vektor.</p>
-<p><strong>Langsung ke:</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Security_192e35a790.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
+<p>In full consideration of your data security, user authentication and transport layer security (TLS) connection are now officially available in Milvus 2.1. Without user authentication, anyone can access all data in your vector database with SDK. However, starting from Milvus 2.1, only those with a valid username and password can access the Milvus vector database. In addition, in Milvus 2.1 data security is further protected by TLS, which ensures secure communications in a computer network.</p>
+<p>This article aims to analyze how Milvus the vector database ensures data security with user authentication and TLS connection and explain how you can utilize these two features as a user who wants to ensure data security when using the vector database.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#What-is-database-security-and-why-is-it-important">Apa yang dimaksud dengan keamanan basis data dan mengapa hal ini penting?</a></li>
-<li><a href="#How-does-the-Milvus-vector-database-ensure-data-security">Bagaimana database vektor Milvus memastikan keamanan data?</a><ul>
-<li><a href="#User-authentication">Otentikasi pengguna</a></li>
-<li><a href="#TLS-connection">Koneksi TLS</a></li>
+<li><a href="#What-is-database-security-and-why-is-it-important">What is database security and why is it important?</a></li>
+<li><a href="#How-does-the-Milvus-vector-database-ensure-data-security">How does the Milvus vector database ensure data security?</a>
+<ul>
+<li><a href="#User-authentication">User authentication</a></li>
+<li><a href="#TLS-connection">TLS connection</a></li>
 </ul></li>
 </ul>
-<h2 id="What-is-database-security-and-why-is-it-important" class="common-anchor-header">Apa yang dimaksud dengan keamanan basis data dan mengapa hal ini penting?<button data-href="#What-is-database-security-and-why-is-it-important" class="anchor-icon" translate="no">
+<h2 id="What-is-database-security-and-why-is-it-important" class="common-anchor-header">What is database security and why is it important?<button data-href="#What-is-database-security-and-why-is-it-important" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,8 +41,8 @@ canonicalUrl: 'https://milvus.io/blog/data-security.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Keamanan basis data mengacu pada langkah-langkah yang diambil untuk memastikan bahwa semua data dalam basis data aman dan dijaga kerahasiaannya. Kasus pembobolan data dan kebocoran data baru-baru ini di <a href="https://firewalltimes.com/recent-data-breaches/">Twitter, Marriott, dan Departemen Asuransi Texas, dan lain-lain</a> membuat kita semakin waspada terhadap masalah keamanan data. Semua kasus ini terus-menerus mengingatkan kita bahwa perusahaan dan bisnis dapat mengalami kerugian besar jika data tidak terlindungi dengan baik dan database yang mereka gunakan aman.</p>
-<h2 id="How-does-the-Milvus-vector-database-ensure-data-security" class="common-anchor-header">Bagaimana database vektor Milvus memastikan keamanan data?<button data-href="#How-does-the-Milvus-vector-database-ensure-data-security" class="anchor-icon" translate="no">
+    </button></h2><p>Database security refers to the measures taken to ensure that all data in the database are safe and kept confidential. Recent data breach and data leak cases at <a href="https://firewalltimes.com/recent-data-breaches/">Twitter, Marriott, and Texas Department of Insurance, etc</a> makes us all the more vigilant to the issue of data security. All these cases constantly remind us that companies and businesses can suffer from severe loss if the data are not well protected and the databases they use are secure.</p>
+<h2 id="How-does-the-Milvus-vector-database-ensure-data-security" class="common-anchor-header">How does the Milvus vector database ensure data security?<button data-href="#How-does-the-Milvus-vector-database-ensure-data-security" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,31 +57,35 @@ canonicalUrl: 'https://milvus.io/blog/data-security.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam rilis 2.1 saat ini, basis data vektor Milvus berusaha memastikan keamanan basis data melalui otentikasi dan enkripsi. Lebih khusus lagi, pada tingkat akses, Milvus mendukung otentikasi pengguna dasar untuk mengontrol siapa yang dapat mengakses basis data. Sementara itu, pada tingkat basis data, Milvus mengadopsi protokol enkripsi transport layer security (TLS) untuk melindungi komunikasi data.</p>
-<h3 id="User-authentication" class="common-anchor-header">Otentikasi pengguna</h3><p>Fitur otentikasi pengguna dasar di Milvus mendukung pengaksesan basis data vektor menggunakan nama pengguna dan kata sandi demi keamanan data. Ini berarti klien hanya dapat mengakses instance Milvus dengan memberikan nama pengguna dan kata sandi yang telah diautentikasi.</p>
-<h4 id="The-authentication-workflow-in-the-Milvus-vector-database" class="common-anchor-header">Alur kerja otentikasi dalam basis data vektor Milvus</h4><p>Semua permintaan gRPC ditangani oleh proksi Milvus, sehingga otentikasi diselesaikan oleh proksi. Alur kerja untuk masuk dengan kredensial untuk menyambung ke instance Milvus adalah sebagai berikut.</p>
+    </button></h2><p>In the current release of 2.1, the Milvus vector database attempts to ensure database security via authentication and encryption. More specifically, on the access level, Milvus supports basic user authentication to control who can access the database. Meanwhile, on the database level, Milvus adopts the transport layer security (TLS) encryption protocol to protect data communication.</p>
+<h3 id="User-authentication" class="common-anchor-header">User authentication</h3><p>The basic user authentication feature in Milvus supports accessing the vector database using a username and password for the sake of data security. This means clients can only access the Milvus instance upon providing an authenticated username and password.</p>
+<h4 id="The-authentication-workflow-in-the-Milvus-vector-database" class="common-anchor-header">The authentication workflow in the Milvus vector database</h4><p>All gRPC requests are handled by the Milvus proxy, hence authentication is completed by the proxy. The workflow of logging in with the credentials to connect to the Milvus instance is as follows.</p>
 <ol>
-<li>Buat kredensial untuk setiap instans Milvus dan kata sandi terenkripsi disimpan dalam etcd. Milvus menggunakan <a href="https://golang.org/x/crypto/bcrypt">bcrypt</a> untuk enkripsi karena mengimplementasikan <a href="http://www.usenix.org/event/usenix99/provos/provos.pdf">algoritma hashing adaptif</a> Provos dan Mazières.</li>
-<li>Di sisi klien, SDK mengirimkan ciphertext ketika terhubung ke layanan Milvus. Ciphertext base64 (<username>:<password>) dilampirkan ke metadata dengan kunci <code translate="no">authorization</code>.</li>
-<li>Proksi Milvus mencegat permintaan dan memverifikasi kredensial.</li>
-<li>Kredensial disimpan secara lokal di dalam proksi.</li>
+<li>Create credentials for each Milvus instance and the encrypted passwords are stored in etcd. Milvus uses <a href="https://golang.org/x/crypto/bcrypt">bcrypt</a> for encryption as it implements Provos and Mazières’s <a href="http://www.usenix.org/event/usenix99/provos/provos.pdf">adaptive hashing algorithm</a>.</li>
+<li>On the client side, SDK sends ciphertext when connecting to the Milvus service. The base64 ciphertext (<username>:<password>) is attached to the metadata with the key <code translate="no">authorization</code>.</li>
+<li>The Milvus proxy intercepts the request and verifies the credentials.</li>
+<li>Credentials are cached locally in the proxy.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1280_X1280_021e90e3c8.jpeg" alt="authetication_workflow" class="doc-image" id="authetication_workflow" />
-   </span> <span class="img-wrapper"> <span>alur_kerja_otentikasi</span> </span></p>
-<p>Ketika kredensial diperbarui, alur kerja sistem di Milvus adalah sebagai berikut</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1280_X1280_021e90e3c8.jpeg" alt="authetication_workflow" class="doc-image" id="authetication_workflow" />
+    <span>authetication_workflow</span>
+  </span>
+</p>
+<p>When the credentials are updated, the system workflow in Milvus is as follows</p>
 <ol>
-<li>Root coord bertanggung jawab atas kredensial ketika API insert, query, delete dipanggil.</li>
-<li>Ketika Anda memperbarui kredensial karena Anda lupa kata sandi misalnya, kata sandi baru akan disimpan di etcd. Kemudian semua kredensial lama dalam cache lokal proxy akan dibatalkan.</li>
-<li>Pencegat autentikasi mencari catatan dari cache lokal terlebih dahulu. Jika kredensial dalam cache tidak benar, panggilan RPC untuk mengambil catatan yang paling baru dari root coord akan dipicu. Dan kredensial di cache lokal akan diperbarui.</li>
+<li>Root coord is in charge of the credentials when insert, query, delete APIs are called.</li>
+<li>When you update the credentials because you forget the password for instance, the new password is persisted in etcd. Then all the old credentials in the proxy’s local cache are invalidated.</li>
+<li>The authentication interceptor looks for the records from local cache first. If the credentials in the cache is not correct, the RPC call to fetch the most updated record from root coord will be triggered. And the credentials in the local cache are updated accordingly.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/update_5af81a4173.jpeg" alt="credential_update_workflow" class="doc-image" id="credential_update_workflow" />
-   </span> <span class="img-wrapper"> <span>alur_kerja_pembaruan_kredensial</span> </span></p>
-<h4 id="How-to-manage-user-authentication-in-the-Milvus-vector-database" class="common-anchor-header">Cara mengelola autentikasi pengguna dalam basis data vektor Milvus</h4><p>Untuk mengaktifkan autentikasi, Anda harus terlebih dahulu mengatur <code translate="no">common.security.authorizationEnabled</code> ke <code translate="no">true</code> saat mengonfigurasi Milvus di file <code translate="no">milvus.yaml</code>.</p>
-<p>Setelah diaktifkan, pengguna root akan dibuat untuk instans Milvus. Pengguna root ini dapat menggunakan kata sandi awal <code translate="no">Milvus</code> untuk terhubung ke basis data vektor Milvus.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/update_5af81a4173.jpeg" alt="credential_update_workflow" class="doc-image" id="credential_update_workflow" />
+    <span>credential_update_workflow</span>
+  </span>
+</p>
+<h4 id="How-to-manage-user-authentication-in-the-Milvus-vector-database" class="common-anchor-header">How to manage user authentication in the Milvus vector database</h4><p>To enable authentication, you need to first set <code translate="no">common.security.authorizationEnabled</code> to <code translate="no">true</code> when configuring Milvus in the <code translate="no">milvus.yaml</code> file.</p>
+<p>Once enabled, a root user will be created for the Milvus instance. This root user can use the initial password of <code translate="no">Milvus</code> to connect to the Milvus vector database.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections
 connections.<span class="hljs-title function_">connect</span>(
     alias=<span class="hljs-string">&#x27;default&#x27;</span>,
@@ -88,17 +95,17 @@ connections.<span class="hljs-title function_">connect</span>(
     password=<span class="hljs-string">&#x27;Milvus&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Kami sangat menyarankan untuk mengganti kata sandi pengguna root ketika memulai Milvus untuk pertama kalinya.</p>
-<p>Kemudian pengguna root dapat membuat lebih banyak pengguna baru untuk akses yang terautentikasi dengan menjalankan perintah berikut untuk membuat pengguna baru.</p>
+<p>We highly recommend changing the password of the root user when starting Milvus for the first time.</p>
+<p>Then root user can further create more new users for authenticated access by running the following command to create new users.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> utility
 utility.<span class="hljs-title function_">create_credential</span>(<span class="hljs-string">&#x27;user&#x27;</span>, <span class="hljs-string">&#x27;password&#x27;</span>, <span class="hljs-keyword">using</span>=<span class="hljs-string">&#x27;default&#x27;</span>) 
 <button class="copy-code-btn"></button></code></pre>
-<p>Ada dua hal yang perlu diingat saat membuat pengguna baru:</p>
+<p>There are two things to remember when creating new users:</p>
 <ol>
-<li><p>Untuk nama pengguna baru, panjangnya tidak boleh lebih dari 32 karakter dan harus diawali dengan huruf. Hanya garis bawah, huruf, atau angka yang diperbolehkan dalam nama pengguna. Sebagai contoh, nama pengguna "2abc!" tidak dapat diterima.</p></li>
-<li><p>Sedangkan untuk kata sandi, panjangnya harus 6-256 karakter.</p></li>
+<li><p>As for the new username, it can not exceed 32 characters in length and must start with a letter. Only underscores, letters, or numbers are allowed in the username. For example a username of “2abc!” is not accepted.</p></li>
+<li><p>As for the password, its length should be 6-256 characters.</p></li>
 </ol>
-<p>Setelah kredensial baru disiapkan, pengguna baru dapat terhubung ke instans Milvus dengan nama pengguna dan kata sandi tersebut.</p>
+<p>Once the new credential is set up, the new user can connect to the Milvus instance with the username and password.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections
 connections.<span class="hljs-title function_">connect</span>(
     alias=<span class="hljs-string">&#x27;default&#x27;</span>,
@@ -108,22 +115,22 @@ connections.<span class="hljs-title function_">connect</span>(
     password=<span class="hljs-string">&#x27;password&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Seperti semua proses autentikasi, Anda tidak perlu khawatir jika Anda lupa kata sandi. Kata sandi untuk pengguna yang sudah ada dapat diatur ulang dengan perintah berikut.</p>
+<p>Like all authentication processes, you do not have to worry if you forget the password. The password for an existing user can be reset with the following command.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> utility
 utility.<span class="hljs-title function_">reset_password</span>(<span class="hljs-string">&#x27;user&#x27;</span>, <span class="hljs-string">&#x27;new_password&#x27;</span>, <span class="hljs-keyword">using</span>=<span class="hljs-string">&#x27;default&#x27;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Baca <a href="https://milvus.io/docs/v2.1.x/authenticate.md">dokumentasi Milvus</a> untuk mempelajari lebih lanjut tentang autentikasi pengguna.</p>
-<h3 id="TLS-connection" class="common-anchor-header">Koneksi TLS</h3><p>Transport layer security (TLS) adalah jenis protokol autentikasi untuk menyediakan keamanan komunikasi dalam jaringan komputer. TLS menggunakan sertifikat untuk menyediakan layanan autentikasi antara dua atau lebih pihak yang berkomunikasi.</p>
-<h4 id="How-to-enable-TLS-in-the-Milvus-vector-database" class="common-anchor-header">Cara mengaktifkan TLS di basis data vektor Milvus</h4><p>Untuk mengaktifkan TLS di Milvus, pertama-tama Anda harus menjalankan perintah berikut untuk membagi dua file untuk menghasilkan sertifikat: file konfigurasi OpenSSL default bernama <code translate="no">openssl.cnf</code> dan file bernama <code translate="no">gen.sh</code> yang digunakan untuk menghasilkan sertifikat yang relevan.</p>
+<p>Read the <a href="https://milvus.io/docs/v2.1.x/authenticate.md">Milvus documentation</a> to learn more about user authentication.</p>
+<h3 id="TLS-connection" class="common-anchor-header">TLS connection</h3><p>Transport layer security (TLS) is a type of authentication protocol to provide communications security in a computer network. TLS uses certificates to provide authentication services between two or more communicating parties.</p>
+<h4 id="How-to-enable-TLS-in-the-Milvus-vector-database" class="common-anchor-header">How to enable TLS in the Milvus vector database</h4><p>To enable TLS in Milvus, you need to first run the following command to perpare two files for generating the certificate: a default OpenSSL configuration file named <code translate="no">openssl.cnf</code> and a file named <code translate="no">gen.sh</code> used to generate relevant certificates.</p>
 <pre><code translate="no"><span class="hljs-built_in">mkdir</span> cert &amp;&amp; <span class="hljs-built_in">cd</span> cert
 <span class="hljs-built_in">touch</span> openssl.cnf gen.sh
 <button class="copy-code-btn"></button></code></pre>
-<p>Kemudian Anda cukup menyalin dan menempelkan konfigurasi yang kami sediakan <a href="https://milvus.io/docs/v2.1.x/tls.md#Create-files">di sini</a> ke dua berkas tersebut. Atau Anda juga dapat melakukan modifikasi berdasarkan konfigurasi kami agar lebih sesuai dengan aplikasi Anda.</p>
-<p>Ketika kedua berkas tersebut sudah siap, Anda dapat menjalankan berkas <code translate="no">gen.sh</code> untuk membuat sembilan berkas sertifikat. Demikian juga, Anda juga dapat memodifikasi konfigurasi dalam sembilan file sertifikat sesuai dengan kebutuhan Anda.</p>
+<p>Then you can simply copy and paste the configuration we provide <a href="https://milvus.io/docs/v2.1.x/tls.md#Create-files">here</a> to the two files. Or you can also make modifications based on our configuration to better suit your application.</p>
+<p>When the two files are ready, you can run the <code translate="no">gen.sh</code> file to create nine certificate files. Likewise, you can also modify the configurations in the nine certificate files to suit your need.</p>
 <pre><code translate="no"><span class="hljs-built_in">chmod</span> +x gen.sh
 ./gen.sh
 <button class="copy-code-btn"></button></code></pre>
-<p>Ada satu langkah terakhir sebelum Anda dapat terhubung ke layanan Milvus dengan TLS. Anda harus mengatur <code translate="no">tlsEnabled</code> ke <code translate="no">true</code> dan mengonfigurasi jalur berkas <code translate="no">server.pem</code>, <code translate="no">server.key</code>, dan <code translate="no">ca.pem</code> untuk server di <code translate="no">config/milvus.yaml</code>. Kode di bawah ini adalah sebuah contoh.</p>
+<p>There is one final step before you can connect to the Milvus service with TLS. You have to set <code translate="no">tlsEnabled</code> to <code translate="no">true</code> and configure the file paths of <code translate="no">server.pem</code>, <code translate="no">server.key</code>, and <code translate="no">ca.pem</code> for the server in <code translate="no">config/milvus.yaml</code>. The code below is an example.</p>
 <pre><code translate="no">tls:
   serverPemPath: configs/cert/server.pem
   serverKeyPath: configs/cert/server.key
@@ -133,7 +140,7 @@ common:
   security:
     tlsEnabled: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Kemudian Anda sudah siap dan dapat terhubung ke layanan Milvus dengan TLS selama Anda menentukan jalur file <code translate="no">client.pem</code>, <code translate="no">client.key</code>, dan <code translate="no">ca.pem</code> untuk klien saat menggunakan SDK koneksi Milvus. Kode di bawah ini juga merupakan contoh.</p>
+<p>Then you are all set and can connect to the Milvus service with TLS as long as you specify the file paths of <code translate="no">client.pem</code>, <code translate="no">client.key</code>, and <code translate="no">ca.pem</code> for the client when using the Milvus connection SDK. The code below is also an example.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections
 
 _HOST = <span class="hljs-string">&#x27;127.0.0.1&#x27;</span>
@@ -146,7 +153,7 @@ connections.connect(host=_HOST, port=_PORT, secure=<span class="hljs-literal">Tr
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nList connections:&quot;</span>)
 <span class="hljs-built_in">print</span>(connections.list_connections())
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Whats-next" class="common-anchor-header">Apa selanjutnya<button data-href="#Whats-next" class="anchor-icon" translate="no">
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -161,12 +168,12 @@ connections.connect(host=_HOST, port=_PORT, secure=<span class="hljs-literal">Tr
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dengan dirilisnya Milvus 2.1 secara resmi, kami telah menyiapkan serangkaian blog yang memperkenalkan fitur-fitur baru. Baca lebih lanjut dalam seri blog ini:</p>
+    </button></h2><p>With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">Cara Menggunakan Data String untuk Memberdayakan Aplikasi Pencarian Kemiripan Anda</a></li>
-<li><a href="https://milvus.io/blog/embedded-milvus.md">Menggunakan Milvus yang Disematkan untuk Menginstal dan Menjalankan Milvus secara Instan dengan Python</a></li>
-<li><a href="https://milvus.io/blog/in-memory-replicas.md">Tingkatkan Throughput Pembacaan Basis Data Vektor Anda dengan Replika Dalam Memori</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Memahami Tingkat Konsistensi dalam Basis Data Vektor Milvus</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Memahami Tingkat Konsistensi dalam Basis Data Vektor Milvus (Bagian II)</a></li>
-<li><a href="https://milvus.io/blog/data-security.md">Bagaimana Basis Data Vektor Milvus Memastikan Keamanan Data?</a></li>
+<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">How to Use String Data to Empower Your Similarity Search Applications</a></li>
+<li><a href="https://milvus.io/blog/embedded-milvus.md">Using Embedded Milvus to Instantly Install and Run Milvus with Python</a></li>
+<li><a href="https://milvus.io/blog/in-memory-replicas.md">Increase Your Vector Database Read Throughput with In-Memory Replicas</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Understanding Consistency Level in the Milvus Vector Database</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Understanding Consistency Level in the Milvus Vector Database (Part II)</a></li>
+<li><a href="https://milvus.io/blog/data-security.md">How Does the Milvus Vector Database Ensure Data Security?</a></li>
 </ul>

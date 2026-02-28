@@ -1,11 +1,11 @@
 ---
 id: hands-on-rag-with-qwen3-embedding-and-reranking-models-using-milvus.md
-title: Hands-on RAG mit Qwen3 Einbettung und Reranking Modelle mit Milvus
+title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
 author: Lumina
 date: 2025-6-30
 desc: >-
-  Ein Tutorial zum Aufbau eines RAG-Systems mit den neu veröffentlichten Qwen3
-  Einbettungs- und Reranking-Modellen.
+  A tutorial to build an RAG system with the newly-released Qwen3 embedding and
+  reranking models.
 cover: assets.zilliz.com/Chat_GPT_Image_Jun_30_2025_07_41_03_PM_e049bf71fb.png
 tag: Tutorials
 recommend: false
@@ -16,16 +16,16 @@ meta_title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
 origin: >-
   https://milvus.io/blog/hands-on-rag-with-qwen3-embedding-and-reranking-models-using-milvus.md
 ---
-<p>Wenn Sie ein Auge auf den Bereich der Einbettungsmodelle geworfen haben, ist Ihnen wahrscheinlich aufgefallen, dass Alibaba gerade seine <a href="https://qwenlm.github.io/blog/qwen3-embedding/">Qwen3-Embedding-Serie</a> veröffentlicht hat. Es wurden sowohl Embedding- als auch Reranking-Modelle in jeweils drei Größen (0,6B, 4B, 8B) veröffentlicht, die alle auf den Qwen3-Grundmodellen aufbauen und speziell für Retrieval-Aufgaben entwickelt wurden.</p>
-<p>Die Qwen3-Reihe verfügt über einige interessante Funktionen, die ich interessant fand:</p>
+<p>If you’ve been keeping an eye on the embedding model space, you’ve probably noticed Alibaba just dropped their <a href="https://qwenlm.github.io/blog/qwen3-embedding/">Qwen3 Embedding series</a>. They released both embedding and reranking models in three sizes each (0.6B, 4B, 8B), all built on the Qwen3 foundation models and designed specifically for retrieval tasks.</p>
+<p>The Qwen3 series has a few features I found interesting:</p>
 <ul>
-<li><p><strong>Mehrsprachige Einbettungen</strong> - es wird ein einheitlicher semantischer Raum für über 100 Sprachen behauptet</p></li>
-<li><p><strong>Instruktionsaufforderung</strong> - Sie können benutzerdefinierte Instruktionen übergeben, um das Verhalten der Einbettung zu ändern</p></li>
-<li><p><strong>Variable Dimensionen</strong> - unterstützt verschiedene Einbettungsgrößen über Matryoshka Representation Learning</p></li>
-<li><p><strong>32K Kontextlänge</strong> - kann längere Eingabesequenzen verarbeiten</p></li>
-<li><p><strong>Standard Dual/Cross-Encoder Setup</strong> - Einbettungsmodell verwendet Dual-Encoder, Reranker verwendet Cross-Encoder</p></li>
+<li><p><strong>Multilingual embeddings</strong> - they claim a unified semantic space across 100+ languages</p></li>
+<li><p><strong>Instruction prompting</strong> - you can pass custom instructions to modify embedding behavior</p></li>
+<li><p><strong>Variable dimensions</strong> - supports different embedding sizes via Matryoshka Representation Learning</p></li>
+<li><p><strong>32K context length</strong> - can process longer input sequences</p></li>
+<li><p><strong>Standard dual/cross-encoder setup</strong> - embedding model uses dual-encoder, reranker uses cross-encoder</p></li>
 </ul>
-<p>Bei den Benchmarks erreichte Qwen3-Embedding-8B eine Punktzahl von 70,58 in der mehrsprachigen MTEB-Rangliste und übertraf damit BGE, E5 und sogar Google Gemini. Der Qwen3-Reranker-8B erreichte 69,02 Punkte bei mehrsprachigen Ranking-Aufgaben. Diese Ergebnisse sind nicht nur "ziemlich gut unter den Open-Source-Modellen" - sie entsprechen in vollem Umfang den gängigen kommerziellen APIs oder übertreffen sie sogar. In den Bereichen RAG Retrieval, sprachübergreifende Suche und Code-Suchsysteme, insbesondere im chinesischen Kontext, haben diese Modelle bereits produktionsreife Fähigkeiten.</p>
+<p>Looking at the benchmarks, Qwen3-Embedding-8B achieved a score of 70.58 on the MTEB multilingual leaderboard, surpassing BGE, E5, and even Google Gemini. The Qwen3-Reranker-8B hit 69.02 on multilingual ranking tasks. These aren’t just “pretty good among open-source models” - they’re comprehensively matching or even surpassing mainstream commercial APIs. In RAG retrieval, cross-language search, and code search systems, especially in Chinese contexts, these models already have production-ready capabilities.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdZCKoPqf8mpxwQ_s-gGbdHYvw_HhWn6Ib62v8C_VEZF8AOSnY1yLEEv1ztkINpmwgHAVC5kZw6rWplfx5OkISf_gL4VvoqlXxSfs8s_qd8mdBuA0HBhP9kEdipXy0QVuPmEyOJRg?key=nqzZfIwgkzdlEZQ2MYSMGQ" alt="" class="doc-image" id="" />
@@ -38,8 +38,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Als jemand, der sich wahrscheinlich schon mit den üblichen Verdächtigen (OpenAIs Embeddings, BGE, E5) beschäftigt hat, fragen Sie sich vielleicht, ob diese Modelle Ihre Zeit wert sind. Spoiler: Sie sind es.</p>
-<h2 id="What-Were-Building" class="common-anchor-header">Was wir bauen<button data-href="#What-Were-Building" class="anchor-icon" translate="no">
+<p>As someone who’s likely dealt with the usual suspects (OpenAI’s embeddings, BGE, E5), you might be wondering if these are worth your time. Spoiler: they are.</p>
+<h2 id="What-Were-Building" class="common-anchor-header">What We’re Building<button data-href="#What-Were-Building" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,14 +54,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dieses Tutorial führt durch den Aufbau eines kompletten RAG-Systems mit Qwen3-Embedding-0.6B und Qwen3-Reranker-0.6B mit Milvus. Wir implementieren eine zweistufige Retrieval-Pipeline:</p>
+    </button></h2><p>This tutorial walks through building a complete RAG system using Qwen3-Embedding-0.6B and Qwen3-Reranker-0.6B with Milvus. We’ll implement a two-stage retrieval pipeline:</p>
 <ol>
-<li><p><strong>Dense Retrieval</strong> mit Qwen3-Embeddings zur schnellen Kandidatenauswahl</p></li>
-<li><p><strong>Reranking</strong> mit Qwen3-Cross-Encoder zur Präzisionsverfeinerung</p></li>
-<li><p><strong>Generierung</strong> mit OpenAIs GPT-4 für endgültige Antworten</p></li>
+<li><p><strong>Dense retrieval</strong> with Qwen3 embeddings for fast candidate selection</p></li>
+<li><p><strong>Reranking</strong> with Qwen3 cross-encoder for precision refinement</p></li>
+<li><p><strong>Generation</strong> with OpenAI’s GPT-4 for final responses</p></li>
 </ol>
-<p>Am Ende werden Sie ein funktionierendes System haben, das mehrsprachige Abfragen handhabt, Instruktionsprompting für Domain-Tuning verwendet und Geschwindigkeit und Genauigkeit durch intelligentes Reranking ausbalanciert.</p>
-<h2 id="Environment-Setup" class="common-anchor-header">Einrichtung der Umgebung<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
+<p>By the end, you’ll have a working system that handles multilingual queries, uses instruction prompting for domain tuning, and balances speed with accuracy through intelligent reranking.</p>
+<h2 id="Environment-Setup" class="common-anchor-header">Environment Setup<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,16 +76,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Beginnen wir mit den Abhängigkeiten. Beachten Sie die Mindestanforderungen an die Version - sie sind wichtig für die Kompatibilität:</p>
+    </button></h2><p>Let’s start with the dependencies. Note the minimum version requirements - they’re important for compatibility:</p>
 <pre><code translate="no">pip install --upgrade pymilvus openai requests tqdm sentence-transformers transformers
 <button class="copy-code-btn"></button></code></pre>
-<p><em>Erfordert transformers&gt;=4.51.0 und sentence-transformers&gt;=2.7.0</em></p>
-<p>Für dieses Tutorial werden wir OpenAI als Generierungsmodell verwenden. Richten Sie Ihren API-Schlüssel ein:</p>
+<p><em>Requires transformers&gt;=4.51.0 and sentence-transformers&gt;=2.7.0</em></p>
+<p>For this tutorial, we’ll use OpenAI as our generation model. Set up your API key:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;OPENAI_API_KEY&quot;</span>] = <span class="hljs-string">&quot;sk-***********&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Data-Preparation" class="common-anchor-header"><strong>Datenvorbereitung</strong><button data-href="#Data-Preparation" class="anchor-icon" translate="no">
+<h2 id="Data-Preparation" class="common-anchor-header"><strong>Data Preparation</strong><button data-href="#Data-Preparation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,12 +100,12 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;OP
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wir werden die Milvus-Dokumentation als Wissensbasis verwenden - sie bietet eine gute Mischung aus technischen Inhalten, die sowohl die Abfrage- als auch die Generierungsqualität testen.</p>
-<p>Herunterladen und Extrahieren der Dokumentation:</p>
+    </button></h2><p>We’ll use Milvus documentation as our knowledge base - it’s a good mix of technical content that tests both retrieval and generation quality.</p>
+<p>Download and extract the documentation:</p>
 <pre><code translate="no">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>Laden und zerlegen Sie die Markdown-Dateien. Wir verwenden hier eine einfache, auf Kopfzeilen basierende Aufteilungsstrategie - für Produktionssysteme sollten Sie anspruchsvollere Chunking-Ansätze in Betracht ziehen:</p>
+<p>Load and chunk the markdown files. We’re using a simple header-based splitting strategy here - for production systems, consider more sophisticated chunking approaches:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 
 text_lines = []
@@ -116,7 +116,7 @@ text_lines = []
 
     text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Model-Setup" class="common-anchor-header"><strong>Modell-Setup</strong><button data-href="#Model-Setup" class="anchor-icon" translate="no">
+<h2 id="Model-Setup" class="common-anchor-header"><strong>Model Setup</strong><button data-href="#Model-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -131,7 +131,7 @@ text_lines = []
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nun wollen wir unsere Modelle initialisieren. Wir verwenden die leichtgewichtigen 0.6B-Versionen, die ein gutes Gleichgewicht zwischen Leistung und Ressourcenbedarf bieten:</p>
+    </button></h2><p>Now let’s initialize our models. We’re using the lightweight 0.6B versions, which offer a good balance of performance and resource requirements:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> sentence_transformers <span class="hljs-keyword">import</span> SentenceTransformer
 <span class="hljs-keyword">import</span> torch
@@ -157,14 +157,14 @@ suffix = <span class="hljs-string">&quot;&lt;|im_end|&gt;\n&lt;|im_start|&gt;ass
 prefix_tokens = reranker_tokenizer.encode(prefix, add_special_tokens=<span class="hljs-literal">False</span>)
 suffix_tokens = reranker_tokenizer.encode(suffix, add_special_tokens=<span class="hljs-literal">False</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Die erwartete Ausgabe:</p>
+<p>The expected output:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdaUrXQrAs2W8-rGT9njJHEKnQ8YwREmULO6xYJnpPy7bwsmZImDRt_3EMwJuVM3k3zI7pbNvY1fDsqMKYq-rrNArx_gxOA4ZTi0g1tkRIlUqJfx1z2nZ60ATPW0L5t6I_XLTVf?key=nqzZfIwgkzdlEZQ2MYSMGQ" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Embedding-Function" class="common-anchor-header">Einbettungsfunktion<button data-href="#Embedding-Function" class="anchor-icon" translate="no">
+<h2 id="Embedding-Function" class="common-anchor-header">Embedding Function<button data-href="#Embedding-Function" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -179,7 +179,7 @@ suffix_tokens = reranker_tokenizer.encode(suffix, add_special_tokens=<span class
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die wichtigste Erkenntnis bei den Qwen3-Einbettungen ist die Möglichkeit, unterschiedliche Prompts für Abfragen und Dokumente zu verwenden. Dieses scheinbar kleine Detail kann die Abfrageleistung erheblich verbessern:</p>
+    </button></h2><p>The key insight with Qwen3 embeddings is the ability to use different prompts for queries versus documents. This seemingly small detail can significantly improve retrieval performance:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">emb_text</span>(<span class="hljs-params">text, is_query=<span class="hljs-literal">False</span></span>):
     <span class="hljs-string">&quot;&quot;&quot;
     Generate text embeddings using Qwen3-Embedding-0.6B model.
@@ -200,17 +200,17 @@ suffix_tokens = reranker_tokenizer.encode(suffix, add_special_tokens=<span class
     
     <span class="hljs-keyword">return</span> embeddings[<span class="hljs-number">0</span>].tolist()
 <button class="copy-code-btn"></button></code></pre>
-<p>Testen wir die Einbettungsfunktion und überprüfen wir die Ausgabedimensionen:</p>
+<p>Let’s test the embedding function and check the output dimensions:</p>
 <pre><code translate="no">test_embedding = emb_text(<span class="hljs-string">&quot;This is a test&quot;</span>)
 embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Embedding dimension: <span class="hljs-subst">{embedding_dim}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;First 10 values: <span class="hljs-subst">{test_embedding[:<span class="hljs-number">10</span>]}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Erwartete Ausgabe:</p>
+<p>Expected output:</p>
 <pre><code translate="no">Embedding dimension: 1024
 First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.011494234204292297, ...]
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Reranking-Implementation" class="common-anchor-header">Reranking-Implementierung<button data-href="#Reranking-Implementation" class="anchor-icon" translate="no">
+<h2 id="Reranking-Implementation" class="common-anchor-header">Reranking Implementation<button data-href="#Reranking-Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -225,8 +225,8 @@ First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.0114942342042
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Reranker verwendet eine Cross-Encoder-Architektur, um Abfrage-Dokumenten-Paare zu bewerten. Dies ist zwar rechenintensiver als das Dual-Encoder-Einbettungsmodell, bietet aber eine wesentlich differenziertere Relevanzbewertung.</p>
-<p>Hier sehen Sie die komplette Reranking-Pipeline:</p>
+    </button></h2><p>The reranker uses a cross-encoder architecture to evaluate query-document pairs. This is more computationally expensive than the dual-encoder embedding model, but provides much more nuanced relevance scoring.</p>
+<p>Here’s the complete reranking pipeline:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">format_instruction</span>(<span class="hljs-params">instruction, query, doc</span>):
     <span class="hljs-string">&quot;&quot;&quot;Format instruction for reranker input&quot;&quot;&quot;</span>
     <span class="hljs-keyword">if</span> instruction <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
@@ -288,7 +288,7 @@ First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.0114942342042
     
     <span class="hljs-keyword">return</span> doc_scores
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Setting-Up-Milvus-Vector-Database" class="common-anchor-header">Einrichten der Milvus-Vektordatenbank<button data-href="#Setting-Up-Milvus-Vector-Database" class="anchor-icon" translate="no">
+<h2 id="Setting-Up-Milvus-Vector-Database" class="common-anchor-header">Setting Up Milvus Vector Database<button data-href="#Setting-Up-Milvus-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -303,20 +303,20 @@ First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.0114942342042
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Lassen Sie uns nun unsere Vektordatenbank einrichten. Der Einfachheit halber verwenden wir Milvus Lite, aber derselbe Code funktioniert auch mit vollständigen Milvus-Einsätzen:</p>
+    </button></h2><p>Now let’s set up our vector database. We’re using Milvus Lite for simplicity, but the same code works with full Milvus deployments:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Bereitstellungsoptionen:</strong></p>
+<p><strong>Deployment Options:</strong></p>
 <ul>
-<li><p><strong>Lokale Datei</strong> (wie <code translate="no">./milvus.db</code>): Verwendet Milvus Lite, perfekt für die Entwicklung</p></li>
-<li><p><strong>Docker/Kubernetes</strong>: Verwendet Server-URI wie <code translate="no">http://localhost:19530</code> für die Produktion</p></li>
-<li><p><strong>Zilliz Cloud</strong>: Cloud-Endpunkt und API-Schlüssel für verwalteten Dienst verwenden</p></li>
+<li><p><strong>Local file</strong> (like <code translate="no">./milvus.db</code>): Uses Milvus Lite, perfect for development</p></li>
+<li><p><strong>Docker/Kubernetes</strong>: Use server URI like <code translate="no">http://localhost:19530</code> for production</p></li>
+<li><p><strong>Zilliz Cloud</strong>: Use cloud endpoint and API key for managed service</p></li>
 </ul>
-<p>Bereinigen Sie eine bestehende Sammlung und erstellen Sie eine neue:</p>
+<p>Clean up any existing collection and create a new one:</p>
 <pre><code translate="no"><span class="hljs-comment"># Remove existing collection if it exists</span>
 <span class="hljs-keyword">if</span> milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
@@ -329,7 +329,7 @@ milvus_client.create_collection(
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,  <span class="hljs-comment"># Ensure data consistency</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Loading-Data-into-Milvus" class="common-anchor-header">Daten in Milvus laden<button data-href="#Loading-Data-into-Milvus" class="anchor-icon" translate="no">
+<h2 id="Loading-Data-into-Milvus" class="common-anchor-header">Loading Data into Milvus<button data-href="#Loading-Data-into-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -344,7 +344,7 @@ milvus_client.create_collection(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Verarbeiten wir nun unsere Dokumente und fügen sie in die Vektordatenbank ein:</p>
+    </button></h2><p>Now let’s process our documents and insert them into the vector database:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 data = []
@@ -354,11 +354,11 @@ data = []
 
 milvus_client.insert(collection_name=collection_name, data=data)
 <button class="copy-code-btn"></button></code></pre>
-<p>Erwartete Ausgabe:</p>
+<p>Expected output:</p>
 <pre><code translate="no">Creating embeddings: 100%|████████████| 72/72 [00:08&lt;00:00, 8.68it/s]
 Inserted 72 documents
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Enhancing-RAG-with-Reranking-Technology" class="common-anchor-header">Erweiterung der RAG mit Reranking-Technologie<button data-href="#Enhancing-RAG-with-Reranking-Technology" class="anchor-icon" translate="no">
+<h2 id="Enhancing-RAG-with-Reranking-Technology" class="common-anchor-header">Enhancing RAG with Reranking Technology<button data-href="#Enhancing-RAG-with-Reranking-Technology" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -373,8 +373,8 @@ Inserted 72 documents
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Jetzt kommt der spannende Teil - das Zusammenfügen zu einem kompletten Retrieval-Augmented Generation System.</p>
-<h3 id="Step-1-Query-and-Initial-Retrieval" class="common-anchor-header"><strong>Schritt 1: Abfrage und erstes Retrieval</strong></h3><p>Testen wir mit einer häufig gestellten Frage über Milvus:</p>
+    </button></h2><p>Now comes the exciting part - putting it all together into a complete retrieval-augmented generation system.</p>
+<h3 id="Step-1-Query-and-Initial-Retrieval" class="common-anchor-header"><strong>Step 1: Query and Initial Retrieval</strong></h3><p>Let’s test with a common question about Milvus:</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 
 <span class="hljs-comment"># Perform initial dense retrieval to get top candidates</span>
@@ -388,7 +388,7 @@ search_res = milvus_client.search(
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Found <span class="hljs-subst">{<span class="hljs-built_in">len</span>(search_res[<span class="hljs-number">0</span>])}</span> initial candidates&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Reranking-for-Precision" class="common-anchor-header"><strong>Schritt 2: Reranking für Präzision</strong></h3><p>Extrahieren Sie Kandidatendokumente und führen Sie ein Reranking durch:</p>
+<h3 id="Step-2-Reranking-for-Precision" class="common-anchor-header"><strong>Step 2: Reranking for Precision</strong></h3><p>Extract candidate documents and apply reranking:</p>
 <pre><code translate="no"><span class="hljs-comment"># Extract candidate documents</span>
 candidate_docs = [res[<span class="hljs-string">&quot;entity&quot;</span>][<span class="hljs-string">&quot;text&quot;</span>] <span class="hljs-keyword">for</span> res <span class="hljs-keyword">in</span> search_res[<span class="hljs-number">0</span>]]
 
@@ -400,7 +400,7 @@ reranked_docs = rerank_documents(question, candidate_docs)
 top_reranked_docs = reranked_docs[:<span class="hljs-number">3</span>]
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Selected top <span class="hljs-subst">{<span class="hljs-built_in">len</span>(top_reranked_docs)}</span> documents after reranking&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Compare-Results" class="common-anchor-header"><strong>Schritt 3: Vergleich der Ergebnisse</strong></h3><p>Untersuchen wir, wie das Reranking die Ergebnisse verändert:</p>
+<h3 id="Step-3-Compare-Results" class="common-anchor-header"><strong>Step 3: Compare Results</strong></h3><p>Let’s examine how reranking changes the results:</p>
 <pre><code translate="no"><span class="hljs-function">Reranked <span class="hljs-title">results</span> (<span class="hljs-params">top <span class="hljs-number">3</span></span>):
 [
     [
@@ -434,14 +434,14 @@ Original embedding-<span class="hljs-function">based <span class="hljs-title">re
     ]
 ]
 </span><button class="copy-code-btn"></button></code></pre>
-<p>Das Reranking zeigt typischerweise viel höhere diskriminative Werte (näher an 1,0 für relevante Dokumente) im Vergleich zu den Ähnlichkeitswerten der Einbettung.</p>
-<h3 id="Step-4-Generate-Final-Response" class="common-anchor-header"><strong>Schritt 4: Generierung der endgültigen Antwort</strong></h3><p>Lassen Sie uns nun den abgerufenen Kontext verwenden, um eine umfassende Antwort zu generieren:</p>
-<p>Erstens: Konvertierung der abgerufenen Dokumente in das String-Format.</p>
+<p>The reranking typically shows much higher discriminative scores (closer to 1.0 for relevant documents) compared to embedding similarity scores.</p>
+<h3 id="Step-4-Generate-Final-Response" class="common-anchor-header"><strong>Step 4: Generate Final Response</strong></h3><p>Now let’s use the retrieved context to generate a comprehensive answer:</p>
+<p>First: Convert the retrieved documents to string format.</p>
 <pre><code translate="no">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Bereitstellung von System- und Benutzer-Prompts für das große Sprachmodell. Dieser Prompt wird aus den von Milvus abgerufenen Dokumenten generiert.</p>
+<p>Provide system prompt and user prompt for the large language model. This prompt is generated from documents retrieved from Milvus.</p>
 <pre><code translate="no">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 Human: You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -455,7 +455,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Verwenden Sie GPT-4o, um eine Antwort auf der Grundlage der Prompts zu generieren.</p>
+<p>Use GPT-4o to generate a response based on the prompts.</p>
 <pre><code translate="no">response = openai_client.chat.completions.create(
     model=<span class="hljs-string">&quot;gpt-4o&quot;</span>,
     messages=[
@@ -465,7 +465,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 )
 <span class="hljs-built_in">print</span>(response.choices[<span class="hljs-number">0</span>].message.content)
 <button class="copy-code-btn"></button></code></pre>
-<p>Erwartete Ausgabe:</p>
+<p>Expected output:</p>
 <pre><code translate="no">In Milvus, data <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> two main forms: inserted data <span class="hljs-keyword">and</span> metadata. 
 Inserted data, which includes vector data, scalar data, <span class="hljs-keyword">and</span> collection-specific 
 schema, <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> persistent storage <span class="hljs-keyword">as</span> incremental logs. Milvus supports 
@@ -474,7 +474,7 @@ Google Cloud Storage, Azure Blob Storage, Alibaba Cloud OSS, <span class="hljs-k
 Cloud Object Storage. Metadata <span class="hljs-keyword">for</span> Milvus <span class="hljs-keyword">is</span> generated <span class="hljs-keyword">by</span> its various modules 
 <span class="hljs-keyword">and</span> stored <span class="hljs-keyword">in</span> etcd.
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Wrapping-Up" class="common-anchor-header"><strong>Zusammenfassung</strong><button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
+<h2 id="Wrapping-Up" class="common-anchor-header"><strong>Wrapping Up</strong><button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -489,12 +489,12 @@ Cloud Object Storage. Metadata <span class="hljs-keyword">for</span> Milvus <spa
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In diesem Tutorial wurde eine vollständige RAG-Implementierung unter Verwendung der Einbettungs- und Reranking-Modelle von Qwen3 demonstriert. Die wichtigsten Erkenntnisse:</p>
+    </button></h2><p>This tutorial demonstrated a complete RAG implementation using Qwen3’s embedding and reranking models. The key takeaways:</p>
 <ol>
-<li><p><strong>Zweistufiges Retrieval</strong> (Dense + Reranking) verbessert durchweg die Genauigkeit gegenüber reinen Einbettungsansätzen</p></li>
-<li><p><strong>Instruktionsprompting</strong> ermöglicht eine domänenspezifische Abstimmung ohne erneutes Training</p></li>
-<li><p><strong>Mehrsprachige Fähigkeiten</strong> funktionieren ohne zusätzliche Komplexität</p></li>
-<li><p><strong>Lokaler Einsatz</strong> ist mit den 0,6B-Modellen machbar</p></li>
+<li><p><strong>Two-stage retrieval</strong> (dense + reranking) consistently improves accuracy over embedding-only approaches</p></li>
+<li><p><strong>Instruction prompting</strong> allows domain-specific tuning without retraining</p></li>
+<li><p><strong>Multilingual capabilities</strong> work naturally without additional complexity</p></li>
+<li><p><strong>Local deployment</strong> is feasible with the 0.6B models</p></li>
 </ol>
-<p>Die Qwen3-Reihe bietet solide Leistung in einem leichtgewichtigen, quelloffenen Paket. Sie sind zwar nicht revolutionär, bieten aber schrittweise Verbesserungen und nützliche Funktionen wie die Eingabeaufforderung, die in Produktionssystemen einen echten Unterschied ausmachen können.</p>
-<p>Testen Sie diese Modelle anhand Ihrer spezifischen Daten und Anwendungsfälle - was am besten funktioniert, hängt immer von Ihren Inhalten, Abfragemustern und Leistungsanforderungen ab.</p>
+<p>The Qwen3 series offers solid performance in a lightweight, open-source package. While not revolutionary, they provide incremental improvements and useful features like instruction prompting that can make a real difference in production systems.</p>
+<p>Test these models against your specific data and use cases - what works best always depends on your content, query patterns, and performance requirements.</p>

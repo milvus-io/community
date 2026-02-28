@@ -1,11 +1,11 @@
 ---
 id: 2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
-title: 'Zhentu: el detector de fraudes fotográficos basado en Milvus'
+title: Zhentu - the Photo Fraud Detector Based on Milvus
 author: 'Yan Shi, Minwei Tang'
 date: 2022-06-20T00:00:00.000Z
 desc: >-
-  ¿Cómo está construido el sistema de detección de Zhentu con Milvus como motor
-  de búsqueda de vectores?
+  How is Zhentu's detection system built with Milvus as its vector search
+  engine?
 cover: assets.zilliz.com/zhentu_0ae11c98ee.png
 tag: Scenarios
 tags: Use Cases of Milvus
@@ -13,25 +13,27 @@ canonicalUrl: >-
   https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zhentu_0ae11c98ee.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>imagen de portada</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/zhentu_0ae11c98ee.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Este artículo ha sido escrito por Yan Shi y Minwei Tang, ingenieros superiores de algoritmos de BestPay, y traducido por <a href="https://www.linkedin.cn/incareer/in/rosie-zhang-694528149">Rosie Zhang</a>.</p>
+<p>This article is written by Yan Shi and Minwei Tang, senior algorithm engineers at BestPay, and translated by <a href="https://www.linkedin.cn/incareer/in/rosie-zhang-694528149">Rosie Zhang</a>.</p>
 </blockquote>
-<p>En los últimos años, a medida que el comercio electrónico y las transacciones en línea se han convertido en algo habitual en todo el mundo, también ha florecido el fraude en el comercio electrónico. Mediante el uso de fotos generadas por ordenador en lugar de las reales para pasar la verificación de identidad en las plataformas de negocios en línea, los estafadores crean cuentas falsas masivas y se aprovechan de las ofertas especiales de las empresas (por ejemplo, regalos de membresía, cupones, fichas), lo que conlleva pérdidas irrecuperables tanto para los consumidores como para las empresas.</p>
-<p>Los métodos tradicionales de control de riesgos ya no son eficaces ante la gran cantidad de datos. Para resolver el problema, <a href="https://www.bestpay.com.cn">BestPay</a> creó un detector de fraudes fotográficos, denominado Zhentu (que significa detectar imágenes en chino), basado en tecnologías de aprendizaje profundo (DL) y procesamiento digital de imágenes (DIP). Zhentu es aplicable a varios escenarios que implican el reconocimiento de imágenes, y una rama importante es la identificación de licencias comerciales falsas. Si la foto de la licencia comercial enviada por un usuario es muy similar a otra foto ya existente en la biblioteca de fotos de una plataforma, es probable que el usuario haya robado la foto en algún lugar o haya falsificado una licencia con fines fraudulentos.</p>
-<p>Los algoritmos tradicionales para medir la similitud de imágenes, como <a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio">PSNR</a> y ORB, son lentos e imprecisos, solo aplicables a tareas offline. El aprendizaje profundo, en cambio, es capaz de procesar datos de imágenes a gran escala en tiempo real y es el método definitivo para emparejar imágenes similares. Con los esfuerzos conjuntos del equipo de I+D de BestPay y <a href="https://milvus.io/">la comunidad Milvus</a>, se desarrolla un sistema de detección de fraudes fotográficos como parte de Zhentu. Funciona convirtiendo cantidades masivas de datos de imágenes en vectores de características mediante modelos de aprendizaje profundo e insertándolos en <a href="https://milvus.io/">Milvus</a>, un motor de búsqueda vectorial. Con Milvus, el sistema de detección es capaz de indexar billones de vectores y recuperar eficientemente fotos similares entre decenas de millones de imágenes.</p>
-<p><strong>Ir a:</strong></p>
+<p>In recent years, as e-commerce and online transactions become commonplace throughout the world, e-commerce fraud also flourished. By using computer-generated photos instead of real ones to pass identity verification on online business platforms, fraudsters create massive fake accounts and cash in on businesses’ special offers (e.g. membership gifts, coupons, tokens), which brings irretrievable losses to both consumers and businesses.</p>
+<p>Traditional risk control methods are no longer effective in the face of a substantial amount of data. To solve the problem, <a href="https://www.bestpay.com.cn">BestPay</a> created a photo fraud detector, namely Zhentu (meaning detecting images in Chinese), based on deep learning (DL) and digital image processing (DIP) technologies. Zhentu is applicable to various scenarios involving image recognition, with one important offshoot being the identification of fake business licenses. If the business license photo submitted by a user is very similar to another photo already existing in a platform’s photo library, it is likely that the user has stolen the photo somewhere or has forged a license for fraudulent purposes.</p>
+<p>Traditional algorithms for measuring image similarity, such as <a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio">PSNR</a> and ORB, are slow and inaccurate, only applicable to offline tasks. Deep learning, on the other hand, is capable of processing large-scale image data in real-time and is the ultimate method for matching similar images. With the joint efforts of BestPay’s R&amp;D team and <a href="https://milvus.io/">the Milvus community</a>, a photo fraud detection system is developed as part of Zhentu. It functions by converting massive amounts of image data into feature vectors through deep learning models and inserting them into <a href="https://milvus.io/">Milvus</a>, a vector search engine. With Milvus, the detection system is able to index trillions of vectors and efficiently retrieve similar photos among tens of millions of images.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#an-overview-of-zhentu">Visión general de Zhentu</a></li>
-<li><a href="#system-structure">Estructura del sistema</a></li>
-<li><a href="#deployment"><strong>Despliegue</strong></a></li>
-<li><a href="#real-world-performance"><strong>Rendimiento en el mundo real</strong></a></li>
-<li><a href="#reference"><strong>Referencia</strong></a></li>
-<li><a href="#about-bestpay"><strong>Acerca de BestPay</strong></a></li>
+<li><a href="#an-overview-of-zhentu">An overview of Zhentu</a></li>
+<li><a href="#system-structure">System structure</a></li>
+<li><a href="#deployment"><strong>Deployment</strong></a></li>
+<li><a href="#real-world-performance"><strong>Real-world performance</strong></a></li>
+<li><a href="#reference"><strong>Reference</strong></a></li>
+<li><a href="#about-bestpay"><strong>About BestPay</strong></a></li>
 </ul>
-<h2 id="An-overview-of-Zhentu" class="common-anchor-header">Una visión general de Zhentu<button data-href="#An-overview-of-Zhentu" class="anchor-icon" translate="no">
+<h2 id="An-overview-of-Zhentu" class="common-anchor-header">An overview of Zhentu<button data-href="#An-overview-of-Zhentu" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,8 +48,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Zhentu es un producto multimedia de control de riesgos visuales diseñado por BestPay y profundamente integrado con tecnologías de aprendizaje automático (ML) y de reconocimiento de imágenes mediante redes neuronales. Su algoritmo incorporado puede identificar con precisión a los defraudadores durante la autenticación del usuario y responder al nivel de milisegundos. Con su tecnología líder en el sector y su solución innovadora, Zhentu ha obtenido cinco patentes y dos derechos de autor de software. Actualmente se utiliza en varios bancos e instituciones financieras para ayudar a identificar con antelación posibles riesgos.</p>
-<h2 id="System-structure" class="common-anchor-header">Estructura del sistema<button data-href="#System-structure" class="anchor-icon" translate="no">
+    </button></h2><p>Zhentu is BestPay’s self-designed multimedia visual risk control product deeply integrated with machine learning (ML) and neural network image recognition technologies. Its built-in algorithm can accurately identify fraudsters during user authentication and respond at the millisecond level. With its industry-leading technology and innovative solution, Zhentu has won five patents and two software copyrights. It is now being used in a number of banks and financial institutions to help identify potential risks in advance.</p>
+<h2 id="System-structure" class="common-anchor-header">System structure<button data-href="#System-structure" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,19 +64,21 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>BestPay cuenta actualmente con más de 10 millones de fotos de licencias comerciales, y el volumen real sigue creciendo exponencialmente a medida que crece el negocio. Para recuperar rápidamente fotos similares de una base de datos tan grande, Zhentu ha elegido Milvus como motor de cálculo de similitud de vectores de características. La estructura general del sistema de detección de fraude fotográfico se muestra en el siguiente diagrama.</p>
+    </button></h2><p>BestPay currently has over 10 million business license photos, and the actual volume is still growing exponentially as the business grows. In order to quickly retrieve similar photos from such a large database, Zhentu has chosen Milvus as the feature vector similarity calculation engine. The general structure of the photo fraud detection system is shown in the diagram below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Structure_of_the_photo_fraud_detection_system_cf5d20d431.png" alt="img" class="doc-image" id="img" />
-   </span> <span class="img-wrapper"> <span>img</span> </span></p>
-<p>El procedimiento puede dividirse en cuatro pasos:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Structure_of_the_photo_fraud_detection_system_cf5d20d431.png" alt="img" class="doc-image" id="img" />
+    <span>img</span>
+  </span>
+</p>
+<p>The procedure can be divided into four steps:</p>
 <ol>
-<li><p>Preprocesamiento de la imagen. El preprocesamiento, que incluye la reducción de ruido, la eliminación de ruido y la mejora del contraste, garantiza tanto la integridad de la información original como la eliminación de información inútil de la señal de la imagen.</p></li>
-<li><p>Extracción de vectores de características. Se utiliza un modelo de aprendizaje profundo especialmente entrenado para extraer los vectores de características de la imagen. La conversión de las imágenes en vectores para la posterior búsqueda de similitudes es una operación rutinaria.</p></li>
-<li><p>Normalización. La normalización de los vectores de características extraídos ayuda a mejorar la eficiencia del procesamiento posterior.</p></li>
-<li><p>Búsqueda vectorial con Milvus. Inserción de los vectores de características normalizados en la base de datos Milvus para la búsqueda de similitud vectorial.</p></li>
+<li><p>Image pre-processing. Pre-processing, including noise reduction, noise removal, and contrast enhancement, ensures both the integrity of the original information and the removal of useless information from the image signal.</p></li>
+<li><p>Feature vector extraction. A specially trained deep learning model is used to extract the feature vectors of the image. Converting images into vectors for further similarity search is a routine operation.</p></li>
+<li><p>Normalization. Normalizing the extracted feature vectors helps to improve the efficiency of the subsequent processing.</p></li>
+<li><p>Vector search with Milvus. Inserting the normalized feature vectors into Milvus database for vector similarity search.</p></li>
 </ol>
-<h2 id="Deployment" class="common-anchor-header"><strong>Despliegue</strong><button data-href="#Deployment" class="anchor-icon" translate="no">
+<h2 id="Deployment" class="common-anchor-header"><strong>Deployment</strong><button data-href="#Deployment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -89,30 +93,32 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A continuación se describe brevemente cómo se despliega el sistema de detección de fraude fotográfico de Zhentu.</p>
+    </button></h2><p>Here is a brief description of how Zhentu’s photo fraud detection system is deployed.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png" alt="Milvus system architecture" class="doc-image" id="milvus-system-architecture" />
-   </span> <span class="img-wrapper"> <span>Arquitectura del sistema Milvus</span> </span></p>
-<p>Desplegamos nuestro <a href="https://milvus.io/docs/v2.0.x/install_cluster-helm.md">clúster Milvus en Kubernetes</a> para garantizar la alta disponibilidad y la sincronización en tiempo real de los servicios en la nube. Los pasos generales son los siguientes:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ea45a5ab53.png" alt="Milvus system architecture" class="doc-image" id="milvus-system-architecture" />
+    <span>Milvus system architecture</span>
+  </span>
+</p>
+<p>We deployed our <a href="https://milvus.io/docs/v2.0.x/install_cluster-helm.md">Milvus cluster on Kubernetes</a> to ensure high availability and real-time synchronization of cloud services. The general steps are as follows:</p>
 <ol>
-<li><p>Ver los recursos disponibles. Ejecute el comando <code translate="no">kubectl describe nodes</code> para ver los recursos que el clúster Kubernetes puede asignar a los casos creados.</p></li>
-<li><p>Asignar recursos. Ejecute el comando <code translate="no">kubect`` -- apply xxx.yaml</code> para asignar recursos de memoria y CPU para los componentes del clúster Milvus utilizando Helm.</p></li>
-<li><p>Aplique la nueva configuración. Ejecute el comando <code translate="no">helm upgrade my-release milvus/milvus --reuse-values -fresources.yaml</code>.</p></li>
-<li><p>Aplique la nueva configuración al cluster Milvus. El clúster desplegado de esta forma no sólo nos permite ajustar la capacidad del sistema en función de las diferentes necesidades empresariales, sino que también satisface mejor los requisitos de alto rendimiento para la recuperación masiva de datos vectoriales.</p></li>
+<li><p>View available resources. Run the command <code translate="no">kubectl describe nodes</code> to see the resources that the Kubernetes cluster can allocate to the created cases.</p></li>
+<li><p>Allocate resources. Run the command <code translate="no">kubect`` -- apply xxx.yaml</code> to allocate memory and CPU resources for Milvus cluster components using Helm.</p></li>
+<li><p>Apply the new configuration. Run the command <code translate="no">helm upgrade my-release milvus/milvus --reuse-values -fresources.yaml</code>.</p></li>
+<li><p>Apply the new configuration to the Milvus cluster. The cluster deployed in this way not only allows us to adjust system capacity according to different business needs, but also better meets the high-performance requirements for massive vector data retrieval.</p></li>
 </ol>
-<p>Puede <a href="https://milvus.io/docs/v2.0.x/configure-docker.md">configurar Milvus</a> para optimizar el rendimiento de la búsqueda para diferentes tipos de datos de diferentes escenarios empresariales, como se muestra en los dos ejemplos siguientes.</p>
-<p>Al <a href="https://milvus.io/docs/v2.0.x/build_index.md">construir el índice vectorial</a>, parametrizamos el índice de acuerdo con el escenario real del sistema de la siguiente manera:</p>
+<p>You can <a href="https://milvus.io/docs/v2.0.x/configure-docker.md">configure Milvus</a> to optimize search performance for different types of data from different business scenarios, as shown in the following two examples.</p>
+<p>In <a href="https://milvus.io/docs/v2.0.x/build_index.md">building the vector index</a>, we parameterize the index according to the actual scenario of the system as follows:</p>
 <pre><code translate="no" class="language-Python">index = {<span class="hljs-string">&quot;index_type&quot;</span>: <span class="hljs-string">&quot;IVF_PQ&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nlist&quot;</span>: <span class="hljs-number">2048</span>}, <span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;IP&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<p><a href="https://milvus.io/docs/v2.0.x/index.md#IVF_PQ">IVF_PQ</a> realiza la agrupación del índice IVF antes de cuantificar el producto de los vectores. Se caracteriza por una consulta de disco de alta velocidad y un consumo de memoria muy bajo, lo que satisface las necesidades de la aplicación real de Zhentu.</p>
-<p>Además, establecemos los parámetros de búsqueda óptimos de la siguiente manera:</p>
+<p><a href="https://milvus.io/docs/v2.0.x/index.md#IVF_PQ">IVF_PQ</a> performs IVF index clustering before quantizing the product of vectors. It features high-speed disk query and very low memory consumption, which meets the needs of the real-world application of Zhentu.</p>
+<p>Besides, we set the optimal search parameters as follows:</p>
 <pre><code translate="no" class="language-Python">search_params = {<span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;IP&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: <span class="hljs-number">32</span>}}
 <button class="copy-code-btn"></button></code></pre>
-<p>Como los vectores ya están normalizados antes de introducirlos en Milvus, se elige el producto interior (PI) para calcular la distancia entre dos vectores. Los experimentos han demostrado que la tasa de recuperación aumenta en torno a un 15% utilizando el PI en lugar de la distancia euclídea (L2).</p>
-<p>Los ejemplos anteriores demuestran que podemos probar y configurar los parámetros de Milvus en función de diferentes escenarios empresariales y requisitos de rendimiento.</p>
-<p>Además, Milvus no sólo integra diferentes bibliotecas de índices, sino que también admite diferentes tipos de índices y métodos de cálculo de similitud. Milvus también proporciona SDK oficiales en varios idiomas y API enriquecidas para la inserción, consulta, etc., lo que permite a nuestros grupos de negocio front-end utilizar los SDK para llamar a la central de control de riesgos.</p>
-<h2 id="Real-world-performance" class="common-anchor-header"><strong>Rendimiento en el mundo real</strong><button data-href="#Real-world-performance" class="anchor-icon" translate="no">
+<p>As the vectors are already normalized before input into Milvus, the inner product (IP) is chosen to calculate the distance between two vectors. Experiments have proved that the recall rate is raised by about 15% using IP than using the Euclidean distance (L2).</p>
+<p>The above examples show that we can test and set Milvus’ parameters according to different business scenarios and performance requirements.</p>
+<p>In addition, Milvus not only integrates different index libraries, but also supports different index types and similarity calculation methods. Milvus also provides official SDKs in multiple languages and rich APIs for insertion, querying, etc., allowing our front-end business groups to use the SDKs to call on the risk control center.</p>
+<h2 id="Real-world-performance" class="common-anchor-header"><strong>Real-world performance</strong><button data-href="#Real-world-performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,8 +133,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hasta ahora, el sistema de detección de fraude fotográfico ha funcionado de manera constante, ayudando a las empresas a identificar a posibles defraudadores. En 2021, detectó más de 20.000 licencias falsas a lo largo del año. En términos de velocidad de consulta, una consulta de vector único entre decenas de millones de vectores tarda menos de 1 segundo, y el tiempo medio de consulta por lotes es inferior a 0,08 segundos. La búsqueda de alto rendimiento de Milvus satisface las necesidades de precisión y concurrencia de las empresas.</p>
-<h2 id="Reference" class="common-anchor-header"><strong>Referencia</strong><button data-href="#Reference" class="anchor-icon" translate="no">
+    </button></h2><p>So far, the photo fraud detection system has been running steadily, helping businesses to identify potential fraudsters. In 2021, it detected over 20,000 fake licenses throughout the year. In terms of query speed, a single vector query among tens of millions of vectors takes less than 1 second, and the average time of batch query is less than 0.08 seconds. Milvus’ high-performance search meets businesses’ needs for both accuracy and concurrency.</p>
+<h2 id="Reference" class="common-anchor-header"><strong>Reference</strong><button data-href="#Reference" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,7 +150,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>Aglave P, Kolkure V S. Implementation of High Performance Feature Extraction Method Using Oriented Fast and Rotated Brief Algorithm[J]. Int. J. Res. Eng. Technol, 2015, 4: 394-397.</p>
-<h2 id="About-BestPay" class="common-anchor-header"><strong>Acerca de BestPay</strong><button data-href="#About-BestPay" class="anchor-icon" translate="no">
+<h2 id="About-BestPay" class="common-anchor-header"><strong>About BestPay</strong><button data-href="#About-BestPay" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -159,4 +165,4 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>China Telecom BestPay Co, Ltd es una filial de propiedad total de China Telecom. Opera los negocios de pago y finanzas. BestPay se compromete a utilizar tecnologías de vanguardia como big data, inteligencia artificial y computación en la nube para potenciar la innovación empresarial, proporcionando productos inteligentes, soluciones de control de riesgos y otros servicios. Hasta enero de 2016, la app llamada BestPay ha atraído a más de 200 millones de usuarios y se ha convertido en el tercer operador de plataformas de pago en China, siguiendo de cerca a Alipay y WeChat Payment.</p>
+    </button></h2><p>China Telecom BestPay Co., Ltd is a wholly owned subsidiary of China Telecom. It operates the payment and finance businesses. BestPay is committed to using cutting-edge technologies such as big data, artificial intelligence and cloud computing to empower business innovation, providing intelligent products, risk control solutions and other services. Up to January 2016, the app called BestPay has attracted over 200 million users and become the third largest payment platform operator in China, closely following Alipay and WeChat Payment.</p>

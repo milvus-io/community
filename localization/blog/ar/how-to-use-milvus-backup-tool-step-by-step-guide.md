@@ -1,11 +1,11 @@
 ---
 id: how-to-use-milvus-backup-tool-step-by-step-guide.md
-title: 'كيفية استخدام أداة النسخ الاحتياطي ميلفوس: دليل خطوة بخطوة'
+title: 'How to Use the Milvus Backup Tool: A Step-by-Step Guide'
 author: Michael Mo
 date: 2024-09-27T00:00:00.000Z
 desc: >-
-  سيرشدك هذا الدليل خلال عملية استخدام Milvus Backup، مما يضمن لك التعامل بثقة
-  مع احتياجاتك من النسخ الاحتياطي.
+  This guide will walk you through the process of using Milvus Backup, ensuring
+  that you can confidently handle your backup needs.
 cover: >-
   assets.zilliz.com/How_to_Use_the_Milvus_Backup_Tool_A_Step_by_Step_Guide_411029fa4b.png
 tag: Engineering
@@ -13,9 +13,9 @@ tags: 'Vector Databases, Milvus, RAG, LLM, Backup and restore'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/how-to-use-milvus-backup-tool-step-by-step-guide.md'
 ---
-<p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong></a> عبارة عن <a href="https://zilliz.com/learn/what-is-vector-database">قاعدة بيانات متجهة</a> مفتوحة المصدر وعالية الأداء وقابلة للتطوير بدرجة كبيرة يمكنها تخزين وفهرسة والبحث في <a href="https://zilliz.com/learn/introduction-to-unstructured-data">البيانات غير المهيكلة</a> على نطاق مليار من خلال <a href="https://zilliz.com/glossary/vector-embeddings">تضمينات متجهة</a> عالية الأبعاد. وهي مثالية لبناء تطبيقات الذكاء الاصطناعي الحديثة مثل الجيل المعزز للاسترجاع<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>)، والبحث الدلالي، <a href="https://zilliz.com/blog/multimodal-rag-expanding-beyond-text-for-smarter-ai">والبحث متعدد الوسائط،</a> وأنظمة التوصيات. يعمل برنامج Milvus بكفاءة عبر <a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">بيئات</a> مختلفة، من أجهزة الكمبيوتر المحمولة إلى الأنظمة الموزعة على نطاق واسع. وهو متاح كبرنامج مفتوح المصدر وخدمة سحابية.</p>
-<p><a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a> هي أداة للنسخ الاحتياطي واستعادة بيانات Milvus. وهي توفر كلاً من CLI وواجهة برمجة التطبيقات لاستيعاب سيناريوهات التطبيقات المختلفة. سيرشدك هذا الدليل خلال عملية استخدام Milvus Backup، مما يضمن لك التعامل بثقة مع احتياجات النسخ الاحتياطي الخاصة بك.</p>
-<h2 id="Preparation" class="common-anchor-header">التحضير<button data-href="#Preparation" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong></a> is an open-source, high-performance, and highly scalable <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> that can store, index, and search billion-scale <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> through high-dimensional <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a>. It is perfect for building modern AI applications such as retrieval augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>), semantic search, <a href="https://zilliz.com/blog/multimodal-rag-expanding-beyond-text-for-smarter-ai">multimodal search</a>, and recommendation systems. Milvus runs efficiently across various <a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">environments</a>, from laptops to large-scale distributed systems. It is available as open-source software and a cloud service.</p>
+<p><a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a> is a tool for backing up and restoring Milvus data. It provides both CLI and API to accommodate different application scenarios. This guide will walk you through the process of using Milvus Backup, ensuring that you can confidently handle your backup needs.</p>
+<h2 id="Preparation" class="common-anchor-header">Preparation<button data-href="#Preparation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,20 +30,20 @@ canonicalUrl: 'https://milvus.io/blog/how-to-use-milvus-backup-tool-step-by-step
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قبل بدء عملية النسخ الاحتياطي أو الاستعادة، تحتاج إلى إعداد بيئتك:</p>
-<p><strong>1. قم بتحميل أحدث إصدار ثنائي</strong> من<a href="https://github.com/zilliztech/milvus-backup/releases"> إصدارات مستودع النسخ الاحتياطي ميلفوس باك أب</a>. حدد الإصدار المناسب لنظام التشغيل الخاص بك:</p>
+    </button></h2><p>Before starting the backup or restore process, you need to set up your environment:</p>
+<p><strong>1. Download the latest binary</strong> from the<a href="https://github.com/zilliztech/milvus-backup/releases"> Milvus-backup repository releases</a>. Select the appropriate version for your operating system:</p>
 <ul>
-<li><p>لنظام التشغيل macOS: <code translate="no">milvus-backup_Darwin_arm64.tar.gz</code> أو <code translate="no">milvus-backup_Darwin_x86_64.tar.gz</code></p></li>
-<li><p>لنظام لينكس: <code translate="no">milvus-backup_Linux_arm64.tar.gz</code> أو <code translate="no">milvus-backup_Linux_x86_64.tar.gz</code></p></li>
+<li><p>For macOS: <code translate="no">milvus-backup_Darwin_arm64.tar.gz</code> or <code translate="no">milvus-backup_Darwin_x86_64.tar.gz</code></p></li>
+<li><p>For Linux: <code translate="no">milvus-backup_Linux_arm64.tar.gz</code> or <code translate="no">milvus-backup_Linux_x86_64.tar.gz</code></p></li>
 </ul>
-<p><strong>2.</strong> قم<strong>بتنزيل ملف التكوين</strong> من <a href="https://github.com/zilliztech/milvus-backup/blob/main/configs/backup.yaml">GitHub</a>.</p>
-<p><strong>3. استخرج ملف القطران</strong> إلى الدليل المفضل لديك وضع <code translate="no">backup.yaml</code> في الدليل <code translate="no">configs/</code> داخل نفس المجلد المستخرج. تأكد من ظهور بنية الدليل الخاص بك على النحو التالي:</p>
+<p><strong>2. Download the configuration file</strong> from <a href="https://github.com/zilliztech/milvus-backup/blob/main/configs/backup.yaml">GitHub</a>.</p>
+<p><strong>3. Extract the tar file</strong> to your preferred directory and place the <code translate="no">backup.yaml</code> in the <code translate="no">configs/</code> directory within the same extracted folder. Ensure your directory structure appears as follows:</p>
 <pre><code translate="no">├── configs
 │   └── backup.yaml
 ├── milvus-backup
 └── README.md
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Command-Overview" class="common-anchor-header">نظرة عامة على الأوامر<button data-href="#Command-Overview" class="anchor-icon" translate="no">
+<h2 id="Command-Overview" class="common-anchor-header">Command Overview<button data-href="#Command-Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -58,8 +58,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-use-milvus-backup-tool-step-by-step
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>انتقل إلى جهازك الطرفي وتعرف على أوامر الأداة:</p>
-<p><strong>1. المساعدة العامة</strong>: اكتب <code translate="no">milvus-backup help</code> لعرض الأوامر والأعلام المتاحة.</p>
+    </button></h2><p>Navigate to your terminal and familiarize yourself with the tool’s commands:</p>
+<p><strong>1. General Help</strong>: Type <code translate="no">milvus-backup help</code> to view the available commands and flags.</p>
 <pre><code translate="no">milvus-backup <span class="hljs-keyword">is</span> a backup&amp;restore tool <span class="hljs-keyword">for</span> milvus.
 
 Usage:
@@ -82,7 +82,7 @@ Flags:
 
 Use &quot;milvus-backup [command] --help&quot; <span class="hljs-keyword">for</span> more information about a command.
 </span><button class="copy-code-btn"></button></code></pre>
-<p><strong>2. إنشاء نسخة احتياطية</strong>: احصل على مساعدة محددة لإنشاء نسخة احتياطية عن طريق كتابة <code translate="no">milvus-backup create --help</code>.</p>
+<p><strong>2. Creating a Backup</strong>: Get specific help for creating a backup by typing <code translate="no">milvus-backup create --help</code>.</p>
 <pre><code translate="no">Usage:
  milvus-backup create [flags]
 
@@ -95,7 +95,7 @@ Flags:
      --meta_only                     only backup collection meta instead of data
  -h, --help                          help <span class="hljs-keyword">for</span> create
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. استعادة نسخة احتياطية</strong>: لفهم كيفية استعادة نسخة احتياطية، استخدم <code translate="no">milvus-backup restore --help</code>.</p>
+<p><strong>3. Restoring a Backup</strong>: To understand how to restore a backup, use <code translate="no">milvus-backup restore --help</code>.</p>
 <pre><code translate="no">Usage:
  milvus-backup restore [flags]
 
@@ -114,7 +114,7 @@ Flags:
      --skip_create_collection        <span class="hljs-keyword">if</span> <span class="hljs-literal">true</span>, will skip collection, use <span class="hljs-keyword">when</span> collection exist, restore index <span class="hljs-keyword">or</span> data
  -h, --help                          help <span class="hljs-keyword">for</span> restore
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="BackupRestore-Use-Cases" class="common-anchor-header">حالات استخدام النسخ الاحتياطي/الاستعادة<button data-href="#BackupRestore-Use-Cases" class="anchor-icon" translate="no">
+<h2 id="BackupRestore-Use-Cases" class="common-anchor-header">Backup/Restore Use Cases<button data-href="#BackupRestore-Use-Cases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -129,15 +129,15 @@ Flags:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>هناك العديد من حالات الاستخدام التي يمكن فيها تطبيق أداة النسخ الاحتياطي ميلفوس للنسخ الاحتياطي بشكل فعال، اعتمادًا على احتياجاتك وتكويناتك الخاصة:</p>
+    </button></h2><p>There are several use cases in which the milvus-backup tool can be applied effectively, depending on your specific needs and configurations:</p>
 <ol>
-<li><p><strong>ضمن مثيل Milvus واحد:</strong> نسخ مجموعة إلى مجموعة جديدة داخل نفس خدمة ميلفوس.</p></li>
-<li><p><strong>بين مثيلات Milvus في S3 واحد مع دلو واحد:</strong> نقل مجموعة بين مثيلات Milvus بمسارات جذر مختلفة ولكن باستخدام نفس دلو S3.</p></li>
-<li><p><strong>بين مثيلات Milvus عبر دلاء S3 مختلفة:</strong> نقل مجموعة بين دلاء S3 مختلفة ضمن نفس خدمة S3.</p></li>
-<li><p><strong>عبر خدمات S3 المختلفة:</strong> نسخ مجموعة بين مثيلات Milvus التي تستخدم خدمات S3 مختلفة.</p></li>
+<li><p><strong>Within a Single Milvus Instance:</strong> Copy a collection to a new one within the same Milvus service.</p></li>
+<li><p><strong>Between Milvus Instances in a Single S3 with One Bucket:</strong> Transfer a collection between Milvus instances with different root paths but using the same S3 bucket.</p></li>
+<li><p><strong>Between Milvus Instances Across Different S3 Buckets:</strong> Transfer a collection between different S3 buckets within the same S3 service.</p></li>
+<li><p><strong>Across Different S3 Services:</strong> Copy a collection between Milvus instances that are using different S3 services.</p></li>
 </ol>
-<p>دعونا نستكشف كل حالة استخدام بالتفصيل.</p>
-<h2 id="Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="common-anchor-header">حالة الاستخدام 1: النسخ الاحتياطي والاستعادة داخل مثيل Milvus واحد<button data-href="#Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="anchor-icon" translate="no">
+<p>Let’s explore each use case in details.</p>
+<h2 id="Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="common-anchor-header">Use Case 1: Backup and Restore Within One Milvus Instance<button data-href="#Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -152,10 +152,10 @@ Flags:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>النسخ الاحتياطي واستعادة مجموعة داخل نفس مثيل Milvus. لنفترض أن مجموعة باسم "coll" يتم نسخها احتياطيًا واستعادتها باسم "coll_bak" باستخدام نفس دلو S3.</p>
-<h3 id="Configuration" class="common-anchor-header">التكوين:</h3><ul>
-<li><p>يستخدم<strong>Milvus</strong> <code translate="no">bucket_A</code> للتخزين.</p></li>
-<li><p><strong>تكوين MinIO:</strong></p></li>
+    </button></h2><p>Backup and restore a collection within the same Milvus instance. Assume a collection named “coll” is backed up and restored as “coll_bak” using the same S3 bucket.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration:</h3><ul>
+<li><p><strong>Milvus</strong> uses the <code translate="no">bucket_A</code> for storage.</p></li>
+<li><p><strong>MinIO Configuration:</strong></p></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -168,7 +168,7 @@ Flags:
  bucketName: bucket_A <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-Workflow" class="common-anchor-header">سير عمل النسخ الاحتياطي</h3><p>1. قم بتكوين <code translate="no">backup.yaml</code> لتوجيه Milvus و MinIO إلى المواقع الصحيحة.</p>
+<h3 id="Backup-Workflow" class="common-anchor-header">Backup Workflow</h3><p>1. Configure <code translate="no">backup.yaml</code> to point Milvus and MinIO to the correct locations.</p>
 <pre><code translate="no"><span class="hljs-comment"># Related configuration of minio, which is responsible for data persistence for Milvus.</span>
 minio:
  <span class="hljs-comment"># cloudProvider: &quot;minio&quot; # deprecated use storageType instead</span>
@@ -189,20 +189,22 @@ minio:
   backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2. قم بإنشاء نسخة احتياطية باستخدام الأمر.</p>
+<p>2. Create a backup using the command.</p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p>يضع هذا الأمر النسخة الاحتياطية في <code translate="no">bucket_A/backup/my_backup</code>.</p>
-<p>3. استعادة النسخة الاحتياطية إلى مجموعة جديدة.</p>
+<p>This command places the backup in <code translate="no">bucket_A/backup/my_backup</code>.</p>
+<p>3. Restore the backup to a new collection.</p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
-<p>يؤدي هذا الأمر إلى استعادة "coll" كـ "coll_bak" داخل نفس مثيل Milvus.</p>
+<p>This restores “coll” as “coll_bak” within the same Milvus instance.</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Within_One_Milvus_Instance_a232ee6e81.png" alt="Figure: The Backup and Restore Workflow Within One Milvus Instance" class="doc-image" id="figure:-the-backup-and-restore-workflow-within-one-milvus-instance" />
-   <span>الشكل: سير عمل النسخ الاحتياطي والاستعادة داخل مثيل ملفوس واحد</span> </span></p>
-<p>الشكل: سير عمل النسخ الاحتياطي والاستعادة ضمن مثيل واحد من مالفوس</p>
-<h2 id="Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="common-anchor-header">حالة الاستخدام 2: النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس يتشاركان مجموعة S3 واحدة<button data-href="#Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Within_One_Milvus_Instance_a232ee6e81.png" alt="Figure: The Backup and Restore Workflow Within One Milvus Instance" class="doc-image" id="figure:-the-backup-and-restore-workflow-within-one-milvus-instance" />
+    <span>Figure: The Backup and Restore Workflow Within One Milvus Instance</span>
+  </span>
+</p>
+<p>Figure: The Backup and Restore Workflow Within One Milvus Instance</p>
+<h2 id="Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="common-anchor-header">Use Case 2: Backup and Restore Between Two Milvus Instances Sharing One S3 Bucket<button data-href="#Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -217,11 +219,11 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قم بعمل نسخة احتياطية لمجموعة من أحد نسختي ملفوس واستعادتها إلى نسخة أخرى باستخدام نفس دلو S3 ولكن بمسارات جذر مختلفة. بافتراض وجود مجموعة باسم "coll" في Milvus_A، نقوم بعمل نسخة احتياطية واستعادتها إلى مجموعة جديدة باسم "coll_bak" إلى Milvus_B. تشترك نسختا Milvus في نفس الدلو "bucket_A" كمخزن، ولكن لهما مسارات جذر مختلفة.</p>
-<h3 id="Configuration" class="common-anchor-header">التكوين</h3><ul>
-<li><p>يستخدم<strong>Milvus A</strong> <code translate="no">files_A</code> كمسار جذر.</p></li>
-<li><p>يستخدم<strong>Milvus B</strong> <code translate="no">files_B</code> كمسار جذر.</p></li>
-<li><p><strong>تكوين MinIO لـ Milvus A:</strong></p></li>
+    </button></h2><p>Back up a collection from one Milvus instance and restore it to another using the same S3 bucket but with different root paths. Assuming there is a collection named “coll” in the milvus_A, we back up and restore it to a new collection named “coll_bak” to milvus_B. The two Milvus instances share the same bucket “bucket_A” as storage, but they have different root paths.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration</h3><ul>
+<li><p><strong>Milvus A</strong> uses <code translate="no">files_A</code> as the root path.</p></li>
+<li><p><strong>Milvus B</strong> uses <code translate="no">files_B</code> as the root path.</p></li>
+<li><p><strong>MinIO Configuration for Milvus A:</strong></p></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -235,7 +237,7 @@ minio:
  rootPath: files_A <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>تكوين MinIO لـ Milvus B:</strong></li>
+<li><strong>MinIO Configuration for Milvus B:</strong></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -248,7 +250,7 @@ minio:
  bucketName: bucket_A <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files_B <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-Workflow" class="common-anchor-header">سير عمل النسخ الاحتياطي</h3><p><strong>1. تكوين النسخ الاحتياطي ل Milvus A</strong></p>
+<h3 id="Backup-Workflow" class="common-anchor-header">Backup Workflow</h3><p><strong>1. Backup Configuration for Milvus A</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_A
@@ -279,11 +281,11 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. تنفيذ أمر النسخ الاحتياطي:</strong></p>
+<p><strong>2. Execute the backup command:</strong></p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. استعادة التكوين لـ Milvus B</strong></p>
-<p>قم بتعديل <code translate="no">backup.yaml</code> للإشارة إلى Milvus B وضبط مسار جذر MinIO:</p>
+<p><strong>3. Restore Configuration for Milvus B</strong></p>
+<p>Modify <code translate="no">backup.yaml</code> to point to Milvus B and adjust the MinIO root path:</p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_B
@@ -314,14 +316,16 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>4. تنفيذ أمر الاستعادة:</strong></p>
+<p><strong>4. Execute the restore command:</strong></p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Sharing_One_S3_Bucket_80f282a6f4.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Sharing One S3 Bucket" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-sharing-one-s3-bucket" />
-   <span>الشكل: سير عمل النسخ الاحتياطي والاستعادة بين مثيلين من Milvus يتشاركان دلو S3 واحد</span> </span></p>
-<h2 id="Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="common-anchor-header">حالة الاستخدام 3: النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس في S3 واحد، دلاء مختلفة<button data-href="#Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Sharing_One_S3_Bucket_80f282a6f4.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Sharing One S3 Bucket" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-sharing-one-s3-bucket" />
+    <span>Figure: The Backup and Restore Workflow Between Two Milvus Instances Sharing One S3 Bucket</span>
+  </span>
+</p>
+<h2 id="Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="common-anchor-header">Use Case 3: Backup and Restore Between Two Milvus Instances in One S3, Different Buckets<button data-href="#Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -336,10 +340,10 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قم بعمل نسخة احتياطية من مجموعة من مثيل Milvus (Milvus_A) واستعادتها إلى مثيل Milvus آخر (Milvus_B) ضمن نفس خدمة S3 ولكن باستخدام دلاء مختلفة.</p>
-<h3 id="Configuration" class="common-anchor-header">التكوين:</h3><ul>
-<li><p>يستخدم<strong>Milvus</strong> <code translate="no">bucket_A</code> للتخزين.</p></li>
-<li><p><strong>تكوين MinIO لـ Milvus A:</strong></p></li>
+    </button></h2><p>Backup a collection from a Milvus instance (Milvus_A) and restore it to another Milvus instance (Milvus_B) within the same S3 service but using different buckets.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration:</h3><ul>
+<li><p><strong>Milvus</strong> uses the <code translate="no">bucket_A</code> for storage.</p></li>
+<li><p><strong>MinIO Configuration for Milvus A:</strong></p></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -353,7 +357,7 @@ minio:
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>تكوين MinIO لـ Milvus B:</strong></li>
+<li><strong>MinIO Configuration for Milvus B:</strong></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -366,7 +370,7 @@ minio:
  bucketName: bucket_B <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">سير عمل النسخ الاحتياطي والاستعادة</h3><p><strong>1. تكوين النسخ الاحتياطي لـ Milvus A</strong></p>
+<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">Backup and Restore Workflow</h3><p><strong>1. Backup Configuration for Milvus A</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_A
@@ -397,10 +401,10 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_B&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. تنفيذ أمر النسخ الاحتياطي:</strong></p>
+<p><strong>2. Execute the backup command:</strong></p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. استعادة التكوين لـ Milvus B</strong></p>
+<p><strong>3. Restore Configuration for Milvus B</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_B
@@ -431,15 +435,17 @@ minio:
   backupBucketName: <span class="hljs-string">&quot;bucket_B&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>4. نفّذ أمر الاستعادة:</strong></p>
+<p><strong>4. Execute the restore command:</strong></p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_in_One_S3_Different_Buckets_02895ffe18.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-in-one-s3,-different-buckets" />
-   <span>الشكل: سير عمل النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس في S3 واحد، دلاء مختلفة</span> </span></p>
-<p>الشكل: سير عمل النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس في S3 واحد، دلاء مختلفة</p>
-<h2 id="Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="common-anchor-header">حالة الاستخدام 4: النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس في S3 مختلفين<button data-href="#Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_in_One_S3_Different_Buckets_02895ffe18.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-in-one-s3,-different-buckets" />
+    <span>Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets</span>
+  </span>
+</p>
+<p>Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets</p>
+<h2 id="Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="common-anchor-header">Use Case 4: Backup and Restore Between Two Milvus Instances Across Different S3 Services<button data-href="#Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -454,9 +460,9 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لتسهيل عملية النسخ الاحتياطي لمجموعة اسمها "coll" من Milvus_A باستخدام خدمة S3 واحدة (MinIO_A) واستعادتها إلى Milvus_B باستخدام خدمة S3 مختلفة (MinIO_B)، مع استخدام كل مثيل دلاء تخزين مختلفة.</p>
-<h3 id="Configuration" class="common-anchor-header">التكوين</h3><ul>
-<li><strong>تكوين MinIO لـ Milvus A:</strong></li>
+    </button></h2><p>To facilitate the backup of a collection named “coll” from Milvus_A using one S3 service (MinIO_A) and restore it into Milvus_B using a different S3 service (MinIO_B), with each instance utilizing different storage buckets.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration</h3><ul>
+<li><strong>MinIO Configuration for Milvus A:</strong></li>
 </ul>
 <pre><code translate="no">minio:
  address: minio_A <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -470,7 +476,7 @@ minio:
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>تكوين MinIO لـ Milvus B</strong></li>
+<li><strong>MinIO Configuration for Milvus B</strong></li>
 </ul>
 <pre><code translate="no"> minio:
  address: minio_B <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -483,7 +489,7 @@ minio:
  bucketName: bucket_B <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">سير عمل النسخ الاحتياطي والاستعادة</h3><p><strong>1. تكوين النسخ الاحتياطي ل Milvus A</strong></p>
+<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">Backup and Restore Workflow</h3><p><strong>1. Backup Configuration for Milvus A</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_A
@@ -514,12 +520,12 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. تنفيذ أمر النسخ الاحتياطي:</strong></p>
+<p><strong>2. Execute the backup command:</strong></p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3.</strong> نقل النسخة الاحتياطية</p>
-<p>انسخ النسخة الاحتياطية يدويًا من <code translate="no">minio_A:bucket_A/backup/my_backup</code> إلى <code translate="no">minio_B:bucket_B/backup/my_backup</code> باستخدام أداة متوافقة مع S3 أو SDK.</p>
-<p>4. <strong>استعادة التكوين لـ Milvus B</strong></p>
+<p><strong>3.</strong> Transfer the Backup</p>
+<p>Manually copy the backup from <code translate="no">minio_A:bucket_A/backup/my_backup</code> to <code translate="no">minio_B:bucket_B/backup/my_backup</code> using an S3 compatible tool or SDK.</p>
+<p>4. <strong>Restore Configuration for Milvus B</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_B
@@ -550,15 +556,17 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_B&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>5. <strong>نفّذ أمر الاستعادة:</strong></p>
+<p>5. <strong>Execute the restore command:</strong></p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Across_Different_S3_Services_6a1c55d559.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-across-different-s3-services" />
-   <span>الشكل: سير عمل النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس عبر خدمات S3 المختلفة</span> </span></p>
-<p>الشكل: سير عمل النسخ الاحتياطي والاستعادة بين مثيلين لميلفوس عبر خدمات S3 مختلفة.</p>
-<h2 id="Configuration-File-Explanation" class="common-anchor-header">شرح ملف التكوين<button data-href="#Configuration-File-Explanation" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Across_Different_S3_Services_6a1c55d559.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-across-different-s3-services" />
+    <span>Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services</span>
+  </span>
+</p>
+<p>Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services</p>
+<h2 id="Configuration-File-Explanation" class="common-anchor-header">Configuration File Explanation<button data-href="#Configuration-File-Explanation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -573,8 +581,8 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قم بتحرير الملف <code translate="no">configs/backup.yaml</code> لتخصيص إعدادات النسخ الاحتياطي بما يتناسب مع بيئتك. فيما يلي تفصيل لخيارات التكوين:</p>
-<p><strong>التسجيل</strong>: تكوين مستويات التسجيل وتفضيلات الإخراج.</p>
+    </button></h2><p>Edit the <code translate="no">configs/backup.yaml</code> file to tailor the backup settings to your environment. Here’s a breakdown of the configuration options:</p>
+<p><strong>Logging</strong>: Configure logging levels and output preferences.</p>
 <pre><code translate="no"><span class="hljs-meta"># Configures the system log output.</span>
 log:
  level: info <span class="hljs-meta"># Only supports debug, info, warn, <span class="hljs-keyword">error</span>, panic, or fatal. Default &#x27;info&#x27;.</span>
@@ -582,7 +590,7 @@ log:
  <span class="hljs-keyword">file</span>:
    rootPath: <span class="hljs-string">&quot;logs/backup.log&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>اتصال ميلفوس</strong>: قم بتعيين تفاصيل الاتصال لمثيل Milvus الخاص بك.</p>
+<p><strong>Milvus Connection</strong>: Set the connection details for your Milvus instance.</p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: localhost
@@ -594,7 +602,7 @@ milvus:
  user: <span class="hljs-string">&quot;root&quot;</span>
  password: <span class="hljs-string">&quot;Milvus&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>تكوين MinIO</strong>: تحديد كيفية تفاعل النسخ الاحتياطية مع MinIO أو أي تخزين آخر متوافق مع S3.</p>
+<p><strong>MinIO Configuration</strong>: Define how backups interact with MinIO or other S3-compatible storage.</p>
 <pre><code translate="no"><span class="hljs-comment"># Related configuration of minio, which is responsible for data persistence for Milvus.</span>
 minio:
  <span class="hljs-comment"># cloudProvider: &quot;minio&quot; # deprecated use storageType instead</span>
@@ -615,7 +623,7 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;a-bucket&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -630,11 +638,11 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>توفر أداة <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a> حلاً قوياً للنسخ الاحتياطي واستعادة المجموعات داخل مثيلات Milvus وعبرها. سواء كنت تدير النسخ الاحتياطية داخل مثيل واحد، أو بين المثيلات في نفس خدمة S3، أو عبر خدمات S3 المختلفة، فإن أداة النسخ الاحتياطي Milvus-backup تتعامل مع كل ذلك بمرونة ودقة.</p>
-<h3 id="Key-Takeaways" class="common-anchor-header">الوجبات السريعة الرئيسية</h3><ol>
-<li><p><strong>تعدد الاستخدامات:</strong> يدعم النسخ الاحتياطي Milvus-backup سيناريوهات متعددة، بدءًا من النسخ الاحتياطية البسيطة داخل المثيل الواحد إلى عمليات الاستعادة المعقدة عبر الخدمات.</p></li>
-<li><p><strong>مرونة التكوين:</strong> من خلال تهيئة ملف <code translate="no">backup.yaml</code> بشكل مناسب، يمكن للمستخدمين تخصيص عمليات النسخ الاحتياطي والاستعادة لتناسب احتياجات محددة، واستيعاب إعدادات التخزين المختلفة وتكوينات الشبكة.</p></li>
-<li><p><strong>الأمان والتحكم:</strong> تسمح المعالجة المباشرة لمجموعات ومسارات S3 بالتحكم في تخزين البيانات وأمانها، مما يضمن أن تكون النسخ الاحتياطية آمنة ولا يمكن الوصول إليها إلا للمستخدمين المصرح لهم فقط.</p></li>
+    </button></h2><p>The <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a> tool provides a robust solution for backing up and restoring collections within and across Milvus instances. Whether you’re managing backups within a single instance, between instances in the same S3 service, or across different S3 services, milvus-backup handles it all with flexibility and precision.</p>
+<h3 id="Key-Takeaways" class="common-anchor-header">Key Takeaways</h3><ol>
+<li><p><strong>Versatility:</strong> Milvus-backup supports multiple scenarios, from simple intra-instance backups to complex cross-service restorations.</p></li>
+<li><p><strong>Configuration Flexibility:</strong> By configuring the <code translate="no">backup.yaml</code> file appropriately, users can customize the backup and restore processes to fit specific needs, accommodating different storage setups and network configurations.</p></li>
+<li><p><strong>Security and Control:</strong> Direct manipulation of S3 buckets and paths allows for control over data storage and security, ensuring backups are both safe and accessible only to authorized users.</p></li>
 </ol>
-<p>الإدارة الفعالة للبيانات أمر بالغ الأهمية للاستفادة من إمكانات Milvus الكاملة في تطبيقاتك. من خلال إتقان أداة النسخ الاحتياطي Milvus، يمكنك ضمان متانة البيانات وتوافرها، حتى في البيئات الموزعة المعقدة. يمكّن هذا الدليل المستخدمين من تنفيذ استراتيجيات النسخ الاحتياطي القوية، وتعزيز أفضل الممارسات وتقنيات التعامل مع البيانات بكفاءة.</p>
-<p>سواء كنت مطورًا أو مهندس بيانات أو محترفًا في مجال تكنولوجيا المعلومات، فإن فهم أداة النسخ الاحتياطي Milvus-backup واستخدامها يمكن أن يساهم بشكل كبير في نجاح مشروعك من خلال توفير حلول موثوقة وفعالة لإدارة البيانات.</p>
+<p>Effective data management is crucial for leveraging Milvus’s full potential in your applications. By mastering the Milvus backup tool, you can ensure data durability and availability, even in complex distributed environments. This guide empowers users to implement robust backup strategies, promoting best practices and efficient data handling techniques.</p>
+<p>Whether you’re a developer, a data engineer, or an IT professional, understanding and utilizing the Milvus-backup tool can significantly contribute to your project’s success by providing reliable and efficient data management solutions.</p>

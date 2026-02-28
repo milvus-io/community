@@ -1,85 +1,94 @@
 ---
 id: >-
   accelerating-compilation-with-dependency-decoupling-and-testing-containerization.md
-title: تسريع التجميع التجميع 2.5 مرة مع فصل التبعية واختبار الحاويات
+title: >-
+  Accelerating Compilation 2.5X with Dependency Decoupling & Testing
+  Containerization
 author: Zhifeng Zhang
 date: 2021-05-28T00:00:00.000Z
 desc: >-
-  اكتشف كيف يقلل zilliz من زمن التحويل البرمجي 2.5 مرة باستخدام تقنيات فصل
-  التبعية والحاويات لمشاريع الذكاء الاصطناعي وعمليات التشغيل الآلي متعددة
-  الوظائف واسعة النطاق.
+  Discover how zilliz to reduce compile times 2.5x using dependency decoupling
+  and containerization techniques for large-scale AI and MLOps projects.
 cover: assets.zilliz.com/cover_20e3cddb96.jpeg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/accelerating-compilation-with-dependency-decoupling-and-testing-containerization
 ---
-<custom-h1>تسريع التحويل البرمجي 2.5 مرة مع فصل التبعيات واختبار الاحتواء</custom-h1><p>يمكن أن يتفاقم وقت التحويل البرمجي بسبب التبعيات الداخلية والخارجية المعقدة التي تتطور خلال عملية التطوير، بالإضافة إلى التغييرات في بيئات التجميع مثل نظام التشغيل أو بنية الأجهزة. فيما يلي بعض المشكلات الشائعة التي قد يواجهها المرء عند العمل على مشاريع الذكاء الاصطناعي أو مشاريع MLOps واسعة النطاق:</p>
-<p><strong>تجميع طويل للغاية</strong> - يتم تجميع التعليمات البرمجية مئات المرات كل يوم. مع وجود مئات الآلاف من أسطر التعليمات البرمجية في المكان، قد يؤدي حتى تغيير بسيط إلى تجميع كامل يستغرق عادةً ساعة أو أكثر.</p>
-<p><strong>بيئة التجميع المعقدة</strong> - يجب تجميع كود المشروع تحت بيئات مختلفة، والتي تتضمن أنظمة تشغيل مختلفة، مثل CentOS وUbuntu، والتبعية الأساسية، مثل GCC وLLVM وCUDA، وبنى الأجهزة. والتجميع في بيئة معينة قد لا يعمل عادةً في بيئة مختلفة.</p>
-<p><strong>التبعيات المعقدة</strong> - يتضمن تجميع المشروع أكثر من 30 تبعية بين المكونات وتبعيات الطرف الثالث. وغالباً ما يؤدي تطوير المشروع إلى تغييرات في التبعيات، مما يؤدي حتماً إلى تعارض التبعيات. التحكم في الإصدار بين التبعيات معقد للغاية بحيث يؤثر تحديث إصدار التبعيات بسهولة على المكونات الأخرى.</p>
-<p><strong>بطء تنزيل التبعيات التابعة للجهات الخارجية أو فشلها</strong> - تتسبب التأخيرات في الشبكة أو مكتبات التبعيات الخارجية غير المستقرة في بطء تنزيل الموارد أو فشل الوصول إليها، مما يؤثر بشكل خطير على تكامل التعليمات البرمجية.</p>
-<p>من خلال فصل التبعيات وتنفيذ اختبار الحاويات، تمكنا من تقليل متوسط وقت التحويل البرمجي بنسبة 60% أثناء العمل على مشروع البحث عن تشابه التضمينات مفتوح المصدر <a href="https://milvus.io/">Milvus</a>.</p>
+<custom-h1>Accelerating Compilation 2.5X with Dependency Decoupling &amp; Testing Containerization</custom-h1><p>Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects:</p>
+<p><strong>Prohibitively long compilation</strong> - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours.</p>
+<p><strong>Complex compilation environment</strong> - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.</p>
+<p><strong>Complex dependencies</strong> - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.</p>
+<p><strong>Third-party dependency download is slow or fails</strong> - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration.</p>
+<p>By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project <a href="https://milvus.io/">Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">فصل تبعيات المشروع</h3><p>عادةً ما يتضمن تجميع المشروع عددًا كبيرًا من تبعيات المكونات الداخلية والخارجية. وكلما زاد عدد التبعيات في المشروع، أصبحت إدارتها أكثر تعقيدًا. ومع نمو البرنامج، يصبح تغيير أو إزالة التبعيات أو إزالتها أكثر صعوبة وتكلفة، بالإضافة إلى تحديد آثار القيام بذلك. الصيانة المنتظمة مطلوبة طوال عملية التطوير لضمان عمل التبعيات بشكل صحيح. يمكن أن تتسبب الصيانة الضعيفة أو التبعيات المعقدة أو التبعيات المعيبة في حدوث تعارضات تؤدي إلى إبطاء أو تعطيل التطوير. ومن الناحية العملية، يمكن أن يعني ذلك تأخر تنزيلات الموارد، وفشل الوصول الذي يؤثر سلبًا على تكامل التعليمات البرمجية، وغير ذلك. يمكن لفصل تبعيات المشروع أن يخفف من العيوب ويقلل من وقت التجميع، مما يسرع من اختبار النظام وتجنب العوائق غير الضرورية في تطوير البرمجيات.</p>
-<p>لذلك، نوصي بفصل التبعيات في مشروعك:</p>
+<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Decouple the dependencies of the project</h3><p>Project compilation usually involves a large number of internal and external component dependencies. The more dependencies a project has, the more complex it becomes to manage them. As software grows, it becomes more difficult and costly to change or remove dependencies, as well as identify the effects of doing so. Regular maintenance is required throughout the development process to ensure the dependencies functions properly.
+Poor maintenance, complex dependencies, or faulty dependencies can cause conflicts that slow or stall development. In practice, this can mean lagging resource downloads, access failures that negatively impact code integration, and more. Decoupling project dependencies can mitigate defects and reduce compile time, accelerating system testing and avoiding unnecessary drag on software development.</p>
+<p>Therefore, we recommend decouple dependencies your project:</p>
 <ul>
-<li>فصل المكونات ذات التبعيات المعقدة</li>
-<li>استخدم مستودعات مختلفة لإدارة الإصدارات.</li>
-<li>استخدم ملفات التكوين لإدارة معلومات الإصدار وخيارات التجميع والتبعيات وما إلى ذلك.</li>
-<li>أضف ملفات التهيئة إلى مكتبات المكونات بحيث يتم تحديثها مع تكرار المشروع.</li>
+<li>Split up components with complex dependencies</li>
+<li>Use different repositories for version management.</li>
+<li>Use configuration files to manage version information, compilation options, dependencies, etc.</li>
+<li>Add the configuration files to the component libraries so that they are updated as the project iterates.</li>
 </ul>
-<p><strong>تحسين التحويل البرمجي بين المكونات</strong> - سحب وتجميع المكون ذي الصلة وفقًا للتبعيات وخيارات التحويل البرمجي المسجلة في ملفات التكوين. ضع علامة على نتائج التحويل البرمجي الثنائي وملفات البيان المقابلة لها وحزمها، ثم ارفعها إلى مستودعك الخاص. إذا لم يتم إجراء أي تغيير على أحد المكونات أو المكونات التي يعتمد عليها، فقم بتشغيل نتائج التحويل البرمجي الخاصة به وفقًا لملفات البيان. بالنسبة لمشكلات مثل التأخير في الشبكة أو مكتبات تبعية الطرف الثالث غير المستقرة، حاول إعداد مستودع داخلي أو استخدام مستودعات معكوسة.</p>
-<p>لتحسين التجميع بين المكونات</p>
-<p>1- إنشاء رسم بياني لعلاقة التبعية - استخدم ملفات التكوين في مكتبات المكونات لإنشاء رسم بياني لعلاقة التبعية. استخدم علاقة التبعية لاسترداد معلومات الإصدار (فرع Git، والوسم، ومعرف التزام Git) وخيارات التحويل البرمجي والمزيد من المكونات التابعة في المنبع والمصب.</p>
+<p><strong>Compile optimization between components</strong> — Pull and compile the relevant component according to the dependencies and the compile options recorded in the configuration files. Tag and pack the binary compilation results and the corresponding manifest files, and then upload them to your private repository. If no change is made to a component or the components it depends on, playback its compilation results according to the manifest files. For issues such as network delays or unstable third-party dependency libraries, try setting up an internal repository or using mirrored repositories.</p>
+<p>To optimize compilation between components:</p>
+<p>1.Create dependency relationship graph — Use the configuration files in the component libraries to create dependency relationship graph. Use the dependency relationship to retrieve the version information (Git Branch, Tag, and Git commit ID) and compilation options and more of both upstream and downstream dependent components.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p><strong>2- التحقق من التبعيات</strong> - قم بإنشاء تنبيهات للتبعيات الدائرية وتعارضات الإصدارات وغيرها من المشكلات التي تنشأ بين المكونات.</p>
-<p><strong>3- تسطيح الت</strong> بعيات - فرز التبعيات حسب البحث في العمق أولًا (DFS) ودمج المكونات ذات التبعيات المكررة لتشكيل رسم بياني للتبعية.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>2.<strong>Check for dependencies</strong> — Generate alerts for circular dependencies, version conflicts, and other issues that arise between components.</p>
+<p>3.<strong>Flatten dependencies</strong> — Sort dependencies by Depth First Search (DFS) and front-merge components with duplicate dependencies to form a dependency graph.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>4- استخدم خوارزمية MerkleTree لتوليد تجزئة (تجزئة جذرية) تحتوي على تبعيات كل مكون بناءً على معلومات الإصدار وخيارات التجميع وغيرها. بالإضافة إلى معلومات مثل اسم المكون، تشكل الخوارزمية علامة فريدة لكل مكون.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>4.Use MerkleTree algorithm to generate a hash (Root Hash) containing dependencies of each component based on version information, compilation options, and more. Combined with information such as component name, the algorithm forms a unique tag for each component.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<p>5- استنادًا إلى معلومات العلامة الفريدة للمكون، تحقق مما إذا كان هناك أرشيف تجميعي مطابق موجود في الريبو الخاص. إذا تم استرجاع أرشيف تجميعي، قم بفك ضغطه للحصول على ملف البيان للتشغيل؛ إذا لم يكن كذلك، قم بتحويل المكون إلى تجميع، وقم بترميز ملفات كائنات التجميع المُنشأة وملف البيان، وقم بتحميلها إلى الريبو الخاص.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<p>5.Based on the component’s unique tag information, check if a corresponding compilation archive exists in the private repo. If a compilation archive is retrieved, unzip it to get the manifest file for playback; if not, compile the component, mark up the generated compilation object files and manifest file, and upload them to the private repo.</p>
 <p><br/></p>
-<p><strong>تنفيذ تحسينات التحويل البرمجي داخل المكونات</strong> - اختر أداة تخزين مؤقت للتحويل البرمجي خاصة باللغة لتخزين ملفات الكائنات المحولة مؤقتًا، وقم بتحميلها وتخزينها في المستودع الخاص. For C/C++ compilation, choose a compilation cache tool like CCache to cache the C/C++ compilation intermediate files, and then archive the local CCache cache after compilation. تقوم أدوات ذاكرة التخزين المؤقت للتجميع هذه ببساطة بتخزين ملفات التعليمات البرمجية المتغيرة واحدًا تلو الآخر بعد التجميع، ونسخ المكونات المجمعة لملف التعليمات البرمجية التي لم تتغير بحيث يمكن إشراكها مباشرةً في التجميع النهائي. يتضمن تحسين التجميع داخل المكونات الخطوات التالية:</p>
+<p><strong>Implement compilation optimizations within components</strong> — Choose a language-specific compilation cache tool to cache the compiled object files, and upload and store them in your private repository. For C/C++ compilation, choose a compilation cache tool like CCache to cache the C/C++ compilation intermediate files, and then archive the local CCache cache after compilation. Such compile cache tools simply cache the changed code files one by one after compilation, and copy the compiled components of the unchanged code file so that they can be directly involved in the final compilation.
+Optimization of the compilation within components includes the following steps:</p>
 <ol>
-<li>إضافة تبعيات التجميع الضرورية إلى ملف Dockerfile. استخدام Hadolint لإجراء فحوصات التوافق على ملف Dockerfile لضمان توافق الصورة مع أفضل ممارسات Docker.</li>
-<li>قم بنسخ بيئة التجميع وفقًا لإصدار سبرينت المشروع (الإصدار + البناء) ونظام التشغيل ومعلومات أخرى.</li>
-<li>قم بتشغيل حاوية بيئة التجميع المنسوخة، وانقل معرف الصورة إلى الحاوية كمتغير بيئة. إليك مثال على أمر للحصول على معرّف الصورة: "docker inspect " - النوع=صورة" - التنسيق "{{.ID}}" مستودع/بناء-إنف:v0.1-centos7".</li>
-<li>اختر الأداة المناسبة لتجميع ذاكرة التخزين المؤقت: أدخل أداة الاحتواء الخاصة بك لدمج وتجميع أكوادك وتحقق في المستودع الخاص بك إذا كانت هناك ذاكرة تخزين مؤقتة مناسبة للتجميع. إذا كانت الإجابة بنعم، قم بتنزيلها واستخراجها إلى الدليل المحدد. بعد أن يتم تجميع جميع المكونات، يتم حزم ذاكرة التخزين المؤقت التي تم إنشاؤها بواسطة أداة تجميع ذاكرة التخزين المؤقت وتحميلها إلى مستودعك الخاص بناءً على إصدار المشروع ومعرف الصورة.</li>
+<li>Add the necessary compilation dependencies to Dockerfile. Use Hadolint to perform compliance checks on Dockerfile to ensure that the image conforms to Docker’s best practices.</li>
+<li>Mirror the compilation environment according to the project sprint version (version + build), operating system, and other information.</li>
+<li>Run the mirrored compilation environment container, and transfer the image ID to the container as an environment variable. Here’s an example command for getting image ID: “docker inspect ‘ — type=image’ — format ‘{{.ID}}’ repository/build-env:v0.1-centos7”.</li>
+<li>Choose the appropriate compile cache tool: Enter your containter to integrate and compile your codes and check in your private repository if an appropriate compile cache exists. If yes, download and extract it to the specified directory. After all components are compiled, the cache generated by the compile cache tool is packaged and uploaded to your private repository based on the project version and image ID.</li>
 </ol>
 <p><br/></p>
-<h3 id="Further-compilation-optimization" class="common-anchor-header">تحسين التحويل البرمجي الإضافي</h3><p>يشغل التجميع الأولي لدينا مساحة كبيرة جدًا على القرص والنطاق الترددي للشبكة، ويستغرق وقتًا طويلاً للنشر، اتخذنا الإجراءات التالية</p>
+<h3 id="Further-compilation-optimization" class="common-anchor-header">Further compilation optimization</h3><p>Our initially-built occupies too much disk space and network bandwidth, and takes a long time to deploy, we took the following measures:</p>
 <ol>
-<li>اختر الصورة الأساسية الأصغر حجمًا لتقليل حجم الصورة، على سبيل المثال: Alpine، وBoolbox، إلخ.</li>
-<li>تقليل عدد طبقات الصورة. إعادة استخدام التبعيات قدر الإمكان. دمج أوامر متعددة باستخدام "&amp;&amp;".</li>
-<li>تنظيف المنتجات الوسيطة أثناء بناء الصورة.</li>
-<li>استخدام ذاكرة التخزين المؤقت للصور لبناء الصورة قدر الإمكان.</li>
+<li>Choose the leanest base image to reduce the image size, e.g. alpine, busybox, etc.</li>
+<li>Reduce the number of image layers. Reuse dependencies as much as possible. Merge multiple commands with “&amp;&amp;”.</li>
+<li>Clean up the intermediate products during image building.</li>
+<li>Use image cache to build image as much as possible.</li>
 </ol>
-<p>مع استمرار تقدم مشروعنا، بدأ استخدام الأقراص وموارد الشبكة في الارتفاع مع زيادة ذاكرة التخزين المؤقت للتجميع، في حين أن بعض ذاكرات التخزين المؤقت للتجميع غير مستغلة بشكل كافٍ. قمنا بعد ذلك بإجراء التعديلات التالية:</p>
-<p><strong>تنظيف ملفات ذاكرة التخزين المؤقت بانتظام</strong> - التحقق بانتظام من المستودع الخاص (باستخدام البرامج النصية على سبيل المثال)، وتنظيف ملفات ذاكرة التخزين المؤقت التي لم تتغير منذ فترة أو لم يتم تنزيلها كثيرًا.</p>
-<p><strong>التخزين الانتقائي لملفات التحويل البرمجي الانتقائية</strong> - قم بتخزين الملفات التي تتطلب موارد كثيرة فقط في ذاكرة التخزين المؤقت، وتخطي ملفات التحويل البرمجي التي لا تتطلب الكثير من الموارد.</p>
+<p>As our project continues to progress, disk usage and network resource began to soar as the compilation cache increases, while some of the compilation caches are underutilized. We then made the following adjustments:</p>
+<p><strong>Regularly clean up cache files</strong> — Regularly check the private repository (using scripts for example), and clean up cache files that have not changed for a while or have not been downloaded much.</p>
+<p><strong>Selective compile caching</strong> — Only cache resource-demanding compiles, and skip caching compiles that do not require much resource.</p>
 <p><br/></p>
-<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">الاستفادة من اختبار الحاويات لتقليل الأخطاء وتحسين الاستقرار والموثوقية</h3><p>يجب تجميع البرمجيات في بيئات مختلفة، والتي تتضمن مجموعة متنوعة من أنظمة التشغيل (مثل CentOS وUbuntu)، والتبعية الأساسية (مثل GCC وLLVM وCUDA)، وبنى أجهزة محددة. التعليمات البرمجية التي يتم تجميعها بنجاح في بيئة معينة تفشل في بيئة مختلفة. من خلال تشغيل الاختبارات داخل الحاويات، تصبح عملية الاختبار أسرع وأكثر دقة.</p>
-<p>تضمن الحاويات أن بيئة الاختبار متسقة، وأن التطبيق يعمل كما هو متوقع. يقوم نهج الاختبار في الحاويات بتعبئة الاختبارات كحاويات صور وبناء بيئة اختبار معزولة حقاً. وجد المختبرون لدينا أن هذا النهج مفيد جدًا، مما أدى في النهاية إلى تقليل أوقات التجميع بنسبة تصل إلى 60%.</p>
-<p><strong>ضمان بيئة تجميع متسقة</strong> - نظرًا لأن المنتجات المجمعة حساسة للتغيرات في بيئة النظام، فقد تحدث أخطاء غير معروفة في أنظمة التشغيل المختلفة. يجب علينا وضع علامات وأرشفة ذاكرة التخزين المؤقت للمنتجات المجمّعة وفقًا للتغييرات في بيئة التجميع، ولكن يصعب تصنيفها. لذلك قمنا بإدخال تقنية التجميع في حاويات لتوحيد بيئة التحويل البرمجي لحل مثل هذه المشكلات.</p>
+<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Leveraging containerized testing to reduce errors, improve stability and reliability</h3><p>Codes have to be compiled in different environments, which involve variety of operating systems (e.g. CentOS and Ubuntu), underlying dependencies (e.g. GCC, LLVM, and CUDA), and specific hardware architectures. Code that successfully compiles under a specific environment fail in a different environment. By running tests inside containers, the testing process becomes faster and more accurate.</p>
+<p>Containerization ensures that the test environment is consistent, and that an application is working as expected. The containerized testing approach packages tests as image containers and builds a truly-isolated test environment. Our testers found that this approach pretty useful, which ended up reducing compile times by as much as 60%.</p>
+<p><strong>Ensure a consistent compile environment</strong> — As the compiled products are sensitive to changes in the system environment, unknown errors may occur in different operating systems. We have to tag and archive the compiled product cache according to the changes in the compile environment, but they are difficult to categorize. So we introduced containerization technology to unify the compile environment to solve such issues.</p>
 <p><br/></p>
-<h3 id="Conclusion" class="common-anchor-header">الخاتمة</h3><p>من خلال تحليل تبعيات المشروع، تقدم هذه المقالة طرقًا مختلفة لتحسين التحويل البرمجي بين المكونات وداخلها، مما يوفر أفكارًا وأفضل الممارسات لبناء تكامل مستقر وفعال للتعليمات البرمجية المستمرة. ساعدت هذه الأساليب في حل مشكلة بطء تكامل التعليمات البرمجية الناجمة عن التبعيات المعقدة، وتوحيد العمليات داخل الحاوية لضمان اتساق البيئة، وتحسين كفاءة التجميع من خلال تشغيل نتائج التجميع واستخدام أدوات التخزين المؤقت للتجميع لتخزين نتائج التجميع الوسيطة مؤقتًا.</p>
-<p>أدت هذه الممارسات المذكورة أعلاه إلى تقليل وقت التحويل البرمجي للمشروع بنسبة 60% في المتوسط، مما أدى إلى تحسين الكفاءة الكلية لتكامل الأكواد بشكل كبير. من الآن فصاعدًا، سنستمر في التحويل البرمجي المتوازي بين المكونات وداخلها لتقليل زمن التحويل البرمجي بشكل أكبر.</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>By analyzing project dependencies, this article introduces different methods for compilation optimization between and within components, providing ideas and best practices for building stable and efficient continuous code integration. These methods helped solve slow code integration caused by complex dependencies, unify operations inside the container to ensure the consistency of the environment, and improve compilation efficiency through the playback of the compilation results and the use of compilation cache tools to cache the intermediate compilation results.</p>
+<p>This above-mentioned practices have reduced the compile time of the project by 60% on average, greatly improving the overall efficiency of code integration. Moving forward, we will continue parallelizing compilation between and within components to further reduce compilation times.</p>
 <p><br/></p>
-<p><em>تم استخدام المصادر التالية لهذه المقالة:</em></p>
+<p><em>The following sources were used for this article:</em></p>
 <ul>
-<li>"فصل الأشجار المصدرية في مكونات مستوى البناء"</li>
-<li>"<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">عوامل يجب مراعاتها عند إضافة تبعيات الطرف الثالث إلى مشروع</a>"</li>
-<li>"<a href="https://queue.acm.org/detail.cfm?id=3344149">النجاة من تبعيات البرمجيات</a>"</li>
-<li>"<a href="https://www.cc.gatech.edu/~beki/t1.pdf">فهم التبعيات: دراسة تحديات التنسيق في تطوير البرمجيات" "دراسة تحديات التنسيق في تطوير البرمجيات</a>"</li>
+<li>“Decoupling Source Trees into Build-Level Components”</li>
+<li>“<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Factors to consider when adding third party dependencies to a project</a>”</li>
+<li>“<a href="https://queue.acm.org/detail.cfm?id=3344149">Surviving Software Dependencies</a>”</li>
+<li>“<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Understanding Dependencies: A Study of the Coordination Challenges in Software Development</a>”</li>
 </ul>
 <p><br/></p>
-<h3 id="About-the-author" class="common-anchor-header">نبذة عن المؤلف</h3><p>تشيفنغ تشانغ هو مهندس أول في DevOps في Zilliz.com يعمل على قاعدة بيانات Milvus، وهي قاعدة بيانات متجهة مفتوحة المصدر، ومدرب معتمد من جامعة LF للبرمجيات مفتوحة المصدر في الصين. حصل على درجة البكالوريوس في إنترنت الأشياء (IOT) من معهد هندسة البرمجيات في قوانغتشو. أمضى حياته المهنية في المشاركة في مشاريع وقيادة مشاريع في مجال CI/CD، و DevOps، وإدارة البنية التحتية لتكنولوجيا المعلومات، ومجموعة أدوات السحابة الأصلية، والحاويات، وتحسين عملية التجميع.</p>
+<h3 id="About-the-author" class="common-anchor-header">About the author</h3><p>Zhifeng Zhang is a senior DevOps engineer at Zilliz.com working on Milvus, an open-source vector database, and authorized instructor of the LF open-source software university in China. He received his bachelor’s degree in Internet of Things (IOT) from Software Engineering Institute of Guangzhou. He spends his career participating in and leading projects in the area of CI/CD, DevOps, IT infrastructure management, Cloud-Native toolkit, containerization, and compilation process optimization.</p>

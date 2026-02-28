@@ -1,9 +1,9 @@
 ---
 id: >-
   is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
-title: >-
-  Le MCP est-il déjà dépassé ? La vraie raison pour laquelle Anthropic a expédié
-  des compétences et comment les associer à Milvus
+title: >
+  Is MCP Already Outdated? The Real Reason Anthropic Shipped Skills—and How to
+  Pair Them with Milvus
 author: Min Yin
 date: 2025-11-19T00:00:00.000Z
 cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
@@ -14,23 +14,23 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Claude, Skills, MCP, Milvus, AI workflow'
 meta_title: 'Exploring Skills, MCP, and Milvus for Smarter AI Workflows'
 desc: >-
-  Découvrez comment Skills réduit la consommation de jetons et comment Skills et
-  MCP collaborent avec Milvus pour améliorer les flux de travail de l'IA.
+  Learn how Skills works to reduce token consumption, and how Skills and MCP
+  work together with Milvus to enhance AI workflows.
 origin: >-
   https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md
 ---
-<p>Au cours des dernières semaines, une discussion étonnamment animée a éclaté sur X et Hacker News : <em>Avons-nous encore besoin des serveurs MCP ?</em> Certains développeurs affirment que MCP est trop technique, gourmand en jetons et fondamentalement mal aligné sur la façon dont les agents devraient utiliser les outils. D'autres défendent MCP comme le moyen fiable d'exposer les capacités du monde réel aux modèles de langage. Selon le fil de discussion que vous lisez, MCP est soit l'avenir de l'utilisation des outils, soit mort à l'arrivée.</p>
+<p>Over the past few weeks, a surprisingly heated argument has erupted across X and Hacker News: <em>Do we actually need MCP servers anymore?</em> Some developers claim MCP is over-engineered, token-hungry, and fundamentally misaligned with how agents should use tools. Others defend MCP as the reliable way to expose real-world capabilities to language models. Depending on which thread you read, MCP is either the future of tool use—or dead on arrival.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hackernews_c3236cca2c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>La frustration est compréhensible. MCP vous donne un accès robuste aux systèmes externes, mais il oblige également le modèle à charger de longs schémas, des descriptions verbeuses et des listes d'outils tentaculaires. Cela représente un coût réel. Si vous téléchargez la transcription d'une réunion et que vous l'introduisez ensuite dans un autre outil, le modèle peut retraiter le même texte plusieurs fois, gonflant ainsi l'utilisation des jetons sans bénéfice évident. Pour les équipes opérant à grande échelle, il ne s'agit pas d'un inconvénient, mais d'une facture.</p>
-<p>Mais déclarer MCP obsolète est prématuré. Anthropic - la même équipe qui a inventé MCP - a tranquillement introduit quelque chose de nouveau : <a href="https://claude.com/blog/skills"><strong>Skills</strong></a>. Les compétences sont des définitions Markdown/YAML légères qui décrivent <em>comment</em> et <em>quand</em> un outil doit être utilisé. Au lieu de déverser des schémas complets dans la fenêtre contextuelle, le modèle lit d'abord les métadonnées compactes et les utilise pour planifier. Dans la pratique, les Skills réduisent considérablement la charge de travail des jetons et donnent aux développeurs plus de contrôle sur l'orchestration des outils.</p>
-<p>Cela signifie-t-il que les Skills vont remplacer MCP ? Pas tout à fait. Les compétences rationalisent la planification, mais MCP fournit toujours les capacités réelles : lecture de fichiers, appel d'API, interaction avec les systèmes de stockage ou connexion à une infrastructure externe comme <a href="https://milvus.io/"><strong>Milvus</strong></a>, une base de données vectorielle open-source qui sous-tend la recherche sémantique rapide à l'échelle, ce qui en fait un backend critique lorsque vos compétences ont besoin d'un accès réel aux données.</p>
-<p>Cet article explique ce que les compétences font bien, où MCP est encore important, et comment les deux s'intègrent dans l'architecture évolutive des agents d'Anthropic. Nous verrons ensuite comment construire vos propres compétences qui s'intègrent parfaitement à Milvus.</p>
-<h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">Que sont les compétences des agents Anthropic et comment fonctionnent-elles ?<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
+<p>The frustration is understandable. MCP gives you robust access to external systems, but it also forces the model to load long schemas, verbose descriptions, and sprawling tool lists. That adds real cost. If you download a meeting transcript and later feed it into another tool, the model may reprocess the same text multiple times, inflating token usage for no obvious benefit. For teams operating at scale, this isn’t an inconvenience—it’s a bill.</p>
+<p>But declaring MCP obsolete is premature. Anthropic—the same team that invented MCP—quietly introduced something new: <a href="https://claude.com/blog/skills"><strong>Skills</strong></a>. Skills are lightweight Markdown/YAML definitions that describe <em>how</em> and <em>when</em> a tool should be used. Instead of dumping full schemas into the context window, the model first reads compact metadata and uses that to plan. In practice, Skills dramatically reduce token overhead and give developers more control over tool orchestration.</p>
+<p>So, does this mean Skills will replace MCP? Not quite. Skills streamline planning, but MCP still provides the actual capabilities: reading files, calling APIs, interacting with storage systems, or plugging into external infrastructure like <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database that underpins fast semantic retrieval at scale, making it a critical backend when your Skills need real data access.</p>
+<p>This post breaks down what Skills do well, where MCP still matters, and how both fit into Anthropic’s evolving agent architecture. Then we’ll walk through how to build your own Skills that integrate cleanly with Milvus.</p>
+<h2 id="What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="common-anchor-header">What Are Anthropic Agent Skills and How Do They Work<button data-href="#What-Are-Anthropic-Agent-Skills-and-How-Do-They-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,19 +45,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'un des problèmes de longue date des agents d'IA traditionnels est que les instructions s'effacent au fur et à mesure que la conversation s'intensifie.</p>
-<p>Même avec les invites les plus soigneusement conçues, le comportement du modèle peut progressivement dériver au cours de la conversation. Après plusieurs tours, Claude commence à oublier les instructions initiales ou à s'en désintéresser.</p>
-<p>Le problème réside dans la structure de l'invite du système. Il s'agit d'une injection unique et statique qui se dispute l'espace dans la fenêtre contextuelle du modèle, aux côtés de l'historique de la conversation, des documents et de toute autre entrée. Au fur et à mesure que la fenêtre contextuelle se remplit, l'attention du modèle pour l'invite du système se dilue de plus en plus, ce qui entraîne une perte de cohérence au fil du temps.</p>
-<p>Les compétences ont été conçues pour résoudre ce problème. Les compétences sont des dossiers contenant des instructions, des scripts et des ressources. Plutôt que de s'appuyer sur un message-guide statique, les compétences décomposent l'expertise en paquets d'instructions modulaires, réutilisables et persistants que Claude peut découvrir et charger dynamiquement lorsqu'il en a besoin pour une tâche.</p>
-<p>Lorsque Claude commence une tâche, il effectue d'abord un balayage léger de toutes les compétences disponibles en lisant uniquement leurs métadonnées YAML (quelques dizaines de tokens seulement). Ces métadonnées fournissent juste assez d'informations pour que Claude puisse déterminer si une compétence est pertinente pour la tâche en cours. Si c'est le cas, Claude développe l'ensemble des instructions (généralement moins de 5k tokens), et des ressources ou des scripts supplémentaires ne sont chargés que si c'est nécessaire.</p>
-<p>Cette divulgation progressive permet à Claude d'initialiser une compétence avec seulement 30 à 50 tokens, ce qui améliore considérablement l'efficacité et réduit les surcharges de contexte inutiles.</p>
+    </button></h2><p>A long-standing pain point of traditional AI agents is that instructions get washed out as the conversation grows.</p>
+<p>Even with the most carefully crafted system prompts, the model’s behavior can gradually drift over the course of the conversation. After several turns, Claude begins to forget or lose focus on the original instructions.</p>
+<p>The problem lies in the structure of the system prompt. It is a one-time, static injection that competes for space in the model’s context window, alongside conversation history, documents, and any other inputs. As the context window fills, the model’s attention to the system prompt becomes increasingly diluted, leading to a loss of consistency over time.</p>
+<p>Skills were designed to address this issue. Skills are folders containing instructions, scripts, and resources. Rather than relying on a static system prompt, Skills break down expertise into modular, reusable, and persistent instruction bundles that Claude can discover and load dynamically when needed for a task.</p>
+<p>When Claude begins a task, it first performs a lightweight scan of all available Skills by reading only their YAML metadata (just a few dozen tokens). This metadata provides just enough information for Claude to determine if a Skill is relevant to the current task. If so, Claude expands into the full set of instructions (usually under 5k tokens), and additional resources or scripts are loaded only if necessary.</p>
+<p>This progressive disclosure allows Claude to initialize a Skill with just 30–50 tokens, significantly improving efficiency and reducing unnecessary context overhead.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/how_skills_works_a8563f346c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="common-anchor-header">Comparaison des compétences avec les invites, les projets, les MCP et les sous-agents<button data-href="#How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="anchor-icon" translate="no">
+<h2 id="How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="common-anchor-header">How Skills Compares to Prompts, Projects, MCP, and Subagents<button data-href="#How-Skills-Compares-to-Prompts-Projects-MCP-and-Subagents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,68 +72,68 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Aujourd'hui, le paysage des outils de modélisation peut sembler encombré. Même au sein de l'écosystème agentique de Claude, il existe plusieurs composants distincts : Compétences, invites, projets, sous-agents et MCP.</p>
-<p>Maintenant que nous comprenons ce que sont les compétences et comment elles fonctionnent grâce aux paquets d'instructions modulaires et au chargement dynamique, nous devons savoir comment les compétences sont liées à d'autres parties de l'écosystème Claude, en particulier MCP. En voici un résumé :</p>
-<h3 id="1-Skills" class="common-anchor-header">1. Les compétences</h3><p>Les compétences sont des dossiers qui contiennent des instructions, des scripts et des ressources. Claude les découvre et les charge dynamiquement en utilisant la divulgation progressive : d'abord les métadonnées, puis les instructions complètes, et enfin tous les fichiers nécessaires.</p>
-<p><strong>Idéal pour :</strong></p>
+    </button></h2><p>Today’s model tooling landscape can feel crowded. Even within Claude’s agentic ecosystem alone, there are several distinct components: Skills, prompts, Projects, subagents, and MCP.</p>
+<p>Now that we understand what Skills are and how they work through modular instruction bundles and dynamic loading, we need to know how Skills relate to other parts of the Claude ecosystem, especially MCP. Here is a summary:</p>
+<h3 id="1-Skills" class="common-anchor-header">1. Skills</h3><p>Skills are folders that contain instructions, scripts, and resources. Claude discovers and loads them dynamically using progressive disclosure: first metadata, then full instructions, and finally any required files.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Les flux de travail organisationnels (directives de marque, procédures de conformité)</p></li>
-<li><p>Expertise dans un domaine (formules Excel, analyse de données)</p></li>
-<li><p>Préférences personnelles (systèmes de prise de notes, modèles de codage)</p></li>
-<li><p>Les tâches professionnelles qui doivent être réutilisées au fil des conversations (examens de la sécurité du code basés sur OWASP).</p></li>
+<li><p>Organizational workflows (brand guidelines, compliance procedures)</p></li>
+<li><p>Domain expertise (Excel formulas, data analysis)</p></li>
+<li><p>Personal preferences (note-taking systems, coding patterns)</p></li>
+<li><p>Professional tasks that need to be reused across conversations (OWASP-based code security reviews)</p></li>
 </ul>
-<h3 id="2-Prompts" class="common-anchor-header">2. Invites</h3><p>Les invites sont les instructions en langage naturel que vous donnez à Claude au cours d'une conversation. Ils sont temporaires et n'existent que dans la conversation en cours.</p>
-<p><strong>C'est la solution idéale :</strong></p>
+<h3 id="2-Prompts" class="common-anchor-header">2. Prompts</h3><p>Prompts are the natural-language instructions you give Claude within a conversation. They are temporary and exist only in the current conversation.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Les demandes ponctuelles (résumer un article, mettre en forme une liste)</p></li>
-<li><p>Amélioration de la conversation (ajuster le ton, ajouter des détails)</p></li>
-<li><p>Contexte immédiat (analyse de données spécifiques, interprétation du contenu)</p></li>
-<li><p>Instructions ad hoc</p></li>
+<li><p>One-off requests (summarizing an article, formatting a list)</p></li>
+<li><p>Conversational refinement (adjusting tone, adding details)</p></li>
+<li><p>Immediate context (analyzing specific data, interpreting content)</p></li>
+<li><p>Ad-hoc instructions</p></li>
 </ul>
-<h3 id="3-Projects" class="common-anchor-header">3. Les projets</h3><p>Les projets sont des espaces de travail autonomes disposant de leur propre historique de conversation et de leur propre base de connaissances. Chaque projet offre une fenêtre contextuelle de 200K. Lorsque la connaissance de votre projet approche les limites du contexte, Claude passe de façon transparente en mode RAG, ce qui permet de multiplier par 10 la capacité effective.</p>
-<p><strong>Idéal pour :</strong></p>
+<h3 id="3-Projects" class="common-anchor-header">3. Projects</h3><p>Projects are self-contained workspaces with their own chat histories and knowledge bases. Each project offers a 200K context window. When your project knowledge approaches context limits, Claude transitions seamlessly into RAG mode, allowing up to a 10x expansion in effective capacity.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Contexte persistant (par exemple, toutes les conversations liées au lancement d'un produit)</p></li>
-<li><p>Organisation de l'espace de travail (contextes distincts pour différentes initiatives)</p></li>
-<li><p>Collaboration d'équipe (pour les plans Team et Enterprise)</p></li>
-<li><p>Instructions personnalisées (ton ou perspective spécifique à un projet)</p></li>
+<li><p>Persistent context (e.g., all conversations related to a product launch)</p></li>
+<li><p>Workspace organization (separate contexts for different initiatives)</p></li>
+<li><p>Team collaboration (on Team and Enterprise plans)</p></li>
+<li><p>Custom instructions (project-specific tone or perspective)</p></li>
 </ul>
-<h3 id="4-Subagents" class="common-anchor-header">4. Sous-agents</h3><p>Les sous-agents sont des assistants spécialisés de l'IA qui disposent de leurs propres fenêtres contextuelles, d'invites système personnalisées et d'autorisations d'utilisation d'outils spécifiques. Ils peuvent travailler de manière indépendante et renvoyer les résultats à l'agent principal.</p>
-<p><strong>Idéal pour :</strong></p>
+<h3 id="4-Subagents" class="common-anchor-header">4. Subagents</h3><p>Subagents are specialized AI assistants with their own context windows, custom system prompts, and specific tool permissions. They can work independently and return results to the main agent.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Spécialisation des tâches (examen du code, génération de tests, audits de sécurité)</p></li>
-<li><p>Gestion du contexte (maintenir l'attention sur la conversation principale)</p></li>
-<li><p>Traitement parallèle (plusieurs sous-agents travaillant simultanément sur différents aspects)</p></li>
-<li><p>Restriction des outils (par exemple, accès en lecture seule)</p></li>
+<li><p>Task specialization (code review, test generation, security audits)</p></li>
+<li><p>Context management (keep the main conversation focused)</p></li>
+<li><p>Parallel processing (multiple subagents working on different aspects simultaneously)</p></li>
+<li><p>Tool restriction (e.g., read-only access)</p></li>
 </ul>
-<h3 id="5-MCP-Model-Context-Protocol" class="common-anchor-header">5. MCP (Model Context Protocol)</h3><p>Le protocole de contexte de modèle (MCP) est une norme ouverte qui relie les modèles d'IA à des outils et des sources de données externes.</p>
-<p><strong>Idéal pour :</strong></p>
+<h3 id="5-MCP-Model-Context-Protocol" class="common-anchor-header">5. MCP (Model Context Protocol)</h3><p>The Model Context Protocol (MCP) is an open standard that connects AI models to external tools and data sources.</p>
+<p><strong>Best for:</strong></p>
 <ul>
-<li><p>Accéder à des données externes (Google Drive, Slack, GitHub, bases de données)</p></li>
-<li><p>Utiliser des outils commerciaux (systèmes CRM, plateformes de gestion de projet)</p></li>
-<li><p>Connexion à des environnements de développement (fichiers locaux, IDE, contrôle de version)</p></li>
-<li><p>Intégration avec des systèmes personnalisés (outils et sources de données propriétaires)</p></li>
+<li><p>Accessing external data (Google Drive, Slack, GitHub, databases)</p></li>
+<li><p>Using business tools (CRM systems, project management platforms)</p></li>
+<li><p>Connecting to development environments (Local files, IDEs, version control)</p></li>
+<li><p>Integrating with custom systems (proprietary tools and data sources)</p></li>
 </ul>
-<p>Sur la base de ce qui précède, nous pouvons constater que les compétences et le MCP répondent à des défis différents et se complètent mutuellement.</p>
+<p>Based on the above, we can see that Skills and MCP address different challenges and work together to complement each other.</p>
 <table>
 <thead>
-<tr><th><strong>Dimension</strong></th><th><strong>MCP</strong></th><th><strong>Compétences</strong></th></tr>
+<tr><th><strong>Dimension</strong></th><th><strong>MCP</strong></th><th><strong>Skills</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Valeur fondamentale</strong></td><td>Connexion à des systèmes externes (bases de données, API, plateformes SaaS)</td><td>Définit les spécifications de comportement (comment traiter et présenter les données)</td></tr>
-<tr><td><strong>Réponses aux questions</strong></td><td>"À quoi Claude peut-il accéder ?</td><td>"Que doit faire Claude ?</td></tr>
-<tr><td><strong>Mise en œuvre</strong></td><td>Protocole client-serveur + schéma JSON</td><td>Fichier Markdown + métadonnées YAML</td></tr>
-<tr><td><strong>Consommation de contexte</strong></td><td>Des dizaines de milliers de jetons (accumulations multiples sur le serveur)</td><td>30-50 jetons par opération</td></tr>
-<tr><td><strong>Cas d'utilisation</strong></td><td>Interrogation de grandes bases de données, appel des API de GitHub</td><td>Définition de stratégies de recherche, application de règles de filtrage, formatage des résultats</td></tr>
+<tr><td><strong>Core Value</strong></td><td>Connects to external systems (databases, APIs, SaaS platforms)</td><td>Defines behavior specifications (how to process and present data)</td></tr>
+<tr><td><strong>Questions Answered</strong></td><td>“What can Claude access?”</td><td>“What should Claude do?”</td></tr>
+<tr><td><strong>Implementation</strong></td><td>Client-server protocol + JSON Schema</td><td>Markdown file + YAML metadata</td></tr>
+<tr><td><strong>Context Consumption</strong></td><td>Tens of thousands of tokens (multiple server accumulations)</td><td>30-50 tokens per operation</td></tr>
+<tr><td><strong>Use Cases</strong></td><td>Querying large databases, calling GitHub APIs</td><td>Defining search strategies, applying filtering rules, output formatting</td></tr>
 </tbody>
 </table>
-<p>Prenons l'exemple de la recherche de code.</p>
+<p>Let’s take code search as an example.</p>
 <ul>
-<li><p><strong>MCP (par exemple, claude-context) :</strong> Permet d'accéder à la base de données vectorielle Milvus.</p></li>
-<li><p><strong>Compétences :</strong> Définit le flux de travail, tel que la priorisation du code le plus récemment modifié, le tri des résultats par pertinence et la présentation des données dans un tableau Markdown.</p></li>
+<li><p><strong>MCP (e.g., claude-context):</strong> Provides the ability to access the Milvus vector database.</p></li>
+<li><p><strong>Skills:</strong> Defines the workflow, such as prioritizing the most recently modified code, sorting results by relevance, and presenting the data in a Markdown table.</p></li>
 </ul>
-<p>MCP fournit la capacité, tandis que les compétences définissent le processus. Ensemble, ils forment une paire complémentaire.</p>
-<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">Comment créer des compétences personnalisées avec Claude-Context et Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
+<p>MCP provides the capability, while Skills define the process. Together, they form a complementary pair.</p>
+<h2 id="How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="common-anchor-header">How to Build Custom Skills with Claude-Context and Milvus<button data-href="#How-to-Build-Custom-Skills-with-Claude-Context-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,14 +148,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/claude-context">Claude-Context</a> est un plugin MCP qui ajoute une fonctionnalité de recherche sémantique de code à Claude Code, transformant l'ensemble de la base de code en contexte de Claude.</p>
-<h3 id="Prerequisite" class="common-anchor-header">Prérequis</h3><p>Configuration requise :</p>
+    </button></h2><p><a href="https://github.com/zilliztech/claude-context">Claude-Context</a> is an MCP plugin that adds semantic code search functionality to Claude Code, turning the entire codebase into Claude’s context.</p>
+<h3 id="Prerequisite" class="common-anchor-header">Prerequisite</h3><p>System Requirements:</p>
 <ul>
-<li><p><strong>Node.js</strong>: Version &gt;= 20.0.0 et &lt; 24.0.0</p></li>
-<li><p><strong>Clé API OpenAI</strong> (pour l'intégration de modèles)</p></li>
-<li><p><strong>Clé API</strong><a href="https://zilliz.com.cn/"><strong>Zilliz Cloud</strong></a> (service Milvus géré)</p></li>
+<li><p><strong>Node.js</strong>: Version &gt;= 20.0.0 and &lt; 24.0.0</p></li>
+<li><p><strong>OpenAI API Key</strong> (for embedding models)</p></li>
+<li><p><a href="https://zilliz.com.cn/"><strong>Zilliz Cloud</strong></a> <strong>API Key</strong> (managed Milvus service)</p></li>
 </ul>
-<h3 id="Step-1-Configure-the-MCP-Service-claude-context" class="common-anchor-header">Étape 1 : Configurer le service MCP (claude-context)</h3><p>Exécutez la commande suivante dans le terminal :</p>
+<h3 id="Step-1-Configure-the-MCP-Service-claude-context" class="common-anchor-header">Step 1: Configure the MCP Service (claude-context)</h3><p>Run the following command in the terminal:</p>
 <pre><code translate="no">claude mcp add claude-context \
   -e OPENAI_API_KEY=sk-your-openai-api-key \
   -e MILVUS_ADDRESS=https:<span class="hljs-comment">//xxxxxxxxx-cn-hangzhou.cloud.zilliz.com.cn \</span>
@@ -163,7 +163,7 @@ origin: >-
   -e COLLECTION_NAME=medium_articles \
   -- npx <span class="hljs-meta">@zilliz</span>/claude-context-mcp<span class="hljs-meta">@latest</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Vérifier la configuration :</p>
+<p>Check the Configuration:</p>
 <pre><code translate="no">claude mcp list
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -172,12 +172,12 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>La configuration du MCP est terminée. Claude peut maintenant accéder à la base de données vectorielle Milvus.</p>
-<h3 id="Step-2-Create-the-Skill" class="common-anchor-header">Etape 2 : Créer la compétence</h3><p>Créer le répertoire Skills :</p>
+<p>The MCP setup is complete. Claude can now access the Milvus vector database.</p>
+<h3 id="Step-2-Create-the-Skill" class="common-anchor-header">Step 2: Create the Skill</h3><p>Create the Skills directory:</p>
 <pre><code translate="no"><span class="hljs-built_in">mkdir</span> -p ~/.claude/skills/milvus-code-search
 <span class="hljs-built_in">cd</span> ~/.claude/skills/milvus-code-search
 <button class="copy-code-btn"></button></code></pre>
-<p>Créer le fichier SKILL.md :</p>
+<p>Create the SKILL.md file:</p>
 <pre><code translate="no">---
 name: milvus-code-search
 description: A semantic code search <span class="hljs-keyword">and</span> architecture analysis skill designed <span class="hljs-keyword">for</span> the Milvus codebase
@@ -228,12 +228,12 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
 
 ---
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Restart-Claude-to-Apply-Skills" class="common-anchor-header">Étape 3 : Redémarrer Claude pour appliquer les compétences</h3><p>Exécutez la commande suivante pour redémarrer Claude :</p>
+<h3 id="Step-3-Restart-Claude-to-Apply-Skills" class="common-anchor-header">Step 3: Restart Claude to Apply Skills</h3><p>Run the following command to restart Claude:</p>
 <pre><code translate="no">claude
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Note :</strong> Une fois la configuration terminée, vous pouvez immédiatement utiliser les compétences pour interroger la base de code Milvus.</p>
-<p>Vous trouverez ci-dessous un exemple de fonctionnement.</p>
-<p>Interroger : Comment fonctionne Milvus QueryCoord ?</p>
+<p><strong>Note:</strong> After the configuration is complete, you can immediately use the Skills to query the Milvus codebase.</p>
+<p>Below is an example of how it works.</p>
+<p>Query: How does Milvus QueryCoord work?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/code_a95429ddb0.png" alt="" class="doc-image" id="" />
@@ -267,7 +267,7 @@ Assistant: *(searching <span class="hljs-keyword">for</span> `distance` implemen
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>À la base, les compétences constituent un mécanisme d'encapsulation et de transfert de connaissances spécialisées. En utilisant les compétences, l'IA peut hériter de l'expérience d'une équipe et suivre les meilleures pratiques de l'industrie, qu'il s'agisse d'une liste de contrôle pour les examens de code ou de normes de documentation. Lorsque ces connaissances tacites sont rendues explicites par le biais de fichiers Markdown, la qualité des résultats générés par l'IA peut s'en trouver considérablement améliorée.</p>
-<p>À l'avenir, la capacité à exploiter efficacement les compétences pourrait devenir un facteur de différenciation clé dans la manière dont les équipes et les individus utilisent l'IA à leur avantage.</p>
-<p>Alors que vous exploitez le potentiel de l'IA dans votre entreprise, Milvus est un outil essentiel pour la gestion et la recherche de données vectorielles à grande échelle. En associant la puissante base de données vectorielles de Milvus à des outils d'IA tels que Skills, vous pouvez améliorer non seulement vos flux de travail, mais aussi la profondeur et la rapidité de vos informations fondées sur des données.</p>
-<p>Vous avez des questions ou souhaitez approfondir une fonctionnalité ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> pour discuter avec nos ingénieurs et d'autres ingénieurs en IA de la communauté. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions dans le cadre des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+    </button></h2><p>At its core, Skills act as a mechanism for encapsulating and transferring specialized knowledge. By using Skills, AI can inherit a team’s experience and follow industry best practices—whether that’s a checklist for code reviews or documentation standards. When this tacit knowledge is made explicit through Markdown files, the quality of AI-generated outputs can see a significant improvement.</p>
+<p>Looking ahead, the ability to leverage Skills effectively could become a key differentiator in how teams and individuals use AI to their advantage.</p>
+<p>As you explore the potential of AI in your organization, Milvus stands as a critical tool for managing and searching large-scale vector data. By pairing Milvus’ powerful vector database with AI tools like Skills, you can improve not only your workflows but also the depth and speed of your data-driven insights.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> to chat with our engineers and other AI engineers in the community. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

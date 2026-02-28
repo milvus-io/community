@@ -1,13 +1,9 @@
 ---
 id: scalable-and-blazing-fast-similarity-search-with-milvus-vector-database.md
-title: >-
-  Pencarian Kemiripan yang Terukur dan Sangat Cepat dengan Basis Data Vektor
-  Milvus
+title: Scalable and Blazing Fast Similarity Search with Milvus Vector Database
 author: Dipanjan Sarkar
 date: 2022-06-21T00:00:00.000Z
-desc: >-
-  Menyimpan, mengindeks, mengelola, dan mencari triliunan vektor dokumen dalam
-  hitungan milidetik!
+desc: 'Store, index, manage and search trillions of document vectors in milliseconds!'
 cover: assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
@@ -15,10 +11,12 @@ canonicalUrl: >-
   https://milvus.io/blog/scalable_and_blazing_fast_similarity_search_with_milvus_vector_database.md
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>gambar sampul</span> </span></p>
-<h2 id="Introduction" class="common-anchor-header">Pendahuluan<button data-href="#Introduction" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,32 +31,34 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pada artikel ini, kita akan membahas beberapa aspek menarik yang berkaitan dengan database vektor dan pencarian kemiripan dalam skala besar. Di dunia yang berkembang pesat saat ini, kita melihat teknologi baru, bisnis baru, sumber data baru, dan sebagai konsekuensinya, kita harus terus menggunakan cara-cara baru untuk menyimpan, mengelola, dan memanfaatkan data ini untuk mendapatkan wawasan. Data terstruktur dan tabular telah disimpan dalam database relasional selama beberapa dekade, dan Business Intelligence berkembang pesat dalam menganalisis dan mengekstraksi wawasan dari data tersebut. Namun, dengan mempertimbangkan lanskap data saat ini, "lebih dari 80-90% data merupakan informasi yang tidak terstruktur seperti teks, video, audio, log server web, media sosial, dan banyak lagi". Organisasi telah memanfaatkan kekuatan pembelajaran mesin dan pembelajaran mendalam untuk mencoba mengekstrak wawasan dari data tersebut karena metode berbasis kueri tradisional mungkin tidak cukup atau bahkan tidak memungkinkan. Ada potensi besar yang belum dimanfaatkan untuk mengekstrak wawasan berharga dari data semacam itu dan kita baru saja memulainya!</p>
+    </button></h2><p>In this article, we will cover some interesting aspects relevant to vector databases and similarity search at scale. In today’s rapidly evolving world, we see new technology, new businesses, new data sources and consequently we will need to keep using new ways to store, manage and leverage this data for insights. Structured, tabular data has been stored in relational databases for decades, and Business Intelligence thrives on analyzing and extracting insights from such data. However, considering the current data landscape, “over 80–90% of data is unstructured information like text, video, audio, web server logs, social media, and more”. Organizations have been leveraging the power of machine learning and deep learning to try and extract insights from such data as traditional query-based methods may not be enough or even possible. There is a huge, untapped potential to extract valuable insights from such data and we are only getting started!</p>
 <blockquote>
-<p>"Karena sebagian besar data di dunia tidak terstruktur, kemampuan untuk menganalisis dan menindaklanjutinya menghadirkan peluang besar." - Mikey Shulman, Kepala ML, Kensho</p>
+<p>“Since most of the world’s data is unstructured, an ability to analyze and act on it presents a big opportunity.” — Mikey Shulman, Head of ML, Kensho</p>
 </blockquote>
-<p>Data tidak terstruktur, seperti namanya, tidak memiliki struktur implisit, seperti tabel baris dan kolom (oleh karena itu disebut data tabel atau terstruktur). Tidak seperti data terstruktur, tidak ada cara yang mudah untuk menyimpan konten data tidak terstruktur dalam database relasional. Ada tiga tantangan utama dalam memanfaatkan data tidak terstruktur untuk mendapatkan wawasan:</p>
+<p>Unstructured data, as the name suggests, does not have an implicit structure, like a table of rows and columns (hence called tabular or structured data). Unlike structured data, there is no easy way to store the contents of unstructured data within a relational database. There are three main challenges with leveraging unstructured data for insights:</p>
 <ul>
-<li><strong>Penyimpanan:</strong> Basis data relasional biasa baik untuk menyimpan data terstruktur. Meskipun Anda dapat menggunakan database NoSQL untuk menyimpan data tersebut, akan ada biaya tambahan untuk memproses data tersebut untuk mengekstrak representasi yang tepat untuk mendukung aplikasi AI dalam skala besar.</li>
-<li><strong>Representasi:</strong> Komputer tidak memahami teks atau gambar seperti yang kita pahami. Komputer hanya memahami angka dan kita perlu menyamarkan data yang tidak terstruktur ke dalam beberapa representasi numerik yang berguna, biasanya berupa vektor atau embedding.</li>
-<li><strong>Mengajukan pertanyaan:</strong> Anda tidak dapat melakukan kueri pada data tidak terstruktur secara langsung berdasarkan pernyataan kondisional yang pasti seperti SQL untuk data terstruktur. Bayangkan, contoh sederhana Anda mencoba mencari sepatu yang serupa dengan foto sepasang sepatu favorit Anda! Anda tidak dapat menggunakan nilai piksel mentah untuk pencarian, Anda juga tidak dapat merepresentasikan fitur terstruktur seperti bentuk sepatu, ukuran, gaya, warna, dan lainnya. Sekarang bayangkan jika Anda harus melakukan hal ini untuk jutaan sepatu!</li>
+<li><strong>Storage:</strong> Regular relational databases are good for holding structured data. While you can use NoSQL databases to store such data, it becomes an additional overhead to process such data to extract the right representations to power AI applications at scale</li>
+<li><strong>Representation:</strong> Computers don’t understand text or images like we do. They only understand numbers and we need to covert unstructed data into some useful numeric representation, typically vectors or embeddings.</li>
+<li><strong>Querying:</strong> You can’t query unstructured data directly based on definite conditional statements like SQL for structured data. Imagine, a simple example of you trying to search for similar shoes given a photo of your favorite pair of shoes! You can’t use raw pixel values for search, neither can you represent structured features like shoe shape, size, style, color and more. Now imagine having to do this for millions of shoes!</li>
 </ul>
-<p>Oleh karena itu, agar komputer dapat memahami, memproses, dan merepresentasikan data yang tidak terstruktur, kita biasanya mengubahnya menjadi vektor padat, yang sering disebut penyisipan.</p>
+<p>Hence, in order for computers to understand, process and represent unstructured data, we typically convert them into dense vectors, often called embeddings.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Representing_Images_as_Dense_Embedding_Vectors_0b6a5f516c.png" alt="figure 1" class="doc-image" id="figure-1" />
-   </span> <span class="img-wrapper"> <span>Gambar 1</span> </span></p>
-<p>Ada berbagai metodologi yang secara khusus memanfaatkan deep learning, termasuk convolutional neural network (CNN) untuk data visual seperti gambar dan Transformers untuk data teks yang dapat digunakan untuk mengubah data yang tidak terstruktur menjadi embeddings. <a href="https://zilliz.com/">Zilliz</a> memiliki <a href="https://zilliz.com/learn/embedding-generation">artikel yang sangat bagus yang membahas berbagai teknik penyematan</a>!</p>
-<p>Sekarang, menyimpan vektor penyematan ini tidaklah cukup. Kita juga harus dapat menanyakan dan menemukan vektor-vektor yang serupa. Mengapa Anda bertanya? Mayoritas aplikasi dunia nyata didukung oleh pencarian kemiripan vektor untuk solusi berbasis AI. Ini termasuk pencarian visual (gambar) di Google, sistem rekomendasi di Netflix atau Amazon, mesin pencari teks di Google, pencarian multi-modal, de-duplikasi data, dan masih banyak lagi!</p>
-<p>Menyimpan, mengelola, dan melakukan kueri vektor dalam skala besar bukanlah tugas yang mudah. Anda membutuhkan alat khusus untuk ini dan database vektor adalah alat yang paling efektif untuk pekerjaan ini! Pada artikel ini kita akan membahas aspek-aspek berikut:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Representing_Images_as_Dense_Embedding_Vectors_0b6a5f516c.png" alt="figure 1" class="doc-image" id="figure-1" />
+    <span>figure 1</span>
+  </span>
+</p>
+<p>There exist a variety of methodologies especially leveraging deep learning, including convolutional neural networks (CNNs) for visual data like images and Transformers for text data which can be used to transform such unstructured data into embeddings. <a href="https://zilliz.com/">Zilliz</a> has <a href="https://zilliz.com/learn/embedding-generation">an excellent article covering different embedding techiques</a>!</p>
+<p>Now storing these embedding vectors is not enough. One also needs to be able to query and find out similar vectors. Why do you ask? A majority of real-world applications are powered by vector similarity search for AI based solutions. This includes visual (image) search in Google, recommendations systems in Netflix or Amazon, text search engines in Google, multi-modal search, data de-duplication and many more!</p>
+<p>Storing, managing and querying vectors at scale is not a simple task. You need specialized tools for this and vector databases are the most effective tool for the job! In this article we will cover the following aspects:</p>
 <ul>
-<li><a href="#Vectors-and-Vector-Similarity-Search">Vektor dan Pencarian Kemiripan Vektor</a></li>
-<li><a href="#What-is-a-Vector-Database">Apa yang dimaksud dengan Basis Data Vektor?</a></li>
-<li><a href="#Milvus—The-World-s-Most-Advanced-Vector-Database">Milvus - Basis Data Vektor Paling Canggih di Dunia</a></li>
-<li><a href="#Performing-visual-image-search-with-Milvus—A-use-case-blueprint">Melakukan pencarian gambar visual dengan Milvus - Cetak biru kasus penggunaan</a></li>
+<li><a href="#Vectors-and-Vector-Similarity-Search">Vectors and Vector Similarity Search</a></li>
+<li><a href="#What-is-a-Vector-Database">What is a Vector Database?</a></li>
+<li><a href="#Milvus—The-World-s-Most-Advanced-Vector-Database">Milvus — The World’s Most Advanced Vector Database</a></li>
+<li><a href="#Performing-visual-image-search-with-Milvus—A-use-case-blueprint">Performing visual image search with Milvus — A use-case blueprint</a></li>
 </ul>
-<p>Mari kita mulai!</p>
-<h2 id="Vectors-and-Vector-Similarity-Search" class="common-anchor-header">Vektor dan Pencarian Kemiripan Vektor<button data-href="#Vectors-and-Vector-Similarity-Search" class="anchor-icon" translate="no">
+<p>Let’s get started!</p>
+<h2 id="Vectors-and-Vector-Similarity-Search" class="common-anchor-header">Vectors and Vector Similarity Search<button data-href="#Vectors-and-Vector-Similarity-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,33 +73,39 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelumnya, kami telah menjelaskan pentingnya merepresentasikan data tidak terstruktur seperti gambar dan teks sebagai vektor, karena komputer hanya dapat memahami angka. Kami biasanya memanfaatkan model AI, atau lebih spesifiknya model deep learning untuk mengubah data yang tidak terstruktur menjadi vektor numerik yang dapat dibaca oleh mesin. Biasanya vektor-vektor ini pada dasarnya adalah daftar angka floating point yang secara kolektif mewakili item yang mendasarinya (gambar, teks, dll.).</p>
-<h3 id="Understanding-Vectors" class="common-anchor-header">Memahami Vektor</h3><p>Mempertimbangkan bidang pemrosesan bahasa alami (NLP), kami memiliki banyak model penyematan kata seperti <a href="https://towardsdatascience.com/understanding-feature-engineering-part-4-deep-learning-methods-for-text-data-96c44370bbfa">Word2Vec, GloVe, dan FastText</a> yang dapat membantu merepresentasikan kata-kata sebagai vektor numerik. Dengan kemajuan dari waktu ke waktu, kita telah melihat munculnya model <a href="https://arxiv.org/abs/1706.03762">Transformer</a> seperti <a href="https://jalammar.github.io/illustrated-bert/">BERT</a> yang dapat dimanfaatkan untuk mempelajari vektor penyematan kontekstual dan representasi yang lebih baik untuk seluruh kalimat dan paragraf.</p>
-<p>Demikian pula untuk bidang visi komputer, kami memiliki model seperti <a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">Convolutional Neural Networks (CNN)</a> yang dapat membantu dalam mempelajari representasi dari data visual seperti gambar dan video. Dengan munculnya Transformers, kami juga memiliki <a href="https://arxiv.org/abs/2010.11929">Vision Transformers</a> yang dapat bekerja lebih baik daripada CNN biasa.</p>
+    </button></h2><p>Earlier, we established the necessity of representing unstructured data like images and text as vectors, since computers can only understand numbers. We typically leverage AI models, to be more specific deep learning models to convert unstructured data into numeric vectors which can be read in by machines. Typically these vectors are basically a list of floating point numbers which collectively represents the underlying item (image, text etc.).</p>
+<h3 id="Understanding-Vectors" class="common-anchor-header">Understanding Vectors</h3><p>Considering the field of natural language processing (NLP) we have many word embedding models like <a href="https://towardsdatascience.com/understanding-feature-engineering-part-4-deep-learning-methods-for-text-data-96c44370bbfa">Word2Vec, GloVe and FastText</a> which can help represent words as numeric vectors. With advancements over time, we have seen the rise of <a href="https://arxiv.org/abs/1706.03762">Transformer</a> models like <a href="https://jalammar.github.io/illustrated-bert/">BERT</a> which can be leveraged to learn contextual embedding vectors and better representations for entire sentences and paragraphs.</p>
+<p>Similarly for the field of computer vision we have models like <a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">Convolutional Neural Networks (CNNs)</a> which can help in learning representations from visual data such as images and videos. With the rise of Transformers, we also have <a href="https://arxiv.org/abs/2010.11929">Vision Transformers</a> which can perform better than regular CNNs.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Sample_workflow_for_extracting_insights_from_unstructured_data_c74f08f75a.png" alt="figure 2" class="doc-image" id="figure-2" />
-   </span> <span class="img-wrapper"> <span>Gambar 2</span> </span></p>
-<p>Keuntungan dari vektor-vektor tersebut adalah kita dapat memanfaatkannya untuk memecahkan masalah dunia nyata seperti pencarian visual, di mana Anda biasanya mengunggah foto dan mendapatkan hasil pencarian termasuk gambar yang mirip secara visual. Google memiliki fitur ini sebagai fitur yang sangat populer di mesin pencari mereka seperti yang digambarkan dalam contoh berikut.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Sample_workflow_for_extracting_insights_from_unstructured_data_c74f08f75a.png" alt="figure 2" class="doc-image" id="figure-2" />
+    <span>figure 2</span>
+  </span>
+</p>
+<p>The advantage with such vectors is that we can leverage them for solving real-world problems such as visual search, where you typically upload a photo and get search results including visually similar images. Google has this as a very popular feature in their search engine as depicted in the following example.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/An_example_of_Google_s_Visual_Image_Search_fa49b81e88.png" alt="figure 3" class="doc-image" id="figure-3" />
-   </span> <span class="img-wrapper"> <span>Gambar 3</span> </span></p>
-<p>Aplikasi semacam itu didukung dengan vektor data dan pencarian kemiripan vektor. Jika Anda mempertimbangkan dua titik dalam ruang koordinat kartesius XY. Jarak antara dua titik dapat dihitung sebagai jarak euclidean sederhana yang digambarkan oleh persamaan berikut.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/An_example_of_Google_s_Visual_Image_Search_fa49b81e88.png" alt="figure 3" class="doc-image" id="figure-3" />
+    <span>figure 3</span>
+  </span>
+</p>
+<p>Such applications are powered with data vectors and vector similarity search. If you consider two points in an X-Y cartesian coordinate space. The distance between two points can be computed as a simple euclidean distance depicted by the following equation.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_D_Euclidean_Distance_6a52b7bc2f.png" alt="figure 4" class="doc-image" id="figure-4" />
-   </span> <span class="img-wrapper"> <span>Gambar 4</span> </span></p>
-<p>Sekarang bayangkan setiap titik data adalah vektor yang memiliki D-dimensi, Anda masih dapat menggunakan jarak euclidean atau bahkan metrik jarak lainnya seperti jarak hamming atau cosinus untuk mengetahui seberapa dekat dua titik data satu sama lain. Hal ini dapat membantu membangun gagasan kedekatan atau kemiripan yang dapat digunakan sebagai metrik yang dapat diukur untuk menemukan item yang mirip dengan item referensi menggunakan vektornya.</p>
-<h3 id="Understanding-Vector-Similarity-Search" class="common-anchor-header">Memahami Pencarian Kemiripan Vektor</h3><p>Pencarian kemiripan vektor, sering dikenal sebagai pencarian tetangga terdekat (NN), pada dasarnya adalah proses menghitung kemiripan berpasangan (atau jarak) antara item referensi (yang ingin kita temukan item yang mirip) dan kumpulan item yang ada (biasanya dalam database) dan mengembalikan 'k' tetangga terdekat yang merupakan 'k' teratas yang paling mirip. Komponen kunci untuk menghitung kemiripan ini adalah metrik kemiripan yang dapat berupa jarak euclidean, inner product, jarak kosinus, jarak hamming, dll. Semakin kecil jaraknya, semakin mirip vektornya.</p>
-<p>Tantangan dengan pencarian tetangga terdekat (NN) adalah skalabilitas. Anda perlu menghitung N-jarak (dengan asumsi N item yang ada) setiap saat untuk mendapatkan item yang mirip. Ini bisa sangat lambat terutama jika Anda tidak menyimpan dan mengindeks data di suatu tempat (seperti basis data vektor!). Untuk mempercepat komputasi, kita biasanya memanfaatkan pencarian tetangga terdekat yang sering disebut pencarian ANN yang pada akhirnya menyimpan vektor ke dalam sebuah indeks. Indeks membantu menyimpan vektor-vektor ini dengan cara yang cerdas untuk memungkinkan pengambilan cepat tetangga yang 'kira-kira' mirip untuk item kueri referensi. Metodologi pengindeksan ANN yang umum meliputi:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_D_Euclidean_Distance_6a52b7bc2f.png" alt="figure 4" class="doc-image" id="figure-4" />
+    <span>figure 4</span>
+  </span>
+</p>
+<p>Now imagine each data point is a vector having D-dimensions, you could still use euclidean distance or even other distance metrics like hamming or cosine distance to find out how close the two data points are to each other. This can help build a notion of closeness or similarity which could be used as a quantifiable metric to find similar items given a reference item using their vectors.</p>
+<h3 id="Understanding-Vector-Similarity-Search" class="common-anchor-header">Understanding Vector Similarity Search</h3><p>Vector similarity search, often known as nearest neighbor (NN) search, is basically the process of computing pairwise similarity (or distances) between a reference item (for which we want to find similar items) and a collection of existing items (typically in a database) and returning the top ‘k’ nearest neighbors which are the top ‘k’ most similar items. The key component to compute this similarity is the similarity metric which can be euclidean distance, inner product, cosine distance, hamming distance, etc. The smaller the distance, the more similar are the vectors.</p>
+<p>The challenge with exact nearest neighbor (NN) search is scalability. You need to compute N-distances (assuming N existing items) everytime to get similar items. This can be super slow especially if you don’t store and index the data somewhere (like a vector database!). To speed up computation, we typically leverage approximate nearest neighbor search which is often called ANN search which ends up storing the vectors into an index. The index helps in storing these vectors in an intelligent way to enable quick retrieval of ‘approximately’ similar neighbors for a reference query item. Typical ANN indexing methodologies include:</p>
 <ul>
-<li><strong>Transformasi Vektor:</strong> Ini termasuk menambahkan transformasi tambahan pada vektor seperti pengurangan dimensi (misalnya PCA \ t-SNE), rotasi, dan sebagainya</li>
-<li><strong>Pengkodean Vektor:</strong> Ini termasuk menerapkan teknik berdasarkan struktur data seperti Locality Sensitive Hashing (LSH), Kuantisasi, Pohon, dll. yang dapat membantu dalam pengambilan item yang serupa dengan lebih cepat</li>
-<li><strong>Metode Pencarian yang Tidak Melelahkan:</strong> Metode ini sebagian besar digunakan untuk mencegah pencarian yang menyeluruh dan mencakup metode seperti grafik ketetanggaan, indeks terbalik, dll.</li>
+<li><strong>Vector Transformations:</strong> This includes adding additional transformations to the vectors like dimension reduction (e.g PCA \ t-SNE), rotation and so on</li>
+<li><strong>Vector Encoding:</strong> This includes applying techniques based on data structures like Locality Sensitive Hashing (LSH), Quantization, Trees etc. which can help in faster retrieval of similar items</li>
+<li><strong>Non-Exhaustive Search Methods:</strong> This is mostly used to prevent exhaustive search and includes methods like neighborhood graphs, inverted indices etc.</li>
 </ul>
-<p>Hal ini membuktikan bahwa untuk membangun aplikasi pencarian kemiripan vektor, Anda memerlukan basis data yang dapat membantu Anda dalam menyimpan, mengindeks, dan melakukan kueri (pencarian) dalam skala besar. Masuk ke basis data vektor!</p>
-<h2 id="What-is-a-Vector-Database" class="common-anchor-header">Apa yang dimaksud dengan basis data vektor?<button data-href="#What-is-a-Vector-Database" class="anchor-icon" translate="no">
+<p>This establishes the case that to build any vector similarity search application, you need a database which can help you with efficient storing, indexing and querying (search) at scale. Enter vector databases!</p>
+<h2 id="What-is-a-Vector-Database" class="common-anchor-header">What is a Vector Database?<button data-href="#What-is-a-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,22 +120,24 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Karena sekarang kita sudah memahami bagaimana vektor dapat digunakan untuk merepresentasikan data yang tidak terstruktur dan cara kerja pencarian vektor, kita dapat menggabungkan kedua konsep tersebut untuk membangun database vektor.</p>
-<p>Basis data vektor adalah platform data yang dapat diskalakan untuk menyimpan, mengindeks, dan melakukan kueri di seluruh vektor penyisipan yang dihasilkan dari data tak terstruktur (gambar, teks, dll.) dengan menggunakan model pembelajaran mendalam.</p>
-<p>Menangani vektor dalam jumlah besar untuk pencarian kemiripan (bahkan dengan indeks) bisa sangat mahal. Meskipun demikian, database vektor terbaik dan tercanggih harus memungkinkan Anda untuk memasukkan, mengindeks, dan mencari di jutaan atau miliaran vektor target, selain menentukan algoritme pengindeksan dan metrik kemiripan pilihan Anda.</p>
-<p>Basis data vektor terutama harus memenuhi persyaratan utama berikut dengan mempertimbangkan sistem manajemen basis data yang kuat untuk digunakan di perusahaan:</p>
+    </button></h2><p>Given that we now understand how vectors can be used to represent unstructured data and how vector search works, we can combine the two concepts together to build a vector database.</p>
+<p>Vector databases are scalable data platforms to store, index and query across embedding vectors which are generated from unstructured data (images, text etc.) using deep learning models.</p>
+<p>Handling a massive numbers of vectors for similarity search (even with indices) can be super expensive. Despite this, the best and most advanced vector databases should allow you to insert, index and search across millions or billions of target vectors, in addition to specifying an indexing algorithm and similarity metric of your choice.</p>
+<p>Vector databases mainly should satisfy the following key requirements considering a robust database management system to be used in the enterprise:</p>
 <ol>
-<li><strong>Terukur:</strong> Basis data vektor harus dapat mengindeks dan menjalankan pencarian perkiraan tetangga terdekat untuk miliaran vektor penyisipan</li>
-<li><strong>Dapat diandalkan:</strong> Basis data vektor harus dapat menangani kesalahan internal tanpa kehilangan data dan dengan dampak operasional yang minimal, yaitu toleran terhadap kesalahan</li>
-<li><strong>Cepat:</strong> Kecepatan kueri dan tulis sangat penting untuk basis data vektor. Untuk platform seperti Snapchat dan Instagram, yang dapat memiliki ratusan atau ribuan gambar baru yang diunggah per detik, kecepatan menjadi faktor yang sangat penting.</li>
+<li><strong>Scalable:</strong> Vector databases should be able to index and run approximate nearest neighbor search for billions of embedding vectors</li>
+<li><strong>Reliable:</strong> Vector databases should be able to handle internal faults without data loss and with minimal operational impact, i.e be fault-tolerant</li>
+<li><strong>Fast:</strong> Query and write speeds are important for vector databases. For platforms such as Snapchat and Instagram, which can have hundreds or thousands of new images uploaded per second, speed becomes an incredibly important factor.</li>
 </ol>
-<p>Basis data vektor tidak hanya menyimpan vektor data. Database vektor juga bertanggung jawab untuk menggunakan struktur data yang efisien untuk mengindeks vektor-vektor ini agar dapat diambil dengan cepat dan mendukung operasi CRUD (buat, baca, perbarui, dan hapus). Basis data vektor juga idealnya harus mendukung pemfilteran atribut, yaitu pemfilteran berdasarkan bidang metadata yang biasanya berupa bidang skalar. Contoh sederhananya adalah mengambil sepatu yang serupa berdasarkan vektor gambar untuk merek tertentu. Di sini, merek akan menjadi atribut yang menjadi dasar pemfilteran yang akan dilakukan.</p>
+<p>Vector databases don’t just store data vectors. They are also responsible for using efficient data structures to index these vectors for fast retrieval and supporting CRUD (create, read, update and delete) operations. Vector databases should also ideally support attribute filtering which is filtering based on metadata fields which are usually scalar fields. A simple example would be retrieving similar shoes based on the image vectors for a specific brand. Here brand would be the attribute based on which filtering would be done.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Bitmask_f72259b751.png" alt="figure 5" class="doc-image" id="figure-5" />
-   </span> <span class="img-wrapper"> <span>Gambar 5</span> </span></p>
-<p>Gambar di atas menunjukkan bagaimana <a href="https://milvus.io/">Milvus</a>, basis data vektor yang akan kita bahas sebentar lagi, menggunakan pemfilteran atribut. <a href="https://milvus.io/">Milvus</a> memperkenalkan konsep bitmask pada mekanisme pemfilteran untuk menyimpan vektor-vektor yang mirip dengan bitmask 1 berdasarkan pemenuhan filter atribut tertentu. Detail lebih lanjut tentang ini <a href="https://zilliz.com/learn/attribute-filtering">di sini</a>.</p>
-<h2 id="Milvus--The-World’s-Most-Advanced-Vector-Database" class="common-anchor-header">Milvus - Basis Data Vektor Paling Canggih di Dunia<button data-href="#Milvus--The-World’s-Most-Advanced-Vector-Database" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Bitmask_f72259b751.png" alt="figure 5" class="doc-image" id="figure-5" />
+    <span>figure 5</span>
+  </span>
+</p>
+<p>The figure above showcases how <a href="https://milvus.io/">Milvus</a>, the vector database we will talk about shortly, uses attribute filtering. <a href="https://milvus.io/">Milvus</a> introduces the concept of a bitmask to the filtering mechanism to keep similar vectors with a bitmask of 1 based on satisfying specific attribute filters. More details on this <a href="https://zilliz.com/learn/attribute-filtering">here</a>.</p>
+<h2 id="Milvus--The-World’s-Most-Advanced-Vector-Database" class="common-anchor-header">Milvus — The World’s Most Advanced Vector Database<button data-href="#Milvus--The-World’s-Most-Advanced-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,64 +152,70 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> adalah platform manajemen basis data vektor sumber terbuka yang dibuat khusus untuk data vektor berskala masif dan menyederhanakan operasi pembelajaran mesin (MLOps).</p>
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source vector database management platform built specifically for massive-scale vector data and streamlining machine learning operations (MLOps).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_Logo_ee3ae48b61.png" alt="figure 6" class="doc-image" id="figure-6" />
-   </span> <span class="img-wrapper"> <span>gambar 6</span> </span></p>
-<p><a href="https://zilliz.com/">Zilliz</a>, adalah organisasi di balik pembuatan <a href="https://milvus.io/">Milvus</a>, basis data vektor tercanggih di dunia, untuk mempercepat pengembangan data fabric generasi berikutnya. Milvus saat ini merupakan proyek kelulusan di <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a> dan berfokus pada pengelolaan kumpulan data tak terstruktur yang sangat besar untuk penyimpanan dan pencarian. Efisiensi dan keandalan platform ini menyederhanakan proses penerapan model AI dan MLOps dalam skala besar. Milvus memiliki aplikasi yang luas yang mencakup penemuan obat, visi komputer, sistem rekomendasi, chatbot, dan banyak lagi.</p>
-<h3 id="Key-Features-of-Milvus" class="common-anchor-header">Fitur-fitur Utama Milvus</h3><p>Milvus dikemas dengan fitur dan kemampuan yang berguna, seperti:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_Logo_ee3ae48b61.png" alt="figure 6" class="doc-image" id="figure-6" />
+    <span>figure 6</span>
+  </span>
+</p>
+<p><a href="https://zilliz.com/">Zilliz</a>, is the organization behind building <a href="https://milvus.io/">Milvus</a>, the world’s most advanced vector database, to accelerate the development of next generation data fabric. Milvus is currently a graduation project at the <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a> and focuses on managing massive unstructured datasets for storage and search. The platform’s efficiency and reliability simplifies the process of deploying AI models and MLOps at scale. Milvus has broad applications spanning drug discovery, computer vision, recommendation systems, chatbots, and much more.</p>
+<h3 id="Key-Features-of-Milvus" class="common-anchor-header">Key Features of Milvus</h3><p>Milvus is packed with useful features and capabilities, such as:</p>
 <ul>
-<li><strong>Kecepatan pencarian yang luar biasa pada triliunan set data vektor:</strong> Latensi rata-rata pencarian dan pengambilan vektor telah diukur dalam milidetik pada satu triliun set data vektor.</li>
-<li><strong>Manajemen data tidak terstruktur yang disederhanakan:</strong> Milvus memiliki API yang kaya yang dirancang untuk alur kerja ilmu data.</li>
-<li><strong>Basis data vektor yang andal dan selalu aktif:</strong> Fitur replikasi dan failover/failback bawaan Milvus memastikan data dan aplikasi dapat selalu menjaga kelangsungan bisnis.</li>
-<li><strong>Sangat skalabel dan elastis:</strong> Skalabilitas tingkat komponen memungkinkan untuk meningkatkan dan menurunkan sesuai permintaan.</li>
-<li><strong>Pencarian hibrida:</strong> Selain vektor, Milvus mendukung tipe data seperti Boolean, String, bilangan bulat, angka floating-point, dan banyak lagi. Milvus menggabungkan pemfilteran skalar dengan pencarian kemiripan vektor yang kuat (seperti yang terlihat pada contoh kemiripan sepatu sebelumnya).</li>
-<li><strong>Struktur Lambda terpadu:</strong> Milvus menggabungkan pemrosesan stream dan batch untuk penyimpanan data untuk menyeimbangkan ketepatan waktu dan efisiensi.</li>
-<li><strong><a href="https://milvus.io/docs/v2.0.x/timetravel_ref.md">Perjalanan Waktu</a>:</strong> Milvus mempertahankan garis waktu untuk semua operasi penyisipan dan penghapusan data. Hal ini memungkinkan pengguna untuk menentukan stempel waktu dalam pencarian untuk mengambil tampilan data pada titik waktu tertentu.</li>
-<li><strong>Didukung oleh komunitas &amp; diakui oleh industri:</strong> Dengan lebih dari 1.000 pengguna perusahaan, 10.000+ bintang di <a href="https://github.com/milvus-io/milvus">GitHub</a>, dan komunitas sumber terbuka yang aktif, Anda tidak sendirian saat menggunakan Milvus. Sebagai proyek pascasarjana di bawah <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>, Milvus memiliki dukungan institusional.</li>
+<li><strong>Blazing search speeds on a trillion vector datasets:</strong> Average latency of vector search and retrieval has been measured in milliseconds on a trillion vector datasets.</li>
+<li><strong>Simplified unstructured data management:</strong> Milvus has rich APIs designed for data science workflows.</li>
+<li><strong>Reliable, always on vector database:</strong> Milvus’ built-in replication and failover/failback features ensure data and applications can maintain business continuity always.</li>
+<li><strong>Highly scalable and elastic:</strong> Component-level scalability makes it possible to scale up and down on demand.</li>
+<li><strong>Hybrid search:</strong> In addition to vectors, Milvus supports data types such as Boolean, String, integers, floating-point numbers, and more. Milvus pairs scalar filtering with powerful vector similarity search (as seen in the shoe similarity example earlier).</li>
+<li><strong>Unified Lambda structure:</strong> Milvus combines stream and batch processing for data storage to balance timeliness and efficiency.</li>
+<li><strong><a href="https://milvus.io/docs/v2.0.x/timetravel_ref.md">Time Travel</a>:</strong> Milvus maintains a timeline for all data insert and delete operations. It allows users to specify timestamps in a search to retrieve a data view at a specified point in time.</li>
+<li><strong>Community supported &amp; Industry recognized:</strong> With over 1,000 enterprise users, 10.5K+ stars on <a href="https://github.com/milvus-io/milvus">GitHub</a>, and an active open-source community, you’re not alone when you use Milvus. As a graduate project under the <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>, Milvus has institutional support.</li>
 </ul>
-<h3 id="Existing-Approaches-to-Vector-Data-Management-and-Search" class="common-anchor-header">Pendekatan yang Ada untuk Manajemen dan Pencarian Data Vektor</h3><p>Cara umum untuk membangun sistem AI yang didukung oleh pencarian kemiripan vektor adalah dengan memasangkan algoritme seperti Approximate Nearest Neighbor Search (ANNS) dengan pustaka sumber terbuka seperti:</p>
+<h3 id="Existing-Approaches-to-Vector-Data-Management-and-Search" class="common-anchor-header">Existing Approaches to Vector Data Management and Search</h3><p>A common way to build an AI system powered by vector similarity search is to pair algorithms like Approximate Nearest Neighbor Search (ANNS) with open-source libraries such as:</p>
 <ul>
-<li><strong><a href="https://ai.facebook.com/tools/faiss/">Pencarian Kemiripan AI Facebook (FAISS)</a>:</strong> Kerangka kerja ini memungkinkan pencarian kemiripan yang efisien dan pengelompokan vektor yang padat. Kerangka kerja ini berisi algoritme yang mencari kumpulan vektor dengan berbagai ukuran, hingga vektor yang mungkin tidak muat dalam RAM. Ini mendukung kemampuan pengindeksan seperti multi-indeks terbalik dan kuantisasi produk</li>
-<li><strong><a href="https://github.com/spotify/annoy">Spotify's Annoy (Perkiraan Tetangga Terdekat Oh Yeah)</a>:</strong> Kerangka kerja ini menggunakan <a href="http://en.wikipedia.org/wiki/Locality-sensitive_hashing#Random_projection">proyeksi acak</a> dan membangun sebuah pohon untuk mengaktifkan ANNS dalam skala besar untuk vektor yang padat</li>
-<li><strong><a href="https://github.com/google-research/google-research/tree/master/scann">ScaNN (Scalable Nearest Neighbors) dari Google</a>:</strong> Kerangka kerja ini melakukan pencarian kemiripan vektor yang efisien dalam skala besar. Terdiri dari implementasi, yang mencakup pemangkasan ruang pencarian dan kuantisasi untuk Maximum Inner Product Search (MIPS)</li>
+<li><strong><a href="https://ai.facebook.com/tools/faiss/">Facebook AI Similarity Search (FAISS)</a>:</strong> This framework enables efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that possibly do not fit in RAM. It supports indexing capabilities like inverted multi-index and product quantization</li>
+<li><strong><a href="https://github.com/spotify/annoy">Spotify’s Annoy (Approximate Nearest Neighbors Oh Yeah)</a>:</strong> This framework uses <a href="http://en.wikipedia.org/wiki/Locality-sensitive_hashing#Random_projection">random projections</a> and builds up a tree to enable ANNS at scale for dense vectors</li>
+<li><strong><a href="https://github.com/google-research/google-research/tree/master/scann">Google’s ScaNN (Scalable Nearest Neighbors)</a>:</strong> This framework performs efficient vector similarity search at scale. Consists of implementations, which includes search space pruning and quantization for Maximum Inner Product Search (MIPS)</li>
 </ul>
-<p>Meskipun masing-masing pustaka ini berguna dengan caranya sendiri, karena beberapa keterbatasan, kombinasi algoritma-pustaka ini tidak setara dengan sistem manajemen data vektor yang lengkap seperti Milvus. Kita akan membahas beberapa keterbatasan ini sekarang.</p>
-<h3 id="Limitations-of-Existing-Approaches" class="common-anchor-header">Keterbatasan Pendekatan yang Sudah Ada</h3><p>Pendekatan yang ada saat ini yang digunakan untuk mengelola data vektor seperti yang telah dibahas pada bagian sebelumnya memiliki beberapa keterbatasan sebagai berikut:</p>
+<p>While each of these libraries are useful in their own way, due to several limitations, these algorithm-library combinations are not equivalent to a full-fledged vector data management system like Milvus. We will discuss some of these limitations now.</p>
+<h3 id="Limitations-of-Existing-Approaches" class="common-anchor-header">Limitations of Existing Approaches</h3><p>Existing approaches used for managing vector data as discussed in the previous section has the following limitations:</p>
 <ol>
-<li><strong>Fleksibilitas:</strong> Sistem yang ada biasanya menyimpan semua data dalam memori utama, oleh karena itu mereka tidak dapat dijalankan dalam mode terdistribusi di beberapa mesin dengan mudah dan tidak cocok untuk menangani kumpulan data yang sangat besar</li>
-<li><strong>Penanganan data dinamis:</strong> Data sering diasumsikan statis setelah dimasukkan ke dalam sistem yang ada, sehingga mempersulit pemrosesan untuk data dinamis dan membuat pencarian yang hampir real-time menjadi tidak mungkin.</li>
-<li><strong>Pemrosesan kueri tingkat lanjut:</strong> Sebagian besar alat tidak mendukung pemrosesan kueri tingkat lanjut (misalnya pemfilteran atribut, penelusuran hibrida, dan kueri multi-vektor), yang sangat penting untuk membangun mesin telusur kemiripan di dunia nyata yang mendukung pemfilteran tingkat lanjut.</li>
-<li><strong>Pengoptimalan komputasi heterogen:</strong> Hanya sedikit platform yang menawarkan pengoptimalan untuk arsitektur sistem heterogen pada CPU dan GPU (tidak termasuk FAISS), yang menyebabkan hilangnya efisiensi.</li>
+<li><strong>Flexibility:</strong> Existing systems typically store all data in main memory, hence they cannot be run in distributed mode across multiple machines easily and are not well-suited for handling massive datasets</li>
+<li><strong>Dynamic data handling:</strong> Data is often assumed to be static once fed into existing systems, complicating processing for dynamic data and making near real-time search impossible</li>
+<li><strong>Advanced query processing:</strong> Most tools do not support advanced query processing (e.g., attribute filtering, hybrid search and multi-vector queries), which is essential for building real-world similarity search engines supporting advanced filtering.</li>
+<li><strong>Heterogeneous computing optimizations:</strong> Few platforms offer optimizations for heterogenous system architectures on both CPUs and GPUs (excluding FAISS), leading to efficiency losses.</li>
 </ol>
-<p><a href="https://milvus.io/">Milvus</a> berusaha mengatasi semua keterbatasan ini dan kami akan membahasnya secara rinci di bagian selanjutnya.</p>
-<h3 id="The-Milvus-Advantage-Understanding-Knowhere" class="common-anchor-header">Keunggulan Milvus -Memahami Knowhere</h3><p><a href="https://milvus.io/">Milvus</a> mencoba mengatasi dan berhasil memecahkan keterbatasan sistem yang ada yang dibangun di atas manajemen data vektor yang tidak efisien dan algoritme pencarian kemiripan dengan cara-cara berikut:</p>
+<p><a href="https://milvus.io/">Milvus</a> attempts to overcome all of these limitations and we will discuss this in detail in the next section.</p>
+<h3 id="The-Milvus-Advantage-Understanding-Knowhere" class="common-anchor-header">The Milvus Advantage —Understanding Knowhere</h3><p><a href="https://milvus.io/">Milvus</a> tries to tackle and successfully solve the limitations of existing systems build on top of inefficient vector data management and similarity search algorithms in the following ways:</p>
 <ul>
-<li>Meningkatkan fleksibilitas dengan menawarkan dukungan untuk berbagai antarmuka aplikasi (termasuk SDK dalam Python, Java, Go, C++ dan RESTful API)</li>
-<li>Mendukung berbagai jenis indeks vektor (misalnya, indeks berbasis kuantisasi dan indeks berbasis grafik), dan pemrosesan kueri tingkat lanjut</li>
-<li>Milvus menangani data vektor dinamis menggunakan log-structured merge-tree (LSM tree), menjaga penyisipan dan penghapusan data tetap efisien dan pencarian tetap berjalan secara real time</li>
-<li>Milvus juga menyediakan pengoptimalan untuk arsitektur komputasi heterogen pada CPU dan GPU modern, yang memungkinkan pengembang untuk menyesuaikan sistem untuk skenario, kumpulan data, dan lingkungan aplikasi tertentu</li>
+<li>It enhances flexibility by offering support for a variety of application interfaces (including SDKs in Python, Java, Go, C++ and RESTful APIs)</li>
+<li>It supports multiple vector index types (e.g., quantization-based indexes and graph-based indexes), and advanced query processing</li>
+<li>Milvus handles dynamic vector data using a log-structured merge-tree (LSM tree), keeping data insertions and deletions efficient and searches humming along in real time</li>
+<li>Milvus also provides optimizations for heterogeneous computing architectures on modern CPUs and GPUs, allowing developers to adjust systems for specific scenarios, datasets, and application environments</li>
 </ul>
-<p>Knowhere, mesin eksekusi vektor dari Milvus, adalah antarmuka operasi untuk mengakses layanan di lapisan atas sistem dan pustaka pencarian kemiripan vektor seperti Faiss, Hnswlib, Annoy di lapisan bawah sistem. Selain itu, Knowhere juga bertanggung jawab atas komputasi heterogen. Knowhere mengontrol perangkat keras mana (mis. CPU atau GPU) yang akan mengeksekusi pembuatan indeks dan permintaan pencarian. Inilah bagaimana Knowhere mendapatkan namanya - mengetahui di mana harus menjalankan operasi. Lebih banyak jenis perangkat keras termasuk DPU dan TPU akan didukung dalam rilis mendatang.</p>
+<p>Knowhere, the vector execution engine of Milvus, is an operation interface for accessing services in the upper layers of the system and vector similarity search libraries like Faiss, Hnswlib, Annoy in the lower layers of the system. In addition, Knowhere is also in charge of heterogeneous computing. Knowhere controls on which hardware (eg. CPU or GPU) to execute index building and search requests. This is how Knowhere gets its name — knowing where to execute the operations. More types of hardware including DPU and TPU will be supported in future releases.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/knowhere_architecture_f1be3dbb1a.png" alt="figure 7" class="doc-image" id="figure-7" />
-   </span> <span class="img-wrapper"> <span>Gambar 7</span> </span></p>
-<p>Komputasi di Milvus terutama melibatkan operasi vektor dan skalar. Knowhere hanya menangani operasi-operasi pada vektor di Milvus. Gambar di atas mengilustrasikan arsitektur Knowhere di Milvus. Lapisan paling bawah adalah perangkat keras sistem. Pustaka indeks pihak ketiga berada di atas perangkat keras. Kemudian Knowhere berinteraksi dengan simpul indeks dan simpul kueri di bagian atas melalui CGO. Knowhere tidak hanya memperluas fungsi Faiss tetapi juga mengoptimalkan kinerja dan memiliki beberapa keunggulan termasuk dukungan untuk BitsetView, dukungan untuk lebih banyak metrik kemiripan, dukungan untuk set instruksi AVX512, pemilihan instruksi SIMD otomatis, dan pengoptimalan kinerja lainnya. Detailnya dapat ditemukan <a href="https://milvus.io/blog/deep-dive-8-knowhere.md">di sini</a>.</p>
-<h3 id="Milvus-Architecture" class="common-anchor-header">Arsitektur Milvus</h3><p>Gambar berikut ini menampilkan arsitektur keseluruhan platform Milvus. Milvus memisahkan aliran data dari aliran kontrol, dan dibagi menjadi empat lapisan yang independen dalam hal skalabilitas dan pemulihan bencana.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/knowhere_architecture_f1be3dbb1a.png" alt="figure 7" class="doc-image" id="figure-7" />
+    <span>figure 7</span>
+  </span>
+</p>
+<p>Computation in Milvus mainly involves vector and scalar operations. Knowhere only handles the operations on vectors in Milvus. The figure above illustrates the Knowhere architecture in Milvus. The bottom-most layer is the system hardware. The third-party index libraries are on top of the hardware. Then Knowhere interacts with the index node and query node on the top via CGO. Knowhere not only further extends the functions of Faiss but also optimizes the performance and has several advantages including support for BitsetView, support for more similarity metrics, support for AVX512 instruction set, automatic SIMD-instruction selection and other performance optimizations. Details can be found <a href="https://milvus.io/blog/deep-dive-8-knowhere.md">here</a>.</p>
+<h3 id="Milvus-Architecture" class="common-anchor-header">Milvus Architecture</h3><p>The following figure showcases the overall architecture of the Milvus platform. Milvus separates data flow from control flow, and is divided into four layers that are independent in terms of scalability and disaster recovery.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ca80be5f96.png" alt="figure 8" class="doc-image" id="figure-8" />
-   </span> <span class="img-wrapper"> <span>Gambar 8</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ca80be5f96.png" alt="figure 8" class="doc-image" id="figure-8" />
+    <span>figure 8</span>
+  </span>
+</p>
 <ul>
-<li><strong>Lapisan akses:</strong> Lapisan akses terdiri dari sekelompok proxy tanpa kewarganegaraan dan berfungsi sebagai lapisan depan sistem dan titik akhir bagi pengguna.</li>
-<li><strong>Layanan koordinator:</strong> Layanan koordinator bertanggung jawab atas manajemen node topologi cluster, penyeimbangan beban, pembuatan stempel waktu, deklarasi data, dan manajemen data</li>
-<li><strong>Node pekerja:</strong> Node pekerja, atau eksekusi, mengeksekusi instruksi yang dikeluarkan oleh layanan koordinator dan perintah bahasa manipulasi data (DML) yang diprakarsai oleh proksi. Node pekerja di Milvus mirip dengan node data di <a href="https://hadoop.apache.org/">Hadoop</a>, atau server wilayah di HBase</li>
-<li><strong>Penyimpanan:</strong> Ini adalah landasan Milvus, yang bertanggung jawab atas persistensi data. Lapisan penyimpanan terdiri dari <strong>meta store</strong>, <strong>perantara log</strong>, dan <strong>penyimpanan objek</strong></li>
+<li><strong>Access layer:</strong> The access layer is composed of a group of stateless proxies and serves as the front layer of the system and endpoint to users.</li>
+<li><strong>Coordinator service:</strong> The coordinator service is responsible for cluster topology node management, load balancing, timestamp generation, data declaration, and data management</li>
+<li><strong>Worker nodes:</strong> The worker, or execution, node executes instructions issued by the coordinator service and the data manipulation language (DML) commands initiated by the proxy. A worker node in Milvus is similar to a data node in <a href="https://hadoop.apache.org/">Hadoop</a>, or a region server in HBase</li>
+<li><strong>Storage:</strong> This is the cornerstone of Milvus, responsible for data persistence. The storage layer is comprised of <strong>meta store</strong>, <strong>log broker</strong> and <strong>object storage</strong></li>
 </ul>
-<p>Lihat detail lebih lanjut tentang arsitekturnya <a href="https://milvus.io/docs/v2.0.x/four_layers.md">di sini</a>!</p>
-<h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">Melakukan pencarian gambar visual dengan Milvus - Cetak biru kasus penggunaan<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
+<p>Do check out more details about the architecture <a href="https://milvus.io/docs/v2.0.x/four_layers.md">here</a>!</p>
+<h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">Performing visual image search with Milvus — A use-case blueprint<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,18 +230,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Basis data vektor sumber terbuka seperti Milvus memungkinkan bisnis apa pun untuk membuat sistem pencarian gambar visual mereka sendiri dengan jumlah langkah yang minimum. Pengembang dapat menggunakan model AI yang telah dilatih sebelumnya untuk mengubah set data gambar mereka sendiri menjadi vektor, dan kemudian memanfaatkan Milvus untuk memungkinkan pencarian produk serupa berdasarkan gambar. Mari kita lihat cetak biru berikut ini tentang bagaimana merancang dan membangun sistem seperti itu.</p>
+    </button></h2><p>Open-source vector databases like Milvus makes it possible for any business to create their own visual image search system with a minimum number of steps. Developers can use pre-trained AI models to convert their own image datasets into vectors, and then leverage Milvus to enable searching for similar products by image. Let’s look at the following blueprint of how to design and build such a system.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Workflow_for_Visual_Image_Search_c490906a58.jpeg" alt="figure 9" class="doc-image" id="figure-9" />
-   </span> <span class="img-wrapper"> <span>Gambar 9</span> </span></p>
-<p>Dalam alur kerja ini kita dapat menggunakan kerangka kerja sumber terbuka seperti <a href="https://github.com/towhee-io/towhee">towhee</a> untuk memanfaatkan model yang sudah terlatih seperti ResNet-50 dan mengekstrak vektor dari gambar, menyimpan dan mengindeks vektor-vektor ini dengan mudah di Milvus dan juga menyimpan pemetaan ID gambar ke gambar yang sebenarnya dalam database MySQL. Setelah data diindeks, kita dapat mengunggah gambar baru dengan mudah dan melakukan pencarian gambar dalam skala besar menggunakan Milvus. Gambar berikut ini menunjukkan contoh pencarian gambar visual.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Workflow_for_Visual_Image_Search_c490906a58.jpeg" alt="figure 9" class="doc-image" id="figure-9" />
+    <span>figure 9</span>
+  </span>
+</p>
+<p>In this workflow we can use an open-source framework like <a href="https://github.com/towhee-io/towhee">towhee</a> to leverage a pre-trained model like ResNet-50 and extract vectors from images, store and index these vectors with ease in Milvus and also store a mapping of image IDs to the actual pictures in a MySQL database. Once the data is indexed we can upload any new image with ease and perform image search at scale using Milvus. The following figure shows a sample visual image search.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Sample_Visual_Search_Example_52c6410dfd.png" alt="figure 10" class="doc-image" id="figure-10" />
-   </span> <span class="img-wrapper"> <span>Gambar 10</span> </span></p>
-<p>Lihatlah <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">tutorial</a> terperinci yang telah menjadi sumber terbuka di GitHub berkat Milvus.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Sample_Visual_Search_Example_52c6410dfd.png" alt="figure 10" class="doc-image" id="figure-10" />
+    <span>figure 10</span>
+  </span>
+</p>
+<p>Do check out the detailed <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">tutorial</a> which has been open-sourced on GitHub thanks to Milvus.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -242,9 +260,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kita telah membahas cukup banyak hal dalam artikel ini. Kita mulai dengan tantangan dalam merepresentasikan data yang tidak terstruktur, memanfaatkan vektor dan pencarian kemiripan vektor dalam skala besar dengan Milvus, sebuah basis data vektor sumber terbuka. Kami membahas tentang detail tentang bagaimana Milvus terstruktur dan komponen-komponen utama yang mendukungnya serta cetak biru tentang cara memecahkan masalah dunia nyata, pencarian gambar visual dengan Milvus. Cobalah dan mulailah memecahkan masalah dunia nyata Anda sendiri dengan <a href="https://milvus.io/">Milvus</a>!</p>
-<p>Suka dengan artikel ini? <a href="https://www.linkedin.com/in/dipanzan/">Hubungi saya</a> untuk berdiskusi lebih lanjut atau memberikan umpan balik!</p>
-<h2 id="About-the-author" class="common-anchor-header">Tentang penulis<button data-href="#About-the-author" class="anchor-icon" translate="no">
+    </button></h2><p>We’ve covered a fair amount of ground in this article. We started with challenges in representing unstrucutured data, leveraging vectors and vector similarity search at scale with Milvus, an open-source vector database. We discussed about details on how Milvus is structured and the key components powering it and a blueprint of how to solve a real-world problem, visual image search with Milvus. Do give it a try and start solving your own real-world problems with <a href="https://milvus.io/">Milvus</a>!</p>
+<p>Liked this article? Do <a href="https://www.linkedin.com/in/dipanzan/">reach out to me</a> to discuss more on it or give feedback!</p>
+<h2 id="About-the-author" class="common-anchor-header">About the author<button data-href="#About-the-author" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -259,4 +277,4 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dipanjan (DJ) Sarkar adalah Pemimpin Ilmu Data, Pakar Pengembang Google - Pembelajaran Mesin, Penulis, Konsultan, dan Penasihat AI. Hubungkan: http://bit.ly/djs_linkedin</p>
+    </button></h2><p>Dipanjan (DJ) Sarkar is a Data Science Lead, Google Developer Expert — Machine Learning, Author, Consultant and AI Advisor. Connect: http://bit.ly/djs_linkedin</p>

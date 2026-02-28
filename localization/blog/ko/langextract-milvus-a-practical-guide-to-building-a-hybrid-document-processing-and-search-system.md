@@ -1,12 +1,14 @@
 ---
 id: >-
   langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
-title: 'LangExtract + Milvus: 하이브리드 문서 처리 및 검색 시스템 구축을 위한 실용적인 가이드'
+title: >
+  LangExtract + Milvus: A Practical Guide to Building a Hybrid Document
+  Processing and Search System
 author: 'Cheney Zhang, Lumina Wang'
 date: 2025-08-28T00:00:00.000Z
 desc: >-
-  하나의 지능형 파이프라인에서 정밀한 필터링과 시맨틱 검색을 달성하는 하이브리드 코드 검색을 위해 LangExtract와 Milvus를
-  결합하는 방법을 알아보세요.
+  Learn how to combine LangExtract and Milvus for hybrid code search—achieving
+  precise filtering with semantic retrieval in one intelligent pipeline.
 cover: assets.zilliz.com/Langextract_1c4d9835a4.png
 tag: Tutorials
 recommend: false
@@ -17,30 +19,30 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/langextract-milvus-a-practical-guide-to-building-a-hybrid-document-processing-and-search-system.md
 ---
-<p><a href="https://milvus.io/blog/why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md">이전 블로그에서</a> 많은 코딩 에이전트에서 코드 검색에 널리 사용되는 두 가지 접근 방식을 비교한 적이 있습니다:</p>
+<p>In a <a href="https://milvus.io/blog/why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md">previous blog</a>, we compared two popular approaches to code search in many coding agents:</p>
 <ul>
-<li><p><strong>벡터 검색 기반 RAG(시맨틱 검색</strong> ) - Cursor와 같은 도구에서 사용됨</p></li>
-<li><p><code translate="no">grep</code> <strong>(리터럴 문자열 매칭)</strong> 을 사용한<strong>키워드 검색</strong> - Claude Code 및 Gemini에서 사용</p></li>
+<li><p><strong>Vector search-powered RAG (semantic retrieval)</strong> – used by tools like Cursor</p></li>
+<li><p><strong>Keyword search with</strong> <code translate="no">grep</code> <strong>(literal string matching)</strong> – used by Claude Code and Gemini</p></li>
 </ul>
-<p>이 게시물은 많은 피드백을 불러일으켰습니다. 일부 개발자는 <code translate="no">grep</code> 에는 종종 관련 없는 검색어가 포함되고 문맥이 부풀려진다는 점을 지적하며 RAG를 주장했습니다. 다른 개발자들은 정확성이 가장 중요하며 임베딩은 여전히 너무 모호해서 신뢰할 수 없다며 키워드 검색을 옹호했습니다.</p>
-<p>양쪽 모두 일리가 있습니다. 현실적으로 완벽하고 만능인 솔루션은 존재하지 않습니다.</p>
+<p>That post sparked a lot of feedback. Some developers argued for RAG, pointing out that <code translate="no">grep</code> often includes irrelevant matches and bloats the context. Others defended keyword search, saying precision is everything and embeddings are still too fuzzy to trust.</p>
+<p>Both sides have a point. The reality is, there’s no perfect, one-size-fits-all solution.</p>
 <ul>
-<li><p>임베딩에만 의존하면 엄격한 규칙이나 정확한 매칭을 놓칠 수 있습니다.</p></li>
-<li><p>키워드에만 의존하면 코드(또는 텍스트)가 실제로 무엇을 의미하는지에 대한 의미론적 이해를 잃게 됩니다.</p></li>
+<li><p>Rely only on embeddings, and you’ll miss strict rules or exact matches.</p></li>
+<li><p>Rely only on keywords, and you’ll lose the semantic understanding of what the code (or text) actually means.</p></li>
 </ul>
-<p>이 튜토리얼에서는 <strong>두 가지 접근 방식을 지능적으로 결합하는</strong> 방법을 보여줍니다. LLM을 사용해 지저분한 텍스트를 정확한 소스 어트리뷰션이 포함된 구조화된 데이터로 변환하는 Python <a href="https://github.com/google/langextract">라이브러리인 LangExtract와</a>오픈 소스 고성능 벡터 데이터베이스인 <a href="https://milvus.io/">Milvus를</a> 함께 사용하여 보다 지능적인 고품질 문서 처리 및 검색 시스템을 구축하는 방법을 보여드리겠습니다.</p>
-<h3 id="Key-Technologies-We’ll-Use" class="common-anchor-header">사용할 주요 기술</h3><p>이 문서 처리 및 검색 시스템 구축을 시작하기 전에 이 튜토리얼에서 사용할 주요 기술에 대해 살펴보겠습니다.</p>
-<h3 id="What-is-LangExtract" class="common-anchor-header">LangExtract란 무엇인가요?</h3><p><a href="https://github.com/langextract/langextract">LangExtract는</a> Google에서 오픈소스화한 새로운 Python 라이브러리로, LLM을 활용하여 지저분한 비정형 텍스트를 소스 어트리뷰션이 있는 정형 데이터로 변환합니다. 정보 추출과 같은 작업을 매우 간단하게 만들어주기 때문에 이미 많은 인기를 얻고 있습니다(GitHub 별 13,000개 이상).</p>
+<p>This tutorial demonstrates a method for <strong>combining both approaches intelligently</strong>. We’ll show you how to use <a href="https://github.com/google/langextract">LangExtract</a>—a Python library that uses LLMs to turn messy text into structured data with precise source attribution—together with <a href="https://milvus.io/">Milvus</a>, an open-source high-performance vector database, to build a more intelligent, high-quality document processing and retrieval system.</p>
+<h3 id="Key-Technologies-We’ll-Use" class="common-anchor-header">Key Technologies We’ll Use</h3><p>Before we get started building this document processing and retrieval system, let’s take a look at the key technologies we’ll use in this tutorial.</p>
+<h3 id="What-is-LangExtract" class="common-anchor-header">What is LangExtract?</h3><p><a href="https://github.com/langextract/langextract">LangExtract</a> is a new Python library, open-sourced by Google, that utilizes LLMs to transform messy, unstructured text into structured data with source attribution. It’s already popular (13K+ GitHub stars) because it makes tasks like information extraction dead simple.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_c04bdf275b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
-주요 기능은 다음과 같습니다:</p>
+Key features include:</p>
 <ul>
-<li><p>구조화된 추출: 스키마를 정의하고 이름, 날짜, 위치, 요금 및 기타 관련 정보를 추출할 수 있습니다.</p></li>
-<li><p>소스 추적성: 추출된 모든 필드는 원본 텍스트에 다시 연결되므로 착각의 가능성이 줄어듭니다.</p></li>
-<li><p>긴 문서에 맞게 확장: 청킹 + 멀티 스레딩으로 수백만 개의 문자를 처리합니다.</p></li>
+<li><p>Structured extraction: Define a schema and extract names, dates, locations, charges, and other relevant information.</p></li>
+<li><p>Source traceability: Every extracted field is linked back to the original text, reducing the likelihood of hallucinations.</p></li>
+<li><p>Scales to long docs: Handles millions of characters with chunking + multi-threading.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -48,9 +50,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>LangExtract는 정확성이 중요한 법률, 의료, 법의학 등의 분야에서 특히 유용합니다. 예를 들어, RAG로 거대한 텍스트 블록을 검색하는 대신 LangExtract는 의미론적 맥락을 유지하면서 관심 있는 날짜, 절 또는 환자 인구 통계만 추출할 수 있습니다.</p>
-<h3 id="What’s-Milvus" class="common-anchor-header">Milvus란 무엇인가요?</h3><p><a href="https://milvus.io/">Milvus는</a> Github에서 36,000개 이상의 별을 받은 오픈 소스 벡터 데이터베이스로, 다양한 산업 분야에서 10,000개 이상의 기업에서 채택하고 있습니다. Milvus는 RAG 시스템, AI 에이전트, 추천 엔진, 이상 징후 감지, 시맨틱 검색에 널리 사용되어 AI 기반 애플리케이션의 핵심 빌딩 블록으로 자리 잡고 있습니다.</p>
-<h2 id="Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="common-anchor-header">LangExtract + Milvus로 고품질 문서 처리 시스템 구축하기<button data-href="#Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="anchor-icon" translate="no">
+<p>LangExtract is especially useful in domains such as law, healthcare, and forensics, where precision is crucial. For example, instead of retrieving a giant block of text with RAG, LangExtract can extract just the dates, clauses, or patient demographics you care about—while still preserving semantic context.</p>
+<h3 id="What’s-Milvus" class="common-anchor-header">What’s Milvus?</h3><p><a href="https://milvus.io/">Milvus</a> is an open-source vector database with more than 36K+stars on Github and has been adopted by more than 10K enterprise uses across various industries. Milvus is widely used in RAG systems, AI Agents, recommendation engines, anomaly detection, and semantic search, making it a core building block for AI-powered applications.</p>
+<h2 id="Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="common-anchor-header">Building a High-Quality Document Processing System with LangExtract + Milvus<button data-href="#Building-a-High-Quality-Document-Processing-System-with-LangExtract-+-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,19 +67,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이 가이드는 <a href="https://github.com/google/langextract">LangExtract와</a><a href="https://milvus.io/"> Milvus를</a> 결합하여 지능형 문서 처리 및 검색 시스템을 구축하는 과정을 안내합니다.</p>
+    </button></h2><p>This guide walks you through the process of combining <a href="https://github.com/google/langextract">LangExtract</a> and<a href="https://milvus.io/"> Milvus</a> to build an intelligent document processing and retrieval system.</p>
 <ul>
-<li><p>LangExtract는 깔끔하고 구조화된 메타데이터를 생성한 다음 Milvus로 이를 효율적으로 저장하고 검색하여 정밀한 필터링과 시맨틱 검색이라는 두 가지 장점을 모두 제공합니다.</p></li>
-<li><p>Milvus는 검색 백본 역할을 하며, 임베딩(시맨틱 검색용)과 LangExtract에서 추출한 구조화된 메타데이터를 모두 저장하여 정확하고 지능적인 하이브리드 쿼리를 대규모로 실행할 수 있게 해줍니다.</p></li>
+<li><p>LangExtract generates clean, structured metadata, and then stores + searches it efficiently with Milvus, giving us the best of both worlds: precise filtering plus semantic retrieval.</p></li>
+<li><p>Milvus will act as the retrieval backbone, storing both embeddings (for semantic search) and structured metadata extracted by LangExtract, allowing us to run precise and intelligent hybrid queries at scale.</p></li>
 </ul>
-<h3 id="Prerequisites" class="common-anchor-header">전제 조건</h3><p>시작하기 전에 다음 종속성이 설치되어 있는지 확인하세요:</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>Before diving in, make sure you have the following dependencies installed:</p>
 <pre><code translate="no">! pip install --upgrade pymilvus langextract google-genai requests tqdm pandas
 <button class="copy-code-btn"></button></code></pre>
-<p>이 예제에서는 Gemini를 LLM으로 사용하겠습니다.<a href="https://aistudio.google.com/app/apikey"> API 키를</a> 환경 변수로 설정해야 합니다:</p>
+<p>We’ll use Gemini as our LLM for this example. You’ll need to set up your<a href="https://aistudio.google.com/app/apikey"> API key</a> as an environment variable:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;GEMINI_API_KEY&quot;</span>] = <span class="hljs-string">&quot;AIza*****************&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Setting-Up-the-LangExtract-+-Milvus-Pipeline" class="common-anchor-header"><strong>LangExtract + Milvus 파이프라인 설정하기</strong></h3><p>구조화된 정보 추출을 위해 LangExtract를 사용하고 벡터 저장소로 Milvus를 사용하는 파이프라인을 정의하는 것부터 시작해 보겠습니다.</p>
+<h3 id="Setting-Up-the-LangExtract-+-Milvus-Pipeline" class="common-anchor-header"><strong>Setting Up the LangExtract + Milvus Pipeline</strong></h3><p>Let’s start by defining our pipeline that uses LangExtract for structured information extraction and Milvus as our vector store.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> langextract <span class="hljs-keyword">as</span> lx
 <span class="hljs-keyword">import</span> textwrap
 <span class="hljs-keyword">from</span> google <span class="hljs-keyword">import</span> genai
@@ -85,20 +87,20 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;GE
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>, <span class="hljs-title class_">DataType</span>
 <span class="hljs-keyword">import</span> uuid
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Configuration-and-Setup" class="common-anchor-header"><strong>구성 및 설정</strong></h3><p>이제 통합을 위한 글로벌 파라미터를 구성하겠습니다. Gemini의 임베딩 모델을 사용하여 문서에 대한 벡터 표현을 생성합니다.</p>
+<h3 id="Configuration-and-Setup" class="common-anchor-header"><strong>Configuration and Setup</strong></h3><p>Now we’ll configure the global parameters for our integration. We’re using Gemini’s embedding model to generate vector representations for our documents.</p>
 <pre><code translate="no">genai_client = genai.Client()
 COLLECTION_NAME = <span class="hljs-string">&quot;document_extractions&quot;</span>
 EMBEDDING_MODEL = <span class="hljs-string">&quot;gemini-embedding-001&quot;</span>
 EMBEDDING_DIM = <span class="hljs-number">3072</span>  <span class="hljs-comment"># Default dimension for gemini-embedding-001</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Initializing-the-Milvus-Client" class="common-anchor-header"><strong>Milvus 클라이언트 초기화</strong></h3><p>Milvus 클라이언트를 초기화해 보겠습니다. 간단하게 하기 위해 로컬 데이터베이스 파일을 사용하겠지만, 이 접근 방식은 전체 Milvus 서버 배포로 쉽게 확장할 수 있습니다.</p>
+<h3 id="Initializing-the-Milvus-Client" class="common-anchor-header"><strong>Initializing the Milvus Client</strong></h3><p>Let’s initialize our Milvus client. For simplicity, we’ll use a local database file, though this approach scales easily to full Milvus server deployments.</p>
 <pre><code translate="no">client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong> <code translate="no">MilvusClient</code> 매개변수 정보</strong></p>
-<p><code translate="no">uri</code> 을 로컬 파일(예: <code translate="no">./milvus.db</code>)로 설정하는 것이 가장 편리한 방법인데, 이 파일에 모든 데이터를 저장하기 위해<a href="https://milvus.io/docs/milvus_lite.md"> Milvus Lite가</a> 자동으로 사용되기 때문입니다.</p>
-<p>대규모 데이터의 경우<a href="https://milvus.io/docs/quickstart.md"> Docker 또는 Kubernetes에서</a> 더 성능이 뛰어난 Milvus 서버를 설정할 수 있습니다. 이 설정에서는 서버 URL(예:[ <code translate="no">http://localhost:19530](http://localhost:19530)</code>)을 대신 사용하세요.</p>
-<p>밀버스의 완전 관리형 클라우드 서비스인<a href="https://zilliz.com/cloud"> 질리즈 클라우드를</a> 선호하는 경우, <code translate="no">uri</code> 및 <code translate="no">token</code> 을 질리즈 클라우드의<a href="https://docs.zilliz.com/docs/on-zilliz-cloud-console#free-cluster-details"> 퍼블릭 엔드포인트 및 API 키와</a> 일치하도록 조정하세요.</p>
-<h3 id="Preparing-Sample-Data" class="common-anchor-header"><strong>샘플 데이터 준비하기</strong></h3><p>이 데모에서는 영화 설명을 샘플 문서로 사용하겠습니다. 이를 통해 LangExtract가 비정형 텍스트에서 장르, 캐릭터, 주제와 같은 정형 정보를 추출하는 방법을 보여줍니다.</p>
+<p><strong>About <code translate="no">MilvusClient</code> parameters:</strong></p>
+<p>Setting the <code translate="no">uri</code> as a local file (like <code translate="no">./milvus.db</code>) is the most convenient method since it automatically uses<a href="https://milvus.io/docs/milvus_lite.md"> Milvus Lite</a> to store all data in this file.</p>
+<p>For large-scale data, you can set up a more performant Milvus server on<a href="https://milvus.io/docs/quickstart.md"> Docker or Kubernetes</a>. In this setup, use the server uri (like[ <code translate="no">http://localhost:19530](http://localhost:19530)</code>) instead.</p>
+<p>If you prefer<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> (the fully managed cloud service for Milvus), adjust the <code translate="no">uri</code> and <code translate="no">token</code> to match your<a href="https://docs.zilliz.com/docs/on-zilliz-cloud-console#free-cluster-details"> Public Endpoint and API key</a> from Zilliz Cloud.</p>
+<h3 id="Preparing-Sample-Data" class="common-anchor-header"><strong>Preparing Sample Data</strong></h3><p>For this demo, we’ll use movie descriptions as our sample documents. This showcases how LangExtract can extract structured information like genres, characters, and themes from unstructured text.</p>
 <pre><code translate="no">sample_documents = [
     <span class="hljs-string">&quot;John McClane fights terrorists in a Los Angeles skyscraper during Christmas Eve. The action-packed thriller features intense gunfights and explosive scenes.&quot;</span>,
     <span class="hljs-string">&quot;A young wizard named Harry Potter discovers his magical abilities at Hogwarts School. The fantasy adventure includes magical creatures and epic battles.&quot;</span>,
@@ -115,7 +117,7 @@ EMBEDDING_DIM = <span class="hljs-number">3072</span>  <span class="hljs-comment
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=== LangExtract + Milvus Integration Demo ===&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Preparing to process <span class="hljs-subst">{<span class="hljs-built_in">len</span>(sample_documents)}</span> documents&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Setting-Up-the-Milvus-Collection" class="common-anchor-header"><strong>밀버스 컬렉션 설정하기</strong></h3><p>추출한 데이터를 저장하기 전에 적절한 스키마로 Milvus 컬렉션을 만들어야 합니다. 이 컬렉션에는 원본 문서 텍스트, 벡터 임베딩 및 추출된 메타데이터 필드가 저장됩니다.</p>
+<h3 id="Setting-Up-the-Milvus-Collection" class="common-anchor-header"><strong>Setting Up the Milvus Collection</strong></h3><p>Before we can store our extracted data, we need to create a Milvus collection with the appropriate schema. This collection will store the original document text, vector embeddings, and extracted metadata fields.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n1. Setting up Milvus collection...&quot;</span>)
 
 <span class="hljs-comment"># Drop existing collection if it exists</span>
@@ -155,7 +157,7 @@ index_params.add_index(
 client.create_index(collection_name=COLLECTION_NAME, index_params=index_params)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Vector index created successfully&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Defining-the-Extraction-Schema" class="common-anchor-header"><strong>추출 스키마 정의하기</strong></h3><p>LangExtract는 프롬프트와 예제를 사용하여 LLM이 구조화된 정보를 추출할 수 있도록 안내합니다. 영화 설명에 대한 추출 스키마를 정의하여 정확히 어떤 정보를 추출하고 어떻게 분류할지 지정해 보겠습니다.</p>
+<h3 id="Defining-the-Extraction-Schema" class="common-anchor-header"><strong>Defining the Extraction Schema</strong></h3><p>LangExtract uses prompts and examples to guide the LLM in extracting structured information. Let’s define our extraction schema for movie descriptions, specifying exactly what information to extract and how to categorize it.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n2. Extracting tags from documents...&quot;</span>)
 
 <span class="hljs-comment"># Define extraction prompt - for movie descriptions, specify attribute value ranges</span>
@@ -182,7 +184,7 @@ prompt = textwrap.dedent(
 )
 
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Providing-Examples-to-Improve-Extraction-Quality" class="common-anchor-header"><strong>추출 품질 향상을 위한 예제 제공</strong></h3><p>추출 품질과 일관성을 개선하기 위해 LangExtract에 세심하게 제작된 예제를 제공합니다. 이러한 예제는 예상되는 형식을 보여주며 모델이 특정 추출 요구 사항을 이해하는 데 도움이 됩니다.</p>
+<h3 id="Providing-Examples-to-Improve-Extraction-Quality" class="common-anchor-header"><strong>Providing Examples to Improve Extraction Quality</strong></h3><p>To improve extraction quality and consistency, we’ll provide LangExtract with carefully crafted examples. These examples demonstrate the expected format and help the model understand our specific extraction requirements.</p>
 <pre><code translate="no"><span class="hljs-comment"># Provide examples to guide the model - n-shot examples for movie descriptions</span>
 <span class="hljs-comment"># Unify attribute keys to ensure consistency in extraction results</span>
 examples = [
@@ -273,7 +275,7 @@ extraction_results = []
     <span></span>
   </span>
 </p>
-<h3 id="Processing-and-Vectorizing-Results" class="common-anchor-header"><strong>결과 처리 및 벡터화</strong></h3><p>이제 추출 결과를 처리하고 각 문서에 대한 벡터 임베딩을 생성해야 합니다. 또한 추출된 속성을 별도의 필드로 플랫화하여 Milvus에서 쉽게 검색할 수 있도록 할 것입니다.</p>
+<h3 id="Processing-and-Vectorizing-Results" class="common-anchor-header"><strong>Processing and Vectorizing Results</strong></h3><p>Now we need to process our extraction results and generate vector embeddings for each document. We’ll also flatten the extracted attributes into separate fields to make them easily searchable in Milvus.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n3. Processing extraction results and generating vectors...&quot;</span>)
 
 processed_data = []
@@ -343,7 +345,7 @@ Successfully generated vector: John McClane fights terrorists...
 Completed data processing, ready to insert 10 records
 
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Inserting-Data-into-Milvus" class="common-anchor-header"><strong>Milvus에 데이터 삽입하기</strong></h3><p>처리된 데이터가 준비되었으므로 이제 Milvus 컬렉션에 삽입해 보겠습니다. 이렇게 하면 시맨틱 검색과 정밀한 메타데이터 필터링을 모두 수행할 수 있습니다.</p>
+<h3 id="Inserting-Data-into-Milvus" class="common-anchor-header"><strong>Inserting Data into Milvus</strong></h3><p>With our processed data ready, let’s insert it into our Milvus collection. This enables us to perform both semantic searches and precise metadata filtering.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n4. Inserting data into Milvus...&quot;</span>)
 
 <span class="hljs-keyword">if</span> processed_data:
@@ -357,7 +359,7 @@ Completed data processing, ready to insert 10 records
 Successfully inserted <span class="hljs-number">10</span> documents <span class="hljs-keyword">into</span> Milvus
 Insert result: {<span class="hljs-string">&#x27;insert_count&#x27;</span>: <span class="hljs-number">10</span>, <span class="hljs-string">&#x27;ids&#x27;</span>: [<span class="hljs-string">&#x27;doc_f8797155&#x27;</span>, <span class="hljs-string">&#x27;doc_78c7e586&#x27;</span>, <span class="hljs-string">&#x27;doc_fa3a3ab5&#x27;</span>, <span class="hljs-string">&#x27;doc_64981815&#x27;</span>, <span class="hljs-string">&#x27;doc_3ab18cb2&#x27;</span>, <span class="hljs-string">&#x27;doc_1ea42b18&#x27;</span>, <span class="hljs-string">&#x27;doc_f0779243&#x27;</span>, <span class="hljs-string">&#x27;doc_386590b7&#x27;</span>, <span class="hljs-string">&#x27;doc_3b3ae1ab&#x27;</span>, <span class="hljs-string">&#x27;doc_851089d6&#x27;</span>]}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Demonstrating-Metadata-Filtering" class="common-anchor-header"><strong>메타데이터 필터링 데모</strong></h3><p>LangExtract와 Milvus를 결합하면 얻을 수 있는 주요 이점 중 하나는 추출된 메타데이터를 기반으로 정밀한 필터링을 수행할 수 있다는 점입니다. 몇 가지 필터 표현식 검색을 통해 이 기능이 실제로 어떻게 작동하는지 확인해 보겠습니다.</p>
+<h3 id="Demonstrating-Metadata-Filtering" class="common-anchor-header"><strong>Demonstrating Metadata Filtering</strong></h3><p>One of the key advantages of combining LangExtract with Milvus is the ability to perform precise filtering based on extracted metadata. Let’s see this in action with some filter expression searches.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n=== Filter Expression Search Examples ===&quot;</span>)
 
 <span class="hljs-comment"># Load collection into memory for querying</span>
@@ -414,8 +416,8 @@ Collection loaded successfully
   Genre: action sci-fi
   Character: protagonist (military)
 <button class="copy-code-btn"></button></code></pre>
-<p>완벽합니다! 검색 결과가 '스릴러' 및 '군사 캐릭터' 필터 조건과 정확하게 일치합니다.</p>
-<h3 id="Combining-Semantic-Search-with-Metadata-Filtering" class="common-anchor-header"><strong>시맨틱 검색과 메타데이터 필터링의 결합</strong></h3><p>시맨틱 벡터 검색과 정밀한 메타데이터 필터링을 결합한 이 통합의 진정한 힘은 바로 여기에서 빛을 발합니다. 이를 통해 추출된 속성을 기반으로 특정 제약 조건을 적용하면서 의미적으로 유사한 콘텐츠를 찾을 수 있습니다.</p>
+<p>Perfect! Our search results accurately match the “thriller” and “military characters” filter conditions.</p>
+<h3 id="Combining-Semantic-Search-with-Metadata-Filtering" class="common-anchor-header"><strong>Combining Semantic Search with Metadata Filtering</strong></h3><p>Here’s where the real power of this integration shines: combining semantic vector search with precise metadata filtering. This allows us to find semantically similar content while applying specific constraints based on our extracted attributes.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n=== Semantic Search Examples ===&quot;</span>)
 
 <span class="hljs-comment"># 1. Search for action-related content + only thriller genre</span>
@@ -510,8 +512,8 @@ results = client.search(
 
 === Demo Complete ===
 <button class="copy-code-btn"></button></code></pre>
-<p>보시다시피, Milvus를 사용한 시맨틱 검색 결과는 장르 필터 조건을 충족하고 쿼리 텍스트 콘텐츠와 높은 연관성을 보여줍니다.</p>
-<h2 id="What-Youve-Built-and-What-It-Means" class="common-anchor-header">구축한 내용과 의미<button data-href="#What-Youve-Built-and-What-It-Means" class="anchor-icon" translate="no">
+<p>As you can see, our semantic search results using Milvus both meet the genre filter conditions and show high relevance to our query text content.</p>
+<h2 id="What-Youve-Built-and-What-It-Means" class="common-anchor-header">What You’ve Built and What It Means<button data-href="#What-Youve-Built-and-What-It-Means" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -526,7 +528,7 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이제 구조화된 추출과 시맨틱 검색을 결합한 하이브리드 문서 처리 시스템을 갖추게 되었으니 더 이상 정확성과 유연성 중 하나를 선택할 필요가 없습니다. 이 접근 방식은 신뢰성을 보장하면서 비정형 데이터의 가치를 극대화하므로 금융, 의료, 법률 영역의 고위험 시나리오에 이상적입니다.</p>
-<p>구조화된 이미지 분석을 시맨틱 검색과 결합하여 더 나은 이커머스 추천을 제공하거나, 비디오 콘텐츠에 적용하여 자율 주행 데이터 마이닝을 강화하는 등 산업 전반에 걸쳐 동일한 원칙을 확장할 수 있습니다.</p>
-<p>대규모 멀티모달 데이터 세트를 관리하는 대규모 배포의 경우, 곧 출시될 <strong>벡터 데이터 레이크는</strong> 훨씬 더 비용 효율적인 콜드 스토리지, 광범위한 테이블 지원, 간소화된 ETL 처리 기능을 제공함으로써 프로덕션 규모의 하이브리드 검색 시스템을 위한 자연스러운 진화를 이룰 것입니다. 계속 지켜봐 주세요.</p>
-<p>질문이 있거나 결과를 공유하고 싶으신가요?<a href="https://github.com/zilliztech/VectorDBBench"> GitHub에서</a> 대화에 참여하거나 <a href="https://discord.com/invite/FG6hMJStWu">Discord에서</a> 커뮤니티와 소통하세요.</p>
+    </button></h2><p>You now have a hybrid document processing system that combines structured extraction with semantic search—no more choosing between accuracy and flexibility. This approach maximizes unstructured data value while ensuring reliability, making it ideal for high-stakes scenarios in finance, healthcare, and legal domains.</p>
+<p>The same principles scale across industries: combine structured image analysis with semantic search for better e-commerce recommendations, or apply it to video content for enhanced autonomous driving data mining.</p>
+<p>For large-scale deployments managing massive multimodal datasets, our upcoming <strong>vector data lake</strong> will offer much more cost-effective cold storage, wide table support, and streamlined ETL processing—the natural evolution for production-scale hybrid search systems. Stay tuned.</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>

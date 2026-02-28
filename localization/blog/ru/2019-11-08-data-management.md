@@ -1,18 +1,18 @@
 ---
 id: 2019-11-08-data-management.md
-title: Как осуществляется управление данными в Milvus
+title: How data management is done in Milvus
 author: Yihua Mo
 date: 2019-11-08T00:00:00.000Z
-desc: В этом посте представлена стратегия управления данными в Milvus.
+desc: This post introduces the data management strategy in Milvus.
 cover: null
 tag: Engineering
 origin: null
 ---
-<custom-h1>Управление данными в векторной поисковой системе большого масштаба</custom-h1><blockquote>
-<p>Автор: Yihua Mo</p>
-<p>Дата: 2019-11-08</p>
+<custom-h1>Managing Data in Massive-Scale Vector Search Engine</custom-h1><blockquote>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-11-08</p>
 </blockquote>
-<h2 id="How-data-management-is-done-in-Milvus" class="common-anchor-header">Как осуществляется управление данными в Milvus<button data-href="#How-data-management-is-done-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-data-management-is-done-in-Milvus" class="common-anchor-header">How data management is done in Milvus<button data-href="#How-data-management-is-done-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,123 +27,149 @@ origin: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде всего, несколько основных понятий Milvus:</p>
+    </button></h2><p>First of all, some basic concepts of Milvus:</p>
 <ul>
-<li>Таблица: Таблица - это набор данных, состоящий из векторов, причем каждый вектор имеет уникальный идентификатор. Каждый вектор и его ID представляют собой строку таблицы. Все векторы в таблице должны иметь одинаковые размеры. Ниже приведен пример таблицы с 10-мерными векторами:</li>
+<li>Table: Table is a data set of vectors, with each vector having a unique ID. Each vector and its ID represent a row of the table. All vectors in a table must have the same dimensions. Below is an example of a table with 10-dimensional vectors:</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png" alt="table" class="doc-image" id="table" />
-   </span> <span class="img-wrapper"> <span>таблица</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png" alt="table" class="doc-image" id="table" />
+    <span>table</span>
+  </span>
+</p>
 <ul>
-<li>Индекс: Построение индекса - это процесс кластеризации векторов по определенному алгоритму, который требует дополнительного дискового пространства. Некоторые типы индексов требуют меньше места, так как они упрощают и сжимают векторы, в то время как другие типы требуют больше места, чем необработанные векторы.</li>
+<li>Index: Building index is the process of vector clustering by certain algorithm, which requires additional disk space. Some index types require less space since they simplify and compress vectors, while some other types require more space than raw vectors.</li>
 </ul>
-<p>В Milvus пользователи могут выполнять такие задачи, как создание таблицы, вставка векторов, построение индексов, поиск векторов, получение информации о таблице, удаление таблиц, удаление части данных в таблице и удаление индексов и т. д.</p>
-<p>Предположим, что у нас есть 100 миллионов 512-мерных векторов, и нам нужно вставить и управлять ими в Milvus для эффективного векторного поиска.</p>
-<p><strong>(1) Вставка векторов</strong></p>
-<p>Давайте рассмотрим, как векторы вставляются в Milvus.</p>
-<p>Поскольку каждый вектор занимает 2 КБ, минимальное пространство для хранения 100 миллионов векторов составляет около 200 ГБ, что делает нереальным однократную вставку всех этих векторов. Необходимо иметь несколько файлов данных вместо одного. Производительность вставки - один из ключевых показателей эффективности. Milvus поддерживает единовременную вставку сотен или даже десятков тысяч векторов. Например, единовременная вставка 30 тысяч 512-мерных векторов обычно занимает всего 1 секунду.</p>
+<p>In Milvus, users can perform tasks such as creating a table, inserting vectors, building indexes, searching vectors, retrieving table information, dropping tables, removing partial data in a table and removing indexes, etc.</p>
+<p>Assume we have 100 million 512-dimensional vectors, and need to insert and manage them in Milvus for efficient vector search.</p>
+<p><strong>(1) Vector Insert</strong></p>
+<p>Let’s take a look at how vectors are inserted into Milvus.</p>
+<p>As each vector takes 2 KB space, the minimum storage space for 100 million vectors is about 200 GB, which makes one-time insertion of all these vectors unrealistic. There need to be multiple data files instead of one. Insertion performance is one of the key performance indicators. Milvus supports one-time insertion of hundreds or even tens of thousands of vectors. For example, one-time insertion of 30 thousand 512-dimensional vectors generally takes only 1 second.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png" alt="insert" class="doc-image" id="insert" />
-   </span> <span class="img-wrapper"> <span>вставка</span> </span></p>
-<p>Не каждая вставка вектора загружается на диск. Для каждой создаваемой таблицы Milvus резервирует в памяти процессора буфер с изменяемыми данными, в который можно быстро записать вставленные данные. А когда данные в буфере достигнут определенного размера, это пространство будет помечено как неизменяемое. В это время будет зарезервирован новый буфер. Данные в неизменяемом буфере регулярно записываются на диск, а соответствующая память процессора освобождается. Механизм регулярной записи на диск похож на тот, что используется в Elasticsearch, который записывает буферизованные данные на диск каждые 1 секунду. Кроме того, пользователи, знакомые с LevelDB/RocksDB, могут увидеть здесь некоторое сходство с MemTable.</p>
-<p>Цели механизма вставки данных следующие:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png" alt="insert" class="doc-image" id="insert" />
+    <span>insert</span>
+  </span>
+</p>
+<p>Not every vector insertion is loaded into disk. Milvus reserves a mutable buffer in the CPU memory for every table that is created, where inserted data can be quickly written to. And as the data in the mutable buffer reaches a certain size, this space will be labeled as immutable. In the mean time, a new mutable buffer will be reserved. Data in immutable buffer are written to disk regularly and corresponding CPU memory is freed up. The regular writing to disk mechanism is similar to the one used in Elasticsearch, which writes buffered data to disk every 1 second. In addition, users that are familiar with LevelDB/RocksDB can see some resemblance to MemTable here.</p>
+<p>The goals of the Data Insert mechanism are:</p>
 <ul>
-<li>Вставка данных должна быть эффективной.</li>
-<li>Вставленные данные могут быть использованы мгновенно.</li>
-<li>Файлы данных не должны быть слишком фрагментированы.</li>
+<li>Data insertion must be efficient.</li>
+<li>Inserted data can be used instantly.</li>
+<li>Data files should not be too fragmented.</li>
 </ul>
-<p><strong>(2) Файл необработанных данных</strong></p>
-<p>Когда векторы записываются на диск, они сохраняются в файле Raw Data File, содержащем необработанные векторы. Как уже говорилось, векторы большого масштаба необходимо сохранять и управлять ими в нескольких файлах данных. Размер вставляемых данных варьируется: пользователь может вставить 10 векторов или 1 миллион векторов за один раз. Однако операция записи на диск выполняется раз в 1 секунду. Таким образом, генерируются файлы данных разного размера.</p>
-<p>Фрагментированными файлами данных неудобно управлять и к ним нелегко получить доступ для векторного поиска. Milvus постоянно объединяет эти маленькие файлы данных, пока размер объединенного файла не достигнет определенного размера, например, 1 ГБ. Этот конкретный размер можно настроить в API-параметре <code translate="no">index_file_size</code> при создании таблицы. Таким образом, 100 миллионов 512-мерных векторов будут распределены и сохранены примерно в 200 файлах данных.</p>
-<p>Учитывая сценарии инкрементных вычислений, в которых векторы вставляются и ищутся одновременно, нам необходимо убедиться, что после записи векторов на диск они будут доступны для поиска. Таким образом, до слияния малых файлов данных к ним можно получить доступ и выполнить поиск. После завершения слияния файлы с малыми данными будут удалены, а для поиска будут использоваться новые объединенные файлы.</p>
-<p>Вот как выглядят запрашиваемые файлы до слияния:</p>
+<p><strong>(2) Raw Data File</strong></p>
+<p>When vectors are written to disk, they are saved in Raw Data File containing the raw vectors. As mentioned before, massive-scale vectors need to be saved and managed in multiple data files. Inserted data size varies as users can insert 10 vectors, or 1 million vectors at one time. However, the operation of writing to disk is executed once every 1 second. Thus data files of different sizes are generated.</p>
+<p>Fragmented data files are neither convenient to manage nor easy to access for vector search. Milvus constantly merges these small data files until the merged file size reaches a particular size, for example, 1GB. This particular size can be configured in the API parameter <code translate="no">index_file_size</code> in table creation. Therefore, 100 million 512-dimensional vectors will be distributed and saved in about 200 data files.</p>
+<p>In consideration to incremental computation scenarios, where vectors are inserted and searched concurrently, we need to make sure that once vectors are written to disk, they are available for search. Thus, before the small data files are merged, they can be accessed and searched. Once the merge is completed, the small data files will be removed, and newly merged files will be used for search instead.</p>
+<p>This is how queried files look before the merge:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png" alt="rawdata1" class="doc-image" id="rawdata1" />
-   </span> <span class="img-wrapper"> <span>rawdata1</span> </span></p>
-<p>Запрашиваемые файлы после слияния:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png" alt="rawdata1" class="doc-image" id="rawdata1" />
+    <span>rawdata1</span>
+  </span>
+</p>
+<p>Queried files after the merge:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png" alt="rawdata2" class="doc-image" id="rawdata2" />
-   </span> <span class="img-wrapper"> <span>rawdata2</span> </span></p>
-<p><strong>(3) Индексный файл</strong></p>
-<p>Поиск по файлу Raw Data File - это грубый поиск, который сравнивает расстояния между векторами запроса и исходными векторами и вычисляет k ближайших векторов. Грубый поиск неэффективен. Эффективность поиска может быть значительно увеличена, если поиск основан на индексном файле, в котором векторы индексируются. Создание индекса требует дополнительного дискового пространства и обычно занимает много времени.</p>
-<p>Так в чем же разница между файлами сырых данных и индексными файлами? Проще говоря, в Raw Data File записывается каждый вектор вместе с его уникальным идентификатором, а в Index File - результаты кластеризации векторов, такие как тип индекса, центроиды кластеров и векторы в каждом кластере.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png" alt="rawdata2" class="doc-image" id="rawdata2" />
+    <span>rawdata2</span>
+  </span>
+</p>
+<p><strong>(3) Index File</strong></p>
+<p>The search based on Raw Data File is brute-force search which compares the distances between query vectors and origin vectors, and computes the nearest k vectors. Brute-force search is inefficient. Search efficiency can be greatly increased if the search is based on Index File where vectors are indexed. Building index requires additional disk space and is usually time-consuming.</p>
+<p>So what are the differences between Raw Data Files and Index Files? To put it simple, Raw Data File records every single vector together with their unique ID while Index File records vector clustering results such as index type, cluster centroids, and vectors in each cluster.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png" alt="indexfile" class="doc-image" id="indexfile" />
-   </span> <span class="img-wrapper"> <span>индексный файл</span> </span></p>
-<p>Вообще говоря, Index File содержит больше информации, чем Raw Data File, но при этом размер файлов гораздо меньше, так как векторы упрощаются и квантуются в процессе построения индекса (для определенных типов индексов).</p>
-<p>Вновь созданные таблицы по умолчанию ищутся методом грубого вычисления. После создания индекса в системе Milvus будет автоматически строить индекс для объединенных файлов, размер которых достигает 1 ГБ, в отдельном потоке. По завершении построения индекса генерируется новый индексный файл. Необработанные файлы данных будут заархивированы для построения индекса на основе других типов индексов.</p>
-<p>Milvus автоматически строит индекс для файлов, размер которых достигает 1 ГБ:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png" alt="indexfile" class="doc-image" id="indexfile" />
+    <span>indexfile</span>
+  </span>
+</p>
+<p>Generally speaking, Index File contains more information than Raw Data File, yet the file sizes are much smaller as vectors are simplified and quantized during the index building process (for certain index types).</p>
+<p>Newly created tables are by default searched by brute-computation. Once the index is created in the system, Milvus will automatically build index for merged files that reach the size of 1 GB in a standalone thread. When the index building is completed, a new Index File is generated. The raw data files will be archived for index building based on other index types.</p>
+<p>Milvus automatically build index for files that reach 1 GB:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png" alt="buildindex" class="doc-image" id="buildindex" />
-   </span> <span class="img-wrapper"> <span>buildindex</span> </span></p>
-<p>Построение индекса завершено:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png" alt="buildindex" class="doc-image" id="buildindex" />
+    <span>buildindex</span>
+  </span>
+</p>
+<p>Index building completed:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png" alt="indexcomplete" class="doc-image" id="indexcomplete" />
-   </span> <span class="img-wrapper"> <span>indexcomplete</span> </span></p>
-<p>Индекс не будет автоматически строиться для файлов необработанных данных, которые не достигают 1 ГБ, что может замедлить скорость поиска. Чтобы избежать этой ситуации, необходимо вручную принудительно построить индекс для этой таблицы.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png" alt="indexcomplete" class="doc-image" id="indexcomplete" />
+    <span>indexcomplete</span>
+  </span>
+</p>
+<p>Index will not be automatically built for raw data files that do not reach 1 GB, which may slow down the search speed. To avoid this situation, you need to manually force build index for this table.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png" alt="forcebuild" class="doc-image" id="forcebuild" />
-   </span> <span class="img-wrapper"> <span>forcebuild</span> </span></p>
-<p>После принудительного построения индекса для файла производительность поиска значительно повышается.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png" alt="forcebuild" class="doc-image" id="forcebuild" />
+    <span>forcebuild</span>
+  </span>
+</p>
+<p>After index is force built for the file, the search performance is greatly enhanced.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png" alt="indexfinal" class="doc-image" id="indexfinal" />
-   </span> <span class="img-wrapper"> <span>indexfinal</span> </span></p>
-<p><strong>(4) Метаданные</strong></p>
-<p>Как упоминалось ранее, 100 миллионов 512-мерных векторов хранятся в 200 дисковых файлах. При построении индекса для этих векторов потребуется еще 200 индексных файлов, что в сумме составит 400 файлов (включая дисковые и индексные файлы). Необходим эффективный механизм для управления метаданными (статусами файлов и другой информацией) этих файлов, чтобы проверять статусы файлов, удалять или создавать файлы.</p>
-<p>Использование баз данных OLTP для управления этой информацией является хорошим выбором. Автономный Milvus использует SQLite для управления метаданными, а в распределенном развертывании Milvus использует MySQL. При запуске сервера Milvus в SQLite/MySQL создаются 2 таблицы (а именно 'Tables' и 'TableFiles') соответственно. В 'Tables' записывается информация о таблицах, а в 'TableFiles' - информация о файлах данных и индексных файлах.</p>
-<p>Как показано на схеме ниже, "Tables" содержит метаданные, такие как имя таблицы (table_id), размерность вектора (dimension), дата создания таблицы (created_on), статус таблицы (state), тип индекса (engine_type), а также количество кластеров вектора (nlist) и метод вычисления расстояния (metric_type).</p>
-<p>А 'TableFiles' содержит имя таблицы, к которой принадлежит файл (table_id), тип индекса файла (engine_type), имя файла (file_id), тип файла (file_type), размер файла (file_size), количество строк (row_count) и дату создания файла (created_on).</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png" alt="indexfinal" class="doc-image" id="indexfinal" />
+    <span>indexfinal</span>
+  </span>
+</p>
+<p><strong>(4) Meta Data</strong></p>
+<p>As mentioned earlier, 100 million 512-dimensional vectors are saved in 200 disk files. When index is built for these vectors, there would be 200 additional index files, which makes the total number of files to 400 (including both disk files and index files). An efficient mechanism is required to manage the meta data (file statuses and other information) of these files in order to check the file statuses, remove or create files.</p>
+<p>Using OLTP databases to manage these information is a good choice. Standalone Milvus uses SQLite to manage meta data while in distributed deployment, Milvus uses MySQL. When Milvus server starts, 2 tables (namely ‘Tables’ and ‘TableFiles’) are created in SQLite/MySQL respectively. ‘Tables’ records table information and ‘TableFiles’ records information of data files and index files.</p>
+<p>As demonstrated in below flowchart, ‘Tables’ contains meta data information such as table name (table_id), vector dimension (dimension), table creation date (created_on), table status (state), index type (engine_type), and number of vector clusters (nlist) and distance computation method (metric_type).</p>
+<p>And ‘TableFiles’ contains name of the table the file belongs to (table_id), index type of the file (engine_type), file name (file_id), file type (file_type), file size (file_size), number of rows (row_count) and file creation date (created_on).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png" alt="metadata" class="doc-image" id="metadata" />
-   </span> <span class="img-wrapper"> <span>метаданные</span> </span></p>
-<p>С помощью этих метаданных можно выполнять различные операции. Ниже приведены примеры:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png" alt="metadata" class="doc-image" id="metadata" />
+    <span>metadata</span>
+  </span>
+</p>
+<p>With these meta data, various operations can be executed. The following are some examples:</p>
 <ul>
-<li>Чтобы создать таблицу, Meta Manager достаточно выполнить SQL-оператор: <code translate="no">INSERT INTO TABLES VALUES(1, 'table_2, 512, xxx, xxx, ...)</code>.</li>
-<li>Чтобы выполнить векторный поиск в таблице_2, Meta Manager выполнит запрос в SQLite/MySQL, который де-факто является SQL-оператором: <code translate="no">SELECT * FROM TableFiles WHERE table_id='table_2'</code> для получения информации о файлах таблицы_2. Затем эти файлы будут загружены в память планировщиком запросов для вычисления поиска.</li>
-<li>Мгновенное удаление таблицы недопустимо, так как на нее могут выполняться запросы. Поэтому существуют мягкое и жесткое удаление таблицы. При удалении таблицы она будет помечена как "мягкое удаление", и дальнейшие запросы или изменения в ней запрещены. Однако запросы, которые выполнялись до удаления, все еще будут выполняться. Только когда все эти запросы перед удалением будут завершены, таблица вместе с ее метаданными и связанными файлами будет удалена навсегда.</li>
+<li>To create a table, Meta Manager only needs to execute a SQL statement: <code translate="no">INSERT INTO TABLES VALUES(1, 'table_2, 512, xxx, xxx, ...)</code>.</li>
+<li>To execute vector search on table_2, Meta Manager will execute a query in SQLite/MySQL, which is a de facto SQL statement: <code translate="no">SELECT * FROM TableFiles WHERE table_id='table_2'</code> to retrieve the file information of table_2. Then these files will be loaded into memory by Query Scheduler for search computation.</li>
+<li>It is not allowed to instantly delete a table as there might be queries being executed on it. That’s why there are soft-delete and hard-delete for a table. When you delete a table, it will be labeled as ‘soft-delete’, and no further querying or changes are allowed to be made to it. However, the queries that were running before the deletion is still going on. Only when all these pre-deletion queries are completed, the table, together with its meta data and related files, will be hard-deleted for good.</li>
 </ul>
-<p><strong>(5) Планировщик запросов</strong></p>
-<p>Приведенная ниже диаграмма демонстрирует процесс поиска векторов на CPU и GPU путем запроса файлов (файлов исходных данных и индексных файлов), которые копируются и сохраняются на диске, в памяти CPU и в памяти GPU для поиска topk наиболее похожих векторов.</p>
+<p><strong>(5) Query Scheduler</strong></p>
+<p>Below chart demonstrates the vector search process in both CPU and GPU by querying files (raw data files and index files) which are copied and saved in disk, CPU memory and GPU memory for the topk most similar vectors.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png" alt="topkresult" class="doc-image" id="topkresult" />
-   </span> <span class="img-wrapper"> <span>topkresult</span> </span></p>
-<p>Алгоритм планирования запросов значительно повышает производительность системы. Основная философия разработки заключается в достижении наилучшей производительности поиска за счет максимального использования аппаратных ресурсов. Ниже приведено лишь краткое описание планировщика запросов, в будущем этой теме будет посвящена отдельная статья.</p>
-<p>Первый запрос к заданной таблице мы называем "холодным" запросом, а последующие - "теплыми". При первом запросе к таблице Milvus выполняет много работы по загрузке данных в память CPU и некоторых данных в память GPU, что отнимает много времени. При последующих запросах поиск происходит гораздо быстрее, так как часть или все данные уже находятся в памяти процессора, что экономит время на чтение с диска.</p>
-<p>Чтобы сократить время поиска при первом запросе, Milvus предлагает конфигурацию Preload Table (<code translate="no">preload_table</code>), которая обеспечивает автоматическую предварительную загрузку таблиц в память процессора при запуске сервера. Для таблицы, содержащей 100 миллионов 512-мерных векторов, что составляет 200 ГБ, скорость поиска будет самой высокой, если памяти процессора достаточно для хранения всех этих данных. Однако если таблица содержит миллиарды векторов, то иногда неизбежно приходится освобождать память CPU/GPU для добавления новых данных, которые не запрашиваются. В настоящее время мы используем LRU (Latest Recently Used) в качестве стратегии замены данных.</p>
-<p>Как показано на диаграмме ниже, предположим, что на диске хранится 6 индексных файлов. Память CPU может хранить только 3 индексных файла, а память GPU - только 1 индексный файл.</p>
-<p>Когда начинается поиск, в память CPU загружаются 3 индексных файла для запроса. Первый файл будет освобожден из памяти CPU сразу после запроса. Тем временем в память процессора загружается четвертый файл. Точно так же, когда файл запрашивается в памяти GPU, он мгновенно освобождается и заменяется новым файлом.</p>
-<p>Планировщик запросов в основном обрабатывает 2 набора очередей задач, одна из которых связана с загрузкой данных, а другая - с выполнением поиска.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png" alt="topkresult" class="doc-image" id="topkresult" />
+    <span>topkresult</span>
+  </span>
+</p>
+<p>Query scheduling algorithm significantly improves system performance. The basic design philosophy is to achieve the best search performance through maximum utilization of hardware resources. Below is just a brief description of query scheduler and there will be a dedicated article about this topic in the future.</p>
+<p>We call the first query against a given table the ‘cold’ query, and subsequent queries the ‘warm’ query. When the first query is made against a given table, Milvus does a lot of work to load data into CPU memory, and some data into GPU memory, which is time-consuming. In further queries, the search is much faster as partial or all the data are already in CPU memory which saves the time to read from the disk.</p>
+<p>To shorten the search time of the first query, Milvus provides Preload Table (<code translate="no">preload_table</code>) configuration which enables automatic pre-loading of tables into CPU memory upon server start-up. For a table containing 100 million 512-dimensional vectors, which is 200 GB, the search speed is the fastest if there’s enough CPU memory to store all these data. However, if the table contains billion-scale vectors, it is sometimes inevitable to free up CPU/GPU memory to add new data that are not queried. Currently, we use LRU (Latest Recently Used) as the data replacement strategy.</p>
+<p>As shown in below chart, assume there is a table that has 6 index files stored on the disk. The CPU memory can only store 3 index files, and GPU memory only 1 index file.</p>
+<p>When the search starts, 3 index files are loaded into CPU memory for query. The first file will be released from CPU memory immediately after it is queried. Meanwhile, the 4th file is loaded into CPU memory. In the same way, when a file is queried in GPU memory, it will be instantly released and replaced with a new file.</p>
+<p>Query scheduler mainly handles 2 sets of task queues, one queue is about data loading and another is about search execution.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png" alt="queryschedule" class="doc-image" id="queryschedule" />
-   </span> <span class="img-wrapper"> <span>queryschedule</span> </span></p>
-<p><strong>(6) Редуктор результатов</strong></p>
-<p>Существует 2 ключевых параметра, связанных с векторным поиском: первый - 'n', означающий n количество целевых векторов; второй - 'k', означающий k наиболее похожих векторов. Результаты поиска на самом деле представляют собой n наборов KVP (пар ключ-значение), каждый из которых содержит k пар ключ-значение. Поскольку запросы должны выполняться к каждому отдельному файлу, независимо от того, является ли он файлом необработанных данных или индексным файлом, для каждого файла будет получено n наборов топ-k наборов результатов. Все эти наборы результатов объединяются, чтобы получить наборы результатов top-k для таблицы.</p>
-<p>В примере ниже показано, как объединяются и сокращаются наборы результатов для векторного поиска по таблице с 4 индексными файлами (n=2, k=3). Обратите внимание, что каждый набор результатов имеет 2 столбца. Левый столбец представляет собой идентификатор вектора, а правый - евклидово расстояние.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png" alt="queryschedule" class="doc-image" id="queryschedule" />
+    <span>queryschedule</span>
+  </span>
+</p>
+<p><strong>(6) Result Reducer</strong></p>
+<p>There are 2 key parameters related to vector search: one is ’n’ which means n number of target vectors; another is ‘k’ meaning the top k most similar vectors. The search results are actually n sets of KVP (key-value pairs), each having k pairs of key-value. As queries need to be executed against each individual file, no matter it is raw data file or index file, n sets of top-k result sets will be retrieved for each file. All these result sets are merged to get the top-k result sets of the table.</p>
+<p>Below example shows how result sets are merged and reduced for the vector search against a table with 4 index files (n=2, k=3). Note that each result set has 2 columns. The left column represents the vector id and the right column represents the Euclidean distance.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png" alt="result" class="doc-image" id="result" />
-   </span> <span class="img-wrapper"> <span>результат</span> </span></p>
-<p><strong>(7) Будущая оптимизация</strong></p>
-<p>Ниже приведены некоторые мысли о возможных оптимизациях управления данными.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png" alt="result" class="doc-image" id="result" />
+    <span>result</span>
+  </span>
+</p>
+<p><strong>(7) Future Optimization</strong></p>
+<p>The following are some thoughts on possible optimizations of data management.</p>
 <ul>
-<li>Что если данные в неизменяемом буфере или даже мутабельном буфере можно будет также мгновенно запрашивать? В настоящее время данные в неизменяемом буфере не могут быть запрошены, пока они не будут записаны на диск. Некоторые пользователи больше заинтересованы в мгновенном доступе к данным после их вставки.</li>
-<li>Предоставьте функциональность разбиения таблиц, которая позволит пользователю разделить очень большие таблицы на более мелкие разделы и выполнять векторный поиск по заданному разделу.</li>
-<li>Добавить к векторам некоторые атрибуты, которые можно фильтровать. Например, некоторые пользователи хотят искать только среди векторов с определенными атрибутами. Требуется получить атрибуты векторов и даже необработанные векторы. Один из возможных подходов - использование базы данных KV, например RocksDB.</li>
-<li>Обеспечить функциональность миграции данных, позволяющую автоматически переносить устаревшие данные в другое пространство хранения. В некоторых сценариях, где данные поступают постоянно, они могут устаревать. Поскольку некоторым пользователям важны только данные за последний месяц и они выполняют поиск по ним, старые данные становятся менее полезными, занимая много места на диске. Механизм миграции данных помогает освободить дисковое пространство для новых данных.</li>
+<li>What if the data in immutable buffer or even mutable buffer can also be instantly queried? Currently, the data in immutable buffer cannot be queried, not until they are written to disk. Some users are more interested in instantaneous access of data after insertion.</li>
+<li>Provide table partitioning functionality that allows user to divide very large tables into smaller partitions, and execute vector search against a given partition.</li>
+<li>Add to vectors some attributes which can be filtered. For example, some users only want to search among the vectors with certain attributes. It is required to retrieve vector attributes and even raw vectors. One possible approach is to use a KV database such as RocksDB.</li>
+<li>Provide data migration functionality that enables automatic migration of outdated data to other storage space. For some scenarios where data flows in all the time, data might be aging. As some users only care about and execute searches against the data of the most recent month, the older data become less useful yet they consume much disk space. A data migration mechanism helps free up disk space for new data.</li>
 </ul>
-<h2 id="Summary" class="common-anchor-header">Резюме<button data-href="#Summary" class="anchor-icon" translate="no">
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -158,8 +184,8 @@ origin: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В этой статье в основном представлена стратегия управления данными в Milvus. Другие статьи о распределенном развертывании Milvus, выборе методов векторного индексирования и планировщике запросов будут опубликованы в ближайшее время. Следите за новостями!</p>
-<h2 id="Related-blogs" class="common-anchor-header">Похожие блоги<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+    </button></h2><p>This article mainly introduces the data management strategy in Milvus. More articles about Milvus distributed deployment, selection of vector indexing methods and query scheduler will be coming soon. Stay tuned!</p>
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,6 +201,6 @@ origin: null
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Управление метаданными в Milvus (1): Как просматривать метаданные</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d">Управление метаданными Milvus (2): Поля в таблице метаданных</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus Metadata Management (1): How to View Metadata</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d">Milvus Metadata Management (2): Fields in the Metadata Table</a></li>
 </ul>

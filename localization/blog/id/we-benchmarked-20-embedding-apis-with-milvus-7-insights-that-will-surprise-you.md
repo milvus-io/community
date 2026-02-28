@@ -1,15 +1,15 @@
 ---
 id: >-
   we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md
-title: >-
-  Kami Membandingkan 20+ API Penyematan dengan Milvus: 7 Wawasan yang Akan
-  Mengejutkan Anda
+title: >
+  We Benchmarked 20+ Embedding APIs with Milvus: 7 Insights That Will Surprise
+  You
 author: Jeremy Zhu
 date: 2025-05-23T00:00:00.000Z
 desc: >-
-  API penyematan yang paling populer bukanlah yang tercepat. Geografi lebih
-  penting daripada arsitektur model. Dan terkadang CPU seharga $20/bulan
-  mengalahkan panggilan API seharga $200/bulan.
+  The most popular embedding APIs aren't the fastest. Geography matters more
+  than model architecture. And sometimes a $20/month CPU beats a $200/month API
+  call.
 cover: >-
   assets.zilliz.com/We_Benchmarked_20_Embedding_AP_Is_with_Milvus_7_Insights_That_Will_Surprise_You_12268622f0.png
 tag: Engineering
@@ -23,17 +23,17 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md
 ---
-<p><strong>Mungkin setiap pengembang AI telah membangun sistem RAG yang bekerja dengan sempurna... di lingkungan lokal mereka.</strong></p>
-<p>Anda telah mendapatkan akurasi pengambilan, mengoptimalkan basis data vektor Anda, dan demo Anda berjalan dengan lancar. Kemudian Anda menerapkannya ke produksi dan tiba-tiba:</p>
+<p><strong>Probably every AI developer has built a RAG system that works perfectly… in their local environment.</strong></p>
+<p>You’ve nailed the retrieval accuracy, optimized your vector database, and your demo runs like butter. Then you deploy to production and suddenly:</p>
 <ul>
-<li><p>Kueri lokal 200ms Anda membutuhkan waktu 3 detik untuk pengguna yang sebenarnya</p></li>
-<li><p>Rekan kerja di berbagai wilayah melaporkan kinerja yang sama sekali berbeda</p></li>
-<li><p>Penyedia penyematan yang Anda pilih untuk "akurasi terbaik" menjadi hambatan terbesar Anda</p></li>
+<li><p>Your 200ms local queries take 3 seconds for actual users</p></li>
+<li><p>Colleagues in different regions report completely different performance</p></li>
+<li><p>The embedding provider you chose for “best accuracy” becomes your biggest bottleneck</p></li>
 </ul>
-<p>Apa yang terjadi? Inilah pembunuh kinerja yang tidak ada tolok ukurnya: <strong>latensi API penyematan</strong>.</p>
-<p>Meskipun peringkat MTEB terobsesi dengan skor penarikan dan ukuran model, mereka mengabaikan metrik yang dirasakan pengguna Anda-berapa lama mereka menunggu sebelum melihat respons apa pun. Kami menguji setiap penyedia embedding utama di seluruh kondisi dunia nyata dan menemukan perbedaan latensi yang ekstrem yang akan membuat Anda mempertanyakan seluruh strategi pemilihan penyedia.</p>
-<p><strong><em>Spoiler: API penyematan yang paling populer bukanlah yang tercepat. Geografi lebih penting daripada arsitektur model. Dan terkadang <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">CPU</annotation><mrow><mi>20/bulanCPUbeatsa20/bulan</mi></mrow><annotation encoding="application/x-tex">mengalahkan</annotation></semantics></math></span></span>panggilan API</em></strong><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><strong><em> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">20/bulanCPUbeatsa200/bulan</span></span></span></span>.</em></strong></p>
-<h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">Mengapa Menanamkan Latensi API Merupakan Hambatan Tersembunyi di RAG<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
+<p>What happened? Here’s the performance killer no one benchmarks: <strong>embedding API latency</strong>.</p>
+<p>While MTEB rankings obsess over recall scores and model sizes, they ignore the metric your users feel—how long they wait before seeing any response. We tested every major embedding provider across real-world conditions and discovered extreme latency differences they’ll make you question your entire provider selection strategy.</p>
+<p><strong><em>Spoiler: The most popular embedding APIs aren’t the fastest. Geography matters more than model architecture. And sometimes a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mi>C</mi><mi>P</mi><mi>U</mi><mi>b</mi><mi>e</mi><mi>a</mi><mi>t</mi><mi>s</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">20/month CPU beats a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">20/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal" style="margin-right:0.13889em;">CP</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord mathnormal">b</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">s</span><span class="mord mathnormal">a</span></span></span></span>200/month API call.</em></strong></p>
+<h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">Why Embedding API Latency Is the Hidden Bottleneck in RAG<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,20 +48,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika membangun sistem RAG, pencarian e-commerce, atau mesin rekomendasi, model penyematan adalah komponen inti yang mengubah teks menjadi vektor, sehingga mesin dapat memahami semantik dan melakukan pencarian kemiripan yang efisien. Meskipun kami biasanya melakukan pra-komputasi embedding untuk pustaka dokumen, kueri pengguna masih memerlukan panggilan API embedding waktu nyata untuk mengubah pertanyaan menjadi vektor sebelum pengambilan, dan latensi waktu nyata ini sering menjadi penghambat kinerja di seluruh rantai aplikasi.</p>
-<p>Tolok ukur penyematan yang populer seperti MTEB berfokus pada akurasi penarikan atau ukuran model, dan sering kali mengabaikan metrik kinerja yang sangat penting, yaitu latensi API. Dengan menggunakan Fungsi <code translate="no">TextEmbedding</code> dari Milvus, kami melakukan pengujian dunia nyata yang komprehensif pada penyedia layanan penyematan utama di Amerika Utara dan Asia.</p>
-<p>Latensi penyematan muncul pada dua tahap kritis:</p>
-<h3 id="Query-Time-Impact" class="common-anchor-header">Dampak Waktu Kueri</h3><p>Dalam alur kerja RAG pada umumnya, ketika pengguna mengajukan pertanyaan, sistem harus:</p>
+    </button></h2><p>When building RAG systems, e-commerce search, or recommendation engines, embedding models are the core component that transforms text into vectors, enabling machines to understand semantics and perform efficient similarity searches. While we typically pre-compute embeddings for document libraries, user queries still require real-time embedding API calls to convert questions into vectors before retrieval, and this real-time latency often becomes the performance bottleneck in the entire application chain.</p>
+<p>Popular embedding benchmarks like MTEB focus on recall accuracy or model size, often overlooking the crucial performance metric—API latency. Using Milvus’s <code translate="no">TextEmbedding</code> Function, we conducted comprehensive real-world tests on major embedding service providers in North America and Asia.</p>
+<p>Embedding latency manifests at two critical stages:</p>
+<h3 id="Query-Time-Impact" class="common-anchor-header">Query-Time Impact</h3><p>In a typical RAG workflow, when a user asks a question, the system must:</p>
 <ul>
-<li><p>Mengubah kueri menjadi vektor melalui panggilan API penyematan</p></li>
-<li><p>Mencari vektor yang serupa di Milvus</p></li>
-<li><p>Mengumpankan hasil dan pertanyaan asli ke LLM</p></li>
-<li><p>Menghasilkan dan mengembalikan jawaban</p></li>
+<li><p>Convert the query to a vector via an embedding API call</p></li>
+<li><p>Search for similar vectors in Milvus</p></li>
+<li><p>Feed results and the original question to an LLM</p></li>
+<li><p>Generate and return the answer</p></li>
 </ul>
-<p>Banyak pengembang menganggap pembuatan jawaban LLM adalah bagian yang paling lambat. Namun, kemampuan output streaming dari banyak LLM menciptakan ilusi kecepatan - Anda melihat token pertama dengan cepat. Pada kenyataannya, jika panggilan API penyematan Anda memerlukan waktu ratusan milidetik atau bahkan detik, hal ini akan menjadi hambatan pertama - dan yang paling mencolok - dalam rantai respons Anda.</p>
-<h3 id="Data-Ingestion-Impact" class="common-anchor-header">Dampak Konsumsi Data</h3><p>Baik membangun indeks dari awal atau melakukan pembaruan rutin, konsumsi massal membutuhkan vektorisasi ribuan atau jutaan potongan teks. Jika setiap panggilan penyematan mengalami latensi yang tinggi, seluruh pipeline data Anda akan melambat secara dramatis, sehingga menunda rilis produk dan pembaruan basis pengetahuan.</p>
-<p>Kedua situasi tersebut menjadikan latensi API penyematan sebagai metrik kinerja yang tidak dapat dinegosiasikan untuk sistem RAG produksi.</p>
-<h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">Mengukur Latensi API Penyematan Dunia Nyata dengan Milvus<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
+<p>Many developers assume the LLM’s answer generation is the slowest part. However, many LLMs’ streaming output capability creates an illusion of speed—you see the first token quickly. In reality, if your embedding API call takes hundreds of milliseconds or even seconds, it becomes the first—and most noticeable—bottleneck in your response chain.</p>
+<h3 id="Data-Ingestion-Impact" class="common-anchor-header">Data Ingestion Impact</h3><p>Whether building an index from scratch or performing routine updates, bulk ingestion requires vectorizing thousands or millions of text chunks. If each embedding call experiences high latency, your entire data pipeline slows dramatically, delaying product releases and knowledge base updates.</p>
+<p>Both situations make embedding API latency a non-negotiable performance metric for production RAG systems.</p>
+<h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">Measuring Real-World Embedding API Latency with Milvus<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,21 +76,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus adalah basis data vektor sumber terbuka dan berkinerja tinggi yang menawarkan antarmuka Fungsi <code translate="no">TextEmbedding</code> yang baru. Fitur ini secara langsung mengintegrasikan model penyematan populer dari OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, dan banyak lagi penyedia lainnya ke dalam pipeline data Anda, menyederhanakan pipeline pencarian vektor Anda dengan satu panggilan.</p>
-<p>Dengan menggunakan antarmuka fungsi baru ini, kami menguji dan membuat tolok ukur API penyematan populer dari penyedia terkenal seperti OpenAI dan Cohere, serta penyedia lainnya seperti AliCloud dan SiliconFlow, mengukur latensi ujung ke ujung dalam skenario penerapan yang realistis.</p>
-<p>Rangkaian pengujian komprehensif kami mencakup berbagai konfigurasi model:</p>
+    </button></h2><p>Milvus is an open-source, high-performance vector database that offers a new <code translate="no">TextEmbedding</code> Function interface. This feature directly integrates popular embedding models from OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and many more providers into your data pipeline, streamlining your vector search pipeline with a single call.</p>
+<p>Using this new function interface, we tested and benchmarked popular embedding APIs from well-known providers like OpenAI and Cohere, as well as others like AliCloud and SiliconFlow, measuring their end-to-end latency in realistic deployment scenarios.</p>
+<p>Our comprehensive test suite covered various model configurations:</p>
 <table>
 <thead>
-<tr><th><strong>Penyedia</strong></th><th><strong>Model</strong></th><th><strong>Dimensi</strong></th></tr>
+<tr><th><strong>Provider</strong></th><th><strong>Model</strong></th><th><strong>Dimensions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>OpenAI</td><td>penyematan teks-ada-002</td><td>1536</td></tr>
-<tr><td>OpenAI</td><td>penyematan-teks-3-kecil</td><td>1536</td></tr>
-<tr><td>OpenAI</td><td>text-embedding-3-besar</td><td>3072</td></tr>
-<tr><td>AWS Bedrock</td><td>amazon.titan-embed-text-v2.0</td><td>1024</td></tr>
-<tr><td>Google Vertex AI</td><td>penyematan-teks-005</td><td>768</td></tr>
-<tr><td>Google Vertex AI</td><td>penyematan teks multibahasa-002</td><td>768</td></tr>
-<tr><td>VoyageAI</td><td>voyage-3-besar</td><td>1024</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-ada-002</td><td>1536</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-small</td><td>1536</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-large</td><td>3072</td></tr>
+<tr><td>AWS Bedrock</td><td>amazon.titan-embed-text-v2:0</td><td>1024</td></tr>
+<tr><td>Google Vertex AI</td><td>text-embedding-005</td><td>768</td></tr>
+<tr><td>Google Vertex AI</td><td>text-multilingual-embedding-002</td><td>768</td></tr>
+<tr><td>VoyageAI</td><td>voyage-3-large</td><td>1024</td></tr>
 <tr><td>VoyageAI</td><td>voyage-3</td><td>1024</td></tr>
 <tr><td>VoyageAI</td><td>voyage-3-lite</td><td>512</td></tr>
 <tr><td>VoyageAI</td><td>voyage-code-3</td><td>1024</td></tr>
@@ -98,18 +98,18 @@ origin: >-
 <tr><td>Cohere</td><td>embed-multilingual-v3.0</td><td>1024</td></tr>
 <tr><td>Cohere</td><td>embed-english-light-v3.0</td><td>384</td></tr>
 <tr><td>Cohere</td><td>embed-multilingual-light-v3.0</td><td>384</td></tr>
-<tr><td>Lingkup Dasbor Aliyun</td><td>penyematan-teks-v1</td><td>1536</td></tr>
-<tr><td>Aliyun Dashscope</td><td>penyematan-teks-v2</td><td>1536</td></tr>
-<tr><td>Aliyun Dashscope</td><td>penyematan-teks-v3</td><td>1024</td></tr>
-<tr><td>Aliran silikon</td><td>BAAI/bge-besar-zh-v1.5</td><td>1024</td></tr>
-<tr><td>Aliran silikon</td><td>BAAI/bge-large-en-v1.5</td><td>1024</td></tr>
-<tr><td>Aliran silikon</td><td>netease-youdao/bce-embedding-base_v1</td><td>768</td></tr>
-<tr><td>Aliran silikon</td><td>BAAI/bge-m3</td><td>1024</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v1</td><td>1536</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v2</td><td>1536</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v3</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-large-zh-v1.5</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-large-en-v1.5</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>netease-youdao/bce-embedding-base_v1</td><td>768</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-m3</td><td>1024</td></tr>
 <tr><td>Siliconflow</td><td>Pro/BAAI/bge-m3</td><td>1024</td></tr>
-<tr><td>TEI</td><td>BAAI / bge-base-en-v1.5</td><td>768</td></tr>
+<tr><td>TEI</td><td>BAAI/bge-base-en-v1.5</td><td>768</td></tr>
 </tbody>
 </table>
-<h2 id="7-Key-Findings-from-Our-Benchmarking-Results" class="common-anchor-header">7 Temuan Utama dari Hasil Pembandingan Kami<button data-href="#7-Key-Findings-from-Our-Benchmarking-Results" class="anchor-icon" translate="no">
+<h2 id="7-Key-Findings-from-Our-Benchmarking-Results" class="common-anchor-header">7 Key Findings from Our Benchmarking Results<button data-href="#7-Key-Findings-from-Our-Benchmarking-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,23 +124,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kami menguji model penyematan terkemuka di bawah berbagai ukuran batch, panjang token, dan kondisi jaringan, mengukur latensi rata-rata di semua skenario. Hasilnya mengungkap wawasan utama yang dapat membentuk kembali cara Anda memilih dan mengoptimalkan API penyematan. Mari kita lihat.</p>
-<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1. Efek Jaringan Global Lebih Signifikan daripada yang Anda Pikirkan</h3><p>Lingkungan jaringan mungkin merupakan faktor paling penting yang memengaruhi kinerja API penyematan. Penyedia layanan API penyematan yang sama dapat berkinerja sangat berbeda di seluruh lingkungan jaringan.</p>
+    </button></h2><p>We tested leading embedding models under varying batch sizes, token lengths, and network conditions, measuring median latency across all scenarios. The results uncover key insights that could reshape how you choose and optimize embedding APIs. Let’s take a look.</p>
+<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1. Global Network Effects Are More Significant Than You Think</h3><p>The network environment is perhaps the most critical factor affecting embedding API performance. The same embedding API service provider can perform dramatically differently across network environments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/latency_in_Asia_vs_in_US_cb4b5a425a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Ketika aplikasi Anda digunakan di Asia dan mengakses layanan seperti OpenAI, Cohere, atau VoyageAI yang digunakan di Amerika Utara, latensi jaringan akan meningkat secara signifikan. Pengujian dunia nyata kami menunjukkan latensi panggilan API secara universal meningkat <strong>3 hingga 4 kali lipat</strong>!</p>
-<p>Sebaliknya, ketika aplikasi Anda digunakan di Amerika Utara dan mengakses layanan Asia seperti AliCloud Dashscope atau SiliconFlow, penurunan kinerja bahkan lebih parah. SiliconFlow, khususnya, menunjukkan peningkatan latensi <strong>hampir 100 kali lipat</strong> dalam skenario lintas wilayah!</p>
-<p>Ini berarti Anda harus selalu memilih penyedia penyematan berdasarkan lokasi penerapan dan geografi pengguna-klaim performa tanpa konteks jaringan tidak ada artinya.</p>
-<h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2. Peringkat Kinerja Model Mengungkapkan Hasil yang Mengejutkan</h3><p>Pengujian latensi kami yang komprehensif mengungkapkan hierarki kinerja yang jelas:</p>
+<p>When your application is deployed in Asia and accesses services like OpenAI, Cohere, or VoyageAI deployed in North America, network latency increases significantly. Our real-world tests show API call latency universally increased by <strong>3 to 4 times</strong>!</p>
+<p>Conversely, when your application is deployed in North America and accesses Asian services like AliCloud Dashscope or SiliconFlow, performance degradation is even more severe. SiliconFlow, in particular, showed latency increases of <strong>nearly 100 times</strong> in cross-region scenarios!</p>
+<p>This means you must always select embedding providers based on your deployment location and user geography—performance claims without network context are meaningless.</p>
+<h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2. Model Performance Rankings Reveal Surprising Results</h3><p>Our comprehensive latency testing revealed clear performance hierarchies:</p>
 <ul>
-<li><p><strong>Model berbasis Amerika Utara (latensi rata-rata)</strong>: Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
-<li><p><strong>Model berbasis Asia (latensi rata-rata)</strong>: SiliconFlow &gt; AliCloud Dashscope</p></li>
+<li><p><strong>North America-based Models (median latency)</strong>: Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
+<li><p><strong>Asia-based Models (median latency)</strong>: SiliconFlow &gt; AliCloud Dashscope</p></li>
 </ul>
-<p>Peringkat ini menantang kebijaksanaan konvensional tentang pemilihan penyedia.</p>
+<p>These rankings challenge conventional wisdom about provider selection.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/median_latency_with_batch_size_1_ef83bec9c8.png" alt="" class="doc-image" id="" />
@@ -165,11 +165,11 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Catatan: Karena dampak signifikan dari lingkungan jaringan dan wilayah geografis server terhadap latensi API penyematan waktu nyata, kami membandingkan latensi model berbasis Amerika Utara dan Asia secara terpisah.</p>
-<h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3. Dampak Ukuran Model Bervariasi Secara Dramatis Menurut Penyedia</h3><p>Kami mengamati tren umum di mana model yang lebih besar memiliki latensi yang lebih tinggi daripada model standar, yang memiliki latensi lebih tinggi daripada model yang lebih kecil/lite. Namun, pola ini tidak bersifat universal dan mengungkapkan wawasan penting tentang arsitektur backend. Sebagai contoh:</p>
+<p>Note: Due to the significant impact of network environment and server geographic regions on real-time embedding API latency, we compared North America and Asia-based model latencies separately.</p>
+<h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3. Model Size Impact Varies Dramatically by Provider</h3><p>We observed a general trend where larger models have higher latency than standard models, which have higher latency than smaller/lite models. However, this pattern wasn’t universal and revealed important insights about backend architecture. For example:</p>
 <ul>
-<li><p><strong>Cohere dan OpenAI</strong> menunjukkan kesenjangan kinerja yang minimal di antara ukuran model</p></li>
-<li><p><strong>VoyageAI</strong> menunjukkan perbedaan kinerja yang jelas berdasarkan ukuran model</p></li>
+<li><p><strong>Cohere and OpenAI</strong> showed minimal performance gaps between model sizes</p></li>
+<li><p><strong>VoyageAI</strong> exhibited clear performance differences based on model size</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -189,47 +189,47 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Hal ini menunjukkan bahwa waktu respons API bergantung pada beberapa faktor di luar arsitektur model, termasuk strategi batching backend, pengoptimalan penanganan permintaan, dan infrastruktur khusus penyedia. Pelajarannya jelas: <em>jangan mempercayai ukuran model atau tanggal rilis sebagai indikator kinerja yang dapat diandalkan-selalu uji di lingkungan penerapan Anda sendiri.</em></p>
-<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4. Panjang Token dan Ukuran Batch Menciptakan Trade-off yang Kompleks</h3><p>Tergantung pada implementasi backend Anda, terutama strategi batching Anda. Panjang token mungkin memiliki dampak kecil pada latensi sampai ukuran batch bertambah. Pengujian kami mengungkapkan beberapa pola yang jelas:</p>
+<p>This indicates that API response time depends on multiple factors beyond model architecture, including backend batching strategies, request handling optimization, and provider-specific infrastructure. The lesson is clear: <em>don’t trust model size or release date as reliable performance indicators—always test in your own deployment environment.</em></p>
+<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4. Token Length and Batch Size Create Complex Trade-offs</h3><p>Depending on your backend implementation, especially your batching strategy. Token length may have little impact on latency until batch sizes grow. Our testing revealed some clear patterns:</p>
 <ul>
-<li><p><strong>Latensi OpenAI</strong> tetap cukup konsisten antara batch kecil dan besar, menunjukkan kemampuan batching backend yang baik</p></li>
-<li><p><strong>VoyageAI</strong> menunjukkan efek panjang token yang jelas, menyiratkan pengoptimalan backend batching yang minimal</p></li>
+<li><p><strong>OpenAI’s latency</strong> remained fairly consistent between small and large batches, suggesting generous backend batching capabilities</p></li>
+<li><p><strong>VoyageAI</strong> showed clear token-length effects, implying minimal backend batching optimization</p></li>
 </ul>
-<p>Ukuran batch yang lebih besar meningkatkan latensi absolut tetapi meningkatkan throughput secara keseluruhan. Dalam pengujian kami, berpindah dari batch = 1 ke batch = 10 meningkatkan latensi sebesar 2×-5×, sekaligus meningkatkan throughput total secara substansial. Ini merupakan peluang pengoptimalan yang sangat penting untuk alur kerja pemrosesan massal di mana Anda dapat menukar latensi permintaan individual dengan peningkatan throughput sistem secara keseluruhan.</p>
+<p>Larger batch sizes increase absolute latency but improve overall throughput. In our tests, moving from batch=1 to batch=10 increased latency by 2×-5×, while substantially boosting total throughput. This represents a critical optimization opportunity for bulk processing workflows where you can trade individual request latency for dramatically improved overall system throughput.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Going_from_batch_1_to_10_latency_increased_2_5_9811536a3c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Mulai dari batch = 1 hingga 10, latensi meningkat 2×-5×</p>
-<h3 id="5-API-Reliability-Introduces-Production-Risk" class="common-anchor-header">5. Keandalan API Memperkenalkan Risiko Produksi</h3><p>Kami mengamati variabilitas yang signifikan dalam latensi, terutama dengan OpenAI dan VoyageAI, yang memperkenalkan ketidakpastian ke dalam sistem produksi.</p>
+<p>Going from batch=1 to 10, latency increased 2×–5×</p>
+<h3 id="5-API-Reliability-Introduces-Production-Risk" class="common-anchor-header">5. API Reliability Introduces Production Risk</h3><p>We observed significant variability in latency, particularly with OpenAI and VoyageAI, introducing unpredictability into production systems.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Latency_variance_when_batch_1_d9cd88fb73.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Varians latensi saat batch = 1</p>
+<p>Latency variance when batch=1</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Latency_variance_when_batch_10_5efc33bf4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Varians latensi saat batch = 10</p>
-<p>Meskipun pengujian kami berfokus terutama pada latensi, mengandalkan API eksternal apa pun menimbulkan risiko kegagalan yang melekat, termasuk fluktuasi jaringan, pembatasan tarif penyedia, dan pemadaman layanan. Tanpa SLA yang jelas dari penyedia, pengembang harus menerapkan strategi penanganan kesalahan yang kuat, termasuk percobaan ulang, batas waktu, dan pemutus arus untuk menjaga keandalan sistem di lingkungan produksi.</p>
-<h3 id="6-Local-Inference-Can-Be-Surprisingly-Competitive" class="common-anchor-header">6. Inferensi Lokal Bisa Sangat Kompetitif</h3><p>Pengujian kami juga mengungkapkan bahwa penerapan model penyematan berukuran sedang secara lokal dapat menawarkan kinerja yang sebanding dengan API cloud - temuan penting untuk aplikasi yang hemat atau sensitif terhadap latensi.</p>
-<p>Sebagai contoh, penerapan open-source <code translate="no">bge-base-en-v1.5</code> melalui TEI (Text Embeddings Inference) pada CPU 4c8g yang sederhana sesuai dengan kinerja latensi SiliconFlow, memberikan alternatif inferensi lokal yang terjangkau. Temuan ini sangat penting bagi pengembang individu dan tim kecil yang mungkin kekurangan sumber daya GPU kelas perusahaan tetapi masih membutuhkan kemampuan embedding berkinerja tinggi.</p>
+<p>Latency variance when batch=10</p>
+<p>While our testing focused primarily on latency, relying on any external API introduces inherent failure risks, including network fluctuations, provider rate limiting, and service outages. Without clear SLAs from providers, developers should implement robust error handling strategies, including retries, timeouts, and circuit breakers to maintain system reliability in production environments.</p>
+<h3 id="6-Local-Inference-Can-Be-Surprisingly-Competitive" class="common-anchor-header">6. Local Inference Can Be Surprisingly Competitive</h3><p>Our tests also revealed that deploying mid-sized embedding models locally can offer performance comparable to cloud APIs—a crucial finding for budget-conscious or latency-sensitive applications.</p>
+<p>For example, deploying the open-source <code translate="no">bge-base-en-v1.5</code> via TEI (Text Embeddings Inference) on a modest 4c8g CPU matched SiliconFlow’s latency performance, providing an affordable local-inference alternative. This finding is particularly significant for individual developers and small teams who may lack enterprise-grade GPU resources but still need high-performance embedding capabilities.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/TEI_Latency_2f09be1ef0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Latensi TEI</p>
-<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7. Overhead Milvus Dapat Diabaikan</h3><p>Karena kami menggunakan Milvus untuk menguji latensi API embedding, kami memvalidasi bahwa overhead tambahan yang diperkenalkan oleh Fungsi TextEmbedding Milvus sangat minim dan hampir dapat diabaikan. Pengukuran kami menunjukkan bahwa operasi Milvus hanya menambahkan total 20-40ms sementara pemanggilan API embedding membutuhkan waktu ratusan milidetik hingga beberapa detik, yang berarti Milvus menambahkan kurang dari 5% overhead ke total waktu operasi. Hambatan kinerja terutama terletak pada transmisi jaringan dan kemampuan pemrosesan penyedia layanan API yang disematkan, bukan pada lapisan server Milvus.</p>
-<h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">Tips: Cara Mengoptimalkan Kinerja Penyematan RAG Anda<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
+<p>TEI Latency</p>
+<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7. Milvus Overhead Is Negligible</h3><p>Since we used Milvus to test embedding API latency, we validated that the additional overhead introduced by Milvus’s TextEmbedding Function is minimal and virtually negligible. Our measurements show Milvus operations add only 20-40ms in total while embedding API calls take hundreds of milliseconds to several seconds, meaning Milvus adds less than 5% overhead to the total operation time. The performance bottleneck primarily lies in network transmission and the embedding API service providers’ processing capabilities, not in the Milvus server layer.</p>
+<h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">Tips: How to Optimize Your RAG Embedding Performance<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -244,20 +244,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Berdasarkan tolok ukur kami, kami merekomendasikan strategi berikut untuk mengoptimalkan kinerja penyematan sistem RAG Anda:</p>
-<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1. Selalu Lokalkan Pengujian Anda</h3><p>Jangan mempercayai laporan benchmark umum apa pun (termasuk yang ini!). Anda harus selalu menguji model dalam lingkungan penerapan yang sebenarnya daripada hanya mengandalkan tolok ukur yang dipublikasikan. Kondisi jaringan, kedekatan geografis, dan perbedaan infrastruktur dapat secara dramatis memengaruhi kinerja dunia nyata.</p>
-<h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2. Sesuaikan Penyedia Anda Secara Strategis</h3><ul>
-<li><p><strong>Untuk penerapan di Amerika Utara</strong>: Pertimbangkan Cohere, VoyageAI, OpenAI/Azure, atau GCP Vertex AI-dan selalu lakukan validasi kinerja Anda sendiri</p></li>
-<li><p><strong>Untuk penerapan di Asia</strong>: Pertimbangkan dengan serius penyedia model Asia seperti AliCloud Dashscope atau SiliconFlow, yang menawarkan kinerja regional yang lebih baik</p></li>
-<li><p><strong>Untuk audiens global</strong>: Menerapkan perutean multi-wilayah atau memilih penyedia dengan infrastruktur yang terdistribusi secara global untuk meminimalkan penalti latensi lintas wilayah</p></li>
+    </button></h2><p>Based on our benchmarks, we recommend the following strategies to optimize your RAG system’s embedding performance:</p>
+<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1. Always Localize Your Testing</h3><p>Don’t trust any generic benchmark reports (including this one!). You should always test models within your actual deployment environment rather than relying solely on published benchmarks. Network conditions, geographic proximity, and infrastructure differences can dramatically impact real-world performance.</p>
+<h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2. Geo-Match Your Providers Strategically</h3><ul>
+<li><p><strong>For North American deployments</strong>: Consider Cohere, VoyageAI, OpenAI/Azure, or GCP Vertex AI—and always conduct your own performance validation</p></li>
+<li><p><strong>For Asian deployments</strong>: Seriously consider Asian model providers such as AliCloud Dashscope or SiliconFlow, which offer better regional performance</p></li>
+<li><p><strong>For global audiences</strong>: Implement multi-region routing or select providers with globally distributed infrastructure to minimize cross-region latency penalties</p></li>
 </ul>
-<h3 id="3-Question-Default-Provider-Choices" class="common-anchor-header">3. Mempertanyakan Pilihan Penyedia Default</h3><p>Model embedding OpenAI sangat populer sehingga banyak perusahaan dan pengembang memilihnya sebagai opsi default. Namun, pengujian kami menunjukkan bahwa latensi dan stabilitas OpenAI rata-rata, terlepas dari popularitasnya di pasar. Tantang asumsi tentang penyedia "terbaik" dengan tolok ukur Anda sendiri yang ketat - popularitas tidak selalu berkorelasi dengan kinerja optimal untuk kasus penggunaan spesifik Anda.</p>
-<h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4. Mengoptimalkan Konfigurasi Batch dan Chunk</h3><p>Satu konfigurasi tidak cocok untuk semua model atau kasus penggunaan. Ukuran batch dan panjang chunk yang optimal sangat bervariasi di antara penyedia layanan karena arsitektur backend dan strategi batching yang berbeda. Bereksperimenlah secara sistematis dengan konfigurasi yang berbeda untuk menemukan titik kinerja optimal Anda, dengan mempertimbangkan pertukaran throughput vs latensi untuk kebutuhan aplikasi spesifik Anda.</p>
-<h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5. Menerapkan Caching Strategis</h3><p>Untuk kueri berfrekuensi tinggi, simpan teks kueri dan sematan yang dihasilkan (menggunakan solusi seperti Redis). Kueri identik berikutnya dapat langsung masuk ke cache, sehingga mengurangi latensi menjadi milidetik. Ini merupakan salah satu teknik pengoptimalan latensi kueri yang paling hemat biaya dan berdampak besar.</p>
-<h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6. Pertimbangkan Penerapan Inferensi Lokal</h3><p>Jika Anda memiliki persyaratan yang sangat tinggi untuk latensi konsumsi data, latensi kueri, dan privasi data, atau jika biaya panggilan API sangat mahal, pertimbangkan untuk menggunakan model penyematan secara lokal untuk inferensi. Paket API standar sering kali memiliki batasan QPS, latensi yang tidak stabil, dan kurangnya jaminan SLA-kendala yang dapat menjadi masalah bagi lingkungan produksi.</p>
-<p>Bagi banyak pengembang individu atau tim kecil, kurangnya GPU kelas perusahaan menjadi penghalang bagi penerapan model penyematan berkinerja tinggi secara lokal. Namun, ini tidak berarti meninggalkan inferensi lokal sepenuhnya. Dengan mesin inferensi berkinerja tinggi seperti <a href="https://github.com/huggingface/text-embeddings-inference">inferensi penyematan teks Hugging Face</a>, bahkan menjalankan model penyematan berukuran kecil hingga sedang pada CPU dapat mencapai kinerja yang layak yang dapat mengungguli pemanggilan API dengan latensi tinggi, terutama untuk pembuatan penyematan offline berskala besar.</p>
-<p>Pendekatan ini membutuhkan pertimbangan yang cermat terhadap trade-off antara biaya, kinerja, dan kompleksitas pemeliharaan.</p>
-<h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">Bagaimana Milvus Menyederhanakan Alur Kerja Penyematan Anda<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
+<h3 id="3-Question-Default-Provider-Choices" class="common-anchor-header">3. Question Default Provider Choices</h3><p>OpenAI’s embedding models are so popular that many enterprises and developers choose them as default options. However, our tests revealed that OpenAI’s latency and stability were average at best, despite its market popularity. Challenge assumptions about “best” providers with your own rigorous benchmarks—popularity doesn’t always correlate with optimal performance for your specific use case.</p>
+<h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4. Optimize Batch and Chunk Configurations</h3><p>One configuration doesn’t fit all models or use cases. The optimal batch size and chunk length vary significantly between providers due to different backend architectures and batching strategies. Experiment systematically with different configurations to find your optimal performance point, considering the throughput vs. latency trade-offs for your specific application requirements.</p>
+<h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5. Implement Strategic Caching</h3><p>For high-frequency queries, cache both the query text and its generated embeddings (using solutions like Redis). Subsequent identical queries can directly hit the cache, reducing latency to milliseconds. This represents one of the most cost-effective and impactful query latency optimization techniques.</p>
+<h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6. Consider Local Inference Deployment</h3><p>If you have extremely high requirements for data ingestion latency, query latency, and data privacy, or if API call costs are prohibitive, consider deploying embedding models locally for inference. Standard API plans often come with QPS limitations, unstable latency, and lack of SLA guarantees—constraints that can be problematic for production environments.</p>
+<p>For many individual developers or small teams, the lack of enterprise-grade GPUs is a barrier to local deployment of high-performance embedding models. However, this doesn’t mean abandoning local inference entirely. With high-performance inference engines like <a href="https://github.com/huggingface/text-embeddings-inference">Hugging Face’s text-embeddings-inference</a>, even running small to medium-sized embedding models on a CPU can achieve decent performance that may outperform high-latency API calls, especially for large-scale offline embedding generation.</p>
+<p>This approach requires careful consideration of trade-offs between cost, performance, and maintenance complexity.</p>
+<h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">How Milvus Simplifies Your Embedding Workflow<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -272,18 +272,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Seperti yang telah disebutkan, Milvus bukan hanya basis data vektor berkinerja tinggi - Milvus juga menawarkan antarmuka fungsi penyematan yang nyaman yang terintegrasi secara mulus dengan model penyematan populer dari berbagai penyedia seperti OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, dan banyak lagi di seluruh dunia ke dalam pipa pencarian vektor Anda.</p>
-<p>Milvus melampaui penyimpanan dan pengambilan vektor dengan fitur-fitur yang menyederhanakan integrasi penyematan:</p>
+    </button></h2><p>As mentioned, Milvus is not just a high-performance vector database—it also offers a convenient embedding function interface that seamlessly integrates with popular embedding models from various providers such as OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and more across the world into your vector search pipeline.</p>
+<p>Milvus goes beyond vector storage and retrieval with features that streamline embedding integration:</p>
 <ul>
-<li><p><strong>Manajemen Vektor yang Efisien</strong>: Sebagai basis data berkinerja tinggi yang dibuat untuk koleksi vektor yang sangat besar, Milvus menawarkan penyimpanan yang andal, opsi pengindeksan yang fleksibel (HNSW, IVF, RaBitQ, DiskANN, dan banyak lagi), dan kemampuan pengambilan yang cepat dan akurat.</p></li>
-<li><p>Peralihan<strong>Penyedia</strong> yang<strong>Efisien</strong>: Milvus menawarkan antarmuka Fungsi <code translate="no">TextEmbedding</code>, memungkinkan Anda untuk mengonfigurasi fungsi dengan kunci API Anda, mengganti penyedia atau model secara instan, dan mengukur kinerja dunia nyata tanpa integrasi SDK yang rumit.</p></li>
-<li><p><strong>Jalur Data Ujung ke Ujung</strong>: Hubungi <code translate="no">insert()</code> dengan teks mentah, dan Milvus secara otomatis menyematkan dan menyimpan vektor dalam satu operasi, yang secara dramatis menyederhanakan kode pipeline data Anda.</p></li>
-<li><p><strong>Teks-ke-Hasil dalam Satu Panggilan</strong>: Hubungi <code translate="no">search()</code> dengan kueri teks, dan Milvus menangani penyematan, pencarian, dan pengembalian hasil-semuanya dalam satu panggilan API.</p></li>
-<li><p><strong>Integrasi Penyedia-Agnostik</strong>: Milvus mengabstraksikan detail implementasi penyedia; cukup konfigurasikan Fungsi dan kunci API Anda sekali saja, dan Anda siap menggunakannya.</p></li>
-<li><p><strong>Kompatibilitas Ekosistem Sumber Terbuka</strong>: Apakah Anda menghasilkan embeddings melalui Fungsi <code translate="no">TextEmbedding</code> bawaan kami, inferensi lokal, atau metode lain, Milvus menyediakan kemampuan penyimpanan dan pengambilan yang terpadu.</p></li>
+<li><p><strong>Efficient Vector Management</strong>: As a high-performance database built for massive vector collections, Milvus offers reliable storage, flexible indexing options (HNSW, IVF, RaBitQ, DiskANN, and more), and fast, accurate retrieval capabilities.</p></li>
+<li><p><strong>Streamlined Provider Switching</strong>: Milvus offers a <code translate="no">TextEmbedding</code> Function interface, allowing you to configure the function with your API keys, switch providers or models instantly, and measure real-world performance without complex SDK integration.</p></li>
+<li><p><strong>End-to-End Data Pipelines</strong>: Call <code translate="no">insert()</code> with raw text, and Milvus automatically embeds and stores vectors in one operation, dramatically simplifying your data pipeline code.</p></li>
+<li><p><strong>Text-to-Results in One Call</strong>: Call <code translate="no">search()</code> with text queries, and Milvus handles embedding, searching, and returning results—all in a single API call.</p></li>
+<li><p><strong>Provider-Agnostic Integration</strong>: Milvus abstracts provider implementation details; just configure your Function and API key once, and you’re ready to go.</p></li>
+<li><p><strong>Open-Source Ecosystem Compatibility</strong>: Whether you generate embeddings via our built-in <code translate="no">TextEmbedding</code> Function, local inference, or another method, Milvus provides unified storage and retrieval capabilities.</p></li>
 </ul>
-<p>Hal ini menciptakan pengalaman "Data-In, Insight-Out" yang efisien di mana Milvus menangani pembuatan vektor secara internal, membuat kode aplikasi Anda lebih mudah dan dapat dipelihara.</p>
-<h2 id="Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="common-anchor-header">Kesimpulan: Kebenaran Kinerja yang Dibutuhkan Sistem RAG Anda<button data-href="#Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="anchor-icon" translate="no">
+<p>This creates a streamlined “Data-In, Insight-Out” experience where Milvus handles vector generation internally, making your application code more straightforward and maintainable.</p>
+<h2 id="Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="common-anchor-header">Conclusion: The Performance Truth Your RAG System Needs<button data-href="#Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -298,7 +298,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pembunuh diam-diam dari kinerja RAG bukanlah hal yang dicari oleh sebagian besar pengembang. Sementara tim mencurahkan sumber daya ke dalam rekayasa yang cepat dan pengoptimalan LLM, menyematkan latensi API secara diam-diam menyabotase pengalaman pengguna dengan penundaan yang bisa 100x lebih buruk dari yang diharapkan. Tolok ukur komprehensif kami mengungkap kenyataan pahit: populer bukan berarti berkinerja baik, geografi lebih penting daripada pilihan algoritme dalam banyak kasus, dan kesimpulan lokal terkadang mengalahkan API cloud yang mahal.</p>
-<p>Temuan ini menyoroti titik buta yang krusial dalam pengoptimalan RAG. Hukuman latensi lintas wilayah, peringkat kinerja penyedia yang tidak terduga, dan daya saing yang mengejutkan dari inferensi lokal bukanlah kasus tepi - ini adalah realitas produksi yang memengaruhi aplikasi nyata. Memahami dan mengukur kinerja API penyematan sangat penting untuk memberikan pengalaman pengguna yang responsif.</p>
-<p>Pilihan penyedia embedding Anda adalah salah satu bagian penting dari teka-teki kinerja RAG Anda. Dengan menguji di lingkungan penerapan yang sebenarnya, memilih penyedia yang sesuai secara geografis, dan mempertimbangkan alternatif seperti inferensi lokal, Anda dapat menghilangkan sumber utama penundaan yang dihadapi pengguna dan membangun aplikasi AI yang benar-benar responsif.</p>
-<p>Untuk detail lebih lanjut tentang bagaimana kami melakukan pembandingan ini, lihat <a href="https://github.com/zhuwenxing/text-embedding-bench">buku catatan ini</a>.</p>
+    </button></h2><p>The silent killer of RAG performance isn’t where most developers are looking. While teams pour resources into prompt engineering and LLM optimization, embedding API latency quietly sabotages user experience with delays that can be 100x worse than expected. Our comprehensive benchmarks expose the harsh reality: popular doesn’t mean performant, geography matters more than algorithm choice in many cases, and local inference sometimes beats expensive cloud APIs.</p>
+<p>These findings highlight a crucial blind spot in RAG optimization. Cross-region latency penalties, unexpected provider performance rankings, and the surprising competitiveness of local inference aren’t edge cases—they’re production realities affecting real applications. Understanding and measuring embedding API performance is essential for delivering responsive user experiences.</p>
+<p>Your embedding provider choice is one critical piece of your RAG performance puzzle. By testing in your actual deployment environment, selecting geographically appropriate providers, and considering alternatives like local inference, you can eliminate a major source of user-facing delays and build truly responsive AI applications.</p>
+<p>For more details on how we did this benchmarking, check <a href="https://github.com/zhuwenxing/text-embedding-bench">this notebook</a>.</p>

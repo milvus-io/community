@@ -1,29 +1,32 @@
 ---
 id: data-security.md
-title: Milvusベクターデータベースはどのようにデータセキュリティを確保しているのか？
+title: How Does the Milvus Vector Database Ensure Data Security?
 author: Angela Ni
 date: 2022-09-05T00:00:00.000Z
-desc: Milvusのユーザー認証とトランジット時の暗号化について学ぶ。
+desc: Learn about user authentication and encryption in transit in Milvus.
 cover: assets.zilliz.com/Security_192e35a790.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
 canonicalUrl: 'https://milvus.io/blog/data-security.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Security_192e35a790.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>カバー画像</span> </span></p>
-<p>Milvus2.1では、データの安全性を考慮し、ユーザー認証とTLS（トランスポートレイヤーセキュリティ）接続が正式に利用できるようになりました。ユーザー認証がない場合、SDKを使えば誰でもベクターデータベースの全てのデータにアクセスすることができます。しかし、Milvus 2.1からは、有効なユーザ名とパスワードを持つ者のみがMilvusベクトルデータベースにアクセスすることができます。また、Milvus 2.1では、データのセキュリティがTLSによってさらに保護され、コンピュータネットワークにおける安全な通信が保証されています。</p>
-<p>本稿では、Milvusベクトルデータベースがユーザー認証とTLS接続によってどのようにデータセキュリティを確保しているかを分析し、ベクトルデータベースを使用する際にデータセキュリティを確保したいユーザーとして、この2つの機能をどのように活用できるかを説明することを目的とする。</p>
-<p><strong>戻る</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Security_192e35a790.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
+<p>In full consideration of your data security, user authentication and transport layer security (TLS) connection are now officially available in Milvus 2.1. Without user authentication, anyone can access all data in your vector database with SDK. However, starting from Milvus 2.1, only those with a valid username and password can access the Milvus vector database. In addition, in Milvus 2.1 data security is further protected by TLS, which ensures secure communications in a computer network.</p>
+<p>This article aims to analyze how Milvus the vector database ensures data security with user authentication and TLS connection and explain how you can utilize these two features as a user who wants to ensure data security when using the vector database.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#What-is-database-security-and-why-is-it-important">データベースのセキュリティとは？</a></li>
-<li><a href="#How-does-the-Milvus-vector-database-ensure-data-security">Milvusベクトルデータベースはどのようにデータセキュリティを確保しているのか？</a><ul>
-<li><a href="#User-authentication">ユーザー認証</a></li>
-<li><a href="#TLS-connection">TLS接続</a></li>
+<li><a href="#What-is-database-security-and-why-is-it-important">What is database security and why is it important?</a></li>
+<li><a href="#How-does-the-Milvus-vector-database-ensure-data-security">How does the Milvus vector database ensure data security?</a>
+<ul>
+<li><a href="#User-authentication">User authentication</a></li>
+<li><a href="#TLS-connection">TLS connection</a></li>
 </ul></li>
 </ul>
-<h2 id="What-is-database-security-and-why-is-it-important" class="common-anchor-header">データベースのセキュリティとは何ですか？<button data-href="#What-is-database-security-and-why-is-it-important" class="anchor-icon" translate="no">
+<h2 id="What-is-database-security-and-why-is-it-important" class="common-anchor-header">What is database security and why is it important?<button data-href="#What-is-database-security-and-why-is-it-important" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,8 +41,8 @@ canonicalUrl: 'https://milvus.io/blog/data-security.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>データベースのセキュリティとは、データベース内のすべてのデータが安全であり、機密が保持されることを保証するために取られる措置のことを指します。<a href="https://firewalltimes.com/recent-data-breaches/">Twitter、Marriott、Texas Department of Insuranceなどにおける</a>最近のデータ漏洩事件は、データ・セキュリティの問題に対する私たちの警戒心をより強くしています。これらの事件はすべて、データが十分に保護され、使用しているデータベースが安全でなければ、企業やビジネスが深刻な損失を被る可能性があることを常に私たちに思い起こさせる。</p>
-<h2 id="How-does-the-Milvus-vector-database-ensure-data-security" class="common-anchor-header">Milvusベクターデータベースはどのようにデータセキュリティを確保しているのでしょうか？<button data-href="#How-does-the-Milvus-vector-database-ensure-data-security" class="anchor-icon" translate="no">
+    </button></h2><p>Database security refers to the measures taken to ensure that all data in the database are safe and kept confidential. Recent data breach and data leak cases at <a href="https://firewalltimes.com/recent-data-breaches/">Twitter, Marriott, and Texas Department of Insurance, etc</a> makes us all the more vigilant to the issue of data security. All these cases constantly remind us that companies and businesses can suffer from severe loss if the data are not well protected and the databases they use are secure.</p>
+<h2 id="How-does-the-Milvus-vector-database-ensure-data-security" class="common-anchor-header">How does the Milvus vector database ensure data security?<button data-href="#How-does-the-Milvus-vector-database-ensure-data-security" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,31 +57,35 @@ canonicalUrl: 'https://milvus.io/blog/data-security.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1では、認証と暗号化によりデータベースの安全性を確保しています。具体的には、アクセスレベルでは、Milvusはデータベースにアクセスできるユーザを制御するための基本的なユーザ認証をサポートしています。一方、データベースレベルでは、Milvusはデータ通信を保護するためにトランスポートレイヤセキュリティ(TLS)暗号化プロトコルを採用しています。</p>
-<h3 id="User-authentication" class="common-anchor-header">ユーザ認証</h3><p>Milvusの基本的なユーザ認証機能は、データセキュリティのためにユーザ名とパスワードを使用してベクトルデータベースにアクセスすることをサポートします。つまり、クライアントは認証されたユーザ名とパスワードを提供した場合のみ、Milvusインスタンスにアクセスすることができます。</p>
-<h4 id="The-authentication-workflow-in-the-Milvus-vector-database" class="common-anchor-header">Milvusベクトルデータベースにおける認証ワークフロー</h4><p>すべてのgRPCリクエストはMilvusプロキシによって処理されるため、認証はプロキシによって行われます。Milvusインスタンスに接続するための認証情報でログインするワークフローは以下の通りです。</p>
+    </button></h2><p>In the current release of 2.1, the Milvus vector database attempts to ensure database security via authentication and encryption. More specifically, on the access level, Milvus supports basic user authentication to control who can access the database. Meanwhile, on the database level, Milvus adopts the transport layer security (TLS) encryption protocol to protect data communication.</p>
+<h3 id="User-authentication" class="common-anchor-header">User authentication</h3><p>The basic user authentication feature in Milvus supports accessing the vector database using a username and password for the sake of data security. This means clients can only access the Milvus instance upon providing an authenticated username and password.</p>
+<h4 id="The-authentication-workflow-in-the-Milvus-vector-database" class="common-anchor-header">The authentication workflow in the Milvus vector database</h4><p>All gRPC requests are handled by the Milvus proxy, hence authentication is completed by the proxy. The workflow of logging in with the credentials to connect to the Milvus instance is as follows.</p>
 <ol>
-<li>Milvusインスタンスごとに認証情報を作成し、暗号化したパスワードをetcdに保存する。MilvusはProvosとMazièresの<a href="http://www.usenix.org/event/usenix99/provos/provos.pdf">適応型ハッシュアルゴリズムを</a>実装しているため、暗号化には<a href="https://golang.org/x/crypto/bcrypt">bcryptを</a>使用する。</li>
-<li>クライアント側では、Milvusサービスに接続する際にSDKが暗号文を送信する。Base64暗号文(<username>:<password>)はキー<code translate="no">authorization</code> でメタデータに添付される。</li>
-<li>Milvusプロキシはリクエストをインターセプトし、クレデンシャルを検証する。</li>
-<li>認証情報はプロキシにローカルにキャッシュされる。</li>
+<li>Create credentials for each Milvus instance and the encrypted passwords are stored in etcd. Milvus uses <a href="https://golang.org/x/crypto/bcrypt">bcrypt</a> for encryption as it implements Provos and Mazières’s <a href="http://www.usenix.org/event/usenix99/provos/provos.pdf">adaptive hashing algorithm</a>.</li>
+<li>On the client side, SDK sends ciphertext when connecting to the Milvus service. The base64 ciphertext (<username>:<password>) is attached to the metadata with the key <code translate="no">authorization</code>.</li>
+<li>The Milvus proxy intercepts the request and verifies the credentials.</li>
+<li>Credentials are cached locally in the proxy.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1280_X1280_021e90e3c8.jpeg" alt="authetication_workflow" class="doc-image" id="authetication_workflow" />
-   </span> <span class="img-wrapper"> <span>authetication_workflow</span> </span></p>
-<p>クレデンシャルが更新されると、Milvus のシステムワークフローは以下のようになる。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1280_X1280_021e90e3c8.jpeg" alt="authetication_workflow" class="doc-image" id="authetication_workflow" />
+    <span>authetication_workflow</span>
+  </span>
+</p>
+<p>When the credentials are updated, the system workflow in Milvus is as follows</p>
 <ol>
-<li>insert、query、deleteのAPIが呼ばれた場合、root coordがクレデンシャルを担当する。</li>
-<li>パスワードを忘れたなどの理由でクレデンシャルを更新すると、新しいパスワードがetcdに永続化される。すると、プロキシのローカルキャッシュにある古い認証情報はすべて無効になる。</li>
-<li>認証インターセプターは、まずローカルキャッシュからレコードを探します。キャッシュ内の認証情報が正しくない場合、ルートコーデ ィネートから最新のレコードをフェッチするためのRPCコールがトリガされる。そして、ローカルキャッシュのクレデンシャルはそれに応じて更新される。</li>
+<li>Root coord is in charge of the credentials when insert, query, delete APIs are called.</li>
+<li>When you update the credentials because you forget the password for instance, the new password is persisted in etcd. Then all the old credentials in the proxy’s local cache are invalidated.</li>
+<li>The authentication interceptor looks for the records from local cache first. If the credentials in the cache is not correct, the RPC call to fetch the most updated record from root coord will be triggered. And the credentials in the local cache are updated accordingly.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/update_5af81a4173.jpeg" alt="credential_update_workflow" class="doc-image" id="credential_update_workflow" />
-   </span> <span class="img-wrapper"> <span>クレデンシャル更新ワークフロー</span> </span></p>
-<h4 id="How-to-manage-user-authentication-in-the-Milvus-vector-database" class="common-anchor-header">Milvusベクターデータベースのユーザー認証の管理方法</h4><p>認証を有効にするには、まずMilvusの設定ファイル<code translate="no">milvus.yaml</code> で<code translate="no">common.security.authorizationEnabled</code> を<code translate="no">true</code> に設定する必要があります。</p>
-<p>認証を有効にすると、Milvusインスタンスにrootユーザが作成されます。このrootユーザは、初期パスワード<code translate="no">Milvus</code> 、Milvusベクターデータベースに接続することができます。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/update_5af81a4173.jpeg" alt="credential_update_workflow" class="doc-image" id="credential_update_workflow" />
+    <span>credential_update_workflow</span>
+  </span>
+</p>
+<h4 id="How-to-manage-user-authentication-in-the-Milvus-vector-database" class="common-anchor-header">How to manage user authentication in the Milvus vector database</h4><p>To enable authentication, you need to first set <code translate="no">common.security.authorizationEnabled</code> to <code translate="no">true</code> when configuring Milvus in the <code translate="no">milvus.yaml</code> file.</p>
+<p>Once enabled, a root user will be created for the Milvus instance. This root user can use the initial password of <code translate="no">Milvus</code> to connect to the Milvus vector database.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections
 connections.<span class="hljs-title function_">connect</span>(
     alias=<span class="hljs-string">&#x27;default&#x27;</span>,
@@ -88,17 +95,17 @@ connections.<span class="hljs-title function_">connect</span>(
     password=<span class="hljs-string">&#x27;Milvus&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvusを初めて起動する際には、rootユーザのパスワードを変更することを強くお勧めします。</p>
-<p>その後、rootユーザはさらに新しいユーザを作成するために以下のコマンドを実行することにより、認証されたアクセスのための新しいユーザを作成することができます。</p>
+<p>We highly recommend changing the password of the root user when starting Milvus for the first time.</p>
+<p>Then root user can further create more new users for authenticated access by running the following command to create new users.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> utility
 utility.<span class="hljs-title function_">create_credential</span>(<span class="hljs-string">&#x27;user&#x27;</span>, <span class="hljs-string">&#x27;password&#x27;</span>, <span class="hljs-keyword">using</span>=<span class="hljs-string">&#x27;default&#x27;</span>) 
 <button class="copy-code-btn"></button></code></pre>
-<p>新規ユーザを作成する際に覚えておくべきことが2つあります：</p>
+<p>There are two things to remember when creating new users:</p>
 <ol>
-<li><p>新しいユーザー名は32文字以内で、必ず文字で始めること。ユーザー名にはアンダースコア、アルファベット、数字のみを使用できます。例えば、「2abc!</p></li>
-<li><p>パスワードの長さは6～256文字でなければならない。</p></li>
+<li><p>As for the new username, it can not exceed 32 characters in length and must start with a letter. Only underscores, letters, or numbers are allowed in the username. For example a username of “2abc!” is not accepted.</p></li>
+<li><p>As for the password, its length should be 6-256 characters.</p></li>
 </ol>
-<p>新しいクレデンシャルが設定されると、新しいユーザはそのユーザ名とパスワードでMilvusインスタンスに接続することができます。</p>
+<p>Once the new credential is set up, the new user can connect to the Milvus instance with the username and password.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections
 connections.<span class="hljs-title function_">connect</span>(
     alias=<span class="hljs-string">&#x27;default&#x27;</span>,
@@ -108,22 +115,22 @@ connections.<span class="hljs-title function_">connect</span>(
     password=<span class="hljs-string">&#x27;password&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>他の認証プロセスと同様に、パスワードを忘れても心配する必要はありません。既存ユーザのパスワードは以下のコマンドでリセットできます。</p>
+<p>Like all authentication processes, you do not have to worry if you forget the password. The password for an existing user can be reset with the following command.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> utility
 utility.<span class="hljs-title function_">reset_password</span>(<span class="hljs-string">&#x27;user&#x27;</span>, <span class="hljs-string">&#x27;new_password&#x27;</span>, <span class="hljs-keyword">using</span>=<span class="hljs-string">&#x27;default&#x27;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>ユーザ認証の詳細については、<a href="https://milvus.io/docs/v2.1.x/authenticate.md">Milvusのドキュメントを</a>お読みください。</p>
-<h3 id="TLS-connection" class="common-anchor-header">TLS接続</h3><p>トランスポートレイヤーセキュリティ（TLS）は、コンピュータネットワークにおける通信セキュリティを提供するための認証プロトコルの一種です。TLSは証明書を使用して、2つ以上の通信当事者間で認証サービスを提供します。</p>
-<h4 id="How-to-enable-TLS-in-the-Milvus-vector-database" class="common-anchor-header">MilvusベクターデータベースでTLSを有効にする方法</h4><p>MilvusでTLSを有効にするには、まず以下のコマンドを実行し、証明書を生成するための2つのファイルを用意する必要があります。<code translate="no">openssl.cnf</code> という名前のデフォルトのOpenSSL設定ファイルと、関連する証明書を生成するために使用される<code translate="no">gen.sh</code> という名前のファイルです。</p>
+<p>Read the <a href="https://milvus.io/docs/v2.1.x/authenticate.md">Milvus documentation</a> to learn more about user authentication.</p>
+<h3 id="TLS-connection" class="common-anchor-header">TLS connection</h3><p>Transport layer security (TLS) is a type of authentication protocol to provide communications security in a computer network. TLS uses certificates to provide authentication services between two or more communicating parties.</p>
+<h4 id="How-to-enable-TLS-in-the-Milvus-vector-database" class="common-anchor-header">How to enable TLS in the Milvus vector database</h4><p>To enable TLS in Milvus, you need to first run the following command to perpare two files for generating the certificate: a default OpenSSL configuration file named <code translate="no">openssl.cnf</code> and a file named <code translate="no">gen.sh</code> used to generate relevant certificates.</p>
 <pre><code translate="no"><span class="hljs-built_in">mkdir</span> cert &amp;&amp; <span class="hljs-built_in">cd</span> cert
 <span class="hljs-built_in">touch</span> openssl.cnf gen.sh
 <button class="copy-code-btn"></button></code></pre>
-<p>次に、<a href="https://milvus.io/docs/v2.1.x/tls.md#Create-files">ここで</a>提供する設定を2つのファイルにコピー・アンド・ペーストするだけです。あるいは、私たちの設定をもとに、あなたのアプリケーションにより適した修正を加えることもできます。</p>
-<p>2つのファイルの準備ができたら、<code translate="no">gen.sh</code> ファイルを実行して、9つの証明書ファイルを作成できます。同様に、9つの証明書ファイルの設定を必要に応じて変更することもできます。</p>
+<p>Then you can simply copy and paste the configuration we provide <a href="https://milvus.io/docs/v2.1.x/tls.md#Create-files">here</a> to the two files. Or you can also make modifications based on our configuration to better suit your application.</p>
+<p>When the two files are ready, you can run the <code translate="no">gen.sh</code> file to create nine certificate files. Likewise, you can also modify the configurations in the nine certificate files to suit your need.</p>
 <pre><code translate="no"><span class="hljs-built_in">chmod</span> +x gen.sh
 ./gen.sh
 <button class="copy-code-btn"></button></code></pre>
-<p>MilvusサービスにTLSで接続する前に、最後のステップがあります。<code translate="no">tlsEnabled</code> を<code translate="no">true</code> に設定し、<code translate="no">server.pem</code> 、<code translate="no">server.key</code> 、<code translate="no">ca.pem</code> のファイルパスを<code translate="no">config/milvus.yaml</code> に設定する必要があります。下記のコードはその一例です。</p>
+<p>There is one final step before you can connect to the Milvus service with TLS. You have to set <code translate="no">tlsEnabled</code> to <code translate="no">true</code> and configure the file paths of <code translate="no">server.pem</code>, <code translate="no">server.key</code>, and <code translate="no">ca.pem</code> for the server in <code translate="no">config/milvus.yaml</code>. The code below is an example.</p>
 <pre><code translate="no">tls:
   serverPemPath: configs/cert/server.pem
   serverKeyPath: configs/cert/server.key
@@ -133,7 +140,7 @@ common:
   security:
     tlsEnabled: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus接続SDKを使用する際、クライアント用に<code translate="no">client.pem</code>,<code translate="no">client.key</code>,<code translate="no">ca.pem</code> のファイルパスを指定すれば、TLSでMilvusサービスに接続することができます。下記のコードも一例です。</p>
+<p>Then you are all set and can connect to the Milvus service with TLS as long as you specify the file paths of <code translate="no">client.pem</code>, <code translate="no">client.key</code>, and <code translate="no">ca.pem</code> for the client when using the Milvus connection SDK. The code below is also an example.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections
 
 _HOST = <span class="hljs-string">&#x27;127.0.0.1&#x27;</span>
@@ -146,7 +153,7 @@ connections.connect(host=_HOST, port=_PORT, secure=<span class="hljs-literal">Tr
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nList connections:&quot;</span>)
 <span class="hljs-built_in">print</span>(connections.list_connections())
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Whats-next" class="common-anchor-header">今後の予定<button data-href="#Whats-next" class="anchor-icon" translate="no">
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -161,12 +168,12 @@ connections.connect(host=_HOST, port=_PORT, secure=<span class="hljs-literal">Tr
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1の正式リリースに伴い、新機能を紹介するブログシリーズを用意しました。詳しくはこちらのブログシリーズをご覧ください：</p>
+    </button></h2><p>With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">類似検索アプリケーションを強化する文字列データの使い方</a></li>
-<li><a href="https://milvus.io/blog/embedded-milvus.md">組み込みMilvusを使用したPythonによるMilvusのインストールと実行</a></li>
-<li><a href="https://milvus.io/blog/in-memory-replicas.md">インメモリレプリカによるベクターデータベースの読み取りスループットの向上</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Milvusベクトルデータベースの一貫性レベルを理解する</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Milvusベクタデータベースのコンシステンシーレベルを理解する(後編)</a></li>
-<li><a href="https://milvus.io/blog/data-security.md">Milvus Vector Databaseはどのようにデータのセキュリティを確保しているのか？</a></li>
+<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">How to Use String Data to Empower Your Similarity Search Applications</a></li>
+<li><a href="https://milvus.io/blog/embedded-milvus.md">Using Embedded Milvus to Instantly Install and Run Milvus with Python</a></li>
+<li><a href="https://milvus.io/blog/in-memory-replicas.md">Increase Your Vector Database Read Throughput with In-Memory Replicas</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Understanding Consistency Level in the Milvus Vector Database</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Understanding Consistency Level in the Milvus Vector Database (Part II)</a></li>
+<li><a href="https://milvus.io/blog/data-security.md">How Does the Milvus Vector Database Ensure Data Security?</a></li>
 </ul>

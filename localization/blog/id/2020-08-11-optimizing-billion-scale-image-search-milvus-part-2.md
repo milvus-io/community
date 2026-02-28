@@ -1,17 +1,17 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-2.md
-title: Sistem pencarian berdasarkan gambar generasi kedua
+title: The second-generation search-by-image system
 author: Rife Wang
 date: 2020-08-11T22:20:27.855Z
 desc: >-
-  Kasus pengguna yang memanfaatkan Milvus untuk membangun sistem pencarian
-  kemiripan gambar untuk bisnis di dunia nyata.
+  A user case of leveraging Milvus to build an image similarity search system
+  for real-world business.
 cover: assets.zilliz.com/header_c73631b1e7.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2'
 ---
-<custom-h1>Perjalanan Mengoptimalkan Pencarian Gambar Berskala Miliaran (2/2)</custom-h1><p>Artikel ini adalah bagian kedua dari <strong>Perjalanan Mengoptimalkan Pencarian Gambar Berskala Miliaran oleh UPYUN</strong>. Jika Anda melewatkan bagian pertama, klik <a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">di sini</a>.</p>
-<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">Sistem pencarian berdasarkan gambar generasi kedua<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
+<custom-h1>The Journey to Optimizing Billion-scale Image Search (2/2)</custom-h1><p>This article is the second part of <strong>The Journey to Optimizing Billion-scale Image Search by UPYUN</strong>. If you miss the first one, click <a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">here</a>.</p>
+<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">The second-generation search-by-image system<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,8 +26,8 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sistem pencarian berdasarkan gambar generasi kedua secara teknis memilih solusi CNN + Milvus. Sistem ini didasarkan pada vektor fitur dan memberikan dukungan teknis yang lebih baik.</p>
-<h2 id="Feature-extraction" class="common-anchor-header">Ekstraksi fitur<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
+    </button></h2><p>The second-generation search-by-image system technically chooses the CNN + Milvus solution. The system is based on feature vectors and provides better technical support.</p>
+<h2 id="Feature-extraction" class="common-anchor-header">Feature extraction<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,21 +42,23 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Di bidang visi komputer, penggunaan kecerdasan buatan telah menjadi arus utama. Demikian pula, ekstraksi fitur dari sistem pencarian berdasarkan gambar generasi kedua menggunakan jaringan saraf konvolusi (CNN) sebagai teknologi yang mendasarinya</p>
-<p>Istilah CNN sulit untuk dipahami. Di sini kami fokus untuk menjawab dua pertanyaan:</p>
+    </button></h2><p>In the field of computer vision, the use of artificial intelligence has become the mainstream. Similarly, the feature extraction of the second-generation search-by-image system uses convolutional neural network (CNN) as the underlying technology</p>
+<p>The term CNN is difficult to understand. Here we focus on answering two questions:</p>
 <ul>
-<li>Apa yang dapat dilakukan CNN?</li>
-<li>Mengapa saya dapat menggunakan CNN untuk pencarian gambar?</li>
+<li>What can CNN do?</li>
+<li>Why can I use CNN for an image search?</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
-   </span> <span class="img-wrapper"> <span>1-meme.jpg</span> </span></p>
-<p>Ada banyak kompetisi di bidang AI dan klasifikasi gambar adalah salah satu yang paling penting. Tugas klasifikasi gambar adalah menentukan apakah konten gambar tersebut tentang kucing, anjing, apel, pir, atau jenis objek lainnya.</p>
-<p>Apa yang bisa dilakukan CNN? CNN dapat mengekstrak fitur dan mengenali objek. Ia mengekstrak fitur dari berbagai dimensi dan mengukur seberapa dekat fitur gambar dengan fitur kucing atau anjing. Kita dapat memilih yang paling dekat sebagai hasil identifikasi kita yang menunjukkan apakah konten gambar tertentu adalah tentang kucing, anjing, atau yang lainnya.</p>
-<p>Apa hubungan antara fungsi identifikasi objek CNN dan pencarian berdasarkan gambar? Yang kita inginkan bukanlah hasil identifikasi akhir, tetapi vektor fitur yang diekstrak dari beberapa dimensi. Vektor fitur dari dua gambar dengan konten yang sama harus dekat.</p>
-<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">Model CNN mana yang harus saya gunakan?</h3><p>Jawabannya adalah VGG16. Mengapa memilihnya? Pertama, VGG16 memiliki kemampuan generalisasi yang baik, yaitu sangat fleksibel. Kedua, vektor fitur yang diekstrak oleh VGG16 memiliki 512 dimensi. Jika hanya ada sedikit dimensi, keakuratannya bisa terpengaruh. Jika ada terlalu banyak dimensi, biaya penyimpanan dan penghitungan vektor fitur ini relatif tinggi.</p>
-<p>Menggunakan CNN untuk mengekstrak fitur gambar adalah solusi utama. Kita dapat menggunakan VGG16 sebagai model dan Keras + TensorFlow untuk implementasi teknis. Berikut adalah contoh resmi dari Keras:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
+    <span>1-meme.jpg</span>
+  </span>
+</p>
+<p>There are many competitions in the AI field and image classification is one of the most important. The job of image classification is to determine whether the content of the picture is about a cat, a dog, an apple, a pear, or other types of objects.</p>
+<p>What can CNN do? It can extract features and recognize objects. It extracts features from multiple dimensions and measures how close the features of an image are to the features of cats or dogs. We can choose the closest ones as our identification result which indicates whether the content of a specific image is about a cat, a dog, or something else.</p>
+<p>What is the connection between the object identification function of CNN and search by image? What we want is not the final identification result, but the feature vector extracted from multiple dimensions. The feature vectors of two images with similar content must be close.</p>
+<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">Which CNN model should I use?</h3><p>The answer is VGG16. Why choose it? First, VGG16 has good generalization capability, that is, it is very versatile. Second, the feature vectors extracted by VGG16 have 512 dimensions. If there are very few dimensions, the accuracy may be affected. If there are too many dimensions, the cost of storing and calculating these feature vectors is relatively high.</p>
+<p>Using CNN to extract image features is a mainstream solution. We can use VGG16 as the model and Keras + TensorFlow for technical implementation. Here is the official example of Keras:</p>
 <pre><code translate="no">from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
@@ -69,16 +71,16 @@ x = np.expand_dims(x, axis=0)
 x = preprocess_input(x)
 features = model.predict(x)
 </code></pre>
-<p>Fitur yang diekstrak di sini adalah vektor fitur.</p>
-<h3 id="1-Normalization" class="common-anchor-header">1. Normalisasi</h3><p>Untuk memudahkan operasi selanjutnya, kita sering melakukan normalisasi fitur:</p>
-<p>Apa yang digunakan selanjutnya juga adalah <code translate="no">norm_feat</code> yang dinormalisasi.</p>
-<h3 id="2-Image-description" class="common-anchor-header">2. Deskripsi gambar</h3><p>Gambar dimuat menggunakan metode <code translate="no">image.load_img</code> dari <code translate="no">keras.preprocessing</code>:</p>
+<p>The features extracted here are feature vectors.</p>
+<h3 id="1-Normalization" class="common-anchor-header">1. Normalization</h3><p>To facilitate subsequent operations, we often normalize feature:</p>
+<p>What is used subsequently is also the normalized <code translate="no">norm_feat</code>.</p>
+<h3 id="2-Image-description" class="common-anchor-header">2. Image description</h3><p>The image is loaded using the <code translate="no">image.load_img</code> method of <code translate="no">keras.preprocessing</code>:</p>
 <pre><code translate="no">from keras.preprocessing import image
 img_path = 'elephant.jpg'
 img = image.load_img(img_path, target_size=(224, 224))
 </code></pre>
-<p>Sebenarnya, ini adalah metode TensorFlow yang dipanggil oleh Keras. Untuk detailnya, lihat dokumentasi TensorFlow. Objek gambar akhir sebenarnya adalah sebuah contoh gambar PIL (PIL yang digunakan oleh TensorFlow).</p>
-<h3 id="3-Bytes-conversion" class="common-anchor-header">3. Konversi byte</h3><p>Secara praktis, konten gambar sering kali ditransmisikan melalui jaringan. Oleh karena itu, alih-alih memuat gambar dari path, kami lebih memilih untuk mengubah data byte langsung menjadi objek gambar, yaitu PIL Images:</p>
+<p>In fact, it is the TensorFlow method called by Keras. For details, see the TensorFlow documentation. The final image object is actually a PIL Image instance (the PIL used by TensorFlow).</p>
+<h3 id="3-Bytes-conversion" class="common-anchor-header">3. Bytes conversion</h3><p>In practical terms, image content is often transmitted through the network. Therefore, instead of loading images from path, we prefer converting bytes data directly into image objects, that is, PIL Images:</p>
 <pre><code translate="no">import io
 from PIL import Image
 
@@ -88,14 +90,14 @@ img = img.convert('RGB')
 
 img = img.resize((224, 224), Image.NEAREST)
 </code></pre>
-<p>Img di atas sama dengan hasil yang diperoleh dengan metode image.load_img. Ada dua hal yang perlu diperhatikan:</p>
+<p>The above img is the same as the result obtained by the image.load_img method. There are two things to pay attention to:</p>
 <ul>
-<li>Anda harus melakukan konversi RGB.</li>
-<li>Anda harus mengubah ukuran (mengubah ukuran adalah parameter kedua dari <code translate="no">load_img method</code>).</li>
+<li>You must do RGB conversion.</li>
+<li>You must resize (resize is the second parameter of the <code translate="no">load_img method</code>).</li>
 </ul>
-<h3 id="4-Black-border-processing" class="common-anchor-header">4. Pemrosesan batas hitam</h3><p>Gambar, seperti tangkapan layar, kadang-kadang mungkin memiliki beberapa batas hitam. Batas hitam ini tidak memiliki nilai praktis dan menyebabkan banyak gangguan. Karena alasan ini, menghilangkan batas hitam juga merupakan praktik yang umum dilakukan.</p>
-<p>Batas hitam pada dasarnya adalah baris atau kolom piksel di mana semua pikselnya adalah (0, 0, 0) (gambar RGB). Untuk menghilangkan batas hitam adalah menemukan baris atau kolom ini dan menghapusnya. Ini sebenarnya adalah perkalian matriks 3-D di NumPy.</p>
-<p>Contoh menghapus batas hitam horizontal:</p>
+<h3 id="4-Black-border-processing" class="common-anchor-header">4. Black border processing</h3><p>Images, such as screenshots, may occasionally have quite a few black borders. These black borders have no practical value and cause much interference. For this reason, removing black borders is also a common practice.</p>
+<p>A black border is essentially a row or column of pixels where all pixels are (0, 0, 0) (RGB image). To remove the black border is to find these rows or columns and delete them. This is actually a 3-D matrix multiplication in NumPy.</p>
+<p>An example of removing horizontal black borders:</p>
 <pre><code translate="no"># -*- coding: utf-8 -*-
 import numpy as np
 from keras.preprocessing import image
@@ -111,8 +113,8 @@ Returns:
    img = image.array_to_img(img_without_black)
 return img
 </code></pre>
-<p>Ini adalah hal yang ingin saya bicarakan tentang penggunaan CNN untuk mengekstrak fitur gambar dan mengimplementasikan pemrosesan gambar lainnya. Sekarang mari kita lihat mesin pencari vektor.</p>
-<h2 id="Vector-search-engine" class="common-anchor-header">Mesin pencari vektor<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
+<p>This is pretty much what I want to talk about using CNN to extract image features and implement other image processing. Now let’s take a look at vector search engines.</p>
+<h2 id="Vector-search-engine" class="common-anchor-header">Vector search engine<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,16 +129,19 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Masalah mengekstraksi vektor fitur dari gambar sudah terpecahkan. Kemudian masalah yang tersisa adalah:</p>
+    </button></h2><p>The problem of extracting feature vectors from images has been solved. Then the remaining problems are:</p>
 <ul>
-<li>Bagaimana cara menyimpan vektor fitur?</li>
-<li>Bagaimana cara menghitung kemiripan vektor fitur, yaitu, bagaimana cara mencari? Mesin pencari vektor sumber terbuka Milvus dapat menyelesaikan kedua masalah ini. Sejauh ini, Milvus telah berjalan dengan baik di lingkungan produksi kami.</li>
+<li>How to store feature vectors?</li>
+<li>How to calculate the similarity of feature vectors, that is, how to search?
+The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
-   </span> <span class="img-wrapper"> <span>3-milvus-logo.png</span> </span></p>
-<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">Milvus, mesin pencari vektor<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
+    <span>3-milvus-logo.png</span>
+  </span>
+</p>
+<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">Milvus, the vector search engine<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -151,70 +156,70 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mengekstrak vektor fitur dari sebuah gambar masih jauh dari cukup. Kita juga perlu mengelola vektor fitur ini secara dinamis (penambahan, penghapusan, dan pembaruan), menghitung kemiripan vektor, dan mengembalikan data vektor dalam rentang tetangga terdekat. Mesin pencari vektor sumber terbuka Milvus melakukan tugas-tugas ini dengan cukup baik.</p>
-<p>Bagian selanjutnya dari artikel ini akan menjelaskan praktik-praktik spesifik dan hal-hal yang perlu diperhatikan.</p>
-<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1. Persyaratan untuk CPU</h3><p>Untuk menggunakan Milvus, CPU Anda harus mendukung set instruksi avx2. Untuk sistem Linux, gunakan perintah berikut untuk memeriksa set instruksi mana yang didukung oleh CPU Anda:</p>
+    </button></h2><p>Extracting feature vectors from an image is far from enough. We also need to dynamically manage these feature vectors (addition, deletion, and update), calculate the similarity of the vectors, and return the vector data in the nearest neighbor range. The open-source vector search engine Milvus performs these tasks quite well.</p>
+<p>The rest of this article will describe specific practices and points to be noted.</p>
+<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1. Requirements for CPU</h3><p>To use Milvus, your CPU must support the avx2 instruction set. For Linux systems, use the following command to check which instruction sets your CPU supports:</p>
 <p><code translate="no">cat /proc/cpuinfo | grep flags</code></p>
-<p>Maka Anda akan mendapatkan sesuatu seperti:</p>
+<p>Then you get something like:</p>
 <pre><code translate="no">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb         rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2     ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
 </code></pre>
-<p>Apa yang ditunjukkan oleh flag berikut adalah set instruksi yang didukung oleh CPU Anda. Tentu saja, ini lebih dari yang saya butuhkan. Saya hanya ingin melihat apakah set instruksi tertentu, seperti avx2, didukung. Cukup tambahkan grep untuk menyaringnya:</p>
+<p>What follows flags is the instruction sets your CPU supports. Of course, these are much more than I need. I just want to see if a specific instruction set, such as avx2, is supported. Just add a grep to filter it:</p>
 <pre><code translate="no">cat /proc/cpuinfo | grep flags | grep avx2
 </code></pre>
-<p>Jika tidak ada hasil yang dikembalikan, itu berarti set instruksi tertentu tidak didukung. Anda perlu mengganti mesin Anda.</p>
-<h3 id="2-Capacity-planning" class="common-anchor-header">2. Perencanaan kapasitas</h3><p>Perencanaan kapasitas adalah pertimbangan pertama kita ketika kita mendesain sebuah sistem. Berapa banyak data yang perlu kita simpan? Berapa banyak memori dan ruang disk yang dibutuhkan oleh data tersebut?</p>
-<p>Mari kita hitung dengan cepat. Setiap dimensi dari sebuah vektor adalah float32. Tipe float32 membutuhkan 4 Byte. Maka sebuah vektor dengan 512 dimensi membutuhkan 2 KB penyimpanan. Dengan cara yang sama:</p>
+<p>If no result is returned, it means that this specific instruction set is not supported. You need to change your machine then.</p>
+<h3 id="2-Capacity-planning" class="common-anchor-header">2. Capacity planning</h3><p>Capacity planning is our first consideration when we design a system. How much data do we need to store? How much memory and disk space does the data require?</p>
+<p>Let’s do some quick maths. Each dimension of a vector is float32. A float32 type takes up 4 Bytes. Then a vector of 512 dimensions requires 2 KB of storage. By the same token:</p>
 <ul>
-<li>Seribu vektor 512 dimensi membutuhkan penyimpanan 2 MB.</li>
-<li>Satu juta vektor 512 dimensi membutuhkan penyimpanan 2 GB.</li>
-<li>10 juta vektor 512 dimensi membutuhkan penyimpanan 20 GB.</li>
-<li>100 juta vektor 512 dimensi membutuhkan penyimpanan 200 GB.</li>
-<li>Satu miliar vektor 512 dimensi membutuhkan penyimpanan 2 TB.</li>
+<li>One thousand 512-dimensional vectors require 2 MB of storage.</li>
+<li>One million 512-dimensional vectors require 2 GB of storage.</li>
+<li>10 million 512-dimensional vectors require 20 GB of storage.</li>
+<li>100 million 512-dimensional vectors require 200 GB of storage.</li>
+<li>One billion 512-dimensional vectors require 2 TB of storage.</li>
 </ul>
-<p>Jika kita ingin menyimpan semua data dalam memori, maka sistem membutuhkan setidaknya kapasitas memori yang sesuai.</p>
-<p>Anda disarankan untuk menggunakan alat penghitung ukuran resmi: Alat pengukur ukuran Milvus.</p>
-<p>Sebenarnya memori kita mungkin tidak sebesar itu. (Tidak masalah jika Anda tidak memiliki cukup memori. Milvus secara otomatis memasukkan data ke dalam disk). Selain data vektor asli, kita juga perlu mempertimbangkan penyimpanan data lain seperti log.</p>
-<h3 id="3-System-configuration" class="common-anchor-header">3. Konfigurasi sistem</h3><p>Untuk informasi lebih lanjut tentang konfigurasi sistem, lihat dokumentasi Milvus:</p>
+<p>If we want to store all the data in the memory, then the system needs at least the corresponding memory capacity.</p>
+<p>It is recommended that you use the official size calculation tool: Milvus sizing tool.</p>
+<p>Actually our memory may not be that big. (It doesn’t really matter if you don’t have enough memory. Milvus automatically flushes data onto the disk.) In addition to the original vector data, we also need to consider the storage of other data such as logs.</p>
+<h3 id="3-System-configuration" class="common-anchor-header">3. System configuration</h3><p>For more information about the system configuration, see the Milvus documentation:</p>
 <ul>
-<li>Konfigurasi server Milvus: https://milvus.io/docs/v0.10.1/milvus_config.md</li>
+<li>Milvus server configuration: https://milvus.io/docs/v0.10.1/milvus_config.md</li>
 </ul>
-<h3 id="4-Database-design" class="common-anchor-header">4. Desain basis data</h3><p><strong>Koleksi &amp; Partisi</strong></p>
+<h3 id="4-Database-design" class="common-anchor-header">4. Database design</h3><p><strong>Collection &amp; Partition</strong></p>
 <ul>
-<li>Koleksi juga dikenal sebagai tabel.</li>
-<li>Partisi mengacu pada partisi-partisi di dalam koleksi.</li>
+<li>Collection is also known as table.</li>
+<li>Partition refers to the partitions inside a collection.</li>
 </ul>
-<p>Implementasi yang mendasari partisi sebenarnya sama dengan koleksi, kecuali bahwa partisi berada di bawah koleksi. Tetapi dengan partisi, pengaturan data menjadi lebih fleksibel. Kita juga dapat melakukan query pada partisi tertentu di dalam koleksi untuk mendapatkan hasil query yang lebih baik.</p>
-<p>Berapa banyak koleksi dan partisi yang dapat kita miliki? Informasi dasar mengenai koleksi dan partisi ada di Metadata. Milvus menggunakan SQLite (integrasi internal Milvus) atau MySQL (membutuhkan koneksi eksternal) untuk manajemen metadata internal. Jika Anda menggunakan SQLite secara default untuk mengelola Metadata, Anda akan mengalami penurunan kinerja yang parah ketika jumlah koleksi dan partisi terlalu besar. Oleh karena itu, jumlah total koleksi dan partisi tidak boleh melebihi 50.000 (Milvus 0.8.0 akan membatasi jumlah ini menjadi 4.096). Jika Anda ingin mengatur jumlah yang lebih besar, Anda disarankan untuk menggunakan MySQL melalui koneksi eksternal.</p>
-<p>Struktur data yang didukung oleh koleksi dan partisi Milvus sangat sederhana, yaitu <code translate="no">ID + vector</code>. Dengan kata lain, hanya ada dua kolom dalam tabel: ID dan data vektor.</p>
-<p><strong>Catatan:</strong></p>
+<p>The underlying implementation of partition is actually the same with that of collection, except that a partition is under a collection. But with partitions, the organization of data becomes more flexible. We can also query a specific partition in a collection to achieve better query results.</p>
+<p>How many collections and partitions can we have? The basic information on collection and partition is in Metadata. Milvus uses either SQLite (Milvus internal integration) or MySQL (requires external connection) for internal metadata management. If you use SQLite by default to manage Metadata, you will suffer severe performance loss when the numbers of collections and partitions are too large. Therefore, the total number of collections and partitions should not exceed 50,000 (Milvus 0.8.0 will limit this number to 4,096). If you need to set a larger number, it is recommended that you use MySQL via an external connection.</p>
+<p>The data structure supported by Milvus’ collection and partition is very simple, that is, <code translate="no">ID + vector</code>. In other words, there are only two columns in the table: ID and vector data.</p>
+<p><strong>Note:</strong></p>
 <ul>
-<li>ID harus berupa bilangan bulat.</li>
-<li>Kita perlu memastikan bahwa ID adalah unik di dalam koleksi, bukan di dalam partisi.</li>
+<li>ID should be integers.</li>
+<li>We need to ensure that the ID is unique within a collection instead of within a partition.</li>
 </ul>
-<p><strong>Pemfilteran bersyarat</strong></p>
-<p>Ketika kita menggunakan basis data tradisional, kita dapat menentukan nilai field sebagai kondisi penyaringan. Meskipun Milvus tidak melakukan penyaringan dengan cara yang persis sama, kita dapat mengimplementasikan penyaringan bersyarat sederhana dengan menggunakan koleksi dan partisi. Sebagai contoh, kita memiliki sejumlah besar data gambar dan data tersebut dimiliki oleh pengguna tertentu. Kemudian kita dapat membagi data ke dalam partisi berdasarkan pengguna. Oleh karena itu, menggunakan pengguna sebagai kondisi filter sebenarnya menentukan partisi.</p>
-<p><strong>Data terstruktur dan pemetaan vektor</strong></p>
-<p>Milvus hanya mendukung struktur data ID + vektor. Namun dalam skenario bisnis, yang kita butuhkan adalah data terstruktur yang mengandung makna bisnis. Dengan kata lain, kita perlu menemukan data terstruktur melalui vektor. Oleh karena itu, kita perlu mempertahankan hubungan pemetaan antara data terstruktur dan vektor melalui ID.</p>
+<p><strong>Conditional filtering</strong></p>
+<p>When we use traditional databases, we can specify field values as filtering conditions. Though Milvus does not filter exactly the same way, we can implement simple conditional filtering using collections and partitions. For example, we have a large amount of image data and the data belongs to specific users. Then we can divide the data into partitions by user. Therefore, using the user as the filter condition is actually specifying the partition.</p>
+<p><strong>Structured data and vector mapping</strong></p>
+<p>Milvus only supports the ID + vector data structure. But in business scenarios, what we need is structured data-bearing business meaning. In other words, we need to find structured data through vectors. Accordingly, we need to maintain the mapping relations between structured data and vectors through ID.</p>
 <pre><code translate="no">structured data ID &lt;--&gt; mapping table &lt;--&gt; Milvus ID
 </code></pre>
-<p><strong>Memilih indeks</strong></p>
-<p>Anda dapat merujuk ke artikel berikut:</p>
+<p><strong>Selecting index</strong></p>
+<p>You can refer to the following articles:</p>
 <ul>
-<li>Jenis-jenis indeks: https://www.milvus.io/docs/v0.10.1/index.md</li>
-<li>Cara memilih indeks: https://medium.com/@milvusio/cara-memilih-indeks-di-milvus-4f3d15259212</li>
+<li>Types of index: https://www.milvus.io/docs/v0.10.1/index.md</li>
+<li>How to select index: https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212</li>
 </ul>
-<h3 id="5-Processing-search-results" class="common-anchor-header">5. Memproses hasil pencarian</h3><p>Hasil pencarian Milvus adalah kumpulan ID + jarak:</p>
+<h3 id="5-Processing-search-results" class="common-anchor-header">5. Processing search results</h3><p>The search results of Milvus are a collection of ID + distance:</p>
 <ul>
-<li>ID: ID dalam sebuah koleksi.</li>
-<li>Jarak: nilai jarak 0 ~ 1 menunjukkan tingkat kemiripan; semakin kecil nilainya, semakin mirip kedua vektor.</li>
+<li>ID: the ID in a collection.</li>
+<li>Distance: a distance value of 0 ~ 1 indicates similarity level; the smaller the value, the more similar the two vectors.</li>
 </ul>
-<p><strong>Memfilter data yang ID-nya -1</strong></p>
-<p>Ketika jumlah koleksi terlalu sedikit, hasil pencarian mungkin berisi data yang ID-nya -1. Kita perlu menyaringnya sendiri.</p>
-<p><strong>Penomoran halaman</strong></p>
-<p>Pencarian untuk vektor sangat berbeda. Hasil kueri diurutkan berdasarkan urutan kemiripan, dan hasil yang paling mirip (topK) dipilih (topK ditentukan oleh pengguna pada saat kueri).</p>
-<p>Milvus tidak mendukung pagination. Kita perlu mengimplementasikan fungsi pagination sendiri jika kita membutuhkannya untuk bisnis. Sebagai contoh, jika kita memiliki sepuluh hasil di setiap halaman dan hanya ingin menampilkan halaman ketiga, kita perlu menentukan bahwa topK = 30 dan hanya mengembalikan sepuluh hasil terakhir.</p>
-<p><strong>Ambang batas kemiripan untuk bisnis</strong></p>
-<p>Jarak antara vektor dua gambar adalah antara 0 dan 1. Jika kita ingin memutuskan apakah dua gambar mirip dalam skenario bisnis tertentu, kita perlu menentukan ambang batas dalam kisaran ini. Dua gambar serupa jika jaraknya lebih kecil dari ambang batas, atau sangat berbeda satu sama lain jika jaraknya lebih besar dari ambang batas. Anda perlu menyesuaikan ambang batas untuk memenuhi kebutuhan bisnis Anda.</p>
+<p><strong>Filtering data whose ID is -1</strong></p>
+<p>When the number of collections is too small, the search results may contain data whose ID is -1. We need to filter it out by ourselves.</p>
+<p><strong>Pagination</strong></p>
+<p>The search for vectors is quite different. The query results are sorted in descending order of similarity, and the most similar (topK) of results are selected (topK is specified by the user at the time of query).</p>
+<p>Milvus does not support pagination. We need to implement the pagination function by ourselves if we need it for business. For example, if we have ten results on each page and only want to display the third page, we need to specify that topK = 30 and only return the last ten results.</p>
+<p><strong>Similarity threshold for business</strong></p>
+<p>The distance between the vectors of two images is between 0 and 1. If we want to decide whether two images are similar in a specific business scenario, we need to specify a threshold within this range. The two images are similar if the distance is smaller than the threshold, or they are quite different from each other if the distance is larger than the threshold. You need to adjust the threshold to meet your own business needs.</p>
 <blockquote>
-<p>Artikel ini ditulis oleh rifewang, pengguna Milvus dan insinyur perangkat lunak UPYUN. Jika Anda menyukai artikel ini, selamat datang untuk menyapa di https://github.com/rifewang.</p>
+<p>This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi @ https://github.com/rifewang.</p>
 </blockquote>

@@ -1,43 +1,49 @@
 ---
 id: ai-in-.md
-title: オープンソースのベクトルデータベースMilvusで金融のAIを加速する
+title: 'Accelerating AI in Finance with Milvus, an Open-Source Vector Database'
 author: milvus
 date: 2021-05-19T03:41:20.776Z
-desc: Milvusは、チャットボットやレコメンダーシステムなど、金融業界向けのAIアプリケーションの構築に利用できる。
+desc: >-
+  Milvus can be used to build AI applications for the finance industry including
+  chatbots, recommender systems, and more.
 cover: assets.zilliz.com/03_1_1e5aaf7dd1.jpg
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/ai-in-finance'
 ---
-<custom-h1>オープンソースのベクトルデータベースMilvusで金融のAIを加速する</custom-h1><p>銀行やその他の金融機関は、ビッグデータ処理や分析のためのオープンソースソフトウェアを早くから採用してきた。2010年、モルガン・スタンレーは小規模な実験の一環として、オープンソースのApache Hadoopフレームワークを<a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">使い始めた</a>。同社は、科学者が活用したいと考える大量のデータに対して、従来のデータベースをうまく拡張することに苦労していたため、代替ソリューションを模索することにした。Hadoopは今やモルガン・スタンレーの定番であり、CRMデータの管理からポートフォリオ分析まで、あらゆる業務に役立っている。MySQL、MongoDB、PostgreSQLといったオープンソースのリレーショナル・データベース・ソフトウェアも、金融業界におけるビッグデータの活用に欠かせないツールとなっている。</p>
-<p>金融サービス業界に競争力を与えているのはテクノロジーであり、人工知能（AI）は、銀行、資産運用、保険の各分野において、ビッグデータから価値ある洞察を引き出し、リアルタイムで活動を分析するための標準的なアプローチとして急速に普及している。AIアルゴリズムを使って、画像、音声、動画などの非構造化データを機械可読の数値データ形式であるベクトルに変換することで、100万、10億、あるいは1兆という膨大なベクトルデータセットに対して類似検索を実行することが可能になる。ベクトルデータは高次元空間に格納され、類似ベクトルは類似性検索によって発見されるが、これにはベクトルデータベースと呼ばれる専用のインフラが必要である。</p>
+<custom-h1>Accelerating AI in Finance with Milvus, an Open-Source Vector Database</custom-h1><p>Banks and other financial institutions have long been early adopters of open-source software for big data processing and analytics. In 2010, Morgan Stanley <a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">began using</a> the open-source Apache Hadoop framework as part of a small experiment. The company was struggling to successfully scale traditional databases to the massive volumes of data its scientists wanted to leverage, so it decided to explore alternative solutions. Hadoop is now a staple at Morgan Stanley, helping with everything from managing CRM data to portfolio analysis. Other open-source relational database software such as MySQL, MongoDB, and PostgreSQL have been indispensable tools for making sense of big data in the finance industry.</p>
+<p>Technology is what gives the financial services industry a competitive edge, and artificial intelligence (AI) is rapidly becoming the standard approach to extracting valuable insights from big data and analyzing activity in real-time across the banking, asset management, and insurance sectors. By using AI algorithms to convert unstructured data such as images, audio, or video to vectors, a machine-readable numeric data format, it is possible to run similarity searches on massive million, billion, or even trillion vector datasets. Vector data is stored in high-dimensional space, and similar vectors are found using similarity search, which requires a dedicated infrastructure called a vector database.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/01_1_cb99f15886.jpg" alt="01 (1).jpg" class="doc-image" id="01-(1).jpg" />
-   </span> <span class="img-wrapper"> <span>01 (1).jpg</span> </span></p>
-<p><a href="https://github.com/milvus-io/milvus">Milvusは</a>ベクターデータを管理するために特別に構築されたオープンソースのベクターデータベースであり、エンジニアやデータサイエンティストは基盤となるデータインフラではなく、AIアプリケーションの構築や分析に集中することができる。このプラットフォームは、AIアプリケーション開発ワークフローを中心に構築され、機械学習オペレーション（MLOps）を合理化するために最適化されている。Milvusとその基盤技術の詳細については、当社の<a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">ブログを</a>ご覧ください。</p>
-<p>金融サービス業界におけるAIの一般的なアプリケーションには、アルゴリズム取引、ポートフォリオ構成と最適化、モデル検証、バックテスト、ロボアドバイス、バーチャルカスタマーアシスタント、マーケットインパクト分析、規制遵守、ストレステストなどがある。この記事では、ベクトルデータが銀行や金融企業にとって最も価値ある資産の一つとして活用されている3つの具体的な分野を取り上げる：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/01_1_cb99f15886.jpg" alt="01 (1).jpg" class="doc-image" id="01-(1).jpg" />
+    <span>01 (1).jpg</span>
+  </span>
+</p>
+<p><a href="https://github.com/milvus-io/milvus">Milvus</a> is an open-source vector database built specifically for managing vector data, which means engineers and data scientists can focus on building AI applications or conducting analysis—instead of the underlying data infrastructure. The platform was built around AI application development workflows and is optimized to streamline machine learning operations (MLOps). For more information about Milvus and its underlying technology, check out our <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">blog</a>.</p>
+<p>Common applications of AI in the financial services industry include algorithmic trading, portfolio composition and optimization, model validation, backtesting, Robo-advising, virtual customer assistants, market impact analysis, regulatory compliance, and stress testing. This article covers three specific areas where vector data is leveraged as one of the most valuable assets for banking and financial companies:</p>
 <ol>
-<li>銀行チャットボットによる顧客体験の向上</li>
-<li>レコメンダー・システムによる金融サービスの販売促進など</li>
-<li>セマンティック・テキスト・マイニングによる決算報告書やその他の非構造化金融データの分析</li>
+<li>Enhancing customer experience with banking chatbots</li>
+<li>Boosting financial services sales and more with recommender systems</li>
+<li>Analyzing earnings reports and other unstructured financial data with semantic text mining</li>
 </ol>
 <p><br/></p>
-<h3 id="Enhancing-customer-experience-with-banking-chatbots" class="common-anchor-header">バンキング・チャットボットによる顧客体験の向上</h3><p>バンキングチャットボットは、消費者の投資、銀行商品、保険契約の選択を支援することで、顧客体験を向上させることができます。デジタルサービスは、コロナウイルスの流行によって加速した傾向もあり、急速に普及しています。チャットボットは、自然言語処理（NLP）を使用して、ユーザーが送信した質問を意味ベクトルに変換し、一致する回答を検索することで機能します。最新の銀行チャットボットは、ユーザーにパーソナライズされた自然な体験を提供し、会話調で話します。Milvusは、リアルタイムのベクトル類似検索を使用してチャットボットを作成するのに適したデータファブリックを提供します。</p>
-<p>詳しくは、<a href="https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus">Milvusを使ったチャットボット</a>構築のデモをご覧ください。</p>
+<h3 id="Enhancing-customer-experience-with-banking-chatbots" class="common-anchor-header">Enhancing customer experience with banking chatbots</h3><p>Banking chatbots can improve customer experiences by helping consumers select investments, banking products, and insurance policies. Digital services are rising rapidly in popularity in part due to trends accelerated by the coronavirus pandemic. Chatbots work by using natural language processing (NLP) to convert user-submitted questions into semantic vectors to search for matching answers. Modern banking chatbots offer a personalized natural experience for users and speak in a conversational tone. Milvus provides a data fabric well suited for creating chatbots using real-time vector similarity search.</p>
+<p>Learn more in our demo that covers building <a href="https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus">chatbots with Milvus</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/02_1_8c298c45e5.jpg" alt="02 (1).jpg" class="doc-image" id="02-(1).jpg" />
-   </span> <span class="img-wrapper"> <span>02 (1).jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/02_1_8c298c45e5.jpg" alt="02 (1).jpg" class="doc-image" id="02-(1).jpg" />
+    <span>02 (1).jpg</span>
+  </span>
+</p>
 <p><br/></p>
-<h4 id="Boosting-financial-services-sales-and-more-with-recommender-systems" class="common-anchor-header">レコメンダーシステムで金融サービスの販売などを強化</h4><p>プライベートバンキング分野では、レコメンダーシステムを利用して、顧客プロファイルに基づいたパーソナライズされたレコメンデーションにより、金融商品の売上を伸ばしています。レコメンダー・システムは、金融リサーチ、ビジネス・ニュース、銘柄選択、取引支援システムなどにも活用できる。深層学習モデルのおかげで、すべてのユーザーとアイテムは埋め込みベクトルとして記述される。ベクトル・データベースは、ユーザーとアイテムの間の類似性を計算できる埋め込み空間を提供します。</p>
-<p>Milvusを使ったグラフベースのレコメンデーションシステムに関する<a href="https://zilliz.com/blog/graph-based-recommendation-system-with-milvus">デモで</a>詳細をご覧ください。</p>
+<h4 id="Boosting-financial-services-sales-and-more-with-recommender-systems" class="common-anchor-header">Boosting financial services sales and more with recommender systems:</h4><p>The private banking sector uses recommender systems to increase sales of financial products through personalized recommendations based on customer profiles. Recommender systems can also be leveraged in financial research, business news, stock selection, and trading support systems. Thanks to deep learning models, every user and item is described as an embedding vector. A vector database offers an embedding space where similarities between users and items can be calculated.</p>
+<p>Learn more from our <a href="https://zilliz.com/blog/graph-based-recommendation-system-with-milvus">demo</a> covering graph-based recommendation systems with Milvus.</p>
 <p><br/></p>
-<h4 id="Analyzing-earnings-reports-and-other-unstructured-financial-data-with-semantic-text-mining" class="common-anchor-header">セマンティックテキストマイニングによる決算報告書やその他の非構造化財務データの分析：</h4><p>テキストマイニング技術は金融業界に大きな影響を与えました。金融データが指数関数的に増大する中、テキストマイニングは金融の領域で重要な研究分野として浮上しています。</p>
-<p>ディープラーニングモデルは現在、多くの意味的側面を捉えることができる単語ベクトルによって金融レポートを表現するために適用されている。Milvusのようなベクトルデータベースは、何百万ものレポートから膨大な意味的単語ベクトルを保存し、それに対してミリ秒単位で類似性検索を行うことができます。</p>
-<p><a href="https://medium.com/deepset-ai/semantic-search-with-milvus-knowledge-graph-qa-web-crawlers-and-more-837451eae9fa">deepsetのHaystackとMilvusの使用</a>方法については、こちらをご覧ください。</p>
+<h4 id="Analyzing-earnings-reports-and-other-unstructured-financial-data-with-semantic-text-mining" class="common-anchor-header">Analyzing earnings reports and other unstructured financial data with semantic text mining:</h4><p>Text mining techniques had a substantial impact on the financial industry. As financial data grows exponentially, text mining has emerged as an important field of research in the domain of finance.</p>
+<p>Deep learning models are currently applied to represent financial reports through word vectors capable of capturing numerous semantic aspects. A vector database like Milvus is able to store massive semantic word vectors from millions of reports, then conduct similarity searches on them in milliseconds.</p>
+<p>Learn more about how to <a href="https://medium.com/deepset-ai/semantic-search-with-milvus-knowledge-graph-qa-web-crawlers-and-more-837451eae9fa">use deepset’s Haystack with Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Don’t-be-a-stranger" class="common-anchor-header">他人にならない</h3><ul>
-<li><a href="https://github.com/milvus-io/milvus/">GitHubで</a>Milvusを見つけ、貢献する。</li>
-<li><a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slackで</a>コミュニティと交流する。</li>
-<li><a href="https://twitter.com/milvusio">Twitterで</a>つながりましょう。</li>
+<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Don’t be a stranger</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

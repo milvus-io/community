@@ -1,15 +1,14 @@
 ---
 id: >-
   is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md
-title: >-
-  Il RAG sta diventando obsoleto ora che stanno emergendo agenti di lunga data
-  come Claude Cowork?
+title: >
+  Is RAG Becoming Outdated Now That Long-Running Agents Like Claude Cowork Are
+  Emerging?
 author: Min Yin
 date: 2026-1-27
 desc: >-
-  Un'analisi approfondita della memoria a lungo termine di Claude Cowork, della
-  memoria agente scrivibile, dei compromessi RAG e del perché i database
-  vettoriali sono ancora importanti.
+  An in-depth analysis of Claude Cowork’s long-term memory, writable agent
+  memory, RAG trade-offs, and why vector databases still matter.
 cover: assets.zilliz.com/RAG_vs_Long_Running_Agents_fc67810cf8.png
 tag: Engineering
 recommend: false
@@ -23,15 +22,15 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md
 ---
-<p><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork">Claude Cowork</a> è una nuova funzione agente dell'applicazione Claude Desktop. Dal punto di vista dello sviluppatore, si tratta fondamentalmente di un task runner automatico avvolto intorno al modello: può leggere, modificare e generare file locali e può pianificare attività in più fasi senza dover richiedere manualmente ogni passo. Pensate allo stesso ciclo che sta dietro a Claude Code, ma esposto al desktop invece che al terminale.</p>
-<p>La caratteristica principale di Cowork è la capacità di funzionare per lunghi periodi senza perdere lo stato. Non subisce il solito timeout della conversazione o il reset del contesto. Può continuare a lavorare, tenere traccia dei risultati intermedi e riutilizzare le informazioni precedenti nelle varie sessioni. Questo dà l'impressione di una "memoria a lungo termine", anche se la meccanica sottostante è più simile a uno stato di attività persistente + carryover contestuale. In ogni caso, l'esperienza è diversa dal modello tradizionale di chat, dove tutto si azzera a meno che non si costruisca un proprio livello di memoria.</p>
-<p>Questo solleva due questioni pratiche per gli sviluppatori:</p>
+<p><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork">Claude Cowork</a> is a new agent feature in the Claude Desktop app. From a developer’s point of view, it’s basically an automated task runner wrapped around the model: it can read, modify, and generate local files, and it can plan multi-step tasks without you having to manually prompt for each step. Think of it as the same loop behind Claude Code, but exposed to the desktop instead of the terminal.</p>
+<p>Cowork’s key capability is its ability to run for extended periods without losing state. It doesn’t hit the usual conversation timeout or context reset. It can keep working, track intermediate results, and reuse previous information across sessions. That gives the impression of “long-term memory,” even though the underlying mechanics are more like persistent task state + contextual carryover. Either way, the experience is different from the traditional chat model, where everything resets unless you build your own memory layer.</p>
+<p>This brings up two practical questions for developers:</p>
 <ol>
-<li><p><strong>Se il modello è già in grado di ricordare le informazioni passate, dove si colloca la RAG o la RAG agenziale? RAG sarà sostituito?</strong></p></li>
-<li><p><strong>Se vogliamo un agente locale, in stile Cowork, come possiamo implementare noi stessi la memoria a lungo termine?</strong></p></li>
+<li><p><strong>If the model can already remember past information, where does RAG or agentic RAG still fit in? Will RAG be replaced?</strong></p></li>
+<li><p><strong>If we want a local, Cowork-style agent, how do we implement long-term memory ourselves?</strong></p></li>
 </ol>
-<p>Il resto dell'articolo affronta queste domande in dettaglio e spiega come i database vettoriali si inseriscono in questo nuovo panorama di "memoria modello".</p>
-<h2 id="Claude-Cowork-vs-RAG-What’s-the-Difference" class="common-anchor-header">Claude Cowork vs. RAG: qual è la differenza?<button data-href="#Claude-Cowork-vs-RAG-What’s-the-Difference" class="anchor-icon" translate="no">
+<p>The rest of this article addresses these questions in detail and explains how vector databases fit into this new “model memory” landscape.</p>
+<h2 id="Claude-Cowork-vs-RAG-What’s-the-Difference" class="common-anchor-header">Claude Cowork vs. RAG: What’s the Difference?<button data-href="#Claude-Cowork-vs-RAG-What’s-the-Difference" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,18 +45,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Come ho detto in precedenza, Claude Cowork è una modalità agente all'interno di Claude Desktop che può leggere e scrivere file locali, suddividere i compiti in fasi più piccole e continuare a lavorare senza perdere lo stato. Mantiene il proprio contesto di lavoro, quindi le attività di più ore non si azzerano come una normale sessione di chat.</p>
-<p><strong>RAG</strong> (Retrieval-Augmented Generation) risolve un problema diverso: dare a un modello l'accesso a conoscenze esterne. Si indicizzano i dati in un database vettoriale, si recuperano i pezzi rilevanti per ogni query e li si inserisce nel modello. È molto utilizzato perché fornisce alle applicazioni LLM una forma di "memoria a lungo termine" per documenti, registri, dati di prodotto e altro ancora.</p>
-<p>Se entrambi i sistemi aiutano un modello a "ricordare", qual è la vera differenza?</p>
-<h3 id="How-Cowork-Handles-Memory" class="common-anchor-header">Come Cowork gestisce la memoria</h3><p>La memoria di Cowork è di lettura-scrittura. L'agente decide quali informazioni dell'attività o della conversazione in corso sono rilevanti, le memorizza come voci della memoria e le recupera in seguito, man mano che l'attività procede. Ciò consente a Cowork di mantenere la continuità nei flussi di lavoro di lunga durata, in particolare quelli che producono nuovi stati intermedi durante il loro svolgimento.</p>
-<h3 id="How-RAG-and-Agentic-RAG-Handle-Memory" class="common-anchor-header">Come RAG e Agentic RAG gestiscono la memoria</h3><p>Il RAG standard è un recupero guidato dalla domanda: l'utente chiede qualcosa, il sistema recupera i documenti pertinenti e il modello li usa per rispondere. Il corpus di recupero rimane stabile e aggiornato, e gli sviluppatori controllano esattamente cosa vi entra.</p>
-<p>La moderna RAG agenziale estende questo modello. Il modello può decidere quando recuperare le informazioni, cosa recuperare e come utilizzarle durante la pianificazione o l'esecuzione di un flusso di lavoro. Questi sistemi possono eseguire compiti lunghi e chiamare strumenti, come Cowork. Ma anche con il RAG agenziale, il livello di recupero rimane orientato alla conoscenza piuttosto che allo stato. L'agente recupera fatti autorevoli; non scrive il suo stato di compito in evoluzione nel corpus.</p>
-<p>Un altro modo di vedere la cosa:</p>
+    </button></h2><p>As I mentioned previously, Claude Cowork is an agent mode inside Claude Desktop that can read and write local files, break tasks into smaller steps, and keep working without losing state. It maintains its own working context, so multi-hour tasks don’t reset like a normal chat session.</p>
+<p><strong>RAG</strong> (Retrieval-Augmented Generation) solves a different problem: giving a model access to external knowledge. You index your data into a vector database, retrieve relevant chunks for each query, and feed them into the model. It’s widely used because it provides LLM applications with a form of “long-term memory” for documents, logs, product data, and more.</p>
+<p>If both systems help a model “remember,” what’s the actual difference?</p>
+<h3 id="How-Cowork-Handles-Memory" class="common-anchor-header">How Cowork Handles Memory</h3><p>Cowork’s memory is read-write. The agent decides which information from the current task or conversation is relevant, stores it as memory entries, and retrieves it later as the task progresses. This allows Cowork to maintain continuity across long-running workflows — especially ones that produce new intermediate state as they progress.</p>
+<h3 id="How-RAG-and-Agentic-RAG-Handle-Memory" class="common-anchor-header">How RAG and Agentic RAG Handle Memory</h3><p>Standard RAG is query-driven retrieval: the user asks something, the system fetches relevant documents, and the model uses them to answer. The retrieval corpus stays stable and versioned, and developers control exactly what enters it.</p>
+<p>Modern agentic RAG extends this pattern. The model can decide when to retrieve information, what to retrieve, and how to use it during the planning or execution of a workflow. These systems can run long tasks and call tools, similar to Cowork. But even with agentic RAG, the retrieval layer remains knowledge-oriented rather than state-oriented. The agent retrieves authoritative facts; it doesn’t write its evolving task state back into the corpus.</p>
+<p>Another way to look at it:</p>
 <ul>
-<li><p><strong>La memoria di Cowork è orientata al compito:</strong> l'agente scrive e legge il proprio stato in evoluzione.</p></li>
-<li><p><strong>La RAG è guidata dalla conoscenza:</strong> il sistema recupera informazioni consolidate su cui il modello deve basarsi.</p></li>
+<li><p><strong>Cowork’s memory is task-driven:</strong> the agent writes and reads its own evolving state.</p></li>
+<li><p><strong>RAG is knowledge-driven:</strong> the system retrieves established information that the model should rely on.</p></li>
 </ul>
-<h2 id="Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="common-anchor-header">Reverse-Engineering di Claude Cowork: Come costruisce la memoria degli agenti a lunga durata<button data-href="#Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="anchor-icon" translate="no">
+<h2 id="Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="common-anchor-header">Reverse-Engineering Claude Cowork: How It Builds Long-Running Agent Memory<button data-href="#Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,76 +71,76 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Cowork è molto apprezzato perché gestisce compiti in più fasi senza dimenticare continuamente quello che sta facendo. Dal punto di vista di uno sviluppatore, mi chiedo <strong>come faccia a mantenere lo stato in sessioni così lunghe.</strong> Anthropic non ha pubblicato i dati interni, ma sulla base dei precedenti esperimenti di sviluppo con il modulo di memoria di Claude, possiamo mettere insieme un modello mentale decente.</p>
-<p>Claude sembra affidarsi a una configurazione ibrida: <strong>un livello di memoria a lungo termine persistente e strumenti di recupero su richiesta.</strong> Invece di inserire l'intera conversazione in ogni richiesta, Claude inserisce selettivamente il contesto passato solo quando lo ritiene rilevante. Questo permette al modello di mantenere un'elevata precisione senza consumare token a ogni turno.</p>
-<p>Se si scompone la struttura della richiesta, si ottiene più o meno questo aspetto:</p>
+    </button></h2><p>Cowork gets a lot of hype because it handles multi-step tasks without constantly forgetting what it was doing. From a developer’s perspective, I am wondering <strong>how it keeps state across such long sessions?</strong> Anthropic hasn’t published the internals, but based on earlier dev experiments with Claude’s memory module, we can piece together a decent mental model.</p>
+<p>Claude seems to rely on a hybrid setup: <strong>a persistent long-term memory layer plus on-demand retrieval tools.</strong> Instead of stuffing the full conversation into every request, Claude selectively pulls in past context only when it decides it’s relevant. This lets the model keep accuracy high without blowing through tokens every turn.</p>
+<p>If you break down the request structure, it roughly looks like this:</p>
 <pre><code translate="no">[<span class="hljs-meta">0</span>] Static system instructions
 [<span class="hljs-meta">1</span>] <span class="hljs-function">User <span class="hljs-title">memory</span> (<span class="hljs-params"><span class="hljs-built_in">long</span>-term</span>)
 [2] Retrieved / pruned conversation history
 [3] Current user message
 </span><button class="copy-code-btn"></button></code></pre>
-<p>Il comportamento interessante non è la struttura in sé, ma il modo in cui il modello decide cosa aggiornare e quando eseguire il recupero.</p>
-<h3 id="User-Memory-The-Persistent-Layer" class="common-anchor-header">Memoria utente: Lo strato persistente</h3><p>Claude mantiene un archivio di memoria a lungo termine che si aggiorna nel tempo. A differenza del sistema di memoria più prevedibile di ChatGPT, quello di Claude sembra un po' più "vivo". Memorizza le memorie in blocchi di tipo XML e le aggiorna in due modi:</p>
+<p>The interesting behavior isn’t the structure itself — it’s how the model decides what to update and when to run retrieval.</p>
+<h3 id="User-Memory-The-Persistent-Layer" class="common-anchor-header">User Memory: The Persistent Layer</h3><p>Claude keeps a long-term memory store that updates over time. And unlike ChatGPT’s more predictable memory system, Claude’s feels a bit more “alive.” It stores memories in XML-ish blocks and updates them in two ways:</p>
 <ul>
-<li><p><strong>Aggiornamenti impliciti:</strong> A volte il modello decide che qualcosa è una preferenza o un fatto stabile e lo scrive tranquillamente in memoria. Questi aggiornamenti non sono istantanei; appaiono dopo qualche turno e i ricordi più vecchi possono svanire se la conversazione relativa scompare.</p></li>
-<li><p><strong>Aggiornamenti espliciti:</strong> Gli utenti possono modificare direttamente la memoria con lo strumento <code translate="no">memory_user_edits</code> ("ricorda X", "dimentica Y"). Queste scritture sono immediate e si comportano più come un'operazione CRUD.</p></li>
+<li><p><strong>Implicit updates:</strong> Sometimes the model just decides something is a stable preference or fact and quietly writes it to memory. These updates aren’t instantaneous; they show up after a few turns, and older memories can fade out if the related conversation disappears.</p></li>
+<li><p><strong>Explicit updates:</strong> Users can directly modify memory with the <code translate="no">memory_user_edits</code> tool (“remember X,” “forget Y”). These writes are immediate and behave more like a CRUD operation.</p></li>
 </ul>
-<p>Claude esegue un'euristica in background per decidere cosa vale la pena di persistere e non aspetta istruzioni esplicite.</p>
-<h3 id="Conversation-Retrieval-The-On-Demand-Part" class="common-anchor-header">Recupero delle conversazioni: La parte su richiesta</h3><p>Claude <em>non</em> mantiene un riepilogo continuo come molti sistemi LLM. Ha invece una serie di funzioni di recupero che può richiamare ogni volta che ritiene che manchi un contesto. Queste chiamate non avvengono a ogni turno: il modello le attiva in base al proprio giudizio interno.</p>
-<p>La più importante è <code translate="no">conversation_search</code>. Quando l'utente dice qualcosa di vago come "quel progetto del mese scorso", Claude spesso attiva questo strumento per recuperare i turni pertinenti. La cosa notevole è che funziona anche quando la formulazione è ambigua o in una lingua diversa. Questo implica chiaramente che:</p>
+<p>Claude is running background heuristics to decide what’s worth persisting, and it’s not waiting for explicit instructions.</p>
+<h3 id="Conversation-Retrieval-The-On-Demand-Part" class="common-anchor-header">Conversation Retrieval: The On-Demand Part</h3><p>Claude does <em>not</em> keep a rolling summary like many LLM systems. Instead, it has a toolbox of retrieval functions it can call whenever it thinks it’s missing context. These retrieval calls don’t happen every turn — the model triggers them based on its own internal judgment.</p>
+<p>The standout is <code translate="no">conversation_search</code>. When the user says something vague like “that project from last month,” Claude often fires this tool to dig up relevant turns. What’s notable is that it still works when the phrasing is ambiguous or in a different language. That pretty clearly implies:</p>
 <ul>
-<li><p>Un qualche tipo di corrispondenza semantica (embeddings).</p></li>
-<li><p>Probabilmente combinato con la normalizzazione o la traduzione leggera</p></li>
-<li><p>Ricerca di parole chiave per precisione</p></li>
+<li><p>Some kind of semantic matching (embeddings)</p></li>
+<li><p>Probably combined with normalization or lightweight translation</p></li>
+<li><p>Keyword search layered in for precision</p></li>
 </ul>
-<p>In sostanza, questo assomiglia molto a un sistema RAG in miniatura, integrato nel set di strumenti del modello.</p>
-<h3 id="How-Claude’s-Retrieval-Behavior-Differs-From-Basic-History-Buffers" class="common-anchor-header">Come il comportamento di Claude nel recupero si differenzia dai buffer di cronologia di base</h3><p>Dai test e dai registri, emergono alcuni modelli:</p>
+<p>Basically, this looks a lot like a miniature RAG system bundled inside the model’s toolset.</p>
+<h3 id="How-Claude’s-Retrieval-Behavior-Differs-From-Basic-History-Buffers" class="common-anchor-header">How Claude’s Retrieval Behavior Differs From Basic History Buffers</h3><p>From testing and logs, a few patterns stand out:</p>
 <ul>
-<li><p><strong>Il recupero non è automatico.</strong> Il modello sceglie quando chiamarlo. Se ritiene di avere già un contesto sufficiente, non si preoccupa nemmeno.</p></li>
-<li><p><strong>I pezzi recuperati includono</strong> <em>sia</em> <strong>i messaggi dell'utente che quelli dell'assistente.</strong> Questo è utile, perché mantiene più sfumature rispetto ai riassunti riservati all'utente.</p></li>
-<li><p><strong>L'uso dei token rimane regolare.</strong> Dato che la cronologia non viene iniettata a ogni turno, le sessioni più lunghe non si allungano in modo imprevedibile.</p></li>
+<li><p><strong>Retrieval isn’t automatic.</strong> The model chooses when to call it. If it thinks it already has enough context, it won’t even bother.</p></li>
+<li><p><strong>Retrieved chunks include</strong> <em>both</em> <strong>user and assistant messages.</strong> That’s useful — it keeps more nuance than user-only summaries.</p></li>
+<li><p><strong>Token usage stays sane.</strong> Because history isn’t injected every turn, long sessions don’t balloon unpredictably.</p></li>
 </ul>
-<p>Nel complesso, sembra un LLM potenziato dal reperimento, con la differenza che il reperimento avviene come parte del ciclo di ragionamento del modello stesso.</p>
-<p>Questa architettura è intelligente, ma non gratuita:</p>
+<p>Overall, it feels like a retrieval-augmented LLM, except the retrieval happens as part of the model’s own reasoning loop.</p>
+<p>This architecture is clever, but not free:</p>
 <ul>
-<li><p>Il recupero aggiunge latenza e più "parti mobili" (indicizzazione, classificazione, ri-classificazione).</p></li>
-<li><p>Il modello a volte sbaglia a valutare se ha bisogno di un contesto, il che significa che si verifica la classica "dimenticanza di LLM" anche se i dati <em>erano</em> disponibili.</p></li>
-<li><p>Il debug diventa più complicato perché il comportamento del modello dipende da trigger invisibili dello strumento, non solo dall'input del prompt.</p></li>
+<li><p>Retrieval adds latency and more “moving parts” (indexing, ranking, re-ranking).</p></li>
+<li><p>The model occasionally misjudges whether it needs context, which means you see the classic “LLM forgetfulness” even though the data <em>was</em> available.</p></li>
+<li><p>Debugging becomes trickier because model behavior depends on invisible tool triggers, not just prompt input.</p></li>
 </ul>
-<h3 id="Claude-Cowork-vs-Claude-Codex-in-handling-long-term-memory" class="common-anchor-header">Claude Cowork vs Claude Codex nella gestione della memoria a lungo termine</h3><p>In contrasto con l'impostazione di Claude, che fa leva sul recupero, ChatGPT gestisce la memoria in modo molto più strutturato e prevedibile. Invece di fare ricerche semantiche o di trattare le vecchie conversazioni come un mini archivio vettoriale, ChatGPT inietta la memoria direttamente in ogni sessione attraverso i seguenti componenti stratificati:</p>
+<h3 id="Claude-Cowork-vs-Claude-Codex-in-handling-long-term-memory" class="common-anchor-header">Claude Cowork vs Claude Codex in handling long-term memory</h3><p>In contrast to Claude’s retrieval-heavy setup, ChatGPT handles memory in a much more structured and predictable way. Instead of doing semantic lookups or treating old conversations like a mini vector store, ChatGPT injects memory directly into each session through the following layered components:</p>
 <ul>
-<li><p>Memoria dell'utente</p></li>
-<li><p>Metadati della sessione</p></li>
-<li><p>Messaggi della sessione corrente</p></li>
+<li><p>User memory</p></li>
+<li><p>Session metadata</p></li>
+<li><p>Current session messages</p></li>
 </ul>
-<p><strong>Memoria utente</strong></p>
-<p>La memoria dell'utente è il principale livello di memorizzazione a lungo termine, la parte che persiste tra le sessioni e che può essere modificata dall'utente. Memorizza cose piuttosto standard: nome, background, progetti in corso, preferenze di apprendimento, questo genere di cose. Ogni nuova conversazione viene iniettata in questo blocco all'inizio, in modo che il modello inizi sempre con una visione coerente dell'utente.</p>
-<p>ChatGPT aggiorna questo livello in due modi:</p>
+<p><strong>User Memory</strong></p>
+<p>User Memory is the main long-term storage layer—the part that persists across sessions and can be edited by the user. It stores pretty standard things: name, background, ongoing projects, learning preferences, that kind of stuff. Every new conversation gets this block injected at the start, so the model always starts with a consistent view of the user.</p>
+<p>ChatGPT updates this layer in two ways:</p>
 <ul>
-<li><p><strong>Aggiornamenti espliciti:</strong> Gli utenti possono dire al modello di "ricordare questo" o "dimenticare quello" e la memoria cambia immediatamente. Si tratta in pratica di un'API CRUD che il modello espone attraverso il linguaggio naturale.</p></li>
-<li><p><strong>Aggiornamenti impliciti:</strong> Se il modello individua un'informazione che corrisponde alle regole di OpenAI per la memoria a lungo termine, come un titolo di lavoro o una preferenza, e l'utente non ha disattivato la memoria, la aggiungerà silenziosamente da solo.</p></li>
+<li><p><strong>Explicit updates:</strong> Users can tell the model to “remember this” or “forget that,” and the memory changes immediately. This is basically a CRUD API that the model exposes through natural language.</p></li>
+<li><p><strong>Implicit updates:</strong> If the model spots information that fits OpenAI’s rules for long-term memory—like a job title or a preference—and the user hasn’t disabled memory, it will quietly add it on its own.</p></li>
 </ul>
-<p>Dal punto di vista dello sviluppatore, questo livello è semplice, deterministico e facile da interpretare. Non ci sono lookup incorporati, né euristiche su cosa recuperare.</p>
-<p><strong>Metadati di sessione</strong></p>
-<p>I metadati di sessione si trovano all'estremità opposta dello spettro. Hanno vita breve, non sono persistenti e vengono iniettati solo una volta all'inizio di una sessione. Considerateli come variabili d'ambiente per la conversazione. Include elementi come</p>
+<p>From a developer angle, this layer is simple, deterministic, and easy to reason about. No embedding lookups, no heuristics about what to fetch.</p>
+<p><strong>Session Metadata</strong></p>
+<p>Session Metadata sits at the opposite end of the spectrum. It’s short-lived, non-persistent, and only injected once at the start of a session. Think of it as environment variables for the conversation. This includes things like:</p>
 <ul>
-<li><p>su quale dispositivo ci si trova</p></li>
-<li><p>stato dell'account/abbonamento</p></li>
-<li><p>modelli di utilizzo approssimativi (giorni attivi, distribuzione del modello, durata media della conversazione).</p></li>
+<li><p>what device you’re on</p></li>
+<li><p>account/subscription state</p></li>
+<li><p>rough usage patterns (active days, model distribution, average conversation length)</p></li>
 </ul>
-<p>Questi metadati aiutano il modello a modellare le risposte in base all'ambiente corrente, ad esempio scrivendo risposte più brevi sul cellulare, senza inquinare la memoria a lungo termine.</p>
-<p><strong>Messaggi della sessione corrente</strong></p>
-<p>È la cronologia standard a finestra scorrevole: tutti i messaggi della conversazione corrente fino al raggiungimento del limite di token. Quando la finestra diventa troppo grande, i turni più vecchi vengono eliminati automaticamente.</p>
-<p>L'eliminazione <strong>non</strong> riguarda la memoria utente o i riepiloghi delle sessioni. Solo la cronologia locale delle conversazioni si riduce.</p>
-<p>La più grande divergenza da Claude appare nel modo in cui ChatGPT gestisce le conversazioni "recenti ma non attuali". Claude chiama uno strumento di ricerca per recuperare il contesto passato se lo ritiene rilevante. ChatGPT non lo fa.</p>
-<p>Invece, ChatGPT mantiene un leggerissimo <strong>riepilogo trasversale alle sessioni</strong> che viene iniettato in ogni conversazione. Alcuni dettagli chiave su questo livello:</p>
+<p>This metadata helps the model shape responses for the current environment—e.g., writing shorter answers on mobile—without polluting long-term memory.</p>
+<p><strong>Current Session Messages</strong></p>
+<p>This is the standard sliding-window history: all messages in the current conversation until the token limit is reached. When the window gets too large, older turns drop off automatically.</p>
+<p>Crucially, this eviction <strong>does not</strong> touch User Memory or cross-session summaries. Only the local conversation history shrinks.</p>
+<p>The biggest divergence from Claude appears in how ChatGPT handles “recent but not current” conversations. Claude will call a search tool to retrieve past context if it thinks it’s relevant. ChatGPT does not do that.</p>
+<p>Instead, ChatGPT keeps a very lightweight <strong>cross-session summary</strong> that gets injected into every conversation. A few key details about this layer:</p>
 <ul>
-<li><p>Riassume <strong>solo i messaggi degli utenti</strong>, non quelli degli assistenti.</p></li>
-<li><p>Memorizza un insieme molto ridotto di elementi, circa 15, sufficienti a catturare temi o interessi stabili.</p></li>
-<li><p><strong>Non</strong> esegue <strong>calcoli di incorporazione, né classifica la somiglianza, né effettua chiamate di recupero</strong>. In pratica si tratta di un contesto pre-masticato, non di una ricerca dinamica.</p></li>
+<li><p>It summarizes <strong>only user messages</strong>, not assistant messages.</p></li>
+<li><p>It stores a very small set of items—roughly 15—just enough to capture stable themes or interests.</p></li>
+<li><p>It does <strong>no embedding computation, no similarity ranking, and no retrieval calls</strong>. It’s basically pre-chewed context, not dynamic lookup.</p></li>
 </ul>
-<p>Da un punto di vista ingegneristico, questo approccio scambia la flessibilità con la prevedibilità. Non c'è la possibilità di uno strano errore di recupero e la latenza dell'inferenza rimane stabile perché non viene recuperato nulla al volo. Lo svantaggio è che ChatGPT non recupererà un messaggio casuale di sei mesi fa, a meno che non sia stato inserito nel livello di riepilogo.</p>
-<h2 id="Challenges-to-Making-Agent-Memory-Writable" class="common-anchor-header">Sfide nel rendere la memoria dell'agente scrivibile<button data-href="#Challenges-to-Making-Agent-Memory-Writable" class="anchor-icon" translate="no">
+<p>From an engineering perspective, this approach trades flexibility for predictability. There’s no chance of a weird retrieval failure, and inference latency stays stable because nothing is being fetched on the fly. The downside is that ChatGPT won’t pull in some random message from six months ago unless it made it into the summary layer.</p>
+<h2 id="Challenges-to-Making-Agent-Memory-Writable" class="common-anchor-header">Challenges to Making Agent Memory Writable<button data-href="#Challenges-to-Making-Agent-Memory-Writable" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -156,46 +155,46 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Quando un agente passa dalla <strong>memoria di sola lettura</strong> (tipica RAG) alla <strong>memoria scrivibile, dove</strong>può registrare le azioni, le decisioni e le preferenze degli utenti, la complessità aumenta rapidamente. Non si tratta più solo di recuperare documenti, ma di mantenere uno stato crescente da cui dipende il modello.</p>
-<p>Un sistema di memoria scrivibile deve risolvere tre problemi reali:</p>
+    </button></h2><p>When an agent moves from <strong>read-only memory</strong> (typical RAG) to <strong>writable memory</strong>—where it can log user actions, decisions, and preferences—the complexity jumps quickly. You’re no longer just retrieving documents; you’re maintaining a growing state on which the model depends.</p>
+<p>A writable memory system has to solve three real problems:</p>
 <ol>
-<li><p><strong>Cosa ricordare:</strong> L'agente ha bisogno di regole per decidere quali eventi, preferenze o osservazioni vale la pena conservare. Senza queste regole, la memoria esplode in dimensioni o si riempie di rumore.</p></li>
-<li><p><strong>Come immagazzinare e gestire la memoria:</strong> Non tutta la memoria è uguale. Gli elementi recenti, i fatti a lungo termine e gli appunti effimeri necessitano di diversi livelli di archiviazione, politiche di conservazione e strategie di indicizzazione.</p></li>
-<li><p><strong>Come scrivere velocemente senza interrompere il recupero:</strong> La memoria deve essere scritta continuamente, ma gli aggiornamenti frequenti possono degradare la qualità dell'indice o rallentare le query se il sistema non è progettato per inserti ad alta velocità.</p></li>
+<li><p><strong>What to remember:</strong> The agent needs rules for deciding which events, preferences, or observations are worth keeping. Without this, memory either explodes in size or fills with noise.</p></li>
+<li><p><strong>How to store and tier memory:</strong> Not all memory is equal. Recent items, long-term facts, and ephemeral notes all need different storage layers, retention policies, and indexing strategies.</p></li>
+<li><p><strong>How to write fast without breaking retrieval:</strong> Memory must be written continuously, but frequent updates can degrade index quality or slow queries if the system isn’t designed for high-throughput inserts.</p></li>
 </ol>
-<h3 id="Challenge-1-What-Is-Worth-Remembering" class="common-anchor-header">Sfida 1: Cosa vale la pena ricordare?</h3><p>Non tutto ciò che un utente fa deve finire nella memoria a lungo termine. Se qualcuno crea un file temporaneo e lo cancella cinque minuti dopo, registrarlo per sempre non aiuta nessuno. Questa è la difficoltà principale: <strong>come fa il sistema a decidere cosa conta davvero?</strong></p>
-<p><strong>(1) Modi comuni per giudicare l'importanza</strong></p>
-<p>I team di solito si affidano a un mix di euristiche:</p>
+<h3 id="Challenge-1-What-Is-Worth-Remembering" class="common-anchor-header">Challenge 1: What Is Worth Remembering?</h3><p>Not everything a user does should end up in long-term memory. If someone creates a temp file and deletes it five minutes later, recording that forever doesn’t help anyone. This is the core difficulty: <strong>how does the system decide what actually matters?</strong></p>
+<p><strong>(1) Common ways to judge importance</strong></p>
+<p>Teams usually rely on a mix of heuristics:</p>
 <ul>
-<li><p><strong>basate sul tempo</strong>: le azioni recenti contano più di quelle vecchie</p></li>
-<li><p><strong>basata sulla frequenza</strong>: i file o le azioni a cui si accede ripetutamente sono più importanti</p></li>
-<li><p><strong>Basata sul tipo</strong>: alcuni oggetti sono intrinsecamente più importanti (ad esempio, i file di configurazione del progetto rispetto ai file della cache).</p></li>
+<li><p><strong>Time-based</strong>: recent actions matter more than old ones</p></li>
+<li><p><strong>Frequency-based</strong>: files or actions accessed repeatedly are more important</p></li>
+<li><p><strong>Type-based</strong>: some objects are inherently more important (for example, project config files vs. cache files)</p></li>
 </ul>
-<p><strong>(2) Quando le regole sono in conflitto</strong></p>
-<p>Questi segnali sono spesso in conflitto. Un file creato la settimana scorsa ma modificato pesantemente oggi: deve prevalere l'età o l'attività? Non esiste un'unica risposta "corretta", ed è per questo che il punteggio di importanza tende a diventare rapidamente disordinato.</p>
-<p><strong>(3) Come aiutano i database vettoriali</strong></p>
-<p>I database vettoriali offrono dei meccanismi per applicare le regole di importanza senza doverle ripulire manualmente:</p>
+<p><strong>(2) When rules conflict</strong></p>
+<p>These signals often conflict. A file created last week but edited heavily today—should age or activity win? There’s no single “correct” answer, which is why importance scoring tends to get messy fast.</p>
+<p><strong>(3) How vector databases help</strong></p>
+<p>Vector databases give you mechanisms to enforce importance rules without manual cleanup:</p>
 <ul>
-<li><p><strong>TTL:</strong> Milvus può rimuovere automaticamente i dati dopo un determinato periodo di tempo.</p></li>
-<li><p><strong>Decadimento: i</strong> vettori più vecchi possono essere declassati in modo da scomparire naturalmente dal recupero.</p></li>
+<li><p><strong>TTL:</strong> Milvus can automatically remove data after a set time</p></li>
+<li><p><strong>Decay:</strong> older vectors can be down-weighted so they naturally fade from retrieval</p></li>
 </ul>
-<h3 id="Challenge-2-Memory-Tiering-in-Practice" class="common-anchor-header">Sfida 2: la gestione della memoria nella pratica</h3><p>Quando gli agenti funzionano più a lungo, la memoria si accumula. Mantenere tutto nella memoria veloce non è sostenibile, quindi il sistema ha bisogno di un modo per dividere la memoria in livelli <strong>caldi</strong> (a cui si accede frequentemente) e <strong>freddi</strong> (a cui si accede raramente).</p>
-<p><strong>(1) Decidere quando la memoria diventa fredda</strong></p>
-<p>In questo modello, la <em>memoria calda</em> si riferisce ai dati mantenuti nella RAM per un accesso a bassa latenza, mentre la <em>memoria fredda</em> si riferisce ai dati spostati su disco o su oggetti per ridurre i costi.</p>
-<p>La decisione su quando la memoria diventa fredda può essere gestita in modi diversi. Alcuni sistemi utilizzano modelli leggeri per stimare l'importanza semantica di un'azione o di un file in base al suo significato e all'uso recente. Altri si basano su una semplice logica basata su regole, come lo spostamento della memoria che non è stata consultata per 30 giorni o che non è apparsa nei risultati di ricerca per una settimana. Gli utenti possono anche contrassegnare esplicitamente alcuni file o azioni come importanti, garantendo che rimangano sempre caldi.</p>
-<p><strong>(2) Dove vengono conservate le memorie calde e fredde</strong></p>
-<p>Una volta classificate, le memorie calde e fredde vengono archiviate in modo diverso. La memoria calda rimane nella RAM e viene utilizzata per i contenuti a cui si accede di frequente, come il contesto delle attività attive o le azioni recenti dell'utente. La memoria fredda viene spostata su disco o su sistemi di archiviazione a oggetti come S3, dove l'accesso è più lento ma i costi di archiviazione sono molto più bassi. Questo compromesso funziona bene perché la memoria fredda è raramente necessaria e di solito vi si accede solo per riferimenti a lungo termine.</p>
-<p><strong>(3) Come aiutano i database vettoriali</strong></p>
-<p><strong>Milvus e Zilliz Cloud</strong> supportano questo modello consentendo l'archiviazione a livelli caldo-freddo e mantenendo un'unica interfaccia di interrogazione, in modo che i vettori a cui si accede di frequente rimangano in memoria e i dati più vecchi si spostino automaticamente in uno storage a basso costo.</p>
-<h3 id="Challenge-3-How-Fast-Should-Memory-Be-Written" class="common-anchor-header">Sfida 3: Qual è la velocità di scrittura della memoria?</h3><p>I sistemi RAG tradizionali di solito scrivono i dati in batch. Gli indici vengono ricostruiti offline, spesso durante la notte, e diventano ricercabili solo successivamente. Questo approccio funziona per le basi di conoscenza statiche, ma non è adatto alla memoria degli agenti.</p>
-<p><strong>(1) Perché la memoria degli agenti ha bisogno di scritture in tempo reale</strong></p>
-<p>La memoria dell'agente deve catturare le azioni dell'utente nel momento in cui avvengono. Se un'azione non viene registrata immediatamente, il successivo turno di conversazione potrebbe essere privo di un contesto critico. Per questo motivo, i sistemi di memoria scrivibile richiedono scritture in tempo reale piuttosto che aggiornamenti ritardati e offline.</p>
-<p><strong>(2) La tensione tra velocità di scrittura e qualità di recupero</strong></p>
-<p>La memoria in tempo reale richiede una latenza di scrittura molto bassa. Allo stesso tempo, un recupero di alta qualità dipende da indici ben costruiti e la costruzione di un indice richiede tempo. Ricostruire un indice per ogni scrittura è troppo costoso, ma ritardare l'indicizzazione significa che i dati appena scritti rimangono temporaneamente invisibili al recupero. Questo compromesso è al centro della progettazione della memoria scrivibile.</p>
-<p><strong>(3) Come aiutano i database vettoriali</strong></p>
-<p>I database vettoriali risolvono questo problema disaccoppiando la scrittura dall'indicizzazione. Una soluzione comune è lo streaming delle scritture e la creazione di indici incrementali. Utilizzando <strong>Milvus</strong> come esempio, i nuovi dati vengono prima scritti in un buffer in-memory, consentendo al sistema di gestire in modo efficiente le scritture ad alta frequenza. Anche prima della creazione di un indice completo, i dati del buffer possono essere interrogati in pochi secondi attraverso la fusione dinamica o la ricerca approssimativa.</p>
-<p>Quando il buffer raggiunge una soglia predefinita, il sistema costruisce indici in batch e li persiste. Questo migliora le prestazioni di recupero a lungo termine senza bloccare le scritture in tempo reale. Separando l'ingestione veloce dalla costruzione più lenta degli indici, Milvus raggiunge un equilibrio pratico tra velocità di scrittura e qualità di ricerca che funziona bene per la memoria degli agenti.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusione<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="Challenge-2-Memory-Tiering-in-Practice" class="common-anchor-header">Challenge 2: Memory Tiering in Practice</h3><p>As agents run longer, memory piles up. Keeping everything in fast storage isn’t sustainable, so the system needs a way to split memory into <strong>hot</strong> (frequently accessed) and <strong>cold</strong> (rarely accessed) tiers.</p>
+<p><strong>(1) Deciding When Memory Becomes Cold</strong></p>
+<p>In this model, <em>hot memory</em> refers to data kept in RAM for low-latency access, while <em>cold memory</em> refers to data moved to disk or object storage to reduce cost.</p>
+<p>Deciding when memory becomes cold can be handled in different ways. Some systems use lightweight models to estimate the semantic importance of an action or file based on its meaning and recent usage. Others rely on simple, rule-based logic, such as moving memory that has not been accessed for 30 days or has not appeared in retrieval results for a week. Users may also explicitly mark certain files or actions as important, ensuring they always remain hot.</p>
+<p><strong>(2) Where Hot and Cold Memory Are Stored</strong></p>
+<p>Once classified, hot and cold memories are stored differently. Hot memory stays in RAM and is used for frequently accessed content, such as active task context or recent user actions. Cold memory is moved to disk or object storage systems like S3, where access is slower but storage costs are much lower. This trade-off works well because cold memory is rarely needed and is typically accessed only for long-term reference.</p>
+<p><strong>(3) How Vector Databases Help</strong></p>
+<p><strong>Milvus and Zilliz Cloud</strong> support this pattern by enabling hot–cold tiered storage while maintaining a single query interface, so frequently accessed vectors stay in memory and older data moves to lower-cost storage automatically.</p>
+<h3 id="Challenge-3-How-Fast-Should-Memory-Be-Written" class="common-anchor-header">Challenge 3: How Fast Should Memory Be Written?</h3><p>Traditional RAG systems usually write data in batches. Indexes are rebuilt offline—often overnight—and only become searchable later. This approach works for static knowledge bases, but it does not fit agent memory.</p>
+<p><strong>(1) Why Agent Memory Needs Real-Time Writes</strong></p>
+<p>Agent memory must capture user actions as they happen. If an action is not recorded immediately, the next conversation turn may lack critical context. For this reason, writable memory systems require real-time writes rather than delayed, offline updates.</p>
+<p><strong>(2) The Tension Between Write Speed and Retrieval Quality</strong></p>
+<p>Real-time memory demands very low write latency. At the same time, high-quality retrieval depends on well-built indexes, and index construction takes time. Rebuilding an index for every write is too expensive, but delaying indexing means newly written data remains temporarily invisible to retrieval. This trade-off sits at the center of writable memory design.</p>
+<p><strong>(3) How Vector Databases Help</strong></p>
+<p>Vector databases address this problem by decoupling writing from indexing. A common solution is to stream writes and perform incremental index builds. Using <strong>Milvus</strong> as an example, new data is first written to an in-memory buffer, allowing the system to handle high-frequency writes efficiently. Even before a full index is built, buffered data can be queried within seconds through dynamic merging or approximate search.</p>
+<p>When the buffer reaches a predefined threshold, the system builds indexes in batches and persists them. This improves long-term retrieval performance without blocking real-time writes. By separating fast ingestion from slower index construction, Milvus achieves a practical balance between write speed and search quality that works well for agent memory.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -210,7 +209,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Cowork ci fa intravedere una nuova classe di agenti, persistenti, statici e in grado di trasportare il contesto su lunghe linee temporali. Ma chiarisce anche un altro aspetto: la memoria a lungo termine è solo metà del quadro. Per costruire agenti pronti per la produzione, autonomi e affidabili, abbiamo ancora bisogno di un recupero strutturato su basi di conoscenza ampie e in evoluzione.</p>
-<p>La RAG gestisce i fatti del mondo; la memoria scrivibile gestisce lo stato interno dell'agente. I database vettoriali si trovano all'intersezione, fornendo indicizzazione, ricerca ibrida e archiviazione scalabile che consentono a entrambi i livelli di lavorare insieme.</p>
-<p>Man mano che gli agenti di lunga durata continueranno a maturare, le loro architetture probabilmente convergeranno verso questo design ibrido. Cowork è un segnale forte della direzione che si sta prendendo: non verso un mondo senza RAG, ma verso agenti con stack di memoria più ricchi alimentati da database vettoriali sottostanti.</p>
-<p>Se volete esplorare queste idee o ricevere aiuto per la vostra configurazione, <strong>unitevi al nostro</strong> <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canale Slack</a> per chiacchierare con gli ingegneri Milvus. E per una guida più pratica, potete sempre <strong>prenotare una</strong> <strong>sessione di</strong> <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> <strong>.</strong></p>
+    </button></h2><p>Cowork gives us a glimpse of a new class of agents—persistent, stateful, and able to carry context across long timelines. But it also makes something else clear: long-term memory is only half of the picture. To build production-ready agents that are both autonomous and reliable, we still need structured retrieval over large, evolving knowledge bases.</p>
+<p>RAG handles the world’s facts; writable memory handles the agent’s internal state. And vector databases sit at the intersection, providing indexing, hybrid search, and scalable storage that enable both layers to work together.</p>
+<p>As long-running agents continue to mature, their architectures will likely converge on this hybrid design. Cowork is a strong signal of where things are heading—not toward a world without RAG, but toward agents with richer memory stacks powered by vector databases underneath.</p>
+<p>If you want to explore these ideas or get help with your own setup, <strong>join our</strong> <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a> to chat with Milvus engineers. And for more hands-on guidance, you can always <strong>book a</strong> <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> <strong>session.</strong></p>

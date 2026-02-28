@@ -1,47 +1,59 @@
 ---
 id: ArtLens-AI-Share-Your-View.md
-title: ArtLens AI Поделитесь своим мнением
+title: ArtLens AI Share Your View
 author: Anna Faxon and Haley Kedziora
 date: 2020-09-11T06:55:00.939Z
-desc: Искусственный интеллект предлагает новый способ найти свой вид в коллекции CMA
+desc: >-
+  Artificial Intelligence Offers a New Way to Find Your View in the CMA
+  Collection
 cover: assets.zilliz.com/Blog_Art_Lens_AI_1_a7b1054511.jpeg
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/ArtLens-AI-Share-Your-View'
 ---
-<custom-h1>ArtLens AI: поделитесь своим взглядом</custom-h1><p><br/></p>
-<p>Искусство - один из способов отражения и формирования мира, который люди видят. Кливлендский музей искусств предлагает новый способ сопоставить свой взгляд с видами, созданными величайшими художниками истории.</p>
-<p>Команда цифровых инноваций CMA запустила <a href="https://www.clevelandart.org/art/collection/share-your-view">ArtLens AI: Share Your View</a>. Этот интерактивный инструмент на сайте музея и в <a href="https://twitter.com/ArtlensAI">Twitter</a> позволяет сопоставить то, что вы видите в своем мире, с произведениями искусства из замечательной коллекции CMA.</p>
-<p>Эта простая точка входа в CMA отвечает усталости людей, осваивающих новые технологии, чтобы оставаться на связи с друзьями, семьей и коллегами. Мы также хотели предоставить сообществу ресурс, с помощью которого - без предварительных знаний истории или теории искусства - можно одним нажатием кнопки установить визуальные связи между своим миром и произведением искусства.</p>
-<p>Инструмент обратного поиска изображений использует <a href="https://en.wikipedia.org/wiki/Artificial_intelligence">искусственный интеллект (ИИ)</a> для распознавания форм, узоров и объектов на ваших собственных фотографиях, чтобы найти удивительные и восхитительные совпадения из энциклопедической коллекции CMA. Инструмент может даже распознать знаменитую архитектуру на вашей фотографии.</p>
+<custom-h1>ArtLens AI: Share Your View</custom-h1><p><br/></p>
+<p>Art is one way people reflect and shape the world they see, and the Cleveland Museum of Art has a new way to match your view to views created by some of history’s greatest artists.</p>
+<p>The CMA’s Digital Innovation team has launched <a href="https://www.clevelandart.org/art/collection/share-your-view">ArtLens AI: Share Your View</a>. This interactive tool on the museum website and on <a href="https://twitter.com/ArtlensAI">Twitter</a> matches what you see in your world to art from the CMA’s remarkable collection.</p>
+<p>This easy point of entry into the CMA answers the fatigue of people learning new technologies to stay connected to friends, family, and co-workers. We also wanted to give the community a resource in which— without previous knowledge of history or art theory — someone can make visual connections between their world and a work of art at the click of a button.</p>
+<p>The reverse image search tool uses <a href="https://en.wikipedia.org/wiki/Artificial_intelligence">Artificial Intelligence (AI)</a> to recognize the shapes, patterns, and objects in your own photos to find surprising and delightful matches from the CMA’s encyclopedic collection. The tool can even recognize famous architecture in your photo.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_2_66517b5302.jpeg" alt="Blog_ArtLens AI_ 2.jpeg" class="doc-image" id="blog_artlens-ai_-2.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog_ArtLens AI_ 2.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_2_66517b5302.jpeg" alt="Blog_ArtLens AI_ 2.jpeg" class="doc-image" id="blog_artlens-ai_-2.jpeg" />
+    <span>Blog_ArtLens AI_ 2.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>При поиске совпадений на сайте вы можете просмотреть другие близкие совпадения, загрузить составное изображение, чтобы поделиться им с друзьями, или добавить изображение в нашу галерею для посетителей. Ссылки на сайт CMA's <a href="https://www.clevelandart.org/art/collection/search">Collection Online</a> предлагают вам более 36 полей метаданных о произведении искусства, таких как биография художника, цитаты и видеоролики куратора. В <a href="https://twitter.com/ArtlensAI">Twitter</a> прикрепите к своему твиту фотографию или изображение и упомяните @ArtLensAI, чтобы поделиться своим мнением. Бот в Twitter автоматически ответит вам подходящим произведением искусства.</p>
+<p>When making a match on the website, you can shuffle through other close matches, download a composite image to share with your friends, or add the image to our visitor gallery. Links to the CMA’s <a href="https://www.clevelandart.org/art/collection/search">Collection Online</a> offer you more than 36 fields of metadata about a work of art, such as an artist biography, citations, and curator videos. On <a href="https://twitter.com/ArtlensAI">Twitter</a>, attach a photo or an image to your tweet and mention @ArtLensAI to share your view. The Twitter bot will automatically reply with a matching artwork.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_3_b77e68aef9.png" alt="Blog_ArtLens AI_ 3.png" class="doc-image" id="blog_artlens-ai_-3.png" />
-   </span> <span class="img-wrapper"> <span>Blog_ArtLens AI_ 3.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_3_b77e68aef9.png" alt="Blog_ArtLens AI_ 3.png" class="doc-image" id="blog_artlens-ai_-3.png" />
+    <span>Blog_ArtLens AI_ 3.png</span>
+  </span>
+</p>
 <p><br/></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_4_f5cfe6af29.png" alt="Blog_ArtLens AI_ 4.png" class="doc-image" id="blog_artlens-ai_-4.png" />
-   </span> <span class="img-wrapper"> <span>Blog_ArtLens AI_ 4.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_4_f5cfe6af29.png" alt="Blog_ArtLens AI_ 4.png" class="doc-image" id="blog_artlens-ai_-4.png" />
+    <span>Blog_ArtLens AI_ 4.png</span>
+  </span>
+</p>
 <p><br/></p>
-<p>Используя машинное обучение и открытый механизм векторного сходства <a href="https://milvus.io/">Milvus</a>, команда разработчиков цифровых инноваций CMA создала инструмент искусственного интеллекта совместно с <a href="https://www.design-io.com/">Design IO</a>, которые ранее сотрудничали с музейной <a href="https://www.clevelandart.org/artlens-gallery/artlens-studio">студией ArtLens Studio</a> в 2016 году, и Джеффом Шулером, партнером, который возглавляет команду CMA по разработке веб-сайтов. Новая инициатива основана на использовании искусственного интеллекта в музейной выставке ArtLens, который считывает эмоции и сопоставляет лицо посетителя с портретами из коллекции CMA.</p>
-<p>Мы надеемся, что это станет еще одним источником вдохновения и веселья в эти нестабильные времена. Мы знаем, что людям нужны новые, творческие и простые способы приобщиться к искусству. За время пандемии COVID-19 CMA вырос как цифровой музей, подарив обществу множество новых работ. Но сотрудники CMA чувствуют "усталость от Zoom" от удаленной работы и видеоконференций, как и все остальные после шести месяцев самоизоляции. Share Your View - это один из ответов на осторожные шаги, которые мы все делаем в гибридном опыте жизни онлайн и жизни в безопасных физических пространствах.</p>
-<p>ArtLens AI: Share Your View может помочь ученикам, учителям и родителям, чувствующим себя истощенными из-за непрерывного виртуального обучения. Школы, работающие в гибридном режиме, по-прежнему полагаются на видеозвонки и онлайн-платформы для работы в классе. Студенты колледжей и средних школ учатся у себя дома или в общежитии, не имея доступа к ресурсам кампуса. Образовательная команда CMA уже начала использовать этот инструмент для обсуждения композиции, палитры и рисунка. Помещение произведения искусства рядом с современным видом создает новые сравнения и возможности для критического мышления.</p>
+<p>Using Machine Learning and the open source vector similarity engine <a href="https://milvus.io/">Milvus</a>, the CMA’s Digital Innovation development team created the AI tool with <a href="https://www.design-io.com/">Design IO</a>, who had previously collaborated on the museum’s <a href="https://www.clevelandart.org/artlens-gallery/artlens-studio">ArtLens Studio</a> in 2016, and Jeff Schuler, a partner who leads the CMA team on website development. The new initiative builds on AI used in the museum’s on-site ArtLens Exhibition to read emotion and match a visitor’s face to portraits in the CMA’s collection.</p>
+<p>We hope this will be another source of inspiration and fun in these uncertain times. We know that people need new, creative, and easy ways to engage with art. The CMA has grown as a digital museum during the COVID-19 pandemic, with many new gifts to the community. But CMA staffers feel the “Zoom fatigue” of remote work and video conferencing as much as anyone else after six months of self-isolation. Share Your View is one answer to the cautious steps we all are taking into a hybrid experience of life online and life in safe physical spaces.</p>
+<p>ArtLens AI: Share Your View can help students, teachers, and parents feeling drained by the continuation of virtual learning. Schools in hybrid mode still rely on video calls and online platforms for classroom engagement. College and high school students are learning from their homes and dorms, without access to on-campus resources. The CMA’s education team has already begun to share this tool as a way to spark conversations about composition, palette, and pattern. Placing an artwork side-by-side with a contemporary view creates new comparisons and opportunities for critical thinking.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_5_6fc48ea113.jpeg" alt="Blog_ArtLens AI_ 5.jpeg" class="doc-image" id="blog_artlens-ai_-5.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog_ArtLens AI_ 5.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_5_6fc48ea113.jpeg" alt="Blog_ArtLens AI_ 5.jpeg" class="doc-image" id="blog_artlens-ai_-5.jpeg" />
+    <span>Blog_ArtLens AI_ 5.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>С момента запуска <a href="https://www.clevelandart.org/artlens-gallery">галереи ARTLENS</a> в 2012 году CMA стал лидером в создании цифровых связей с искусством. В этом году мы добавили множество <a href="https://www.clevelandart.org/home-where-art-video-series">новых видеороликов кураторов</a> для онлайн-просмотра и создали <a href="https://www.clevelandart.org/artlens-for-slack">приложение ArtLens for Slack</a>, чтобы рабочие места могли ежедневно обсуждать и взаимодействовать между собой произведения искусства из коллекции музея, находящейся в <a href="https://www.clevelandart.org/open-access">открытом доступе</a>. Мы надеемся, что новая функция искусственного интеллекта поможет вам оказаться в удивительных и вдохновляющих местах внутри одного из самых красивых произведений искусства в мире.</p>
+<p>Since the launch of <a href="https://www.clevelandart.org/artlens-gallery">ARTLENS Gallery</a> in 2012, the CMA has been a leader in creating digital connections to art. This year we have added many <a href="https://www.clevelandart.org/home-where-art-video-series">new curator videos</a> for online viewing and created the <a href="https://www.clevelandart.org/artlens-for-slack">ArtLens for Slack app</a> so workplaces can share a daily moment of discussion and interaction centered around artwork in the museum’s <a href="https://www.clevelandart.org/open-access">Open Access</a> collection. We hope the new AI feature will help you find yourself in some surprising and inspiring places inside some of the most beautiful art in the world.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_6_36d8922e8c.png" alt="Blog_ArtLens AI_ 6.png" class="doc-image" id="blog_artlens-ai_-6.png" />
-   </span> <span class="img-wrapper"> <span>Blog_ArtLens AI_ 6.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Art_Lens_AI_6_36d8922e8c.png" alt="Blog_ArtLens AI_ 6.png" class="doc-image" id="blog_artlens-ai_-6.png" />
+    <span>Blog_ArtLens AI_ 6.png</span>
+  </span>
+</p>
 <p><br/></p>
-<p><em>Эта статья в блоге перепечатана с сайта https://medium.com/cma-thinker/artlens-ai-share-your-view-5a326c15943f.</em></p>
-<p>Читайте другие <a href="https://zilliz.com/user-stories">истории пользователей</a>, чтобы узнать больше о создании вещей с помощью Milvus.</p>
+<p><em>This blog article is reposted from https://medium.com/cma-thinker/artlens-ai-share-your-view-5a326c15943f</em></p>
+<p>Read other <a href="https://zilliz.com/user-stories">user stories</a> to learn more about making things with Milvus.</p>

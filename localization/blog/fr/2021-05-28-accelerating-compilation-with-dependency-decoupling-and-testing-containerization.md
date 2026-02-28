@@ -2,86 +2,93 @@
 id: >-
   accelerating-compilation-with-dependency-decoupling-and-testing-containerization.md
 title: >-
-  Accélérer la compilation 2,5 fois avec le découplage des dépendances et la
-  conteneurisation des tests
+  Accelerating Compilation 2.5X with Dependency Decoupling & Testing
+  Containerization
 author: Zhifeng Zhang
 date: 2021-05-28T00:00:00.000Z
 desc: >-
-  Découvrez comment zilliz a réduit les temps de compilation de 2,5 fois en
-  utilisant le découplage des dépendances et les techniques de conteneurisation
-  pour les projets d'IA et de MLOps à grande échelle.
+  Discover how zilliz to reduce compile times 2.5x using dependency decoupling
+  and containerization techniques for large-scale AI and MLOps projects.
 cover: assets.zilliz.com/cover_20e3cddb96.jpeg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/accelerating-compilation-with-dependency-decoupling-and-testing-containerization
 ---
-<custom-h1>Accélérer la compilation de 2,5 fois avec le découplage des dépendances et la conteneurisation des tests</custom-h1><p>Le temps de compilation peut être compliqué par des dépendances internes et externes complexes qui évoluent tout au long du processus de développement, ainsi que par des changements dans les environnements de compilation tels que le système d'exploitation ou les architectures matérielles. Voici quelques problèmes courants que l'on peut rencontrer lorsqu'on travaille sur des projets d'IA ou de MLOps à grande échelle :</p>
-<p><strong>Compilation excessivement longue</strong> - L'intégration du code se fait des centaines de fois par jour. Avec des centaines de milliers de lignes de code en place, même une petite modification peut entraîner une compilation complète qui prend généralement une ou plusieurs heures.</p>
-<p><strong>Environnement de compilation complexe</strong> - Le code du projet doit être compilé dans différents environnements, qui impliquent différents systèmes d'exploitation, tels que CentOS et Ubuntu, des dépendances sous-jacentes, telles que GCC, LLVM et CUDA, et des architectures matérielles. La compilation dans un environnement spécifique peut normalement ne pas fonctionner dans un environnement différent.</p>
-<p><strong>Dépendances complexes</strong> - La compilation d'un projet implique plus de 30 dépendances entre composants et avec des tiers. Le développement d'un projet entraîne souvent des changements dans les dépendances, ce qui provoque inévitablement des conflits de dépendances. Le contrôle de version entre les dépendances est si complexe que la mise à jour de la version des dépendances affectera facilement les autres composants.</p>
-<p>Le<strong>téléchargement de dépendances tierces est lent ou échoue</strong> - Les retards de réseau ou les bibliothèques de dépendances tierces instables entraînent des téléchargements de ressources lents ou des échecs d'accès, ce qui affecte sérieusement l'intégration du code.</p>
-<p>En découplant les dépendances et en mettant en œuvre la conteneurisation des tests, nous avons réussi à réduire le temps de compilation moyen de 60 % lorsque nous travaillions sur le projet open-source de recherche de similarité d'embeddings <a href="https://milvus.io/">Milvus</a>.</p>
+<custom-h1>Accelerating Compilation 2.5X with Dependency Decoupling &amp; Testing Containerization</custom-h1><p>Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects:</p>
+<p><strong>Prohibitively long compilation</strong> - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours.</p>
+<p><strong>Complex compilation environment</strong> - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.</p>
+<p><strong>Complex dependencies</strong> - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.</p>
+<p><strong>Third-party dependency download is slow or fails</strong> - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration.</p>
+<p>By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project <a href="https://milvus.io/">Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Découpler les dépendances du projet</h3><p>La compilation d'un projet implique généralement un grand nombre de dépendances internes et externes. Plus un projet a de dépendances, plus il devient complexe de les gérer. Au fur et à mesure que le logiciel se développe, il devient plus difficile et plus coûteux de modifier ou de supprimer les dépendances, ainsi que d'identifier les effets de ces modifications. Une maintenance régulière est nécessaire tout au long du processus de développement pour garantir le bon fonctionnement des dépendances. Une mauvaise maintenance, des dépendances complexes ou défectueuses peuvent provoquer des conflits qui ralentissent ou bloquent le développement. En pratique, cela peut se traduire par des téléchargements de ressources tardifs, des échecs d'accès qui ont un impact négatif sur l'intégration du code, et bien d'autres choses encore. Le découplage des dépendances d'un projet peut atténuer les défauts et réduire le temps de compilation, en accélérant les tests du système et en évitant de ralentir inutilement le développement du logiciel.</p>
-<p>Nous vous recommandons donc de découpler les dépendances de votre projet :</p>
+<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Decouple the dependencies of the project</h3><p>Project compilation usually involves a large number of internal and external component dependencies. The more dependencies a project has, the more complex it becomes to manage them. As software grows, it becomes more difficult and costly to change or remove dependencies, as well as identify the effects of doing so. Regular maintenance is required throughout the development process to ensure the dependencies functions properly.
+Poor maintenance, complex dependencies, or faulty dependencies can cause conflicts that slow or stall development. In practice, this can mean lagging resource downloads, access failures that negatively impact code integration, and more. Decoupling project dependencies can mitigate defects and reduce compile time, accelerating system testing and avoiding unnecessary drag on software development.</p>
+<p>Therefore, we recommend decouple dependencies your project:</p>
 <ul>
-<li>Séparer les composants ayant des dépendances complexes</li>
-<li>Utiliser différents référentiels pour la gestion des versions.</li>
-<li>Utiliser des fichiers de configuration pour gérer les informations sur les versions, les options de compilation, les dépendances, etc.</li>
-<li>Ajoutez les fichiers de configuration aux bibliothèques de composants afin qu'ils soient mis à jour au fur et à mesure de l'itération du projet.</li>
+<li>Split up components with complex dependencies</li>
+<li>Use different repositories for version management.</li>
+<li>Use configuration files to manage version information, compilation options, dependencies, etc.</li>
+<li>Add the configuration files to the component libraries so that they are updated as the project iterates.</li>
 </ul>
-<p><strong>Optimisation de la compilation entre les composants</strong> - Tirer et compiler le composant approprié en fonction des dépendances et des options de compilation enregistrées dans les fichiers de configuration. Marquez et emballez les résultats de la compilation binaire et les fichiers manifestes correspondants, puis téléchargez-les dans votre dépôt privé. Si aucune modification n'est apportée à un composant ou aux composants dont il dépend, lire ses résultats de compilation conformément aux fichiers manifestes. En cas de problèmes tels que des retards de réseau ou des bibliothèques de dépendances tierces instables, essayez de mettre en place un référentiel interne ou d'utiliser des référentiels miroirs.</p>
-<p>Pour optimiser la compilation entre les composants :</p>
-<p>1. créer un graphe de relations de dépendance - Utilisez les fichiers de configuration des bibliothèques de composants pour créer un graphe de relations de dépendance. Utilisez la relation de dépendance pour récupérer les informations de version (Git Branch, Tag, et Git commit ID) et les options de compilation et plus encore des composants dépendants en amont et en aval.</p>
+<p><strong>Compile optimization between components</strong> — Pull and compile the relevant component according to the dependencies and the compile options recorded in the configuration files. Tag and pack the binary compilation results and the corresponding manifest files, and then upload them to your private repository. If no change is made to a component or the components it depends on, playback its compilation results according to the manifest files. For issues such as network delays or unstable third-party dependency libraries, try setting up an internal repository or using mirrored repositories.</p>
+<p>To optimize compilation between components:</p>
+<p>1.Create dependency relationship graph — Use the configuration files in the component libraries to create dependency relationship graph. Use the dependency relationship to retrieve the version information (Git Branch, Tag, and Git commit ID) and compilation options and more of both upstream and downstream dependent components.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p>2<strong>. vérifier les dépendances</strong> - générer des alertes pour les dépendances circulaires, les conflits de version et d'autres problèmes qui surviennent entre les composants.</p>
-<p>3<strong>. aplanir les dépendances</strong> - Trier les dépendances par recherche en profondeur (DFS) et fusionner les composants ayant des dépendances en double pour former un graphe de dépendances.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>2.<strong>Check for dependencies</strong> — Generate alerts for circular dependencies, version conflicts, and other issues that arise between components.</p>
+<p>3.<strong>Flatten dependencies</strong> — Sort dependencies by Depth First Search (DFS) and front-merge components with duplicate dependencies to form a dependency graph.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>4. utiliser l'algorithme MerkleTree pour générer un hachage (Root Hash) contenant les dépendances de chaque composant sur la base des informations de version, des options de compilation, etc. Combiné à des informations telles que le nom du composant, l'algorithme forme une étiquette unique pour chaque composant.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>4.Use MerkleTree algorithm to generate a hash (Root Hash) containing dependencies of each component based on version information, compilation options, and more. Combined with information such as component name, the algorithm forms a unique tag for each component.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<p>5. en se basant sur les informations de l'étiquette unique du composant, vérifier si une archive de compilation correspondante existe dans le repo privé. Si une archive de compilation est récupérée, décompressez-la pour obtenir le fichier manifeste pour la lecture ; sinon, compilez le composant, marquez les fichiers objets de compilation et le fichier manifeste générés, et téléchargez-les dans le répertoire privé.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<p>5.Based on the component’s unique tag information, check if a corresponding compilation archive exists in the private repo. If a compilation archive is retrieved, unzip it to get the manifest file for playback; if not, compile the component, mark up the generated compilation object files and manifest file, and upload them to the private repo.</p>
 <p><br/></p>
-<p><strong>Mettre en œuvre des optimisations de compilation dans les composants</strong> - Choisissez un outil de cache de compilation spécifique au langage pour mettre en cache les fichiers objets compilés, puis téléchargez-les et stockez-les dans votre dépôt privé. Pour la compilation C/C++, choisissez un outil de cache de compilation comme CCache pour mettre en cache les fichiers intermédiaires de compilation C/C++, puis archivez le cache CCache local après la compilation. Ces outils de cache de compilation mettent simplement en cache les fichiers de code modifiés un par un après la compilation, et copient les composants compilés du fichier de code inchangé afin qu'ils puissent être directement impliqués dans la compilation finale. L'optimisation de la compilation au sein des composants comprend les étapes suivantes :</p>
+<p><strong>Implement compilation optimizations within components</strong> — Choose a language-specific compilation cache tool to cache the compiled object files, and upload and store them in your private repository. For C/C++ compilation, choose a compilation cache tool like CCache to cache the C/C++ compilation intermediate files, and then archive the local CCache cache after compilation. Such compile cache tools simply cache the changed code files one by one after compilation, and copy the compiled components of the unchanged code file so that they can be directly involved in the final compilation.
+Optimization of the compilation within components includes the following steps:</p>
 <ol>
-<li>Ajouter les dépendances de compilation nécessaires au fichier Dockerfile. Utiliser Hadolint pour effectuer des contrôles de conformité sur Dockerfile afin de s'assurer que l'image est conforme aux meilleures pratiques de Docker.</li>
-<li>Mettre en miroir l'environnement de compilation en fonction de la version sprint du projet (version + build), du système d'exploitation et d'autres informations.</li>
-<li>Exécutez le conteneur de l'environnement de compilation miroir et transférez l'identifiant de l'image au conteneur en tant que variable d'environnement. Voici un exemple de commande pour obtenir l'ID de l'image : "docker inspect ' - type=image' - format '{{.ID}}' repository/build-env:v0.1-centos7".</li>
-<li>Choisissez l'outil de cache de compilation approprié : Entrez votre conteneur pour intégrer et compiler vos codes et vérifiez dans votre dépôt privé si un cache de compilation approprié existe. Si c'est le cas, téléchargez-le et extrayez-le dans le répertoire spécifié. Une fois que tous les composants ont été compilés, le cache généré par l'outil de cache de compilation est empaqueté et téléchargé dans votre dépôt privé en fonction de la version du projet et de l'ID de l'image.</li>
+<li>Add the necessary compilation dependencies to Dockerfile. Use Hadolint to perform compliance checks on Dockerfile to ensure that the image conforms to Docker’s best practices.</li>
+<li>Mirror the compilation environment according to the project sprint version (version + build), operating system, and other information.</li>
+<li>Run the mirrored compilation environment container, and transfer the image ID to the container as an environment variable. Here’s an example command for getting image ID: “docker inspect ‘ — type=image’ — format ‘{{.ID}}’ repository/build-env:v0.1-centos7”.</li>
+<li>Choose the appropriate compile cache tool: Enter your containter to integrate and compile your codes and check in your private repository if an appropriate compile cache exists. If yes, download and extract it to the specified directory. After all components are compiled, the cache generated by the compile cache tool is packaged and uploaded to your private repository based on the project version and image ID.</li>
 </ol>
 <p><br/></p>
-<h3 id="Further-compilation-optimization" class="common-anchor-header">Optimisation de la compilation</h3><p>Notre version initiale occupe trop d'espace disque et de bande passante, et prend beaucoup de temps à déployer, nous avons pris les mesures suivantes :</p>
+<h3 id="Further-compilation-optimization" class="common-anchor-header">Further compilation optimization</h3><p>Our initially-built occupies too much disk space and network bandwidth, and takes a long time to deploy, we took the following measures:</p>
 <ol>
-<li>Choisir l'image de base la plus légère pour réduire la taille de l'image, par exemple alpine, busybox, etc.</li>
-<li>Réduire le nombre de couches d'images. Réutiliser les dépendances autant que possible. Fusionner plusieurs commandes avec "&amp;&amp;".</li>
-<li>Nettoyer les produits intermédiaires pendant la construction de l'image.</li>
-<li>Utiliser le cache d'image pour construire l'image autant que possible.</li>
+<li>Choose the leanest base image to reduce the image size, e.g. alpine, busybox, etc.</li>
+<li>Reduce the number of image layers. Reuse dependencies as much as possible. Merge multiple commands with “&amp;&amp;”.</li>
+<li>Clean up the intermediate products during image building.</li>
+<li>Use image cache to build image as much as possible.</li>
 </ol>
-<p>Au fur et à mesure de l'avancement de notre projet, l'utilisation du disque et des ressources réseau a commencé à monter en flèche à mesure que le cache de compilation augmentait, alors que certains des caches de compilation étaient sous-utilisés. Nous avons donc procédé aux ajustements suivants :</p>
-<p>Nettoyer<strong>régulièrement les fichiers de cache</strong> - Vérifier régulièrement le dépôt privé (à l'aide de scripts par exemple), et nettoyer les fichiers de cache qui n'ont pas été modifiés depuis un certain temps ou qui n'ont pas été beaucoup téléchargés.</p>
-<p><strong>Mise en cache sélective</strong> des compilations - Ne mettre en cache que les compilations exigeant des ressources, et ne pas mettre en cache les compilations ne nécessitant pas beaucoup de ressources.</p>
+<p>As our project continues to progress, disk usage and network resource began to soar as the compilation cache increases, while some of the compilation caches are underutilized. We then made the following adjustments:</p>
+<p><strong>Regularly clean up cache files</strong> — Regularly check the private repository (using scripts for example), and clean up cache files that have not changed for a while or have not been downloaded much.</p>
+<p><strong>Selective compile caching</strong> — Only cache resource-demanding compiles, and skip caching compiles that do not require much resource.</p>
 <p><br/></p>
-<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Exploiter les tests conteneurisés pour réduire les erreurs, améliorer la stabilité et la fiabilité</h3><p>Les codes doivent être compilés dans différents environnements, ce qui implique une variété de systèmes d'exploitation (par exemple CentOS et Ubuntu), de dépendances sous-jacentes (par exemple GCC, LLVM et CUDA) et d'architectures matérielles spécifiques. Le code qui se compile avec succès dans un environnement spécifique échoue dans un environnement différent. En exécutant les tests dans des conteneurs, le processus de test devient plus rapide et plus précis.</p>
-<p>La conteneurisation garantit que l'environnement de test est cohérent et qu'une application fonctionne comme prévu. L'approche des tests conteneurisés consiste à emballer les tests sous forme de conteneurs d'images et à créer un environnement de test véritablement isolé. Nos testeurs ont trouvé cette approche très utile, ce qui a permis de réduire les temps de compilation de 60 %.</p>
-<p><strong>Assurer un environnement de compilation cohérent</strong> - Comme les produits compilés sont sensibles aux changements dans l'environnement du système, des erreurs inconnues peuvent se produire dans différents systèmes d'exploitation. Nous devons étiqueter et archiver le cache des produits compilés en fonction des changements survenus dans l'environnement de compilation, mais il est difficile de les classer. Nous avons donc introduit la technologie de conteneurisation pour unifier l'environnement de compilation afin de résoudre ces problèmes.</p>
+<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Leveraging containerized testing to reduce errors, improve stability and reliability</h3><p>Codes have to be compiled in different environments, which involve variety of operating systems (e.g. CentOS and Ubuntu), underlying dependencies (e.g. GCC, LLVM, and CUDA), and specific hardware architectures. Code that successfully compiles under a specific environment fail in a different environment. By running tests inside containers, the testing process becomes faster and more accurate.</p>
+<p>Containerization ensures that the test environment is consistent, and that an application is working as expected. The containerized testing approach packages tests as image containers and builds a truly-isolated test environment. Our testers found that this approach pretty useful, which ended up reducing compile times by as much as 60%.</p>
+<p><strong>Ensure a consistent compile environment</strong> — As the compiled products are sensitive to changes in the system environment, unknown errors may occur in different operating systems. We have to tag and archive the compiled product cache according to the changes in the compile environment, but they are difficult to categorize. So we introduced containerization technology to unify the compile environment to solve such issues.</p>
 <p><br/></p>
-<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>En analysant les dépendances du projet, cet article présente différentes méthodes d'optimisation de la compilation entre et au sein des composants, en fournissant des idées et des bonnes pratiques pour construire une intégration de code continue stable et efficace. Ces méthodes ont permis de résoudre les problèmes de lenteur de l'intégration du code causés par des dépendances complexes, d'unifier les opérations à l'intérieur du conteneur pour assurer la cohérence de l'environnement, et d'améliorer l'efficacité de la compilation grâce à la lecture des résultats de la compilation et à l'utilisation d'outils de cache de compilation pour mettre en cache les résultats intermédiaires de la compilation.</p>
-<p>Les pratiques susmentionnées ont permis de réduire le temps de compilation du projet de 60 % en moyenne, améliorant ainsi considérablement l'efficacité globale de l'intégration du code. À l'avenir, nous continuerons à paralléliser la compilation entre les composants et à l'intérieur de ceux-ci afin de réduire davantage les temps de compilation.</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>By analyzing project dependencies, this article introduces different methods for compilation optimization between and within components, providing ideas and best practices for building stable and efficient continuous code integration. These methods helped solve slow code integration caused by complex dependencies, unify operations inside the container to ensure the consistency of the environment, and improve compilation efficiency through the playback of the compilation results and the use of compilation cache tools to cache the intermediate compilation results.</p>
+<p>This above-mentioned practices have reduced the compile time of the project by 60% on average, greatly improving the overall efficiency of code integration. Moving forward, we will continue parallelizing compilation between and within components to further reduce compilation times.</p>
 <p><br/></p>
-<p><em>Les sources suivantes ont été utilisées pour cet article :</em></p>
+<p><em>The following sources were used for this article:</em></p>
 <ul>
-<li>"Découplage des arbres de sources dans les composants de niveau bâtiment"</li>
-<li>"<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Facteurs à prendre en compte lors de l'ajout de dépendances tierces à un projet</a></li>
-<li>"<a href="https://queue.acm.org/detail.cfm?id=3344149">Survivre aux dépendances logicielles</a>"</li>
-<li>"<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Comprendre les dépendances : Une étude des défis de coordination dans le développement de logiciels</a>"</li>
+<li>“Decoupling Source Trees into Build-Level Components”</li>
+<li>“<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Factors to consider when adding third party dependencies to a project</a>”</li>
+<li>“<a href="https://queue.acm.org/detail.cfm?id=3344149">Surviving Software Dependencies</a>”</li>
+<li>“<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Understanding Dependencies: A Study of the Coordination Challenges in Software Development</a>”</li>
 </ul>
 <p><br/></p>
-<h3 id="About-the-author" class="common-anchor-header">A propos de l'auteur</h3><p>Zhifeng Zhang est ingénieur DevOps senior chez Zilliz.com et travaille sur Milvus, une base de données vectorielle open-source, et instructeur autorisé de l'université de logiciels open-source LF en Chine. Il a obtenu sa licence en Internet des objets (IOT) à l'Institut de génie logiciel de Guangzhou. Il passe sa carrière à participer et à diriger des projets dans le domaine du CI/CD, du DevOps, de la gestion de l'infrastructure informatique, de la boîte à outils Cloud-Native, de la conteneurisation et de l'optimisation du processus de compilation.</p>
+<h3 id="About-the-author" class="common-anchor-header">About the author</h3><p>Zhifeng Zhang is a senior DevOps engineer at Zilliz.com working on Milvus, an open-source vector database, and authorized instructor of the LF open-source software university in China. He received his bachelor’s degree in Internet of Things (IOT) from Software Engineering Institute of Guangzhou. He spends his career participating in and leading projects in the area of CI/CD, DevOps, IT infrastructure management, Cloud-Native toolkit, containerization, and compilation process optimization.</p>

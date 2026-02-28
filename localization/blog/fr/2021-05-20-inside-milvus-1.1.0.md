@@ -1,24 +1,24 @@
 ---
 id: inside-milvus-1.1.0.md
-title: Nouvelles fonctionnalités
+title: New features
 author: milvus
 date: 2021-05-20T08:35:42.700Z
 desc: >-
-  Milvus v1.1.0 est arrivé ! Les nouvelles fonctionnalités, les améliorations et
-  les corrections de bugs sont disponibles dès maintenant.
+  Milvus v1.1.0 has arrived! New features, improvements, and bug fixes are
+  available now.
 cover: assets.zilliz.com/v1_1_cover_487e70971a.jpeg
 tag: News
 canonicalUrl: 'https://zilliz.com/blog/inside-milvus-1.1.0'
 ---
-<custom-h1>A l'intérieur de Milvus 1.1.0</custom-h1><p><a href="https://github.com/milvus-io">Milvus</a> est un projet permanent de logiciel libre (OSS) visant à construire la base de données vectorielles la plus rapide et la plus fiable au monde. Les nouvelles fonctionnalités de Milvus v1.1.0 sont les premières de nombreuses mises à jour à venir, grâce au soutien à long terme de la communauté open-source et au parrainage de Zilliz. Cet article de blog couvre les nouvelles fonctionnalités, les améliorations et les corrections de bogues incluses dans Milvus v1.1.0.</p>
-<p><strong>Aller à :</strong></p>
+<custom-h1>Inside Milvus 1.1.0</custom-h1><p><a href="https://github.com/milvus-io">Milvus</a> is an ongoing open-source software (OSS) project focused on building the world’s fastest and most reliable vector database. New features inside Milvus v1.1.0 are the first of many updates to come, thanks to long-term support from the open-source community and sponsorship from Zilliz. This blog article covers the new features, improvements, and bug fixes included with Milvus v1.1.0.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#new-features">Nouvelles fonctionnalités</a></li>
-<li><a href="#improvements">Améliorations</a></li>
-<li><a href="#bug-fixes">Corrections de bogues</a></li>
+<li><a href="#new-features">New features</a></li>
+<li><a href="#improvements">Improvements</a></li>
+<li><a href="#bug-fixes">Bug fixes</a></li>
 </ul>
 <p><br/></p>
-<h2 id="New-features" class="common-anchor-header">Nouvelles fonctionnalités<button data-href="#New-features" class="anchor-icon" translate="no">
+<h2 id="New-features" class="common-anchor-header">New features<button data-href="#New-features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,8 +33,8 @@ canonicalUrl: 'https://zilliz.com/blog/inside-milvus-1.1.0'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Comme tout projet OSS, Milvus est un travail perpétuel en cours. Nous nous efforçons d'écouter nos utilisateurs et la communauté open-source afin de donner la priorité aux fonctionnalités les plus importantes. La dernière mise à jour, Milvus v1.1.0, offre les nouvelles fonctionnalités suivantes :</p>
-<h3 id="Specify-partitions-with-getentitybyid-method-calls" class="common-anchor-header">Spécification des partitions avec les appels de méthode <code translate="no">get_entity_by_id()</code> </h3><p>Pour accélérer davantage la recherche de similarité vectorielle, Milvus 1.1.0 prend désormais en charge l'extraction de vecteurs à partir d'une partition spécifiée. En général, Milvus prend en charge l'interrogation de vecteurs par le biais d'ID de vecteur spécifiés. Dans Milvus 1.0, l'appel de la méthode <code translate="no">get_entity_by_id()</code> permet de rechercher l'ensemble de la collection, ce qui peut prendre du temps pour les grands ensembles de données. Comme le montre le code ci-dessous, <code translate="no">GetVectorsByIdHelper</code> utilise une structure <code translate="no">FileHolder</code> pour parcourir en boucle et trouver un vecteur spécifique.</p>
+    </button></h2><p>Like any OSS project, Milvus is a perpetual work in progress. We strive to listen to our users and the open-source community to prioritize the features that matter most. The latest update, Milvus v1.1.0, offers the following new features:</p>
+<h3 id="Specify-partitions-with-getentitybyid-method-calls" class="common-anchor-header">Specify partitions with <code translate="no">get_entity_by_id()</code> method calls</h3><p>To further accelerate vector similarity search, Milvus 1.1.0 now supports retrieving vectors from a specified partition. Generally, Milvus supports querying vectors through specified vector IDs. In Milvus 1.0, calling the method <code translate="no">get_entity_by_id()</code> searches the entire collection, which can be time consuming for large datasets. As we can see from the code below, <code translate="no">GetVectorsByIdHelper</code> uses a <code translate="no">FileHolder</code> structure to loop through and find a specific vector.</p>
 <pre><code translate="no">std::vector&lt;meta::CollectionSchema&gt; collection_array; 
  <span class="hljs-type">auto</span> <span class="hljs-variable">status</span> <span class="hljs-operator">=</span> meta_ptr_-&gt;ShowPartitions(collection.collection_id_, collection_array); 
   
@@ -72,14 +72,14 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
      <span class="hljs-type">IDNumbers</span> <span class="hljs-variable">temp_ids</span> <span class="hljs-operator">=</span> id_array; 
      <span class="hljs-keyword">for</span> (auto&amp; file : files) { 
 <button class="copy-code-btn"></button></code></pre>
-<p>Toutefois, cette structure n'est filtrée par aucune partition dans <code translate="no">FilesByTypeEx()</code>. Dans Milvus v1.1.0, il est possible pour le système de transmettre des noms de partition à la boucle <code translate="no">GetVectorsIdHelper</code> de sorte que <code translate="no">FileHolder</code> ne contienne que des segments provenant des partitions spécifiées. En d'autres termes, si vous savez exactement à quelle partition appartient le vecteur à rechercher, vous pouvez spécifier le nom de la partition dans un appel de méthode <code translate="no">get_entity_by_id()</code> pour accélérer le processus de recherche.</p>
-<p>Nous avons non seulement apporté des modifications au code contrôlant les requêtes du système au niveau du serveur Milvus, mais nous avons également mis à jour tous nos SDK (Python, Go, C++, Java et RESTful) en ajoutant un paramètre permettant de spécifier les noms des partitions. Par exemple, dans pymilvus, la définition de <code translate="no">get_entity_by_id</code> <code translate="no">def get_entity_by_id(self, collection_name, ids, timeout=None)</code> est remplacée par <code translate="no">def get_entity_by_id(self, collection_name, partition_tags=None, ids, timeout=None)</code>.</p>
+<p>However, this structure is not filtered by any partitions in <code translate="no">FilesByTypeEx()</code>. In Milvus v1.1.0, it is possible for the system to pass partition names to the <code translate="no">GetVectorsIdHelper</code> loop so that the <code translate="no">FileHolder</code> only contains segments from specified partitions. Put differently, if you know exactly which partition the vector for a search belongs to, you can specify the partition name in a <code translate="no">get_entity_by_id()</code> method call to accelerate the search process.</p>
+<p>We not only made modifications to code controlling system queries at the Milvus server level, but also updated all our SDKs(Python, Go, C++, Java, and RESTful) by adding a parameter for specifying partition names. For example, in pymilvus, the definition of <code translate="no">get_entity_by_id</code> <code translate="no">def get_entity_by_id(self, collection_name, ids, timeout=None)</code> is changed to <code translate="no">def get_entity_by_id(self, collection_name, partition_tags=None, ids, timeout=None)</code>.</p>
 <p><br/></p>
-<h3 id="Specify-partitions-with-deleteentitybyid-method-calls" class="common-anchor-header">Spécifier les partitions avec les appels de méthode <code translate="no">delete_entity_by_id()</code> </h3><p>Pour rendre la gestion des vecteurs plus efficace, Milvus v1.1.0 prend désormais en charge la spécification des noms de partition lors de la suppression d'un vecteur dans une collection. Dans Milvus 1.0, les vecteurs d'une collection ne peuvent être supprimés que par ID. Lors de l'appel de la méthode de suppression, Milvus examine tous les vecteurs de la collection. Cependant, il est beaucoup plus efficace de n'analyser que les partitions pertinentes lorsque l'on travaille avec des ensembles de données massifs d'un million, d'un milliard, voire d'un trillion de vecteurs. Comme pour la nouvelle fonctionnalité permettant de spécifier des partitions avec les appels de méthode <code translate="no">get_entity_by_id()</code>, des modifications ont été apportées au code Milvus selon la même logique.</p>
+<h3 id="Specify-partitions-with-deleteentitybyid-method-calls" class="common-anchor-header">Specify partitions with <code translate="no">delete_entity_by_id()</code> method calls</h3><p>To make vector management more efficient, Milvus v1.1.0 now supports specifying partition names when deleting a vector in a collection. In Milvus 1.0, vectors in a collection can only be deleted by ID. When calling the delete method, Milvus will scan all vectors in the collection. However, it is far more efficient to scan only relevant partitions when working with massive million, billion, or even trillion vector datasets. Similar to the new feature for specifying partitions with <code translate="no">get_entity_by_id()</code> method calls, modifications were made to the Milvus code using the same logic.</p>
 <p><br/></p>
-<h3 id="New-method-releasecollection" class="common-anchor-header">Nouvelle méthode <code translate="no">release_collection()</code></h3><p>Pour libérer la mémoire utilisée par Milvus pour charger les collections au moment de l'exécution, une nouvelle méthode <code translate="no">release_collection()</code> a été ajoutée dans Milvus v1.1.0 pour décharger manuellement des collections spécifiques du cache.</p>
+<h3 id="New-method-releasecollection" class="common-anchor-header">New method <code translate="no">release_collection()</code></h3><p>To free up memory Milvus used to load collections at runtime, a new method <code translate="no">release_collection()</code> has been added in Milvus v1.1.0 to manually unload specific collections from cache.</p>
 <p><br/></p>
-<h2 id="Improvements" class="common-anchor-header">Améliorations<button data-href="#Improvements" class="anchor-icon" translate="no">
+<h2 id="Improvements" class="common-anchor-header">Improvements<button data-href="#Improvements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,11 +94,14 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bien que les nouvelles fonctionnalités fassent généralement fureur, il est également important d'améliorer ce que nous avons déjà. Voici les mises à jour et autres améliorations générales par rapport à Milvus v1.0.</p>
+    </button></h2><p>Although new features are usually all the rage, it’s also important to improve what we already have. What follows are upgrades and other general improvements over Milvus v1.0.</p>
 <p><br/></p>
-<h3 id="Improved-performance-of-getentitybyid-method-call" class="common-anchor-header">Amélioration des performances de l'appel à la méthode <code translate="no">get_entity_by_id()</code> </h3><p>Le tableau ci-dessous est une comparaison des performances de recherche vectorielle entre Milvus v1.0 et Milvus v1.1.0 :</p>
+<h3 id="Improved-performance-of-getentitybyid-method-call" class="common-anchor-header">Improved performance of <code translate="no">get_entity_by_id()</code> method call</h3><p>The chart below is a comparison of vector search performance between Milvus v1.0 and Milvus v1.1.0:</p>
 <blockquote>
-<p>CPU : Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>Taille du fichier de segment = 1024 Mo <br/>Nombre de lignes = 1 000 000 <br/>Dim = 128</p>
+<p>CPU: Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>
+Segment file size = 1024 MB <br/>
+Row count = 1,000,000 <br/>
+Dim = 128</p>
 </blockquote>
 <table>
 <thead>
@@ -110,12 +113,13 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
 </tbody>
 </table>
 <p><br/></p>
-<h3 id="Hnswlib-upgraded-to-v050" class="common-anchor-header">Hnswlib mis à niveau vers v0.5.0</h3><p>Milvus adopte plusieurs bibliothèques d'index largement utilisées, notamment Faiss, NMSLIB, Hnswlib et Annoy, afin de simplifier le processus de sélection du type d'index approprié pour un scénario donné.</p>
-<p>Hnswlib a été mis à niveau de la version 0.3.0 à la version 0.5.0 dans Milvus 1.1.0 en raison d'un bogue détecté dans la version précédente. De plus, la mise à niveau de Hnswlib améliore les performances de <code translate="no">addPoint()</code> dans la construction de l'index.</p>
-<p>Un développeur de Zilliz a créé une pull request (PR) pour améliorer les performances de Hnswlib lors de la construction d'index dans Milvus. Voir <a href="https://github.com/nmslib/hnswlib/pull/298">PR #298</a> pour plus de détails.</p>
-<p>Le tableau ci-dessous est une comparaison des performances de <code translate="no">addPoint()</code> entre Hnswlib 0.5.0 et la PR proposée :</p>
+<h3 id="Hnswlib-upgraded-to-v050" class="common-anchor-header">Hnswlib upgraded to v0.5.0</h3><p>Milvus adopts multiple widely used index libraries, including Faiss, NMSLIB, Hnswlib, and Annoy to simplify the process of choosing the right index type for a given scenario.</p>
+<p>Hnswlib has been upgraded from v0.3.0 to v0.5.0 in Milvus 1.1.0 due to a bug detected in the earlier version. Additionally, upgrading Hnswlib improves <code translate="no">addPoint()</code> performance in index building.</p>
+<p>A Zilliz developer created a pull request (PR) to improve Hnswlib performance while building indexes in Milvus. See <a href="https://github.com/nmslib/hnswlib/pull/298">PR #298</a> for details.</p>
+<p>The chart below is a comparison of <code translate="no">addPoint()</code> performance between Hnswlib 0.5.0 and the proposed PR:</p>
 <blockquote>
-<p>CPU : Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>Dataset : sift_1M (row count = 1000000, dim = 128, space = L2)</p>
+<p>CPU: Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>
+Dataset: sift_1M (row count = 1000000, dim = 128, space = L2)</p>
 </blockquote>
 <table>
 <thead>
@@ -127,9 +131,10 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
 </tbody>
 </table>
 <p><br/></p>
-<h3 id="Improved-IVF-index-training-performance" class="common-anchor-header">Amélioration des performances de l'apprentissage de l'index IVF</h3><p>La création d'un index comprend la formation, l'insertion et l'écriture des données sur le disque. Milvus 1.1.0 améliore la composante d'entraînement de la construction d'index. Le graphique ci-dessous est une comparaison des performances de formation d'index IVF entre Milvus 1.0 et Milvus 1.1.0 :</p>
+<h3 id="Improved-IVF-index-training-performance" class="common-anchor-header">Improved IVF index training performance</h3><p>Creating an index includes training, inserting and writing data to disk. Milvus 1.1.0 improves the training component of index building. The chart below is a comparison of IVF index training performance between Milvus 1.0 and Milvus 1.1.0:</p>
 <blockquote>
-<p>CPU : Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>Dataset : sift_1m (row_count = 1000000, dim = 128, metric_type = L2)</p>
+<p>CPU: Intel® Core™ i7-8550U CPU @ 1.80GHz * 8 <br/>
+Dataset: sift_1m (row_count = 1000000, dim = 128, metric_type = L2)</p>
 </blockquote>
 <table>
 <thead>
@@ -145,7 +150,7 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
 </tbody>
 </table>
 <p><br/></p>
-<h2 id="Bug-fixes" class="common-anchor-header">Correction de bogues<button data-href="#Bug-fixes" class="anchor-icon" translate="no">
+<h2 id="Bug-fixes" class="common-anchor-header">Bug fixes<button data-href="#Bug-fixes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -160,4 +165,4 @@ DBImpl::GetVectorsByIdHelper(const IDNumbers&amp; id_array, std::vector&lt;engin
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nous avons également corrigé quelques bogues pour rendre Milvus plus stable et plus efficace lors de la gestion d'ensembles de données vectorielles. Voir les <a href="https://milvus.io/docs/v1.1.0/release_notes.md#Fixed-issues">problèmes corrigés</a> pour plus de détails.</p>
+    </button></h2><p>We also fixed some bugs to make Milvus more stable and efficient when managing vector datasets. See <a href="https://milvus.io/docs/v1.1.0/release_notes.md#Fixed-issues">Fixed Issues</a> for more details.</p>

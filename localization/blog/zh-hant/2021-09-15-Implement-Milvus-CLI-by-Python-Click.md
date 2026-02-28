@@ -1,25 +1,26 @@
 ---
 id: Implement-Milvus-CLI-by-Python-Click.md
-title: 總覽
+title: Overview
 author: Zhen Chen
 date: 2021-09-15T00:00:00.000Z
-desc: 介紹如何基於 Python Click 實作 CLI。
+desc: Introduce how to implement a CLI based on Python Click.
 tag: Engineering
 isPublish: true
 ---
-<custom-h1>以 Python Click 實作 Milvus CLI</custom-h1><ul>
-<li><a href="#Implement-Milvus-CLI-by-Python-Click">使用 Python Click 實作 Milvus CLI</a><ul>
-<li><a href="#Overview">概述</a></li>
-<li><a href="#Group-commands">群組命令</a></li>
-<li><a href="#Custom-a-command">自訂命令</a></li>
-<li><a href="#Implement-prompt-cli-for-user-to-input">執行提示 CLI 供使用者輸入</a></li>
-<li><a href="#Manually-implement-autocomplete">手動執行自動完成</a></li>
-<li><a href="#Add-one-time-option">新增一次性選項</a></li>
-<li><a href="#Build-and-release">建立和釋放</a></li>
-<li><a href="#Learn-more-about-Milvus">進一步了解 Milvus</a></li>
+<custom-h1>Implement Milvus CLI by Python Click</custom-h1><ul>
+<li><a href="#Implement-Milvus-CLI-by-Python-Click">Implement Milvus CLI by Python Click</a>
+<ul>
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Group-commands">Group commands</a></li>
+<li><a href="#Custom-a-command">Custom a command</a></li>
+<li><a href="#Implement-prompt-cli-for-user-to-input">Implement prompt CLI for user to input</a></li>
+<li><a href="#Manually-implement-autocomplete">Manually implement autocomplete</a></li>
+<li><a href="#Add-one-time-option">Add one-time option</a></li>
+<li><a href="#Build-and-release">Build and release</a></li>
+<li><a href="#Learn-more-about-Milvus">Learn more about Milvus</a></li>
 </ul></li>
 </ul>
-<h2 id="Overview" class="common-anchor-header">總覽<button data-href="#Overview" class="anchor-icon" translate="no">
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,9 +35,9 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>專案網址: https://github.com/milvus-io/milvus_cli</p>
-<p>準備：<code translate="no">Python3.8</code>,<a href="https://click.palletsprojects.com/en/8.0.x/api/"> <code translate="no">Click 8.0.x</code></a></p>
-<h2 id="Group-commands" class="common-anchor-header">組命令<button data-href="#Group-commands" class="anchor-icon" translate="no">
+    </button></h2><p>Project URL: https://github.com/milvus-io/milvus_cli</p>
+<p>Preparation: <code translate="no">Python3.8</code>,<a href="https://click.palletsprojects.com/en/8.0.x/api/"> <code translate="no">Click 8.0.x</code></a></p>
+<h2 id="Group-commands" class="common-anchor-header">Group commands<button data-href="#Group-commands" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,7 +52,7 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Create-a-command" class="common-anchor-header">建立命令</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> click
+    </button></h2><h3 id="Create-a-command" class="common-anchor-header">Create a command</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> click
 <span class="hljs-keyword">from</span> utils <span class="hljs-keyword">import</span> PyOrm
 
 <span class="hljs-meta">@click.group(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span>, add_help_option=<span class="hljs-literal">False</span>, invoke_without_command=<span class="hljs-literal">True</span></span>)</span>
@@ -63,9 +64,9 @@ isPublish: true
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     cli()
 <button class="copy-code-btn"></button></code></pre>
-<p>如上面的程式碼，我們使用<code translate="no">@click.group()</code> 建立一個命令群組<code translate="no">cli</code> 作為入口點。為了實現提示式 CLI，我們需要停用入口的幫助訊息，因此我們加入<code translate="no">no_args_is_help=False</code>,<code translate="no">add_help_option=False</code> 和<code translate="no">invoke_without_command=True</code> 。如果我們只在終端輸入<code translate="no">cli</code> ，則不會列印任何內容。</p>
-<p>此外，我們使用<code translate="no">@click.pass_context</code> 傳送一個上下文給這個群組，以便進一步使用。</p>
-<h3 id="Create-a-sub-command-of-command-group" class="common-anchor-header">建立命令群組的子命令</h3><p>然後，我們在<code translate="no">cli</code> 之下新增第一個子指令<code translate="no">help</code> ：</p>
+<p>As the code above, we use <code translate="no">@click.group()</code> to create a command group <code translate="no">cli</code> as entry point. To implement a prompt CLI we need to disable help messages for the entry, so we add <code translate="no">no_args_is_help=False</code>, <code translate="no">add_help_option=False</code> and <code translate="no">invoke_without_command=True</code>. And nothing will be printed if we input <code translate="no">cli</code> in terminal only.</p>
+<p>Besides we use <code translate="no">@click.pass_context</code> to pass a context to this group for further usage.</p>
+<h3 id="Create-a-sub-command-of-command-group" class="common-anchor-header">Create a sub command of command group</h3><p>Then we add the first sub command <code translate="no">help</code> under <code translate="no">cli</code>:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Print the help message of specified command.</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">print_help_msg</span>(<span class="hljs-params">command</span>):
     <span class="hljs-keyword">with</span> click.Context(command) <span class="hljs-keyword">as</span> ctx:
@@ -79,20 +80,20 @@ isPublish: true
     <span class="hljs-comment"># Print help message of cli.</span>
     click.echo(print_help_msg(cli))
 <button class="copy-code-btn"></button></code></pre>
-<p>現在我們可以在終端機使用<code translate="no">cli help</code> ：</p>
+<p>Now we can use <code translate="no">cli help</code> in terminal:</p>
 <pre><code translate="no" class="language-shell">$ python milvus_cli/scripts/milvus_cli.py <span class="hljs-built_in">help</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Create-a-sub-group-of-a-command-group" class="common-anchor-header">建立命令群組的子群組</h3><p>我們不僅要有像<code translate="no">cli help</code> 這樣的子命令，還需要子命令群組，如<code translate="no">cli list collection</code> 、<code translate="no">cli list partition</code> 和<code translate="no">cli list indexes</code> 。</p>
-<p>首先我們建立一個子命令群組<code translate="no">list</code> ，在這裡我們可以將第一個參數傳給<code translate="no">@cli.group</code> 作為命令名稱，而不是使用 Defult 函式名稱，這樣我們就可以減少重複的函式名稱。</p>
-<p>注意，這裡我們使用<code translate="no">@cli.group()</code> 而不是<code translate="no">@click.group</code> ，這樣我們就建立了 origin 群組的子群組。</p>
-<p>我們使用<code translate="no">@click.pass_obj</code> 將<code translate="no">context.obj</code> 傳給這個子群組的子指令。</p>
+<h3 id="Create-a-sub-group-of-a-command-group" class="common-anchor-header">Create a sub group of a command group</h3><p>Not only we want to have a sub command like <code translate="no">cli help</code>, but also we need a sub group commands such as <code translate="no">cli list collection</code> , <code translate="no">cli list partition</code> and <code translate="no">cli list indexes</code>.</p>
+<p>First we create a sub group command <code translate="no">list</code>, here we can pass the first parameter to <code translate="no">@cli.group</code> as the command name instead of use defult function name, so that we can reduce duplicated function names.</p>
+<p>Attention here, we use <code translate="no">@cli.group()</code> instead of <code translate="no">@click.group</code> so that we create a sub group of origin group.</p>
+<p>The we use <code translate="no">@click.pass_obj</code> to pass the <code translate="no">context.obj</code> to sub commands of this sub group.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.group(<span class="hljs-params"><span class="hljs-string">&#x27;list&#x27;</span>, no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.pass_obj</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">listDetails</span>(<span class="hljs-params">obj</span>):
     <span class="hljs-string">&quot;&quot;&quot;List collections, partitions and indexes.&quot;&quot;&quot;</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>然後，我們使用<code translate="no">@listDetails.command()</code> (不是<code translate="no">@cli.command()</code>)，將一些子指令加入這個子群組。這裡只是一個範例，您可以忽略實作，我們稍後會討論。</p>
+<p>Then we add some sub commands into this sub group by <code translate="no">@listDetails.command()</code> (not <code translate="no">@cli.command()</code>). Here’s just an example, you can ignore the implement and we will discuss it later.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@listDetails.command()</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;--timeout&#x27;</span>, <span class="hljs-string">&#x27;timeout&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;[Optional] - An optional duration of time in seconds to allow for the RPC. When timeout is set to None, client waits until server response or error occur.&quot;</span>, default=<span class="hljs-literal">None</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;--show-loaded&#x27;</span>, <span class="hljs-string">&#x27;showLoaded&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;[Optional] - Only show loaded collections.&quot;</span>, default=<span class="hljs-literal">False</span></span>)</span>
@@ -119,12 +120,14 @@ isPublish: true
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         click.echo(message=e, err=<span class="hljs-literal">True</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>所有這些完成之後，我們就有一個類似如下的 miltigroup 指令：</p>
+<p>After all these complete, we have a miltigroup commands that look like:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png" alt="image" class="doc-image" id="image" />
-   </span> <span class="img-wrapper"> <span>影像</span> </span></p>
-<h2 id="Custom-a-command" class="common-anchor-header">自訂指令<button data-href="#Custom-a-command" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png" alt="image" class="doc-image" id="image" />
+    <span>image</span>
+  </span>
+</p>
+<h2 id="Custom-a-command" class="common-anchor-header">Custom a command<button data-href="#Custom-a-command" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,10 +142,10 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Add-options" class="common-anchor-header">新增選項</h3><p>您可以在命令中加入一些選項，這些選項會像<code translate="no">cli --test-option value</code> 般使用。</p>
-<p>這裡有一個範例，我們加入三個選項<code translate="no">alias</code>,<code translate="no">host</code> 和<code translate="no">port</code> 來指定連接到 Milvus 的位址。</p>
-<p>前兩個參數定義了選項的簡短和完整名稱，第三個參數定義了變量名稱，<code translate="no">help</code> 參數指定了簡短的幫助信息，<code translate="no">default</code> 參數指定了預設值，<code translate="no">type</code> 指定了值類型。</p>
-<p>所有選項的值會依序傳入函式。</p>
+    </button></h2><h3 id="Add-options" class="common-anchor-header">Add options</h3><p>You can add some options to a command which will be used like <code translate="no">cli --test-option value</code>.</p>
+<p>Here’s an example, we add three options <code translate="no">alias</code>, <code translate="no">host</code> and <code translate="no">port</code> to specified an address to connect to Milvus.</p>
+<p>First two parameters define the short and full option name, the third parameter defines the variable name, the <code translate="no">help</code> parameter specifies the short help message, the <code translate="no">default</code> parameter specifies the default value and the <code translate="no">type</code> specifies the value type.</p>
+<p>And all options’ values will be passed into the function in order of definition.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-a&#x27;</span>, <span class="hljs-string">&#x27;--alias&#x27;</span>, <span class="hljs-string">&#x27;alias&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Milvus link alias name, default is `default`.&quot;</span>, default=<span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-h&#x27;</span>, <span class="hljs-string">&#x27;--host&#x27;</span>, <span class="hljs-string">&#x27;host&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Host name, default is `127.0.0.1`.&quot;</span>, default=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
@@ -151,8 +154,8 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">connect</span>(<span class="hljs-params">obj, alias, host, port</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-flag-options" class="common-anchor-header">新增旗標選項</h3><p>我們在上面使用選項來傳遞一個值，但有些時候我們只需要一個旗標作為布林值。</p>
-<p>就像下面的範例，選項<code translate="no">autoId</code> 是一個旗標選項，不傳任何資料給函數，所以我們可以像<code translate="no">cli create collection -c c_name -p p_name -a</code> 般使用它。</p>
+<h3 id="Add-flag-options" class="common-anchor-header">Add flag options</h3><p>We use options above to pass a value, but some times we just need a flag as a boolean value.</p>
+<p>As the example below, option <code translate="no">autoId</code> is a flag option and don’t pass any data to function, so we can use it like <code translate="no">cli create collection -c c_name -p p_name -a</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@createDetails.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-c&#x27;</span>, <span class="hljs-string">&#x27;--collection-name&#x27;</span>, <span class="hljs-string">&#x27;collectionName&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Collection name to be created.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-p&#x27;</span>, <span class="hljs-string">&#x27;--schema-primary-field&#x27;</span>, <span class="hljs-string">&#x27;primaryField&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Primary field name.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
@@ -161,7 +164,7 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">createCollection</span>(<span class="hljs-params">obj, collectionName, primaryField, autoId, description, fields</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-arguments" class="common-anchor-header">新增參數</h3><p>在這個專案中，我們用選項取代了所有的參數用法。但我們仍會在這裡介紹參數的用法。與選項不同，arguments 的用法就像<code translate="no">cli COMMAND [OPTIONS] ARGUEMENTS</code> 。如果我們將上面的範例轉換成 argements 的用法，就會變成這樣：</p>
+<h3 id="Add-arguments" class="common-anchor-header">Add arguments</h3><p>In this project we replace all arguments usage with options usage. But we still introduce argument usage here. Different from options, argements are used like <code translate="no">cli COMMAND [OPTIONS] ARGUEMENTS</code>. If we convert the example above into arguements usage, it’ll be like this:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@createDetails.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.argument(<span class="hljs-params"><span class="hljs-string">&#x27;collectionName&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-p&#x27;</span>, <span class="hljs-string">&#x27;--schema-primary-field&#x27;</span>, <span class="hljs-string">&#x27;primaryField&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Primary field name.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
@@ -170,8 +173,8 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">createCollection</span>(<span class="hljs-params">obj, collectionName, primaryField, autoId, description, fields</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>那麼用法應該是<code translate="no">cli create collection c_name -p p_name -a</code> 。</p>
-<h3 id="Add-full-help-message" class="common-anchor-header">新增完整說明資訊</h3><p>正如我們在上面定義了簡短的幫助訊息，我們也可以在函式中定義完整的幫助訊息：</p>
+<p>Then the usage should be <code translate="no">cli create collection c_name -p p_name -a</code>.</p>
+<h3 id="Add-full-help-message" class="common-anchor-header">Add full help message</h3><p>As we define the short help message above, we can define the full help message in function:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-a&#x27;</span>, <span class="hljs-string">&#x27;--alias&#x27;</span>, <span class="hljs-string">&#x27;alias&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Milvus link alias name, default is `default`.&quot;</span>, default=<span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-h&#x27;</span>, <span class="hljs-string">&#x27;--host&#x27;</span>, <span class="hljs-string">&#x27;host&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Host name, default is `127.0.0.1`.&quot;</span>, default=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
@@ -193,7 +196,7 @@ isPublish: true
         click.echo(<span class="hljs-string">&quot;Connect Milvus successfully!&quot;</span>)
         click.echo(obj.showConnection(alias))
 <button class="copy-code-btn"></button></code></pre>
-<p>在函數中的第一個區塊是幫助訊息，它會在我們輸入<code translate="no">cli connect --help</code> 後列印出來。</p>
+<p>The first block inside of the function is the help message which will be printed after we input <code translate="no">cli connect --help</code>.</p>
 <pre><code translate="no" class="language-shell">milvus_cli &gt; connect --help
 Usage: milvus_cli.py connect [OPTIONS]
 
@@ -209,7 +212,7 @@ Options:
   -p, --port INTEGER  Port, <span class="hljs-literal">default</span> <span class="hljs-keyword">is</span> `<span class="hljs-number">19530</span>`.
   --help              Show <span class="hljs-keyword">this</span> message <span class="hljs-keyword">and</span> exit.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-confirm" class="common-anchor-header">新增確認</h3><p>有時我們需要使用者確認某些動作，特別是刪除某些東西。我們可以加入<code translate="no">click.confirm</code> 來暫停並請使用者確認：</p>
+<h3 id="Add-confirm" class="common-anchor-header">Add confirm</h3><p>Sometimes we need user to confirm some action especially delete something. We can add <code translate="no">click.confirm</code> to pause and ask user to confirm:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@deleteSth.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-c&#x27;</span>, <span class="hljs-string">&#x27;--collection&#x27;</span>, <span class="hljs-string">&#x27;collectionName&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;The name of collection to be deleted.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-t&#x27;</span>, <span class="hljs-string">&#x27;--timeout&#x27;</span>, <span class="hljs-string">&#x27;timeout&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;An optional duration of time in seconds to allow for the RPC. If timeout is set to None, the client keeps waiting until the server responds or an error occurs.&#x27;</span>, default=<span class="hljs-literal">None</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span></span>)</span>
@@ -228,8 +231,8 @@ Options:
         <span class="hljs-keyword">return</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>如上面的範例，確認對話會顯示為<code translate="no">Aborted!ant to continue? [y/N]:</code> 。</p>
-<h3 id="Add-prompts" class="common-anchor-header">新增提示</h3><p>要實現提示，我們只需要新增<code translate="no">click.prompt</code> 。</p>
+<p>As the example above, a confirm conversation will show like <code translate="no">Aborted!ant to continue? [y/N]:</code>.</p>
+<h3 id="Add-prompts" class="common-anchor-header">Add prompts</h3><p>To implement prompts we juest need to add <code translate="no">click.prompt</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command()</span>
 <span class="hljs-meta">@click.pass_obj</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">query</span>(<span class="hljs-params">obj</span>):
@@ -246,23 +249,23 @@ Options:
     timeout = click.prompt(<span class="hljs-string">&#x27;timeout&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span>)
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>提示將在每個<code translate="no">click.prompt</code> 時顯示。我們使用一些連續的提示，讓它看起來像一個連續的對話。這可確保使用者按照我們想要的順序輸入資料。在本例中，我們需要使用者先選擇一個集合，然後我們需要取得此集合下的所有分割區，再顯示給使用者選擇。</p>
-<h3 id="Add-choices" class="common-anchor-header">新增選擇</h3><p>有時您希望使用者只輸入有限範圍/類型的值，您可以將<code translate="no">type=click.Choice([&lt;any&gt;])</code> 加到<code translate="no">click.prompt</code>,<code translate="no">click.options</code> 等等...</p>
-<p>例如</p>
+<p>The prompt will show when each <code translate="no">click.prompt</code>. We use a few prompts in series so that it’ll look like a continuously conversation. This ensure user will input the data in order we want. In this case we need user to choose a collection first, and we need to get all partitions under this collections, then show them to user to choose.</p>
+<h3 id="Add-choices" class="common-anchor-header">Add choices</h3><p>Sometimes you want user just input the limited range/type of value, you can add <code translate="no">type=click.Choice([&lt;any&gt;])</code> to <code translate="no">click.prompt</code> , <code translate="no">click.options</code> and etc…</p>
+<p>Such as,</p>
 <pre><code translate="no" class="language-python">collectionName = click.prompt(
         <span class="hljs-string">&#x27;Collection name&#x27;</span>, <span class="hljs-built_in">type</span>=click.Choice([<span class="hljs-string">&#x27;collection_1&#x27;</span>, <span class="hljs-string">&#x27;collection_2&#x27;</span>]))
 <button class="copy-code-btn"></button></code></pre>
-<p>則使用者只能輸入<code translate="no">collection_1</code> 或<code translate="no">collection_2</code> ，若有其他輸入則會出錯。</p>
-<h3 id="Add-clear-screen" class="common-anchor-header">新增清除畫面</h3><p>您可以使用<code translate="no">click.clear()</code> 來實現。</p>
+<p>Then user can only input <code translate="no">collection_1</code> or <code translate="no">collection_2</code> , error will be raised if any other inputs.</p>
+<h3 id="Add-clear-screen" class="common-anchor-header">Add clear screen</h3><p>You can use <code translate="no">click.clear()</code> to implement it.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command()</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">clear</span>():
     <span class="hljs-string">&quot;&quot;&quot;Clear screen.&quot;&quot;&quot;</span>
     click.clear()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Additional-tips" class="common-anchor-header">附加提示</h3><ul>
-<li>預設值為<code translate="no">None</code> ，所以如果您指定預設值為<code translate="no">None</code> 就沒有意義了。而預設值<code translate="no">None</code> 會導致<code translate="no">click.prompt</code> 持續顯示，如果您要留空值跳過它。</li>
+<h3 id="Additional-tips" class="common-anchor-header">Additional tips</h3><ul>
+<li>Default value is <code translate="no">None</code>, so it’s meaningless if you specified the default value as <code translate="no">None</code>. And default <code translate="no">None</code> will cause <code translate="no">click.prompt</code> continously show if you want to leave a value empty to jump over it.</li>
 </ul>
-<h2 id="Implement-prompt-CLI-for-user-to-input" class="common-anchor-header">實施提示 CLI 讓使用者輸入<button data-href="#Implement-prompt-CLI-for-user-to-input" class="anchor-icon" translate="no">
+<h2 id="Implement-prompt-CLI-for-user-to-input" class="common-anchor-header">Implement prompt CLI for user to input<button data-href="#Implement-prompt-CLI-for-user-to-input" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -277,9 +280,9 @@ Options:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Why-prompt-CLI" class="common-anchor-header">為什麼要提示 CLI</h3><p>為了操作資料庫，我們需要連線到一個實例。如果我們使用 origin 命令列模式，每次執行完命令後，連線就會被刪除。我們也希望在使用 CLI 時儲存一些資料，並在離開後清理這些資料。</p>
-<h3 id="Implement" class="common-anchor-header">執行</h3><ol>
-<li>使用<code translate="no">while True</code> 來持續監聽使用者的輸入。</li>
+    </button></h2><h3 id="Why-prompt-CLI" class="common-anchor-header">Why prompt CLI</h3><p>For database operation, we need a continuously connection to a instance. If we use origin command line mode, the connection will be dropped after each command performed. We also want to store some data when using CLI, and clean them after exit.</p>
+<h3 id="Implement" class="common-anchor-header">Implement</h3><ol>
+<li>Use <code translate="no">while True</code> for continuously listening user’s input.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
@@ -296,7 +299,7 @@ Options:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>只使用<code translate="no">input</code> 會導致<code translate="no">up</code>,<code translate="no">down</code>,<code translate="no">left</code>,<code translate="no">right</code> 方向鍵、<code translate="no">tab</code> 鍵和一些其他按鍵自動轉換為 Acsii 字串。此外，歷史指令無法從 session 讀取。因此我們將<code translate="no">readline</code> 加入<code translate="no">runCliPrompt</code> 函式。</li>
+<li>Use <code translate="no">input</code> only will cause <code translate="no">up</code>, <code translate="no">down</code>, <code translate="no">left</code>, <code translate="no">right</code> arrow keys, <code translate="no">tab</code> key and some other keys converted to Acsii string automatically. Besides history commands can not be read from session. So we add <code translate="no">readline</code> into <code translate="no">runCliPrompt</code> function.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
@@ -311,7 +314,7 @@ Options:
             <span class="hljs-keyword">continue</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>新增<code translate="no">quit</code> CLI。</li>
+<li>Add <code translate="no">quit</code> CLI.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params"><span class="hljs-string">&#x27;exit&#x27;</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">quitapp</span>():
@@ -336,7 +339,7 @@ quitapp = <span class="hljs-literal">False</span>  <span class="hljs-comment"># 
             <span class="hljs-keyword">continue</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>當使用<code translate="no">ctrl C</code> 退出時，捕捉<code translate="no">KeyboardInterrupt</code> 錯誤。</li>
+<li>Catch <code translate="no">KeyboardInterrupt</code> error when use <code translate="no">ctrl C</code> to exit.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">try</span>:
@@ -354,7 +357,7 @@ quitapp = <span class="hljs-literal">False</span>  <span class="hljs-comment"># 
         sys.exit(<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>全部完成後，CLI 現在看起來就像這樣：</li>
+<li>After all settled, the CLI now looks like:</li>
 </ol>
 <pre><code translate="no" class="language-shell">milvus_cli &gt;
 milvus_cli &gt; connect
@@ -388,7 +391,7 @@ Commands:
 
 milvus_cli &gt; exit
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Manually-implement-autocomplete" class="common-anchor-header">手動實作自動完成<button data-href="#Manually-implement-autocomplete" class="anchor-icon" translate="no">
+<h2 id="Manually-implement-autocomplete" class="common-anchor-header">Manually implement autocomplete<button data-href="#Manually-implement-autocomplete" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,7 +406,7 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>與 click 的 shell 自動完成不同，我們的專案會包覆命令列，並使用循環來取得使用者的輸入，以執行提示命令列。因此我們需要綁定一個完成器到<code translate="no">readline</code> 。</p>
+    </button></h2><p>Different from click’s shell autocomplete, our project wrap the command line and use a loop to get user’s input to implement a prompt command line. So we need to bind a completer to <code translate="no">readline</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Completer</span>(<span class="hljs-title class_ inherited__">object</span>):
     RE_SPACE = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">&#x27;.*\s+$&#x27;</span>, re.M)
     CMDS_DICT = {
@@ -502,7 +505,7 @@ milvus_cli &gt; exit
             c + <span class="hljs-string">&#x27; &#x27;</span> <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.COMMANDS <span class="hljs-keyword">if</span> c.startswith(cmd)] + [<span class="hljs-literal">None</span>]
         <span class="hljs-keyword">return</span> results[state]
 <button class="copy-code-btn"></button></code></pre>
-<p>定義<code translate="no">Completer</code> 之後，我們可以將它與 readline 綁定：</p>
+<p>After define <code translate="no">Completer</code> we can bind it with readline:</p>
 <pre><code translate="no" class="language-python">comp = Completer()
 
 
@@ -523,7 +526,7 @@ milvus_cli &gt; exit
     <span class="hljs-keyword">except</span> KeyboardInterrupt:
         sys.exit(<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Add-one-time-option" class="common-anchor-header">新增一次性選項<button data-href="#Add-one-time-option" class="anchor-icon" translate="no">
+<h2 id="Add-one-time-option" class="common-anchor-header">Add one-time option<button data-href="#Add-one-time-option" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -538,7 +541,7 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>對於提示命令列，有時我們不想完全執行腳本來取得一些資訊，例如版本。一個很好的例子是<code translate="no">Python</code> ，當您在終端輸入<code translate="no">python</code> 時，promtp 指令行會顯示，但它只會回傳版本資訊，如果您輸入<code translate="no">python -V</code> ，它不會進入提示指令碼。所以我們可以在程式碼中使用<code translate="no">sys.args</code> 來實現。</p>
+    </button></h2><p>For prompt command line, sometimes we don’t want to fully run into the scripts to get some informations such as version. A good example is <code translate="no">Python</code>, when you type <code translate="no">python</code> in terminal the promtp command line will show, but it only returns a version message and will not entry the prompt scripts if you type <code translate="no">python -V</code>. So we can use <code translate="no">sys.args</code> in our code to implement.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     args = sys.argv
     <span class="hljs-keyword">if</span> args <span class="hljs-keyword">and</span> (args[-<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;--version&#x27;</span>):
@@ -564,9 +567,9 @@ milvus_cli &gt; exit
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
-<p>當第一次運行到 CLI 腳本時，我們會在循環之前得到<code translate="no">sys.args</code> 。如果最後一個參數是<code translate="no">--version</code> ，程式碼會返回套件版本，而不會進入循環。</p>
-<p>在我們將代碼建立為套件之後，這將會很有幫助。使用者可以輸入<code translate="no">milvus_cli</code> 跳到提示 CLI，或輸入<code translate="no">milvus_cli --version</code> 只取得版本。</p>
-<h2 id="Build-and-release" class="common-anchor-header">建立與釋出<button data-href="#Build-and-release" class="anchor-icon" translate="no">
+<p>We get <code translate="no">sys.args</code> before the loop when first run into CLI scripts. If the last arguments is <code translate="no">--version</code> , the code will return the package version without running into loop.</p>
+<p>It will be helpful after we build the codes as a package. User can type <code translate="no">milvus_cli</code> to jump into a prompt CLI, or type <code translate="no">milvus_cli --version</code> to only get the version.</p>
+<h2 id="Build-and-release" class="common-anchor-header">Build and release<button data-href="#Build-and-release" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -581,11 +584,11 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最後，我們要建立套件並透過 PYPI 發佈。這樣使用者就可以簡單地使用<code translate="no">pip install &lt;package name&gt;</code> 來安裝。</p>
-<h3 id="Install-locally-for-test" class="common-anchor-header">本機安裝測試</h3><p>在您將軟體包發佈到PYPI之前，您可能想要在本機安裝進行一些測試。</p>
-<p>在這種情況下，您只需<code translate="no">cd</code> 到套件目錄，然後執行<code translate="no">pip install -e .</code> (別忘了<code translate="no">.</code>)。</p>
-<h3 id="Create-package-files" class="common-anchor-header">建立套件檔案</h3><p>參考：https://packaging.python.org/tutorials/packaging-projects/</p>
-<p>套件的結構應該如下</p>
+    </button></h2><p>Finally we want to build a package and release by PYPI. So that user can simply use <code translate="no">pip install &lt;package name&gt;</code> to install.</p>
+<h3 id="Install-locally-for-test" class="common-anchor-header">Install locally for test</h3><p>Before you publish the package to PYPI, you may want to install it locally for some tests.</p>
+<p>In this case, you can simply <code translate="no">cd</code> into the package directory and run <code translate="no">pip install -e .</code> (Don’t forget the <code translate="no">.</code>).</p>
+<h3 id="Create-package-files" class="common-anchor-header">Create package files</h3><p>Refer to: https://packaging.python.org/tutorials/packaging-projects/</p>
+<p>A package’s structure should look like:</p>
 <pre><code translate="no" class="language-shell">package_example/
 ├── LICENSE
 ├── README.md
@@ -598,7 +601,7 @@ milvus_cli &gt; exit
 │       └── example.py
 └── tests/
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Create-the-package-directory" class="common-anchor-header">建立套件目錄</h4><p>建立<code translate="no">Milvus_cli</code> 目錄，結構如下：</p>
+<h4 id="Create-the-package-directory" class="common-anchor-header">Create the package directory</h4><p>Create <code translate="no">Milvus_cli</code> directory with the structure below:</p>
 <pre><code translate="no" class="language-shell">Milvus_cli/
 ├── LICENSE
 ├── README.md
@@ -612,7 +615,7 @@ milvus_cli &gt; exit
 │       └── milvus_cli.py
 └── dist/
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Write-the-entry-code" class="common-anchor-header">寫入程式碼</h4><p>腳本的入口應該在<code translate="no">Milvus_cli/milvus_cli/scripts</code> ，而<code translate="no">Milvus_cli/milvus_cli/scripts/milvus_cli.py</code> 應該像這樣：</p>
+<h4 id="Write-the-entry-code" class="common-anchor-header">Write the entry code</h4><p>The script’s entry should be in <code translate="no">Milvus_cli/milvus_cli/scripts</code>, and the <code translate="no">Milvus_cli/milvus_cli/scripts/milvus_cli.py</code> should be like:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> sys
 <span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> click
@@ -673,7 +676,7 @@ comp = Completer()
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Edit-the-setuppy" class="common-anchor-header">編輯<code translate="no">setup.py</code></h4><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages
+<h4 id="Edit-the-setuppy" class="common-anchor-header">Edit the <code translate="no">setup.py</code></h4><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages
 
 <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;README.md&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> fh:
     long_description = fh.read()
@@ -703,30 +706,30 @@ setup(
     python_requires=<span class="hljs-string">&#x27;&gt;=3.8&#x27;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>這裡有些提示：</p>
+<p>Some tips here:</p>
 <ol>
-<li>我們使用<code translate="no">README.md</code> 的內容做為套件的長描述。</li>
-<li>將所有相依性加入<code translate="no">install_requires</code> 。</li>
-<li>指定<code translate="no">entry_points</code> 。在本例中，我們將<code translate="no">milvus_cli</code> 設定為<code translate="no">console_scripts</code> 的子代，這樣我們就可以在安裝此套件後直接輸入<code translate="no">milvus_cli</code> 作為命令。而<code translate="no">milvus_cli</code> 的入口點是<code translate="no">milvus_cli/scripts/milvus_cli.py</code> 中的<code translate="no">runCliPrompt</code> 函式。</li>
+<li>We use <code translate="no">README.md</code> content as the package’s long description.</li>
+<li>Add all dependencies to <code translate="no">install_requires</code>.</li>
+<li>Specify the <code translate="no">entry_points</code>. In this case, we set <code translate="no">milvus_cli</code> as a child of <code translate="no">console_scripts</code>, so that we can type <code translate="no">milvus_cli</code> as a command directly after we install this package. And the <code translate="no">milvus_cli</code>'s entry point is <code translate="no">runCliPrompt</code> function in <code translate="no">milvus_cli/scripts/milvus_cli.py</code>.</li>
 </ol>
-<h4 id="Build" class="common-anchor-header">建立</h4><ol>
-<li><p>升級<code translate="no">build</code> 套件：<code translate="no">python3 -m pip install --upgrade build</code></p></li>
-<li><p>執行 build：<code translate="no">python -m build --sdist --wheel --outdir dist/ .</code></p></li>
-<li><p>在<code translate="no">dist/</code> 目錄下會產生兩個檔案：</p></li>
+<h4 id="Build" class="common-anchor-header">Build</h4><ol>
+<li><p>Upgrade the <code translate="no">build</code> package: <code translate="no">python3 -m pip install --upgrade build</code></p></li>
+<li><p>Run build: <code translate="no">python -m build --sdist --wheel --outdir dist/ .</code></p></li>
+<li><p>Two files will be generated under the <code translate="no">dist/</code> directory:</p></li>
 </ol>
 <pre><code translate="no" class="language-shell">dist/
   example_package_YOUR_USERNAME_HERE-<span class="hljs-number">0.0</span><span class="hljs-number">.1</span>-py3-none-<span class="hljs-built_in">any</span>.whl
   example_package_YOUR_USERNAME_HERE-<span class="hljs-number">0.0</span><span class="hljs-number">.1</span>.tar.gz
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Publish-release" class="common-anchor-header">發佈版本</h3><p>參考： https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</p>
+<h3 id="Publish-release" class="common-anchor-header">Publish release</h3><p>Refer to: https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</p>
 <ol>
-<li>升級<code translate="no">twine</code> 套件：<code translate="no">python3 -m pip install --upgrade twine</code></li>
-<li>上傳至<code translate="no">PYPI</code> test env：<code translate="no">python3 -m twine upload --repository testpypi dist/*</code></li>
-<li>上傳至<code translate="no">PYPI</code> ：<code translate="no">python3 -m twine upload dist/*</code></li>
+<li>Upgrade <code translate="no">twine</code> package: <code translate="no">python3 -m pip install --upgrade twine</code></li>
+<li>Upload to <code translate="no">PYPI</code> test env: <code translate="no">python3 -m twine upload --repository testpypi dist/*</code></li>
+<li>Upload to <code translate="no">PYPI</code> : <code translate="no">python3 -m twine upload dist/*</code></li>
 </ol>
-<h3 id="CICD-by-Github-workflows" class="common-anchor-header">透過 Github 工作流程進行 CI/CD</h3><p>參考：https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/</p>
-<p>我們想要一種自動上傳資產的方式，它可以建立套件並上傳到 github 發行版和PYPI。</p>
-<p>(因為某些原因，我們只希望工作流程只將發行版發佈到PYPI測試)。</p>
+<h3 id="CICD-by-Github-workflows" class="common-anchor-header">CI/CD by Github workflows</h3><p>Refer to: https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/</p>
+<p>We want a way to upload assets automatically, it can build the packages and upload them to github releases and PYPI.</p>
+<p>(For some reason we just want the workflow only publish the release to test PYPI.)</p>
 <pre><code translate="no" class="language-yaml"><span class="hljs-comment"># This is a basic workflow to help you get started with Actions</span>
 
 name: Update the release<span class="hljs-string">&#x27;s assets after it published
@@ -785,7 +788,7 @@ jobs:
           packages_dir: dist/
           verify_metadata: <span class="hljs-literal">false</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Learn-more-about-Milvus" class="common-anchor-header">進一步了解 Milvus<button data-href="#Learn-more-about-Milvus" class="anchor-icon" translate="no">
+<h2 id="Learn-more-about-Milvus" class="common-anchor-header">Learn more about Milvus<button data-href="#Learn-more-about-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -800,10 +803,10 @@ jobs:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 是一個強大的工具，能夠為大量的人工智慧和向量相似性搜尋應用提供動力。若要瞭解更多關於專案的資訊，請參閱下列資源：</p>
+    </button></h2><p>Milvus is a powerful tool capable of powering a vast array of artificial intelligence and vector similarity search applications. To learn more about the project, check out the following resources:</p>
 <ul>
-<li>閱讀我們的<a href="https://milvus.io/blog">部落格</a>。</li>
-<li>在<a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a> 上與我們的開放原始碼社群互動。</li>
-<li>在<a href="https://github.com/milvus-io/milvus/">GitHub</a> 上使用全球最受歡迎的向量資料庫，或為其做出貢獻。</li>
-<li>使用我們新的<a href="https://github.com/milvus-io/bootcamp">bootcamp</a> 快速測試和部署 AI 應用程式。</li>
+<li>Read our <a href="https://milvus.io/blog">blog</a>.</li>
+<li>Interact with our open-source community on <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a>.</li>
+<li>Use or contribute to the world’s most popular vector database on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Quickly test and deploy AI applications with our new <a href="https://github.com/milvus-io/bootcamp">bootcamp</a>.</li>
 </ul>

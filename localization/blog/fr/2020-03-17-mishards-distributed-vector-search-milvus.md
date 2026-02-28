@@ -1,20 +1,22 @@
 ---
 id: mishards-distributed-vector-search-milvus.md
-title: Vue d'ensemble de l'architecture distribuée
+title: Distributed architecture overview
 author: milvus
 date: 2020-03-17T21:36:16.974Z
-desc: Comment passer à l'échelle supérieure
+desc: How to scale out
 cover: assets.zilliz.com/tim_j_ots0_EO_Yu_Gt_U_unsplash_14f939b344.jpg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus'
 ---
-<custom-h1>Mishards - Recherche vectorielle distribuée dans Milvus</custom-h1><p>Milvus vise à réaliser une recherche de similarité et une analyse efficaces pour les vecteurs à grande échelle. Une instance autonome de Milvus peut facilement gérer la recherche vectorielle pour des vecteurs à l'échelle du milliard. Cependant, pour des ensembles de données de 10 milliards, 100 milliards ou même plus, un cluster Milvus est nécessaire. Le cluster peut être utilisé comme une instance autonome pour des applications de niveau supérieur et peut répondre aux besoins de l'entreprise en matière de faible latence et de forte concurrence pour les données à grande échelle. Un cluster Milvus peut renvoyer des requêtes, séparer la lecture de l'écriture, s'étendre horizontalement et dynamiquement, fournissant ainsi une instance Milvus qui peut s'étendre sans limite. Mishards est une solution distribuée pour Milvus.</p>
-<p>Cet article présente brièvement les composants de l'architecture Mishards. Des informations plus détaillées seront présentées dans les prochains articles.</p>
+<custom-h1>Mishards — Distributed Vector Search in Milvus</custom-h1><p>Milvus aims to achieve efficient similarity search and analytics for massive-scale vectors. A standalone Milvus instance can easily handle vector search for billion-scale vectors. However, for 10 billion, 100 billion or even larger datasets, a Milvus cluster is needed. The cluster can be used as a standalone instance for upper-level applications and can meet the business needs of low latency, high concurrency for massive-scale data. A Milvus cluster can resend requests, separate reading from writing, scale horizontally, and expand dynamically, thus providing a Milvus instance that can expand without limit. Mishards is a distributed solution for Milvus.</p>
+<p>This article will briefly introduce components of the Mishards architecture. More detailed information will be introduced in the upcoming articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_milvus_cluster_mishards_daf78a0a91.png" alt="1-milvus-cluster-mishards.png" class="doc-image" id="1-milvus-cluster-mishards.png" />
-   </span> <span class="img-wrapper"> <span>1-milvus-cluster-mishards.png</span> </span></p>
-<h2 id="Distributed-architecture-overview" class="common-anchor-header">Vue d'ensemble de l'architecture distribuée<button data-href="#Distributed-architecture-overview" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_milvus_cluster_mishards_daf78a0a91.png" alt="1-milvus-cluster-mishards.png" class="doc-image" id="1-milvus-cluster-mishards.png" />
+    <span>1-milvus-cluster-mishards.png</span>
+  </span>
+</p>
+<h2 id="Distributed-architecture-overview" class="common-anchor-header">Distributed architecture overview<button data-href="#Distributed-architecture-overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,10 +32,12 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_distributed_architecture_overview_f059fe8c90.png" alt="2-distributed-architecture-overview.png" class="doc-image" id="2-distributed-architecture-overview.png" />
-   </span> <span class="img-wrapper"> <span>2-architecture-distribuée-overview.png</span> </span></p>
-<h2 id="Service-tracing" class="common-anchor-header">Traçage des services<button data-href="#Service-tracing" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_distributed_architecture_overview_f059fe8c90.png" alt="2-distributed-architecture-overview.png" class="doc-image" id="2-distributed-architecture-overview.png" />
+    <span>2-distributed-architecture-overview.png</span>
+  </span>
+</p>
+<h2 id="Service-tracing" class="common-anchor-header">Service tracing<button data-href="#Service-tracing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -49,10 +53,12 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_service_tracing_milvus_38559f7fd7.png" alt="3-service-tracing-milvus.png" class="doc-image" id="3-service-tracing-milvus.png" />
-   </span> <span class="img-wrapper"> <span>3-service-tracing-milvus.png</span> </span></p>
-<h2 id="Primary-service-components" class="common-anchor-header">Principaux composants des services<button data-href="#Primary-service-components" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_service_tracing_milvus_38559f7fd7.png" alt="3-service-tracing-milvus.png" class="doc-image" id="3-service-tracing-milvus.png" />
+    <span>3-service-tracing-milvus.png</span>
+  </span>
+</p>
+<h2 id="Primary-service-components" class="common-anchor-header">Primary service components<button data-href="#Primary-service-components" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,15 +74,15 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
         ></path>
       </svg>
     </button></h2><ul>
-<li>Cadre de découverte des services, tel que ZooKeeper, etcd et Consul.</li>
-<li>Équilibreur de charge, tel que Nginx, HAProxy, Ingress Controller.</li>
-<li>Nœud Mishards : sans état, évolutif.</li>
-<li>Nœud Milvus en écriture seule : nœud unique et non évolutif. Vous devez utiliser des solutions de haute disponibilité pour ce nœud afin d'éviter un point de défaillance unique.</li>
-<li>Nœud Milvus en lecture seule : Nœud avec état et évolutif.</li>
-<li>Service de stockage partagé : Tous les nœuds Milvus utilisent un service de stockage partagé pour partager les données, tel que NAS ou NFS.</li>
-<li>Service de métadonnées : Tous les nœuds Milvus utilisent ce service pour partager des métadonnées. Actuellement, seul MySQL est pris en charge. Ce service nécessite une solution de haute disponibilité MySQL.</li>
+<li>Service discovery framework, such as ZooKeeper, etcd, and Consul.</li>
+<li>Load balancer, such as Nginx, HAProxy, Ingress Controller.</li>
+<li>Mishards node: stateless, scalable.</li>
+<li>Write-only Milvus node: single node and not scalable. You need to use high availability solutions for this node to avoid single-point-of-failure.</li>
+<li>Read-only Milvus node: Stateful node and scalable.</li>
+<li>Shared storage service: All Milvus nodes use shared storage service to share data, such as NAS or NFS.</li>
+<li>Metadata service: All Milvus nodes use this service to share metadata. Currently, only MySQL is supported. This service requires MySQL high availability solution.</li>
 </ul>
-<h2 id="Scalable-components" class="common-anchor-header">Composants évolutifs<button data-href="#Scalable-components" class="anchor-icon" translate="no">
+<h2 id="Scalable-components" class="common-anchor-header">Scalable components<button data-href="#Scalable-components" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -93,9 +99,9 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
       </svg>
     </button></h2><ul>
 <li>Mishards</li>
-<li>Nœuds Milvus en lecture seule</li>
+<li>Read-only Milvus nodes</li>
 </ul>
-<h2 id="Components-introduction" class="common-anchor-header">Présentation des composants<button data-href="#Components-introduction" class="anchor-icon" translate="no">
+<h2 id="Components-introduction" class="common-anchor-header">Components introduction<button data-href="#Components-introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,15 +116,17 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Nœuds Mishards</strong></p>
-<p>Mishards est responsable de la décomposition des demandes en amont et de l'acheminement des sous-demandes vers les sous-services. Les résultats sont résumés pour être renvoyés en amont.</p>
+    </button></h2><p><strong>Mishards nodes</strong></p>
+<p>Mishards is responsible for breaking up upstream requests and routing sub-requests to sub-services. The results are summarized to return to upstream.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_mishards_nodes_3fbe7d255d.jpg" alt="4-mishards-nodes.jpg" class="doc-image" id="4-mishards-nodes.jpg" />
-   </span> <span class="img-wrapper"> <span>4-noeuds-mishards.jpg</span> </span></p>
-<p>Comme l'indique le graphique ci-dessus, après avoir accepté une demande de recherche TopK, Mishards décompose d'abord la demande en sous-demandes et envoie les sous-demandes au service en aval. Lorsque toutes les sous-réponses sont collectées, elles sont fusionnées et renvoyées en amont.</p>
-<p>Mishards étant un service sans état, il n'enregistre pas de données et ne participe pas à des calculs complexes. Les nœuds n'ont donc pas d'exigences élevées en matière de configuration et la puissance de calcul est principalement utilisée pour fusionner les sous-résultats. Il est donc possible d'augmenter le nombre de nœuds Mishards pour obtenir une concurrence élevée.</p>
-<h2 id="Milvus-nodes" class="common-anchor-header">Nœuds Milvus<button data-href="#Milvus-nodes" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_mishards_nodes_3fbe7d255d.jpg" alt="4-mishards-nodes.jpg" class="doc-image" id="4-mishards-nodes.jpg" />
+    <span>4-mishards-nodes.jpg</span>
+  </span>
+</p>
+<p>As is indicated in the chart above, after accepting a TopK search request, Mishards first breaks up the request into sub-requests and send the sub-requests to the downstream service. When all sub-responses are collected, the sub-responses are merged and returned to upstream.</p>
+<p>Because Mishards is a stateless service, it does not save data or participate in complex computation. Thus, nodes do not have high configuration requirements and the computing power is mainly used in merging sub-results. So, it is possible to increase the number of Mishards nodes for high concurrency.</p>
+<h2 id="Milvus-nodes" class="common-anchor-header">Milvus nodes<button data-href="#Milvus-nodes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -133,67 +141,83 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Les nœuds Milvus sont responsables des opérations de base liées au CRUD et ont donc des exigences de configuration relativement élevées. Tout d'abord, la taille de la mémoire doit être suffisante pour éviter un trop grand nombre d'opérations d'E/S sur disque. Ensuite, la configuration de l'unité centrale peut également affecter les performances. Au fur et à mesure que la taille du cluster augmente, davantage de nœuds Milvus sont nécessaires pour accroître le débit du système.</p>
-<h3 id="Read-only-nodes-and-writable-nodes" class="common-anchor-header">Nœuds en lecture seule et nœuds en écriture</h3><ul>
-<li>Les opérations principales de Milvus sont l'insertion et la recherche de vecteurs. La recherche est extrêmement exigeante pour les configurations de CPU et de GPU, alors que l'insertion ou d'autres opérations sont relativement peu exigeantes. Séparer le nœud qui exécute la recherche du nœud qui exécute les autres opérations permet un déploiement plus économique.</li>
-<li>En termes de qualité de service, lorsqu'un nœud effectue des opérations de recherche, le matériel connexe fonctionne à pleine charge et ne peut pas garantir la qualité de service des autres opérations. C'est pourquoi deux types de nœuds sont utilisés. Les demandes de recherche sont traitées par des nœuds en lecture seule et les autres demandes sont traitées par des nœuds en écriture.</li>
+    </button></h2><p>Milvus nodes are responsible for CRUD related core operations, so they have relatively high configuration requirements. Firstly, the memory size should be large enough to avoid too many disk IO operations. Secondly, CPU configurations can also affect performance. As the cluster size increases, more Milvus nodes are required to increase system throughput.</p>
+<h3 id="Read-only-nodes-and-writable-nodes" class="common-anchor-header">Read-only nodes and writable nodes</h3><ul>
+<li>Core operations of Milvus are vector insertion and search. Search has extremely high requirements on CPU and GPU configurations, while insertion or other operations have relatively low requirements. Separating the node that runs search from the node that runs other operations leads to more economical deployment.</li>
+<li>In terms of service quality, when a node is performing search operations, the related hardware is running in full load and cannot ensure the service quality of other operations. Therefore, two node types are used. Search requests are processed by read-only nodes and other requests are processed by writable nodes.</li>
 </ul>
-<h3 id="Only-one-writable-node-is-allowed" class="common-anchor-header">Un seul nœud inscriptible est autorisé</h3><ul>
-<li><p>Actuellement, Milvus ne prend pas en charge le partage des données pour plusieurs instances inscriptibles.</p></li>
-<li><p>Lors du déploiement, un point de défaillance unique des nœuds inscriptibles doit être envisagé. Des solutions de haute disponibilité doivent être préparées pour les nœuds inscriptibles.</p></li>
+<h3 id="Only-one-writable-node-is-allowed" class="common-anchor-header">Only one writable node is allowed</h3><ul>
+<li><p>Currently, Milvus does not support sharing data for multiple writable instances.</p></li>
+<li><p>During deployment, a single-point-of-failure of writable nodes needs to be considered. High availability solutions need to be prepared for writable nodes.</p></li>
 </ul>
-<h3 id="Read-only-node-scalability" class="common-anchor-header">Évolutivité des nœuds en lecture seule</h3><p>Lorsque la taille des données est très importante ou que les exigences en matière de latence sont très élevées, vous pouvez faire évoluer horizontalement les nœuds en lecture seule en tant que nœuds avec état. Supposons qu'il y ait 4 hôtes et que chacun ait la configuration suivante : CPU Cores : 16, GPU : 1, Mémoire : 64 Go. Le graphique suivant montre le cluster lors de la mise à l'échelle horizontale des nœuds à état. La puissance de calcul et la mémoire évoluent linéairement. Les données sont réparties en 8 zones, chaque nœud traitant les requêtes de 2 zones.</p>
+<h3 id="Read-only-node-scalability" class="common-anchor-header">Read-only node scalability</h3><p>When the data size is extremely large, or the latency requirement is extremely high, you can horizontally scale read-only nodes as stateful nodes. Assume there are 4 hosts and each has the following configuration: CPU Cores: 16, GPU: 1, Memory: 64 GB. The following chart shows the cluster when horizontally scaling stateful nodes. Both computing power and memory scale linearly. The data is split into 8 shards with each node processing requests from 2 shards.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/5_read_only_node_scalability_milvus_be3ee6e0a7.png" alt="5-read-only-node-scalability-milvus.png" class="doc-image" id="5-read-only-node-scalability-milvus.png" />
-   </span> <span class="img-wrapper"> <span>5-read-only-node-scalability-milvus.png</span> </span></p>
-<p>Lorsque le nombre de requêtes est important pour certains domaines, des nœuds en lecture seule sans état peuvent être déployés pour ces domaines afin d'augmenter le débit. Prenons l'exemple des hôtes ci-dessus. Lorsque les hôtes sont combinés en un cluster sans serveur, la puissance de calcul augmente de façon linéaire. Comme les données à traiter n'augmentent pas, la puissance de traitement pour le même groupe de données augmente également de façon linéaire.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/5_read_only_node_scalability_milvus_be3ee6e0a7.png" alt="5-read-only-node-scalability-milvus.png" class="doc-image" id="5-read-only-node-scalability-milvus.png" />
+    <span>5-read-only-node-scalability-milvus.png</span>
+  </span>
+</p>
+<p>When the number of requests is large for some shards, stateless read-only nodes can be deployed for these shards to increase throughput. Take the hosts above as an example. when the hosts are combined into a serverless cluster, the computing power increases linearly. Because the data to process does not increase, the processing power for the same data shard also increases linearly.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/6_read_only_node_scalability_milvus_2_2cb98b9aa8.png" alt="6-read-only-node-scalability-milvus-2.png" class="doc-image" id="6-read-only-node-scalability-milvus-2.png" />
-   </span> <span class="img-wrapper"> <span>6-read-only-node-scalability-milvus-2.png</span> </span></p>
-<h3 id="Metadata-service" class="common-anchor-header">Service de métadonnées</h3><p>Mots clés : MySQL</p>
-<p>Pour plus d'informations sur les métadonnées Milvus, voir Comment afficher les métadonnées. Dans un système distribué, les nœuds inscriptibles Milvus sont les seuls producteurs de métadonnées. Les nœuds Mishards, les nœuds inscriptibles Milvus et les nœuds en lecture seule Milvus sont tous des consommateurs de métadonnées. Actuellement, Milvus ne prend en charge que MySQL et SQLite pour le stockage des métadonnées. Dans un système distribué, le service ne peut être déployé qu'en tant que MySQL hautement disponible.</p>
-<h3 id="Service-discovery" class="common-anchor-header">Découverte du service</h3><p>Mots-clés : Apache Zookeeper, etcd, Consul, Kubernetes</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/6_read_only_node_scalability_milvus_2_2cb98b9aa8.png" alt="6-read-only-node-scalability-milvus-2.png" class="doc-image" id="6-read-only-node-scalability-milvus-2.png" />
+    <span>6-read-only-node-scalability-milvus-2.png</span>
+  </span>
+</p>
+<h3 id="Metadata-service" class="common-anchor-header">Metadata service</h3><p>Keywords: MySQL</p>
+<p>For more information about Milvus metadata, refer to How to view metadata. In a distributed system, Milvus writable nodes are the only producer of metadata. Mishards nodes, Milvus writable nodes, and Milvus read-only nodes are all consumers of metadata. Currently, Milvus only supports MySQL and SQLite as the storage backend of metadata. In a distributed system, the service can only be deployed as highly-available MySQL.</p>
+<h3 id="Service-discovery" class="common-anchor-header">Service discovery</h3><p>Keywords: Apache Zookeeper, etcd, Consul, Kubernetes</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/7_service_discovery_054a977c6e.png" alt="7-service-discovery.png" class="doc-image" id="7-service-discovery.png" />
-   </span> <span class="img-wrapper"> <span>7-decouverte-de-services.png</span> </span></p>
-<p>La découverte de services fournit des informations sur tous les nœuds Milvus. Les nœuds Milvus enregistrent leurs informations lorsqu'ils sont en ligne et se déconnectent lorsqu'ils sont hors ligne. Les nœuds Milvus peuvent également détecter les nœuds anormaux en vérifiant périodiquement l'état de santé des services.</p>
-<p>La découverte de services comprend de nombreux cadres, notamment etcd, Consul, ZooKeeper, etc. Mishards définit les interfaces de découverte de services et offre des possibilités de mise à l'échelle par des plugins. Actuellement, Mishards fournit deux types de plugins, qui correspondent aux configurations statiques et aux clusters Kubernetes. Vous pouvez personnaliser votre propre découverte de services en suivant l'implémentation de ces plugins. Les interfaces sont temporaires et doivent être remaniées. Plus d'informations sur l'écriture de votre propre plugin seront développées dans les prochains articles.</p>
-<h3 id="Load-balancing-and-service-sharding" class="common-anchor-header">Équilibrage de charge et répartition des services</h3><p>Mots-clés : Nginx, HAProxy, Kubernetes</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/7_service_discovery_054a977c6e.png" alt="7-service-discovery.png" class="doc-image" id="7-service-discovery.png" />
+    <span>7-service-discovery.png</span>
+  </span>
+</p>
+<p>Service discovery provides information about all Milvus nodes. Milvus nodes register their information when going online and log out when going offline. Milvus nodes can also detect abnormal nodes by periodically checking the health status of services.</p>
+<p>Service discovery contains a lot of frameworks, including etcd, Consul, ZooKeeper, etc. Mishards defines the service discovery interfaces and provides possibilities for scaling by plugins. Currently, Mishards provides two kinds of plugins, which correspond to Kubernetes cluster and static configurations. You can customize your own service discovery by following the implementation of these plugins. The interfaces are temporary and need a redesign. More information about writing your own plugin will be elaborated in the upcoming articles.</p>
+<h3 id="Load-balancing-and-service-sharding" class="common-anchor-header">Load balancing and service sharding</h3><p>Keywords: Nginx, HAProxy, Kubernetes</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/7_load_balancing_and_service_sharding_f91891c6c1.png" alt="7-load-balancing-and-service-sharding.png" class="doc-image" id="7-load-balancing-and-service-sharding.png" />
-   </span> <span class="img-wrapper"> <span>7-load-balancing-and-service-sharding.png</span> </span></p>
-<p>La découverte de services et l'équilibrage de charge sont utilisés ensemble. L'équilibrage de charge peut être configuré comme une interrogation, un hachage ou un hachage cohérent.</p>
-<p>L'équilibreur de charge est chargé de renvoyer les demandes des utilisateurs au nœud Mishards.</p>
-<p>Chaque nœud Mishards acquiert les informations de tous les nœuds Milvus en aval via le centre de découverte de services. Toutes les métadonnées connexes peuvent être obtenues par le service de métadonnées. Mishards implémente le sharding en consommant ces ressources. Mishards définit les interfaces liées aux stratégies de routage et fournit des extensions via des plugins. Actuellement, Mishards fournit une stratégie de hachage cohérente basée sur le niveau de segment le plus bas. Comme le montre le graphique, il y a 10 segments, de s1 à s10. Selon la stratégie de hachage cohérent basée sur les segments, Mishards achemine les demandes concernant s1, 24, s6 et s9 vers le nœud Milvus 1, s2, s3, s5 vers le nœud Milvus 2 et s7, s8, s10 vers le nœud Milvus 3.</p>
-<p>En fonction des besoins de votre entreprise, vous pouvez personnaliser le routage en suivant le plugin de routage par hachage cohérent par défaut.</p>
-<h3 id="Tracing" class="common-anchor-header">Traçage</h3><p>Mots clés : OpenTracing, Jaeger, Zipkin</p>
-<p>Étant donné la complexité d'un système distribué, les requêtes sont envoyées à de multiples invocations de services internes. Pour aider à identifier les problèmes, nous avons besoin de tracer la chaîne d'invocation des services internes. Au fur et à mesure que la complexité augmente, les avantages d'un système de traçage disponible s'expliquent d'eux-mêmes. Nous avons choisi le standard OpenTracing de la CNCF. OpenTracing fournit des API indépendantes de la plateforme et du fournisseur pour que les développeurs puissent facilement mettre en œuvre un système de traçage.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/7_load_balancing_and_service_sharding_f91891c6c1.png" alt="7-load-balancing-and-service-sharding.png" class="doc-image" id="7-load-balancing-and-service-sharding.png" />
+    <span>7-load-balancing-and-service-sharding.png</span>
+  </span>
+</p>
+<p>Service discovery and load balancing are used together. Load balancing can be configured as polling, hashing, or consistent hashing.</p>
+<p>The load balancer is responsible for resending user requests to the Mishards node.</p>
+<p>Each Mishards node acquires the information of all downstream Milvus nodes via the service discovery center. All related metadata can be acquired by metadata service. Mishards implements sharding by consuming these resources. Mishards defines the interfaces related to routing strategies and provides extensions via plugins. Currently, Mishards provides a consistent hashing strategy based on the lowest segment level. As is shown in the chart, there are 10 segments, s1 to s10. Per the segment-based consistent hashing strategy, Mishards routes requests concerning s1, 24, s6, and s9 to the Milvus 1 node, s2, s3, s5 to the Milvus 2 node, and s7, s8, s10 to the Milvus 3 node.</p>
+<p>Based on your business needs, you can customize routing by following the default consistent hashing routing plugin.</p>
+<h3 id="Tracing" class="common-anchor-header">Tracing</h3><p>Keywords: OpenTracing, Jaeger, Zipkin</p>
+<p>Given the complexity of a distributed system, requests are sent to multiple internal service invocations. To help pinpoint problems, we need to trace the internal service invocation chain. As the complexity increases, the benefits of an available tracing system are self-explanatory. We choose the CNCF OpenTracing standard. OpenTracing provides platform-independent, vendor-independent APIs for developers to conveniently implement a tracing system.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/8_tracing_demo_milvus_fd385f0aba.png" alt="8-tracing-demo-milvus.png" class="doc-image" id="8-tracing-demo-milvus.png" />
-   </span> <span class="img-wrapper"> <span>8-tracing-demo-milvus.png</span> </span></p>
-<p>Le graphique précédent est un exemple de traçage pendant l'invocation d'une recherche. La recherche invoque consécutivement <code translate="no">get_routing</code>, <code translate="no">do_search</code> et <code translate="no">do_merge</code>. <code translate="no">do_search</code> invoque également <code translate="no">search_127.0.0.1</code>.</p>
-<p>L'ensemble de l'enregistrement de traçage forme l'arbre suivant :</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/8_tracing_demo_milvus_fd385f0aba.png" alt="8-tracing-demo-milvus.png" class="doc-image" id="8-tracing-demo-milvus.png" />
+    <span>8-tracing-demo-milvus.png</span>
+  </span>
+</p>
+<p>The previous chart is an example of tracing during search invocation. Search invokes <code translate="no">get_routing</code>, <code translate="no">do_search</code>, and <code translate="no">do_merge</code> consecutively. <code translate="no">do_search</code> also invokes <code translate="no">search_127.0.0.1</code>.</p>
+<p>The whole tracing record forms the following tree:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/8_search_traceid_milvus_35040d75bc.png" alt="8-search-traceid-milvus.png" class="doc-image" id="8-search-traceid-milvus.png" />
-   </span> <span class="img-wrapper"> <span>8-search-traceid-milvus.png</span> </span></p>
-<p>Le tableau suivant montre des exemples d'informations de requête/réponse et de balises pour chaque nœud :</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/8_search_traceid_milvus_35040d75bc.png" alt="8-search-traceid-milvus.png" class="doc-image" id="8-search-traceid-milvus.png" />
+    <span>8-search-traceid-milvus.png</span>
+  </span>
+</p>
+<p>The following chart shows examples of request/response info and tags of each node:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/request_response_info_tags_node_milvus_e169a31cb1.png" alt="request-response-info-tags-node-milvus.png" class="doc-image" id="request-response-info-tags-node-milvus.png" />
-   </span> <span class="img-wrapper"> <span>request-response-info-tags-node-milvus.png</span> </span></p>
-<p>OpenTracing a été intégré à Milvus. De plus amples informations seront fournies dans les prochains articles.</p>
-<h3 id="Monitoring-and-alerting" class="common-anchor-header">Surveillance et alerte</h3><p>Mots-clés : Prometheus, Grafana</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/request_response_info_tags_node_milvus_e169a31cb1.png" alt="request-response-info-tags-node-milvus.png" class="doc-image" id="request-response-info-tags-node-milvus.png" />
+    <span>request-response-info-tags-node-milvus.png</span>
+  </span>
+</p>
+<p>OpenTracing has been integrated to Milvus. More information will be covered in the upcoming articles.</p>
+<h3 id="Monitoring-and-alerting" class="common-anchor-header">Monitoring and alerting</h3><p>Keywords: Prometheus, Grafana</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/10_monitor_alert_milvus_3ae8910af6.jpg" alt="10-monitor-alert-milvus.jpg" class="doc-image" id="10-monitor-alert-milvus.jpg" />
-   </span> <span class="img-wrapper"> <span>10-monitor-alert-milvus.jpg</span> </span></p>
-<h2 id="Summary" class="common-anchor-header">Résumé<button data-href="#Summary" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/10_monitor_alert_milvus_3ae8910af6.jpg" alt="10-monitor-alert-milvus.jpg" class="doc-image" id="10-monitor-alert-milvus.jpg" />
+    <span>10-monitor-alert-milvus.jpg</span>
+  </span>
+</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -208,11 +232,12 @@ canonicalUrl: 'https://zilliz.com/blog/mishards-distributed-vector-search-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En tant qu'intergiciel de service, Mishards intègre la découverte de services, le routage des requêtes, la fusion des résultats et le traçage. Une extension basée sur des plugins est également fournie. Actuellement, les solutions distribuées basées sur Mishards présentent encore les inconvénients suivants :</p>
+    </button></h2><p>As the service middleware, Mishards integrates service discovery, routing request, result merging, and tracing. Plugin-based expansion is also provided. Currently, distributed solutions based on Mishards still have the following setbacks:</p>
 <ul>
-<li>Mishards utilise un proxy comme couche intermédiaire et a des coûts de latence.</li>
-<li>Les nœuds inscriptibles de Milvus sont des services à point unique.</li>
-<li>Le déploiement est compliqué lorsqu'il y a de multiples tiroirs et qu'un seul tiroir a plusieurs copies.</li>
-<li>Absence d'une couche de cache, comme l'accès aux métadonnées.</li>
+<li>Mishards uses proxy as the middle layer and has latency costs.</li>
+<li>Milvus writable nodes are single-point services.</li>
+<li>Dependent on highly-available MySQL service.
+-Deployment is complicated when there are multiple shards and a single shard has multiple copies.</li>
+<li>Lacks a cache layer, such as access to metadata.</li>
 </ul>
-<p>Nous corrigerons ces problèmes dans les prochaines versions afin que les Mishards puissent être appliqués à l'environnement de production plus facilement.</p>
+<p>We will fix these know issues in the upcoming versions so that Mishards can be applied to the production environment more conveniently.</p>

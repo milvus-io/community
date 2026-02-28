@@ -1,13 +1,13 @@
 ---
 id: benchmarks-lie-vector-dbs-deserve-a-real-test.md
-title: Os parâmetros de referência mentem - as BD vectoriais merecem um teste real
+title: |
+  Benchmarks Lie — Vector DBs Deserve a Real Test
 author: Min Tian
 date: 2025-05-14T00:00:00.000Z
 desc: >-
-  Descubra a lacuna de desempenho em bancos de dados vetoriais com o VDBBench. A
-  nossa ferramenta testa em cenários de produção reais, garantindo que as suas
-  aplicações de IA funcionam sem problemas e sem tempo de inatividade
-  inesperado.
+  Uncover the performance gap in vector databases with VDBBench. Our tool tests
+  under real production scenarios, ensuring your AI applications run smoothly
+  without unexpected downtime.
 cover: >-
   assets.zilliz.com/Benchmarks_Lie_Vector_D_Bs_Deserve_a_Real_Test_9280c66efc.png
 tag: Engineering
@@ -21,7 +21,7 @@ meta_title: |
   Benchmarks Lie — Vector DBs Deserve a Real Test
 origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md'
 ---
-<h2 id="The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="common-anchor-header">A base de dados de vectores que escolheu com base em parâmetros de referência pode falhar na produção<button data-href="#The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="anchor-icon" translate="no">
+<h2 id="The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="common-anchor-header">The Vector Database You Chose Based on Benchmarks Might Fail in Production<button data-href="#The-Vector-Database-You-Chose-Based-on-Benchmarks-Might-Fail-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,18 +36,18 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ao selecionar uma <a href="https://milvus.io/blog/what-is-a-vector-database.md">base de dados de vectores</a> para a sua aplicação de IA, os benchmarks convencionais são como testar um carro desportivo numa pista vazia, apenas para descobrir que bloqueia no trânsito da hora de ponta. A verdade incómoda? A maioria dos benchmarks apenas avalia o desempenho em condições artificiais que nunca existem em ambientes de produção.</p>
+    </button></h2><p>When selecting a <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector database</a> for your AI application, conventional benchmarks are like test-driving a sports car on an empty track, only to find it stalls in rush hour traffic. The uncomfortable truth? Most benchmarks only evaluate performance in artificial conditions that never exist in production environments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Benchmarks_Lie_Vector_D_Bs_Deserve_a_Real_Test_9280c66efc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>A maioria dos benchmarks testa bases de dados vectoriais <strong>depois de</strong> todos os dados terem sido ingeridos e o índice estar totalmente construído. Mas na produção, os dados nunca param de fluir. Não é possível pausar o sistema por horas para reconstruir um índice.</p>
-<p>Já vimos essa desconexão em primeira mão. Por exemplo, o Elasticsearch pode ostentar velocidades de consulta de milissegundos, mas, nos bastidores, vimos ele levar <strong>mais de 20 horas</strong> apenas para otimizar seu índice. Esse é um tempo de inatividade que nenhum sistema de produção pode pagar, especialmente em cargas de trabalho de IA que exigem atualizações contínuas e respostas instantâneas.</p>
-<p>Com o Milvus, depois de executar inúmeras avaliações de Prova de Conceito (PoC) com clientes corporativos, descobrimos um padrão preocupante: <strong>bancos de dados vetoriais que se destacam em ambientes de laboratório controlados frequentemente têm dificuldades sob cargas de produção reais.</strong> Essa lacuna crítica não frustra apenas os engenheiros de infraestrutura - ela pode inviabilizar iniciativas inteiras de IA criadas com base nessas promessas enganosas de desempenho.</p>
-<p>É por isso que criamos <a href="https://github.com/zilliztech/VectorDBBench">o VDBBench</a>: um benchmark de código aberto projetado desde o início para simular a realidade da produção. Ao contrário dos testes sintéticos que selecionam cenários, o VDBBench faz com que os bancos de dados passem por ingestão contínua, condições de filtragem rigorosas e diversos cenários, exatamente como suas cargas de trabalho de produção reais. Nossa missão é simples: fornecer aos engenheiros uma ferramenta que mostre como os bancos de dados vetoriais realmente funcionam em condições reais, para que você possa tomar decisões de infraestrutura com base em números confiáveis.</p>
-<h2 id="The-Gap-between-Benchmarks-and-Reality" class="common-anchor-header">A lacuna entre benchmarks e realidade<button data-href="#The-Gap-between-Benchmarks-and-Reality" class="anchor-icon" translate="no">
+<p>Most benchmarks test vector databases <strong>after</strong> all data has been ingested and the index is fully built. But in production, data never stops flowing. You don’t get to pause your system for hours to rebuild an index.</p>
+<p>We’ve seen the disconnect firsthand. For example, Elasticsearch might boast millisecond-level query speeds, but behind the scenes, we’ve watched it take <strong>over 20 hours</strong> just to optimize its index. That’s downtime no production system can afford, especially in AI workloads that demand continuous updates and instant responses.</p>
+<p>With Milvus, after running countless Proof of Concept (PoC) evaluations with enterprise clients, we’ve uncovered a troubling pattern: <strong>vector databases that excel in controlled lab environments frequently struggle under actual production loads.</strong> This critical gap doesn’t just frustrate infrastructure engineers—it can derail entire AI initiatives built on these misleading performance promises.</p>
+<p>That’s why we built <a href="https://github.com/zilliztech/VectorDBBench">VDBBench</a>: an open-source benchmark designed from the ground up to simulate production reality. Unlike synthetic tests that cherry-pick scenarios, VDBBench pushes databases through continuous ingestion, rigorous filtering conditions, and diverse scenarios, just like your actual production workloads. Our mission is simple: give engineers a tool that shows how vector databases actually perform under real-world conditions so you can make infrastructure decisions based on trustworthy numbers.</p>
+<h2 id="The-Gap-between-Benchmarks-and-Reality" class="common-anchor-header">The Gap between Benchmarks and Reality<button data-href="#The-Gap-between-Benchmarks-and-Reality" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,12 +62,12 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>As abordagens tradicionais de benchmarking sofrem de três falhas críticas que tornam seus resultados praticamente sem sentido para a tomada de decisões de produção:</p>
-<h3 id="1-Outdated-Data" class="common-anchor-header">1. Dados desactualizados</h3><p>Muitos benchmarks ainda se baseiam em conjuntos de dados desatualizados, como SIFT ou<a href="https://zilliz.com/glossary/glove"> GloVe</a>, que têm pouca semelhança com as atuais incorporações vetoriais complexas e de alta dimensão geradas por modelos de IA. Considere o seguinte: O SIFT contém vectores de 128 dimensões, enquanto os populares embeddings dos modelos de embedding da OpenAI variam entre 768 e 3072 dimensões.</p>
-<h3 id="2-Vanity-Metrics" class="common-anchor-header">2. Métricas de vaidade</h3><p>Muitos benchmarks se concentram apenas na latência média ou no pico de QPS, o que cria uma imagem distorcida. Estas métricas idealizadas não conseguem capturar os outliers e as inconsistências que os utilizadores reais experimentam em ambientes de produção. Por exemplo, de que serve um número impressionante de QPS se este requer recursos computacionais ilimitados que levariam a sua organização à falência?</p>
-<h3 id="3-Oversimplified-Scenarios" class="common-anchor-header">3. Cenários demasiado simplificados</h3><p>A maioria dos benchmarks testa apenas cargas de trabalho básicas e estáticas - essencialmente o "Hello World" da pesquisa vetorial. Por exemplo, emitem pedidos de pesquisa apenas depois de todo o conjunto de dados ter sido ingerido e indexado, ignorando a realidade dinâmica em que os utilizadores pesquisam enquanto chegam novos dados. Esta conceção simplista ignora os padrões complexos que definem os sistemas de produção reais, tais como consultas simultâneas, pesquisas filtradas e ingestão contínua de dados.</p>
-<p>Reconhecendo essas falhas, percebemos que a indústria precisava de uma <strong>mudança radical na filosofia de benchmarking - uma</strong>baseada em como os sistemas de IA realmente se comportam na natureza. É por isso que criamos <a href="https://github.com/zilliztech/VectorDBBench">o VDBBench</a>.</p>
-<h2 id="From-Lab-to-Production-How-VDBBench-Bridges-the-Gap" class="common-anchor-header">Do laboratório à produção: Como o VDBBench preenche a lacuna<button data-href="#From-Lab-to-Production-How-VDBBench-Bridges-the-Gap" class="anchor-icon" translate="no">
+    </button></h2><p>Traditional benchmarking approaches suffer from three critical flaws that render their results practically meaningless for production decision-making:</p>
+<h3 id="1-Outdated-Data" class="common-anchor-header">1. Outdated Data</h3><p>Many benchmarks still rely on outdated datasets like SIFT or<a href="https://zilliz.com/glossary/glove"> GloVe</a>, which bear little resemblance to today’s complex, high-dimensional vector embeddings generated by AI models. Consider this: SIFT contains 128-dimensional vectors, while popular embeddings from OpenAI’s embedding models range from 768 to 3072 dimensions.</p>
+<h3 id="2-Vanity-Metrics" class="common-anchor-header">2. Vanity Metrics</h3><p>Many benchmarks focus solely on average latency or peak QPS, which creates a distorted picture. These idealized metrics fail to capture the outliers and inconsistencies that actual users experience in production environments. For example, what good is an impressive QPS number if it requires unbounded computational resources that would bankrupt your organization?</p>
+<h3 id="3-Oversimplified-Scenarios" class="common-anchor-header">3. Oversimplified Scenarios</h3><p>Most benchmarks test only basic, static workloads—essentially the “Hello World” of vector search. For example, they issue search requests only after the entire dataset is ingested and indexed, ignoring the dynamic reality where users search while new data streams in. This simplistic design overlooks the complex patterns defining real production systems such as concurrent queries, filtered searches, and continuous data ingestion.</p>
+<p>Recognizing these flaws, we realized the industry needed a <strong>radical shift in benchmarking philosophy</strong>—one grounded in how AI systems actually behave in the wild. That’s why we built <a href="https://github.com/zilliztech/VectorDBBench">VDBBench</a>.</p>
+<h2 id="From-Lab-to-Production-How-VDBBench-Bridges-the-Gap" class="common-anchor-header">From Lab to Production: How VDBBench Bridges the Gap<button data-href="#From-Lab-to-Production-How-VDBBench-Bridges-the-Gap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -82,57 +82,57 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O VDBBench não se limita a iterar filosofias de benchmarking desatualizadas - ele reconstrói o conceito a partir dos primeiros princípios com uma crença orientadora: <strong>um benchmark só é valioso se prever o comportamento real da produção</strong>.</p>
-<p>Projetamos o VDBBench para replicar fielmente as condições do mundo real em três dimensões críticas: autenticidade dos dados, padrões de carga de trabalho e medição de desempenho.</p>
-<h3 id="Modernizing-the-Dataset" class="common-anchor-header">Modernizando o conjunto de dados</h3><p>Nós reformulamos completamente os conjuntos de dados usados para o benchmarking do vectorDB. Em vez de conjuntos de teste herdados, como SIFT e GloVe, o VDBBench usa vetores gerados a partir de modelos de incorporação de última geração que alimentam os aplicativos de IA atuais.</p>
-<p>Para garantir a relevância, especialmente para casos de utilização como o Retrieval-Augmented Generation (RAG), selecionámos corpora que reflectem cenários reais de empresas e domínios específicos. Estes vão desde bases de conhecimento de uso geral a aplicações verticais como a resposta a perguntas biomédicas e a pesquisa na Web em grande escala.</p>
+    </button></h2><p>VDBBench doesn’t just iterate on outdated benchmarking philosophies—it rebuilds the concept from first principles with one guiding belief: <strong>a benchmark is only valuable if it predicts actual production behavior</strong>.</p>
+<p>We’ve engineered VDBBench to faithfully replicate real-world conditions across three critical dimensions: data authenticity, workload patterns, and performance measurement.</p>
+<h3 id="Modernizing-the-Dataset" class="common-anchor-header">Modernizing the Dataset</h3><p>We’ve completely overhauled the datasets used for vectorDB benchmarking. Instead of legacy test sets like SIFT and GloVe, VDBBench uses vectors generated from state-of-the-art embedding models that power today’s AI applications.</p>
+<p>To ensure relevance, especially for use cases like Retrieval-Augmented Generation (RAG), we selected corpora that reflect real-world enterprise and domain-specific scenarios. These range from general-purpose knowledge bases to vertical applications like biomedical question answering and large-scale web search.</p>
 <table>
 <thead>
 <tr><th></th><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Corpus</strong></td><td><strong>Modelo de incorporação</strong></td><td><strong>Dimensões</strong></td><td><strong>Tamanho</strong></td></tr>
-<tr><td>Wikipédia</td><td>Cohere V2</td><td>768</td><td>1M / 10M</td></tr>
-<tr><td>BioASQ</td><td>Cobre V3</td><td>1024</td><td>1M / 10M</td></tr>
+<tr><td><strong>Corpus</strong></td><td><strong>Embedding Model</strong></td><td><strong>Dimensions</strong></td><td><strong>Size</strong></td></tr>
+<tr><td>Wikipedia</td><td>Cohere V2</td><td>768</td><td>1M / 10M</td></tr>
+<tr><td>BioASQ</td><td>Cohere V3</td><td>1024</td><td>1M / 10M</td></tr>
 <tr><td>C4</td><td>OpenAI</td><td>1536</td><td>500K / 5M</td></tr>
 <tr><td>MSMarco V2</td><td>udever-bloom-1b1</td><td>1536</td><td>1M / 10M / 138M</td></tr>
 </tbody>
 </table>
-<p>Tabela: Conjuntos de dados usados no VDBBench</p>
-<p>O VDBBench também oferece suporte a conjuntos de dados personalizados, permitindo que você faça benchmark com seus próprios dados gerados a partir de seus modelos de incorporação específicos para suas cargas de trabalho específicas. Afinal de contas, nenhum conjunto de dados conta uma história melhor do que seus próprios dados de produção.</p>
-<h3 id="Production-Focused-Metric-Design" class="common-anchor-header">Design de métricas com foco na produção</h3><p><strong>O VDBBench prioriza métricas que refletem o desempenho no mundo real, não apenas resultados de laboratório.</strong> Redesenhamos o benchmarking em torno do que realmente importa em ambientes de produção: confiabilidade sob carga, latência de cauda, taxa de transferência sustentada e precisão.</p>
+<p>Table: Datasets used in VDBBench</p>
+<p>VDBBench also supports custom datasets, letting you benchmark with your own data generated from your specific embedding models for your specific workloads. After all, no dataset tells a better story than your own production data.</p>
+<h3 id="Production-Focused-Metric-Design" class="common-anchor-header">Production-Focused Metric Design</h3><p><strong>VDBBench prioritizes metrics that reflect real-world performance, not just lab results.</strong> We’ve redesigned benchmarking around what actually matters in production environments: reliability under load, tail latency, sustained throughput, and accuracy.</p>
 <ul>
-<li><p><strong>Latência P95/P99 para medir a experiência real do utilizador</strong>: A latência média/mediana mascara os outliers que frustram os utilizadores reais. É por isso que o VDBBench se concentra na latência de cauda, como P95/P99, revelando o desempenho que 95% ou 99% das suas consultas realmente alcançarão.</p></li>
-<li><p><strong>Taxa de transferência sustentável sob carga:</strong> Um sistema que funciona bem por 5 segundos não é suficiente para a produção. O VDBBench aumenta gradualmente a concorrência para encontrar o máximo de consultas sustentáveis por segundo do seu banco de dados (<code translate="no">max_qps</code>) - não o número de pico em condições curtas e ideais. Isso mostra o quão bem seu sistema se mantém ao longo do tempo.</p></li>
-<li><p><strong>Recall equilibrado com desempenho:</strong> Velocidade sem precisão não tem sentido. Cada número de desempenho no VDBBench é emparelhado com o recall, para que você saiba exatamente quanta relevância você está trocando por throughput. Isso permite comparações justas entre sistemas com trocas internas muito diferentes.</p></li>
+<li><p><strong>P95/P99 latency to measure real user experience</strong>: Average/median latency masks the outliers that frustrate real users. That’s why VDBBench focuses on tail latency like P95/P99, revealing what performance 95% or 99% of your queries will actually achieve.</p></li>
+<li><p><strong>Sustainable throughput under load:</strong> A system that performs well for 5 seconds doesn’t cut it in production. VDBBench gradually increases concurrency to find your database’s maximum sustainable queries per second (<code translate="no">max_qps</code>)—not the peak number under short, ideal conditions. This shows how well your system holds up over time.</p></li>
+<li><p><strong>Recall balanced with performance:</strong> Speed without accuracy is meaningless. Every performance number in VDBBench is paired with recall, so you know exactly how much relevance you’re trading off for throughput. This enables fair, apples-to-apples comparisons between systems with vastly different internal tradeoffs.</p></li>
 </ul>
-<h3 id="Test-Methodology-That-Reflects-Reality" class="common-anchor-header">Metodologia de teste que reflete a realidade</h3><p>Uma inovação chave no projeto do VDBBench é a <strong>separação de testes seriais e simultâneos</strong>, o que ajuda a capturar como os sistemas se comportam sob diferentes tipos de carga. Por exemplo, as métricas de latência são divididas da seguinte forma:</p>
+<h3 id="Test-Methodology-That-Reflects-Reality" class="common-anchor-header">Test Methodology That Reflects Reality</h3><p>A key innovation in VDBBench’s design is the <strong>separation of serial and concurrent testing</strong>, which helps capture how systems behave under different types of load. For instance, latency metrics are divided as follows:</p>
 <ul>
-<li><p><code translate="no">serial_latency_p99</code> mede o desempenho do sistema sob carga mínima, onde apenas uma solicitação é processada por vez. Isto representa o <em>melhor cenário</em> para a latência.</p></li>
-<li><p><code translate="no">conc_latency_p99</code> captura o comportamento do sistema em <em>condições realistas de alta simultaneidade</em>, em que vários pedidos chegam simultaneamente.</p></li>
+<li><p><code translate="no">serial_latency_p99</code> measures system performance under minimal load, where only one request is processed at a time. This represents the <em>best-case scenario</em> for latency.</p></li>
+<li><p><code translate="no">conc_latency_p99</code> captures system behavior under <em>realistic, high-concurrency conditions</em>, where multiple requests arrive simultaneously.</p></li>
 </ul>
-<h3 id="Two-Benchmark-Phases" class="common-anchor-header">Duas fases de benchmark</h3><p>O VDBBench separa os testes em duas fases cruciais:</p>
+<h3 id="Two-Benchmark-Phases" class="common-anchor-header">Two Benchmark Phases</h3><p>VDBBench separates testing into two crucial phases:</p>
 <ol>
-<li><strong>Teste serial</strong></li>
+<li><strong>Serial Test</strong></li>
 </ol>
-<p>Esta é uma execução de processo único de 1.000 consultas. Esta fase estabelece uma linha de base para o desempenho e a precisão ideais, relatando <code translate="no">serial_latency_p99</code> e recall.</p>
+<p>This is a single-process run of 1,000 queries. This phase establishes a baseline for ideal performance and accuracy, reporting both <code translate="no">serial_latency_p99</code> and recall.</p>
 <ol start="2">
-<li><strong>Teste de simultaneidade</strong></li>
+<li><strong>Concurrency Test</strong></li>
 </ol>
-<p>Esta fase simula um ambiente de produção sob carga sustentada.</p>
+<p>This phase simulates a production environment under sustained load.</p>
 <ul>
-<li><p><strong>Simulação realista do cliente</strong>: Cada processo de teste opera de forma independente com sua própria conexão e conjunto de consultas. Isso evita a interferência de estado compartilhado (por exemplo, cache) que poderia distorcer os resultados.</p></li>
-<li><p><strong>Início sincronizado</strong>: Todos os processos começam simultaneamente, garantindo que o QPS medido reflita com precisão o nível de simultaneidade reivindicado.</p></li>
+<li><p><strong>Realistic client simulation</strong>: Each test process operates independently with its own connection and query set. This avoids shared-state (e.g., cache) interference that could distort results.</p></li>
+<li><p><strong>Synchronized start</strong>: All processes begin simultaneously, ensuring that the measured QPS accurately reflects the claimed concurrency level.</p></li>
 </ul>
-<p>Esses métodos cuidadosamente estruturados garantem que os valores <code translate="no">max_qps</code> e <code translate="no">conc_latency_p99</code> relatados pelo VDBBench sejam <strong>precisos e relevantes para a produção</strong>, fornecendo informações significativas para o planejamento da capacidade de produção e o design do sistema.</p>
+<p>These carefully structured methods ensure that the <code translate="no">max_qps</code> and <code translate="no">conc_latency_p99</code> values reported by VDBBench are both <strong>accurate and production-relevant</strong>, providing meaningful insights for production capacity planning and system design.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_QPS_and_Latency_of_Milvus_16c64g_standalone_at_Varying_Concurrency_Levels_Cohere_1_M_Test_7f2294e87a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura: QPS e latência do Milvus-16c64g-standalone em diferentes níveis de simultaneidade (teste Cohere 1M). Nesse teste, o Milvus é inicialmente subutilizado - até o</em> <strong><em>nível de simultaneidade 20</em></strong><em>, o aumento da simultaneidade melhora a utilização do sistema e resulta em QPS mais alto. Para além da</em> <strong><em>concorrência 20</em></strong><em>, o sistema atinge a carga total: aumentos adicionais na concorrência já não melhoram a taxa de transferência e a latência aumenta devido a atrasos nas filas.</em></p>
-<h2 id="Beyond-Searching-Static-Data-The-Real-Production-Scenarios" class="common-anchor-header">Para além da pesquisa de dados estáticos: Os cenários reais de produção<button data-href="#Beyond-Searching-Static-Data-The-Real-Production-Scenarios" class="anchor-icon" translate="no">
+<p><em>Figure: QPS and Latency of Milvus-16c64g-standalone at Varying Concurrency Levels (Cohere 1M Test). In this test, Milvus is initially underutilized—up to</em> <strong><em>concurrency level 20</em></strong><em>, increasing concurrency improves system utilization and results in higher QPS. Beyond</em> <strong><em>concurrency 20</em></strong><em>, the system reaches full load: further increases in concurrency no longer improve throughput, and latency rises due to queuing delays.</em></p>
+<h2 id="Beyond-Searching-Static-Data-The-Real-Production-Scenarios" class="common-anchor-header">Beyond Searching Static Data: The Real Production Scenarios<button data-href="#Beyond-Searching-Static-Data-The-Real-Production-Scenarios" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,61 +147,62 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Até onde sabemos, o VDBBench é a única ferramenta de benchmark que testa bancos de dados vetoriais em todo o espetro de cenários críticos de produção, incluindo coleta estática, filtragem e casos de streaming.</p>
-<h3 id="Static-Collection" class="common-anchor-header">Coleta estática</h3><p>Ao contrário de outros benchmarks que se apressam em testar, o VDBBench primeiro garante que cada banco de dados tenha otimizado totalmente seus índices - um pré-requisito crítico de produção que muitos benchmarks frequentemente negligenciam. Isso lhe dá uma visão completa:</p>
+    </button></h2><p>To the best of our knowledge, VDBBench is the only benchmark tool that tests vector databases across the complete spectrum of production-critical scenarios, including static collection, filtering, and streaming cases.</p>
+<h3 id="Static-Collection" class="common-anchor-header">Static Collection</h3><p>Unlike other benchmarks that rush into testing, VDBBench first ensures each database has fully optimized its indexes—a critical production prerequisite that many benchmarks often neglect. This gives you the complete picture:</p>
 <ul>
-<li><p>Tempo de ingestão de dados</p></li>
-<li><p>Tempo de indexação (o tempo usado para construir um índice otimizado, que afeta drasticamente o desempenho da pesquisa)</p></li>
-<li><p>Desempenho da pesquisa em índices totalmente optimizados em condições de série e simultâneas</p></li>
+<li><p>Data ingestion time</p></li>
+<li><p>Indexing time (the time used to build an optimized index, which dramatically affects search performance)</p></li>
+<li><p>Search performance on fully optimized indexes under both serial and concurrent conditions</p></li>
 </ul>
-<h3 id="Filtering" class="common-anchor-header">Filtragem</h3><p>A pesquisa vetorial em produção raramente acontece de forma isolada. As aplicações reais combinam a semelhança de vectores com a filtragem de metadados ("encontrar sapatos parecidos com esta fotografia mas que custem menos de 100 dólares"). Esta pesquisa vetorial filtrada cria desafios únicos:</p>
+<h3 id="Filtering" class="common-anchor-header">Filtering</h3><p>Vector search in production rarely happens in isolation. Real applications combine vector similarity with metadata filtering (“find shoes that look like this photo but cost under $100”). This filtered vector search creates unique challenges:</p>
 <ul>
-<li><p><strong>Complexidade do filtro</strong>: Mais colunas escalares e condições lógicas aumentam as exigências computacionais</p></li>
-<li><p><strong>Seletividade do filtro</strong>: <a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Nossa experiência de produção</a> revela que este é o assassino oculto do desempenho - as velocidades de consulta podem flutuar por ordens de magnitude, dependendo de como os filtros são seletivos</p></li>
+<li><p><strong>Filter Complexity</strong>: More scalar columns and logic conditions increase computational demands</p></li>
+<li><p><strong>Filter Selectiveness</strong>: <a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Our production experience</a> reveals this as the hidden performance killer—query speeds can fluctuate by orders of magnitude depending on how selective filters are</p></li>
 </ul>
-<p>O VDBBench avalia sistematicamente o desempenho do filtro em diferentes níveis de seletividade (de 50% a 99,9%), fornecendo um perfil abrangente de como os bancos de dados lidam com esse padrão crítico de produção.</p>
+<p>VDBBench systematically evaluates filter performance across varying selectivity levels (from 50% to 99.9%), delivering a comprehensive profile of how databases handle this critical production pattern.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_QPS_and_Recall_of_Milvus_and_Open_Search_Across_Different_Filter_Selectivity_Levels_Cohere_1_M_Test_4b5df2244d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura: QPS e Recall do Milvus e do OpenSearch em diferentes níveis de seletividade de filtro (teste Cohere 1M). O eixo X representa a percentagem de dados filtrados. Como se pode ver, o Milvus mantém uma recuperação consistentemente elevada em todos os níveis de seletividade do filtro, enquanto o OpenSearch apresenta um desempenho instável, com uma recuperação que flutua significativamente em diferentes condições de filtragem.</em></p>
-<h3 id="Streaming" class="common-anchor-header">Fluxo contínuo</h3><p>Os sistemas de produção raramente se dão ao luxo de ter dados estáticos. Novas informações fluem continuamente enquanto as pesquisas são executadas - um cenário onde muitos bancos de dados impressionantes entram em colapso.</p>
-<p>O caso de teste de streaming exclusivo do VDBBench examina o desempenho da pesquisa durante a inserção, medindo:</p>
+<p><em>Figure: QPS and Recall of Milvus and OpenSearch Across Different Filter Selectivity Levels (Cohere 1M Test). The X-axis represents the percentage of data filtered. As shown, Milvus maintains consistently high recall across all filter selectivity levels, while OpenSearch exhibits unstable performance, with recall fluctuating significantly under different filtering conditions.</em></p>
+<h3 id="Streaming" class="common-anchor-header">Streaming</h3><p>Production systems rarely enjoy the luxury of static data. New information continuously flows in while searches execute—a scenario where many otherwise impressive databases collapse.</p>
+<p>VDBBench’s unique streaming test case examines search-while-inserting performance, measuring:</p>
 <ol>
-<li><p><strong>Impacto do aumento do volume de dados</strong>: Como o desempenho da pesquisa é dimensionado com o aumento do tamanho dos dados.</p></li>
-<li><p><strong>Impacto da carga de gravação</strong>: como as gravações simultâneas afetam a latência e a taxa de transferência da pesquisa, já que a gravação também consome recursos de CPU ou memória no sistema.</p></li>
+<li><p><strong>Impact of Growing Data Volume</strong>: How search performance scales with increasing data size.</p></li>
+<li><p><strong>Impact of Write Load</strong>: How concurrent writes affect search latency and throughput, as write also consumes CPU or memory resources in the system.</p></li>
 </ol>
-<p>Os cenários de streaming representam um teste de stress abrangente para qualquer base de dados vetorial. Mas construir um benchmark <em>justo</em> para isso não é trivial. Não é suficiente descrever como um sistema se comporta - precisamos de um modelo de avaliação consistente que permita <strong>comparações</strong> entre diferentes bases de dados.</p>
-<p>Com base em nossa experiência em ajudar empresas com implantações no mundo real, criamos uma abordagem estruturada e repetível. Com o VDBBench:</p>
+<p>Streaming scenarios represent a comprehensive stress test for any vector database. But building a <em>fair</em> benchmark for this isn’t trivial. It’s not enough to describe how one system behaves—we need a consistent evaluation model that enables <strong>apples-to-apples comparisons</strong> across different databases.</p>
+<p>Drawing from our experience helping enterprises with real-world deployments, we built a structured, repeatable approach. With VDBBench:</p>
 <ul>
-<li><p>Você <strong>define uma taxa de inserção fixa</strong> que espelha sua carga de trabalho de produção alvo.</p></li>
-<li><p>Em seguida, o VDBBench aplica <strong>uma pressão de carga idêntica</strong> em todos os sistemas, garantindo que os resultados de desempenho sejam diretamente comparáveis.</p></li>
+<li><p>You <strong>define a fixed insertion rate</strong> that mirrors your target production workload.</p></li>
+<li><p>VDBBench then applies <strong>identical load pressure</strong> across all systems, ensuring performance results are directly comparable.</p></li>
 </ul>
-<p>Por exemplo, com um conjunto de dados Cohere 10M e uma meta de ingestão de 500 linhas/segundo:</p>
+<p>For example, with a Cohere 10M dataset and a 500 rows/second ingestion target:</p>
 <ul>
-<li><p>O VDBBench ativa 5 processos produtores paralelos, cada um inserindo 100 linhas por segundo.</p></li>
-<li><p>Após cada 10% dos dados serem ingeridos, o VDBBench aciona uma rodada de testes de pesquisa em condições seriais e simultâneas.</p></li>
-<li><p>Métricas como latência, QPS e recall são registradas após cada estágio.</p></li>
+<li><p>VDBBench spins up 5 parallel producer processes, each inserting 100 rows per second.</p></li>
+<li><p>After every 10% of data is ingested, VDBBench triggers a round of search testing under both serial and concurrent conditions.</p></li>
+<li><p>Metrics such as latency, QPS, and recall are recorded after each stage.</p></li>
 </ul>
-<p>Essa metodologia controlada revela como o desempenho de cada sistema evolui ao longo do tempo e sob estresse operacional real - dando a você a perceção necessária para tomar decisões de infraestrutura em escala.</p>
+<p>This controlled methodology reveals how each system’s performance evolves over time and under real operational stress—giving you the insight you need to make infrastructure decisions that scale.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/igure_QPS_and_Recall_of_Pinecone_vs_Elasticsearch_in_the_Cohere_10_M_Streaming_Test_500_rows_s_Ingestion_Rate_548fc02f24.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura: QPS e recuperação do Pinecone em comparação com o Elasticsearch no teste de streaming Cohere 10M (taxa de ingestão de 500 linhas/s). O Pinecone manteve QPS e recuperação mais altos, mostrando uma melhoria significativa de QPS após a inserção de 100% dos dados.</em></p>
-<p>Mas este não é o fim da história. O VDBBench vai ainda mais longe ao oferecer suporte a uma etapa de otimização opcional, permitindo que os usuários comparem o desempenho da pesquisa de streaming antes e depois da otimização do índice. Ele também rastreia e relata o tempo real gasto em cada etapa, oferecendo informações mais detalhadas sobre a eficiência e o comportamento do sistema em condições semelhantes às de produção.</p>
-<p><span class="img-wrapper">
+<p><em>Figure: QPS and Recall of Pinecone vs. Elasticsearch in the Cohere 10M Streaming Test (500 rows/s Ingestion Rate). Pinecone maintained higher QPS and recall, showing a significant QPS improvement after inserting 100% of the data.</em></p>
+<p>But this is not the end of the story. VDBBench goes even further by supporting an optional optimization step, allowing users to compare streaming search performance before and after index optimization. It also tracks and reports the actual time spent on each stage, offering deeper insights into system efficiency and behavior under production-like conditions.</p>
+<p>​
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_QPS_and_Recall_of_Pinecone_vs_Elasticsearch_in_the_Cohere_10_M_Streaming_Test_After_Optimization_500_rows_s_Ingestion_Rate_d249d290bb.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura: QPS e recuperação do Pinecone em comparação com o Elasticsearch no teste de streaming de 10M do Cohere após a otimização (taxa de ingestão de 500 linhas/s)</em></p>
-<p>Conforme mostrado no diagrama, o ElasticSearch superou o Pinecone em QPS após a otimização do índice. Um milagre? Não é bem assim. O gráfico à direita conta a história completa: quando o eixo x reflete o tempo decorrido real, fica claro que o ElasticSearch levou muito mais tempo para atingir esse desempenho. E, na produção, esse atraso é importante. Essa comparação revela uma troca importante: taxa de transferência de pico vs. tempo de atendimento.</p>
-<h2 id="Choose-Your-Vector-Database-with-Confidence" class="common-anchor-header">Escolha seu banco de dados vetorial com confiança<button data-href="#Choose-Your-Vector-Database-with-Confidence" class="anchor-icon" translate="no">
+<p><em>Figure: QPS and Recall of Pinecone vs. Elasticsearch in the Cohere 10M Streaming Test After Optimization (500 rows/s Ingestion Rate)</em></p>
+<p>As shown in the diagram, ElasticSearch surpassed Pinecone in QPS—after index optimization. A miracle? Not quite. The right chart tells the full story: once the x-axis reflects actual elapsed time, it’s clear that ElasticSearch took significantly longer to reach that performance. And in production, that delay matters. This comparison reveals a key tradeoff: peak throughput vs. time-to-serve.</p>
+<h2 id="Choose-Your-Vector-Database-with-Confidence" class="common-anchor-header">Choose Your Vector Database with Confidence<button data-href="#Choose-Your-Vector-Database-with-Confidence" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,7 +217,7 @@ origin: 'https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A diferença entre os resultados de benchmark e o desempenho no mundo real não deve ser um jogo de adivinhação. O VDBBench fornece uma maneira de avaliar bancos de dados vetoriais em condições realistas, semelhantes às de produção, incluindo ingestão contínua de dados, filtragem de metadados e cargas de trabalho de streaming.</p>
-<p>Se você está planejando implantar um banco de dados vetorial na produção, vale a pena entender como ele funciona além dos testes de laboratório idealizados. O VDBBench é de código aberto, transparente e foi projetado para oferecer suporte a comparações significativas e homogêneas.</p>
-<p>Experimente o VDBBench com suas próprias cargas de trabalho hoje mesmo e veja como os diferentes sistemas se comportam na prática: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench.</a></p>
-<p>Tem dúvidas ou deseja compartilhar seus resultados? Participe da conversa no<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> ou conecte-se com nossa comunidade no <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>. Gostaríamos muito de ouvir suas opiniões.</p>
+    </button></h2><p>The gap between benchmark results and real-world performance shouldn’t be a guessing game. VDBBench provides a way to evaluate vector databases under realistic, production-like conditions, including continuous data ingestion, metadata filtering, and streaming workloads.</p>
+<p>If you’re planning to deploy a vector database in production, it’s worth understanding how it performs beyond idealized lab tests. VDBBench is open-source, transparent, and designed to support meaningful, apples-to-apples comparisons.</p>
+<p>Try VDBBench with your own workloads today and see how different systems hold up in practice: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a>.</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>. We’d love to hear your opinions.</p>

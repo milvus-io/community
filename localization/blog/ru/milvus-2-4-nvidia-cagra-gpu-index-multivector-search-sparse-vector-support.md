@@ -1,13 +1,13 @@
 ---
 id: milvus-2-4-nvidia-cagra-gpu-index-multivector-search-sparse-vector-support.md
 title: >-
-  Представление Milvus 2.4: многовекторный поиск, разреженный вектор, индекс
-  CAGRA и многое другое!
+  Unveiling Milvus 2.4: Multi-vector Search, Sparse Vector, CAGRA Index, and
+  More!
 author: Fendy Feng
 date: 2024-3-20
 desc: >-
-  Мы рады сообщить о запуске Milvus 2.4 - значительном достижении в расширении
-  возможностей поиска по крупным массивам данных.
+  We are happy to announce the launch of Milvus 2.4, a major advancement in
+  enhancing search capabilities for large-scale datasets.
 metaTitle: 'Milvus 2.4 Supports Multi-vector Search, Sparse Vector, CAGRA, and More!'
 cover: assets.zilliz.com/What_is_new_in_Milvus_2_4_1_c580220be3.png
 tag: Engineering
@@ -18,8 +18,8 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/milvus-2-4-nvidia-cagra-gpu-index-multivector-search-sparse-vector-support.md
 ---
-<p>Мы рады объявить о выпуске Milvus 2.4 - значительном продвижении в расширении возможностей поиска по крупным наборам данных. В этой последней версии добавлены новые функции, такие как поддержка индекса CAGRA на базе GPU, бета-версия поддержки <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">разреженных вкраплений</a>, групповой поиск и другие улучшения поисковых возможностей. Эти разработки подтверждают нашу приверженность сообществу, предлагая разработчикам, подобным вам, мощный и эффективный инструмент для работы с векторными данными и запросов к ним. Давайте вместе познакомимся с ключевыми преимуществами Milvus 2.4.</p>
-<h2 id="Enabled-Multi-vector-Search-for-Simplified-Multimodal-Searches" class="common-anchor-header">Мультивекторный поиск для упрощения мультимодального поиска<button data-href="#Enabled-Multi-vector-Search-for-Simplified-Multimodal-Searches" class="anchor-icon" translate="no">
+<p>We are happy to announce the launch of Milvus 2.4, a major advancement in enhancing search capabilities for large-scale datasets. This latest release adds new features, such as support for the GPU-based CAGRA index, beta support for <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">sparse embeddings</a>, group search, and various other improvements in search capabilities. These developments reinforce our commitment to the community by offering developers like you a powerful and efficient tool for handling and querying vector data. Let’s jump into the key benefits of Milvus 2.4 together.</p>
+<h2 id="Enabled-Multi-vector-Search-for-Simplified-Multimodal-Searches" class="common-anchor-header">Enabled Multi-vector Search for Simplified Multimodal Searches<button data-href="#Enabled-Multi-vector-Search-for-Simplified-Multimodal-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,18 +34,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В Milvus 2.4 реализована возможность многовекторного поиска, позволяющая одновременно искать и переранжировать различные типы векторов в одной системе Milvus. Эта функция упрощает мультимодальный поиск, значительно повышая показатели запоминания и позволяя разработчикам без труда управлять сложными приложениями ИИ с различными типами данных. Кроме того, эта функция упрощает интеграцию и тонкую настройку пользовательских моделей ранжирования, помогая в создании расширенных функций поиска, таких как точные <a href="https://zilliz.com/vector-database-use-cases/recommender-system">рекомендательные системы</a>, использующие многомерные данные.</p>
+    </button></h2><p>Milvus 2.4 provides multivector search capability, allowing simultaneous search and reranking of different vector types within the same Milvus system. This feature streamlines multimodal searches, significantly enhancing recall rates and enabling developers to effortlessly manage intricate AI applications with varied data types. Additionally, this functionality simplifies the integration and fine-tuning of custom reranking models, aiding in the creation of advanced search functions like precise <a href="https://zilliz.com/vector-database-use-cases/recommender-system">recommender systems</a> that utilize insights from multidimensional data.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/How_the_multi_vector_search_feature_works_6c85961349.png" alt="How the Milti-Vector Search Feature Works" class="doc-image" id="how-the-milti-vector-search-feature-works" />
-   </span> <span class="img-wrapper"> <span>Принцип работы функции многовекторного поиска</span> </span></p>
-<p>Поддержка мультивекторов в Milvus состоит из двух компонентов:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/How_the_multi_vector_search_feature_works_6c85961349.png" alt="How the Milti-Vector Search Feature Works" class="doc-image" id="how-the-milti-vector-search-feature-works" />
+    <span>How the Milti-Vector Search Feature Works</span>
+  </span>
+</p>
+<p>Multivector support in Milvus has two components:</p>
 <ol>
-<li><p>Возможность хранить/запрашивать несколько векторов для одной сущности в коллекции, что является более естественным способом организации данных.</p></li>
-<li><p>Возможность построить/оптимизировать алгоритм ранжирования, используя готовые алгоритмы ранжирования в Milvus.</p></li>
+<li><p>The ability to store/query multiple vectors for a single entity within a collection, which is a more natural way to organize data</p></li>
+<li><p>The ability to build/optimize a reranking algorithm by leveraging the prebuilt reranking algorithms in Milvus</p></li>
 </ol>
-<p>Помимо того, что эта <a href="https://github.com/milvus-io/milvus/issues/25639">функция</a> была очень <a href="https://github.com/milvus-io/milvus/issues/25639">востребована</a>, мы создали ее потому, что индустрия переходит к мультимодальным моделям с выходом GPT-4 и Claude 3. Реранжирование - это широко используемая техника для дальнейшего улучшения производительности запросов в поиске. Мы стремились упростить разработчикам создание и оптимизацию своих реранкеров в рамках экосистемы Milvus.</p>
-<h2 id="Grouping-Search-Support-for-Enhanced-Compute-Efficiency" class="common-anchor-header">Поддержка группирующего поиска для повышения эффективности вычислений<button data-href="#Grouping-Search-Support-for-Enhanced-Compute-Efficiency" class="anchor-icon" translate="no">
+<p>Besides being a highly <a href="https://github.com/milvus-io/milvus/issues/25639">requested feature</a>, we built this capability because the industry is moving towards multimodal models with the release of GPT-4 and Claude 3. Reranking is a commonly used technique to further improve query performance in search. We aimed to make it easy for developers to build and optimize their rerankers within the Milvus ecosystem.</p>
+<h2 id="Grouping-Search-Support-for-Enhanced-Compute-Efficiency" class="common-anchor-header">Grouping Search Support for Enhanced Compute Efficiency<button data-href="#Grouping-Search-Support-for-Enhanced-Compute-Efficiency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,11 +62,11 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Группирующий поиск - еще одна часто <a href="https://github.com/milvus-io/milvus/issues/25343">запрашиваемая функция</a>, которую мы добавили в Milvus 2.4. Она интегрирует операцию group-by, предназначенную для полей типа BOOL, INT или VARCHAR, заполняя критически важный пробел в эффективности выполнения крупных запросов на группировку.</p>
-<p>Традиционно разработчики полагались на обширный поиск по Top-K с последующей ручной постобработкой для выделения результатов, относящихся к конкретной группе, что требовало больших вычислительных затрат и большого объема кода. Grouping Search совершенствует этот процесс, эффективно связывая результаты запросов с совокупными идентификаторами групп, такими как названия документов или видео, что упрощает работу с сегментированными сущностями в больших наборах данных.</p>
-<p>Milvus отличает реализацию Grouping Search на основе итераторов, что заметно повышает эффективность вычислений по сравнению с аналогичными технологиями. Такой выбор обеспечивает превосходную масштабируемость производительности, особенно в производственных средах, где оптимизация вычислительных ресурсов имеет первостепенное значение. Благодаря сокращению времени обхода данных и вычислительных затрат Milvus поддерживает более эффективную обработку запросов, значительно сокращая время отклика и эксплуатационные расходы по сравнению с другими векторными базами данных.</p>
-<p>Grouping Search расширяет возможности Milvus по управлению сложными запросами большого объема и соответствует практике высокопроизводительных вычислений для надежных решений по управлению данными.</p>
-<h2 id="Beta-Support-for-Sparse-Vector-Embeddings" class="common-anchor-header">Бета-версия поддержки разреженных векторных вкраплений<button data-href="#Beta-Support-for-Sparse-Vector-Embeddings" class="anchor-icon" translate="no">
+    </button></h2><p>Grouping Search is another often <a href="https://github.com/milvus-io/milvus/issues/25343">requested feature</a> we added to Milvus 2.4. It integrates a group-by operation designed for fields of types BOOL, INT, or VARCHAR, filling a crucial efficiency gap in executing large-scale grouping queries.</p>
+<p>Traditionally, developers relied on extensive Top-K searches followed by manual post-processing to distill group-specific results, a compute-intensive and code-heavy method. Grouping Search refines this process by efficiently linking query outcomes to aggregate group identifiers like document or video names, streamlining the handling of segmented entities within larger datasets.</p>
+<p>Milvus distinguishes its Grouping Search with an iterator-based implementation, offering a marked improvement in computational efficiency over similar technologies. This choice ensures superior performance scalability, particularly in production environments where compute resource optimization is paramount. By reducing data traversal and computation overhead, Milvus supports more efficient query processing, significantly reducing response times and operational costs compared to other vector databases.</p>
+<p>Grouping Search bolsters Milvus’s capability to manage high-volume, complex queries and aligns with high-performance computing practices for robust data management solutions.</p>
+<h2 id="Beta-Support-for-Sparse-Vector-Embeddings" class="common-anchor-header">Beta Support for Sparse Vector Embeddings<button data-href="#Beta-Support-for-Sparse-Vector-Embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -79,11 +81,11 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings">Разреженные вкрапления</a> представляют собой смену парадигмы по сравнению с традиционными подходами, использующими плотные векторы, и учитывают нюансы семантического сходства, а не просто частоту ключевых слов. Это различие обеспечивает более тонкие возможности поиска, тесно увязывая их с семантическим содержанием запроса и документов. Модели с разреженными векторами, особенно полезные в информационном поиске и обработке естественного языка, предлагают мощные возможности поиска за пределами области и интерпретируемость по сравнению с их плотными аналогами.</p>
-<p>В Milvus 2.4 мы расширили гибридный поиск, включив в него разреженные вкрапления, генерируемые продвинутыми нейронными моделями, такими как SPLADEv2, или статистическими моделями, такими как BM25. В Milvus разреженные векторы рассматриваются наравне с плотными векторами, что позволяет создавать коллекции с разреженными векторными полями, вставлять данные, создавать индексы и выполнять поиск по сходству. Примечательно, что разреженные вкрапления в Milvus поддерживают метрику расстояния <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search#Inner-Product">Inner Product</a> (IP), что является преимуществом, учитывая их высокоразмерную природу, делающую другие метрики менее эффективными. Эта функциональность также поддерживает типы данных с размерностью в виде беззнакового 32-битного целого числа и 32-битного плавающего числа для значения, что облегчает широкий спектр приложений, от тонкого текстового поиска до сложных <a href="https://zilliz.com/learn/information-retrieval-metrics">информационно-поисковых</a> систем.</p>
-<p>Благодаря этой новой функции Milvus позволяет использовать гибридные методики поиска, сочетающие в себе методы поиска по ключевым словам и встраивания, обеспечивая плавный переход для пользователей, переходящих от поисковых систем, ориентированных на ключевые слова, и ищущих комплексное решение, не требующее больших затрат на обслуживание.</p>
-<p>Мы обозначили эту функцию как "Beta", чтобы продолжить тестирование ее производительности и собрать отзывы сообщества. Общедоступность (GA) поддержки разреженных векторов ожидается с выходом Milvus 3.0.</p>
-<h2 id="CAGRA-Index-Support-for-Advanced-GPU-Accelerated-Graph-Indexing" class="common-anchor-header">Поддержка индекса CAGRA для расширенного индексирования графиков с GPU-ускорением<button data-href="#CAGRA-Index-Support-for-Advanced-GPU-Accelerated-Graph-Indexing" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings">Sparse embeddings</a> represent a paradigm shift from traditional dense vector approaches, catering to the nuances of semantic similarity rather than mere keyword frequency. This distinction allows for a more nuanced search capability, aligning closely with the semantic content of the query and the documents. Sparse vector models, particularly useful in information retrieval and natural language processing, offer powerful out-of-domain search capabilities and interpretability compared to their dense counterparts.</p>
+<p>In Milvus 2.4, we have expanded the Hybrid Search to include sparse embeddings generated by advanced neural models like SPLADEv2 or statistical models such as BM25. In Milvus, sparse vectors are treated on par with dense vectors, enabling the creation of collections with sparse vector fields, data insertion, index building, and performing similarity searches. Notably, sparse embeddings in Milvus support the <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search#Inner-Product">Inner Product</a> (IP) distance metric, which is advantageous given their high-dimensional nature, making other metrics less effective. This functionality also supports data types with a dimension as an unsigned 32-bit integer and a 32-bit float for the value, thus facilitating a broad spectrum of applications, from nuanced text searches to elaborate <a href="https://zilliz.com/learn/information-retrieval-metrics">information retrieval</a> systems.</p>
+<p>With this new feature, Milvus allows for hybrid search methodologies that meld keyword and embedding-based techniques, offering a seamless transition for users moving from keyword-centric search frameworks seeking a comprehensive, low-maintenance solution.</p>
+<p>We are labeling this feature as “Beta” to continue our performance testing of the feature and gather feedback from the community. The general availability (GA) of sparse vector support is anticipated with the release of Milvus 3.0.</p>
+<h2 id="CAGRA-Index-Support-for-Advanced-GPU-Accelerated-Graph-Indexing" class="common-anchor-header">CAGRA Index Support for Advanced GPU-Accelerated Graph Indexing<button data-href="#CAGRA-Index-Support-for-Advanced-GPU-Accelerated-Graph-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,13 +100,15 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Разработанная NVIDIA, <a href="https://arxiv.org/abs/2308.15136">CAGRA</a> (Cuda Anns GRAph-based) - это технология индексации графов на базе GPU, которая значительно превосходит традиционные методы на базе CPU, такие как индекс HNSW, по эффективности и производительности, особенно в средах с высокой пропускной способностью.</p>
-<p>С появлением индекса CAGRA, Milvus 2.4 обеспечивает расширенные возможности индексирования графов с GPU-ускорением. Это усовершенствование идеально подходит для создания приложений поиска по сходству, требующих минимальной задержки. Кроме того, в Milvus 2.4 интегрирован перебор с индексом CAGRA для достижения максимального коэффициента отзыва в приложениях. Для получения подробной информации ознакомьтесь с <a href="https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA">вводным блогом по CAGRA</a>.</p>
+    </button></h2><p>Developed by NVIDIA, <a href="https://arxiv.org/abs/2308.15136">CAGRA</a> (Cuda Anns GRAph-based) is a GPU-based graph indexing technology that significantly surpasses traditional CPU-based methods like the HNSW index in efficiency and performance, especially in high-throughput environments.</p>
+<p>With the introduction of the CAGRA Index, Milvus 2.4 provides enhanced GPU-accelerated graph indexing capability. This enhancement is ideal for building similarity search applications requiring minimal latency. Additionally, Milvus 2.4 integrates a brute-force search with the CAGRA index to achieve maximum recall rates in applications. For detailed insights, explore the <a href="https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA">introduction blog on CAGRA</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_raft_cagra_vs_milvus_hnsw_ffe0415ff5.png" alt="Milvus Raft CAGRA vs. Milvus HNSW" class="doc-image" id="milvus-raft-cagra-vs.-milvus-hnsw" />
-   </span> <span class="img-wrapper"> <span>Milvus Raft CAGRA против Milvus HNSW</span> </span></p>
-<h2 id="Additional-Enhancements-and-Features" class="common-anchor-header">Дополнительные усовершенствования и функции<button data-href="#Additional-Enhancements-and-Features" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_raft_cagra_vs_milvus_hnsw_ffe0415ff5.png" alt="Milvus Raft CAGRA vs. Milvus HNSW" class="doc-image" id="milvus-raft-cagra-vs.-milvus-hnsw" />
+    <span>Milvus Raft CAGRA vs. Milvus HNSW</span>
+  </span>
+</p>
+<h2 id="Additional-Enhancements-and-Features" class="common-anchor-header">Additional Enhancements and Features<button data-href="#Additional-Enhancements-and-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -119,9 +123,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.4 также включает другие ключевые усовершенствования, такие как поддержка регулярных выражений для улучшенного сопоставления подстрок при <a href="https://zilliz.com/blog/metadata-filtering-with-zilliz-cloud-pipelines">фильтрации метаданных</a>, новый скалярный инвертированный индекс для эффективной фильтрации скалярных типов данных, а также инструмент Change Data Capture для мониторинга и репликации изменений в коллекциях Milvus. Эти обновления в совокупности повышают производительность и универсальность Milvus, делая его комплексным решением для сложных операций с данными.</p>
-<p>Более подробную информацию можно найти в <a href="https://milvus.io/docs/release_notes.md">документации Milvus 2.4</a>.</p>
-<h2 id="Stay-Connected" class="common-anchor-header">Оставайтесь на связи!<button data-href="#Stay-Connected" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.4 also includes other key enhancements, such as Regular Expression support for enhanced substring matching in <a href="https://zilliz.com/blog/metadata-filtering-with-zilliz-cloud-pipelines">metadata filtering</a>, a new scalar inverted index for efficient scalar data type filtering, and a Change Data Capture tool for monitoring and replicating changes in Milvus collections. These updates collectively enhance Milvus’s performance and versatility, making it a comprehensive solution for complex data operations.</p>
+<p>For more details, see <a href="https://milvus.io/docs/release_notes.md">Milvus 2.4 documentation</a>.</p>
+<h2 id="Stay-Connected" class="common-anchor-header">Stay Connected!<button data-href="#Stay-Connected" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -136,4 +140,4 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Хотите узнать больше о Milvus 2.4? <a href="https://zilliz.com/event/unlocking-advanced-search-capabilities-milvus">Присоединяйтесь к нашему предстоящему вебинару</a> с Джеймсом Луаном, вице-президентом Zilliz по инженерным вопросам, для подробного обсуждения возможностей этой последней версии. Если у вас есть вопросы или отзывы, присоединяйтесь к нашему <a href="https://discord.com/invite/8uyFbECzPX">каналу Discord</a>, чтобы пообщаться с нашими инженерами и членами сообщества. Не забывайте следить за нами в <a href="https://twitter.com/milvusio">Twitter</a> или <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a>, чтобы получать последние новости и обновления о Milvus.</p>
+    </button></h2><p>Excited to learn more about Milvus 2.4? <a href="https://zilliz.com/event/unlocking-advanced-search-capabilities-milvus">Join our upcoming webinar</a> with James Luan, Zilliz’s VP of Engineering, for an in-depth discussion on the capabilities of this latest release. If you have questions or feedback, join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> to engage with our engineers and community members. Don’t forget to follow us on <a href="https://twitter.com/milvusio">Twitter</a> or <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a> for the latest news and updates about Milvus.</p>

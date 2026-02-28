@@ -1,9 +1,9 @@
 ---
 id: >-
   unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
-title: >-
-  Sbloccare il vero recupero a livello di entità: Nuove funzionalità
-  Array-of-Structs e MAX_SIM in Milvus
+title: >
+  Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM
+  Capabilities in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
 cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
@@ -15,24 +15,24 @@ meta_keywords: 'Milvus, Array of Structs, MAX_SIM, vector database, multi-vector
 meta_title: |
   Array of Structs in Milvus: Entity-Level Multi-Vector Retrieval
 desc: >-
-  Scoprite come Array of Structs e MAX_SIM in Milvus consentono una vera ricerca
-  a livello di entità per i dati multivettoriali, eliminando la deduplicazione e
-  migliorando la precisione del recupero.
+  Learn how Array of Structs and MAX_SIM in Milvus enable true entity-level
+  search for multi-vector data, eliminating deduping and improving retrieval
+  accuracy.
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>Se avete costruito applicazioni di intelligenza artificiale su database vettoriali, probabilmente avete riscontrato lo stesso problema: il database recupera embedding di singoli pezzi, ma la vostra applicazione si interessa alle <strong><em>entità</em>.</strong> Questo disallineamento rende complesso l'intero flusso di lavoro di recupero.</p>
-<p>È probabile che questa situazione si ripeta più volte:</p>
+<p>If you’ve built AI applications on top of vector databases, you’ve probably hit the same pain point: the database retrieves embeddings of individual chunks, but your application cares about <strong><em>entities</em>.</strong> The mismatch makes the entire retrieval workflow complex.</p>
+<p>You’ve likely seen this play out again and again:</p>
 <ul>
-<li><p><strong>Basi di conoscenza RAG:</strong> Gli articoli sono raggruppati in embedding di paragrafi, quindi il motore di ricerca restituisce frammenti sparsi invece del documento completo.</p></li>
-<li><p><strong>Raccomandazioni di e-commerce:</strong> Un prodotto ha più incorporazioni di immagini e il sistema restituisce cinque angolazioni dello stesso articolo anziché cinque prodotti unici.</p></li>
-<li><p><strong>Piattaforme video:</strong> I video sono suddivisi in embedding di clip, ma i risultati della ricerca mostrano fette dello stesso video anziché un'unica voce consolidata.</p></li>
-<li><p><strong>Recupero in stile ColBERT / ColPali:</strong> I documenti si espandono in centinaia di incorporazioni a livello di token o di patch, e i risultati vengono restituiti come piccoli pezzi che devono ancora essere uniti.</p></li>
+<li><p><strong>RAG knowledge bases:</strong> Articles are chunked into paragraph embeddings, so the search engine returns scattered fragments instead of the complete document.</p></li>
+<li><p><strong>E-commerce recommendation:</strong> A product has multiple image embeddings, and your system returns five angles of the same item rather than five unique products.</p></li>
+<li><p><strong>Video platforms:</strong> Videos are split into clip embeddings, but search results surface slices of the same video rather than a single consolidated entry.</p></li>
+<li><p><strong>ColBERT / ColPali–style retrieval:</strong> Documents expand into hundreds of token or patch-level embeddings, and your results come back as tiny pieces that still require merging.</p></li>
 </ul>
-<p>Tutti questi problemi derivano dalla <em>stessa lacuna architettonica</em>: la maggior parte dei database vettoriali tratta ogni incorporazione come una riga isolata, mentre le applicazioni reali operano su entità di livello superiore: documenti, prodotti, video, oggetti, scene. Di conseguenza, i team di ingegneri sono costretti a ricostruire le entità manualmente, utilizzando logiche di deduplicazione, raggruppamento, separazione e riclassificazione. Funziona, ma è fragile, lento e gonfia il livello dell'applicazione con una logica che non avrebbe mai dovuto essere presente.</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> colma questa lacuna con una nuova funzionalità: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> con il tipo metrico <strong>MAX_SIM</strong>. Insieme, consentono di memorizzare tutte le incorporazioni di una singola entità in un unico record e permettono a Milvus di valutare e restituire l'entità in modo olistico. Niente più insiemi di risultati duplicati. Niente più complesse post-elaborazioni come reranking e merging.</p>
-<p>In questo articolo spiegheremo come funzionano Array of Structs e MAX_SIM e li dimostreremo attraverso due esempi reali: Il recupero di documenti di Wikipedia e la ricerca di documenti basata su immagini di ColPali.</p>
-<h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">Che cos'è un array di strutture?<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
+<p>All of these issues stem from the <em>same architectural gap</em>: most vector databases treat each embedding as an isolated row, while real applications operate on higher-level entities — documents, products, videos, items, scenes. As a result, engineering teams are forced to reconstruct entities manually using deduplication, grouping, bucketing, and reranking logic. It works, but it’s fragile, slow, and bloats your application layer with logic that should never have lived there in the first place.</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> closes this gap with a new feature: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> with the <strong>MAX_SIM</strong> metric type. Together, they allow all embeddings for a single entity to be stored in a single record and enable Milvus to score and return the entity holistically. No more duplicate-filled result sets. No more complex post-processing like reranking and merging</p>
+<p>In this article, we’ll walk through how Array of Structs and MAX_SIM work—and demonstrate them through two real examples: Wikipedia document retrieval and ColPali image-based document search.</p>
+<h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">What is an Array of Structs?<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,8 +47,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In Milvus, un campo <strong>Array of Structs</strong> consente a un singolo record di contenere un <em>elenco ordinato</em> di elementi Struct, ognuno dei quali segue lo stesso schema predefinito. Una struttura può contenere vettori multipli, campi scalari, stringhe o qualsiasi altro tipo supportato. In altre parole, consente di raggruppare tutti i pezzi che appartengono a un'entità - embedding di paragrafi, viste di immagini, vettori di token, metadati - direttamente in una riga.</p>
-<p>Ecco un esempio di entità di una collezione che contiene un campo Array of Structs.</p>
+    </button></h2><p>In Milvus, an <strong>Array of Structs</strong> field allows a single record to contain an <em>ordered list</em> of Struct elements, each following the same predefined schema. A Struct can hold multiple vectors as well as scalar fields, strings, or any other supported types. In other words, it lets you bundle all the pieces that belong to one entity—paragraph embeddings, image views, token vectors, metadata—directly inside one row.</p>
+<p>Here’s an example of an entity from a collection that contains an Array of Structs field.</p>
 <pre><code translate="no">{
     <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">0</span>,
     <span class="hljs-string">&#x27;title&#x27;</span>: <span class="hljs-string">&#x27;Walden&#x27;</span>,
@@ -71,9 +71,9 @@ origin: >-
     <span class="hljs-comment">// hightlight-end</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>Nell'esempio precedente, il campo <code translate="no">chunks</code> è un campo Array of Structs e ogni elemento Struct contiene i propri campi, ovvero <code translate="no">text</code>, <code translate="no">text_vector</code> e <code translate="no">chapter</code>.</p>
-<p>Questo approccio risolve un problema di modellazione di lunga data nei database vettoriali. Tradizionalmente, ogni incorporazione o attributo deve diventare una riga a sé stante, il che costringe le <strong>entità multivettore (documenti, prodotti, video)</strong> a essere suddivise in decine, centinaia o addirittura migliaia di record. Con Array of Structs, Milvus consente di memorizzare l'intera entità multivettore in un unico campo, il che lo rende naturale per gli elenchi di paragrafi, le incorporazioni di token, le sequenze di clip, le immagini multi-view o qualsiasi scenario in cui un elemento logico è composto da molti vettori.</p>
-<h2 id="How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="common-anchor-header">Come funziona un array di strutture con MAX_SIM?<button data-href="#How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="anchor-icon" translate="no">
+<p>In the example above, the <code translate="no">chunks</code> field is an Array of Structs field, and each Struct element contains its own fields, namely <code translate="no">text</code>, <code translate="no">text_vector</code>, and <code translate="no">chapter</code>.</p>
+<p>This approach solves a long-standing modeling issue in vector databases. Traditionally, every embedding or attribute has to become its own row, which forces <strong>multi-vector entities (documents, products, videos)</strong> to be split into dozens, hundreds, or even thousands of records. With Array of Structs, Milvus lets you store the entire multi-vector entity in a single field, making it a natural fit for paragraph lists, token embeddings, clip sequences, multi-view images, or any scenario where one logical item is composed of many vectors.</p>
+<h2 id="How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="common-anchor-header">How Does an Array of Structs Work with MAX_SIM?<button data-href="#How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,67 +88,67 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sopra questa nuova struttura ad array di strutture si trova <strong>MAX_SIM</strong>, una nuova strategia di punteggio che rende il reperimento semantico consapevole delle entità. Quando arriva una query, Milvus la confronta con <em>ogni</em> vettore all'interno di ogni array di strutture e prende la <strong>massima somiglianza</strong> come punteggio finale dell'entità. L'entità viene quindi classificata e restituita in base a questo singolo punteggio. In questo modo si evita il classico problema del database vettoriale, che consiste nel recuperare frammenti sparsi, e si sposta l'onere del raggruppamento, della deduplicazione e della riclassificazione nel livello dell'applicazione. Con MAX_SIM, il recupero a livello di entità diventa integrato, coerente ed efficiente.</p>
-<p>Per capire come funziona MAX_SIM nella pratica, vediamo un esempio concreto.</p>
-<p><strong>Nota:</strong> tutti i vettori di questo esempio sono generati dallo stesso modello di incorporazione e la somiglianza è misurata con la somiglianza del coseno nell'intervallo [0,1].</p>
-<p>Supponiamo che un utente cerchi <strong>"Corso di apprendimento automatico per principianti".</strong></p>
-<p>La query è stata tokenizzata in tre <strong>token</strong>:</p>
+    </button></h2><p>Layered on top of this new array of structs structure is <strong>MAX_SIM</strong>, a new scoring strategy that makes semantic retrieval entity-aware. When a query comes in, Milvus compares it against <em>every</em> vector inside each Array of Structs and takes the <strong>maximum similarity</strong> as the entity’s final score. The entity is then ranked—and returned—based on that single score. This avoids the classic vector-database problem of retrieving scattered fragments and pushing the burden of grouping, deduping, and reranking into the application layer. With MAX_SIM, entity-level retrieval becomes built-in, consistent, and efficient.</p>
+<p>To understand how MAX_SIM works in practice, let’s walk through a concrete example.</p>
+<p><strong>Note:</strong> All vectors in this example are generated by the same embedding model, and similarity is measured with cosine similarity in the [0,1] range.</p>
+<p>Suppose a user searches for <strong>“Machine Learning Beginner Course.”</strong></p>
+<p>The query is tokenized into three <strong>tokens</strong>:</p>
 <ul>
-<li><p><em>apprendimento automatico</em></p></li>
-<li><p><em>principiante</em></p></li>
-<li><p><em>corso</em></p></li>
+<li><p><em>Machine learning</em></p></li>
+<li><p><em>beginner</em></p></li>
+<li><p><em>course</em></p></li>
 </ul>
-<p>Ciascuno di questi token viene poi <strong>convertito in un vettore di incorporamento</strong> dallo stesso modello di incorporamento utilizzato per i documenti.</p>
-<p>Immaginiamo che il database dei vettori contenga due documenti:</p>
+<p>Each of these tokens is then <strong>converted into an embedding vector</strong> by the same embedding model used for the documents.</p>
+<p>Now, imagine the vector database contains two documents:</p>
 <ul>
-<li><p><strong>doc_1:</strong> <em>Guida introduttiva alle reti neurali profonde con Python</em></p></li>
-<li><p><strong>doc_2:</strong> <em>Una guida avanzata alla lettura dei documenti di un LLM.</em></p></li>
+<li><p><strong>doc_1:</strong> <em>An Introduction Guide to Deep Neural Networks with Python</em></p></li>
+<li><p><strong>doc_2:</strong> <em>An Advanced Guide to LLM Paper Reading</em></p></li>
 </ul>
-<p>Entrambi i documenti sono stati incorporati in vettori e memorizzati in un array di strutture.</p>
-<h3 id="Step-1-Compute-MAXSIM-for-doc1" class="common-anchor-header"><strong>Passo 1: Calcolo di MAX_SIM per doc_1</strong></h3><p>Per ogni vettore di query, Milvus calcola la sua somiglianza di coseno rispetto a ogni vettore di doc_1:</p>
+<p>Both documents have been embedded into vectors and stored inside an Array of Structs.</p>
+<h3 id="Step-1-Compute-MAXSIM-for-doc1" class="common-anchor-header"><strong>Step 1: Compute MAX_SIM for doc_1</strong></h3><p>For each query vector, Milvus computes its cosine similarity against every vector in doc_1:</p>
 <table>
 <thead>
-<tr><th></th><th>Introduzione</th><th>guida</th><th>reti neurali profonde</th><th>python</th></tr>
+<tr><th></th><th>Introduction</th><th>guide</th><th>deep neural networks</th><th>python</th></tr>
 </thead>
 <tbody>
-<tr><td>apprendimento automatico</td><td>0.0</td><td>0.0</td><td><strong>0.9</strong></td><td>0.3</td></tr>
-<tr><td>principiante</td><td><strong>0.8</strong></td><td>0.1</td><td>0.0</td><td>0.3</td></tr>
-<tr><td>corso</td><td>0.3</td><td><strong>0.7</strong></td><td>0.1</td><td>0.1</td></tr>
+<tr><td>machine learning</td><td>0.0</td><td>0.0</td><td><strong>0.9</strong></td><td>0.3</td></tr>
+<tr><td>beginner</td><td><strong>0.8</strong></td><td>0.1</td><td>0.0</td><td>0.3</td></tr>
+<tr><td>course</td><td>0.3</td><td><strong>0.7</strong></td><td>0.1</td><td>0.1</td></tr>
 </tbody>
 </table>
-<p>Per ogni vettore di query, MAX_SIM seleziona la somiglianza <strong>più alta</strong> dalla sua riga:</p>
+<p>For each query vector, MAX_SIM selects the <strong>highest</strong> similarity from its row:</p>
 <ul>
-<li><p>apprendimento automatico → reti neurali profonde (0,9)</p></li>
-<li><p>principiante → introduzione (0,8)</p></li>
-<li><p>corso → guida (0,7)</p></li>
+<li><p>machine learning → deep neural networks (0.9)</p></li>
+<li><p>beginner → introduction (0.8)</p></li>
+<li><p>course → guide (0.7)</p></li>
 </ul>
-<p>Sommando le migliori corrispondenze si ottiene per doc_1 un <strong>punteggio MAX_SIM di 2,4</strong>.</p>
-<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Passo 2: Calcolo di MAX_SIM per il documento_2</h3><p>Ora ripetiamo il processo per il documento_2:</p>
+<p>Summing the best matches gives doc_1 a <strong>MAX_SIM score of 2.4</strong>.</p>
+<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Step 2: Compute MAX_SIM for doc_2</h3><p>Now we repeat the process for doc_2:</p>
 <table>
 <thead>
-<tr><th></th><th>avanzato</th><th>guida</th><th>LLM</th><th>carta</th><th>lettura</th></tr>
+<tr><th></th><th>advanced</th><th>guide</th><th>LLM</th><th>paper</th><th>reading</th></tr>
 </thead>
 <tbody>
-<tr><td>apprendimento automatico</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
-<tr><td>principiante</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
-<tr><td>corso</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
+<tr><td>machine learning</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
+<tr><td>beginner</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
+<tr><td>course</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
 </tbody>
 </table>
-<p>Le migliori corrispondenze per il doc_2 sono:</p>
+<p>The best matches for doc_2 are:</p>
 <ul>
-<li><p>"machine learning" → "LLM" (0,9)</p></li>
-<li><p>"principiante" → "guida" (0,6)</p></li>
-<li><p>"corso" → "guida" (0,8)</p></li>
+<li><p>“machine learning” → “LLM” (0.9)</p></li>
+<li><p>“beginner” → “guide” (0.6)</p></li>
+<li><p>“course” → “guide” (0.8)</p></li>
 </ul>
-<p>La somma dei punteggi dà al doc_2 un <strong>punteggio MAX_SIM di 2,3</strong>.</p>
-<h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">Passo 3: confrontare i punteggi</h3><p>Poiché <strong>2,4 &gt; 2,3</strong>, il <strong>doc_1 si classifica più in alto del doc_2</strong>, il che ha un senso intuitivo, poiché il doc_1 è più vicino a una guida introduttiva all'apprendimento automatico.</p>
-<p>Da questo esempio, possiamo evidenziare tre caratteristiche fondamentali di MAX_SIM:</p>
+<p>Summing them gives doc_2 a <strong>MAX_SIM score of 2.3</strong>.</p>
+<h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">Step 3: Compare the Scores</h3><p>Because <strong>2.4 &gt; 2.3</strong>, <strong>doc_1 ranks higher than doc_2</strong>, which makes intuitive sense, since doc_1 is closer to an introductory machine learning guide.</p>
+<p>From this example, we can highlight three core characteristics of MAX_SIM:</p>
 <ul>
-<li><p><strong>Prima di tutto semantica, non basata su parole chiave:</strong> MAX_SIM confronta gli embeddings, non i letterali di testo. Anche se <em>"machine learning"</em> e <em>"deep neural networks"</em> hanno zero parole in comune, la loro somiglianza semantica è pari a 0,9. Questo rende MAX_SIM robusto rispetto ai sinonimi. Questo rende MAX_SIM robusto ai sinonimi, alle parafrasi, alle sovrapposizioni concettuali e ai moderni carichi di lavoro ricchi di embedding.</p></li>
-<li><p><strong>Insensibile alla lunghezza e all'ordine:</strong> MAX_SIM non richiede che la query e il documento abbiano lo stesso numero di vettori (ad esempio, il documento_1 ha 4 vettori mentre il documento_2 ne ha 5, ed entrambi funzionano bene). Inoltre, non tiene conto dell'ordine dei vettori: "principiante" che compare prima nella query e "introduzione" che compare dopo nel documento non hanno alcun impatto sul punteggio.</p></li>
-<li><p><strong>Ogni vettore della query è importante:</strong> MAX_SIM prende la migliore corrispondenza per ogni vettore della query e somma i punteggi migliori. In questo modo si evita che i vettori non abbinati influenzino il risultato e si garantisce che ogni token di query importante contribuisca al punteggio finale. Ad esempio, la corrispondenza di qualità inferiore per "principiante" in doc_2 riduce direttamente il punteggio complessivo.</p></li>
+<li><p><strong>Semantic first, not keyword-based:</strong> MAX_SIM compares embeddings, not text literals. Even though <em>“machine learning”</em> and <em>“deep neural networks”</em> share zero overlapping words, their semantic similarity is 0.9. This makes MAX_SIM robust to synonyms, paraphrases, conceptual overlap, and modern embedding-rich workloads.</p></li>
+<li><p><strong>Insensitive to length and order:</strong> MAX_SIM does not require the query and document to have the same number of vectors (e.g., doc_1 has 4 vectors while doc_2 has 5, and both work fine). It also ignores vector order—“beginner” appearing earlier in the query and “introduction” appearing later in the document has no impact on the score.</p></li>
+<li><p><strong>Every query vector matters:</strong> MAX_SIM takes the best match for each query vector and sums those best scores. This prevents unmatched vectors from skewing the result and ensures that every important query token contributes to the final score. For example, the lower-quality match for “beginner” in doc_2 directly reduces its overall score.</p></li>
 </ul>
-<h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">Perché MAX_SIM + Array di strutture sono importanti nel database vettoriale<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">
+<h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">Why MAX_SIM + Array of Structs Matter in Vector Database<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -163,13 +163,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> è un database vettoriale open-source ad alte prestazioni e ora supporta pienamente MAX_SIM insieme ad Array of Structs, consentendo il reperimento di entità multivettoriali a livello vettoriale:</p>
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source, high-performance vector database and it now fully supports MAX_SIM together with Array of Structs, enabling vector-native, entity-level multi-vector retrieval:</p>
 <ul>
-<li><p><strong>Memorizzare entità multivettore in modo nativo:</strong> Array of Structs consente di memorizzare gruppi di vettori correlati in un unico campo senza dividerli in righe separate o tabelle ausiliarie.</p></li>
-<li><p><strong>Calcolo efficiente del best-match:</strong> In combinazione con indici vettoriali come IVF e HNSW, MAX_SIM può calcolare le migliori corrispondenze senza scansionare ogni vettore, mantenendo alte le prestazioni anche con documenti di grandi dimensioni.</p></li>
-<li><p><strong>Costruito appositamente per carichi di lavoro ad alto contenuto semantico:</strong> Questo approccio eccelle nel reperimento di testi lunghi, nella corrispondenza semantica multi-sfaccettata, nell'allineamento documento-sommario, nelle query con più parole chiave e in altri scenari di intelligenza artificiale che richiedono un ragionamento semantico flessibile e a grana fine.</p></li>
+<li><p><strong>Store multi-vector entities natively:</strong> Array of Structs allows you to store groups of related vectors in a single field without splitting them into separate rows or auxiliary tables.</p></li>
+<li><p><strong>Efficient best-match computation:</strong> Combined with vector indexes such as IVF and HNSW, MAX_SIM can compute the best matches without scanning every vector, keeping performance high even with large documents.</p></li>
+<li><p><strong>Purpose-built for semantic-heavy workloads:</strong> This approach excels in long-text retrieval, multi-facet semantic matching, document–summary alignment, multi-keyword queries, and other AI scenarios that require flexible, fine-grained semantic reasoning.</p></li>
 </ul>
-<h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">Quando usare un array di strutture<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
+<h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">When to Use an Array of Structs<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -184,24 +184,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Il valore di <strong>Array of Structs</strong> diventa chiaro quando si guarda a ciò che consente. Nel suo nucleo, questa funzione fornisce tre funzionalità fondamentali:</p>
+    </button></h2><p>The value of <strong>Array of Structs</strong> becomes clear when you look at what it enables. At its core, this feature provides three foundational capabilities:</p>
 <ul>
-<li><p><strong>Riunisce dati eterogenei - vettori</strong>, scalari, stringhe, metadati - in un unico oggetto strutturato.</p></li>
-<li><p><strong>Allinea l'archiviazione alle entità del mondo reale</strong>, in modo che ogni riga del database corrisponda perfettamente a un elemento reale, come un articolo, un prodotto o un video.</p></li>
-<li><p><strong>Se combinato con funzioni di aggregazione come MAX_SIM</strong>, consente di recuperare un vero e proprio multivettore a livello di entità direttamente dal database, eliminando la deduplicazione, il raggruppamento o il reranking nel livello applicativo.</p></li>
+<li><p><strong>It bundles heterogeneous data</strong>—vectors, scalars, strings, metadata—into a single structured object.</p></li>
+<li><p><strong>It aligns storage with real-world entities</strong>, so each database row maps cleanly to an actual item such as an article, a product, or a video.</p></li>
+<li><p><strong>When combined with aggregate functions like MAX_SIM</strong>, it enables true entity-level multi-vector retrieval directly from the database, eliminating deduplication, grouping, or reranking in the application layer.</p></li>
 </ul>
-<p>Grazie a queste proprietà, Array of Structs è una soluzione naturale ogni volta che una <em>singola entità logica è rappresentata da più vettori</em>. Esempi comuni sono gli articoli suddivisi in paragrafi, i documenti scomposti in token embeddings o i prodotti rappresentati da più immagini. Se i risultati di una ricerca soffrono di duplicazioni, frammenti sparsi o la stessa entità appare più volte tra i primi risultati, Array of Structs risolve questi problemi a livello di archiviazione e recupero, non attraverso patch a posteriori nel codice dell'applicazione.</p>
-<p>Questo pattern è particolarmente potente per i moderni sistemi di intelligenza artificiale che si basano sul <strong>recupero di più vettori</strong>. Ad esempio:</p>
+<p>Because of these properties, Array of Structs is a natural fit whenever a <em>single logical entity is represented by multiple vectors</em>. Common examples include articles split into paragraphs, documents decomposed into token embeddings, or products represented by multiple images. If your search results suffer from duplicate hits, scattered fragments, or the same entity appearing multiple times in the top results, Array of Structs solves these issues at the storage and retrieval layer—not through after-the-fact patching in application code.</p>
+<p>This pattern is especially powerful for modern AI systems that rely on <strong>multi-vector retrieval</strong>.
+For instance:</p>
 <ul>
-<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> rappresenta un singolo documento come 100-500 token embeddings per una corrispondenza semantica a grana fine in domini come il testo legale e la ricerca accademica.</p></li>
-<li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong> converte </a>ogni pagina PDF in 256-1024 patch di immagini per il recupero cross-modale di bilanci, contratti, fatture e altri documenti scansionati.</p></li>
+<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> represents a single document as 100–500 token embeddings for fine-grained semantic matching across domains such as legal text and academic research.</p></li>
+<li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong> </a>converts each PDF page into 256–1024 image patches for cross-modal retrieval across financial statements, contracts, invoices, and other scanned documents.</p></li>
 </ul>
-<p>Un array di strutture consente a Milvus di memorizzare tutti questi vettori sotto un'unica entità e di calcolare la somiglianza aggregata (ad esempio, MAX_SIM) in modo efficiente e nativo. Per rendere più chiaro questo concetto, ecco due esempi concreti.</p>
-<h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">Esempio 1: Ricerca di prodotti di e-commerce</h3><p>In precedenza, i prodotti con più immagini venivano memorizzati in uno schema piatto: un'immagine per riga. Un prodotto con immagini frontali, laterali e angolate produceva tre righe. I risultati della ricerca spesso restituivano più immagini dello stesso prodotto, richiedendo la deduplicazione e la riclassificazione manuale.</p>
-<p>Con un array di strutture, ogni prodotto diventa <strong>una riga</strong>. Tutte le incorporazioni delle immagini e i metadati (angolo, is_primary, ecc.) vivono all'interno di un campo <code translate="no">images</code> come array di strutture. Milvus capisce che appartengono allo stesso prodotto e restituisce il prodotto nel suo complesso, non le singole immagini.</p>
-<h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">Esempio 2: Base di conoscenza o ricerca su Wikipedia</h3><p>In precedenza, un singolo articolo di Wikipedia era suddiviso in <em>N</em> righe di paragrafi. I risultati della ricerca restituivano paragrafi sparsi, costringendo il sistema a raggrupparli e a indovinare a quale articolo appartenessero.</p>
-<p>Con un array di strutture, l'intero articolo diventa <strong>una riga</strong>. Tutti i paragrafi e i loro incorporamenti sono raggruppati in un campo paragrafo e il database restituisce l'articolo completo, non pezzi frammentati.</p>
-<h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">Esercitazioni pratiche: Recupero a livello di documento con l'array di strutture<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
+<p>An array of Structs lets Milvus store all these vectors under a single entity and compute aggregate similarity (e.g., MAX_SIM) efficiently and natively. To make this clearer, here are two concrete examples.</p>
+<h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">Example 1: E-commerce Product Search</h3><p>Previously, products with multiple images were stored in a flat schema—one image per row. A product with front, side, and angled shots produced three rows. Search results often returned multiple images of the same product, requiring manual deduplication and reranking.</p>
+<p>With an Array of Structs, each product becomes <strong>one row</strong>. All image embeddings and metadata (angle, is_primary, etc.) live inside an <code translate="no">images</code> field as an array of structs. Milvus understands they belong to the same product and returns the product as a whole—not its individual images.</p>
+<h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">Example 2: Knowledge Base or Wikipedia Search</h3><p>Previously, a single Wikipedia article was split into <em>N</em> paragraph rows. Search results returned scattered paragraphs, forcing the system to group them and guess which article they belonged to.</p>
+<p>With an Array of Structs, the entire article becomes <strong>one row</strong>. All paragraphs and their embeddings are grouped under a paragraphs field, and the database returns the full article, not fragmented pieces.</p>
+<h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">Hands-on Tutorials: Document-Level Retrieval with the Array of Structs<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,17 +217,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. Recupero dei documenti di Wikipedia</h3><p>In questa esercitazione vedremo come utilizzare un <strong>Array of Structs</strong> per convertire i dati a livello di paragrafo in record di documenti completi, consentendo a Milvus di eseguire un <strong>vero e proprio recupero a livello di documento</strong>, invece di restituire frammenti isolati.</p>
-<p>Molte pipeline di basi di conoscenza memorizzano gli articoli di Wikipedia come pezzi di paragrafo. Questo funziona bene per l'incorporazione e l'indicizzazione, ma non per il recupero: una query dell'utente restituisce tipicamente paragrafi sparsi, costringendo l'utente a raggruppare e ricostruire manualmente l'articolo. Con un array di strutture e MAX_SIM, possiamo riprogettare lo schema di memorizzazione in modo che <strong>ogni articolo diventi una riga</strong> e Milvus possa classificare e restituire l'intero documento in modo nativo.</p>
-<p>Nei prossimi passi mostreremo come:</p>
+    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. Wikipedia Document Retrieval</h3><p>In this tutorial, we’ll walk through how to use an <strong>Array of Structs</strong> to convert paragraph-level data into full document records—allowing Milvus to perform <strong>true document-level retrieval</strong> rather than returning isolated fragments.</p>
+<p>Many knowledge base pipelines store Wikipedia articles as paragraph chunks. This works well for embedding and indexing, but it breaks retrieval: a user query typically returns scattered paragraphs, forcing you to manually group and reconstruct the article. With an Array of Structs and MAX_SIM, we can redesign the storage schema so that <strong>each article becomes one row</strong>, and Milvus can rank and return the entire document natively.</p>
+<p>In the next steps, we’ll show how to:</p>
 <ol>
-<li><p>Caricare e preelaborare i dati dei paragrafi di Wikipedia</p></li>
-<li><p>raggruppare tutti i paragrafi appartenenti allo stesso articolo in un array di strutture</p></li>
-<li><p>Inserire questi documenti strutturati in Milvus</p></li>
-<li><p>Eseguire query MAX_SIM per recuperare gli articoli completi, in modo pulito, senza deduplicazione o reranking.</p></li>
+<li><p>Load and preprocess Wikipedia paragraph data</p></li>
+<li><p>Bundle all paragraphs belonging to the same article into an Array of Structs</p></li>
+<li><p>Insert these structured documents into Milvus</p></li>
+<li><p>Run MAX_SIM queries to retrieve full articles—cleanly, without deduping or reranking</p></li>
 </ol>
-<p>Alla fine di questo tutorial, avrete una pipeline funzionante in cui Milvus gestisce direttamente il recupero a livello di entità, esattamente nel modo in cui gli utenti si aspettano.</p>
-<p><strong>Modello dei dati:</strong></p>
+<p>By the end of this tutorial, you’ll have a working pipeline where Milvus handles entity-level retrieval directly, exactly the way users expect.</p>
+<p><strong>Data Model:</strong></p>
 <pre><code translate="no">{
     <span class="hljs-string">&quot;wiki_id&quot;</span>: <span class="hljs-built_in">int</span>,                  <span class="hljs-comment"># WIKI ID(primary key） </span>
     <span class="hljs-string">&quot;paragraphs&quot;</span>: ARRAY&lt;STRUCT&lt;      <span class="hljs-comment"># Array of paragraph structs</span>
@@ -235,8 +236,8 @@ origin: >-
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Passo 1: raggruppare e trasformare i dati</strong></p>
-<p>Per questa dimostrazione, utilizziamo il set di dati <a href="https://huggingface.co/datasets/Cohere/wikipedia-22-12-simple-embeddings">Simple Wikipedia Embeddings</a>.</p>
+<p><strong>Step 1: Group and Transform the Data</strong></p>
+<p>For this demo, we use the <a href="https://huggingface.co/datasets/Cohere/wikipedia-22-12-simple-embeddings">Simple Wikipedia Embeddings</a> dataset.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> pyarrow <span class="hljs-keyword">as</span> pa
 
@@ -253,7 +254,7 @@ wiki_data = []
                        <span class="hljs-keyword">for</span> _, row <span class="hljs-keyword">in</span> group.iterrows()]
     })
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 2: Creare la raccolta Milvus</strong></p>
+<p><strong>Step 2: Create the Milvus Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -271,7 +272,7 @@ schema.add_field(<span class="hljs-string">&quot;paragraphs&quot;</span>, DataTy
 
 client.create_collection(<span class="hljs-string">&quot;wiki_docs&quot;</span>, schema=schema)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 3: inserimento dei dati e costruzione dell'indice</strong></p>
+<p><strong>Step 3: Insert Data and Build Index</strong></p>
 <pre><code translate="no"><span class="hljs-meta"># Batch insert documents</span>
 client.insert(<span class="hljs-string">&quot;wiki_docs&quot;</span>, wiki_data)
 
@@ -286,7 +287,7 @@ index_params.add_index(
 client.create_index(<span class="hljs-string">&quot;wiki_docs&quot;</span>, index_params)
 client.load_collection(<span class="hljs-string">&quot;wiki_docs&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 4: Ricerca dei documenti</strong></p>
+<p><strong>Step 4: Search Documents</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Search query</span>
 <span class="hljs-keyword">import</span> cohere
 <span class="hljs-keyword">from</span> pymilvus.client.embedding_list <span class="hljs-keyword">import</span> EmbeddingList
@@ -317,51 +318,51 @@ results = client.search(
 <span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> results[<span class="hljs-number">0</span>]:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Article <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;entity&#x27;</span>][<span class="hljs-string">&#x27;wiki_id&#x27;</span>]}</span>: Score <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Confronto dei risultati: Recupero tradizionale vs. Array di strutture</strong></p>
-<p>L'impatto di Array of Structs diventa chiaro quando si guarda a ciò che il database effettivamente restituisce:</p>
+<p><strong>Comparing Outputs: Traditional Retrieval vs. Array of Structs</strong></p>
+<p>The impact of Array of Structs becomes clear when we look at what the database actually returns:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Dimensione</strong></th><th style="text-align:center"><strong>Approccio tradizionale</strong></th><th style="text-align:center"><strong>Array di strutture</strong></th></tr>
+<tr><th style="text-align:center"><strong>Dimension</strong></th><th style="text-align:center"><strong>Traditional Approach</strong></th><th style="text-align:center"><strong>Array of Structs</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>Output del database</strong></td><td style="text-align:center">Restituisce i <strong>primi 100 paragrafi</strong> (elevata ridondanza)</td><td style="text-align:center">Restituisce i <em>primi 10 documenti completi</em> - puliti e accurati</td></tr>
-<tr><td style="text-align:center"><strong>Logica applicativa</strong></td><td style="text-align:center">Richiede il <strong>raggruppamento, la deduplicazione e il reranking</strong> (complesso)</td><td style="text-align:center">Non è necessaria alcuna post-elaborazione - i risultati a livello di entità provengono direttamente da Milvus</td></tr>
+<tr><td style="text-align:center"><strong>Database Output</strong></td><td style="text-align:center">Returns <strong>Top 100 paragraphs</strong> (high redundancy)</td><td style="text-align:center">Returns the <em>top 10 full documents</em> — clean and accurate</td></tr>
+<tr><td style="text-align:center"><strong>Application Logic</strong></td><td style="text-align:center">Requires <strong>grouping, deduplication, and reranking</strong> (complex)</td><td style="text-align:center">No post-processing needed — entity-level results come directly from Milvus</td></tr>
 </tbody>
 </table>
-<p>Nell'esempio di Wikipedia, abbiamo dimostrato solo il caso più semplice: la combinazione di vettori di paragrafi in una rappresentazione unificata del documento. Ma il vero punto di forza di Array of Structs è che è generalizzabile a <strong>qualsiasi</strong> modello di dati multivettoriale, sia alle classiche pipeline di recupero che alle moderne architetture di intelligenza artificiale.</p>
-<p><strong>Scenari di recupero multivettoriale tradizionali</strong></p>
-<p>Molti sistemi di ricerca e raccomandazione consolidati operano naturalmente su entità con più vettori associati. Array of Structs si adatta perfettamente a questi casi d'uso:</p>
+<p>In the Wikipedia example, we demonstrated only the simplest case: combining paragraph vectors into a unified document representation. But the real strength of Array of Structs is that it generalizes to <strong>any</strong> multi-vector data model—both classic retrieval pipelines and modern AI architectures.</p>
+<p><strong>Traditional Multi-Vector Retrieval Scenarios</strong></p>
+<p>Many well-established search and recommendation systems naturally operate on entities with multiple associated vectors. Array of Structs maps to these use cases cleanly:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Scenario</strong></th><th style="text-align:center"><strong>Modello di dati</strong></th><th style="text-align:center"><strong>Vettori per entità</strong></th></tr>
+<tr><th style="text-align:center"><strong>Scenario</strong></th><th style="text-align:center"><strong>Data Model</strong></th><th style="text-align:center"><strong>Vectors per Entity</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">🛍️ <strong>Prodotti di e-commerce</strong></td><td style="text-align:center">Un prodotto → più immagini</td><td style="text-align:center">5-20</td></tr>
-<tr><td style="text-align:center">🎬 <strong>Ricerca video</strong></td><td style="text-align:center">Un video → più clip</td><td style="text-align:center">20-100</td></tr>
-<tr><td style="text-align:center">📖 <strong>Ricerca carta</strong></td><td style="text-align:center">Un documento → più sezioni</td><td style="text-align:center">5-15</td></tr>
+<tr><td style="text-align:center">🛍️ <strong>E-commerce products</strong></td><td style="text-align:center">One product → multiple images</td><td style="text-align:center">5–20</td></tr>
+<tr><td style="text-align:center">🎬 <strong>Video search</strong></td><td style="text-align:center">One video → multiple clips</td><td style="text-align:center">20–100</td></tr>
+<tr><td style="text-align:center">📖 <strong>Paper retrieval</strong></td><td style="text-align:center">One paper → multiple sections</td><td style="text-align:center">5–15</td></tr>
 </tbody>
 </table>
-<p><strong>Carichi di lavoro dei modelli di intelligenza artificiale (casi d'uso chiave multivettoriali)</strong></p>
-<p>L'array di strutture diventa ancora più critico nei moderni modelli di IA che producono intenzionalmente grandi insiemi di vettori per entità per un ragionamento semantico a grana fine.</p>
+<p><strong>AI Model Workloads (Key Multi-Vector Use Cases)</strong></p>
+<p>Array of Structs becomes even more critical in modern AI models that intentionally produce large sets of vectors per entity for fine-grained semantic reasoning.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Modello</strong></th><th style="text-align:center"><strong>Modello di dati</strong></th><th style="text-align:center"><strong>Vettori per entità</strong></th><th style="text-align:center"><strong>Applicazione</strong></th></tr>
+<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Data Model</strong></th><th style="text-align:center"><strong>Vectors per Entity</strong></th><th style="text-align:center"><strong>Application</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">Un documento → molte incorporazioni di token</td><td style="text-align:center">100-500</td><td style="text-align:center">Testo legale, documenti accademici, recupero di documenti a grana fine</td></tr>
-<tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">Una pagina PDF → molte incorporazioni di patch</td><td style="text-align:center">256-1024</td><td style="text-align:center">Rapporti finanziari, contratti, fatture, ricerca di documenti multimodale</td></tr>
+<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">One document → many token embeddings</td><td style="text-align:center">100–500</td><td style="text-align:center">Legal text, academic papers, fine-grained document retrieval</td></tr>
+<tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">One PDF page → many patch embeddings</td><td style="text-align:center">256–1024</td><td style="text-align:center">Financial reports, contracts, invoices, multimodal document search</td></tr>
 </tbody>
 </table>
-<p>Questi modelli <em>richiedono</em> uno schema di archiviazione multivettore. Prima di Array of Structs, gli sviluppatori dovevano dividere i vettori tra le righe e ricucire manualmente i risultati. Con Milvus, queste entità possono essere memorizzate e recuperate in modo nativo, con MAX_SIM che gestisce automaticamente il punteggio a livello di documento.</p>
-<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Ricerca di documenti basata su immagini ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> è un potente modello per il recupero cross-modale di PDF. Invece di basarsi sul testo, elabora ogni pagina PDF come un'immagine e la suddivide in un massimo di 1024 patch visive, generando un embedding per ogni patch. In uno schema di database tradizionale, ciò richiederebbe la memorizzazione di una singola pagina come centinaia o migliaia di righe separate, rendendo impossibile per il database capire che queste righe appartengono alla stessa pagina. Di conseguenza, la ricerca a livello di entità diventa frammentata e poco pratica.</p>
-<p>Array of Structs risolve questo problema in modo pulito, memorizzando tutti i patch embeddings <em>all'interno di un singolo campo</em>, consentendo a Milvus di trattare la pagina come un'entità coesa e multivettoriale.</p>
-<p>La ricerca tradizionale nei PDF dipende spesso dall'<strong>OCR</strong>, che converte le immagini delle pagine in testo. Questo funziona per il testo semplice, ma perde grafici, tabelle, layout e altri elementi visivi. ColPali evita questa limitazione lavorando direttamente sulle immagini delle pagine, conservando tutte le informazioni visive e testuali. Il compromesso è la scala: ogni pagina contiene ora centinaia di vettori, il che richiede un database in grado di aggregare molte incorporazioni in un'unica entità, esattamente ciò che fornisce Array of Structs + MAX_SIM.</p>
-<p>Il caso d'uso più comune è <strong>Vision RAG</strong>, dove ogni pagina PDF diventa un'entità multivettore. Gli scenari tipici includono:</p>
+<p>These models <em>require</em> a multi-vector storage pattern. Before Array of Structs, developers had to split vectors across rows and manually stitch results back together. With Milvus, these entities can now be stored and retrieved natively, with MAX_SIM handling document-level scoring automatically.</p>
+<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. ColPali Image-Based Document Search</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> is a powerful model for cross-modal PDF retrieval. Instead of relying on text, it processes each PDF page as an image and slices it into up to 1024 visual patches, generating one embedding per patch. Under a traditional database schema, this would require storing a single page as hundreds or thousands of separate rows, making it impossible for the database to understand that these rows belong to the same page. As a result, entity-level search becomes fragmented and impractical.</p>
+<p>Array of Structs solves this cleanly by storing all patch embeddings <em>inside a single field</em>, allowing Milvus to treat the page as one cohesive multi-vector entity.</p>
+<p>Traditional PDF search often depends on <strong>OCR</strong>, which converts page images into text. This works for plain text but loses charts, tables, layout, and other visual cues. ColPali avoids this limitation by working directly on page images, preserving all visual and textual information. The trade-off is scale: each page now contains hundreds of vectors, which requires a database that can aggregate many embeddings into one entity—exactly what Array of Structs + MAX_SIM provides.</p>
+<p>The most common use case is <strong>Vision RAG</strong>, where each PDF page becomes a multi-vector entity. Typical scenarios include:</p>
 <ul>
-<li><p><strong>Rapporti finanziari:</strong> ricerca in migliaia di PDF di pagine contenenti grafici o tabelle specifiche.</p></li>
-<li><p><strong>Contratti:</strong> recupero di clausole da documenti legali scansionati o fotografati.</p></li>
-<li><p><strong>Fatture:</strong> ricerca di fatture per fornitore, importo o layout.</p></li>
-<li><p><strong>Presentazioni:</strong> individuazione delle diapositive che contengono una particolare figura o diagramma.</p></li>
+<li><p><strong>Financial reports:</strong> searching thousands of PDFs for pages containing specific charts or tables.</p></li>
+<li><p><strong>Contracts:</strong> retrieving clauses from scanned or photographed legal documents.</p></li>
+<li><p><strong>Invoices:</strong> finding invoices by vendor, amount, or layout.</p></li>
+<li><p><strong>Presentations:</strong> locating slides that contain a particular figure or diagram.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -369,7 +370,7 @@ results = client.search(
     <span></span>
   </span>
 </p>
-<p><strong>Modello di dati:</strong></p>
+<p><strong>Data Model:</strong></p>
 <pre><code translate="no">{
     <span class="hljs-string">&quot;page_id&quot;</span>: <span class="hljs-built_in">int</span>,                     <span class="hljs-comment"># Page ID (primary key) </span>
     <span class="hljs-string">&quot;page_number&quot;</span>: <span class="hljs-built_in">int</span>,                 <span class="hljs-comment"># Page number within the document </span>
@@ -379,7 +380,8 @@ results = client.search(
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 1: Preparare i dati</strong>Per i dettagli su come ColPali converte le immagini o il testo in rappresentazioni multivettoriali, potete consultare il documento.</p>
+<p><strong>Step 1: Prepare the Data</strong>
+You can refer to the doc for details on how ColPali converts images or text into multi-vector representations.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 
@@ -406,7 +408,7 @@ batch_images = processor.process_images(images).to(model.device)
 <span class="hljs-keyword">with</span> torch.no_grad():
     image_embeddings = model(**batch_images)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 2: Creare la collezione Milvus</strong></p>
+<p><strong>Step 2: Create the Milvus Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -425,7 +427,7 @@ schema.add_field(<span class="hljs-string">&quot;patches&quot;</span>, DataType.
 
 client.create_collection(<span class="hljs-string">&quot;doc_pages&quot;</span>, schema=schema)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 3: Inserire i dati e costruire l'indice</strong></p>
+<p><strong>Step 3: Insert Data and Build Index</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Prepare data for insertion</span>
 page_data=[
     {
@@ -460,7 +462,7 @@ index_params.add_index(
 client.create_index(<span class="hljs-string">&quot;doc_pages&quot;</span>, index_params)
 client.load_collection(<span class="hljs-string">&quot;doc_pages&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fase 4: Ricerca intermodale: Interrogazione del testo → Risultati dell'immagine</strong></p>
+<p><strong>Step 4: Cross-Modal Search: Text Query → Image Results</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Run the search</span>
 <span class="hljs-keyword">from</span> pymilvus.client.embedding_list <span class="hljs-keyword">import</span> EmbeddingList
 
@@ -494,7 +496,7 @@ results = client.search(
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{i}</span>. <span class="hljs-subst">{entity[<span class="hljs-string">&#x27;doc_name&#x27;</span>]}</span> - Page <span class="hljs-subst">{entity[<span class="hljs-string">&#x27;page_number&#x27;</span>]}</span>&quot;</span>)
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;   Score: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Esempio di output:</strong></p>
+<p><strong>Sample Output:</strong></p>
 <pre><code translate="no"><span class="hljs-title class_">Query</span>: <span class="hljs-string">&#x27;quarterly revenue growth chart&#x27;</span>
 <span class="hljs-number">1.</span> Q1_Financial_Report.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">2</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.9123</span>
@@ -505,8 +507,8 @@ results = client.search(
 <span class="hljs-number">3.</span> <span class="hljs-title class_">Product</span>_Manual.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">1</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.5231</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Qui i risultati restituiscono direttamente le pagine PDF complete. Non è necessario preoccuparsi delle 1024 patch embeddings sottostanti: Milvus gestisce automaticamente l'aggregazione.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusione<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Here, the results directly return full PDF pages. We don’t need to worry about the underlying 1024 patch embeddings—Milvus handles all the aggregation automatically.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -521,10 +523,10 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La maggior parte dei database vettoriali memorizza ogni frammento come un record indipendente, il che significa che le applicazioni devono riassemblare i frammenti quando hanno bisogno di un documento, un prodotto o una pagina completa. Un array di strutture cambia questa situazione. Combinando scalari, vettori, testo e altri campi in un unico oggetto strutturato, permette a una riga di database di rappresentare un'entità completa da capo a fondo.</p>
-<p>Il risultato è semplice ma potente: il lavoro che prima richiedeva complessi raggruppamenti, deduplicazioni e riordini nel livello applicativo diventa una capacità nativa del database. Il futuro dei database vettoriali è proprio questo: strutture più ricche, recupero più intelligente e pipeline più semplici.</p>
-<p>Per ulteriori informazioni su Array of Structs e MAX_SIM, consultate la documentazione qui sotto:</p>
+    </button></h2><p>Most vector databases store each fragment as an independent record, which means applications have to reassemble those fragments when they need a full document, product, or page. An array of Structs changes that. By combining scalars, vectors, text, and other fields into a single structured object, it allows one database row to represent one complete entity end-to-end.</p>
+<p>The result is simple but powerful: work that used to require complex grouping, deduping, and reranking in the application layer becomes a native database capability. And that’s exactly where the future of vector databases is heading—richer structures, smarter retrieval, and simpler pipelines.</p>
+<p>For more information about Array of Structs and MAX_SIM, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Documentazione Milvus</a></li>
+<li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Milvus Documentation</a></li>
 </ul>
-<p>Avete domande o volete un approfondimento su una qualsiasi funzione dell'ultima versione di Milvus? Unitevi al nostro<a href="https://discord.com/invite/8uyFbECzPX"> canale Discord</a> o inviate problemi su<a href="https://github.com/milvus-io/milvus"> GitHub</a>. È anche possibile prenotare una sessione individuale di 20 minuti per ottenere approfondimenti, indicazioni e risposte alle vostre domande tramite<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

@@ -1,9 +1,11 @@
 ---
 id: how-to-use-milvus-backup-tool-step-by-step-guide.md
-title: 'Milvus 백업 도구 사용 방법: 단계별 가이드'
+title: 'How to Use the Milvus Backup Tool: A Step-by-Step Guide'
 author: Michael Mo
 date: 2024-09-27T00:00:00.000Z
-desc: 이 가이드는 Milvus 백업 사용 과정을 안내하여 백업 요구 사항을 자신 있게 처리할 수 있도록 도와줍니다.
+desc: >-
+  This guide will walk you through the process of using Milvus Backup, ensuring
+  that you can confidently handle your backup needs.
 cover: >-
   assets.zilliz.com/How_to_Use_the_Milvus_Backup_Tool_A_Step_by_Step_Guide_411029fa4b.png
 tag: Engineering
@@ -11,9 +13,9 @@ tags: 'Vector Databases, Milvus, RAG, LLM, Backup and restore'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/how-to-use-milvus-backup-tool-step-by-step-guide.md'
 ---
-<p><a href="https://milvus.io/docs/overview.md"><strong>Milvus는</strong></a> 고차원 <a href="https://zilliz.com/glossary/vector-embeddings">벡터 임베딩을</a> 통해 수십억 규모의 <a href="https://zilliz.com/learn/introduction-to-unstructured-data">비정형 데이터를</a> 저장, 색인, 검색할 수 있는 확장성이 뛰어난 오픈 소스 고성능 <a href="https://zilliz.com/learn/what-is-vector-database">벡터 데이터베이스입니다</a>. 검색 증강 생성<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG)</a>, 시맨틱 검색, <a href="https://zilliz.com/blog/multimodal-rag-expanding-beyond-text-for-smarter-ai">멀티모달 검색</a>, 추천 시스템과 같은 최신 AI 애플리케이션을 구축하는 데 적합합니다. Milvus는 노트북부터 대규모 분산 시스템에 이르기까지 다양한 <a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">환경에서</a> 효율적으로 실행됩니다. 오픈 소스 소프트웨어와 클라우드 서비스로 제공됩니다.</p>
-<p>Milvus<a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Backup은</strong></a> Milvus 데이터를 백업 및 복원하는 도구입니다. 다양한 애플리케이션 시나리오를 수용하기 위해 CLI와 API를 모두 제공합니다. 이 가이드는 Milvus Backup을 사용하는 과정을 안내하여 백업 요구 사항을 자신 있게 처리할 수 있도록 도와드립니다.</p>
-<h2 id="Preparation" class="common-anchor-header">준비<button data-href="#Preparation" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong></a> is an open-source, high-performance, and highly scalable <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> that can store, index, and search billion-scale <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> through high-dimensional <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a>. It is perfect for building modern AI applications such as retrieval augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>), semantic search, <a href="https://zilliz.com/blog/multimodal-rag-expanding-beyond-text-for-smarter-ai">multimodal search</a>, and recommendation systems. Milvus runs efficiently across various <a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">environments</a>, from laptops to large-scale distributed systems. It is available as open-source software and a cloud service.</p>
+<p><a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a> is a tool for backing up and restoring Milvus data. It provides both CLI and API to accommodate different application scenarios. This guide will walk you through the process of using Milvus Backup, ensuring that you can confidently handle your backup needs.</p>
+<h2 id="Preparation" class="common-anchor-header">Preparation<button data-href="#Preparation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -28,20 +30,20 @@ canonicalUrl: 'https://milvus.io/blog/how-to-use-milvus-backup-tool-step-by-step
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>백업 또는 복원 프로세스를 시작하기 전에 환경을 설정해야 합니다:</p>
-<p><strong>1.</strong><a href="https://github.com/zilliztech/milvus-backup/releases"> Milvus 백업 리포지토리 릴리스에서</a><strong>최신 바이너리를 다운로드합니다</strong>. 사용 중인 운영 체제에 적합한 버전을 선택합니다:</p>
+    </button></h2><p>Before starting the backup or restore process, you need to set up your environment:</p>
+<p><strong>1. Download the latest binary</strong> from the<a href="https://github.com/zilliztech/milvus-backup/releases"> Milvus-backup repository releases</a>. Select the appropriate version for your operating system:</p>
 <ul>
-<li><p>macOS의 경우: <code translate="no">milvus-backup_Darwin_arm64.tar.gz</code> 또는 <code translate="no">milvus-backup_Darwin_x86_64.tar.gz</code></p></li>
-<li><p>Linux의 경우: <code translate="no">milvus-backup_Linux_arm64.tar.gz</code> 또는 <code translate="no">milvus-backup_Linux_x86_64.tar.gz</code></p></li>
+<li><p>For macOS: <code translate="no">milvus-backup_Darwin_arm64.tar.gz</code> or <code translate="no">milvus-backup_Darwin_x86_64.tar.gz</code></p></li>
+<li><p>For Linux: <code translate="no">milvus-backup_Linux_arm64.tar.gz</code> or <code translate="no">milvus-backup_Linux_x86_64.tar.gz</code></p></li>
 </ul>
-<p><strong>2.</strong> <a href="https://github.com/zilliztech/milvus-backup/blob/main/configs/backup.yaml">GitHub에서</a><strong>구성 파일을 다운로드합니다</strong>.</p>
-<p><strong>3. tar 파일을</strong> 원하는 디렉터리에 압축을 풀고 압축을 푼 동일한 폴더 내의 <code translate="no">configs/</code> 디렉터리에 <code translate="no">backup.yaml</code> 을 넣습니다. 디렉토리 구조가 다음과 같이 표시되는지 확인합니다:</p>
+<p><strong>2. Download the configuration file</strong> from <a href="https://github.com/zilliztech/milvus-backup/blob/main/configs/backup.yaml">GitHub</a>.</p>
+<p><strong>3. Extract the tar file</strong> to your preferred directory and place the <code translate="no">backup.yaml</code> in the <code translate="no">configs/</code> directory within the same extracted folder. Ensure your directory structure appears as follows:</p>
 <pre><code translate="no">├── configs
 │   └── backup.yaml
 ├── milvus-backup
 └── README.md
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Command-Overview" class="common-anchor-header">명령 개요<button data-href="#Command-Overview" class="anchor-icon" translate="no">
+<h2 id="Command-Overview" class="common-anchor-header">Command Overview<button data-href="#Command-Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,8 +58,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-use-milvus-backup-tool-step-by-step
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>터미널로 이동하여 도구의 명령어를 숙지합니다:</p>
-<p><strong>1. 일반 도움말</strong>: <code translate="no">milvus-backup help</code> 을 입력하여 사용 가능한 명령어와 플래그를 확인합니다.</p>
+    </button></h2><p>Navigate to your terminal and familiarize yourself with the tool’s commands:</p>
+<p><strong>1. General Help</strong>: Type <code translate="no">milvus-backup help</code> to view the available commands and flags.</p>
 <pre><code translate="no">milvus-backup <span class="hljs-keyword">is</span> a backup&amp;restore tool <span class="hljs-keyword">for</span> milvus.
 
 Usage:
@@ -80,7 +82,7 @@ Flags:
 
 Use &quot;milvus-backup [command] --help&quot; <span class="hljs-keyword">for</span> more information about a command.
 </span><button class="copy-code-btn"></button></code></pre>
-<p><strong>2. 백업 만들기</strong>: <code translate="no">milvus-backup create --help</code> 을 입력하면 백업 생성에 대한 구체적인 도움말을 볼 수 있습니다.</p>
+<p><strong>2. Creating a Backup</strong>: Get specific help for creating a backup by typing <code translate="no">milvus-backup create --help</code>.</p>
 <pre><code translate="no">Usage:
  milvus-backup create [flags]
 
@@ -93,7 +95,7 @@ Flags:
      --meta_only                     only backup collection meta instead of data
  -h, --help                          help <span class="hljs-keyword">for</span> create
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. 백업 복원하기</strong>: 백업을 복원하는 방법을 이해하려면 <code translate="no">milvus-backup restore --help</code> 을 사용합니다.</p>
+<p><strong>3. Restoring a Backup</strong>: To understand how to restore a backup, use <code translate="no">milvus-backup restore --help</code>.</p>
 <pre><code translate="no">Usage:
  milvus-backup restore [flags]
 
@@ -112,7 +114,7 @@ Flags:
      --skip_create_collection        <span class="hljs-keyword">if</span> <span class="hljs-literal">true</span>, will skip collection, use <span class="hljs-keyword">when</span> collection exist, restore index <span class="hljs-keyword">or</span> data
  -h, --help                          help <span class="hljs-keyword">for</span> restore
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="BackupRestore-Use-Cases" class="common-anchor-header">백업/복원 사용 사례<button data-href="#BackupRestore-Use-Cases" class="anchor-icon" translate="no">
+<h2 id="BackupRestore-Use-Cases" class="common-anchor-header">Backup/Restore Use Cases<button data-href="#BackupRestore-Use-Cases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,15 +129,15 @@ Flags:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>특정 요구사항과 구성에 따라 밀버스 백업 도구를 효과적으로 적용할 수 있는 몇 가지 사용 사례가 있습니다:</p>
+    </button></h2><p>There are several use cases in which the milvus-backup tool can be applied effectively, depending on your specific needs and configurations:</p>
 <ol>
-<li><p><strong>단일 Milvus 인스턴스 내에서:</strong> 동일한 Milvus 서비스 내에서 컬렉션을 새 컬렉션으로 복사합니다.</p></li>
-<li><p><strong>하나의 버킷으로 단일 S3의 Milvus 인스턴스 간:</strong> 루트 경로가 다르지만 동일한 S3 버킷을 사용하는 Milvus 인스턴스 간에 컬렉션을 전송합니다.</p></li>
-<li><p><strong>서로 다른 S3 버킷에 있는 Milvus 인스턴스 간:</strong> 동일한 S3 서비스 내에서 서로 다른 S3 버킷 간에 컬렉션을 전송합니다.</p></li>
-<li><p><strong>서로 다른 S3 서비스 간:</strong> 서로 다른 S3 서비스를 사용하는 Milvus 인스턴스 간에 컬렉션을 복사합니다.</p></li>
+<li><p><strong>Within a Single Milvus Instance:</strong> Copy a collection to a new one within the same Milvus service.</p></li>
+<li><p><strong>Between Milvus Instances in a Single S3 with One Bucket:</strong> Transfer a collection between Milvus instances with different root paths but using the same S3 bucket.</p></li>
+<li><p><strong>Between Milvus Instances Across Different S3 Buckets:</strong> Transfer a collection between different S3 buckets within the same S3 service.</p></li>
+<li><p><strong>Across Different S3 Services:</strong> Copy a collection between Milvus instances that are using different S3 services.</p></li>
 </ol>
-<p>각 사용 사례를 자세히 살펴보겠습니다.</p>
-<h2 id="Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="common-anchor-header">사용 사례 1: 하나의 Milvus 인스턴스 내에서 백업 및 복원<button data-href="#Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="anchor-icon" translate="no">
+<p>Let’s explore each use case in details.</p>
+<h2 id="Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="common-anchor-header">Use Case 1: Backup and Restore Within One Milvus Instance<button data-href="#Use-Case-1-Backup-and-Restore-Within-One-Milvus-Instance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -150,10 +152,10 @@ Flags:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>동일한 Milvus 인스턴스 내에서 컬렉션을 백업 및 복원합니다. "coll"이라는 이름의 컬렉션을 동일한 S3 버킷을 사용하여 "coll_bak"으로 백업 및 복원한다고 가정합니다.</p>
-<h3 id="Configuration" class="common-anchor-header">구성:</h3><ul>
-<li><p><strong>Milvus는</strong> <code translate="no">bucket_A</code> 를 스토리지로 사용합니다.</p></li>
-<li><p><strong>MinIO 구성을 사용합니다:</strong></p></li>
+    </button></h2><p>Backup and restore a collection within the same Milvus instance. Assume a collection named “coll” is backed up and restored as “coll_bak” using the same S3 bucket.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration:</h3><ul>
+<li><p><strong>Milvus</strong> uses the <code translate="no">bucket_A</code> for storage.</p></li>
+<li><p><strong>MinIO Configuration:</strong></p></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -166,7 +168,7 @@ Flags:
  bucketName: bucket_A <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-Workflow" class="common-anchor-header">백업 워크플로</h3><p>1. Milvus와 MinIO가 올바른 위치를 가리키도록 <code translate="no">backup.yaml</code> 을 구성합니다.</p>
+<h3 id="Backup-Workflow" class="common-anchor-header">Backup Workflow</h3><p>1. Configure <code translate="no">backup.yaml</code> to point Milvus and MinIO to the correct locations.</p>
 <pre><code translate="no"><span class="hljs-comment"># Related configuration of minio, which is responsible for data persistence for Milvus.</span>
 minio:
  <span class="hljs-comment"># cloudProvider: &quot;minio&quot; # deprecated use storageType instead</span>
@@ -187,20 +189,22 @@ minio:
   backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2. 명령을 사용하여 백업을 생성합니다.</p>
+<p>2. Create a backup using the command.</p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p>이 명령은 백업을 <code translate="no">bucket_A/backup/my_backup</code> 에 저장합니다.</p>
-<p>3. 백업을 새 컬렉션에 복원합니다.</p>
+<p>This command places the backup in <code translate="no">bucket_A/backup/my_backup</code>.</p>
+<p>3. Restore the backup to a new collection.</p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
-<p>이렇게 하면 동일한 Milvus 인스턴스 내에서 "coll"이 "coll_bak"으로 복원됩니다.</p>
+<p>This restores “coll” as “coll_bak” within the same Milvus instance.</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Within_One_Milvus_Instance_a232ee6e81.png" alt="Figure: The Backup and Restore Workflow Within One Milvus Instance" class="doc-image" id="figure:-the-backup-and-restore-workflow-within-one-milvus-instance" />
-   <span>그림: 하나의 Milvus 인스턴스 내 백업 및 복원 워크플로</span> </span></p>
-<p>그림: 하나의 Milvus 인스턴스 내 백업 및 복원 워크플로</p>
-<h2 id="Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="common-anchor-header">사용 사례 2: 하나의 S3 버킷을 공유하는 두 Milvus 인스턴스 간 백업 및 복원<button data-href="#Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Within_One_Milvus_Instance_a232ee6e81.png" alt="Figure: The Backup and Restore Workflow Within One Milvus Instance" class="doc-image" id="figure:-the-backup-and-restore-workflow-within-one-milvus-instance" />
+    <span>Figure: The Backup and Restore Workflow Within One Milvus Instance</span>
+  </span>
+</p>
+<p>Figure: The Backup and Restore Workflow Within One Milvus Instance</p>
+<h2 id="Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="common-anchor-header">Use Case 2: Backup and Restore Between Two Milvus Instances Sharing One S3 Bucket<button data-href="#Use-Case-2-Backup-and-Restore-Between-Two-Milvus-Instances-Sharing-One-S3-Bucket" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -215,11 +219,11 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>한 Milvus 인스턴스에서 컬렉션을 백업하고 동일한 S3 버킷을 사용하지만 루트 경로가 다른 다른 인스턴스로 복원합니다. milvus_A에 "coll"이라는 컬렉션이 있다고 가정하고, 이를 "coll_bak"이라는 새 컬렉션으로 백업하여 milvus_B에 복원합니다. 두 Milvus 인스턴스는 스토리지로 동일한 버킷 "bucket_A"를 공유하지만 루트 경로는 서로 다릅니다.</p>
-<h3 id="Configuration" class="common-anchor-header">구성</h3><ul>
-<li><p><strong>Milvus A는</strong> <code translate="no">files_A</code> 를 루트 경로로 사용합니다.</p></li>
-<li><p><strong>Milvus B는</strong> <code translate="no">files_B</code> 를 루트 경로로 사용합니다.</p></li>
-<li><p><strong>Milvus A의 MinIO 구성:</strong></p></li>
+    </button></h2><p>Back up a collection from one Milvus instance and restore it to another using the same S3 bucket but with different root paths. Assuming there is a collection named “coll” in the milvus_A, we back up and restore it to a new collection named “coll_bak” to milvus_B. The two Milvus instances share the same bucket “bucket_A” as storage, but they have different root paths.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration</h3><ul>
+<li><p><strong>Milvus A</strong> uses <code translate="no">files_A</code> as the root path.</p></li>
+<li><p><strong>Milvus B</strong> uses <code translate="no">files_B</code> as the root path.</p></li>
+<li><p><strong>MinIO Configuration for Milvus A:</strong></p></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -233,7 +237,7 @@ minio:
  rootPath: files_A <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Milvus B의 MinIO 구성:</strong></li>
+<li><strong>MinIO Configuration for Milvus B:</strong></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -246,7 +250,7 @@ minio:
  bucketName: bucket_A <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files_B <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-Workflow" class="common-anchor-header">백업 워크플로</h3><p><strong>1. Milvus A의 백업 구성</strong></p>
+<h3 id="Backup-Workflow" class="common-anchor-header">Backup Workflow</h3><p><strong>1. Backup Configuration for Milvus A</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_A
@@ -277,11 +281,11 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. 백업 명령을 실행합니다:</strong></p>
+<p><strong>2. Execute the backup command:</strong></p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. Milvus B에 대한 구성 복원</strong></p>
-<p><code translate="no">backup.yaml</code> 을 Milvus B를 가리키도록 수정하고 MinIO 루트 경로를 조정합니다:</p>
+<p><strong>3. Restore Configuration for Milvus B</strong></p>
+<p>Modify <code translate="no">backup.yaml</code> to point to Milvus B and adjust the MinIO root path:</p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_B
@@ -312,14 +316,16 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>4. 복원 명령을 실행합니다:</strong></p>
+<p><strong>4. Execute the restore command:</strong></p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Sharing_One_S3_Bucket_80f282a6f4.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Sharing One S3 Bucket" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-sharing-one-s3-bucket" />
-   <span>그림: 하나의 S3 버킷을 공유하는 두 Milvus 인스턴스 간의 백업 및 복원 워크플로</span> </span></p>
-<h2 id="Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="common-anchor-header">사용 사례 3: 하나의 S3, 서로 다른 버킷에 있는 두 Milvus 인스턴스 간의 백업 및 복원<button data-href="#Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Sharing_One_S3_Bucket_80f282a6f4.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Sharing One S3 Bucket" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-sharing-one-s3-bucket" />
+    <span>Figure: The Backup and Restore Workflow Between Two Milvus Instances Sharing One S3 Bucket</span>
+  </span>
+</p>
+<h2 id="Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="common-anchor-header">Use Case 3: Backup and Restore Between Two Milvus Instances in One S3, Different Buckets<button data-href="#Use-Case-3-Backup-and-Restore-Between-Two-Milvus-Instances-in-One-S3-Different-Buckets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -334,10 +340,10 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 인스턴스(Milvus_A)에서 컬렉션을 백업하고 동일한 S3 서비스 내에 있지만 다른 버킷을 사용하는 다른 Milvus 인스턴스(Milvus_B)로 복원합니다.</p>
-<h3 id="Configuration" class="common-anchor-header">구성:</h3><ul>
-<li><p><strong>Milvus는</strong> <code translate="no">bucket_A</code> 를 스토리지로 사용합니다.</p></li>
-<li><p><strong>Milvus A의 MinIO 구성:</strong></p></li>
+    </button></h2><p>Backup a collection from a Milvus instance (Milvus_A) and restore it to another Milvus instance (Milvus_B) within the same S3 service but using different buckets.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration:</h3><ul>
+<li><p><strong>Milvus</strong> uses the <code translate="no">bucket_A</code> for storage.</p></li>
+<li><p><strong>MinIO Configuration for Milvus A:</strong></p></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -351,7 +357,7 @@ minio:
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Milvus B에 대한 MinIO 구성:</strong></li>
+<li><strong>MinIO Configuration for Milvus B:</strong></li>
 </ul>
 <pre><code translate="no">minio:
  address: localhost <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -364,7 +370,7 @@ minio:
  bucketName: bucket_B <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">백업 및 복원 워크플로</h3><p><strong>1. Milvus A용 백업 구성</strong></p>
+<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">Backup and Restore Workflow</h3><p><strong>1. Backup Configuration for Milvus A</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_A
@@ -395,10 +401,10 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_B&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. 백업 명령을 실행합니다:</strong></p>
+<p><strong>2. Execute the backup command:</strong></p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. Milvus B에 대한 구성 복원</strong></p>
+<p><strong>3. Restore Configuration for Milvus B</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_B
@@ -429,15 +435,17 @@ minio:
   backupBucketName: <span class="hljs-string">&quot;bucket_B&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>4. 복원 명령을 실행합니다:</strong></p>
+<p><strong>4. Execute the restore command:</strong></p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_in_One_S3_Different_Buckets_02895ffe18.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-in-one-s3,-different-buckets" />
-   <span>그림: 하나의 S3, 서로 다른 버킷에 있는 두 Milvus 인스턴스 간의 백업 및 복원 워크플로</span> </span></p>
-<p>그림: 하나의 S3, 서로 다른 버킷에 있는 두 Milvus 인스턴스 간의 백업 및 복원 워크플로우</p>
-<h2 id="Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="common-anchor-header">사용 사례 4: 서로 다른 S3 서비스에서 두 개의 Milvus 인스턴스 간 백업 및 복원<button data-href="#Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_in_One_S3_Different_Buckets_02895ffe18.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-in-one-s3,-different-buckets" />
+    <span>Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets</span>
+  </span>
+</p>
+<p>Figure: The Backup and Restore Workflow Between Two Milvus Instances in One S3, Different Buckets</p>
+<h2 id="Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="common-anchor-header">Use Case 4: Backup and Restore Between Two Milvus Instances Across Different S3 Services<button data-href="#Use-Case-4-Backup-and-Restore-Between-Two-Milvus-Instances-Across-Different-S3-Services" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -452,9 +460,9 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>하나의 S3 서비스(MinIO_A)를 사용하여 Milvus_A에서 "coll"이라는 이름의 컬렉션을 백업하고, 각 인스턴스가 서로 다른 스토리지 버킷을 사용하여 다른 S3 서비스(MinIO_B)를 사용하여 Milvus_B로 복원하는 것을 용이하게 하기 위해, 각 인스턴스가 서로 다른 스토리지 버킷을 활용합니다.</p>
-<h3 id="Configuration" class="common-anchor-header">구성</h3><ul>
-<li><strong>Milvus A용 MinIO 구성:</strong></li>
+    </button></h2><p>To facilitate the backup of a collection named “coll” from Milvus_A using one S3 service (MinIO_A) and restore it into Milvus_B using a different S3 service (MinIO_B), with each instance utilizing different storage buckets.</p>
+<h3 id="Configuration" class="common-anchor-header">Configuration</h3><ul>
+<li><strong>MinIO Configuration for Milvus A:</strong></li>
 </ul>
 <pre><code translate="no">minio:
  address: minio_A <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -468,7 +476,7 @@ minio:
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>Milvus B용 MinIO 구성</strong></li>
+<li><strong>MinIO Configuration for Milvus B</strong></li>
 </ul>
 <pre><code translate="no"> minio:
  address: minio_B <span class="hljs-comment"># Address of MinIO/S3</span>
@@ -481,7 +489,7 @@ minio:
  bucketName: bucket_B <span class="hljs-comment"># Bucket name in MinIO/S3</span>
  rootPath: files <span class="hljs-comment"># The root path where the message is stored in MinIO/S3</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">백업 및 복원 워크플로</h3><p><strong>1. Milvus A용 백업 구성</strong></p>
+<h3 id="Backup-and-Restore-Workflow" class="common-anchor-header">Backup and Restore Workflow</h3><p><strong>1. Backup Configuration for Milvus A</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_A
@@ -512,12 +520,12 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_A&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. 백업 명령을 실행합니다:</strong></p>
+<p><strong>2. Execute the backup command:</strong></p>
 <pre><code translate="no">./milvus-backup create -c coll -n my_backup
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3.</strong> 백업 전송</p>
-<p>S3 호환 도구 또는 SDK를 사용하여 <code translate="no">minio_A:bucket_A/backup/my_backup</code> 에서 <code translate="no">minio_B:bucket_B/backup/my_backup</code> 으로 백업을 수동으로 복사합니다.</p>
-<p>4. <strong>Milvus B에 대한 구성 복원</strong></p>
+<p><strong>3.</strong> Transfer the Backup</p>
+<p>Manually copy the backup from <code translate="no">minio_A:bucket_A/backup/my_backup</code> to <code translate="no">minio_B:bucket_B/backup/my_backup</code> using an S3 compatible tool or SDK.</p>
+<p>4. <strong>Restore Configuration for Milvus B</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: milvus_B
@@ -548,15 +556,17 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;bucket_B&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>5. <strong>복원 명령을 실행합니다:</strong></p>
+<p>5. <strong>Execute the restore command:</strong></p>
 <pre><code translate="no">./milvus-backup restore -c coll -n my_backup -s _bak
 <button class="copy-code-btn"></button></code></pre>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Across_Different_S3_Services_6a1c55d559.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-across-different-s3-services" />
-   <span>그림: 서로 다른 S3 서비스에서 두 Milvus 인스턴스 간의 백업 및 복원 워크플로</span> </span></p>
-<p>그림: 서로 다른 S3 서비스에서 두 Milvus 인스턴스 간의 백업 및 복원 워크플로</p>
-<h2 id="Configuration-File-Explanation" class="common-anchor-header">구성 파일 설명<button data-href="#Configuration-File-Explanation" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_Backup_and_Restore_Workflow_Between_Two_Milvus_Instances_Across_Different_S3_Services_6a1c55d559.png" alt="Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services" class="doc-image" id="figure:-the-backup-and-restore-workflow-between-two-milvus-instances-across-different-s3-services" />
+    <span>Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services</span>
+  </span>
+</p>
+<p>Figure: The Backup and Restore Workflow Between Two Milvus Instances Across Different S3 Services</p>
+<h2 id="Configuration-File-Explanation" class="common-anchor-header">Configuration File Explanation<button data-href="#Configuration-File-Explanation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -571,8 +581,8 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><code translate="no">configs/backup.yaml</code> 파일을 편집하여 백업 설정을 사용자 환경에 맞게 조정하세요. 다음은 구성 옵션에 대한 분석입니다:</p>
-<p><strong>로깅</strong>: 로깅 수준 및 출력 기본 설정을 구성합니다.</p>
+    </button></h2><p>Edit the <code translate="no">configs/backup.yaml</code> file to tailor the backup settings to your environment. Here’s a breakdown of the configuration options:</p>
+<p><strong>Logging</strong>: Configure logging levels and output preferences.</p>
 <pre><code translate="no"><span class="hljs-meta"># Configures the system log output.</span>
 log:
  level: info <span class="hljs-meta"># Only supports debug, info, warn, <span class="hljs-keyword">error</span>, panic, or fatal. Default &#x27;info&#x27;.</span>
@@ -580,7 +590,7 @@ log:
  <span class="hljs-keyword">file</span>:
    rootPath: <span class="hljs-string">&quot;logs/backup.log&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Milvus 연결</strong>: Milvus 인스턴스에 대한 연결 세부 정보를 설정합니다.</p>
+<p><strong>Milvus Connection</strong>: Set the connection details for your Milvus instance.</p>
 <pre><code translate="no"><span class="hljs-comment"># milvus proxy address, compatible to milvus.yaml</span>
 milvus:
  address: localhost
@@ -592,7 +602,7 @@ milvus:
  user: <span class="hljs-string">&quot;root&quot;</span>
  password: <span class="hljs-string">&quot;Milvus&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>MinIO 구성</strong>: 백업이 MinIO 또는 기타 S3 호환 스토리지와 상호 작용하는 방식을 정의합니다.</p>
+<p><strong>MinIO Configuration</strong>: Define how backups interact with MinIO or other S3-compatible storage.</p>
 <pre><code translate="no"><span class="hljs-comment"># Related configuration of minio, which is responsible for data persistence for Milvus.</span>
 minio:
  <span class="hljs-comment"># cloudProvider: &quot;minio&quot; # deprecated use storageType instead</span>
@@ -613,7 +623,7 @@ minio:
  backupBucketName: <span class="hljs-string">&quot;a-bucket&quot;</span> <span class="hljs-comment"># Bucket name to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
  backupRootPath: <span class="hljs-string">&quot;backup&quot;</span> <span class="hljs-comment"># Rootpath to store backup data. Backup data will store to backupBucketName/backupRootPath</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -628,11 +638,11 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>백업</strong></a> 도구는 Milvus 인스턴스 내부 및 전체에서 컬렉션을 백업하고 복원할 수 있는 강력한 솔루션을 제공합니다. 단일 인스턴스 내에서 백업을 관리하든, 동일한 S3 서비스의 인스턴스 간에 백업을 관리하든, 서로 다른 S3 서비스 간에 백업을 관리하든, milvus-backup은 유연하고 정확하게 모든 것을 처리합니다.</p>
-<h3 id="Key-Takeaways" class="common-anchor-header">핵심 사항</h3><ol>
-<li><p><strong>다용도성:</strong> Milvus-backup은 간단한 인스턴스 내 백업부터 복잡한 서비스 간 복원에 이르기까지 다양한 시나리오를 지원합니다.</p></li>
-<li><p><strong>구성 유연성:</strong> <code translate="no">backup.yaml</code> 파일을 적절하게 구성함으로써 사용자는 다양한 스토리지 설정 및 네트워크 구성을 수용하여 특정 요구 사항에 맞게 백업 및 복원 프로세스를 사용자 지정할 수 있습니다.</p></li>
-<li><p><strong>보안 및 제어:</strong> S3 버킷과 경로를 직접 조작하면 데이터 저장 및 보안을 제어할 수 있어 백업을 안전하고 권한이 있는 사용자만 액세스할 수 있습니다.</p></li>
+    </button></h2><p>The <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a> tool provides a robust solution for backing up and restoring collections within and across Milvus instances. Whether you’re managing backups within a single instance, between instances in the same S3 service, or across different S3 services, milvus-backup handles it all with flexibility and precision.</p>
+<h3 id="Key-Takeaways" class="common-anchor-header">Key Takeaways</h3><ol>
+<li><p><strong>Versatility:</strong> Milvus-backup supports multiple scenarios, from simple intra-instance backups to complex cross-service restorations.</p></li>
+<li><p><strong>Configuration Flexibility:</strong> By configuring the <code translate="no">backup.yaml</code> file appropriately, users can customize the backup and restore processes to fit specific needs, accommodating different storage setups and network configurations.</p></li>
+<li><p><strong>Security and Control:</strong> Direct manipulation of S3 buckets and paths allows for control over data storage and security, ensuring backups are both safe and accessible only to authorized users.</p></li>
 </ol>
-<p>효과적인 데이터 관리는 애플리케이션에서 Milvus의 잠재력을 최대한 활용하기 위해 매우 중요합니다. Milvus 백업 도구를 숙달하면 복잡한 분산 환경에서도 데이터의 내구성과 가용성을 보장할 수 있습니다. 이 가이드는 사용자가 강력한 백업 전략을 구현하고 모범 사례와 효율적인 데이터 처리 기술을 촉진할 수 있도록 지원합니다.</p>
-<p>개발자, 데이터 엔지니어, IT 전문가 등 누구든 Milvus 백업 도구를 이해하고 활용하면 안정적이고 효율적인 데이터 관리 솔루션을 제공함으로써 프로젝트 성공에 크게 기여할 수 있습니다.</p>
+<p>Effective data management is crucial for leveraging Milvus’s full potential in your applications. By mastering the Milvus backup tool, you can ensure data durability and availability, even in complex distributed environments. This guide empowers users to implement robust backup strategies, promoting best practices and efficient data handling techniques.</p>
+<p>Whether you’re a developer, a data engineer, or an IT professional, understanding and utilizing the Milvus-backup tool can significantly contribute to your project’s success by providing reliable and efficient data management solutions.</p>

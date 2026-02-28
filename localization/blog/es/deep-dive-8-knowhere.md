@@ -1,31 +1,33 @@
 ---
 id: deep-dive-8-knowhere.md
-title: ¿Qué potencia la búsqueda de similitudes en la base de datos vectorial Milvus?
+title: What Powers Similarity Search in Milvus Vector Database?
 author: Yudong Cai
 date: 2022-05-10T00:00:00.000Z
-desc: 'Y no, no es Faiss.'
+desc: 'And no, it''s not Faiss.'
 cover: assets.zilliz.com/Deep_Dive_8_6919720d59.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deep_Dive_8_6919720d59.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>imagen de portada</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deep_Dive_8_6919720d59.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Este artículo ha sido escrito por <a href="https://github.com/cydrain">Yudong Cai</a> y traducido por <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is written by <a href="https://github.com/cydrain">Yudong Cai</a> and translated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>Como motor central de ejecución vectorial, Knowhere es para Milvus lo que un motor es para un coche deportivo. Este artículo presenta qué es Knowhere, en qué se diferencia de Faiss y cómo está estructurado el código de Knowhere.</p>
-<p><strong>Saltar a:</strong></p>
+<p>As the core vector execution engine, Knowhere to Milvus is what an engine is to a sports car. This post introduces what Knowhere is, how it is different from Faiss, and how the code of Knowhere is structured.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#The-concept-of-Knowhere">El concepto de Knowhere</a></li>
-<li><a href="#Knowhere-in-the-Milvus-architecture">Knowhere en la arquitectura Milvus</a></li>
-<li><a href="#Knowhere-Vs-Faiss">Knowhere vs Faiss</a></li>
-<li><a href="#Understanding-the-Knowhere-code">Entendiendo el código de Knowhere</a></li>
-<li><a href="#Adding-indexes-to-Knowhere">Añadir índices a Knowhere</a></li>
+<li><a href="#The-concept-of-Knowhere">The concept of Knowhere</a></li>
+<li><a href="#Knowhere-in-the-Milvus-architecture">Knowhere in the Milvus architecture</a></li>
+<li><a href="#Knowhere-Vs-Faiss">Knowhere Vs Faiss</a></li>
+<li><a href="#Understanding-the-Knowhere-code">Understanding the Knowhere code</a></li>
+<li><a href="#Adding-indexes-to-Knowhere">Adding indexes to Knowhere</a></li>
 </ul>
-<h2 id="The-concept-of-Knowhere" class="common-anchor-header">El concepto de Knowhere<button data-href="#The-concept-of-Knowhere" class="anchor-icon" translate="no">
+<h2 id="The-concept-of-Knowhere" class="common-anchor-header">The concept of Knowhere<button data-href="#The-concept-of-Knowhere" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,11 +42,11 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Estrechamente hablando, Knowhere es una interfaz de operación para acceder a los servicios en las capas superiores del sistema y las bibliotecas de búsqueda de similitud vectorial como <a href="https://github.com/facebookresearch/faiss">Faiss</a>, <a href="https://github.com/nmslib/hnswlib">Hnswlib</a>, <a href="https://github.com/spotify/annoy">Annoy</a> en las capas inferiores del sistema. Además, Knowhere también se encarga de la computación heterogénea. Más concretamente, Knowhere controla en qué hardware (por ejemplo, CPU o GPU) se ejecutan las solicitudes de creación y búsqueda de índices. Así es como Knowhere obtiene su nombre - sabiendo dónde ejecutar las operaciones. Más tipos de hardware incluyendo DPU y TPU serán soportados en futuras versiones.</p>
-<p>En un sentido más amplio, Knowhere también incorpora otras bibliotecas de índices de terceros como Faiss. Por lo tanto, en su conjunto, Knowhere es reconocido como el motor central de computación vectorial en la base de datos vectorial Milvus.</p>
-<p>Desde el concepto de Knowhere, podemos ver que sólo procesa tareas de computación de datos, mientras que aquellas tareas como sharding, balance de carga, recuperación de desastres están más allá del ámbito de trabajo de Knowhere.</p>
-<p>A partir de Milvus 2.0.1, <a href="https://github.com/milvus-io/knowhere">Knowhere</a> (en sentido amplio) se independiza del proyecto Milvus.</p>
-<h2 id="Knowhere-in-the-Milvus-architecture" class="common-anchor-header">Knowhere en la arquitectura Milvus<button data-href="#Knowhere-in-the-Milvus-architecture" class="anchor-icon" translate="no">
+    </button></h2><p>Narrowly speaking, Knowhere is an operation interface for accessing services in the upper layers of the system and vector similarity search libraries like <a href="https://github.com/facebookresearch/faiss">Faiss</a>, <a href="https://github.com/nmslib/hnswlib">Hnswlib</a>, <a href="https://github.com/spotify/annoy">Annoy</a> in the lower layers of the system. In addition, Knowhere is also in charge of heterogeneous computing. More specifically, Knowhere controls on which hardware (eg. CPU or GPU) to execute index building and search requests. This is how Knowhere gets its name - knowing where to execute the operations. More types of hardware including DPU and TPU will be supported in future releases.</p>
+<p>In a broader sense, Knowhere also incorporates other third-party index libraries like Faiss. Therefore, as a whole, Knowhere is recognized as the core vector computation engine in the Milvus vector database.</p>
+<p>From the concept of Knowhere, we can see that it only processes data computing tasks, while those tasks like sharding, load balance, disaster recovery are beyond the work scope of Knowhere.</p>
+<p>Starting from Milvus 2.0.1, <a href="https://github.com/milvus-io/knowhere">Knowhere</a> (in the broader sense) becomes independent from the Milvus project.</p>
+<h2 id="Knowhere-in-the-Milvus-architecture" class="common-anchor-header">Knowhere in the Milvus architecture<button data-href="#Knowhere-in-the-Milvus-architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,12 +62,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/ec63d1e9_86e1_48e3_9d75_8fed305bbcb5_26b842e9f6.png" alt="knowhere architecture" class="doc-image" id="knowhere-architecture" />
-   </span> <span class="img-wrapper"> <span>arquitectura de knowhere</span> </span></p>
-<p>La computación en Milvus involucra principalmente operaciones vectoriales y escalares. Knowhere sólo maneja las operaciones sobre vectores en Milvus. La figura anterior ilustra la arquitectura Knowhere en Milvus.</p>
-<p>La capa inferior es el hardware del sistema. Las bibliotecas de índices de terceros están sobre el hardware. Luego Knowhere interactúa con el nodo de índice y el nodo de consulta en la parte superior a través de CGO.</p>
-<p>Este artículo habla de Knowhere en su sentido más amplio, como se marca dentro del marco azul en la ilustración de la arquitectura.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/ec63d1e9_86e1_48e3_9d75_8fed305bbcb5_26b842e9f6.png" alt="knowhere architecture" class="doc-image" id="knowhere-architecture" />
+    <span>knowhere architecture</span>
+  </span>
+</p>
+<p>Computation in Milvus mainly involves vector and scalar operations. Knowhere only handles the operations on vectors in Milvus. The figure above illustrates the Knowhere architecture in Milvus.</p>
+<p>The bottom-most layer is the system hardware. The third-party index libraries are on top of the hardware. Then Knowhere interacts with the index node and query node on the top via CGO.</p>
+<p>This article talks about Knowhere in its broader sense, as marked within the blue frame in the architecture illustration.</p>
 <h2 id="Knowhere-Vs-Faiss" class="common-anchor-header">Knowhere Vs Faiss<button data-href="#Knowhere-Vs-Faiss" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -81,15 +85,15 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Knowhere no sólo amplía las funciones de Faiss sino que también optimiza el rendimiento. Más específicamente, Knowhere tiene las siguientes ventajas.</p>
-<h3 id="1-Support-for-BitsetView" class="common-anchor-header">1. Soporte para BitsetView</h3><p>Inicialmente, bitset fue introducido en Milvus con el propósito de &quot;borrado suave&quot;. Un vector borrado suavemente aún existe en la base de datos pero no será computado durante una búsqueda o consulta de similitud de vectores. Cada bit del conjunto de bits corresponde a un vector indexado. Si un vector está marcado como "1" en el conjunto de bits, significa que se ha eliminado de forma suave y que no participará en la búsqueda de vectores.</p>
-<p>Los parámetros del conjunto de bits se agregan a todas las API de consulta de índice Faiss expuestas en Knowhere, incluidos los índices de CPU y GPU.</p>
-<p>Obtenga más información sobre <a href="https://milvus.io/blog/2022-2-14-bitset.md">cómo bitset permite la versatilidad de la búsqueda vectorial</a>.</p>
-<h3 id="2-Support-for-more-similarity-metrics-for-indexing-binary-vectors" class="common-anchor-header">2. Soporte para más métricas de similitud para indexar vectores binarios</h3><p>Además de <a href="https://milvus.io/docs/v2.0.x/metric.md#Hamming-distance">Hamming</a>, Knowhere también soporta <a href="https://milvus.io/docs/v2.0.x/metric.md#Jaccard-distance">Jaccard</a>, <a href="https://milvus.io/docs/v2.0.x/metric.md#Tanimoto-distance">Tanimoto</a>, <a href="https://milvus.io/docs/v2.0.x/metric.md#Superstructure">Superestructura</a>, <a href="https://milvus.io/docs/v2.0.x/metric.md#Substructure">Subestructura</a>. Jaccard y Tanimoto pueden utilizarse para medir la similitud entre dos conjuntos de muestras mientras que Superestructura y Subestructura pueden utilizarse para medir la similitud de estructuras químicas.</p>
-<h3 id="3-Support-for-AVX512-instruction-set" class="common-anchor-header">3. Soporte para el conjunto de instrucciones AVX512</h3><p>Faiss soporta múltiples conjuntos de instrucciones incluyendo <a href="https://en.wikipedia.org/wiki/AArch64">AArch64</a>, <a href="https://en.wikipedia.org/wiki/SSE4#SSE4.2">SSE4.2</a>, <a href="https://en.wikipedia.org/wiki/Advanced_Vector_Extensions">AVX2</a>. Knowhere amplía los conjuntos de instrucciones soportados añadiendo <a href="https://en.wikipedia.org/wiki/AVX-512">AVX512</a>, que puede <a href="https://milvus.io/blog/milvus-performance-AVX-512-vs-AVX2.md">mejorar el rendimiento de la creación de índices y consultas entre un 20% y un 30%</a> en comparación con AVX2.</p>
-<h3 id="4-Automatic-SIMD-instruction-selection" class="common-anchor-header">4. Selección automática de instrucciones SIMD</h3><p>Knowhere está diseñado para funcionar bien en un amplio espectro de procesadores CPU (tanto en plataformas locales como en la nube) con diferentes instrucciones SIMD (por ejemplo, SIMD SSE, AVX, AVX2 y AVX512). Por lo tanto, el reto es, dada una única pieza de software binario (es decir, Milvus), ¿cómo hacer que invoque automáticamente las instrucciones SIMD adecuadas en cualquier procesador de CPU? Faiss no admite la selección automática de instrucciones SIMD y los usuarios deben especificar manualmente la bandera SIMD (por ejemplo, "-msse4") durante la compilación. Sin embargo, Knowhere se construye mediante la refactorización del código base de Faiss. Las funciones comunes (por ejemplo, el cálculo de similitudes) que dependen de las aceleraciones SIMD se eliminan. Luego, para cada función, se implementan cuatro versiones (es decir, SSE, AVX, AVX2, AVX512) y cada una se coloca en un archivo fuente separado. A continuación, los archivos fuente se compilan individualmente con el indicador SIMD correspondiente. Por lo tanto, en tiempo de ejecución, Knowhere puede elegir automáticamente las instrucciones SIMD más adecuadas basándose en las banderas actuales de la CPU y luego enlazar los punteros de función correctos utilizando hooking.</p>
-<h3 id="5-Other-performance-optimization" class="common-anchor-header">5. Otras optimizaciones de rendimiento</h3><p>Lea <a href="https://www.cs.purdue.edu/homes/csjgwang/pubs/SIGMOD21_Milvus.pdf">Milvus: A Purpose-Built Vector Data Management System</a> para más información sobre la optimización del rendimiento de Knowhere.</p>
-<h2 id="Understanding-the-Knowhere-code" class="common-anchor-header">Entendiendo el código Knowhere<button data-href="#Understanding-the-Knowhere-code" class="anchor-icon" translate="no">
+    </button></h2><p>Knowhere not only further extends the functions of Faiss but also optimizes the performance. More specifically, Knowhere has the following advantages.</p>
+<h3 id="1-Support-for-BitsetView" class="common-anchor-header">1. Support for BitsetView</h3><p>Initially, bitset was introduced in Milvus for the purpose of &quot;soft deletion&quot;. A soft-deleted vector still exists in the database but will not be computed during a vector similarity search or query. Each bit in the bitset corresponds to an indexed vector. If a vector is marked as “1” in the bitset, it means this vector is soft-deleted and will not be involved during a vector search.</p>
+<p>The bitset parameters are added to all the exposed Faiss index query APIs in Knowhere, including CPU and GPU indexes.</p>
+<p>Learn more about <a href="https://milvus.io/blog/2022-2-14-bitset.md">how bitset enables the versatility of vector search</a>.</p>
+<h3 id="2-Support-for-more-similarity-metrics-for-indexing-binary-vectors" class="common-anchor-header">2. Support for more similarity metrics for indexing binary vectors</h3><p>Apart from <a href="https://milvus.io/docs/v2.0.x/metric.md#Hamming-distance">Hamming</a>, Knowhere also supports <a href="https://milvus.io/docs/v2.0.x/metric.md#Jaccard-distance">Jaccard</a>, <a href="https://milvus.io/docs/v2.0.x/metric.md#Tanimoto-distance">Tanimoto</a>, <a href="https://milvus.io/docs/v2.0.x/metric.md#Superstructure">Superstructure</a>, <a href="https://milvus.io/docs/v2.0.x/metric.md#Substructure">Substructure</a>. Jaccard and Tanimoto can be used to measure the similarity between two sample sets while Superstructure and Substructure can be used to measure the similarity of chemical structures.</p>
+<h3 id="3-Support-for-AVX512-instruction-set" class="common-anchor-header">3. Support for AVX512 instruction set</h3><p>Faiss itself supports multiple instruction sets including <a href="https://en.wikipedia.org/wiki/AArch64">AArch64</a>, <a href="https://en.wikipedia.org/wiki/SSE4#SSE4.2">SSE4.2</a>, <a href="https://en.wikipedia.org/wiki/Advanced_Vector_Extensions">AVX2</a>. Knowhere further extends the supported instruction sets by adding <a href="https://en.wikipedia.org/wiki/AVX-512">AVX512</a>, which can <a href="https://milvus.io/blog/milvus-performance-AVX-512-vs-AVX2.md">improve the performance of index building and query by 20% to 30%</a> compared to AVX2.</p>
+<h3 id="4-Automatic-SIMD-instruction-selection" class="common-anchor-header">4. Automatic SIMD-instruction selection</h3><p>Knowhere is designed to work well on a wide spectrum of CPU processors (both on-premises and cloud platforms) with different SIMD instructions (e.g., SIMD SSE, AVX, AVX2, and AVX512). Thus the challenge is, given a single piece of software binary (i.e., Milvus), how to make it automatically invoke the suitable SIMD instructions on any CPU processor? Faiss does not support automatic SIMD-instruction selection and users need to manually specify the SIMD flag (e.g., “-msse4”) during compilation. However, Knowhere is built by refactoring the codebase of Faiss. Common functions (e.g., similarity computing) that rely on SIMD accelerations are factored out. Then for each function, four versions (i.e., SSE, AVX, AVX2, AVX512) are implemented and each put into a separate source file. Then the source files are further compiled individually with the corresponding SIMD flag. Therefore, at runtime, Knowhere can automatically choose the best suited SIMD instructions based on the current CPU flags and then link the right function pointers using hooking.</p>
+<h3 id="5-Other-performance-optimization" class="common-anchor-header">5. Other performance optimization</h3><p>Read <a href="https://www.cs.purdue.edu/homes/csjgwang/pubs/SIGMOD21_Milvus.pdf">Milvus: A Purpose-Built Vector Data Management System</a> for more about Knowhere’s performance optimization.</p>
+<h2 id="Understanding-the-Knowhere-code" class="common-anchor-header">Understanding the Knowhere code<button data-href="#Understanding-the-Knowhere-code" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -104,43 +108,53 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Como se mencionó en la primera sección, Knowhere sólo maneja operaciones de búsqueda de vectores. Por lo tanto, Knowhere sólo procesa el campo vectorial de una entidad (actualmente, sólo se admite un campo vectorial para entidades en una colección). La construcción de índices y la búsqueda de similitud vectorial también se dirigen al campo vectorial de un segmento. Para tener una mejor comprensión del modelo de datos, lea el blog <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">aquí</a>.</p>
+    </button></h2><p>As mentioned in the first section, Knowhere only handles vector search operations. Therefore, Knowhere only processes the vector field of an entity (currently, only one vector field for entities in a collection is supported). Index building and vector similarity search are also targeted at the vector field in a segment. To have a better understanding of the data model, read the blog <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">here</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Entity_fields_6aa517cc4c.png" alt="entity fields" class="doc-image" id="entity-fields" />
-   </span> <span class="img-wrapper"> <span>campos de entidad</span> </span></p>
-<h3 id="Index" class="common-anchor-header">Índice</h3><p>El índice es un tipo de estructura de datos independiente de los datos vectoriales originales. La indexación requiere cuatro pasos: crear un índice, entrenar datos, insertar datos y construir un índice.</p>
-<p>Para algunas de las aplicaciones de IA, el entrenamiento del conjunto de datos es un proceso independiente de la búsqueda de vectores. En este tipo de aplicaciones, los datos de los conjuntos de datos se entrenan primero y luego se insertan en una base de datos vectorial como Milvus para la búsqueda de similitudes. Los conjuntos de datos abiertos como sift1M y sift1B proporcionan datos para el entrenamiento y las pruebas. Sin embargo, en Knowhere, los datos para el entrenamiento y la búsqueda se mezclan. Es decir, Knowhere entrena todos los datos en un segmento y luego inserta todos los datos entrenados y construye un índice para ellos.</p>
-<h3 id="Knowhere-code-structure" class="common-anchor-header">Estructura del código Knowhere</h3><p>DataObj es la clase base de todas las estructuras de datos en Knowhere. <code translate="no">Size()</code> es el único método virtual en DataObj. La clase Index hereda de DataObj con un campo llamado &quot;size_&quot;. La clase Index también tiene dos métodos virtuales - <code translate="no">Serialize()</code> y <code translate="no">Load()</code>. La clase VecIndex derivada de Index es la clase base virtual para todos los índices vectoriales. VecIndex proporciona métodos como <code translate="no">Train()</code>, <code translate="no">Query()</code>, <code translate="no">GetStatistics()</code>, y <code translate="no">ClearStatistics()</code>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Entity_fields_6aa517cc4c.png" alt="entity fields" class="doc-image" id="entity-fields" />
+    <span>entity fields</span>
+  </span>
+</p>
+<h3 id="Index" class="common-anchor-header">Index</h3><p>Index is a type of independent data structure from the original vector data. Indexing requires four steps: create an index, train data, insert data and build an index.</p>
+<p>For some of the AI applications, dataset training is an individual process from vector search. In this type of application, data from datasets are first trained and then inserted into a vector database like Milvus for similarity search. Open datasets like sift1M and sift1B provides data for training and testing. However, in Knowhere, data for training and searching are mixed together. That is to say, Knowhere trains all the data in a segment and then inserts all the trained data and builds an index for them.</p>
+<h3 id="Knowhere-code-structure" class="common-anchor-header">Knowhere code structure</h3><p>DataObj is the base class of all data structure in Knowhere. <code translate="no">Size()</code> is the only virtual method in DataObj. The Index class inherits from DataObj with a field named &quot;size_&quot;. The Index class also has two virtual methods - <code translate="no">Serialize()</code> and <code translate="no">Load()</code>. The VecIndex class derived from Index is the virtual base class for all vector indexes. VecIndex provides methods including <code translate="no">Train()</code>, <code translate="no">Query()</code>, <code translate="no">GetStatistics()</code>, and <code translate="no">ClearStatistics()</code>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Knowhere_base_classes_9d610618d9.png" alt="base clase" class="doc-image" id="base-clase" />
-   </span> <span class="img-wrapper"> <span>clase base</span> </span></p>
-<p>Otros tipos de índices se enumeran a la derecha en la figura anterior.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Knowhere_base_classes_9d610618d9.png" alt="base clase" class="doc-image" id="base-clase" />
+    <span>base clase</span>
+  </span>
+</p>
+<p>Other index types are listed on the right in the figure above.</p>
 <ul>
-<li>El índice Faiss tiene dos subclases: FaissBaseIndex para todos los índices sobre vectores en coma flotante, y FaissBaseBinaryIndex para todos los índices sobre vectores binarios.</li>
-<li>GPUIndex es la clase base para todos los índices Faiss GPU.</li>
-<li>OffsetBaseIndex es la clase base para todos los índices de desarrollo propio. En el archivo de índice sólo se almacena el ID del vector. Como resultado, el tamaño de un fichero de índices para vectores de 128 dimensiones puede reducirse en 2 órdenes de magnitud. Recomendamos tener en cuenta también los vectores originales cuando se utilice este tipo de índice para la búsqueda de similitud vectorial.</li>
+<li>The Faiss index has two sub classes: FaissBaseIndex for all indexes on float point vectors, and FaissBaseBinaryIndex for all indexes on binary vectors.</li>
+<li>GPUIndex is the base class for all Faiss GPU indexes.</li>
+<li>OffsetBaseIndex is the base class for all self-developed indexes. Only vector ID is stored in the index file. As a result, an index file size for 128-dimensional vectors can be reduced by 2 orders of magnitude. We recommend taking the original vectors into consideration as well when using this type of index for vector similarity search.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/IDMAP_8773a4511c.png" alt="IDMAP" class="doc-image" id="idmap" />
-   </span> <span class="img-wrapper"> <span>IDMAP</span> </span></p>
-<p>Técnicamente hablando, <a href="https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index#then-flat">IDMAP</a> no es un índice, sino que se utiliza para la búsqueda por fuerza bruta. Cuando se insertan vectores en la base de datos de vectores, no es necesario entrenar los datos ni construir el índice. Las búsquedas se realizarán directamente sobre los datos vectoriales insertados.</p>
-<p>Sin embargo, en aras de la coherencia del código, IDMAP también hereda de la clase VecIndex con todas sus interfaces virtuales. El uso de IDMAP es el mismo que el de otros índices.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/IDMAP_8773a4511c.png" alt="IDMAP" class="doc-image" id="idmap" />
+    <span>IDMAP</span>
+  </span>
+</p>
+<p>Technically speaking, <a href="https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index#then-flat">IDMAP</a> is not an index, but rather used for brute-force search. When vectors are inserted to the vector database, no data training and index building is required. Searches will be conducted directly on the inserted vector data.</p>
+<p>However, for the sake of code consistency, IDMAP also inherits from the VecIndex class with all its virtual interfaces. The usage of IDMAP is the same as other indexes.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/IVF_42b0f123d1.png" alt="IVF" class="doc-image" id="ivf" />
-   </span> <span class="img-wrapper"> <span>IVF</span> </span></p>
-<p>Los índices IVF (archivo invertido) son los más utilizados. La clase IVF deriva de VecIndex y FaissBaseIndex, y se extiende a IVFSQ e IVFPQ. GPUIVF deriva de GPUIndex e IVF. GPUIVF se extiende a GPUIVFSQ y GPUIVFPQ.</p>
-<p>IVFSQHybrid es una clase de índice híbrido de desarrollo propio que se ejecuta mediante cuantificación gruesa en la GPU. Y la búsqueda en el cubo se ejecuta en la CPU. Este tipo de índice puede reducir la aparición de copias de memoria entre CPU y GPU aprovechando la potencia de cálculo de la GPU. IVFSQHybrid tiene la misma tasa de recuperación que GPUIVFSQ, pero presenta un mejor rendimiento.</p>
-<p>La estructura de clases base de los índices binarios es relativamente más sencilla. BinaryIDMAP y BinaryIVF derivan de FaissBaseBinaryIndex y VecIndex.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/IVF_42b0f123d1.png" alt="IVF" class="doc-image" id="ivf" />
+    <span>IVF</span>
+  </span>
+</p>
+<p>The IVF (inverted file) indexes are the most frequently used. The IVF class is derived from VecIndex and FaissBaseIndex, and further extends to IVFSQ and IVFPQ. GPUIVF is derived from GPUIndex and IVF. Then GPUIVF further extends to GPUIVFSQ and GPUIVFPQ.</p>
+<p>IVFSQHybrid is a class for self-developed hybrid index that is executed by coarse quantize on GPU. And search in the bucket is executed on CPU. This type of index can reduce the occurrence of memory copy between CPU and GPU by leveraging the computing power of GPU. IVFSQHybrid has the same recall rate as GPUIVFSQ but comes with a better performance.</p>
+<p>The base class structure for binary indexes are relatively simpler. BinaryIDMAP and BinaryIVF are derived from FaissBaseBinaryIndex and VecIndex.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/third_party_index_34ad029848.png" alt="third-party index" class="doc-image" id="third-party-index" />
-   </span> <span class="img-wrapper"> <span>índice de terceros</span> </span></p>
-<p>Actualmente, sólo se soportan dos tipos de índices de terceros aparte de Faiss: el índice basado en árbol Annoy, y el índice basado en grafo HNSW. Estos dos índices de terceros comunes y de uso frecuente se derivan de VecIndex.</p>
-<h2 id="Adding-indexes-to-Knowhere" class="common-anchor-header">Añadir índices a Knowhere<button data-href="#Adding-indexes-to-Knowhere" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/third_party_index_34ad029848.png" alt="third-party index" class="doc-image" id="third-party-index" />
+    <span>third-party index</span>
+  </span>
+</p>
+<p>Currently, only two types of third-party indexes are supported apart from Faiss: tree-based index Annoy, and graph-based index HNSW. These two common and frequently used third-party indexes are both derived from VecIndex.</p>
+<h2 id="Adding-indexes-to-Knowhere" class="common-anchor-header">Adding indexes to Knowhere<button data-href="#Adding-indexes-to-Knowhere" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -155,21 +169,21 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Si desea añadir nuevos índices a Knowhere, puede referirse primero a los índices existentes:</p>
+    </button></h2><p>If you want to add new indexes to Knowhere, you can refer to existing indexes first:</p>
 <ul>
-<li>Para añadir un índice basado en cuantización, consulte IVF_FLAT.</li>
-<li>Para añadir un índice basado en gráficos, consulte HNSW.</li>
-<li>Para añadir un índice basado en árboles, consulte Annoy.</li>
+<li>To add quantization-based index, refer to IVF_FLAT.</li>
+<li>To add graph-based index, refer to HNSW.</li>
+<li>To add tree-based index, refer to Annoy.</li>
 </ul>
-<p>Después de referirse al índice existente, puede seguir los siguientes pasos para agregar un nuevo índice a Knowhere.</p>
+<p>After referring to the existing index, you can follow the steps below to add a new index to Knowhere.</p>
 <ol>
-<li>Añada el nombre del nuevo índice en <code translate="no">IndexEnum</code>. El tipo de datos es cadena.</li>
-<li>Agregue la comprobación de validación de datos en el nuevo índice en el archivo <code translate="no">ConfAdapter.cpp</code>. La comprobación de validación es principalmente para validar los parámetros para la formación de datos y consulta.</li>
-<li>Cree un nuevo archivo para el nuevo índice. La clase base del nuevo índice debe incluir <code translate="no">VecIndex</code>, y la interfaz virtual necesaria de <code translate="no">VecIndex</code>.</li>
-<li>Añade la lógica de construcción del nuevo índice en <code translate="no">VecIndexFactory::CreateVecIndex()</code>.</li>
-<li>Añada la prueba unitaria en el directorio <code translate="no">unittest</code>.</li>
+<li>Add the name of the new index in <code translate="no">IndexEnum</code>. The data type is string.</li>
+<li>Add data validation check on the new index in the file <code translate="no">ConfAdapter.cpp</code>. The validation check is mainly to validate the parameters for data training and query.</li>
+<li>Create a new file for the new index. The base class of the new index should include <code translate="no">VecIndex</code>, and the necessary virtual interface of <code translate="no">VecIndex</code>.</li>
+<li>Add the index building logic for new index in <code translate="no">VecIndexFactory::CreateVecIndex()</code>.</li>
+<li>Add unit test under the <code translate="no">unittest</code> directory.</li>
 </ol>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Acerca de la serie Deep Dive<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -184,14 +198,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-8-knowhere.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con el <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">anuncio oficial de la disponibilidad general</a> de Milvus 2.0, orquestamos esta serie de blogs Milvus Deep Dive para ofrecer una interpretación en profundidad de la arquitectura y el código fuente de Milvus. Los temas tratados en esta serie de blogs incluyen</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Visión general de la arquitectura de Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">API y SDK de Python</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Procesamiento de datos</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Gestión de datos</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Consultas en tiempo real</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Motor de ejecución escalar</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">Sistema de control de calidad</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Motor de ejecución vectorial</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

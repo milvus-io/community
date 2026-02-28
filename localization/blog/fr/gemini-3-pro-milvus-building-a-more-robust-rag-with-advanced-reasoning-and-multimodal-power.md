@@ -1,9 +1,9 @@
 ---
 id: >-
   gemini-3-pro-milvus-building-a-more-robust-rag-with-advanced-reasoning-and-multimodal-power.md
-title: >-
-  Gemini 3 Pro + Milvus : construire un RAG plus robuste avec un raisonnement
-  avancé et une puissance multimodale
+title: >
+  Gemini 3 Pro + Milvus: Building a More Robust RAG With Advanced Reasoning and
+  Multimodal Power
 author: Lumina Wang
 date: 2025-11-20T00:00:00.000Z
 cover: assets.zilliz.com/gemini3pro_cover_2f88fb0fe6.png
@@ -15,30 +15,29 @@ meta_keywords: 'Gemini 3 Pro, vibe coding, Milvus, RAG'
 meta_title: |
   Gemini 3 Pro + Milvus: Robust RAG With Advanced Reasoning and Multimodal Power
 desc: >-
-  Découvrez les principales mises à jour de Gemini 3 Pro, voyez comment il
-  fonctionne sur les principaux points de référence et suivez un guide pour
-  construire un pipeline RAG haute performance avec Milvus.
+  Learn core updates in Gemini 3 Pro, see how it performs on key benchmarks, and
+  follow a guide to building a high-performance RAG pipeline with Milvus.
 origin: >-
   https://milvus.io/blog/gemini-3-pro-milvus-building-a-more-robust-rag-with-advanced-reasoning-and-multimodal-power.md
 ---
-<p>Gemini 3 Pro de Google a débarqué avec le rare type de version qui modifie réellement les attentes des développeurs - pas seulement un battage médiatique, mais des capacités qui étendent matériellement ce que les interfaces en langage naturel peuvent faire. Il transforme "décrire l'application que vous voulez" en un flux de travail exécutable : acheminement dynamique des outils, planification en plusieurs étapes, orchestration des API et génération d'une interface utilisateur interactive, le tout assemblé de manière transparente. C'est le modèle le plus proche du codage vibratoire de la production.</p>
-<p>Et les chiffres le confirment. Gemini 3 Pro affiche des résultats remarquables dans presque tous les principaux points de référence :</p>
+<p>Google’s Gemini 3 Pro landed with the rare kind of release that genuinely shifts developer expectations — not just hype, but capabilities that materially expand what natural-language interfaces can do. It turns “describe the app you want” into an executable workflow: dynamic tool routing, multi-step planning, API orchestration, and interactive UX generation all stitched together seamlessly. This is the closest any model has come to making vibe coding feel production-viable.</p>
+<p>And the numbers back the narrative. Gemini 3 Pro posts standout results across nearly every major benchmark:</p>
 <ul>
-<li><p><strong>Dernier examen de l'humanité :</strong> 37,5 % sans outils, 45,8 % avec outils - le concurrent le plus proche se situe à 26,5 %.</p></li>
-<li><p><strong>MathArena Apex :</strong> 23,4 %, alors que la plupart des modèles ne dépassent pas les 2 %.</p></li>
-<li><p><strong>ScreenSpot-Pro :</strong> 72,7 % de précision, soit près du double du modèle suivant (36,2 %).</p></li>
-<li><p><strong>Vending-Bench 2 :</strong> Valeur nette moyenne de <strong> 5 478,16 $</strong>, soit environ <strong>1,4 fois plus</strong> que la deuxième place.</p></li>
+<li><p><strong>Humanity’s Last Exam:</strong> 37.5% without tools, 45.8% with tools — the nearest competitor sits at 26.5%.</p></li>
+<li><p><strong>MathArena Apex:</strong> 23.4%, while most models fail to break 2%.</p></li>
+<li><p><strong>ScreenSpot-Pro:</strong> 72.7% accuracy, almost double the next best at 36.2%.</p></li>
+<li><p><strong>Vending-Bench 2:</strong> Average net value of <strong>$5,478.16</strong>, about <strong>1.4×</strong> above second place.</p></li>
 </ul>
-<p>Le tableau ci-dessous présente d'autres résultats de référence.</p>
+<p>Check out the table below for more benchmark results.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gemini_3_table_final_HLE_Tools_on_1s_X_Rb4o_f50f42dd67.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Cette combinaison de raisonnement profond, d'utilisation intensive d'outils et de fluidité multimodale fait de Gemini 3 Pro un outil naturel pour la génération augmentée par récupération (RAG). Associez-le à <a href="https://milvus.io/"><strong>Milvus</strong></a>, la base de données vectorielle open-source haute performance conçue pour la recherche sémantique à l'échelle du milliard, et vous obtiendrez une couche de recherche qui permet d'ancrer les réponses, d'évoluer proprement et de rester fiable en production, même en cas de charge de travail élevée.</p>
-<p>Dans ce billet, nous présenterons les nouveautés de Gemini 3 Pro, les raisons pour lesquelles elles améliorent les flux de travail RAG et la manière de construire un pipeline RAG propre et efficace en utilisant Milvus comme colonne vertébrale de recherche.</p>
-<h2 id="Major-Upgrades-in-Gemini-3-Pro" class="common-anchor-header">Principales mises à jour de Gemini 3 Pro<button data-href="#Major-Upgrades-in-Gemini-3-Pro" class="anchor-icon" translate="no">
+<p>This combination of deep reasoning, strong tool use, and multimodal fluency makes Gemini 3 Pro a natural fit for retrieval-augmented generation (RAG). Pair it with <a href="https://milvus.io/"><strong>Milvus</strong></a>, the high-performance open-source vector database built for billion-scale semantic search, and you get a retrieval layer that grounds responses, scales cleanly, and stays production-reliable even under heavy workloads.</p>
+<p>In this post, we’ll break down what’s new in Gemini 3 Pro, why it elevates RAG workflows, and how to build a clean, efficient RAG pipeline using Milvus as your retrieval backbone.</p>
+<h2 id="Major-Upgrades-in-Gemini-3-Pro" class="common-anchor-header">Major Upgrades in Gemini 3 Pro<button data-href="#Major-Upgrades-in-Gemini-3-Pro" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -53,12 +52,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gemini 3 Pro introduit un ensemble d'améliorations substantielles qui remodèlent la façon dont le modèle raisonne, crée, exécute des tâches et interagit avec les utilisateurs. Ces améliorations se répartissent en quatre grands domaines de compétences :</p>
-<h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">Compréhension et raisonnement multimodaux</h3><p>Gemini 3 Pro établit de nouveaux records dans d'importants benchmarks multimodaux, notamment ARC-AGI-2 pour le raisonnement visuel, MMMU-Pro pour la compréhension multimodale et Video-MMMU pour la compréhension vidéo et l'acquisition de connaissances. Le modèle introduit également Deep Think, un mode de raisonnement étendu qui permet un traitement logique structuré en plusieurs étapes. Il en résulte une précision nettement supérieure pour les problèmes complexes pour lesquels les modèles traditionnels de raisonnement en chaîne ont tendance à échouer.</p>
-<h3 id="Code-Generation" class="common-anchor-header">Génération de code</h3><p>Le modèle porte le codage génératif à un niveau supérieur. Gemini 3 Pro peut produire des SVG interactifs, des applications web complètes, des scènes 3D et même des jeux fonctionnels - y compris des environnements de type Minecraft et des billards sur navigateur - le tout à partir d'une seule invite en langage naturel. Le développement frontal en bénéficie particulièrement : le modèle peut recréer des conceptions d'interface utilisateur existantes avec une grande fidélité ou traduire une capture d'écran directement en code prêt à la production, ce qui accélère considérablement le travail itératif sur l'interface utilisateur.</p>
-<h3 id="AI-Agents-and-Tool-Use" class="common-anchor-header">Agents d'IA et utilisation d'outils</h3><p>Avec l'autorisation de l'utilisateur, Gemini 3 Pro peut accéder aux données de l'appareil Google de l'utilisateur pour effectuer des tâches à long terme et en plusieurs étapes, telles que la planification de voyages ou la réservation de voitures de location. Cette capacité agentique se reflète dans ses excellentes performances sur <strong>Vending-Bench 2</strong>, un benchmark spécialement conçu pour tester l'utilisation d'outils à long terme. Le modèle prend également en charge des flux de travail d'agent de niveau professionnel, y compris l'exécution de commandes de terminal et l'interaction avec des outils externes par le biais d'API bien définies.</p>
-<h3 id="Generative-UI" class="common-anchor-header">Interface utilisateur générative</h3><p>Gemini 3 Pro dépasse le modèle conventionnel "une question - une réponse" et introduit une <strong>interface utilisateur générative</strong>, dans laquelle le modèle peut construire des expériences interactives entières de manière dynamique. Au lieu de renvoyer un texte statique, il peut générer des interfaces entièrement personnalisées - par exemple, un planificateur de voyage riche et ajustable - directement en réponse aux instructions de l'utilisateur. Les LLM passent ainsi du statut de répondeurs passifs à celui de générateurs actifs d'interfaces.</p>
-<h2 id="Putting-Gemini-3-Pro-to-the-Test" class="common-anchor-header">Mise à l'épreuve de Gemini 3 Pro<button data-href="#Putting-Gemini-3-Pro-to-the-Test" class="anchor-icon" translate="no">
+    </button></h2><p>Gemini 3 Pro introduces a set of substantial upgrades that reshape how the model reasons, creates, executes tasks, and interacts with users. These improvements fall into four major capability areas:</p>
+<h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">Multimodal Understanding and Reasoning</h3><p>Gemini 3 Pro sets new records across important multimodal benchmarks, including ARC-AGI-2 for visual reasoning, MMMU-Pro for cross-modal understanding, and Video-MMMU for video comprehension and knowledge acquisition. The model also introduces Deep Think, an extended reasoning mode that enables structured, multi-step logical processing. This results in significantly higher accuracy on complex problems where traditional chain-of-thought models tend to fail.</p>
+<h3 id="Code-Generation" class="common-anchor-header">Code Generation</h3><p>The model takes generative coding to a new level. Gemini 3 Pro can produce interactive SVGs, full web applications, 3D scenes, and even functional games — including Minecraft-like environments and browser-based billiards — all from a single natural-language prompt. Front-end development benefits especially: the model can re-create existing UI designs with high fidelity or translate a screenshot directly into production-ready code, making iterative UI work dramatically faster.</p>
+<h3 id="AI-Agents-and-Tool-Use" class="common-anchor-header">AI Agents and Tool Use</h3><p>With user permission, Gemini 3 Pro can access data from a user’s Google device to perform long-horizon, multi-step tasks such as planning trips or booking rental cars. This agentic capability is reflected in its strong performance on <strong>Vending-Bench 2</strong>, a benchmark specifically designed to stress-test long-horizon tool use. The model also supports professional-grade agent workflows, including executing terminal commands and interacting with external tools through well-defined APIs.</p>
+<h3 id="Generative-UI" class="common-anchor-header">Generative UI</h3><p>Gemini 3 Pro moves past the conventional one-question-one-answer model and introduces <strong>generative UI</strong>, where the model can build entire interactive experiences dynamically. Instead of returning static text, it can generate fully customized interfaces — for example, a rich, adjustable travel planner — directly in response to user instructions. This shifts LLMs from passive responders to active interface generators.</p>
+<h2 id="Putting-Gemini-3-Pro-to-the-Test" class="common-anchor-header">Putting Gemini 3 Pro to the Test<button data-href="#Putting-Gemini-3-Pro-to-the-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,8 +72,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Au-delà des résultats des tests de référence, nous avons effectué une série de tests pratiques pour comprendre comment Gemini 3 Pro se comporte dans les flux de travail réels. Les résultats soulignent comment son raisonnement multimodal, ses capacités génératives et sa planification à long terme se traduisent par une valeur pratique pour les développeurs.</p>
-<h3 id="Multimodal-understanding" class="common-anchor-header">Compréhension multimodale</h3><p>Gemini 3 Pro fait preuve d'une polyvalence impressionnante en matière de texte, d'images, de vidéo et de code. Lors de notre test, nous avons téléchargé une vidéo de Zilliz directement depuis YouTube. Le modèle a traité l'intégralité du clip - y compris la narration, les transitions et le texte à l'écran - en <strong>40 secondes</strong> environ, ce qui est exceptionnellement rapide pour un contenu multimodal de longue durée.</p>
+    </button></h2><p>Beyond benchmark results, we ran a series of hands-on tests to understand how Gemini 3 Pro behaves in real workflows. The outcomes highlight how its multimodal reasoning, generative capabilities, and long-horizon planning translate into practical value for developers.</p>
+<h3 id="Multimodal-understanding" class="common-anchor-header">Multimodal understanding</h3><p>Gemini 3 Pro shows impressive versatility across text, images, video, and code. In our test, we uploaded a Zilliz video directly from YouTube. The model processed the entire clip — including narration, transitions, and on-screen text — in roughly <strong>40 seconds</strong>, an unusually fast turnaround for long-form multimodal content.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ytb1_39f31b728a.png" alt="" class="doc-image" id="" />
@@ -87,13 +86,13 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Les évaluations internes de Google montrent un comportement similaire : Gemini 3 Pro a traité des recettes manuscrites en plusieurs langues, les a transcrites et traduites, puis les a compilées dans un livre de recettes familiales partageable.</p>
+<p>Google’s internal evaluations show similar behavior: Gemini 3 Pro handled handwritten recipes across multiple languages, transcribed and translated each one, and compiled them into a shareable family recipe book.</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
-<h3 id="Zero-Shot-Tasks" class="common-anchor-header">Tâches en un clin d'œil</h3><p>Gemini 3 Pro peut générer des interfaces web entièrement interactives sans aucun exemple ou échafaudage préalable. Lorsqu'on lui a demandé de créer un <strong>jeu Web</strong> rétro-futuriste <strong>en 3D avec des vaisseaux spatiaux</strong>, le modèle a produit une scène interactive complète : une grille violet néon, des vaisseaux de style cyberpunk, des effets de particules lumineuses et des contrôles de caméra fluides, le tout en une seule réponse zéro-coup.</p>
+<h3 id="Zero-Shot-Tasks" class="common-anchor-header">Zero-Shot Tasks</h3><p>Gemini 3 Pro can generate fully interactive web UIs with no prior examples or scaffolding. When prompted to create a polished, retro-futuristic <strong>3D spaceship web game</strong>, the model produced a complete interactive scene: a neon-purple grid, cyberpunk-style ships, glowing particle effects, and smooth camera controls — all in a single zero-shot response.</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
-<h3 id="Complex-Task-Planning" class="common-anchor-header">Planification de tâches complexes</h3><p>Le modèle fait également preuve d'une meilleure planification des tâches à long terme que la plupart de ses homologues. Lors de notre test d'organisation de la boîte de réception, Gemini 3 Pro s'est comporté comme un assistant administratif IA : il a classé les courriels désordonnés dans des catégories de projets, a rédigé des suggestions exploitables (réponse, suivi, archivage) et a présenté un résumé propre et structuré. Une fois le plan du modèle établi, la totalité de la boîte de réception pouvait être vidée d'un simple clic de confirmation.</p>
+<h3 id="Complex-Task-Planning" class="common-anchor-header">Complex Task Planning</h3><p>The model also demonstrates stronger long-horizon task planning than many of its peers. In our inbox-organization test, Gemini 3 Pro behaved much like an AI administrative assistant: categorizing messy emails into project buckets, drafting actionable suggestions (reply, follow-up, archive), and presenting a clean, structured summary. With the model’s plan laid out, the entire inbox could be cleared with a single confirmation click.</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
-<h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">Comment construire un système RAG avec Gemini 3 Pro et Milvus<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">How to Build a RAG System with Gemini 3 Pro and Milvus<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -108,27 +107,27 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le raisonnement amélioré, la compréhension multimodale et les fortes capacités d'utilisation des outils de Gemini 3 Pro en font une excellente base pour des systèmes RAG performants.</p>
-<p>Associé à <a href="https://milvus.io/"><strong>Milvus</strong></a>, la base de données vectorielles open-source haute performance conçue pour la recherche sémantique à grande échelle, vous bénéficiez d'une répartition claire des responsabilités : Gemini 3 Pro se charge de l'<strong>interprétation, du raisonnement et de la génération</strong>, tandis que Milvus fournit une <strong>couche d'extraction rapide et évolutive</strong> qui maintient les réponses ancrées dans les données de votre entreprise. Cette association est bien adaptée aux applications de production telles que les bases de connaissances internes, les assistants documentaires, les copilotes d'assistance à la clientèle et les systèmes experts spécifiques à un domaine.</p>
-<h3 id="Prerequisites" class="common-anchor-header">Conditions préalables</h3><p>Avant de construire votre pipeline RAG, assurez-vous que les bibliothèques Python suivantes sont installées ou mises à jour dans leurs dernières versions :</p>
+    </button></h2><p>Gemini 3 Pro’s upgraded reasoning, multimodal understanding, and strong tool-use capabilities make it an excellent foundation for high-performance RAG systems.</p>
+<p>When paired with <a href="https://milvus.io/"><strong>Milvus</strong></a>, the high-performance open-source vector database built for large-scale semantic search, you get a clean division of responsibilities: Gemini 3 Pro handles the <strong>interpretation, reasoning, and generation</strong>, while Milvus provides a <strong>fast, scalable retrieval layer</strong> that keeps responses grounded in your enterprise data. This pairing is well-suited for production-grade applications such as internal knowledge bases, document assistants, customer-support copilots, and domain-specific expert systems.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>Before building your RAG pipeline, ensure these core Python libraries are installed or upgraded to their latest versions:</p>
 <ul>
-<li><p><strong>pymilvus</strong> - le SDK officiel Milvus Python</p></li>
-<li><p><strong>google-generativeai</strong> - la bibliothèque client Gemini 3 Pro</p></li>
-<li><p><strong>requests</strong> - pour gérer les appels HTTP si nécessaire</p></li>
-<li><p><strong>tqdm</strong> - pour les barres de progression pendant l'ingestion des ensembles de données</p></li>
+<li><p><strong>pymilvus</strong> — the official Milvus Python SDK</p></li>
+<li><p><strong>google-generativeai</strong> — the Gemini 3 Pro client library</p></li>
+<li><p><strong>requests</strong> — for handling HTTP calls where needed</p></li>
+<li><p><strong>tqdm</strong> — for progress bars during dataset ingestion</p></li>
 </ul>
 <pre><code translate="no">! pip install --upgrade pymilvus google-generativeai requests tqdm
 <button class="copy-code-btn"></button></code></pre>
-<p>Ensuite, connectez-vous à <a href="https://aistudio.google.com/api-keys"><strong>Google AI Studio</strong></a> pour obtenir votre clé API.</p>
+<p>Next, log in to <a href="https://aistudio.google.com/api-keys"><strong>Google AI Studio</strong></a> to obtain your API key.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;GEMINI_API_KEY&quot;</span>] = <span class="hljs-string">&quot;**********&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Preparing-the-Dataset" class="common-anchor-header">Préparation du jeu de données</h3><p>Pour ce tutoriel, nous utiliserons la section FAQ de la documentation Milvus 2.4.x comme base de connaissances privée pour notre système RAG.</p>
-<p>Téléchargez l'archive de la documentation et extrayez-la dans un dossier nommé <code translate="no">milvus_docs</code>.</p>
+<h3 id="Preparing-the-Dataset" class="common-anchor-header">Preparing the Dataset</h3><p>For this tutorial, we’ll use the FAQ section from the Milvus 2.4.x documentation as the private knowledge base for our RAG system.</p>
+<p>Download the documentation archive and extract it into a folder named <code translate="no">milvus_docs</code>.</p>
 <pre><code translate="no">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>Chargez tous les fichiers Markdown à partir du chemin <code translate="no">milvus_docs/en/faq</code>. Pour chaque document, nous appliquons une division simple basée sur les titres <code translate="no">#</code> pour séparer grossièrement les sections principales dans chaque fichier Markdown.</p>
+<p>Load all Markdown files from the path <code translate="no">milvus_docs/en/faq</code>. For each document, we apply a simple split based on <code translate="no">#</code> headings to roughly separate the main sections within each Markdown file.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 text_lines = []
 <span class="hljs-keyword">for</span> file_path <span class="hljs-keyword">in</span> glob(<span class="hljs-string">&quot;milvus_docs/en/faq/*.md&quot;</span>, recursive=<span class="hljs-literal">True</span>):
@@ -136,15 +135,15 @@ text_lines = []
         file_text = file.read()
     text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="LLM-and-Embedding-Model-Setup" class="common-anchor-header">Configuration du LLM et du modèle d'intégration</h3><p>Pour ce tutoriel, nous utiliserons <code translate="no">gemini-3-pro-preview</code> comme LLM et <code translate="no">text-embedding-004</code> comme modèle d'intégration.</p>
+<h3 id="LLM-and-Embedding-Model-Setup" class="common-anchor-header">LLM and Embedding Model Setup</h3><p>For this tutorial, we’ll use <code translate="no">gemini-3-pro-preview</code> as the LLM and <code translate="no">text-embedding-004</code> as the embedding model.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> google.generativeai <span class="hljs-keyword">as</span> genai
 genai.configure(api_key=os.environ[<span class="hljs-string">&quot;GEMINI_API_KEY&quot;</span>])
 gemini_model = genai.GenerativeModel(<span class="hljs-string">&quot;gemini-3-pro-preview&quot;</span>)
 response = gemini_model.generate_content(<span class="hljs-string">&quot;who are you&quot;</span>)
 <span class="hljs-built_in">print</span>(response.text)
 <button class="copy-code-btn"></button></code></pre>
-<p>Réponse du modèle : Je suis Gemini, un grand modèle de langage construit par Google.</p>
-<p>Vous pouvez effectuer une vérification rapide en générant un test d'intégration et en imprimant sa dimensionnalité ainsi que les premières valeurs :</p>
+<p>Model response: I am Gemini, a large language model built by Google.</p>
+<p>You can run a quick check by generating a test embedding and printing its dimensionality along with the first few values:</p>
 <pre><code translate="no">test_embeddings = genai.embed_content(
     model=<span class="hljs-string">&quot;models/text-embedding-004&quot;</span>, content=[<span class="hljs-string">&quot;This is a test1&quot;</span>, <span class="hljs-string">&quot;This is a test2&quot;</span>]
 )[<span class="hljs-string">&quot;embedding&quot;</span>]
@@ -152,26 +151,26 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embeddings[<span cla
 <span class="hljs-built_in">print</span>(embedding_dim)
 <span class="hljs-built_in">print</span>(test_embeddings[<span class="hljs-number">0</span>][:<span class="hljs-number">10</span>])
 <button class="copy-code-btn"></button></code></pre>
-<p>Sortie du vecteur de test :</p>
+<p>Test vector output:</p>
 <p>768</p>
 <p>[0.013588584, -0.004361838, -0.08481652, -0.039724775, 0.04723794, -0.0051557426, 0.026071774, 0.045514572, -0.016867816, 0.039378334]</p>
-<h3 id="Loading-Data-into-Milvus" class="common-anchor-header">Chargement des données dans Milvus</h3><p><strong>Créer une collection</strong></p>
+<h3 id="Loading-Data-into-Milvus" class="common-anchor-header">Loading Data into Milvus</h3><p><strong>Create a Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Lors de la création d'une collection ( <code translate="no">MilvusClient</code>), vous avez le choix entre trois options de configuration, en fonction de votre échelle et de votre environnement :</p>
+<p>When creating a <code translate="no">MilvusClient</code>, you can choose from three configuration options, depending on your scale and environment:</p>
 <ul>
-<li><p><strong>Mode local (Milvus Lite) :</strong> Définissez l'URI sur un chemin de fichier local (par exemple, <code translate="no">./milvus.db</code>). Il s'agit de la manière la plus simple de démarrer - <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> stockera automatiquement toutes les données dans ce fichier.</p></li>
-<li><p><strong>Milvus auto-hébergé (Docker ou Kubernetes) :</strong> Pour les ensembles de données plus importants ou les charges de travail de production, exécutez Milvus sur Docker ou Kubernetes. Définissez l'URI sur le point d'extrémité de votre serveur Milvus, tel que <code translate="no">http://localhost:19530</code>.</p></li>
-<li><p><strong>Zilliz Cloud (le service Milvus entièrement géré) :</strong> Si vous préférez une solution gérée, utilisez Zilliz Cloud. Définissez l'URI sur votre point de terminaison public et fournissez votre clé API comme jeton d'authentification.</p></li>
+<li><p><strong>Local Mode (Milvus Lite):</strong> Set the URI to a local file path (e.g., <code translate="no">./milvus.db</code>). This is the easiest way to get started — <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> will automatically store all data in that file.</p></li>
+<li><p><strong>Self-Hosted Milvus (Docker or Kubernetes):</strong> For larger datasets or production workloads, run Milvus on Docker or Kubernetes. Set the URI to your Milvus server endpoint, such as <code translate="no">http://localhost:19530</code>.</p></li>
+<li><p><strong>Zilliz Cloud (the fully managed Milvus service):</strong> If you prefer a managed solution, use Zilliz Cloud. Set the URI to your Public Endpoint and provide your API key as the authentication token.</p></li>
 </ul>
-<p>Avant de créer une nouvelle collection, vérifiez d'abord si elle existe déjà. Si c'est le cas, supprimez-la et recréez-la pour garantir une configuration propre.</p>
+<p>Before creating a new collection, first check whether it already exists. If it does, drop it and recreate it to ensure a clean setup.</p>
 <pre><code translate="no">if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<p>Créez une nouvelle collection avec les paramètres spécifiés.</p>
-<p>Si aucun schéma n'est fourni, Milvus génère automatiquement un champ ID par défaut comme clé primaire et un champ vectoriel pour le stockage des embeddings. Il fournit également un champ dynamique JSON réservé, qui capture tous les champs supplémentaires qui ne sont pas définis dans le schéma.</p>
+<p>Create a new collection with the specified parameters.</p>
+<p>If no schema is provided, Milvus automatically generates a default ID field as the primary key and a vector field for storing embeddings. It also provides a reserved JSON dynamic field, which captures any additional fields that are not defined in the schema.</p>
 <pre><code translate="no">milvus_client.create_collection(
     collection_name=collection_name,
     dimension=embedding_dim,
@@ -179,8 +178,9 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,  <span class="hljs-comment"># Strong consistency level</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Insérer des données</strong></p>
-<p>Parcourez chaque entrée de texte, générez son vecteur d'intégration et insérez les données dans Milvus. Dans cet exemple, nous incluons un champ supplémentaire appelé <code translate="no">text</code>. Comme il n'est pas prédéfini dans le schéma, Milvus le stocke automatiquement à l'aide du champ JSON dynamique sous le capot - aucune configuration supplémentaire n'est requise.</p>
+<p><strong>Insert Data</strong></p>
+<p>Iterate through each text entry, generate its embedding vector, and insert the data into Milvus.
+In this example, we include an extra field called <code translate="no">text</code>. Because it isn’t pre-defined in the schema, Milvus automatically stores it using the dynamic JSON field under the hood — no additional setup required.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 data = []
 doc_embeddings = genai.embed_content(
@@ -190,15 +190,15 @@ doc_embeddings = genai.embed_content(
     data.append({<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: doc_embeddings[i], <span class="hljs-string">&quot;text&quot;</span>: line})
 milvus_client.insert(collection_name=collection_name, data=data)
 <button class="copy-code-btn"></button></code></pre>
-<p>Exemple de sortie :</p>
+<p>Sample output:</p>
 <pre><code translate="no">Creating embeddings: 100%|█████████████████████████| 72/72 [00:00&lt;00:00, 431414.13it/s]
 {<span class="hljs-string">&#x27;insert_count&#x27;</span>: 72, <span class="hljs-string">&#x27;ids&#x27;</span>: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], <span class="hljs-string">&#x27;cost&#x27;</span>: 0}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Building-the-RAG-Workflow" class="common-anchor-header">Construction du flux de travail RAG</h3><p><strong>Récupérer les données pertinentes</strong></p>
-<p>Pour tester la récupération, nous posons une question courante sur Milvus.</p>
+<h3 id="Building-the-RAG-Workflow" class="common-anchor-header">Building the RAG Workflow</h3><p><strong>Retrieve Relevant Data</strong></p>
+<p>To test retrieval, we ask a common question about Milvus.</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Recherchez la requête dans la collection et renvoyez les 3 résultats les plus pertinents.</p>
+<p>Search the collection for the query and return the top 3 most relevant results.</p>
 <pre><code translate="no">question_embedding = genai.embed_content(
     model=<span class="hljs-string">&quot;models/text-embedding-004&quot;</span>, content=question
 )[<span class="hljs-string">&quot;embedding&quot;</span>]
@@ -215,7 +215,7 @@ retrieved_lines_with_distances = [
 ]
 <span class="hljs-built_in">print</span>(json.dumps(retrieved_lines_with_distances, indent=<span class="hljs-number">4</span>))
 <button class="copy-code-btn"></button></code></pre>
-<p>Les résultats sont renvoyés par ordre de similarité, du plus proche au moins similaire.</p>
+<p>The results are returned in order of similarity, from closest to least similar.</p>
 <pre><code translate="no">[
     [
         <span class="hljs-string">&quot; Where does Milvus store data?\n\nMilvus deals with two types of data, inserted data and metadata. \n\nInserted data, including vector data, scalar data, and collection-specific schema, are stored in persistent storage as incremental log. Milvus supports multiple object storage backends, including [MinIO](
@@ -243,13 +243,13 @@ https://www.tencentcloud.com/products/cos
     ]
 ]
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Générer une réponse RAG avec le LLM</strong></p>
-<p>Après avoir récupéré les documents, convertissez-les dans un format de chaîne de caractères</p>
+<p><strong>Generate a RAG Response with the LLM</strong></p>
+<p>After retrieving the documents, convert them into a string format</p>
 <pre><code translate="no">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Fournir au LLM une invite système et une invite utilisateur, toutes deux construites à partir des documents récupérés de Milvus.</p>
+<p>Provide the LLM with a system prompt and a user prompt, both constructed from the documents retrieved from Milvus.</p>
 <pre><code translate="no">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 Human: You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -263,14 +263,14 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Utilisez le modèle <code translate="no">gemini-3-pro-preview</code> avec ces invites pour générer la réponse finale.</p>
+<p>Use the <code translate="no">gemini-3-pro-preview</code> model along with these prompts to generate the final response.</p>
 <pre><code translate="no">gemini_model = genai.GenerativeModel(
     <span class="hljs-string">&quot;gemini-3-pro-preview&quot;</span>, system_instruction=SYSTEM_PROMPT
 )
 response = gemini_model.generate_content(USER_PROMPT)
 <span class="hljs-built_in">print</span>(response.text)
 <button class="copy-code-btn"></button></code></pre>
-<p>Le résultat montre que Gemini 3 Pro produit une réponse claire et bien structurée basée sur les informations extraites.</p>
+<p>From the output, you can see that Gemini 3 Pro produces a clear, well-structured answer based on the retrieved information.</p>
 <pre><code translate="no">Based <span class="hljs-keyword">on</span> the provided documents, Milvus stores data <span class="hljs-keyword">in</span> the following ways:
 *   **Inserted Data:** Vector data, scalar data, <span class="hljs-keyword">and</span> collection-specific schema are stored <span class="hljs-keyword">in</span> persistent storage <span class="hljs-keyword">as</span> an incremental log. Milvus supports multiple <span class="hljs-built_in">object</span> storage backends <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> purpose, including:
     *   MinIO
@@ -282,7 +282,7 @@ response = gemini_model.generate_content(USER_PROMPT)
 *   **Metadata:** Metadata generated within Milvus modules <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> **etcd**.
 *   **Memory Buffering:** Incremental <span class="hljs-title">data</span> (<span class="hljs-params">growing segments</span>) are buffered <span class="hljs-keyword">in</span> memory before being persisted, <span class="hljs-keyword">while</span> historical <span class="hljs-title">data</span> (<span class="hljs-params"><span class="hljs-keyword">sealed</span> segments</span>) resides <span class="hljs-keyword">in</span> <span class="hljs-built_in">object</span> storage but <span class="hljs-keyword">is</span> loaded <span class="hljs-keyword">into</span> memory <span class="hljs-keyword">for</span> querying.
 </span><button class="copy-code-btn"></button></code></pre>
-<p><strong>Remarque</strong>: Gemini 3 Pro n'est pas encore disponible pour les utilisateurs free-tier. Cliquez <a href="https://ai.google.dev/gemini-api/docs/rate-limits#tier-1">ici</a> pour plus de détails.</p>
+<p><strong>Note</strong>: Gemini 3 Pro is not currently available to free-tier users. Click <a href="https://ai.google.dev/gemini-api/docs/rate-limits#tier-1">here</a> for more details.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Gemini_3_Pro1_095925d461.png" alt="" class="doc-image" id="" />
@@ -295,7 +295,7 @@ response = gemini_model.generate_content(USER_PROMPT)
     <span></span>
   </span>
 </p>
-<p>Vous pouvez y accéder via <a href="https://openrouter.ai/google/gemini-3-pro-preview/api">OpenRouter</a>:</p>
+<p>You can access it through <a href="https://openrouter.ai/google/gemini-3-pro-preview/api">OpenRouter</a> instead:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 client = OpenAI(
   base_url=<span class="hljs-string">&quot;https://openrouter.ai/api/v1&quot;</span>,
@@ -318,7 +318,7 @@ response2 = client.chat.completions.create(
 response_message = response2.choices[<span class="hljs-number">0</span>].message
 <span class="hljs-built_in">print</span>(response_message.content)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="One-More-Thing-Vibe-Coding-with-Google-Antigravity" class="common-anchor-header">Encore une chose : Vibe Coding avec Google Antigravity<button data-href="#One-More-Thing-Vibe-Coding-with-Google-Antigravity" class="anchor-icon" translate="no">
+<h2 id="One-More-Thing-Vibe-Coding-with-Google-Antigravity" class="common-anchor-header">One More Thing: Vibe Coding with Google Antigravity<button data-href="#One-More-Thing-Vibe-Coding-with-Google-Antigravity" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,10 +333,10 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Parallèlement à Gemini 3 Pro, Google a présenté <a href="https://antigravity.google/"><strong>Google Antigravity</strong></a>, une plateforme de codage vidéo qui interagit de manière autonome avec votre éditeur, votre terminal et votre navigateur. Contrairement aux outils antérieurs assistés par l'IA qui géraient des instructions ponctuelles, Antigravity fonctionne à un niveau orienté vers les tâches - permettant aux développeurs de spécifier <em>ce qu'</em> ils veulent construire tandis que le système gère le <em>comment</em>, orchestrant le flux de travail complet de bout en bout.</p>
-<p>Les flux de codage d'IA traditionnels généraient généralement des bribes isolées que les développeurs devaient encore examiner, intégrer, déboguer et exécuter manuellement. Antigravity change cette dynamique. Vous pouvez simplement décrire une tâche - par exemple, <em>"Créer un jeu simple d'interaction avec les animaux de compagnie</em> " - et le système décomposera la demande, générera le code, exécutera les commandes terminales, ouvrira un navigateur pour tester le résultat, et itérera jusqu'à ce que cela fonctionne. L'IA n'est plus un moteur d'autocomplétion passif, mais un partenaire d'ingénierie actif, qui apprend vos préférences et s'adapte à votre style de développement personnel au fil du temps.</p>
-<p>À l'avenir, l'idée d'un agent coordonnant directement avec une base de données n'est pas farfelue. Grâce à l'appel d'outils via MCP, une IA pourrait éventuellement lire une base de données Milvus, assembler une base de connaissances et même maintenir son propre pipeline de recherche de manière autonome. À bien des égards, ce changement est encore plus important que la mise à niveau du modèle lui-même : une fois qu'une IA peut prendre une description au niveau du produit et la convertir en une séquence de tâches exécutables, l'effort humain se déplace naturellement vers la définition des objectifs, des contraintes et de ce à quoi ressemble la "justesse" - la réflexion de haut niveau qui stimule véritablement le développement de produits.</p>
-<h2 id="Ready-to-Build" class="common-anchor-header">Prêt à construire ?<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">
+    </button></h2><p>Alongside Gemini 3 Pro, Google introduced <a href="https://antigravity.google/"><strong>Google Antigravity</strong></a>, a vide coding platform that autonomously interacts with your editor, terminal, and browser. Unlike earlier AI-assisted tools that handled one-off instructions, Antigravity operates at a task-oriented level — allowing developers to specify <em>what</em> they want built while the system manages the <em>how</em>, orchestrating the complete workflow end-to-end.</p>
+<p>Traditional AI coding workflows typically generated isolated snippets that developers still had to review, integrate, debug, and run manually. Antigravity changes that dynamic. You can simply describe a task — for example, <em>“Create a simple pet-interaction game”</em> — and the system will decompose the request, generate the code, execute terminal commands, open a browser to test the result, and iterate until it works. It elevates AI from a passive autocomplete engine to an active engineering partner — one that learns your preferences and adapts to your personal development style over time.</p>
+<p>Looking ahead, the idea of an agent coordinating directly with a database is not far-fetched. With tool calling via MCP, an AI could eventually read from a Milvus database, assemble a knowledge base, and even maintain its own retrieval pipeline autonomously. In many ways, this shift is even more significant than the model upgrade itself: once an AI can take a product-level description and convert it into a sequence of executable tasks, human effort naturally shifts toward defining objectives, constraints, and what “correctness” looks like — the higher-level thinking that truly drives product development.</p>
+<h2 id="Ready-to-Build" class="common-anchor-header">Ready to Build?<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -351,5 +351,5 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Si vous êtes prêt à l'essayer, suivez notre tutoriel étape par étape et construisez un système RAG avec <strong>Gemini 3 Pro + Milvus</strong> dès aujourd'hui.</p>
-<p>Vous avez des questions ou souhaitez approfondir une fonctionnalité ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou déposez des questions sur<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions dans le cadre des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Heures de bureau Milvus</a>.</p>
+    </button></h2><p>If you’re ready to try it out, follow our step-by-step tutorial and build a RAG system with <strong>Gemini 3 Pro + Milvus</strong> today.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

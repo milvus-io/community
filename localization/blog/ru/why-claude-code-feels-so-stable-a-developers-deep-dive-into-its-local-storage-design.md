@@ -1,9 +1,9 @@
 ---
 id: >-
   why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
-title: >-
-  Почему код Claude кажется таким стабильным: Глубокое погружение разработчика в
-  дизайн локального хранилища
+title: >
+  Why Claude Code Feels So Stable: A Developer’s Deep Dive into Its Local
+  Storage Design
 author: Bill Chen
 date: 2026-01-30T00:00:00.000Z
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
@@ -14,18 +14,18 @@ tags: 'Claude, Claude Code, Vector Database, Retreival Augmented Generation, Mil
 meta_keywords: 'Claude Code, AI agent, AI coding assistant, Agent memory'
 meta_title: |
   How Claude Code Manages Local Storage for AI Agents
-desc: >-
-  Глубокое погружение в хранилище Claude Code: JSONL-журналы сессий, изоляция
-  проектов, многоуровневая конфигурация и снимки файлов, которые делают кодинг с
-  помощью искусственного интеллекта стабильным и восстанавливаемым.
+desc: >
+  Deep dive into Claude Code's storage: JSONL session logs, project isolation,
+  layered config, and file snapshots that make AI-assisted coding stable and
+  recoverable.
 origin: >-
   https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md
 ---
-<p>Код Клода в последнее время повсюду. Разработчики используют его, чтобы быстрее создавать функции, автоматизировать рабочие процессы и создавать прототипы агентов, которые действительно работают в реальных проектах. Что еще более удивительно, так это то, как много людей, не являющихся кодерами, тоже подключились к нему - создают инструменты, подключают задачи и получают полезные результаты практически без настройки. Редко можно увидеть, чтобы инструмент для кодирования ИИ так быстро распространялся среди людей разного уровня подготовки.</p>
-<p>Но что действительно выделяется, так это <em>стабильность</em>. Claude Code помнит, что происходило в разных сессиях, переживает сбои без потери прогресса и ведет себя скорее как локальный инструмент разработки, чем как чат-интерфейс. Такая надежность обусловлена тем, как он работает с локальным хранилищем.</p>
-<p>Вместо того чтобы рассматривать сессию кодирования как временный чат, Claude Code читает и записывает реальные файлы, хранит состояние проекта на диске и записывает каждый шаг работы агента. Сессии можно возобновлять, проверять или сворачивать без лишних раздумий, а каждый проект остается чисто изолированным, что позволяет избежать проблем с перекрестным заражением, с которыми сталкиваются многие инструменты для агентов.</p>
-<p>В этом посте мы подробнее рассмотрим архитектуру хранения, лежащую в основе этой стабильности, и почему она играет такую важную роль в том, чтобы сделать Claude Code практичным для повседневной разработки.</p>
-<h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">Проблемы, с которыми сталкивается каждый локальный помощник по кодированию ИИ<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
+<p>Claude Code has been everywhere lately. Developers are using it to ship features faster, automate workflows, and prototype agents that actually work in real projects. What’s even more surprising is how many non-coders have jumped in too — building tools, wiring up tasks, and getting useful results with almost no setup. It’s rare to see an AI coding tool spread this quickly across so many different skill levels.</p>
+<p>What really stands out, though, is how <em>stable</em> it feels. Claude Code remembers what happened across sessions, survives crashes without losing progress, and behaves more like a local development tool than a chat interface. That reliability comes from how it handles local storage.</p>
+<p>Instead of treating your coding session as a temporary chat, Claude Code reads and writes real files, stores project state on disk, and records every step of the agent’s work. Sessions can be resumed, inspected, or rolled back without guesswork, and each project stays cleanly isolated — avoiding the cross-contamination issues that many agent tools run into.</p>
+<p>In this post, we’ll take a closer look at the storage architecture behind that stability, and why it plays such a big role in making Claude Code feel practical for everyday development.</p>
+<h2 id="Challenges-Every-Local-AI-Coding-Assistant-Faces" class="common-anchor-header">Challenges Every Local AI Coding Assistant Faces<button data-href="#Challenges-Every-Local-AI-Coding-Assistant-Faces" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,18 +40,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем рассказать о том, как Claude Code подходит к хранению данных, давайте рассмотрим общие проблемы, с которыми обычно сталкиваются локальные инструменты кодирования ИИ. Они возникают естественным образом, когда помощник работает непосредственно с вашей файловой системой и сохраняет ее состояние во времени.</p>
-<p><strong>1. Данные проекта перемешиваются между рабочими пространствами.</strong></p>
-<p>Большинство разработчиков переключаются между несколькими репозиториями в течение дня. Если помощник переносит состояние из одного проекта в другой, становится сложнее понять его поведение и легче сделать неверные предположения. Каждый проект нуждается в собственном чистом, изолированном пространстве для состояния и истории.</p>
-<p><strong>2. Аварии могут привести к потере данных.</strong></p>
-<p>Во время сеанса кодирования помощник создает непрерывный поток полезных данных - редактирование файлов, вызов инструментов, промежуточные шаги. Если эти данные не сохранить сразу, то сбой или принудительный перезапуск могут уничтожить их. Надежная система записывает важные данные на диск сразу после их создания, чтобы работа не была неожиданно потеряна.</p>
-<p><strong>3. Не всегда понятно, что на самом деле делал агент.</strong></p>
-<p>Типичная сессия включает в себя множество мелких действий. Без четкой, упорядоченной записи этих действий трудно проследить, как помощник пришел к определенному результату, или найти шаг, на котором что-то пошло не так. Полная история делает отладку и анализ гораздо более удобными.</p>
-<p><strong>4. Исправление ошибок требует слишком много усилий.</strong></p>
-<p>Иногда помощник вносит изменения, которые не совсем работают. Если у вас нет встроенного способа откатить эти изменения, вам приходится вручную искать правки по всему репозиторию. Система должна автоматически отслеживать изменения, чтобы вы могли отменить их без лишней работы.</p>
-<p><strong>5. Разным проектам нужны разные настройки.</strong></p>
-<p>Локальные среды различаются. Для одних проектов требуются особые разрешения, инструменты или правила работы с каталогами, для других - пользовательские сценарии или рабочие процессы. Ассистент должен учитывать эти различия и позволять настраивать параметры для каждого проекта, сохраняя при этом единообразие основного поведения.</p>
-<h2 id="The-Storage-Design-Principles-Behind-Claude-Code" class="common-anchor-header">Принципы проектирования хранилищ, лежащие в основе Claude Code<button data-href="#The-Storage-Design-Principles-Behind-Claude-Code" class="anchor-icon" translate="no">
+    </button></h2><p>Before explaining how Claude Code approaches storage, let’s take a look at the common issues that local AI coding tools tend to run into. These come up naturally when an assistant works directly on your filesystem and keeps state over time.</p>
+<p><strong>1. Project data gets mixed across workspaces.</strong></p>
+<p>Most developers switch between multiple repos throughout the day. If an assistant carries over state from one project to another, it becomes harder to understand its behavior and easier for it to make incorrect assumptions. Each project needs its own clean, isolated space for state and history.</p>
+<p><strong>2. Crashes can cause data loss.</strong></p>
+<p>During a coding session, an assistant produces a steady stream of useful data—file edits, tool calls, intermediate steps. If this data isn’t saved right away, a crash or forced restart can wipe it out. A reliable system writes important state to disk as soon as it’s created so work isn’t lost unexpectedly.</p>
+<p><strong>3. It’s not always clear what the agent actually did.</strong></p>
+<p>A typical session involves many small actions. Without a clear, ordered record of those actions, it’s difficult to retrace how the assistant arrived at a certain output or locate the step where something went wrong. A full history makes debugging and review a lot more manageable.</p>
+<p><strong>4. Undoing mistakes takes too much effort.</strong></p>
+<p>Sometimes the assistant makes changes that don’t quite work. If you don’t have a built-in way to roll back those changes, you end up manually hunting for edits across the repo. The system should automatically track what changed so you can undo it cleanly without extra work.</p>
+<p><strong>5. Different projects need different settings.</strong></p>
+<p>Local environments vary. Some projects require specific permissions, tools, or directory rules; others have custom scripts or workflows. An assistant needs to respect these differences and allow per-project settings while still keeping its core behavior consistent.</p>
+<h2 id="The-Storage-Design-Principles-Behind-Claude-Code" class="common-anchor-header">The Storage Design Principles Behind Claude Code<button data-href="#The-Storage-Design-Principles-Behind-Claude-Code" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,12 +66,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Дизайн хранилища Claude Code построен на четырех простых идеях. Они могут показаться простыми, но вместе они решают практические проблемы, возникающие, когда ИИ-ассистент работает непосредственно на вашей машине и в нескольких проектах.</p>
-<h3 id="1-Each-project-gets-its-own-storage" class="common-anchor-header">1. Каждый проект получает собственное хранилище.</h3><p>Claude Code привязывает все данные сессии к каталогу проекта, к которому они относятся. Это означает, что разговоры, правки и журналы остаются в том проекте, из которого они пришли, и не просачиваются в другие. Раздельное хранение данных делает поведение помощника более понятным и позволяет легко проверять или удалять данные для конкретного репозитория.</p>
-<h3 id="2-Data-is-saved-to-disk-right-away" class="common-anchor-header">2. Данные сразу сохраняются на диск.</h3><p>Вместо того чтобы хранить данные о взаимодействии в памяти, Claude Code записывает их на диск сразу же после создания. Каждое событие - сообщение, вызов инструмента или обновление состояния - добавляется как новая запись. Если программа аварийно завершается или неожиданно закрывается, почти все сохраняется. Такой подход обеспечивает долговечность сессий, не создавая при этом особых сложностей.</p>
-<h3 id="3-Every-action-has-a-clear-place-in-history" class="common-anchor-header">3. Каждое действие имеет четкое место в истории.</h3><p>Claude Code связывает каждое сообщение и действие инструмента с предыдущим, формируя полную последовательность. Такая упорядоченная история позволяет просмотреть, как разворачивалась сессия, и проследить шаги, которые привели к определенному результату. Для разработчиков наличие такого рода трассировки значительно облегчает отладку и понимание поведения агента.</p>
-<h3 id="4-Code-edits-are-easy-to-roll-back" class="common-anchor-header">4. Правки в коде легко отменить.</h3><p>Перед тем как помощник обновляет файл, Claude Code сохраняет снимок его предыдущего состояния. Если изменение окажется неверным, вы сможете восстановить предыдущую версию, не копаясь в репозитории и не гадая, что изменилось. Эта простая система безопасности делает редактирование, управляемое ИИ, гораздо менее рискованным.</p>
-<h2 id="Claude-Code-Local-Storage-Layout" class="common-anchor-header">Расположение локальных хранилищ Claude Code<button data-href="#Claude-Code-Local-Storage-Layout" class="anchor-icon" translate="no">
+    </button></h2><p>Claude Code’s storage design is built around four straightforward ideas. They may seem simple, but together they address the practical problems that come up when an AI assistant works directly on your machine and across multiple projects.</p>
+<h3 id="1-Each-project-gets-its-own-storage" class="common-anchor-header">1. Each project gets its own storage.</h3><p>Claude Code ties all session data to the project directory it belongs to. That means conversations, edits, and logs stay with the project they came from and don’t leak into others. Keeping storage separate makes the assistant’s behavior easier to understand and makes it simple to inspect or delete data for a specific repo.</p>
+<h3 id="2-Data-is-saved-to-disk-right-away" class="common-anchor-header">2. Data is saved to disk right away.</h3><p>Instead of holding interaction data in memory, Claude Code writes it to disk as soon as it’s created. Each event—message, tool call, or state update—is appended as a new entry. If the program crashes or is closed unexpectedly, almost everything is still there. This approach keeps sessions durable without adding much complexity.</p>
+<h3 id="3-Every-action-has-a-clear-place-in-history" class="common-anchor-header">3. Every action has a clear place in history.</h3><p>Claude Code links each message and tool action to the one before it, forming a complete sequence. This ordered history makes it possible to review how a session unfolded and trace the steps that led to a specific result. For developers, having this kind of trace makes debugging and understanding agent behavior much easier.</p>
+<h3 id="4-Code-edits-are-easy-to-roll-back" class="common-anchor-header">4. Code edits are easy to roll back.</h3><p>Before the assistant updates a file, Claude Code saves a snapshot of its previous state. If the change turns out to be wrong, you can restore the earlier version without digging through the repo or guessing what changed. This simple safety net makes AI-driven edits far less risky.</p>
+<h2 id="Claude-Code-Local-Storage-Layout" class="common-anchor-header">Claude Code Local Storage Layout<button data-href="#Claude-Code-Local-Storage-Layout" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,15 +86,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Claude Code хранит все свои локальные данные в одном месте: в вашей домашней директории. Это делает систему предсказуемой и облегчает проверку, отладку или очистку при необходимости. Схема хранения данных построена вокруг двух основных компонентов: небольшого глобального файла конфигурации и более крупного каталога данных, в котором хранится все состояние проекта.</p>
-<p><strong>Два основных компонента:</strong></p>
+    </button></h2><p>Claude Code stores all of its local data in a single place: your home directory. This keeps the system predictable and makes it easier to inspect, debug, or clean up when needed. The storage layout is built around two main components: a small global config file and a larger data directory where all project-level state lives.</p>
+<p><strong>Two core components:</strong></p>
 <ul>
-<li><p><code translate="no">~/.claude.json</code>Хранит глобальную конфигурацию и ярлыки, включая сопоставления проектов, настройки сервера MCP и недавно использованные подсказки.</p></li>
-<li><p><code translate="no">~/.claude/</code>Основной каталог данных, в котором Claude Code хранит беседы, сессии проекта, разрешения, плагины, навыки, историю и связанные с ними данные времени выполнения.</p></li>
+<li><p><code translate="no">~/.claude.json</code>Stores global configuration and shortcuts, including project mappings, MCP server settings, and recently used prompts.</p></li>
+<li><p><code translate="no">~/.claude/</code>The main data directory, where Claude Code stores conversations, project sessions, permissions, plugins, skills, history, and related runtime data.</p></li>
 </ul>
-<p>Далее давайте подробнее рассмотрим эти два основных компонента.</p>
-<p><strong>(1) Глобальная конфигурация</strong>: <code translate="no">~/.claude.json</code></p>
-<p>Этот файл служит скорее указателем, чем хранилищем данных. В нем записано, над какими проектами вы работали, какие инструменты прикреплены к каждому проекту и какие подсказки вы недавно использовали. Сами данные разговора здесь не хранятся.</p>
+<p>Next, let’s take a closer look at these two core components.</p>
+<p><strong>(1) Global configuration:</strong> <code translate="no">~/.claude.json</code></p>
+<p>This file acts as an index rather than a data store. It records which projects you’ve worked on, what tools are attached to each project, and which prompts you recently used. Conversation data itself is not stored here.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;projects&quot;</span>: {
     <span class="hljs-string">&quot;/Users/xxx/my-project&quot;</span>: {
@@ -113,8 +113,8 @@ origin: >-
   ]
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) Основной каталог данных</strong>: <code translate="no">~/.claude/</code></p>
-<p>Каталог <code translate="no">~/.claude/</code> - это место, где хранится большая часть локальных данных Claude Code. Его структура отражает несколько основных идей дизайна: изоляция проекта, немедленная персистентность и безопасное восстановление после ошибок.</p>
+<p><strong>(2) Main data directory:</strong> <code translate="no">~/.claude/</code></p>
+<p>The <code translate="no">~/.claude/</code> directory is where most of Claude Code’s local state lives. Its structure reflects a few core design ideas: project isolation, immediate persistence, and safe recovery from mistakes.</p>
 <pre><code translate="no">~/.claude/
 ├── settings.json                    <span class="hljs-comment"># Global settings (permissions, plugins, cleanup intervals)</span>
 ├── settings.local.json              <span class="hljs-comment"># Local settings (machine-specific, not committed to Git)</span>
@@ -162,8 +162,8 @@ origin: >-
 ├── telemetry/                       <span class="hljs-comment"># Telemetry data</span>
 └── debug/                           <span class="hljs-comment"># Debug logs</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта структура намеренно проста: все, что генерирует Claude Code, живет в одном каталоге, организованном по проектам и сессиям. Скрытое состояние не разбросано по системе, и его легко проверить или очистить при необходимости.</p>
-<h2 id="How-Claude-Code-Manages-Configuration" class="common-anchor-header">Как Claude Code управляет конфигурацией<button data-href="#How-Claude-Code-Manages-Configuration" class="anchor-icon" translate="no">
+<p>This layout is intentionally simple: everything Claude Code generates lives under one directory, organized by project and session. There’s no hidden state scattered around your system, and it’s easy to inspect or clean up when necessary.</p>
+<h2 id="How-Claude-Code-Manages-Configuration" class="common-anchor-header">How Claude Code Manages Configuration<button data-href="#How-Claude-Code-Manages-Configuration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -178,8 +178,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Система конфигурации Claude Code построена на простой идее: сохранять поведение по умолчанию на всех машинах, но при этом позволять отдельным средам и проектам настраивать то, что им нужно. Для этого в Claude Code используется трехслойная модель конфигурации. Когда одна и та же настройка встречается в нескольких местах, всегда побеждает более конкретный уровень.</p>
-<h3 id="The-three-configuration-levels" class="common-anchor-header">Три уровня конфигурации</h3><p>Claude Code загружает конфигурацию в следующем порядке: от наименьшего приоритета к наибольшему:</p>
+    </button></h2><p>Claude Code’s configuration system is designed around a simple idea: keep the default behavior consistent across machines, but still let individual environments and projects customize what they need. To make this work, Claude Code uses a three-layer configuration model. When the same setting appears in more than one place, the more specific layer always wins.</p>
+<h3 id="The-three-configuration-levels" class="common-anchor-header">The three configuration levels</h3><p>Claude Code loads configuration in the following order, from lowest priority to highest:</p>
 <pre><code translate="no">┌─────────────────────────────────────────┐
 │    <span class="hljs-title class_">Project</span>-level configuration          │  <span class="hljs-title class_">Highest</span> priority
 │    project/.<span class="hljs-property">claude</span>/settings.<span class="hljs-property">json</span>        │  <span class="hljs-title class_">Project</span>-specific, overrides other configs
@@ -191,10 +191,10 @@ origin: >-
 │    ~<span class="hljs-regexp">/.claude/</span>settings.<span class="hljs-property">json</span>              │  <span class="hljs-title class_">Base</span> <span class="hljs-keyword">default</span> configuration
 └─────────────────────────────────────────┘
 <button class="copy-code-btn"></button></code></pre>
-<p>Можно представить, что все начинается с глобальных настроек по умолчанию, затем применяются настройки, специфичные для конкретной машины, и, наконец, применяются правила, специфичные для проекта.</p>
-<p>Далее мы подробно рассмотрим каждый уровень конфигурации.</p>
-<p><strong>(1) Глобальная конфигурация</strong>: <code translate="no">~/.claude/settings.json</code></p>
-<p>Глобальная конфигурация определяет поведение по умолчанию для Claude Code во всех проектах. Здесь вы устанавливаете базовые разрешения, включаете плагины и настраиваете поведение очистки.</p>
+<p>You can think of this as starting with global defaults, then applying machine-specific adjustments, and finally applying project-specific rules.</p>
+<p>Next, we’ll walk through each configuration level in detail.</p>
+<p><strong>(1) Global configuration:</strong> <code translate="no">~/.claude/settings.json</code></p>
+<p>The global configuration defines the default behavior for Claude Code across all projects. This is where you set baseline permissions, enable plugins, and configure cleanup behavior.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;<span class="hljs-variable">$schema</span>&quot;</span>: <span class="hljs-string">&quot;https://json.schemastore.org/claude-code-settings.json&quot;</span>,
   <span class="hljs-string">&quot;permissions&quot;</span>: {
@@ -208,8 +208,8 @@ origin: >-
   <span class="hljs-string">&quot;cleanupPeriodDays&quot;</span>: 30
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) Локальная конфигурация</strong>: <code translate="no">~/.claude/settings.local.json</code></p>
-<p>Локальная конфигурация предназначена только для одной машины. Она не предназначена для совместного использования или проверки в системе контроля версий. Это делает ее хорошим местом для ключей API, локальных инструментов или специфических для среды разрешений.</p>
+<p><strong>(2) Local configuration:</strong> <code translate="no">~/.claude/settings.local.json</code></p>
+<p>The local configuration is specific to a single machine. It is not meant to be shared or checked into version control. This makes it a good place for API keys, local tools, or environment-specific permissions.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;permissions&quot;</span>: {
     <span class="hljs-string">&quot;allow&quot;</span>: [<span class="hljs-string">&quot;Bash(git:*)&quot;</span>, <span class="hljs-string">&quot;Bash(docker:*)&quot;</span>]
@@ -219,25 +219,25 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(3) Конфигурация уровня проекта</strong>: <code translate="no">project/.claude/settings.json</code></p>
-<p>Конфигурация на уровне проекта применяется только к одному проекту и имеет наивысший приоритет. Здесь вы определяете правила, которые всегда должны применяться при работе в этом хранилище.</p>
+<p><strong>(3) Project-level configuration:</strong> <code translate="no">project/.claude/settings.json</code></p>
+<p>Project-level configuration applies only to a single project and has the highest priority. This is where you define rules that should always apply when working in that repository.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;permissions&quot;</span>: {
     <span class="hljs-string">&quot;allow&quot;</span>: [<span class="hljs-string">&quot;Bash(pytest:*)&quot;</span>]
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>Когда уровни конфигурации определены, следующий вопрос заключается в том <strong>, как Claude Code на самом деле разрешает конфигурацию и разрешения во время выполнения.</strong></p>
-<p><strong>Claude Code</strong> применяет конфигурацию в три слоя: он начинает с глобальных настроек по умолчанию, затем применяет специфические для машины переопределения и, наконец, применяет специфические для проекта правила. Если один и тот же параметр встречается в нескольких местах, приоритет отдается наиболее специфической конфигурации.</p>
-<p>Разрешения следуют в фиксированном порядке оценки:</p>
+<p>With the configuration layers defined, the next question is <strong>how Claude Code actually resolves configuration and permissions at runtime.</strong></p>
+<p><strong>Claude Code</strong> applies configuration in three layers: it starts with global defaults, then applies machine-specific overrides, and finally applies project-specific rules. When the same setting appears in multiple places, the most specific configuration takes priority.</p>
+<p>Permissions follow a fixed evaluation order:</p>
 <ol>
-<li><p><strong>запретить</strong> - всегда блокирует</p></li>
-<li><p><strong>спрашивать</strong> - требует подтверждения</p></li>
-<li><p><strong>разрешить</strong> - выполняется автоматически</p></li>
-<li><p><strong>по умолчанию</strong> - применяется только в том случае, если ни одно правило не подходит</p></li>
+<li><p><strong>deny</strong> — always blocks</p></li>
+<li><p><strong>ask</strong> — requires confirmation</p></li>
+<li><p><strong>allow</strong> — runs automatically</p></li>
+<li><p><strong>default</strong> — applies only when no rule matches</p></li>
 </ol>
-<p>Это обеспечивает безопасность системы по умолчанию, но при этом дает проектам и отдельным машинам необходимую гибкость.</p>
-<h2 id="Session-Storage-How-Claude-Code-Persists-Core-Interaction-Data" class="common-anchor-header">Хранение сессий: Как Claude Code сохраняет основные данные о взаимодействии<button data-href="#Session-Storage-How-Claude-Code-Persists-Core-Interaction-Data" class="anchor-icon" translate="no">
+<p>This keeps the system safe by default, while still giving projects and individual machines the flexibility they need.</p>
+<h2 id="Session-Storage-How-Claude-Code-Persists-Core-Interaction-Data" class="common-anchor-header">Session Storage: How Claude Code Persists Core Interaction Data<button data-href="#Session-Storage-How-Claude-Code-Persists-Core-Interaction-Data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -252,51 +252,51 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В <strong>Claude Code</strong> сессии являются основной единицей данных. В сессию записывается все взаимодействие между пользователем и ИИ, включая сам разговор, вызовы инструментов, изменения файлов и сопутствующий контекст. То, как хранятся сессии, напрямую влияет на надежность, отлаживаемость и общую безопасность системы.</p>
-<h3 id="Keep-session-data-separate-for-each-project" class="common-anchor-header">Храните данные сеансов отдельно для каждого проекта</h3><p>После определения сессий возникает следующий вопрос: как <strong>Claude Code</strong> хранит их таким образом, чтобы данные были упорядочены и изолированы.</p>
-<p><strong>Claude Code</strong> изолирует данные сессий по проектам. Сессии каждого проекта хранятся в директории, полученной из пути к файлу проекта.</p>
-<p>Путь хранения следует этому шаблону:</p>
+    </button></h2><p>In <strong>Claude Code</strong>, sessions are the core unit of data. A session captures the entire interaction between the user and the AI, including the conversation itself, tool calls, file changes, and related context. How sessions are stored has a direct impact on the system’s reliability, debuggability, and overall safety.</p>
+<h3 id="Keep-session-data-separate-for-each-project" class="common-anchor-header">Keep session data separate for each project</h3><p>Once sessions are defined, the next question is how <strong>Claude Code</strong> stores them in a way that keeps data organized and isolated.</p>
+<p><strong>Claude Code</strong> isolates session data by project. Each project’s sessions are stored under a directory derived from the project’s file path.</p>
+<p>The storage path follows this pattern:</p>
 <p><code translate="no">~/.claude/projects/ + path-encoded project directory</code></p>
-<p>Чтобы создать правильное имя каталога, специальные символы, такие как <code translate="no">/</code>, пробелы и <code translate="no">~</code>, заменяются на <code translate="no">-</code>.</p>
-<p>Например:</p>
+<p>To create a valid directory name, special characters such as <code translate="no">/</code>, spaces, and <code translate="no">~</code> are replaced with <code translate="no">-</code>.</p>
+<p>For example:</p>
 <p><code translate="no">/Users/bill/My Project → -Users-bill-My-Project</code></p>
-<p>Такой подход гарантирует, что данные сессий из разных проектов никогда не смешаются, и ими можно управлять или удалять по отдельным проектам.</p>
-<h3 id="Why-sessions-are-stored-in-JSONL-format" class="common-anchor-header">Почему сессии хранятся в формате JSONL</h3><p><strong>Claude Code</strong> хранит данные о сессиях, используя JSONL (JSON Lines) вместо стандартного JSON.</p>
-<p>В традиционном JSON-файле все сообщения объединяются в одну большую структуру, что означает, что весь файл нужно читать и переписывать при каждом изменении. В отличие от этого, JSONL хранит каждое сообщение как отдельную строку в файле. Одна строка равна одному сообщению, без внешней обертки.</p>
+<p>This approach ensures that session data from different projects never mixes and can be managed or removed on a per-project basis.</p>
+<h3 id="Why-sessions-are-stored-in-JSONL-format" class="common-anchor-header">Why sessions are stored in JSONL format</h3><p><strong>Claude Code</strong> stores session data using JSONL (JSON Lines) instead of standard JSON.</p>
+<p>In a traditional JSON file, all messages are bundled together inside one large structure, which means the entire file has to be read and rewritten whenever it changes. In contrast, JSONL stores each message as its own line in the file. One line equals one message, with no outer wrapper.</p>
 <table>
 <thead>
-<tr><th>Аспект</th><th>Стандартный JSON</th><th>JSONL (JSON Lines)</th></tr>
+<tr><th>Aspect</th><th>Standard JSON</th><th>JSONL (JSON Lines)</th></tr>
 </thead>
 <tbody>
-<tr><td>Как хранятся данные</td><td>Одна большая структура</td><td>Одно сообщение в строке</td></tr>
-<tr><td>Когда сохраняются данные</td><td>Обычно в конце</td><td>Немедленно, в каждом сообщении</td></tr>
-<tr><td>Последствия сбоя</td><td>Весь файл может разрушиться</td><td>Пострадает только последняя строка</td></tr>
-<tr><td>Запись новых данных</td><td>Переписать весь файл</td><td>Добавление одной строки</td></tr>
-<tr><td>Использование памяти</td><td>Загрузить все</td><td>Читать строку за строкой</td></tr>
+<tr><td>How data is stored</td><td>One large structure</td><td>One message per line</td></tr>
+<tr><td>When data is saved</td><td>Usually at the end</td><td>Immediately, per message</td></tr>
+<tr><td>Crash impact</td><td>Whole file may break</td><td>Only last line affected</td></tr>
+<tr><td>Writing new data</td><td>Rewrite entire file</td><td>Append one line</td></tr>
+<tr><td>Memory usage</td><td>Load everything</td><td>Read line by line</td></tr>
 </tbody>
 </table>
-<p>JSONL работает лучше по нескольким ключевым параметрам:</p>
+<p>JSONL works better in several key ways:</p>
 <ul>
-<li><p><strong>Немедленное сохранение:</strong> Каждое сообщение записывается на диск сразу после создания, вместо того чтобы ждать завершения сеанса.</p></li>
-<li><p><strong>Устойчивость к сбоям:</strong> при сбое программы может быть потеряно только последнее незавершенное сообщение. Все, что было написано до этого, останется нетронутым.</p></li>
-<li><p><strong>Быстрое добавление:</strong> Новые сообщения добавляются в конец файла без чтения или перезаписи существующих данных.</p></li>
-<li><p><strong>Низкое потребление памяти:</strong> Файлы сессий можно читать по одной строке за раз, поэтому весь файл не нужно загружать в память.</p></li>
+<li><p><strong>Immediate saving:</strong> Each message is written to disk as soon as it’s generated, instead of waiting for the session to finish.</p></li>
+<li><p><strong>Crash-resistant:</strong> If the program crashes, only the last unfinished message may be lost. Everything written before that stays intact.</p></li>
+<li><p><strong>Fast appends:</strong> New messages are added to the end of the file without reading or rewriting existing data.</p></li>
+<li><p><strong>Low memory usage:</strong> Session files can be read one line at a time, so the entire file doesn’t need to be loaded into memory.</p></li>
 </ul>
-<p>Упрощенный файл сессии JSONL выглядит следующим образом:</p>
+<p>A simplified JSONL session file looks like this:</p>
 <pre><code translate="no">{<span class="hljs-string">&quot;type&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;message&quot;</span>:{<span class="hljs-string">&quot;role&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;content&quot;</span>:<span class="hljs-string">&quot;Hello&quot;</span>},<span class="hljs-string">&quot;timestamp&quot;</span>:<span class="hljs-string">&quot;2026-01-05T10:00:00Z&quot;</span>}
 {<span class="hljs-string">&quot;type&quot;</span>:<span class="hljs-string">&quot;assistant&quot;</span>,<span class="hljs-string">&quot;message&quot;</span>:{<span class="hljs-string">&quot;role&quot;</span>:<span class="hljs-string">&quot;assistant&quot;</span>,<span class="hljs-string">&quot;content&quot;</span>:[{<span class="hljs-string">&quot;type&quot;</span>:<span class="hljs-string">&quot;text&quot;</span>,<span class="hljs-string">&quot;text&quot;</span>:<span class="hljs-string">&quot;Hi!&quot;</span>}]}}
 {<span class="hljs-string">&quot;type&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;message&quot;</span>:{<span class="hljs-string">&quot;role&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;content&quot;</span>:<span class="hljs-string">&quot;Help me fix this bug&quot;</span>}}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Session-message-types" class="common-anchor-header">Типы сообщений сессии</h3><p>В файле сессии записывается все, что происходит во время взаимодействия с Claude Code. Чтобы сделать это наглядно, он использует различные типы сообщений для разных типов событий.</p>
+<h3 id="Session-message-types" class="common-anchor-header">Session message types</h3><p>A session file records everything that happens during an interaction with Claude Code. To do this clearly, it uses different message types for different kinds of events.</p>
 <ul>
-<li><p><strong>Пользовательские сообщения</strong> представляют собой новые данные, поступающие в систему. Сюда входит не только то, что набирает пользователь, но и результаты, возвращаемые инструментами, например вывод команды оболочки. С точки зрения ИИ, и то, и другое - это входные данные, на которые он должен реагировать.</p></li>
-<li><p><strong>Сообщения помощника</strong> фиксируют то, что Клод делает в ответ. Эти сообщения включают рассуждения ИИ, текст, который он генерирует, и любые инструменты, которые он решает использовать. В них также записываются подробности использования, например количество токенов, чтобы составить полную картину взаимодействия.</p></li>
-<li><p><strong>Снимки истории файлов</strong> - это контрольные точки безопасности, создаваемые до того, как Клод изменит какие-либо файлы. Сохраняя сначала исходное состояние файла, Claude Code позволяет отменить изменения, если что-то пойдет не так.</p></li>
-<li><p><strong>Резюме</strong> представляют собой краткий обзор сессии и связаны с конечным результатом. С их помощью можно понять, о чем шла речь в сессии, не переигрывая каждый шаг.</p></li>
+<li><p><strong>User messages</strong> represent new input coming into the system. This includes not only what the user types, but also the results returned by tools, such as the output of a shell command. From the AI’s point of view, both are inputs it needs to respond to.</p></li>
+<li><p><strong>Assistant messages</strong> capture what Claude does in response. These messages include the AI’s reasoning, the text it generates, and any tools it decides to use. They also record usage details, such as token counts, to provide a complete picture of the interaction.</p></li>
+<li><p><strong>File-history snapshots</strong> are safety checkpoints created before Claude modifies any files. By saving the original file state first, Claude Code makes it possible to undo changes if something goes wrong.</p></li>
+<li><p><strong>Summaries</strong> provide a concise overview of the session and are linked to the final result. They make it easier to understand what a session was about without replaying every step.</p></li>
 </ul>
-<p>Вместе эти типы сообщений фиксируют не только разговор, но и всю последовательность действий и эффектов, которые происходят во время сеанса.</p>
-<p>Чтобы сделать это более конкретным, давайте рассмотрим конкретные примеры пользовательских сообщений и сообщений помощника.</p>
-<p><strong>(1) Пример сообщений пользователя:</strong></p>
+<p>Together, these message types record not just the conversation, but the full sequence of actions and effects that occur during a session.</p>
+<p>To make this more concrete, let’s look at specific examples of user messages and assistant messages.</p>
+<p><strong>(1) User messages example:</strong></p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>,
   <span class="hljs-string">&quot;uuid&quot;</span>: <span class="hljs-string">&quot;7d90e1c9-e727-4291-8eb9-0e7b844c4348&quot;</span>,
@@ -312,7 +312,7 @@ origin: >-
   <span class="hljs-string">&quot;version&quot;</span>: <span class="hljs-string">&quot;2.0.76&quot;</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) Пример сообщений помощника:</strong></p>
+<p><strong>(2) Assistant messages example:</strong></p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;assistant&quot;</span>,
   <span class="hljs-string">&quot;uuid&quot;</span>: <span class="hljs-string">&quot;e684816e-f476-424d-92e3-1fe404f13212&quot;</span>,
@@ -344,10 +344,10 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-Session-Messages-Are-Linked" class="common-anchor-header">Как связаны сообщения сеанса</h3><p>Claude Code не хранит сообщения сессии в виде отдельных записей. Вместо этого он связывает их вместе, чтобы сформировать четкую цепочку событий. Каждое сообщение содержит уникальный идентификатор (<code translate="no">uuid</code>) и ссылку на сообщение, которое пришло до него (<code translate="no">parentUuid</code>). Это позволяет понять не только, что произошло, но и почему это произошло.</p>
-<p>Сессия начинается с пользовательского сообщения, с которого начинается цепочка. Каждый ответ от Claude указывает на сообщение, которое его вызвало. Вызовы инструментов и их результаты добавляются таким же образом, причем каждый шаг связан с предыдущим. Когда сессия заканчивается, к последнему сообщению прикрепляется резюме.</p>
-<p>Поскольку каждый шаг связан, Claude Code может воспроизвести всю последовательность действий и понять, как был получен результат, что значительно упрощает отладку и анализ.</p>
-<h2 id="Making-Code-Changes-Easy-to-Undo-with-File-Snapshots" class="common-anchor-header">Изменения кода легко отменить с помощью снимков файлов<button data-href="#Making-Code-Changes-Easy-to-Undo-with-File-Snapshots" class="anchor-icon" translate="no">
+<h3 id="How-Session-Messages-Are-Linked" class="common-anchor-header">How Session Messages Are Linked</h3><p>Claude Code doesn’t store session messages as isolated entries. Instead, it links them together to form a clear chain of events. Each message includes a unique identifier (<code translate="no">uuid</code>) and a reference to the message that came before it (<code translate="no">parentUuid</code>). This makes it possible to see not just what happened, but why it happened.</p>
+<p>A session starts with a user message, which begins the chain. Each reply from Claude points back to the message that caused it. Tool calls and their outputs are added the same way, with every step linked to the one before it. When the session ends, a summary is attached to the final message.</p>
+<p>Because every step is connected, Claude Code can replay the full sequence of actions and understand how a result was produced, making debugging and analysis much easier.</p>
+<h2 id="Making-Code-Changes-Easy-to-Undo-with-File-Snapshots" class="common-anchor-header">Making Code Changes Easy to Undo with File Snapshots<button data-href="#Making-Code-Changes-Easy-to-Undo-with-File-Snapshots" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -362,21 +362,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Изменения, генерируемые искусственным интеллектом, не всегда корректны, а иногда они идут совершенно не в том направлении. Чтобы сделать эти изменения безопасными для экспериментов, Claude Code использует простую систему снимков, которая позволяет отменять правки, не копаясь в диффах и не очищая файлы вручную.</p>
-<p>Идея проста: <strong>прежде чем Claude Code изменит файл, он сохраняет копию исходного содержимого.</strong> Если правка окажется ошибочной, система сможет мгновенно восстановить предыдущую версию.</p>
-<h3 id="What-is-a-file-history-snapshot" class="common-anchor-header">Что такое <em>снимок истории файла</em>?</h3><p><em>Снимок истории файлов</em> - это контрольная точка, создаваемая перед изменением файлов. Он записывает исходное содержимое каждого файла, который <strong>Claude</strong> собирается редактировать. Эти снимки служат источником данных для операций отмены и отката.</p>
-<p>Когда пользователь отправляет сообщение, которое может изменить файлы, <strong>Claude Code</strong> создает пустой снимок для этого сообщения. Перед редактированием система создает резервную копию исходного содержимого каждого целевого файла в снимок, а затем применяет правки непосредственно на диск. Если пользователь активирует <em>отмену</em>, <strong>Claude Code</strong> восстанавливает сохраненное содержимое и перезаписывает измененные файлы.</p>
-<p>На практике жизненный цикл отменяемой правки выглядит следующим образом:</p>
+    </button></h2><p>AI-generated edits aren’t always correct, and sometimes they go in the completely wrong direction. To make these changes safe to experiment with, Claude Code uses a simple snapshot system that lets you undo edits without digging through diffs or manually cleaning up files.</p>
+<p>The idea is straightforward: <strong>before Claude Code modifies a file, it saves a copy of the original content.</strong> If the edit turns out to be a mistake, the system can restore the previous version instantly.</p>
+<h3 id="What-is-a-file-history-snapshot" class="common-anchor-header">What is a <em>file-history snapshot</em>?</h3><p>A <em>file-history snapshot</em> is a checkpoint created before files are modified. It records the original content of every file that <strong>Claude</strong> is about to edit. These snapshots serve as the data source for undo and rollback operations.</p>
+<p>When a user sends a message that may change files, <strong>Claude Code</strong> creates an empty snapshot for that message. Before editing, the system backs up the original content of each target file into the snapshot, then applies the edits directly to disk. If the user triggers <em>undo</em>, <strong>Claude Code</strong> restores the saved content and overwrites the modified files.</p>
+<p>In practice, the lifecycle of an undoable edit looks like this:</p>
 <ol>
-<li><p><strong>Пользователь отправляет сообщениеКлод</strong>Код создает новую, пустую запись <code translate="no">file-history-snapshot</code>.</p></li>
-<li><p><strong>Клод готовится к изменению файловСистема</strong>определяет, какие файлы будут редактироваться, и создает резервную копию их исходного содержимого в <code translate="no">trackedFileBackups</code>.</p></li>
-<li><p><strong>Клод выполняет редактированиеОперации редактирования</strong>и записи выполняются, и измененное содержимое записывается на диск.</p></li>
-<li><p><strong>Пользователь запускает отменуПользователь</strong>нажимает <strong>Esc + Esc</strong>, сигнализируя, что изменения должны быть отменены.</p></li>
-<li><p><strong>Оригинальное содержимое восстанавливаетсяКод Клода</strong>считывает сохраненное содержимое с сайта <code translate="no">trackedFileBackups</code> и перезаписывает текущие файлы, завершая отмену.</p></li>
+<li><p><strong>User sends a message</strong>Claude Code creates a new, empty <code translate="no">file-history-snapshot</code> record.</p></li>
+<li><p><strong>Claude prepares to modify files</strong>The system identifies which files will be edited and backs up their original content into <code translate="no">trackedFileBackups</code>.</p></li>
+<li><p><strong>Claude executes the edit</strong>Edit and write operations are performed, and the modified content is written to disk.</p></li>
+<li><p><strong>User triggers undo</strong>The user presses <strong>Esc + Esc</strong>, signaling that the changes should be reverted.</p></li>
+<li><p><strong>Original content is restored</strong>Claude Code reads the saved content from <code translate="no">trackedFileBackups</code> and overwrites the current files, completing the undo.</p></li>
 </ol>
-<h3 id="Why-Undo-Works-Snapshots-Save-the-Old-Version" class="common-anchor-header">Почему отмена работает: Снимки сохраняют старую версию</h3><p>Отмена в Claude Code работает потому, что система сохраняет <em>исходное</em> содержимое файла до внесения изменений.</p>
-<p>Вместо того чтобы пытаться отменить изменения постфактум, Claude Code использует более простой подход: он копирует файл в том виде, в котором он существовал <em>до</em> внесения изменений, и сохраняет эту копию в <code translate="no">trackedFileBackups</code>. Когда пользователь запускает отмену, система восстанавливает эту сохраненную версию и перезаписывает отредактированный файл.</p>
-<p>На приведенной ниже диаграмме пошагово показан этот процесс:</p>
+<h3 id="Why-Undo-Works-Snapshots-Save-the-Old-Version" class="common-anchor-header">Why Undo Works: Snapshots Save the Old Version</h3><p>Undo in Claude Code works because the system saves the <em>original</em> file content before any edit happens.</p>
+<p>Instead of trying to reverse changes after the fact, Claude Code takes a simpler approach: it copies the file as it existed <em>before</em> modification and stores that copy in <code translate="no">trackedFileBackups</code>. When the user triggers undo, the system restores this saved version and overwrites the edited file.</p>
+<p>The diagram below shows this flow step by step:</p>
 <pre><code translate="no">┌─────────────────────────┐
 │    before edit,  app.py │
 │    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;old&quot;</span>)         │───────→  Backed up into snapshot trackedFileBackups
@@ -396,8 +396,8 @@ origin: >-
 │    Press   Esc + Esc     │───────→ Restore <span class="hljs-string">&quot;old&quot;</span> content to disk <span class="hljs-keyword">from</span> snapshot
 └──────────────────────────┘
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="What-a-file-History-snapshot-Looks-Like-Internally" class="common-anchor-header">Как выглядит <em>снимок истории файла</em> изнутри</h3><p>Сам снимок хранится в виде структурированной записи. Он содержит метаданные о сообщении пользователя, времени создания снимка и, что особенно важно, карту файлов с их исходным содержимым.</p>
-<p>В примере ниже показана одна запись <code translate="no">file-history-snapshot</code>, созданная до того, как Клод отредактирует какие-либо файлы. Каждая запись в <code translate="no">trackedFileBackups</code> хранит содержимое файла <em>до редактирования</em>, которое впоследствии используется для восстановления файла при отмене.</p>
+<h3 id="What-a-file-History-snapshot-Looks-Like-Internally" class="common-anchor-header">What a <em>file-History snapshot</em> Looks Like Internally</h3><p>The snapshot itself is stored as a structured record. It captures metadata about the user message, the time of the snapshot, and—most importantly—a map of files to their original contents.</p>
+<p>The example below shows a single <code translate="no">file-history-snapshot</code> record created before Claude edits any files. Each entry in <code translate="no">trackedFileBackups</code> stores the <em>pre-edit</em> content of a file, which is later used to restore the file during an undo.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;file-history-snapshot&quot;</span>,
   <span class="hljs-string">&quot;messageId&quot;</span>: <span class="hljs-string">&quot;7d90e1c9-e727-4291-8eb9-0e7b844c4348&quot;</span>,
@@ -412,23 +412,23 @@ origin: >-
   <span class="hljs-string">&quot;isSnapshotUpdate&quot;</span>: <span class="hljs-literal">false</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Where-Snapshots-Are-Stored-and-How-Long-They-Are-Kept" class="common-anchor-header">Где хранятся моментальные снимки и как долго они хранятся</h3><ul>
-<li><p><strong>Где хранятся метаданные моментальных снимков</strong>: Записи моментальных снимков привязываются к определенной сессии и сохраняются в виде JSONL-файлов по адресу<code translate="no">~/.claude/projects/-path-to-project/{session-id}.jsonl</code>.</p></li>
-<li><p><strong>Где хранится исходное содержимое файлов</strong>: Содержимое каждого файла до редактирования хранится отдельно по хэшу содержимого в разделе<code translate="no">~/.claude/file-history/{content-hash}/</code>.</p></li>
-<li><p><strong>Как долго хранятся моментальные снимки по умолчанию</strong>: Данные снимков хранятся в течение 30 дней, в соответствии с глобальной настройкой <code translate="no">cleanupPeriodDays</code>.</p></li>
-<li><p><strong>Как изменить период хранения</strong>: Количество дней хранения можно настроить с помощью поля <code translate="no">cleanupPeriodDays</code> в <code translate="no">~/.claude/settings.json</code>.</p></li>
+<h3 id="Where-Snapshots-Are-Stored-and-How-Long-They-Are-Kept" class="common-anchor-header">Where Snapshots Are Stored and How Long They Are Kept</h3><ul>
+<li><p><strong>Where snapshot metadata is stored</strong>: Snapshot records are bound to a specific session and saved as JSONL files under<code translate="no">~/.claude/projects/-path-to-project/{session-id}.jsonl</code>.</p></li>
+<li><p><strong>Where original file contents are backed up</strong>: The pre-edit content of each file is stored separately by content hash under<code translate="no">~/.claude/file-history/{content-hash}/</code>.</p></li>
+<li><p><strong>How long snapshots are kept by default</strong>: Snapshot data is retained for 30 days, consistent with the global <code translate="no">cleanupPeriodDays</code> setting.</p></li>
+<li><p><strong>How to change the retention period</strong>: The number of retention days can be adjusted via the <code translate="no">cleanupPeriodDays</code> field in <code translate="no">~/.claude/settings.json</code>.</p></li>
 </ul>
-<h3 id="Related-Commands" class="common-anchor-header">Связанные команды</h3><table>
+<h3 id="Related-Commands" class="common-anchor-header">Related Commands</h3><table>
 <thead>
-<tr><th>Команда / действие</th><th>Описание</th></tr>
+<tr><th>Command / Action</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>Esc + Esc</td><td>Отмена последнего раунда редактирования файла (наиболее часто используемая)</td></tr>
-<tr><td>/rewind</td><td>Возврат к ранее указанной контрольной точке (моментальному снимку)</td></tr>
-<tr><td>/diff</td><td>Просмотр различий между текущим файлом и резервной копией моментального снимка</td></tr>
+<tr><td>Esc + Esc</td><td>Undo the most recent round of file edits (most commonly used)</td></tr>
+<tr><td>/rewind</td><td>Revert to a previously specified checkpoint (snapshot)</td></tr>
+<tr><td>/diff</td><td>View differences between the current file and the snapshot backup</td></tr>
 </tbody>
 </table>
-<h2 id="Other-Important-Directories" class="common-anchor-header">Другие важные директории<button data-href="#Other-Important-Directories" class="anchor-icon" translate="no">
+<h2 id="Other-Important-Directories" class="common-anchor-header">Other Important Directories<button data-href="#Other-Important-Directories" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -443,9 +443,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>(1) plugins/ - Управление плагинами</strong></p>
-<p>В директории <code translate="no">plugins/</code> хранятся дополнения, которые предоставляют Claude Code дополнительные возможности.</p>
-<p>В этой директории хранятся сведения о том, какие <em>плагины</em> установлены, откуда они взяты и какие дополнительные способности дают эти плагины. Здесь также хранятся локальные копии загруженных плагинов, чтобы не искать их снова.</p>
+    </button></h2><p><strong>(1) plugins/ — Plugin Management</strong></p>
+<p>The <code translate="no">plugins/</code> directory stores add-ons that give Claude Code extra abilities.</p>
+<p>This directory stores which <em>plugins</em> are installed, where they came from, and the extra skills those plugins provide. It also keeps local copies of downloaded plugins so they don’t need to be fetched again.</p>
 <pre><code translate="no">~/.claude/plugins/
 ├── config.json
 │   Global plugin configuration (e.g., <span class="hljs-built_in">enable</span>/disable rules)
@@ -471,36 +471,36 @@ origin: >-
             └── frontend-design/
                 Frontend design skills
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) skills/ - место хранения и применения навыков</strong></p>
-<p>В Claude Code навык - это небольшая способность многократного использования, которая помогает Клоду выполнять определенную задачу, например работать с PDF-файлами, редактировать документы или следовать рабочему процессу кодирования.</p>
-<p>Не все навыки доступны повсеместно. Некоторые из них применяются глобально, а другие ограничены одним проектом или предоставляются плагином. Claude Code хранит навыки в разных местах, чтобы контролировать, где каждый из них может быть использован.</p>
-<p>В приведенной ниже иерархии показано, как навыки распределяются по уровням: от глобально доступных до специфических для конкретного проекта и предоставляемых плагинами.</p>
+<p><strong>(2) skills/ — Where Skills Are Stored and Applied</strong></p>
+<p>In Claude Code, a skill is a small, reusable ability that helps Claude perform a specific task, such as working with PDFs, editing documents, or following a coding workflow.</p>
+<p>Not all skills are available everywhere. Some apply globally, while others are limited to a single project or provided by a plugin. Claude Code stores skills in different locations to control where each skill can be used.</p>
+<p>The hierarchy below shows how skills are layered by scope, from globally available skills to project-specific and plugin-provided ones.</p>
 <table>
 <thead>
-<tr><th>Уровень</th><th>Место хранения</th><th>Описание</th></tr>
+<tr><th>Level</th><th>Storage Location</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>Пользователь</td><td>~/.claude/skills/</td><td>Глобально доступно, доступно для всех проектов</td></tr>
-<tr><td>Проект</td><td>project/.claude/skills/</td><td>Доступно только для текущего проекта, настройка под конкретный проект</td></tr>
-<tr><td>Плагин</td><td>~/.claude/plugins/marketplaces/*/skills/</td><td>Устанавливается вместе с плагинами, зависит от статуса включения плагинов</td></tr>
+<tr><td>User</td><td>~/.claude/skills/</td><td>Globally available, accessible by all projects</td></tr>
+<tr><td>Project</td><td>project/.claude/skills/</td><td>Available only to the current project, project-specific customization</td></tr>
+<tr><td>Plugin</td><td>~/.claude/plugins/marketplaces/*/skills/</td><td>Installed with plugins, dependent on plugin enablement status</td></tr>
 </tbody>
 </table>
-<p><strong>(3) todos/ - Хранилище списков задач</strong></p>
-<p>В каталоге <code translate="no">todos/</code> хранятся списки задач, которые Клод создает для отслеживания работы во время разговора, например, шаги, которые нужно выполнить, элементы в процессе выполнения и завершенные задачи.</p>
-<p>Списки задач сохраняются в виде JSON-файлов в каталоге<code translate="no">~/.claude/todos/{session-id}-*.json</code>.В названии каждого файла указан идентификатор сессии, который привязывает список задач к конкретному разговору.</p>
-<p>Содержимое этих файлов поступает из инструмента <code translate="no">TodoWrite</code> и включает основную информацию о задаче, такую как описание задачи, текущий статус, приоритет и связанные метаданные.</p>
-<p><strong>(4) local/ - Локальная среда выполнения и инструменты</strong></p>
-<p>Каталог <code translate="no">local/</code> содержит основные файлы Claude Code, необходимые для работы на вашей машине.</p>
-<p>Сюда входит исполняемый файл командной строки <code translate="no">claude</code> и каталог <code translate="no">node_modules/</code>, содержащий его зависимости от времени выполнения. Благодаря локальности этих компонентов Claude Code может работать независимо, не завися от внешних служб или общесистемных установок.</p>
-<p><strong>（5）Дополнительные вспомогательные каталоги</strong></p>
+<p><strong>(3) todos/ — Task List Storage</strong></p>
+<p>The <code translate="no">todos/</code> directory stores task lists that Claude creates to track work during a conversation, such as steps to complete, items in progress, and completed tasks.</p>
+<p>Task lists are saved as JSON files under<code translate="no">~/.claude/todos/{session-id}-*.json</code>.Each filename includes the session ID, which ties the task list to a specific conversation.</p>
+<p>The contents of these files come from the <code translate="no">TodoWrite</code> tool and include basic task information such as the task description, current status, priority, and related metadata.</p>
+<p><strong>(4) local/ — Local Runtime and Tools</strong></p>
+<p>The <code translate="no">local/</code> directory holds the core files Claude Code needs to run on your machine.</p>
+<p>This includes the <code translate="no">claude</code> command-line executable and the <code translate="no">node_modules/</code> directory that contains its runtime dependencies. By keeping these components local, Claude Code can run independently, without depending on external services or system-wide installations.</p>
+<p><strong>（5）Additional Supporting Directories</strong></p>
 <ul>
-<li><p><strong>shell-snapshots/:</strong> Хранит снимки состояния сеанса оболочки (например, текущий каталог и переменные окружения), что позволяет откатывать операции оболочки.</p></li>
-<li><p><strong>plans/:</strong> Хранит планы выполнения, сгенерированные режимом Plan Mode (например, пошаговое разбиение многоэтапных задач программирования).</p></li>
-<li><p><strong>statsig/:</strong> Кэширует конфигурации флагов функций (например, включены ли новые функции), чтобы сократить количество повторных запросов.</p></li>
-<li><p><strong>telemetry/:</strong> Хранит анонимные телеметрические данные (например, частоту использования функций) для оптимизации продукта.</p></li>
-<li><p><strong>debug/:</strong> Хранит журналы отладки (включая стеки ошибок и трассировки выполнения) для помощи в устранении неполадок.</p></li>
+<li><p><strong>shell-snapshots/:</strong> Stores shell session state snapshots (such as current directory and environment variables), enabling shell operation rollback.</p></li>
+<li><p><strong>plans/:</strong> Stores execution plans generated by Plan Mode (e.g., step-by-step breakdowns of multi-step programming tasks).</p></li>
+<li><p><strong>statsig/:</strong> Caches feature flag configurations (such as whether new features are enabled) to reduce repeated requests.</p></li>
+<li><p><strong>telemetry/:</strong> Stores anonymous telemetry data (such as feature usage frequency) for product optimization.</p></li>
+<li><p><strong>debug/:</strong> Stores debug logs (including error stacks and execution traces) to aid troubleshooting.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -515,7 +515,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После изучения того, как Claude Code хранит и управляет всем локально, картина становится довольно ясной: инструмент чувствует себя стабильно, потому что его основа прочна. Ничего вычурного - просто продуманная инженерия. У каждого проекта есть свое место, каждое действие записывается, а правки файлов резервируются до того, как что-то изменится. Это тот тип дизайна, который спокойно выполняет свою работу и позволяет вам сосредоточиться на своей.</p>
-<p>Больше всего мне нравится то, что здесь нет ничего мистического. Claude Code работает хорошо, потому что основы сделаны правильно. Если вы когда-нибудь пытались создать агент, который работает с реальными файлами, вы знаете, как легко все разваливается - состояние смешивается, сбои стирают прогресс, а отмена становится угадайкой. Claude Code позволяет избежать всего этого благодаря простой, последовательной и трудноразрешимой модели хранения.</p>
-<p>Для команд, создающих локальные или локальные ИИ-агенты, особенно в безопасных средах, этот подход показывает, как надежное хранение и персистентность делают инструменты ИИ надежными и практичными для повседневной разработки.</p>
-<p>Если вы разрабатываете локальные или локальные агенты ИИ и хотите обсудить архитектуру хранения, дизайн сессий или безопасный откат более подробно, присоединяйтесь к нашему <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">каналу в Slack</a>. Вы также можете заказать 20-минутную индивидуальную встречу через <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>, чтобы получить индивидуальные рекомендации.</p>
+    </button></h2><p>After digging through how Claude Code stores and manages everything locally, the picture becomes pretty clear: the tool feels stable because the foundation is solid. Nothing fancy — just thoughtful engineering. Each project has its own space, every action gets written down, and file edits are backed up before anything changes. It’s the kind of design that quietly does its job and lets you focus on yours.</p>
+<p>What I like most is that there’s nothing mystical going on here. Claude Code works well because the basics are done right. If you’ve ever tried to build an agent that touches real files, you know how easy it is for things to fall apart — state gets mixed, crashes wipe progress, and undo becomes guesswork. Claude Code avoids all of that with a storage model that’s simple, consistent, and hard to break.</p>
+<p>For teams building local or on-prem AI agents, especially in secure environments, this approach shows how strong storage and persistence make AI tools reliable and practical for everyday development.</p>
+<p>If you’re designing local or on-prem AI agents and want to discuss storage architecture, session design, or safe rollback in more detail, feel free to join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a>.You can also book a 20-minute one-on-one through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> for personalized guidance.</p>

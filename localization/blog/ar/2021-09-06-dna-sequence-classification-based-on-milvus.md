@@ -1,37 +1,42 @@
 ---
 id: dna-sequence-classification-based-on-milvus.md
-title: تصنيف تسلسل الحمض النووي على أساس ميلفوس
+title: DNA Sequence Classification based on Milvus
 author: Jael Gu
 date: 2021-09-06T06:02:27.431Z
 desc: >-
-  استخدم قاعدة بيانات Milvus، وهي قاعدة بيانات متجهات مفتوحة المصدر، للتعرف على
-  العائلات الجينية لتسلسلات الحمض النووي. مساحة أقل ولكن دقة أعلى.
+  Use Milvus, an open-source vector database, to recognize gene families of DNA
+  sequences. Less space but higher accuracy.
 cover: assets.zilliz.com/11111_5d089adf08.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/dna-sequence-classification-based-on-milvus'
 ---
-<custom-h1>تصنيف تسلسل الحمض النووي على أساس ميلفوس</custom-h1><blockquote>
-<p>المؤلف: منغجيا جو، مهندسة بيانات في شركة زيليز، تخرجت من جامعة ماكجيل بدرجة الماجستير في الدراسات المعلوماتية. تشمل اهتماماتها تطبيقات الذكاء الاصطناعي والبحث عن التشابه مع قواعد البيانات المتجهة. وبصفتها عضوًا في مجتمع مشروع Milvus المفتوح المصدر، قدمت وحسّنت العديد من الحلول، مثل نظام التوصيات ونموذج تصنيف تسلسل الحمض النووي. تستمتع بالتحديات ولا تستسلم أبدًا!</p>
+<custom-h1>DNA Sequence Classification based on Milvus</custom-h1><blockquote>
+<p>Author:
+Mengjia Gu, a data engineer at Zilliz, graduated from McGill University with a Master degree in Information Studies. Her interests include AI applications and similarity search with vector databases. As a community member of open-source project Milvus, she has provided and improved various solutions, like recommendation system and DNA sequence classification model. She enjoys challenges and never gives up!</p>
 </blockquote>
-<custom-h1>مقدمة</custom-h1><p>يعد تسلسل الحمض النووي مفهومًا شائعًا في كل من البحوث الأكاديمية والتطبيقات العملية، مثل تتبع الجينات، وتحديد الأنواع، وتشخيص الأمراض. وفي حين أن جميع الصناعات تتوق إلى طريقة بحث أكثر ذكاءً وكفاءةً، فقد اجتذب الذكاء الاصطناعي الكثير من الاهتمام خاصةً في المجال البيولوجي والطبي. يساهم المزيد والمزيد من العلماء والباحثين في التعلم الآلي والتعلم العميق في المعلوماتية الحيوية. ولجعل النتائج التجريبية أكثر إقناعًا، فإن أحد الخيارات الشائعة هو زيادة حجم العينة. كما أن التعاون مع البيانات الضخمة في علم الجينوميات يجلب المزيد من إمكانيات الاستخدام في الواقع. ومع ذلك، فإن محاذاة التسلسل التقليدي لها قيود، مما يجعلها <a href="https://www.frontiersin.org/articles/10.3389/fbioe.2020.01032/full#h5">غير مناسبة للبيانات الكبيرة</a>. من أجل إجراء مفاضلة أقل في الواقع، يعد استخدام المتجهات خيارًا جيدًا لمجموعة بيانات كبيرة من تسلسلات الحمض النووي.</p>
-<p>قاعدة بيانات المتجهات مفتوحة المصدر <a href="https://milvus.io/docs/v2.0.x/overview.md">Milvus</a> صديقة للبيانات الضخمة. فهي قادرة على تخزين ناقلات تسلسلات الحمض النووي وإجراء استرجاع عالي الكفاءة. ويمكن أن تساعد أيضًا في تقليل تكلفة الإنتاج أو البحث. لا يستغرق نظام تصنيف تسلسل الحمض النووي القائم على Milvus سوى أجزاء من الثانية للقيام بتصنيف الجينات. علاوة على ذلك، فإنه يُظهر دقة أعلى من المصنفات الشائعة الأخرى في التعلم الآلي.</p>
-<custom-h1>معالجة البيانات</custom-h1><p>يتكون الجين الذي يشفر المعلومات الوراثية من مقطع صغير من تسلسل الحمض النووي، والذي يتكون من 4 قواعد نيوكليوتيدية [A، C، G، T]. ويوجد حوالي 30,000 جين في الجينوم البشري، أي ما يقرب من 3 مليارات زوج من قواعد الحمض النووي، ولكل زوج قاعدة قاعدتين متناظرتين. لدعم الاستخدامات المتنوعة، يمكن تصنيف تسلسلات الحمض النووي إلى فئات مختلفة. من أجل تقليل التكلفة وتسهيل استخدام بيانات تسلسل الحمض النووي الطويل، يتم إدخال <a href="https://en.wikipedia.org/wiki/K-mer#:~:text=Usually%2C%20the%20term%20k%2Dmer,total%20possible%20k%2Dmers%2C%20where">k-mer </a>في المعالجة المسبقة للبيانات. وفي الوقت نفسه، يجعل بيانات تسلسل الحمض النووي أكثر تشابهًا مع النص العادي. علاوة على ذلك، يمكن للبيانات المتجهة تسريع عملية الحساب في تحليل البيانات أو التعلم الآلي.</p>
+<custom-h1>Introduction</custom-h1><p>DNA sequence is a popular concept in both academic research and practical applications, such as gene traceability, species identification, and disease diagnosis. Whereas all industries starve for a more intelligent and efficient research method, artificial intelligence has attracted much attention especially from biological and medical domain. More and more scientists and researchers are contributing to machine learning and deep learning in bioinformatics. To make experimental results more convincing, one common option is increasing sample size. The collaboration with big data in genomics as well brings more possibilities of use case in reality. However, the traditional sequence alignment has limitations, which make it <a href="https://www.frontiersin.org/articles/10.3389/fbioe.2020.01032/full#h5">unsuitable for large data</a>. In order to make less trade-off in reality, vectorization is a good choice for a large dataset of DNA sequences.</p>
+<p>The open source vector database <a href="https://milvus.io/docs/v2.0.x/overview.md">Milvus</a> is friendly for massive data. It is able to store vectors of nucleic acid sequences and perform high-efficiency retrieval. It can also help reduce the cost of production or research. The DNA sequence classification system based on Milvus only takes milliseconds to do gene classification. Moreover, it shows a higher accuracy than other common classifiers in machine learning.</p>
+<custom-h1>Data Processing</custom-h1><p>A gene that encodes genetic information is made up of a small section of DNA sequences, which consists of 4 nucleotide bases [A, C, G, T]. There are about 30,000 genes in human genome, nearly 3 billion DNA base pairs, and each base pair has 2 corresponding bases. To support diverse uses, DNA sequences can be classified into various categories. In order to reduce the cost and make easier use of data of long DNA sequnces, <a href="https://en.wikipedia.org/wiki/K-mer#:~:text=Usually%2C%20the%20term%20k%2Dmer,total%20possible%20k%2Dmers%2C%20where">k-mer </a>is introduced to data preprocessing. Meanwhile, it makes DNA sequence data more similar to plain text. Furthermore, vectorized data can speed up calculation in data analysis or machine learning.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_a7469e9eac.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p><strong>ك-مير</strong></p>
-<p>تُستخدم طريقة k-mer بشكل شائع في المعالجة المسبقة لتسلسل الحمض النووي. وهي تستخرج مقطعًا صغيرًا من الطول k بدءًا من كل قاعدة من التسلسل الأصلي، وبالتالي تحويل تسلسل طويل بطول s إلى (s-k+1) تسلسلات قصيرة بطول k. سيؤدي تعديل قيمة k إلى تحسين أداء النموذج. تُعد قوائم التسلسلات القصيرة أسهل في قراءة البيانات واستخراج السمات وتكوين المتجهات.</p>
-<p><strong>تحويل المتجهات</strong></p>
-<p>يتم تحويل تسلسلات الحمض النووي إلى متجهات في شكل نص. يصبح التسلسل الذي يتم تحويله بواسطة k-mer قائمة من التسلسلات القصيرة، والتي تبدو كقائمة من الكلمات الفردية في جملة ما. لذلك، يجب أن تعمل معظم نماذج معالجة اللغة الطبيعية مع بيانات تسلسل الحمض النووي أيضًا. يمكن تطبيق منهجيات مماثلة على تدريب النموذج واستخراج السمات والترميز. نظرًا لأن كل نموذج له مزاياه وعيوبه الخاصة، فإن اختيار النماذج يعتمد على ميزة البيانات والغرض من البحث. على سبيل المثال، يقوم CountVectorizer، وهو نموذج كيس من الكلمات، بتنفيذ استخراج الميزات من خلال الترميز المباشر. لا يضع حدًا لطول البيانات، ولكن النتيجة التي يتم إرجاعها أقل وضوحًا من حيث مقارنة التشابه.</p>
-<custom-h1>عرض Milvus التجريبي</custom-h1><p>يستطيع Milvus إدارة البيانات غير المهيكلة بسهولة واستدعاء معظم النتائج المتشابهة من بين تريليونات المتجهات في غضون متوسط تأخير يبلغ ميلي ثانية. يعتمد بحث التشابه الخاص به على خوارزمية البحث التقريبي لأقرب جار (ANN). هذه الميزات تجعل من Milvus خيارًا رائعًا لإدارة متجهات تسلسلات الحمض النووي، وبالتالي تعزيز تطوير وتطبيقات المعلوماتية الحيوية.</p>
-<p>فيما يلي عرض توضيحي يوضح كيفية بناء نظام تصنيف تسلسل الحمض النووي باستخدام Milvus. تتضمن <a href="https://www.kaggle.com/nageshsingh/dna-sequence-dataset">مجموعة البيانات التجريبية </a>3 كائنات حية و7 عائلات جينية. يتم تحويل جميع البيانات إلى قوائم من التسلسلات القصيرة بواسطة k-mers. باستخدام نموذج CountVectorizer المدرب مسبقًا، يقوم النظام بعد ذلك بترميز بيانات التسلسل إلى متجهات. يوضح مخطط التدفق أدناه هيكل النظام وعمليات الإدراج والبحث.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_a7469e9eac.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p><strong>k-mer</strong></p>
+<p>The k-mer method is commonly used in DNA sequence preprocessing. It extracts a small section of length k starting from each base of the original sequence, thereby converting a long sequence of length s to (s-k+1) short sequences of length k. Adjusting the value of k will improve the model performance. Lists of short sequences are easier for data reading, feature extraction, and vectorization.</p>
+<p><strong>Vectorization</strong></p>
+<p>DNA sequences are vectorized in the form of text. A sequence transformed by k-mer becomes a list of short sequences, which looks like a list of individual words in a sentence. Therefore, most natural language processing models should work for DNA sequence data as well. Similar methodologies can be applied to model training, feature extraction, and encoding. Since each model has its own advantages and drawbacks, the selection of models depends on the feature of data and the purpose of research. For example, CountVectorizer, a bag-of-words model, implements feature extraction through straightforward tokenization. It sets no limit on data length, but the result returned is less obvious in terms of similarity comparison.</p>
+<custom-h1>Milvus Demo</custom-h1><p>Milvus can easily manage unstructured data and recall most similar results among trillions of vectors within an average delay of milliseconds. Its similarity search is based on Approximate Nearest Neighbor (ANN) search algorithm. These highlights make Milvus a great option to manage vectors of DNA sequences, hence promote the development and applications of bioinformatics.</p>
+<p>Here is a demo showing how to build a DNA sequence classification system with Milvus. The <a href="https://www.kaggle.com/nageshsingh/dna-sequence-dataset">experimental dataset </a>includes 3 organisms and 7 gene families. All data are converted to lists of short sequences by k-mers. With a pre-trained CountVectorizer model, the system then encodes sequence data into vectors. The flow chart below depicts the system structure and the processes of inserting and searching.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_ebd89660f6.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p>جرّب هذا العرض التوضيحي في <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/dna_sequence_classification">معسكر ميلفوس التدريبي</a>.</p>
-<p>في Milvus، ينشئ النظام مجموعة ويدرج المتجهات المقابلة لتسلسلات الحمض النووي في المجموعة (أو القسم إذا تم تمكينه). عند تلقي طلب استعلام، سيعيد ميلفوس المسافات بين متجه تسلسل الحمض النووي المدخلات والنتائج الأكثر تشابهًا في قاعدة البيانات. يمكن تحديد فئة تسلسل الإدخال والتشابه بين تسلسل الحمض النووي من خلال مسافات المتجه في النتائج.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_ebd89660f6.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>Try out this demo at <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/dna_sequence_classification">Milvus bootcamp</a>.</p>
+<p>In Milvus, the system creates collection and inserts corresponding vectors of DNA sequences into the collection (or partition if enabled). When receiving a query request, Milvus will return distances between the vector of input DNA sequence and most similar results in database. The class of input sequence and similarity between DNA sequences can be determined by vector distances in results.</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert vectors to Milvus collection (partition &quot;human&quot;)</span>
 DNA_human = collection.insert([human_ids, human_vectors], partition_name=<span class="hljs-string">&#x27;human&#x27;</span>)
 <span class="hljs-comment"># Search topK results (in partition &quot;human&quot;) for test vectors</span>
@@ -40,36 +45,47 @@ res = collection.search(test_vectors, <span class="hljs-string">&quot;vector_fie
     res_ids = results.ids <span class="hljs-comment"># primary keys of topK results</span>
     res_distances = results.distances <span class="hljs-comment"># distances between topK results &amp; search input</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>تصنيف تسلسل الحمض النووي</strong>يمكن أن يشير البحث عن أكثر تسلسلات الحمض النووي تشابهًا في "ملفوس" إلى عائلة الجينات لعينة مجهولة، وبالتالي معرفة وظائفها المحتملة.<a href="https://www.nature.com/scitable/topicpage/gpcr-14047471/"> إذا تم تصنيف التسلسل على أنه GPCRs، فمن المحتمل أن يكون له تأثير في وظائف الجسم. </a>في هذا العرض التوضيحي، نجح نظام Milvus في تحديد العائلات الجينية لتسلسلات الحمض النووي البشري التي تم البحث عنها.</p>
+<p><strong>DNA Sequence Classification</strong>
+Searching for most similar DNA sequences in Milvus could imply the gene family of an unknown sample, thus learn about its possible functionality.<a href="https://www.nature.com/scitable/topicpage/gpcr-14047471/"> If a sequence is classified as GPCRs, then it probably has influence in body functions. </a>In this demo, Milvus has successfully enabled the system to identify the gene families of the human DNA sequences searched with.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_1616da5bb0.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_d719b22fc7.png" alt="4.png" class="doc-image" id="4.png" /><span>4.png</span> </span></p>
-<p><strong>التشابه الجيني</strong></p>
-<p>يوضح متوسط تشابه تسلسل الحمض النووي بين الكائنات الحية مدى التقارب بين جينوماتها. يبحث البرنامج التجريبي في بيانات الإنسان عن أكثر تسلسلات الحمض النووي تشابهًا مع تسلسلات الشمبانزي والكلب على التوالي. ثم يحسب ويقارن متوسط مسافات الضرب الداخلي (0.97 للشمبانزي و 0.70 للكلب)، مما يثبت أن الشمبانزي يشترك مع الإنسان في جينات أكثر تشابهًا من الكلب. مع وجود بيانات أكثر تعقيدًا وتصميم نظام أكثر تعقيدًا، فإن برنامج Milvus قادر على دعم الأبحاث الجينية حتى على مستوى أعلى.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_1616da5bb0.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_d719b22fc7.png" alt="4.png" class="doc-image" id="4.png" />
+    <span>4.png</span>
+  </span>
+</p>
+<p><strong>Genetic Similarity</strong></p>
+<p>Average DNA sequence similarity between organisms illustrates how close between their genomes. The demo searches in human data for most similar DNA sequences as that of chimpanzee and dog respectively. Then it calculates and compares average inner product distances (0.97 for chimpanzee and 0.70 for dog), which proves that chimpanzee shares more similar genes with human than dog shares. With more complex data and system design, Milvus is able to support genetic research even on a higher level.</p>
 <pre><code translate="no">search_params = {<span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;IP&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: <span class="hljs-number">20</span>}}
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الأداء</strong></p>
-<p>يقوم العرض التوضيحي بتدريب نموذج التصنيف باستخدام 80% من بيانات العينة البشرية (3629 في المجموع) ويستخدم الباقي كبيانات اختبار. وهو يقارن أداء نموذج تصنيف تسلسل الحمض النووي الذي يستخدم Milvus مع النموذج الذي يعمل بواسطة Mysql و5 مصنفات شائعة للتعلم الآلي. يتفوق النموذج القائم على Milvus على نظرائه في الدقة.</p>
+<p><strong>Performance</strong></p>
+<p>The demo trains the classification model with 80% human sample data (3629 in total) and uses the remaining as test data. It compares performance of the DNA sequence classification model which uses Milvus with the one powered by Mysql and 5 popular machine learning classifiers. The model based on Milvus outperforms its counterparts in accuracy.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> sklearn.<span class="hljs-property">model_selection</span> <span class="hljs-keyword">import</span> train_test_split
 X, y = human_sequence_kmers, human_labels
 X_train, X_test, y_train, y_test = <span class="hljs-title function_">train_test_split</span>(X, y, test_size=<span class="hljs-number">0.2</span>, random_state=<span class="hljs-number">42</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_6541a7dec6.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<custom-h1>مزيد من الاستكشاف</custom-h1><p>مع تطور تكنولوجيا البيانات الضخمة، ستلعب متجهات تسلسل الحمض النووي دورًا أكثر أهمية في الأبحاث والممارسات الوراثية. إلى جانب المعرفة المهنية في مجال المعلوماتية الحيوية، يمكن للدراسات ذات الصلة أن تستفيد بشكل أكبر من مشاركة ناقلات تسلسل الحمض النووي. لذلك، يمكن أن تقدم ميلفوس نتائج أفضل في الممارسة العملية. ووفقًا للسيناريوهات المختلفة واحتياجات المستخدم، يُظهر البحث عن التشابه وحساب المسافة المدعوم من ميلفوس إمكانات كبيرة وإمكانيات عديدة.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_6541a7dec6.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<custom-h1>Further Exploration</custom-h1><p>With the development of big data technology, vectorization of DNA sequence will play a more important role in genetic research and practice. Combined with professional knowledge in bioinformatics, related studies can further benefit from the involvement of DNA sequence vectorization. Therefore, Milvus can present better results in practice. According to different scenarios and user needs, Milvus-powered similarity search and distance calculation show great potential and many possibilities.</p>
 <ul>
-<li><strong>دراسة التسلسلات المجهولة</strong>: <a href="https://iopscience.iop.org/article/10.1088/1742-6596/1453/1/012071/pdf">وفقًا لبعض الباحثين، يمكن أن يضغط المتجه بيانات تسلسل الحمض النووي.</a> وفي الوقت نفسه، يتطلب جهدًا أقل لدراسة بنية ووظيفة وتطور تسلسلات الحمض النووي غير المعروفة. يمكن لميلفوس تخزين واسترجاع عدد كبير من نواقل تسلسل الحمض النووي دون فقدان الدقة.</li>
-<li><strong>تكييف الأجهزة</strong>: مقيدًا بالخوارزميات التقليدية لمحاذاة التسلسل، بالكاد يمكن أن يستفيد البحث عن التشابه من تحسين الجهاز<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7884812/">(وحدة المعالجة</a><a href="https://mjeer.journals.ekb.eg/article_146090.html">المركزية/وحدة</a><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7884812/">المعالجة المركزية/وحدة معالجة الرسومات</a>). يعمل برنامج Milvus، الذي يدعم كلاً من الحوسبة العادية لوحدة المعالجة المركزية وتسريع وحدة معالجة الرسومات، على حل هذه المشكلة باستخدام خوارزمية الجار الأقرب التقريبي.</li>
-<li><strong>الكشف عن الفيروسات وتتبع أصولها</strong>: <a href="https://www.nature.com/articles/s41586-020-2012-7?fbclid=IwAR2hxnXb9nLWgA8xexEoNrCNH8WHqvHhhbN38aSm48AaH6fTzGMB1BLljf4">قارن العلماء تسلسل الجينوم وأبلغوا أن فيروس COVID19 الذي يُحتمل أن يكون من أصل خفاش ينتمي إلى فيروس سارس-COV</a>. وبناءً على هذا الاستنتاج، يمكن للباحثين توسيع حجم العينة للحصول على المزيد من الأدلة والأنماط.</li>
-<li><strong>تشخيص الأمراض</strong>: سريريًا، يمكن للأطباء مقارنة تسلسل الحمض النووي بين المرضى والمجموعة السليمة لتحديد الجينات المتغيرة التي تسبب الأمراض. من الممكن استخراج السمات وترميز هذه البيانات باستخدام خوارزميات مناسبة. يستطيع ميلفوس إرجاع المسافات بين المتجهات، والتي يمكن أن تكون مرتبطة ببيانات الأمراض. وبالإضافة إلى المساعدة في تشخيص المرض، يمكن لهذا التطبيق أن يساعد أيضًا في استلهام دراسة <a href="https://www.frontiersin.org/articles/10.3389/fgene.2021.680117/full">العلاج المستهدف</a>.</li>
+<li><strong>Study unknown sequences</strong>: <a href="https://iopscience.iop.org/article/10.1088/1742-6596/1453/1/012071/pdf">According to some researchers, vectorization can compress DNA sequence data.</a> At the same time, it requires less effort to study structure, function, and evolution of unknown DNA sequences. Milvus can store and retrieve a huge number of DNA sequence vectors without losing accuracy.</li>
+<li><strong>Adapt devices</strong>: Limited by traditional algorithms of sequence alignment, similarity search can barely benefit from device (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7884812/">CPU</a>/<a href="https://mjeer.journals.ekb.eg/article_146090.html">GPU</a>) improvement. Milvus, which supports both regular CPU computation and GPU acceleration, resolves this problem with approximate nearest neighbor algorithm.</li>
+<li><strong>Detect virus &amp; trace origins</strong>: <a href="https://www.nature.com/articles/s41586-020-2012-7?fbclid=IwAR2hxnXb9nLWgA8xexEoNrCNH8WHqvHhhbN38aSm48AaH6fTzGMB1BLljf4">Scientists have compared genome sequences and reported that COVID19 virus of probable bat origin belongs to SARS-COV</a>. Based on this conclusion, researchers can expand sample size for more evidence and patterns.</li>
+<li><strong>Diagnose diseases</strong>: Clinically, doctors could compare DNA sequences between patients and healthy group to identify variant genes that cause diseases. It is possible to extract features and encode these data using proper algorithms. Milvus is able to return distances between vectors, which can be related to disease data. In addition to assisting diagnosis of disease, this application can also help to inspire the study of <a href="https://www.frontiersin.org/articles/10.3389/fgene.2021.680117/full">targeted therapy</a>.</li>
 </ul>
-<custom-h1>تعرف على المزيد حول ميلفوس</custom-h1><p>Milvus هو أداة قوية قادرة على تشغيل مجموعة واسعة من تطبيقات الذكاء الاصطناعي والبحث عن تشابه المتجهات. لمعرفة المزيد عن المشروع، اطلع على الموارد التالية:</p>
+<custom-h1>Learn more about Milvus</custom-h1><p>Milvus is a powerful tool capable of powering a vast array of artificial intelligence and vector similarity search applications. To learn more about the project, check out the following resources:</p>
 <ul>
-<li>اقرأ <a href="https://milvus.io/blog">مدونتنا</a>.</li>
-<li>تفاعل مع مجتمعنا مفتوح المصدر على <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a>.</li>
-<li>استخدم أو ساهم في قاعدة بيانات المتجهات الأكثر شعبية في العالم على <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>اختبار تطبيقات الذكاء الاصطناعي ونشرها بسرعة من خلال <a href="https://github.com/milvus-io/bootcamp">معسكرنا التدريبي</a> الجديد.</li>
+<li>Read our <a href="https://milvus.io/blog">blog</a>.</li>
+<li>Interact with our open-source community on <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a>.</li>
+<li>Use or contribute to the world’s most popular vector database on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Quickly test and deploy AI applications with our new <a href="https://github.com/milvus-io/bootcamp">bootcamp</a>.</li>
 </ul>

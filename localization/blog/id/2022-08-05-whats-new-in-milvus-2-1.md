@@ -1,21 +1,33 @@
 ---
 id: 2022-08-05-whats-new-in-milvus-2-1.md
-title: Apa yang baru di Milvus 2.1 - Menuju kesederhanaan dan kecepatan
+title: What's new in Milvus 2.1 - Towards simplicity and speed
 author: Xiaofan Luan
 date: 2022-08-05T00:00:00.000Z
 desc: >-
-  Milvus, basis data vektor sumber terbuka, kini memiliki peningkatan performa
-  dan kegunaan yang telah lama dinanti-nantikan oleh para pengguna.
+  Milvus, the open-source vector database, now has performance and usability
+  improvements that users have long been anticipating.
 cover: assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png
 tag: News
 canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png" alt="What's new in Milvus 2.1 - Towards simplicity and speed" class="doc-image" id="what's-new-in-milvus-2.1---towards-simplicity-and-speed" />
-   </span> <span class="img-wrapper"> <span>Apa yang baru di Milvus 2.1 - Menuju kesederhanaan dan kecepatan</span> </span></p>
-<p>Kami sangat senang mengumumkan bahwa<a href="https://milvus.io/docs/v2.1.x/release_notes.md">rilis</a> Milvus 2.1 telah tersedia setelah enam bulan kerja keras dari semua kontributor komunitas Milvus. Iterasi utama dari database vektor yang populer ini menekankan pada <strong>performa</strong> dan <strong>kegunaan</strong>, dua kata kunci terpenting dari fokus kami. Kami menambahkan dukungan untuk string, antrean pesan Kafka, dan Milvus yang disematkan, serta sejumlah peningkatan dalam hal kinerja, skalabilitas, keamanan, dan observabilitas. Milvus 2.1 adalah pembaruan menarik yang akan menjembatani "mil terakhir" dari laptop insinyur algoritma ke layanan pencarian kemiripan vektor tingkat produksi.</p>
-<custom-h1>Performa - Peningkatan lebih dari 3,2x lipat</custom-h1><h2 id="5ms-level-latency" class="common-anchor-header">Latensi tingkat 5ms<button data-href="#5ms-level-latency" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png" alt="What's new in Milvus 2.1 - Towards simplicity and speed" class="doc-image" id="what's-new-in-milvus-2.1---towards-simplicity-and-speed" />
+    <span>What's new in Milvus 2.1 - Towards simplicity and speed</span>
+  </span>
+</p>
+<p>We are very glad to announce the
+<a href="https://milvus.io/docs/v2.1.x/release_notes.md">release</a> of Milvus 2.1
+is now live after six months of hard work by all of our Milvus community
+contributors. This major iteration of the popular vector database
+emphasizes <strong>performance</strong> and <strong>usability</strong>, two most important
+keywords of our focus. We added support for strings, Kafka message
+queue, and embedded Milvus, as well as a number of improvements in
+performance, scalability, security, and observability. Milvus 2.1 is an
+exciting update that will bridge the “last mile” from the algorithm
+engineer’s laptop to production-level vector similarity search
+services.</p>
+<custom-h1>Performance - More than a 3.2x boost</custom-h1><h2 id="5ms-level-latency" class="common-anchor-header">5ms-level latency<button data-href="#5ms-level-latency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,9 +42,16 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus sudah mendukung pencarian perkiraan tetangga terdekat (ANN), sebuah lompatan besar dari metode KNN tradisional. Namun, masalah throughput dan latensi terus menjadi tantangan bagi pengguna yang harus berurusan dengan skenario pencarian data vektor berskala miliaran.</p>
-<p>Dalam Milvus 2.1, ada protokol perutean baru yang tidak lagi bergantung pada antrean pesan di tautan pengambilan, yang secara signifikan mengurangi latensi pengambilan untuk set data kecil. Hasil pengujian kami menunjukkan bahwa Milvus sekarang menurunkan tingkat latensi hingga 5ms, yang memenuhi persyaratan tautan online yang penting seperti pencarian kemiripan dan rekomendasi.</p>
-<h2 id="Concurrency-control" class="common-anchor-header">Kontrol konkurensi<button data-href="#Concurrency-control" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus already supports approximate nearest neighbor (ANN) search, a
+substantial leap from the traditional KNN method. However, problems of
+throughput and latency continue to challenge users who need to deal with
+billion-scale vector data retrieval scenarios.</p>
+<p>In Milvus 2.1, there is a new routing protocol that no longer relies on
+message queues in the retrieval link, significantly reducing retrieval
+latency for small datasets. Our test results show that Milvus now brings
+its latency level down to 5ms, which meets the requirements of critical
+online links such as similarity search and recommendation.</p>
+<h2 id="Concurrency-control" class="common-anchor-header">Concurrency control<button data-href="#Concurrency-control" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,8 +66,15 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 menyempurnakan model konkurensinya dengan memperkenalkan model evaluasi biaya dan penjadwal konkurensi yang baru. Sekarang ini menyediakan kontrol konkurensi, yang memastikan bahwa tidak akan ada banyak permintaan bersamaan yang bersaing untuk mendapatkan sumber daya CPU dan cache, dan juga tidak akan ada CPU yang kurang dimanfaatkan karena tidak ada cukup permintaan. Lapisan penjadwal cerdas yang baru di Milvus 2.1 juga menggabungkan kueri small-nq yang memiliki parameter permintaan yang konsisten, sehingga menghasilkan peningkatan kinerja 3,2x lipat dalam skenario dengan small-nq dan konkurensi kueri yang tinggi.</p>
-<h2 id="In-memory-replicas" class="common-anchor-header">Replika dalam memori<button data-href="#In-memory-replicas" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.1 fine-tunes its concurrency model by introducing a new cost
+evaluation model and concurrency scheduler. It now provides concurrency
+control, which ensures that there will not be a large number of
+concurrent requests competing for CPU and cache resources, nor will the
+CPU be under-utilized because there are not enough requests. The new,
+intelligent scheduler layer in Milvus 2.1 also merges small-nq queries
+that have consistent request parameters, delivering an amazing 3.2x
+performance boost in scenarios with small-nq and high query concurrency.</p>
+<h2 id="In-memory-replicas" class="common-anchor-header">In-memory replicas<button data-href="#In-memory-replicas" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,13 +89,27 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 menghadirkan replika in-memory yang meningkatkan skalabilitas dan ketersediaan untuk dataset kecil. Mirip dengan replika hanya-baca di database tradisional, replika dalam memori dapat diskalakan secara horizontal dengan menambahkan mesin ketika QPS baca tinggi. Dalam pengambilan vektor untuk dataset kecil, sistem rekomendasi sering kali perlu menyediakan QPS yang melebihi batas kinerja satu mesin. Sekarang dalam skenario ini, throughput sistem dapat ditingkatkan secara signifikan dengan memuat beberapa replika dalam memori. Di masa mendatang, kami juga akan memperkenalkan mekanisme pembacaan lindung nilai berdasarkan replika dalam memori, yang akan dengan cepat meminta salinan fungsional lainnya jika sistem perlu pulih dari kegagalan dan memanfaatkan sepenuhnya redundansi memori untuk meningkatkan ketersediaan sistem secara keseluruhan.</p>
+    </button></h2><p>Milvus 2.1 brings in-memory replicas that improve scalability and
+availability for small datasets. Similar to the read-only replicas in
+traditional databases, in-memory replicas can scale horizontally by
+adding machines when the read QPS is high. In vector retrieval for small
+datasets, a recommendation system often needs to provide QPS that
+exceeds the performance limit of a single machine. Now in these
+scenarios, the system’s throughput can be significantly improved by
+loading multiple replicas in the memory. In the future, we will also
+introduce a hedged read mechanism based on in-memory replicas, which
+will quickly request other functional copies in case the system needs to
+recover from failures and makes full use of memory redundancy to improve
+the system’s overall availability.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/What_s_New_in_Milvus_2_1_Figure_1_excalidraw_1f7fe3c998.png" alt="In-memory replicas allow query services to be based on separate
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/What_s_New_in_Milvus_2_1_Figure_1_excalidraw_1f7fe3c998.png" alt="In-memory replicas allow query services to be based on separate
 copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-services-to-be-based-on-separate-copies-of-the-same-data." />
-   </span> <span class="img-wrapper"> <span>Replika dalam memori memungkinkan layanan kueri didasarkan pada salinan terpisah dari data yang sama.</span> </span></p>
-<h2 id="Faster-data-loading" class="common-anchor-header">Pemuatan data yang lebih cepat<button data-href="#Faster-data-loading" class="anchor-icon" translate="no">
+    <span>In-memory replicas allow query services to be based on separate
+copies of the same data.</span>
+  </span>
+</p>
+<h2 id="Faster-data-loading" class="common-anchor-header">Faster data loading<button data-href="#Faster-data-loading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,9 +124,17 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Peningkatan kinerja terakhir berasal dari pemuatan data. Milvus 2.1 sekarang mengompres <a href="https://milvus.io/docs/v2.1.x/glossary.md#Log-snapshot">log biner</a> dengan Zstandard (zstd), yang secara signifikan mengurangi ukuran data dalam penyimpanan objek dan pesan serta overhead jaringan selama pemuatan data. Selain itu, goroutine pools kini diperkenalkan sehingga Milvus dapat memuat segmen secara bersamaan dengan jejak memori yang terkendali dan meminimalkan waktu yang dibutuhkan untuk pulih dari kegagalan dan memuat data.</p>
-<p>Hasil benchmark lengkap dari Milvus 2.1 akan segera dirilis di situs web kami. Nantikan terus.</p>
-<h2 id="String-and-scalar-index-support" class="common-anchor-header">Dukungan indeks string dan skalar<button data-href="#String-and-scalar-index-support" class="anchor-icon" translate="no">
+    </button></h2><p>The last performance boost comes from data loading. Milvus 2.1 now
+compresses <a href="https://milvus.io/docs/v2.1.x/glossary.md#Log-snapshot">binary
+logs</a> with
+Zstandard (zstd), which significantly reduces data size in the object
+and message stores as well as network overhead during data loading. In
+addition, goroutine pools are now introduced so that Milvus can load
+segments concurrently with memory footprints controlled and minimize the
+time required to recover from failures and to load data.</p>
+<p>The complete benchmark results of Milvus 2.1 will be released on our
+website soon. Stay tuned.</p>
+<h2 id="String-and-scalar-index-support" class="common-anchor-header">String and scalar index support<button data-href="#String-and-scalar-index-support" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,14 +149,35 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dengan versi 2.1, Milvus sekarang mendukung string panjang variabel (VARCHAR) sebagai tipe data skalar. VARCHAR dapat digunakan sebagai kunci utama yang dapat dikembalikan sebagai output, dan juga dapat bertindak sebagai filter atribut. <a href="https://milvus.io/docs/v2.1.x/hybridsearch.md">Pemfilteran atribut</a> adalah salah satu fungsi paling populer yang dibutuhkan oleh pengguna Milvus. Jika Anda sering menemukan diri Anda ingin &quot;menemukan produk yang paling mirip dengan pengguna dalam kisaran harga <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>200-200</mo></mrow><annotation encoding="application/x-tex">-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">200-300</span></span></span></span>&quot;, atau &quot;menemukan artikel yang memiliki kata kunci 'database vektor' dan terkait dengan topik cloud-native&quot;, Anda akan menyukai Milvus 2.1.</p>
-<p>Milvus 2.1 juga mendukung indeks terbalik skalar untuk meningkatkan kecepatan penyaringan berdasarkan<a href="https://github.com/s-yata/marisa-trie">MARISA-Tries</a> yang<a href="https://www.cs.le.ac.uk/people/ond1/XMLcomp/confersWEA06_LOUDS.pdf">ringkas</a>sebagai struktur data. Semua data sekarang dapat dimuat ke dalam memori dengan jejak yang sangat rendah, yang memungkinkan perbandingan, penyaringan, dan pencocokan awalan pada string dengan lebih cepat. Hasil pengujian kami menunjukkan bahwa kebutuhan memori MARISA-tries hanya 10% dari kebutuhan memori kamus Python untuk memuat semua data ke dalam memori dan menyediakan kemampuan query.</p>
+    </button></h2><p>With 2.1, Milvus now supports variable-length string (VARCHAR) as a
+scalar data type. VARCHAR can be used as the primary key that can be
+returned as output, and can also act as attribute filters. <a href="https://milvus.io/docs/v2.1.x/hybridsearch.md">Attribute
+filtering</a> is one of the
+most popular functions Milvus users need. If you often find yourself
+wanting to &quot;find products most similar to a user in a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mo>−</mo></mrow><annotation encoding="application/x-tex">200 -</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">200</span><span class="mord">−</span></span></span></span>300
+price range&quot;, or &quot;find articles that have the keyword ‘vector
+database’ and are related to cloud-native topics&quot;, you’ll love Milvus
+2.1.</p>
+<p>Milvus 2.1 also supports scalar inverted index to improve filtering
+speed based on
+<a href="https://www.cs.le.ac.uk/people/ond1/XMLcomp/confersWEA06_LOUDS.pdf">succinct</a>
+<a href="https://github.com/s-yata/marisa-trie">MARISA-Tries</a> as the data
+structure. All the data can now be loaded into memory with a very low
+footprint, which allows much quicker comparison, filtering and prefix
+matching on strings. Our test results show that the memory requirement
+of MARISA-trie is only 10% of that of Python dictionaries to load all
+the data into memory and provide query capabilities.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 combines MARISA-Trie with inverted index to significantly improve filtering speed." class="doc-image" id="milvus-2.1-combines-marisa-trie-with-inverted-index-to-significantly-improve-filtering-speed." />
-   </span> <span class="img-wrapper"> <span>Milvus 2.1 menggabungkan MARISA-Trie dengan indeks terbalik untuk meningkatkan kecepatan penyaringan secara signifikan</span> </span>.</p>
-<p>Di masa depan, Milvus akan terus berfokus pada pengembangan yang berhubungan dengan kueri skalar, mendukung lebih banyak jenis indeks skalar dan operator kueri, dan menyediakan kemampuan kueri skalar berbasis disk, semuanya sebagai bagian dari upaya berkelanjutan untuk mengurangi biaya penyimpanan dan penggunaan data skalar.</p>
-<custom-h1>Peningkatan kegunaan</custom-h1><h2 id="Kafka-support" class="common-anchor-header">Dukungan Kafka<button data-href="#Kafka-support" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 combines MARISA-Trie with inverted index to significantly improve filtering speed." class="doc-image" id="milvus-2.1-combines-marisa-trie-with-inverted-index-to-significantly-improve-filtering-speed." />
+    <span>Milvus 2.1 combines MARISA-Trie with inverted index to significantly improve filtering speed.</span>
+  </span>
+</p>
+<p>In the future, Milvus will continue focusing on scalar query-related
+developments, support more scalar index types and query operators, and
+provide disk-based scalar query capabilities, all as part of an ongoing
+effort to reduce storage and usage cost of scalar data.</p>
+<custom-h1>Usability improvements</custom-h1><h2 id="Kafka-support" class="common-anchor-header">Kafka support<button data-href="#Kafka-support" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,8 +192,15 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Komunitas kami telah lama meminta dukungan untuk <a href="https://kafka.apache.org">Apache Kafka</a> sebagai <a href="https://milvus.io/docs/v2.1.x/deploy_pulsar.md">penyimpanan pesan</a> di Milvus. Milvus 2.1 sekarang menawarkan pilihan untuk menggunakan<a href="https://pulsar.apache.org">Pulsar</a> atau Kafka sebagai penyimpanan pesan berdasarkan konfigurasi pengguna, berkat desain abstraksi dan enkapsulasi Milvus dan Go Kafka SDK yang dikontribusikan oleh Confluent.</p>
-<h2 id="Production-ready-Java-SDK" class="common-anchor-header">SDK Java yang siap produksi<button data-href="#Production-ready-Java-SDK" class="anchor-icon" translate="no">
+    </button></h2><p>Our community has long been requesting support for <a href="https://kafka.apache.org">Apache
+Kafka</a> as the <a href="https://milvus.io/docs/v2.1.x/deploy_pulsar.md">message
+storage</a> in Milvus.
+Milvus 2.1 now offers you the option to use
+<a href="https://pulsar.apache.org">Pulsar</a> or Kafka as the message storage
+based on user configurations, thanks to the abstraction and
+encapsulation design of Milvus and the Go Kafka SDK contributed by
+Confluent.</p>
+<h2 id="Production-ready-Java-SDK" class="common-anchor-header">Production-ready Java SDK<button data-href="#Production-ready-Java-SDK" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,8 +215,14 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dengan Milvus 2.1, <a href="https://github.com/milvus-io/milvus-sdk-java">Java SDK</a> kami sekarang telah resmi dirilis. Java SDK memiliki kemampuan yang sama persis dengan Python SDK, dengan kinerja konkurensi yang lebih baik. Pada langkah selanjutnya, kontributor komunitas kami akan secara bertahap meningkatkan dokumentasi dan kasus penggunaan untuk Java SDK, dan membantu mendorong Go dan RESTful SDK ke tahap siap produksi.</p>
-<h2 id="Observability-and-maintainability" class="common-anchor-header">Observabilitas dan pemeliharaan<button data-href="#Observability-and-maintainability" class="anchor-icon" translate="no">
+    </button></h2><p>With Milvus 2.1, our <a href="https://github.com/milvus-io/milvus-sdk-java">Java
+SDK</a> is now officially
+released. The Java SDK has the exact same capabilities as the Python
+SDK, with even better concurrency performance. In the next step, our
+community contributors will gradually improve documentation and use
+cases for the Java SDK, and help push Go and RESTful SDKs into the
+production-ready stage, too.</p>
+<h2 id="Observability-and-maintainability" class="common-anchor-header">Observability and maintainability<button data-href="#Observability-and-maintainability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -155,8 +237,13 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 menambahkan<a href="https://milvus.io/docs/v2.1.x/metrics_dashboard.md">metrik</a> pemantauan penting seperti jumlah penyisipan vektor, latensi/throughput pencarian, overhead memori node, dan overhead CPU. Selain itu, versi baru ini juga secara signifikan mengoptimalkan penyimpanan log dengan menyesuaikan level log dan mengurangi pencetakan log yang tidak berguna.</p>
-<h2 id="Embedded-Milvus" class="common-anchor-header">Milvus Tertanam<button data-href="#Embedded-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.1 adds important monitoring
+<a href="https://milvus.io/docs/v2.1.x/metrics_dashboard.md">metrics</a> such as
+vector insertion counts, search latency/throughput, node memory
+overhead, and CPU overhead. Plus, the new version also significantly
+optimizes log keeping by adjusting log levels and reducing useless log
+printing.</p>
+<h2 id="Embedded-Milvus" class="common-anchor-header">Embedded Milvus<button data-href="#Embedded-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,9 +258,20 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus telah sangat menyederhanakan penyebaran layanan pengambilan data vektor besar berskala besar, tetapi bagi para ilmuwan yang ingin memvalidasi algoritme dalam skala yang lebih kecil, Docker atau K8 masih terlalu rumit. Dengan diperkenalkannya <a href="https://github.com/milvus-io/embd-milvus">Milvus</a> tertanam, Anda sekarang dapat menginstal Milvus menggunakan pip, seperti halnya Pyrocksb dan Pysqlite. Embedded Milvus mendukung semua fungsi dari versi cluster dan versi mandiri, sehingga Anda dapat dengan mudah beralih dari laptop ke lingkungan produksi terdistribusi tanpa mengubah satu baris kode pun. Para insinyur algoritme akan mendapatkan pengalaman yang jauh lebih baik ketika membangun prototipe dengan Milvus.</p>
-<custom-h1>Coba pencarian vektor yang belum pernah ada sebelumnya sekarang</custom-h1><p>Selain itu, Milvus 2.1 juga memiliki beberapa peningkatan besar dalam hal stabilitas dan skalabilitas, dan kami menantikan penggunaan dan umpan balik Anda.</p>
-<h2 id="Whats-next" class="common-anchor-header">Apa yang berikutnya<button data-href="#Whats-next" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus has greatly simplified the deployment of large-scale massive
+vector data retrieval services, but for scientists who want to validate
+algorithms on a smaller scale, Docker or K8s is still too unnecessarily
+complicated. With the introduction of <a href="https://github.com/milvus-io/embd-milvus">embedded
+Milvus</a>, you can now install
+Milvus using pip, just like with Pyrocksb and Pysqlite. Embedded Milvus
+supports all the functionalities of both the cluster and standalone
+versions, allowing you to easily switch from your laptop to a
+distributed production environment without changing a single line of
+code. Algorithm engineers will have a much better experience when
+building a prototype with Milvus.</p>
+<custom-h1>Try out-of-the-box vector search now</custom-h1><p>Moreover, Milvus 2.1 also has some great improvements in stability and
+scalability, and we look forward to your use and feedbacks.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -189,11 +287,17 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
         ></path>
       </svg>
     </button></h2><ul>
-<li>Lihat <a href="https://milvus.io/docs/v2.1.x/release_notes.md">Catatan Rilis</a> terperinci untuk mengetahui semua perubahan di Milvus 2.1</li>
-<li><a href="https://milvus.io/docs/v2.1.x/install_standalone-docker.md">Instal</a>Milvus 2.1 dan cobalah fitur-fitur barunya</li>
-<li>Bergabunglah dengan <a href="https://slack.milvus.io/">komunitas Slack</a> kami dan diskusikan fitur-fitur baru dengan ribuan pengguna Milvus di seluruh dunia</li>
-<li>Ikuti kami di <a href="https://twitter.com/milvusio">Twitter</a> dan<a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a> untuk mendapatkan informasi terbaru ketika blog kami mengenai fitur-fitur baru yang spesifik telah dirilis</li>
+<li>See the detailed <a href="https://milvus.io/docs/v2.1.x/release_notes.md">Release
+Notes</a> for all the
+changes in Milvus 2.1</li>
+<li><a href="https://milvus.io/docs/v2.1.x/install_standalone-docker.md">Install</a>
+Milvus 2.1 and try out the new features</li>
+<li>Join our <a href="https://slack.milvus.io/">Slack community</a> and discuss the
+new features with thousands of Milvus users around the world</li>
+<li>Follow us on <a href="https://twitter.com/milvusio">Twitter</a> and
+<a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a> to
+get updates once our blogs on specific new features are out</li>
 </ul>
 <blockquote>
-<p>Diedit oleh <a href="https://github.com/songxianj">Songxian Jiang</a></p>
+<p>Edited by <a href="https://github.com/songxianj">Songxian Jiang</a></p>
 </blockquote>

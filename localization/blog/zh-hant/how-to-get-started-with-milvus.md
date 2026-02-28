@@ -1,6 +1,6 @@
 ---
 id: how-to-get-started-with-milvus.md
-title: 如何開始使用 Milvus
+title: How to Get Started with Milvus
 author: Ruben Winastwan
 date: 2025-01-17T00:00:00.000Z
 cover: >-

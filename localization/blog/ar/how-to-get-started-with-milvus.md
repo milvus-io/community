@@ -1,6 +1,6 @@
 ---
 id: how-to-get-started-with-milvus.md
-title: كيف تبدأ مع ميلفوس
+title: How to Get Started with Milvus
 author: Ruben Winastwan
 date: 2025-01-17T00:00:00.000Z
 cover: >-
@@ -13,21 +13,23 @@ recommend: false
 canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png" alt="How to get started with Milvus" class="doc-image" id="how-to-get-started-with-milvus" />
-   </span> <span class="img-wrapper"> <span>كيف تبدأ مع ميلفوس</span> </span></p>
-<p><strong><em>آخر تحديث يناير 2025</em></strong></p>
-<p>تستلزم التطورات في نماذج اللغات الكبيرة<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLMs)</a> وتزايد حجم البيانات وجود بنية تحتية مرنة وقابلة للتطوير لتخزين كميات هائلة من المعلومات، مثل قاعدة البيانات. ومع ذلك، فإن <a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">قواعد البيانات التقليدية</a> مصممة لتخزين البيانات المجدولة والمنظمة، في حين أن المعلومات المفيدة عادةً للاستفادة من قوة نماذج اللغات الكبيرة وخوارزميات استرجاع المعلومات المتطورة هي معلومات <a href="https://zilliz.com/learn/introduction-to-unstructured-data">غير منظمة،</a> مثل النصوص أو الصور أو مقاطع الفيديو أو الصوت.</p>
-<p><a href="https://zilliz.com/learn/what-is-vector-database">قواعد البيانات المتجهة</a> هي أنظمة قواعد بيانات مصممة خصيصًا للبيانات غير المنظمة. لا يمكننا فقط تخزين كميات هائلة من البيانات غير المهيكلة باستخدام قواعد البيانات المتجهة فحسب، بل يمكننا أيضًا إجراء <a href="https://zilliz.com/learn/vector-similarity-search">عمليات بحث متجهة</a> باستخدامها. تحتوي قواعد البيانات المتجهة على طرق فهرسة متقدمة مثل فهرس الملفات المقلوب (IVFFlat) أو العالم الصغير المتجهي الهرمي القابل للتنقل<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">(HNSW</a>) لإجراء عمليات بحث واسترجاع معلومات سريعة وفعالة عن المتجهات.</p>
-<p><strong>Milvus</strong> هي قاعدة بيانات متجهات مفتوحة المصدر يمكننا استخدامها للاستفادة من جميع الميزات المفيدة التي يمكن أن تقدمها قاعدة بيانات المتجهات. فيما يلي ما سنتناوله في هذا المنشور:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/How_To_Get_Started_With_Milvus_20230517_084248_28560b1efc.png" alt="How to get started with Milvus" class="doc-image" id="how-to-get-started-with-milvus" />
+    <span>How to get started with Milvus</span>
+  </span>
+</p>
+<p><strong><em>Last updated January 2025</em></strong></p>
+<p>The advancements in Large Language Models (<a href="https://zilliz.com/glossary/large-language-models-(llms)">LLMs</a>) and the increasing volume of data necessitate a flexible and scalable infrastructure to store massive amounts of information, such as a database. However, <a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">traditional databases</a> are designed to store tabular and structured data, while the information commonly useful for leveraging the power of sophisticated LLMs and information retrieval algorithms is <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured</a>, such as text, images, videos, or audio.</p>
+<p><a href="https://zilliz.com/learn/what-is-vector-database">Vector databases</a> are database systems specifically designed for unstructured data. Not only can we store massive amounts of unstructured data with vector databases, but we can also perform <a href="https://zilliz.com/learn/vector-similarity-search">vector searches</a> with them. Vector databases have advanced indexing methods such as Inverted File Index (IVFFlat) or Hierarchical Navigable Small World (<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a>) to perform fast and efficient vector search and information retrieval processes.</p>
+<p><strong>Milvus</strong> is an open-source vector database that we can use to leverage all of the beneficial features a vector database can offer. Here are what we’ll cover in this post:</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">نظرة عامة على ملفوس</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Milvus-Deployment-Options">خيارات نشر ميلفوس</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Lite">البدء باستخدام ميلفوس لايت</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Standalone">البدء باستخدام ميلفوس مستقل</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Fully-Managed-Milvus">ميلفوس المُدار بالكامل </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#What-is-Milvus">An Overview of Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Milvus-Deployment-Options">Milvus deployment options</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Lite">Getting started with Milvus Lite</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Getting-Started-with-Milvus-Standalone">Getting started with Milvus Standalone</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-get-started-with-milvus.md#Fully-Managed-Milvus">Fully Managed Milvus </a></p></li>
 </ul>
-<h2 id="What-is-Milvus" class="common-anchor-header">ما هو ميلفوس؟<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
+<h2 id="What-is-Milvus" class="common-anchor-header">What is Milvus?<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,16 +44,16 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong> عبارة </a>عن قاعدة بيانات متجهة مفتوحة المصدر تمكننا من تخزين كميات هائلة من البيانات غير المنظمة وإجراء عمليات بحث متجهة سريعة وفعالة عليها. تُعد Milvus مفيدة للغاية للعديد من تطبيقات GenAI الشائعة، مثل أنظمة التوصيات، وروبوتات الدردشة المخصصة، واكتشاف الشذوذ، والبحث عن الصور، ومعالجة اللغة الطبيعية، والجيل المعزز للاسترجاع<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG)</a>.</p>
-<p>هناك العديد من المزايا التي يمكنك الحصول عليها باستخدام Milvus كقاعدة بيانات متجهة:</p>
+    </button></h2><p><a href="https://milvus.io/docs/overview.md"><strong>Milvus</strong> </a>is an open-source vector database that enables us to store massive amounts of unstructured data and perform fast and efficient vector searches on them. Milvus is highly useful for many popular GenAI applications, such as recommendation systems, personalized chatbots, anomaly detection, image search, natural language processing, and retrieval augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>).</p>
+<p>There are several advantages that you can get by using Milvus as a vector database:</p>
 <ul>
-<li><p>يوفر Milvus خيارات نشر متعددة يمكنك الاختيار من بينها اعتمادًا على حالة استخدامك وحجم التطبيقات التي تريد إنشاءها.</p></li>
-<li><p>يدعم Milvus مجموعة متنوعة من طرق الفهرسة لتلبية مختلف احتياجات البيانات والأداء، بما في ذلك الخيارات داخل الذاكرة مثل FLAT وIVFFlat وHNSW <a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">وSCANN،</a> والمتغيرات الكمية لكفاءة الذاكرة، <a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">وDANN</a> على القرص لمجموعات البيانات الكبيرة، والفهارس المحسّنة لوحدة معالجة الرسومات مثل GPU_CAGRA وGPU_IVF_FLAT وGPU_IVF_PQ لعمليات البحث المتسارعة والفعالة من حيث الذاكرة.</p></li>
-<li><p>كما يوفر Milvus أيضًا بحثًا هجينًا، حيث يمكننا استخدام مزيج من التضمينات الكثيفة والتضمينات المتفرقة وتصفية البيانات الوصفية أثناء عمليات البحث المتجه، مما يؤدي إلى نتائج استرجاع أكثر دقة. بالإضافة إلى ذلك، يدعم <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> الآن <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">بحثًا</a> هجينًا <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">عن النص الكامل</a> والبحث المتجه، مما يجعل عملية الاسترجاع أكثر دقة.</p></li>
-<li><p>يمكن استخدام Milvus بشكل كامل على السحابة عبر <a href="https://zilliz.com/cloud">Zilliz Cloud،</a> حيث يمكنك تحسين تكاليفه التشغيلية وسرعة البحث المتجه بفضل أربع ميزات متقدمة: المجموعات المنطقية، وتصنيف البيانات المتدفقة والتاريخية، والتخزين المتدرج، والتوسيع التلقائي، والفصل بين الإيجارات المتعددة.</p></li>
+<li><p>Milvus offers multiple deployment options that you can choose from depending on your use case and the size of the applications you want to build.</p></li>
+<li><p>Milvus supports a diverse array of indexing methods to meet various data and performance needs, including in-memory options like FLAT, IVFFlat, HNSW, and <a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">SCANN</a>, quantized variants for memory efficiency, the on-disk <a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DiskANN</a> for large datasets, and GPU-optimized indexes such as GPU_CAGRA, GPU_IVF_FLAT, and GPU_IVF_PQ for accelerated, memory-efficient searches.</p></li>
+<li><p>Milvus also offers hybrid search, where we can use a combination of dense embeddings, sparse embeddings, and metadata filtering during vector search operations, leading to more accurate retrieval results. Additionally, <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> now supports a hybrid <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">full-text search</a> and vector search, making your retrieval even more accurate.</p></li>
+<li><p>Milvus can be fully used on the cloud via <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, where you can optimize its operational costs and vector search speed due to four advanced features: logical clusters, streaming and historical data disaggregation, tiered storage, autoscaling, and multi-tenancy hot-cold separation.</p></li>
 </ul>
-<p>عند استخدام Milvus كقاعدة بيانات متجهة، يمكنك اختيار ثلاثة خيارات نشر مختلفة، لكل منها نقاط قوته وفوائده. سنتحدث عن كل منها في القسم التالي.</p>
-<h2 id="Milvus-Deployment-Options" class="common-anchor-header">خيارات نشر ميلفوس<button data-href="#Milvus-Deployment-Options" class="anchor-icon" translate="no">
+<p>When using Milvus as your vector database, you can choose three different deployment options, each with its strengths and benefits. We’ll talk about each of them in the next section.</p>
+<h2 id="Milvus-Deployment-Options" class="common-anchor-header">Milvus Deployment Options<button data-href="#Milvus-Deployment-Options" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,25 +68,25 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يمكننا الاختيار من بين أربعة خيارات للنشر لبدء استخدام ميلفوس: ميلفوس <strong>لايت، ميلفوس مستقل، ميلفوس الموزع، وزيليز كلاود (ميلفوس المدارة).</strong> تم تصميم كل خيار نشر ليناسب سيناريوهات مختلفة في حالة استخدامنا، مثل حجم بياناتنا، والغرض من تطبيقنا، وحجم تطبيقنا.</p>
-<h3 id="Milvus-Lite" class="common-anchor-header">ميلفوس لايت</h3><p>Milvus<a href="https://milvus.io/docs/quickstart.md"><strong>Lite</strong></a> هو إصدار خفيف الوزن من Milvus وأسهل طريقة بالنسبة لنا للبدء. في القسم التالي، سنرى في القسم التالي كيف يمكننا تشغيل ميلفوس لايت، وكل ما علينا فعله للبدء هو تثبيت مكتبة Pymilvus باستخدام pip. بعد ذلك، يمكننا تنفيذ معظم الوظائف الأساسية لـ Milvus كقاعدة بيانات متجهة.</p>
-<p>يعد Milvus Lite مثاليًا لأغراض النماذج الأولية السريعة أو لأغراض التعلم ويمكن تشغيله في دفتر ملاحظات Jupyter دون أي إعداد معقد. فيما يتعلق بتخزين المتجهات، فإن Milvus Lite مناسب لتخزين ما يصل إلى مليون متجه تقريبًا. نظرًا لخفة وزنه وسعته التخزينية، يعد Milvus Lite خيارًا مثاليًا للنشر للعمل مع الأجهزة المتطورة، مثل محرك البحث عن المستندات الخاصة، واكتشاف الكائنات على الجهاز، وما إلى ذلك.</p>
-<h3 id="Milvus-Standalone" class="common-anchor-header">ميلفوس مستقل</h3><p>Milvus Standalone هو عبارة عن نشر خادم أحادي الجهاز معبأ في صورة Docker. لذلك، كل ما علينا فعله للبدء هو تثبيت Milvus في Docker، ثم بدء تشغيل حاوية Docker. سنرى أيضًا التنفيذ التفصيلي لـ Milvus Standalone في القسم التالي.</p>
-<p>يعتبر Milvus Standalone مثاليًا لبناء وإنتاج تطبيقات صغيرة إلى متوسطة الحجم، حيث أنه قادر على تخزين ما يصل إلى 10 ملايين من التضمينات المتجهة. بالإضافة إلى ذلك، يوفر Milvus Standalone توافرًا عاليًا من خلال وضع النسخ الاحتياطي الأساسي، مما يجعله موثوقًا للغاية للاستخدام في التطبيقات الجاهزة للإنتاج.</p>
-<p>يمكننا أيضًا استخدام Milvus Standalone، على سبيل المثال، بعد إجراء نماذج أولية سريعة وتعلم وظائف Milvus مع Milvus Lite، حيث يشترك كل من Milvus Standalone و Milvus Lite في نفس واجهة برمجة التطبيقات من جانب العميل.</p>
-<h3 id="Milvus-Distributed" class="common-anchor-header">ميلفوس الموزع</h3><p>Milvus Distributed هو خيار نشر يستفيد من بنية قائمة على السحابة، حيث يتم التعامل مع استيعاب البيانات واسترجاعها بشكل منفصل، مما يسمح بتطبيق عالي الكفاءة وقابل للتطوير.</p>
-<p>لتشغيل Milvus Distributed، نحتاج عادةً إلى استخدام مجموعة Kubernetes للسماح بتشغيل الحاوية على أجهزة وبيئات متعددة. يضمن تطبيق مجموعة Kubernetes العنقودية قابلية التوسع والمرونة في تطبيق Milvus Distributed في تخصيص الموارد المخصصة حسب الطلب وعبء العمل. وهذا يعني أيضًا أنه في حالة فشل أحد الأجزاء، يمكن أن يحل محله أجزاء أخرى، مما يضمن بقاء النظام بأكمله دون انقطاع.</p>
-<p>يستطيع نظام Milvus Distributed التعامل مع ما يصل إلى عشرات المليارات من التضمينات المتجهة وهو مصمم خصيصًا لحالات الاستخدام التي تكون فيها البيانات كبيرة جدًا بحيث لا يمكن تخزينها في جهاز خادم واحد. لذلك، فإن خيار النشر هذا مثالي لعملاء المؤسسات التي تخدم قاعدة مستخدمين كبيرة.</p>
+    </button></h2><p>We can choose from four deployment options to start using Milvus: <strong>Milvus Lite, Milvus Standalone, Milvus Distributed, and Zilliz Cloud (managed Milvus).</strong> Each deployment option is designed to suit various scenarios in our use case, such as the size of our data, the purpose of our application, and the scale of our application.</p>
+<h3 id="Milvus-Lite" class="common-anchor-header">Milvus Lite</h3><p><a href="https://milvus.io/docs/quickstart.md"><strong>Milvus Lite</strong></a> is a lightweight version of Milvus and the easiest way for us to get started. In the next section, we’ll see how we can run Milvus Lite in action, and all we need to do to get started is to install the Pymilvus library with pip. After that, we can perform most of the core functionalities of Milvus as a vector database.</p>
+<p>Milvus Lite is perfect for quick prototyping or learning purposes and can be run in a Jupyter notebook without any complicated setup. In terms of vector storage, Milvus Lite is suitable for storing roughly up to a million vector embeddings. Due to its lightweight feature and storage capacity, Milvus Lite is a perfect deployment option for working with edge devices, such as private documents search engine, on-device object detection, etc.</p>
+<h3 id="Milvus-Standalone" class="common-anchor-header">Milvus Standalone</h3><p>Milvus Standalone is a single-machine server deployment packed in a Docker image. Therefore, all we need to do to get started is to install Milvus in Docker, and then start the Docker container. We’ll also see the detailed implementation of Milvus Standalone in the next section.</p>
+<p>Milvus Standalone is ideal for building and productionizing small to medium-scale applications, as it’s able to store up to 10M vector embeddings. Additionally, Milvus Standalone offers high availability through a primary backup mode, making it highly dependable for use in production-ready applications.</p>
+<p>We can also use Milvus Standalone, for example, after performing quick prototyping and learning Milvus functionalities with Milvus Lite, as both Milvus Standalone and Milvus Lite share the same client-side API.</p>
+<h3 id="Milvus-Distributed" class="common-anchor-header">Milvus Distributed</h3><p>Milvus Distributed is a deployment option that leverages a cloud-based architecture, where data ingestion and retrieval are handled separately, allowing for a highly scalable and efficient application.</p>
+<p>To run Milvus Distributed, we typically need to use a Kubernetes cluster to allow the container to run on multiple machines and environments. The application of a Kubernetes cluster ensures the scalability and flexibility of Milvus Distributed in customizing the allocated resources depending on demand and workload. This also means that if one part fails, others can take over, ensuring the entire system remains uninterrupted.</p>
+<p>Milvus Distributed is able to handle up to tens of billions of vector embeddings and is specially designed for use cases where the data are too big to be stored in a single server machine. Therefore, this deployment option is perfect for Enterprise clients that serve a large user base.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Vector_embedding_storage_capability_of_different_Milvus_deployment_options_e3959ccfcd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل: إمكانية تخزين متجه التضمين المتجه لخيارات النشر المختلفة لـ Milvus.</em></p>
-<p>في هذه المقالة، سنوضح لك كيفية البدء باستخدام كل من Milvus Lite و Milvus Standalone، حيث يمكنك البدء بسرعة باستخدام كلا الطريقتين دون الحاجة إلى إعداد معقد. ومع ذلك، فإن إعداد Milvus Distributed أكثر تعقيدًا. بمجرد إعداد Milvus Distributed، تتشابه التعليمات البرمجية والعملية المنطقية لإنشاء المجموعات واستيعاب البيانات وإجراء البحث المتجه وما إلى ذلك مع Milvus Lite و Milvus Standalone، حيث يتشاركان نفس واجهة برمجة التطبيقات من جانب العميل.</p>
-<p>بالإضافة إلى خيارات النشر الثلاثة المذكورة أعلاه، يمكنك أيضًا تجربة Milvus المُدارة على <a href="https://zilliz.com/cloud">Zilliz Cloud</a> لتجربة خالية من المتاعب. سنتحدث أيضًا عن Zilliz Cloud لاحقًا في هذه المقالة.</p>
-<h2 id="Getting-Started-with-Milvus-Lite" class="common-anchor-header">البدء باستخدام ميلفوس لايت<button data-href="#Getting-Started-with-Milvus-Lite" class="anchor-icon" translate="no">
+<p><em>Figure: Vector embedding storage capability of different Milvus deployment options.</em></p>
+<p>In this article, we’re going to show you how to get started with both Milvus Lite and Milvus Standalone, as you can get started quickly with both methods without complicated setup. Milvus Distributed, however, is more complicated to set up. Once we set Milvus Distributed up, the code and logical process to create collections, ingest data, perform vector search, etc. are similar to Milvus Lite and Milvus Standalone, as they share the same client-side API.</p>
+<p>In addition to the three deployment options mentioned above, you can also try the managed Milvus on <a href="https://zilliz.com/cloud">Zilliz Cloud</a> for a hassle-free experience. We’ll also talk about Zilliz Cloud later in this article.</p>
+<h2 id="Getting-Started-with-Milvus-Lite" class="common-anchor-header">Getting Started with Milvus Lite<button data-href="#Getting-Started-with-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,26 +101,26 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يمكن تنفيذ Milvus Lite على الفور باستخدام Python عن طريق استيراد مكتبة تسمى Pymilvus باستخدام pip. قبل تثبيت Pymilvus، تأكد من أن بيئتك تفي بالمتطلبات التالية:</p>
+    </button></h2><p>Milvus Lite can be implemented straightaway with Python by importing a library called Pymilvus using pip. Before installing Pymilvus, ensure that your environment meets the following requirements:</p>
 <ul>
-<li><p>أوبونتو &gt;= 20.04 (x86_64 و arm64)</p></li>
-<li><p>MacOS &gt;= 11.0 (Apple Silicon M1/M2 و x86_64)</p></li>
-<li><p>بايثون 3.7 أو أحدث</p></li>
+<li><p>Ubuntu &gt;= 20.04 (x86_64 and arm64)</p></li>
+<li><p>MacOS &gt;= 11.0 (Apple Silicon M1/M2 and x86_64)</p></li>
+<li><p>Python 3.7 or later</p></li>
 </ul>
-<p>بمجرد استيفاء هذه المتطلبات، يمكنك تثبيت Milvus Lite والتبعيات اللازمة للعرض التوضيحي باستخدام الأمر التالي:</p>
+<p>Once these requirements are fulfilled, you can install Milvus Lite and the necessary dependencies for demonstration using the following command:</p>
 <pre><code translate="no">!pip install -U pymilvus
 !pip install <span class="hljs-string">&quot;pymilvus[model]&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p><code translate="no">!pip install -U pymilvus</code>: يقوم هذا الأمر بتثبيت أو ترقية مكتبة <code translate="no">pymilvus</code> ، وهي مجموعة أدوات تطوير البرمجيات الخاصة بـ Python SDK الخاصة بـ Milvus. يتم تجميع Milvus Lite مع PyMilvus، لذا فإن هذا السطر الوحيد من التعليمات البرمجية هو كل ما تحتاجه لتثبيت Milvus Lite.</p></li>
-<li><p><code translate="no">!pip install &quot;pymilvus[model]&quot;</code>: يضيف هذا الأمر ميزات متقدمة وأدوات إضافية مدمجة مسبقًا مع Milvus، بما في ذلك نماذج التعلم الآلي مثل محولات تعانق الوجوه، ونماذج تضمين الذكاء الاصطناعي جينا، ونماذج إعادة ترتيب النماذج.</p></li>
+<li><p><code translate="no">!pip install -U pymilvus</code>: This command installs or upgrades the <code translate="no">pymilvus</code> library, the Python SDK of Milvus. Milvus Lite is bunded with PyMilvus, so this single line of code is all you need to install Milvus Lite.</p></li>
+<li><p><code translate="no">!pip install &quot;pymilvus[model]&quot;</code>: This command adds advanced features and extra tools pre-integrated with Milvus, including machine learning models like Hugging Face Transformers, Jina AI embedding models, and reranking models.</p></li>
 </ul>
-<p>فيما يلي الخطوات التي سنتبعها مع Milvus Lite:</p>
+<p>Here are the steps we’re going to follow with Milvus Lite:</p>
 <ol>
-<li><p>تحويل البيانات النصية إلى تمثيل التضمين الخاص بها باستخدام نموذج تضمين.</p></li>
-<li><p>إنشاء مخطط في قاعدة بيانات Milvus لتخزين بياناتنا النصية وتمثيلات التضمين الخاصة بها.</p></li>
-<li><p>تخزين بياناتنا وفهرستها في مخططنا.</p></li>
-<li><p>إجراء بحث متجه بسيط على البيانات المخزنة.</p></li>
+<li><p>Transform text data into their embedding representation using an embedding model.</p></li>
+<li><p>Create a schema in our Milvus database to store our text data and their embedding representations.</p></li>
+<li><p>Store and index our data into our schema.</p></li>
+<li><p>Perform a simple vector search on the stored data.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -126,8 +128,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-get-started-with-milvus.md'
     <span></span>
   </span>
 </p>
-<p><em>الشكل: سير عمل عملية البحث المتجه.</em></p>
-<p>لتحويل البيانات النصية إلى تضمينات متجهة، سنستخدم <a href="https://zilliz.com/ai-models">نموذج تضمين</a> من SentenceTransformers يسمى "all-MiniLM-L6-v2". يقوم نموذج التضمين هذا بتحويل نصنا إلى تضمين متجه ذي 384 بُعدًا. لنقم بتحميل النموذج وتحويل بياناتنا النصية وتجميع كل شيء معًا.</p>
+<p><em>Figure: Workflow of vector search operation.</em></p>
+<p>To transform text data into vector embeddings, we’ll use an <a href="https://zilliz.com/ai-models">embedding model</a> from SentenceTransformers called 'all-MiniLM-L6-v2’. This embedding model transforms our text into a 384-dimensional vector embedding. Let’s load the model, transform our text data, and pack everything together.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 docs = [
@@ -144,7 +146,7 @@ sentence_transformer_ef = model.dense.SentenceTransformerEmbeddingFunction(
 vectors  = sentence_transformer_ef.encode_documents(docs)
 data = [ {<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: vectors[i], <span class="hljs-string">&quot;text&quot;</span>: docs[i]} <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(vectors)) ]
 <button class="copy-code-btn"></button></code></pre>
-<p>بعد ذلك، دعنا ننشئ مخططًا لتخزين جميع البيانات أعلاه في ميلفوس. كما ترى أعلاه، تتكون بياناتنا من ثلاثة حقول: المعرف والمتجه والنص. لذلك، سنقوم بإنشاء مخطط بهذه الحقول الثلاثة.</p>
+<p>Next, let’s create a schema to store all of the data above into Milvus. As you can see above, our data consists of three fields: ID, vector, and text. Therefore, we’re going to create a schema with these three fields.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(
@@ -157,7 +159,7 @@ schema.add_field(field_name=<span class="hljs-string">&quot;id&quot;</span>, dat
 schema.add_field(field_name=<span class="hljs-string">&quot;vector&quot;</span>, datatype=DataType.FLOAT_VECTOR, dim=<span class="hljs-number">384</span>)
 schema.add_field(field_name=<span class="hljs-string">&quot;text&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">512</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>باستخدام Milvus Lite، يمكننا بسهولة إنشاء مجموعة على قاعدة بيانات معينة استنادًا إلى المخطط المحدد أعلاه، بالإضافة إلى إدراج البيانات وفهرستها في المجموعة في بضعة أسطر من التعليمات البرمجية.</p>
+<p>With Milvus Lite, we can easily create a collection on a particular database based on the schema defined above, as well as inserting and indexing the data into the collection in just a few lines of code.</p>
 <pre><code translate="no" class="language-python">client = MilvusClient(<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 index_params = client.prepare_index_params()
@@ -182,14 +184,14 @@ res = client.insert(
     data=data
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>في الكود أعلاه، ننشئ مجموعة تسمى &quot;demo_collection&quot; داخل قاعدة بيانات Milvus باسم &quot;milvus_demo&quot;. بعد ذلك، نقوم بفهرسة جميع بياناتنا في "demo_collection" التي أنشأناها للتو.</p>
-<p>الآن بعد أن أصبح لدينا بياناتنا داخل قاعدة البيانات، يمكننا إجراء بحث متجه عليها لأي استعلام معين. لنفترض أن لدينا استعلام: &quot;<em>من هو آلان تورينج؟</em> يمكننا الحصول على الإجابة الأنسب للاستعلام من خلال تنفيذ الخطوات التالية:</p>
+<p>In the code above, we create a collection called “demo_collection” inside a Milvus database named &quot;milvus_demo&quot;. Next, we index all of our data into the “demo_collection” that we just created.</p>
+<p>Now that we have our data inside the database, we can perform a vector search on them for any given query. Let’s say we have a query: &quot;<em>Who is Alan Turing?</em>&quot;. We can get the most appropriate answer to the query by implementing the following steps:</p>
 <ol>
-<li><p>تحويل استعلامنا إلى تضمين متجه باستخدام نفس نموذج التضمين الذي استخدمناه لتحويل بياناتنا في قاعدة البيانات إلى تضمينات.</p></li>
-<li><p>احسب التشابه بين تضمين الاستعلام لدينا وتضمين كل إدخال في قاعدة البيانات باستخدام مقاييس مثل تشابه جيب التمام أو المسافة الإقليدية.</p></li>
-<li><p>جلب الإدخال الأكثر تشابهًا باعتباره الإجابة المناسبة لاستعلامنا.</p></li>
+<li><p>Transform our query into a vector embedding using the same embedding model that we used to transform our data in the database into embeddings.</p></li>
+<li><p>Calculate the similarity between our query embedding and the embedding of each entry in the database using metrics like cosine similarity or Euclidean distance.</p></li>
+<li><p>Fetch the most similar entry as the appropriate answer to our query.</p></li>
 </ol>
-<p>فيما يلي تنفيذ الخطوات المذكورة أعلاه باستخدام Milvus:</p>
+<p>Below is the implementation of the above steps with Milvus:</p>
 <pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
@@ -211,8 +213,8 @@ Output:
 data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x27;entity&#x27;: {&#x27;text&#x27;: &#x27;Alan Turing was the first person to conduct substantial research in AI.&#x27;}}]&quot;] 
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>وهذا كل شيء! يمكنك أيضًا معرفة المزيد حول الوظائف الأخرى التي يقدمها ملفوس، مثل إدارة قواعد البيانات، وإدراج المجموعات وحذفها، واختيار طريقة الفهرسة المناسبة، وإجراء عمليات بحث متجهية أكثر تقدمًا باستخدام تصفية البيانات الوصفية والبحث المختلط في <a href="https://milvus.io/docs/">وثائق ملفوس</a>.</p>
-<h2 id="Getting-Started-with-Milvus-Standalone" class="common-anchor-header">الشروع في العمل مع ميلفوس Standalone<button data-href="#Getting-Started-with-Milvus-Standalone" class="anchor-icon" translate="no">
+<p>And that’s it! You can also learn more about other functionalities that Milvus offers, such as managing databases, inserting and deleting collections, choosing the right indexing method, and performing more advanced vector searches with metadata filtering and hybrid search in <a href="https://milvus.io/docs/">Milvus documentation</a>.</p>
+<h2 id="Getting-Started-with-Milvus-Standalone" class="common-anchor-header">Getting Started with Milvus Standalone<button data-href="#Getting-Started-with-Milvus-Standalone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -227,25 +229,25 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199002504348755, &#x2
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Standalone هو خيار نشر يتم فيه تعبئة كل شيء في حاوية Docker. لذلك، نحتاج إلى تثبيت Milvus في Docker ثم بدء تشغيل حاوية Docker لبدء استخدام Milvus Standalone.</p>
-<p>قبل تثبيت Milvus Standalone، تأكد من استيفاء كل من أجهزتك وبرامجك للمتطلبات الموضحة في <a href="https://milvus.io/docs/prerequisite-docker.md">هذه الصفحة</a>. تأكد أيضًا من تثبيت Docker. لتثبيت Docker، راجع <a href="https://docs.docker.com/get-started/get-docker/">هذه الصفحة</a>.</p>
-<p>بمجرد أن يستوفي نظامنا المتطلبات وقمنا بتثبيت Docker، يمكننا متابعة تثبيت Milvus في Docker باستخدام الأمر التالي:</p>
+    </button></h2><p>Milvus Standalone is a deployment option in which everything is packed in a Docker container. Therefore, we need to install Milvus in Docker and then start the Docker container to get started with Milvus Standalone.</p>
+<p>Before installing Milvus Standalone, make sure that both your hardware and software fulfill the requirements described on <a href="https://milvus.io/docs/prerequisite-docker.md">this page</a>. Also, ensure that you’ve installed Docker. To install Docker, refer to <a href="https://docs.docker.com/get-started/get-docker/">this page</a>.</p>
+<p>Once our system fulfills the requirements and we have installed Docker, we can proceed with Milvus installation in Docker using the following command:</p>
 <pre><code translate="no" class="language-shell"><span class="hljs-comment"># Download the installation script</span>
 $ curl -sfL &lt;https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh&gt; -o standalone_embed.sh
 
 <span class="hljs-comment"># Start the Docker container</span>
 $ bash standalone_embed.sh start
 <button class="copy-code-btn"></button></code></pre>
-<p>في الشيفرة أعلاه، نبدأ أيضًا ببدء تشغيل حاوية Docker وبمجرد بدء تشغيلها، ستحصل على مخرجات مشابهة كما هو موضح أدناه:</p>
+<p>In the above code, we also start the Docker container and once it’s started, you’ll get similar output as below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Message_after_successful_starting_of_the_Docker_container_5c60fa15dd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل: رسالة بعد بدء تشغيل حاوية Docker بنجاح.</em></p>
-<p>بعد تشغيل البرنامج النصي للتثبيت "standalone_embed.sh" أعلاه، يتم بدء تشغيل حاوية Docker المسماة "milvus" على المنفذ 19530. لذلك، يمكننا إنشاء قاعدة بيانات جديدة وكذلك الوصول إلى جميع الأشياء المتعلقة بقاعدة بيانات Milvus من خلال الإشارة إلى هذا المنفذ عند بدء تشغيل العميل.</p>
-<p>لنفترض أننا نريد إنشاء قاعدة بيانات تدعى "milvus_demo"، على غرار ما فعلناه في Milvus Lite أعلاه. يمكننا القيام بذلك على النحو التالي:</p>
+<p><em>Figure: Message after successful starting of the Docker container.</em></p>
+<p>After running the installation script “standalone_embed.sh” above, a Docker container named “milvus” is started at port 19530. Therefore, we can create a new database as well as access all the things related to the Milvus database by pointing to this port when initiating the client.</p>
+<p>Let’s say we want to create a database called “milvus_demo”, similar to what we have done in Milvus Lite above. We can do so as follows:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
@@ -254,22 +256,22 @@ client = <span class="hljs-title class_">MilvusClient</span>(
 )
 client.<span class="hljs-title function_">create_database</span>(<span class="hljs-string">&quot;milvus_demo&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>بعد ذلك، يمكنك التحقق مما إذا كانت قاعدة البيانات التي تم إنشاؤها حديثًا باسم "milvus_demo" موجودة بالفعل في مثيل Milvus الخاص بك عن طريق الوصول إلى <a href="https://milvus.io/docs/milvus-webui.md">واجهة مستخدم Milvus Web UI</a>. كما يوحي الاسم، فإن واجهة مستخدم الويب Milvus Web UI هي واجهة مستخدم رسومية توفرها Milvus لمراقبة الإحصائيات والمقاييس الخاصة بالمكونات، والتحقق من قائمة وتفاصيل قواعد البيانات والمجموعات والتكوينات. يمكنك الوصول إلى واجهة مستخدم Milvus Web UI بمجرد بدء تشغيل حاوية Docker أعلاه على http://127.0.0.1:9091/webui/.</p>
-<p>إذا قمت بالوصول إلى الرابط أعلاه، سترى صفحة هبوط مثل هذه:</p>
+<p>Next, you can verify whether the newly created database called “milvus_demo” truly exists in your Milvus instance by accessing the <a href="https://milvus.io/docs/milvus-webui.md">Milvus Web UI</a>. As the name suggests, Milvus Web UI is a graphical user interface provided by Milvus to observe the statistics and metrics of the components, check the list and details of databases, collections, and configurations. You can access Milvus Web UI once you’ve started the Docker container above at http://127.0.0.1:9091/webui/.</p>
+<p>If you access the above link, you’ll see a landing page like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Landing_page_UI_187a40e935.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>تحت علامة التبويب "المجموعات"، سترى أنه تم إنشاء قاعدة بيانات "milvus_demo" بنجاح. كما ترى، يمكنك أيضًا التحقق من أشياء أخرى مثل قائمة المجموعات والتكوينات والاستعلامات التي أجريتها وما إلى ذلك، باستخدام واجهة مستخدم الويب هذه.</p>
+<p>Under the “Collections” tab, you’ll see that our “milvus_demo” database has been successfully created. As you can see, you can also check other things such as the list of collections, configurations, the queries you’ve performed, etc., with this Web UI.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Web_Ui_2_666eae57b1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>الآن يمكننا تنفيذ كل شيء تمامًا كما رأينا في قسم ميلفوس لايت أعلاه. لنقم بإنشاء مجموعة تسمى "demo_collection_collection" داخل قاعدة بيانات "milvus_demo" التي تتكون من ثلاثة حقول، وهي نفس ما كان لدينا في قسم Milvus Lite من قبل. بعد ذلك، سنقوم بإدخال بياناتنا في المجموعة.</p>
+<p>Now we can perform everything exactly as we’ve seen in the Milvus Lite section above. Let’s create a collection called “demo_collection” inside the “milvus_demo” database that consists of three fields, the same as what we had in the Milvus Lite section before. Then, we’ll insert our data into the collection.</p>
 <pre><code translate="no" class="language-python">index_params = client.prepare_index_params()
 
 <span class="hljs-comment">#  Add indexes</span>
@@ -292,7 +294,7 @@ res = client.insert(
     data=data
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>الكود الخاص بإجراء عملية البحث المتجه هو نفسه الموجود في Milvus Lite، كما ترى في الكود أدناه:</p>
+<p>The code to perform a vector search operation is also the same as Milvus Lite, as you can see in the below code:</p>
 <pre><code translate="no" class="language-python">query = [<span class="hljs-string">&quot;Who is Alan Turing&quot;</span>]
 query_embedding = sentence_transformer_ef.encode_queries(query)
 
@@ -314,11 +316,11 @@ Output:
 data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x27;entity&#x27;: {&#x27;text&#x27;: &#x27;Alan Turing was the first person to conduct substantial research in AI.&#x27;}}]&quot;] 
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>بصرف النظر عن استخدام Docker، يمكنك أيضًا استخدام Milvus Standalone مع <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (لنظام لينكس) و <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (لنظام ويندوز).</p>
-<p>عندما لا نستخدم مثيل Milvus بعد الآن، يمكننا إيقاف Milvus Standalone باستخدام الأمر التالي:</p>
+<p>Aside from using Docker, you can also use Milvus Standalone with <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose</a> (for Linux) and <a href="https://milvus.io/docs/install_standalone-windows.md">Docker Desktop</a> (for Windows).</p>
+<p>When we’re not using our Milvus instance anymore, we can stop Milvus Standalone with the following command:</p>
 <pre><code translate="no" class="language-shell">$ bash standalone_embed.sh stop
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Fully-Managed-Milvus" class="common-anchor-header">ميلفوس المدارة بالكامل<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
+<h2 id="Fully-Managed-Milvus" class="common-anchor-header">Fully Managed Milvus<button data-href="#Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,27 +335,27 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>طريقة بديلة لبدء استخدام ميلفوس هي من خلال بنية تحتية أصلية قائمة على السحابة في <a href="https://zilliz.com/cloud">Zilliz Cloud</a>، حيث يمكنك الحصول على تجربة خالية من المتاعب وأسرع 10 مرات.</p>
-<p>تقدم Zilliz Cloud مجموعات مخصصة مع بيئات وموارد مخصصة لدعم تطبيق الذكاء الاصطناعي الخاص بك. ونظراً لأنها قاعدة بيانات قائمة على السحابة مبنية على Milvus، فإننا لا نحتاج إلى إعداد وإدارة البنية التحتية المحلية. توفر Zilliz Cloud أيضًا ميزات أكثر تقدمًا، مثل الفصل بين التخزين المتجه والحساب، والنسخ الاحتياطي للبيانات إلى أنظمة تخزين الكائنات الشائعة مثل S3، والتخزين المؤقت للبيانات لتسريع عمليات البحث عن المتجهات واسترجاعها.</p>
-<p>ومع ذلك، هناك شيء واحد يجب مراعاته عند التفكير في الخدمات المستندة إلى السحابة هو التكلفة التشغيلية. في معظم الحالات، ما زلنا بحاجة إلى الدفع حتى عندما تكون المجموعة خاملة بدون استيعاب بيانات أو نشاط بحث متجه. إذا كنت ترغب في تحسين التكلفة التشغيلية والأداء التشغيلي لتطبيقك بشكل أكبر، فإن Zilliz Cloud Serverless سيكون خيارًا ممتازًا.</p>
+    </button></h2><p>An alternative way to get started with Milvus is through a native cloud-based infrastructure in <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, where you can get a hassle-free, 10x faster experience.</p>
+<p>Zilliz Cloud offers dedicated clusters with dedicated environments and resources to support your AI application. Since it is a cloud-based database built on Milvus, we do not need to set up and manage local infrastructure. Zilliz Cloud also provides more advanced features, such as separation between vector storage and computation, data backup to popular object storage systems like S3, and data caching to speed up vector search and retrieval operations.</p>
+<p>However, one thing to consider when considering cloud-based services is the operational cost. In most cases, we still need to pay even when the cluster is idle with no data ingestion or vector search activity. If you want to optimize your application’s operational cost and performance further, Zilliz Cloud Serverless would be an excellent option.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Key_benefits_of_using_Zilliz_Cloud_Serverless_20f68e0fff.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل: المزايا الرئيسية لاستخدام Zilliz Cloud Serverless.</em></p>
-<p>يتوفر Zilliz Cloud Serverless على مزودي الخدمات السحابية الرئيسيين مثل AWS و Azure و GCP. يوفر ميزات مثل تسعير الدفع حسب الاستخدام، مما يعني أنك تدفع فقط عند استخدامك للمجموعة.</p>
-<p>تطبق Zilliz Cloud Serverless أيضًا تقنيات متقدمة مثل التكتلات المنطقية، والتوسع التلقائي، والتخزين المتدرج، وفصل البيانات المتدفقة والتاريخية، وفصل البيانات الباردة والساخنة. تُمكِّن هذه الميزات Zilliz Cloud Serverless من تحقيق وفورات في التكاليف تصل إلى 50 ضعفًا وعمليات بحث متجه أسرع 10 مرات تقريبًا مقارنةً بـ Milvus داخل الذاكرة.</p>
+<p><em>Figure: Key benefits of using Zilliz Cloud Serverless.</em></p>
+<p>Zilliz Cloud Serverless is available on major cloud providers such as AWS, Azure, and GCP. It offers features like pay-as-you-go pricing, meaning you only pay when you use the cluster.</p>
+<p>Zilliz Cloud Serverless also implements advanced technologies such as logical clusters, auto-scaling, tiered storage, disaggregation of streaming and historical data, and hot-cold data separation. These features enable Zilliz Cloud Serverless to achieve up to 50x cost savings and approximately 10x faster vector search operations compared to in-memory Milvus.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Illustration_of_tiered_storage_and_hot_cold_data_separation_c634dfd211.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل: رسم توضيحي للتخزين المتدرج وفصل البيانات الباردة والساخنة.</em></p>
-<p>إذا كنت ترغب في البدء في استخدام Zilliz Cloud Serverless، راجع <a href="https://zilliz.com/serverless">هذه الصفحة</a> لمزيد من المعلومات.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><em>Figure: Illustration of tiered storage and hot-cold data separation.</em></p>
+<p>If you’d like to get started with Zilliz Cloud Serverless, check out <a href="https://zilliz.com/serverless">this page</a> for more information.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -368,5 +370,5 @@ data: [&quot;[{&#x27;id&#x27;: 1, &#x27;distance&#x27;: 0.7199004292488098, &#x2
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تبرز Milvus كقاعدة بيانات متجهة متعددة الاستخدامات وقوية مصممة لمواجهة تحديات إدارة البيانات غير المهيكلة وإجراء عمليات بحث متجهة سريعة وفعالة في تطبيقات الذكاء الاصطناعي الحديثة. وبفضل خيارات النشر مثل Milvus Lite للنماذج الأولية السريعة، و Milvus Standalone للتطبيقات الصغيرة والمتوسطة الحجم، و Milvus Distributed لقابلية التوسع على مستوى المؤسسات، فإنه يوفر مرونة تتناسب مع حجم أي مشروع وتعقيده.</p>
-<p>بالإضافة إلى ذلك، يعمل Zilliz Cloud Serverless على توسيع قدرات Milvus إلى السحابة ويوفر نموذجًا فعالاً من حيث التكلفة والدفع حسب الاستخدام يلغي الحاجة إلى البنية التحتية المحلية. وبفضل الميزات المتقدمة مثل التخزين المتدرج والتوسع التلقائي، يضمن Zilliz Cloud Serverless عمليات بحث أسرع في البحث المتجه مع تحسين التكاليف.</p>
+    </button></h2><p>Milvus stands out as a versatile and powerful vector database designed to meet the challenges of managing unstructured data and performing fast, efficient vector search operations in modern AI applications. With deployment options such as Milvus Lite for quick prototyping, Milvus Standalone for small to medium-scale applications, and Milvus Distributed for enterprise-level scalability, it offers flexibility to match any project’s size and complexity.</p>
+<p>Additionally, Zilliz Cloud Serverless extends Milvus’s capabilities into the cloud and provides a cost-effective, pay-as-you-go model that eliminates the need for local infrastructure. With advanced features like tiered storage and auto-scaling, Zilliz Cloud Serverless ensures faster vector search operations while optimizing costs.</p>

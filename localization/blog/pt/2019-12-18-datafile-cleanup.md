@@ -1,19 +1,19 @@
 ---
 id: 2019-12-18-datafile-cleanup.md
-title: Estratégia de eliminação anterior e problemas relacionados
+title: Previous delete strategy and related problems
 author: Yihua Mo
 date: 2019-12-18T00:00:00.000Z
 desc: >-
-  Melhorámos a estratégia de eliminação de ficheiros para corrigir os problemas
-  relacionados com a operação de consulta.
+  We improved the file delete strategy to fix the query operation related
+  issues.
 cover: null
 tag: Engineering
 ---
-<custom-h1>Melhorias no mecanismo de limpeza de ficheiros de dados</custom-h1><blockquote>
-<p>autor: Yihua Mo</p>
-<p>Data: 2019-12-18</p>
+<custom-h1>Improvements of the Data File Cleanup Mechanism</custom-h1><blockquote>
+<p>author: Yihua Mo</p>
+<p>Date: 2019-12-18</p>
 </blockquote>
-<h2 id="Previous-delete-strategy-and-related-problems" class="common-anchor-header">Estratégia de eliminação anterior e problemas relacionados<button data-href="#Previous-delete-strategy-and-related-problems" class="anchor-icon" translate="no">
+<h2 id="Previous-delete-strategy-and-related-problems" class="common-anchor-header">Previous delete strategy and related problems<button data-href="#Previous-delete-strategy-and-related-problems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -28,21 +28,25 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Em <a href="/blog/pt/2019-11-08-data-management.md">Managing Data in Massive-Scale Vetor Search Engine</a>, mencionámos o mecanismo de eliminação de ficheiros de dados. A eliminação inclui a eliminação suave e a eliminação rígida. Depois de efetuar uma operação de eliminação numa tabela, a tabela é marcada com uma eliminação suave. As operações de pesquisa ou atualização subsequentes deixam de ser permitidas. No entanto, a operação de consulta que se inicia antes da eliminação pode continuar a ser executada. A tabela é realmente eliminada juntamente com os metadados e outros ficheiros apenas quando a operação de consulta estiver concluída.</p>
-<p>Então, quando é que os ficheiros marcados com soft-delete são realmente eliminados? Antes da versão 0.6.0, a estratégia é que um ficheiro é realmente eliminado após uma eliminação suave durante 5 minutos. A figura seguinte mostra a estratégia:</p>
+    </button></h2><p>In <a href="/blog/pt/2019-11-08-data-management.md">Managing Data in Massive-Scale Vector Search Engine</a>, we mentioned the delete mechanism of data files. Delete includes soft-delete and hard-delete. After performing a delete operation on a table, the table is marked with soft-delete. Search or update operations afterwards are no longer allowed. However, the query operation that starts before delete can still run. The table is really deleted together with metadata and other files only when the query operation is complete.</p>
+<p>So, when the files marked with soft-delete are really deleted? Before 0.6.0, the strategy is that a file is really deleted after soft-deleted for 5 minutes. The following figure displays the strategy:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5mins.png" alt="5mins" class="doc-image" id="5mins" />
-   </span> <span class="img-wrapper"> <span>5mins</span> </span></p>
-<p>Esta estratégia baseia-se na premissa de que as consultas normalmente não duram mais de 5 minutos e não é fiável. Se uma consulta durar mais de 5 minutos, a consulta falhará. A razão é que, quando uma consulta é iniciada, o Milvus recolhe informações sobre os ficheiros que podem ser pesquisados e cria tarefas de consulta. Depois, o programador de consultas carrega os ficheiros para a memória um a um e procura os ficheiros um a um. Se um ficheiro já não existir ao carregar um ficheiro, a consulta falhará.</p>
-<p>Aumentar o tempo pode ajudar a reduzir o risco de falhas nas consultas, mas também causa outro problema: a utilização do disco é demasiado grande. A razão é que, quando são inseridas grandes quantidades de vectores, o Milvus combina continuamente os ficheiros de dados e os ficheiros combinados não são imediatamente removidos do disco, mesmo que não ocorra nenhuma consulta. Se a inserção de dados for demasiado rápida e/ou a quantidade de dados inseridos for demasiado grande, a utilização extra do disco pode ascender a dezenas de GBs. Consulte a figura seguinte como exemplo:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5mins.png" alt="5mins" class="doc-image" id="5mins" />
+    <span>5mins</span>
+  </span>
+</p>
+<p>This strategy is based on the premise that queries normally do not last more than 5 minutes and is not reliable. If a query lasts more than 5 minutes, the query will fail. The reason is that when a query starts, Milvus collects information about files that can be searched and creates query tasks. Then, the query scheduler loads files to memory one by one and searches for files one by one. If a file no longer exists when loading a file, the query will fail.</p>
+<p>Extending the time may help reduce the risk of query failures, but also causes another problem: disk usage is too large. The reason is that when large quantities of vectors are being inserted, Milvus continually combines data files and the combined files are not immediately removed from the disk, even though no query happens. If data insertion is too fast and/or the amount of inserted data is too large, extra disk usage can amount to tens of GBs. Refer to the following figure as an example:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5min_result.png" alt="result" class="doc-image" id="result" />
-   </span> <span class="img-wrapper"> <span>resultado</span> </span></p>
-<p>Como mostrado na figura anterior, o primeiro lote de dados inseridos (insert_1) é descarregado para o disco e torna-se ficheiro_1, depois insert_2 torna-se ficheiro_2. O thread responsável pela combinação de ficheiros combina os ficheiros no ficheiro_3. Em seguida, o ficheiro_1 e o ficheiro_2 são marcados como soft-delete. O terceiro lote de dados de inserção torna-se o ficheiro_4. A thread combina o ficheiro_3 e o ficheiro_4 com o ficheiro_5 e marca o ficheiro_3 e o ficheiro_4 como soft-delete.</p>
-<p>Da mesma forma, insert_6 e insert_5 são combinados. Em t3, o ficheiro_5 e o ficheiro_6 são marcados como soft-delete. Entre t3 e t4, embora muitos ficheiros estejam marcados como soft-delete, eles ainda estão no disco. Os ficheiros são realmente eliminados após t4. Assim, entre t3 e t4, o uso do disco é 64 + 64 + 128 + 64 + 196 + 64 + 256 = 836 MB. Os dados inseridos são 64 + 64 + 64 + 64 + 64 = 256 MB. A utilização do disco é 3 vezes superior ao tamanho dos dados inseridos. Quanto mais rápida for a velocidade de escrita do disco, maior será a utilização do disco durante um período de tempo específico.</p>
-<h2 id="Improvements-of-the-delete-strategy-in-060" class="common-anchor-header">Melhorias da estratégia de eliminação na versão 0.6.0<button data-href="#Improvements-of-the-delete-strategy-in-060" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/5min_result.png" alt="result" class="doc-image" id="result" />
+    <span>result</span>
+  </span>
+</p>
+<p>As shown in the previous figure, the first batch of inserted data (insert_1) is flushed to disk and becomes file_1, then insert_2 becomes file_2. The thread responsible for file combination combines the files to file_3. Then, file_1 and file_2 are marked as soft-delete. The third batch of insert data becomes file_4. The thread combines file_3 and file_4 to file_5 and marks file_3 and file_4 as soft-delete.</p>
+<p>Likewise, insert_6 and insert_5 are combined. In t3, file_5 and file_6 are marked as soft-delete. Between t3 and t4, although many files are marked as soft-delete, they are still in the disk. Files are really deleted after t4. Thus, between t3 and t4, the disk usage is 64 + 64 + 128 + 64 + 196 + 64 + 256 = 836 MB. The inserted data is 64 + 64 + 64 + 64 = 256 MB. The disk usage is 3 times the size of inserted data. The faster the write speed of the disk, the higher the disk usage during a specific time period.</p>
+<h2 id="Improvements-of-the-delete-strategy-in-060" class="common-anchor-header">Improvements of the delete strategy in 0.6.0<button data-href="#Improvements-of-the-delete-strategy-in-060" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,14 +61,16 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Assim, alterámos a estratégia de eliminação de ficheiros na v0.6.0. O hard-delete já não usa o tempo como gatilho. Em vez disso, o gatilho é quando o ficheiro não está a ser utilizado por nenhuma tarefa.</p>
+    </button></h2><p>Thus, we changed the strategy to delete files in v0.6.0. Hard-delete no longer uses time as triggers. Instead, the trigger is when the file is not in use by any task.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/new_strategy.png" alt="newstrategy" class="doc-image" id="newstrategy" />
-   </span> <span class="img-wrapper"> <span>novaestratégia</span> </span></p>
-<p>Suponha que são inseridos dois lotes de vectores. Em t1 é dado um pedido de consulta, Milvus adquire dois ficheiros a serem consultados (ficheiro_1 e ficheiro_2, porque o ficheiro_3 ainda não existe.) Depois, a thread de backend começa a combinar os dois ficheiros com a consulta a correr ao mesmo tempo. Quando o ficheiro_3 é gerado, o ficheiro_1 e o ficheiro_2 são marcados como soft-delete. Após a consulta, nenhuma outra tarefa usará o arquivo_1 e o arquivo_2, então eles serão apagados em t4. O intervalo entre t2 e t4 é muito pequeno e depende do intervalo da consulta. Desta forma, os ficheiros não utilizados serão removidos a tempo.</p>
-<p>Quanto à implementação interna, a contagem de referências, que é familiar aos engenheiros de software, é utilizada para determinar se um ficheiro pode ser apagado. Para explicar usando uma comparação, quando um jogador tem vidas num jogo, ele ainda pode jogar. Quando o número de vidas chega a 0, o jogo termina. O Milvus monitoriza o estado de cada ficheiro. Quando um ficheiro é utilizado por uma tarefa, é-lhe adicionada uma vida. Quando o ficheiro deixa de ser utilizado, é-lhe retirada uma vida. Quando um ficheiro é marcado com soft-delete e o número de vidas é 0, o ficheiro está pronto para hard-delete.</p>
-<h2 id="Related-blogs" class="common-anchor-header">Blogs relacionados<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/datafile_clean/new_strategy.png" alt="newstrategy" class="doc-image" id="newstrategy" />
+    <span>newstrategy</span>
+  </span>
+</p>
+<p>Assume two batches of vectors are inserted. In t1 a query request is given, Milvus acquires two files to be queried (file_1 and file_2, because file_3 still does not exist.) Then, the backend thread starts combining the two files with the query running at the same time. When file_3 is generated, file_1 and file_2 are marked as soft-delete. After the query, no other tasks will use file_1 and file_2, so they will be hard-deleted in t4. The interval between t2 and t4 is very small and depends on the interval of the query. In this way, unused files will be removed in time.</p>
+<p>As for internal implementation, reference counting, which is familiar to software engineers, is used to determine whether a file can be hard-deleted. To explain using comparison, when a player has lives in a game, he can still play. When the number of lives becomes 0, the game is over. Milvus monitors the status of each file. When a file is used by a task, a life will be added to the file. When the file is no longer used, a life will be removed from the file. When a file is marked with soft-delete and the number of lives is 0, the file is ready for hard-delete.</p>
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,7 +86,7 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="/blog/pt/2019-11-08-data-management.md">Gestão de dados num motor de busca vetorial de grande escala</a></li>
-<li><a href="https://milvus.io/blog/managing-metadata-in-milvus-1.md">Milvus Metadata Management (1): Como visualizar metadados</a></li>
-<li><a href="/blog/pt/2019-12-27-meta-table.md">Milvus Metadata Management (2): Campos na tabela de metadados</a></li>
+<li><a href="/blog/pt/2019-11-08-data-management.md">Managing Data in Massive-Scale Vector Search Engine</a></li>
+<li><a href="https://milvus.io/blog/managing-metadata-in-milvus-1.md">Milvus Metadata Management (1): How to View Metadata</a></li>
+<li><a href="/blog/pt/2019-12-27-meta-table.md">Milvus Metadata Management (2): Fields in the Metadata Table</a></li>
 </ul>

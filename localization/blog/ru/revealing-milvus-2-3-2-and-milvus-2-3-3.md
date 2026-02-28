@@ -1,15 +1,14 @@
 ---
 id: revealing-milvus-2-3-2-and-milvus-2-3-3.md
 title: >-
-  Раскрытие Milvus 2.3.2 и 2.3.3: Поддержка типов данных массивов, сложное
-  удаление, интеграция с TiKV и многое другое
+  Revealing Milvus 2.3.2 & 2.3.3: Support for Array Data Types, Complex Delete,
+  TiKV Integration, and More
 author: 'Fendy Feng, Owen Jiao'
 date: 2023-11-20T00:00:00.000Z
 desc: >-
-  Сегодня мы с радостью объявляем о выходе обновлений Milvus 2.3.2 и 2.3.3! В
-  этих обновлениях появилось множество интересных функций, оптимизаций и
-  улучшений, повышающих производительность системы, гибкость и общий
-  пользовательский опыт.
+  Today, we are thrilled to announce the release of Milvus 2.3.2 and 2.3.3!
+  These updates bring many exciting features, optimizations, and improvements,
+  enhancing system performance, flexibility, and overall user experience.
 cover: assets.zilliz.com/What_s_New_in_Milvus_2_3_2_and_2_3_3_d3d0db03c3.png
 tag: News
 tags: >-
@@ -24,8 +23,8 @@ canonicalUrl: null
     <span></span>
   </span>
 </p>
-<p>В постоянно развивающемся ландшафте технологий векторного поиска Milvus остается на переднем крае, расширяя границы и устанавливая новые стандарты. Сегодня мы с радостью объявляем о выпуске Milvus 2.3.2 и 2.3.3! В этих обновлениях появилось множество интересных функций, оптимизаций и улучшений, повышающих производительность системы, гибкость и общий пользовательский опыт.</p>
-<h2 id="Support-for-Array-data-types---making-search-results-more-accurate-and-relevant" class="common-anchor-header">Поддержка типов данных Array - более точные и релевантные результаты поиска<button data-href="#Support-for-Array-data-types---making-search-results-more-accurate-and-relevant" class="anchor-icon" translate="no">
+<p>In the ever-evolving landscape of vector search technologies, Milvus remains at the forefront, pushing boundaries and setting new standards. Today, we are thrilled to announce the release of Milvus 2.3.2 and 2.3.3! These updates bring many exciting features, optimizations, and improvements, enhancing system performance, flexibility, and overall user experience.</p>
+<h2 id="Support-for-Array-data-types---making-search-results-more-accurate-and-relevant" class="common-anchor-header">Support for Array data types - making search results more accurate and relevant<button data-href="#Support-for-Array-data-types---making-search-results-more-accurate-and-relevant" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,9 +39,9 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Добавление поддержки типов данных Array - важнейшее усовершенствование для Milvus, особенно в сценариях фильтрации запросов, таких как пересечение и объединение. Это дополнение гарантирует, что результаты поиска будут не только более точными, но и более релевантными. С практической точки зрения, например, в секторе электронной коммерции теги товаров, хранящиеся в виде массивов строк, позволяют потребителям выполнять расширенный поиск, отсеивая нерелевантные результаты.</p>
-<p>Погрузитесь в нашу исчерпывающую <a href="https://milvus.io/docs/array_data_type.md">документацию</a>, чтобы получить подробное руководство по использованию типов Array в Milvus.</p>
-<h2 id="Support-for-complex-delete-expressions---improving-your-data-management" class="common-anchor-header">Поддержка сложных выражений удаления - улучшение управления данными<button data-href="#Support-for-complex-delete-expressions---improving-your-data-management" class="anchor-icon" translate="no">
+    </button></h2><p>Adding the Array data type support is a pivotal enhancement for Milvus, particularly in query filtering scenarios like intersection and union. This addition ensures that search results are not only more accurate but also more relevant. In practical terms, for instance, within the e-commerce sector, product tags stored as string Arrays allow consumers to perform advanced searches, filtering out irrelevant results.</p>
+<p>Dive into our comprehensive <a href="https://milvus.io/docs/array_data_type.md">documentation</a> for an in-depth guide on leveraging Array types in Milvus.</p>
+<h2 id="Support-for-complex-delete-expressions---improving-your-data-management" class="common-anchor-header">Support for complex delete expressions - improving your data management<button data-href="#Support-for-complex-delete-expressions---improving-your-data-management" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,9 +56,9 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В предыдущих версиях Milvus поддерживал выражения удаления первичных ключей, обеспечивая стабильную и оптимизированную архитектуру. В Milvus 2.3.2 или 2.3.3 пользователи могут использовать сложные выражения удаления, что облегчает сложные задачи управления данными, такие как скользящая очистка старых данных или удаление данных в соответствии с GDPR на основе идентификаторов пользователей.</p>
-<p>Примечание: Перед использованием сложных выражений убедитесь, что вы загрузили коллекции. Кроме того, важно отметить, что процесс удаления не гарантирует атомарности.</p>
-<h2 id="TiKV-integration---scalable-metadata-storage-with-stability" class="common-anchor-header">Интеграция TiKV - масштабируемое хранилище метаданных со стабильностью<button data-href="#TiKV-integration---scalable-metadata-storage-with-stability" class="anchor-icon" translate="no">
+    </button></h2><p>In previous versions, Milvus supported primary key deletion expressions, providing a stable and streamlined architecture. With Milvus 2.3.2 or 2.3.3, users can employ complex delete expressions, facilitating sophisticated data management tasks such as rolling cleanup of old data or GDPR compliance-driven data deletion based on user IDs.</p>
+<p>Note: Ensure you’ve loaded collections before utilizing complex expressions. Additionally, it’s important to note that the deletion process does not guarantee atomicity.</p>
+<h2 id="TiKV-integration---scalable-metadata-storage-with-stability" class="common-anchor-header">TiKV integration - scalable metadata storage with stability<button data-href="#TiKV-integration---scalable-metadata-storage-with-stability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -74,8 +73,8 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ранее полагаясь на Etcd для хранения метаданных, Milvus столкнулся с проблемами ограниченной емкости и масштабируемости хранилища метаданных. Чтобы решить эти проблемы, Milvus добавила TiKV, хранилище ключевых значений с открытым исходным кодом, в качестве еще одного варианта хранения метаданных. TiKV обладает повышенной масштабируемостью, стабильностью и эффективностью, что делает его идеальным решением для меняющихся требований Milvus. Начиная с версии Milvus 2.3.2, пользователи могут плавно перейти на TiKV для хранения метаданных, изменив конфигурацию.</p>
-<h2 id="Support-for-FP16-vector-type---embracing-machine-learning-efficiency" class="common-anchor-header">Поддержка векторного типа FP16 - повышение эффективности машинного обучения<button data-href="#Support-for-FP16-vector-type---embracing-machine-learning-efficiency" class="anchor-icon" translate="no">
+    </button></h2><p>Previously relying on Etcd for metadata storage, Milvus faced limited capacity and scalability challenges in metadata storage. To address these problems, Milvus added TiKV, an open-source key-value store, as one more option for metadata storage. TiKV offers enhanced scalability, stability, and efficiency, making it an ideal solution for Milvus’s evolving requirements. Starting from Milvus 2.3.2, users can seamlessly transition to TiKV for their metadata storage by modifying the configuration.</p>
+<h2 id="Support-for-FP16-vector-type---embracing-machine-learning-efficiency" class="common-anchor-header">Support for FP16 vector type - embracing machine learning efficiency<button data-href="#Support-for-FP16-vector-type---embracing-machine-learning-efficiency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -90,9 +89,9 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3.2 и более поздние версии теперь поддерживают векторный тип FP16 на уровне интерфейса. FP16, или 16-битная плавающая точка, - это формат данных, широко используемый в глубоком обучении и машинном обучении, обеспечивающий эффективное представление и вычисление числовых значений. В то время как полная поддержка FP16 находится в процессе реализации, различные индексы в слое индексирования требуют преобразования FP16 в FP32 во время построения.</p>
-<p>Мы полностью поддерживаем типы данных FP16, BF16 и int8 в последующих версиях Milvus. Следите за новостями.</p>
-<h2 id="Significant-improvement-in-the-rolling-upgrade-experience---seamless-transition-for-users" class="common-anchor-header">Значительное улучшение опыта скользящего обновления - плавный переход для пользователей<button data-href="#Significant-improvement-in-the-rolling-upgrade-experience---seamless-transition-for-users" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.3.2 and later versions now support the FP16 vector type at the interface level. FP16, or 16-bit floating point, is a data format widely used in deep learning and machine learning, providing efficient representation and calculation of numerical values. While full support for FP16 is underway, various indexes in the indexing layer require converting FP16 to FP32 during construction.</p>
+<p>We will fully support FP16, BF16, and int8 data types in later versions of Milvus. Stay tuned.</p>
+<h2 id="Significant-improvement-in-the-rolling-upgrade-experience---seamless-transition-for-users" class="common-anchor-header">Significant improvement in the rolling upgrade experience - seamless transition for users<button data-href="#Significant-improvement-in-the-rolling-upgrade-experience---seamless-transition-for-users" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -107,8 +106,8 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Скользящее обновление - важная функция для распределенных систем, позволяющая обновлять систему без нарушения работы бизнес-сервисов и простоев. В последних релизах Milvus мы усовершенствовали функцию скользящего обновления, обеспечив более плавный и эффективный переход для пользователей при обновлении с версии 2.2.15 до 2.3.3 и всех последующих версий. Сообщество также вложило средства в обширное тестирование и оптимизацию, что позволило сократить время выполнения запросов при обновлении до менее чем 5 минут, обеспечив пользователям беспроблемный опыт.</p>
-<h2 id="Performance-optimization" class="common-anchor-header">Оптимизация производительности<button data-href="#Performance-optimization" class="anchor-icon" translate="no">
+    </button></h2><p>Rolling upgrade is a critical feature for distributed systems, enabling system upgrades without disrupting business services or experiencing downtimes. In the latest Milvus releases, we’ve strengthened Milvus’s rolling upgrade feature, ensuring a more streamlined and efficient transition for users’ upgrading  from version 2.2.15 to 2.3.3 and all later versions. The community has also invested in extensive testing and optimizations, reducing query impact during the upgrade to less than 5 minutes, providing users with a hassle-free experience.</p>
+<h2 id="Performance-optimization" class="common-anchor-header">Performance optimization<button data-href="#Performance-optimization" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,15 +122,15 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В дополнение к новым функциям мы значительно оптимизировали производительность Milvus в двух последних выпусках.</p>
+    </button></h2><p>In addition to introducing new features, we’ve significantly optimized the performance of Milvus in the latest two releases.</p>
 <ul>
-<li><p>Минимизированы операции копирования данных для оптимизации их загрузки</p></li>
-<li><p>Упрощена вставка больших объемов данных с помощью пакетного чтения varchar</p></li>
-<li><p>Устранены ненужные проверки смещения при заполнении данных для повышения производительности фазы отзыва.</p></li>
-<li><p>Устранены проблемы высокого потребления процессора в сценариях со значительными вставками данных.</p></li>
+<li><p>Minimized data copy operations for optimized data loading</p></li>
+<li><p>Simplified large-capacity inserts using batch varchar reading</p></li>
+<li><p>Removed unnecessary offset checks during data padding to improve recall phase performance.</p></li>
+<li><p>Addressed high CPU consumption issues in scenarios with substantial data insertions</p></li>
 </ul>
-<p>Все эти оптимизации в совокупности способствуют более быстрой и эффективной работе Milvus. Посмотрите на нашу панель мониторинга, чтобы получить представление о том, как Milvus улучшил свою производительность.</p>
-<h2 id="Incompatible-changes" class="common-anchor-header">Несовместимые изменения<button data-href="#Incompatible-changes" class="anchor-icon" translate="no">
+<p>These optimizations collectively contribute to a faster and more efficient Milvus experience. Check out our monitoring dashboard for a quick glance at how Milvus improved its performance.</p>
+<h2 id="Incompatible-changes" class="common-anchor-header">Incompatible changes<button data-href="#Incompatible-changes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,11 +146,11 @@ canonicalUrl: null
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Удален код, связанный с TimeTravel.</p></li>
-<li><p>Утрачена поддержка MySQL в качестве хранилища метаданных.</p></li>
+<li><p>Permanently deleted TimeTravel-related code.</p></li>
+<li><p>Deprecated support for MySQL as the metadata store.</p></li>
 </ul>
-<p>Более подробная информация о всех новых функциях и улучшениях содержится в <a href="https://milvus.io/docs/release_notes.md">примечаниях к выпуску Milvus</a>.</p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Refer to the <a href="https://milvus.io/docs/release_notes.md">Milvus release notes</a> for more detailed information about all the new features and enhancements.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -166,8 +165,8 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В последних релизах Milvus 2.3.2 и 2.3.3 мы стремимся предоставить надежное, многофункциональное и высокопроизводительное решение для работы с базами данных. Изучите новые возможности, воспользуйтесь оптимизациями и присоединяйтесь к нам в этом увлекательном путешествии, поскольку мы развиваем Milvus в соответствии с требованиями современного управления данными. Загрузите последнюю версию прямо сейчас и почувствуйте будущее хранения данных с Milvus!</p>
-<h2 id="Let’s-keep-in-touch" class="common-anchor-header">Давайте поддерживать связь!<button data-href="#Let’s-keep-in-touch" class="anchor-icon" translate="no">
+    </button></h2><p>With the latest Milvus 2.3.2 and 2.3.3 releases, we’re committed to providing a robust, feature-rich, high-performance database solution. Explore these new features, take advantage of the optimizations, and join us on this exciting journey as we evolve Milvus to meet the demands of modern data management. Download the latest version now and experience the future of data storage with Milvus!</p>
+<h2 id="Let’s-keep-in-touch" class="common-anchor-header">Let’s keep in touch!<button data-href="#Let’s-keep-in-touch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -182,4 +181,4 @@ canonicalUrl: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Если у вас есть вопросы или отзывы о Milvus, присоединяйтесь к нашему <a href="https://discord.com/invite/8uyFbECzPX">каналу Discord</a>, чтобы напрямую общаться с нашими инженерами и сообществом, или присоединяйтесь к <a href="https://discord.com/invite/RjNbk8RR4f">обеду и обучению сообщества Milvus</a> каждый вторник с 12-12:30 PM PST. Вы также можете следить за нами в <a href="https://twitter.com/milvusio">Twitter</a> или <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a>, чтобы узнавать последние новости и обновления о Milvus.</p>
+    </button></h2><p>If you have questions or feedback about Milvus, join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> to engage with our engineers and the community directly or join our <a href="https://discord.com/invite/RjNbk8RR4f">Milvus Community Lunch and Learn</a> Every Tuesday from 12-12:30 PM PST. You’re also welcome to follow us on <a href="https://twitter.com/milvusio">Twitter</a> or <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a> for the latest news and updates about Milvus.</p>

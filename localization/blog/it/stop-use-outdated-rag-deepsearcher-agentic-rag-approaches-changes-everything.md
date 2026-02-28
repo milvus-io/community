@@ -1,7 +1,8 @@
 ---
 id: >-
   stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
-title: 'Smettere di costruire Vanilla RAG: abbracciare Agentic RAG con DeepSearcher'
+title: |
+  Stop Building Vanilla RAG: Embrace Agentic RAG with DeepSearcher
 author: Cheney Zhang
 date: 2025-03-23T00:00:00.000Z
 cover: >-
@@ -11,7 +12,7 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md
 ---
-<h2 id="The-Shift-to-AI-Powered-Search-with-LLMs-and-Deep-Research" class="common-anchor-header">Il passaggio alla ricerca alimentata dall'intelligenza artificiale con LLM e ricerca approfondita<button data-href="#The-Shift-to-AI-Powered-Search-with-LLMs-and-Deep-Research" class="anchor-icon" translate="no">
+<h2 id="The-Shift-to-AI-Powered-Search-with-LLMs-and-Deep-Research" class="common-anchor-header">The Shift to AI-Powered Search with LLMs and Deep Research<button data-href="#The-Shift-to-AI-Powered-Search-with-LLMs-and-Deep-Research" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,10 +27,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'evoluzione della tecnologia di ricerca è progredita notevolmente nel corso dei decenni: dal recupero basato sulle parole chiave negli anni precedenti al 2000 alle esperienze di ricerca personalizzate nel 2010. Stiamo assistendo all'emergere di soluzioni basate sull'intelligenza artificiale in grado di gestire query complesse che richiedono un'analisi approfondita e professionale.</p>
-<p>Deep Research di OpenAI è un esempio di questo cambiamento, in quanto utilizza capacità di ragionamento per sintetizzare grandi quantità di informazioni e generare rapporti di ricerca in più fasi. Ad esempio, alla domanda "Qual è la ragionevole capitalizzazione di mercato di Tesla?". Deep Research è in grado di analizzare in modo completo le finanze aziendali, le traiettorie di crescita del business e le stime del valore di mercato.</p>
-<p>Deep Research implementa una forma avanzata del framework RAG (Retrieval-Augmented Generation). Il RAG tradizionale migliora i risultati dei modelli linguistici recuperando e incorporando informazioni esterne rilevanti. L'approccio di OpenAI va oltre, implementando cicli iterativi di recupero e ragionamento. Invece di un'unica fase di recupero, Deep Research genera dinamicamente più interrogazioni, valuta i risultati intermedi e affina la strategia di ricerca, dimostrando come le tecniche di RAG avanzate o agenziali possano fornire contenuti di alta qualità e di livello aziendale che assomigliano più a ricerche professionali che a semplici risposte a domande.</p>
-<h2 id="DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="common-anchor-header">DeepSearcher: Una ricerca locale profonda che porta la RAG agenziale a tutti<button data-href="#DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="anchor-icon" translate="no">
+    </button></h2><p>The evolution of search technology has progressed dramatically over the decades—from keyword-based retrieval in the pre-2000s to personalized search experiences in the 2010s. We’re witnessing the emergence of AI-powered solutions capable of handling complex queries requiring in-depth, professional analysis.</p>
+<p>OpenAI’s Deep Research exemplifies this shift, using reasoning capabilities to synthesize large amounts of information and generate multi-step research reports. For example, when asked about “What is Tesla’s reasonable market cap?” Deep Research can comprehensively analyze corporate finances, business growth trajectories, and market value estimations.</p>
+<p>Deep Research implements an advanced form of the RAG (Retrieval-Augmented Generation) framework at its core. Traditional RAG enhances language model outputs by retrieving and incorporating relevant external information. OpenAI’s approach takes this further by implementing iterative retrieval and reasoning cycles. Instead of a single retrieval step, Deep Research dynamically generates multiple queries, evaluates intermediate results, and refines its search strategy—demonstrating how advanced or agentic RAG techniques can deliver high-quality, enterprise-level content that feels more like professional research than simple question-answering.</p>
+<h2 id="DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="common-anchor-header">DeepSearcher: A Local Deep Research Bringing Agentic RAG to Everyone<button data-href="#DeepSearcher-A-Local-Deep-Research-Bringing-Agentic-RAG-to-Everyone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,17 +45,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ispirati da questi progressi, gli sviluppatori di tutto il mondo hanno creato le proprie implementazioni. Gli ingegneri di Zilliz hanno costruito e reso open-source il progetto <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>, che può essere considerato una Deep Research locale e open-source. Questo progetto ha ottenuto oltre 4.900 stelle su GitHub in meno di un mese.</p>
-<p>DeepSearcher ridefinisce la ricerca aziendale basata sull'intelligenza artificiale, combinando la potenza di modelli di ragionamento avanzati, sofisticate funzioni di ricerca e un assistente di ricerca integrato. Integrando i dati locali tramite <a href="https://milvus.io/docs/overview.md">Milvus</a> (un database vettoriale open source ad alte prestazioni), DeepSearcher offre risultati più rapidi e pertinenti, consentendo agli utenti di scambiare facilmente i modelli principali per un'esperienza personalizzata.</p>
+    </button></h2><p>Inspired by these advancements, developers worldwide have been creating their own implementations. Zilliz engineers built and open-sourced the <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> project, which can be considered a local and open-source Deep Research. This project has garnered over 4,900 GitHub stars in less than a month.</p>
+<p>DeepSearcher redefines AI-powered enterprise search by combining the power of advanced reasoning models, sophisticated search features, and an integrated research assistant. Integrating local data via <a href="https://milvus.io/docs/overview.md">Milvus</a> (a high-performance and open-source vector database), DeepSearcher delivers faster, more relevant results while allowing users to swap core models for a customized experience easily.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_1_Deep_Searcher_s_star_history_9c1a064ed8.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 1:</em> <em>La storia delle stelle di DeepSearcher</em><a href="https://www.star-history.com/#zilliztech/deep-searcher&amp;Date"><em>(Fonte</em></a><em>)</em></p>
-<p>In questo articolo esploreremo l'evoluzione dalla RAG tradizionale alla RAG agenziale, analizzando ciò che rende questi approcci diversi a livello tecnico. Parleremo poi dell'implementazione di DeepSearcher, mostrando come sfrutta le capacità degli agenti intelligenti per consentire ragionamenti dinamici e multigiro, e perché questo è importante per gli sviluppatori che costruiscono soluzioni di ricerca di livello aziendale.</p>
-<h2 id="From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="common-anchor-header">Dalla RAG tradizionale alla RAG agenziale: il potere del ragionamento iterativo<button data-href="#From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="anchor-icon" translate="no">
+<p><em>Figure 1:</em> <em>DeepSearcher’s star history (</em><a href="https://www.star-history.com/#zilliztech/deep-searcher&amp;Date"><em>Source</em></a><em>)</em></p>
+<p>In this article, we’ll explore the evolution from traditional RAG to Agentic RAG, exploring what specifically makes these approaches different on a technical level. We’ll then discuss DeepSearcher’s implementation, showing how it leverages intelligent agent capabilities to enable dynamic, multi-turn reasoning—and why this matters for developers building enterprise-level search solutions.</p>
+<h2 id="From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="common-anchor-header">From Traditional RAG to Agentic RAG: The Power of Iterative Reasoning<button data-href="#From-Traditional-RAG-to-Agentic-RAG-The-Power-of-Iterative-Reasoning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,33 +70,33 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agentic RAG migliora il framework RAG tradizionale incorporando capacità di agenti intelligenti. DeepSearcher è un ottimo esempio di struttura RAG agenziale. Attraverso la pianificazione dinamica, il ragionamento in più fasi e il processo decisionale autonomo, stabilisce un processo a ciclo chiuso che recupera, elabora, convalida e ottimizza i dati per risolvere problemi complessi.</p>
-<p>La crescente popolarità di Agentic RAG è dovuta ai significativi progressi nelle capacità di ragionamento dei modelli linguistici di grandi dimensioni (LLM), in particolare alla loro migliore capacità di scomporre problemi complessi e di mantenere catene di pensiero coerenti in più fasi.</p>
+    </button></h2><p>Agentic RAG enhances the traditional RAG framework by incorporating intelligent agent capabilities. DeepSearcher is a prime example of an agentic RAG framework. Through dynamic planning, multi-step reasoning, and autonomous decision-making, it establishes a closed-loop process that retrieves, processes, validates, and optimizes data to solve complex problems.</p>
+<p>The growing popularity of Agentic RAG is driven by significant advancements in large language model (LLM) reasoning capabilities, particularly their improved ability to break down complex problems and maintain coherent chains of thought across multiple steps.</p>
 <table>
 <thead>
 <tr><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Dimensione di confronto</strong></td><td><strong>RAG tradizionale</strong></td><td><strong>RAG Agentico</strong></td></tr>
-<tr><td>Approccio centrale</td><td>Passivo e reattivo</td><td>Proattivo, guidato da agenti</td></tr>
-<tr><td>Flusso di processo</td><td>Reperimento e generazione in un solo passaggio (processo unico)</td><td>Recupero e generazione dinamici, in più fasi (perfezionamento iterativo)</td></tr>
-<tr><td>Strategia di reperimento</td><td>Ricerca per parola chiave fissa, dipendente dall'interrogazione iniziale</td><td>Recupero adattivo (ad esempio, affinamento delle parole chiave, cambio di fonte di dati)</td></tr>
-<tr><td>Gestione di query complesse</td><td>Generazione diretta; soggetta a errori in caso di dati contrastanti.</td><td>Decomposizione del compito → reperimento mirato → sintesi della risposta</td></tr>
-<tr><td>Capacità di interazione</td><td>Si basa interamente sull'input dell'utente; nessuna autonomia</td><td>Impegno proattivo (ad esempio, chiarimento di ambiguità, richiesta di dettagli)</td></tr>
-<tr><td>Correzione degli errori e feedback</td><td>Nessuna autocorrezione; limitata dai risultati iniziali</td><td>Convalida iterativa → recupero autogestito per la precisione</td></tr>
-<tr><td>Casi d'uso ideali</td><td>Semplici domande e risposte, ricerca di fatti</td><td>Ragionamento complesso, risoluzione di problemi in più fasi, compiti aperti</td></tr>
-<tr><td>Esempio</td><td>L'utente chiede: "Cos'è l'informatica quantistica?" → Il sistema restituisce una definizione da manuale</td><td>L'utente chiede: "Come può l'informatica quantistica ottimizzare la logistica?". → Il sistema recupera i principi quantistici e gli algoritmi logistici, quindi sintetizza le intuizioni attuabili</td></tr>
+<tr><td><strong>Comparison Dimension</strong></td><td><strong>Traditional RAG</strong></td><td><strong>Agentic RAG</strong></td></tr>
+<tr><td>Core Approach</td><td>Passive and reactive</td><td>Proactive, agent-driven</td></tr>
+<tr><td>Process Flow</td><td>Single-step retrieval and generation (one-time process)</td><td>Dynamic, multi-step retrieval and generation (iterative refinement)</td></tr>
+<tr><td>Retrieval Strategy</td><td>Fixed keyword search, dependent on initial query</td><td>Adaptive retrieval (e.g., keyword refinement, data source switching)</td></tr>
+<tr><td>Complex Query Handling</td><td>Direct generation; prone to errors with conflicting data</td><td>Task decomposition → targeted retrieval → answer synthesis</td></tr>
+<tr><td>Interaction Capability</td><td>Relies entirely on user input; no autonomy</td><td>Proactive engagement (e.g., clarifying ambiguities, requesting details)</td></tr>
+<tr><td>Error Correction &amp; Feedback</td><td>No self-correction; limited by initial results</td><td>Iterative validation → self-triggered re-retrieval for accuracy</td></tr>
+<tr><td>Ideal Use Cases</td><td>Simple Q&amp;A, factual lookups</td><td>Complex reasoning, multi-stage problem-solving, open-ended tasks</td></tr>
+<tr><td>Example</td><td>User asks: “What is quantum computing?” → System returns a textbook definition</td><td>User asks: “How can quantum computing optimize logistics?” → System retrieves quantum principles and logistics algorithms, then synthesizes actionable insights</td></tr>
 </tbody>
 </table>
-<p>A differenza della RAG tradizionale, che si basa su un'unica interrogazione, la RAG agenziale scompone la domanda in più sotto-domande e affina iterativamente la ricerca fino a raggiungere una risposta soddisfacente. Questa evoluzione offre tre vantaggi principali:</p>
+<p>Unlike traditional RAG, which relies on a single, query-based retrieval, Agentic RAG breaks down a query into multiple sub-questions and iteratively refines its search until it reaches a satisfactory answer. This evolution offers three primary benefits:</p>
 <ul>
-<li><p><strong>Risoluzione proattiva dei problemi:</strong> Il sistema passa dalla reazione passiva alla soluzione attiva dei problemi.</p></li>
-<li><p><strong>Recupero dinamico e multigiro:</strong> Invece di eseguire una ricerca una tantum, il sistema regola continuamente le sue richieste e si autocorregge in base al feedback continuo.</p></li>
-<li><p><strong>Applicabilità più ampia:</strong> Si estende oltre il fact-checking di base per gestire attività di ragionamento complesse e generare report completi.</p></li>
+<li><p><strong>Proactive Problem-Solving:</strong> The system transitions from passively reacting to actively solving problems.</p></li>
+<li><p><strong>Dynamic, Multi-Turn Retrieval:</strong> Instead of performing a one-time search, the system continually adjusts its queries and self-corrects based on ongoing feedback.</p></li>
+<li><p><strong>Broader Applicability:</strong> It extends beyond basic fact-checking to handle complex reasoning tasks and generate comprehensive reports.</p></li>
 </ul>
-<p>Sfruttando queste capacità, le applicazioni Agentic RAG come DeepSearcher funzionano come un esperto umano, fornendo non solo la risposta finale, ma anche un resoconto completo e trasparente del processo di ragionamento e dei dettagli di esecuzione.</p>
-<p>A lungo termine, l'Agentic RAG è destinato a superare i sistemi RAG di base. Gli approcci convenzionali spesso faticano ad affrontare la logica sottostante alle interrogazioni degli utenti, che richiedono ragionamenti iterativi, riflessione e ottimizzazione continua.</p>
-<h2 id="What-Does-an-Agentic-RAG-Architecture-Look-Like-DeepSearcher-as-an-Example" class="common-anchor-header">Come si presenta un'architettura RAG agenziale? DeepSearcher come esempio<button data-href="#What-Does-an-Agentic-RAG-Architecture-Look-Like-DeepSearcher-as-an-Example" class="anchor-icon" translate="no">
+<p>By leveraging these capabilities, Agentic RAG apps like DeepSearcher operate much like a human expert—delivering not only the final answer but also a complete, transparent breakdown of its reasoning process and execution details.</p>
+<p>In the long term, Agentic RAG is set to overtake baseline RAG systems. Conventional approaches often struggle to address the underlying logic in user queries, which require iterative reasoning, reflection, and continuous optimization.</p>
+<h2 id="What-Does-an-Agentic-RAG-Architecture-Look-Like-DeepSearcher-as-an-Example" class="common-anchor-header">What Does an Agentic RAG Architecture Look Like? DeepSearcher as an Example<button data-href="#What-Does-an-Agentic-RAG-Architecture-Look-Like-DeepSearcher-as-an-Example" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,25 +111,25 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ora che abbiamo compreso la potenza dei sistemi agenziali RAG, come si presenta la loro architettura? Prendiamo come esempio DeepSearcher.</p>
+    </button></h2><p>Now that we’ve understood the power of agentic RAG systems, what does their architecture look like? Let’s take DeepSearcher as an example.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_2_Two_Modules_Within_Deep_Searcher_baf5ca5952.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 2: Due moduli di DeepSearcher</em></p>
-<p>L'architettura di DeepSearcher è composta da due moduli principali:</p>
-<h3 id="1-Data-Ingestion-Module" class="common-anchor-header">1. Modulo di ingestione dei dati</h3><p>Questo modulo collega varie fonti di dati proprietarie di terze parti tramite un database vettoriale Milvus. È particolarmente utile per gli ambienti aziendali che si basano su set di dati proprietari. Il modulo gestisce:</p>
+<p><em>Figure 2: Two Modules Within DeepSearcher</em></p>
+<p>DeepSearcher’s architecture consists of two primary modules:</p>
+<h3 id="1-Data-Ingestion-Module" class="common-anchor-header">1. Data Ingestion Module</h3><p>This module connects various third-party proprietary data sources via a Milvus vector database. It is especially valuable for enterprise environments that rely on proprietary datasets. The module handles:</p>
 <ul>
-<li><p>Analisi dei documenti e chunking</p></li>
-<li><p>Generazione di incorporazioni</p></li>
-<li><p>Memorizzazione e indicizzazione dei vettori</p></li>
-<li><p>Gestione dei metadati per un recupero efficiente</p></li>
+<li><p>Document parsing and chunking</p></li>
+<li><p>Embedding generation</p></li>
+<li><p>Vector storage and indexing</p></li>
+<li><p>Metadata management for efficient retrieval</p></li>
 </ul>
-<h3 id="2-Online-Reasoning-and-Query-Module" class="common-anchor-header">2. Modulo di ragionamento e interrogazione online</h3><p>Questo componente implementa diverse strategie di agenti all'interno del framework RAG per fornire risposte precise e perspicaci. Opera su un ciclo dinamico e iterativo: dopo ogni recupero di dati, il sistema riflette se le informazioni accumulate rispondono sufficientemente alla domanda originale. In caso negativo, viene attivata un'altra iterazione; in caso affermativo, viene generato il report finale.</p>
-<p>Questo ciclo continuo di "follow-up" e "riflessione" rappresenta un miglioramento fondamentale rispetto ad altri approcci RAG di base. Mentre il RAG tradizionale esegue un processo di recupero e generazione in un'unica soluzione, l'approccio iterativo di DeepSearcher rispecchia il modo in cui i ricercatori umani lavorano: ponendo le domande iniziali, valutando le informazioni ricevute, identificando le lacune e perseguendo nuove linee di indagine.</p>
-<h2 id="How-Effective-is-DeepSearcher-and-What-Use-Cases-is-It-Best-Suited-For" class="common-anchor-header">Quanto è efficace DeepSearcher e per quali casi d'uso è più adatto?<button data-href="#How-Effective-is-DeepSearcher-and-What-Use-Cases-is-It-Best-Suited-For" class="anchor-icon" translate="no">
+<h3 id="2-Online-Reasoning-and-Query-Module" class="common-anchor-header">2. Online Reasoning and Query Module</h3><p>This component implements diverse agent strategies within the RAG framework to deliver precise, insightful responses. It operates on a dynamic, iterative loop—after each data retrieval, the system reflects on whether the accumulated information sufficiently answers the original query. If not, another iteration is triggered; if yes, the final report is generated.</p>
+<p>This ongoing cycle of “follow-up” and “reflection” represents a fundamental improvement over other basic RAG approaches. While traditional RAG performs a one-shot retrieval and generation process, DeepSearcher’s iterative approach mirrors how human researchers work—asking initial questions, evaluating the information received, identifying gaps, and pursuing new lines of inquiry.</p>
+<h2 id="How-Effective-is-DeepSearcher-and-What-Use-Cases-is-It-Best-Suited-For" class="common-anchor-header">How Effective is DeepSearcher, and What Use Cases is It Best Suited For?<button data-href="#How-Effective-is-DeepSearcher-and-What-Use-Cases-is-It-Best-Suited-For" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,17 +144,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Una volta installato e configurato, DeepSearcher indicizza i file locali attraverso il database vettoriale Milvus. Quando si invia una query, viene eseguita una ricerca completa e approfondita dei contenuti indicizzati. Un vantaggio fondamentale per gli sviluppatori è che il sistema registra ogni fase del suo processo di ricerca e ragionamento, fornendo trasparenza su come è arrivato alle sue conclusioni, una caratteristica fondamentale per il debug e l'ottimizzazione dei sistemi RAG.</p>
+    </button></h2><p>Once installed and configured, DeepSearcher indexes your local files through the Milvus vector database. When you submit a query, it performs a comprehensive, in-depth search of this indexed content. A key advantage for developers is that the system logs every step of its search and reasoning process, providing transparency into how it arrived at its conclusions—a critical feature for debugging and optimizing RAG systems.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_3_Accelerated_Playback_of_Deep_Searcher_Iteration_0c36baea2f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 3: Riproduzione accelerata dell'iterazione di DeepSearcher</em></p>
-<p>Questo approccio consuma più risorse computazionali rispetto alla RAG tradizionale, ma fornisce risultati migliori per le query complesse. Analizziamo due casi d'uso specifici per i quali DeepSearcher è più adatto.</p>
-<h3 id="1-Overview-Type-Queries" class="common-anchor-header">1. Query di tipo panoramico</h3><p>Le query di tipo panoramico, come la generazione di report, la stesura di documenti o la sintesi delle tendenze, forniscono un argomento breve ma richiedono un risultato esaustivo e dettagliato.</p>
-<p>Per esempio, quando si interroga &quot;Come sono cambiati i Simpson nel tempo?&quot;, DeepSearcher genera prima una serie iniziale di sotto-query:</p>
+<p><em>Figure 3: Accelerated Playback of DeepSearcher Iteration</em></p>
+<p>This approach consumes more computational resources than traditional RAG but delivers better results for complex queries. Let’s discuss two specific use cases where DeepSearcher is best suited for.</p>
+<h3 id="1-Overview-Type-Queries" class="common-anchor-header">1. Overview-Type Queries</h3><p>Overview-type queries—such as generating reports, drafting documents, or summarizing trends—provide a brief topic but require an exhaustive, detailed output.</p>
+<p>For example, when querying &quot;How has The Simpsons changed over time?&quot;, DeepSearcher first generates an initial set of sub-queries:</p>
 <pre><code translate="no">_Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [_
 
 _<span class="hljs-string">&#x27;How has the cultural impact and societal relevance of The Simpsons evolved from its debut to the present?&#x27;</span>,_
@@ -164,7 +165,7 @@ _<span class="hljs-string">&#x27;How has the animation style and production tech
 
 _<span class="hljs-string">&#x27;How have audience demographics, reception, and ratings of The Simpsons shifted throughout its run?&#x27;</span>]_
 <button class="copy-code-btn"></button></code></pre>
-<p>Recupera le informazioni rilevanti e poi itera con un feedback per affinare la ricerca, generando le sotto-query successive:</p>
+<p>It retrieves relevant information, and then iterates with feedback to refine its search, generating the next sub-queries:</p>
 <pre><code translate="no">_New search queries <span class="hljs-keyword">for</span> <span class="hljs-built_in">next</span> iteration: [_
 
 _<span class="hljs-string">&quot;How have changes in The Simpsons&#x27; voice cast and production team influenced the show&#x27;s evolution over different seasons?&quot;</span>,_
@@ -173,7 +174,7 @@ _<span class="hljs-string">&quot;What role has The Simpsons&#x27; satire and soc
 
 _<span class="hljs-string">&#x27;How has The Simpsons addressed and incorporated shifts in media consumption, such as streaming services, into its distribution and content strategies?&#x27;</span>]_
 <button class="copy-code-btn"></button></code></pre>
-<p>Ogni iterazione si basa sulla precedente e culmina in un rapporto completo che copre diverse sfaccettature dell'argomento, strutturato con sezioni del tipo:</p>
+<p>Each iteration builds on the previous one, culminating in a comprehensive report that covers multiple facets of the subject, structured with sections like:</p>
 <pre><code translate="no">**<span class="hljs-title class_">Report</span>: <span class="hljs-title class_">The</span> <span class="hljs-title class_">Evolution</span> <span class="hljs-keyword">of</span> _The <span class="hljs-title class_">Simpsons</span>_ (<span class="hljs-number">1989</span>–<span class="hljs-title class_">Present</span>)**
 **<span class="hljs-number">1.</span> <span class="hljs-title class_">Cultural</span> <span class="hljs-title class_">Impact</span> and <span class="hljs-title class_">Societal</span> <span class="hljs-title class_">Relevance</span>** 
 _The <span class="hljs-title class_">Simpsons</span>_ debuted <span class="hljs-keyword">as</span> a subversive critique <span class="hljs-keyword">of</span> <span class="hljs-title class_">American</span> middle-<span class="hljs-keyword">class</span> <span class="hljs-title class_">life</span>, gaining notoriety <span class="hljs-keyword">for</span> its bold satire <span class="hljs-keyword">in</span> the 1990s. <span class="hljs-title class_">Initially</span> a countercultural phenomenon, it challenged norms <span class="hljs-keyword">with</span> episodes tackling religion, politics, and consumerism. <span class="hljs-title class_">Over</span> time, its cultural dominance waned <span class="hljs-keyword">as</span> competitors like _South <span class="hljs-title class_">Park</span>_ and _Family <span class="hljs-title class_">Guy</span>_ pushed boundaries further. <span class="hljs-title class_">By</span> the 2010s, the show transitioned <span class="hljs-keyword">from</span> trendsetter to nostalgic institution, balancing legacy appeal <span class="hljs-keyword">with</span> attempts to address modern issues like climate change and <span class="hljs-variable constant_">LGBTQ</span>+ rights, albeit <span class="hljs-keyword">with</span> less societal resonance.
@@ -185,25 +186,25 @@ _The <span class="hljs-title class_">Simpsons</span>_ debuted <span class="hljs-
 **<span class="hljs-title class_">Conclusion</span>** 
 _The <span class="hljs-title class_">Simpsons</span>_ evolved <span class="hljs-keyword">from</span> a radical satire to a television institution, navigating shifts <span class="hljs-keyword">in</span> technology, politics, and audience expectations. <span class="hljs-title class_">While</span> its golden-age brilliance remains unmatched, its adaptability—through streaming, updated humor, and <span class="hljs-variable language_">global</span> outreach—secures its place <span class="hljs-keyword">as</span> a cultural touchstone. <span class="hljs-title class_">The</span> show’s longevity reflects both nostalgia and a pragmatic embrace <span class="hljs-keyword">of</span> change, even <span class="hljs-keyword">as</span> it grapples <span class="hljs-keyword">with</span> the challenges <span class="hljs-keyword">of</span> relevance <span class="hljs-keyword">in</span> a fragmented media landscape.
 <button class="copy-code-btn"></button></code></pre>
-<p><em>(Per brevità, vengono mostrati solo estratti del processo e del report finale)</em></p>
-<p>La relazione finale fornisce un'analisi approfondita con citazioni adeguate e un'organizzazione strutturata.</p>
-<h3 id="2-Complex-Reasoning-Queries" class="common-anchor-header">2. Query di ragionamento complesse</h3><p>Le interrogazioni complesse coinvolgono più livelli di logica ed entità interconnesse.</p>
-<p>Si consideri l'interrogazione: "Quale film ha il regista più anziano, Il dono di Dio alle donne o Aldri annet enn bråk?".</p>
-<p>Sebbene questa domanda possa sembrare semplice per un essere umano, i semplici sistemi RAG hanno difficoltà a risolverla perché la risposta non è memorizzata direttamente nella base di conoscenza. DeepSearcher affronta questa sfida scomponendo la domanda in sotto-domande più piccole:</p>
+<p><em>(For brevity, only excerpts of the process and final report are shown)</em></p>
+<p>The final report provides a thorough analysis with proper citations and structured organization.</p>
+<h3 id="2-Complex-Reasoning-Queries" class="common-anchor-header">2. Complex Reasoning Queries</h3><p>Complex queries involve multiple layers of logic and interconnected entities.</p>
+<p>Consider the query: “Which film has the director who is older, God’s Gift To Women or Aldri annet enn bråk?”</p>
+<p>While this might seem simple to a human, simple RAG systems struggle with it because the answer isn’t stored directly in the knowledge base. DeepSearcher tackles this challenge by decomposing the query into smaller sub-questions:</p>
 <pre><code translate="no">[<span class="hljs-string">&quot;Who is the director of God&#x27;S Gift To Women?&quot;</span>, <span class="hljs-string">&#x27;Who is the director of Aldri annet enn bråk?&#x27;</span>, <span class="hljs-string">&#x27;What are the ages of the respective directors?&#x27;</span>, <span class="hljs-string">&#x27;Which director is older?&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>Prima recupera le informazioni sui registi di entrambi i film,</p>
+<p>It first retrieves information on the directors of both films,</p>
 <pre><code translate="no">The director of <span class="hljs-string">&quot;God&#x27;s Gift To Women&quot;</span> <span class="hljs-keyword">is</span> Michael Curtiz, the director of <span class="hljs-string">&quot;Aldri annet enn bråk&quot;</span> <span class="hljs-keyword">is</span> Edith Carlmar
 <button class="copy-code-btn"></button></code></pre>
-<p>poi genera delle sotto-interrogazioni:</p>
+<p>then generates sub-queries:</p>
 <pre><code translate="no">[<span class="hljs-string">&quot;Find the birthdate of Michael Curtiz, the director of God&#x27;s Gift To Women&quot;</span>, <span class="hljs-string">&#x27;Find the birthdate of Edith Carlmar, the director of Aldri annet enn bråk&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>e poi estrae le loro date di nascita e infine le confronta per determinare la risposta corretta:</p>
+<p>and then extracts their birth dates, and finally compares them to determine the correct answer:</p>
 <pre><code translate="no">The director of <span class="hljs-string">&quot;God&#x27;s Gift To Women&quot;</span> <span class="hljs-keyword">is</span> Michael Curtiz, who was born <span class="hljs-keyword">on</span> December <span class="hljs-number">24</span>, <span class="hljs-number">1886</span> <span class="hljs-keyword">and</span> passed away <span class="hljs-keyword">on</span> April <span class="hljs-number">11</span>, <span class="hljs-number">1962.</span> He was a Hungarian-born American film director known <span class="hljs-keyword">for</span> his prolific career <span class="hljs-keyword">in</span> Hollywood.
 On the other hand, the director of <span class="hljs-string">&quot;Aldri annet enn bråk&quot;</span> <span class="hljs-keyword">is</span> Edith Carlmar, who was born <span class="hljs-keyword">on</span> November <span class="hljs-number">15</span>, <span class="hljs-number">1911</span> <span class="hljs-keyword">and</span> passed away <span class="hljs-keyword">on</span> May <span class="hljs-number">17</span>, <span class="hljs-number">2003.</span>
 Therefore, Michael Curtiz <span class="hljs-keyword">is</span> older than Edith Carlmar.
 <button class="copy-code-btn"></button></code></pre>
-<p>Al contrario, un sistema RAG convenzionale potrebbe perdere dettagli chiave a causa di un recupero limitato in un unico passaggio, con il rischio di ottenere risposte <a href="https://zilliz.com/blog/decoding-llm-hallucinations-deep-dive-into-llm-errors">allucinate</a> o imprecise:</p>
+<p>In contrast, a conventional RAG system might miss key details due to limited retrieval in a single pass, potentially resulting in <a href="https://zilliz.com/blog/decoding-llm-hallucinations-deep-dive-into-llm-errors">hallucinated</a> or inaccurate answers:</p>
 <pre><code translate="no"><span class="hljs-number">1.</span> **Aldri annet enn bråk** (<span class="hljs-number">1954</span>) <span class="hljs-keyword">is</span> directed <span class="hljs-keyword">by</span> **Edith Carlmar**, who was born <span class="hljs-keyword">on</span> November <span class="hljs-number">15</span>, <span class="hljs-number">1911.</span>
 <span class="hljs-number">2.</span> The related chunks did <span class="hljs-keyword">not</span> provide specific details about the director of <span class="hljs-string">&quot;God&#x27;s Gift to Women.&quot;</span> However, <span class="hljs-keyword">if</span> we look at external sources <span class="hljs-keyword">for</span> <span class="hljs-string">&quot;God&#x27;s Gift to Women,&quot;</span> the film was directed <span class="hljs-keyword">by</span> **L. M. (Lyman) Steinberg**, who was born <span class="hljs-keyword">on</span> December <span class="hljs-number">19</span>, <span class="hljs-number">1905.</span>
 By comparing their birth dates:
@@ -211,9 +212,9 @@ By comparing their birth dates:
 - L. M. Steinberg: December <span class="hljs-number">19</span>, <span class="hljs-number">1905</span>
 **Conclusion**: L. M. Steinberg, the director of <span class="hljs-string">&quot;God&#x27;s Gift to Women,&quot;</span> <span class="hljs-keyword">is</span> older than Edith Carlmar, the director of <span class="hljs-string">&quot;Aldri annet enn bråk.&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>DeepSearcher si distingue per l'esecuzione di ricerche profonde e iterative su dati locali importati. Registra ogni fase del processo di ragionamento e alla fine fornisce un rapporto completo e unificato. Questo lo rende particolarmente efficace per le interrogazioni di tipo panoramico, come la generazione di rapporti dettagliati o la sintesi delle tendenze, e per le interrogazioni di ragionamento complesse che richiedono la scomposizione di una domanda in sotto-domande più piccole e l'aggregazione dei dati attraverso più cicli di feedback.</p>
-<p>Nella prossima sezione, confronteremo DeepSearcher con altri sistemi RAG, esplorando come il suo approccio iterativo e l'integrazione flessibile dei modelli si collochino rispetto ai metodi tradizionali.</p>
-<h2 id="Quantitative-Comparison-DeepSearcher-vs-Traditional-RAG" class="common-anchor-header">Confronto quantitativo: DeepSearcher vs. RAG tradizionale<button data-href="#Quantitative-Comparison-DeepSearcher-vs-Traditional-RAG" class="anchor-icon" translate="no">
+<p>DeepSearcher stands out by performing deep, iterative searches on imported local data. It logs each step of its reasoning process and ultimately delivers a comprehensive and unified report. This makes it particularly effective for overview-type queries—such as generating detailed reports or summarizing trends—and for complex reasoning queries that require breaking down a question into smaller sub-questions and aggregating data through multiple feedback loops.</p>
+<p>In the next section, we will compare DeepSearcher with other RAG systems, exploring how its iterative approach and flexible model integration stack up against traditional methods.</p>
+<h2 id="Quantitative-Comparison-DeepSearcher-vs-Traditional-RAG" class="common-anchor-header">Quantitative Comparison: DeepSearcher vs. Traditional RAG<button data-href="#Quantitative-Comparison-DeepSearcher-vs-Traditional-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -228,35 +229,35 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nel repository GitHub di DeepSearcher abbiamo reso disponibile il codice per i test quantitativi. Per questa analisi abbiamo utilizzato il popolare set di dati 2WikiMultiHopQA. (Nota: abbiamo valutato solo le prime 50 voci per gestire il consumo di token API, ma le tendenze generali rimangono chiare).</p>
-<h3 id="Recall-Rate-Comparison" class="common-anchor-header">Confronto del tasso di richiamo</h3><p>Come mostrato nella Figura 4, il tasso di richiamo migliora significativamente con l'aumento del numero di iterazioni massime:</p>
+    </button></h2><p>In the DeepSearcher GitHub repository, we’ve made available code for quantitative testing. For this analysis, we used the popular 2WikiMultiHopQA dataset. (Note: We evaluated only the first 50 entries to manage API token consumption, but the overall trends remain clear.)</p>
+<h3 id="Recall-Rate-Comparison" class="common-anchor-header">Recall Rate Comparison</h3><p>As shown in Figure 4, the recall rate improves significantly as the number of maximum iterations increases:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_4_Max_Iterations_vs_Recall_18a8d6e9bf.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 4: Iterazioni massime vs. richiamo</em></p>
-<p>Dopo un certo punto, i miglioramenti marginali si riducono: per questo motivo, di solito impostiamo il valore predefinito a 3 iterazioni, anche se questo valore può essere modificato in base alle esigenze specifiche.</p>
-<h3 id="Token-Consumption-Analysis" class="common-anchor-header">Analisi del consumo di token</h3><p>Abbiamo anche misurato l'utilizzo totale dei token per 50 query con un diverso numero di iterazioni:</p>
+<p><em>Figure 4: Max Iterations vs. Recall</em></p>
+<p>After a certain point, the marginal improvements taper off—hence, we typically set the default to 3 iterations, though this can be adjusted based on specific needs.</p>
+<h3 id="Token-Consumption-Analysis" class="common-anchor-header">Token Consumption Analysis</h3><p>We also measured the total token usage for 50 queries across different iteration counts:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_5_Max_Iterations_vs_Token_Usage_6d1d44b114.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 5: Iterazioni massime e consumo di token</em></p>
-<p>I risultati mostrano che il consumo di token aumenta linearmente con l'aumentare delle iterazioni. Ad esempio, con 4 iterazioni, DeepSearcher consuma circa 0,3 milioni di token. Utilizzando una stima approssimativa basata sul prezzo di gpt-4o-mini di OpenAI di <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,</mn><mi>60/1Moutputtokens</mi><mo separator="true">, che</mo><mi>equivale a un</mi><mi>costo</mi><mi>medio di circa 0</mi></mrow><annotation encoding="application/x-tex">,60/1M token di output, questo equivale a un costo medio di circa</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord mathnormal">60/1Moutputtokens</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">che equivale a un costo medio di</span><span class="mord mathnormal">circa</span><span class="mord mathnormal">0</span></span></span></span>,0036 per query (o circa 0,18 dollari per 50 query).</p>
-<p>Per i modelli di inferenza ad alta intensità di risorse, i costi sarebbero più volte superiori a causa del prezzo più alto per token e dei token in uscita più grandi.</p>
-<h3 id="Model-Performance-Comparison" class="common-anchor-header">Confronto delle prestazioni del modello</h3><p>Un vantaggio significativo di DeepSearcher è la sua flessibilità nel passare da un modello all'altro. Abbiamo testato diversi modelli di inferenza e non (come gpt-4o-mini). Complessivamente, i modelli di inferenza, in particolare Claude 3.7 Sonnet, hanno avuto le prestazioni migliori, anche se le differenze non sono state eclatanti.</p>
+<p><em>Figure 5: Max Iterations vs. Token Usage</em></p>
+<p>The results show that token consumption increases linearly with more iterations. For example, with 4 iterations, DeepSearcher consumes roughly 0.3M tokens. Using a rough estimate based on OpenAI’s gpt-4o-mini pricing of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.60</mn><mi mathvariant="normal">/</mi><mn>1</mn><mi>M</mi><mi>o</mi><mi>u</mi><mi>t</mi><mi>p</mi><mi>u</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi><mi>s</mi><mo separator="true">,</mo><mi>t</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>e</mi><mi>q</mi><mi>u</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>a</mi><mi>n</mi><mi>a</mi><mi>v</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>g</mi><mi>e</mi><mi>c</mi><mi>o</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>f</mi><mi>a</mi><mi>b</mi><mi>o</mi><mi>u</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">0.60/1M output tokens, this equates to an average cost of about</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">0.60/1</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">tp</span><span class="mord mathnormal">u</span><span class="mord mathnormal">tt</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">hi</span><span class="mord mathnormal">se</span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mord mathnormal">u</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">es</span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal">ana</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">ecos</span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">ab</span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">t</span></span></span></span>0.0036 per query (or roughly $0.18 for 50 queries).</p>
+<p>For more resource-intensive inference models, the costs would be several times higher due to both higher per-token pricing and larger token outputs.</p>
+<h3 id="Model-Performance-Comparison" class="common-anchor-header">Model Performance Comparison</h3><p>A significant advantage of DeepSearcher is its flexibility in switching between different models. We tested various inference models and non-inference models (like gpt-4o-mini). Overall, inference models—especially Claude 3.7 Sonnet—tended to perform the best, although the differences weren’t dramatic.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_6_Average_Recall_by_Model_153c93f616.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 6: Richiamo medio per modello</em></p>
-<p>In particolare, alcuni piccoli modelli non di inferenza a volte non riuscivano a completare l'intero processo di interrogazione dell'agente a causa della loro limitata capacità di seguire le istruzioni, una sfida comune a molti sviluppatori che lavorano con sistemi simili.</p>
+<p><em>Figure 6: Average Recall by Model</em></p>
+<p>Notably, some smaller non-inference models sometimes couldn’t complete the full agent query process because of their limited ability to follow instructions—a common challenge for many developers working with similar systems.</p>
 <h2 id="DeepSearcher-Agentic-RAG-vs-Graph-RAG" class="common-anchor-header">DeepSearcher (Agentic RAG) vs. Graph RAG<button data-href="#DeepSearcher-Agentic-RAG-vs-Graph-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -272,23 +273,23 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/blog/graphrag-explained-enhance-rag-with-knowledge-graphs">Graph RAG</a> è anche in grado di gestire query complesse, in particolare query multi-hop. Qual è allora la differenza tra DeepSearcher (Agentic RAG) e Graph RAG?</p>
-<p>Graph RAG è progettato per interrogare documenti basati su collegamenti relazionali espliciti, il che lo rende particolarmente forte nelle interrogazioni multi-hop. Ad esempio, quando si elabora un lungo romanzo, Graph RAG può estrarre con precisione le intricate relazioni tra i personaggi. Tuttavia, questo metodo richiede un uso sostanziale di token durante l'importazione dei dati per mappare queste relazioni e la sua modalità di interrogazione tende a essere rigida, tipicamente efficace solo per le interrogazioni a relazione singola.</p>
+    </button></h2><p><a href="https://zilliz.com/blog/graphrag-explained-enhance-rag-with-knowledge-graphs">Graph RAG</a> is also able to handle complex queries, particularly multi-hop queries. Then, what is the difference between DeepSearcher (Agentic RAG) and Graph RAG?</p>
+<p>Graph RAG is designed to query documents based on explicit relational links, making it particularly strong in multi-hop queries. For instance, when processing a long novel, Graph RAG can precisely extract the intricate relationships between characters. However, this method requires substantial token usage during data import to map out these relationships, and its query mode tends to be rigid—typically effective only for single-relationship queries.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_7_Graph_RAG_vs_Deep_Searcher_a5c7130374.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 7: Graph RAG vs DeepSearcher</em></p>
-<p>Al contrario, Agentic RAG, come esemplificato da DeepSearcher, adotta un approccio fondamentalmente diverso. Riduce al minimo il consumo di token durante l'importazione dei dati e investe invece risorse computazionali durante l'elaborazione delle query. Questa scelta progettuale crea importanti compromessi tecnici:</p>
+<p><em>Figure 7: Graph RAG vs. DeepSearcher</em></p>
+<p>In contrast, Agentic RAG—as exemplified by DeepSearcher—takes a fundamentally different approach. It minimizes token consumption during data import and instead invests computational resources during query processing. This design choice creates important technical tradeoffs:</p>
 <ol>
-<li><p>Costi iniziali più bassi: DeepSearcher richiede una minore pre-elaborazione dei documenti, rendendo la configurazione iniziale più veloce e meno costosa.</p></li>
-<li><p>Gestione dinamica delle query: Il sistema può modificare al volo la propria strategia di reperimento in base ai risultati intermedi.</p></li>
-<li><p>Costi più elevati per ogni interrogazione: Ogni interrogazione richiede più calcoli rispetto a Graph RAG, ma fornisce risultati più flessibili.</p></li>
+<li><p>Lower upfront costs: DeepSearcher requires less preprocessing of documents, making initial setup faster and less expensive</p></li>
+<li><p>Dynamic query handling: The system can adjust its retrieval strategy on-the-fly based on intermediate findings</p></li>
+<li><p>Higher per-query costs: Each query requires more computation than Graph RAG, but delivers more flexible results</p></li>
 </ol>
-<p>Per gli sviluppatori, questa distinzione è fondamentale quando si progettano sistemi con diversi modelli di utilizzo. Graph RAG può essere più efficiente per applicazioni con schemi di query prevedibili e un elevato volume di query, mentre l'approccio di DeepSearcher eccelle in scenari che richiedono flessibilità e gestione di query imprevedibili e complesse.</p>
-<p>In prospettiva, con la riduzione del costo dei LLM e il continuo miglioramento delle prestazioni di inferenza, è probabile che i sistemi agenziali di RAG come DeepSearcher diventino sempre più diffusi. Lo svantaggio del costo computazionale diminuirà, mentre il vantaggio della flessibilità rimarrà.</p>
+<p>For developers, this distinction is crucial when designing systems with different usage patterns. Graph RAG may be more efficient for applications with predictable query patterns and high query volume, while DeepSearcher’s approach excels in scenarios requiring flexibility and handling unpredictable, complex queries.</p>
+<p>Looking ahead, as the cost of LLMs drops and inference performance continues to improve, Agentic RAG systems like DeepSearcher are likely to become more prevalent. The computational cost disadvantage will diminish, while the flexibility advantage will remain.</p>
 <h2 id="DeepSearcher-vs-Deep-Research" class="common-anchor-header">DeepSearcher vs. Deep Research<button data-href="#DeepSearcher-vs-Deep-Research" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -304,9 +305,9 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A differenza di Deep Research di OpenAI, DeepSearcher è specificamente concepito per il reperimento e l'analisi di dati privati. Sfruttando un database vettoriale, DeepSearcher è in grado di ingerire diverse fonti di dati, integrare vari tipi di dati e memorizzarli in modo uniforme in un archivio di conoscenze vettoriale. Le sue solide capacità di ricerca semantica gli consentono di cercare in modo efficiente tra grandi quantità di dati offline.</p>
-<p>Inoltre, DeepSearcher è completamente open source. Deep Research, pur rimanendo un leader nella qualità della generazione di contenuti, prevede un canone mensile e opera come prodotto closed-source, il che significa che i suoi processi interni sono nascosti agli utenti. Al contrario, DeepSearcher offre una trasparenza totale: gli utenti possono esaminare il codice, personalizzarlo in base alle proprie esigenze o addirittura implementarlo nei propri ambienti di produzione.</p>
-<h2 id="Technical-Insights" class="common-anchor-header">Approfondimenti tecnici<button data-href="#Technical-Insights" class="anchor-icon" translate="no">
+    </button></h2><p>Unlike OpenAI’s Deep Research, DeepSearcher is specifically tailored for the deep retrieval and analysis of private data. By leveraging a vector database, DeepSearcher can ingest diverse data sources, integrate various data types, and store them uniformly in a vector-based knowledge repository. Its robust semantic search capabilities enable it to efficiently search through vast amounts of offline data.</p>
+<p>Furthermore, DeepSearcher is completely open source. While Deep Research remains a leader in content generation quality, it comes with a monthly fee and operates as a closed-source product, meaning its internal processes are hidden from users. In contrast, DeepSearcher provides full transparency—users can examine the code, customize it to suit their needs, or even deploy it in their own production environments.</p>
+<h2 id="Technical-Insights" class="common-anchor-header">Technical Insights<button data-href="#Technical-Insights" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -321,27 +322,27 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nel corso dello sviluppo e delle successive iterazioni di DeepSearcher, abbiamo raccolto diverse importanti intuizioni tecniche:</p>
-<h3 id="Inference-Models-Effective-but-Not-Infallible" class="common-anchor-header">Modelli di inferenza: Efficaci ma non infallibili</h3><p>I nostri esperimenti hanno rivelato che, sebbene i modelli di inferenza funzionino bene come agenti, a volte analizzano in modo eccessivo le istruzioni più semplici, causando un consumo eccessivo di token e tempi di risposta più lenti. Questa osservazione è in linea con l'approccio dei principali fornitori di IA come OpenAI, che non distinguono più tra modelli di inferenza e non. Al contrario, i servizi di modello dovrebbero determinare automaticamente la necessità dell'inferenza in base a requisiti specifici per conservare i token.</p>
-<h3 id="The-Imminent-Rise-of-Agentic-RAG" class="common-anchor-header">L'imminente ascesa della RAG agenziale</h3><p>Dal punto di vista della domanda, la generazione di contenuti profondi è essenziale; tecnicamente, anche il miglioramento dell'efficacia della RAG è fondamentale. Nel lungo periodo, il costo è la principale barriera all'adozione diffusa della RAG agenziale. Tuttavia, con l'emergere di LLM di alta qualità ed efficaci dal punto di vista dei costi, come DeepSeek-R1, e con la riduzione dei costi determinata dalla Legge di Moore, le spese associate ai servizi di inferenza sono destinate a diminuire.</p>
-<h3 id="The-Hidden-Scaling-Limit-of-Agentic-RAG" class="common-anchor-header">Il limite nascosto di scalabilità della RAG agenziale</h3><p>Un risultato fondamentale della nostra ricerca riguarda la relazione tra prestazioni e risorse computazionali. Inizialmente, abbiamo ipotizzato che il semplice aumento del numero di iterazioni e dell'allocazione dei token avrebbe migliorato proporzionalmente i risultati per le query complesse.</p>
-<p>I nostri esperimenti hanno rivelato una realtà più sfumata: sebbene le prestazioni migliorino con l'aumento delle iterazioni, abbiamo osservato dei chiari rendimenti decrescenti. In particolare:</p>
+    </button></h2><p>Throughout the development and subsequent iterations of DeepSearcher, we’ve gathered several important technical insights:</p>
+<h3 id="Inference-Models-Effective-but-Not-Infallible" class="common-anchor-header">Inference Models: Effective but Not Infallible</h3><p>Our experiments reveal that while inference models perform well as agents, they sometimes overanalyze straightforward instructions, leading to excessive token consumption and slower response times. This observation aligns with the approach of major AI providers like OpenAI, which no longer distinguish between inference and non-inference models. Instead, model services should automatically determine the necessity of inference based on specific requirements to conserve tokens.</p>
+<h3 id="The-Imminent-Rise-of-Agentic-RAG" class="common-anchor-header">The Imminent Rise of Agentic RAG</h3><p>From a demand perspective, deep content generation is essential; technically, enhancing RAG effectiveness is also crucial. In the long run, cost is the primary barrier to the widespread adoption of Agentic RAG. However, with the emergence of cost-effective, high-quality LLMs like DeepSeek-R1 and the cost reductions driven by Moore’s Law, the expenses associated with inference services are expected to decrease.</p>
+<h3 id="The-Hidden-Scaling-Limit-of-Agentic-RAG" class="common-anchor-header">The Hidden Scaling Limit of Agentic RAG</h3><p>A critical finding from our research concerns the relationship between performance and computational resources. Initially, we hypothesized that simply increasing the number of iterations and token allocation would proportionally improve results for complex queries.</p>
+<p>Our experiments revealed a more nuanced reality: while performance does improve with additional iterations, we observed clear diminishing returns. Specifically:</p>
 <ul>
-<li><p>Le prestazioni aumentano nettamente da 1 a 3 iterazioni.</p></li>
-<li><p>i miglioramenti da 3 a 5 iterazioni sono stati modesti</p></li>
-<li><p>Oltre le 5 iterazioni, i guadagni erano trascurabili, nonostante un aumento significativo del consumo di token.</p></li>
+<li><p>Performance increased sharply from 1 to 3 iterations</p></li>
+<li><p>Improvements from 3 to 5 iterations were modest</p></li>
+<li><p>Beyond 5 iterations, gains were negligible despite significant increases in token consumption</p></li>
 </ul>
-<p>Questa constatazione ha importanti implicazioni per gli sviluppatori: il semplice aumento delle risorse computazionali nei sistemi RAG non è l'approccio più efficiente. La qualità della strategia di reperimento, della logica di decomposizione e del processo di sintesi è spesso più importante del numero di iterazioni. Ciò suggerisce che gli sviluppatori dovrebbero concentrarsi sull'ottimizzazione di questi componenti piuttosto che aumentare il budget di token.</p>
-<h3 id="The-Evolution-Beyond-Traditional-RAG" class="common-anchor-header">L'evoluzione oltre la RAG tradizionale</h3><p>Il RAG tradizionale offre una preziosa efficienza grazie al suo approccio a basso costo e a un singolo recupero, che lo rende adatto a scenari di risposta a domande semplici. I suoi limiti diventano però evidenti quando si gestiscono interrogazioni con una logica implicita complessa.</p>
-<p>Consideriamo una domanda dell'utente del tipo "Come guadagnare 100 milioni in un anno". Un sistema RAG tradizionale potrebbe recuperare contenuti sulle carriere ad alto reddito o sulle strategie di investimento, ma faticherebbe a..:</p>
+<p>This finding has important implications for developers: simply throwing more computational resources at RAG systems isn’t the most efficient approach. The quality of the retrieval strategy, the decomposition logic, and the synthesis process often matter more than raw iteration count. This suggests that developers should focus on optimizing these components rather than just increasing token budgets.</p>
+<h3 id="The-Evolution-Beyond-Traditional-RAG" class="common-anchor-header">The Evolution Beyond Traditional RAG</h3><p>Traditional RAG offers valuable efficiency with its low-cost, single-retrieval approach, making it suitable for straightforward question-answering scenarios. Its limitations become apparent, however, when handling queries with complex implicit logic.</p>
+<p>Consider a user query like “How to earn 100 million in a year.” A traditional RAG system might retrieve content about high-earning careers or investment strategies, but would struggle to:</p>
 <ol>
-<li><p>Identificare le aspettative non realistiche nella query</p></li>
-<li><p>scomporre il problema in sotto-obiettivi fattibili</p></li>
-<li><p>sintetizzare le informazioni provenienti da più domini (business, finanza, imprenditorialità)</p></li>
-<li><p>Presentare un approccio strutturato e multi-path con tempistiche realistiche.</p></li>
+<li><p>Identify unrealistic expectations in the query</p></li>
+<li><p>Break down the problem into feasible sub-goals</p></li>
+<li><p>Synthesize information from multiple domains (business, finance, entrepreneurship)</p></li>
+<li><p>Present a structured, multi-path approach with realistic timelines</p></li>
 </ol>
-<p>È qui che i sistemi Agentic RAG come DeepSearcher mostrano la loro forza. Scomponendo query complesse e applicando ragionamenti in più fasi, possono fornire risposte complete e sfumate che rispondono meglio alle esigenze informative dell'utente. Man mano che questi sistemi diventano più efficienti, ci aspettiamo di vederne accelerare l'adozione nelle applicazioni aziendali.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusione<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This is where Agentic RAG systems like DeepSearcher show their strength. By decomposing complex queries and applying multi-step reasoning, they can provide nuanced, comprehensive responses that better address the user’s underlying information needs. As these systems become more efficient, we expect to see their adoption accelerate across enterprise applications.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -356,13 +357,13 @@ By comparing their birth dates:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DeepSearcher rappresenta un'evoluzione significativa nella progettazione di sistemi RAG, offrendo agli sviluppatori un quadro potente per la creazione di capacità di ricerca e di ricerca più sofisticate. I suoi principali vantaggi tecnici sono</p>
+    </button></h2><p>DeepSearcher represents a significant evolution in RAG system design, offering developers a powerful framework for building more sophisticated search and research capabilities. Its key technical advantages include:</p>
 <ol>
-<li><p>Ragionamento iterativo: La capacità di scomporre interrogazioni complesse in sottofasi logiche e di costruire progressivamente verso risposte complete.</p></li>
-<li><p>Architettura flessibile: Supporto per la sostituzione dei modelli sottostanti e per la personalizzazione del processo di ragionamento in base alle esigenze specifiche dell'applicazione.</p></li>
-<li><p>Integrazione con i database vettoriali: Connessione perfetta a Milvus per l'archiviazione e il recupero efficiente delle incorporazioni vettoriali da fonti di dati private.</p></li>
-<li><p>Esecuzione trasparente: Registrazione dettagliata di ogni fase del ragionamento, che consente agli sviluppatori di eseguire il debug e ottimizzare il comportamento del sistema.</p></li>
+<li><p>Iterative reasoning: The ability to break down complex queries into logical sub-steps and progressively build toward comprehensive answers</p></li>
+<li><p>Flexible architecture: Support for swapping underlying models and customizing the reasoning process to suit specific application needs</p></li>
+<li><p>Vector database integration: Seamless connection to Milvus for efficient storage and retrieval of vector embeddings from private data sources</p></li>
+<li><p>Transparent execution: Detailed logging of each reasoning step, enabling developers to debug and optimize system behavior</p></li>
 </ol>
-<p>I nostri test sulle prestazioni confermano che DeepSearcher fornisce risultati superiori per le query complesse rispetto agli approcci RAG tradizionali, anche se con evidenti compromessi in termini di efficienza computazionale. La configurazione ottimale (in genere circa 3 iterazioni) bilancia l'accuratezza con il consumo di risorse.</p>
-<p>Con la continua diminuzione dei costi dell'LLM e il miglioramento delle capacità di ragionamento, l'approccio Agentic RAG implementato in DeepSearcher diventerà sempre più pratico per le applicazioni di produzione. Per gli sviluppatori che lavorano alla ricerca aziendale, agli assistenti alla ricerca o ai sistemi di gestione della conoscenza, DeepSearcher offre una potente base open-source che può essere personalizzata in base ai requisiti specifici del dominio.</p>
-<p>Accogliamo con favore i contributi della comunità degli sviluppatori e vi invitiamo a esplorare questo nuovo paradigma di implementazione delle RAG consultando il nostro <a href="https://github.com/zilliztech/deep-searcher">repository GitHub</a>.</p>
+<p>Our performance testing confirms that DeepSearcher delivers superior results for complex queries compared to traditional RAG approaches, though with clear tradeoffs in computational efficiency. The optimal configuration (typically around 3 iterations) balances accuracy against resource consumption.</p>
+<p>As LLM costs continue to decrease and reasoning capabilities improve, the Agentic RAG approach implemented in DeepSearcher will become increasingly practical for production applications. For developers working on enterprise search, research assistants, or knowledge management systems, DeepSearcher offers a powerful open-source foundation that can be customized to specific domain requirements.</p>
+<p>We welcome contributions from the developer community and invite you to explore this new paradigm in RAG implementation by checking out our <a href="https://github.com/zilliztech/deep-searcher">GitHub repository</a>.</p>

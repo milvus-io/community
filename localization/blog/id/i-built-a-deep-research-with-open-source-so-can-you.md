@@ -1,11 +1,11 @@
 ---
 id: i-built-a-deep-research-with-open-source-so-can-you.md
-title: Saya Membangun Penelitian Mendalam dengan Open Source-dan Anda Juga Bisa!
+title: I Built a Deep Research with Open Source—and So Can You!
 author: Stefan Webb
 date: 2025-02-6
 desc: >-
-  Pelajari cara membuat agen bergaya Deep Research menggunakan alat sumber
-  terbuka seperti Milvus, DeepSeek R1, dan LangChain.
+  Learn how to create a Deep Research-style agent using open-source tools like
+  Milvus, DeepSeek R1, and LangChain.
 cover: >-
   assets.zilliz.com/I_Built_a_Deep_Research_with_Open_Source_and_So_Can_You_7eb2a38078.png
 tag: Tutorials
@@ -19,10 +19,10 @@ canonicalUrl: 'https://milvus.io/blog/i-built-a-deep-research-with-open-source-s
     <span></span>
   </span>
 </p>
-<p>Sebenarnya, agen dengan cakupan minimal yang dapat bernalar, merencanakan, menggunakan alat bantu, dll. untuk melakukan penelitian menggunakan Wikipedia. Tetap saja, lumayan untuk beberapa jam kerja...</p>
-<p>Kecuali jika Anda tinggal di bawah batu, di dalam gua, atau di biara pegunungan terpencil, Anda pasti sudah mendengar tentang rilis <em>Deep Research</em> dari OpenAI pada tanggal 2 Februari 2025. Produk baru ini menjanjikan untuk merevolusi cara kita menjawab pertanyaan yang membutuhkan sintesis sejumlah besar informasi yang beragam.</p>
-<p>Anda mengetikkan pertanyaan Anda, memilih opsi Deep Research, dan platform secara mandiri mencari di web, melakukan penalaran atas apa yang ditemukannya, dan mensintesis berbagai sumber menjadi laporan yang koheren dan dikutip secara lengkap. Dibutuhkan beberapa kali lipat lebih lama untuk menghasilkan outputnya dibandingkan dengan chatbot standar, tetapi hasilnya lebih detail, lebih terinformasi, dan lebih bernuansa.</p>
-<h2 id="How-does-it-work" class="common-anchor-header">Bagaimana cara kerjanya?<button data-href="#How-does-it-work" class="anchor-icon" translate="no">
+<p>Well actually, a minimally scoped agent that can reason, plan, use tools, etc. to perform research using Wikipedia. Still, not bad for a few hours of work…</p>
+<p>Unless you reside under a rock, in a cave, or in a remote mountain monastery, you will have heard about OpenAI’s release of <em>Deep Research</em> on Feb 2, 2025. This new product promises to revolutionize how we answer questions requiring the synthesis of large amounts of diverse information.</p>
+<p>You type in your query, select the Deep Research option, and the platform autonomously searches the web, performs reasoning on what it discovers, and synthesizes multiple sources into a coherent, fully-cited report. It takes several orders of magnitude longer to produce its output relative to a standard chatbot, but the result is more detailed, more informed, and more nuanced.</p>
+<h2 id="How-does-it-work" class="common-anchor-header">How does it work?<button data-href="#How-does-it-work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,26 +37,26 @@ canonicalUrl: 'https://milvus.io/blog/i-built-a-deep-research-with-open-source-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Tapi bagaimana cara kerja teknologi ini, dan mengapa Deep Research merupakan peningkatan yang nyata dari upaya sebelumnya (seperti Google <em>Deep Research</em> - peringatan sengketa merek dagang yang masuk)? Kami akan membahas yang terakhir ini di artikel mendatang. Sedangkan untuk yang pertama, tidak diragukan lagi ada banyak "saus rahasia" yang mendasari Deep Research. Kita bisa mendapatkan beberapa detail dari postingan rilis OpenAI, yang saya rangkum.</p>
-<p><strong>Deep Research mengeksploitasi kemajuan terbaru dalam model fondasi yang dikhususkan untuk tugas-tugas penalaran:</strong></p>
+    </button></h2><p>But how does this technology work, and why is Deep Research a noticeable improvement over previous attempts (like Google’s <em>Deep Research</em> - incoming trademark dispute alert)? We’ll leave the latter for a future post. As for the former, there is no doubt much “secret sauce” underlying Deep Research. We can glean a few details from OpenAI’s release post, which I summarize.</p>
+<p><strong>Deep Research exploits recent advances in foundation models specialized for reasoning tasks:</strong></p>
 <ul>
-<li><p>"... disempurnakan pada model penalaran OpenAI o3 yang akan datang..."</p></li>
-<li><p>"... memanfaatkan penalaran untuk mencari, menafsirkan, dan menganalisis teks dalam jumlah yang sangat besar..."</p></li>
+<li><p>“…fine-tuned on the upcoming OpenAI o3 reasoning model…”</p></li>
+<li><p>“…leverages reasoning to search, interpret, and analyze massive amounts of text…”</p></li>
 </ul>
-<p><strong>Deep Research memanfaatkan alur kerja agen yang canggih dengan perencanaan, refleksi, dan memori:</strong></p>
+<p><strong>Deep Research makes use of a sophisticated agentic workflow with planning, reflection, and memory:</strong></p>
 <ul>
-<li><p>"... belajar untuk merencanakan dan melaksanakan lintasan multi-langkah..."</p></li>
-<li><p>"... mundur ke belakang dan bereaksi terhadap informasi waktu nyata..."</p></li>
-<li><p>"... berputar sesuai kebutuhan sebagai reaksi terhadap informasi yang ditemui..."</p></li>
+<li><p>“…learned to plan and execute a multi-step trajectory…”</p></li>
+<li><p>“…backtracking and reacting to real-time information…”</p></li>
+<li><p>“…pivoting as needed in reaction to information it encounters…”</p></li>
 </ul>
-<p><strong>Deep Research dilatih menggunakan data milik sendiri, dengan menggunakan beberapa jenis penyempurnaan, yang kemungkinan besar merupakan komponen kunci dalam kinerjanya:</strong></p>
+<p><strong>Deep Research is trained on proprietary data, using several types of fine-tuning, which is likely a key component in its performance:</strong></p>
 <ul>
-<li><p>"... dilatih menggunakan pembelajaran penguatan end-to-end pada tugas-tugas penelusuran dan penalaran yang sulit di berbagai domain..."</p></li>
-<li><p>"... dioptimalkan untuk penjelajahan web dan analisis data..."</p></li>
+<li><p>“…trained using end-to-end reinforcement learning on hard browsing and reasoning tasks across a range of domains…”</p></li>
+<li><p>“…optimized for web browsing and data analysis…”</p></li>
 </ul>
-<p>Desain yang tepat dari alur kerja agen adalah sebuah rahasia, namun, kita dapat membangun sesuatu sendiri berdasarkan ide-ide yang sudah mapan tentang bagaimana menyusun agen.</p>
-<p><strong>Satu catatan sebelum kita mulai</strong>: Sangat mudah untuk terhanyut oleh demam AI Generatif, terutama ketika sebuah produk baru yang tampaknya merupakan sebuah langkah perbaikan dirilis. Namun, Deep Research, seperti yang diakui oleh OpenAI, memiliki keterbatasan yang umum terjadi pada teknologi AI Generatif. Kita harus ingat untuk berpikir kritis tentang output yang mungkin berisi fakta-fakta yang salah ("halusinasi"), format dan kutipan yang salah, dan sangat bervariasi dalam kualitas berdasarkan benih acak.</p>
-<h2 id="Can-I-build-my-own" class="common-anchor-header">Dapatkah saya membuat sendiri?<button data-href="#Can-I-build-my-own" class="anchor-icon" translate="no">
+<p>The exact design of the agentic workflow is a secret, however, we can build something ourselves based on well-established ideas about how to structure agents.</p>
+<p><strong>One note before we begin</strong>: It is easy to be swept away by Generative AI fever, especially when a new product that seems a step-improvement is released. However, Deep Research, as OpenAI acknowledges, has limitations common to Generative AI technology. We should remember to think critically about the output in that it may contain false facts (“hallucinations”), incorrect formatting and citations, and vary significantly in quality based on the random seed.</p>
+<h2 id="Can-I-build-my-own" class="common-anchor-header">Can I build my own?<button data-href="#Can-I-build-my-own" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,22 +71,22 @@ canonicalUrl: 'https://milvus.io/blog/i-built-a-deep-research-with-open-source-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Tentu saja bisa! Mari kita bangun "Penelitian Mendalam" kita sendiri, yang dijalankan secara lokal dan dengan alat bantu sumber terbuka. Kita hanya perlu berbekal pengetahuan dasar tentang Generative AI, akal sehat, beberapa jam luang, GPU, dan <a href="https://milvus.io/docs">Milvus</a>, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a>, dan <a href="https://python.langchain.com/docs/introduction/">LangChain</a>.</p>
-<p>Tentu saja, kami tidak dapat meniru kinerja OpenAI, tetapi prototipe kami akan mendemonstrasikan secara minimal beberapa ide utama yang mungkin mendasari teknologi mereka, menggabungkan kemajuan dalam model penalaran dengan kemajuan dalam alur kerja agen. Yang terpenting, dan tidak seperti OpenAI, kami hanya akan menggunakan alat bantu sumber terbuka, dan dapat menggunakan sistem kami secara lokal - sumber terbuka tentu saja memberikan fleksibilitas yang tinggi!</p>
-<p>Kita akan membuat beberapa asumsi penyederhanaan untuk mengurangi ruang lingkup proyek kita:</p>
+    </button></h2><p>Why certainly! Let’s build our own “Deep Research”, running locally and with open-source tools. We’ll be armed with just a basic knowledge of Generative AI, common sense, a couple of spare hours, a GPU, and the open-source <a href="https://milvus.io/docs">Milvus</a>, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a>, and <a href="https://python.langchain.com/docs/introduction/">LangChain</a>.</p>
+<p>We cannot hope to replicate OpenAI’s performance of course, but our prototype will minimally demonstrate some of the key ideas likely underlying their technology, combining advances in reasoning models with advances in agentic workflows. Importantly, and unlike OpenAI, we will be using only open-source tools, and be able to deploy our system locally - open-source certainly provides us great flexibility!</p>
+<p>We will make a few simplifying assumptions to reduce the scope of our project:</p>
 <ul>
-<li><p>Kita akan menggunakan mode penalaran sumber terbuka yang disaring kemudian <a href="https://zilliz.com/learn/unlock-power-of-vector-quantization-techniques-for-efficient-data-compression-and-retrieval">dikuantisasi</a> untuk 4-bit yang dapat dijalankan secara lokal.</p></li>
-<li><p>Kami tidak akan melakukan penyempurnaan tambahan pada model penalaran kami sendiri.</p></li>
-<li><p>Satu-satunya alat yang dimiliki oleh agen kami adalah kemampuan untuk mengunduh dan membaca halaman Wikipedia dan melakukan kueri RAG yang terpisah (kami tidak akan memiliki akses ke seluruh web).</p></li>
-<li><p>Agen kami hanya akan memproses data teks, bukan gambar, PDF, dll.</p></li>
-<li><p>Agen kami tidak akan mundur atau mempertimbangkan pivot.</p></li>
-<li><p>Agen kami akan (belum) mengontrol alur eksekusinya berdasarkan keluarannya.</p></li>
-<li><p>Wikipedia berisi kebenaran, seluruh kebenaran, dan tidak ada yang lain selain kebenaran.</p></li>
+<li><p>We will use an open-source reasoning mode distilled then <a href="https://zilliz.com/learn/unlock-power-of-vector-quantization-techniques-for-efficient-data-compression-and-retrieval">quantized</a> for 4-bits that can be run locally.</p></li>
+<li><p>We will not perform additional fine-tuning on our reasoning model ourselves.</p></li>
+<li><p>The only tool our agent has is the ability to download and read a Wikipedia page and perform separate RAG queries (we will not have access to the entire web).</p></li>
+<li><p>Our agent will only process text data, not images, PDFs, etc.</p></li>
+<li><p>Our agent will not backtrack or consider pivots.</p></li>
+<li><p>Our agent will (not yet) control its execution flow based on its output.</p></li>
+<li><p>Wikipedia contains the truth, the whole truth and nothing but the truth.</p></li>
 </ul>
-<p>Kita akan menggunakan <a href="https://milvus.io/docs">Milvus</a> untuk basis data vektor kita, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a> sebagai model penalaran kita, dan <a href="https://python.langchain.com/docs/introduction/">LangChain</a> untuk mengimplementasikan RAG. Mari kita mulai!</p>
-<custom-h1>Agen Minimal untuk Riset Online</custom-h1><p>Kita akan menggunakan model mental kita tentang bagaimana manusia melakukan penelitian untuk merancang alur kerja agen:</p>
-<h3 id="DefineRefine-Question" class="common-anchor-header">Mendefinisikan/Menentukan Pertanyaan</h3><p>Riset dimulai dengan mendefinisikan sebuah pertanyaan. Kami menganggap pertanyaan tersebut sebagai pertanyaan pengguna, namun, kami menggunakan model penalaran kami untuk memastikan pertanyaan tersebut diungkapkan dengan cara yang spesifik, jelas, dan terfokus. Artinya, langkah pertama kami adalah menulis ulang permintaan dan mengekstrak subkueri atau subpertanyaan. Kami memanfaatkan spesialisasi model dasar kami secara efektif untuk penalaran, dan metode sederhana untuk keluaran terstruktur JSON.</p>
-<p>Berikut ini adalah contoh penelusuran penalaran saat DeepSeek menyempurnakan pertanyaan "Bagaimana pemeran berubah dari waktu ke waktu?":</p>
+<p>We will use <a href="https://milvus.io/docs">Milvus</a> for our vector database, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a> as our reasoning model, and <a href="https://python.langchain.com/docs/introduction/">LangChain</a> to implement RAG. Let’s get started!</p>
+<custom-h1>A Minimal Agent for Online Research</custom-h1><p>We will use our mental model of how humans conduct research to design the agentic workflow:</p>
+<h3 id="DefineRefine-Question" class="common-anchor-header">Define/Refine Question</h3><p>Research starts by defining a question. We take the question to be the user’s query, however, we use our reasoning model to ensure the question is expressed in a way that is specific, clear, and focused. That is, our first step is to rewrite the prompt and extract any subqueries or subquestions. We make effective use of our foundation models specialization for reasoning, and a simple method for JSON structured output.</p>
+<p>Here is an example reasoning trace as DeepSeek refines the question “How has the cast changed over time?”:</p>
 <pre><code translate="no" class="language-text">&lt;think&gt;
 
 Alright, so I need to <span class="hljs-built_in">break</span> down the question <span class="hljs-string">&quot;How has the cast changed over time?&quot;</span> related to the evolution of The Simpsons. Let me think about what aspects are involved here.
@@ -103,8 +103,8 @@ Lastly, the overall impact on the cast<span class="hljs-string">&#x27;s careers 
 
 &lt;/think&gt;
 </span><button class="copy-code-btn"></button></code></pre>
-<h3 id="Search" class="common-anchor-header">Pencarian</h3><p>Selanjutnya, kami melakukan "tinjauan literatur" terhadap artikel-artikel Wikipedia. Untuk saat ini, kami membaca satu artikel dan meninggalkan tautan navigasi ke iterasi berikutnya. Kami menemukan selama pembuatan prototipe bahwa eksplorasi tautan dapat menjadi sangat mahal jika setiap tautan memerlukan panggilan ke model penalaran. Kami mengurai artikel, dan menyimpan datanya dalam basis data vektor kami, Milvus, mirip dengan membuat catatan.</p>
-<p>Berikut ini adalah cuplikan kode yang menunjukkan bagaimana kami menyimpan halaman Wikipedia kami di Milvus menggunakan integrasi LangChain:</p>
+<h3 id="Search" class="common-anchor-header">Search</h3><p>Next, we conduct a “literature review” of Wikipedia articles. For now, we read a single article and leave navigating links to a future iteration. We discovered during prototyping that link exploration can become very expensive if each link requires a call to the reasoning model. We parse the article, and store its data in our vector database, Milvus, akin to taking notes.</p>
+<p>Here is a code snippet showing how we store our Wikipedia page in Milvus using its LangChain integration:</p>
 <pre><code translate="no" class="language-python">wiki_wiki = wikipediaapi.Wikipedia(user_agent=<span class="hljs-string">&#x27;MilvusDeepResearchBot (&lt;insert your email&gt;)&#x27;</span>, language=<span class="hljs-string">&#x27;en&#x27;</span>)
 page_py = wiki_wiki.page(page_title)
 
@@ -125,8 +125,8 @@ vectorstore = Milvus.from_documents(  <span class="hljs-comment"># or Zilliz.fro
     },
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Analyze" class="common-anchor-header">Menganalisis</h3><p>Agen kembali ke pertanyaan-pertanyaannya dan menjawabnya berdasarkan informasi yang relevan di dalam dokumen. Kami akan meninggalkan alur kerja analisis/refleksi multi-langkah untuk pekerjaan di masa depan, serta pemikiran kritis tentang kredibilitas dan bias sumber kami.</p>
-<p>Berikut ini adalah cuplikan kode yang mengilustrasikan pembuatan RAG dengan LangChain dan menjawab sub-pertanyaan kita secara terpisah.</p>
+<h3 id="Analyze" class="common-anchor-header">Analyze</h3><p>The agent returns to its questions and answers them based on the relevant information in the document. We will leave a multi-step analysis/reflection workflow for future work, as well as any critical thinking on the credibility and bias of our sources.</p>
+<p>Here is a code snippet illustrating constructing a RAG with LangChain and answering our subquestions separately.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Define the RAG chain for response generation</span>
 rag_chain = (
     {<span class="hljs-string">&quot;context&quot;</span>: retriever | format_docs, <span class="hljs-string">&quot;question&quot;</span>: RunnablePassthrough()}
@@ -151,9 +151,9 @@ pbar = tqdm(total=total)
             answers[q] = rag_chain.invoke(q).split(<span class="hljs-string">&#x27;&lt;/think&gt;&#x27;</span>)[-<span class="hljs-number">1</span>].strip()
             pbar.update(<span class="hljs-number">1</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Synthesize" class="common-anchor-header">Mensintesis</h3><p>Setelah agen melakukan penelitian, ia membuat garis besar terstruktur, atau lebih tepatnya, kerangka, dari temuannya untuk dirangkum dalam laporan. Kemudian melengkapi setiap bagian, mengisinya dengan judul bagian dan konten yang sesuai. Kami meninggalkan alur kerja yang lebih canggih dengan refleksi, penyusunan ulang, dan penulisan ulang untuk iterasi berikutnya. Bagian agen ini melibatkan perencanaan, penggunaan alat, dan memori.</p>
-<p>Lihat <a href="https://drive.google.com/file/d/1waKX_NTgiY-47bYE0cI6qD8Cjn3zjrL6/view?usp=sharing">buku catatan yang menyertai</a> untuk kode lengkap dan <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link">file laporan yang disimpan</a> sebagai contoh keluaran.</p>
-<h2 id="Results" class="common-anchor-header">Hasil<button data-href="#Results" class="anchor-icon" translate="no">
+<h3 id="Synthesize" class="common-anchor-header">Synthesize</h3><p>After the agent has performed its research, it creates a structured outline, or rather, a skeleton, of its findings to summarize in a report. It then completes each section, filling it in with a section title and the corresponding content. We leave a more sophisticated workflow with reflection, reordering, and rewriting for a future iteration. This part of the agent involves planning, tool usage, and memory.</p>
+<p>See <a href="https://drive.google.com/file/d/1waKX_NTgiY-47bYE0cI6qD8Cjn3zjrL6/view?usp=sharing">accompanying notebook</a> for the full code and the <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link">saved report file</a> for example output.</p>
+<h2 id="Results" class="common-anchor-header">Results<button data-href="#Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -168,14 +168,14 @@ pbar = tqdm(total=total)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pertanyaan kami untuk pengujian adalah <em>"Bagaimana The Simpsons berubah dari waktu ke waktu?"</em> dan sumber datanya adalah artikel Wikipedia untuk "The Simpsons". Berikut ini adalah salah satu bagian dari <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=sharing">laporan yang dihasilkan</a>:</p>
+    </button></h2><p>Our query for testing is <em>“How has The Simpsons changed over time?”</em> and the data source is the Wikipedia article for “The Simpsons”. Here is one section of the <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=sharing">generated report</a>:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/result_query_424beba224.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Summary-What-we-built-and-what’s-next" class="common-anchor-header">Ringkasan: Apa yang telah kami buat dan apa yang selanjutnya<button data-href="#Summary-What-we-built-and-what’s-next" class="anchor-icon" translate="no">
+<h2 id="Summary-What-we-built-and-what’s-next" class="common-anchor-header">Summary: What we built and what’s next<button data-href="#Summary-What-we-built-and-what’s-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,15 +190,15 @@ pbar = tqdm(total=total)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hanya dalam beberapa jam, kami telah merancang alur kerja agen dasar yang dapat menalar, merencanakan, dan mengambil informasi dari Wikipedia untuk menghasilkan laporan penelitian yang terstruktur. Meskipun prototipe ini masih jauh dari Deep Research milik OpenAI, prototipe ini menunjukkan kekuatan alat sumber terbuka seperti Milvus, DeepSeek, dan LangChain dalam membangun agen penelitian otonom.</p>
-<p>Tentu saja, ada banyak ruang untuk perbaikan. Iterasi di masa depan bisa saja terjadi:</p>
+    </button></h2><p>In just a few hours, we have designed a basic agentic workflow that can reason, plan, and retrieve information from Wikipedia to generate a structured research report. While this prototype is far from OpenAI’s Deep Research, it demonstrates the power of open-source tools like Milvus, DeepSeek, and LangChain in building autonomous research agents.</p>
+<p>Of course, there’s plenty of room for improvement. Future iterations could:</p>
 <ul>
-<li><p>Memperluas di luar Wikipedia untuk mencari berbagai sumber secara dinamis</p></li>
-<li><p>Memperkenalkan pelacakan mundur dan refleksi untuk menyempurnakan tanggapan</p></li>
-<li><p>Mengoptimalkan alur eksekusi berdasarkan penalaran agen itu sendiri</p></li>
+<li><p>Expand beyond Wikipedia to search multiple sources dynamically</p></li>
+<li><p>Introduce backtracking and reflection to refine responses</p></li>
+<li><p>Optimize execution flow based on the agent’s own reasoning</p></li>
 </ul>
-<p>Sumber terbuka memberi kita fleksibilitas dan kontrol yang tidak dimiliki oleh sumber tertutup. Baik untuk penelitian akademis, sintesis konten, atau bantuan bertenaga AI, membangun agen penelitian kita sendiri membuka berbagai kemungkinan yang menarik. Nantikan tulisan berikutnya di mana kita akan mengeksplorasi penambahan pengambilan web secara real-time, penalaran multi-langkah, dan alur eksekusi bersyarat!</p>
-<h2 id="Resources" class="common-anchor-header">Sumber daya<button data-href="#Resources" class="anchor-icon" translate="no">
+<p>Open-source gives us flexibility and control that closed source doesn’t. Whether for academic research, content synthesis, or AI-powered assistance, building our own research agents open up exciting possibilities. Stay tuned for the next post where we explore adding real-time web retrieval, multi-step reasoning, and conditional execution flow!</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -214,10 +214,10 @@ pbar = tqdm(total=total)
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Buku catatan: <em>"</em><a href="https://colab.research.google.com/drive/1W5tW8SqWXve7ZwbSb9pVdbt5R2wq105O?usp=sharing"><em>Garis Dasar untuk Penelitian Mendalam Sumber Terbuka</em></a><em>"</em></p></li>
-<li><p>Laporan: <em>"</em><a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link"><em>Evolusi The Simpsons sebagai sebuah pertunjukan dari waktu ke waktu, meliputi perubahan konten, humor, pengembangan karakter, animasi, dan perannya dalam masyarakat.</em></a><em>"</em></p></li>
-<li><p><a href="https://milvus.io/docs">Dokumentasi basis data vektor Milvus</a></p></li>
-<li><p><a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">Halaman model DeepSeek R1 yang telah disaring dan dikuantifikasi</a></p></li>
+<li><p>Notebook: <em>“</em><a href="https://colab.research.google.com/drive/1W5tW8SqWXve7ZwbSb9pVdbt5R2wq105O?usp=sharing"><em>Baseline for An Open-Source Deep Research</em></a><em>”</em></p></li>
+<li><p>Report: <em>“</em><a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link"><em>The evolution of The Simpsons as a show over time, covering changes in content, humor, character development, animation, and its role in society.</em></a><em>”</em></p></li>
+<li><p><a href="https://milvus.io/docs">Milvus vector database documentation</a></p></li>
+<li><p><a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">Distilled and quantized DeepSeek R1 model page</a></p></li>
 <li><p><a href="https://python.langchain.com/docs/introduction/">️🔗 LangChain</a></p></li>
-<li><p><a href="https://help.openai.com/en/articles/10500283-deep-research-faq">Pertanyaan Umum Penelitian Mendalam | Pusat Bantuan OpenAI</a></p></li>
+<li><p><a href="https://help.openai.com/en/articles/10500283-deep-research-faq">Deep Research FAQ | OpenAI Help Center</a></p></li>
 </ul>

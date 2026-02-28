@@ -3,12 +3,12 @@ id: select-index-parameters-ivf-index.md
 title: 1. index_file_size
 author: milvus
 date: 2020-02-26T22:57:02.071Z
-desc: أفضل الممارسات لمؤشر التلقيح الصناعي
+desc: Best practices for IVF index
 cover: assets.zilliz.com/header_4d3fc44879.jpg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
 ---
-<custom-h1>كيفية تحديد معلمات الفهرس لفهرس IVF</custom-h1><p>في <a href="https://medium.com/@milvusio/best-practices-for-milvus-configuration-f38f1e922418">أفضل الممارسات لتكوين Milvus،</a> تم تقديم بعض أفضل الممارسات لتكوين Milvus 0.6.0. في هذه المقالة، سنقدم أيضًا بعض أفضل الممارسات لتعيين المعلمات الرئيسية في عملاء Milvus للعمليات بما في ذلك إنشاء جدول وإنشاء الفهارس والبحث. يمكن أن تؤثر هذه المعلمات على أداء البحث.</p>
+<custom-h1>How to Select Index Parameters for IVF Index</custom-h1><p>In <a href="https://medium.com/@milvusio/best-practices-for-milvus-configuration-f38f1e922418">Best Practices for Milvus Configuration</a>, some best practices for Milvus 0.6.0 configuration were introduced. In this article, we will also introduce some best practices for setting key parameters in Milvus clients for operations including creating a table, creating indexes, and searching. These parameters can affect search performance.</p>
 <h2 id="1-codeindexfilesizecode" class="common-anchor-header">1. <code translate="no">index_file_size</code><button data-href="#1-codeindexfilesizecode" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -24,15 +24,17 @@ canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>عند إنشاء جدول، تُستخدم معلمة index_file_size لتحديد حجم ملف واحد لتخزين البيانات بالميجابايت. الافتراضي هو 1024. عندما يتم استيراد البيانات المتجهة، يقوم ميلفوس بتجميع البيانات بشكل تدريجي في ملفات. عندما يصل حجم الملف إلى حجم_ملف_المفهرس_الحجم، لا يقبل هذا الملف بيانات جديدة ويقوم Milvus بحفظ البيانات الجديدة في ملف آخر. هذه كلها ملفات بيانات خام. عند إنشاء فهرس، يقوم Milvus بإنشاء ملف فهرس لكل ملف بيانات خام. بالنسبة لنوع فهرس IVFLAT، فإن حجم ملف الفهرس يساوي تقريباً حجم ملف البيانات الخام المقابل. بالنسبة لفهرس SQ8، يبلغ حجم ملف الفهرس حوالي 30 بالمائة من ملف البيانات الخام المقابل.</p>
-<p>أثناء البحث، يبحث Milvus في كل ملف فهرس واحدًا تلو الآخر. وفقًا لتجربتنا، عندما يتغير حجم_ملف_الفهرس من 1024 إلى 2048، يتحسن أداء البحث بنسبة 30 بالمائة إلى 50 بالمائة. ومع ذلك، إذا كانت القيمة كبيرة جدًا، فقد يفشل تحميل الملفات الكبيرة إلى ذاكرة وحدة معالجة الرسومات (أو حتى ذاكرة وحدة المعالجة المركزية). على سبيل المثال، إذا كانت ذاكرة وحدة معالجة الرسومات 2 غيغابايت وكان حجم_ملف_الفهرس 3 غيغابايت، فلا يمكن تحميل ملف الفهرس إلى ذاكرة وحدة معالجة الرسومات. عادةً، نقوم بتعيين index_file_size على 1024 ميجابايت أو 2048 ميجابايت.</p>
-<p>يعرض الجدول التالي اختبارًا باستخدام sift50m للفهرس_ملف_الحجم. نوع الفهرس هو SQ8.</p>
+    </button></h2><p>When creating a table, the index_file_size parameter is used to specify the size, in MB, of a single file for data storage. The default is 1024. When vector data is being imported, Milvus incrementally combines data into files. When the file size reaches index_file_size, this file does not accept new data and Milvus saves new data to another file. These are all raw data files. When an index is created, Milvus generates an index file for each raw data file. For the IVFLAT index type, the index file size approximately equals to the size of the corresponding raw data file. For the SQ8 index, the size of an index file is approximately 30 percent of the corresponding raw data file.</p>
+<p>During a search, Milvus searches each index file one by one. Per our experience, when index_file_size changes from 1024 to 2048, the search performance improves by 30 percent to 50 percent. However, if the value is too large, large files may fail to be loaded to GPU memory (or even CPU memory). For example, if GPU memory is 2 GB and index_file_size is 3 GB, the index file cannot be loaded to GPU memory. Usually, we set index_file_size to 1024 MB or 2048 MB.</p>
+<p>The following table shows a test using sift50m for index_file_size. The index type is SQ8.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_sift50m_test_results_milvus_74f60de4aa.png" alt="1-sift50m-test-results-milvus.png" class="doc-image" id="1-sift50m-test-results-milvus.png" />
-   </span> <span class="img-wrapper"> <span>1- sift50m-test-results-milvus.png</span> </span></p>
-<p>يمكننا أن نرى أنه في وضع وحدة المعالجة المركزية ووضع وحدة معالجة الرسومات، عندما يكون حجم_ملف_الفهرس 2048 ميغابايت بدلاً من 1024 ميغابايت، يتحسن أداء البحث بشكل ملحوظ.</p>
-<h2 id="2-codenlistcode-and-codenprobecode" class="common-anchor-header">2. <code translate="no">nlist</code> <strong>و</strong> <code translate="no">nprobe</code><button data-href="#2-codenlistcode-and-codenprobecode" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_sift50m_test_results_milvus_74f60de4aa.png" alt="1-sift50m-test-results-milvus.png" class="doc-image" id="1-sift50m-test-results-milvus.png" />
+    <span>1-sift50m-test-results-milvus.png</span>
+  </span>
+</p>
+<p>We can see that in CPU mode and GPU mode, when index_file_size is 2048 MB instead of 1024 MB, the search performance significantly improves.</p>
+<h2 id="2-codenlistcode-and-codenprobecode" class="common-anchor-header">2. <code translate="no">nlist</code> <strong>and</strong> <code translate="no">nprobe</code><button data-href="#2-codenlistcode-and-codenprobecode" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,17 +49,19 @@ canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تُستخدم المعلمة <code translate="no">nlist</code> لإنشاء الفهرس وتُستخدم المعلمة <code translate="no">nprobe</code> للبحث. يستخدم كل من IVFLAT و SQ8 خوارزميات التجميع لتقسيم عدد كبير من المتجهات إلى مجموعات أو دلاء. <code translate="no">nlist</code> هو عدد الدلاء أثناء التجميع.</p>
-<p>عند البحث باستخدام الفهارس، تتمثل الخطوة الأولى في العثور على عدد معين من الدلاء الأقرب إلى المتجه الهدف، والخطوة الثانية هي العثور على أكثر المتجهات k تشابهًا من الدلاء حسب المسافة بين المتجهات. <code translate="no">nprobe</code> هو عدد الدلاء في الخطوة الأولى.</p>
-<p>بشكل عام، تؤدي زيادة <code translate="no">nlist</code> إلى زيادة عدد الدلاء وعدد أقل من المتجهات في الدلو أثناء التجميع. ونتيجة لذلك، ينخفض حمل الحساب ويتحسن أداء البحث. ومع ذلك، مع وجود عدد أقل من المتجهات لمقارنة التشابه، قد تضيع النتيجة الصحيحة.</p>
-<p>تؤدي زيادة <code translate="no">nprobe</code> إلى مزيد من الدلاء للبحث. نتيجة لذلك، يزداد حمل الحساب ويتدهور أداء البحث، لكن دقة البحث تتحسن. قد يختلف الوضع باختلاف مجموعات البيانات ذات التوزيعات المختلفة. يجب أيضًا مراعاة حجم مجموعة البيانات عند تعيين <code translate="no">nlist</code> و <code translate="no">nprobe</code>. بشكل عام، من المستحسن أن يكون <code translate="no">nlist</code> <code translate="no">4 * sqrt(n)</code> ، حيث n هو العدد الإجمالي للمتجهات. بالنسبة إلى <code translate="no">nprobe</code> ، يجب عليك إجراء مفاضلة بين الدقة والكفاءة وأفضل طريقة هي تحديد القيمة من خلال التجربة والخطأ.</p>
-<p>يوضح الجدول التالي اختبارًا باستخدام sift50m لـ <code translate="no">nlist</code> و <code translate="no">nprobe</code>. نوع الفهرس هو SQ8.</p>
+    </button></h2><p>The <code translate="no">nlist</code> parameter is used for index creating and the <code translate="no">nprobe</code> parameter is used for searching. IVFLAT and SQ8 both use clustering algorithms to split a large number of vectors into clusters, or buckets. <code translate="no">nlist</code> is the number of buckets during clustering.</p>
+<p>When searching using indexes, the first step is to find a certain number of buckets closest to the target vector and the second step is to find the most similar k vectors from the buckets by vector distance. <code translate="no">nprobe</code> is the number of buckets in step one.</p>
+<p>Generally, increasing <code translate="no">nlist</code> leads to more buckets and fewer vectors in a bucket during clustering. As a result, the computation load decreases and search performance improves. However, with fewer vectors for similarity comparison, the correct result might be missed.</p>
+<p>Increasing <code translate="no">nprobe</code> leads to more buckets to search. As a result, the computation load increases and search performance deteriorates, but search precision improves. The situation may differ per datasets with different distributions. You should also consider the size of the dataset when setting <code translate="no">nlist</code> and <code translate="no">nprobe</code>. Generally, it is recommended that <code translate="no">nlist</code> can be <code translate="no">4 * sqrt(n)</code>, where n is the total number of vectors. As for <code translate="no">nprobe</code>, you must make a trade-off between precision and efficiency and the best way is to determine the value through trial and error.</p>
+<p>The following table shows a test using sift50m for <code translate="no">nlist</code> and <code translate="no">nprobe</code>. The index type is SQ8.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/sq8_index_test_sift50m_b5daa9f7b5.png" alt="sq8-index-test-sift50m.png" class="doc-image" id="sq8-index-test-sift50m.png" />
-   </span> <span class="img-wrapper"> <span>sq8-index-test-sift50m.png</span> </span></p>
-<p>يقارن الجدول أداء البحث ودقته باستخدام قيم مختلفة لـ <code translate="no">nlist</code>/<code translate="no">nprobe</code>. يتم عرض نتائج وحدة معالجة الرسومات فقط لأن اختبارات وحدة المعالجة المركزية ووحدة معالجة الرسومات لها نتائج مماثلة. في هذا الاختبار، مع زيادة قيم <code translate="no">nlist</code>/<code translate="no">nprobe</code> بنفس النسبة المئوية، تزداد دقة البحث أيضًا. عندما يكون <code translate="no">nlist</code> = 4096 و <code translate="no">nprobe</code> 128، يكون لدى Milvus أفضل أداء بحث. في الختام، عند تحديد قيم <code translate="no">nlist</code> و <code translate="no">nprobe</code> ، يجب إجراء مفاضلة بين الأداء والدقة مع مراعاة مجموعات البيانات والمتطلبات المختلفة.</p>
-<h2 id="Summary" class="common-anchor-header">الملخص<button data-href="#Summary" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/sq8_index_test_sift50m_b5daa9f7b5.png" alt="sq8-index-test-sift50m.png" class="doc-image" id="sq8-index-test-sift50m.png" />
+    <span>sq8-index-test-sift50m.png</span>
+  </span>
+</p>
+<p>The table compares search performance and precision using different values of <code translate="no">nlist</code>/<code translate="no">nprobe</code>. Only GPU results are displayed because CPU and GPU tests have similar results. In this test, as the values of <code translate="no">nlist</code>/<code translate="no">nprobe</code> increase by the same percentage, search precision also increase. When <code translate="no">nlist</code> = 4096 and <code translate="no">nprobe</code> is 128, Milvus has the best search performance. In conclusion, when determining the values for <code translate="no">nlist</code> and <code translate="no">nprobe</code>, you must make a trade-off between performance and precision with consideration to different datasets and requirements.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,4 +76,5 @@ canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><code translate="no">index_file_size</code>: عندما يكون حجم البيانات أكبر من <code translate="no">index_file_size</code> ، كلما كانت قيمة <code translate="no">index_file_size</code> أكبر، كان أداء البحث أفضل.<code translate="no">nlist</code> و <code translate="no">nprobe</code>： يجب إجراء مفاضلة بين الأداء والدقة.</p>
+    </button></h2><p><code translate="no">index_file_size</code>: When the data size is greater than <code translate="no">index_file_size</code>, the greater the value of <code translate="no">index_file_size</code>, the better the search performance.
+<code translate="no">nlist</code> and <code translate="no">nprobe</code>：You must make a trade-off between performance and precision.</p>

@@ -1,6 +1,7 @@
 ---
 id: understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md
-title: IVFベクターインデックスを理解する：その仕組みとHNSWより選ぶべき場合
+title: |
+  Understanding IVF Vector Index: How It Works and When to Choose It Over HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_1bbe0e9f85.png
@@ -11,14 +12,15 @@ tags: 'Milvus, vector database'
 meta_keywords: 'IVF, ANN, HNSW, vector index, vector database'
 meta_title: How to Choose Between IVF and HNSW for ANN Vector Search
 desc: >-
-  IVFベクトルインデックスがどのように機能するのか、どのようにANN検索を高速化するのか、そしてどのような場合に速度、メモリ、フィルタリング効率においてHNSWを上回るのかを学ぶ。
+  Learn how the IVF vector index works, how it accelerates ANN search, and when
+  it outperforms HNSW in speed, memory, and filtering efficiency.
 origin: >-
   https://milvus.io/blog/understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md
 ---
-<p>ベクトルデータベースでは、画像特徴、テキスト埋め込み、音声表現など、膨大な高次元ベクトルのコレクションから最も類似した結果を素早く見つける必要があります。インデックスがない場合、唯一の選択肢はクエリベクトルをデータセット内のすべてのベクトルと比較することです。この<strong>総当たり検索は</strong>、数千のベクトルであればうまくいくかもしれませんが、数千万、数億のベクトルを扱うようになると、耐えられないほど時間がかかり、計算コストが高くなります。</p>
-<p>そこで登場するのが<strong>近似最近傍（ANN）</strong>検索だ。巨大な図書館で特定の本を探すようなものだと考えてほしい。すべての本を一冊ずつチェックするのではなく、その本がある可能性が最も高いセクションを閲覧することから始める。完全な検索と<em>まったく</em>同じ結果は得られないかもしれないが、非常に近い結果を、しかもほんのわずかな時間で得ることができる。要するに、ANNはわずかな精度の低下と引き換えに、スピードとスケーラビリティを大幅に向上させているのだ。</p>
-<p>ANN検索を実装する多くの方法の中で、<strong>IVF（Inverted File</strong>）と<strong>HNSW（Hierarchical Navigable Small World）の</strong>2つが最も広く使われている。しかし、IVFは大規模なベクトル検索において、その効率性と適応性の高さで際立っている。この記事では、IVFがどのように機能し、HNSWとどのように比較するかを説明します。</p>
-<h2 id="What-is-an-IVF-Vector-Index" class="common-anchor-header">IVFベクトルインデックスとは？<button data-href="#What-is-an-IVF-Vector-Index" class="anchor-icon" translate="no">
+<p>In a vector database, we often need to quickly find the most similar results among vast collections of high-dimensional vectors—such as image features, text embeddings, or audio representations. Without an index, the only option is to compare the query vector against every single vector in the dataset. This <strong>brute-force search</strong> might work when you have a few thousand vectors, but once you’re dealing with tens or hundreds of millions, it becomes unbearably slow and computationally expensive.</p>
+<p>That’s where <strong>Approximate Nearest Neighbor (ANN)</strong> search comes in. Think of it like looking for a specific book in a massive library. Instead of checking every book one by one, you start by browsing the sections most likely to contain it. You might not get the <em>exact</em> same results as a full search, but you’ll get very close—and in a fraction of the time. In short, ANN trades a slight loss in accuracy for a significant boost in speed and scalability.</p>
+<p>Among the many ways to implement ANN search, <strong>IVF (Inverted File)</strong> and <strong>HNSW (Hierarchical Navigable Small World)</strong> are two of the most widely used. But IVF stands out for its efficiency and adaptability in large-scale vector search. In this article, we’ll walk you through how IVF works and how it compares with HNSW—so you can understand their trade-offs and choose the one that best fits your workload.</p>
+<h2 id="What-is-an-IVF-Vector-Index" class="common-anchor-header">What is an IVF Vector Index?<button data-href="#What-is-an-IVF-Vector-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,13 +35,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>IVF（Inverted File</strong>）は、ANNのアルゴリズムとして最も広く使われているものの1つです。IVFは、テキスト検索システムで使用される「転置インデックス」からその核となるアイデアを拝借していますが、今回は単語や文書の代わりに、高次元空間のベクトルを扱っています。</p>
-<p>巨大な図書館を整理するようなものだ。すべての本（ベクトル）を巨大な山に捨てたら、必要なものを見つけるのに永遠に時間がかかるだろう。IVFは、まずすべてのベクトルをグループ（<em>バケツ</em>）に<strong>クラスタリングする</strong>ことでこれを解決します。各バケツは似たようなベクトルの「カテゴリー」を表し、<strong>重心によって</strong>定義される。</p>
-<p>クエリーが来ると、検索は2つのステップで行われる：</p>
-<p><strong>1.最も近いクラスターを見つける。</strong>システムは、セントロイドがクエリーベクトルに最も近いいくつかのバケットを探します。ちょうど、図書館で最も本がありそうな2つか3つのセクションにまっすぐ向かうようなものです。</p>
-<p><strong>2.それらのクラスター内を検索する。</strong>一度正しいセクションに入れば、図書館全体ではなく、小さな本のセットに目を通すだけで済む。</p>
-<p>この方法は、計算量を桁違いに減らすことができる。精度の高い結果が得られることに変わりはないが、そのスピードははるかに速い。</p>
-<h2 id="How-to-Build-an-IVF-Vector-Index" class="common-anchor-header">IVFベクトル指数の構築方法<button data-href="#How-to-Build-an-IVF-Vector-Index" class="anchor-icon" translate="no">
+    </button></h2><p><strong>IVF (Inverted File)</strong> is one of the most widely used algorithms for ANN. It borrows its core idea from the “inverted index” used in text retrieval systems—only this time, instead of words and documents, we’re dealing with vectors in a high-dimensional space.</p>
+<p>Think of it like organizing a massive library. If you dumped every book (vector) into one giant pile, finding what you need would take forever. IVF solves this by first <strong>clustering</strong> all vectors into groups, or <em>buckets</em>. Each bucket represents a “category” of similar vectors, defined by a <strong>centroid</strong>—a kind of summary or “label” for everything inside that cluster.</p>
+<p>When a query comes in, the search happens in two steps:</p>
+<p><strong>1. Find the nearest clusters.</strong> The system looks for the few buckets whose centroids are closest to the query vector—just like heading straight to the two or three library sections most likely to have your book.</p>
+<p><strong>2. Search within those clusters.</strong> Once you’re in the right sections, you only need to look through a small set of books instead of the entire library.</p>
+<p>This approach cuts down the amount of computation by orders of magnitude. You still get highly accurate results—but much faster.</p>
+<h2 id="How-to-Build-an-IVF-Vector-Index" class="common-anchor-header">How to Build an IVF Vector Index<button data-href="#How-to-Build-an-IVF-Vector-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,35 +56,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>IVFベクトル・インデックスを構築するプロセスには、主に3つのステップがあります：K-meansクラスタリング、ベクトル割り当て、圧縮符号化（オプション）です。全プロセスは以下のようになります：</p>
+    </button></h2><p>The process of building an IVF vector index involves three main steps: K-means Clustering, Vector Assignment, and Compression Encoding (Optional). The full process looks like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ivf_building_process_90c2966975.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">ステップ 1: K-平均クラスタリング</h3><p>まず、データセットXに対してk-meansクラスタリングを実行し、高次元ベクトル空間をnlistクラスタに分割する。セントロイドの数nlistは、クラスタリングの細かさを決定する重要なハイパーパラメータである。</p>
-<p>k-meansがどのように機能するかを説明しよう：</p>
+<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Step 1: K-means Clustering</h3><p>First, run k-means clustering on the dataset X to divide the high-dimensional vector space into nlist clusters. Each cluster is represented by a centroid, which is stored in the centroid table C. The number of centroids, nlist, is a key hyperparameter that determines how fine-grained the clustering will be.</p>
+<p>Here’s how k-means works under the hood:</p>
 <ul>
-<li><p><strong>初期化：</strong> <em>nlist個の</em>ベクトルを初期セントロイドとしてランダムに選択する。</p></li>
-<li><p><strong>割り当て：</strong>各ベクトルについて、すべてのセントロイドとの距離を計算し、最も近いものに割り当てる。</p></li>
-<li><p><strong>更新：</strong>各クラスタについて、そのベクトルの平均を計算し、それを新しいセントロイドとして設定する。</p></li>
-<li><p><strong>反復と収束：</strong>セントロイドが大きく変化しなくなるか、最大反復回数に達するまで、割り当てと更新を繰り返す。</p></li>
+<li><p><strong>Initialization:</strong> Randomly select <em>nlist</em> vectors as the initial centroids.</p></li>
+<li><p><strong>Assignment:</strong> For each vector, compute its distance to all centroids and assign it to the nearest one.</p></li>
+<li><p><strong>Update:</strong> For each cluster, calculate the average of its vectors and set that as the new centroid.</p></li>
+<li><p><strong>Iteration and convergence:</strong> Repeat assignment and update until centroids stop changing significantly or a maximum number of iterations is reached.</p></li>
 </ul>
-<p>k-meansが収束すると、得られたnリストのセントロイドがIVFの「インデックス・ディレクトリ」を形成する。インデックス・ディレクトリは、データセットがどのように粗く分割されるかを定義し、クエリーが後で検索空間を素早く絞り込むことを可能にする。</p>
-<p>図書館の例えを思い出してほしい。セントロイドを訓練することは、トピックごとに本をグループ分けする方法を決めるようなものだ：</p>
+<p>Once k-means converges, the resulting nlist centroids form the “index directory” of IVF. They define how the dataset is coarsely partitioned, allowing queries to quickly narrow down the search space later on.</p>
+<p>Think back to the library analogy: training centroids is like deciding how to group books by topic:</p>
 <ul>
-<li><p>nlistが大きければセクションが増え、それぞれのセクションにはより少ない、より具体的な本が並ぶ。</p></li>
-<li><p>nlistが小さければ、セクションは少なくなり、それぞれがより広範なトピックをカバーすることになります。</p></li>
+<li><p>A larger nlist means more sections, each with fewer, more specific books.</p></li>
+<li><p>A smaller nlist means fewer sections, each covering a broader, more mixed range of topics.</p></li>
 </ul>
-<h3 id="Step-2-Vector-Assignment" class="common-anchor-header">ステップ2：ベクトルの割り当て</h3><p>次に、各ベクトルは、そのセントロイドが最も近いクラスタに割り当てられ、転置リスト（List_i）が形成されます。各転置リストには、そのクラスタに属するすべてのベクトルのIDと格納情報が格納されます。</p>
-<p>このステップは、本をそれぞれのセクションに棚分けするようなものだと考えることができます。後でタイトルを探すとき、図書館全体を歩き回るのではなく、そのタイトルがある可能性が高いいくつかのセクションをチェックするだけでよい。</p>
-<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">ステップ3：圧縮エンコーディング（オプション）</h3><p>メモリを節約し、計算を高速化するために、各クラスタ内のベクトルは圧縮エンコーディングを通過することができます。一般的なアプローチは2つある：</p>
+<h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Step 2: Vector Assignment</h3><p>Next, each vector is assigned to the cluster whose centroid it’s closest to, forming inverted lists (List_i). Each inverted list stores the IDs and storage information of all vectors that belong to that cluster.</p>
+<p>You can think of this step like shelving the books into their respective sections. When you’re looking for a title later, you only need to check the few sections that are most likely to have it, instead of wandering the whole library.</p>
+<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Step 3: Compression Encoding (Optional)</h3><p>To save memory and speed up computation, vectors within each cluster can go through compression encoding. There are two common approaches:</p>
 <ul>
-<li><p><strong>SQ8（スカラー量子化）：</strong>この方法は、ベクトルの各次元を8ビットに量子化します。標準的な<code translate="no">float32</code> ベクトルの場合、各次元は通常4バイトを占める。SQ8では、各次元はわずか1バイトに縮小され、ベクトルのジオメトリはほぼそのままに、4:1の圧縮率を達成します。</p></li>
-<li><p><strong>PQ（積量子化）：</strong>高次元のベクトルをいくつかの部分空間に分割します。例えば、128次元のベクトルは、それぞれ16次元の8つの部分ベクトルに分割することができます。各サブスペースでは、小さなコードブック（通常256エントリ）が事前に訓練され、各サブベクトルは、最も近いコードブックエントリを指す8ビットのインデックスで表されます。つまり、元の128次元<code translate="no">float32</code> ベクトル（512バイト必要）は、わずか8バイト（8つの部分空間×各1バイト）で表現でき、64:1の圧縮率を達成できる。</p></li>
+<li><p><strong>SQ8 (Scalar Quantization):</strong> This method quantizes each dimension of a vector into 8 bits. For a standard <code translate="no">float32</code> vector, each dimension typically takes up 4 bytes. With SQ8, it’s reduced to just 1 byte—achieving a 4:1 compression ratio while keeping the vector’s geometry largely intact.</p></li>
+<li><p><strong>PQ (Product Quantization):</strong> It splits a high-dimensional vector into several subspaces. For example, a 128-dimensional vector can be divided into 8 sub-vectors of 16 dimensions each. In each subspace, a small codebook (typically with 256 entries) is pre-trained, and each sub-vector is represented by an 8-bit index pointing to its nearest codebook entry. This means the original 128-D <code translate="no">float32</code> vector (which requires 512 bytes) can be represented using only 8 bytes (8 subspaces × 1 byte each), achieving a 64:1 compression ratio.</p></li>
 </ul>
-<h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">検索にIVFベクトルインデックスを使用する方法<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
+<h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">How to Use the IVF Vector Index for Search<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -97,29 +99,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>セントロイドテーブル、転置リスト、圧縮エンコーダとコードブック（オプション）が構築されると、IVFインデックスを使用して類似検索を高速化することができます。このプロセスには通常、以下のような3つの主要ステップがある：</p>
+    </button></h2><p>Once the centroid table, inverted lists, and the compression encoder and codebooks (optional) are built, the IVF index can be used to accelerate similarity search. The process typically has three main steps, as shown below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ivf_search_process_025d3f444f.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">ステップ1：クエリーベクトルからすべてのセントロイドまでの距離を計算する。</h3><p>クエリベクトルqが到着すると、システムはまずそれがどのクラスタに属する可能性が高いかを決定する。次に、qとセントロイドテーブルCのすべてのセントロイドとの距離を計算する。通常、ユークリッド距離か内積を類似度メトリックとして使用する。次にセントロイドはクエリーベクトルとの距離でソートされ、最も近いものから遠いものまで順番に並べられる。</p>
-<p>例えば、図に示すように、順序は次のようになる：C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5。</p>
-<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">ステップ2：最も近いnprobeクラスタを選択する</h3><p>データセット全体のスキャンを避けるため、IVFはクエリーベクトルに最も近い上位<em>nprobe</em>クラスター内のみを検索します。</p>
-<p>パラメータnprobeは検索範囲を定義し、速度と想起のバランスに直接影響する：</p>
+<h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Step 1: Calculate distances from the query vector to all centroids</h3><p>When a query vector q arrives, the system first determines which clusters it is most likely to belong to. Then, it computes the distance between q and every centroid in the centroid table C—usually using Euclidean distance or inner product as the similarity metric. The centroids are then sorted by their distance to the query vector, producing an ordered list from nearest to farthest.</p>
+<p>For example, as shown in the illustration, the order is: C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5.</p>
+<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Step 2: Select the nearest nprobe clusters</h3><p>To avoid scanning the entire dataset, IVF only searches within the top <em>nprobe</em> clusters that are closest to the query vector.</p>
+<p>The parameter nprobe defines the search scope and directly affects the balance between speed and recall:</p>
 <ul>
-<li><p>nprobeを小さくするとクエリーは速くなるが、リコールは低下する。</p></li>
-<li><p>nprobeを小さくすると、クエリーは速くなるが、リコールは低下する。nprobeを大きくすると、リコールは向上するが、待ち時間が長くなる。</p></li>
+<li><p>A smaller nprobe leads to faster queries but may reduce recall.</p></li>
+<li><p>A larger nprobe improves recall but increases latency.</p></li>
 </ul>
-<p>実際のシステムでは、nprobeはレイテンシーバジェットや精度要件に基づいて動的に調整することができます。 上記の例では、nprobe = 2の場合、システムはクラスタ2とクラスタ4（2つの最近傍クラスタ）内のみを検索します。</p>
-<h3 id="Step-3-Search-the-nearest-neighbor-in-the-selected-clusters" class="common-anchor-header">ステップ3: 選択されたクラスター内の最近傍を検索する</h3><p>候補クラスタが選択されると、システムはクエリベクトルqとその中に格納されているベクトルを比較します。 比較には主に2つのモードがあります：</p>
+<p>In real-world systems, nprobe can be dynamically tuned based on the latency budget or accuracy requirements.
+In the example above, if nprobe = 2, the system will only search within Cluster 2 and Cluster 4—the two nearest clusters.</p>
+<h3 id="Step-3-Search-the-nearest-neighbor-in-the-selected-clusters" class="common-anchor-header">Step 3: Search the nearest neighbor in the selected clusters</h3><p>Once the candidate clusters are selected, the system compares the query vector q with the vectors stored inside them.
+ There are two main modes of comparison:</p>
 <ul>
-<li><p><strong>厳密比較（IVF_FLAT）</strong>：選択されたクラスタから元のベクトルを取り出し、qとの距離を直接計算します。</p></li>
-<li><p><strong>近似比較（IVF_PQ / IVF_SQ8）</strong>：PQまたはSQ8圧縮が使用されている場合、システムは距離計算を高速化するために<strong>ルックアップテーブル法を</strong>採用する。検索を開始する前に、クエリーベクトルと各コードブックエントリ間の距離を事前に計算する。そして、各ベクトルについて、これらの事前計算された距離を「ルックアップして合計」するだけで、類似度を推定することができる。</p></li>
+<li><p><strong>Exact Comparison (IVF_FLAT)</strong>: The system retrieves the original vectors from the selected clusters and computes their distances to q directly, returning the most accurate results.</p></li>
+<li><p><strong>Approximate Comparison (IVF_PQ / IVF_SQ8)</strong>: When PQ or SQ8 compression is used, the system employs a <strong>lookup table method</strong> to accelerate distance computation. Before the search begins, it precomputes the distances between the query vector and each codebook entry. Then, for each vector, it can simply “look up and sum” these precomputed distances to estimate similarity.</p></li>
 </ul>
-<p>最後に、検索されたすべてのクラスタからの候補結果がマージされ、再ランク付けされ、最終出力としてTop-kの最も類似したベクトルが生成されます。</p>
-<h2 id="IVF-In-Practice" class="common-anchor-header">IVF の実際<button data-href="#IVF-In-Practice" class="anchor-icon" translate="no">
+<p>Finally, the candidate results from all searched clusters are merged and re-ranked, producing the Top-k most similar vectors as the final output.</p>
+<h2 id="IVF-In-Practice" class="common-anchor-header">IVF In-Practice<button data-href="#IVF-In-Practice" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,36 +138,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>IVFベクトルインデックスがどのように<strong>構築さ</strong>れ、<strong>検索されるかを</strong>理解したら、次のステップは実際のワークロードに適用することです。実際の作業では、<strong>性能</strong>、<strong>精度</strong>、<strong>メモリ使用量の</strong>バランスを取る必要があります。以下は、エンジニアの経験から導き出された実践的なガイドラインです。</p>
-<h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">正しいnlistの選び方</h3><p>前述したように、パラメータnlistは、IVFインデックスを構築する際にデータセットを分割するクラスタ数を決定します。</p>
+    </button></h2><p>Once you understand how IVF vector indexes are <strong>built</strong> and <strong>searched</strong>, the next step is to apply them for real-world workloads. In practice, you’ll often need to balance <strong>performance</strong>, <strong>accuracy</strong>, and <strong>memory usage</strong>. Below are some practical guidelines drawn from engineering experience.</p>
+<h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">How to Choose the Right nlist</h3><p>As mentioned earlier, the parameter nlist determines the number of clusters into which the dataset is divided when building an IVF index.</p>
 <ul>
-<li><p><strong>nlistを大きくする</strong>：より細かいクラスターを作成し、各クラスターに含まれるベクトル数が少なくなります。これにより、検索時にスキャンされるベクトル数が減り、一般的にクエリが高速になります。しかし、インデックスの構築には時間がかかり、セントロイド・テーブルはより多くのメモリを消費します。</p></li>
-<li><p><strong>より小さな nlist</strong>：インデックスの構築を高速化し、メモリ使用量を減らしますが、各クラスタはより "混雑" します。各クエリはクラスタ内でより多くのベクトルをスキャンする必要があり、パフォーマンスのボトルネックになる可能性があります。</p></li>
+<li><p><strong>Larger nlist</strong>: Creates finer-grained clusters, meaning each cluster contains fewer vectors. This reduces the number of vectors scanned during search and generally results in faster queries. But building the index takes longer, and the centroid table consumes more memory.</p></li>
+<li><p><strong>Smaller nlist</strong>: Speeds up index construction and reduces memory usage, but each cluster becomes more “crowded.” Each query must scan more vectors within a cluster, which can lead to performance bottlenecks.</p></li>
 </ul>
-<p>これらのトレードオフに基づく、実用的な経験則を以下に示す：</p>
-<p><strong>100万人規模の</strong>データセットの場合、<strong>nlist ≈ √n</strong>（nはインデックスを作成するデータシャード内のベクトル数）が良い出発点となります。</p>
-<p>例えば、100万個のベクトルがある場合、nlist = 1,000とする。数千万から数億という大きなデータセットの場合、ほとんどのベクトル・データベースは各シャードが100万程度のベクトルを含むようにデータをシャード化し、このルールを実用的なものにしています。</p>
-<p>nlistはインデックス作成時に固定されるため、後で変更するとインデックス全体を再構築することになります。ですから、早めに実験するのが一番です。いくつかの値（理想的には2の累乗（例えば1024、2048））をテストして、ワークロードの速度、精度、メモリのバランスをとるスイートスポットを見つける。</p>
-<h3 id="How-to-Tune-nprobe" class="common-anchor-header">nprobeの調整方法</h3><p>nprobeパラメータは、クエリ時に検索されるクラスタ数を制御します。リコールとレイテンシのトレードオフに直接影響します。</p>
+<p>Based on these trade-offs, here’s a practical rule of thumb:</p>
+<p>For datasets at the <strong>million scale</strong>, a good starting point is <strong>nlist ≈ √n</strong> (n is the number of vectors in the data shard being indexed).</p>
+<p>For example, if you have 1 million vectors, try nlist = 1,000. For larger datasets—tens or hundreds of millions—most vector databases shard the data so that each shard contains around one million vectors, keeping this rule practical.</p>
+<p>Because nlist is fixed at index creation, changing it later means rebuilding the entire index. So it’s best to experiment early. Test several values—ideally in powers of two (e.g., 1024, 2048)—to find the sweet spot that balances speed, accuracy, and memory for your workload.</p>
+<h3 id="How-to-Tune-nprobe" class="common-anchor-header">How to Tune nprobe</h3><p>The parameter nprobe controls the number of clusters searched during query time. It directly affects the trade-off between recall and latency.</p>
 <ul>
-<li><p><strong>nprobeを大きくする</strong>：より多くのクラスターをカバーし、リコールが高くなりますが、レイテンシも高くなります。一般的に遅延は検索されるクラスタ数とともに直線的に増加する。</p></li>
-<li><p><strong>nprobeが小さい</strong>：より少ないクラスターを検索し、より低い遅延とより速いクエリーをもたらします。しかし、いくつかの真の最近傍を見逃す可能性があり、再現率と結果の精度が若干下がります。</p></li>
+<li><p><strong>Larger nprobe</strong>: Covers more clusters, leading to higher recall but also higher latency. The delay generally increases linearly with the number of clusters searched.</p></li>
+<li><p><strong>Smaller nprobe</strong>: Searches fewer clusters, resulting in lower latency and faster queries. However, it may miss some true nearest neighbors, slightly lowering recall and result accuracy.</p></li>
 </ul>
-<p>アプリケーションがレイテンシに極端に敏感でない場合、nprobeを動的に実験するのは良いアイデアです。例えば、1から16までの値をテストし、リコールとレイテンシがどのように変化するかを観察します。目標は、リコールが許容でき、レイテンシが目標範囲内に収まるスイートスポットを見つけることである。</p>
-<p>nprobeは実行時の検索パラメーターであるため、インデックスを再構築することなく、その場で調整することができる。このため、異なるワークロードやクエリーシナリオに対して、高速、低コスト、かつ柔軟性の高いチューニングが可能です。</p>
-<h3 id="Common-Variants-of-the-IVF-Index" class="common-anchor-header">IVFインデックスの一般的なバリエーション</h3><p>IVFインデックスを構築する際には、各クラスタのベクトルに対して圧縮エンコーディングを使用するかどうか、使用する場合はどの方法を使用するかを決定する必要があります。</p>
-<p>その結果、IVFインデックスには3つの一般的なバリエーションがあります：</p>
+<p>If your application is not extremely sensitive to latency, it’s a good idea to experiment with nprobe dynamically—for example, testing values from 1 to 16 to observe how recall and latency change. The goal is to find the sweet spot where recall is acceptable and latency remains within your target range.</p>
+<p>Since nprobe is a runtime search parameter, it can be adjusted on the fly without requiring the index to be rebuilt. This enables fast, low-cost, and highly flexible tuning across different workloads or query scenarios.</p>
+<h3 id="Common-Variants-of-the-IVF-Index" class="common-anchor-header">Common Variants of the IVF Index</h3><p>When building an IVF index, you’ll need to decide whether to use compression encoding for the vectors in each cluster—and if so, which method to use.</p>
+<p>This results in three common IVF index variants:</p>
 <table>
 <thead>
-<tr><th><strong>IVF バリアント</strong></th><th><strong>主な機能</strong></th><th><strong>使用例</strong></th></tr>
+<tr><th><strong>IVF Variant</strong></th><th><strong>Key Features</strong></th><th><strong>Use Cases</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>IVF_FLAT</strong></td><td>各クラスタ内の生のベクトルを圧縮せずに格納。最も精度が高いが、最もメモリを消費する。</td><td>高い再現性（95%以上）が求められる中規模データセット（数億ベクトルまで）に最適です。</td></tr>
-<tr><td><strong>IVF_PQ</strong></td><td>クラスタ内のベクトルを圧縮するために積量子化（PQ）を適用します。圧縮率を調整することで、メモリ使用量を大幅に削減できる。</td><td>多少の精度低下が許容される大規模なベクトル探索（数億以上）に適しています。64:1の圧縮比の場合、リコールは通常70%程度ですが、圧縮比を下げることで90%以上に達することもあります。</td></tr>
-<tr><td><strong>IVF_SQ8</strong></td><td>スカラー量子化（SQ8）を使用してベクトルを量子化します。メモリ使用量は IVF_FLAT と IVF_PQ の中間に位置します。</td><td>比較的高い再現率（90%以上）を維持しながら効率を向上させる必要がある大規模ベクトル検索に最適です。</td></tr>
+<tr><td><strong>IVF_FLAT</strong></td><td>Stores raw vectors within each cluster without compression. Offers the highest accuracy, but also consumes the most memory.</td><td>Ideal for medium-scale datasets (up to hundreds of millions of vectors) where high recall (95%+) is required.</td></tr>
+<tr><td><strong>IVF_PQ</strong></td><td>Applies Product Quantization (PQ) to compress vectors within clusters. By adjusting the compression ratio, memory usage can be significantly reduced.</td><td>Suitable for large-scale vector search (hundreds of millions or more) where some accuracy loss is acceptable. With a 64:1 compression ratio, recall is typically around 70%, but can reach 90% or higher by lowering the compression ratio.</td></tr>
+<tr><td><strong>IVF_SQ8</strong></td><td>Uses Scalar Quantization (SQ8) to quantize vectors. Memory usage sits between IVF_FLAT and IVF_PQ.</td><td>Ideal for large-scale vector search where you need to maintain relatively high recall (90%+) while improving efficiency.</td></tr>
 </tbody>
 </table>
-<h2 id="IVF-vs-HNSW-Pick-What-Fits" class="common-anchor-header">IVFとHNSWの比較：適合するものを選ぶ<button data-href="#IVF-vs-HNSW-Pick-What-Fits" class="anchor-icon" translate="no">
+<h2 id="IVF-vs-HNSW-Pick-What-Fits" class="common-anchor-header">IVF vs HNSW: Pick What Fits<button data-href="#IVF-vs-HNSW-Pick-What-Fits" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -178,32 +182,32 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>IVFの他に、<strong>HNSW（Hierarchical Navigable Small World</strong>）も広く使われているインメモリ・ベクトルインデックスです。下の表は、両者の主な違いを示しています。</p>
+    </button></h2><p>Besides IVF, <strong>HNSW (Hierarchical Navigable Small World)</strong> is another widely used in-memory vector index. The table below highlights the key differences between the two.</p>
 <table>
 <thead>
 <tr><th></th><th><strong>IVF</strong></th><th><strong>HNSW</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>アルゴリズム概念</strong></td><td>クラスタリングとバケッティング</td><td>多層グラフ・ナビゲーション</td></tr>
-<tr><td><strong>メモリ使用量</strong></td><td>比較的低い</td><td>比較的高い</td></tr>
-<tr><td><strong>インデックス構築速度</strong></td><td>速い（クラスタリングのみ必要）</td><td>遅い（多層グラフ構築が必要）</td></tr>
-<tr><td><strong>クエリー速度（フィルタリングなし）</strong></td><td>高速、<em>nprobeに</em>依存</td><td>非常に速いが、対数の複雑さを伴う</td></tr>
-<tr><td><strong>クエリー速度（フィルタリングあり）</strong></td><td>安定 - 候補を絞り込むためにセントロイドレベルで粗いフィルタリングを行う。</td><td>不安定 - 特にフィルタリングの比率が高い場合（90%以上）、グラフが断片化し、フルグラフトラバーサルに近くなり、ブルートフォースサーチよりも遅くなる可能性がある。</td></tr>
-<tr><td><strong>回収率</strong></td><td>圧縮の有無による; 量子化なしでも、再現率は<strong>95%</strong>以上に達する。</td><td>通常は<strong>98%</strong>以上</td></tr>
-<tr><td><strong>主要パラメータ</strong></td><td><em>nlist</em>,<em>nprobe</em></td><td><em>m</em>,<em>ef_construction</em>,<em>ef_search</em></td></tr>
-<tr><td><strong>使用例</strong></td><td>メモリは限られているが、高いクエリーパフォーマンスとリコールが必要な場合。</td><td>メモリは十分で、極めて高いリコールとクエリー性能が目標だが、フィルタリングは必要ないか、フィルタリング比率が低い場合。</td></tr>
+<tr><td><strong>Algorithm Concept</strong></td><td>Clustering and bucketing</td><td>Multi-layer graph navigation</td></tr>
+<tr><td><strong>Memory Usage</strong></td><td>Relatively low</td><td>Relatively high</td></tr>
+<tr><td><strong>Index Build Speed</strong></td><td>Fast (only requires clustering)</td><td>Slow (needs multi-layer graph construction)</td></tr>
+<tr><td><strong>Query Speed (No Filtering)</strong></td><td>Fast, depends on <em>nprobe</em></td><td>Extremely fast, but with logarithmic complexity</td></tr>
+<tr><td><strong>Query Speed (With Filtering)</strong></td><td>Stable — performs coarse filtering at the centroid level to narrow down candidates</td><td>Unstable — especially when the filtering ratio is high (90%+), the graph becomes fragmented and may degrade to near full-graph traversal, even slower than brute-force search</td></tr>
+<tr><td><strong>Recall Rate</strong></td><td>Depends on whether compression is used; without quantization, recall can reach <strong>95%+</strong></td><td>Usually higher, around <strong>98%+</strong></td></tr>
+<tr><td><strong>Key Parameters</strong></td><td><em>nlist</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_construction</em>, <em>ef_search</em></td></tr>
+<tr><td><strong>Use Cases</strong></td><td>When memory is limited, but high query performance and recall are required; well-suited for searches with filtering conditions</td><td>When memory is sufficient and the goal is extremely high recall and query performance, but filtering is not needed, or the filtering ratio is low</td></tr>
 </tbody>
 </table>
-<p>実世界のアプリケーションでは、フィルタリング条件を含めることは非常に一般的です。例えば、"特定のユーザーからのベクトルだけを検索する"、"結果を特定の時間範囲に制限する "などです。基本的なアルゴリズムの違いにより、一般的にIVFはHNSWよりもフィルタリングされた検索を効率的に処理します。</p>
-<p>IVFの強みは2段階のフィルタリング処理にある。まずセントロイド（クラスター）レベルで粗視化フィルタを実行し、候補セットを素早く絞り込み、次に選択されたクラスター内で細かい距離計算を行うことができる。これにより、データの大部分がフィルタリングされた場合でも、安定した予測可能な性能が維持される。</p>
-<p>対照的に、HNSWはグラフ・トラバーサルに基づいている。その構造上、トラバーサル中にフィルタリング条件を直接利用することはできない。フィルタリングの比率が低い場合、これは大きな問題にはならない。しかし、フィルタリングの比率が高い場合（例えば、90％以上のデータがフィルタリングされる）、残りのグラフはしばしば断片化され、多くの "孤立ノード "が形成される。このような場合、検索はフルグラフトラバーサルに近くなり、時には総当り検索よりも悪くなることがある。</p>
-<p>実際には、IVF インデックスは既に様々なドメインで多くのインパクトのあるユースケースを支えている：</p>
+<p>In real-world applications, it’s very common to include filtering conditions—for example, “only search vectors from a specific user” or “limit results to a certain time range.” Due to differences in their underlying algorithms, IVF generally handles filtered searches more efficiently than HNSW.</p>
+<p>The strength of IVF lies in its two-level filtering process. It can first perform a coarse-grained filter at the centroid (cluster) level to quickly narrow down the candidate set, and then conduct fine-grained distance calculations within the selected clusters. This maintains stable and predictable performance, even when a large portion of the data is filtered out.</p>
+<p>In contrast, HNSW is based on graph traversal. Because of its structure, it cannot directly leverage filtering conditions during traversal. When the filtering ratio is low, this doesn’t cause major issues. However, when the filtering ratio is high (e.g., more than 90% of data is filtered out), the remaining graph often becomes fragmented, forming many “isolated nodes.” In such cases, the search may degrade into a near full-graph traversal—sometimes even worse than a brute-force search.</p>
+<p>In practice, IVF indexes are already powering many high-impact use cases across different domains:</p>
 <ul>
-<li><p><strong>Eコマース検索：</strong>Eコマース検索：ユーザーが商品画像をアップロードすると、何百万ものリストから視覚的に類似した商品を即座に見つけることができる。</p></li>
-<li><p><strong>特許検索：</strong>従来のキーワード検索よりもはるかに効率的です。</p></li>
-<li><p><strong>RAG知識ベース：</strong>IVFは、何百万ものテナント文書から最も関連性の高いコンテキストを検索し、AIモデルがより正確で根拠のある応答を生成することを保証します。</p></li>
+<li><p><strong>E-commerce search:</strong> A user can upload a product image and instantly find visually similar items from millions of listings.</p></li>
+<li><p><strong>Patent retrieval:</strong> Given a short description, the system can locate the most semantically related patents from a massive database—far more efficient than traditional keyword search.</p></li>
+<li><p><strong>RAG knowledge bases:</strong> IVF helps retrieve the most relevant context from millions of tenant documents, ensuring AI models generate more accurate and grounded responses.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -218,6 +222,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>適切なインデックスを選択するには、特定のユースケースによります。大規模なデータセットを扱う場合や、フィルタリングされた検索をサポートする必要がある場合は、IVFの方が適している可能性があります。HNSWのようなグラフベースのインデックスに比べ、IVFはインデックス構築の高速化、メモリ使用量の削減、速度と精度の強力なバランスを実現します。</p>
-<p>オープンソースのベクトルデータベースとして最も有名な<a href="https://milvus.io/">Milvusは</a>、IVF_FLAT、IVF_PQ、IVF_SQ8を含むIVFファミリー全体をフルサポートしています。これらのインデックスタイプを簡単に試すことができ、パフォーマンスとメモリのニーズに最も適したセットアップを見つけることができます。Milvusがサポートしているインデックスの完全なリストについては、この<a href="https://milvus.io/docs/index-explained.md">Milvus Index docページを</a>ご覧ください。</p>
-<p>画像検索、推薦システム、またはRAG知識ベースを構築している方は、MilvusのIVFインデックスを試してみてください。</p>
+    </button></h2><p>To choose the right index, it all comes down to your specific use case. If you’re working with large-scale datasets or need to support filtered searches, IVF can be the better fit. Compared with graph-based indexes like HNSW, IVF delivers faster index builds, lower memory usage, and a strong balance between speed and accuracy.</p>
+<p><a href="https://milvus.io/">Milvus</a>, the most popular open-source vector database, provides full support for the entire IVF family, including IVF_FLAT, IVF_PQ, and IVF_SQ8. You can easily experiment with these index types and find the setup that best fits your performance and memory needs. For a complete list of indexes Milvus supports, check out this <a href="https://milvus.io/docs/index-explained.md">Milvus Index doc page</a>.</p>
+<p>If you’re building image search, recommendation systems, or RAG knowledge bases, give IVF indexing in Milvus a try—and see how efficient, large-scale vector search feels in action.</p>

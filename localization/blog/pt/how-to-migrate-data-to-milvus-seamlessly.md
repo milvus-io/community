@@ -1,11 +1,11 @@
 ---
 id: how-to-migrate-data-to-milvus-seamlessly.md
-title: 'Como migrar os seus dados para Milvus sem problemas: Um guia completo'
+title: 'How to Migrate Your Data to Milvus Seamlessly: A Comprehensive Guide'
 author: Wenhui Zhang
 date: 2023-12-01T00:00:00.000Z
 desc: >-
-  Um guia completo sobre a migração dos seus dados do Elasticsearch, FAISS e
-  versões mais antigas do Milvus 1.x para o Milvus 2.x.
+  A comprehensive guide on migrating your data from Elasticsearch, FAISS, and
+  older Milvus 1.x to Milvus 2.x versions.
 cover: assets.zilliz.com/How_to_Migrate_Your_Data_to_Milvus_with_Ease_485dcb8b22.png
 tag: Engineering
 tags: >-
@@ -21,10 +21,10 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><a href="https://milvus.io/">O Milvus</a> é uma base de dados vetorial robusta de código aberto para <a href="https://zilliz.com/learn/vector-similarity-search">pesquisa de semelhanças</a> que pode armazenar, processar e recuperar milhares de milhões e até triliões de dados vectoriais com uma latência mínima. É também altamente escalável, fiável, nativo da nuvem e rico em funcionalidades. <a href="https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md">A versão mais recente do Milvus</a> apresenta recursos e melhorias ainda mais interessantes, incluindo <a href="https://zilliz.com/blog/getting-started-with-gpu-powered-milvus-unlocking-10x-higher-performance">suporte a GPU</a> para desempenho 10x mais rápido e MMap para maior capacidade de armazenamento em uma única máquina.</p>
-<p>Em setembro de 2023, Milvus ganhou quase 23.000 estrelas no GitHub e tem dezenas de milhares de usuários de diversos setores com necessidades variadas. Está a tornar-se ainda mais popular à medida que a tecnologia de IA generativa como o <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> se torna mais prevalecente. É um componente essencial de várias pilhas de IA, especialmente a estrutura de <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">geração aumentada</a> de recuperação, que aborda o problema de alucinação de grandes modelos de linguagem.</p>
-<p>Para responder à procura crescente de novos utilizadores que pretendem migrar para o Milvus e de utilizadores existentes que pretendem atualizar para as versões mais recentes do Milvus, desenvolvemos <a href="https://github.com/zilliztech/milvus-migration">o Milvus Migration</a>. Neste blogue, vamos explorar as funcionalidades do Milvus Migration e guiá-lo na transição rápida dos seus dados para o Milvus a partir do Milvus 1.x, do <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a> e do <a href="https://zilliz.com/comparison/elastic-vs-milvus">Elasticsearch 7.0</a> e posteriores.</p>
-<h2 id="Milvus-Migration-a-powerful-data-migration-tool" class="common-anchor-header">Milvus Migration, uma poderosa ferramenta de migração de dados<button data-href="#Milvus-Migration-a-powerful-data-migration-tool" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus</a> is a robust open-source vector database for <a href="https://zilliz.com/learn/vector-similarity-search">similarity search</a> that can store, process, and retrieve billions and even trillions of vector data with minimal latency. It is also highly scalable, reliable, cloud-native, and feature-rich. <a href="https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md">The newest release of Milvus</a> introduces even more exciting features and improvements, including <a href="https://zilliz.com/blog/getting-started-with-gpu-powered-milvus-unlocking-10x-higher-performance">GPU support</a> for over 10x faster performance and MMap for greater storage capacity on a single machine.</p>
+<p>As of September 2023, Milvus has earned almost 23,000 stars on GitHub and has tens of thousands of users from diverse industries with varying needs. It is becoming even more popular as Generative AI technology like <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> becomes more prevalent. It is an essential component of various AI stacks, especially the <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">retrieval augmented generation</a> framework, which addresses the hallucination problem of large language models.</p>
+<p>To meet the growing demand from new users who want to migrate to Milvus and existing users who wish to upgrade to the latest Milvus versions, we developed  <a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a>. In this blog, we’ll explore the features of Milvus Migration and guide you through quickly transitioning your data to Milvus from Milvus 1.x, <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a>, and <a href="https://zilliz.com/comparison/elastic-vs-milvus">Elasticsearch 7.0</a> and beyond.</p>
+<h2 id="Milvus-Migration-a-powerful-data-migration-tool" class="common-anchor-header">Milvus Migration, a powerful data migration tool<button data-href="#Milvus-Migration-a-powerful-data-migration-tool" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,58 +39,58 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/milvus-migration">O Milvus Migration</a> é uma ferramenta de migração de dados escrita em Go. Permite aos utilizadores moverem os seus dados sem problemas de versões mais antigas do Milvus (1.x), FAISS e Elasticsearch 7.0 e posteriores para versões do Milvus 2.x.</p>
-<p>O diagrama abaixo demonstra como criámos o Milvus Migration e como funciona.</p>
+    </button></h2><p><a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a> is a data migration tool written in Go. It enables users to move their data seamlessly from older versions of Milvus (1.x), FAISS, and Elasticsearch 7.0 and beyond to Milvus 2.x versions.</p>
+<p>The diagram below demonstrates how we built Milvus Migration and how it works.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_migration_architecture_144e22f499.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="How-Milvus-Migration-migrates-data" class="common-anchor-header">Como o Milvus Migration migra os dados</h3><h4 id="From-Milvus-1x-and-FAISS-to-Milvus-2x" class="common-anchor-header">Do Milvus 1.x e FAISS para o Milvus 2.x</h4><p>A migração de dados do Milvus 1.x e do FAISS envolve a análise do conteúdo dos ficheiros de dados originais, a sua transformação para o formato de armazenamento de dados do Milvus 2.x e a escrita dos dados utilizando o SDK do Milvus <code translate="no">bulkInsert</code>. Todo este processo é baseado em fluxo, teoricamente limitado apenas pelo espaço em disco, e armazena ficheiros de dados no seu disco local, S3, OSS, GCP ou Minio.</p>
-<h4 id="From-Elasticsearch-to-Milvus-2x" class="common-anchor-header">Do Elasticsearch para o Milvus 2.x</h4><p>Na migração de dados do Elasticsearch, a recuperação de dados é diferente. Os dados não são obtidos a partir de ficheiros, mas sim sequencialmente, utilizando a API de deslocamento do Elasticsearch. Os dados são depois analisados e transformados no formato de armazenamento Milvus 2.x, seguindo-se a sua escrita utilizando <code translate="no">bulkInsert</code>. Para além da migração de vectores do tipo <code translate="no">dense_vector</code> armazenados no Elasticsearch, o Milvus Migration também suporta a migração de outros tipos de campo, incluindo long, integer, short, boolean, keyword, text e double.</p>
-<h3 id="Milvus-Migration-feature-set" class="common-anchor-header">Conjunto de funcionalidades do Milvus Migration</h3><p>O Milvus Migration simplifica o processo de migração através do seu conjunto robusto de funcionalidades:</p>
+<h3 id="How-Milvus-Migration-migrates-data" class="common-anchor-header">How Milvus Migration migrates data</h3><h4 id="From-Milvus-1x-and-FAISS-to-Milvus-2x" class="common-anchor-header">From Milvus 1.x and FAISS to Milvus 2.x</h4><p>The data migration from Milvus 1.x and FAISS involves parsing the content of the original data files, transforming them into the data storage format of Milvus 2.x, and writing the data using Milvus SDK’s <code translate="no">bulkInsert</code>. This entire process is stream-based, theoretically limited only by disk space, and stores data files on your local disk, S3, OSS, GCP, or Minio.</p>
+<h4 id="From-Elasticsearch-to-Milvus-2x" class="common-anchor-header">From Elasticsearch to Milvus 2.x</h4><p>In the Elasticsearch data migration, data retrieval is different. Data is not obtained from files but sequentially fetched using Elasticsearch’s scroll API. The data is then parsed and transformed into Milvus 2.x storage format, followed by writing it using <code translate="no">bulkInsert</code>. Besides migrating <code translate="no">dense_vector</code> type vectors stored in Elasticsearch, Milvus Migration also supports migrating other field types, including long, integer, short, boolean, keyword, text, and double.</p>
+<h3 id="Milvus-Migration-feature-set" class="common-anchor-header">Milvus Migration feature set</h3><p>Milvus Migration simplifies the migration process through its robust feature set:</p>
 <ul>
-<li><p><strong>Fontes de dados suportadas:</strong></p>
+<li><p><strong>Supported Data Sources:</strong></p>
 <ul>
-<li><p>Milvus 1.x para Milvus 2.x</p></li>
-<li><p>Elasticsearch 7.0 e posteriores para Milvus 2.x</p></li>
-<li><p>FAISS para Milvus 2.x</p></li>
+<li><p>Milvus 1.x to Milvus 2.x</p></li>
+<li><p>Elasticsearch 7.0 and beyond to Milvus 2.x</p></li>
+<li><p>FAISS to Milvus 2.x</p></li>
 </ul></li>
 </ul>
 <ul>
-<li><p><strong>Múltiplos modos de interação:</strong></p>
+<li><p><strong>Multiple Interaction Modes:</strong></p>
 <ul>
-<li><p>Interface de linha de comando (CLI) utilizando a estrutura Cobra</p></li>
-<li><p>API restful com uma IU Swagger incorporada</p></li>
-<li><p>Integração como um módulo Go noutras ferramentas</p></li>
+<li><p>Command-line interface (CLI) using the Cobra framework</p></li>
+<li><p>Restful API with a built-in Swagger UI</p></li>
+<li><p>Integration as a Go module in other tools</p></li>
 </ul></li>
 </ul>
 <ul>
-<li><p><strong>Suporte versátil a formatos de ficheiros:</strong></p>
+<li><p><strong>Versatile File Format Support:</strong></p>
 <ul>
-<li><p>Ficheiros locais</p></li>
+<li><p>Local files</p></li>
 <li><p>Amazon S3</p></li>
-<li><p>Serviço de armazenamento de objectos (OSS)</p></li>
-<li><p>Plataforma de nuvem do Google (GCP)</p></li>
+<li><p>Object Storage Service (OSS)</p></li>
+<li><p>Google Cloud Platform (GCP)</p></li>
 </ul></li>
 </ul>
 <ul>
-<li><p><strong>Integração flexível com o Elasticsearch:</strong></p>
+<li><p><strong>Flexible Elasticsearch Integration:</strong></p>
 <ul>
-<li><p>Migração de <code translate="no">dense_vector</code> vectores de tipo do Elasticsearch</p></li>
-<li><p>Suporte para migração de outros tipos de campo, como longo, inteiro, curto, booleano, palavra-chave, texto e duplo</p></li>
+<li><p>Migration of <code translate="no">dense_vector</code> type vectors from Elasticsearch</p></li>
+<li><p>Support for migrating other field types such as long, integer, short, boolean, keyword, text, and double</p></li>
 </ul></li>
 </ul>
-<h3 id="Interface-definitions" class="common-anchor-header">Definições de interface</h3><p>O Milvus Migration fornece as seguintes interfaces principais:</p>
+<h3 id="Interface-definitions" class="common-anchor-header">Interface definitions</h3><p>Milvus Migration provides the following key interfaces:</p>
 <ul>
-<li><p><code translate="no">/start</code>: Inicia um trabalho de migração (equivalente a uma combinação de despejo e carregamento, atualmente só suporta migração ES).</p></li>
-<li><p><code translate="no">/dump</code>: Inicia um trabalho de dump (grava dados de origem no meio de armazenamento de destino).</p></li>
-<li><p><code translate="no">/load</code>: Inicia um trabalho de carregamento (escreve dados do meio de armazenamento de destino no Milvus 2.x).</p></li>
-<li><p><code translate="no">/get_job</code>: Permite que os utilizadores vejam os resultados da execução da tarefa. (Para mais detalhes, consulte o <a href="https://github.com/zilliztech/milvus-migration/blob/main/server/server.go">server.go do projeto</a>)</p></li>
+<li><p><code translate="no">/start</code>: Initiates a migration job (equivalent to a combination of dump and load, currently only supports ES migration).</p></li>
+<li><p><code translate="no">/dump</code>: Initiates a dump job (writes source data into the target storage medium).</p></li>
+<li><p><code translate="no">/load</code>: Initiates a load job (writes data from the target storage medium into Milvus 2.x).</p></li>
+<li><p><code translate="no">/get_job</code>: Allows users to view job execution results. (For more details, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/server/server.go">the project’s server.go</a>)</p></li>
 </ul>
-<p>Em seguida, vamos utilizar alguns dados de exemplo para explorar a forma de utilizar a Migração Milvus nesta secção. Você pode encontrar esses exemplos <a href="https://github.com/zilliztech/milvus-migration#migration-examples-migrationyaml-details">aqui</a> no GitHub.</p>
-<h2 id="Migration-from-Elasticsearch-to-Milvus-2x" class="common-anchor-header">Migração do Elasticsearch para o Milvus 2.x<button data-href="#Migration-from-Elasticsearch-to-Milvus-2x" class="anchor-icon" translate="no">
+<p>Next, let’s use some example data to explore how to use Milvus Migration in this section. You can find these examples <a href="https://github.com/zilliztech/milvus-migration#migration-examples-migrationyaml-details">here</a> on GitHub.</p>
+<h2 id="Migration-from-Elasticsearch-to-Milvus-2x" class="common-anchor-header">Migration from Elasticsearch to Milvus 2.x<button data-href="#Migration-from-Elasticsearch-to-Milvus-2x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,9 +106,9 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><ol>
-<li>Preparar dados do Elasticsearch</li>
+<li>Prepare Elasticsearch Data</li>
 </ol>
-<p>Para <a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">migrar</a> os dados <a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">do Elasticsearch</a>, já deve ter configurado o seu próprio servidor Elasticsearch. Deve armazenar os dados vectoriais no campo <code translate="no">dense_vector</code> e indexá-los com outros campos. Os mapeamentos de índice são os mostrados abaixo.</p>
+<p>To <a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">migrate Elasticsearch</a> data, you should already set up your own Elasticsearch server. You should store vector data in the <code translate="no">dense_vector</code> field and index them with other fields. The index mappings are as shown below.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/migrate_elasticsearch_data_milvus_index_mappings_59370f9596.png" alt="" class="doc-image" id="" />
@@ -116,17 +116,17 @@ canonicalUrl: >-
   </span>
 </p>
 <ol start="2">
-<li>Compilar e construir</li>
+<li>Compile and Build</li>
 </ol>
-<p>Primeiro, baixe <a href="https://github.com/zilliztech/milvus-migration">o código-fonte</a> da Migração Milvus <a href="https://github.com/zilliztech/milvus-migration">do GitHub</a>. Em seguida, execute os seguintes comandos para compilá-lo.</p>
+<p>First, download the Milvus Migration’s <a href="https://github.com/zilliztech/milvus-migration">source code from GitHub</a>. Then, run the following commands to compile it.</p>
 <pre><code translate="no"><span class="hljs-keyword">go</span> get
 <span class="hljs-keyword">go</span> build
 <button class="copy-code-btn"></button></code></pre>
-<p>Esta etapa gerará um arquivo executável chamado <code translate="no">milvus-migration</code>.</p>
+<p>This step will generate an executable file named <code translate="no">milvus-migration</code>.</p>
 <ol start="3">
-<li>Configurar <code translate="no">migration.yaml</code></li>
+<li>Configure <code translate="no">migration.yaml</code></li>
 </ol>
-<p>Antes de iniciar a migração, você deve preparar um arquivo de configuração chamado <code translate="no">migration.yaml</code> que inclui informações sobre a fonte de dados, o destino e outras configurações relevantes. Aqui está um exemplo de configuração:</p>
+<p>Before starting the migration, you must prepare a configuration file named <code translate="no">migration.yaml</code> that includes information about the data source, target, and other relevant settings. Here’s an example configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># Configuration for Elasticsearch to Milvus 2.x migration</span>
 
 
@@ -177,29 +177,31 @@ target:
     username: ******
     password: ******
 <button class="copy-code-btn"></button></code></pre>
-<p>Para obter uma explicação mais detalhada do arquivo de configuração, consulte <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_ES.md#elasticsearch-to-milvus-2x-migrationyaml-example">esta página</a> no GitHub.</p>
+<p>For a more detailed explanation of the configuration file, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_ES.md#elasticsearch-to-milvus-2x-migrationyaml-example">this page</a> on GitHub.</p>
 <ol start="4">
-<li>Executar o trabalho de migração</li>
+<li>Execute the migration job</li>
 </ol>
-<p>Agora que você configurou seu arquivo <code translate="no">migration.yaml</code>, você pode iniciar a tarefa de migração executando o seguinte comando:</p>
+<p>Now that you have configured your <code translate="no">migration.yaml</code> file, you can start the migration task by running the following command:</p>
 <pre><code translate="no">./milvus-migration start --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>Observe a saída do log. Quando você vir logs semelhantes aos seguintes, isso significa que a migração foi bem-sucedida.</p>
+<p>Observe the log output. When you see logs similar to the following, it means the migration was successful.</p>
 <pre><code translate="no">[task/load_base_task.go:94] [<span class="hljs-string">&quot;[LoadTasker] Dec Task Processing--------------&gt;&quot;</span>] [Count=0] [fileName=testfiles/output/zwh/migration/test_mul_field4/data_1_1.json] [taskId=442665677354739304][task/load_base_task.go:76] [<span class="hljs-string">&quot;[LoadTasker] Progress Task ---------------&gt;&quot;</span>] [fileName=testfiles/output/zwh/migration/test_mul_field4/data_1_1.json] [taskId=442665677354739304][dbclient/cus_field_milvus2x.go:86] [<span class="hljs-string">&quot;[Milvus2x] begin to ShowCollectionRows&quot;</span>][loader/cus_milvus2x_loader.go:66] [<span class="hljs-string">&quot;[Loader] Static: &quot;</span>] [collection=test_mul_field4_rename1] [beforeCount=50000] [afterCount=100000] [increase=50000][loader/cus_milvus2x_loader.go:66] [<span class="hljs-string">&quot;[Loader] Static Total&quot;</span>] [<span class="hljs-string">&quot;Total Collections&quot;</span>=1] [beforeTotalCount=50000] [afterTotalCount=100000] [totalIncrease=50000][migration/es_starter.go:25] [<span class="hljs-string">&quot;[Starter] migration ES to Milvus finish!!!&quot;</span>] [Cost=80.009174459][starter/starter.go:106] [<span class="hljs-string">&quot;[Starter] Migration Success!&quot;</span>] [Cost=80.00928425][cleaner/remote_cleaner.go:27] [<span class="hljs-string">&quot;[Remote Cleaner] Begin to clean files&quot;</span>] [bucket=a-bucket] [rootPath=testfiles/output/zwh/migration][cmd/start.go:32] [<span class="hljs-string">&quot;[Cleaner] clean file success!&quot;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>Para além da abordagem de linha de comandos, o Milvus Migration também suporta a migração através da API Restful.</p>
-<p>Para utilizar a API Restful, inicie o servidor da API utilizando o seguinte comando:</p>
+<p>In addition to the command-line approach, Milvus Migration also supports migration using Restful API.</p>
+<p>To use the Restful API, start the API server using the following command:</p>
 <pre><code translate="no">./milvus-migration server run -p 8080
 <button class="copy-code-btn"></button></code></pre>
-<p>Assim que o serviço for executado, pode iniciar a migração chamando a API.</p>
+<p>Once the service runs, you can initiate the migration by calling the API.</p>
 <pre><code translate="no">curl -XPOST http://localhost:8080/api/v1/start
 <button class="copy-code-btn"></button></code></pre>
-<p>Quando a migração estiver concluída, pode utilizar <a href="https://zilliz.com/attu">o Attu</a>, uma ferramenta de administração de bases de dados vectoriais tudo-em-um, para ver o número total de linhas migradas com êxito e efetuar outras operações relacionadas com a coleção.</p>
+<p>When the migration is complete, you can use <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool, to view the total number of successful rows migrated and perform other collection-related operations.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/attu_interface_vector_database_admin_4893a31f6d.png" alt="The Attu interface" class="doc-image" id="the-attu-interface" />
-   </span> <span class="img-wrapper"> <span>A interface do Attu</span> </span></p>
-<h2 id="Migration-from-Milvus-1x-to-Milvus-2x" class="common-anchor-header">Migração do Milvus 1.x para o Milvus 2.x<button data-href="#Migration-from-Milvus-1x-to-Milvus-2x" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/attu_interface_vector_database_admin_4893a31f6d.png" alt="The Attu interface" class="doc-image" id="the-attu-interface" />
+    <span>The Attu interface</span>
+  </span>
+</p>
+<h2 id="Migration-from-Milvus-1x-to-Milvus-2x" class="common-anchor-header">Migration from Milvus 1.x to Milvus 2.x<button data-href="#Migration-from-Milvus-1x-to-Milvus-2x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -215,33 +217,33 @@ target:
         ></path>
       </svg>
     </button></h2><ol>
-<li>Preparar os dados do Milvus 1.x</li>
+<li>Prepare Milvus 1.x Data</li>
 </ol>
-<p>Para o ajudar a experimentar rapidamente o processo de migração, colocámos 10.000 registos <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">de dados de teste</a> do Milvus 1.x no código fonte do Milvus Migration. No entanto, em casos reais, deve exportar o seu próprio ficheiro <code translate="no">meta.json</code> da sua instância Milvus 1.x antes de iniciar o processo de migração.</p>
+<p>To help you quickly experience the migration process, we’ve put 10,000 Milvus 1.x <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">test data</a> records in the source code of Milvus Migration. However, in real cases, you must export your own <code translate="no">meta.json</code> file from your Milvus 1.x instance before starting the migration process.</p>
 <ul>
-<li>Pode exportar os dados com o seguinte comando.</li>
+<li>You can export the data with the following command.</li>
 </ul>
 <pre><code translate="no">./milvus-migration <span class="hljs-built_in">export</span> -m <span class="hljs-string">&quot;user:password@tcp(adderss)/milvus?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&quot;</span> -o outputDir
 <button class="copy-code-btn"></button></code></pre>
-<p>Certifique-se de que:</p>
+<p>Make sure to:</p>
 <ul>
-<li><p>Substituir os marcadores de posição pelas suas credenciais MySQL reais.</p></li>
-<li><p>Parar o servidor Milvus 1.x ou interromper a escrita de dados antes de efetuar esta exportação.</p></li>
-<li><p>Copie a pasta Milvus <code translate="no">tables</code> e o ficheiro <code translate="no">meta.json</code> para o mesmo diretório.</p></li>
+<li><p>Replace the placeholders with your actual MySQL credentials.</p></li>
+<li><p>Stop the Milvus 1.x server or halt data writes before performing this export.</p></li>
+<li><p>Copy the Milvus <code translate="no">tables</code> folder and the <code translate="no">meta.json</code> file to the same directory.</p></li>
 </ul>
-<p><strong>Nota:</strong> Se utilizar o Milvus 2.x no <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (o serviço totalmente gerido do Milvus), pode iniciar a migração utilizando a Cloud Console.</p>
+<p><strong>Note:</strong> If you use Milvus 2.x on <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed service of Milvus), you can start the migration using Cloud Console.</p>
 <ol start="2">
-<li>Compilar e construir</li>
+<li>Compile and Build</li>
 </ol>
-<p>Primeiro, descarregue o <a href="https://github.com/zilliztech/milvus-migration">código fonte</a> do Milvus Migration a <a href="https://github.com/zilliztech/milvus-migration">partir do GitHub</a>. Depois, execute os seguintes comandos para o compilar.</p>
+<p>First, download the Milvus Migration’s <a href="https://github.com/zilliztech/milvus-migration">source code from GitHub</a>. Then, run the following commands to compile it.</p>
 <pre><code translate="no"><span class="hljs-keyword">go</span> get
 <span class="hljs-keyword">go</span> build
 <button class="copy-code-btn"></button></code></pre>
-<p>Esta etapa gerará um arquivo executável chamado <code translate="no">milvus-migration</code>.</p>
+<p>This step will generate an executable file named <code translate="no">milvus-migration</code>.</p>
 <ol start="3">
-<li>Configurar <code translate="no">migration.yaml</code></li>
+<li>Configure <code translate="no">migration.yaml</code></li>
 </ol>
-<p>Prepare um ficheiro de configuração <code translate="no">migration.yaml</code>, especificando detalhes sobre a origem, o destino e outras definições relevantes. Aqui está um exemplo de configuração:</p>
+<p>Prepare a <code translate="no">migration.yaml</code> configuration file, specifying details about the source, target, and other relevant settings. Here’s an example configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># Configuration for Milvus 1.x to Milvus 2.x migration</span>
 
 
@@ -285,20 +287,20 @@ target:
     username: xxxxx
     password: xxxxx
 <button class="copy-code-btn"></button></code></pre>
-<p>Para uma explicação mais detalhada do arquivo de configuração, consulte <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">esta página</a> no GitHub.</p>
+<p>For a more detailed explanation of the configuration file, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">this page</a> on GitHub.</p>
 <ol start="4">
-<li>Executar tarefa de migração</li>
+<li>Execute Migration Job</li>
 </ol>
-<p>Você deve executar os comandos <code translate="no">dump</code> e <code translate="no">load</code> separadamente para concluir a migração. Estes comandos convertem os dados e importam-nos para o Milvus 2.x.</p>
-<p><strong>Nota:</strong> Em breve, simplificaremos este passo e permitiremos que os utilizadores concluam a migração utilizando apenas um comando. Fique atento.</p>
-<p><strong>Comando Dump:</strong></p>
+<p>You must execute the <code translate="no">dump</code> and <code translate="no">load</code> commands separately to finish the migration. These commands convert the data and import it into Milvus 2.x.</p>
+<p><strong>Note:</strong> We’ll simplify this step and enable users to finish migration using just one command shortly. Stay tuned.</p>
+<p><strong>Dump Command:</strong></p>
 <pre><code translate="no">./milvus-migration dump --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Comando Load:</strong></p>
+<p><strong>Load Command:</strong></p>
 <pre><code translate="no">./milvus-migration load --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>Após a migração, a coleção gerada no Milvus 2.x conterá dois campos: <code translate="no">id</code> e <code translate="no">data</code>. Pode ver mais detalhes utilizando o <a href="https://zilliz.com/attu">Attu</a>, uma ferramenta de administração de bases de dados vectoriais tudo-em-um.</p>
-<h2 id="Migration-from-FAISS-to-Milvus-2x" class="common-anchor-header">Migração do FAISS para o Milvus 2.x<button data-href="#Migration-from-FAISS-to-Milvus-2x" class="anchor-icon" translate="no">
+<p>After the migration, the generated collection in Milvus 2.x will contain two fields: <code translate="no">id</code> and <code translate="no">data</code>. You can view more details using <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool.</p>
+<h2 id="Migration-from-FAISS-to-Milvus-2x" class="common-anchor-header">Migration from FAISS to Milvus 2.x<button data-href="#Migration-from-FAISS-to-Milvus-2x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -314,21 +316,21 @@ target:
         ></path>
       </svg>
     </button></h2><ol>
-<li>Preparar os dados FAISS</li>
+<li>Prepare FAISS Data</li>
 </ol>
-<p>Para migrar os dados do Elasticsearch, deve ter os seus próprios dados FAISS prontos. Para o ajudar a experimentar rapidamente o processo de migração, colocámos alguns <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">dados de teste FAISS</a> no código-fonte do Milvus Migration.</p>
+<p>To migrate Elasticsearch data, you should have your own FAISS data ready. To help you quickly experience the migration process, we’ve put some <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">FAISS test data</a> in the source code of Milvus Migration.</p>
 <ol start="2">
-<li>Compilar e construir</li>
+<li>Compile and Build</li>
 </ol>
-<p>Primeiro, descarregue o <a href="https://github.com/zilliztech/milvus-migration">código-fonte</a> do Milvus Migration a <a href="https://github.com/zilliztech/milvus-migration">partir do GitHub</a>. Depois, execute os seguintes comandos para o compilar.</p>
+<p>First, download the Milvus Migration’s <a href="https://github.com/zilliztech/milvus-migration">source code from GitHub</a>. Then, run the following commands to compile it.</p>
 <pre><code translate="no"><span class="hljs-keyword">go</span> get
 <span class="hljs-keyword">go</span> build
 <button class="copy-code-btn"></button></code></pre>
-<p>Este passo irá gerar um ficheiro executável com o nome <code translate="no">milvus-migration</code>.</p>
+<p>This step will generate an executable file named <code translate="no">milvus-migration</code>.</p>
 <ol start="3">
-<li>Configurar <code translate="no">migration.yaml</code></li>
+<li>Configure <code translate="no">migration.yaml</code></li>
 </ol>
-<p>Prepare um ficheiro de configuração <code translate="no">migration.yaml</code> para a migração FAISS, especificando detalhes sobre a origem, o destino e outras definições relevantes. Aqui está um exemplo de configuração:</p>
+<p>Prepare a <code translate="no">migration.yaml</code> configuration file for FAISS migration, specifying details about the source, target, and other relevant settings. Here’s an example configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># Configuration for FAISS to Milvus 2.x migration</span>
 
 
@@ -373,20 +375,20 @@ target:
     username: xxxxx
     password: xxxxx
 <button class="copy-code-btn"></button></code></pre>
-<p>Para uma explicação mais detalhada do ficheiro de configuração, consulte <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">esta página</a> no GitHub.</p>
+<p>For a more detailed explanation of the configuration file, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">this page</a> on GitHub.</p>
 <ol start="4">
-<li>Executar tarefa de migração</li>
+<li>Execute Migration Job</li>
 </ol>
-<p>Tal como a migração do Milvus 1.x para o Milvus 2.x, a migração FAISS requer a execução dos comandos <code translate="no">dump</code> e <code translate="no">load</code>. Estes comandos convertem os dados e importam-nos para o Milvus 2.x.</p>
-<p><strong>Nota:</strong> Em breve, simplificaremos este passo e permitiremos que os utilizadores concluam a migração utilizando apenas um comando. Fique atento.</p>
-<p><strong>Comando Dump:</strong></p>
+<p>Like Milvus 1.x to Milvus 2.x migration, FAISS migration requires executing both the <code translate="no">dump</code> and <code translate="no">load</code> commands. These commands convert the data and import it into Milvus 2.x.</p>
+<p><strong>Note:</strong> We’ll simplify this step and enable users to finish migration using just one command shortly. Stay tuned.</p>
+<p><strong>Dump Command:</strong></p>
 <pre><code translate="no">./milvus-migration dump --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Comando Load:</strong></p>
+<p><strong>Load Command:</strong></p>
 <pre><code translate="no">./milvus-migration load --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>Pode ver mais detalhes utilizando <a href="https://zilliz.com/attu">o Attu</a>, uma ferramenta de administração de bases de dados vectoriais tudo-em-um.</p>
-<h2 id="Stay-tuned-for-future-migration-plans" class="common-anchor-header">Fique atento aos futuros planos de migração<button data-href="#Stay-tuned-for-future-migration-plans" class="anchor-icon" translate="no">
+<p>You can view more details using <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool.</p>
+<h2 id="Stay-tuned-for-future-migration-plans" class="common-anchor-header">Stay tuned for future migration plans<button data-href="#Stay-tuned-for-future-migration-plans" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -401,15 +403,15 @@ target:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>No futuro, daremos suporte à migração de mais fontes de dados e adicionaremos mais recursos de migração, incluindo:</p>
+    </button></h2><p>In the future, we’ll support migration from more data sources and add more migration features, including:</p>
 <ul>
-<li><p>Suporte à migração de Redis para Milvus.</p></li>
-<li><p>Suporte à migração do MongoDB para o Milvus.</p></li>
-<li><p>Suporte à migração reescalonável.</p></li>
-<li><p>Simplificar os comandos de migração, fundindo os processos de despejo e carregamento num só.</p></li>
-<li><p>Suporte à migração de outras fontes de dados convencionais para o Milvus.</p></li>
+<li><p>Support migration from Redis to Milvus.</p></li>
+<li><p>Support migration from MongoDB to Milvus.</p></li>
+<li><p>Support resumable migration.</p></li>
+<li><p>Simplify migration commands by merging the dump and load processes into one.</p></li>
+<li><p>Support migration from other mainstream data sources to Milvus.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -424,5 +426,5 @@ target:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3, a última versão do Milvus, traz novos recursos e melhorias de desempenho que atendem às crescentes necessidades de gerenciamento de dados. A migração dos seus dados para o Milvus 2.x pode trazer estes benefícios, e o projeto Milvus Migration torna o processo de migração simplificado e fácil. Experimente-o e não ficará desiludido.</p>
-<p><em><strong>Nota:</strong> As informações neste blogue baseiam-se no estado dos projectos Milvus e <a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a> em setembro de 2023. Consulte a <a href="https://milvus.io/docs">documentação</a> oficial <a href="https://milvus.io/docs">do Milvus</a> para obter as informações e instruções mais atualizadas.</em></p>
+    </button></h2><p>Milvus 2.3, the latest release of Milvus, brings exciting new features and performance improvements that cater to the growing needs of data management. Migrating your data to Milvus 2.x can unlock these benefits, and the Milvus Migration project makes the migration process streamlined and easy. Give it a try, and you won’t be disappointed.</p>
+<p><em><strong>Note:</strong> The information in this blog is based on the state of the Milvus and <a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a> projects as of September 2023. Check the official <a href="https://milvus.io/docs">Milvus documentation</a> for the most up-to-date information and instructions.</em></p>

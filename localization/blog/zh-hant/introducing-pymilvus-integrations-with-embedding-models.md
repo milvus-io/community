@@ -1,6 +1,6 @@
 ---
 id: introducing-pymilvus-integrations-with-embedding-models.md
-title: 介紹 PyMilvus 與嵌入式模型的整合
+title: Introducing PyMilvus Integration with Embedding Models
 author: Stephen Batifol
 date: 2024-06-05T00:00:00.000Z
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
@@ -12,10 +12,10 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/introducing-pymilvus-integrations-with-embedding-models.md
 ---
-<p><a href="https://milvus.io/intro">Milvus</a>是專為 AI 應用程式設計的開放原始碼向量資料庫。無論您是在進行機器學習、深度學習或任何其他 AI 相關專案，Milvus 都能提供強大且有效率的方式來處理大規模向量資料。</p>
-<p>現在，透過 Milvus 的 Python SDK PyMilvus 中的<a href="https://milvus.io/docs/embeddings.md">模型模組整合</a>，新增 Embedding 和 Reranking 模型變得更加容易。此整合可簡化將您的資料轉換為可搜尋向量或重新排序結果，以獲得更精確的結果，例如在<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a> 中。</p>
-<p>在這篇部落格中，我們將回顧密集嵌入模型、稀疏嵌入模型和重新排序器，並示範如何使用<a href="https://milvus.io/blog/introducing-milvus-lite.md">Milvus Lite</a>（Milvus 的輕量級版本，可在您的 Python 應用程式中本機執行）來實際使用它們。</p>
-<h2 id="Dense-vs-Sparse-Embeddings" class="common-anchor-header">密集嵌入與稀疏嵌入<button data-href="#Dense-vs-Sparse-Embeddings" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/intro">Milvus</a> is an open-source vector database designed specifically for AI applications. Whether you’re working on machine learning, deep learning, or any other AI-related project, Milvus offers a robust and efficient way to handle large-scale vector data.</p>
+<p>Now, with the <a href="https://milvus.io/docs/embeddings.md">model module integration</a> in PyMilvus, the Python SDK for Milvus, it’s even easier to add Embedding and Reranking models. This integration simplifies transforming your data into searchable vectors or reranking results for more accurate outcomes, such as in <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a>.</p>
+<p>In this blog, we will review dense embedding models, sparse embedding models, and re-rankers and demonstrate how to use them in practice using <a href="https://milvus.io/blog/introducing-milvus-lite.md">Milvus Lite</a>, a lightweight version of Milvus that can run locally in your Python applications.</p>
+<h2 id="Dense-vs-Sparse-Embeddings" class="common-anchor-header">Dense vs Sparse Embeddings<button data-href="#Dense-vs-Sparse-Embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,14 +30,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在介紹如何使用我們的整合之前，我們先來看看向量嵌入的兩大類別。</p>
-<p><a href="https://zilliz.com/glossary/vector-embeddings">向量嵌入</a>通常分為兩大類：<a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>密集嵌入</strong></a>（<a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Dense Embeddings</strong></a>）<a href="https://zilliz.com/learn/sparse-and-dense-embeddings">和<strong>稀疏嵌入（Sparse Embeddings</strong></a>）。</p>
+    </button></h2><p>Before we walk you through how to use our integrations, let’s look at two main categories of vector embeddings.</p>
+<p><a href="https://zilliz.com/glossary/vector-embeddings">Vector Embeddings</a> generally fall into two main categories: <a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Dense Embeddings</strong> and <strong>Sparse Embeddings</strong></a>.</p>
 <ul>
-<li><p>Dense Embeddings 是高維向量，其中大多數或所有元素都非零，因此非常適合編碼文字語意或模糊意義。</p></li>
-<li><p>稀疏嵌入（Sparse Embeddings）是具有許多零元素的高維向量，更適合編碼精確或相鄰的概念。</p></li>
+<li><p>Dense Embeddings are high-dimensional vectors in which most or all elements are non-zero, making them ideal for encoding text semantics or fuzzy meaning.</p></li>
+<li><p>Sparse Embeddings are high-dimensional vectors with many zero elements, better suited for encoding exact or adjacent concepts.</p></li>
 </ul>
-<p>Milvus 支援這兩種類型的嵌入，並提供混合搜尋功能。<a href="https://zilliz.com/blog/hybrid-search-with-milvus">混合搜尋</a>允許您在同一個資料集中的不同向量領域進行搜尋。這些向量可以代表資料的不同層面、使用不同的嵌入模型、或採用不同的資料處理方法，並使用重新排序器來結合結果。</p>
-<h2 id="How-to-Use-Our-Embedding-and-Reranking-Integrations" class="common-anchor-header">如何使用我們的嵌入與重新排名整合功能<button data-href="#How-to-Use-Our-Embedding-and-Reranking-Integrations" class="anchor-icon" translate="no">
+<p>Milvus supports both types of embeddings and offers hybrid search. <a href="https://zilliz.com/blog/hybrid-search-with-milvus">Hybrid Search</a> allows you to conduct searches across various vector fields within the same collection. These vectors can represent different facets of data, use diverse embedding models, or employ distinct data processing methods, combining the results using re-rankers.</p>
+<h2 id="How-to-Use-Our-Embedding-and-Reranking-Integrations" class="common-anchor-header">How to Use Our Embedding and Reranking Integrations<button data-href="#How-to-Use-Our-Embedding-and-Reranking-Integrations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,13 +52,13 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在以下各節中，我們將示範使用我們的整合來產生嵌入和進行向量搜尋的三個實例。</p>
-<h3 id="Example-1-Use-the-Default-Embedding-Function-to-Generate-Dense-Vectors" class="common-anchor-header">範例 1：使用預設的嵌入功能產生密集向量</h3><p>您必須安裝<code translate="no">model</code> 套件的<code translate="no">pymilvus</code> 客戶端，才能使用 Milvus 的 embedding 和 reranking 功能。</p>
+    </button></h2><p>In the following sections, we’ll demonstrate three practical examples of using our integrations to generate embeddings and conduct vector searches.</p>
+<h3 id="Example-1-Use-the-Default-Embedding-Function-to-Generate-Dense-Vectors" class="common-anchor-header">Example 1: Use the Default Embedding Function to Generate Dense Vectors</h3><p>You must install the <code translate="no">pymilvus</code> client with the <code translate="no">model</code> package to use embedding and reranking functions with Milvus.</p>
 <pre><code translate="no">pip install <span class="hljs-string">&quot;pymilvus[model]&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>這個步驟將安裝<a href="https://milvus.io/docs/quickstart.md">Milvus Lite</a>，讓您可以在 Python 應用程式中本機執行 Milvus。它也包含模型子套件，其中包括 Embedding 和 reranking 的所有公用程式。</p>
-<p>模型子套件支援各種嵌入模型，包括 OpenAI、<a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence Transformers</a>、<a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3</a>、BM25、<a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">SPLADE</a> 和 Jina AI 預先訓練的模型。</p>
-<p>本範例使用<code translate="no">DefaultEmbeddingFunction</code> ，基於<code translate="no">all-MiniLM-L6-v2</code> Sentence Transformer 模型，以簡化操作。模型約 70MB，會在第一次使用時下載：</p>
+<p>This step will install <a href="https://milvus.io/docs/quickstart.md">Milvus Lite</a>, allowing you to run Milvus locally within your Python application. It also includes the model subpackage, which includes all utilities for Embedding and reranking.</p>
+<p>The model subpackage supports various embedding models, including those from OpenAI, <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence Transformers</a>, <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3</a>, BM25, <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">SPLADE</a>, and Jina AI pre-trained models.</p>
+<p>This example uses the <code translate="no">DefaultEmbeddingFunction</code>, based on the <code translate="no">all-MiniLM-L6-v2</code> Sentence Transformer model for simplicity. The model is about 70MB and will be downloaded during the first use:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 <span class="hljs-comment"># This will download &quot;all-MiniLM-L6-v2&quot;, a lightweight model.</span>
@@ -77,7 +77,7 @@ embeddings = ef.encode_documents(docs)
 <span class="hljs-comment"># Print dimension and shape of embeddings</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Dim:&quot;</span>, ef.dim, embeddings[<span class="hljs-number">0</span>].shape)
 <button class="copy-code-btn"></button></code></pre>
-<p>預期的輸出應該如下所示：</p>
+<p>The expected output should be something like the following:</p>
 <pre><code translate="no">Embeddings: [array([<span class="hljs-number">-3.09392996e-02</span>, <span class="hljs-number">-1.80662833e-02</span>,  <span class="hljs-number">1.34775648e-02</span>,  <span class="hljs-number">2.77156215e-02</span>,
       <span class="hljs-number">-4.86349640e-03</span>, <span class="hljs-number">-3.12581174e-02</span>, <span class="hljs-number">-3.55921760e-02</span>,  <span class="hljs-number">5.76934684e-03</span>,
        <span class="hljs-number">2.80773244e-03</span>,  <span class="hljs-number">1.35783911e-01</span>,  <span class="hljs-number">3.59678417e-02</span>,  <span class="hljs-number">6.17732145e-02</span>,
@@ -87,8 +87,8 @@ embeddings = ef.encode_documents(docs)
      dtype=<span class="hljs-type">float32</span>)]
 Dim: <span class="hljs-number">384</span> (<span class="hljs-number">384</span>,)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Example-2-Generate-Sparse-Vectors-Using-The-BM25-Model" class="common-anchor-header">範例 2：使用 BM25 模型產生稀疏向量</h3><p>BM25 是一種著名的方法，它使用單字出現頻率來判斷查詢與文件之間的相關性。在這個範例中，我們將展示如何使用<code translate="no">BM25EmbeddingFunction</code> 來產生查詢和文件的稀疏嵌入。</p>
-<p>在 BM25 中，計算文件中的統計資料以獲得 IDF（反向文件頻率）是非常重要的，它可以代表文件中的模式。IDF 衡量一個單字提供了多少資訊，它在所有文件中是常見還是罕見。</p>
+<h3 id="Example-2-Generate-Sparse-Vectors-Using-The-BM25-Model" class="common-anchor-header">Example 2: Generate Sparse Vectors Using The BM25 Model</h3><p>BM25 is a well-known method that uses word occurrence frequencies to determine the relevance between queries and documents. In this example, we’ll show how to use <code translate="no">BM25EmbeddingFunction</code> to generate sparse embeddings for queries and documents.</p>
+<p>In BM25, it’s important to calculate the statistics in your documents to obtain the IDF (Inverse Document Frequency), which can represent the patterns in your documents. The IDF measures how much information a word provides, whether it’s common or rare across all documents.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus.model.sparse <span class="hljs-keyword">import</span> BM25EmbeddingFunction
 
 <span class="hljs-comment"># 1. Prepare a small corpus to search</span>
@@ -114,9 +114,9 @@ docs_embeddings = new_bm25_ef.encode_documents(docs)
 query_embeddings = new_bm25_ef.encode_queries([query])
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Dim:&quot;</span>, new_bm25_ef.dim, <span class="hljs-built_in">list</span>(docs_embeddings)[<span class="hljs-number">0</span>].shape)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Example-3-Using-a-ReRanker" class="common-anchor-header">範例 3：使用 ReRanker</h3><p>搜尋系統的目的是快速、有效率地找到最相關的結果。傳統上，像 BM25 或 TF-IDF 之類的方法都是用來根據關鍵字匹配度來對搜尋結果進行排序。最近的方法，例如以嵌入為基礎的余弦相似度，雖然簡單直接，但有時會忽略語言的微妙之處，最重要的是，忽略文件與查詢意圖之間的互動關係。</p>
-<p>這就是使用<a href="https://zilliz.com/learn/optimize-rag-with-rerankers-the-role-and-tradeoffs">重新排序器</a>的幫助所在。重新排序器是一種先進的人工智慧模型，它可以從搜尋中取得初始結果集 (通常由嵌入式/代號式搜尋提供)，並重新評估這些結果，以確保它們更貼近使用者的意圖。它的觀點超越了表面層級的詞彙匹配，而是考慮搜尋查詢與文件內容之間更深層次的互動。</p>
-<p>在這個範例中，我們會使用<a href="https://milvus.io/docs/integrate_with_jina.md">Jina AI Reranker</a>。</p>
+<h3 id="Example-3-Using-a-ReRanker" class="common-anchor-header">Example 3: Using a ReRanker</h3><p>A search system aims to find the most relevant results quickly and efficiently. Traditionally, methods like BM25 or TF-IDF have been used to rank search results based on keyword matching. Recent methods, such as embedding-based cosine similarity, are straightforward but can sometimes miss the subtleties of language and, most importantly, the interaction between documents and a query’s intent.</p>
+<p>This is where using a <a href="https://zilliz.com/learn/optimize-rag-with-rerankers-the-role-and-tradeoffs">re-ranker</a> helps. A re-ranker is an advanced AI model that takes the initial set of results from a search—often provided by an embeddings/token-based search—and re-evaluates them to ensure they align more closely with the user’s intent. It looks beyond the surface-level matching of terms to consider the deeper interaction between the search query and the content of the documents.</p>
+<p>For this example, we’ll use the <a href="https://milvus.io/docs/integrate_with_jina.md">Jina AI Reranker</a>.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus.model.reranker <span class="hljs-keyword">import</span> JinaRerankFunction
 
 jina_api_key = <span class="hljs-string">&quot;&lt;YOUR_JINA_API_KEY&gt;&quot;</span>
@@ -139,7 +139,7 @@ results = rf(query, documents)
    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Score: <span class="hljs-subst">{result.score:<span class="hljs-number">.6</span>f}</span>&quot;</span>)
    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Text: <span class="hljs-subst">{result.text}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>預期的輸出結果類似如下：</p>
+<p>The expected output is similar to the following:</p>
 <pre><code translate="no">Index: <span class="hljs-number">1</span>
 Score: <span class="hljs-number">0.937096</span>
 Text: The Dartmouth Conference <span class="hljs-keyword">in</span> <span class="hljs-number">1956</span> <span class="hljs-keyword">is</span> considered the birthplace of artificial intelligence <span class="hljs-keyword">as</span> a field; here, John McCarthy <span class="hljs-keyword">and</span> others coined the term <span class="hljs-string">&#x27;artificial intelligence&#x27;</span> <span class="hljs-keyword">and</span> laid <span class="hljs-keyword">out</span> its basic goals.
@@ -156,7 +156,7 @@ Index: <span class="hljs-number">2</span>
 Score: <span class="hljs-number">0.272896</span>
 Text: In <span class="hljs-number">1951</span>, British mathematician <span class="hljs-keyword">and</span> computer scientist Alan Turing also developed the first program designed to play chess, demonstrating an early example of AI <span class="hljs-keyword">in</span> game strategy.
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Star-Us-On-GitHub-and-Join-Our-Discord" class="common-anchor-header">Star Us On GitHub 並加入我們的 Discord！<button data-href="#Star-Us-On-GitHub-and-Join-Our-Discord" class="anchor-icon" translate="no">
+<h2 id="Star-Us-On-GitHub-and-Join-Our-Discord" class="common-anchor-header">Star Us On GitHub and Join Our Discord!<button data-href="#Star-Us-On-GitHub-and-Join-Our-Discord" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,4 +171,4 @@ Text: In <span class="hljs-number">1951</span>, British mathematician <span clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>如果您喜歡這篇博文，請考慮在<a href="https://github.com/milvus-io/milvus">GitHub</a> 星級 Milvus，並隨時加入我們的<a href="https://discord.gg/FG6hMJStWu">Discord</a>！💙</p>
+    </button></h2><p>If you liked this blog post, consider starring Milvus on <a href="https://github.com/milvus-io/milvus">GitHub</a>, and feel free to join our <a href="https://discord.gg/FG6hMJStWu">Discord</a>! 💙</p>

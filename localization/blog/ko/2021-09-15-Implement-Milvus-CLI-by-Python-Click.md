@@ -1,25 +1,26 @@
 ---
 id: Implement-Milvus-CLI-by-Python-Click.md
-title: 개요
+title: Overview
 author: Zhen Chen
 date: 2021-09-15T00:00:00.000Z
-desc: Python Click을 기반으로 CLI를 구현하는 방법을 소개합니다.
+desc: Introduce how to implement a CLI based on Python Click.
 tag: Engineering
 isPublish: true
 ---
-<custom-h1>파이썬 클릭으로 Milvus CLI 구현하기</custom-h1><ul>
-<li><a href="#Implement-Milvus-CLI-by-Python-Click">파이썬 클릭으로 Milvus CLI 구현하기</a><ul>
-<li><a href="#Overview">개요</a></li>
-<li><a href="#Group-commands">명령 그룹화</a></li>
-<li><a href="#Custom-a-command">명령 사용자 지정</a></li>
-<li><a href="#Implement-prompt-cli-for-user-to-input">사용자가 입력할 프롬프트 CLI 구현하기</a></li>
-<li><a href="#Manually-implement-autocomplete">자동 완성 수동 구현</a></li>
-<li><a href="#Add-one-time-option">일회성 옵션 추가</a></li>
-<li><a href="#Build-and-release">빌드 및 릴리스</a></li>
-<li><a href="#Learn-more-about-Milvus">Milvus에 대해 더 알아보기</a></li>
+<custom-h1>Implement Milvus CLI by Python Click</custom-h1><ul>
+<li><a href="#Implement-Milvus-CLI-by-Python-Click">Implement Milvus CLI by Python Click</a>
+<ul>
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Group-commands">Group commands</a></li>
+<li><a href="#Custom-a-command">Custom a command</a></li>
+<li><a href="#Implement-prompt-cli-for-user-to-input">Implement prompt CLI for user to input</a></li>
+<li><a href="#Manually-implement-autocomplete">Manually implement autocomplete</a></li>
+<li><a href="#Add-one-time-option">Add one-time option</a></li>
+<li><a href="#Build-and-release">Build and release</a></li>
+<li><a href="#Learn-more-about-Milvus">Learn more about Milvus</a></li>
 </ul></li>
 </ul>
-<h2 id="Overview" class="common-anchor-header">개요<button data-href="#Overview" class="anchor-icon" translate="no">
+<h2 id="Overview" class="common-anchor-header">Overview<button data-href="#Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,9 +35,9 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>프로젝트 URL: https://github.com/milvus-io/milvus_cli</p>
-<p>준비 <code translate="no">Python3.8</code>,<a href="https://click.palletsprojects.com/en/8.0.x/api/"> <code translate="no">Click 8.0.x</code></a></p>
-<h2 id="Group-commands" class="common-anchor-header">그룹 명령<button data-href="#Group-commands" class="anchor-icon" translate="no">
+    </button></h2><p>Project URL: https://github.com/milvus-io/milvus_cli</p>
+<p>Preparation: <code translate="no">Python3.8</code>,<a href="https://click.palletsprojects.com/en/8.0.x/api/"> <code translate="no">Click 8.0.x</code></a></p>
+<h2 id="Group-commands" class="common-anchor-header">Group commands<button data-href="#Group-commands" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,7 +52,7 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Create-a-command" class="common-anchor-header">명령 만들기</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> click
+    </button></h2><h3 id="Create-a-command" class="common-anchor-header">Create a command</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> click
 <span class="hljs-keyword">from</span> utils <span class="hljs-keyword">import</span> PyOrm
 
 <span class="hljs-meta">@click.group(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span>, add_help_option=<span class="hljs-literal">False</span>, invoke_without_command=<span class="hljs-literal">True</span></span>)</span>
@@ -63,9 +64,9 @@ isPublish: true
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     cli()
 <button class="copy-code-btn"></button></code></pre>
-<p>위의 코드에서는 <code translate="no">@click.group()</code> 을 사용하여 <code translate="no">cli</code> 을 진입점으로 하는 명령 그룹을 만듭니다. 프롬프트 CLI를 구현하려면 항목에 대한 도움말 메시지를 비활성화해야 하므로 <code translate="no">no_args_is_help=False</code>, <code translate="no">add_help_option=False</code> 및 <code translate="no">invoke_without_command=True</code> 을 추가합니다. 터미널에 <code translate="no">cli</code> 만 입력하면 아무 것도 인쇄되지 않습니다.</p>
-<p>또한 <code translate="no">@click.pass_context</code> 을 사용하여 추가 사용을 위해 이 그룹에 컨텍스트를 전달합니다.</p>
-<h3 id="Create-a-sub-command-of-command-group" class="common-anchor-header">명령 그룹의 하위 명령 만들기</h3><p>그런 다음 <code translate="no">cli</code> 아래에 첫 번째 하위 명령 <code translate="no">help</code> 을 추가합니다:</p>
+<p>As the code above, we use <code translate="no">@click.group()</code> to create a command group <code translate="no">cli</code> as entry point. To implement a prompt CLI we need to disable help messages for the entry, so we add <code translate="no">no_args_is_help=False</code>, <code translate="no">add_help_option=False</code> and <code translate="no">invoke_without_command=True</code>. And nothing will be printed if we input <code translate="no">cli</code> in terminal only.</p>
+<p>Besides we use <code translate="no">@click.pass_context</code> to pass a context to this group for further usage.</p>
+<h3 id="Create-a-sub-command-of-command-group" class="common-anchor-header">Create a sub command of command group</h3><p>Then we add the first sub command <code translate="no">help</code> under <code translate="no">cli</code>:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Print the help message of specified command.</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">print_help_msg</span>(<span class="hljs-params">command</span>):
     <span class="hljs-keyword">with</span> click.Context(command) <span class="hljs-keyword">as</span> ctx:
@@ -79,20 +80,20 @@ isPublish: true
     <span class="hljs-comment"># Print help message of cli.</span>
     click.echo(print_help_msg(cli))
 <button class="copy-code-btn"></button></code></pre>
-<p>이제 터미널에서 <code translate="no">cli help</code> 을 사용할 수 있습니다:</p>
+<p>Now we can use <code translate="no">cli help</code> in terminal:</p>
 <pre><code translate="no" class="language-shell">$ python milvus_cli/scripts/milvus_cli.py <span class="hljs-built_in">help</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Create-a-sub-group-of-a-command-group" class="common-anchor-header">명령 그룹의 하위 그룹 만들기</h3><p><code translate="no">cli help</code> 과 같은 하위 명령뿐만 아니라 <code translate="no">cli list collection</code>, <code translate="no">cli list partition</code> 및 <code translate="no">cli list indexes</code> 과 같은 하위 그룹 명령도 필요합니다.</p>
-<p>먼저 하위 그룹 명령 <code translate="no">list</code> 을 만들고, 여기서 기본 함수 이름을 사용하는 대신 첫 번째 매개 변수를 <code translate="no">@cli.group</code> 에 명령 이름으로 전달하여 중복된 함수 이름을 줄일 수 있습니다.</p>
-<p>여기서는 <code translate="no">@click.group</code> 대신 <code translate="no">@cli.group()</code> 을 사용하여 원본 그룹의 하위 그룹을 만듭니다.</p>
-<p><code translate="no">@click.pass_obj</code> 을 사용하여 <code translate="no">context.obj</code> 을 이 하위 그룹의 하위 명령에 전달합니다.</p>
+<h3 id="Create-a-sub-group-of-a-command-group" class="common-anchor-header">Create a sub group of a command group</h3><p>Not only we want to have a sub command like <code translate="no">cli help</code>, but also we need a sub group commands such as <code translate="no">cli list collection</code> , <code translate="no">cli list partition</code> and <code translate="no">cli list indexes</code>.</p>
+<p>First we create a sub group command <code translate="no">list</code>, here we can pass the first parameter to <code translate="no">@cli.group</code> as the command name instead of use defult function name, so that we can reduce duplicated function names.</p>
+<p>Attention here, we use <code translate="no">@cli.group()</code> instead of <code translate="no">@click.group</code> so that we create a sub group of origin group.</p>
+<p>The we use <code translate="no">@click.pass_obj</code> to pass the <code translate="no">context.obj</code> to sub commands of this sub group.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.group(<span class="hljs-params"><span class="hljs-string">&#x27;list&#x27;</span>, no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.pass_obj</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">listDetails</span>(<span class="hljs-params">obj</span>):
     <span class="hljs-string">&quot;&quot;&quot;List collections, partitions and indexes.&quot;&quot;&quot;</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>그런 다음 <code translate="no">@listDetails.command()</code> ( <code translate="no">@cli.command()</code> 이 아닌)으로 이 하위 그룹에 일부 하위 명령을 추가합니다. 여기서는 예제일 뿐이므로 구현은 무시해도 되며 나중에 설명하겠습니다.</p>
+<p>Then we add some sub commands into this sub group by <code translate="no">@listDetails.command()</code> (not <code translate="no">@cli.command()</code>). Here’s just an example, you can ignore the implement and we will discuss it later.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@listDetails.command()</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;--timeout&#x27;</span>, <span class="hljs-string">&#x27;timeout&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;[Optional] - An optional duration of time in seconds to allow for the RPC. When timeout is set to None, client waits until server response or error occur.&quot;</span>, default=<span class="hljs-literal">None</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;--show-loaded&#x27;</span>, <span class="hljs-string">&#x27;showLoaded&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;[Optional] - Only show loaded collections.&quot;</span>, default=<span class="hljs-literal">False</span></span>)</span>
@@ -119,12 +120,14 @@ isPublish: true
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         click.echo(message=e, err=<span class="hljs-literal">True</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>이 모든 작업이 완료되면 다음과 같은 밀리그룹 명령이 생깁니다:</p>
+<p>After all these complete, we have a miltigroup commands that look like:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png" alt="image" class="doc-image" id="image" />
-   </span> <span class="img-wrapper"> <span>image</span> </span></p>
-<h2 id="Custom-a-command" class="common-anchor-header">명령 사용자 지정<button data-href="#Custom-a-command" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://user-images.githubusercontent.com/83751452/132306467-71d81e50-3d6c-4fbe-81fc-db7280cb4838.png" alt="image" class="doc-image" id="image" />
+    <span>image</span>
+  </span>
+</p>
+<h2 id="Custom-a-command" class="common-anchor-header">Custom a command<button data-href="#Custom-a-command" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,10 +142,10 @@ isPublish: true
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Add-options" class="common-anchor-header">옵션 추가하기</h3><p><code translate="no">cli --test-option value</code> 와 같이 사용할 명령에 몇 가지 옵션을 추가할 수 있습니다.</p>
-<p>여기서는 <code translate="no">alias</code>, <code translate="no">host</code>, <code translate="no">port</code> 세 가지 옵션을 추가하여 Milvus에 연결할 주소를 지정하는 예제입니다.</p>
-<p>처음 두 매개변수는 짧은 옵션 이름과 전체 옵션 이름을 정의하고, 세 번째 매개변수는 변수 이름을 정의하며, <code translate="no">help</code> 매개변수는 간단한 도움말 메시지를, <code translate="no">default</code> 매개변수는 기본값을, <code translate="no">type</code> 매개변수는 값 유형을 지정합니다.</p>
-<p>그리고 모든 옵션의 값은 정의된 순서대로 함수에 전달됩니다.</p>
+    </button></h2><h3 id="Add-options" class="common-anchor-header">Add options</h3><p>You can add some options to a command which will be used like <code translate="no">cli --test-option value</code>.</p>
+<p>Here’s an example, we add three options <code translate="no">alias</code>, <code translate="no">host</code> and <code translate="no">port</code> to specified an address to connect to Milvus.</p>
+<p>First two parameters define the short and full option name, the third parameter defines the variable name, the <code translate="no">help</code> parameter specifies the short help message, the <code translate="no">default</code> parameter specifies the default value and the <code translate="no">type</code> specifies the value type.</p>
+<p>And all options’ values will be passed into the function in order of definition.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-a&#x27;</span>, <span class="hljs-string">&#x27;--alias&#x27;</span>, <span class="hljs-string">&#x27;alias&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Milvus link alias name, default is `default`.&quot;</span>, default=<span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-h&#x27;</span>, <span class="hljs-string">&#x27;--host&#x27;</span>, <span class="hljs-string">&#x27;host&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Host name, default is `127.0.0.1`.&quot;</span>, default=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
@@ -151,8 +154,8 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">connect</span>(<span class="hljs-params">obj, alias, host, port</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-flag-options" class="common-anchor-header">플래그 옵션 추가하기</h3><p>위의 옵션을 사용하여 값을 전달하지만 때로는 부울 값으로 플래그만 전달해야 할 때도 있습니다.</p>
-<p>아래 예시처럼 <code translate="no">autoId</code> 옵션은 플래그 옵션이며 함수에 데이터를 전달하지 않으므로 <code translate="no">cli create collection -c c_name -p p_name -a</code> 과 같이 사용할 수 있습니다.</p>
+<h3 id="Add-flag-options" class="common-anchor-header">Add flag options</h3><p>We use options above to pass a value, but some times we just need a flag as a boolean value.</p>
+<p>As the example below, option <code translate="no">autoId</code> is a flag option and don’t pass any data to function, so we can use it like <code translate="no">cli create collection -c c_name -p p_name -a</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@createDetails.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-c&#x27;</span>, <span class="hljs-string">&#x27;--collection-name&#x27;</span>, <span class="hljs-string">&#x27;collectionName&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Collection name to be created.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-p&#x27;</span>, <span class="hljs-string">&#x27;--schema-primary-field&#x27;</span>, <span class="hljs-string">&#x27;primaryField&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Primary field name.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
@@ -161,7 +164,7 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">createCollection</span>(<span class="hljs-params">obj, collectionName, primaryField, autoId, description, fields</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-arguments" class="common-anchor-header">인수 추가하기</h3><p>이 프로젝트에서는 모든 인자 사용을 옵션 사용으로 대체합니다. 하지만 여기서는 여전히 인자 사용법을 소개합니다. 옵션과 달리 인수는 <code translate="no">cli COMMAND [OPTIONS] ARGUEMENTS</code> 와 같이 사용됩니다. 위의 예제를 인수 사용법으로 변환하면 다음과 같이 됩니다:</p>
+<h3 id="Add-arguments" class="common-anchor-header">Add arguments</h3><p>In this project we replace all arguments usage with options usage. But we still introduce argument usage here. Different from options, argements are used like <code translate="no">cli COMMAND [OPTIONS] ARGUEMENTS</code>. If we convert the example above into arguements usage, it’ll be like this:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@createDetails.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.argument(<span class="hljs-params"><span class="hljs-string">&#x27;collectionName&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-p&#x27;</span>, <span class="hljs-string">&#x27;--schema-primary-field&#x27;</span>, <span class="hljs-string">&#x27;primaryField&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Primary field name.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
@@ -170,8 +173,8 @@ isPublish: true
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">createCollection</span>(<span class="hljs-params">obj, collectionName, primaryField, autoId, description, fields</span>):
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>그러면 사용법은 <code translate="no">cli create collection c_name -p p_name -a</code> 이 되어야 합니다.</p>
-<h3 id="Add-full-help-message" class="common-anchor-header">전체 도움말 메시지 추가하기</h3><p>위에서 짧은 도움말 메시지를 정의했듯이 함수에서 전체 도움말 메시지를 정의할 수 있습니다:</p>
+<p>Then the usage should be <code translate="no">cli create collection c_name -p p_name -a</code>.</p>
+<h3 id="Add-full-help-message" class="common-anchor-header">Add full help message</h3><p>As we define the short help message above, we can define the full help message in function:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params">no_args_is_help=<span class="hljs-literal">False</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-a&#x27;</span>, <span class="hljs-string">&#x27;--alias&#x27;</span>, <span class="hljs-string">&#x27;alias&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Milvus link alias name, default is `default`.&quot;</span>, default=<span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-h&#x27;</span>, <span class="hljs-string">&#x27;--host&#x27;</span>, <span class="hljs-string">&#x27;host&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Host name, default is `127.0.0.1`.&quot;</span>, default=<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span></span>)</span>
@@ -193,7 +196,7 @@ isPublish: true
         click.echo(<span class="hljs-string">&quot;Connect Milvus successfully!&quot;</span>)
         click.echo(obj.showConnection(alias))
 <button class="copy-code-btn"></button></code></pre>
-<p>함수 내부의 첫 번째 블록은 <code translate="no">cli connect --help</code> 을 입력한 후 인쇄될 도움말 메시지입니다.</p>
+<p>The first block inside of the function is the help message which will be printed after we input <code translate="no">cli connect --help</code>.</p>
 <pre><code translate="no" class="language-shell">milvus_cli &gt; connect --help
 Usage: milvus_cli.py connect [OPTIONS]
 
@@ -209,7 +212,7 @@ Options:
   -p, --port INTEGER  Port, <span class="hljs-literal">default</span> <span class="hljs-keyword">is</span> `<span class="hljs-number">19530</span>`.
   --help              Show <span class="hljs-keyword">this</span> message <span class="hljs-keyword">and</span> exit.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Add-confirm" class="common-anchor-header">확인 추가</h3><p>때로는 사용자가 어떤 작업을 확인해야 할 때, 특히 무언가를 삭제해야 할 때가 있습니다. <code translate="no">click.confirm</code> 을 추가하여 일시 중지하고 사용자에게 확인을 요청할 수 있습니다:</p>
+<h3 id="Add-confirm" class="common-anchor-header">Add confirm</h3><p>Sometimes we need user to confirm some action especially delete something. We can add <code translate="no">click.confirm</code> to pause and ask user to confirm:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@deleteSth.command(<span class="hljs-params"><span class="hljs-string">&#x27;collection&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-c&#x27;</span>, <span class="hljs-string">&#x27;--collection&#x27;</span>, <span class="hljs-string">&#x27;collectionName&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;The name of collection to be deleted.&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span></span>)</span>
 <span class="hljs-meta">@click.option(<span class="hljs-params"><span class="hljs-string">&#x27;-t&#x27;</span>, <span class="hljs-string">&#x27;--timeout&#x27;</span>, <span class="hljs-string">&#x27;timeout&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;An optional duration of time in seconds to allow for the RPC. If timeout is set to None, the client keeps waiting until the server responds or an error occurs.&#x27;</span>, default=<span class="hljs-literal">None</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span></span>)</span>
@@ -228,8 +231,8 @@ Options:
         <span class="hljs-keyword">return</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>위의 예와 같이 확인 대화가 <code translate="no">Aborted!ant to continue? [y/N]:</code> 와 같이 표시됩니다.</p>
-<h3 id="Add-prompts" class="common-anchor-header">프롬프트 추가하기</h3><p>프롬프트를 구현하려면 <code translate="no">click.prompt</code> 을 추가해야 합니다.</p>
+<p>As the example above, a confirm conversation will show like <code translate="no">Aborted!ant to continue? [y/N]:</code>.</p>
+<h3 id="Add-prompts" class="common-anchor-header">Add prompts</h3><p>To implement prompts we juest need to add <code translate="no">click.prompt</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command()</span>
 <span class="hljs-meta">@click.pass_obj</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">query</span>(<span class="hljs-params">obj</span>):
@@ -246,23 +249,23 @@ Options:
     timeout = click.prompt(<span class="hljs-string">&#x27;timeout&#x27;</span>, default=<span class="hljs-string">&#x27;&#x27;</span>)
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>프롬프트는 각 <code translate="no">click.prompt</code>. 프롬프트 몇 개를 연속적으로 사용하여 연속적으로 대화하는 것처럼 보이도록 합니다. 이렇게 하면 사용자가 원하는 순서대로 데이터를 입력할 수 있습니다. 이 경우 사용자가 먼저 컬렉션을 선택해야 하며, 이 컬렉션 아래의 모든 파티션을 가져온 다음 사용자가 선택할 수 있도록 표시해야 합니다.</p>
-<h3 id="Add-choices" class="common-anchor-header">선택 항목 추가</h3><p>때로는 사용자가 제한된 범위/종류의 값만 입력하도록 하고 싶다면 <code translate="no">type=click.Choice([&lt;any&gt;])</code> 에 <code translate="no">click.prompt</code>, <code translate="no">click.options</code> 등을 추가할 수 있습니다.</p>
-<p>예를 들어,</p>
+<p>The prompt will show when each <code translate="no">click.prompt</code>. We use a few prompts in series so that it’ll look like a continuously conversation. This ensure user will input the data in order we want. In this case we need user to choose a collection first, and we need to get all partitions under this collections, then show them to user to choose.</p>
+<h3 id="Add-choices" class="common-anchor-header">Add choices</h3><p>Sometimes you want user just input the limited range/type of value, you can add <code translate="no">type=click.Choice([&lt;any&gt;])</code> to <code translate="no">click.prompt</code> , <code translate="no">click.options</code> and etc…</p>
+<p>Such as,</p>
 <pre><code translate="no" class="language-python">collectionName = click.prompt(
         <span class="hljs-string">&#x27;Collection name&#x27;</span>, <span class="hljs-built_in">type</span>=click.Choice([<span class="hljs-string">&#x27;collection_1&#x27;</span>, <span class="hljs-string">&#x27;collection_2&#x27;</span>]))
 <button class="copy-code-btn"></button></code></pre>
-<p>그러면 사용자는 <code translate="no">collection_1</code> 또는 <code translate="no">collection_2</code> 만 입력할 수 있으며 다른 입력이 있으면 오류가 발생합니다.</p>
-<h3 id="Add-clear-screen" class="common-anchor-header">투명 화면 추가</h3><p><code translate="no">click.clear()</code> 을 사용하여 구현할 수 있습니다.</p>
+<p>Then user can only input <code translate="no">collection_1</code> or <code translate="no">collection_2</code> , error will be raised if any other inputs.</p>
+<h3 id="Add-clear-screen" class="common-anchor-header">Add clear screen</h3><p>You can use <code translate="no">click.clear()</code> to implement it.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command()</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">clear</span>():
     <span class="hljs-string">&quot;&quot;&quot;Clear screen.&quot;&quot;&quot;</span>
     click.clear()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Additional-tips" class="common-anchor-header">추가 팁</h3><ul>
-<li>기본값은 <code translate="no">None</code> 이므로 기본값을 <code translate="no">None</code> 으로 지정한 경우 의미가 없습니다. 값을 비워두고 건너뛰려면 기본값을 <code translate="no">None</code> 으로 지정하면 <code translate="no">click.prompt</code> 이 계속 표시됩니다.</li>
+<h3 id="Additional-tips" class="common-anchor-header">Additional tips</h3><ul>
+<li>Default value is <code translate="no">None</code>, so it’s meaningless if you specified the default value as <code translate="no">None</code>. And default <code translate="no">None</code> will cause <code translate="no">click.prompt</code> continously show if you want to leave a value empty to jump over it.</li>
 </ul>
-<h2 id="Implement-prompt-CLI-for-user-to-input" class="common-anchor-header">사용자가 입력할 수 있는 프롬프트 CLI 구현하기<button data-href="#Implement-prompt-CLI-for-user-to-input" class="anchor-icon" translate="no">
+<h2 id="Implement-prompt-CLI-for-user-to-input" class="common-anchor-header">Implement prompt CLI for user to input<button data-href="#Implement-prompt-CLI-for-user-to-input" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -277,9 +280,9 @@ Options:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Why-prompt-CLI" class="common-anchor-header">프롬프트 CLI가 필요한 이유</h3><p>데이터베이스 작업을 위해서는 인스턴스에 지속적으로 연결해야 합니다. 오리진 명령줄 모드를 사용하면 각 명령이 수행될 때마다 연결이 끊어집니다. 또한 CLI를 사용할 때 일부 데이터를 저장하고 종료 후 정리하고 싶습니다.</p>
-<h3 id="Implement" class="common-anchor-header">구현하기</h3><ol>
-<li>사용자의 입력을 지속적으로 수신하려면 <code translate="no">while True</code> 을 사용합니다.</li>
+    </button></h2><h3 id="Why-prompt-CLI" class="common-anchor-header">Why prompt CLI</h3><p>For database operation, we need a continuously connection to a instance. If we use origin command line mode, the connection will be dropped after each command performed. We also want to store some data when using CLI, and clean them after exit.</p>
+<h3 id="Implement" class="common-anchor-header">Implement</h3><ol>
+<li>Use <code translate="no">while True</code> for continuously listening user’s input.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
@@ -296,7 +299,7 @@ Options:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li><code translate="no">input</code> 만 사용하면 <code translate="no">up</code>, <code translate="no">down</code>, <code translate="no">left</code>, <code translate="no">right</code> 화살표 키, <code translate="no">tab</code> 키 및 기타 일부 키가 자동으로 Acsii 문자열로 변환됩니다. 게다가 히스토리 명령은 세션에서 읽을 수 없습니다. 따라서 <code translate="no">runCliPrompt</code> 함수에 <code translate="no">readline</code> 을 추가합니다.</li>
+<li>Use <code translate="no">input</code> only will cause <code translate="no">up</code>, <code translate="no">down</code>, <code translate="no">left</code>, <code translate="no">right</code> arrow keys, <code translate="no">tab</code> key and some other keys converted to Acsii string automatically. Besides history commands can not be read from session. So we add <code translate="no">readline</code> into <code translate="no">runCliPrompt</code> function.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
@@ -311,7 +314,7 @@ Options:
             <span class="hljs-keyword">continue</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li><code translate="no">quit</code> CLI를 추가합니다.</li>
+<li>Add <code translate="no">quit</code> CLI.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">@cli.command(<span class="hljs-params"><span class="hljs-string">&#x27;exit&#x27;</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">quitapp</span>():
@@ -336,7 +339,7 @@ quitapp = <span class="hljs-literal">False</span>  <span class="hljs-comment"># 
             <span class="hljs-keyword">continue</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li><code translate="no">ctrl C</code> 을 사용하여 종료할 때 <code translate="no">KeyboardInterrupt</code> 오류가 발생합니다.</li>
+<li>Catch <code translate="no">KeyboardInterrupt</code> error when use <code translate="no">ctrl C</code> to exit.</li>
 </ol>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     <span class="hljs-keyword">try</span>:
@@ -354,7 +357,7 @@ quitapp = <span class="hljs-literal">False</span>  <span class="hljs-comment"># 
         sys.exit(<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>모든 설정이 완료되면 이제 CLI는 다음과 같습니다:</li>
+<li>After all settled, the CLI now looks like:</li>
 </ol>
 <pre><code translate="no" class="language-shell">milvus_cli &gt;
 milvus_cli &gt; connect
@@ -388,7 +391,7 @@ Commands:
 
 milvus_cli &gt; exit
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Manually-implement-autocomplete" class="common-anchor-header">수동으로 자동 완성 구현하기<button data-href="#Manually-implement-autocomplete" class="anchor-icon" translate="no">
+<h2 id="Manually-implement-autocomplete" class="common-anchor-header">Manually implement autocomplete<button data-href="#Manually-implement-autocomplete" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,7 +406,7 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>클릭의 셸 자동 완성과는 달리, 우리 프로젝트는 명령줄을 래핑하고 루프를 사용하여 사용자의 입력을 받아 프롬프트 명령줄을 구현합니다. 따라서 완성자를 <code translate="no">readline</code> 에 바인딩해야 합니다.</p>
+    </button></h2><p>Different from click’s shell autocomplete, our project wrap the command line and use a loop to get user’s input to implement a prompt command line. So we need to bind a completer to <code translate="no">readline</code>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Completer</span>(<span class="hljs-title class_ inherited__">object</span>):
     RE_SPACE = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">&#x27;.*\s+$&#x27;</span>, re.M)
     CMDS_DICT = {
@@ -502,7 +505,7 @@ milvus_cli &gt; exit
             c + <span class="hljs-string">&#x27; &#x27;</span> <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.COMMANDS <span class="hljs-keyword">if</span> c.startswith(cmd)] + [<span class="hljs-literal">None</span>]
         <span class="hljs-keyword">return</span> results[state]
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">Completer</code> 을 정의한 후 readline으로 바인딩하면 됩니다:</p>
+<p>After define <code translate="no">Completer</code> we can bind it with readline:</p>
 <pre><code translate="no" class="language-python">comp = Completer()
 
 
@@ -523,7 +526,7 @@ milvus_cli &gt; exit
     <span class="hljs-keyword">except</span> KeyboardInterrupt:
         sys.exit(<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Add-one-time-option" class="common-anchor-header">일회성 옵션 추가<button data-href="#Add-one-time-option" class="anchor-icon" translate="no">
+<h2 id="Add-one-time-option" class="common-anchor-header">Add one-time option<button data-href="#Add-one-time-option" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -538,7 +541,7 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>프롬프트 명령줄의 경우 버전과 같은 일부 정보를 얻기 위해 스크립트를 완전히 실행하고 싶지 않을 때가 있습니다. 좋은 예는 <code translate="no">Python</code>, 터미널에서 <code translate="no">python</code> 을 입력하면 프롬프트 명령줄이 표시되지만 <code translate="no">python -V</code> 을 입력하면 버전 메시지만 반환하고 프롬프트 스크립트를 입력하지 않습니다. 따라서 코드에서 <code translate="no">sys.args</code> 을 사용하여 구현할 수 있습니다.</p>
+    </button></h2><p>For prompt command line, sometimes we don’t want to fully run into the scripts to get some informations such as version. A good example is <code translate="no">Python</code>, when you type <code translate="no">python</code> in terminal the promtp command line will show, but it only returns a version message and will not entry the prompt scripts if you type <code translate="no">python -V</code>. So we can use <code translate="no">sys.args</code> in our code to implement.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">runCliPrompt</span>():
     args = sys.argv
     <span class="hljs-keyword">if</span> args <span class="hljs-keyword">and</span> (args[-<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;--version&#x27;</span>):
@@ -564,9 +567,9 @@ milvus_cli &gt; exit
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
-<p>CLI 스크립트를 처음 실행할 때 루프 앞에 <code translate="no">sys.args</code> 가 나타납니다. 마지막 인수가 <code translate="no">--version</code> 인 경우 코드는 루프를 실행하지 않고 패키지 버전을 반환합니다.</p>
-<p>코드를 패키지로 빌드한 후에 유용하게 사용할 수 있습니다. 사용자는 <code translate="no">milvus_cli</code> 을 입력하여 프롬프트 CLI로 이동하거나 <code translate="no">milvus_cli --version</code> 을 입력하여 버전만 가져올 수 있습니다.</p>
-<h2 id="Build-and-release" class="common-anchor-header">빌드 및 릴리스<button data-href="#Build-and-release" class="anchor-icon" translate="no">
+<p>We get <code translate="no">sys.args</code> before the loop when first run into CLI scripts. If the last arguments is <code translate="no">--version</code> , the code will return the package version without running into loop.</p>
+<p>It will be helpful after we build the codes as a package. User can type <code translate="no">milvus_cli</code> to jump into a prompt CLI, or type <code translate="no">milvus_cli --version</code> to only get the version.</p>
+<h2 id="Build-and-release" class="common-anchor-header">Build and release<button data-href="#Build-and-release" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -581,11 +584,11 @@ milvus_cli &gt; exit
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>마지막으로 패키지를 빌드하고 PYPI로 릴리스하려고 합니다. 그러면 사용자는 <code translate="no">pip install &lt;package name&gt;</code> 을 사용하여 간단히 설치할 수 있습니다.</p>
-<h3 id="Install-locally-for-test" class="common-anchor-header">테스트를 위해 로컬에 설치</h3><p>패키지를 PYPI에 게시하기 전에 몇 가지 테스트를 위해 로컬에 설치하고 싶을 수 있습니다.</p>
-<p>이 경우 <code translate="no">cd</code> 을 패키지 디렉토리에 넣고 <code translate="no">pip install -e .</code> 을 실행하면 됩니다( <code translate="no">.</code> 을 잊지 마세요).</p>
-<h3 id="Create-package-files" class="common-anchor-header">패키지 파일 만들기</h3><p>참조: https://packaging.python.org/tutorials/packaging-projects/</p>
-<p>패키지의 구조는 다음과 같아야 합니다:</p>
+    </button></h2><p>Finally we want to build a package and release by PYPI. So that user can simply use <code translate="no">pip install &lt;package name&gt;</code> to install.</p>
+<h3 id="Install-locally-for-test" class="common-anchor-header">Install locally for test</h3><p>Before you publish the package to PYPI, you may want to install it locally for some tests.</p>
+<p>In this case, you can simply <code translate="no">cd</code> into the package directory and run <code translate="no">pip install -e .</code> (Don’t forget the <code translate="no">.</code>).</p>
+<h3 id="Create-package-files" class="common-anchor-header">Create package files</h3><p>Refer to: https://packaging.python.org/tutorials/packaging-projects/</p>
+<p>A package’s structure should look like:</p>
 <pre><code translate="no" class="language-shell">package_example/
 ├── LICENSE
 ├── README.md
@@ -598,7 +601,7 @@ milvus_cli &gt; exit
 │       └── example.py
 └── tests/
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Create-the-package-directory" class="common-anchor-header">패키지 디렉터리 만들기</h4><p>아래 구조로 <code translate="no">Milvus_cli</code> 디렉터리를 만듭니다:</p>
+<h4 id="Create-the-package-directory" class="common-anchor-header">Create the package directory</h4><p>Create <code translate="no">Milvus_cli</code> directory with the structure below:</p>
 <pre><code translate="no" class="language-shell">Milvus_cli/
 ├── LICENSE
 ├── README.md
@@ -612,7 +615,7 @@ milvus_cli &gt; exit
 │       └── milvus_cli.py
 └── dist/
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Write-the-entry-code" class="common-anchor-header">엔트리 코드를 작성합니다.</h4><p>스크립트의 항목은 <code translate="no">Milvus_cli/milvus_cli/scripts</code> 에 있어야 하며 <code translate="no">Milvus_cli/milvus_cli/scripts/milvus_cli.py</code> 은 다음과 같아야 합니다:</p>
+<h4 id="Write-the-entry-code" class="common-anchor-header">Write the entry code</h4><p>The script’s entry should be in <code translate="no">Milvus_cli/milvus_cli/scripts</code>, and the <code translate="no">Milvus_cli/milvus_cli/scripts/milvus_cli.py</code> should be like:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> sys
 <span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> click
@@ -673,7 +676,7 @@ comp = Completer()
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
     runCliPrompt()
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Edit-the-setuppy" class="common-anchor-header">다음과 같아야 합니다. <code translate="no">setup.py</code></h4><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages
+<h4 id="Edit-the-setuppy" class="common-anchor-header">Edit the <code translate="no">setup.py</code></h4><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup, find_packages
 
 <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;README.md&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> fh:
     long_description = fh.read()
@@ -703,30 +706,30 @@ setup(
     python_requires=<span class="hljs-string">&#x27;&gt;=3.8&#x27;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>여기에 몇 가지 팁이 있습니다:</p>
+<p>Some tips here:</p>
 <ol>
-<li>패키지의 긴 설명으로 <code translate="no">README.md</code> 콘텐츠를 사용합니다.</li>
-<li>모든 종속성을 <code translate="no">install_requires</code> 에 추가합니다.</li>
-<li><code translate="no">entry_points</code> 을 지정합니다. 이 경우 <code translate="no">milvus_cli</code> 을 <code translate="no">console_scripts</code> 의 하위 항목으로 설정하여 이 패키지를 설치한 후 바로 <code translate="no">milvus_cli</code> 을 명령으로 입력할 수 있도록 합니다. 그리고 <code translate="no">milvus_cli</code> 의 진입점은 <code translate="no">milvus_cli/scripts/milvus_cli.py</code> 의 <code translate="no">runCliPrompt</code> 함수입니다.</li>
+<li>We use <code translate="no">README.md</code> content as the package’s long description.</li>
+<li>Add all dependencies to <code translate="no">install_requires</code>.</li>
+<li>Specify the <code translate="no">entry_points</code>. In this case, we set <code translate="no">milvus_cli</code> as a child of <code translate="no">console_scripts</code>, so that we can type <code translate="no">milvus_cli</code> as a command directly after we install this package. And the <code translate="no">milvus_cli</code>'s entry point is <code translate="no">runCliPrompt</code> function in <code translate="no">milvus_cli/scripts/milvus_cli.py</code>.</li>
 </ol>
-<h4 id="Build" class="common-anchor-header">빌드</h4><ol>
-<li><p><code translate="no">build</code> 패키지를 업그레이드합니다: <code translate="no">python3 -m pip install --upgrade build</code></p></li>
-<li><p>빌드를 실행합니다: <code translate="no">python -m build --sdist --wheel --outdir dist/ .</code></p></li>
-<li><p><code translate="no">dist/</code> 디렉토리에 두 개의 파일이 생성됩니다:</p></li>
+<h4 id="Build" class="common-anchor-header">Build</h4><ol>
+<li><p>Upgrade the <code translate="no">build</code> package: <code translate="no">python3 -m pip install --upgrade build</code></p></li>
+<li><p>Run build: <code translate="no">python -m build --sdist --wheel --outdir dist/ .</code></p></li>
+<li><p>Two files will be generated under the <code translate="no">dist/</code> directory:</p></li>
 </ol>
 <pre><code translate="no" class="language-shell">dist/
   example_package_YOUR_USERNAME_HERE-<span class="hljs-number">0.0</span><span class="hljs-number">.1</span>-py3-none-<span class="hljs-built_in">any</span>.whl
   example_package_YOUR_USERNAME_HERE-<span class="hljs-number">0.0</span><span class="hljs-number">.1</span>.tar.gz
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Publish-release" class="common-anchor-header">릴리스 게시</h3><p>참조: https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</p>
+<h3 id="Publish-release" class="common-anchor-header">Publish release</h3><p>Refer to: https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives</p>
 <ol>
-<li><code translate="no">twine</code> 패키지를 업그레이드합니다: <code translate="no">python3 -m pip install --upgrade twine</code></li>
-<li><code translate="no">PYPI</code> 테스트 환경에 업로드합니다: <code translate="no">python3 -m twine upload --repository testpypi dist/*</code></li>
-<li><code translate="no">PYPI</code> 에 업로드합니다: <code translate="no">python3 -m twine upload dist/*</code></li>
+<li>Upgrade <code translate="no">twine</code> package: <code translate="no">python3 -m pip install --upgrade twine</code></li>
+<li>Upload to <code translate="no">PYPI</code> test env: <code translate="no">python3 -m twine upload --repository testpypi dist/*</code></li>
+<li>Upload to <code translate="no">PYPI</code> : <code translate="no">python3 -m twine upload dist/*</code></li>
 </ol>
-<h3 id="CICD-by-Github-workflows" class="common-anchor-header">Github 워크플로우별 CI/CD</h3><p>참조: https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/</p>
-<p>우리는 자동으로 에셋을 업로드하는 방법을 원하며, 패키지를 빌드하고 github 릴리스와 PYPI에 업로드할 수 있습니다.</p>
-<p>(어떤 이유에서인지 워크플로에서 PYPI를 테스트하기 위한 릴리스만 게시하기를 원합니다.)</p>
+<h3 id="CICD-by-Github-workflows" class="common-anchor-header">CI/CD by Github workflows</h3><p>Refer to: https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/</p>
+<p>We want a way to upload assets automatically, it can build the packages and upload them to github releases and PYPI.</p>
+<p>(For some reason we just want the workflow only publish the release to test PYPI.)</p>
 <pre><code translate="no" class="language-yaml"><span class="hljs-comment"># This is a basic workflow to help you get started with Actions</span>
 
 name: Update the release<span class="hljs-string">&#x27;s assets after it published
@@ -785,7 +788,7 @@ jobs:
           packages_dir: dist/
           verify_metadata: <span class="hljs-literal">false</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Learn-more-about-Milvus" class="common-anchor-header">Milvus에 대해 자세히 알아보기<button data-href="#Learn-more-about-Milvus" class="anchor-icon" translate="no">
+<h2 id="Learn-more-about-Milvus" class="common-anchor-header">Learn more about Milvus<button data-href="#Learn-more-about-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -800,10 +803,10 @@ jobs:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus는 방대한 인공 지능 및 벡터 유사도 검색 애플리케이션을 구동할 수 있는 강력한 도구입니다. 프로젝트에 대해 자세히 알아보려면 다음 리소스를 확인하세요:</p>
+    </button></h2><p>Milvus is a powerful tool capable of powering a vast array of artificial intelligence and vector similarity search applications. To learn more about the project, check out the following resources:</p>
 <ul>
-<li><a href="https://milvus.io/blog">블로그</a> 읽기.</li>
-<li><a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack의</a> 오픈 소스 커뮤니티와 교류하세요.</li>
-<li><a href="https://github.com/milvus-io/milvus/">GitHub에서</a> 세계에서 가장 인기 있는 벡터 데이터베이스를 사용하거나 기여하세요.</li>
-<li>새로운 <a href="https://github.com/milvus-io/bootcamp">부트캠프를</a> 통해 AI 애플리케이션을 빠르게 테스트하고 배포하세요.</li>
+<li>Read our <a href="https://milvus.io/blog">blog</a>.</li>
+<li>Interact with our open-source community on <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/shared-invite/email">Slack</a>.</li>
+<li>Use or contribute to the world’s most popular vector database on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Quickly test and deploy AI applications with our new <a href="https://github.com/milvus-io/bootcamp">bootcamp</a>.</li>
 </ul>

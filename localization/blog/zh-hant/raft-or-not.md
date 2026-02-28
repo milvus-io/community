@@ -1,31 +1,35 @@
 ---
 id: raft-or-not.md
-title: 筏與否？雲端原生資料庫資料一致性的最佳解決方案
+title: Raft or not? The Best Solution to Data Consistency in Cloud-native Databases
 author: Xiaofan Luan
 date: 2022-05-16T00:00:00.000Z
-desc: 為什麼基於共識的複製演算法不是在分散式資料庫中實現資料一致性的靈丹妙藥？
+desc: >-
+  Why consensus-based replication algorithm is not the silver bullet for
+  achieving data consistency in distributed databases?
 cover: assets.zilliz.com/Tech_Modify_5_e18025ffbc.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Tech_Modify_5_e18025ffbc.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>封面圖片</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Tech_Modify_5_e18025ffbc.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>本文由<a href="https://github.com/xiaofan-luan">栾小凡</a>撰寫，<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">倪安琪</a>轉載。</p>
+<p>This article was written by <a href="https://github.com/xiaofan-luan">Xiaofan Luan</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>基於共識的複製是許多雲原生分散式資料庫廣泛採用的策略。然而，它也有一定的缺點，絕非萬靈丹。</p>
-<p>本文旨在解釋雲原生和分散式資料庫中複製、一致性和共識的概念，然後澄清為什麼 Paxos 和 Raft 等基於共識的演算法不是靈丹妙藥，最後針<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">對基於共識的複製</a>提出<a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">解決方案</a>。</p>
-<p><strong>跳到</strong></p>
+<p>Consensus-based replication is a widely-adopted strategy in many cloud-native, distributed databases. However, it has certain shortcomings and is definitely not the silver bullet.</p>
+<p>This post aims to explain the concepts of replication, consistency, and consensus in a cloud-native and distributed database, then clarify why consensus-based algorithms like Paxos and Raft are not the silver bullet, and finally propose a <a href="#a-log-replication-strategy-for-cloud-native-and-distributed-database">solution to consensus-based replication</a>.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#Understanding-replication-consistency-and-consensus">瞭解複製、一致性與共識</a></li>
-<li><a href="#Consensus-based-replication">基於共識的複製</a></li>
-<li><a href="#A-log-replication-strategy-for-cloud-native-and-distributed-database">適用於雲原生與分散式資料庫的日誌複製策略</a></li>
-<li><a href="#Summary">摘要</a></li>
+<li><a href="#Understanding-replication-consistency-and-consensus">Understanding replication, consistency, and consensus</a></li>
+<li><a href="#Consensus-based-replication">Consensus-based replication</a></li>
+<li><a href="#A-log-replication-strategy-for-cloud-native-and-distributed-database">A log replication strategy for cloud-native and distributed database</a></li>
+<li><a href="#Summary">Summary</a></li>
 </ul>
-<h2 id="Understanding-replication-consistency-and-consensus" class="common-anchor-header">瞭解複製、一致性與共識<button data-href="#Understanding-replication-consistency-and-consensus" class="anchor-icon" translate="no">
+<h2 id="Understanding-replication-consistency-and-consensus" class="common-anchor-header">Understanding replication, consistency, and consensus<button data-href="#Understanding-replication-consistency-and-consensus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,25 +44,27 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在深入探討 Paxos 和 Raft 的優缺點，並提出最適合的日誌複製策略之前，我們需要先解釋複製、一致性和共識的概念。</p>
-<p>請注意，本文主要著重於增量資料/日誌的同步化。因此，在談論資料/日誌複製時，僅提及複製增量資料，而非歷史資料。</p>
-<h3 id="Replication" class="common-anchor-header">複製</h3><p>複製是將資料複製多份，並儲存在不同的磁碟、進程、機器、叢集等中，以提高資料可靠性並加速資料查詢的過程。由於在複製過程中，資料會被複製並儲存在多個位置，因此在面對磁碟故障、實體機器故障或叢集錯誤時，資料的復原會更加可靠。此外，資料的多重複製可大幅加快查詢速度，從而提升分散式資料庫的效能。</p>
-<p>複製模式有多種，例如同步/異步複製、強一致性/現行一致性複製、領導者-追隨者/分散式複製。複製模式的選擇會影響系統的可用性和一致性。因此，正如著名的<a href="https://medium.com/analytics-vidhya/cap-theorem-in-distributed-system-and-its-tradeoffs-d8d981ecf37e">CAP 理論</a>所提出的，當網路分割不可避免時，系統架構需要在一致性和可用性之間作出取捨。</p>
-<h3 id="Consistency" class="common-anchor-header">一致性</h3><p>簡而言之，分散式資料庫中的一致性是指在指定時間寫入或讀取資料時，確保每個節點或副本都擁有相同資料視圖的屬性。如需一致性等級的完整清單，請閱讀<a href="https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels">此處</a>的說明文件。</p>
-<p>要澄清的是，這裡我們討論的是 CAP 理論中的一致性，而不是 ACID (原子性、一致性、隔離性、耐久性)。CAP 理論中的一致性是指系統中的每個節點都擁有相同的資料，而 ACID 中的一致性是指單一節點對每個潛在的提交執行相同的規則。</p>
-<p>一般而言，OLTP（線上交易處理）資料庫需要強一致性或線性化來確保：</p>
+    </button></h2><p>Before going deep into the pros and cons of Paxos and Raft, and proposing a best suited log replication strategy, we need to first demystify concepts of replication, consistency, and consensus.</p>
+<p>Note that this article mainly focuses on the synchronization of incremental data/log. Therefore, when talking about data/log replication, only replicating incremental data, not historical data, is referred to.</p>
+<h3 id="Replication" class="common-anchor-header">Replication</h3><p>Replication is the process of making multiple copies of data and storing them in different disks, processes, machines, clusters, etc, for the purpose of increasing data reliability and accelerating data queries. Since in replication, data are copied and stored at multiple locations, data are more reliable in the face of recovering from disk failures, physical machine failures, or cluster errors. In addition, multiple replicas of data can boost the performance of a distributed database by greatly speeding up queries.</p>
+<p>There are various modes of replication, such as synchronous/asynchronous replication, replication with strong/eventual consistency, leader-follower/decentralized replication. The choice of replication mode has an effect on system availability and consistency. Therefore, as proposed in the famous <a href="https://medium.com/analytics-vidhya/cap-theorem-in-distributed-system-and-its-tradeoffs-d8d981ecf37e">CAP theorem</a>, a system architect needs to trade off between consistency and availability when network partition is inevitable.</p>
+<h3 id="Consistency" class="common-anchor-header">Consistency</h3><p>In short, consistency in a distributed database refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time. For a full list of consistency levels, read the doc <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels">here</a>.</p>
+<p>To clarify, here we are talking about consistency as in the CAP theorem, not ACID (atomicity, consistency, isolation, durability). Consistency in CAP theorem refers to each node in the system having the same data while consistency in ACID refers to a single node enforcing the same rules on every potential commit.</p>
+<p>Generally, OLTP (online transaction processing) databases require strong consistency or linearizability to ensure that:</p>
 <ul>
-<li>每次讀取都能存取最新插入的資料。</li>
-<li>如果在讀取之後傳回了新的值，那麼接下來的所有讀取，不論是在相同或不同的用戶端，都必須傳回新的值。</li>
+<li>Each read can access the latest inserted data.</li>
+<li>If a new value is returned after a read, all following reads, regardless on the same or different clients, must return the new value.</li>
 </ul>
-<p>可線性化的精髓在於保證多個資料副本的重複性 - 一旦寫入或讀取新值，所有後續讀取都可以檢視新值，直到該值後來被覆蓋為止。提供線性化的分散式系統可以省去使用者盯著多個複製本的麻煩，並保證每個操作的原子性和順序。</p>
-<h3 id="Consensus" class="common-anchor-header">共識</h3><p>共識的概念被引入到分散式系統中，因為使用者渴望看到分散式系統以與獨立系統相同的方式運作。</p>
-<p>簡單來說，共識就是在價值上的一般協議。例如，Steve 和 Frank 想去吃點東西。Steve 建議吃三明治。Frank 同意 Steve 的建議，兩人都吃了三明治。他們達成共識。更明確地說，其中一人提出的價值 (三明治) 得到了兩人的同意，而兩人都根據該價值採取了行動。同樣地，分散式系統中的共識是指當一個程序提出一個值時，系統中的所有其他程序都會同意這個值並採取行動。</p>
+<p>The essence of linearizability is to guarantee the recency of multiple data replicas - once a new value is written or read, all subsequent reads can view the new value until the value is later overwritten. A distributed system providing linearizability can save users the trouble of keeping an eye on multiple replicas, and can guarantee the atomicity and order or each operation.</p>
+<h3 id="Consensus" class="common-anchor-header">Consensus</h3><p>The concept of consensus is introduced to distributed systems as users are eager to see distributed systems work in the same way as standalone systems.</p>
+<p>To put it simple, consensus is a general agreement on value. For instance, Steve and Frank wanted to grab something to eat. Steve suggested having sandwiches. Frank agreed to Steve’s suggestion and both of them are had sandwiches. They reached a consensus. More specifically, a value (sandwiches) proposed by one of them is agreed upon by both, and both of them take actions based on the value. Similarly, consensus in a distributed system means when a process propose a value, all the rest processes in the system agree on and act upon this value.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2bb46e57_9eb5_456e_be7e_e7762aa9eb7e_68dd2e8e65.png" alt="Consensus" class="doc-image" id="consensus" />
-   </span> <span class="img-wrapper"> <span>共識</span> </span></p>
-<h2 id="Consensus-based-replication" class="common-anchor-header">基於共識的複製<button data-href="#Consensus-based-replication" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2bb46e57_9eb5_456e_be7e_e7762aa9eb7e_68dd2e8e65.png" alt="Consensus" class="doc-image" id="consensus" />
+    <span>Consensus</span>
+  </span>
+</p>
+<h2 id="Consensus-based-replication" class="common-anchor-header">Consensus-based replication<button data-href="#Consensus-based-replication" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,28 +79,33 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最早的共識型演算法是在 1988 年與<a href="https://pmg.csail.mit.edu/papers/vr.pdf">視圖戳記複製</a>一起提出的。1989 年，Leslie Lamport 提出了<a href="https://lamport.azurewebsites.net/pubs/paxos-simple.pdf">Paxos</a>，一種基於共識的演算法。</p>
-<p>近年來，我們見證了業界另一種盛行的共識型演算法 -<a href="https://raft.github.io/">Raft</a>。它已被許多主流 NewSQL 資料庫採用，例如 CockroachDB、TiDB、OceanBase 等。</p>
-<p>值得注意的是，分散式系統即使採用共識式複製，也不一定支援線性化。然而，線性化是建立 ACID 分散式資料庫的先決條件。</p>
-<p>在設計資料庫系統時，應該考慮日誌和狀態機的提交順序。此外，還需要格外小心，以維護 Paxos 或 Raft 的 leader 租賃，並防止在網路分割下出現分裂腦的情況。</p>
+    </button></h2><p>The earliest consensus-based algorithms were proposed  along with <a href="https://pmg.csail.mit.edu/papers/vr.pdf">viewstamped replication</a> in 1988. In 1989, Leslie Lamport proposed <a href="https://lamport.azurewebsites.net/pubs/paxos-simple.pdf">Paxos</a>, a consensus-based algorithm.</p>
+<p>In recent years, we witness another prevalent consensus-based algorithm in the industry - <a href="https://raft.github.io/">Raft</a>. It has been adopted by many mainstream NewSQL databases like CockroachDB, TiDB, OceanBase, etc.</p>
+<p>Notably, a distributed system does not necessarily support linearizability even if it adopts consensus-based replication. However, linearizability is the prerequisite for building ACID distributed database.</p>
+<p>When designing a database system, the commit order of logs and state machines should be taken into consideration. Extra caution is also needed to maintain the leader lease of Paxos or Raft and prevent a split-brain under network partition.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926429-69b5144c-f3ba-4819-87c3-ab7e04a7e22e.png" alt="Raft replication state machine" class="doc-image" id="raft-replication-state-machine" />
-   </span> <span class="img-wrapper"> <span>Raft 複製狀態機</span> </span></p>
-<h3 id="Pros-and-cons" class="common-anchor-header">優點與缺點</h3><p>事實上，Raft、ZAB 和 Aurora<a href="https://aws.amazon.com/blogs/database/amazon-aurora-under-the-hood-quorum-and-correlated-failure/">中基於法定人數的日誌通訊協定</a>都是 Paxos 的變體。基於共識的複製有以下優點：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926429-69b5144c-f3ba-4819-87c3-ab7e04a7e22e.png" alt="Raft replication state machine" class="doc-image" id="raft-replication-state-machine" />
+    <span>Raft replication state machine</span>
+  </span>
+</p>
+<h3 id="Pros-and-cons" class="common-anchor-header">Pros and cons</h3><p>Indeed, Raft, ZAB, and <a href="https://aws.amazon.com/blogs/database/amazon-aurora-under-the-hood-quorum-and-correlated-failure/">quorum-based log protocol</a> in Aurora are all Paxos variations. Consensus-based replication has the following advantages:</p>
 <ol>
-<li>雖然在 CAP 理論中，基於共識的複製更著重於一致性和網路分割，但相較於傳統的領導者-追隨者複製，它能提供相對更好的可用性。</li>
-<li>Raft 是一個突破，大大簡化了基於共識的演算法。GitHub 上有許多開源的 Raft 函式庫（例如<a href="https://github.com/sofastack/sofa-jraft">sofa-jraft</a>）。</li>
-<li>共識式複製的效能可以滿足絕大多數的應用程式和企業。隨著高效能 SSD 和千兆 NIC（網路介面卡）的覆蓋，同步多個副本的負擔得以減輕，使得 Paxos 和 Raft 演算法成為業界主流。</li>
+<li>Though consensus-based replication focus more on consistency and network partition in the CAP theorem, it provides relatively better availability compared to traditional leader-follower replication.</li>
+<li>Raft is a breakthrough that greatly simplified consensus-based algorithms. And there are many open-source Raft libraries on GitHub (Eg. <a href="https://github.com/sofastack/sofa-jraft">sofa-jraft</a>).</li>
+<li>The performance of consensus-based replication can satisfy most of the applications and businesses. With the coverage of high-performance SSD and gigabyte NICs (network interface card), the burden of synchronizing multiple replicas is relieved, making Paxos and Raft algorithms the mainstream in the industry.</li>
 </ol>
-<p>有一種誤解是，以共識為基礎的複製是在分散式資料庫中實現資料一致性的靈丹妙藥。然而，事實並非如此。基於共識的演算法所面臨的可用性、複雜性和效能挑戰，使其無法成為完美的解決方案。</p>
+<p>One misconception is that consensus-based replication is the silver bullet to achieving data consistency in a distributed database. However, this is not the truth. The challenges in availability, complexity, and performance faced by consensus-based algorithm blocks it from being the perfect solution.</p>
 <ol>
-<li><p>可用性受損 優化的 Paxos 或 Raft 演算法非常依賴領導複製，因此對抗灰色故障的能力較弱。在基於共識的複製中，除非領導者節點長時間不回應，否則不會進行新的領導者複製選舉。因此，基於共識的複製無法處理領導節點(leader node)緩慢或發生斷層(thrashing)的情況。</p></li>
-<li><p>高複雜度 雖然已經有許多基於 Paxos 和 Raft 的擴充演算法，但<a href="http://www.vldb.org/pvldb/vol13/p3072-huang.pdf">Multi-Raft</a>和<a href="https://www.vldb.org/pvldb/vol11/p1849-cao.pdf">Parallel Raft</a>的出現，需要在日誌和狀態機之間進行更多同步的考量和測試。</p></li>
-<li><p>效能受損 在雲原生時代，本機儲存會被 EBS 和 S3 等共用儲存解決方案取代，以確保資料的可靠性和一致性。因此，基於共識的複製不再是分散式系統的必要條件。更重要的是，基於共識的複製會帶來資料備援的問題，因為解決方案和 EBS 都有多個複本。</p></li>
+<li><p>Compromised availability
+Optimized Paxos or Raft algorithm has strong dependency on the leader replica, which comes with a weak ability to fight against grey failure. In consensus-based replication, a new election of leader replica will not take place until the leader node does not respond for a long time. Therefore, consensus-based replication is incapable of handling situations where the leader node is slow or a thrashing occurs.</p></li>
+<li><p>High complexity
+Though there are already many extended algorithms based on Paxos and Raft, the emergence of <a href="http://www.vldb.org/pvldb/vol13/p3072-huang.pdf">Multi-Raft</a> and <a href="https://www.vldb.org/pvldb/vol11/p1849-cao.pdf">Parallel Raft</a> requires more considerations and tests on synchronization between logs and state machines.</p></li>
+<li><p>Compromised performance
+In a cloud-native era, local storage is replaced by shared storage solutions like EBS and S3 to ensure data reliability and consistency. As a result, consensus-based replication is no longer a must for distributed systems. What’s more, consensus-based replication comes with the problem of data redundancy as both the solution and EBS has multiple replicas.</p></li>
 </ol>
-<p>對於多資料中心和多雲端複製而言，追求一致性不僅會損害可用性，也會影響<a href="https://en.wikipedia.org/wiki/PACELC_theorem">延遲</a>，導致效能下降。因此，在大多數應用中，線性化並非多資料中心容災的必要條件。</p>
-<h2 id="A-log-replication-strategy-for-cloud-native-and-distributed-database" class="common-anchor-header">適用於雲原生與分散式資料庫的日誌複製策略<button data-href="#A-log-replication-strategy-for-cloud-native-and-distributed-database" class="anchor-icon" translate="no">
+<p>For multi-datacenter and multi-cloud replication, the pursuit for consistency compromises not only availability but also <a href="https://en.wikipedia.org/wiki/PACELC_theorem">latency</a>, resulting in a decline in performance. Therefore, linearizability is not a must for multi-datacenter disaster tolerance in most of the applications.</p>
+<h2 id="A-log-replication-strategy-for-cloud-native-and-distributed-database" class="common-anchor-header">A log replication strategy for cloud-native and distributed database<button data-href="#A-log-replication-strategy-for-cloud-native-and-distributed-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -109,36 +120,44 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>無可否認，Raft 和 Paxos 等基於共識的演算法仍是許多 OLTP 資料庫所採用的主流演算法。然而，透過觀察<a href="https://www.microsoft.com/en-us/research/publication/pacifica-replication-in-log-based-distributed-storage-systems/">PacificA</a>協定、<a href="https://www.microsoft.com/en-us/research/uploads/prod/2019/05/socrates.pdf">Socrates</a>和<a href="https://rockset.com/">Rockset</a> 等範例，我們可以發現趨勢正在轉變。</p>
-<p>能為雲端原生分散式資料庫提供最佳服務的解決方案有兩大原則。</p>
-<h3 id="1-Replication-as-a-service" class="common-anchor-header">1.複製即服務</h3><p>需要專門用於資料同步的獨立微型服務。同步模組與儲存模組不該再緊耦合在同一個流程中。</p>
-<p>例如，Socrates 解耦了儲存、日誌和運算。有一個專用的日誌服務（下圖中間的 XLog 服務）。</p>
+    </button></h2><p>Undeniably, consensus-based algorithms like Raft and Paxos are still the mainstream algorithms adopted by many OLTP databases. However, by observing the examples of <a href="https://www.microsoft.com/en-us/research/publication/pacifica-replication-in-log-based-distributed-storage-systems/">PacificA</a> protocol, <a href="https://www.microsoft.com/en-us/research/uploads/prod/2019/05/socrates.pdf">Socrates</a> and <a href="https://rockset.com/">Rockset</a>, we can see the trend is shifting.</p>
+<p>There are two major principles for a solution that can best serve a cloud-native, distributed database.</p>
+<h3 id="1-Replication-as-a-service" class="common-anchor-header">1. Replication as a service</h3><p>A separate microservice dedicated to data synchronization is needed. The synchronization module and storage module should no longer be tightly coupled within the same process.</p>
+<p>For instance, Socrates decouples storage, log, and computing. There is one dedicated log service (XLog service in the middle of the figure below).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_0d7822a781.png" alt="Socrates architecture" class="doc-image" id="socrates-architecture" />
-   </span> <span class="img-wrapper"> <span>Socrates 架構</span> </span></p>
-<p>XLog 服務是一個獨立的服務。借助低延遲存儲實現了資料持久化。Socrates 中的著陸區負責以加速的速度保持三個副本。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_0d7822a781.png" alt="Socrates architecture" class="doc-image" id="socrates-architecture" />
+    <span>Socrates architecture</span>
+  </span>
+</p>
+<p>XLog service is an individual service. Data persistence is achieved with the help of low-latency storage. The landing zone in Socrates is in charge of keeping three replicas at an accelerated speed.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_6d1182b6f1.png" alt="Socrates XLog service" class="doc-image" id="socrates-xlog-service" />
-   </span> <span class="img-wrapper"> <span>Socrates XLog 服務</span> </span></p>
-<p>領導節點以非同步方式將日誌分發給日誌經紀人，並將資料刷新到 Xstore。本地 SSD 快取可以加速資料讀取。一旦資料刷新成功，就可以清理登陸區域的緩衝區。很明顯，所有日誌資料分為三層 - 著陸區、本機 SSD 和 XStore。</p>
-<h3 id="2-Russian-doll-principle" class="common-anchor-header">2.俄羅斯娃娃原則</h3><p>設計系統的一種方法是遵循俄羅斯娃娃原則：每一層都是完整的，並完全適合該層的功能，以便在其上或周圍建立其他層。</p>
-<p>在設計雲端原生資料庫時，我們需要巧妙地利用其他第三方服務來降低系統架構的複雜性。</p>
-<p>我們似乎無法繞過 Paxos 來避免單點故障。但是，我們仍可以將 leader election 交給 Raft 或基於<a href="https://research.google.com/archive/chubby-osdi06.pdf">Chubby</a>、<a href="https://github.com/bloomreach/zk-replicator">Zk</a> 和<a href="https://etcd.io/">etcd</a> 的 Paxos 服務，從而大大簡化日誌複製。</p>
-<p>舉例來說，<a href="https://rockset.com/">Rockset</a>架構遵循俄羅斯娃娃原則，使用 Kafka/Kineses 來做分散式日誌，使用 S3 來做儲存，並使用本機 SSD 快取來提升查詢效能。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_6d1182b6f1.png" alt="Socrates XLog service" class="doc-image" id="socrates-xlog-service" />
+    <span>Socrates XLog service</span>
+  </span>
+</p>
+<p>The leader node distributes logs to log broker asynchronously, and flushes data to Xstore. Local SSD cache can accelerate data read. Once data flush is successful, buffers in the landing zone can be cleaned. Obviously, all log data are divided into three layers - landing zone, local SSD, and XStore.</p>
+<h3 id="2-Russian-doll-principle" class="common-anchor-header">2. Russian doll principle</h3><p>One way to design a system is to follow the Russian doll principle: each layer is complete and perfectly suited to what the layer does so that other layers may be built on-top or around it.</p>
+<p>When designing a cloud-native database, we need to cleverly leverage other third-party services to reduce the complexity of system architecture.</p>
+<p>It seems like we cannot get around with Paxos to avoid single point failure. However, we can still greatly simplify log replication by handing leader election over to Raft or Paxos services based on <a href="https://research.google.com/archive/chubby-osdi06.pdf">Chubby</a>, <a href="https://github.com/bloomreach/zk-replicator">Zk</a>, and <a href="https://etcd.io/">etcd</a>.</p>
+<p>For instance, <a href="https://rockset.com/">Rockset</a> architecture follows the Russian doll principle and uses Kafka/Kineses for distributed logs, S3 for storage, and local SSD cache for improving query performance.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926697-c8b380dc-d71a-41a9-a76d-a261b77f0b5d.png" alt="Rockset architecture" class="doc-image" id="rockset-architecture" />
-   </span> <span class="img-wrapper"> <span>Rockset 架構</span> </span></p>
-<h3 id="The-Milvus-approach" class="common-anchor-header">Milvus 方法</h3><p>Milvus 中的可調式一致性實際上與共識式複製中的跟讀類似。從者讀取功能是指在強一致性的前提下，使用從者複製器承擔資料讀取任務。其目的是提高集群吞吐量並減少 leader 的負載。從者讀取功能的機制是查詢最新日誌的 commit 索引，並提供查詢服務，直到 commit 索引中的所有資料都套用到狀態機上。</p>
-<p>然而，Milvus 的設計並未採用 follower 策略。換句話說，Milvus 並不是在每次收到查詢請求時都查詢提交索引。相反地，Milvus 採用了類似<a href="https://flink.apache.org/">Flink</a> 中的水印機制，每隔一段固定時間通知查詢節點 commit index 的位置。之所以採用這樣的機制，是因為 Milvus 的使用者通常對資料一致性的要求不高，他們可以接受資料可視性的折衷，以獲得更好的系統效能。</p>
-<p>此外，Milvus 也採用多重微服務，並將儲存與運算分離。在<a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">Milvus 架構</a>中，儲存使用 S3、MinIo 和 Azure Blob。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://user-images.githubusercontent.com/1500781/165926697-c8b380dc-d71a-41a9-a76d-a261b77f0b5d.png" alt="Rockset architecture" class="doc-image" id="rockset-architecture" />
+    <span>Rockset architecture</span>
+  </span>
+</p>
+<h3 id="The-Milvus-approach" class="common-anchor-header">The Milvus approach</h3><p>Tunable consistency in Milvus is in fact similar to follower reads in consensus-based replication. Follower read feature refers to using follower replica to undertake data read tasks under the premise of strong consistency. The purpose is to enhance cluster throughput and reduce the load on leader. The mechanism behind follower read feature is inquiring the commit index of the latest log and providing query service until all data in the commit index are applied to state machines.</p>
+<p>However, the design of Milvus did not adopt the follower strategy. In other words, Milvus does not inquire commit index every time it receives a query request. Instead, Milvus adopts a mechanism like the watermark in <a href="https://flink.apache.org/">Flink</a>, which notifies query node the location of commit index at a regular interval. The reason for such a mechanism is that Milvus users usually do not have high demand for data consistency, and they can accept a compromise in data visibility for better system performance.</p>
+<p>In addition, Milvus also adopts multiple microservices and separates storage from computing. In the <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">Milvus architecture</a>, S3, MinIo, and Azure Blob are used for storage.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_b7743a4a7f.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
-   </span> <span class="img-wrapper"> <span>Milvus 架構</span> </span></p>
-<h2 id="Summary" class="common-anchor-header">摘要<button data-href="#Summary" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_b7743a4a7f.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
+    <span>Milvus architecture</span>
+  </span>
+</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -153,8 +172,8 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>如今，越來越多的雲原生資料庫將日誌複製變成單獨的服務。如此一來，新增唯讀複製和異質複製的成本就能降低。使用多個微服務可快速利用成熟的雲端基礎架構，這是傳統資料庫無法做到的。單獨的日誌服務可以仰賴共識式複製，但也可以遵循俄羅斯娃娃策略，採用各種一致性協定，再搭配 Paxos 或 Raft 來達成可線性化。</p>
-<h2 id="References" class="common-anchor-header">參考文獻<button data-href="#References" class="anchor-icon" translate="no">
+    </button></h2><p>Nowadays, an increasing number of cloud-native databases are making log replication an individual service. By doing so, the cost of adding read-only replicas and heterogeneous replication can be reduced. Using multiple microservices enables quick utilization of mature cloud-based infrastructure, which is impossible for traditional databases. An individual log service can rely on consensus-based replication, but it can also follow the Russian doll strategy to adopt various consistency protocols together with Paxos or Raft to achieve linearizability.</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -170,10 +189,10 @@ canonicalUrl: 'https://milvus.io/blog/raft-or-not.md'
         ></path>
       </svg>
     </button></h2><ul>
-<li>Lamport L. Paxos made simple[J].ACM SIGACT News (Distributed Computing Column) 32, 4 (Whole Number 121, December 2001), 2001: 51-58.</li>
-<li>Ongaro D, Ousterhout J. In search of an understandable consensus algorithm[C]//2014 USENIX Annual Technical Conference (Usenix ATC 14).2014:305-319.</li>
-<li>Oki B M, Liskov B H. Viewstamped replication：A new primary copy method to support highly-available distributed systems[C]//Proceedings of the seventh annual ACM Symposium on Principles of distributed computing.1988: 8-17.</li>
-<li>Lin W, Yang M, Zhang L, et al. PacificA: Replication in log-based distributed storage systems[J].2008.</li>
-<li>Verbitski A, Gupta A, Saha D, et al. Amazon aurora：On avoiding distributed consensus for i/os、commits、member changes[C]//Proceedings of the 2018 International Conference on Management of Data.2018: 789-796.</li>
-<li>Antonopoulos P, Budovski A, Diaconu C, et al. Socrates：雲端新的 sql 伺服器[C]//2019 資料管理國際研討會論文集.2019: 1743-1756.</li>
+<li>Lamport L. Paxos made simple[J]. ACM SIGACT News (Distributed Computing Column) 32, 4 (Whole Number 121, December 2001), 2001: 51-58.</li>
+<li>Ongaro D, Ousterhout J. In search of an understandable consensus algorithm[C]//2014 USENIX Annual Technical Conference (Usenix ATC 14). 2014: 305-319.</li>
+<li>Oki B M, Liskov B H. Viewstamped replication: A new primary copy method to support highly-available distributed systems[C]//Proceedings of the seventh annual ACM Symposium on Principles of distributed computing. 1988: 8-17.</li>
+<li>Lin W, Yang M, Zhang L, et al. PacificA: Replication in log-based distributed storage systems[J]. 2008.</li>
+<li>Verbitski A, Gupta A, Saha D, et al. Amazon aurora: On avoiding distributed consensus for i/os, commits, and membership changes[C]//Proceedings of the 2018 International Conference on Management of Data. 2018: 789-796.</li>
+<li>Antonopoulos P, Budovski A, Diaconu C, et al. Socrates: The new sql server in the cloud[C]//Proceedings of the 2019 International Conference on Management of Data. 2019: 1743-1756.</li>
 </ul>

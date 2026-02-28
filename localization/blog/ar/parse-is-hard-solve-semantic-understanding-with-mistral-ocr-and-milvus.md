@@ -1,21 +1,22 @@
 ---
 id: parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md
-title: 'الإعراب صعب: حل مشكلة الفهم الدلالي باستخدام Mistral OCR و Milvus'
+title: |
+  Parsing is Hard: Solving Semantic Understanding with Mistral OCR and Milvus
 author: Stephen Batifol
 date: 2025-04-03T00:00:00.000Z
 desc: >-
-  مواجهة التحدي وجهاً لوجه باستخدام مزيج قوي من Mistral OCR وMilvus Vector DB،
-  مما يحول كوابيس تحليل المستندات إلى حلم هادئ مع تضمينات متجهات ذات معنى دلالي
-  يمكن البحث فيها.
+  Tackling the challenge head-on using the powerful combo of Mistral OCR and
+  Milvus Vector DB, turning your doc parsing nightmares into a calm dream with
+  searchable, semantically meaningful vector embeddings.
 cover: >-
   assets.zilliz.com/Parsing_is_Hard_Solving_Semantic_Understanding_with_Mistral_OCR_and_Milvus_316ac013b6.png
 tag: Engineering
 canonicalUrl: >-
   https://milvus.io/blog/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md
 ---
-<p>دعنا نواجه الأمر: تحليل المستندات أمر صعب - صعب للغاية. ملفات PDF، والصور، والتقارير، والجداول، والكتابة اليدوية الفوضوية؛ إنها مليئة بالمعلومات القيّمة التي يرغب المستخدمون في البحث عنها، ولكن استخراج تلك المعلومات والتعبير عنها بدقة في فهرس البحث الخاص بك يشبه حل لغز يستمر شكل القطع فيه بالتغير: كنت تعتقد أنك حللتها بسطر إضافي من التعليمات البرمجية ولكن غدًا يتم استيعاب مستند جديد وتجد حالة زاوية أخرى للتعامل معها.</p>
-<p>في هذا المنشور، سنتعامل مع هذا التحدي وجهاً لوجه باستخدام مزيج قوي من Mistral OCR و Milvus Vector DB، مما يحول كوابيس تحليل المستندات إلى حلم هادئ مع تضمينات متجهات ذات معنى دلالي يمكن البحث فيها.</p>
-<h2 id="Why-Rule-based-Parsing-Just-Wont-Cut-It" class="common-anchor-header">لماذا لا يفي التحليل المستند إلى القواعد بالغرض؟<button data-href="#Why-Rule-based-Parsing-Just-Wont-Cut-It" class="anchor-icon" translate="no">
+<p>Let’s face it: parsing documents is hard—really hard. PDFs, images, reports, tables, messy handwriting; they’re packed with valuable information that your users want to search for, but extracting that information and express that accurately in your search index is like solving a puzzle where the pieces keep changing shape: you thought you’ve solved it with an extra line of code but tomorrow a new doc gets ingested and you find another corner case to deal with.</p>
+<p>In this post, we’ll tackle this challenge head-on using the powerful combo of Mistral OCR and Milvus Vector DB, turning your doc parsing nightmares into a calm dream with searchable, semantically meaningful vector embeddings.</p>
+<h2 id="Why-Rule-based-Parsing-Just-Wont-Cut-It" class="common-anchor-header">Why Rule-based Parsing Just Won’t Cut It<button data-href="#Why-Rule-based-Parsing-Just-Wont-Cut-It" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,14 +31,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إذا كنت قد عانيت من أي وقت مضى مع أدوات التعرف الضوئي على الحروف القياسية، فربما تعرف أن لديها جميع أنواع المشكلات:</p>
+    </button></h2><p>If you’ve ever struggled with standard OCR tools, you probably know that they have all sorts of issues:</p>
 <ul>
-<li><strong>التخطيطات المعقدة</strong>: الجداول، والقوائم، والتنسيقات متعددة الأعمدة - يمكن أن تتعطل أو تشكل مشاكل لمعظم المحللين.</li>
-<li><strong>الغموض الدلالي</strong>: الكلمات الرئيسية وحدها لا تخبرك ما إذا كانت كلمة "تفاحة" تعني فاكهة أم شركة.</li>
-<li>مشكلة الحجم والتكلفة: تصبح معالجة آلاف المستندات بطيئة بشكل مؤلم.</li>
+<li><strong>Complex layouts</strong>: Tables, lists, multi-column formats – they can break or pose issues to most parsers.</li>
+<li><strong>Semantic ambiguity</strong>: Keywords alone don’t tell you if “apple” means fruit or company.</li>
+<li>The chanllege of scale and cost: Processing thousands of documents becomes painfully slow.</li>
 </ul>
-<p>نحن بحاجة إلى نهج أكثر ذكاءً ومنهجية لا يكتفي باستخراج النص - بل <em>يفهم</em> المحتوى. وهنا بالضبط يأتي دور Mistral OCR وMilvus.</p>
-<h2 id="Meet-Your-Dream-Team" class="common-anchor-header">تعرّف على فريق الأحلام<button data-href="#Meet-Your-Dream-Team" class="anchor-icon" translate="no">
+<p>We need a smarter, more systematic approach that doesn’t just extract text—it <em>understands</em> the content. And that’s exactly where Mistral OCR and Milvus come in.</p>
+<h2 id="Meet-Your-Dream-Team" class="common-anchor-header">Meet Your Dream Team<button data-href="#Meet-Your-Dream-Team" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,17 +53,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Mistral-OCR-More-than-just-text-extraction" class="common-anchor-header">Mistral OCR: أكثر من مجرد استخراج النصوص</h3><p>إن Mistral OCR ليس أداة التعرف الضوئي على الحروف (OCR) العادية. فهي مصممة لمعالجة مجموعة واسعة من المستندات.</p>
+    </button></h2><h3 id="Mistral-OCR-More-than-just-text-extraction" class="common-anchor-header">Mistral OCR: More than just text extraction</h3><p>Mistral OCR isn’t your average OCR tool. It’s designed to tackle a wide range of documents.</p>
 <ul>
-<li><strong>فهم عميق للمستندات المعقدة</strong>: سواء كانت صورًا مضمنة أو معادلات رياضية أو جداول مدمجة، يمكنها فهم كل ذلك بدقة عالية جدًا.</li>
-<li><strong>يحتفظ بالتخطيطات الأصلية:</strong> لا يكتفي البرنامج بفهم التخطيطات المختلفة في المستندات فحسب، بل يحافظ أيضًا على التخطيطات الأصلية والبنية الأصلية سليمة. علاوة على ذلك، فهو قادر أيضًا على تحليل المستندات متعددة الصفحات.</li>
-<li><strong>إتقان متعدد اللغات ومتعدد الوسائط</strong>: من الإنجليزية إلى الهندية إلى العربية، يمكن لـ Mistral OCR فهم المستندات عبر آلاف اللغات والنصوص، مما يجعلها لا تقدر بثمن للتطبيقات التي تستهدف قاعدة مستخدمين عالمية.</li>
+<li><strong>Deep Understanding of Complex Documents</strong>: Whether it’s embedded images, mathematical equations, or tables, it can understand it all with a very high accuracy.</li>
+<li><strong>Keeps original layouts:</strong> Not only does it understand the different layouts in the documents, it also keeps the original layouts and structure intact. On top of that, it’s also capable of parsing multi-page documents.</li>
+<li><strong>Multilingual and Multimodal Mastery</strong>: From English to Hindi to Arabic, Mistral OCR can comprehend documents across thousands of languages and scripts, making it invaluable for applications targeting a global user base.</li>
 </ul>
-<h3 id="Milvus-Your-Vector-Database-Built-for-Scale" class="common-anchor-header">ميلفوس: قاعدة بياناتك المتجهة المصممة على نطاق واسع</h3><ul>
-<li><strong>مليار + مقياس</strong>: يمكن لـ <a href="https://milvus.io/">Milvus</a> أن يتسع لمليارات المتجهات، مما يجعله مثاليًا لتخزين المستندات على نطاق واسع.</li>
-<li><strong>البحث عن النص الكامل: بالإضافة إلى دعم التضمينات المتجهة الكثيفة،</strong> يدعم ميلفوس أيضًا البحث في النص الكامل. مما يجعل من السهل تشغيل الاستعلامات باستخدام النص والحصول على نتائج أفضل لنظام RAG الخاص بك.</li>
+<h3 id="Milvus-Your-Vector-Database-Built-for-Scale" class="common-anchor-header">Milvus: Your Vector Database Built for Scale</h3><ul>
+<li><strong>Billion+ Scale</strong>: <a href="https://milvus.io/">Milvus</a> can scale to billions of vectors, making it perfect for storing large-scale documents.</li>
+<li><strong>Full-Text Search: In addition to supporting dense vector embeddings</strong>, Milvus also supports Full Text Search. Making it easy to run queries using text and get better results for your RAG system.</li>
 </ul>
-<h2 id="Examples" class="common-anchor-header">أمثلة:<button data-href="#Examples" class="anchor-icon" translate="no">
+<h2 id="Examples" class="common-anchor-header">Examples:<button data-href="#Examples" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,12 +78,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لنأخذ هذه الملاحظة المكتوبة بخط اليد باللغة الإنجليزية على سبيل المثال. سيكون استخدام أداة التعرف الضوئي على الحروف العادية لاستخراج هذا النص مهمة صعبة للغاية.</p>
+    </button></h2><p>Let’s take this handwritten note in English, for example. Using a regular OCR tool to extract this text would be a very hard task.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/A_handwritten_note_in_English_3bbc40dee7.png" alt="A handwritten note in English " class="doc-image" id="a-handwritten-note-in-english-" />
-   </span> <span class="img-wrapper"> <span>ملاحظة مكتوبة بخط اليد باللغة الإنجليزية </span> </span></p>
-<p>نقوم بمعالجتها باستخدام Mistral OCR</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/A_handwritten_note_in_English_3bbc40dee7.png" alt="A handwritten note in English " class="doc-image" id="a-handwritten-note-in-english-" />
+    <span>A handwritten note in English </span>
+  </span>
+</p>
+<p>We process it with Mistral OCR</p>
 <pre><code translate="no" class="language-python">api_key = os.getenv(<span class="hljs-string">&quot;MISTRAL_API_KEY&quot;</span>)
 client = Mistral(api_key=api_key)
 
@@ -92,13 +95,13 @@ result = client.ocr.process(
             )
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Result: <span class="hljs-subst">{result.pages[<span class="hljs-number">0</span>].markdown}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>ونحصل على المخرجات التالية. يمكنه التعرف على النص المكتوب بخط اليد بشكل جيد. يمكننا أن نرى أنه يحافظ حتى على التنسيق الكبير للكلمات &quot;مُجبر وغير طبيعي&quot;!</p>
+<p>And we get the following output. It can recognize handwritten text well. We can see that it even keeps the capitalized format of the words &quot;FORCED AND UNNATURAL&quot;!</p>
 <pre><code translate="no" class="language-Markdown">Today is Thursday, October 20th - But it definitely feels like a Friday. I<span class="hljs-string">&#x27;m already considering making a second cup of coffee - and I haven&#x27;</span>t even finished my first. Do I have a problem?
 Sometimes I<span class="hljs-string">&#x27;ll fly through older notes I&#x27;</span>ve taken, and my handwriting is unrecamptable. Perhaps it depends on the <span class="hljs-built_in">type</span> of pen I use. I<span class="hljs-string">&#x27;ve tried writing in all cups but it looks so FORCED AND UNNATURAL.
 Often times, I&#x27;</span>ll just take notes on my lapten, but I still seem to ermittelt forward pen and paper. Any advice on what to
 improve? I already feel stressed at looking back at what I<span class="hljs-string">&#x27;ve just written - it looks like I different people wrote this!
 </span><button class="copy-code-btn"></button></code></pre>
-<p>الآن يمكننا بعد ذلك إدراج النص في ميلفوس للبحث الدلالي.</p>
+<p>Now we can then insert the text into Milvus for semantic search.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient 
 
 COLLECTION_NAME = <span class="hljs-string">&quot;document_ocr&quot;</span>
@@ -118,12 +121,14 @@ milvus_client.create_collection(
 
 milvus_client.insert(collection_name=COLLECTION_NAME, data=[result.pages[<span class="hljs-number">0</span>].markdown])
 <button class="copy-code-btn"></button></code></pre>
-<p>لكن يمكن لميسترال أيضًا فهم المستندات بلغات مختلفة أو بتنسيق أكثر تعقيدًا، على سبيل المثال دعنا نجرب هذه الفاتورة باللغة الألمانية التي تجمع بين بعض أسماء العناصر باللغة الإنجليزية.</p>
+<p>But Mistral can also understand documents in different languages or in more complex format, for example let’s try this invoice in German that combines some item names in English.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/An_Invoice_in_German_994e204d49.png" alt="An Invoice in German" class="doc-image" id="an-invoice-in-german" />
-   </span> <span class="img-wrapper"> <span>فاتورة باللغة الألمانية</span> </span></p>
-<p>لا يزال برنامج Mistral OCR قادرًا على استخراج جميع المعلومات التي لديك، بل إنه ينشئ بنية الجدول بتنسيق Markdown الذي يمثل الجدول من الصورة الممسوحة ضوئيًا.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/An_Invoice_in_German_994e204d49.png" alt="An Invoice in German" class="doc-image" id="an-invoice-in-german" />
+    <span>An Invoice in German</span>
+  </span>
+</p>
+<p>Mistral OCR is still capable of extracting all the information you have and it even creates the table structure in Markdown that represents the table from the scanned image.</p>
 <pre><code translate="no"><span class="hljs-title class_">Rechnungsadresse</span>:
 
 Jähn <span class="hljs-title class_">Jessel</span> <span class="hljs-title class_">GmbH</span> a. <span class="hljs-title class_">Co</span>. <span class="hljs-variable constant_">KG</span> <span class="hljs-title class_">Marianne</span> <span class="hljs-title class_">Scheibe</span> <span class="hljs-title class_">Karla</span>-Löffler-<span class="hljs-title class_">Weg</span> <span class="hljs-number">2</span> <span class="hljs-number">66522</span> <span class="hljs-title class_">Wismar</span>
@@ -155,7 +160,7 @@ Jähn <span class="hljs-title class_">Jessel</span> <span class="hljs-title clas
 | <span class="hljs-title class_">Zzgl</span>. <span class="hljs-title class_">Mwst</span>. <span class="hljs-number">19</span>\% |  | <span class="hljs-number">118.6</span> C |  |  |  |
 | <span class="hljs-title class_">Gesamtbetrag</span> C inkl. <span class="hljs-title class_">MwSt</span>. |  | <span class="hljs-number">1954.79</span> C |  |  |  |
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Real-World-Usage-A-Case-Study" class="common-anchor-header">الاستخدام في العالم الحقيقي: دراسة حالة<button data-href="#Real-World-Usage-A-Case-Study" class="anchor-icon" translate="no">
+<h2 id="Real-World-Usage-A-Case-Study" class="common-anchor-header">Real-World Usage: A Case Study<button data-href="#Real-World-Usage-A-Case-Study" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -170,6 +175,6 @@ Jähn <span class="hljs-title class_">Jessel</span> <span class="hljs-title clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>الآن بعد أن رأينا أن Mistral OCR يمكن أن يعمل على مستندات مختلفة، يمكننا أن نتخيل كيف يمكن لشركة قانونية غارقة في ملفات القضايا والعقود الاستفادة من هذه الأداة. من خلال تطبيق نظام RAG مع Mistral OCR و Milvus، فإن ما كان يستغرق من قبل ساعات لا حصر لها من المساعدين القانونيين، مثل المسح الضوئي يدويًا بحثًا عن بنود معينة أو مقارنة القضايا السابقة، يتم الآن بواسطة الذكاء الاصطناعي في بضع دقائق فقط.</p>
-<h3 id="Next-Steps" class="common-anchor-header">الخطوات التالية</h3><p>هل أنت مستعد لاستخراج كل المحتوى الخاص بك؟ توجّه إلى <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/integration/mistral_ocr_with_milvus.ipynb">دفتر الملاحظات على GitHub</a> للحصول على المثال الكامل، وانضم إلى <a href="http://zilliz.com/discord">Discord</a> للدردشة مع المجتمع، وابدأ في البناء اليوم! يمكنك أيضًا الاطلاع على <a href="https://docs.mistral.ai/capabilities/document/">وثائق Mistral</a> حول نموذج OCR الخاص بهم </p>
-<p>قل وداعًا لفوضى التحليل، وأهلاً بالفهم الذكي والقابل للتطوير للمستندات.</p>
+    </button></h2><p>Now that we’ve seen that Mistral OCR can work on different documents, we could imagine how a legal firm that is drowning in case files and contracts leverage this tool. By implementing a RAG system with Mistral OCR and Milvus, what once took a paralegal countless hours, like manually scanning for specific clauses or comparing past cases, now is done by AI in only a couple of minutes.</p>
+<h3 id="Next-Steps" class="common-anchor-header">Next Steps</h3><p>Ready to extract all your content? Head over to the <a href="https://github.com/milvus-io/bootcamp/blob/master/bootcamp/tutorials/integration/mistral_ocr_with_milvus.ipynb">notebook on GitHub</a> for the full example, join our <a href="http://zilliz.com/discord">Discord</a> to chat with the community, and start building today! You can also check out <a href="https://docs.mistral.ai/capabilities/document/">Mistral documentation</a> about their OCR model </p>
+<p>Say goodbye to parsing chaos, and hello to intelligent, scalable document understanding.</p>

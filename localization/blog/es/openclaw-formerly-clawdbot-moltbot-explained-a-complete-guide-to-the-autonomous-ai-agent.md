@@ -1,9 +1,9 @@
 ---
 id: >-
   openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md
-title: >-
-  Explicación de OpenClaw (antes Clawdbot y Moltbot): Guía completa del agente
-  autónomo de IA
+title: >
+  OpenClaw (Formerly Clawdbot & Moltbot) Explained: A Complete Guide to the
+  Autonomous AI Agent
 author: 'Julie Xia, Fendy Feng'
 date: 2026-02-10T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Autonomous_Agent_Cover_11zon_1_8124f1b98b.png
@@ -14,21 +14,21 @@ tags: 'OpenClaw, Clawdbot, Moltbot, Moltbook, Tutorial'
 meta_keywords: 'OpenClaw, Clawdbot, Moltbot, AI agent, autonomous AI agent'
 meta_title: |
   What Is OpenClaw? Complete Guide to the Open-Source AI Agent
-desc: >-
-  Guía completa de OpenClaw (Clawdbot/Moltbot): cómo funciona, configuración,
-  casos de uso, Moltbook y advertencias de seguridad.
+desc: >
+  Complete guide to OpenClaw (Clawdbot/Moltbot) — how it works, setup
+  walkthrough, use cases, Moltbook, and security warnings.
 origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 ---
-<p><a href="https://openclaw.ai/">OpenClaw</a> (antes conocido como Moltbot y Clawdbot) es un agente de IA de código abierto que se ejecuta en tu máquina, se conecta a través de las aplicaciones de mensajería que ya utilizas (WhatsApp, Telegram, Slack, Signal y otras) y realiza acciones en tu nombre: comandos de shell, automatización del navegador, correo electrónico, calendario y operaciones con archivos. Un programador de latidos lo despierta en un intervalo configurable para que pueda ejecutarse sin que se le solicite. Consiguió más de <a href="https://github.com/openclaw/openclaw">100.000</a> estrellas de GitHub en menos de una semana tras su lanzamiento a finales de enero de 2026, convirtiéndose en uno de los repositorios de código abierto de más rápido crecimiento en la historia de GitHub.</p>
+<p><a href="https://openclaw.ai/">OpenClaw</a> (formerly known as Moltbot and Clawdbot) is an open-source AI agent that runs on your machine, connects through the messaging apps you already use (WhatsApp, Telegram, Slack, Signal, and others), and takes action on your behalf — shell commands, browser automation, email, calendar, and file operations. A heartbeat scheduler wakes it up at a configurable interval so it can run without being prompted. It gained over <a href="https://github.com/openclaw/openclaw">100,000</a> GitHub stars in under a week after its launch in late January 2026, making it one of the fastest-growing open-source repositories in GitHub history.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_1_e9bc8881bc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Lo que distingue a OpenClaw es su combinación: Licencia MIT, código abierto, local-first (memoria y datos almacenados como archivos Markdown en tu disco) y extensible a la comunidad a través de un formato de habilidades portátil. También es donde se están llevando a cabo algunos de los experimentos más interesantes en IA agéntica: el agente de un desarrollador negoció por correo electrónico un descuento de 4.200 dólares en la compra de un coche mientras dormía; otro presentó una refutación legal a la denegación de un seguro sin que nadie se lo pidiera; y otro usuario creó <a href="https://moltbook.com/">Moltbook</a>, una red social en la que más de un millón de agentes de IA interactúan de forma autónoma mientras los humanos observan.</p>
-<p>Esta guía desglosa todo lo que necesitas saber: qué es OpenClaw, cómo funciona, qué puede hacer en la vida real, cómo se relaciona con Moltbook y los riesgos de seguridad que conlleva.</p>
-<h2 id="What-is-OpenClaw" class="common-anchor-header">¿Qué es OpenClaw?<button data-href="#What-is-OpenClaw" class="anchor-icon" translate="no">
+<p>What makes OpenClaw distinct is its combination: MIT-licensed, open-source, local-first (memory and data stored as Markdown files on your disk), and community-extensible through a portable skill format. It’s also where some of the more interesting experiments in agentic AI are happening — one developer’s agent negotiated $4,200 off a car purchase over email while he slept; another’s filed a legal rebuttal to an insurance denial without being asked; and another user built <a href="https://moltbook.com/">Moltbook</a>, a social network where over a million AI agents interact autonomously while humans watch.</p>
+<p>This guide breaks down everything you need to know: what OpenClaw is, how it works, what it can do in real life, how it relates to Moltbook, and the security risks associated with it.</p>
+<h2 id="What-is-OpenClaw" class="common-anchor-header">What is OpenClaw?<button data-href="#What-is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,25 +43,25 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclawd.ai/">OpenClaw</a> (antes Clawdbot y Moltbot) es un asistente de IA autónomo y de código abierto que se ejecuta en tu máquina y vive en tus aplicaciones de chat. Hablas con él a través de WhatsApp, Telegram, <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack</a>, Discord, iMessage o Signal -lo que ya utilices- y él te responde. Pero a diferencia de ChatGPT o la interfaz web de Claude, OpenClaw no se limita a responder preguntas. Puede ejecutar comandos shell, controlar tu navegador, leer y escribir archivos, gestionar tu calendario y enviar correos electrónicos, todo ello activado por un mensaje de texto.</p>
-<p>Está pensado para desarrolladores y usuarios avanzados que desean un asistente personal de inteligencia artificial con el que puedan comunicarse desde cualquier lugar, sin renunciar al control de sus datos ni depender de un servicio alojado.</p>
-<h3 id="Key-Capabilities-of-OpenClaw" class="common-anchor-header">Principales funciones de OpenClaw</h3><ul>
-<li><p><strong>Pasarela multicanal</strong>: WhatsApp, Telegram, Discord e iMessage con un único proceso de pasarela. Añade Mattermost y más con paquetes de extensión.</p></li>
-<li><p><strong>Enrutamiento multiagente</strong> - sesiones aisladas por agente, espacio de trabajo o remitente.</p></li>
-<li><p><strong>Soporte multimedia</strong>: envíe y reciba imágenes, audio y documentos.</p></li>
-<li><p><strong>Interfaz de control web</strong>: panel de control del navegador para chat, configuración, sesiones y nodos.</p></li>
-<li><p><strong>Nodos móviles</strong>: empareje nodos iOS y Android compatibles con Canvas.</p></li>
+    </button></h2><p><a href="https://openclawd.ai/">OpenClaw</a> (formerly Clawdbot and Moltbot) is an autonomous, open-source AI assistant that runs on your machine and lives in your chat apps. You talk to it through WhatsApp, Telegram, <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack</a>, Discord, iMessage, or Signal—whatever you already use—and it talks back. But unlike ChatGPT or Claude’s web interface, OpenClaw doesn’t just answer questions. It can run shell commands, control your browser, read and write files, manage your calendar, and send emails, all triggered by a text message.</p>
+<p>It’s built for developers and power users who want a personal AI assistant they can message from anywhere — without sacrificing control over their data or relying on a hosted service.</p>
+<h3 id="Key-Capabilities-of-OpenClaw" class="common-anchor-header">Key Capabilities of OpenClaw</h3><ul>
+<li><p><strong>Multi-channel gateway</strong> — WhatsApp, Telegram, Discord, and iMessage with a single gateway process. Add Mattermost and more with extension packages.</p></li>
+<li><p><strong>Multi-agent routing</strong> — isolated sessions per agent, workspace, or sender.</p></li>
+<li><p><strong>Media support</strong> — send and receive images, audio, and documents.</p></li>
+<li><p><strong>Web Control UI</strong> — browser dashboard for chat, config, sessions, and nodes.</p></li>
+<li><p><strong>Mobile nodes</strong> — pair iOS and Android nodes with Canvas support.</p></li>
 </ul>
-<h3 id="What-Makes-OpenClaw-Different" class="common-anchor-header">¿Qué hace diferente a OpenClaw?</h3><p><strong>OpenClaw es autoalojado.</strong></p>
-<p>El gateway, las herramientas y la memoria de OpenClaw viven en su máquina, no en un SaaS alojado por un proveedor. OpenClaw almacena las conversaciones, la memoria a largo plazo y las habilidades como archivos Markdown y YAML en tu espacio de trabajo y en <code translate="no">~/.openclaw</code>. Puedes inspeccionarlos en cualquier editor de texto, hacer copias de seguridad con Git, buscar en ellos o eliminarlos. Los modelos de IA pueden estar alojados en la nube (Anthropic, OpenAI, Google) o localmente (a través de Ollama, LM Studio u otros servidores compatibles con OpenAI), dependiendo de cómo configures el bloque de modelos. Si quieres que toda la inferencia permanezca en tu hardware, dirige OpenClaw sólo a modelos locales.</p>
-<p><strong>OpenClaw es totalmente autónomo</strong></p>
-<p>La pasarela se ejecuta como un demonio en segundo plano (<code translate="no">systemd</code> en Linux, <code translate="no">LaunchAgent</code> en macOS) con un latido configurable - cada 30 minutos por defecto, cada hora con Anthropic OAuth. En cada latido, el agente lee una lista de comprobación de <code translate="no">HEARTBEAT.md</code> en el espacio de trabajo, decide si algún elemento requiere acción y le envía un mensaje o responde <code translate="no">HEARTBEAT_OK</code> (que la pasarela deja caer silenciosamente). Los eventos externos (webhooks, cron jobs, mensajes de compañeros de equipo) también activan el bucle del agente.</p>
-<p>El grado de autonomía del agente depende de la configuración. Las políticas de herramientas y las aprobaciones de ejecución rigen las acciones de alto riesgo: puede permitir la lectura de correos electrónicos pero exigir aprobación antes de enviarlos, permitir la lectura de archivos pero bloquear las eliminaciones. Si se desactivan estas barreras, el agente ejecuta sin preguntar.</p>
-<p><strong>OpenClaw es de código abierto.</strong></p>
-<p>El núcleo de Gateway tiene licencia MIT. Es totalmente legible, bifurcable y auditable. Esto es importante en contexto: Anthropic presentó una DMCA contra un desarrollador que desofuscó el cliente de Claude Code; Codex CLI de OpenAI es Apache 2.0 pero la interfaz web y los modelos son cerrados; Manus es completamente cerrado.</p>
-<p>El ecosistema refleja la apertura. <a href="https://github.com/openclaw/openclaw">Cientos de colaboradores</a> han creado habilidades (archivos modulares de <code translate="no">SKILL.md</code> con material frontal YAML e instrucciones en lenguaje natural) compartidas a través de ClawHub (un registro de habilidades en el que el agente puede buscar automáticamente), repositorios comunitarios o URL directas. El formato es portátil, compatible con las convenciones Claude Code y Cursor. Si no existe una habilidad, puedes describir la tarea a tu agente y hacer que redacte una.</p>
-<p>Esta combinación de propiedad local, evolución impulsada por la comunidad y funcionamiento autónomo es la razón por la que los desarrolladores están entusiasmados. Para los desarrolladores que quieren un control total sobre sus herramientas de IA, eso es importante.</p>
-<h2 id="How-OpenClaw-Works-Under-the-Hood" class="common-anchor-header">Cómo funciona OpenClaw bajo el capó<button data-href="#How-OpenClaw-Works-Under-the-Hood" class="anchor-icon" translate="no">
+<h3 id="What-Makes-OpenClaw-Different" class="common-anchor-header">What Makes OpenClaw Different?</h3><p><strong>OpenClaw is self-hosted.</strong></p>
+<p>The gateway, tools, and memory of OpenClaw live on your machine, not in a vendor-hosted SaaS. OpenClaw stores conversations, long-term memory, and skills as plain Markdown and YAML files under your workspace and <code translate="no">~/.openclaw</code>. You can inspect them in any text editor, back them up with Git, grep through them, or delete them. The AI models can be cloud-hosted (Anthropic, OpenAI, Google) or local (via Ollama, LM Studio, or other OpenAI-compatible servers), depending on how you configure the models block. If you want all inference to stay on your hardware, you point OpenClaw at local models only.</p>
+<p><strong>OpenClaw is fully autonomous</strong></p>
+<p>The Gateway runs as a background daemon (<code translate="no">systemd</code> on Linux, <code translate="no">LaunchAgent</code> on macOS) with a configurable heartbeat — every 30 minutes by default, every hour with Anthropic OAuth. On each heartbeat, the agent reads a checklist from <code translate="no">HEARTBEAT.md</code> in the workspace, decides whether any item requires action, and either messages you or responds <code translate="no">HEARTBEAT_OK</code> (which the Gateway silently drops). External events — webhooks, cron jobs, teammate messages — also trigger the agent loop.</p>
+<p>How much autonomy the agent has is a configuration choice. Tool policies and exec approvals govern high-risk actions: you might allow email reads but require approval before sends, permit file reads but block deletions. Disable those guardrails and it executes without asking.</p>
+<p><strong>OpenClaw is open-source.</strong></p>
+<p>The core Gateway is MIT-licensed. It’s fully readable, forkable, and auditable. This matters in context: Anthropic filed a DMCA takedown against a developer who de-obfuscated Claude Code’s client; OpenAI’s Codex CLI is Apache 2.0 but the web UI and models are closed; Manus is entirely closed.</p>
+<p>The ecosystem reflects the openness. <a href="https://github.com/openclaw/openclaw">Hundreds of contributors</a> have built skills — modular <code translate="no">SKILL.md</code> files with YAML frontmatter and natural-language instructions — shared through ClawHub (a skill registry the agent can search automatically), community repos, or direct URLs. The format is portable, compatible with Claude Code and Cursor conventions. If a skill doesn’t exist, you can describe the task to your agent and have it draft one.</p>
+<p>This combination of local ownership, community-driven evolution, and autonomous operation is why developers are excited. For developers who want full control over their AI tooling, that matters.</p>
+<h2 id="How-OpenClaw-Works-Under-the-Hood" class="common-anchor-header">How OpenClaw Works Under the Hood<button data-href="#How-OpenClaw-Works-Under-the-Hood" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,15 +76,15 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Un proceso, todo dentro</strong></p>
-<p>Cuando se ejecuta <code translate="no">openclaw gateway</code>, se inicia un único proceso Node.js de larga duración llamado Gateway. Ese proceso es todo el sistema: las conexiones de canal, el estado de la sesión, el bucle del agente, las llamadas al modelo, la ejecución de herramientas y la persistencia en memoria. No hay ningún servicio separado que gestionar.</p>
-<p>Cinco subsistemas dentro de un proceso:</p>
+    </button></h2><p><strong>One Process, Everything Inside</strong></p>
+<p>When you run <code translate="no">openclaw gateway</code>, you start a single long-lived Node.js process called the Gateway. That process is the entire system — channel connections, session state, the agent loop, model calls, tool execution, memory persistence. There’s no separate service to manage.</p>
+<p>Five subsystems inside one process:</p>
 <ol>
-<li><p><strong>Adaptadores de canal</strong> - uno por plataforma (Baileys para WhatsApp, grammY para Telegram, etc.). Normalizan los mensajes entrantes en un formato común y serializan las respuestas.</p></li>
-<li><p><strong>Gestor de sesiones</strong>: resuelve la identidad del remitente y el contexto de la conversación. Los mensajes de texto se agrupan en una sesión principal; los chats de grupo tienen su propia sesión.</p></li>
-<li><p><strong>Cola</strong>: serializa las ejecuciones por sesión. Si llega un mensaje a mitad de la ejecución, lo retiene, lo inyecta o lo recoge para un turno posterior.</p></li>
-<li><p><strong>Tiempo de ejecución del agente</strong>: reúne el contexto (AGENTS.md, SOUL.md, TOOLS.md, MEMORY.md, registro diario, historial de conversaciones) y, a continuación, ejecuta el bucle del agente: llama al modelo → ejecuta las llamadas a las herramientas → devuelve los resultados → repite hasta que termina.</p></li>
-<li><p><strong>Plano de control</strong> - API WebSocket en <code translate="no">:18789</code>. La CLI, la aplicación macOS, la interfaz web y los nodos iOS/Android se conectan aquí.</p></li>
+<li><p><strong>Channel adapters</strong> — one per platform (Baileys for WhatsApp, grammY for Telegram, etc.). Normalize inbound messages into a common format; serialize replies back out.</p></li>
+<li><p><strong>Session manager</strong> — resolves sender identity and conversation context. DMs collapse into a main session; group chats get their own.</p></li>
+<li><p><strong>Queue</strong> — serializes runs per session. If a message arrives mid-run, it holds, injects, or collects it for a follow-up turn.</p></li>
+<li><p><strong>Agent runtime</strong> — assembles context (AGENTS.md, SOUL.md, TOOLS.md, MEMORY.md, daily log, conversation history), then runs the agent loop: call model → execute tool calls → feed results back → repeat until done.</p></li>
+<li><p><strong>Control plane</strong> — WebSocket API on <code translate="no">:18789</code>. The CLI, macOS app, web UI, and iOS/Android nodes all connect here.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -92,41 +92,41 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
     <span></span>
   </span>
 </p>
-<p>El modelo es una llamada a una API externa que puede o no ejecutarse localmente. Todo lo demás -enrutamiento, herramientas, memoria, estado- vive dentro de ese único proceso en tu máquina.</p>
+<p>The model is an external API call that may or may not run locally. Everything else — routing, tools, memory, state — lives inside that one process on your machine.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_3_0206219c02.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Para una solicitud simple, ese bucle se completa en segundos. Las cadenas de herramientas de varios pasos tardan más. El modelo es una llamada a una API externa que puede o no ejecutarse localmente, pero todo lo demás -enrutamiento, herramientas, memoria, estado- vive dentro de ese único proceso en tu máquina.</p>
-<p><strong>El mismo bucle que el código Claude, pero con un shell diferente</strong></p>
-<p>El bucle del agente -entrada → contexto → modelo → herramientas → repetición → respuesta- es el mismo patrón que utiliza Claude Code. Todo framework de agentes serio ejecuta alguna versión del mismo. Lo que difiere es lo que lo envuelve.</p>
-<p>Claude Code lo envuelve en una <strong>CLI</strong>: tecleas, se ejecuta, sale. OpenClaw lo envuelve en un <strong>demonio persistente</strong> conectado a más de 12 plataformas de mensajería, con un programador de latidos, gestión de sesiones a través de canales y memoria que persiste entre ejecuciones, incluso cuando no estás en tu escritorio.</p>
+<p>For a simple request, that loop completes in seconds. Multi-step tool chains take longer. The model is an external API call that may or may not run locally, but everything else — routing, tools, memory, state — lives inside that one process on your machine.</p>
+<p><strong>Same Loop as Claude Code, Different Shell</strong></p>
+<p>The agent loop — input → context → model → tools → repeat → reply — is the same pattern Claude Code uses. Every serious agent framework runs some version of it. What differs is what wraps it.</p>
+<p>Claude Code wraps it in a <strong>CLI</strong>: you type, it runs, it exits. OpenClaw wraps it in a <strong>persistent daemon</strong> wired to 12+ messaging platforms, with a heartbeat scheduler, session management across channels, and memory that persists between runs — even when you’re not at your desk.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_4_9c481b1ce7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Enrutamiento de modelos y conmutación por error</strong></p>
-<p>OpenClaw es independiente del modelo. Los proveedores se configuran en <code translate="no">openclaw.json</code>, y la pasarela enruta en consecuencia, con rotación de perfiles de autenticación y una cadena de reserva que utiliza un backoff exponencial cuando se cae un proveedor. Pero la elección del modelo importa, porque OpenClaw ensambla grandes indicaciones: instrucciones del sistema, historial de conversaciones, esquemas de herramientas, habilidades y memoria. Esa carga de contexto es la razón por la que la mayoría de las implantaciones utilizan un modelo de frontera como orquestador principal, con modelos más baratos que gestionan los latidos del corazón y las tareas de los subagentes.</p>
-<p><strong>Compromisos entre nube y local</strong></p>
-<p>Desde la perspectiva de la pasarela, los modelos local y en la nube parecen idénticos: ambos son puntos finales compatibles con OpenAI. Lo que difiere son las compensaciones.</p>
-<p>Los modelos en la nube (Anthropic, OpenAI, Google) ofrecen un razonamiento sólido, grandes ventanas de contexto y un uso fiable de las herramientas. Son la opción por defecto para el orquestador principal. El coste varía con el uso: los usuarios poco exigentes gastan entre 5 y 20 dólares al mes, los agentes activos con latidos frecuentes y grandes avisos suelen costar entre 50 y 150 dólares al mes, y los usuarios avanzados no optimizados han informado de facturas de miles de dólares.</p>
-<p>Los modelos locales a través de Ollama u otros servidores compatibles con OpenAI eliminan el coste por token, pero requieren hardware, y OpenClaw necesita al menos 64.000 tokens de contexto, lo que reduce las opciones viables. Con 14B de parámetros, los modelos pueden manejar automatizaciones sencillas, pero son marginales para tareas de agentes de múltiples pasos; la experiencia de la comunidad sitúa el umbral fiable en 32B+, necesitando al menos 24GB de VRAM. No podrá igualar a un modelo de nube fronteriza en razonamiento o contexto ampliado, pero obtendrá una localización de datos completa y costes predecibles.</p>
-<p><strong>Qué le aporta esta arquitectura</strong></p>
-<p>Dado que todo se ejecuta a través de un único proceso, el Gateway es una única superficie de control. Qué modelo llamar, qué herramientas permitir, cuánto contexto incluir, cuánta autonomía conceder... todo se configura en un solo lugar. Los canales están desacoplados del modelo: cambia Telegram por Slack o Claude por Gemini y nada más cambia. El cableado de los canales, las herramientas y la memoria permanecen en tu infra; el modelo es la única dependencia a la que apuntas.</p>
-<h3 id="What-Hardware-Do-You-Actually-Need-to-Run-OpenClaw" class="common-anchor-header">¿Qué hardware se necesita realmente para ejecutar OpenClaw?</h3><p>A finales de enero, circularon publicaciones que mostraban a desarrolladores sacando de la caja varios Mac Mini; un usuario publicó 40 unidades en un escritorio. Incluso Logan Kilpatrick, de Google DeepMind, anunció que había pedido uno, aunque los requisitos reales de hardware son mucho más modestos.</p>
+<p><strong>Model Routing and Failover</strong></p>
+<p>OpenClaw is model-agnostic. You configure providers in <code translate="no">openclaw.json</code>, and the Gateway routes accordingly — with auth profile rotation and a fallback chain that uses exponential backoff when a provider goes down. But model choice matters, because OpenClaw assembles large prompts: system instructions, conversation history, tool schemas, skills, and memory. That context load is why most deployments use a frontier model as the primary orchestrator, with cheaper models handling heartbeats and sub-agent tasks.</p>
+<p><strong>Cloud vs. Local Trade-offs</strong></p>
+<p>From the Gateway’s perspective, cloud and local models look identical — they’re both OpenAI-compatible endpoints. The trade-offs are what differ.</p>
+<p>Cloud models (Anthropic, OpenAI, Google) offer strong reasoning, large context windows, and reliable tool use. They’re the default choice for the primary orchestrator. Cost scales with usage: light users spend $5–20/month, active agents with frequent heartbeats and large prompts typically run $50–150/month, and unoptimized power users have reported bills in the thousands.</p>
+<p>Local models via Ollama or other OpenAI-compatible servers eliminate per-token cost but require hardware — and OpenClaw needs at least 64K tokens of context, which narrows viable options. At 14B parameters, models can handle simple automations but are marginal for multi-step agent tasks; community experience puts the reliable threshold at 32B+, needing at least 24GB of VRAM. You won’t match a frontier cloud model on reasoning or extended context, but you get full data locality and predictable costs.</p>
+<p><strong>What This Architecture Gets You</strong></p>
+<p>Because everything runs through one process, the Gateway is a single control surface. Which model to call, which tools to allow, how much context to include, how much autonomy to grant — all configured in one place. Channels are decoupled from the model: swap Telegram for Slack or Claude for Gemini and nothing else changes. Channel wiring, tools, and memory stay on your infra; the model is the one dependency you point outward.</p>
+<h3 id="What-Hardware-Do-You-Actually-Need-to-Run-OpenClaw" class="common-anchor-header">What Hardware Do You Actually Need to Run OpenClaw?</h3><p>In late January, posts circulated showing developers unboxing multiple Mac Minis — one user posted 40 units on a desk. Even Logan Kilpatrick at Google DeepMind posted about ordering one, though the actual hardware requirements are far more modest.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_5_896f6a05f6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>La documentación oficial indica que los requisitos mínimos son 2 GB de RAM y 2 núcleos de CPU para el chat básico, o 4 GB si quieres automatizar el navegador. Un VPS de 5 dólares al mes es suficiente. También puede implementar en AWS o Hetzner con Pulumi, ejecutarlo en Docker en un pequeño VPS, o utilizar un viejo ordenador portátil acumulando polvo. La tendencia del Mac Mini fue impulsada por la prueba social, no por requisitos técnicos.</p>
-<p><strong>Entonces, ¿por qué la gente compró hardware dedicado? Dos razones: aislamiento y persistencia.</strong> Cuando das a un agente autónomo acceso shell, quieres una máquina que puedas desconectar físicamente si algo va mal. Y como OpenClaw funciona con un latido (despertándose en un horario configurable para actuar en su nombre), un dispositivo dedicado significa que siempre está encendido, siempre listo. El atractivo es el aislamiento físico en un ordenador que puede desconectar y el tiempo de actividad sin depender de la disponibilidad de un servicio en la nube.</p>
-<h2 id="How-to-Install-OpenClaw-and-Quickly-Get-Started" class="common-anchor-header">Cómo instalar OpenClaw y empezar rápidamente<button data-href="#How-to-Install-OpenClaw-and-Quickly-Get-Started" class="anchor-icon" translate="no">
+<p>The official documentation lists minimum requirements as 2GB RAM and 2 CPU cores for basic chat, or 4GB if you want browser automation. A $5/month VPS handles this fine. You can also deploy on AWS or Hetzner with Pulumi, run it in Docker on a small VPS, or use an old laptop gathering dust. The Mac Mini trend was driven by social proof, not technical requirements.</p>
+<p><strong>So why did people buy dedicated hardware? Two reasons: isolation and persistence.</strong> When you give an autonomous agent shell access, you want a machine you can physically unplug if something goes wrong. And because OpenClaw runs on a heartbeat — waking on a configurable schedule to act on your behalf — a dedicated device means it’s always on, always ready. The appeal is physical isolation on a computer you can unplug and uptime without depending on a cloud service’s availability.</p>
+<h2 id="How-to-Install-OpenClaw-and-Quickly-Get-Started" class="common-anchor-header">How to Install OpenClaw and Quickly Get Started<button data-href="#How-to-Install-OpenClaw-and-Quickly-Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -141,36 +141,36 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Necesitas <strong>Node 22+</strong>. Consulte con <code translate="no">node --version</code> si no está seguro.</p>
-<p><strong>Instala la CLI:</strong></p>
-<p>En macOS/Linux:</p>
+    </button></h2><p>You need <strong>Node 22+</strong>. Check with <code translate="no">node --version</code> if you’re not sure.</p>
+<p><strong>Install the CLI:</strong></p>
+<p>On macOS/Linux:</p>
 <pre><code translate="no">curl -fsSL <span class="hljs-attr">https</span>:<span class="hljs-comment">//openclaw.ai/install.sh | bash</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>En Windows (PowerShell):</p>
+<p>On Windows (PowerShell):</p>
 <pre><code translate="no">iwr -useb <span class="hljs-attr">https</span>:<span class="hljs-comment">//openclaw.ai/install.ps1 | iex</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Ejecuta el asistente de onboarding:</strong></p>
+<p><strong>Run the onboarding wizard:</strong></p>
 <pre><code translate="no">openclaw onboard --install-daemon
 <button class="copy-code-btn"></button></code></pre>
-<p>Te guiará a través de la autenticación, la configuración de la pasarela y, opcionalmente, la conexión de un canal de mensajería (WhatsApp, Telegram, etc.). El indicador <code translate="no">--install-daemon</code> registra la pasarela como un servicio en segundo plano para que se inicie automáticamente.</p>
-<p><strong>Comprueba que la pasarela se está ejecutando:</strong></p>
+<p>This walks you through auth, gateway config, and optionally connecting a messaging channel (WhatsApp, Telegram, etc.). The <code translate="no">--install-daemon</code> flag registers the gateway as a background service so it starts automatically.</p>
+<p><strong>Verify the gateway is running:</strong></p>
 <pre><code translate="no">openclaw gateway status
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Abre el panel de control:</strong></p>
+<p><strong>Open the dashboard:</strong></p>
 <pre><code translate="no">openclaw dashboard
 <button class="copy-code-btn"></button></code></pre>
-<p>Esto abre la interfaz de control en <code translate="no">http://127.0.0.1:18789/</code>. Puedes empezar a chatear con tu agente aquí mismo, sin necesidad de configurar ningún canal si sólo quieres probar las cosas.</p>
-<p><strong>Un par de cosas que vale la pena saber desde el principio.</strong> Si desea ejecutar la pasarela en primer plano en lugar de como un demonio (útil para la depuración), puede hacerlo:</p>
+<p>This opens the Control UI at <code translate="no">http://127.0.0.1:18789/</code>. You can start chatting with your agent right here — no channel setup needed if you just want to test things out.</p>
+<p><strong>A couple of things worth knowing early on.</strong> If you want to run the gateway in the foreground instead of as a daemon (useful for debugging), you can do:</p>
 <pre><code translate="no">openclaw gateway --port 18789
 <button class="copy-code-btn"></button></code></pre>
-<p>Y si necesita personalizar donde OpenClaw almacena su configuración y estado - digamos que lo está ejecutando como una cuenta de servicio o en un contenedor - hay tres env vars que importan:</p>
+<p>And if you need to customize where OpenClaw stores its config and state — say you’re running it as a service account or in a container — there are three env vars that matter:</p>
 <ul>
-<li><p><code translate="no">OPENCLAW_HOME</code> - directorio base para la resolución de rutas internas</p></li>
-<li><p><code translate="no">OPENCLAW_STATE_DIR</code> - anula la ubicación de los archivos de estado</p></li>
-<li><p><code translate="no">OPENCLAW_CONFIG_PATH</code> - apunta a un archivo de configuración específico</p></li>
+<li><p><code translate="no">OPENCLAW_HOME</code> — base directory for internal path resolution</p></li>
+<li><p><code translate="no">OPENCLAW_STATE_DIR</code> — overrides where state files live</p></li>
+<li><p><code translate="no">OPENCLAW_CONFIG_PATH</code> — points to a specific config file</p></li>
 </ul>
-<p>Una vez que tengas la pasarela funcionando y el panel de control cargando, estás listo. A partir de ahí, es probable que desee conectar un canal de mensajería y configurar las aprobaciones de habilidades - vamos a cubrir ambos en las próximas secciones.</p>
-<h2 id="How-Does-OpenClaw-Compare-to-Other-AI-Agents" class="common-anchor-header">¿Cómo se compara OpenClaw con otros agentes de IA?<button data-href="#How-Does-OpenClaw-Compare-to-Other-AI-Agents" class="anchor-icon" translate="no">
+<p>Once you’ve got the gateway running and the dashboard loading, you’re set. From there, you’ll probably want to connect a messaging channel and set up skill approvals — we’ll cover both in the next sections.</p>
+<h2 id="How-Does-OpenClaw-Compare-to-Other-AI-Agents" class="common-anchor-header">How Does OpenClaw Compare to Other AI Agents?<button data-href="#How-Does-OpenClaw-Compare-to-Other-AI-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -185,28 +185,28 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La comunidad tecnológica llama a OpenClaw "Claude, pero con manos". Es una descripción vívida, pero pasa por alto las diferencias arquitectónicas. Varios productos de IA ya tienen "manos": Anthropic tiene <a href="https://claude.com/blog/claude-code">Claude Code</a> y <a href="https://claude.com/blog/cowork-research-preview">Cowork</a>, OpenAI tiene <a href="https://openai.com/codex/">Codex</a> y <a href="https://openai.com/index/introducing-chatgpt-agent/">el agente ChatGPT</a>, y existe <a href="https://manus.im/">Manus</a>. Las distinciones que importan en la práctica son:</p>
+    </button></h2><p>The tech community calls OpenClaw “Claude, but with hands.” It’s a vivid depiction, but it misses the architectural differences. Several AI products have “hands” now — Anthropic has <a href="https://claude.com/blog/claude-code">Claude Code</a> and <a href="https://claude.com/blog/cowork-research-preview">Cowork</a>, OpenAI has <a href="https://openai.com/codex/">Codex</a> and <a href="https://openai.com/index/introducing-chatgpt-agent/">ChatGPT agent</a>, and <a href="https://manus.im/">Manus</a> exists. The distinctions that matter in practice are:</p>
 <ul>
-<li><p><strong>Dónde se ejecuta el agente</strong> (tu máquina frente a la nube del proveedor).</p></li>
-<li><p><strong>Cómo interactúas con él</strong> (aplicación de mensajería, terminal, IDE, interfaz de usuario web)</p></li>
-<li><p><strong>A quién pertenece el estado y la memoria a largo plazo</strong> (archivos locales frente a la cuenta del proveedor).</p></li>
+<li><p><strong>Where the agent runs</strong> (your machine vs the provider’s cloud)</p></li>
+<li><p><strong>How you interact with it</strong> (messaging app, terminal, IDE, web UI)</p></li>
+<li><p><strong>Who owns the state and long‑term memory</strong> (local files vs provider account)</p></li>
 </ul>
-<p>A un alto nivel, OpenClaw es una puerta de enlace local que vive en tu hardware y habla a través de aplicaciones de chat, mientras que los otros son en su mayoría agentes alojados que manejas desde un terminal, IDE o aplicación web/escritorio.</p>
+<p>At a high level, OpenClaw is a local-first gateway that lives on your hardware and talks through chat apps, while the others are mostly hosted agents you drive from a terminal, IDE, or web/desktop app.</p>
 <table>
 <thead>
-<tr><th></th><th>OpenClaw</th><th>Código Claude</th><th>Códice OpenAI</th><th>Agente ChatGPT</th><th>Manus</th></tr>
+<tr><th></th><th>OpenClaw</th><th>Claude Code</th><th>OpenAI Codex</th><th>ChatGPT Agent</th><th>Manus</th></tr>
 </thead>
 <tbody>
-<tr><td>Código abierto</td><td>Sí. Core gateway bajo licencia MIT;</td><td>No.</td><td>No.</td><td>No.</td><td>No. SaaS de código cerrado</td></tr>
-<tr><td>Interfaz</td><td>Aplicaciones de mensajería (WhatsApp, Telegram, Slack, Discord, Signal, iMessage, etc.)</td><td>Terminal, integraciones IDE, web y aplicación móvil</td><td>Terminal CLI, integraciones IDE, Codex Web UI</td><td>ChatGPT web y aplicaciones de escritorio (incluido el modo de agente macOS)</td><td>Panel web, operador de navegador, Slack e integraciones de aplicaciones</td></tr>
-<tr><td>Enfoque principal</td><td>Automatización personal y del desarrollador a través de herramientas y servicios</td><td>Desarrollo de software y flujos de trabajo DevOps</td><td>Desarrollo de software y edición de código</td><td>Tareas web de uso general, investigación y flujos de trabajo de productividad</td><td>Investigación, contenidos y automatización web para usuarios empresariales</td></tr>
-<tr><td>Memoria de sesión</td><td>Memoria basada en archivos (Markdown + logs) en disco; los plugins opcionales añaden memoria semántica / a largo plazo</td><td>Sesiones por proyecto con historial, más memoria Claude opcional en la cuenta</td><td>Estado por sesión en CLI / editor; no hay memoria de usuario a largo plazo incorporada</td><td>Ejecución de agente por tarea respaldada por las funciones de memoria a nivel de cuenta de ChatGPT (si están activadas)</td><td>Memoria en la nube, a nivel de cuenta, en todas las ejecuciones, ajustada para flujos de trabajo recurrentes</td></tr>
-<tr><td>Despliegue</td><td>Pasarela/demonio siempre en ejecución en su máquina o VPS; llamadas a proveedores LLM</td><td>Se ejecuta en la máquina del desarrollador como plugin CLI/IDE; todas las llamadas a los modelos van a la API de Anthropic</td><td>La CLI se ejecuta localmente; los modelos se ejecutan a través de la API de OpenAI o Codex Web</td><td>Totalmente alojado por OpenAI; el modo Agente crea un espacio de trabajo virtual desde el cliente ChatGPT</td><td>Totalmente alojado por Manus; los agentes se ejecutan en el entorno de nube de Manus</td></tr>
-<tr><td>Público objetivo</td><td>Desarrolladores y usuarios avanzados que se sienten cómodos ejecutando su propia infraestructura</td><td>Desarrolladores e ingenieros DevOps que trabajan en terminales e IDEs</td><td>Desarrolladores que desean un agente de codificación en terminal/IDE</td><td>Trabajadores del conocimiento y equipos que utilizan ChatGPT para tareas de usuario final</td><td>Usuarios empresariales y equipos que automatizan flujos de trabajo centrados en la web</td></tr>
-<tr><td>Coste</td><td>Gratuito + llamada a la API en función de su uso</td><td>20-200 $/mes</td><td>20-200 $/mes</td><td>20-200 $/mes</td><td>39-199 $/mes (créditos)</td></tr>
+<tr><td>Open source</td><td>Yes. Core gateway under MIT license;</td><td>No.</td><td>No.</td><td>No.</td><td>No. Closed-source SaaS</td></tr>
+<tr><td>Interface</td><td>Messaging apps (WhatsApp, Telegram, Slack, Discord, Signal, iMessage, etc.)</td><td>Terminal, IDE integrations, web and mobile app</td><td>Terminal CLI, IDE integrations, Codex Web UI</td><td>ChatGPT web and desktop apps (including macOS Agent mode)</td><td>Web dashboard, browser operator, Slack and app integrations</td></tr>
+<tr><td>Primary focus</td><td>Personal + developer automation across tools and services</td><td>Software development and DevOps workflows</td><td>Software development and code editing</td><td>General-purpose web tasks, research, and productivity workflows</td><td>Research, content, and web automation for business users</td></tr>
+<tr><td>Session memory</td><td>File‑based memory (Markdown + logs) on disk; optional plugins add semantic / long‑term memory</td><td>Per‑project sessions with history, plus optional Claude Memory on the account</td><td>Per‑session state in CLI / editor; no built‑in long‑term user memory</td><td>Per‑task “agent run” backed by ChatGPT’s account‑level memory features (if enabled)</td><td>Cloud‑side, account‑scoped memory across runs, tuned for recurring workflows</td></tr>
+<tr><td>Deployment</td><td>Always‑running gateway/daemon on your machine or VPS; calls out to LLM providers</td><td>Runs on the developer’s machine as CLI/IDE plugin; all model calls go to Anthropic’s API</td><td>CLI runs locally; models execute via OpenAI’s API or Codex Web</td><td>Fully hosted by OpenAI; Agent mode spins up a virtual workspace from the ChatGPT client</td><td>Fully hosted by Manus; agents execute in Manus’ cloud environment</td></tr>
+<tr><td>Target audience</td><td>Developers and power users comfortable running their own infrastructure</td><td>Developers and DevOps engineers working in terminals and IDEs</td><td>Developers who want a coding agent in terminal/IDE</td><td>Knowledge workers and teams using ChatGPT for end‑user tasks</td><td>Business users and teams automating web‑centric workflows</td></tr>
+<tr><td>Cost</td><td>Free + API calling based on your usage</td><td>$20–200/mo</td><td>$20–200/mo</td><td>$20–200/mo</td><td>$39–199/mo (credits)</td></tr>
 </tbody>
 </table>
-<h2 id="Real-World-Applications-of-OpenClaw" class="common-anchor-header">Aplicaciones reales de OpenClaw<button data-href="#Real-World-Applications-of-OpenClaw" class="anchor-icon" translate="no">
+<h2 id="Real-World-Applications-of-OpenClaw" class="common-anchor-header">Real-World Applications of OpenClaw<button data-href="#Real-World-Applications-of-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -221,29 +221,29 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El valor práctico de OpenClaw proviene de su alcance. Aquí están algunas de las cosas más interesantes que la gente ha construido con él, comenzando con un bot de soporte que desplegamos para la comunidad Milvus.</p>
-<p><strong>El equipo de soporte de Zilliz creó un robot de soporte de IA para la comunidad Milvus en Slack</strong></p>
-<p>El equipo de Zilliz conectó OpenClaw a su espacio de trabajo Slack como <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">asistente de la comunidad Milvus</a>. La instalación duró 20 minutos. Ahora responde a preguntas comunes sobre Milvus, ayuda a solucionar errores y remite a los usuarios a la documentación pertinente. Si desea probar algo similar, hemos escrito un <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">tutorial</a> completo <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">paso a paso</a> sobre cómo conectar OpenClaw a Slack.</p>
+    </button></h2><p>OpenClaw’s practical value comes from scope. Here are some of the more interesting things people have built with it, starting with a support bot we deployed for the Milvus community.</p>
+<p><strong>Zilliz Support Team Built an AI Support Bot for the Milvus Community on Slack</strong></p>
+<p>The Zilliz team connected OpenClaw to its Slack workspace as a <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Milvus community assistant</a>. Setup took 20 minutes. It now answers common questions about Milvus, helps troubleshoot errors, and points users to relevant documentation. If you want to try something similar, we wrote a full <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">step-by-step tutorial</a> on how to connect OpenClaw to Slack.</p>
 <ul>
-<li><strong>Tutorial de OpenClaw:</strong> <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Guía paso a paso para configurar OpenClaw con Slack</a></li>
+<li><strong>OpenClaw Tutorial:</strong> <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Step-by-Step Guide to Setting Up OpenClaw with Slack</a></li>
 </ul>
-<p><strong>AJ Stuyvenberg creó un agente que le ayudó a negociar un descuento de 4.200 dólares en la compra de un coche mientras dormía</strong></p>
-<p>El ingeniero de software AJ Stuyvenberg encargó a su agente OpenClaw la compra de un Hyundai Palisade 2026. El agente buscó en los inventarios de los concesionarios locales, rellenó formularios de contacto con su número de teléfono y correo electrónico y se pasó varios días enfrentando a los concesionarios entre sí, enviándoles presupuestos en PDF y pidiéndoles que superaran el precio del otro. Resultado final: <a href="https://aaronstuyvenberg.com/posts/clawd-bought-a-car"> 4.200 dólares</a> por debajo del precio de etiqueta, y Stuyvenberg sólo se presentó para firmar el papeleo. "Subcontratar los aspectos dolorosos de la compra de un coche a la IA fue refrescantemente agradable", escribió.</p>
+<p><strong>AJ Stuyvenberg Built an Agent That Helped Him Negotiate $4,200 Off a Car Purchase While he was Sleeping</strong></p>
+<p>Software engineer AJ Stuyvenberg tasked his OpenClaw with buying a 2026 Hyundai Palisade. The agent scraped local dealer inventories, filled out contact forms using his phone number and email, then spent several days playing dealers against each other—forwarding competing PDF quotes and asking each to beat the other’s price. Final result: <a href="https://aaronstuyvenberg.com/posts/clawd-bought-a-car">$4,200</a> below sticker, with Stuyvenberg showing up only to sign the paperwork. “Outsourcing the painful aspects of a car purchase to AI was refreshingly nice,” he wrote.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_6_b147a5e824.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>El agente de Hormold le ganó un litigio de seguros previamente cerrado sin previo aviso</strong></p>
+<p><strong>Hormold’s Agent Won Him a Previously-Closed Insurance Dispute Without Prompt</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_6_5_b1a9f37495.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Un usuario llamado Hormold tuvo una reclamación rechazada por Lemonade Insurance. Su OpenClaw descubrió el correo electrónico de rechazo, redactó una refutación citando el lenguaje de la póliza, y lo envió, sin permiso explícito. Lemonade reabrió la investigación. Mi @openclaw inició accidentalmente una pelea con Lemonade Insurance&quot;, tuiteó. &quot;Gracias, AI&quot;.</p>
-<h2 id="Moltbook-A-Social-Network-Built-with-OpenClaw-for-AI-Agents" class="common-anchor-header">Moltbook: Una red social construida con OpenClaw para agentes de IA<button data-href="#Moltbook-A-Social-Network-Built-with-OpenClaw-for-AI-Agents" class="anchor-icon" translate="no">
+<p>A user named Hormold had a claim rejected by Lemonade Insurance. His OpenClaw discovered the rejection email, drafted a rebuttal citing policy language, and sent it—without explicit permission. Lemonade reopened the investigation. “My @openclaw accidentally started a fight with Lemonade Insurance,” he tweeted. &quot;Thanks, AI.</p>
+<h2 id="Moltbook-A-Social-Network-Built-with-OpenClaw-for-AI-Agents" class="common-anchor-header">Moltbook: A Social Network Built with OpenClaw for AI Agents<button data-href="#Moltbook-A-Social-Network-Built-with-OpenClaw-for-AI-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -258,23 +258,23 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Los ejemplos anteriores muestran a OpenClaw automatizando tareas para usuarios individuales. Pero, ¿qué ocurre cuando miles de estos agentes interactúan entre sí?</p>
+    </button></h2><p>The examples above show OpenClaw automating tasks for individual users. But what happens when thousands of these agents interact with each other?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_7_2dd1b06c04.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>El 28 de enero de 2026, inspirado en OpenClaw y construido con él, el empresario Matt Schlicht lanzó <a href="https://moltbook.com/">Moltbook</a>, una plataforma al estilo de Reddit en la que sólo pueden publicar agentes de IA. El crecimiento fue rápido. En 72 horas se habían registrado 32.000 agentes. En una semana, el número superaba el millón y medio. Más de un millón de humanos visitaron la plataforma durante la primera semana.</p>
+<p>On January 28, 2026, inspired by and built with OpenClaw, entrepreneur Matt Schlicht launched <a href="https://moltbook.com/">Moltbook</a> — a Reddit-style platform where only AI agents can post. Growth was fast. Within 72 hours, 32,000 agents had registered. Within a week, the count passed 1.5 million. Over a million humans visited in the first week to watch.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_8_ce2b911259.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Los problemas de seguridad llegaron igual de rápido. El 31 de enero -cuatro días después del lanzamiento- <a href="https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/">404 Media informó</a> de que un error de configuración de la base de datos Supabase había dejado todo el backend de la plataforma abierto a la Internet pública. El investigador de seguridad Jameson O'Reilly descubrió el fallo; <a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">Wiz lo confirmó de forma independiente</a> y documentó todo su alcance: acceso no autenticado de lectura y escritura a todas las tablas, incluyendo 1,5 millones de claves API de agentes, más de 35.000 direcciones de correo electrónico y miles de mensajes privados.</p>
-<p>Si Moltbook representa un comportamiento emergente de la máquina o agentes que reproducen tropos de ciencia ficción a partir de datos de entrenamiento es una cuestión abierta. Lo que es menos ambiguo es la demostración técnica: agentes autónomos que mantienen un contexto persistente, se coordinan en una plataforma compartida y producen resultados estructurados sin instrucciones explícitas. Para los ingenieros que trabajan con OpenClaw o marcos similares, es un anticipo en vivo tanto de las capacidades como de los retos de seguridad que plantea la IA agéntica a gran escala.</p>
-<h2 id="Technical-Risks-and-Production-Considerations-for-OpenClaw" class="common-anchor-header">Riesgos técnicos y consideraciones de producción para OpenClaw<button data-href="#Technical-Risks-and-Production-Considerations-for-OpenClaw" class="anchor-icon" translate="no">
+<p>The security problems arrived just as fast. On January 31 — four days after launch — <a href="https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/">404 Media reported</a> that a Supabase database misconfiguration had left the platform’s entire backend open to the public internet. Security researcher Jameson O’Reilly discovered the flaw; <a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">Wiz independently confirmed</a> it and documented the full scope: unauthenticated read and write access to all tables, including 1.5 million agent API keys, over 35,000 email addresses, and thousands of private messages.</p>
+<p>Whether Moltbook represents emergent machine behavior or agents reproducing science-fiction tropes from training data is an open question. What’s less ambiguous is the technical demonstration: autonomous agents maintaining persistent context, coordinating on a shared platform, and producing structured output without explicit instruction. For engineers building with OpenClaw or similar frameworks, it’s a live preview of both the capabilities and the security challenges that come with agentic AI at scale.</p>
+<h2 id="Technical-Risks-and-Production-Considerations-for-OpenClaw" class="common-anchor-header">Technical Risks and Production Considerations for OpenClaw<button data-href="#Technical-Risks-and-Production-Considerations-for-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -289,21 +289,21 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de desplegar OpenClaw en cualquier lugar importante, es necesario entender lo que realmente se está ejecutando. Se trata de un agente con acceso shell, control del navegador y capacidad para enviar correos electrónicos en su nombre, en bucle y sin preguntar. Eso es poderoso, pero la superficie de ataque es enorme y el proyecto es joven.</p>
-<p><strong>El modelo de autenticación tenía un grave agujero.</strong> El 30 de enero de 2026, Mav Levin de depthfirst reveló <a href="https://thehackernews.com/2026/02/openclaw-bug-enables-one-click-remote.html">CVE-2026-25253</a> (CVSS 8.8) - un fallo de secuestro de WebSocket a través del sitio donde cualquier sitio web podría robar tu token de autenticación y obtener RCE en tu máquina a través de un único enlace malicioso. Un clic, acceso completo. Esto fue parcheado en <code translate="no">2026.1.29</code>, pero Censys encontró más de 21.000 instancias de OpenClaw expuestas a la Internet pública en ese momento, muchas a través de HTTP. <strong>Si estás ejecutando una versión anterior o no has bloqueado la configuración de tu red, compruébalo primero.</strong></p>
-<p><strong>Las habilidades son sólo código de extraños, y no hay sandbox.</strong> <a href="https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare">El equipo de seguridad de Cisco</a> desmontó una habilidad llamada "¿Qué haría Elon?" que había alcanzado el número 1 en el repositorio. Se trataba de malware puro y duro: utilizaba la inyección rápida para saltarse las comprobaciones de seguridad y filtraba los datos del usuario a un servidor controlado por el atacante. Encontraron nueve vulnerabilidades en esa habilidad, dos de ellas críticas. Cuando auditaron 31.000 habilidades de agentes en múltiples plataformas (Claude, Copilot, repos genéricos de AgentSkills), el 26% tenía al menos una vulnerabilidad. Sólo en la primera semana de febrero se subieron a ClawHub más de 230 habilidades maliciosas. <strong>Trata cada skill que no hayas escrito tú mismo como una dependencia no fiable - haz un fork, léelo e instálalo.</strong></p>
-<p><strong>El bucle de latido hará cosas que no pediste.</strong> Esa historia de Hormold de la introducción - en la que el agente encontró una denegación de seguro, investigó precedentes y envió una refutación legal de forma autónoma - no es una demostración de características; es un riesgo de responsabilidad. El agente se comprometió a enviar correspondencia legal sin aprobación humana. Aquella vez funcionó. No siempre será así. <strong>Cualquier cosa que implique pagos, eliminaciones o comunicación externa necesita una puerta humana en el bucle, y punto.</strong></p>
-<p><strong>Los costes de la API aumentan rápidamente si no estás atento.</strong> Números aproximados: una configuración ligera con unos pocos latidos al día cuesta entre 18 y 36 dólares al mes con Sonnet 4.5. Aumentar esa cifra a más de 12 comprobaciones diarias puede suponer un coste adicional. Si a eso le sumamos más de 12 comprobaciones diarias en Opus, el coste mensual es de 270-540 dólares. Una persona en HN descubrió que estaba gastando 70 dólares al mes en llamadas redundantes a la API y en registros detallados. <strong>Establezca alertas de gasto a nivel de proveedor.</strong> Un intervalo de heartbeat mal configurado puede agotar su presupuesto de API de la noche a la mañana.</p>
-<p>Antes de desplegarlo, le recomendamos encarecidamente que lo revise:</p>
+    </button></h2><p>Before you deploy OpenClaw anywhere that matters, you need to understand what you’re actually running. This is an agent with shell access, browser control, and the ability to send emails on your behalf — on a loop, without asking. That’s powerful, but the attack surface is enormous and the project is young.</p>
+<p><strong>The auth model had a serious hole.</strong> On January 30, 2026, Mav Levin from depthfirst disclosed  <a href="https://thehackernews.com/2026/02/openclaw-bug-enables-one-click-remote.html">CVE-2026-25253</a> (CVSS 8.8) — a cross-site WebSocket hijacking bug where any website could steal your auth token and get RCE on your machine through a single malicious link. One click, full access. This was patched in <code translate="no">2026.1.29</code>, but Censys found over 21,000 OpenClaw instances exposed to the public internet at the time, many over plain HTTP. <strong>If you’re running an older version or haven’t locked down your network config, check that first.</strong></p>
+<p><strong>Skills are just code from strangers, and there’s no sandbox.</strong> <a href="https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare">Cisco’s security team</a> tore apart a skill called “What Would Elon Do?” that had been gamed to #1 on the repository. It was straight-up malware — used prompt injection to bypass safety checks and exfiltrated user data to an attacker-controlled server. They found nine vulnerabilities in that one skill, two of them critical. When they audited 31,000 agent skills across multiple platforms (Claude, Copilot, generic AgentSkills repos), 26% had at least one vulnerability. Over 230 malicious skills were uploaded to ClawHub in the first week of February alone. <strong>Treat every skill you didn’t write yourself like an untrusted dependency — fork it, read it, then install it.</strong></p>
+<p><strong>The heartbeat loop will do things you didn’t ask for.</strong> That Hormold story from the intro — where the agent found an insurance denial, researched precedent, and sent a legal rebuttal autonomously — is not a feature demo; it’s a liability risk. The agent committed to legal correspondence without human approval. It worked out that time. It won’t always. <strong>Anything involving payments, deletions, or external communication needs a human-in-the-loop gate, full stop.</strong></p>
+<p><strong>API costs add up fast if you’re not watching.</strong> Rough numbers: a light setup with a few heartbeats per day runs $18–36/month on Sonnet 4.5. Bump that to 12+ checks daily on Opus and you’re looking at $270–540/month. One person on HN found they were burning $70/month on redundant API calls and verbose logging — cut it to almost nothing after cleaning up the config. <strong>Set spending alerts at the provider level.</strong> A misconfigured heartbeat interval can drain your API budget overnight.</p>
+<p>Before you deploy, we highly recommend that you go through this:</p>
 <ul>
-<li><p>Ejecutarlo en un entorno aislado - una máquina virtual o contenedor dedicado, no su conductor diario.</p></li>
-<li><p>Fork y auditar cada habilidad antes de instalar. Lee el código fuente. Todo.</p></li>
-<li><p>Establezca límites estrictos de gasto de API a nivel de proveedor, no sólo en la configuración del agente.</p></li>
-<li><p>Protege todas las acciones irreversibles tras la aprobación humana: pagos, eliminaciones, envío de correos electrónicos, cualquier cosa externa.</p></li>
-<li><p>Fija la versión 2026.1.29 o posterior y mantente al día con los parches de seguridad.</p></li>
+<li><p>Run it in an isolated environment — a dedicated VM or container, not your daily driver</p></li>
+<li><p>Fork and audit every skill before installing. Read the source. All of it.</p></li>
+<li><p>Set hard API spending limits at the provider level, not just in the agent config</p></li>
+<li><p>Gate all irreversible actions behind human approval — payments, deletions, sending emails, anything external</p></li>
+<li><p>Pin to 2026.1.29 or later and keep up with security patches</p></li>
 </ul>
-<p>No lo expongas a la Internet pública a menos que sepas exactamente lo que estás haciendo con la configuración de la red.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Don’t expose it to the public internet unless you know exactly what you’re doing with the network config.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -318,16 +318,16 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenClaw ha superado las 175.000 estrellas de GitHub en menos de dos semanas, convirtiéndose en uno de los repos de código abierto de más rápido crecimiento en la historia de GitHub. La adopción es real, y la arquitectura subyacente merece atención.</p>
-<p>Desde un punto de vista técnico, OpenClaw es tres cosas que la mayoría de los agentes de IA no son: completamente de código abierto (MIT), local-first (memoria almacenada como archivos Markdown en su máquina), y programado de forma autónoma (un demonio de latido que actúa sin preguntar). Se integra con plataformas de mensajería como Slack, Telegram y WhatsApp desde el primer momento, y admite habilidades creadas por la comunidad a través de un sencillo sistema SKILL.md. Esta combinación lo hace especialmente adecuado para crear asistentes siempre activos: bots de Slack que responden preguntas 24/7, monitores de bandeja de entrada que trian el correo electrónico mientras duermes, o flujos de trabajo de automatización que se ejecutan en tu propio hardware sin dependencia del proveedor.</p>
-<p>Dicho esto, la arquitectura que hace potente a OpenClaw también lo convierte en un riesgo si se despliega de forma descuidada. Algunas cosas que hay que tener en cuenta:</p>
+    </button></h2><p>OpenClaw crossed 175,000 GitHub stars in under two weeks, making it one of the fastest-growing open-source repos in GitHub history. The adoption is real, and the architecture underneath it warrants attention.</p>
+<p>From a technical standpoint, OpenClaw is three things most AI agents aren’t: fully open-source (MIT), local-first (memory stored as Markdown files on your machine), and autonomously scheduled (a heartbeat daemon that acts without prompting). It integrates with messaging platforms like Slack, Telegram, and WhatsApp out of the box, and supports community-built skills through a simple SKILL.md system. That combination makes it uniquely suited for building always-on assistants: Slack bots that answer questions 24/7, inbox monitors that triage email while you sleep, or automation workflows that run on your own hardware without vendor lock-in.</p>
+<p>That said, the architecture that makes OpenClaw powerful also makes it risky if deployed carelessly. A few things to keep in mind:</p>
 <ul>
-<li><p><strong>Ejecútelo de forma aislada.</strong> Utilice un dispositivo dedicado o una máquina virtual, no su máquina principal. Si algo va mal, necesita un interruptor de corte físicamente accesible.</p></li>
-<li><p><strong>Audite las competencias antes de instalarlas.</strong> El 26% de las competencias comunitarias analizadas por Cisco contenían al menos una vulnerabilidad. Bifurque y revise todo aquello en lo que no confíe.</p></li>
-<li><p><strong>Establezca límites de gasto de API a nivel de proveedor.</strong> Un heartbeat mal configurado puede quemar cientos de dólares de la noche a la mañana. Configure alertas antes de desplegar.</p></li>
-<li><p><strong>Bloquee las acciones irreversibles.</strong> Pagos, eliminaciones, comunicaciones externas: deben requerir la aprobación humana, no la ejecución autónoma.</p></li>
+<li><p><strong>Run it in isolation.</strong> Use a dedicated device or VM, not your primary machine. If something goes wrong, you want a kill switch you can physically reach.</p></li>
+<li><p><strong>Audit skills before installing.</strong> 26% of community skills analyzed by Cisco contained at least one vulnerability. Fork and review anything you don’t trust.</p></li>
+<li><p><strong>Set API spending limits at the provider level.</strong> A misconfigured heartbeat can burn through hundreds of dollars overnight. Configure alerts before you deploy.</p></li>
+<li><p><strong>Gate irreversible actions.</strong> Payments, deletions, external communications: these should require human approval, not autonomous execution.</p></li>
 </ul>
-<h2 id="Keep-Reading" class="common-anchor-header">Seguir leyendo<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -343,9 +343,9 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Guía paso a paso para configurar OpenClaw con Slack</a> - Cree un robot de soporte de IA impulsado por Milvus en su espacio de trabajo de Slack utilizando OpenClaw</p></li>
-<li><p><a href="https://milvus.io/blog/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md">LangChain 1.0 and Milvus: Build Production-Ready AI Agents with Long-Term</a> Memory - Cómo dotar a sus agentes de memoria semántica persistente con Milvus</p></li>
-<li><p><a href="https://milvus.io/blog/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md">Stop Building Vanilla RAG: Embrace Agentic RAG with DeepSearcher</a> - Why agentic RAG outperforms traditional retrieval, with a hands-on open-source implementation</p></li>
-<li><p><a href="https://milvus.io/docs/agentic_rag_with_milvus_and_langgraph.md">Agentic RAG with Milvus and LangGraph</a> - Tutorial: construir un agente que decide cuándo recuperar, califica la relevancia de los documentos y reescribe las consultas</p></li>
-<li><p><a href="https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md">Building a Production-Ready AI Assistant with Spring Boot and Milvus</a> - Guía completa para crear un asistente de IA empresarial con búsqueda semántica y memoria de conversación</p></li>
+<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Step-by-Step Guide to Setting Up OpenClaw with Slack</a> — Build a Milvus-powered AI support bot in your Slack workspace using OpenClaw</p></li>
+<li><p><a href="https://milvus.io/blog/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md">LangChain 1.0 and Milvus: Build Production-Ready AI Agents with Long-Term Memory</a> — How to give your agents persistent, semantic memory with Milvus</p></li>
+<li><p><a href="https://milvus.io/blog/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md">Stop Building Vanilla RAG: Embrace Agentic RAG with DeepSearcher</a> — Why agentic RAG outperforms traditional retrieval, with a hands-on open-source implementation</p></li>
+<li><p><a href="https://milvus.io/docs/agentic_rag_with_milvus_and_langgraph.md">Agentic RAG with Milvus and LangGraph</a> — Tutorial: build an agent that decides when to retrieve, grades document relevance, and rewrites queries</p></li>
+<li><p><a href="https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md">Building a Production-Ready AI Assistant with Spring Boot and Milvus</a> — Full-stack guide to building an enterprise AI assistant with semantic search and conversation memory</p></li>
 </ul>

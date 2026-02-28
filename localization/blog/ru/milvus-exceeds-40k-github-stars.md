@@ -1,8 +1,8 @@
 ---
 id: milvus-exceeds-40k-github-stars.md
-title: >-
-  7 лет, 2 крупных перестройки, 40K+ звезд GitHub: Восхождение Milvus как
-  ведущей базы данных векторов с открытым исходным кодом
+title: >
+  7 Years, 2 Major Rebuilds, 40K+ GitHub Stars: The Rise of Milvus as the
+  Leading Open-Source Vector Database
 author: Fendy Feng
 date: 2025-12-02T00:00:00.000Z
 cover: assets.zilliz.com/star_history_3dfceda40f.png
@@ -15,20 +15,20 @@ meta_title: >
   7 Years, 2 Major Rebuilds, 40K+ GitHub Stars: The Rise of Milvus as the
   Leading Open-Source Vector Database
 desc: >-
-  Празднование 7-летнего пути Milvus к становлению ведущей в мире векторной базы
-  данных с открытым исходным кодом
+  Celebrating Milvus’s 7-Year Journey to Becoming the World’s Leading
+  Open-Source Vector Database
 origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
 ---
-<p>В июне 2025 года Milvus достиг 35 000 звезд на GitHub. Прошло всего несколько месяцев, и мы уже <a href="https://github.com/milvus-io/milvus">перешагнули отметку в 40 000, что свидетельствует</a>не только о динамике развития, но и о глобальном сообществе, которое продолжает продвигать будущее векторного и мультимодального поиска.</p>
-<p>Мы глубоко благодарны. Всем, кто ставил звездочки, форки, создавал проблемы, спорил об API, делился эталонами или создавал что-то невероятное с помощью Milvus: <strong>спасибо, благодаря вам этот проект развивается так быстро, как он развивается</strong>. Каждая звездочка - это не просто нажатая кнопка, это отражение того, кто выбрал Milvus для своей работы, того, кто верит в то, что мы создаем, того, кто разделяет наше видение открытой, доступной, высокопроизводительной инфраструктуры ИИ.</p>
-<p>Поэтому, празднуя, мы также смотрим в будущее - на функции, о которых вы просите, на архитектуры, которые сейчас требует ИИ, и на мир, в котором мультимодальное, семантическое понимание будет использоваться по умолчанию в каждом приложении.</p>
+<p>In June 2025, Milvus reached 35,000 GitHub stars. Fast-forward just a few months, and we’ve now <a href="https://github.com/milvus-io/milvus">crossed 40,000</a>—proof not only of momentum but of a global community that keeps pushing the future of vector and multimodal search forward.</p>
+<p>We’re profoundly grateful. To everyone who starred, forked, filed issues, argued over an API, shared a benchmark, or built something incredible with Milvus: <strong>Thank you, and you’re the reason this project moves as fast as it does</strong>. Every star represents more than a button pressed — it reflects someone choosing Milvus to power their work, someone who believes in what we’re building, someone who shares our vision for open, accessible, high-performance AI infrastructure.</p>
+<p>So as we celebrate, we’re also looking ahead—to the features you’re asking for, to the architectures AI now demands, and to a world where multimodal, semantic understanding is the default in every application.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/star_history_3dfceda40f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="The-Journey-From-Zero-to-40000+-Stars" class="common-anchor-header">Путешествие: От нуля до 40 000+ звезд<button data-href="#The-Journey-From-Zero-to-40000+-Stars" class="anchor-icon" translate="no">
+<h2 id="The-Journey-From-Zero-to-40000+-Stars" class="common-anchor-header">The Journey: From Zero to 40,000+ Stars<button data-href="#The-Journey-From-Zero-to-40000+-Stars" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,17 +43,17 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Когда мы начали создавать Milvus в 2017 году, термина " <em>векторная база данных"</em> еще не существовало. Мы были всего лишь небольшой командой инженеров, убежденных в том, что приложениям ИИ вскоре понадобится новый тип инфраструктуры данных - созданный не для строк и столбцов, а для высокоразмерных, неструктурированных, мультимодальных данных. Традиционные базы данных не были созданы для такого мира, и мы знали, что кто-то должен заново представить себе, как может выглядеть хранение и поиск данных.</p>
-<p>Первые дни были далеко не самыми приятными. Создание инфраструктуры корпоративного уровня - это медленная, упорная работа, недели которой уходят на профилирование путей кода, переписывание компонентов и сомнения в выборе дизайна в два часа ночи. Но мы придерживались простой миссии: <strong>сделать векторный поиск доступным, масштабируемым и надежным для каждого разработчика, создающего приложения для искусственного интеллекта</strong>. Эта миссия помогла нам совершить первые прорывы и преодолеть неизбежные неудачи.</p>
-<p>И на этом пути несколько поворотных моментов изменили все:</p>
+    </button></h2><p>When we started building Milvus in 2017, the term <em>vector database</em> didn’t even exist. We were just a small team of engineers convinced that AI applications would soon need a new kind of data infrastructure—one built not for rows and columns, but for high-dimensional, unstructured, multimodal data. Traditional databases weren’t built for that world, and we knew someone had to reimagine what storage and retrieval could look like.</p>
+<p>The early days were far from glamorous. Building enterprise-grade infrastructure is slow, stubborn work—weeks spent profiling code paths, rewriting components, and questioning design choices at 2 a.m. But we held onto a simple mission: <strong>make vector search accessible, scalable, and reliable for every developer building AI applications</strong>. That mission carried us through the first breakthroughs and through the inevitable setbacks.</p>
+<p>And along the way, a few turning points changed everything:</p>
 <ul>
-<li><p><strong>2019:</strong> Мы выложили в открытый доступ версию Milvus 0.10. Это означало обнажить все наши неровности - хаки, TODO, части, которыми мы еще не гордились. Но сообщество поддержало нас. Разработчики выявляли проблемы, которые мы никогда бы не нашли, предлагали функции, которые мы даже не представляли, и оспаривали предположения, которые в итоге сделали Milvus сильнее.</p></li>
-<li><p><strong>2020-2021:</strong> Мы присоединились к <a href="https://lfaidata.foundation/projects/milvus/">фонду LF AI &amp; Data Foundation</a>, выпустили Milvus 1.0, стали выпускниками LF AI &amp; Data и победили в конкурсе векторного поиска <a href="https://big-ann-benchmarks.com/neurips21.html">BigANN</a> с миллиардными масштабами - раннее доказательство того, что наша архитектура может справиться с реальными масштабами.</p></li>
-<li><p><strong>2022 год:</strong> корпоративным пользователям требовалось масштабирование на основе Kubernetes, эластичность и реальное разделение хранения и вычислений. Нам предстояло принять непростое решение: исправить старую систему или переделать все заново. Мы выбрали более сложный путь. <strong>Milvus 2.0 был переосмыслен с нуля</strong>, в нем была представлена полностью развязанная облачная нативная архитектура, которая превратила Milvus в платформу производственного уровня для критически важных рабочих нагрузок ИИ.</p></li>
-<li><p><strong>2024-2025:</strong> <a href="https://zilliz.com/">Zilliz</a> (команда, стоящая за Milvus) была названа <a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">лидером по версии Forrester</a>, перешагнула отметку в 30 000 звезд и сейчас находится за пределами 40 000. Он стал основой для мультимодального поиска, систем RAG, агентских рабочих процессов и поиска в миллиардных масштабах в различных отраслях - образовании, финансах, творчестве, научных исследованиях и других.</p></li>
+<li><p><strong>2019:</strong> We open-sourced Milvus 0.10. It meant exposing all our rough edges—the hacks, the TODOs, the pieces we weren’t yet proud of. But the community showed up. Developers filed issues we never would’ve found, proposed features we hadn’t imagined, and challenged assumptions that ultimately made Milvus stronger.</p></li>
+<li><p><strong>2020–2021:</strong> We joined the <a href="https://lfaidata.foundation/projects/milvus/">LF AI &amp; Data Foundation</a>, shipped Milvus 1.0, graduated from LF AI &amp; Data, and won the <a href="https://big-ann-benchmarks.com/neurips21.html">BigANN</a> billion-scale vector search challenge—early proof that our architecture could handle real-world scale.</p></li>
+<li><p><strong>2022:</strong> Enterprise users needed Kubernetes-native scaling, elasticity, and real separation of storage and compute. We faced a hard decision: patch the old system or rebuild everything. We chose the harder path. <strong>Milvus 2.0 was a ground-up reinvention</strong>, introducing a fully decoupled cloud-native architecture that transformed Milvus into a production-grade platform for mission-critical AI workloads.</p></li>
+<li><p><strong>2024–2025:</strong> <a href="https://zilliz.com/">Zilliz</a> (the team behind Milvus) was named <a href="https://zilliz.com/resources/analyst-report/zilliz-forrester-wave-vector-database-report">a leader by Forrester</a>, surged past 30,000 stars, and is now beyond 40,000. It became the backbone for multimodal search, RAG systems, agentic workflows, and billion-scale retrieval across industries—education, finance, creative production, scientific research, and more.</p></li>
 </ul>
-<p>Эта веха была достигнута не благодаря шумихе, а благодаря тому, что разработчики выбрали Milvus для реальных производственных нагрузок и подталкивали нас к совершенствованию на каждом шагу.</p>
-<h2 id="2025-Two-Major-Releases-Massive-Performance-Gains" class="common-anchor-header">2025: Два крупных релиза, значительный прирост производительности<button data-href="#2025-Two-Major-Releases-Massive-Performance-Gains" class="anchor-icon" translate="no">
+<p>This milestone was earned not through hype, but through developers choosing Milvus for real production workloads and pushing us to improve every step of the way.</p>
+<h2 id="2025-Two-Major-Releases-Massive-Performance-Gains" class="common-anchor-header">2025: Two Major Releases, Massive Performance Gains<button data-href="#2025-Two-Major-Releases-Massive-Performance-Gains" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,29 +68,29 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>2025 год стал годом, когда Milvus вышел в новую лигу. Хотя векторный поиск отлично справляется с семантическим пониманием, реальность в производстве проста: <strong>разработчикам по-прежнему требуется точное соответствие ключевым словам</strong> для идентификаторов продуктов, серийных номеров, точных фраз, юридических терминов и многого другого. Без встроенного полнотекстового поиска команды были вынуждены поддерживать кластеры Elasticsearch/OpenSearch или собирать собственные решения, что удваивало операционные расходы и фрагментацию.</p>
-<p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md"><strong>Milvus 2.5</strong></a> <strong>изменил ситуацию</strong>. В ней появился <strong>действительно собственный гибридный поиск</strong>, объединяющий полнотекстовый поиск и векторный поиск в одном движке. Впервые разработчики могли выполнять лексические запросы, семантические запросы и фильтры метаданных вместе, не используя дополнительные системы и конвейеры синхронизации. Мы также улучшили фильтрацию метаданных, разбор выражений и эффективность выполнения, чтобы гибридные запросы были естественными и быстрыми в условиях реальной производственной нагрузки.</p>
-<p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6</strong></a> <strong>развил эту тенденцию</strong>, нацелившись на две проблемы, которые мы чаще всего слышим от пользователей, работающих в масштабе: <strong><em>стоимость</em> и <em>производительность</em>.</strong> В этом выпуске были реализованы глубокие архитектурные улучшения - более предсказуемые пути запросов, более быстрое индексирование, значительно меньшее использование памяти и более эффективное хранение данных. Многие команды сообщили о немедленном увеличении производительности, не изменив ни одной строчки кода приложения.</p>
-<p>Вот лишь несколько основных преимуществ Milvus 2.6:</p>
+    </button></h2><p>2025 was the year Milvus stepped into a new league. While vector search excels at semantic understanding, the reality in production is simple: <strong>developers still need precise keyword matching</strong> for product IDs, serial numbers, exact phrases, legal terms, and more. Without native full-text search, teams were forced to maintain Elasticsearch/OpenSearch clusters or glue together their own custom solutions—doubling operational overhead and fragmentation.</p>
+<p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md"><strong>Milvus 2.5</strong></a> <strong>changed that</strong>. It introduced <strong>truly native hybrid search</strong>, combining full-text retrieval and vector search into a single engine. For the first time, developers could run lexical queries, semantic queries, and metadata filters together without juggling extra systems or syncing pipelines. We also upgraded metadata filtering, expression parsing, and execution efficiency so that hybrid queries felt natural—and fast—under real production loads.</p>
+<p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6</strong></a> <strong>pushed this momentum further</strong>, targeting the two challenges we hear most often from users running at scale: <strong><em>cost</em> and <em>performance</em>.</strong> This release delivered deep architectural improvements—more predictable query paths, faster indexing, dramatically lower memory usage, and significantly more efficient storage. Many teams reported immediate gains without changing a single line of application code.</p>
+<p>Here are just a few highlights from Milvus 2.6:</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/tiered-storage-overview.md"><strong>Многоуровневое хранилище</strong></a>, позволяющее командам более разумно балансировать между стоимостью и производительностью, сокращая расходы на хранение данных на 50 %.</p></li>
-<li><p><strong>Огромная экономия памяти</strong> благодаря <a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">1-битному квантованию RaBitQ</a> - сокращение использования памяти до 72 % при сохранении скорости запросов.</p></li>
-<li><p><a href="https://milvus.io/docs/full-text-search.md"><strong>Переработанный полнотекстовый движок</strong></a> со значительно более быстрой реализацией BM25 - до 4× быстрее Elasticsearch в наших бенчмарках.</p></li>
-<li><p><strong>Новый индекс Path Index</strong> для <a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">метаданных, структурированных в формате JSON</a>, позволяет ускорить фильтрацию сложных документов до 100×.</p></li>
-<li><p><a href="https://milvus.io/docs/aisaq.md"><strong>AiSAQ</strong>:</a> сжатие миллиардного масштаба с уменьшением объема хранения на 3200× и сильным отзывом.</p></li>
-<li><p><strong>Семантический +</strong> <a href="https://milvus.io/docs/geometry-operators.md"><strong>геопространственный поиск</strong></a> <strong>с R-Tree:</strong> Объединение информации <em>о местонахождении предметов</em> и <em>их значении</em> для получения более релевантных результатов.</p></li>
-<li><p><a href="https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA"><strong>CAGRA+ Vamana</strong></a><strong>:</strong> Сокращение затрат на развертывание благодаря гибридному режиму CAGRA, который строится на GPU, а запросы выполняются на CPU.</p></li>
-<li><p><strong>Рабочий процесс</strong><strong>"</strong><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md"><strong>данные внутрь, данные наружу</strong></a><strong>"</strong>, который упрощает встраивание и извлечение данных, особенно для мультимодальных конвейеров.</p></li>
-<li><p><strong>Поддержка до 100 тыс. коллекций</strong> в одном кластере - важный шаг на пути к истинной многопользовательскости в масштабе.</p></li>
+<li><p><a href="https://milvus.io/docs/tiered-storage-overview.md"><strong>Tiered storage</strong></a> that lets teams balance cost and performance more intelligently, cutting storage costs by as much as 50%.</p></li>
+<li><p><strong>Huge memory savings</strong> through <a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">RaBitQ 1-bit quantization</a> — reducing memory usage by up to 72% while still delivering faster queries.</p></li>
+<li><p><a href="https://milvus.io/docs/full-text-search.md"><strong>A redesigned full-text engine</strong></a> with a significantly faster BM25 implementation — up to 4× faster than Elasticsearch in our benchmarks.</p></li>
+<li><p><strong>A new Path Index</strong> for <a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON-structured metadata</a>, unlocking up to 100× faster filtering on complex documents.</p></li>
+<li><p><a href="https://milvus.io/docs/aisaq.md"><strong>AiSAQ</strong>:</a> billion-scale compression with 3200× storage reduction and strong recall</p></li>
+<li><p><strong>Semantic +</strong> <a href="https://milvus.io/docs/geometry-operators.md"><strong>Geospatial Search</strong></a> <strong>with R-Tree:</strong> Combining <em>where things are</em> with <em>what they mean</em> for more relevant results</p></li>
+<li><p><a href="https://zilliz.com/blog/Milvus-introduces-GPU-index-CAGRA"><strong>CAGRA+ Vamana</strong></a><strong>:</strong> Cuts deployment cost with a hybrid CAGRA mode that builds on GPU but queries on CPU</p></li>
+<li><p><strong>A “</strong><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md"><strong>data in, data out</strong></a><strong>” workflow</strong> that simplifies embedding ingestion and retrieval, especially for multimodal pipelines.</p></li>
+<li><p><strong>Support for up to 100K collections</strong> in a single cluster — a major step toward true multi-tenancy at scale.</p></li>
 </ul>
-<p>Для более глубокого изучения Milvus 2.6 ознакомьтесь с <a href="https://milvus.io/docs/release_notes.md">полным описанием релиза</a>.</p>
+<p>For a deeper look at Milvus 2.6, check out the <a href="https://milvus.io/docs/release_notes.md">full release notes</a>.</p>
 <p><a href="https://zilliz.com/event/milvus-2-6-deep-dive-faster-search-lower-cost-smarter-scaling?utm_source=milvusio&amp;utm_medium=milvus-40k-stars&amp;utm_campaign=milvus-26-webinar">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Webinar_Milvus_2_6_Webinar_5_4_Twitter_a4e8dbf7e4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </a></p>
-<h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">За пределами Milvus: инструменты с открытым исходным кодом для разработчиков ИИ<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
+<h2 id="Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="common-anchor-header">Beyond Milvus: Open-Source Tools for AI Developers<button data-href="#Beyond-Milvus-Open-Source-Tools-for-AI-Developers" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,25 +105,25 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В 2025 году мы не просто улучшили Milvus - мы создали инструменты, которые укрепляют всю экосистему разработчиков ИИ. Нашей целью было не гнаться за трендами, а предоставить разработчикам такие открытые, мощные и прозрачные инструменты, о существовании которых мы всегда мечтали.</p>
-<h3 id="DeepSearcher-Research-Without-Cloud-Lock-In" class="common-anchor-header">DeepSearcher: Исследования без облачной блокировки</h3><p>Deep Researcher от OpenAI доказал, на что способны агенты глубокого мышления. Но он закрыт, дорог и заблокирован за облачными API. <a href="https://github.com/zilliztech/deep-searcher"><strong>DeepSearcher</strong></a> <strong>- это наш ответ.</strong> Это локальный движок глубоких исследований с открытым исходным кодом, предназначенный для тех, кто хочет проводить структурированные исследования, не жертвуя при этом контролем и конфиденциальностью.</p>
+    </button></h2><p>In 2025, we didn’t just improve Milvus—we built tools that strengthen the entire AI developer ecosystem. Our goal wasn’t to chase trends, but to give builders the kind of open, powerful, transparent tools we’ve always wished existed.</p>
+<h3 id="DeepSearcher-Research-Without-Cloud-Lock-In" class="common-anchor-header">DeepSearcher: Research Without Cloud Lock-In</h3><p>OpenAI’s Deep Researcher proved what deep reasoning agents can do. But it’s closed, expensive, and locked behind cloud APIs. <a href="https://github.com/zilliztech/deep-searcher"><strong>DeepSearcher</strong></a> <strong>is our answer.</strong> It’s a local, open-source deep research engine designed for anyone who wants structured investigations without sacrificing control or privacy.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepsearcher_5cf6a4f0dc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>DeepSearcher работает полностью на вашей машине, собирая информацию из разных источников, синтезируя ее и предоставляя цитаты, шаги по аргументации и возможность отслеживания - функции, необходимые для реальных исследований, а не просто резюме на поверхностном уровне. Никаких "черных ящиков". Никакой привязки к поставщику. Только прозрачный, воспроизводимый анализ, которому могут доверять разработчики и исследователи.</p>
-<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Клод Контекст: Помощники кодирования, которые действительно понимают ваш код</h3><p>Большинство инструментов для кодирования с помощью ИИ по-прежнему ведут себя как причудливые конвейеры grep - быстрые, поверхностные, сжигающие токены и не обращающие внимания на реальную структуру проекта. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> меняет эту ситуацию. Созданный как плагин для MCP, он наконец-то дает помощникам по кодингу то, чего им так не хватало: настоящее семантическое понимание вашей кодовой базы.</p>
+<p>DeepSearcher runs entirely on your machine, gathering information across sources, synthesizing insights, and providing citations, reasoning steps, and traceability—features essential for real research, not just surface-level summaries. No black boxes. No vendor lock-in. Just transparent, reproducible analysis that developers and researchers can trust.</p>
+<h3 id="Claude-Context-Coding-Assistants-That-Actually-Understand-Your-Code" class="common-anchor-header">Claude Context: Coding Assistants That Actually Understand Your Code</h3><p>Most AI coding tools still behave like fancy grep pipelines—fast, shallow, token-burning, and oblivious to real project structure. <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> changes that. Built as an MCP plugin, it finally gives coding assistants what they’ve been missing: genuine semantic understanding of your codebase.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_7f608a153d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Claude Context строит векторный семантический индекс по всему проекту, позволяя агентам находить нужные модули, отслеживать взаимосвязи между файлами, понимать замысел на уровне архитектуры и отвечать на вопросы, руководствуясь релевантностью, а не догадками. Это позволяет сократить трату маркеров, повысить точность и, что самое важное, дать помощникам по кодингу возможность вести себя так, будто они действительно понимают ваше программное обеспечение, а не притворяются.</p>
-<p>Оба инструмента имеют полностью открытый исходный код. Потому что инфраструктура ИИ должна принадлежать всем, и потому что будущее ИИ не должно быть заперто за проприетарными стенами.</p>
-<h2 id="Trusted-by-10000+-Teams-in-Production" class="common-anchor-header">Доверяют 10 000+ команд в производстве<button data-href="#Trusted-by-10000+-Teams-in-Production" class="anchor-icon" translate="no">
+<p>Claude Context builds a vector-powered semantic index across your project, letting agents find the right modules, follow relationships across files, understand architecture-level intent, and answer questions with relevance rather than guesswork. It reduces token waste, boosts precision, and—most importantly—lets coding assistants behave as if they truly understand your software rather than pretending to.</p>
+<p>Both tools are fully open source. Because AI infrastructure should belong to everyone—and because the future of AI should not be locked behind proprietary walls.</p>
+<h2 id="Trusted-by-10000+-Teams-in-Production" class="common-anchor-header">Trusted by 10,000+ Teams in Production<button data-href="#Trusted-by-10000+-Teams-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,37 +138,37 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Сегодня более 10 000 корпоративных команд используют Milvus в производстве - от быстрорастущих стартапов до самых известных технологических компаний и компаний из списка Fortune 500. Команды в NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch и внутри Microsoft используют Milvus для питания систем искусственного интеллекта, которые работают каждую минуту каждого дня. Их рабочие нагрузки охватывают поиск, рекомендации, агентские конвейеры, мультимодальный поиск и другие приложения, которые доводят векторную инфраструктуру до предела.</p>
+    </button></h2><p>Today, more than 10,000 enterprise teams run Milvus in production—from fast-growing startups to some of the world’s most established technology and Fortune 500 companies. Teams at NVIDIA, Salesforce, eBay, Airbnb, IBM, AT&amp;T, LINE, Shopee, Roblox, Bosch, and inside Microsoft rely on Milvus to power AI systems that operate every minute of every day. Their workloads span search, recommendations, agentic pipelines, multimodal retrieval, and other applications that push vector infrastructure to its limits.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/logos_eb0d3ad4af.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Но важнее всего не то, <em>кто</em> использует Milvus, а то <em>, что они с его помощью создают</em>. Во всех отраслях промышленности Milvus стоит за системами, которые определяют методы работы, инновации и конкуренцию:</p>
+<p>But what matters most isn’t just <em>who</em> uses Milvus—it’s <em>what they’re building with it</em>. Across industries, Milvus sits behind systems that shape how businesses operate, innovate, and compete:</p>
 <ul>
-<li><p><strong>ИИ-пилоты и корпоративные ассистенты</strong>, которые улучшают поддержку клиентов, рабочие процессы продаж и принятие внутренних решений благодаря мгновенному доступу к миллиардам встроенных данных.</p></li>
-<li><p><strong>Семантический и визуальный поиск в электронной коммерции, СМИ и рекламе</strong>, повышающий конверсию, улучшающий поиск и ускоряющий создание креативных продуктов.</p></li>
-<li><p><strong>Платформы для юридической, финансовой и научной аналитики</strong>, где точность, проверяемость и соответствие нормативным требованиям приводят к реальным операционным выгодам.</p></li>
-<li><p><strong>Системы обнаружения мошенничества и рисков</strong> в финтех и банковской сфере, которые зависят от быстрого семантического сопоставления для предотвращения потерь в режиме реального времени.</p></li>
-<li><p><strong>Крупномасштабные RAG и агентские системы</strong>, обеспечивающие командам глубоко контекстуальное поведение ИИ, ориентированное на конкретную область.</p></li>
-<li><p><strong>Корпоративные слои знаний</strong>, объединяющие текст, код, изображения и метаданные в единую семантическую ткань.</p></li>
+<li><p><strong>AI copilots and enterprise assistants</strong> that improve customer support, sales workflows, and internal decision-making with instant access to billions of embeddings.</p></li>
+<li><p><strong>Semantic and visual search in e-commerce, media, and advertising</strong>, driving higher conversion, better discovery, and faster creative production.</p></li>
+<li><p><strong>Legal, financial, and scientific intelligence platforms</strong> where precision, auditability, and compliance translate into real operational gains.</p></li>
+<li><p><strong>Fraud detection and risk engines</strong> in fintech and banking that depend on fast semantic matching to prevent losses in real time.</p></li>
+<li><p><strong>Large-scale RAG and agentic systems</strong> that give teams deeply contextual, domain-aware AI behavior.</p></li>
+<li><p><strong>Enterprise knowledge layers</strong> that unify text, code, images, and metadata into one coherent semantic fabric.</p></li>
 </ul>
-<p>И это не лабораторные эталоны - это одни из самых требовательных в мире производственных развертываний. Milvus регулярно выполняет их:</p>
+<p>And these aren’t lab benchmarks—they’re some of the world’s most demanding production deployments. Milvus routinely delivers:</p>
 <ul>
-<li><p>Поиск информации в течение менее 50 мс по миллиардам векторов</p></li>
-<li><p>Управление миллиардами документов и событий в одной системе</p></li>
-<li><p>Рабочие процессы на 5-10× быстрее, чем в альтернативных решениях.</p></li>
-<li><p>Многопользовательские архитектуры, поддерживающие сотни тысяч коллекций.</p></li>
+<li><p>Sub-50ms retrieval across billions of vectors</p></li>
+<li><p>Billions of documents and events managed in a single system</p></li>
+<li><p>5–10× faster workflows than alternative solutions</p></li>
+<li><p>Multi-tenant architectures supporting hundreds of thousands of collections</p></li>
 </ul>
-<p>Команды выбирают Milvus по простой причине: <strong>он обеспечивает скорость, надежность, экономическую эффективность и возможность масштабирования до миллиардов без разрушения архитектуры каждые несколько месяцев.</strong> Доверие, которое оказывают нам команды, - это причина, по которой мы продолжаем укреплять Milvus для предстоящего десятилетия ИИ.</p>
+<p>Teams choose Milvus for a simple reason: <strong>it delivers where it matters—speed, reliability, cost efficiency, and the ability to scale to billions without tearing apart their architecture every few months.</strong> The trust these teams place in us is the reason we keep strengthening Milvus for the decade of AI ahead.</p>
 <p><a href="https://zilliz.com/share-your-story">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/share_your_story_3c44c533ed.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </a></p>
-<h2 id="When-You-Need-Milvus-Without-the-Ops-Zilliz-Cloud" class="common-anchor-header">Когда вам нужен Milvus без операционной службы: Zilliz Cloud<button data-href="#When-You-Need-Milvus-Without-the-Ops-Zilliz-Cloud" class="anchor-icon" translate="no">
+<h2 id="When-You-Need-Milvus-Without-the-Ops-Zilliz-Cloud" class="common-anchor-header">When You Need Milvus Without the Ops: Zilliz Cloud<button data-href="#When-You-Need-Milvus-Without-the-Ops-Zilliz-Cloud" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -183,24 +183,24 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus - бесплатная, мощная и проверенная в боях система. Но это также распределенная система, а хорошая работа распределенных систем - это настоящая инженерная работа. Настройка индексов, управление памятью, стабильность кластера, масштабирование, наблюдаемость... Эти задачи требуют времени и опыта, которых у многих команд просто нет. Разработчикам нужна была мощь Milvus, но без операционной нагрузки, которая неизбежно возникает при управлении им в масштабе.</p>
-<p>Эта реальность привела нас к простому выводу: если Milvus собирается стать основной инфраструктурой для приложений искусственного интеллекта, нам нужно сделать его простым в управлении. Именно поэтому мы создали <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>, полностью управляемый сервис Milvus, созданный и поддерживаемый той же командой, которая стоит за проектом с открытым исходным кодом.</p>
-<p>Zilliz Cloud предоставляет разработчикам Milvus, который они уже знают и которому доверяют, но без необходимости создавать кластеры, устранять проблемы с производительностью, планировать обновления или беспокоиться о настройке хранилищ и вычислений. А благодаря оптимизациям, которые невозможно реализовать в самоуправляемых средах, он стал еще быстрее и надежнее. <a href="https://zilliz.com/blog/cardinal-most-performant-vector-search-engine">Cardinal</a>, наш самооптимизирующийся векторный движок коммерческого уровня, обеспечивает производительность в 10 раз выше, чем у <strong>Milvus с открытым исходным кодом</strong>.</p>
-<p><strong>Что отличает Zilliz Cloud</strong></p>
+    </button></h2><p>Milvus is free, powerful, and battle-tested. But it’s also a distributed system—and running distributed systems well is real engineering work. Index tuning, memory management, cluster stability, scaling, observability… these tasks take time and expertise that many teams simply don’t have to spare. Developers wanted the power of Milvus, just without the operational weight that inevitably comes with managing it at scale.</p>
+<p>This reality led us to a simple conclusion: if Milvus was going to become core infrastructure for AI applications, we needed to make it effortless to operate. That’s why we built <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>, the fully managed Milvus service created and maintained by the same team behind the open-source project.</p>
+<p>Zilliz Cloud gives developers the Milvus they already know and trust—but without provisioning clusters, firefighting performance issues, planning upgrades, or worrying about storage and compute tuning. And because it includes optimizations impossible to run in self-managed environments, it’s even faster and more reliable. <a href="https://zilliz.com/blog/cardinal-most-performant-vector-search-engine">Cardinal</a>, our commercial-grade, self-optimizing vector engine, delivers 10× the performance of <strong>open-source Milvus</strong>.</p>
+<p><strong>What Sets Zilliz Cloud Apart</strong></p>
 <ul>
-<li><strong>Самооптимизирующаяся производительность:</strong> AutoIndex автоматически настраивает HNSW, IVF и DiskANN, обеспечивая 96 %+ отзыв при нулевой ручной настройке.</li>
+<li><strong>Self-optimizing performance:</strong> AutoIndex automatically tunes HNSW, IVF, and DiskANN, delivering 96%+ recall with zero manual configuration.</li>
 </ul>
 <ul>
-<li><p><strong>Эластичность и экономичность:</strong> Ценообразование с оплатой по факту использования, бессерверное автомасштабирование и интеллектуальное управление ресурсами часто снижают затраты на 50 % и более по сравнению с самоуправляемыми развертываниями.</p></li>
-<li><p><strong>Надежность корпоративного уровня:</strong> SLA на 99,95 %, резервирование с несколькимиAZ, соответствие стандартам SOC 2 Type II, ISO 27001 и GDPR. Полная поддержка RBAC, BYOC, журналов аудита и шифрования.</p></li>
-<li><p><strong>Развертывание без привязки к облаку:</strong> Работайте на AWS, Azure, GCP, Alibaba Cloud или Tencent Cloud - никакой привязки к поставщику, стабильная производительность везде.</p></li>
-<li><p><strong>Запросы на естественном языке:</strong> Встроенная поддержка MCP-сервера позволяет запрашивать данные в разговорной форме, а не вручную составлять вызовы API.</p></li>
-<li><p><strong>Легкая миграция</strong>: Переход с Milvus, Pinecone, Qdrant, Weaviate, Elasticsearch или PostgreSQL с помощью встроенных инструментов миграции - не требуется переписывать схему или простаивать.</p></li>
-<li><p><strong>100% совместимость с Milvus с открытым исходным кодом.</strong> Никаких проприетарных форков. Никакой привязки. Просто Milvus, который стал проще.</p></li>
+<li><p><strong>Elastic &amp; cost-efficient:</strong> Pay-as-you-go pricing, serverless autoscaling, and intelligent resource management often reduce costs by 50% or more compared to self-managed deployments.</p></li>
+<li><p><strong>Enterprise-grade reliability:</strong> 99.95% uptime SLA, multi-AZ redundancy, SOC 2 Type II, ISO 27001, and GDPR compliance. Full support for RBAC, BYOC, audit logs, and encryption.</p></li>
+<li><p><strong>Cloud-agnostic deployment:</strong> Run on AWS, Azure, GCP, Alibaba Cloud, or Tencent Cloud—no vendor lock-in, consistent performance everywhere.</p></li>
+<li><p><strong>Natural language queries:</strong> Built-in MCP server support lets you query data conversationally instead of manually crafting API calls.</p></li>
+<li><p><strong>Effortless Migration</strong>: Move from Milvus, Pinecone, Qdrant, Weaviate, Elasticsearch, or PostgreSQL using built-in migration tools — no schema rewrites or downtime required.</p></li>
+<li><p><strong>100% compatible with open-source Milvus.</strong> No proprietary forks. No lock-in. Just Milvus, made easier.</p></li>
 </ul>
-<p><strong>Milvus всегда будет оставаться открытым исходным кодом и бесплатным для использования.</strong> Но его надежная работа в масштабах предприятия требует значительного опыта и ресурсов. <strong>Zilliz Cloud - наш ответ на этот вопрос</strong>. Развернутое в 29 регионах и пяти основных облаках, Zilliz Cloud обеспечивает производительность, безопасность и экономическую эффективность корпоративного уровня, сохраняя при этом полную совместимость с уже известным вам Milvus.</p>
-<p><a href="https://cloud.zilliz.com/signup"><strong>Начать бесплатную пробную версию →</strong></a></p>
-<h2 id="Whats-Next-Milvus-Lake" class="common-anchor-header">Что дальше: Milvus Lake<button data-href="#Whats-Next-Milvus-Lake" class="anchor-icon" translate="no">
+<p><strong>Milvus will always remain open source and free to use.</strong> But running and operating it reliably at enterprise scale requires significant expertise and resources. <strong>Zilliz Cloud is our answer to that gap</strong>. Deployed across 29 regions and five major clouds, Zilliz Cloud provides enterprise-grade performance, security, and cost efficiency while keeping you completely aligned with the Milvus you already know.</p>
+<p><a href="https://cloud.zilliz.com/signup"><strong>Start free trial →</strong></a></p>
+<h2 id="Whats-Next-Milvus-Lake" class="common-anchor-header">What’s Next: Milvus Lake<button data-href="#Whats-Next-Milvus-Lake" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -215,14 +215,14 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Как команда, представившая векторную базу данных, мы в первых рядах наблюдаем за тем, как меняются корпоративные данные. То, что когда-то умещалось в терабайтах структурированных таблиц, быстро превращается в петабайты, а вскоре и в триллионы мультимодальных объектов. Текст, изображения, аудио, видео, потоки временных рядов, журналы мультисенсорных измерений... все это теперь определяет наборы данных, на которые опираются современные системы искусственного интеллекта.</p>
-<p>Векторные базы данных специально созданы для неструктурированных и мультимодальных данных, но они не всегда являются наиболее экономичным или архитектурно обоснованным выбором - особенно когда подавляющее большинство данных холодные. Обучающие корпорации для больших моделей, журналы восприятия автономных автомобилей и наборы данных для робототехники обычно не требуют миллисекундных задержек или высокого параллелизма. Прогон такого объема данных через векторную базу данных в реальном времени становится дорогим, тяжелым в эксплуатации и чрезмерно сложным для конвейеров, не требующих такого уровня производительности.</p>
-<p>Эта реальность привела нас к следующей крупной инициативе: <strong>Milvus Lake -</strong>семантическое мультимодальное озеро, ориентированное на индексы и предназначенное для данных масштаба ИИ. Milvus Lake объединяет семантические сигналы всех модальностей - векторы, метаданные, метки, описания, созданные LLM, и структурированные поля - и организует их в <strong>семантические таблицы</strong>, привязанные к реальным бизнес-сущностям. Данные, которые раньше жили в виде сырых, разрозненных файлов в объектных хранилищах, хранилищах озер и конвейерах моделей, становятся единым семантическим слоем, доступным для запросов. Массивные мультимодальные корпорации превращаются в управляемые, извлекаемые, многократно используемые активы с последовательным смыслом в масштабах предприятия.</p>
-<p>Milvus Lake построен на чистой архитектуре " <strong>манифест + данные + индекс"</strong>, которая рассматривает индексирование как основополагающее, а не последующее действие. Это открывает возможности рабочего процесса "сначала получить, потом обработать", оптимизированного для работы с холодными данными триллионного масштаба, обеспечивая предсказуемую задержку, значительное снижение затрат на хранение и гораздо большую операционную стабильность. Многоуровневый подход к хранению данных - NVMe/SSD для "горячих" путей и объектные хранилища для глубоких архивов - в сочетании с эффективным сжатием и индексами с "ленивой" нагрузкой сохраняет семантическую точность, а накладные расходы на инфраструктуру остаются под строгим контролем.</p>
-<p>Milvus Lake также легко встраивается в современную экосистему данных, интегрируясь с Paimon, Iceberg, Hudi, Spark, Ray и другими движками и форматами больших данных. Команды могут выполнять пакетную обработку, конвейеры в режиме, близком к реальному времени, семантический поиск, разработку функций и подготовку обучающих данных в одном месте, не перестраивая существующие рабочие процессы. Независимо от того, создаете ли вы корпоративные модели, управляете библиотеками симуляторов автономного вождения, обучаете агентов робототехники или используете крупномасштабные поисковые системы, Milvus Lake обеспечивает расширяемое и экономически эффективное семантическое озеро для эпохи ИИ.</p>
-<p><strong>Milvus Lake находится в стадии активной разработки.</strong> Заинтересованы в раннем доступе или хотите узнать больше?<a href="https://zilliz.com/contact"> </a></p>
-<p><a href="https://zilliz.com/contact-sales"><strong>Свяжитесь с нами →</strong></a></p>
-<h2 id="Built-by-the-Community-For-the-Community" class="common-anchor-header">Создано сообществом, для сообщества<button data-href="#Built-by-the-Community-For-the-Community" class="anchor-icon" translate="no">
+    </button></h2><p>As the team that introduced the vector database, we’ve had a front-row seat to how enterprise data is changing. What once fit neatly into terabytes of structured tables is rapidly turning into petabytes—and soon trillions—of multimodal objects. Text, images, audio, video, time-series streams, multi-sensor logs… these now define the datasets that modern AI systems rely on.</p>
+<p>Vector databases are purpose-built for unstructured and multimodal data, but they aren’t always the most economical or architecturally sound choice—especially when the vast majority of data is cold. Training corpora for large models, autonomous-driving perception logs, and robotics datasets usually don’t require millisecond-level latency or high concurrency. Running this volume of data through a real-time vector database becomes expensive, operationally heavy, and overly complex for pipelines that don’t require that level of performance.</p>
+<p>That reality led us to our next major initiative: <strong>Milvus Lake</strong>—a semantic-driven, index-first multimodal lakehouse designed for AI-scale data. Milvus Lake unifies semantic signals across every modality—vectors, metadata, labels, LLM-generated descriptions, and structured fields—and organizes them into <strong>Semantic Wide Tables</strong> anchored around real business entities. Data that previously lived as raw, scattered files in object storage, lakehouses, and model pipelines becomes a unified, queryable semantic layer. Massive multimodal corpora turn into manageable, retrievable, reusable assets with consistent meaning across the enterprise.</p>
+<p>Under the hood, Milvus Lake is built on a clean <strong>manifest + data + index</strong> architecture that treats indexing as foundational rather than an afterthought. This unlocks a “retrieve first, process later” workflow optimized for trillion-scale cold data—offering predictable latency, dramatically lower storage costs, and far greater operational stability. A tiered-storage approach—NVMe/SSD for hot paths and object storage for deep archives—paired with efficient compression and lazy-loaded indexes preserves semantic fidelity while keeping infrastructure overhead firmly in control.</p>
+<p>Milvus Lake also plugs seamlessly into the modern data ecosystem, integrating with Paimon, Iceberg, Hudi, Spark, Ray, and other big-data engines and formats. Teams can run batch processing, near-real-time pipelines, semantic retrieval, feature engineering, and training-data preparation all in one place—without replatforming their existing workflows. Whether you’re building foundation-model corpora, managing autonomous-driving simulation libraries, training robotics agents, or powering large-scale retrieval systems, Milvus Lake provides an extensible and cost-efficient semantic lakehouse for the AI era.</p>
+<p><strong>Milvus Lake is in active development.</strong> Interested in early access or want to learn more?<a href="https://zilliz.com/contact"> </a></p>
+<p><a href="https://zilliz.com/contact-sales"><strong>Contact us →</strong></a></p>
+<h2 id="Built-by-the-Community-For-the-Community" class="common-anchor-header">Built by the Community, For the Community<button data-href="#Built-by-the-Community-For-the-Community" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -237,18 +237,18 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Особенность Milvus заключается не только в технологии, но и в людях, которые за ней стоят. Наша база разработчиков охватывает весь мир, объединяя специалистов в области высокопроизводительных вычислений, распределенных систем и инфраструктуры ИИ. Инженеры и исследователи из ARM, NVIDIA, AMD, Intel, Meta, IBM, Salesforce, Alibaba, Microsoft и многих других компаний внесли свой опыт и знания в создание Milvus, чтобы он стал тем, чем является сегодня.</p>
-<p>Каждый запрос на исправление ошибок, каждое сообщение об ошибке, каждый вопрос, заданный на наших форумах, каждый созданный учебник - все это делает Milvus лучше для всех.</p>
-<p>Эта веха принадлежит всем вам:</p>
+    </button></h2><p>What makes Milvus special isn’t just the technology—it’s the people behind it. Our contributor base spans the globe, bringing together specialists from high-performance computing, distributed systems, and AI infrastructure. Engineers and researchers from ARM, NVIDIA, AMD, Intel, Meta, IBM, Salesforce, Alibaba, Microsoft, and many more have contributed their expertise to shape Milvus into what it is today.</p>
+<p>Every pull request, every bug report, every question answered in our forums, every tutorial created—these contributions make Milvus better for everyone.</p>
+<p>This milestone belongs to all of you:</p>
 <ul>
-<li><p><strong>Нашим соавторам</strong>: Спасибо за ваш код, ваши идеи и ваше время. Вы делаете Milvus лучше каждый день.</p></li>
-<li><p><strong>Нашим пользователям</strong>: Спасибо, что доверяете Milvus свои производственные рабочие нагрузки и делитесь своим опытом, как положительным, так и отрицательным. Ваши отзывы определяют нашу дорожную карту.</p></li>
-<li><p><strong>Сторонникам нашего сообщества</strong>: Спасибо, что отвечаете на вопросы, пишете руководства, создаете контент и помогаете новичкам начать работу. Благодаря вам наше сообщество становится гостеприимным и инклюзивным.</p></li>
-<li><p><strong>Нашим партнерам и интеграторам</strong>: Спасибо, что работаете с нами и делаете Milvus первоклассным гражданином в экосистеме разработки ИИ.</p></li>
-<li><p><strong>Команде Zilliz</strong>: Спасибо за вашу непоколебимую приверженность проекту с открытым исходным кодом и успеху наших пользователей.</p></li>
+<li><p><strong>To our contributors</strong>: Thank you for your code, your ideas, and your time. You make Milvus better every single day.</p></li>
+<li><p><strong>To our users</strong>: Thank you for trusting Milvus with your production workloads and for sharing your experiences, both good and challenging. Your feedback drives our roadmap.</p></li>
+<li><p><strong>To our community supporters</strong>: Thank you for answering questions, writing tutorials, creating content, and helping newcomers get started. You make our community welcoming and inclusive.</p></li>
+<li><p><strong>To our partners and integrators</strong>: Thank you for building with us and making Milvus a first-class citizen in the AI development ecosystem.</p></li>
+<li><p><strong>To the Zilliz team</strong>: Thank you for your unwavering commitment to both the open-source project and our users’ success.</p></li>
 </ul>
-<p>Milvus вырос благодаря тому, что тысячи людей решили построить что-то вместе - открыто, щедро и с верой в то, что основополагающая инфраструктура ИИ должна быть доступна каждому.</p>
-<h2 id="Join-Us-on-This-Journey" class="common-anchor-header">Присоединяйтесь к нам в этом путешествии<button data-href="#Join-Us-on-This-Journey" class="anchor-icon" translate="no">
+<p>Milvus has grown because thousands of people decided to build something together—openly, generously, and with the belief that foundational AI infrastructure should be accessible to everyone.</p>
+<h2 id="Join-Us-on-This-Journey" class="common-anchor-header">Join Us on This Journey<button data-href="#Join-Us-on-This-Journey" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -263,14 +263,14 @@ origin: 'https://milvus.io/blog/milvus-exceeds-40k-github-stars.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Создаете ли вы свое первое приложение для векторного поиска или масштабируете его до миллиардов векторов, мы будем рады, если вы станете частью сообщества Milvus.</p>
-<p><strong>Начните</strong>:</p>
+    </button></h2><p>Whether you’re building your first vector search application or scaling to billions of vectors, we’d love to have you as part of the Milvus community.</p>
+<p><strong>Get Started</strong>:</p>
 <ul>
-<li><p><strong>⭐ Присоединяйтесь к нам на GitHub</strong>:<a href="https://github.com/milvus-io/milvus"> github.com/milvus-io/milvus</a></p></li>
-<li><p>☁️ <strong>Попробуйте Zilliz Cloud бесплатно</strong>:<a href="https://zilliz.com/"> zilliz.com/cloud</a></p></li>
-<li><p>💬 <strong>Присоединяйтесь к нашему</strong> <a href="https://discord.com/invite/8uyFbECzPX"><strong>Discord</strong></a>, чтобы общаться с разработчиками по всему миру</p></li>
-<li><p>📚 <strong>Изучите нашу документацию</strong>: <a href="https://milvus.io/docs">Документация Milvus</a></p></li>
-<li><p>💬 <strong>Запишитесь</strong> <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>на 20-минутную индивидуальную сессию</strong></a>, чтобы получить знания, рекомендации и ответы на свои вопросы.</p></li>
+<li><p>⭐ <strong>Star us on GitHub</strong>:<a href="https://github.com/milvus-io/milvus"> github.com/milvus-io/milvus</a></p></li>
+<li><p>☁️ <strong>Try Zilliz Cloud Free</strong>:<a href="https://zilliz.com/"> zilliz.com/cloud</a></p></li>
+<li><p>💬 <strong>Join our</strong> <a href="https://discord.com/invite/8uyFbECzPX"><strong>Discord</strong></a> to connect with developers worldwide</p></li>
+<li><p>📚 <strong>Explore our docs</strong>: <a href="https://milvus.io/docs">Milvus documentation</a></p></li>
+<li><p>💬 <strong>Book a</strong> <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>20-minute one-on-one session</strong></a> to get insights, guidance, and answers to your questions.</p></li>
 </ul>
-<p>Впереди захватывающий путь. По мере того как искусственный интеллект перестраивает отрасли и открывает новые возможности, векторные базы данных будут занимать центральное место в этих преобразованиях. Вместе мы создаем семантическую основу, на которую опираются современные приложения ИИ, и мы только начинаем.</p>
-<p>За следующие 40 000 звезд и за то, чтобы <strong>вместе</strong> строить будущее инфраструктуры ИИ. 🎉</p>
+<p>The road ahead is exciting. As AI reshapes industries and unlocks new possibilities, vector databases will sit at the core of this transformation. Together, we’re building the semantic foundation that modern AI applications rely on—and we’re only getting started.</p>
+<p>Here’s to the next 40,000 stars, and to building the future of AI infrastructure <strong>together</strong>. 🎉</p>

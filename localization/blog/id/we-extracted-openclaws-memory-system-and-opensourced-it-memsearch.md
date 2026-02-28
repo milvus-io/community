@@ -1,6 +1,7 @@
 ---
 id: we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
-title: Kami Mengekstrak Sistem Memori OpenClaw dan Sumber Terbuka (memsearch)
+title: |
+  We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)
 author: Cheney Zhang
 date: 2026-02-13T00:00:00.000Z
 cover: assets.zilliz.com/memsearch_openclaw_memory_11zon_b2a6b4cbb9.jpg
@@ -13,23 +14,22 @@ meta_keywords: >-
   memsearch
 meta_title: |
   We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)
-desc: >-
-  Kami mengekstrak arsitektur memori AI OpenClaw ke dalam memsearch - sebuah
-  pustaka Python mandiri dengan log Markdown, pencarian vektor hibrida, dan
-  dukungan Git.
+desc: >
+  We extracted OpenClaw's AI memory architecture into memsearch — a standalone
+  Python library with Markdown logs, hybrid vector search, and Git support.
 origin: >-
   https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md
 ---
-<p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (sebelumnya clawdbot dan moltbot) menjadi viral - <a href="https://github.com/openclaw/openclaw">189 ribu+ bintang GitHub</a> dalam waktu kurang dari dua minggu. Ini sangat gila. Sebagian besar dari buzz yang ada adalah seputar kemampuannya yang otonom dan agen di seluruh saluran obrolan sehari-hari, termasuk iMessages, WhatsApp, Slack, Telegram, dan banyak lagi.</p>
-<p>Namun sebagai insinyur yang bekerja pada sistem basis data vektor, yang benar-benar menarik perhatian kami adalah <strong>pendekatan OpenClaw terhadap memori jangka panjang.</strong> Tidak seperti kebanyakan sistem memori di luar sana, OpenClaw memiliki AI yang secara otomatis menulis log harian sebagai file Markdown. File-file tersebut adalah sumber kebenaran, dan model hanya "mengingat" apa yang dituliskan ke disk. Pengembang manusia dapat membuka file-file penurunan harga tersebut, mengeditnya secara langsung, menyaring prinsip-prinsip jangka panjang, dan melihat dengan tepat apa yang diingat oleh AI pada titik mana pun. Tidak ada kotak hitam. Sejujurnya, ini adalah salah satu arsitektur memori yang paling bersih dan paling ramah pengembang yang pernah kami lihat.</p>
-<p>Jadi tentu saja, kami memiliki pertanyaan: <strong><em>mengapa ini hanya bekerja di dalam OpenClaw? Bagaimana jika ada agen yang bisa memiliki memori seperti ini?</em></strong> Kami mengambil arsitektur memori yang tepat dari OpenClaw dan membangun <a href="https://github.com/zilliztech/memsearch">memsearch</a> - perpustakaan memori jangka panjang yang berdiri sendiri, plug-and-play yang memberikan agen mana pun memori yang persisten, transparan, dan dapat diedit oleh manusia. Tidak ada ketergantungan pada bagian lain dari OpenClaw. Cukup masukkan saja, dan agen Anda akan mendapatkan memori yang tahan lama dengan pencarian yang didukung oleh Milvus/Zilliz Cloud, ditambah log penurunan harga sebagai sumber kebenaran kanonik.</p>
+<p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (previously clawdbot and moltbot) is going viral — <a href="https://github.com/openclaw/openclaw">189k+ GitHub stars</a> in under two weeks. That’s insane. Most of the buzz is around its autonomous, agentic capabilities across everyday chat channels, including iMessages, WhatsApp, Slack, Telegram, and more.</p>
+<p>But as engineers working on a vector database system, what really caught our attention was <strong>OpenClaw’s approach to long-term memory</strong>. Unlike most memory systems out there, OpenClaw has its AI automatically write daily logs as Markdown files. Those files are the source of truth, and the model only “remembers” what gets written to disk. Human developers can open those markdown files, edit them directly, distill long-term principles, and see exactly what the AI remembers at any point. No black boxes. Honestly, it’s one of the cleanest and most developer-friendly memory architectures we’ve seen.</p>
+<p>So naturally, we had a question: <strong><em>why should this only work inside OpenClaw? What if any agent could have memory like this?</em></strong> We took the exact memory architecture from OpenClaw and built <a href="https://github.com/zilliztech/memsearch">memsearch</a> — a standalone, plug-and-play long-term memory library that gives any agent persistent, transparent, human-editable memory. No dependency on the rest of OpenClaw. Just drop it in, and your agent gets durable memory with search powered by Milvus/Zilliz Cloud, plus Markdown logs as the canonical source of truth.</p>
 <iframe width="997" height="561" src="https://www.youtube.com/embed/VRzqRVFm39s" title="MemSearch: OpenClaw's long-term memory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <ul>
-<li><p><strong>GitHub Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a> (sumber terbuka, lisensi MIT)</p></li>
-<li><p><strong>Dokumentasi:</strong> <a href="https://zilliztech.github.io/memsearch/">https://zilliztech.github.io/memsearch/</a></p></li>
-<li><p><strong>Plugin kode Claude:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
+<li><p><strong>GitHub Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a> (open-source, MIT license)</p></li>
+<li><p><strong>Documentation</strong>: <a href="https://zilliztech.github.io/memsearch/">https://zilliztech.github.io/memsearch/</a></p></li>
+<li><p><strong>Claude code plugin:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
 </ul>
-<h2 id="What-Makes-OpenClaws-Memory-Different" class="common-anchor-header">Apa yang Membuat Memori OpenClaw Berbeda<button data-href="#What-Makes-OpenClaws-Memory-Different" class="anchor-icon" translate="no">
+<h2 id="What-Makes-OpenClaws-Memory-Different" class="common-anchor-header">What Makes OpenClaw’s Memory Different<button data-href="#What-Makes-OpenClaws-Memory-Different" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,16 +44,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelum masuk ke dalam arsitektur memori OpenClaw, mari kita luruskan dua konsep: <strong>konteks</strong> dan <strong>memori</strong>. Keduanya terdengar mirip tetapi dalam praktiknya sangat berbeda.</p>
+    </button></h2><p>Before diving into the OpenClaw memory architecture, let’s get two concepts straight: <strong>context</strong> and <strong>memory</strong>. They sound similar but work very differently in practice.</p>
 <ul>
-<li><p><strong>Konteks</strong> adalah segala sesuatu yang dilihat oleh agen dalam satu permintaan - perintah sistem, file panduan tingkat proyek seperti <code translate="no">AGENTS.md</code> dan <code translate="no">SOUL.md</code>, riwayat percakapan (pesan, panggilan alat, ringkasan yang dikompresi), dan pesan pengguna saat ini. Ini terbatas pada satu sesi dan relatif ringkas.</p></li>
-<li><p><strong>Memori</strong> adalah apa yang bertahan di seluruh sesi. Memori ini berada di disk lokal Anda - riwayat lengkap percakapan sebelumnya, file yang pernah digunakan agen, dan preferensi pengguna. Tidak diringkas. Tidak dikompresi. Hal-hal yang masih mentah.</p></li>
+<li><p><strong>Context</strong> is everything the agent sees in a single request — system prompts, project-level guidance files like <code translate="no">AGENTS.md</code> and <code translate="no">SOUL.md</code>, conversation history (messages, tool calls, compressed summaries), and the user’s current message. It’s scoped to one session and relatively compact.</p></li>
+<li><p><strong>Memory</strong> is what persists across sessions. It lives on your local disk — the full history of past conversations, files the agent has worked with, and user preferences. Not summarized. Not compressed. The raw stuff.</p></li>
 </ul>
-<p>Sekarang, inilah keputusan desain yang membuat pendekatan OpenClaw menjadi istimewa: <strong>semua memori disimpan sebagai file Markdown biasa di sistem berkas lokal</strong>. Setelah setiap sesi, AI menulis pembaruan ke log Markdown tersebut secara otomatis. Anda-dan pengembang mana pun-dapat membukanya, mengeditnya, mengatur ulang, menghapusnya, atau menyempurnakannya. Sementara itu, basis data vektor berada di samping sistem ini, membuat dan memelihara indeks untuk pencarian. Setiap kali file Markdown berubah, sistem akan mendeteksi perubahan tersebut dan mengindeks ulang secara otomatis.</p>
-<p>Jika Anda pernah menggunakan alat seperti Mem0 atau Zep, Anda akan segera melihat perbedaannya. Sistem-sistem tersebut menyimpan memori sebagai penyematan - itulah satu-satunya salinan. Anda tidak dapat membaca apa yang diingat oleh agen Anda. Anda tidak dapat memperbaiki memori yang buruk dengan mengedit sebuah baris. Pendekatan OpenClaw memberikan Anda keduanya: transparansi file biasa <strong>dan</strong> kekuatan pencarian vektor menggunakan basis data vektor. Anda bisa membacanya, <code translate="no">git diff</code> itu, grep itu - itu hanya file.</p>
-<p>Satu-satunya kekurangannya? Saat ini sistem memori yang mengutamakan penurunan harga ini sangat terkait erat dengan ekosistem OpenClaw secara keseluruhan - proses Gateway, konektor platform, konfigurasi ruang kerja, dan infrastruktur pesan. Jika Anda hanya menginginkan model memori, maka akan ada banyak mesin yang harus diikutsertakan.</p>
-<p>Itulah mengapa kami membangun <a href="http://github.com/zilliztech/memsearch"><strong>memsearch</strong></a>: filosofi yang sama - Markdown sebagai sumber kebenaran, pengindeksan vektor otomatis, dapat diedit oleh manusia sepenuhnya - tetapi disampaikan sebagai pustaka mandiri yang ringan yang dapat Anda masukkan ke dalam arsitektur agen apa pun.</p>
-<h2 id="How-Memsearch-Works" class="common-anchor-header">Bagaimana Memsearch Bekerja<button data-href="#How-Memsearch-Works" class="anchor-icon" translate="no">
+<p>Now here’s the design decision that makes OpenClaw’s approach special: <strong>all memory is stored as plain Markdown files on the local filesystem.</strong> After each session, the AI writes updates to those Markdown logs automatically. You—and any developer—can open them, edit them, reorganize them, delete them, or refine them. Meanwhile, the vector database sits alongside this system, creating and maintaining an index for retrieval. Whenever a Markdown file changes, the system detects the change and re-indexes it automatically.</p>
+<p>If you’ve used tools like Mem0 or Zep, you’ll notice the difference immediately. Those systems store memories as embeddings — that’s the only copy. You can’t read what your agent remembers. You can’t fix a bad memory by editing a row. OpenClaw’s approach gives you both: the transparency of plain files <strong>and</strong> the retrieval power of vector search using a vector database. You can read it, <code translate="no">git diff</code> it, grep it — it’s just files.</p>
+<p>The only downside? Right now this Markdown-first memory system is tightly intertwined with the full OpenClaw ecosystem—the Gateway process, platform connectors, workspace configuration, and messaging infrastructure. If you only want the memory model, that’s a lot of machinery to drag in.</p>
+<p>Which is exactly why we built <a href="http://github.com/zilliztech/memsearch"><strong>memsearch</strong></a>: the same philosophy—Markdown as source of truth, automatic vector indexing, fully human-editable—but delivered as a lightweight, standalone library you can drop into any agentic architecture.</p>
+<h2 id="How-Memsearch-Works" class="common-anchor-header">How Memsearch Works<button data-href="#How-Memsearch-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,8 +68,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Seperti yang telah disebutkan sebelumnya, <a href="https://github.com/zilliztech/memsearch">memsearch</a> adalah pustaka memori jangka panjang yang sepenuhnya independen yang mengimplementasikan arsitektur memori yang sama dengan yang digunakan di OpenClaw-tanpa membawa serta tumpukan OpenClaw lainnya. Anda dapat menyambungkannya ke dalam kerangka kerja agen apa pun (Claude, GPT, Llama, agen khusus, mesin alur kerja) dan secara instan memberikan memori yang persisten, transparan, dan dapat diedit oleh manusia kepada sistem Anda.</p>
-<p>Semua memori agen dalam memsearch disimpan sebagai Markdown teks biasa dalam direktori lokal. Strukturnya sengaja dibuat sederhana agar para pengembang dapat memahaminya dengan cepat:</p>
+    </button></h2><p>As mentioned earlier, <a href="https://github.com/zilliztech/memsearch">memsearch</a> is a fully independent long-term memory library that implements the same memory architecture used in OpenClaw—without bringing along the rest of the OpenClaw stack. You can plug it into any agent framework (Claude, GPT, Llama, custom agents, workflow engines) and instantly give your system persistent, transparent, human-editable memory.</p>
+<p>All agent memory in memsearch is stored as plain-text Markdown in a local directory. The structure is intentionally simple so developers can understand it at a glance:</p>
 <pre><code translate="no">~/your-project/
 └── memory/
     ├── MEMORY.md              <span class="hljs-comment"># Hand-written long-term memory</span>
@@ -77,31 +77,31 @@ origin: >-
     ├── 2026-02-08.md
     └── 2026-02-07.md
 <button class="copy-code-btn"></button></code></pre>
-<p>Memsearch menggunakan <a href="https://milvus.io/"><strong>Milvus</strong></a> sebagai basis data vektor untuk mengindeks berkas-berkas Markdown ini untuk pengambilan semantik yang cepat. Tetapi yang terpenting, indeks vektor <em>bukanlah</em> sumber kebenaran - berkas-berkasnya yang benar. Jika Anda menghapus indeks Milvus sepenuhnya, <strong>Anda tidak akan kehilangan apa pun</strong>. Memsearch hanya menyematkan kembali dan mengindeks ulang file Markdown, membangun kembali lapisan pengambilan penuh dalam beberapa menit. Ini berarti memori agen Anda transparan, tahan lama, dan dapat direkonstruksi sepenuhnya.</p>
-<p>Berikut ini adalah kemampuan inti dari memsearch:</p>
-<h3 id="Readable-Markdown-Makes-Debugging-as-Simple-as-Editing-a-File" class="common-anchor-header">Markdown yang Dapat Dibaca Membuat Debugging Semudah Mengedit File</h3><p>Debugging memori AI biasanya menyakitkan. Ketika sebuah agen menghasilkan jawaban yang salah, sebagian besar sistem memori tidak memberi Anda cara yang jelas untuk melihat <em>apa</em> yang sebenarnya disimpan. Alur kerja yang umum dilakukan adalah menulis kode khusus untuk meminta API memori, kemudian memilah-milah embedding yang tidak jelas atau gumpalan JSON yang bertele-tele-tidak ada yang memberi tahu Anda banyak tentang keadaan internal AI yang sebenarnya.</p>
-<p><strong>memsearch menghilangkan seluruh kelas masalah tersebut.</strong> Semua memori berada di dalam memori/folder sebagai Markdown biasa:</p>
+<p>Memsearch uses <a href="https://milvus.io/"><strong>Milvus</strong></a> as the vector database to index these Markdown files for fast semantic retrieval. But crucially, the vector index is <em>not</em> the source of truth—the files are. If you delete the Milvus index entirely, <strong>you lose nothing.</strong> Memsearch simply re-embeds and re-indexes the Markdown files, rebuilding the full retrieval layer in a few minutes. This means your agent’s memory is transparent, durable, and fully reconstructable.</p>
+<p>Here are the core capabilities of memsearch:</p>
+<h3 id="Readable-Markdown-Makes-Debugging-as-Simple-as-Editing-a-File" class="common-anchor-header">Readable Markdown Makes Debugging as Simple as Editing a File</h3><p>Debugging AI memory is usually painful. When an agent produces a wrong answer, most memory systems give you no clear way to see <em>what</em> it actually stored. The typical workflow is writing custom code to query a memory API, then sifting through opaque embeddings or verbose JSON blobs—neither of which tell you much about the AI’s real internal state.</p>
+<p><strong>memsearch eliminates that entire class of problems.</strong> All memory lives in the memory/ folder as plain Markdown:</p>
 <pre><code translate="no" class="language-markdown"><span class="hljs-meta">## Morning</span>
 - Fixed N+<span class="hljs-number">1</span> query issue — <span class="hljs-function">switched to <span class="hljs-title">selectinload</span>()
 - Query count dropped <span class="hljs-keyword">from</span> 152 to 3
 </span><button class="copy-code-btn"></button></code></pre>
-<p>Jika AI melakukan kesalahan, memperbaikinya semudah mengedit file. Perbarui entri, simpan, dan memsearch secara otomatis mengindeks ulang perubahan. Lima detik. Tidak ada panggilan API. Tidak ada perkakas. Tidak ada misteri. Anda men-debug memori AI dengan cara yang sama seperti men-debug dokumentasi-dengan mengedit file.</p>
-<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Memori yang Didukung Git Berarti Tim Dapat Melacak, Meninjau, dan Mengembalikan Perubahan</h3><p>Memori AI yang berada di dalam basis data sulit untuk dikolaborasikan. Mencari tahu siapa yang mengubah apa dan kapan berarti menggali log audit, dan banyak solusi yang tidak menyediakannya. Perubahan terjadi secara diam-diam, dan ketidaksepakatan tentang apa yang harus diingat oleh AI tidak memiliki jalur penyelesaian yang jelas. Tim akhirnya mengandalkan pesan dan asumsi Slack.</p>
-<p>Memsearch memperbaiki masalah ini dengan menjadikan memori hanya sebagai berkas penurunan versi-yang berarti <strong>Git menangani pembuatan versi secara otomatis</strong>. Satu perintah menunjukkan seluruh riwayat:</p>
+<p>If the AI gets something wrong, fixing it is as simple as editing the file. Update the entry, save, and memsearch automatically re-indexes the change. Five seconds. No API calls. No tooling. No mystery. You debug AI memory the same way you debug documentation—by editing a file.</p>
+<h3 id="Git-Backed-Memory-Means-Teams-Can-Track-Review-and-Roll-Back-Changes" class="common-anchor-header">Git-Backed Memory Means Teams Can Track, Review, and Roll Back Changes</h3><p>AI memory that lives in a database is hard to collaborate on. Figuring out who changed what and when means digging through audit logs, and many solutions do not even provide those. Changes happen silently, and disagreements about what the AI should remember have no clear resolution path. Teams end up relying on Slack messages and assumptions.</p>
+<p>Memsearch fixes this problem by making memory just Markdown files—which means <strong>Git handles versioning automatically</strong>. A single command shows the entire history:</p>
 <pre><code translate="no" class="language-bash">git <span class="hljs-built_in">log</span> memory/MEMORY.md
 git diff HEAD~1 memory/2026-02-09.md
 <button class="copy-code-btn"></button></code></pre>
-<p>Sekarang memori AI berpartisipasi dalam alur kerja yang sama dengan kode. Keputusan arsitektur, pembaruan konfigurasi, dan perubahan preferensi semuanya muncul dalam diff yang dapat dikomentari, disetujui, atau dikembalikan oleh siapa pun:</p>
+<p>Now AI memory participates in the same workflow as code. Architecture decisions, configuration updates, and preference changes all appear in diffs that anyone can comment on, approve, or revert:</p>
 <pre><code translate="no" class="language-diff">+ <span class="hljs-meta">## Architecture Decision</span>
 + - Use Kafka <span class="hljs-keyword">for</span> <span class="hljs-keyword">event</span> bus instead of RabbitMQ
 + - Reason: better horizontal scaling
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Plaintext-Memory-Makes-Migration-Nearly-Effortless" class="common-anchor-header">Memori Plaintext Membuat Migrasi Menjadi Hampir Mudah</h3><p>Migrasi adalah salah satu biaya tersembunyi terbesar dari kerangka kerja memori. Berpindah dari satu alat ke alat lain biasanya berarti mengekspor data, mengonversi format, mengimpor ulang, dan berharap bidang-bidang tersebut kompatibel. Pekerjaan semacam itu dapat dengan mudah menghabiskan setengah hari, dan hasilnya tidak pernah terjamin.</p>
-<p>memsearch menghindari masalah ini sepenuhnya karena memori adalah plaintext Penurunan harga. Tidak ada format kepemilikan, tidak ada skema yang perlu diterjemahkan, tidak ada yang perlu dimigrasi:</p>
+<h3 id="Plaintext-Memory-Makes-Migration-Nearly-Effortless" class="common-anchor-header">Plaintext Memory Makes Migration Nearly Effortless</h3><p>Migration is one of the biggest hidden costs of memory frameworks. Moving from one tool to another usually means exporting data, converting formats, re-importing, and hoping the fields are compatible. That kind of work can easily eat half a day, and the result is never guaranteed.</p>
+<p>memsearch avoids the problem entirely because memory is plaintext Markdown. There is no proprietary format, no schema to translate, nothing to migrate:</p>
 <ul>
-<li><p><strong>Pindah mesin:</strong> <code translate="no">rsync</code> folder memori. Selesai.</p></li>
-<li><p><strong>Ganti model penyematan:</strong> Jalankan kembali perintah indeks. Ini akan memakan waktu lima menit, dan file penurunan harga tidak akan tersentuh.</p></li>
-<li><p><strong>Ganti penyebaran basis data vektor:</strong> Mengubah satu nilai konfigurasi. Misalnya, beralih dari Milvus Lite dalam pengembangan ke Zilliz Cloud dalam produksi:</p></li>
+<li><p><strong>Switch machines:</strong> <code translate="no">rsync</code> the memory folder. Done.</p></li>
+<li><p><strong>Switch embedding models:</strong> Re-run the index command. It’ll take five minutes, and markdown files stay untouched.</p></li>
+<li><p><strong>Switch vector database deployment:</strong> Change one config value. For example, going from Milvus Lite in development to Zilliz Cloud in production:</p></li>
 </ul>
 <pre><code translate="no" class="language-python"><span class="hljs-meta"># Development</span>
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db&quot;</span>)
@@ -109,15 +109,15 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;~/.memsearch/milvus.db
 <span class="hljs-meta"># Production (change only this <span class="hljs-keyword">line</span>)</span>
 ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>File memori Anda tetap sama persis. Infrastruktur di sekitarnya dapat berkembang dengan bebas. Hasilnya adalah portabilitas jangka panjang - sifat yang langka dalam sistem AI.</p>
-<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">File Penurunan Harga Bersama Memungkinkan Manusia dan Agen Menulis Memori Bersama</h3><p>Di sebagian besar solusi memori, mengedit apa yang diingat oleh AI memerlukan penulisan kode terhadap API. Itu berarti hanya pengembang yang dapat mengelola memori AI, dan bahkan bagi mereka, hal ini merepotkan.</p>
-<p>Memsearch memungkinkan pembagian tanggung jawab yang lebih alami:</p>
+<p>Your memory files stay exactly the same. The infrastructure around them can evolve freely. The result is long-term portability—a rare property in AI systems.</p>
+<h3 id="Shared-Markdown-Files-Let-Humans-and-Agents-Co-Author-Memory" class="common-anchor-header">Shared Markdown Files Let Humans and Agents Co-Author Memory</h3><p>In most memory solutions, editing what the AI remembers requires writing code against an API. That means only developers can maintain AI memory, and even for them, it is cumbersome.</p>
+<p>Memsearch enables a more natural division of responsibility:</p>
 <ul>
-<li><p><strong>AI menangani:</strong> Catatan harian otomatis (<code translate="no">YYYY-MM-DD.md</code>) dengan detail eksekusi seperti "diterapkan v2.3.1, peningkatan kinerja 12%."</p></li>
-<li><p><strong>Manusia menangani:</strong> Prinsip-prinsip jangka panjang di <code translate="no">MEMORY.md</code>, seperti "Tumpukan tim: Python + FastAPI + PostgreSQL."</p></li>
+<li><p><strong>AI handles:</strong> Automatic daily logs (<code translate="no">YYYY-MM-DD.md</code>) with execution details like “deployed v2.3.1, 12% performance improvement.”</p></li>
+<li><p><strong>Humans handle:</strong> Long-term principles in <code translate="no">MEMORY.md</code>, like “Team stack: Python + FastAPI + PostgreSQL.”</p></li>
 </ul>
-<p>Kedua belah pihak mengedit file Markdown yang sama dengan alat apa pun yang sudah mereka gunakan. Tidak ada pemanggilan API, tidak ada perkakas khusus, tidak ada penjaga gerbang. Ketika memori terkunci di dalam basis data, kepenulisan bersama seperti ini tidak mungkin dilakukan. memsearch menjadikannya sebagai default.</p>
-<h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">Di Balik Tudung: memsearch Berjalan pada Empat Alur Kerja yang Menjaga Memori Tetap Cepat, Segar, dan Ramping<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
+<p>Both sides edit the same Markdown files with whatever tools they already use. No API calls, no special tooling, no gatekeeper. When memory is locked inside a database, this kind of shared authorship is not possible. memsearch makes it the default.</p>
+<h2 id="Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="common-anchor-header">Under the Hood: memsearch Runs on Four Workflows That Keep Memory Fast, Fresh, and Lean<button data-href="#Under-the-Hood-memsearch-Runs-on-Four-Workflows-That-Keep-Memory-Fast-Fresh-and-Lean" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,13 +138,13 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
     <span></span>
   </span>
 </p>
-<p>memsearch memiliki empat alur kerja inti: <strong>Menonton</strong> (memantau) → <strong>Indeks</strong> (memotong dan menyematkan) → <strong>Cari</strong> (mengambil) → <strong>Ringkas</strong> (meringkas). Inilah yang dilakukan oleh masing-masing alur tersebut.</p>
-<h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1. Perhatikan: Mengindeks Ulang Secara Otomatis pada Setiap Penyimpanan File</h3><p>Alur kerja <strong>Watch</strong> memonitor semua file Markdown dalam memori/direktori dan memicu indeks ulang setiap kali sebuah file dimodifikasi dan disimpan. <strong>Debounce 1500ms</strong> memastikan pembaruan terdeteksi tanpa membuang-buang komputasi: jika beberapa penyimpanan terjadi secara berurutan, pengatur waktu akan diatur ulang dan menyala hanya ketika pengeditan telah stabil.</p>
-<p>Penundaan itu disetel secara empiris:</p>
+<p>memsearch has four core workflows: <strong>Watch</strong> (monitor) → <strong>Index</strong> (chunk and embed) → <strong>Search</strong> (retrieve) → <strong>Compact</strong> (summarize). Here is what each one does.</p>
+<h3 id="1-Watch-Automatically-Re-Index-on-Every-File-Save" class="common-anchor-header">1. Watch: Automatically Re-Index on Every File Save</h3><p>The <strong>Watch</strong> workflow monitors all Markdown files in the memory/ directory and triggers a re-index whenever a file is modified and saved. A <strong>1500ms debounce</strong> ensures updates are detected without wasting compute: if multiple saves occur in quick succession, the timer resets and fires only when edits have stabilized.</p>
+<p>That delay is empirically tuned:</p>
 <ul>
-<li><p><strong>100ms</strong> → terlalu sensitif; menyala pada setiap penekanan tombol, membakar panggilan penyematan</p></li>
-<li><p><strong>10 detik</strong> → terlalu lambat; pengembang menyadari adanya kelambatan</p></li>
-<li><p><strong>1500ms</strong> → keseimbangan ideal antara daya tanggap dan efisiensi sumber daya</p></li>
+<li><p><strong>100ms</strong> → too sensitive; fires on every keystroke, burning embedding calls</p></li>
+<li><p><strong>10s</strong> → too slow; developers notice lag</p></li>
+<li><p><strong>1500ms</strong> → ideal balance of responsiveness and resource efficiency</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -152,10 +152,10 @@ ms = MemSearch(milvus_uri=<span class="hljs-string">&quot;https://xxx.zillizclou
     <span></span>
   </span>
 </p>
-<p>Dalam praktiknya, ini berarti pengembang dapat menulis kode di satu jendela dan mengedit <code translate="no">MEMORY.md</code> di jendela lain, menambahkan URL dokumen API atau mengoreksi entri yang sudah ketinggalan zaman. Simpan file, dan kueri AI berikutnya akan mengambil memori yang baru. Tidak perlu memulai ulang, tidak perlu mengindeks ulang secara manual.</p>
-<h3 id="2-Index-Smart-Chunking-Deduplication-and-Version-Aware-Embeddings" class="common-anchor-header">2. Indeks: Pemotongan Cerdas, Deduplikasi, dan Penyematan Sadar Versi</h3><p>Index adalah alur kerja yang sangat penting bagi kinerja. Ini menangani tiga hal: <strong>chunking, deduplikasi, dan ID chunk berversi</strong>.</p>
-<p><strong>Pemenggalan</strong> membagi teks di sepanjang batas semantik-judul dan badan teks-sehingga konten yang terkait tetap bersama. Hal ini untuk menghindari kasus di mana frasa seperti "Konfigurasi Redis" terpecah menjadi beberapa bagian.</p>
-<p>Misalnya, Penurunan harga ini:</p>
+<p>In practice, this means a developer can write code in one window and edit <code translate="no">MEMORY.md</code> in another, adding an API docs URL or correcting an outdated entry. Save the file, and the next AI query picks up the new memory. No restart, no manual re-index.</p>
+<h3 id="2-Index-Smart-Chunking-Deduplication-and-Version-Aware-Embeddings" class="common-anchor-header">2. Index: Smart Chunking, Deduplication, and Version-Aware Embeddings</h3><p>Index is the performance-critical workflow. It handles three things: <strong>chunking, deduplication, and versioned chunk IDs.</strong></p>
+<p><strong>Chunking</strong> splits text along semantic boundaries—headings and their bodies—so related content stays together. This avoids cases where a phrase like “Redis configuration” gets split across chunks.</p>
+<p>For example, this Markdown:</p>
 <pre><code translate="no" class="language-markdown"><span class="hljs-comment">## Redis Caching</span>
 We use Redis <span class="hljs-keyword">for</span> L1 cache <span class="hljs-keyword">with</span> 5<span class="hljs-built_in">min</span> TTL.
 The connection pool <span class="hljs-keyword">is</span> configured <span class="hljs-keyword">with</span> <span class="hljs-built_in">max</span> <span class="hljs-number">100</span> connections.
@@ -163,22 +163,22 @@ The connection pool <span class="hljs-keyword">is</span> configured <span class=
 <span class="hljs-comment">## Database</span>
 PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</span> the primary database.
 <button class="copy-code-btn"></button></code></pre>
-<p>Menjadi dua potongan:</p>
+<p>Becomes two chunks:</p>
 <ul>
-<li><p>Potongan 1: <code translate="no">## Redis Caching\nWe use Redis for L1 cache...</code></p></li>
-<li><p>Potongan 2: Potongan 2: <code translate="no">## Database\nPostgreSQL 16 is the primary database.</code></p></li>
+<li><p>Chunk 1: <code translate="no">## Redis Caching\nWe use Redis for L1 cache...</code></p></li>
+<li><p>Chunk 2: <code translate="no">## Database\nPostgreSQL 16 is the primary database.</code></p></li>
 </ul>
-<p><strong>Deduplikasi</strong> menggunakan hash SHA-256 untuk setiap potongan untuk menghindari penyematan teks yang sama dua kali. Jika beberapa file menyebutkan "PostgreSQL 16," API penyematan dipanggil sekali, bukan sekali per file. Untuk ~500KB teks, ini menghemat sekitar <strong>$0,15/bulan</strong>. Dalam skala besar, penghematan ini bisa mencapai ratusan dolar.</p>
-<p><strong>Desain ID Chunk</strong> mengkodekan semua yang diperlukan untuk mengetahui apakah sebuah chunk sudah basi. Formatnya adalah <code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code>. Bidang <code translate="no">model_version</code> adalah bagian yang penting: ketika sebuah model penyematan ditingkatkan dari <code translate="no">text-embedding-3-small</code> ke <code translate="no">text-embedding-3-large</code>, penyematan yang lama menjadi tidak valid. Karena versi model dimasukkan ke dalam ID, sistem secara otomatis mengidentifikasi potongan mana yang perlu disematkan ulang. Tidak diperlukan pembersihan manual.</p>
-<h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3. Pencarian: Pencarian Vektor Hibrida + BM25 untuk Akurasi Maksimum</h3><p>Pencarian menggunakan pendekatan pencarian hibrida: pencarian vektor berbobot 70% dan pencarian kata kunci BM25 berbobot 30%. Hal ini menyeimbangkan dua kebutuhan berbeda yang sering muncul dalam praktiknya.</p>
+<p><strong>Deduplication</strong> uses a SHA-256 hash of each chunk to avoid embedding the same text twice. If multiple files mention “PostgreSQL 16,” the embedding API is called once, not once per file. For ~500KB of text, this saves around <strong>$0.15/month.</strong> At scale, that adds up to hundreds of dollars.</p>
+<p><strong>Chunk ID design</strong> encodes everything needed to know whether a chunk is stale. The format is <code translate="no">hash(source_path:start_line:end_line:content_hash:model_version)</code>. The <code translate="no">model_version</code> field is the important part: when an embedding model is upgraded from <code translate="no">text-embedding-3-small</code> to <code translate="no">text-embedding-3-large</code>, the old embeddings become invalid. Because the model version is baked into the ID, the system automatically identifies which chunks need re-embedding. No manual cleanup required.</p>
+<h3 id="3-Search-Hybrid-Vector-+-BM25-Retrieval-for-Maximum-Accuracy" class="common-anchor-header">3. Search: Hybrid Vector + BM25 Retrieval for Maximum Accuracy</h3><p>Retrieval uses a hybrid search approach: vector search weighted at 70% and BM25 keyword search weighted at 30%. This balances two different needs that arise frequently in practice.</p>
 <ul>
-<li><p><strong>Pencarian vektor</strong> menangani pencocokan semantik. Kueri untuk "Redis cache config" mengembalikan potongan yang berisi "Redis L1 cache dengan TTL 5 menit" meskipun kata-katanya berbeda. Ini berguna ketika pengembang mengingat konsepnya tetapi tidak mengingat frasa yang tepat.</p></li>
-<li><p><strong>BM25</strong> menangani pencocokan yang tepat. Kueri untuk "PostgreSQL 16" tidak mengembalikan hasil tentang "PostgreSQL 15." Hal ini penting untuk kode kesalahan, nama fungsi, dan perilaku spesifik versi, di mana close tidak cukup baik.</p></li>
+<li><p><strong>Vector search</strong> handles semantic matching. A query for “Redis cache config” returns a chunk containing “Redis L1 cache with 5min TTL” even though the wording is different. This is useful when the developer remembers the concept but not the exact phrasing.</p></li>
+<li><p><strong>BM25</strong> handles exact matching. A query for “PostgreSQL 16” does not return results about “PostgreSQL 15.” This matters for error codes, function names, and version-specific behavior, where close is not good enough.</p></li>
 </ul>
-<p>Pembagian default 70/30 bekerja dengan baik untuk sebagian besar kasus penggunaan. Untuk alur kerja yang sangat condong ke arah pencocokan yang sama persis, menaikkan bobot BM25 menjadi 50% adalah perubahan konfigurasi satu baris.</p>
-<p>Hasil dikembalikan sebagai potongan top-K (default 3), masing-masing dipotong menjadi 200 karakter. Ketika konten lengkap diperlukan, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> akan memuatnya. Pengungkapan progresif ini membuat penggunaan jendela konteks LLM tetap ramping tanpa mengorbankan akses ke detail.</p>
-<h3 id="4-Compact-Summarize-Historical-Memory-to-Keep-Context-Clean" class="common-anchor-header">4. Ringkas: Meringkas Memori Historis untuk Menjaga Konteks Tetap Bersih</h3><p>Memori yang menumpuk pada akhirnya menjadi masalah. Entri lama memenuhi jendela konteks, meningkatkan biaya token, dan menambahkan noise yang menurunkan kualitas jawaban. Compact mengatasi hal ini dengan memanggil LLM untuk meringkas memori historis ke dalam bentuk yang ringkas, kemudian menghapus atau mengarsipkan yang asli. Ini dapat dipicu secara manual atau dijadwalkan untuk berjalan pada interval yang teratur.</p>
-<h2 id="How-to-get-started-with-memsearch" class="common-anchor-header">Cara memulai dengan memsearch<button data-href="#How-to-get-started-with-memsearch" class="anchor-icon" translate="no">
+<p>The default 70/30 split works well for most use cases. For workflows that lean heavily toward exact matches, raising the BM25 weight to 50% is a one-line configuration change.</p>
+<p>Results are returned as top-K chunks (default 3), each truncated to 200 characters. When the full content is needed, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> loads it. This progressive disclosure keeps LLM context window usage lean without sacrificing access to detail.</p>
+<h3 id="4-Compact-Summarize-Historical-Memory-to-Keep-Context-Clean" class="common-anchor-header">4. Compact: Summarize Historical Memory to Keep Context Clean</h3><p>Accumulated memory eventually becomes a problem. Old entries fill the context window, increase token costs, and add noise that degrades answer quality. Compact addresses this by calling an LLM to summarize historical memory into a condensed form, then deleting or archiving the originals. It can be triggered manually or scheduled to run on a regular interval.</p>
+<h2 id="How-to-get-started-with-memsearch" class="common-anchor-header">How to get started with memsearch<button data-href="#How-to-get-started-with-memsearch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -193,18 +193,18 @@ PostgreSQL <span class="hljs-number">16</span> <span class="hljs-keyword">is</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Memsearch menyediakan <strong>API Python</strong> dan <strong>CLI</strong>, sehingga Anda bisa menggunakannya di dalam kerangka kerja agen atau sebagai alat debugging mandiri. Penyiapannya minimal, dan sistem ini dirancang agar lingkungan pengembangan lokal dan penerapan produksi Anda terlihat hampir sama.</p>
-<p>Memsearch mendukung tiga backend yang kompatibel dengan Milvus, semuanya diekspos melalui <strong>API yang sama</strong>:</p>
+    </button></h2><p>Memsearch provides both a <strong>Python API</strong> and a <strong>CLI</strong>, so you can use it inside agent frameworks or as a standalone debugging tool. Setup is minimal, and the system is designed so your local development environment and production deployment look almost identical.</p>
+<p>Memsearch supports three Milvus-compatible backends, all exposed through the <strong>same API</strong>:</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite (default)</strong></a><strong>:</strong> File <code translate="no">.db</code> lokal, tanpa konfigurasi, cocok untuk penggunaan individu.</p></li>
-<li><p><strong>Milvus Standalone / Cluster:</strong> Di-host sendiri, mendukung beberapa agen berbagi data, cocok untuk lingkungan tim.</p></li>
-<li><p><a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a><strong>:</strong> Dikelola sepenuhnya, dengan penskalaan otomatis, pencadangan, ketersediaan tinggi, dan isolasi. Ideal untuk beban kerja produksi.</p></li>
+<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite (default)</strong></a><strong>:</strong> Local <code translate="no">.db</code> file, zero configuration, suited for individual use.</p></li>
+<li><p><strong>Milvus Standalone / Cluster:</strong> Self-hosted, supports multiple agents sharing data, suited for team environments.</p></li>
+<li><p><a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a><strong>:</strong> Fully managed, with auto-scaling, backups, high availability, and isolation. Ideal for production workloads.</p></li>
 </ul>
-<p>Beralih dari pengembangan lokal ke produksi biasanya merupakan <strong>perubahan konfigurasi satu baris</strong>. Kode Anda tetap sama.</p>
-<h3 id="Install" class="common-anchor-header">Instal</h3><pre><code translate="no" class="language-bash">pip install memsearch
+<p>Switching from local development to production is typically <strong>a one-line config change</strong>. Your code stays the same.</p>
+<h3 id="Install" class="common-anchor-header">Install</h3><pre><code translate="no" class="language-bash">pip install memsearch
 <button class="copy-code-btn"></button></code></pre>
-<p>memsearch juga mendukung beberapa penyedia penyematan, termasuk OpenAI, Google, Voyage, Ollama, dan model lokal. Ini memastikan arsitektur memori Anda tetap portabel dan vendor-agnostik.</p>
-<h3 id="Option-1-Python-API-integrated-into-your-agent-framework" class="common-anchor-header">Opsi 1: API Python (terintegrasi ke dalam kerangka kerja agen Anda)</h3><p>Berikut ini adalah contoh minimal dari perulangan agen lengkap menggunakan memsearch. Anda dapat menyalin/menempel dan memodifikasi sesuai kebutuhan:</p>
+<p>memsearch also supports multiple embedding providers, including OpenAI, Google, Voyage, Ollama, and local models. This ensures your memory architecture stays portable and vendor-agnostic.</p>
+<h3 id="Option-1-Python-API-integrated-into-your-agent-framework" class="common-anchor-header">Option 1: Python API (integrated into your agent framework)</h3><p>Here is a minimal example of a full agent loop using memsearch. You can copy/paste and modify as needed:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> memsearch <span class="hljs-keyword">import</span> MemSearch
 
@@ -230,21 +230,21 @@ ms = MemSearch(paths=[<span class="hljs-string">&quot;./memory/&quot;</span>])
     <span class="hljs-keyword">await</span> ms.index()
     <span class="hljs-keyword">return</span> resp.choices[<span class="hljs-number">0</span>].message.content
 <button class="copy-code-btn"></button></code></pre>
-<p>Ini menunjukkan perulangan inti:</p>
+<p>This shows the core loop:</p>
 <ul>
-<li><p><strong>Ingat</strong>: memsearch melakukan pengambilan vektor hibrida + BM25</p></li>
-<li><p><strong>Pikirkan</strong>: LLM Anda memproses input pengguna + memori yang diambil</p></li>
-<li><p><strong>Ingat</strong>: agen menulis memori baru ke Markdown, dan memsearch memperbarui indeksnya</p></li>
+<li><p><strong>Recall</strong>: memsearch performs hybrid vector + BM25 retrieval</p></li>
+<li><p><strong>Think</strong>: your LLM processes the user input + retrieved memory</p></li>
+<li><p><strong>Remember</strong>: the agent writes new memory to Markdown, and memsearch updates its index</p></li>
 </ul>
-<p>Pola ini cocok secara alami ke dalam sistem agen apa pun - LangChain, AutoGPT, router semantik, LangGraph, atau loop agen khusus. Ini adalah kerangka kerja yang bersifat agnostik secara desain.</p>
-<h3 id="Option-2-CLI-quick-operations-good-for-debugging" class="common-anchor-header">Opsi 2: CLI (operasi cepat, bagus untuk debugging)</h3><p>CLI sangat ideal untuk alur kerja mandiri, pemeriksaan cepat, atau memeriksa memori selama pengembangan:</p>
+<p>This pattern fits naturally into any agent system—LangChain, AutoGPT, semantic routers, LangGraph, or custom agent loops. It’s framework-agnostic by design.</p>
+<h3 id="Option-2-CLI-quick-operations-good-for-debugging" class="common-anchor-header">Option 2: CLI (quick operations, good for debugging)</h3><p>The CLI is ideal for standalone workflows, quick checks, or inspecting memory during development:</p>
 <pre><code translate="no" class="language-bash">memsearch index ./docs/              <span class="hljs-comment"># Index files</span>
 memsearch search <span class="hljs-string">&quot;Redis caching&quot;</span>     <span class="hljs-comment"># Search</span>
 memsearch watch ./docs/              <span class="hljs-comment"># Watch for file changes</span>
 memsearch compact                    <span class="hljs-comment"># Compact old memory</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>CLI mencerminkan kemampuan API Python tetapi bekerja tanpa menulis kode apa pun-bagus untuk debugging, inspeksi, migrasi, atau memvalidasi struktur folder memori Anda.</p>
-<h2 id="How-memsearch-Compares-to-Other-Memory-Solutions" class="common-anchor-header">Bagaimana memsearch Dibandingkan dengan Solusi Memori Lainnya<button data-href="#How-memsearch-Compares-to-Other-Memory-Solutions" class="anchor-icon" translate="no">
+<p>The CLI mirrors the Python API’s capabilities but works without writing any code—great for debugging, inspections, migrations, or validating your memory folder structure.</p>
+<h2 id="How-memsearch-Compares-to-Other-Memory-Solutions" class="common-anchor-header">How memsearch Compares to Other Memory Solutions<button data-href="#How-memsearch-Compares-to-Other-Memory-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -259,19 +259,19 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pertanyaan paling umum yang ditanyakan oleh para pengembang adalah mengapa mereka menggunakan memsearch ketika sudah ada opsi yang sudah ada. Jawaban singkatnya: memsearch menukar fitur-fitur canggih seperti grafik pengetahuan temporal dengan transparansi, portabilitas, dan kesederhanaan. Untuk sebagian besar kasus penggunaan memori agen, itu adalah pertukaran yang tepat.</p>
+    </button></h2><p>The most common question developers ask is why they would use memsearch when established options already exist. The short answer: memsearch trades advanced features like temporal knowledge graphs for transparency, portability, and simplicity. For most agent memory use cases, that is the right tradeoff.</p>
 <table>
 <thead>
-<tr><th>Solusi</th><th>Kekuatan</th><th>Keterbatasan</th><th>Paling cocok untuk</th></tr>
+<tr><th>Solution</th><th>Strengths</th><th>Limitations</th><th>Best For</th></tr>
 </thead>
 <tbody>
-<tr><td>memsearch</td><td>Memori plaintext transparan, penulisan bersama manusia-AI, gesekan migrasi nol, debugging yang mudah, Git-native</td><td>Tidak ada grafik temporal bawaan atau struktur memori multi-agen yang kompleks</td><td>Tim yang menghargai kontrol, kesederhanaan, dan portabilitas dalam memori jangka panjang</td></tr>
-<tr><td>Mem0</td><td>Dikelola sepenuhnya, tidak ada infrastruktur yang harus dijalankan atau dipelihara</td><td>Buram-tidak dapat memeriksa atau mengedit memori secara manual; penyematan adalah satu-satunya representasi</td><td>Tim yang menginginkan layanan terkelola lepas tangan dan tidak masalah dengan visibilitas yang lebih rendah</td></tr>
-<tr><td>Zep</td><td>Rangkaian fitur yang kaya: memori temporal, pemodelan multi-persona, grafik pengetahuan yang kompleks</td><td>Arsitektur yang berat; lebih banyak bagian yang bergerak; lebih sulit untuk dipelajari dan dioperasikan</td><td>Agen yang benar-benar membutuhkan struktur memori tingkat lanjut atau penalaran yang sadar waktu</td></tr>
-<tr><td>LangMem / Letta</td><td>Integrasi yang dalam dan mulus di dalam ekosistem mereka sendiri</td><td>Kerangka kerja terkunci; sulit untuk di-porting ke tumpukan agen lain</td><td>Tim yang sudah berkomitmen pada kerangka kerja spesifik tersebut</td></tr>
+<tr><td>memsearch</td><td>Transparent plaintext memory, human-AI co-authoring, zero migration friction, easy debugging, Git-native</td><td>No built-in temporal graphs or complex multi-agent memory structures</td><td>Teams that value control, simplicity, and portability in long-term memory</td></tr>
+<tr><td>Mem0</td><td>Fully managed, no infrastructure to run or maintain</td><td>Opaque—cannot inspect or manually edit memory; embeddings are the only representation</td><td>Teams that want a hands-off managed service and are okay with less visibility</td></tr>
+<tr><td>Zep</td><td>Rich feature set: temporal memory, multi-persona modeling, complex knowledge graphs</td><td>Heavy architecture; more moving pieces; harder to learn and operate</td><td>Agents that truly need advanced memory structures or time-aware reasoning</td></tr>
+<tr><td>LangMem / Letta</td><td>Deep, seamless integration inside their own ecosystems</td><td>Framework lock-in; hard to port to other agent stacks</td><td>Teams already committed to those specific frameworks</td></tr>
 </tbody>
 </table>
-<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Coba memsearch dan beri tahu kami umpan balik Anda<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
+<h2 id="Try-memsearch-and-let-us-know-your-feedback" class="common-anchor-header">Try memsearch and let us know your feedback<button data-href="#Try-memsearch-and-let-us-know-your-feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -286,20 +286,20 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Memsearch sepenuhnya bersifat open source di bawah lisensi MIT, dan repositori siap untuk percobaan produksi hari ini.</p>
+    </button></h2><p>Memsearch is fully open source under the MIT license, and the repository is ready for production experiments today.</p>
 <ul>
-<li><p><strong>Repositori:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
-<li><p><strong>Dokumen:</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>
+<li><p><strong>Repo:</strong> <a href="https://github.com/zilliztech/memsearch">github.com/zilliztech/memsearch</a></p></li>
+<li><p><strong>Docs:</strong> <a href="https://zilliztech.github.io/memsearch">zilliztech.github.io/memsearch</a></p></li>
 </ul>
-<p>Jika Anda sedang membangun sebuah agen yang perlu mengingat berbagai hal di seluruh sesi dan menginginkan kontrol penuh atas apa yang diingatnya, memsearch patut dicoba. Pustaka ini dipasang dengan satu <code translate="no">pip install</code>, bekerja dengan kerangka kerja agen apa pun, dan menyimpan semuanya sebagai Markdown yang dapat Anda baca, edit, dan versi dengan Git.</p>
-<p>Kami secara aktif mengembangkan memsearch dan sangat mengharapkan masukan dari komunitas.</p>
+<p>If you are building an agent that needs to remember things across sessions and want full control over what it remembers, memsearch is worth a look. The library installs with a single <code translate="no">pip install</code>, works with any agent framework, and stores everything as Markdown that you can read, edit, and version with Git.</p>
+<p>We are actively developing memsearch and would love input from the community.</p>
 <ul>
-<li><p>Buka masalah jika ada sesuatu yang rusak.</p></li>
-<li><p>Kirimkan PR jika Anda ingin memperluas perpustakaan.</p></li>
-<li><p>Bintangi repo jika filosofi Markdown-sebagai-sumber-kebenaran sesuai dengan Anda.</p></li>
+<li><p>Open an issue if something breaks.</p></li>
+<li><p>Submit a PR if you want to extend the library.</p></li>
+<li><p>Star the repo if the Markdown-as-source-of-truth philosophy resonates with you.</p></li>
 </ul>
-<p>Sistem memori OpenClaw tidak lagi terkunci di dalam OpenClaw. Sekarang, siapa pun dapat menggunakannya.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Teruslah membaca<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p>OpenClaw’s memory system is no longer locked inside OpenClaw. Now, anyone can use it.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -315,9 +315,9 @@ memsearch compact                    <span class="hljs-comment"># Compact old me
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">Apa itu OpenClaw? Panduan Lengkap untuk Agen AI Sumber Terbuka</a></p></li>
-<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Tutorial OpenClaw: Menghubungkan ke Slack untuk Asisten AI Lokal</a></p></li>
-<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Membuat Agen AI Bergaya Clawdbot dengan LangGraph &amp; Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">Agen RAG vs Agen yang Sudah Berjalan Lama: Apakah RAG Sudah Usang?</a></p></li>
-<li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">Membuat Keterampilan Antropik Khusus untuk Milvus untuk Memutar RAG dengan Cepat</a></p></li>
+<li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a></p></li>
+<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></p></li>
+<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Build Clawdbot-Style AI Agents with LangGraph &amp; Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">RAG vs Long-Running Agents: Is RAG Obsolete?</a></p></li>
+<li><p><a href="https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md">Create a Custom Anthropic Skill for Milvus to Quickly Spin Up RAG</a></p></li>
 </ul>

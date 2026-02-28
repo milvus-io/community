@@ -1,22 +1,22 @@
 ---
 id: dynamic-data-update-and-query-milvus.md
-title: Persiapan
+title: Preparation
 author: milvus
 date: 2020-04-13T21:02:08.632Z
-desc: Pencarian vektor sekarang lebih intuitif dan nyaman
+desc: Vector search is now more intuitive and convenient
 cover: assets.zilliz.com/header_62d7b8c823.png
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/dynamic-data-update-and-query-milvus'
 ---
-<custom-h1>Bagaimana Milvus Menerapkan Pembaruan Data Dinamis dan Kueri</custom-h1><p>Pada artikel ini, kami akan menjelaskan bagaimana data vektor direkam dalam memori Milvus, dan bagaimana data ini dipertahankan.</p>
-<p>Di bawah ini adalah tujuan desain utama kami:</p>
+<custom-h1>How Milvus Implements Dynamic Data Update And Query</custom-h1><p>In this article, we will mainly describe how vector data are recorded in the memory of Milvus, and how these records are maintained.</p>
+<p>Below are our main design goals:</p>
 <ol>
-<li>Efisiensi impor data harus tinggi.</li>
-<li>Data dapat dilihat sesegera mungkin setelah impor data.</li>
-<li>Hindari fragmentasi file data.</li>
+<li>Efficiency of data import should be high.</li>
+<li>Data can be seen as soon as possible after data import.</li>
+<li>Avoid fragmentation of data files.</li>
 </ol>
-<p>Oleh karena itu, kami telah membuat penyangga memori (insert buffer) untuk menyisipkan data untuk mengurangi jumlah peralihan konteks IO acak pada disk dan sistem operasi untuk meningkatkan kinerja penyisipan data. Arsitektur penyimpanan memori berdasarkan MemTable dan MemTableFile memungkinkan kami untuk mengelola dan melakukan serialisasi data dengan lebih nyaman. Status buffer dibagi menjadi Mutable dan Immutable, yang memungkinkan data disimpan ke disk sambil tetap menyediakan layanan eksternal.</p>
-<h2 id="Preparation" class="common-anchor-header">Persiapan<button data-href="#Preparation" class="anchor-icon" translate="no">
+<p>Therefore, we have established a memory buffer (insert buffer) to insert data to reduce the number of context switches of random IO on the disk and operating system to improve the performance of data insertion. The memory storage architecture based on MemTable and MemTableFile enables us to manage and serialize data more conveniently. The state of the buffer is divided into Mutable and Immutable, which allows the data to be persisted to disk while keeping external services available.</p>
+<h2 id="Preparation" class="common-anchor-header">Preparation<button data-href="#Preparation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -31,9 +31,9 @@ canonicalUrl: 'https://zilliz.com/blog/dynamic-data-update-and-query-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika pengguna siap untuk memasukkan vektor ke dalam Milvus, pertama-tama ia harus membuat Collection (* Milvus mengganti nama Table menjadi Collection pada versi 0.7.0). Collection adalah unit paling dasar untuk merekam dan mencari vektor di Milvus.</p>
-<p>Setiap Collection memiliki nama yang unik dan beberapa properti yang dapat diatur, dan vektor-vektor dimasukkan atau dicari berdasarkan nama Collection. Ketika membuat sebuah Collection baru, Milvus akan mencatat informasi dari Collection ini di dalam metadata.</p>
-<h2 id="Data-Insertion" class="common-anchor-header">Penyisipan Data<button data-href="#Data-Insertion" class="anchor-icon" translate="no">
+    </button></h2><p>When the user is ready to insert a vector into Milvus, he first needs to create a Collection (* Milvus renames Table to Collection in 0.7.0 version). Collection is the most basic unit for recording and searching vectors in Milvus.</p>
+<p>Each Collection has a unique name and some properties that can be set, and vectors are inserted or searched based on the Collection name. When creating a new Collection, Milvus will record the information of this Collection in the metadata.</p>
+<h2 id="Data-Insertion" class="common-anchor-header">Data Insertion<button data-href="#Data-Insertion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,19 +48,21 @@ canonicalUrl: 'https://zilliz.com/blog/dynamic-data-update-and-query-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika pengguna mengirimkan permintaan untuk menyisipkan data, data diserialisasikan dan dideserialisasikan untuk mencapai server Milvus. Data sekarang ditulis ke dalam memori. Penulisan memori secara garis besar dibagi menjadi beberapa langkah berikut:</p>
+    </button></h2><p>When the user sends a request to insert data, the data are serialized and deserialized to reach the Milvus server. Data are now written into memory. Memory writing is roughly divided into the following steps:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_data_insertion_milvus_99448bae50.png" alt="2-data-insertion-milvus.png" class="doc-image" id="2-data-insertion-milvus.png" />
-   </span> <span class="img-wrapper"> <span>2-penyisipan-data-milvus.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_data_insertion_milvus_99448bae50.png" alt="2-data-insertion-milvus.png" class="doc-image" id="2-data-insertion-milvus.png" />
+    <span>2-data-insertion-milvus.png</span>
+  </span>
+</p>
 <ol>
-<li>Pada MemManager, cari atau buat MemTable baru yang sesuai dengan nama Koleksi. Setiap MemTable berhubungan dengan buffer Koleksi dalam memori.</li>
-<li>Sebuah MemTable akan berisi satu atau lebih MemTableFile. Setiap kali kita membuat MemTableFile baru, kita akan mencatat informasi ini di Meta pada saat yang sama. Kita membagi MemTableFile ke dalam dua status: Dapat berubah dan Tidak Dapat Berubah. Ketika ukuran MemTableFile mencapai ambang batas, ia akan menjadi Immutable. Setiap MemTable hanya dapat memiliki satu MemTableFile Mutable yang dapat ditulis kapan saja.</li>
-<li>Data dari setiap MemTableFile pada akhirnya akan direkam dalam memori dalam format tipe indeks yang ditetapkan. MemTableFile adalah unit paling dasar untuk mengelola data dalam memori.</li>
-<li>Setiap saat, penggunaan memori dari data yang disisipkan tidak akan melebihi nilai yang telah ditetapkan (insert_buffer_size). Hal ini dikarenakan setiap ada permintaan untuk menyisipkan data yang masuk, MemManager dapat dengan mudah menghitung memori yang ditempati oleh MemTableFile yang terdapat pada setiap MemTable, lalu mengkoordinasikan permintaan penyisipan data sesuai dengan memori yang ada.</li>
+<li>In MemManager, find or create a new MemTable corresponding to the name of the Collection. Each MemTable corresponds to a Collection buffer in memory.</li>
+<li>A MemTable will contain one or more MemTableFile. Whenever we create a new MemTableFile, we will record this information in the Meta at the same time. We divide MemTableFile into two states: Mutable and Immutable. When the size of MemTableFile reaches the threshold, it will become Immutable. Each MemTable can only have one Mutable MemTableFile to be written at any time.</li>
+<li>The data of each MemTableFile will be finally recorded in the memory in the format of the set index type. MemTableFile is the most basic unit for managing data in memory.</li>
+<li>At any time, the memory usage of the inserted data will not exceed the preset value (insert_buffer_size). This is because every request to insert data comes in, MemManager can easily calculate the memory occupied by the MemTableFile contained in each MemTable, and then coordinate the insertion request according to the current memory.</li>
 </ol>
-<p>Melalui arsitektur multi-level MemManager, MemTable dan MemTableFile, penyisipan data dapat dikelola dan dipelihara dengan lebih baik. Tentu saja, mereka dapat melakukan lebih dari itu.</p>
-<h2 id="Near-Real-time-Query" class="common-anchor-header">Query yang Hampir Real-time<button data-href="#Near-Real-time-Query" class="anchor-icon" translate="no">
+<p>Through MemManager, MemTable and MemTableFile multi-level architecture, data insertion can be better managed and maintained. Of course, they can do much more than that.</p>
+<h2 id="Near-Real-time-Query" class="common-anchor-header">Near Real-time Query<button data-href="#Near-Real-time-Query" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,27 +77,33 @@ canonicalUrl: 'https://zilliz.com/blog/dynamic-data-update-and-query-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam Milvus, Anda hanya perlu menunggu paling lama satu detik untuk memindahkan data yang disisipkan dari memori ke disk. Keseluruhan proses ini secara kasar dapat diringkas oleh gambar berikut:</p>
+    </button></h2><p>In Milvus, you only need to wait for one second at the longest for the inserted data to move from memory to disk. This entire process can be roughly summarized by the following picture:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_near_real_time_query_milvus_f3cfdd00fb.png" alt="2-near-real-time-query-milvus.png" class="doc-image" id="2-near-real-time-query-milvus.png" />
-   </span> <span class="img-wrapper"> <span>2-hampir-real-time-query-milvus.png</span> </span></p>
-<p>Pertama, data yang disisipkan akan masuk ke dalam buffer penyisipan di memori. Buffer secara berkala akan berubah dari kondisi awal Mutable ke kondisi Immutable sebagai persiapan untuk serialisasi. Kemudian, buffer Immutable ini akan diserialisasi ke disk secara berkala oleh thread serialisasi latar belakang. Setelah data ditempatkan, informasi pesanan akan dicatat dalam metadata. Pada titik ini, data dapat dicari!</p>
-<p>Sekarang, kami akan menjelaskan langkah-langkah dalam gambar secara rinci.</p>
-<p>Kita sudah mengetahui proses memasukkan data ke dalam buffer yang dapat diubah. Langkah berikutnya adalah beralih dari buffer yang dapat diubah ke buffer yang tidak dapat diubah:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_near_real_time_query_milvus_f3cfdd00fb.png" alt="2-near-real-time-query-milvus.png" class="doc-image" id="2-near-real-time-query-milvus.png" />
+    <span>2-near-real-time-query-milvus.png</span>
+  </span>
+</p>
+<p>First, the inserted data will enter an insert buffer in memory. The buffer will periodically change from the initial Mutable state to the Immutable state in preparation for serialization. Then, these Immutable buffers will be serialized to disk periodically by the background serialization thread. After the data are placed, the order information will be recorded in the metadata. At this point, the data can be searched!</p>
+<p>Now, we will describe the steps in the picture in detail.</p>
+<p>We already know the process of inserting data into the mutable buffer. The next step is to switch from the mutable buffer to the immutable buffer:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_mutable_buffer_immutable_buffer_milvus_282b66c5fe.png" alt="3-mutable-buffer-immutable-buffer-milvus.png" class="doc-image" id="3-mutable-buffer-immutable-buffer-milvus.png" />
-   </span> <span class="img-wrapper"> <span>3-mutable-buffer-immutable-buffer-milvus.png</span> </span></p>
-<p>Antrian yang tidak dapat diubah akan menyediakan latar belakang thread serialisasi dengan status yang tidak dapat diubah dan MemTableFile yang siap untuk diserialisasi. Setiap MemTable mengelola antrean tidak berubahnya sendiri, dan ketika ukuran satu-satunya MemTableFile yang dapat diubah mencapai ambang batas, ia akan masuk ke antrean tidak berubah. Thread latar belakang yang bertanggung jawab atas ToImmutable akan secara berkala menarik semua MemTableFile dalam antrean tidak dapat diubah yang dikelola oleh MemTable dan mengirimkannya ke antrean tidak dapat diubah secara keseluruhan. Perlu dicatat bahwa dua operasi menulis data ke dalam memori dan mengubah data dalam memori ke dalam keadaan yang tidak dapat ditulis tidak dapat terjadi pada saat yang sama, dan diperlukan penguncian bersama. Namun demikian, pengoperasian ToImmutable sangat sederhana dan hampir tidak menyebabkan penundaan apa pun, sehingga dampak performa pada data yang dimasukkan sangat minimal.</p>
-<p>Langkah selanjutnya adalah menserialisasikan MemTableFile dalam antrian serialisasi ke disk. Ini terutama dibagi menjadi tiga langkah:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_mutable_buffer_immutable_buffer_milvus_282b66c5fe.png" alt="3-mutable-buffer-immutable-buffer-milvus.png" class="doc-image" id="3-mutable-buffer-immutable-buffer-milvus.png" />
+    <span>3-mutable-buffer-immutable-buffer-milvus.png</span>
+  </span>
+</p>
+<p>Immutable queue will provide the background serialization thread with the immutable state and the MemTableFile that is ready to be serialized. Each MemTable manages its own immutable queue, and when the size of the MemTable’s only mutable MemTableFile reaches the threshold, it will enter the immutable queue. A background thread responsible for ToImmutable will periodically pull all the MemTableFiles in the immutable queue managed by MemTable and send them to the total Immutable queue. It should be noted that the two operations of writing data into the memory and changing the data in the memory into a state that cannot be written cannot occur at the same time, and a common lock is required. However, the operation of ToImmutable is very simple and almost does not cause any delay, so the performance impact on inserted data is minimal.</p>
+<p>The next step is to serialize the MemTableFile in the serialization queue to disk. This is mainly divided into three steps:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_serialize_memtablefile_milvus_95766abdfb.png" alt="4-serialize-memtablefile-milvus.png" class="doc-image" id="4-serialize-memtablefile-milvus.png" />
-   </span> <span class="img-wrapper"> <span>4-serialisasi-memtablefile-milvus.png</span> </span></p>
-<p>Pertama, thread serialisasi latar belakang akan menarik MemTableFile dari antrean yang tidak dapat diubah secara berkala. Kemudian, mereka diserialisasi menjadi file mentah berukuran tetap (Raw TableFiles). Terakhir, kita akan mencatat informasi ini dalam metadata. Ketika kita melakukan pencarian vektor, kita akan menanyakan TableFile yang sesuai dalam metadata. Dari sini, data-data ini dapat dicari!</p>
-<p>Selain itu, menurut set index_file_size, setelah thread serialisasi menyelesaikan siklus serialisasi, ia akan menggabungkan beberapa TableFile dengan ukuran tetap ke dalam TableFile, dan juga mencatat informasi ini dalam metadata. Pada saat ini, TableFile dapat diindeks. Pembuatan indeks juga bersifat asinkron. Thread latar belakang lain yang bertanggung jawab atas pembuatan indeks akan secara berkala membaca TableFile dalam status ToIndex pada metadata untuk melakukan pembuatan indeks yang sesuai.</p>
-<h2 id="Vector-search" class="common-anchor-header">Pencarian vektor<button data-href="#Vector-search" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_serialize_memtablefile_milvus_95766abdfb.png" alt="4-serialize-memtablefile-milvus.png" class="doc-image" id="4-serialize-memtablefile-milvus.png" />
+    <span>4-serialize-memtablefile-milvus.png</span>
+  </span>
+</p>
+<p>First, the background serialization thread will periodically pull MemTableFile from the immutable queue. Then, they are serialized into fixed-size raw files (Raw TableFiles). Finally, we will record this information in the metadata. When we conduct a vector search, we will query the corresponding TableFile in the metadata. From here, these data can be searched!</p>
+<p>In addition, according to the set index_file_size, after the serialization thread completes a serialization cycle, it will merge some fixed-size TableFiles into a TableFile, and also record these information in the metadata. At this time, the TableFile can be indexed. Index building is also asynchronous. Another background thread responsible for index building will periodically read the TableFile in the ToIndex state of the metadata to perform the corresponding index building.</p>
+<h2 id="Vector-search" class="common-anchor-header">Vector search<button data-href="#Vector-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,5 +118,5 @@ canonicalUrl: 'https://zilliz.com/blog/dynamic-data-update-and-query-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Faktanya, Anda akan menemukan bahwa dengan bantuan TableFile dan metadata, pencarian vektor menjadi lebih intuitif dan nyaman. Secara umum, kita perlu mendapatkan TableFile yang sesuai dengan Koleksi yang ditanyakan dari metadata, mencari di setiap TableFile, dan akhirnya menggabungkan. Pada artikel ini, kami tidak membahas implementasi spesifik dari pencarian.</p>
-<p>Jika Anda ingin tahu lebih banyak, silakan baca kode sumber kami, atau baca artikel teknis kami yang lain tentang Milvus!</p>
+    </button></h2><p>In fact, you will find that with the help of TableFile and metadata, vector search becomes more intuitive and convenient. In general, we need to get the TableFiles corresponding to the queried Collection from the metadata, search in each TableFile, and finally merge. In this article, we do not delve into the specific implementation of search.</p>
+<p>If you want to know more, welcome to read our source code, or read our other technical articles about Milvus!</p>

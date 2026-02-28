@@ -1,14 +1,12 @@
 ---
 id: understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md
-title: >-
-  Compreender os pequenos mundos navegáveis hierárquicos (HNSW) para a pesquisa
-  de vectores
+title: |
+  Understanding Hierarchical Navigable Small Worlds (HNSW) for Vector Search
 author: Stefan Webb
 date: 2025-05-21T00:00:00.000Z
 desc: >-
-  O HNSW (Hierarchical Navigable Small World) é um algoritmo eficiente para a
-  pesquisa aproximada do vizinho mais próximo utilizando uma estrutura de grafo
-  em camadas.
+  HNSW (Hierarchical Navigable Small World) is an efficient algorithm for
+  approximate nearest neighbor search using a layered graph structure.
 cover: assets.zilliz.com/Chat_GPT_Image_May_26_2025_11_56_17_AM_1a84d31090.png
 tag: Engineering
 recommend: false
@@ -20,17 +18,17 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md
 ---
-<p>A principal operação das <a href="https://milvus.io/blog/what-is-a-vector-database.md">bases de dados vectoriais</a> é a <em>pesquisa de semelhanças</em>, que consiste em encontrar os vizinhos mais próximos de um vetor de consulta na base de dados, por exemplo, através da distância euclidiana. Um método ingénuo calcularia a distância do vetor de consulta a todos os vectores armazenados na base de dados e seleccionaria o top-K mais próximo. No entanto, isso claramente não escala à medida que o tamanho da base de dados aumenta. Na prática, uma pesquisa por semelhança ingénua só é prática para bases de dados com menos de 1 milhão de vectores. Como podemos escalar a nossa pesquisa para dezenas e centenas de milhões, ou mesmo para milhares de milhões de vectores?</p>
+<p>The key operation of <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector databases</a> is <em>similarity search</em>, which involves finding the nearest neighbors in the database to a query vector, for example, by Euclidean distance. A naive method would calculate the distance from the query vector to every vector stored in the database and take the top-K closest. However, this clearly does not scale as the size of the database grows. In practice, a naive similarity search is practical only for databases with fewer than around 1 million vectors. How are we to scale our search to the 10s and 100s of millions, or even to the billions of vectors?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Descending_a_hierarchy_of_vector_search_indices_cf9fb8060a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura: Descida de uma hierarquia de índices de pesquisa vetorial</em></p>
-<p>Foram desenvolvidos muitos algoritmos e estruturas de dados para escalar a pesquisa por semelhança em espaços vectoriais de elevada dimensão para uma complexidade de tempo sub-linear. Neste artigo, explicaremos e implementaremos um método popular e eficaz chamado Hierarchical Navigable Small Worlds (HNSW), que é frequentemente a escolha padrão para conjuntos de dados vetoriais de tamanho médio. Pertence à família de métodos de pesquisa que constroem um grafo sobre os vectores, em que os vértices indicam os vectores e as arestas indicam a semelhança entre eles. A pesquisa é efectuada navegando no grafo, no caso mais simples, percorrendo avidamente o vizinho do nó atual que está mais próximo da consulta e repetindo até atingir um mínimo local.</p>
-<p>Explicaremos mais detalhadamente como o grafo de pesquisa é construído, como o grafo permite a pesquisa e, no final, faremos uma ligação a uma implementação do HNSW, feita por mim, em Python simples.</p>
-<h2 id="Navigable-Small-Worlds" class="common-anchor-header">Pequenos mundos navegáveis<button data-href="#Navigable-Small-Worlds" class="anchor-icon" translate="no">
+<p><em>Figure: Descending a hierarchy of vector search indices</em></p>
+<p>Many algorithms and data structures have been developed to scale similarity search in high-dimensional vector spaces to sub-linear time complexity. In this article, we’ll explain and implement a popular and effective method called Hierarchical Navigable Small Worlds (HNSW), which is frequently the default choice for medium-sized vector datasets. It belongs to the family of search methods that construct a graph over the vectors, where vertices denote vectors and edges denote similarity between them. Search is performed by navigating the graph, in the simplest case, greedily traversing to the neighbor of the current node that is closest to the query and repeating until a local minimum is reached.</p>
+<p>We will explain in more detail how the search graph is constructed, how the graph enables search, and at the end, link to an HNSW implementation, by yours truly, in simple Python.</p>
+<h2 id="Navigable-Small-Worlds" class="common-anchor-header">Navigable Small Worlds<button data-href="#Navigable-Small-Worlds" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,9 +49,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><em>Figura: Grafo NSW criado a partir de 100 pontos 2D localizados aleatoriamente.</em></p>
-<p>Como mencionado, o HNSW constrói um grafo de pesquisa offline antes de podermos efetuar uma consulta. O algoritmo baseia-se num trabalho anterior, um método chamado Navigable Small Worlds (NSW). Vamos explicar primeiro o NSW e depois será trivial passar para o NSW <em>hierárquico</em>. A ilustração acima é de um gráfico de pesquisa construído para NSW sobre vectores bidimensionais. Em todos os exemplos abaixo, restringimo-nos a vectores bidimensionais para podermos visualizá-los.</p>
-<h2 id="Constructing-the-Graph" class="common-anchor-header">Construir o gráfico<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
+<p><em>Figure: NSW graph created from 100 randomly located 2D points.</em></p>
+<p>As mentioned, HNSW constructs a search graph offline before we can perform a query. The algorithm builds on top of prior work, a method called Navigable Small Worlds (NSW). We will explain NSW first and it will then be trivial to go from there to <em>Hierarchical</em> NSW. The illustration above is of a constructed search graph for NSW over 2-dimensional vectors. In all examples below, we restrict ourselves to 2-dimensional vectors so as to be able to visualize them.</p>
+<h2 id="Constructing-the-Graph" class="common-anchor-header">Constructing the Graph<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,9 +66,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um NSW é um grafo em que os vértices representam vectores e as arestas são construídas heuristicamente a partir da semelhança entre vectores, de modo a que a maioria dos vectores seja alcançável a partir de qualquer lugar através de um pequeno número de saltos. Esta é a chamada propriedade de "mundo pequeno" que permite uma navegação rápida. Veja a figura acima.</p>
-<p>O grafo é inicializado como vazio. Iteramos pelos vectores, adicionando cada um deles ao grafo. Para cada vetor, a partir de um nó de entrada aleatório, procuramos avidamente os nós R mais próximos alcançáveis a partir do ponto de entrada <em>no grafo até agora construído</em>. Estes R nós são então ligados a um novo nó que representa o vetor que está a ser inserido, opcionalmente podando quaisquer nós vizinhos que tenham agora mais de R vizinhos. A repetição deste processo para todos os vectores resultará no grafo NSW. Veja a ilustração acima, que visualiza o algoritmo, e consulte os recursos no final do artigo para obter uma análise teórica das propriedades de um grafo construído dessa forma.</p>
-<h2 id="Searching-the-Graph" class="common-anchor-header">Pesquisando o grafo<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
+    </button></h2><p>An NSW is a graph where the vertices represent vectors and the edges are constructed heuristically from the similarity between vectors so that most vectors are reachable from anywhere via a small number of hops. This is the so-called “small world” property that permits quick navigation. See the above figure.</p>
+<p>The graph is initialized to be empty. We iterate through the vectors, adding each to the graph in turn. For each vector, starting at a random entry node, we greedily find the closest R nodes reachable from the entry point <em>in the graph so far constructed</em>. These R nodes are then connected to a new node representing the vector being inserted, optionally pruning any neighboring nodes that now have more than R neighbors. Repeating this process for all vectors will result in the NSW graph. See the above illustration visualizing the algorithm, and refer to the resources at the end of the article for a theoretical analysis of the properties of a graph constructed like this.</p>
+<h2 id="Searching-the-Graph" class="common-anchor-header">Searching the Graph<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -85,22 +83,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Já vimos o algoritmo de busca a partir de seu uso na construção de grafos. Neste caso, no entanto, o nó de consulta é fornecido pelo utilizador, em vez de ser um nó de inserção no grafo. A partir de um nó de entrada aleatório, navegamos avidamente para o seu vizinho mais próximo da consulta, mantendo um conjunto dinâmico dos vectores mais próximos encontrados até ao momento. Ver a ilustração acima. Note-se que podemos aumentar a precisão da pesquisa iniciando pesquisas a partir de vários pontos de entrada aleatórios e agregando os resultados, juntamente com a consideração de vários vizinhos em cada passo. No entanto, essas melhorias vêm com o custo de uma maior latência.</p>
-<custom-h1>Adicionando hierarquia</custom-h1><p>
+    </button></h2><p>We have already seen the search algorithm from its use in graph construction. In this case, however, the query node is provided by the user, rather than being one for insertion into the graph. Starting from a random entry note, we greedily navigate to its neighbor closest to the query, maintaining a dynamic set of the closest vectors encountered so far. See the illustration above. Note that we can enhance search accuracy by initiating searches from multiple random entry points and aggregating the results, along with considering multiple neighbors at each step. However, these improvements come at the cost of increased latency.</p>
+<custom-h1>Adding Hierarchy</custom-h1><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/adding_hierarchy_0101234812.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Até agora, descrevemos o algoritmo NSW e a estrutura de dados que podem ajudar-nos a aumentar a escala da pesquisa no espaço de alta dimensão. No entanto, o método sofre de graves deficiências, incluindo falhas em dimensões baixas, convergência lenta da pesquisa e uma tendência para ficar preso em mínimos locais.</p>
-<p>Os autores do HNSW corrigem estas deficiências com três modificações ao NSW:</p>
+<p>So far, we have described the NSW algorithm and data structure that can help us scale up search in high-dimensional space. Nonetheless, the method suffers serious shortcomings, including failure in low dimensions, slow search convergence, and a tendency to be trapped in local minima.</p>
+<p>The authors of HNSW fix these shortcomings with three modifications to NSW:</p>
 <ul>
-<li><p>Seleção explícita dos nós de entrada durante a construção e a pesquisa;</p></li>
-<li><p>Separação das arestas por diferentes escalas; e,</p></li>
-<li><p>Utilização de uma heurística avançada para selecionar os vizinhos.</p></li>
+<li><p>Explicit selection of the entry nodes during construction and search;</p></li>
+<li><p>Separation of edges by different scales; and,</p></li>
+<li><p>Use of an advanced heuristic to select the neighbors.</p></li>
 </ul>
-<p>Os dois primeiros são realizados com uma idéia simples: construir <em>uma hierarquia de grafos de busca</em>. Em vez de um único grafo, como no NSW, o HNSW constrói uma hierarquia de grafos. Cada grafo, ou camada, é pesquisado individualmente da mesma forma que o NSW. A camada superior, que é pesquisada primeiro, contém muito poucos nós, e as camadas mais profundas incluem progressivamente mais e mais nós, com a camada inferior a incluir todos os nós. Isto significa que as camadas superiores contêm saltos mais longos no espaço vetorial, o que permite uma espécie de pesquisa de curso a fino. Veja acima uma ilustração.</p>
-<h2 id="Constructing-the-Graph" class="common-anchor-header">Construindo o gráfico<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
+<p>The first two are realized with a simple idea: building <em>a hierarchy of search graphs</em>. Instead of a single graph, as in NSW, HNSW constructs a hierarchy of graphs. Each graph, or layer, is individually searched in the same way as NSW. The top layer, which is searched first, contains very few nodes, and deeper layers progressively include more and more nodes, with the bottom layer including all nodes. This means that the top layers contain longer hops across the vector space, permitting a sort of course-to-fine search. See above for an illustration.</p>
+<h2 id="Constructing-the-Graph" class="common-anchor-header">Constructing the Graph<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -115,10 +113,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O algoritmo de construção funciona da seguinte forma: fixamos um número de camadas, <em>L</em>, antecipadamente. O valor l=1 corresponderá à camada mais grosseira, onde a pesquisa começa, e l=L corresponderá à camada mais densa, onde a pesquisa termina. Iteramos através de cada vetor a ser inserido e recolhemos uma amostra de uma camada de inserção seguindo uma <a href="https://en.wikipedia.org/wiki/Geometric_distribution">distribuição geométrica</a> truncada (rejeitando <em>l &gt; L</em> ou definindo <em>l' =</em> min_(l, L)_). Digamos que fazemos uma amostragem de <em>1 &lt; l &lt; L</em> para o vetor atual. Efectuamos uma pesquisa gulosa na camada superior, L, até atingirmos o seu mínimo local. Em seguida, seguimos uma aresta do mínimo local na camada _L_th para o vetor correspondente na camada _(L-1)_th e o usamos como ponto de entrada para pesquisar avidamente a camada _(L-1)_th.</p>
-<p>Este processo repete-se até chegarmos à camada _l_th. Começamos então a criar nós para o vetor a inserir, ligando-o aos seus vizinhos mais próximos encontrados por pesquisa gulosa na _l_ª camada até agora construída, navegando para a _(l-1)_ª camada e repetindo até termos inserido o vetor na _1ª camada. Uma animação acima torna isto claro</p>
-<p>Podemos ver que este método de construção de grafos hierárquicos utiliza uma seleção inteligente e explícita do nó de inserção para cada vetor. Pesquisamos as camadas acima da camada de inserção construída até agora, pesquisando de forma eficiente a partir de distâncias de curso a fino. De forma semelhante, o método separa as ligações por escalas diferentes em cada camada: a camada superior permite saltos de longa escala no espaço de pesquisa, com a escala a diminuir até à camada inferior. Ambas as modificações ajudam a evitar ficar preso em mínimos sub-ótimos e aceleram a convergência da pesquisa ao custo de memória adicional.</p>
-<h2 id="Searching-the-Graph" class="common-anchor-header">Pesquisando o gráfico<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
+    </button></h2><p>The construction algorithm works as follows: we fix a number of layers, <em>L</em>, in advance. The value l=1 will correspond to the coarsest layer, where search begins, and l=L will correspond to the densest layer, where search finishes. We iterate through each vector to be inserted and sample an insertion layer following a truncated <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> (either rejecting <em>l &gt; L</em> or setting <em>l’ =</em> min_(l, L)_). Say we sample <em>1 &lt; l &lt; L</em> for the current vector. We perform a greedy search on the top layer, L, until we reach its local minimum. Then, we follow an edge from the local minimum in the _L_th layer to the corresponding vector in the _(L-1)_th layer and use it as the entry point to greedily search the _(L-1)_th layer.</p>
+<p>This process is repeated until we reach the _l_th layer. We then begin to create nodes for the vector to be inserted, connecting it to its closest neighbors found by greedy search in the _l_th layer so far constructed, navigating to the _(l-1)_th layer and repeating until we have inserted the vector into the _1_st layer. An animation above makes this clear</p>
+<p>We can see that this hierarchical graph construction method uses a clever explicit selection of the insertion node for each vector. We search the layers above the insertion layer constructed so far, searching efficiently from course-to-fine distances. Relatedly, the method separates links by different scales in each layer: the top layer affords long-scale hops across the search space, with the scale diminishing down to the bottom layer. Both of these modifications help avoid being trapped in sub-optimal minima and hasten search convergence at the cost of additional memory.</p>
+<h2 id="Searching-the-Graph" class="common-anchor-header">Searching the Graph<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -133,8 +131,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O procedimento de busca funciona de forma semelhante à etapa de construção do grafo interno. Começando pela camada superior, navegamos avidamente até o nó ou nós mais próximos da consulta. Em seguida, seguimos esse(s) nó(s) até a próxima camada e repetimos o processo. Nossa resposta é obtida pela lista de <em>R</em> vizinhos mais próximos na camada inferior, conforme ilustrado pela animação acima.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>The search procedure works much like the inner graph construction step. Starting from the top layer, we greedily navigate to the node or nodes closest to the query. Then we follow that node(s) down to the next layer and repeat the process. Our answer is obtained by the list of <em>R</em> closest neighbors in the bottom layer, as illustrated by the animation above this.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -149,13 +147,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bases de dados vectoriais como o Milvus fornecem implementações altamente optimizadas e afinadas do HNSW, e é frequentemente o melhor índice de pesquisa predefinido para conjuntos de dados que cabem na memória.</p>
-<p>Esboçámos uma visão geral de alto nível de como e porquê o HNSW funciona, preferindo visualizações e intuição em vez de teoria e matemática. Consequentemente, omitimos uma descrição exacta dos algoritmos de construção e pesquisa<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; Alg 1-3], a análise da complexidade da pesquisa e da construção<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; §4.2], e detalhes menos essenciais como uma heurística para escolher mais eficazmente os nós vizinhos durante a construção<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; Alg 5]. Além disso, omitimos a discussão dos hiperparâmetros do algoritmo, o seu significado e a forma como afectam o compromisso latência/velocidade/memória<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; §4.1]. A compreensão deste facto é importante para utilizar o HNSW na prática.</p>
-<p>Os recursos abaixo contêm leituras adicionais sobre estes tópicos e uma implementação pedagógica completa em Python (escrita por mim) para NSW e HNSW, incluindo código para produzir as animações neste artigo.</p>
-<custom-h1>Recursos</custom-h1><ul>
-<li><p>GitHub: "<a href="https://github.com/stefanwebb/hnsw-illustrated">HNSW-Illustrated: Uma pequena implementação do Hierarchical Navigable Small Worlds (HNSW), um algoritmo de pesquisa vetorial, para fins de aprendizagem</a>"</p></li>
-<li><p><a href="https://milvus.io/docs/hnsw.md#HNSW">HNSW | Documentação do Milvus</a></p></li>
-<li><p><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">Compreender os Mundos Pequenos Navegáveis Hierárquicos (HNSW) - Zilliz Learn</a></p></li>
-<li><p>Documento HNSW: "<a href="https://arxiv.org/abs/1603.09320">Pesquisa eficiente e robusta do vizinho mais próximo aproximado utilizando grafos Hierarchical Navigable Small Worlds</a>"</p></li>
-<li><p>Artigo NSW: "<a href="https://publications.hse.ru/pubs/share/folder/x5p6h7thif/128296059.pdf">Algoritmo do vizinho mais próximo aproximado baseado em grafos de mundos pequenos navegáveis</a>"</p></li>
+    </button></h2><p>Vector databases like Milvus provide highly optimized and tuned implementations of HNSW, and it is often the best default search index for datasets that fit in memory.</p>
+<p>We have sketched a high-level overview of how and why HNSW works, preferring visualizations and intuition over theory and mathematics. Consequently, we have omitted an exact description of the construction and search algorithms[<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; Alg 1-3], analysis of search and construction complexity [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; §4.2], and less essential details like a heuristic for more effectively choosing neighbor nodes during construction [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; Alg 5]. Moreover, we have omitted discussion of the algorithm’s hyperparameters, their meaning and how they affect the latency/speed/memory trade-off [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; §4.1]. An understanding of this is important for using HNSW in practice.</p>
+<p>The resources below contain further reading on these topics and a full Python pedagogical implementation (written by myself) for NSW and HNSW, including code to produce the animations in this article.</p>
+<custom-h1>Resources</custom-h1><ul>
+<li><p>GitHub: “<a href="https://github.com/stefanwebb/hnsw-illustrated">HNSW-Illustrated: A small implementation of Hierarchical Navigable Small Worlds (HNSW), a vector search algorithm, for learning purposes</a>”</p></li>
+<li><p><a href="https://milvus.io/docs/hnsw.md#HNSW">HNSW | Milvus Documentation</a></p></li>
+<li><p><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">Understanding Hierarchical Navigable Small Worlds (HNSW) - Zilliz Learn</a></p></li>
+<li><p>HNSW paper: “<a href="https://arxiv.org/abs/1603.09320">Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs</a>”</p></li>
+<li><p>NSW paper: “<a href="https://publications.hse.ru/pubs/share/folder/x5p6h7thif/128296059.pdf">Approximate nearest neighbor algorithm based on navigable small world graphs</a>”</p></li>
 </ul>

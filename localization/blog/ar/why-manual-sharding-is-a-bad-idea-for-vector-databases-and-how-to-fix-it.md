@@ -1,11 +1,12 @@
 ---
 id: why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
-title: لماذا يعتبر التجزئة اليدوية فكرة سيئة لقاعدة بيانات المتجهات وكيفية إصلاحها
+title: Why Manual Sharding is a Bad Idea for Vector Database And How to Fix It
 author: James Luan
 date: 2025-03-18T00:00:00.000Z
 desc: >-
-  اكتشف لماذا يؤدي التجزئة اليدوية لقاعدة بيانات المتجهات إلى حدوث اختناقات وكيف
-  أن التوسيع الآلي من Milvus يزيل النفقات الهندسية الزائدة لتحقيق نمو سلس.
+  Discover why manual vector database sharding creates bottlenecks and how
+  Milvus's automated scaling eliminates engineering overhead for seamless
+  growth.
 cover: >-
   assets.zilliz.com/Why_Manual_Sharding_is_a_Bad_Idea_for_Vector_Database_And_How_to_Fix_It_1_968a5be504.png
 tag: Engineering
@@ -14,8 +15,8 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/why-manual-sharding-is-a-bad-idea-for-vector-databases-and-how-to-fix-it.md
 ---
-<p>يتذكر أليكس، المدير التنفيذي للتكنولوجيا في شركة ناشئة للذكاء الاصطناعي كخدمة SaaS، قائلاً:<em>"لقد أنشأنا في البداية بحثنا الدلالي على pgvector بدلاً من Milvus لأن جميع بياناتنا العلائقية كانت موجودة بالفعل في PostgreSQL"</em>. <em>"ولكن بمجرد أن وصلنا إلى ملاءمة المنتج للسوق، واجهنا عقبات خطيرة في الجانب الهندسي. وسرعان ما أصبح من الواضح أن pgvector لم يكن مصممًا لقابلية التوسع. فقد تحولت المهام البسيطة مثل نشر تحديثات المخطط عبر أجزاء متعددة إلى عمليات مملة ومعرضة للأخطاء استهلكت أياماً من الجهد الهندسي. عندما وصلنا إلى 100 مليون ناقل مضمن، ارتفع زمن استجابة الاستعلام إلى أكثر من ثانية، وهو أمر يتجاوز بكثير ما يمكن لعملائنا تحمله. بعد الانتقال إلى Milvus، شعرنا أن التجزئة يدويًا أشبه بالدخول إلى العصر الحجري. ليس من الممتع التلاعب بخوادم التجزئة كما لو كانت قطعاً أثرية هشة. لا ينبغي لأي شركة أن تتحمل ذلك."</em></p>
-<h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">تحدٍ مشترك لشركات الذكاء الاصطناعي<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
+<p><em>“We initially built our semantic search on pgvector instead of Milvus because all our relational data was already in PostgreSQL,”</em> recalls Alex, CTO of an enterprise AI SaaS startup. <em>“But as soon as we hit product-market fit, our growth ran into serious hurdles on the engineering side. It quickly became clear that pgvector wasn’t designed for scalability. Simple tasks such as rolling out schema updates across multiple shards turned into tedious, error-prone processes that consumed days of engineering effort. When we reached 100 million vector embeddings, query latency spiked to over a second, something far beyond what our customers would tolerate. After moving to Milvus, sharding manually felt like stepping into the stone age. It’s no fun juggling shard servers as if they were fragile artifacts. No company should have to endure that.”</em></p>
+<h2 id="A-Common-Challenge-for-AI-Companies" class="common-anchor-header">A Common Challenge for AI Companies<button data-href="#A-Common-Challenge-for-AI-Companies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,10 +31,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تجربة أليكس ليست فريدة من نوعها لمستخدمي pgvector. سواءً كنت تستخدم pgvector أو Qdrant أو Weaviate أو أي قاعدة بيانات متجهة أخرى تعتمد على التجزئة اليدوية، تظل تحديات التوسع هي نفسها. ما يبدأ كحل يمكن التحكم فيه سرعان ما يتحول إلى دين تقني مع نمو أحجام البيانات.</p>
-<p>بالنسبة للشركات الناشئة اليوم، فإن <strong>قابلية التوسع ليست اختيارية، بل هي أمر بالغ الأهمية</strong>. وينطبق هذا بشكل خاص على منتجات الذكاء الاصطناعي المدعومة بنماذج اللغات الكبيرة وقواعد البيانات المتجهة، حيث يمكن أن تحدث القفزة من التبني المبكر إلى النمو الأسي بين عشية وضحاها. وغالباً ما يؤدي تحقيق التوافق بين المنتج والسوق إلى زيادة كبيرة في نمو المستخدمين، وتدفقات هائلة من البيانات، وارتفاع كبير في طلبات الاستعلام. ولكن إذا لم تستطع البنية التحتية لقاعدة البيانات مواكبة ذلك، فإن بطء الاستعلامات وعدم الكفاءة التشغيلية يمكن أن يوقف الزخم ويعيق نجاح الأعمال.</p>
-<p>قد يؤدي القرار التقني قصير الأجل إلى اختناق طويل الأجل، مما يجبر الفرق الهندسية على معالجة مشكلات الأداء العاجلة وتعطل قاعدة البيانات وأعطال النظام بدلاً من التركيز على الابتكار. السيناريو الأسوأ؟ إعادة هيكلة قاعدة البيانات المكلفة والمستهلكة للوقت - في الوقت الذي يجب على الشركة أن تتوسع فيه.</p>
-<h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">أليس التجزئة حلاً طبيعياً لقابلية التوسع؟<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
+    </button></h2><p>Alex’s experience isn’t unique to pgvector users. Whether you’re using pgvector, Qdrant, Weaviate, or any other vector database that relies on manual sharding, the scaling challenges remain the same. What starts as a manageable solution quickly turns into a tech debt as data volumes grow.</p>
+<p>For startups today, <strong>scalability isn’t optional—it’s mission-critical</strong>. This is especially true for AI products powered by Large Language Models(LLM) and vector databases, where the leap from early adoption to exponential growth can happen overnight. Achieving product-market fit often triggers a surge in user growth, overwhelming data inflows, and skyrocketing query demands. But if the database infrastructure can’t keep up, slow queries and operational inefficiencies can stall momentum and hinder business success.</p>
+<p>A short-term technical decision could lead to long-term bottleneck, forcing engineering teams to constantly address urgent performance issues, database crashes, and system failures instead of focusing on innovation. The worst-case scenario? A costly, time-consuming database re-architecture—precisely when a company should be scaling.</p>
+<h2 id="Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="common-anchor-header">Isn’t Sharding a Natural Solution to Scalability?<button data-href="#Isn’t-Sharding-a-Natural-Solution-to-Scalability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,10 +49,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يمكن معالجة قابلية التوسع بطرق متعددة. تتضمن الطريقة الأكثر وضوحًا، وهي <strong>التوسع،</strong> تعزيز موارد جهاز واحد عن طريق إضافة المزيد من وحدة المعالجة المركزية أو الذاكرة أو التخزين لاستيعاب أحجام البيانات المتزايدة. على الرغم من بساطة هذه الطريقة، إلا أن لها قيودًا واضحة. في بيئة Kubernetes، على سبيل المثال، تكون البودات الكبيرة غير فعالة، والاعتماد على عقدة واحدة يزيد من خطر الفشل، مما قد يؤدي إلى تعطل كبير.</p>
-<p>عندما لا يكون التوسع للأعلى قابلاً للتطبيق، تتحول الشركات بطبيعة الحال إلى <strong>التوسع للخارج،</strong> وتوزيع البيانات عبر خوادم متعددة. للوهلة الأولى، يبدو <strong>التجزئة</strong> حلاً بسيطاً - تقسيم قاعدة البيانات إلى قواعد بيانات أصغر ومستقلة لزيادة السعة وتمكين عقد أساسية متعددة قابلة للكتابة.</p>
-<p>ومع ذلك، على الرغم من أن التجزئة واضحة من الناحية المفاهيمية، إلا أن التجزئة سرعان ما تصبح تحديًا معقدًا في الممارسة العملية. يتم تصميم معظم التطبيقات في البداية للعمل مع قاعدة بيانات واحدة وموحدة. في اللحظة التي يتم فيها تقسيم قاعدة البيانات المتجهة إلى أجزاء متعددة، يجب تعديل كل جزء من التطبيق الذي يتفاعل مع البيانات أو إعادة كتابته بالكامل، مما يؤدي إلى زيادة كبيرة في تكاليف التطوير. يصبح تصميم استراتيجية تجزئة فعالة أمرًا بالغ الأهمية، وكذلك تنفيذ منطق التوجيه لضمان توجيه البيانات إلى الجزء الصحيح. وغالبًا ما تتطلب إدارة المعاملات الذرية عبر أجزاء متعددة إعادة هيكلة التطبيقات لتجنب العمليات عبر الأجزاء. بالإضافة إلى ذلك، يجب التعامل مع سيناريوهات الفشل برشاقة لمنع حدوث اضطرابات عندما تصبح بعض الأجزاء غير متوفرة.</p>
-<h2 id="Why-Manual-Sharding-Becomes-a-Burden" class="common-anchor-header">لماذا يصبح التجزئة اليدوية عبئاً ثقيلاً؟<button data-href="#Why-Manual-Sharding-Becomes-a-Burden" class="anchor-icon" translate="no">
+    </button></h2><p>Scalability can be addressed in multiple ways. The most straightforward approach, <strong>Scaling Up</strong>, involves enhancing a single machine’s resources by adding more CPU, memory, or storage to accommodate growing data volumes. While simple, this method has clear limitations. In a Kubernetes environment, for example, large pods are inefficient, and relying on a single node increases the risk of failure, potentially leading to significant downtime.</p>
+<p>When Scaling Up is no longer viable, businesses naturally turn to <strong>Scaling Out</strong>, distributing data across multiple servers. At first glance, <strong>sharding</strong> appears to be a simple solution—splitting a database into smaller, independent databases to increase capacity and enable multiple writable primary nodes.</p>
+<p>However, while conceptually straightforward, sharding quickly becomes a complex challenge in practice. Most applications are initially designed to work with a single, unified database. The moment a vector database is divided into multiple shards, every part of the application that interacts with data must be modified or entirely rewritten, introducing significant development overhead. Designing an effective sharding strategy becomes crucial, as does implementing routing logic to ensure data is directed to the correct shard. Managing atomic transactions across multiple shards often requires restructuring applications to avoid cross-shard operations. Additionally, failure scenarios must be handled gracefully to prevent disruptions when certain shards become unavailable.</p>
+<h2 id="Why-Manual-Sharding-Becomes-a-Burden" class="common-anchor-header">Why Manual Sharding Becomes a Burden<button data-href="#Why-Manual-Sharding-Becomes-a-Burden" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,16 +67,16 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يتذكر أليكس قائلاً<em>: &quot;قدّرنا في الأصل أن تنفيذ التجزئة اليدوية لقاعدة بيانات pgvector سيستغرق مهندسين اثنين حوالي ستة أشهر</em>.&quot; <em>&quot;ما لم ندركه هو أننا لم نكن ندرك</em> <em>أن الحاجة إلى</em> <em> هؤلاء المهندسين</em> <strong><em>ستكون دائمة</em></strong>. <em>فكل تغيير في المخطط، أو عملية إعادة موازنة البيانات، أو قرار تحجيم يتطلب خبراتهم المتخصصة. لقد كنا ملتزمين بشكل أساسي ب &quot;فريق تقاسم دائم&quot; فقط للحفاظ على تشغيل قاعدة البيانات الخاصة بنا.&quot;</em></p>
-<p>تتضمن تحديات العالم الحقيقي مع قواعد البيانات المتجهة المجزأة ما يلي:</p>
+    </button></h2><p><em>“We originally estimated implementing manual sharding for our pgvector database would take two engineers about six months,”</em> Alex remembers. <em>&quot;What we didn’t realize was that those engineers would</em> <strong><em>always</em></strong> <em>be needed. Every schema change, data rebalancing operation, or scaling decision required their specialized expertise. We were essentially committing to a permanent ‘sharding team’ just to keep our database running.&quot;</em></p>
+<p>Real-world challenges with sharded vector databases include:</p>
 <ol>
-<li><p><strong>عدم توازن توزيع البيانات (النقاط الساخنة)</strong>: في حالات استخدام المستأجرين المتعددين، يمكن أن يتراوح توزيع البيانات من مئات إلى مليارات المتجهات لكل مستأجر. هذا الاختلال يخلق نقاطًا ساخنة حيث تصبح بعض الأجزاء مثقلة بالبيانات بينما تظل أجزاء أخرى خاملة.</p></li>
-<li><p><strong>صداع إعادة التجزئة</strong>: اختيار العدد المناسب من الأجزاء يكاد يكون مستحيلاً. فالقليل جداً يؤدي إلى عمليات إعادة تجميع متكررة ومكلفة. يؤدي العدد الكبير جدًا إلى إنشاء بيانات وصفية غير ضرورية، مما يزيد من التعقيد ويقلل من الأداء.</p></li>
-<li><p><strong>تعقيد تغيير المخطط</strong>: تقوم العديد من قواعد البيانات المتجهة بتنفيذ التجزئة من خلال إدارة قواعد بيانات أساسية متعددة. هذا يجعل مزامنة تغييرات المخطط عبر الأجزاء مرهقة ومعرضة للأخطاء، مما يؤدي إلى إبطاء دورات التطوير.</p></li>
-<li><p><strong>إهدار الموارد</strong>: في قواعد البيانات المقترنة بالتخزين والحوسبة المقترنة، يجب عليك تخصيص الموارد بدقة عبر كل عقدة مع توقع النمو المستقبلي. عادة، عندما تصل نسبة استخدام الموارد إلى 60-70%، تحتاج إلى البدء في التخطيط لإعادة التجزئة.</p></li>
+<li><p><strong>Data Distribution Imbalance (Hotspots)</strong>: In multi-tenant use cases, data distribution can range from hundreds to billions of vectors per tenant. This imbalance creates hotspots where certain shards become overloaded while others sit idle.</p></li>
+<li><p><strong>The Resharding Headache</strong>: Choosing the right number of shards is nearly impossible. Too few leads to frequent and costly resharding operations. Too many creates unnecessary metadata overhead, increasing complexity and reducing performance.</p></li>
+<li><p><strong>Schema Change Complexity</strong>: Many vector databases implement sharding by managing multiple underlying databases. This makes synchronizing schema changes across shards cumbersome and error-prone, slowing development cycles.</p></li>
+<li><p><strong>Resource Waste</strong>: In storage-compute coupled databases, you must meticulously allocate resources across every node while anticipating future growth. Typically, when resource utilization reaches 60-70%, you need to start planning for resharding.</p></li>
 </ol>
-<p>ببساطة، <strong>إدارة الأجزاء يدويًا أمر سيء لعملك</strong>. فبدلاً من تقييد فريقك الهندسي في إدارة الأجزاء بشكل مستمر، فكّر في الاستثمار في قاعدة بيانات متجهة مصممة للتوسع تلقائياً - دون عبء التشغيل.</p>
-<h2 id="How-Milvus-Solves-the-Scalability-Problem" class="common-anchor-header">كيف تحل Milvus مشكلة قابلية التوسع<button data-href="#How-Milvus-Solves-the-Scalability-Problem" class="anchor-icon" translate="no">
+<p>Simply put, <strong>managing shards manually is bad for your business</strong>. Instead of locking your engineering team into constant shard management, consider investing in a vector database designed to scale automatically—without the operational burden.</p>
+<h2 id="How-Milvus-Solves-the-Scalability-Problem" class="common-anchor-header">How Milvus Solves the Scalability Problem<button data-href="#How-Milvus-Solves-the-Scalability-Problem" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -90,34 +91,34 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد أدرك العديد من المطورين - من الشركات الناشئة إلى الشركات - العبء الكبير المرتبط بالتجزئة اليدوية لقاعدة البيانات. تتخذ Milvus نهجًا مختلفًا بشكل أساسي، مما يتيح التوسع السلس من ملايين إلى مليارات المتجهات دون تعقيد.</p>
-<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">التوسع الآلي بدون ديون تقنية</h3><p>تستفيد Milvus من Kubernetes وبنية تخزين وحوسبة مفصّلة لدعم التوسع السلس. يتيح هذا التصميم:</p>
+    </button></h2><p>Many developers—from startups to enterprises—have recognized the significant overhead associated with manual database sharding. Milvus takes a fundamentally different approach, enabling seamless scaling from millions to billions of vectors without the complexity.</p>
+<h3 id="Automated-Scaling-Without-the-Tech-Debt" class="common-anchor-header">Automated Scaling Without the Tech Debt</h3><p>Milvus leverages Kubernetes and a disaggregated storage-compute architecture to support seamless expansion. This design enables:</p>
 <ul>
-<li><p>التوسع السريع استجابةً للمتطلبات المتغيرة</p></li>
-<li><p>موازنة التحميل التلقائي عبر جميع العقد المتاحة</p></li>
-<li><p>تخصيص الموارد بشكل مستقل، مما يتيح لك ضبط الحوسبة والذاكرة والتخزين بشكل منفصل</p></li>
-<li><p>أداء عالٍ متناسق، حتى أثناء فترات النمو السريع</p></li>
+<li><p>Rapid scaling in response to changing demands</p></li>
+<li><p>Automatic load balancing across all available nodes</p></li>
+<li><p>Independent resource allocation, letting you adjust compute, memory, and storage separately</p></li>
+<li><p>Consistent high performance, even during periods of rapid growth</p></li>
 </ul>
-<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">بنية موزعة مصممة من الألف إلى الياء</h3><p>تحقق Milvus قدراتها التوسعية من خلال ابتكارين رئيسيين:</p>
-<p><strong>البنية القائمة على القطاعات:</strong> في جوهرها، تنظم Milvus البيانات في &quot;شرائح&quot; - أصغر وحدات إدارة البيانات:</p>
+<h3 id="Distributed-Architecture-Designed-from-the-Ground-Up" class="common-anchor-header">Distributed Architecture Designed from the Ground Up</h3><p>Milvus achieves its scaling capabilities through two key innovations:</p>
+<p><strong>Segment-Based Architecture:</strong> At its core, Milvus organizes data into &quot;segments&quot;—the smallest units of data management:</p>
 <ul>
-<li><p>تتواجد الشرائح المتنامية على StreamNodes، مما يحسّن من حداثة البيانات للاستعلامات في الوقت الفعلي</p></li>
-<li><p>تتم إدارة الشرائح المختومة بواسطة QueryNodes، باستخدام فهارس قوية لتسريع البحث</p></li>
-<li><p>يتم توزيع هذه الشرائح بالتساوي عبر العقد لتحسين المعالجة المتوازية</p></li>
+<li><p>Growing Segments reside on StreamNodes, optimizing data freshness for real-time queries</p></li>
+<li><p>Sealed Segments are managed by QueryNodes, utilizing powerful indexes to accelerate search</p></li>
+<li><p>These segments are evenly distributed across nodes to optimize parallel processing</p></li>
 </ul>
-<p><strong>توجيه ثنائي الطبقة</strong>: على عكس قواعد البيانات التقليدية حيث تعيش كل شريحة على جهاز واحد، تقوم ميلفوس بتوزيع البيانات في شريحة واحدة بشكل ديناميكي عبر عقد متعددة:</p>
+<p><strong>Two-Layer Routing</strong>: Unlike traditional databases where each shard lives on a single machine, Milvus distributes data in one shard dynamically across multiple nodes:</p>
 <ul>
-<li><p>يمكن لكل جزء تخزين أكثر من 1 مليار نقطة بيانات</p></li>
-<li><p>يتم موازنة الأجزاء داخل كل جزء تلقائيًا عبر الأجهزة</p></li>
-<li><p>توسيع المجموعات أمر بسيط مثل زيادة عدد الأجزاء.</p></li>
-<li><p>سيقدم الإصدار القادم من Milvus 3.0 التقسيم الديناميكي للأجزاء، مما يلغي حتى هذه الخطوة اليدوية البسيطة</p></li>
+<li><p>Each shard can store over 1 billion data points</p></li>
+<li><p>Segments within each shard are automatically balanced across machines</p></li>
+<li><p>Expanding collections is as simple as increasing the number of shards</p></li>
+<li><p>The upcoming Milvus 3.0 will introduce dynamic shard splitting, eliminating even this minimal manual step</p></li>
 </ul>
-<h3 id="Query-Processing-at-Scale" class="common-anchor-header">معالجة الاستعلام على نطاق واسع</h3><p>عند تنفيذ استعلام، يتبع ميلفوس عملية فعالة:</p>
+<h3 id="Query-Processing-at-Scale" class="common-anchor-header">Query Processing at Scale</h3><p>When executing a query, Milvus follows an efficient process:</p>
 <ol>
-<li><p>يحدد الوكيل الأجزاء ذات الصلة للمجموعة المطلوبة</p></li>
-<li><p>يقوم الوكيل بجمع البيانات من كل من عقد الدفق وعقد الاستعلام</p></li>
-<li><p>تتعامل عُقد الدفق مع البيانات في الوقت الفعلي بينما تعالج عُقد الاستعلام البيانات التاريخية بشكل متزامن</p></li>
-<li><p>يتم تجميع النتائج وإعادتها إلى المستخدم</p></li>
+<li><p>The Proxy identifies relevant shards for the requested collection</p></li>
+<li><p>The Proxy gathers data from both StreamNodes and QueryNodes</p></li>
+<li><p>StreamNodes handle real-time data while QueryNodes process historical data concurrently</p></li>
+<li><p>Results are aggregated and returned to the user</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -125,7 +126,7 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<h2 id="A-Different-Engineering-Experience" class="common-anchor-header">تجربة هندسية مختلفة<button data-href="#A-Different-Engineering-Experience" class="anchor-icon" translate="no">
+<h2 id="A-Different-Engineering-Experience" class="common-anchor-header">A Different Engineering Experience<button data-href="#A-Different-Engineering-Experience" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -140,6 +141,6 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يقول أليكس:<em>"عندما تكون قابلية التوسع مدمجة في قاعدة البيانات نفسها، تختفي كل تلك المشاكل..."،</em> يقول أليكس معلقًا على انتقال فريقه إلى Milvus. <em>"لقد عاد مهندسيّ إلى بناء الميزات التي يحبها العملاء بدلاً من مجالسة أجزاء قاعدة البيانات."</em></p>
-<p>إذا كنت تتصارع مع العبء الهندسي للتجزئة اليدوية، أو اختناقات الأداء على نطاق واسع، أو الاحتمال الشاق لترحيل قواعد البيانات، فقد حان الوقت لإعادة التفكير في نهجك. قم بزيارة <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">صفحة المستندات</a> الخاصة بنا لمعرفة المزيد عن بنية Milvus، أو اختبر قابلية التوسع دون عناء بشكل مباشر مع Milvus المُدارة بالكامل على <a href="https://zilliz.com/cloud">zilliz.com/cloud.</a></p>
-<p>مع أساس قاعدة البيانات المتجهة الصحيح، لا يعرف ابتكارك حدودًا.</p>
+    </button></h2><p><em>“When scalability is built into the database itself, all those headaches just… disappear,”</em> says Alex, reflecting on his team’s transition to Milvus. <em>“My engineers are back to building features customers love instead of babysitting database shards.”</em></p>
+<p>If you’re grappling with the engineering burden of manual sharding, performance bottlenecks at scale, or the daunting prospect of database migrations, it’s time to rethink your approach. Visit our <a href="https://milvus.io/docs/overview.md#What-Makes-Milvus-so-Scalable">docs page</a> to learn more about Milvus architecture, or experience effortless scalability firsthand with fully-managed Milvus at <a href="https://zilliz.com/cloud">zilliz.com/cloud</a>.</p>
+<p>With the right vector database foundation, your innovation knows no limits.</p>
