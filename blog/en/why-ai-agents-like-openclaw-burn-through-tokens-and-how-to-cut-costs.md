@@ -18,20 +18,20 @@ origin: https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-a
 ---
 # Why AI Agents like OpenClaw Burn Through Tokens and How to Cut Costs
 
-If you’ve spent any time with [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) (formerly Clawdbot and Moltbot), you already know how good this AI Agent is. It’s fast, local, flexible, and capable of pulling off surprisingly complex workflows across Slack, Discord, your codebase, and practically anything else you hook it into. But once you start using it seriously, one pattern quickly emerges: your token usage starts to climb.
+If you’ve spent any time with [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) (formerly Clawdbot and Moltbot), you already know how good this AI Agent is. It’s fast, local, flexible, and capable of pulling off surprisingly complex workflows across Slack, Discord, your codebase, and practically anything else you hook it into. But once you start using it seriously, one pattern quickly emerges: **your token usage starts to climb.**
 
 This isn’t OpenClaw’s fault specifically — it’s how most AI agents behave today. They trigger an LLM call for almost everything: looking up a file, planning a task, writing a note, executing a tool, or asking a follow-up question. And because tokens are the universal currency of these calls, every action has a cost.
 
 To understand where that cost comes from, we need to look under the hood at two big contributors:
 
--   Search: Badly constructed searches pull in sprawling context payloads — entire files, logs, messages, and code regions that the model didn’t actually need.
--   Memory: Storing unimportant information forces the agent to reread and reprocess it on future calls, compounding token usage over time.
+-   **Search:** Badly constructed searches pull in sprawling context payloads — entire files, logs, messages, and code regions that the model didn’t actually need.
+-   **Memory:** Storing unimportant information forces the agent to reread and reprocess it on future calls, compounding token usage over time.
 
 Both issues silently increase operational costs without improving capability.
 
 ## How AI Agents Like OpenClaw Actually Perform Searches — and Why That Burns Tokens
 
-When an agent needs information from your codebase or document library, it typically does the equivalent of a project-wide Ctrl+F. Every matching line is returned — unranked, unfiltered, and unprioritized. Claude Code implements this through a dedicated Grep tool built on ripgrep. OpenClaw doesn't have a built-in codebase search tool, but its exec tool lets the underlying model run any command, and loaded skills can guide the agent to use tools like rg. In both cases, codebase search returns keyword matches unranked and unfiltered.
+When an agent needs information from your codebase or document library, it typically does the equivalent of a project-wide **Ctrl+F**. Every matching line is returned — unranked, unfiltered, and unprioritized. Claude Code implements this through a dedicated Grep tool built on ripgrep. OpenClaw doesn't have a built-in codebase search tool, but its exec tool lets the underlying model run any command, and loaded skills can guide the agent to use tools like rg. In both cases, codebase search returns keyword matches unranked and unfiltered.
 
 This brute-force approach works fine in small projects. But as repositories grow, so does the price. Irrelevant matches pile into the LLM’s context window, forcing the model to read and process thousands of tokens it didn’t actually need. A single unscoped search might drag in full files, huge comment blocks, or logs that share a keyword but not the underlying intent. Repeat that pattern across a long debugging or research session, and the bloat adds up quickly.
 
@@ -51,8 +51,8 @@ OpenClaw's memory design works well, but it requires the full OpenClaw ecosystem
 
 If you want to reduce how many tokens OpenClaw consumes, there are two levers you can pull.
 
--   The first is better retrieval — replacing grep-style keyword dumps with ranked, relevance-driven search tools so the model only sees the information that actually matters.
--   The second is better memory — moving from opaque, framework-dependent storage to something you can understand, inspect, and control.
+-   The first is **better retrieval** — replacing grep-style keyword dumps with ranked, relevance-driven search tools so the model only sees the information that actually matters.
+-   The second is **better memory** — moving from opaque, framework-dependent storage to something you can understand, inspect, and control.
 
 ### Replacing grep with Better Retrieval: index1, QMD, and Milvus
 
@@ -79,8 +79,8 @@ index1 also includes an episodic memory module for storing lessons learned, bug 
 
 Note: index1 is an early-stage project (0 stars, 4 commits as of February 2026). Evaluate it against your own codebase before committing.
 
--   Best for: solo developers or small teams with a codebase that fits on one machine, looking for a fast improvement over grep.
--   Outgrow it when: you need multi-user access to the same index, or your data exceeds what a single SQLite file handles comfortably.
+-   **Best for**: solo developers or small teams with a codebase that fits on one machine, looking for a fast improvement over grep.
+-   **Outgrow it when**: you need multi-user access to the same index, or your data exceeds what a single SQLite file handles comfortably.
 
 #### QMD: higher accuracy through local LLM re-ranking
 
@@ -90,8 +90,8 @@ QMD runs entirely on your machine using three GGUF models totaling about 2 GB: a
 
 The tradeoff is cold-start time: loading three models from disk takes roughly 15 to 16 seconds. QMD supports a persistent server mode (qmd mcp) that keeps models in memory between requests, eliminating the cold-start penalty for repeated queries.
 
--   Best for: privacy-critical environments where no data can leave your machine, and where retrieval accuracy matters more than response time.
--   Outgrow it when: you need sub-second responses, shared team access, or your dataset exceeds single-machine capacity.
+-   **Best for:** privacy-critical environments where no data can leave your machine, and where retrieval accuracy matters more than response time.
+-   **Outgrow it when:** you need sub-second responses, shared team access, or your dataset exceeds single-machine capacity.
 
 #### Milvus: hybrid search at team and enterprise scale
 
@@ -105,7 +105,7 @@ Because the BM25 representation is already stored, retrieval doesn't need to rec
 
 Milvus also provides capabilities that single-machine tools cannot: multi-tenant isolation (separate databases or collections per team), data replication with automatic failover, and hot/cold data tiering for cost-efficient storage. For agents, this means multiple developers or multiple agent instances can query the same knowledge base concurrently without stepping on each other's data.
 
-Best for: multiple developers or agents sharing a knowledge base, large or fast-growing document sets, or production environments that need replication, failover, and access control.
+-   **Best for**: multiple developers or agents sharing a knowledge base, large or fast-growing document sets, or production environments that need replication, failover, and access control.
 
 To sum up:
 
@@ -124,15 +124,15 @@ Every piece of context an agent recalls from memory has to be loaded into the pr
 
 Most frameworks fail on all three counts. Mem0 and Zep store everything in a vector database, which works for retrieval, but makes memory:
 
--   Opaque. You can't see what the agent remembers without querying an API.
--   Hard to edit. Correcting or removing a memory means API calls, not opening a file.
--   Locked in. Switching frameworks means exporting, converting, and reimporting your data.
+-   **Opaque.** You can't see what the agent remembers without querying an API.
+-   **Hard to edit.** Correcting or removing a memory means API calls, not opening a file.
+-   **Locked in.** Switching frameworks means exporting, converting, and reimporting your data.
 
 OpenClaw takes a different approach. All memory lives in plain Markdown files on disk. The agent writes daily logs automatically, and humans can open and edit any memory file directly. This solves all three problems: the memory is readable, editable, and portable by design.
 
-The trade-off is deployment overhead. Running OpenClaw's memory means running the full OpenClaw ecosystem: the Gateway process, messaging platform connections, and the rest of the stack. For teams already using OpenClaw, that's fine. For everyone else, the barrier is too high. memsearch was built to close this gap: it extracts OpenClaw's Markdown-first memory pattern into a standalone library that works with any agent.
+The trade-off is deployment overhead. Running OpenClaw's memory means running the full OpenClaw ecosystem: the Gateway process, messaging platform connections, and the rest of the stack. For teams already using OpenClaw, that's fine. For everyone else, the barrier is too high. **memsearch** was built to close this gap: it extracts OpenClaw's Markdown-first memory pattern into a standalone library that works with any agent.
 
-[memsearch](https://github.com/zilliztech/memsearch), built by Zilliz (the team behind Milvus), treats Markdown files as the single source of truth. A MEMORY.md holds long-term facts and decisions you write by hand. Daily logs (2026-02-26.md) are generated automatically from session summaries. The vector index, stored in Milvus, is a derived layer that can be rebuilt from the Markdown at any time.
+**[memsearch](https://github.com/zilliztech/memsearch)**, built by Zilliz (the team behind Milvus), treats Markdown files as the single source of truth. A MEMORY.md holds long-term facts and decisions you write by hand. Daily logs (2026-02-26.md) are generated automatically from session summaries. The vector index, stored in Milvus, is a derived layer that can be rebuilt from the Markdown at any time.
 
 In practice, this means you can open any memory file in a text editor, read exactly what the agent knows, and change it. Save the file, and memsearch's file watcher detects the change and re-indexes automatically. You can manage memories with Git, review AI-generated memories through pull requests, or move to a new machine by copying a folder. If the Milvus index is lost, you rebuild it from the files. The files are never at risk.
 
