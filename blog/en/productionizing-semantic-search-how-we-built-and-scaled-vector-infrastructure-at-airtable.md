@@ -16,10 +16,6 @@ desc: >
  How Airtable scaled semantic search with Milvus, supporting billions of embeddings, multi-tenancy, low latency, and resilient vector infrastructure.
 origin: https://milvus.io/blog/productionizing-semantic-search-how-we-built-and-scaled-vector-infrastructure-at-airtable.md
 ---
-# Productionizing Semantic Search: How We Built and Scaled Vector Infrastructure at Airtable
-
-By Aria Malkani and Cole Dearmon-Moore
-
 As semantic search at Airtable evolved from a concept into a core product feature, the Data Infrastructure team faced the challenge of supporting it at scale. As detailed in our [](https://medium.com/airtable-eng/building-a-resilient-embedding-system-for-semantic-search-at-airtable-d5fdf27807e2)[previous post on Building the Embedding System](https://medium.com/airtable-eng/building-a-resilient-embedding-system-for-semantic-search-at-airtable-d5fdf27807e2), we had already designed a robust, eventually consistent application layer to handle the embedding lifecycle. But one critical piece was still missing from our architecture diagram: the vector database itself.
 
 We needed a storage engine capable of indexing and serving billions of embeddings, supporting massive multi-tenancy, and maintaining performance and availability targets in a distributed cloud environment. This is the story of how we architected, hardened, and evolved our vector search platform to become a core pillar of Airtable’s infrastructure stack.
@@ -183,9 +179,3 @@ In those situations, our recovery path is straightforward. We first bring up a f
 Our work with Milvus has laid a strong foundation for semantic search at Airtable, powering fast, meaningful AI experiences at scale. With this system in place, we’re now exploring better embeddings, richer retrieval pipelines, and deeper AI integrations across the product. There’s a lot of exciting work ahead, and we’re just getting started.
 
 Thanks to all past and present Airtablets on Data Infrastructure and across the organization who contributed to this project: Cole Dearmon-Moore, Aria Malkani, Xiaobing Xia, Nabeel Farooqui, Will Powelson, Andrew Wang, Alex Sorokin
-
-[[a]](#cmnt_ref1)I just added some links to our website
-
-[[b]](#cmnt_ref2)I would suggest that we add a Milvus logo here to this diagram. attached below.
-
-[[c]](#cmnt_ref3)Same here
