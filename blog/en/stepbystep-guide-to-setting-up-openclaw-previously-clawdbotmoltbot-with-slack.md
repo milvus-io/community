@@ -5,7 +5,7 @@ title: >
 author: Min Yin, Lumina Wang
 date: 2026-02-04
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: OpenClaw, Clawdbot, Moltbot, Slack, Tutorial
