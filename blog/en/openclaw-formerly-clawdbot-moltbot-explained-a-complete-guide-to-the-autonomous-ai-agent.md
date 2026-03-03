@@ -17,7 +17,7 @@ desc: >
 origin: https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md
 ---
 
-[OpenClaw](https://openclaw.ai/) (formerly known as Moltbot and Clawdbot) is an open-source AI agent that runs on your machine, connects through the messaging apps you already use (WhatsApp, Telegram, Slack, Signal, and others), and takes action on your behalf — shell commands, browser automation, email, calendar, and file operations. A heartbeat scheduler wakes it up at a configurable interval so it can run without being prompted. It gained over [100,000](https://github.com/openclaw/openclaw) GitHub stars in under a week after its launch in late January 2026, making it one of the fastest-growing open-source repositories in GitHub history. 
+[OpenClaw](https://openclaw.ai/) (formerly known as Moltbot and Clawdbot) is an open-source AI agent that runs on your machine, connects through the messaging apps you already use (WhatsApp, Telegram, Slack, Signal, and others), and takes action on your behalf — shell commands, browser automation, email, calendar, and file operations. A heartbeat scheduler wakes it up at a configurable interval so it can run without being prompted. It gained over [![GitHub Stars](https://img.shields.io/github/stars/openclaw/openclaw?label=⭐%20GitHub%20Stars)](https://github.com/openclaw/openclaw) GitHub stars in under a week after its launch in late January 2026, making it one of the fastest-growing open-source repositories in GitHub history. 
 
 ![](https://assets.zilliz.com/OC_1_e9bc8881bc.png)
 
@@ -272,7 +272,7 @@ Don't expose it to the public internet unless you know exactly what you're doing
 
 ## Conclusion
 
-OpenClaw crossed 175,000 GitHub stars in under two weeks, making it one of the fastest-growing open-source repos in GitHub history. The adoption is real, and the architecture underneath it warrants attention.
+OpenClaw crossed [![GitHub Stars](https://img.shields.io/github/stars/openclaw/openclaw?label=⭐%20GitHub%20Stars)](https://github.com/openclaw/openclaw) GitHub stars in under two weeks, making it one of the fastest-growing open-source repos in GitHub history. The adoption is real, and the architecture underneath it warrants attention.
 
 From a technical standpoint, OpenClaw is three things most AI agents aren't: fully open-source (MIT), local-first (memory stored as Markdown files on your machine), and autonomously scheduled (a heartbeat daemon that acts without prompting). It integrates with messaging platforms like Slack, Telegram, and WhatsApp out of the box, and supports community-built skills through a simple SKILL.md system. That combination makes it uniquely suited for building always-on assistants: Slack bots that answer questions 24/7, inbox monitors that triage email while you sleep, or automation workflows that run on your own hardware without vendor lock-in.
 
