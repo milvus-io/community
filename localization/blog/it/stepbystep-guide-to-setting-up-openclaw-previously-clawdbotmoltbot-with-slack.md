@@ -7,7 +7,7 @@ title: >-
 author: 'Min Yin, Lumina Wang'
 date: 2026-02-04T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: 'OpenClaw, Clawdbot, Moltbot, Slack, Tutorial'
@@ -32,7 +32,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
   </span>
 </p>
 <p>Benvenuti nella mania di OpenClaw.</p>
-<p>L'entusiasmo è tale che le azioni di Cloudflare sono balzate del 14% semplicemente perché gli sviluppatori utilizzano la sua infrastruttura per eseguire le applicazioni. Secondo quanto riferito, le vendite di Mac Mini sono aumentate perché le persone acquistano hardware dedicato per il loro nuovo dipendente AI. E il repo di GitHub? Oltre <a href="https://github.com/openclaw/openclaw">150.000 stelle</a> in poche settimane.</p>
+<p>L'entusiasmo è tale che le azioni di Cloudflare sono balzate del 14% semplicemente perché gli sviluppatori utilizzano la sua infrastruttura per eseguire le applicazioni. Secondo quanto riferito, le vendite di Mac Mini hanno subito un'impennata a causa dell'acquisto di hardware dedicato per il loro nuovo dipendente AI. E il repo di GitHub? Oltre <a href="https://github.com/openclaw/openclaw">150.000 stelle</a> in poche settimane.</p>
 <p>Quindi, naturalmente, abbiamo dovuto mostrarvi come configurare la vostra istanza di OpenClaw e come collegarla a Slack, in modo da poter comandare il vostro assistente AI dalla vostra app di messaggistica preferita.</p>
 <h2 id="What-Is-OpenClaw" class="common-anchor-header">Cos'è OpenClaw?<button data-href="#What-Is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -49,8 +49,8 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a> (precedentemente noto come Clawdbot/Moltbot) è un agente AI autonomo e open-source che viene eseguito localmente sui computer degli utenti e svolge compiti reali tramite app di messaggistica come WhatsApp, Telegram e Discord. Automatizza i flussi di lavoro digitali, come la gestione delle e-mail, la navigazione sul web o la programmazione di riunioni, collegandosi a LLM come Claude o ChatGPT.</p>
-<p>In breve, è come avere un assistente digitale 24 ore su 24, 7 giorni su 7, in grado di pensare, rispondere e portare a termine le cose.</p>
+    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a> (precedentemente noto come Clawdbot/Moltbot) è un agente di intelligenza artificiale autonomo e open-source che viene eseguito localmente sui computer degli utenti e svolge compiti reali tramite app di messaggistica come WhatsApp, Telegram e Discord. Automatizza i flussi di lavoro digitali, come la gestione delle e-mail, la navigazione sul web o la programmazione di riunioni, collegandosi a LLM come Claude o ChatGPT.</p>
+<p>In breve, è come avere un assistente digitale 24 ore su 24, 7 giorni su 7, in grado di pensare, rispondere e portare a termine i compiti.</p>
 <h2 id="Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="common-anchor-header">Impostazione di OpenClaw come assistente AI basato su Slack<button data-href="#Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -71,7 +71,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 <h3 id="Prerequisites" class="common-anchor-header">Prerequisiti</h3><ul>
 <li><p>Un computer Mac o Linux</p></li>
 <li><p>Una <a href="https://console.anthropic.com/">chiave API Anthropic</a> (o accesso CLI a Claude Code)</p></li>
-<li><p>Uno spazio di lavoro Slack in cui installare le app.</p></li>
+<li><p>Uno spazio di lavoro Slack in cui installare le applicazioni.</p></li>
 </ul>
 <p>È tutto. Iniziamo.</p>
 <h3 id="Step-1-Install-OpenClaw" class="common-anchor-header">Passo 1: installare OpenClaw</h3><p>Eseguire il programma di installazione:</p>
@@ -99,7 +99,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </li>
 </ol>
 <ol start="2">
-<li>Completare la verifica nel browser quando viene richiesto.  <span class="img-wrapper">
+<li>Quando viene richiesto, completare la verifica nel browser.  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_7_410c1a39d3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>

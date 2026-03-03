@@ -7,7 +7,7 @@ title: >-
 author: 'Min Yin, Lumina Wang'
 date: 2026-02-04T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: 'OpenClaw, Clawdbot, Moltbot, Slack, Tutorial'
@@ -74,7 +74,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 <li><p>Ein <a href="https://console.anthropic.com/">Anthropic-API-Schlüssel</a> (oder Claude Code CLI-Zugang)</p></li>
 <li><p>Ein Slack-Arbeitsbereich, in dem du Apps installieren kannst</p></li>
 </ul>
-<p>Das war's schon. Fangen wir an.</p>
+<p>Das war's. Fangen wir an.</p>
 <h3 id="Step-1-Install-OpenClaw" class="common-anchor-header">Schritt 1: OpenClaw installieren</h3><p>Führen Sie das Installationsprogramm aus:</p>
 <p>curl -fsSL https://molt.bot/install.sh | bash  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_3_fc80684811.png" alt="" class="doc-image" id="" />
@@ -252,7 +252,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </ul>
 <p><strong>Unser Ratschlag:</strong></p>
 <ul>
-<li><p>Führen Sie den Bot nicht auf Ihrem Hauptrechner aus. Verwenden Sie eine VM, einen Ersatzlaptop oder einen dedizierten Server.</p></li>
+<li><p>Führen Sie den Bot nicht auf Ihrem Hauptrechner aus. Verwenden Sie eine VM, einen Ersatz-Laptop oder einen dedizierten Server.</p></li>
 <li><p>Gewähren Sie nicht mehr Berechtigungen als nötig.</p></li>
 <li><p>Verwenden Sie es noch nicht in der Produktion. Es ist neu. Behandeln Sie es als das Experiment, das es ist.</p></li>
 <li><p>Halten Sie sich an die offiziellen Quellen: <a href="https://x.com/openclaw">@openclaw</a> auf X und <a href="https://github.com/openclaw">OpenClaw</a>.</p></li>

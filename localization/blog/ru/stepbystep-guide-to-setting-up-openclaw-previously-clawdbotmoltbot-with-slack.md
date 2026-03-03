@@ -7,7 +7,7 @@ title: >-
 author: 'Min Yin, Lumina Wang'
 date: 2026-02-04T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: 'OpenClaw, Clawdbot, Moltbot, Slack, Tutorial'
@@ -20,7 +20,7 @@ desc: >-
   требуется.
 origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 ---
-<p>Если на этой неделе вы заходили в технологический Twitter, Hacker News или Discord, то вы это видели. Лобстер-эмодзи 🦞, скриншоты выполненных заданий и одно смелое заявление: ИИ, который не просто <em>говорит - он</em>действительно <em>говорит</em>.</p>
+<p>Если на этой неделе вы заходили в технологический Twitter, Hacker News или Discord, вы это видели. Лобстер-эмодзи 🦞, скриншоты выполненных заданий и одно смелое заявление: ИИ, который не просто <em>говорит - он</em>действительно <em>говорит</em>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_1_567975a33f.png" alt="" class="doc-image" id="" />
@@ -257,7 +257,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 <li><p>Пока не используйте его в производстве. Это новинка. Относитесь к нему как к эксперименту.</p></li>
 <li><p>Придерживайтесь официальных источников: <a href="https://x.com/openclaw">@openclaw</a> на X и <a href="https://github.com/openclaw">OpenClaw</a>.</p></li>
 </ul>
-<p>Как только вы даете LLM возможность выполнять команды, 100%-ной безопасности уже не будет. Это не проблема OpenClaw - такова природа агентного ИИ. Просто будьте умны в этом вопросе.</p>
+<p>Как только вы даете LLM возможность выполнять команды, 100% безопасности уже не будет. Это не проблема OpenClaw - такова природа агентного ИИ. Просто будьте умны в этом вопросе.</p>
 <h2 id="Whats-Next" class="common-anchor-header">Что дальше?<button data-href="#Whats-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

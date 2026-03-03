@@ -7,7 +7,7 @@ title: >-
 author: 'Min Yin, Lumina Wang'
 date: 2026-02-04T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: 'OpenClaw, Clawdbot, Moltbot, Slack, Tutorial'
@@ -20,7 +20,7 @@ desc: >-
   necessidade de nuvem.
 origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 ---
-<p>Se esteve no Twitter de tecnologia, no Hacker News ou no Discord esta semana, já o viu. Um emoji de lagosta 🦞, capturas de ecrã de tarefas a serem concluídas e uma afirmação ousada: uma IA que não se limita a <em>falar -</em> <em>fala</em> mesmo.</p>
+<p>Se esteve no Twitter sobre tecnologia, no Hacker News ou no Discord esta semana, já o viu. Um emoji de lagosta 🦞, capturas de ecrã de tarefas a serem concluídas e uma afirmação ousada: uma IA que não se limita a <em>falar -</em> <em>fala</em> mesmo.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_1_567975a33f.png" alt="" class="doc-image" id="" />

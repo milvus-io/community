@@ -5,7 +5,7 @@ title: Guía paso a paso para configurar OpenClaw (antes Clawdbot/Moltbot) con S
 author: 'Min Yin, Lumina Wang'
 date: 2026-02-04T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: 'OpenClaw, Clawdbot, Moltbot, Slack, Tutorial'
@@ -64,7 +64,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Imagine tener un bot en su espacio de trabajo de Slack que pueda responder instantáneamente a preguntas sobre su producto, ayudar a depurar problemas de los usuarios o indicar a los compañeros de equipo la documentación adecuada, sin que nadie tenga que dejar de hacer lo que está haciendo. Para nosotros, eso podría significar un soporte más rápido para la comunidad Milvus: un bot que responda a preguntas comunes ("¿Cómo creo una colección?"), ayude a solucionar errores o resuma las notas de la versión bajo demanda. Para su equipo, podría ser la incorporación de nuevos ingenieros, la gestión de preguntas frecuentes internas o la automatización de tareas repetitivas de DevOps. Los casos de uso son muy variados.</p>
+    </button></h2><p>Imagine tener un bot en su espacio de trabajo de Slack que pueda responder instantáneamente a preguntas sobre su producto, ayudar a depurar problemas de los usuarios o indicar a los compañeros de equipo la documentación adecuada, sin que nadie tenga que dejar de hacer lo que está haciendo. Para nosotros, eso podría significar un soporte más rápido para la comunidad de Milvus: un bot que responda a preguntas comunes ("¿Cómo creo una colección?"), ayude a solucionar errores o resuma las notas de la versión bajo demanda. Para su equipo, podría ser la incorporación de nuevos ingenieros, la gestión de preguntas frecuentes internas o la automatización de tareas repetitivas de DevOps. Los casos de uso son muy variados.</p>
 <p>En este tutorial, vamos a caminar a través de los conceptos básicos: la instalación de OpenClaw en su máquina y conectarlo a Slack. Una vez hecho esto, tendrás un asistente de IA listo para personalizarlo para lo que necesites.</p>
 <h3 id="Prerequisites" class="common-anchor-header">Requisitos previos</h3><ul>
 <li><p>Una máquina Mac o Linux</p></li>
@@ -280,7 +280,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </ul>
 <p><strong>¿Tienes preguntas o quieres compartir lo que estás construyendo?</strong></p>
 <ul>
-<li><p>Únete a la <a href="https://milvus.io/slack">comunidad Milvus Slack</a> para conectar con otros desarrolladores</p></li>
+<li><p>Únase a la <a href="https://milvus.io/slack">comunidad Milvus Slack</a> para conectar con otros desarrolladores</p></li>
 <li><p>Reserva nuestro <a href="https://milvus.io/office-hours">Milvus Office Hours</a> para preguntas y respuestas en directo con el equipo.</p></li>
 </ul>
 <p>¡Feliz hacking! 🦞</p>

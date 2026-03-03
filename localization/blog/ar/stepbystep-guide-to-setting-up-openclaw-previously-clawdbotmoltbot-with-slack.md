@@ -5,7 +5,7 @@ title: دليل خطوة بخطوة لإعداد OpenClaw (Clawdbot/Moltbot سا
 author: 'Min Yin, Lumina Wang'
 date: 2026-02-04T00:00:00.000Z
 cover: assets.zilliz.com/Open_Claw_Slack_Setup_Guide_Cover_1_11zon_3a995858a8.png
-tag: Tutorial
+tag: tutorials
 recommend: true
 publishToMedium: true
 tags: 'OpenClaw, Clawdbot, Moltbot, Slack, Tutorial'
@@ -47,7 +47,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a> (المعروف سابقًا باسم Clawdbot/Moltbot) هو وكيل ذكاء اصطناعي مفتوح المصدر ومستقل يعمل محليًا على أجهزة المستخدم وينفذ مهام العالم الحقيقي عبر تطبيقات المراسلة مثل واتساب وتيليجرام وديسكورد. وهو يقوم بأتمتة سير العمل الرقمي - مثل إدارة رسائل البريد الإلكتروني أو تصفح الويب أو جدولة الاجتماعات - من خلال الاتصال بتطبيقات المراسلة مثل Claude أو ChatGPT.</p>
+    </button></h2><p><a href="https://openclaw.ai/">OpenClaw</a> (المعروف سابقًا باسم Clawdbot/Moltbot) هو وكيل ذكاء اصطناعي مفتوح المصدر ومستقل يعمل محليًا على أجهزة المستخدم وينفذ مهام العالم الحقيقي عبر تطبيقات المراسلة مثل واتساب وتيليجرام وديسكورد. فهو يقوم بأتمتة سير العمل الرقمي - مثل إدارة رسائل البريد الإلكتروني أو تصفح الويب أو جدولة الاجتماعات - من خلال الاتصال بتطبيقات المراسلة مثل Claude أو ChatGPT.</p>
 <p>باختصار، إنه باختصار يشبه وجود مساعد رقمي على مدار الساعة طوال أيام الأسبوع يمكنه التفكير والاستجابة وإنجاز المهام بالفعل.</p>
 <h2 id="Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="common-anchor-header">إعداد OpenClaw كمساعد ذكاء اصطناعي قائم على Slack<button data-href="#Setting-Up-OpenClaw-as-a-Slack-Based-AI-Assistant" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -104,7 +104,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 </li>
 </ol>
 <ol start="3">
-<li>اختر <strong>Anthropic/claude-claude-opus-4-5-20251101</strong> كنموذج افتراضي  <span class="img-wrapper">
+<li>اختر <strong>anthropic/claude-claude-opus-4-5-20251101</strong> كنموذج افتراضي  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ST_8_0c22bf5a16.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
@@ -252,9 +252,9 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 <li><p>لا تشغل هذا على جهازك الأساسي. استخدم جهازًا افتراضيًا أو حاسوبًا محمولًا احتياطيًا أو خادمًا مخصصًا.</p></li>
 <li><p>لا تمنح أذونات أكثر مما تحتاج إليه.</p></li>
 <li><p>لا تستخدم هذا في الإنتاج بعد. إنه جديد. تعامل معه على أنه تجربة.</p></li>
-<li><p>التزم بالمصادر الرسمية: <a href="https://x.com/openclaw">@openclaw</a> على X <a href="https://github.com/openclaw">وOpenClaw</a>.</p></li>
+<li><p>التزم بالمصادر الرسمية: <a href="https://x.com/openclaw">@openclaw</a> على X و <a href="https://github.com/openclaw">OpenClaw</a>.</p></li>
 </ul>
-<p>بمجرد أن تمنح LLM القدرة على تنفيذ الأوامر، لا يوجد شيء آمن 100%. هذه ليست مشكلة OpenClaw - هذه هي طبيعة الذكاء الاصطناعي العميل. فقط كن ذكيًا حيال ذلك.</p>
+<p>بمجرد أن تعطي LLM القدرة على تنفيذ الأوامر، لا يوجد شيء آمن 100%. هذه ليست مشكلة OpenClaw - هذه هي طبيعة الذكاء الاصطناعي العميل. فقط كن ذكيًا حيال ذلك.</p>
 <h2 id="Whats-Next" class="common-anchor-header">ما التالي؟<button data-href="#Whats-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -270,7 +270,7 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تهانينا! لديك الآن مساعد ذكاء اصطناعي محلي يعمل على البنية التحتية الخاصة بك، ويمكن الوصول إليه من خلال Slack. تظل بياناتك ملكاً لك، ولديك مساعد لا يكلّ ولا يملّ جاهز لأتمتة الأمور المتكررة.</p>
+    </button></h2><p>تهانينا! لديك الآن مساعد ذكاء اصطناعي محلي يعمل على البنية التحتية الخاصة بك، ويمكن الوصول إليه من خلال Slack. ستبقى بياناتك ملكاً لك، ولديك مساعد لا يكل ولا يمل وجاهز لأتمتة الأمور المتكررة.</p>
 <p>من هنا، يمكنك</p>
 <ul>
 <li><p>تثبيت المزيد من <a href="https://docs.molt.bot/skills">المهارات</a> لتوسيع ما يمكن لـ OpenClaw القيام به</p></li>
@@ -281,6 +281,6 @@ origin: 'https://milvus.io/blog/openclaw-slack-setup-guide.md'
 <p><strong>هل لديك أسئلة أو تريد مشاركة ما تقوم ببنائه؟</strong></p>
 <ul>
 <li><p>انضم إلى <a href="https://milvus.io/slack">مجتمع ميلفوس سلاك</a> للتواصل مع مطورين آخرين</p></li>
-<li><p>احجز <a href="https://milvus.io/office-hours">ساعات عمل ميلفوس المكتبية</a> للحصول على أسئلة وأجوبة مباشرة مع الفريق</p></li>
+<li><p>احجز <a href="https://milvus.io/office-hours">ساعات عمل Milvus المكتبية</a> للحصول على أسئلة وأجوبة مباشرة مع الفريق</p></li>
 </ul>
 <p>قرصنة سعيدة! 🦞</p>
