@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Nano Banana 2, Milvus, e-commerce AI image generation, AI product photography, vector search
