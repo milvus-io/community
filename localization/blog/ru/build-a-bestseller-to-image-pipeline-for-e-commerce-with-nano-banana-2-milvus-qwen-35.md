@@ -7,7 +7,7 @@ title: >-
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: >-
@@ -98,7 +98,7 @@ origin: >-
 </ul>
 <p>Nano Banana 2 подходит практически ко всем пунктам. В следующих разделах мы рассмотрим, что каждое обновление означает на практике: где оно непосредственно решает болевую точку электронной коммерции, где не дотягивает до нее, а также каково реальное влияние на затраты.</p>
 <h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">Сокращение затрат на генерацию вывода на 60 %</h3><p>При разрешении 1K стоимость <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">одного изображения в</annotation></semantics></math></span></span>Nano Banana 2 составляет <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,067</mn><mi>perimageversusPro′s0</mi></mrow><annotation encoding="application/x-tex">,067 по сравнению с</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord"><span class="mord mathnormal">067perimageversusPro</span></span></span></span></span><span class="pstrut" style="height:2.7em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">′s0</span></span></span></span>,134, что составляет прямое 50-процентное сокращение. Но цена за изображение - это только половина истории. Что раньше убивало бюджеты пользователей, так это доработки. Каждый маркетплейс устанавливает свои спецификации изображений (1:1 для Amazon, 3:4 для витрин Shopify, ultrawide для баннерной рекламы), и производство каждого варианта означало отдельную генерацию с собственными режимами отказа.</p>
-<p>Nano Banana 2 сводит все эти дополнительные этапы к одному.</p>
+<p>Nano Banana 2 сводит все эти дополнительные проходы к одному.</p>
 <ul>
 <li><p><strong>Четыре уровня нативного разрешения.</strong></p></li>
 <li><p>512px ($0,045)</p></li>
@@ -149,7 +149,7 @@ origin: >-
 <p><strong>Продолжение рукописного текста.</strong> Поскольку электронная коммерция часто требует рукописных элементов, таких как ценники и персонализированные карточки, мы проверили, могут ли модели соответствовать существующему рукописному стилю и расширять его - в частности, соответствовать рукописному списку дел и добавлять 5 новых пунктов в том же стиле. Результаты по трем моделям:</p>
 <ul>
 <li><strong>Оригинальный Nano Banana.</strong> Повторяющиеся порядковые номера, непонятная структура.</li>
-<li><strong>Nano Banana Pro.</strong> Правильная структура, но плохое воспроизведение стиля шрифта.</li>
+<li><strong>Nano Banana Pro.</strong> Правильный макет, но плохое воспроизведение стиля шрифта.</li>
 <li><strong>Nano Banana 2.</strong> Ноль ошибок. Вес штриха и стиль начертания совпадают достаточно близко, чтобы быть неотличимыми от источника.</li>
 </ul>
 <p>
@@ -492,7 +492,7 @@ stats = milvus_client.get_collection_stats(COLLECTION)
 <ol>
 <li><strong>Плотный поиск</strong>: находит продукты с визуально похожими вкраплениями изображений.</li>
 <li><strong>Разрозненный поиск</strong>: находит продукты с совпадающими ключевыми словами в тексте с помощью TF-IDF.</li>
-<li><strong>Скалярная фильтрация</strong>: ограничивает результаты одной категорией и товарами с sales_count &gt; 1500.</li>
+<li><strong>Скалярная фильтрация</strong>: ограничивает результаты одной и той же категорией и товарами с sales_count &gt; 1500.</li>
 <li><strong>Ранжирование RRF</strong>: объединяет плотный и разреженный списки результатов с помощью Reciprocal Rank Fusion.</li>
 </ol>
 <p>Загрузка нового продукта:</p>
@@ -663,7 +663,7 @@ gen_response = llm.chat.completions.create(
 <button class="copy-code-btn"></button></code></pre>
 <p>Ключевые параметры для вызова API Nano Banana 2:</p>
 <ul>
-<li>modalities: [&quot;текст&quot;, &quot;изображение&quot;]: определяет, что ответ должен включать изображение.</li>
+<li>modalities: [&quot;текст&quot;, &quot;изображение&quot;]: определяет, что ответ должен содержать изображение.</li>
 <li>image_config.aspect_ratio: управляет соотношением сторон выводимого изображения (3:4 хорошо подходит для портретных/модных снимков).</li>
 <li>image_config.image_size: задает разрешение. Nano Banana 2 поддерживает разрешение от 512px до 4K.</li>
 </ul>

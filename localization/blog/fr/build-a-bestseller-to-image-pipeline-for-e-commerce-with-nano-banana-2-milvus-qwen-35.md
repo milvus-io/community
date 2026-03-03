@@ -7,7 +7,7 @@ title: >-
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: >-
@@ -117,7 +117,7 @@ origin: >-
 <p>Ces nouveaux rapports ultra-larges et ultra-grands s'ajoutent à l'ensemble existant. Une session de génération peut produire différents formats tels que : L'<strong>image principale d'Amazon</strong> (1:1), le <strong>héros de la vitrine</strong> (3:4) et la <strong>bannière publicitaire</strong> (ultra-large ou autres ratios).</p>
 <p>Aucun recadrage, aucun remplissage, aucun re-promptage n'est nécessaire pour ces 4 rapports. Les 10 autres ratios sont inclus dans le jeu complet, ce qui rend le processus plus flexible sur les différentes plateformes.</p>
 <p>L'économie d'environ 50 % par image permettrait à elle seule de réduire la facture de moitié. C'est l'élimination des travaux de retouche pour toutes les résolutions et tous les rapports d'aspect qui a permis de ramener le coût total à environ un tiers de ce qu'il était auparavant.</p>
-<h3 id="Support-Up-to-14-Reference-Images-with-Bestseller-Style" class="common-anchor-header">Prise en charge de 14 images de référence avec le style Bestseller</h3><p>De toutes les mises à jour de Nano Banana 2, c'est le mélange multiréférences qui a le plus d'impact sur notre pipeline Milvus. Nano Banana 2 accepte jusqu'à 14 images de référence dans une seule requête, en maintenant :</p>
+<h3 id="Support-Up-to-14-Reference-Images-with-Bestseller-Style" class="common-anchor-header">Prise en charge de 14 images de référence avec le style Bestseller</h3><p>De toutes les mises à jour de Nano Banana 2, c'est le mélange multiréférences qui a le plus d'impact sur notre pipeline Milvus. Nano Banana 2 accepte jusqu'à 14 images de référence dans une seule requête, en conservant :</p>
 <ul>
 <li>la ressemblance des caractères pour un maximum de <strong>5 personnages</strong></li>
 <li>La fidélité des objets pour un maximum de <strong>14 objets</strong></li>
@@ -540,7 +540,7 @@ filter_expr = <span class="hljs-string">f&#x27;category == &quot;<span class="hl
 <p>Voici les principaux appels API :</p>
 <ul>
 <li>AnnSearchRequest crée des requêtes de recherche distinctes pour les champs vectoriels denses et épars.</li>
-<li>expr=filter_expr applique un filtrage scalaire dans chaque demande de recherche.</li>
+<li>expr=filter_expr applique un filtrage scalaire dans chaque requête de recherche.</li>
 <li>RRFRanker(k=60) fusionne les deux listes de résultats classés à l'aide de l'algorithme Reciprocal Rank Fusion.</li>
 <li>hybrid_search exécute les deux requêtes et renvoie les résultats fusionnés et reclassés.</li>
 </ul>
@@ -697,8 +697,8 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
     <span></span>
   </span>
 </p>
-<h3 id="Step-10-Batch-Generation-for-All-New-Products" class="common-anchor-header">Étape 10 : Génération de lots pour tous les nouveaux produits</h3><p>Nous regroupons l'ensemble du pipeline en une seule fonction et l'exécutons pour les nouveaux produits restants. Le code des lots est omis ici par souci de concision ; contactez-nous si vous avez besoin de l'implémentation complète.</p>
-<p>Deux choses ressortent des résultats des lots. Les invites de style que nous obtenons de <strong>Qwen 3.5</strong> s'adaptent de manière significative à chaque produit : une robe d'été et un tricot d'hiver reçoivent des descriptions de scène véritablement différentes, adaptées à la saison, au cas d'utilisation et aux accessoires. Les images obtenues par <strong>Nano Banana 2</strong>, quant à elles, sont comparables à de vraies photographies de studio en termes d'éclairage, de texture et de composition.</p>
+<h3 id="Step-10-Batch-Generation-for-All-New-Products" class="common-anchor-header">Étape 10 : Génération de lots pour tous les nouveaux produits</h3><p>Nous regroupons l'ensemble du pipeline dans une seule fonction et l'exécutons pour les nouveaux produits restants. Le code des lots est omis ici par souci de concision ; contactez-nous si vous avez besoin de l'implémentation complète.</p>
+<p>Deux choses ressortent des résultats des lots. Les invites de style que nous obtenons de <strong>Qwen 3.5</strong> s'adaptent de manière significative à chaque produit : une robe d'été et un tricot d'hiver reçoivent des descriptions de scène véritablement différentes, adaptées à la saison, au cas d'utilisation et aux accessoires. Les images obtenues par <strong>Nano Banana 2</strong>, quant à elles, sont comparables à de véritables photographies de studio en termes d'éclairage, de texture et de composition.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image3.png" alt="" class="doc-image" id="" />

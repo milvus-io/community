@@ -7,7 +7,7 @@ title: >-
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: >-

@@ -7,7 +7,7 @@ title: >-
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: >-
@@ -145,7 +145,7 @@ origin: >-
 </ul>
 <p>Untuk sebagian besar tugas pembuatan latar belakang dalam fotografi produk, kami menemukan bahwa output Nano Banana 2 dapat digunakan tanpa pasca-pemrosesan.</p>
 <h3 id="Render-In-Image-Text-Cleanly-Across-Languages" class="common-anchor-header">Merender Teks Dalam Gambar dengan Bersih di Berbagai Bahasa</h3><p>Label harga, spanduk promosi, dan teks multibahasa tidak dapat dihindari dalam gambar e-commerce, dan secara historis telah menjadi titik balik bagi generasi AI. Nano Banana 2 menanganinya dengan jauh lebih baik, mendukung rendering teks dalam gambar di berbagai bahasa dengan terjemahan dan pelokalan dalam satu generasi.</p>
-<p><strong>Rendering teks standar.</strong> Dalam pengujian kami, keluaran teks bebas dari kesalahan di setiap format e-commerce yang kami coba: label harga, slogan pemasaran singkat, dan deskripsi produk dua bahasa.</p>
+<p><strong>Rendering teks standar.</strong> Dalam pengujian kami, keluaran teks bebas dari kesalahan di setiap format e-commerce yang kami coba: label harga, slogan pemasaran singkat, dan deskripsi produk dalam dua bahasa.</p>
 <p><strong>Kelanjutan tulisan tangan.</strong> Karena e-commerce sering kali memerlukan elemen tulisan tangan seperti label harga dan kartu yang dipersonalisasi, kami menguji apakah model ini dapat mencocokkan gaya tulisan tangan yang sudah ada dan memperluasnya - khususnya, mencocokkan daftar tugas yang ditulis tangan dan menambahkan 5 item baru dengan gaya yang sama. Hasil dari tiga model:</p>
 <ul>
 <li><strong>Pisang Nano Asli.</strong> Nomor urut yang berulang, struktur yang disalahpahami.</li>

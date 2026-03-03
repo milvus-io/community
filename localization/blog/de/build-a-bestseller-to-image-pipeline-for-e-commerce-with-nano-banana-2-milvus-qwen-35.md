@@ -2,12 +2,12 @@
 id: >-
   build-a-bestseller-to-image-pipeline-for-e-commerce-with-nano-banana-2-milvus-qwen-35.md
 title: >-
-  Aufbau einer Bestseller-to-Image Pipeline für den E-Commerce mit Nano Banana 2
-  + Milvus + Qwen 3.5
+  Aufbau einer Bestseller-to-Image Pipeline für E-Commerce mit Nano Banana 2 +
+  Milvus + Qwen 3.5
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: >-
@@ -68,7 +68,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Den vollständigen Funktionsumfang finden Sie <a href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/">im Ankündigungsblog von Google</a> und in der <a href="https://ai.google.dev/gemini-api/docs/image-generation">Entwicklerdokumentation</a>.</p>
+<p>Den vollständigen Funktionsumfang finden Sie in <a href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/">Googles Ankündigungsblog</a> und in der <a href="https://ai.google.dev/gemini-api/docs/image-generation">Entwicklerdokumentation</a>.</p>
 <h2 id="What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="common-anchor-header">Was bedeutet dieses Nano Banana-Update für den E-Commerce?<button data-href="#What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -89,7 +89,7 @@ origin: >-
 <ul>
 <li><strong>Niedrige Kosten</strong> - die Kosten pro Bild müssen in Kataloggröße funktionieren.</li>
 <li><strong>Anpassung an das Aussehen bewährter Bestseller</strong> - neue Bilder sollten dem visuellen Stil von Angeboten entsprechen, die bereits erfolgreich sind.</li>
-<li><strong>Vermeiden Sie Rechtsverletzungen</strong> - kopieren Sie nicht die Motive von Wettbewerbern oder verwenden Sie keine geschützten Inhalte wieder.</li>
+<li><strong>Vermeiden Sie Rechtsverletzungen</strong> - kopieren Sie keine Motive von Konkurrenten oder verwenden Sie keine geschützten Inhalte wieder.</li>
 </ul>
 <p>Darüber hinaus benötigen grenzüberschreitende Verkäufer:</p>
 <ul>
@@ -97,7 +97,7 @@ origin: >-
 <li><strong>Mehrsprachiges Text-Rendering</strong> - sauberer, akkurater In-Image-Text in mehreren Sprachen.</li>
 </ul>
 <p>Nano Banana 2 erfüllt nahezu alle Kriterien. In den folgenden Abschnitten wird aufgeschlüsselt, was die einzelnen Verbesserungen in der Praxis bedeuten: wo sie direkt ein Problem des E-Commerce lösen, wo sie nicht ausreichen und wie sich die tatsächlichen Kosten auswirken.</p>
-<h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">Senkung der Output-Erzeugungskosten um bis zu 60</h3><p>Bei einer Auflösung von 1K kostet Nano Banana 2 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,067 pro</mn><mi>BildversusPro′s0</mi></mrow><annotation encoding="application/x-tex">,067 pro Bild im Vergleich zu Pro</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,067 pro</span><span class="mord"><span class="mord mathnormal">BildversusPro</span></span></span></span></span><span class="pstrut" style="height:2.7em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">′s0</span></span></span></span>,134, was einer direkten Senkung um 50% entspricht. Aber der Preis pro Bild ist nur die Hälfte der Geschichte. Was früher die Budgets der Nutzer vernichtete, war die Nachbearbeitung. Jeder Marktplatz erzwingt seine eigenen Bildspezifikationen (1:1 für Amazon, 3:4 für Shopify-Storefronts, ultrawide für Bannerwerbung), und die Produktion jeder Variante bedeutete einen separaten Generierungsdurchlauf mit eigenen Fehlermöglichkeiten.</p>
+<h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">Bis zu 60 % geringere Output-Erzeugungskosten</h3><p>Bei einer Auflösung von 1K kostet Nano Banana 2 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,067 pro</mn><mi>BildversusPro′s0</mi></mrow><annotation encoding="application/x-tex">,067 pro Bild im Vergleich zu Pro</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,067 pro</span><span class="mord"><span class="mord mathnormal">BildversusPro</span></span></span></span></span><span class="pstrut" style="height:2.7em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">′s0</span></span></span></span>,134, was einer direkten Senkung um 50% entspricht. Aber der Preis pro Bild ist nur die Hälfte der Geschichte. Was früher die Budgets der Nutzer vernichtete, war die Nachbearbeitung. Jeder Marktplatz erzwingt seine eigenen Bildspezifikationen (1:1 für Amazon, 3:4 für Shopify-Storefronts, ultrawide für Bannerwerbung), und die Produktion jeder Variante bedeutete einen separaten Generierungsdurchlauf mit eigenen Fehlermöglichkeiten.</p>
 <p>Nano Banana 2 fasst diese zusätzlichen Durchgänge in einem zusammen.</p>
 <ul>
 <li><p><strong>Vier native Auflösungsebenen.</strong></p></li>
@@ -122,7 +122,7 @@ origin: >-
 <li>Zeichenähnlichkeit für bis zu <strong>5 Zeichen</strong></li>
 <li>Objekttreue für bis zu <strong>14 Objekte</strong></li>
 </ul>
-<p>In der Praxis haben wir mehrere Bestseller-Bilder aus Milvus abgerufen, sie als Referenzen übergeben und das generierte Bild hat deren Szenenkomposition, Beleuchtung, Posing und Requisitenplatzierung übernommen. Es war kein promptes Engineering erforderlich, um diese Muster von Hand zu rekonstruieren.</p>
+<p>In der Praxis haben wir mehrere Bestseller-Bilder von Milvus abgerufen, sie als Referenzen übergeben und das generierte Bild hat deren Szenenkomposition, Beleuchtung, Posing und Requisitenplatzierung übernommen. Es war kein promptes Engineering erforderlich, um diese Muster von Hand zu rekonstruieren.</p>
 <p>Frühere Modelle unterstützten nur ein oder zwei Referenzen, so dass die Benutzer gezwungen waren, einen einzigen Bestseller zur Nachahmung auszuwählen. Mit 14 Referenzplätzen konnten wir Merkmale aus mehreren Top-Listen mischen und das Modell einen zusammengesetzten Stil synthetisieren lassen. Dies ist die Fähigkeit, die die Retrieval-basierte Pipeline in der folgenden Anleitung möglich macht.</p>
 <p>
   <span class="img-wrapper">
@@ -131,7 +131,7 @@ origin: >-
   </span>
 </p>
 <h3 id="Produce-Premium-Commercial-Ready-Visuals-Without-Traditional-Production-Cost-or-Logistics" class="common-anchor-header">Produzieren Sie hochwertiges, werbefähiges Bildmaterial ohne herkömmliche Produktionskosten oder Logistik</h3><p>Um eine konsistente und zuverlässige Bilderzeugung zu gewährleisten, sollten Sie nicht alle Ihre Anforderungen in eine einzige Eingabeaufforderung packen. Ein zuverlässigerer Ansatz besteht darin, schrittweise vorzugehen: Generieren Sie zuerst den Hintergrund, dann das Modell separat und fügen Sie beide schließlich zusammen.</p>
-<p>Wir haben die Hintergrundgenerierung für alle drei Nano Banana-Modelle mit derselben Eingabeaufforderung getestet: eine 4:1-Ultrawide-Skyline von Shanghai an einem verregneten Tag, durch ein Fenster betrachtet, mit dem Oriental Pearl Tower im Blick. Mit dieser Aufforderung werden die Komposition, die architektonischen Details und der Fotorealismus in einem einzigen Durchgang getestet.</p>
+<p>Wir haben die Hintergrundgenerierung für alle drei Nano Banana-Modelle mit derselben Eingabeaufforderung getestet: eine 4:1-Ultrawide-Skyline von Shanghai an einem verregneten Tag, die durch ein Fenster betrachtet wird, wobei der Oriental Pearl Tower sichtbar ist. Mit dieser Aufforderung werden die Komposition, die architektonischen Details und der Fotorealismus in einem einzigen Durchgang getestet.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image2.png" alt="" class="doc-image" id="" />
