@@ -15,7 +15,7 @@ meta_title: |
 desc: OpenClaw (Clawdbot/Moltbot) 完整指南 - 如何運作、設定步驟、使用案例、Moltbook 及安全警告。
 origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 ---
-<p><a href="https://openclaw.ai/">OpenClaw</a>(以前稱為 Moltbot 和 Clawdbot) 是一個開放原始碼的 AI 代理程式，可在您的機器上執行，透過您已使用的訊息應用程式 (WhatsApp、Telegram、Slack、Signal 等) 連線，並代表您採取行動 - shell 指令、瀏覽器自動化、電子郵件、行事曆和檔案操作。心跳調度程式會以可設定的間隔喚醒它，因此無需提示即可執行。OpenClaw 在 2026 年 1 月底推出後，不到一個星期就獲得超過<a href="https://github.com/openclaw/openclaw">100,000 個</a>GitHub stars，成為 GitHub 歷史上成長最快的開放原始碼套件庫之一。</p>
+<p><a href="https://openclaw.ai/">OpenClaw</a>(以前稱為 Moltbot 和 Clawdbot) 是一個開放原始碼的 AI 代理程式，可在您的機器上執行，透過您已使用的訊息應用程式 (WhatsApp、Telegram、Slack、Signal 等) 連線，並代表您採取行動 - shell 指令、瀏覽器自動化、電子郵件、行事曆和檔案操作。心跳調度程式會以可設定的間隔喚醒它，因此無需提示即可執行。它在 2026 年 1 月底推出後，不到一個星期就獲得超過<a href="https://github.com/openclaw/openclaw"> <span class="img-wrapper"> <img translate="no" src="https://img.shields.io/github/stars/openclaw/openclaw?label=⭐%20GitHub%20Stars" alt="GitHub Stars" class="doc-image" id="github-stars" /><span>GitHub Stars</span>GitHub<span>stars</span> </span></a>，成為 GitHub 歷史上成長最快的開放原始碼套件庫之一。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_1_e9bc8881bc.png" alt="" class="doc-image" id="" />
@@ -45,7 +45,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <li><p><strong>多管道閘道</strong>- WhatsApp、Telegram、Discord 和 iMessage 只需單一閘道程序。使用擴充套件新增 Mattermost 及其他功能。</p></li>
 <li><p><strong>多代理路由</strong>- 每個代理、工作區或傳送者的獨立會話。</p></li>
 <li><p><strong>媒體支援</strong>- 傳送及接收影像、音訊及文件。</p></li>
-<li><p><strong>Web Control UI</strong>- 瀏覽器儀表板，用於聊天、配置、會話和節點。</p></li>
+<li><p><strong>Web Control UI</strong>- 聊天、配置、會話和節點的瀏覽器儀表板。</p></li>
 <li><p><strong>行動節點</strong>- 搭配支援 Canvas 的 iOS 與 Android 節點。</p></li>
 </ul>
 <h3 id="What-Makes-OpenClaw-Different" class="common-anchor-header">是什麼讓 OpenClaw 與眾不同？</h3><p><strong>OpenClaw 是自行託管的。</strong></p>
@@ -80,7 +80,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <li><p><strong>會話管理員</strong>- 解析寄件者身份和對話內容。DM 歸入一個主會話；群組聊天則有自己的會話。</p></li>
 <li><p><strong>佇列</strong>- 序列化每個會話的執行。如果有訊息在執行中途到達，它會保留、注入或收集訊息，以備後續使用。</p></li>
 <li><p><strong>代理程式執行時</strong>- 集合上下文 (AGENTS.md、SOUL.md、TOOLS.md、MEMORY.md、每日記錄、對話歷史)，然後執行代理程式循環：呼叫模型 → 執行工具呼叫 → 輸回結果 → 重複直到完成。</p></li>
-<li><p><strong>控制平面</strong>-<code translate="no">:18789</code> 上的 WebSocket API。CLI、macOS 應用程式、Web UI 和 iOS/Android 節點都在此連接。</p></li>
+<li><p><strong>控制平面</strong>- WebSocket API 在<code translate="no">:18789</code> 上。CLI、macOS 應用程式、Web UI 和 iOS/Android 節點都在此連接。</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -106,9 +106,9 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
   </span>
 </p>
 <p><strong>模型路由與故障移轉</strong></p>
-<p>OpenClaw 與模型無關。您可以在<code translate="no">openclaw.json</code> 中設定提供者，而閘道會依此進行路由 - 當提供者宕機時，閘道會使用 auth profile 輪流和使用指數回報的備援鏈。但是模型的選擇很重要，因為 OpenClaw 會組合大量的提示：系統指令、會話歷史、工具模式、技能和記憶體。這種情境負載是大多數部署使用前沿模型作為主要協調器的原因，而較便宜的模型則處理心跳和子代理任務。</p>
+<p>OpenClaw 與模型無關。您可以在<code translate="no">openclaw.json</code> 中設定提供者，而閘道會依此進行路由 - 當提供者宕機時，閘道會使用 auth profile 輪流和使用指數回報的備援鏈。但模型選擇很重要，因為 OpenClaw 會組合大量提示：系統指令、會話歷史、工具模式、技能和記憶體。這種情境負載是大多數部署使用前沿模型作為主要協調器的原因，而較便宜的模型則處理心跳和子代理任務。</p>
 <p><strong>雲端與本地的權衡</strong></p>
-<p>從 Gateway 的角度來看，雲端與本地模式看起來是完全相同的 - 它們都是 OpenAI 相容的端點。不同之處在於權衡。</p>
+<p>從 Gateway 的角度來看，雲端與本地模式看起來是一樣的 - 它們都是 OpenAI 相容的端點。不同之處在於權衡。</p>
 <p>雲端模型 (Anthropic、OpenAI、Google) 提供強大的推理能力、大型情境視窗以及可靠的工具使用。它們是主要協調器的預設選擇。成本隨使用量調整：輕度使用者花費 5-20 美元/月，頻繁心跳和大量提示的主動式代理通常花費 50-150 美元/月，未經優化的強大使用者則報稱帳單高達數千美元。</p>
 <p>透過 Ollama 或其他與 OpenAI 相容的伺服器建立的本機模型，可以省去每個代幣的成本，但需要硬體，而 OpenClaw 至少需要 64K 的上下文代幣，這縮窄了可行的選擇範圍。在 14B 的參數下，模型可以處理簡單的自動化，但對於多步驟的代理任務而言，就顯得微不足道；社群經驗認為可靠的門檻在 32B 以上，至少需要 24GB 的 VRAM。您在推理或延伸情境上無法與前沿雲端模型相提並論，但您可以獲得完整的資料位置性與可預測的成本。</p>
 <p><strong>此架構的優點</strong></p>
@@ -120,7 +120,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
     <span></span>
   </span>
 </p>
-<p>官方文件列出的最低要求是 2GB 記憶體和 2 個 CPU 核心來進行基本聊天，如果您想要瀏覽器自動化，則需要 4GB。5 美元/月的 VPS 就可以處理得很好。您也可以使用 Pulumi 部署在 AWS 或 Hetzner 上，在小型 VPS 上以 Docker 執行，或使用塵封的舊筆記型電腦。Mac Mini 趨勢的驅動力來自社會證明，而非技術需求。</p>
+<p>官方文件列出的最低要求是 2GB RAM 和 2 個 CPU 核心來進行基本聊天，如果您想要瀏覽器自動化，則需要 4GB。5 美元/月的 VPS 就可以處理得很好。您也可以使用 Pulumi 部署在 AWS 或 Hetzner 上，在小型 VPS 上以 Docker 執行，或使用塵封的舊筆記型電腦。Mac Mini 趨勢的驅動力來自社會證明，而非技術需求。</p>
 <p><strong>那麼人們為什麼要購買專用硬體？兩個原因：隔離和持久性。</strong>當您給予自主代理程式 shell 存取權限時，您需要的是一台在發生問題時可以實體拔除的機器。由於 OpenClaw 是以心跳的方式執行 - 在可設定的排程中喚醒，以代表您行事 - 因此專用裝置代表它永遠開啟，永遠準備就緒。這樣的優點在於，OpenClaw 可在電腦上實體隔離，讓您無須拔除插頭，也無須仰賴雲端服務的可用性，就能隨時運作。</p>
 <h2 id="How-to-Install-OpenClaw-and-Quickly-Get-Started" class="common-anchor-header">如何安裝 OpenClaw 並快速上手<button data-href="#How-to-Install-OpenClaw-and-Quickly-Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -195,7 +195,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <tbody>
 <tr><td>開放原始碼</td><td>是。核心閘道採用 MIT 授權；</td><td>否。</td><td>否。</td><td>開放原始碼</td><td>No.</td></tr>
 <tr><td>介面</td><td>訊息應用程式 (WhatsApp、Telegram、Slack、Discord、Signal、iMessage 等)</td><td>終端機、IDE 整合、Web 與行動應用程式</td><td>終端 CLI、IDE 整合、Codex Web UI</td><td>ChatGPT 網頁和桌面應用程式（包括 macOS 代理模式）</td><td>網頁儀表板、瀏覽器操作員、Slack 與應用程式整合</td></tr>
-<tr><td>主要焦點</td><td>跨工具與服務的個人 + 開發人員自動化</td><td>軟體開發與 DevOps 工作流程</td><td>軟體開發與程式碼編輯</td><td>一般用途的網路任務、研究和生產力工作流程</td><td>商業使用者的研究、內容和網路自動化</td></tr>
+<tr><td>主要焦點</td><td>跨工具與服務的個人 + 開發人員自動化</td><td>軟體開發與 DevOps 工作流程</td><td>軟體開發與程式碼編輯</td><td>一般用途的網路任務、研究和生產力工作流程</td><td>企業使用者的研究、內容和網路自動化</td></tr>
 <tr><td>會話記憶體</td><td>磁碟上以檔案為基礎的記憶體 (Markdown + 記錄)；可選的外掛程式可增加語意/長期記憶體</td><td>具有歷史記錄的每個專案階段，加上帳戶上可選的 Claude 記憶體</td><td>CLI / 編輯器中的每工作階段狀態；無內建長期使用者記憶體</td><td>由 ChatGPT 帳號層級記憶體功能 (如果啟用) 支援的每個任務「代理程式執行</td><td>跨執行的雲端、帳號層級記憶體，針對重複性工作流程進行調整</td></tr>
 <tr><td>部署</td><td>在您的電腦或 VPS 上永遠執行閘道/daemon；呼叫 LLM 供應商</td><td>在開發人員的電腦上以 CLI/IDE 外掛程式的方式執行；所有的模型呼叫都會轉至 Anthropic 的 API</td><td>CLI 在本機執行；模型透過 OpenAI 的 API 或 Codex Web 執行</td><td>完全由 OpenAI 主控；代理模式會從 ChatGPT 用戶端啟動虛擬工作區</td><td>完全由 Manus 主持；代理在 Manus 的雲端環境中執行</td></tr>
 <tr><td>目標受眾</td><td>能夠自如運行自己基礎架構的開發人員和強大使用者</td><td>在終端機和 IDE 中工作的開發人員和 DevOps 工程師</td><td>希望在終端/IDE 中使用編碼代理的開發人員</td><td>使用 ChatGPT 執行終端使用者任務的知識工作者與團隊</td><td>自動執行以網頁為中心的工作流程的商業使用者與團隊</td></tr>
@@ -254,7 +254,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>上面的例子顯示 OpenClaw 為個別使用者自動執行任務。但當成千上萬的代理相互互動時會發生什麼？</p>
+    </button></h2><p>上述範例顯示 OpenClaw 為個別使用者自動執行任務。但當成千上萬的這些代理相互互動時，會發生什麼呢？</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_7_2dd1b06c04.png" alt="" class="doc-image" id="" />
@@ -294,12 +294,12 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <ul>
 <li><p>在隔離的環境中執行 - 專用的虛擬機器或容器，而非您的日常驅動程式</p></li>
 <li><p>在安裝之前，先叉開並稽核每項技能。閱讀原始碼。全部。</p></li>
-<li><p>在提供者層級設定硬性 API 開銷限制，而非僅在代理程式設定中</p></li>
+<li><p>在提供者層級設定硬性 API 支出限制，而非僅在代理程式配置中設定限制</p></li>
 <li><p>將所有不可逆的動作納入人為核准的範圍 - 付款、刪除、傳送電子郵件、任何外部動作</p></li>
 <li><p>Pin 到 2026.1.29 或更新版本，並跟上安全修補程式</p></li>
 </ul>
 <p>除非您確實知道自己在網路設定上做了什麼，否則不要將它暴露在公共網路上。</p>
-<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -314,8 +314,8 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenClaw 在不到兩週的時間內就突破了 175,000 GitHub stars，成為 GitHub 歷史上成長最快的開源套件之一。它的採用是真實的，而且其架構也值得關注。</p>
-<p>從技術角度來看，OpenClaw 具備大多數 AI 代理所沒有的三項特點：完全開放原始碼 (MIT)、本機優先 (記憶體以 Markdown 檔案形式儲存在您的機器上)、自主排程 (心跳守护程式，無須提示即可執行)。它整合了 Slack、Telegram 和 WhatsApp 等訊息平台，並透過簡單的 SKILL.md 系統支援社群建立的技能。這樣的組合讓它非常適合建立隨時待命的助理：可全天候回答問題的 Slack 機器人、可在您睡覺時分流電子郵件的收件匣監控程式，或是可在您自己的硬體上執行而不會被廠商鎖定的自動化工作流程。</p>
+    </button></h2><p>OpenClaw 在不到兩週的時間內就跨越了<a href="https://github.com/openclaw/openclaw"> <span class="img-wrapper"> <img translate="no" src="https://img.shields.io/github/stars/openclaw/openclaw?label=⭐%20GitHub%20Stars" alt="GitHub Stars" class="doc-image" id="github-stars" /><span>GitHub Stars</span>GitHub<span>stars</span> </span></a>，成為 GitHub 歷史上成長最快的開放原始碼套件之一。它的採用是真實的，而且其下的架構也值得關注。</p>
+<p>從技術角度來看，OpenClaw 具備大多數 AI 代理所沒有的三項特點：完全開放原始碼 (MIT)、本機優先 (記憶體以 Markdown 檔案形式儲存在您的機器上)，以及自主排程 (心跳守护程式，不需提示即可行動)。它整合了 Slack、Telegram 和 WhatsApp 等訊息平台，並透過簡單的 SKILL.md 系統支援社群建立的技能。這樣的組合讓它非常適合建立隨時待命的助理：可全天候回答問題的 Slack 機器人、可在您睡覺時分流電子郵件的收件匣監控程式，或是可在您自己的硬體上執行而不會被廠商鎖定的自動化工作流程。</p>
 <p>儘管如此，OpenClaw 強大的架構也讓它在不小心部署時風險重重。有幾點需要注意：</p>
 <ul>
 <li><p><strong>隔離運行。</strong>使用專用裝置或虛擬機器，而非您的主機。如果出了問題，您需要一個可以實體觸及的關閉開關。</p></li>
@@ -342,6 +342,6 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <li><p>使用<a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack 設定 OpenClaw 的逐步指南</a>- 使用 OpenClaw 在您的 Slack 工作區建立由 Milvus 驅動的 AI 支援機器人</p></li>
 <li><p><a href="https://milvus.io/blog/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md">LangChain 1.0 與 Milvus：建立具有長期記憶的生產就緒 AI 代理</a>- 如何使用 Milvus 賦予您的代理持久的語義記憶</p></li>
 <li><p><a href="https://milvus.io/blog/stop-use-outdated-rag-deepsearcher-agentic-rag-approaches-changes-everything.md">停止建立 Vanilla RAG：使用 DeepSearcher 接納代理式 RAG</a>- 代理式 RAG 優於傳統檢索的原因，以及實作的開放原始碼實作</p></li>
-<li><p><a href="https://milvus.io/docs/agentic_rag_with_milvus_and_langgraph.md">使用 Milvus 和 LangGraph 的代理 RAG</a>- 教學：建立一個代理，以決定何時檢索、評級文件相關性，以及重寫查詢。</p></li>
+<li><p><a href="https://milvus.io/docs/agentic_rag_with_milvus_and_langgraph.md">使用 Milvus 和 LangGraph 的代理 RAG</a>- 教學：建立一個代理，以決定何時進行檢索、評級文件相關性，以及重寫查詢內容</p></li>
 <li><p><a href="https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md">使用 Spring Boot 與 Milvus 建置生產就緒的 AI 助理</a>-<a href="https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md">使用</a>語意搜尋與會話記憶建置企業級 AI 助理的全架構指南</p></li>
 </ul>

@@ -15,14 +15,14 @@ meta_title: |
 desc: 'OpenClaw(클로봇/몰트봇)에 대한 전체 가이드 - 작동 방식, 설정 안내, 사용 사례, 몰트북 및 보안 경고.'
 origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 ---
-<p><a href="https://openclaw.ai/">OpenClaw</a> (이전의 Moltbot 및 Clawdbot)는 컴퓨터에서 실행되는 오픈 소스 AI 에이전트로, 이미 사용 중인 메시징 앱(WhatsApp, Telegram, Slack, Signal 등)을 통해 연결하여 셸 명령, 브라우저 자동화, 이메일, 일정 및 파일 작업 등 사용자를 대신하여 작업을 수행합니다. 하트비트 스케줄러가 설정 가능한 간격으로 깨어나서 메시지 없이 실행할 수 있습니다. 2026년 1월 말 출시 후 일주일 만에 <a href="https://github.com/openclaw/openclaw">100,000개</a> 이상의 GitHub 별을 획득하여 GitHub 역사상 가장 빠르게 성장하는 오픈소스 리포지토리 중 하나가 되었습니다.</p>
+<p><a href="https://openclaw.ai/">OpenClaw</a> (이전의 Moltbot 및 Clawdbot)는 컴퓨터에서 실행되는 오픈 소스 AI 에이전트로, 이미 사용 중인 메시징 앱(WhatsApp, Telegram, Slack, Signal 등)을 통해 연결하여 셸 명령, 브라우저 자동화, 이메일, 일정 및 파일 작업 등 사용자를 대신하여 작업을 수행합니다. 하트비트 스케줄러는 구성 가능한 간격으로 깨우므로 메시지 없이 실행할 수 있습니다. 2026년 1월 말 출시 후 1주일 만에 <a href="https://github.com/openclaw/openclaw"> <span class="img-wrapper"> <img translate="no" src="https://img.shields.io/github/stars/openclaw/openclaw?label=⭐%20GitHub%20Stars" alt="GitHub Stars" class="doc-image" id="github-stars" /><span>GitHub 스타</span> </span></a> 를 획득하여 GitHub 역사상 가장 빠르게 성장하는 오픈소스 리포지토리 중 하나가 되었습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/OC_1_e9bc8881bc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>OpenClaw를 특별하게 만드는 것은 그 조합입니다: MIT 라이선스, 오픈 소스, 로컬 우선(디스크에 마크다운 파일로 저장된 메모리와 데이터), 휴대용 스킬 포맷을 통한 커뮤니티 확장성. 한 개발자의 에이전트는 잠자는 동안 이메일을 통해 4,200달러의 자동차 구매 할인을 협상했고, 다른 개발자는 보험 거부에 대한 법적 반박을 요청하지 않고 제기했으며, 다른 사용자는 백만 명이 넘는 AI 에이전트가 사람이 보는 가운데 자율적으로 상호작용하는 소셜 네트워크인 <a href="https://moltbook.com/">몰트북을</a> 구축하는 등 흥미로운 AI 실험이 진행되고 있는 곳이기도 하죠.</p>
+<p>OpenClaw를 특별하게 만드는 것은 그 조합입니다: MIT 라이선스, 오픈 소스, 로컬 우선(디스크에 마크다운 파일로 저장된 메모리와 데이터), 휴대용 스킬 포맷을 통한 커뮤니티 확장성. 한 개발자의 에이전트는 잠자는 동안 이메일을 통해 4,200달러의 자동차 구매 할인을 협상했고, 다른 개발자는 보험 거부에 대한 법적 반박을 요청하지 않고 제기했으며, 다른 사용자는 백만 명이 넘는 AI 에이전트가 사람이 보는 가운데 자율적으로 상호작용하는 소셜 네트워크인 <a href="https://moltbook.com/">Moltbook을</a> 구축하는 등 에이전트 AI의 흥미로운 실험이 진행되고 있는 곳이기도 하죠.</p>
 <p>이 가이드에서는 OpenClaw의 정의, 작동 방식, 실생활에서 사용할 수 있는 기능, 몰트북과의 관계, 관련 보안 위험 등 사용자가 알아야 할 모든 것을 자세히 설명합니다.</p>
 <h2 id="What-is-OpenClaw" class="common-anchor-header">OpenClaw란 무엇인가요?<button data-href="#What-is-OpenClaw" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -56,7 +56,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <p><strong>OpenClaw는 오픈 소스입니다.</strong></p>
 <p>핵심 게이트웨이는 MIT 라이선스를 받았습니다. 완전히 읽을 수 있고, 포크가 가능하며, 감사할 수 있습니다. 이는 맥락에서 중요합니다: Anthropic은 Claude Code의 클라이언트의 난독화를 제거한 개발자를 상대로 DMCA를 제기했고, OpenAI의 Codex CLI는 Apache 2.0이지만 웹 UI와 모델은 폐쇄적이며, Manus는 완전히 폐쇄적입니다.</p>
 <p>에코시스템은 개방성을 반영합니다. <a href="https://github.com/openclaw/openclaw">수백 명의 기여자가</a> 스킬(YAML 프론트매터와 자연어 지침이 포함된 모듈식 <code translate="no">SKILL.md</code> 파일)을 구축하여 ClawHub(에이전트가 자동으로 검색할 수 있는 스킬 레지스트리), 커뮤니티 리포지토리 또는 직접 URL을 통해 공유하고 있습니다. 이 형식은 이식성이 뛰어나며 클로드 코드 및 커서 규칙과 호환됩니다. 스킬이 존재하지 않는 경우에는 상담원에게 작업을 설명하여 초안을 작성하도록 할 수 있습니다.</p>
-<p>로컬 소유권, 커뮤니티 주도의 진화, 자율적인 운영이 결합된 이 점이 개발자들이 열광하는 이유입니다. AI 툴을 완전히 제어하고자 하는 개발자에게는 이 점이 중요합니다.</p>
+<p>로컬 소유권, 커뮤니티 주도의 진화, 자율적인 운영의 조합은 개발자들이 열광하는 이유입니다. AI 툴을 완전히 제어하고자 하는 개발자에게는 이 점이 중요합니다.</p>
 <h2 id="How-OpenClaw-Works-Under-the-Hood" class="common-anchor-header">OpenClaw의 내부 작동 방식<button data-href="#How-OpenClaw-Works-Under-the-Hood" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -199,7 +199,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
 <tr><td>세션 메모리</td><td>디스크의 파일 기반 메모리(마크다운 + 로그), 시맨틱/장기 메모리 추가 플러그인(옵션)</td><td>기록이 있는 프로젝트별 세션 및 계정의 선택적 클로드 메모리</td><td>CLI/편집기의 세션별 상태, 내장된 장기 사용자 메모리 없음</td><td>ChatGPT의 계정 수준 메모리 기능으로 지원되는 작업별 "에이전트 실행"(활성화된 경우)</td><td>실행 전반에 걸친 클라우드 측 계정 범위 메모리, 반복 워크플로우에 맞게 조정됨</td></tr>
 <tr><td>배포</td><td>머신 또는 VPS에서 상시 실행되는 게이트웨이/데몬, LLM 제공업체에 호출</td><td>개발자의 머신에서 CLI/IDE 플러그인으로 실행되며, 모든 모델 호출은 Anthropic의 API로 이동합니다.</td><td>CLI는 로컬에서 실행되며, 모델은 OpenAI의 API 또는 코덱스 웹을 통해 실행됩니다.</td><td>OpenAI에서 완전히 호스팅; 에이전트 모드는 ChatGPT 클라이언트에서 가상 작업 공간을 회전시킵니다.</td><td>마누스가 완전히 호스팅하며, 에이전트는 마누스의 클라우드 환경에서 실행됩니다.</td></tr>
 <tr><td>대상 고객</td><td>자체 인프라 운영에 익숙한 개발자 및 고급 사용자</td><td>터미널 및 IDE에서 작업하는 개발자 및 DevOps 엔지니어</td><td>터미널/IDE에서 코딩 에이전트를 원하는 개발자</td><td>최종 사용자 작업에 ChatGPT를 사용하는 지식 근로자 및 팀</td><td>웹 중심 워크플로우를 자동화하는 비즈니스 사용자 및 팀</td></tr>
-<tr><td>비용</td><td>무료 + 사용량에 따른 API 호출</td><td>$20-200/월</td><td>$20-200/월</td><td>$20-200/월</td><td>39-199/월(크레딧)</td></tr>
+<tr><td>비용</td><td>무료 + 사용량에 따른 API 호출</td><td>$20-200/월</td><td>$20-200/월</td><td>20-200/월</td><td>39-199/월(크레딧)</td></tr>
 </tbody>
 </table>
 <h2 id="Real-World-Applications-of-OpenClaw" class="common-anchor-header">OpenClaw의 실제 적용 사례<button data-href="#Real-World-Applications-of-OpenClaw" class="anchor-icon" translate="no">
@@ -314,7 +314,7 @@ origin: 'https://milvus.io/blog/openclaw-clawdbot-ai-agent-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenClaw는 2주 만에 175,000개의 GitHub 스타를 돌파하여 GitHub 역사상 가장 빠르게 성장하는 오픈소스 리포지토리 중 하나가 되었습니다. 실제 채택이 이루어지고 있으며 그 밑바탕에 깔린 아키텍처에 주목할 필요가 있습니다.</p>
+    </button></h2><p>OpenClaw는 2주 만에 <a href="https://github.com/openclaw/openclaw"> <span class="img-wrapper"> <img translate="no" src="https://img.shields.io/github/stars/openclaw/openclaw?label=⭐%20GitHub%20Stars" alt="GitHub Stars" class="doc-image" id="github-stars" /><span>GitHub 스타</span> </span></a> 를 돌파하여 GitHub 역사상 가장 빠르게 성장하는 오픈소스 리포지토리 중 하나가 되었습니다. 실제 채택이 이루어지고 있으며, 그 밑바탕에 깔린 아키텍처도 주목할 만합니다.</p>
 <p>기술적 관점에서 볼 때, OpenClaw는 완전 오픈 소스(MIT), 로컬 우선(머신에 마크다운 파일로 저장된 메모리), 자율 예약(프롬프트 없이 작동하는 하트비트 데몬) 등 대부분의 AI 에이전트가 갖지 못한 세 가지를 모두 갖추고 있습니다. Slack, Telegram, WhatsApp과 같은 메시징 플랫폼과 바로 통합되며, 간단한 SKILL.md 시스템을 통해 커뮤니티에서 구축한 스킬을 지원합니다. 이러한 조합은 상시 대기 어시스턴트를 구축하는 데 매우 적합합니다: 연중무휴 24시간 질문에 답변하는 Slack 봇, 잠자는 동안 이메일을 분류하는 받은 편지함 모니터, 공급업체에 종속되지 않고 자체 하드웨어에서 실행되는 자동화 워크플로 등을 구축하는 데 적합합니다.</p>
 <p>하지만 OpenClaw를 강력하게 만드는 아키텍처는 부주의하게 배포할 경우 위험할 수도 있습니다. 몇 가지 유의해야 할 사항이 있습니다:</p>
 <ul>
