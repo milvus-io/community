@@ -3,7 +3,7 @@ id: how-to-build-productionready-ai-agents-with-deep-agents-and-milvus.md
 title: >
  How to Build Production-Ready AI Agents with Deep Agents and Milvus
 author: Min Yin
-date: 2026-03-04
+date: 2026-03-02
 cover: assets.zilliz.com/cover_deepagents_b45edd5f94.png
 tag: Engineering
 recommend: false
