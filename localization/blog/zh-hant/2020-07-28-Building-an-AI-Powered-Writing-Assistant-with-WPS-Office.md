@@ -1,50 +1,54 @@
 ---
 id: Building-an-AI-Powered-Writing-Assistant-with-WPS-Office.md
-title: 為 WPS Office 打造人工智能寫作助理
+title: Building an AI-Powered Writing Assistant for WPS Office
 author: milvus
 date: 2020-07-28T03:35:40.105Z
-desc: 了解金山如何利用開源相似性搜尋引擎 Milvus，為 WPS Office 的 AI 寫作助理建立推薦引擎。
+desc: >-
+  Learn how Kingsoft leveraged Milvus, an open-source similarity search engine,
+  to build a recommendation engine for WPS Office’s AI-powered writing
+  assistant.
 cover: assets.zilliz.com/wps_thumbnail_6cb7876963.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office
 ---
-<custom-h1>為WPS Office打造人工智能寫作助手</custom-h1><p>WPS Office 是金山軟件開發的生產力工具，全球用戶超過 1.5 億。該公司的人工智能（AI）部門採用語意識別和文本聚類等語義匹配算法，從零開始打造了一款智能寫作助手。該工具同時以 Web 應用程式和<a href="https://walkthechat.com/wechat-mini-programs-simple-introduction/">微信小程式的</a>形式存在，只需輸入標題並選擇多達五個關鍵字，即可幫助用戶快速創建提綱、個別段落和整個文件。</p>
-<p>寫作助手的推薦引擎使用 Milvus（一個開放源代碼的相似性搜尋引擎）為其核心向量處理模組提供動力。以下我們將探討 WPS Offices 智慧型寫作助理的建置過程，包括如何從非結構化資料中萃取特徵，以及 Milvus 在儲存資料和強化工具推薦引擎中所扮演的角色。</p>
-<p>跳至：</p>
+<custom-h1>Building an AI-Powered Writing Assistant for WPS Office</custom-h1><p>WPS Office is a productivity tool developed by Kingsoft with over 150M users worldwide. The company’s artificial intelligence (AI) department built a smart writing assistant from scratch using semantic matching algorithms such as intent recognition and text clustering. The tool exists both as a web application and <a href="https://walkthechat.com/wechat-mini-programs-simple-introduction/">WeChat mini program</a> that helps users quickly create outlines, individual paragraphs, and entire documents by simply inputting a title and selecting up to five keywords.</p>
+<p>The writing assistant’s recommendation engine uses Milvus, an open-source similarity search engine, to power its core vector processing module. Below we’ll explore the process for building WPS Offices’ smart writing assistant, including how features are extracted from unstructured data as well as the role Milvus plays in storing data and powering the tool’s recommendation engine.</p>
+<p>Jump to:</p>
 <ul>
-<li><a href="#building-an-ai-powered-writing-assistant-for-wps-office">為 WPS Office 打造人工智能驅動的寫作助理</a><ul>
-<li><a href="#making-sense-of-unstructured-textual-data">理順非結構化文字資料</a></li>
-<li><a href="#using-the-tfidf-model-to-maximize-feature-extraction">使用 TFIDF 模型最大化特徵萃取</a></li>
-<li><a href="#extracting-features-with-the-bi-directional-lstm-cnns-crf-deep-learning-model">使用雙向 LSTM-CNNs-CRF 深度學習模型萃取特徵</a></li>
-<li><a href="#creating-sentence-embeddings-using-infersent">使用 Infersent 建立句子內嵌</a></li>
-<li><a href="#storing-and-querying-vectors-with-milvus">使用 Milvus 儲存和查詢向量</a></li>
-<li><a href="#ai-isnt-replacing-writers-its-helping-them-write">AI 不是取代作家，而是幫助他們寫作</a></li>
+<li><a href="#building-an-ai-powered-writing-assistant-for-wps-office">Building an AI-Powered Writing Assistant for WPS Office</a>
+<ul>
+<li><a href="#making-sense-of-unstructured-textual-data">Making sense of unstructured textual data</a></li>
+<li><a href="#using-the-tfidf-model-to-maximize-feature-extraction">Using the TFIDF model to maximize feature extraction</a></li>
+<li><a href="#extracting-features-with-the-bi-directional-lstm-cnns-crf-deep-learning-model">Extracting features with the bi-directional LSTM-CNNs-CRF deep learning model</a></li>
+<li><a href="#creating-sentence-embeddings-using-infersent">Creating sentence embeddings using Infersent</a></li>
+<li><a href="#storing-and-querying-vectors-with-milvus">Storing and querying vectors with Milvus</a></li>
+<li><a href="#ai-isnt-replacing-writers-its-helping-them-write">AI isn’t replacing writers, it’s helping them write</a></li>
 </ul></li>
 </ul>
-<h3 id="Making-sense-of-unstructured-textual-data" class="common-anchor-header">理解非結構化的文字資料</h3><p>與任何值得解決的現代問題一樣，建立 WPS 寫作助理也是從混亂的資料開始。數以千萬計的密集文字文件，準確一點來說，必須從中萃取有意義的特徵。為了瞭解這個問題的複雜性，請考慮來自不同新聞媒體的兩位記者如何報導相同的主題。</p>
-<p>雖然兩位記者都會遵守規範句子結構的規則、原則和程序，但他們會選擇不同的字，創造長短不一的句子，並使用自己的文章結構來描述類似（或可能不同）的故事。與具有固定維數的結構化資料集不同，由於支配文字的語法非常容易變通，因此文字本質上缺乏結構。為了尋找意義，必須從非結構化的文件語料庫中萃取機器可讀的特徵。但首先，資料必須經過清理。</p>
-<p>清理文字資料的方法有很多，本文將不會深入介紹。儘管如此，這是處理資料前的重要步驟，可包括移除標籤、移除重音字元、擴大縮寫、移除特殊字元、移除停止字等。有關預先處理和清理文字資料方法的詳細說明，請參閱<a href="https://towardsdatascience.com/understanding-feature-engineering-part-3-traditional-methods-for-text-data-f6f7d70acd41">此處</a>。</p>
-<h3 id="Using-the-TFIDF-model-to-maximize-feature-extraction" class="common-anchor-header">使用 TFIDF 模型最大化特徵萃取</h3><p>為了開始理解非結構化的文字資料，我們將詞彙頻率-反向文件頻率 (TFIDF) 模型應用於 WPS 寫作助理所擷取的語料庫。此模型結合詞彙頻率和反向文件頻率這兩種指標，為文件中的每個詞彙賦予 TFIDF 值。詞彙頻率 (TF) 代表詞彙在文件中的原始數量除以文件中的詞彙總數，而反向文件頻率 (IDF) 是指語料庫中的文件數量除以詞彙出現的文件數量。</p>
-<p>TF 和 IDF 的乘積提供了一個詞彙在文件中出現頻率乘以該詞彙在語料庫中獨特程度的量度。歸根結柢，TFIDF 值是衡量一個詞彙在一個文件集合中與文件的相關程度。詞彙會依 TFIDF 值排序，在使用深度學習從詞料庫萃取特徵時，可以降低低值詞彙 (即常見詞) 的權重。</p>
-<h3 id="Extracting-features-with-the-bi-directional-LSTM-CNNs-CRF-deep-learning-model" class="common-anchor-header">使用雙向 LSTM-CNNs-CRF 深度學習模型擷取特徵</h3><p>使用雙向長短期記憶體 (BLSTM)、卷繞神經網路 (CNN) 和條件隨機場 (CRF) 的組合，可以從語料擷取單字和字元層級的表徵。用於建立 WPS Office 書寫助手的<a href="https://arxiv.org/pdf/1603.01354.pdf">BLSTM-CNNs-CRF 模型</a>的工作原理如下：</p>
+<h3 id="Making-sense-of-unstructured-textual-data" class="common-anchor-header">Making sense of unstructured textual data</h3><p>Much like any modern problem worth solving, building the WPS writing assistant begins with messy data. Tens of millions of dense text documents from which meaningful features must be extracted, to be a bit more precise. To understand the complexity of this problem consider how two journalists from different news outlets might report on the same topic.</p>
+<p>While both will adhere to the rules, principles, and processes that govern sentence structure, they will make different word choices, create sentences of varying length, and use their own article structures to tell similar (or perhaps dissimilar) stories. Unlike structured datasets with a fixed number of dimensions, bodies of text inherently lack structure because the syntax that governs them is so malleable. In order to find meaning, machine readable features must be extracted from an unstructured corpus of documents. But first, the data must be cleaned.</p>
+<p>There are a variety of ways to clean textual data, none of which this article will cover in depth. Nonetheless, this is an important step that preempts processing the data, and can include removing tags, removing accented characters, expanding contractions, removing special characters, removing stopwords, and more. A detailed explanation of methods for pre-processing and cleaning text data can be found <a href="https://towardsdatascience.com/understanding-feature-engineering-part-3-traditional-methods-for-text-data-f6f7d70acd41">here</a>.</p>
+<h3 id="Using-the-TFIDF-model-to-maximize-feature-extraction" class="common-anchor-header">Using the TFIDF model to maximize feature extraction</h3><p>To begin making sense of unstructured textual data, the term frequency–inverse document frequency (TFIDF) model was applied to the corpus the WPS writing assistant pulls from. This model uses a combination of two metrics, term frequency and inverse document frequency, to give each word within a document a TFIDF value. Term frequency (TF) represents the raw count of a term in a document divided by the total number of terms in the document, while inverse document frequency (IDF) is the number of documents in a corpus divided by the number of documents in which a term appears.</p>
+<p>The product of TF and IDF provides a measure of how frequent a term appears in a document multiplied by how unique the word is in the corpus. Ultimately, TFIDF values are a measure of how relevant a word is to a document within a collection of documents. Terms are sorted by TFIDF values, and those with low values (i.e. common words) can be given less weight when using deep learning to extract features from the corpus.</p>
+<h3 id="Extracting-features-with-the-bi-directional-LSTM-CNNs-CRF-deep-learning-model" class="common-anchor-header">Extracting features with the bi-directional LSTM-CNNs-CRF deep learning model</h3><p>Using a combination of bi-directional long short-term memory (BLSTM), convolutional neural networks (CNN), and conditional random fields (CRF) both word- and character-level representations can be extracted from the corpus. The <a href="https://arxiv.org/pdf/1603.01354.pdf">BLSTM-CNNs-CRF model</a> used to build the WPS Office writing assistant works as follows:</p>
 <ol>
-<li><strong>CNN：</strong>字元內嵌被用作 CNN 的輸入，然後擷取語義相關的字詞結構 (即前綴或後綴)，並將其編碼為字元層級的表示向量。</li>
-<li><strong>BLSTM：</strong>字元層級向量與單字嵌入向量串接，然後輸入 BLSTM 網路。每個序列會向前和向後呈現兩個獨立的隱藏狀態，以擷取過去和未來的資訊。</li>
-<li><strong>CRF：</strong>BLSTM 的輸出向量會送入 CRF 層，以共同解碼最佳標籤序列。</li>
+<li><strong>CNN:</strong> Character embeddings are used as inputs to the CNN, then semantically relevant word structures (i.e. the prefix or suffix) are extracted and encoded into character-level representation vectors.</li>
+<li><strong>BLSTM:</strong> Character-level vectors are concatenated with word embedding vectors then fed into the BLSTM network. Each sequence is presented forwards and backwards to two separate hidden states to capture past and future information.</li>
+<li><strong>CRF:</strong> The output vectors from the BLSTM are fed to the CRF layer to jointly decode the best label sequence.</li>
 </ol>
-<p>神經網路現在能夠從非結構化文字中抽取命名實體並將其分類。此過程稱為<a href="https://en.wikipedia.org/wiki/Named-entity_recognition">命名實體識別 (NER)</a>，涉及到人名、機構、地理位置等類別的定位與分類。這些實體在分類和記憶資料時扮演重要的角色。從這裡可以從語料庫中萃取出關鍵句子、段落和摘要。</p>
-<h3 id="Creating-sentence-embeddings-using-Infersent" class="common-anchor-header">使用 Infersent 建立句子內嵌</h3><p><a href="https://github.com/facebookresearch/InferSent">Infersent</a> 是 Facebook 設計的監督句子嵌入方法，可將完整句子嵌入向量空間，用來建立向量，並輸入 Milvus 資料庫。Infersent 是使用斯坦福自然語言推理 (SNLI) 語料庫進行訓練，其中包含 570k 對由人類撰寫和標示的句子。有關 Infersent 如何運作的其他資訊，請參閱<a href="https://medium.com/analytics-vidhya/sentence-embeddings-facebooks-infersent-6ac4a9fc2001">此處</a>。</p>
-<h3 id="Storing-and-querying-vectors-with-Milvus" class="common-anchor-header">使用 Milvus 儲存和查詢向量</h3><p><a href="https://www.milvus.io/">Milvus</a>是一個開放原始碼的相似性搜尋引擎，支援以兆位元組的規模新增、刪除、更新嵌入向量，以及近乎即時的搜尋。為了改善查詢效能，Milvus 允許為每個向量欄位指定索引類型。WPS Office 智慧型助理使用 IVF_FLAT 索引，這是最基本的反向檔案 (IVF) 索引類型，其中「flat」表示向量的儲存不經壓縮或量化。聚類是以 IndexFlat2 為基礎，使用精確搜尋 L2 距離。</p>
-<p>雖然 IVF_FLAT 的查詢召回率為 100%，但由於沒有壓縮，因此查詢速度相對較慢。Milvus 的<a href="https://milvus.io/docs/manage-partitions.md">分割功能</a>用來根據預先定義的規則，將資料分割成多個部分的實體儲存空間，使查詢速度更快、更精準。當向量加入 Milvus 時，標籤會指定資料應該加入哪個分割區。向量資料的查詢使用標籤來指定查詢應該在哪個分割區執行。資料可在每個分割區內再細分為不同的區段，以進一步提升速度。</p>
-<p>智慧寫作助理也使用 Kubernetes 集群，讓應用程式容器可以在多台機器和環境中執行，並使用 MySQL 進行元資料管理。</p>
-<h3 id="AI-isn’t-replacing-writers-it’s-helping-them-write" class="common-anchor-header">AI 不是取代寫手，而是幫助他們寫作</h3><p>金山WPS Office的寫作助手依賴Milvus來管理和查詢超過200萬個文件的資料庫。該系統高度靈活，能夠在萬億規模的資料集上執行近乎實時的搜索。查詢平均只需 0.2 秒即可完成，這意味著只需使用標題或幾個關鍵字，幾乎就能立即生成整份文件。雖然人工智能無法取代專業作家，但現今的技術已經能夠以新奇有趣的方式強化寫作流程。未來仍是未知之數，但至少作家們可以期待更有效率，而且對某些人來說不那麼困難的 「提筆寫作 」方式。</p>
-<p>本文使用了下列資料來源：</p>
+<p>The neural network is now capable of extracting and classifying named entities from unstructured text. This process is called <a href="https://en.wikipedia.org/wiki/Named-entity_recognition">named entity recognition (NER)</a> and involves locating and classifying categories such as person names, institutions, geographic locations, and more. These entities play an important role in sorting and recalling data. From here key sentences, paragraphs, and summaries can be extracted from the corpus.</p>
+<h3 id="Creating-sentence-embeddings-using-Infersent" class="common-anchor-header">Creating sentence embeddings using Infersent</h3><p><a href="https://github.com/facebookresearch/InferSent">Infersent</a>, a supervised sentence embeddings method designed by Facebook that embeds full sentences into vector space, is used to create vectors that will be fed into the Milvus database. Infersent was trained using the Stanford Natural Language Inference (SNLI) corpus, which contains 570k pairs of sentences that were written and labelled by humans. Additional information about how Infersent works can be found <a href="https://medium.com/analytics-vidhya/sentence-embeddings-facebooks-infersent-6ac4a9fc2001">here</a>.</p>
+<h3 id="Storing-and-querying-vectors-with-Milvus" class="common-anchor-header">Storing and querying vectors with Milvus</h3><p><a href="https://www.milvus.io/">Milvus</a> is an open source similarity search engine that supports adding, deleting, updating, and near-real-time search of embeddings on a trillion bytes scale. To improve query performance, Milvus allows an index type to be specified for each vector field. The WPS Office smart assistant uses the IVF_FLAT index, the most basic Inverted File (IVF) index type where “flat” means vectors are stored without compression or quantization. Clustering is based on IndexFlat2, which uses exact search for L2 distance.</p>
+<p>Although IVF_FLAT has a 100% query recall rate, its lack of compression results in comparatively slow query speeds. Milvus’ <a href="https://milvus.io/docs/manage-partitions.md">partitioning function</a> is used to divide data into multiple parts of physical storage based on predefined rules, making queries faster and more accurate. When vectors are added to Milvus, tags specify which partition the data should be added to. Queries of the vector data use tags to specify which partition the query should be executed on. Data can be further broken down into segments within each partition to further improve speed.</p>
+<p>The intelligent writing assistant also uses Kubernetes clusters, allowing application containers to run across multiple machines and environments, as well as MySQL for metadata management.</p>
+<h3 id="AI-isn’t-replacing-writers-it’s-helping-them-write" class="common-anchor-header">AI isn’t replacing writers, it’s helping them write</h3><p>Kingsoft’s writing assistant for WPS Office relies on Milvus to manage and query a database of more than 2 million documents. The system is highly flexible, capable of running near real-time search on trillion-scale datasets. Queries complete in 0.2 seconds on average, meaning entire documents can be generated almost instantaneously using just a title or a few keywords. Although AI isn’t replacing professional writers, technology that exists today is capable of augmenting the writing process in novel and interesting ways. The future is unknown, but at the very least writers can look forward to more productive, and for some less difficult, methods of “putting pen to paper.”</p>
+<p>The following sources were used for this article:</p>
 <ul>
-<li>"<a href="https://arxiv.org/pdf/1603.01354.pdf">End-to-end Sequence Labeling via Bi-directional LSTM-CNNs-CRF</a>," Xuezhe Ma and Eduard Hovy.</li>
-<li><a href="https://towardsdatascience.com/understanding-feature-engineering-part-3-traditional-methods-for-text-data-f6f7d70acd41">「文本資料的傳統方法</a>」，Dipanjan (DJ) Sarkar。</li>
-<li>「<a href="https://ieeexplore.ieee.org/document/8780663">基於 TF-IDF 關聯語意的文字特徵萃取</a>」，劉清、王晶、張德海、楊雲、王乃堯。</li>
-<li><a href="https://medium.com/analytics-vidhya/sentence-embeddings-facebooks-infersent-6ac4a9fc2001">「使用 Facebook 的 Infersent 理解句子嵌入」</a>，Rehan Ahmad。</li>
-<li><a href="https://arxiv.org/pdf/1705.02364.pdf">"從自然語言推理資料監督學習通用句子表達</a>」，Alexis Conneau、Douwe Kiela、Holger Schwenk、LoÏc Barrault、Antoine Bordes.V1</li>
+<li>“<a href="https://arxiv.org/pdf/1603.01354.pdf">End-to-end Sequence Labeling via Bi-directional LSTM-CNNs-CRF</a>,” Xuezhe Ma and Eduard Hovy.</li>
+<li>“<a href="https://towardsdatascience.com/understanding-feature-engineering-part-3-traditional-methods-for-text-data-f6f7d70acd41">Traditional Methods for Text Data</a>,” Dipanjan (DJ) Sarkar.</li>
+<li>“<a href="https://ieeexplore.ieee.org/document/8780663">Text Features Extraction based on TF-IDF Associating Semantic</a>,” Qing Liu, Jing Wang, Dehai Zhang, Yun Yang, NaiYao Wang.</li>
+<li>“<a href="https://medium.com/analytics-vidhya/sentence-embeddings-facebooks-infersent-6ac4a9fc2001">Understanding Sentence Embeddings using Facebook’s Infersent</a>,” Rehan Ahmad</li>
+<li>“<a href="https://arxiv.org/pdf/1705.02364.pdf">Supervised Learning of Universal Sentence Representations from Natural Language Inference Data</a>,” Alexis Conneau, Douwe Kiela, Holger Schwenk, LoÏc Barrault, Antoine Bordes.V1</li>
 </ul>
-<p>閱讀其他<a href="https://zilliz.com/user-stories">使用者故事</a>，了解更多關於使用 Milvus 製造物品的資訊。</p>
+<p>Read other <a href="https://zilliz.com/user-stories">user stories</a> to learn more about making things with Milvus.</p>

@@ -1,13 +1,13 @@
 ---
 id: ai-agents-vs-workflows-why-80-need-simple-automation.md
-title: >-
-  وكلاء الذكاء الاصطناعي أم مهام سير العمل؟ لماذا يجب عليك تخطي الوكلاء في 80%
-  من مهام الأتمتة
+title: |
+  AI Agents or Workflows? Why You Should Skip Agents for 80% of Automation Tasks
 author: Min Yin
 date: 2025-08-11T00:00:00.000Z
 desc: >-
-  يوفر التكامل بين Refly وMilvus نهجًا عمليًا للأتمتة - نهجًا يقدّر الموثوقية
-  وسهولة الاستخدام على التعقيد غير الضروري.
+  The integration of Refly and Milvus offers a pragmatic approach to
+  automation—one that values reliability and ease of use over unnecessary
+  complexity.
 cover: >-
   assets.zilliz.com/AI_Agents_or_Workflows_Why_You_Should_Skip_Agents_for_80_of_Automation_Tasks_9f54386e8a.png
 tag: Tutorials
@@ -19,11 +19,11 @@ meta_title: |
   AI Agents or Workflows? Why Skip Agents for 80% of Automation
 origin: 'https://milvus.io/blog/ai-agents-vs-workflows-why-80-need-simple-automation.md'
 ---
-<p>وكلاء الذكاء الاصطناعي موجودون في كل مكان الآن - بدءاً من روبوتات البرمجة إلى روبوتات خدمة العملاء - ويمكن أن يكونوا جيدين بشكل مذهل في التفكير المعقد. ومثل الكثير منكم، أنا أحبهم. ولكن بعد بناء كل من الوكلاء وسير عمل الأتمتة، تعلمت حقيقة بسيطة: الوكلاء <strong>ليسوا الحل الأفضل لكل مشكلة.</strong></p>
-<p>على سبيل المثال، عندما قمتُ ببناء نظام متعدد الوكلاء مع CrewAI لفك تشفير التعلم الآلي، أصبحت الأمور فوضوية بسرعة. تجاهل وكلاء البحث برامج زحف الويب بنسبة 70% من الوقت. أسقط وكلاء الملخص الاستشهادات. وانهار التنسيق كلما كانت المهام غير واضحة تماماً.</p>
-<p>ولا يقتصر الأمر على التجارب فقط. فالكثيرون منا يتنقلون بالفعل بين ChatGPT للعصف الذهني، وClaude للترميز، ونصف دزينة من واجهات برمجة التطبيقات لمعالجة البيانات - نفكر بهدوء: <em>يجب أن تكون هناك طريقة أفضل لجعل كل هذا يعمل معًا.</em></p>
-<p>في بعض الأحيان، تكون الإجابة هي وكيل. في كثير من الأحيان، هو <strong>سير عمل ذكاء اصطناعي مصمم بشكل جيد</strong> يدمج أدواتك الحالية في شيء قوي، دون تعقيد لا يمكن التنبؤ به.</p>
-<h2 id="Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="common-anchor-header">بناء سير عمل ذكاء اصطناعي أكثر ذكاءً مع Refly وMilvus<button data-href="#Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="anchor-icon" translate="no">
+<p>AI agents are everywhere right now—from coding copilots to customer service bots—and they can be jaw-droppingly good at complex reasoning. Like many of you, I love them. But after building both agents and automation workflows, I’ve learned a simple truth: <strong>agents aren’t the best solution for every problem.</strong></p>
+<p>For example, when I built a multi-agent system with CrewAI for decoding ML, things got messy fast. Research agents ignored web crawlers 70% of the time. Summary agents dropped citations. Coordination fell apart whenever tasks weren’t crystal clear.</p>
+<p>And it’s not just in experiments. Many of us are already bouncing between ChatGPT for brainstorming, Claude for coding, and a half-dozen APIs for data processing—quietly thinking: <em>there has to be a better way to make all this work together.</em></p>
+<p>Sometimes, the answer is an agent. More often, it’s a <strong>well-designed AI workflow</strong> that stitches your existing tools into something powerful, without the unpredictable complexity.</p>
+<h2 id="Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="common-anchor-header">Building Smarter AI Workflows with Refly and Milvus<button data-href="#Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,44 +38,44 @@ origin: 'https://milvus.io/blog/ai-agents-vs-workflows-why-80-need-simple-automa
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>أعلم أن بعضكم يهز رأسه بالفعل: "سير العمل؟ إنها جامدة. إنها ليست ذكية بما يكفي لأتمتة الذكاء الاصطناعي الحقيقية." نقطة عادلة - معظم عمليات سير العمل جامدة، لأنها مصممة على غرار خطوط التجميع القديمة: الخطوة أ ← الخطوة ب ← الخطوة ج، لا يسمح بالانحراف.</p>
-<p>لكن المشكلة الحقيقية ليست في <em>فكرة</em> سير العمل، بل في <em>التنفيذ</em>. لا يتعين علينا أن نكتفي بخطوط أنابيب خطية هشة. يمكننا تصميم عمليات سير عمل أكثر ذكاءً تتكيف مع السياق، وتتسم بالمرونة والإبداع، وتحقق نتائج يمكن التنبؤ بها.</p>
-<p>في هذا الدليل، سنقوم ببناء نظام كامل لإنشاء المحتوى باستخدام Refly وMilvus لإظهار لماذا يمكن أن تتفوق عمليات سير عمل الذكاء الاصطناعي على البنى المعقدة متعددة العوامل، خاصةً إذا كنت تهتم بالسرعة والموثوقية وقابلية الصيانة.</p>
-<h3 id="The-Tools-We’re-Using" class="common-anchor-header">الأدوات التي نستخدمها</h3><p><a href="https://refly.ai/"><strong>ريفلي</strong></a>: منصة إنشاء محتوى مفتوحة المصدر قائمة على الذكاء الاصطناعي مبنية على مفهوم "اللوحة القماشية الحرة".</p>
+    </button></h2><p>I know some of you are already shaking your heads: “Workflows? Those are rigid. They’re not smart enough for real AI automation.” Fair point—most workflows are rigid, because they’re modeled after old-school assembly lines: step A → step B → step C, no deviation allowed.</p>
+<p>But the real issue isn’t the <em>idea</em> of workflows—it’s the <em>execution</em>. We don’t have to settle for brittle, linear pipelines. We can design smarter workflows that adapt to context, flex with creativity, and still deliver predictable results.</p>
+<p>In this guide, we’ll build a complete content creation system using Refly and Milvus to show why AI workflows can outperform complex multi-agent architectures, especially if you care about speed, reliability, and maintainability.</p>
+<h3 id="The-Tools-We’re-Using" class="common-anchor-header">The Tools We’re Using</h3><p><a href="https://refly.ai/"><strong>Refly</strong></a>: An open-source, AI-native content creation platform built around a “free canvas” concept.</p>
 <ul>
-<li><p><strong>الإمكانيات الأساسية:</strong> اللوحة الذكية، وإدارة المعرفة، والحوار متعدد الخيوط، وأدوات الإنشاء الاحترافية.</p></li>
-<li><p><strong>لماذا هي مفيدة:</strong> يتيح لك بناء سير العمل بالسحب والإفلات إمكانية ربط الأدوات معًا في تسلسل أتمتة متماسك، دون تقييدك في تنفيذ جامد أحادي المسار.</p></li>
+<li><p><strong>Core capabilities:</strong> intelligent canvas, knowledge management, multi-threaded dialogue, and professional creation tools.</p></li>
+<li><p><strong>Why it’s useful:</strong> Drag-and-drop workflow building lets you chain tools together into cohesive automation sequences, without locking you into rigid, single-path execution.</p></li>
 </ul>
-<p><a href="https://milvus.io/"><strong>Milvus</strong></a>: قاعدة بيانات متجهة مفتوحة المصدر تتعامل مع طبقة البيانات.</p>
+<p><a href="https://milvus.io/"><strong>Milvus</strong></a>: An open-source vector database handling the data layer.</p>
 <ul>
-<li><p><strong>ما أهمية ذلك:</strong> يتعلق إنشاء المحتوى في الغالب بالعثور على المعلومات الموجودة وإعادة تجميعها. تتعامل قواعد البيانات التقليدية مع البيانات المهيكلة بشكل جيد، ولكن معظم الأعمال الإبداعية تتضمن تنسيقات غير منظمة - مستندات وصور ومقاطع فيديو.</p></li>
-<li><p><strong>ما الذي يضيفه:</strong> تستفيد Milvus من نماذج التضمين المدمجة لترميز البيانات غير المهيكلة كمتجهات، مما يتيح البحث الدلالي حتى تتمكن عمليات سير العمل من استرداد السياق ذي الصلة بزمن انتقال يبلغ جزء من الثانية. من خلال بروتوكولات مثل MCP، يتكامل بسلاسة مع أطر عمل الذكاء الاصطناعي الخاصة بك، مما يتيح لك الاستعلام عن البيانات بلغة طبيعية بدلاً من المصارعة مع بناء قواعد البيانات.</p></li>
+<li><p><strong>Why it matters:</strong> Content creation is mostly about finding and recombining existing information. Traditional databases handle structured data well, but most creative work involves unstructured formats—documents, images, videos.</p></li>
+<li><p><strong>What it adds:</strong> Milvus leverages integrated embedding models to encode unstructured data as vectors, enabling semantic search so your workflows can retrieve relevant context with millisecond latency. Through protocols like MCP, it integrates seamlessly with your AI frameworks, letting you query data in natural language instead of wrestling with database syntax.</p></li>
 </ul>
-<h3 id="Setting-Up-Your-Environment" class="common-anchor-header">إعداد بيئتك</h3><p>دعني أطلعك على إعداد سير العمل هذا محلياً.</p>
-<p><strong>قائمة مراجعة سريعة للإعداد:</strong></p>
+<h3 id="Setting-Up-Your-Environment" class="common-anchor-header">Setting Up Your Environment</h3><p>Let me walk you through setting this workflow up locally.</p>
+<p><strong>Quick setup checklist:</strong></p>
 <ul>
-<li><p>أوبونتو 20.04+ (أو لينكس مشابه)</p></li>
+<li><p>Ubuntu 20.04+ (or similar Linux)</p></li>
 <li><p>Docker + Docker Compose</p></li>
-<li><p>مفتاح واجهة برمجة التطبيقات من أي LLM يدعم استدعاء الدالة. هنا في هذا الدليل، سأستخدم <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot'</a>s LLM.</p></li>
+<li><p>An API key from any LLM that supports function calling. Here in this guide, I’ll use <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>’s LLM.</p></li>
 </ul>
-<p><strong>متطلبات النظام</strong></p>
+<p><strong>System Requirements</strong></p>
 <ul>
-<li><p>وحدة المعالجة المركزية 8 أنوية كحد أدنى (يوصى بـ 16 نواة)</p></li>
-<li><p>الذاكرة: 16 جيجابايت كحد أدنى (يوصى ب 32 جيجابايت)</p></li>
-<li><p>التخزين: قرص SSD سعة 100 جيجابايت كحد أدنى (يوصى ب 500 جيجابايت)</p></li>
-<li><p>الشبكة: مطلوب اتصال مستقر بالإنترنت</p></li>
+<li><p>CPU: 8 cores minimum (16 cores recommended)</p></li>
+<li><p>Memory: 16GB minimum (32GB recommended)</p></li>
+<li><p>Storage: 100GB SSD minimum (500GB recommended)</p></li>
+<li><p>Network: Stable internet connection required</p></li>
 </ul>
-<p><strong>تبعيات البرامج</strong></p>
+<p><strong>Software Dependencies</strong></p>
 <ul>
-<li><p>نظام التشغيل: لينكس (يوصى باستخدام Ubuntu 20.04+)</p></li>
-<li><p>نظام الحاويات: Docker + Docker Compose</p></li>
-<li><p>بايثون: الإصدار 3.11 أو أعلى</p></li>
-<li><p>نموذج اللغة: أي نموذج يدعم استدعاءات الدالة (الخدمات عبر الإنترنت أو النشر دون اتصال بالإنترنت يعمل كلاهما)</p></li>
+<li><p>Operating System: Linux (Ubuntu 20.04+ recommended)</p></li>
+<li><p>Containerization: Docker + Docker Compose</p></li>
+<li><p>Python: Version 3.11 or higher</p></li>
+<li><p>Language Model: Any model supporting function calls (online services or Ollama offline deployment both work)</p></li>
 </ul>
-<h3 id="Step-1-Deploy-the-Milvus-Vector-Database" class="common-anchor-header">الخطوة 1: نشر قاعدة بيانات ميلفوس فيكتور</h3><p><strong>1.1 تحميل ميلفوس</strong></p>
+<h3 id="Step-1-Deploy-the-Milvus-Vector-Database" class="common-anchor-header">Step 1: Deploy the Milvus Vector Database</h3><p><strong>1.1 Download Milvus</strong></p>
 <pre><code translate="no">wget https://github.com/milvus-io/milvus/releases/download/v2.5.12/milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>1.2 إطلاق خدمات ميلفوس</strong></p>
+<p><strong>1.2 Launch Milvus services</strong></p>
 <pre><code translate="no">docker-compose up -d
 docker-compose ps -a
 <button class="copy-code-btn"></button></code></pre>
@@ -85,15 +85,15 @@ docker-compose ps -a
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Deploy-the-Refly-Platform" class="common-anchor-header">الخطوة 2: نشر منصة ريفلي</h3><p><strong>2.1 استنساخ المستودع</strong></p>
-<p>يمكنك استخدام القيم الافتراضية لجميع متغيرات البيئة ما لم تكن لديك متطلبات محددة:</p>
+<h3 id="Step-2-Deploy-the-Refly-Platform" class="common-anchor-header">Step 2: Deploy the Refly Platform</h3><p><strong>2.1 Clone the repository</strong></p>
+<p>You can use default values for all environment variables unless you have specific requirements:</p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/refly-ai/refly.git
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-built_in">cd</span> deploy/docker
 <span class="hljs-built_in">cp</span> ../../apps/api/.env.example .<span class="hljs-built_in">env</span> <span class="hljs-comment"># copy the example api env file</span>
 docker compose up -d
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2.2 التحقق من حالة الخدمة</strong></p>
+<p><strong>2.2 Verify service status</strong></p>
 <pre><code translate="no">docker ps -a
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -102,24 +102,24 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Set-Up-MCP-Services" class="common-anchor-header">الخطوة 3: إعداد خدمات MCP</h3><p><strong>3.1 تحميل خادم ميلفوس MCP</strong></p>
+<h3 id="Step-3-Set-Up-MCP-Services" class="common-anchor-header">Step 3: Set Up MCP Services</h3><p><strong>3.1 Download the Milvus MCP server</strong></p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/zilliztech/mcp-server-milvus.git
 <span class="hljs-built_in">cd</span> mcp-server-milvus
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3.2 بدء تشغيل خدمة MCP</strong></p>
-<p>يستخدم هذا المثال وضع SSE. استبدل URI بنقطة نهاية خدمة Milvus المتوفرة لديك:</p>
+<p><strong>3.2 Start the MCP service</strong></p>
+<p>This example uses SSE mode. Replace the URI with your available Milvus service endpoint:</p>
 <pre><code translate="no">uv run src/mcp_server_milvus/server.py --sse --milvus-uri http://localhost:19530 --port 8000
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3.3 قم بتأكيد تشغيل خدمة MCP</strong></p>
+<p><strong>3.3 Confirm MCP service is running</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_b755922c41.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Configuration-and-Setup" class="common-anchor-header">الخطوة 4: التهيئة والإعداد</h3><p>الآن بعد أن أصبحت البنية التحتية الخاصة بك قيد التشغيل، دعنا نهيئ كل شيء للعمل معًا بسلاسة.</p>
-<p><strong>4.1 الوصول إلى منصة Refly</strong></p>
-<p>انتقل إلى مثيل Refly المحلي الخاص بك:</p>
+<h3 id="Step-4-Configuration-and-Setup" class="common-anchor-header">Step 4: Configuration and Setup</h3><p>Now that your infrastructure is running, let’s configure everything to work together seamlessly.</p>
+<p><strong>4.1 Access the Refly platform</strong></p>
+<p>Navigate to your local Refly instance:</p>
 <pre><code translate="no"><span class="hljs-attr">http</span>:<span class="hljs-comment">//192.168.7.148:5700</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -128,7 +128,7 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<p><strong>4.2 أنشئ حسابك</strong></p>
+<p><strong>4.2 Create your account</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/42_4b8af22fe3.png" alt="" class="doc-image" id="" />
@@ -141,26 +141,26 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<p><strong>4.3 قم بتكوين نموذج اللغة الخاص بك</strong></p>
-<p>في هذا الدليل، سنستخدم <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>. أولاً، قم بالتسجيل والحصول على مفتاح API الخاص بك.</p>
-<p><strong>4.4 أضف موفر النموذج الخاص بك</strong></p>
-<p>أدخل مفتاح واجهة برمجة التطبيقات الذي حصلت عليه في الخطوة السابقة:</p>
+<p><strong>4.3 Configure your language model</strong></p>
+<p>For this guide, we’ll use <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>. First, register and obtain your API key.</p>
+<p><strong>4.4 Add your model provider</strong></p>
+<p>Enter the API key you obtained in the previous step:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/44_b085f9a263.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>4.5 قم بتهيئة نموذج LLM</strong></p>
-<p>تأكد من تحديد نموذج يدعم قدرات استدعاء الدالة، حيث أن هذا ضروري لتكاملات سير العمل التي سنقوم ببنائها:</p>
+<p><strong>4.5 Configure the LLM model</strong></p>
+<p>Make sure to select a model that supports function calling capabilities, as this is essential for the workflow integrations we’ll be building:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/45_a05213d0fa.pngQ" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>4.6 دمج خدمة Milvus-MCP</strong></p>
-<p>لاحظ أن إصدار الويب لا يدعم اتصالات من نوع stdio، لذلك سنستخدم نقطة نهاية HTTP التي أنشأناها سابقًا:</p>
+<p><strong>4.6 Integrate Milvus-MCP service</strong></p>
+<p>Note that the web version doesn’t support stdio-type connections, so we’ll use the HTTP endpoint we set up earlier:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/46_027e21e479.png" alt="" class="doc-image" id="" />
@@ -173,48 +173,48 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<p>ممتاز! بعد تكوين كل شيء، دعنا نرى هذا النظام قيد التنفيذ من خلال بعض الأمثلة العملية.</p>
-<p><strong>4.7 مثال: استرجاع المتجهات بكفاءة مع خادم MCP-Milvus-Server</strong></p>
-<p>يوضح هذا المثال كيف يعمل <strong>خادم MCP-Milvus-Server</strong> كبرنامج وسيط بين نماذج الذكاء الاصطناعي الخاصة بك ومثيلات قاعدة بيانات متجهات ميلفوس. فهو يعمل كمترجم - قبول طلبات اللغة الطبيعية من نموذج الذكاء الاصطناعي الخاص بك، وتحويلها إلى استعلامات قاعدة البيانات الصحيحة، وإرجاع النتائج - حتى تتمكن نماذجك من العمل مع بيانات المتجهات دون معرفة أي بناء جملة قاعدة بيانات.</p>
-<p><strong>4.7.1 إنشاء لوحة جديدة</strong></p>
+<p>Excellent! With everything configured, let’s see this system in action through some practical examples.</p>
+<p><strong>4.7 Example: Efficient Vector Retrieval with MCP-Milvus-Server</strong></p>
+<p>This example shows how the <strong>MCP-Milvus-Server</strong> works as middleware between your AI models and Milvus vector database instances. It acts like a translator—accepting natural language requests from your AI model, converting them into the right database queries, and returning the results—so your models can work with vector data without knowing any database syntax.</p>
+<p><strong>4.7.1 Create a new canvas</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/471_a684e275ed.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>4.7.2 بدء محادثة</strong></p>
-<p>افتح واجهة الحوار، وحدد نموذجك، وأدخل سؤالك، وأرسل.</p>
-<p><strong>4.7.3 راجع النتائج</strong></p>
+<p><strong>4.7.2 Start a conversation</strong></p>
+<p>Open the dialogue interface, select your model, input your question, and send.</p>
+<p><strong>4.7.3 Review the results</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/473_7c24a28999.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ما يحدث هنا رائع جدًا: لقد أظهرنا للتو تحكمًا لغويًا طبيعيًا في قاعدة بيانات متجه ميلفوس باستخدام <a href="https://milvus.io/blog/talk-to-vector-db-manage-milvus-via-natural-language.md">MCP-Milvus-Server</a> كطبقة تكامل. لا يوجد بناء جملة استعلام معقدة - فقط أخبر النظام بما تحتاجه بلغة إنجليزية بسيطة، وسيتولى النظام عمليات قاعدة البيانات نيابةً عنك.</p>
-<p><strong>4.8 مثال 2: بناء دليل نشر إعادة النشر مع تدفقات العمل</strong></p>
-<p>يوضح هذا المثال الثاني القوة الحقيقية لتنسيق سير العمل. سنقوم بإنشاء دليل نشر كامل من خلال الجمع بين أدوات الذكاء الاصطناعي المتعددة ومصادر البيانات في عملية واحدة متماسكة.</p>
-<p><strong>4.8.1 اجمع موادك المصدرية</strong></p>
-<p>تكمن قوة Refly في مرونته في التعامل مع تنسيقات الإدخال المختلفة. يمكنك استيراد الموارد بتنسيقات متعددة، سواء كانت مستندات أو صور أو بيانات منظمة.</p>
-<p><strong>4.8.2 إنشاء المهام وربط بطاقات الموارد</strong></p>
-<p>سنقوم الآن بإنشاء سير عملنا من خلال تحديد المهام وربطها بموادنا المصدرية.</p>
-<p><strong>4.8.3 إنشاء ثلاث مهام معالجة</strong></p>
-<p>هذا هو المكان الذي يتألق فيه نهج سير العمل حقًا. فبدلاً من محاولة التعامل مع كل شيء في عملية واحدة معقدة، نقوم بتقسيم العمل إلى ثلاث مهام مركزة تدمج المواد التي تم تحميلها وتنقيحها بشكل منهجي.</p>
+<p>What’s happening here is pretty remarkable: we’ve just shown natural language control of a Milvus vector database using <a href="https://milvus.io/blog/talk-to-vector-db-manage-milvus-via-natural-language.md">MCP-Milvus-Server</a> as the integration layer. No complex query syntax—just tell the system what you need in plain English, and it handles the database operations for you.</p>
+<p><strong>4.8 Example 2: Building a Refly Deployment Guide with Workflows</strong></p>
+<p>This second example shows the real power of workflow orchestration. We’ll create a complete deployment guide by combining multiple AI tools and data sources into a single, coherent process.</p>
+<p><strong>4.8.1 Gather your source materials</strong></p>
+<p>The power of Refly is its flexibility in handling different input formats. You can import resources in multiple formats, whether they’re documents, images, or structured data.</p>
+<p><strong>4.8.2 Create tasks and link resource cards</strong></p>
+<p>Now we’ll create our workflow by defining tasks and connecting them to our source materials.</p>
+<p><strong>4.8.3 Set up three processing tasks</strong></p>
+<p>This is where the workflow approach really shines. Instead of trying to handle everything in one complex process, we break the work into three focused tasks that integrate uploaded materials and refine them systematically.</p>
 <ul>
-<li><p><strong>مهمة تكامل المحتوى</strong>: دمج وهيكلة المواد المصدرية</p></li>
-<li><p><strong>مهمة تنقيح المحتوى</strong>: تحسين الوضوح والتدفق</p></li>
-<li><p><strong>تجميع المسودة النهائية</strong>: إنشاء مخرجات جاهزة للنشر</p></li>
+<li><p><strong>Content integration task</strong>: Combines and structures source materials</p></li>
+<li><p><strong>Content refinement task</strong>: Improves clarity and flow</p></li>
+<li><p><strong>Final draft compilation</strong>: Creates publication-ready output</p></li>
 </ul>
-<p>النتائج تتحدث عن نفسها. ما كان يستغرق ساعات من التنسيق اليدوي عبر أدوات متعددة يتم التعامل معه الآن تلقائيًا، مع بناء كل خطوة بشكل منطقي على الخطوة السابقة.</p>
-<p><strong>إمكانيات سير العمل متعدد الوسائط:</strong></p>
+<p>The results speak for themselves. What would have taken hours of manual coordination across multiple tools is now handled automatically, with each step building logically on the previous one.</p>
+<p><strong>Multi-modal workflow capabilities:</strong></p>
 <ul>
-<li><p><strong>توليد الصور ومعالجتها</strong>: التكامل مع النماذج عالية الجودة بما في ذلك flux-schnell وflux-pro وSDXL</p></li>
-<li><p><strong>توليد الفيديو وفهمه</strong>: دعم العديد من نماذج الفيديو المنمقة، بما في ذلك سيدانس وكلينغ وفيو</p></li>
-<li><p><strong>أدوات توليد الصوت</strong>: توليد الموسيقى من خلال نماذج مثل Lyria-2 وتوليف الصوت عبر نماذج مثل Chatterbox</p></li>
-<li><p><strong>معالجة متكاملة</strong>: يمكن الرجوع إلى جميع المخرجات متعددة الوسائط وتحليلها وإعادة معالجتها داخل النظام</p></li>
+<li><p><strong>Image generation and processing</strong>: Integration with high-quality models including flux-schnell, flux-pro, and SDXL</p></li>
+<li><p><strong>Video generation and understanding</strong>: Support for various stylized video models, including Seedance, Kling, and Veo</p></li>
+<li><p><strong>Audio generation tools</strong>: Music generation through models like Lyria-2 and voice synthesis via models like Chatterbox</p></li>
+<li><p><strong>Integrated processing</strong>: All multi-modal outputs can be referenced, analyzed, and reprocessed within the system</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -229,11 +229,11 @@ docker compose up -d
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يقدم تكامل <strong>Refly</strong> و <strong>Milvus</strong> نهجًا عمليًا للأتمتة - نهجًا يقدّر الموثوقية وسهولة الاستخدام على التعقيد غير الضروري. من خلال الجمع بين تنسيق سير العمل والمعالجة متعددة الوسائط، يمكن للفرق الانتقال من المفهوم إلى النشر بشكل أسرع مع الاحتفاظ بالتحكم الكامل في كل مرحلة.</p>
-<p>لا يتعلق الأمر برفض وكلاء الذكاء الاصطناعي. فهي ذات قيمة في معالجة المشاكل المعقدة حقاً والتي لا يمكن التنبؤ بها. ولكن بالنسبة للعديد من احتياجات الأتمتة - خاصةً في إنشاء المحتوى ومعالجة البيانات - يمكن لسير العمل المصمم جيدًا أن يحقق نتائج أفضل مع نفقات أقل.</p>
-<p>مع تطور تكنولوجيا الذكاء الاصطناعي، من المرجح أن تمزج الأنظمة الأكثر فعالية بين الاستراتيجيتين:</p>
+    </button></h2><p>The integration of <strong>Refly</strong> and <strong>Milvus</strong> offers a pragmatic approach to automation—one that values reliability and ease of use over unnecessary complexity. By combining workflow orchestration with multi-modal processing, teams can move from concept to publication faster while retaining full control at every stage.</p>
+<p>This isn’t about dismissing AI agents. They’re valuable for tackling genuinely complex, unpredictable problems. But for many automation needs—especially in content creation and data processing—a well-designed workflow can deliver better results with less overhead.</p>
+<p>As AI tech evolves, the most effective systems will likely blend both strategies:</p>
 <ul>
-<li><p><strong>تدفقات العمل</strong> حيث تكون إمكانية التنبؤ والصيانة وقابلية التكرار هي المفتاح.</p></li>
-<li><p><strong>الوكلاء</strong> حيث يكون التفكير الحقيقي والقدرة على التكيف وحل المشكلات المفتوح مطلوبًا.</p></li>
+<li><p><strong>Workflows</strong> where predictability, maintainability, and reproducibility are key.</p></li>
+<li><p><strong>Agents</strong> where real reasoning, adaptability, and open-ended problem-solving are required.</p></li>
 </ul>
-<p>الهدف ليس بناء الذكاء الاصطناعي الأكثر بهرجة - بل بناء الذكاء الاصطناعي الأكثر <em>فائدة</em>. وفي كثير من الأحيان، يكون الحل الأكثر فائدة هو الأكثر وضوحًا أيضًا.</p>
+<p>The goal isn’t to build the flashiest AI—it’s to build the most <em>useful</em> one. And often, the most helpful solution is also the most straightforward.</p>

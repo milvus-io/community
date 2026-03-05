@@ -1,9 +1,9 @@
 ---
 id: >-
   milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-faster-than-elasticsearch.md
-title: >-
-  Avance de Milvus 2.6: 72% de reducción de memoria sin comprometer la
-  recuperación y 4 veces más rápido que Elasticsearch
+title: >
+  Milvus 2.6 Preview: 72% Memory Reduction Without Compromising Recall and 4x
+  Faster Than Elasticsearch
 author: Ken Zhang
 date: 2025-05-17T00:00:00.000Z
 cover: >-
@@ -17,29 +17,28 @@ meta_title: >
   Milvus 2.6 Preview: 72% Memory Reduction Without Compromising Recall and 4x
   Faster Than Elasticsearch
 desc: >-
-  Eche un primer vistazo en exclusiva a las innovaciones de la próxima Milvus
-  2.6 que redefinirán el rendimiento y la eficacia de las bases de datos
-  vectoriales.
+  Get an exclusive first look at the innovations in upcoming Milvus 2.6 that
+  will redefine vector database performance and efficiency.
 origin: >-
   https://milvus.io/blog/milvus-26-preview-72-memory-reduction-without-compromising-recall-and-4x-faster-than-elasticsearch.md
 ---
-<p>A lo largo de esta semana, hemos compartido una serie de innovaciones interesantes en Milvus que amplían los límites de la tecnología de bases de datos vectoriales:</p>
+<p>Throughout this week, we’ve shared a range of exciting innovations in Milvus that push the boundaries of vector database technology:</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Vector Search in the Real World: How to Filter Efficiently Without Killing Recall (Búsqueda vectorial en el mundo real: cómo filtrar de forma eficiente sin matar la recuperación) </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Lleve la compresión vectorial al extremo: Cómo Milvus sirve 3 veces más consultas con RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Los puntos de referencia mienten: las bases de datos vectoriales merecen una prueba real </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Sustituimos Kafka/Pulsar por un Woodpecker para Milvus </a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH en Milvus: El arma secreta para luchar contra los duplicados en los datos de entrenamiento LLM </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Vector Search in the Real World: How to Filter Efficiently Without Killing Recall </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus </a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
 </ul>
-<p>Ahora, como colofón a nuestra serie de Semanas Milvus, me complace ofrecerle un adelanto de lo que está por llegar en Milvus 2.6, un hito crucial en nuestra hoja de ruta de productos 2025 que se encuentra actualmente en desarrollo, y cómo estas mejoras transformarán la búsqueda impulsada por IA. Esta próxima versión reúne todas estas innovaciones y más en tres frentes críticos: <strong>optimización de la rentabilidad</strong>, <strong>capacidades de búsqueda avanzada</strong> y <strong>una nueva arquitectura</strong> que lleva la búsqueda vectorial más allá de la escala de 10.000 millones de vectores.</p>
-<p>Analicemos algunas de las mejoras clave que puede esperar cuando Milvus 2.6 llegue este mes de junio, empezando por las que podrían tener un impacto más inmediato: reducciones drásticas en el uso y coste de la memoria y un rendimiento ultrarrápido.</p>
+<p>Now, as we wrap up our Milvus Week series, I’m excited to give you a sneak peek of what’s coming in Milvus 2.6—a crucial milestone in our 2025 product roadmap that’s currently in development, and how these improvements will transform AI-powered search. This upcoming release brings together all these innovations and more across three critical fronts: <strong>cost-efficiency optimization</strong>, <strong>advanced search capabilities</strong>, and <strong>a new architecture</strong> that pushes vector search beyond 10 billion vector scale.</p>
+<p>Let’s dive into some of the key improvements you can expect when Milvus 2.6 arrives this June, starting with what might be the most immediately impactful: dramatic reductions in memory usage and cost, and ultra-fast performance.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Milvus_2_6_Preview_72_Memory_Reduction_Without_Compromising_Recall_and_4x_Faster_Than_Elasticsearch_c607b644f1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Cost-Reduction-Slash-Memory-Usage-While-Boosting-Performance" class="common-anchor-header">Reducción de costes: Reducción drástica del uso de memoria y aumento del rendimiento<button data-href="#Cost-Reduction-Slash-Memory-Usage-While-Boosting-Performance" class="anchor-icon" translate="no">
+<h2 id="Cost-Reduction-Slash-Memory-Usage-While-Boosting-Performance" class="common-anchor-header">Cost-Reduction: Slash Memory Usage While Boosting Performance<button data-href="#Cost-Reduction-Slash-Memory-Usage-While-Boosting-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,41 +53,41 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Depender de una memoria costosa representa uno de los mayores obstáculos para escalar la búsqueda vectorial a miles de millones de registros. Milvus 2.6 introducirá varias optimizaciones clave que reducirán drásticamente sus costes de infraestructura a la vez que mejorarán el rendimiento.</p>
-<h3 id="RaBitQ-1-bit-Quantization-72-Memory-Reduction-with-4×-QPS-and-No-Recall-Loss" class="common-anchor-header">Cuantización RaBitQ de 1 bit: 72% de reducción de memoria con 4× QPS y sin pérdida de recuperación</h3><p>El consumo de memoria ha sido durante mucho tiempo el talón de Aquiles de las bases de datos vectoriales a gran escala. Aunque la cuantización vectorial no es nueva, la mayoría de los enfoques existentes sacrifican demasiada calidad de búsqueda para ahorrar memoria. Milvus 2.6 abordará este reto de frente introduciendo<a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md"> la cuantización RaBitQ de 1 bit</a> en entornos de producción.</p>
-<p>Lo que hace que nuestra implementación sea especial es la capacidad de optimización ajustable Refine que estamos construyendo. Al implementar un índice primario con cuantificación RaBitQ y opciones de refinado SQ4/SQ6/SQ8, hemos logrado un equilibrio óptimo entre el uso de memoria y la calidad de la búsqueda (~95% de recuperación).</p>
-<p>Nuestros resultados preliminares son prometedores:</p>
+    </button></h2><p>Relying on expensive memory presents one of the biggest obstacles to scaling vector search to billions of records. Milvus 2.6 will introduce several key optimizations that dramatically lower your infrastructure costs while improving performance.</p>
+<h3 id="RaBitQ-1-bit-Quantization-72-Memory-Reduction-with-4×-QPS-and-No-Recall-Loss" class="common-anchor-header">RaBitQ 1-bit Quantization: 72% Memory Reduction with 4× QPS and No Recall Loss</h3><p>Memory consumption has long been the Achilles’ heel of large-scale vector databases. While vector quantization isn’t new, most existing approaches sacrifice too much search quality for memory savings. Milvus 2.6 will tackle this challenge head-on by introducing<a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md"> RaBitQ 1-bit quantization</a> in production environments.</p>
+<p>What makes our implementation special is the adjustable Refine optimization capability we’re building. By implementing a primary index with RaBitQ quantization plus SQ4/SQ6/SQ8 Refine options, we’ve achieved an optimal balance between memory usage and search quality (~95% recall).</p>
+<p>Our preliminary benchmarks reveal promising results:</p>
 <table>
 <thead>
-<tr><th><strong>Métrica de</strong><strong>rendimiento</strong> </th><th><strong>IVF_FLAT tradicional</strong></th><th><strong>Sólo RaBitQ (1 bit)</strong></th><th><strong>RaBitQ (1 bit) + SQ8 Refinar</strong></th></tr>
+<tr><th><strong>Performance</strong> <strong>Metric</strong></th><th><strong>Traditional IVF_FLAT</strong></th><th><strong>RaBitQ (1-bit) Only</strong></th><th><strong>RaBitQ (1-bit) + SQ8 Refine</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Huella de memoria</td><td>100% (línea de base)</td><td>3% (reducción del 97%)</td><td>28% (reducción del 72%)</td></tr>
-<tr><td>Calidad de recuperación</td><td>95.2%</td><td>76.3%</td><td>94.9%</td></tr>
-<tr><td>Rendimiento de las consultas (QPS)</td><td>236</td><td>648 (2,7 veces más rápido)</td><td>946 (4 veces más rápido)</td></tr>
+<tr><td>Memory Footprint</td><td>100% (baseline)</td><td>3% (97% reduction)</td><td>28% (72% reduction)</td></tr>
+<tr><td>Recall Quality</td><td>95.2%</td><td>76.3%</td><td>94.9%</td></tr>
+<tr><td>Query Throughput (QPS)</td><td>236</td><td>648 (2.7× faster)</td><td>946 (4× faster)</td></tr>
 </tbody>
 </table>
-<p><em>Tabla: Evaluación de VectorDBBench con 1M de vectores de 768 dimensiones, probado en AWS m6id.2xlarge</em></p>
-<p>El verdadero avance aquí no es sólo la reducción de memoria, sino lograr esto al mismo tiempo que ofrece una mejora de rendimiento 4× sin comprometer la precisión. Esto significa que podrá servir la misma carga de trabajo con un 75% menos de servidores o gestionar 4 veces más tráfico en su infraestructura actual.</p>
-<p>Para los usuarios empresariales que utilizan Milvus totalmente gestionado en<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>, estamos desarrollando perfiles de configuración automatizados que ajustarán dinámicamente los parámetros de RaBitQ en función de las características específicas de su carga de trabajo y sus requisitos de precisión.</p>
-<h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">Búsqueda de texto completo un 400% más rápida que Elasticsearch</h3><p>Las capacidades de<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">búsqueda</a> de<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">texto</a> completo en bases de datos vectoriales se han convertido en esenciales para la creación de sistemas de recuperación híbridos. Desde la introducción de BM25 en <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a>, hemos recibido comentarios entusiastas, junto con peticiones de un mejor rendimiento a escala.</p>
-<p>Milvus 2.6 ofrecerá mejoras sustanciales de rendimiento en BM25. Nuestras pruebas en el conjunto de datos BEIR muestran un rendimiento 3-4 veces mayor que Elasticsearch con tasas de recuperación equivalentes. Para algunas cargas de trabajo, la mejora alcanza hasta 7 veces más QPS.</p>
+<p><em>Table: VectorDBBench evaluation with 1M vectors of 768 dimensions, tested on AWS m6id.2xlarge</em></p>
+<p>The real breakthrough here isn’t just the memory reduction, but achieving this while simultaneously delivering a 4× throughput improvement without compromising accuracy. This means you’ll be able to serve the same workload with 75% fewer servers or handle 4× more traffic on your existing infrastructure.</p>
+<p>For enterprise users using fully managed Milvus on<a href="https://zilliz.com/cloud"> Zilliz Cloud</a>, we’re developing automated configuration profiles that will dynamically adjust RaBitQ parameters based on your specific workload characteristics and precision requirements.</p>
+<h3 id="400-Faster-Full-text-Search-Than-Elasticsearch" class="common-anchor-header">400% Faster Full-text Search Than Elasticsearch</h3><p><a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md">Full-text search</a> capabilities in vector databases have become essential for building hybrid retrieval systems. Since introducing BM25 in <a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a>, we’ve received enthusiastic feedback—along with requests for better performance at scale.</p>
+<p>Milvus 2.6 will deliver substantial performance gains on BM25. Our testing on the BEIR dataset shows 3-4× higher throughput than Elasticsearch with equivalent recall rates. For some workloads, the improvement reaches up to 7× higher QPS.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_vs_Elasticsearch_on_throughput_140b7c1b06.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Figura: Rendimiento de Milvus frente a Elasticsearch</p>
-<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">Índice de rutas JSON: 99% menos de latencia para filtrado complejo</h3><p>Las aplicaciones modernas de IA rara vez se basan únicamente en la similitud vectorial: casi siempre combinan la búsqueda vectorial con el filtrado de metadatos. A medida que estas condiciones de filtrado se hacen más complejas (especialmente con objetos JSON anidados), el rendimiento de la consulta puede deteriorarse rápidamente.</p>
-<p>Milvus 2.6 introducirá un mecanismo de indexación dirigido para rutas JSON anidadas que le permitirá crear índices en rutas específicas (por ejemplo, <code translate="no">$meta user_info.location</code>) dentro de campos JSON. En lugar de escanear objetos enteros, Milvus buscará directamente los valores de los índices preconstruidos.</p>
-<p>En nuestra evaluación con más de 100 M de registros, JSON Path Index redujo la latencia de filtrado de <strong>140 ms</strong> (P99: 480 ms) a sólo <strong>1,5 ms</strong> (P99: 10 ms), una reducción del 99% que transformará consultas antes impracticables en respuestas instantáneas.</p>
-<p>Esta característica será especialmente valiosa para:</p>
+<p>Figure: Milvus vs. Elasticsearch on throughput</p>
+<h3 id="JSON-Path-Index-99-Lower-Latency-for-Complex-Filtering" class="common-anchor-header">JSON Path Index: 99% Lower Latency for Complex Filtering</h3><p>Modern AI applications rarely rely on vector similarity alone—they almost always combine vector search with metadata filtering. As these filtering conditions become more complex (especially with nested JSON objects), query performance can deteriorate rapidly.</p>
+<p>Milvus 2.6 will introduce a targeted indexing mechanism for nested JSON paths that allows you to create indexes on specific paths (e.g., <code translate="no">$meta user_info.location</code>) within JSON fields. Instead of scanning entire objects, Milvus will directly look up values from pre-built indexes.</p>
+<p>In our evaluation with 100 M+ records, JSON Path Index reduced filter latency from <strong>140ms</strong> (P99: 480ms) to just <strong>1.5ms</strong> (P99: 10ms)—a 99% reduction that will transform previously impractical queries into instant responses.</p>
+<p>This feature will be particularly valuable for:</p>
 <ul>
-<li><p>Sistemas de recomendación con filtrado complejo de atributos de usuario</p></li>
-<li><p>Aplicaciones RAG que filtran documentos por varias etiquetas</p></li>
+<li><p>Recommendation systems with complex user attribute filtering</p></li>
+<li><p>RAG applications that filter documents by various labels</p></li>
 </ul>
-<h2 id="Next-Generation-Search-From-Basic-Vector-Similarity-to-Production-Grade-Retrieval" class="common-anchor-header">Búsqueda de próxima generación: De la similitud vectorial básica a la recuperación de nivel de producción<button data-href="#Next-Generation-Search-From-Basic-Vector-Similarity-to-Production-Grade-Retrieval" class="anchor-icon" translate="no">
+<h2 id="Next-Generation-Search-From-Basic-Vector-Similarity-to-Production-Grade-Retrieval" class="common-anchor-header">Next-Generation Search: From Basic Vector Similarity to Production-Grade Retrieval<button data-href="#Next-Generation-Search-From-Basic-Vector-Similarity-to-Production-Grade-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -103,52 +102,52 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La búsqueda vectorial por sí sola no es suficiente para las aplicaciones modernas de IA. Los usuarios exigen la precisión de la recuperación de información tradicional combinada con la comprensión semántica de las incrustaciones vectoriales. Milvus 2.6 introducirá varias funciones de búsqueda avanzada que acortarán esta distancia.</p>
-<h3 id="Better-Full-text-Search-with-Multi-language-Analyzer" class="common-anchor-header">Mejor búsqueda de texto completo con analizador multilingüe</h3><p>La búsqueda de texto completo depende en gran medida del idioma... Milvus 2.6 introducirá un proceso de análisis de texto completamente renovado con soporte multilingüe:</p>
+    </button></h2><p>Vector search alone isn’t enough for modern AI applications. Users demand the precision of traditional information retrieval combined with the semantic understanding of vector embeddings. Milvus 2.6 will introduce several advanced search features that bridge this gap.</p>
+<h3 id="Better-Full-text-Search-with-Multi-language-Analyzer" class="common-anchor-header">Better Full-text Search with Multi-language Analyzer</h3><p>Full-text search is highly language-dependent… Milvus 2.6 will introduce a completely revamped text analysis pipeline with multi-language support:</p>
 <ul>
-<li><p><code translate="no">RUN_ANALYZER</code> soporte sintáctico para la observabilidad de la configuración del analizador/tokenización</p></li>
-<li><p>tokenizador Lindera para idiomas asiáticos como el japonés y el coreano</p></li>
-<li><p>tokenizador ICU para un soporte multilingüe completo</p></li>
-<li><p>Configuración granular de idiomas para definir reglas de tokenización específicas de cada idioma.</p></li>
-<li><p>Jieba mejorado con soporte para la integración de diccionarios personalizados.</p></li>
-<li><p>Opciones de filtro ampliadas para un procesamiento de texto más preciso</p></li>
+<li><p><code translate="no">RUN_ANALYZER</code> syntax support for analyzer/tokenization configuration observability</p></li>
+<li><p>Lindera tokenizer for Asian languages like Japanese and Korean</p></li>
+<li><p>ICU tokenizer for comprehensive multilingual support</p></li>
+<li><p>Granular language configuration for defining language-specific tokenization rules</p></li>
+<li><p>Enhanced Jieba with support for custom dictionary integration</p></li>
+<li><p>Expanded filter options for more precise text processing</p></li>
 </ul>
-<p>Para las aplicaciones globales, esto significa una mejor búsqueda multilingüe sin indexación especializada por idioma ni complejas soluciones.</p>
-<h3 id="Phrase-Match-Capturing-Semantic-Nuance-in-Word-Order" class="common-anchor-header">Coincidencia de frases: Captura del matiz semántico en el orden de las palabras</h3><p>El orden de las palabras transmite distinciones de significado críticas que la búsqueda por palabras clave suele pasar por alto. Pruebe a comparar &quot;técnicas de aprendizaje automático&quot; con &quot;técnicas de aprendizaje automático&quot;: mismas palabras, significado totalmente diferente.</p>
-<p>Milvus 2.6 añadirá <strong>la concordancia de frases</strong>, que ofrece a los usuarios más control sobre el orden y la proximidad de las palabras que la búsqueda de texto completo o la concordancia exacta de cadenas:</p>
+<p>For global applications, this means better multilingual search without specialized per-language indexing or complex workarounds.</p>
+<h3 id="Phrase-Match-Capturing-Semantic-Nuance-in-Word-Order" class="common-anchor-header">Phrase Match: Capturing Semantic Nuance in Word Order</h3><p>Word order conveys critical meaning distinctions that keyword search often misses. Try comparing “machine learning techniques” with &quot;learning machine techniques&quot;—same words, totally different meaning.</p>
+<p>Milvus 2.6 will add <strong>Phrase Match</strong>, giving users more control over word order and proximity than full-text search or exact string match:</p>
 <pre><code translate="no">PHRASE_MATCH(field_name, phrase, slop)
 <button class="copy-code-btn"></button></code></pre>
-<p>El parámetro <code translate="no">slop</code> proporcionará un control flexible sobre la proximidad de las palabras: 0 requiere coincidencias exactas consecutivas, mientras que valores más altos permiten pequeñas variaciones en las frases.</p>
-<p>Esta función será especialmente útil para:</p>
+<p>The <code translate="no">slop</code> parameter will provide flexible control over word proximity—0 requires exact consecutive matches, while higher values allow for minor variations in phrasing.</p>
+<p>This feature will be particularly valuable for:</p>
 <ul>
-<li><p>Búsqueda de documentos jurídicos en los que la redacción exacta tiene importancia jurídica.</p></li>
-<li><p>Recuperación de contenidos técnicos en los que el orden de los términos distingue conceptos diferentes.</p></li>
-<li><p>Bases de datos de patentes en las que se deben buscar frases técnicas específicas.</p></li>
+<li><p>Legal document search where exact phrasing carries legal significance</p></li>
+<li><p>Technical content retrieval where term order distinguishes different concepts</p></li>
+<li><p>Patent databases where specific technical phrases must be matched precisely</p></li>
 </ul>
-<h3 id="Time-Aware-Decay-Functions-Automatically-Prioritize-Fresh-Content" class="common-anchor-header">Funciones de decaimiento en función del tiempo: Priorización automática del contenido nuevo</h3><p>El valor de la información suele disminuir con el tiempo. Los artículos de noticias, los lanzamientos de productos y las publicaciones en redes sociales pierden relevancia a medida que envejecen, aunque los algoritmos de búsqueda tradicionales tratan todo el contenido por igual, independientemente de la fecha.</p>
-<p>Milvus 2.6 introducirá <strong>funciones de decaimiento</strong> para una clasificación consciente del tiempo que ajusta automáticamente las puntuaciones de relevancia en función de la antigüedad del documento.</p>
+<h3 id="Time-Aware-Decay-Functions-Automatically-Prioritize-Fresh-Content" class="common-anchor-header">Time-Aware Decay Functions: Automatically Prioritize Fresh Content</h3><p>Information value often diminishes with time. News articles, product releases, and social posts all become less relevant as they age, yet traditional search algorithms treat all content equally, regardless of timestamp.</p>
+<p>Milvus 2.6 will introduce <strong>Decay Functions</strong> for time-aware ranking that automatically adjust relevance scores based on document age.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/decay_function_210e65f9a0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Podrá configurar:</p>
+<p>You’ll be able to configure:</p>
 <ul>
-<li><p><strong>Tipo de función</strong>: Exponencial (decaimiento rápido), Gaussiano (decaimiento gradual) o Lineal (decaimiento constante)</p></li>
-<li><p><strong>Tasa de decaimiento</strong>: La rapidez con la que la relevancia disminuye con el tiempo</p></li>
-<li><p><strong>Punto de origen</strong>: Fecha de referencia para medir las diferencias temporales</p></li>
+<li><p><strong>Function type</strong>: Exponential (rapid decay), Gaussian (gradual decay), or Linear (constant decay)</p></li>
+<li><p><strong>Decay rate</strong>: How quickly relevance diminishes over time</p></li>
+<li><p><strong>Origin point</strong>: The reference timestamp for measuring time differences</p></li>
 </ul>
-<p>Este reordenamiento sensible al tiempo garantizará que los resultados más actualizados y contextualmente relevantes aparezcan en primer lugar, lo que es crucial para los sistemas de recomendación de noticias, las plataformas de comercio electrónico y las redes sociales.</p>
-<h3 id="Data-in-Data-Out-From-Raw-Text-to-Vector-Search-in-One-Step" class="common-anchor-header">Datos de entrada, datos de salida: Del texto bruto a la búsqueda vectorial en un solo paso</h3><p>Uno de los mayores problemas de los desarrolladores con las bases de datos vectoriales ha sido la desconexión entre los datos sin procesar y las incrustaciones vectoriales. Milvus 2.6 simplificará drásticamente este flujo de trabajo con una nueva interfaz de <strong>funciones</strong> que integra modelos de incrustación de terceros directamente en su canalización de datos. Esto agiliza su proceso de búsqueda vectorial con una sola llamada.</p>
-<p>En lugar de calcular previamente las incrustaciones, podrá:</p>
+<p>This time-sensitive re-ranking will ensure that the most up-to-date and contextually relevant results appear first, which is crucial for news recommendation systems, e-commerce platforms, and social media feeds.</p>
+<h3 id="Data-in-Data-Out-From-Raw-Text-to-Vector-Search-in-One-Step" class="common-anchor-header">Data in, Data Out: From Raw Text to Vector Search in One Step</h3><p>One of the biggest developer pain points with vector databases has been the disconnect between raw data and vector embeddings. Milvus 2.6 will dramatically simplify this workflow with a new <strong>Function</strong> interface that integrates third-party embedding models directly into your data pipeline. This streamlines your vector search pipeline with one single call.</p>
+<p>Instead of pre-computing embeddings, you’ll be able to:</p>
 <ol>
-<li><p><strong>Insertar datos sin procesar directamente</strong>: Enviar texto, imágenes u otro contenido a Milvus.</p></li>
-<li><p><strong>Configurar proveedores de incrustación para vectorización</strong>: Milvus puede conectarse a servicios de modelos de incrustación como OpenAI, AWS Bedrock, Google Vertex AI y Hugging Face.</p></li>
-<li><p><strong>Consulta mediante lenguaje natural</strong>: Búsqueda mediante consultas de texto, no incrustaciones vectoriales.</p></li>
+<li><p><strong>Insert raw data directly</strong>: Submit text, images, or other content to Milvus</p></li>
+<li><p><strong>Configure embedding providers for vectorization</strong>: Milvus can connect to embedding model services like OpenAI, AWS Bedrock, Google Vertex AI, and Hugging Face.</p></li>
+<li><p><strong>Query using natural language</strong>: Search using text queries, not vector embeddings</p></li>
 </ol>
-<p>Esto creará una experiencia racionalizada de "Entrada de datos, salida de datos" en la que Milvus gestiona internamente la generación de vectores, haciendo que el código de su aplicación sea más sencillo.</p>
-<h2 id="Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="common-anchor-header">Evolución arquitectónica: Escalado a cientos de miles de millones de vectores<button data-href="#Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="anchor-icon" translate="no">
+<p>This will create a streamlined “Data-In, Data-Out” experience where Milvus handles the vector generation internally, making your application code more straightforward.</p>
+<h2 id="Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="common-anchor-header">Architectural Evolution: Scaling to Hundreds of Billions of Vectors<button data-href="#Architectural-Evolution-Scaling-to-Hundreds-of-Billions-of-Vectors" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -163,10 +162,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Una buena base de datos no sólo tiene grandes características, también debe ofrecer esas características a escala, probadas en producción.</p>
-<p>Milvus 2.6 introducirá un cambio arquitectónico fundamental que permitirá un escalado rentable a cientos de miles de millones de vectores. Lo más destacado es una nueva arquitectura de almacenamiento por niveles caliente-frío que gestiona de forma inteligente la colocación de los datos en función de los patrones de acceso, moviendo automáticamente los datos calientes a la memoria/SSD de alto rendimiento y colocando los datos fríos en un almacenamiento de objetos más económico. Este enfoque puede reducir drásticamente los costes al tiempo que mantiene el rendimiento de las consultas donde más importa.</p>
-<p>Además, un nuevo <a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow">Streaming Node</a> permitirá el procesamiento vectorial en tiempo real con integración directa a plataformas de streaming como Kafka y Pulsar y el recién creado <a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Woodpecker</a>, haciendo que los nuevos datos se puedan buscar inmediatamente sin retrasos por lotes.</p>
-<h2 id="Stay-tuned-for-Milvus-26" class="common-anchor-header">Esté atento a Milvus 2.6<button data-href="#Stay-tuned-for-Milvus-26" class="anchor-icon" translate="no">
+    </button></h2><p>A good database doesn’t just have great features, it must also deliver those features at scale, battle-tested in production.</p>
+<p>Milvus 2.6 will introduce a fundamental architectural change that enables cost-effective scaling to hundreds of billions of vectors. The highlight is a new hot-cold tiered storage architecture that intelligently manages data placement based on access patterns, automatically moving hot data to high-performance memory/SSD while placing cold data in more economical object storage. This approach can dramatically reduce costs while maintaining query performance where it matters most.</p>
+<p>Additionally, a new <a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md#StreamingService-Built-for-Real-Time-Data-Flow">Streaming Node</a> will enable real-time vector processing with direct integration to streaming platforms like Kafka and Pulsar and the newly created <a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Woodpecker</a>, making new data searchable immediately without batch delays.</p>
+<h2 id="Stay-tuned-for-Milvus-26" class="common-anchor-header">Stay tuned for Milvus 2.6<button data-href="#Stay-tuned-for-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,6 +180,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 está actualmente en desarrollo activo y estará disponible este mes de junio. Estamos encantados de ofrecerle estas optimizaciones de rendimiento, capacidades de búsqueda avanzadas y una nueva arquitectura para ayudarle a crear aplicaciones de IA escalables a un coste menor.</p>
-<p>Mientras tanto, agradeceremos sus comentarios sobre estas próximas funciones. ¿Qué es lo que más le entusiasma? ¿Qué funciones tendrían un mayor impacto en sus aplicaciones? Únete a la conversación en nuestro<a href="https://discord.com/invite/8uyFbECzPX"> canal de Discord</a> o sigue nuestro progreso en<a href="https://github.com/milvus-io/milvus"> GitHub</a>.</p>
-<p>¿Quiere ser el primero en saber cuándo se lanza Milvus 2.6? Síganos en<a href="https://www.linkedin.com/company/zilliz/"> LinkedIn</a> o<a href="https://twitter.com/milvusio"> X</a> para conocer las últimas actualizaciones.</p>
+    </button></h2><p>Milvus 2.6 is currently in active development and will be available this June. We’re excited to bring you these breakthrough performance optimizations, advanced search capabilities, and a new architecture to help you build scalable AI applications at lower cost.</p>
+<p>In the meantime, we welcome your feedback on these upcoming features. What excites you most? Which capabilities would have the most impact on your applications? Join the conversation in our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or follow our progress on<a href="https://github.com/milvus-io/milvus"> GitHub</a>.</p>
+<p>Want to be the first to know when Milvus 2.6 is released? Follow us on<a href="https://www.linkedin.com/company/zilliz/"> LinkedIn</a> or<a href="https://twitter.com/milvusio"> X</a> for the latest updates.</p>

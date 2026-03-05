@@ -1,11 +1,11 @@
 ---
 id: getting-started-with-milvus-cluster-and-k8s.md
-title: Memulai dengan klaster Milvus dan K8
+title: Getting started with Milvus cluster and K8s
 author: Stephen Batifol
 date: 2024-04-03T00:00:00.000Z
 desc: >-
-  Melalui tutorial ini, Anda akan mempelajari dasar-dasar pengaturan Milvus
-  dengan Helm, membuat koleksi, dan melakukan pencarian data dan kemiripan.
+  Through this tutorial, you'll learn the basics of setting up Milvus with Helm,
+  creating a collection, and performing data ingestion and similarity searches.
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
 tag: Engineering
 tags: >-
@@ -14,7 +14,7 @@ tags: >-
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
 ---
-<h2 id="Introduction" class="common-anchor-header">Pengantar<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,9 +29,9 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus adalah basis data vektor terdistribusi yang bertujuan untuk menyimpan, mengindeks, dan mengelola vektor penyematan dalam jumlah besar. Kemampuannya untuk mengindeks dan mencari triliunan vektor secara efisien membuat Milvus menjadi pilihan utama untuk beban kerja AI dan pembelajaran mesin.</p>
-<p>Kubernetes (K8), di sisi lain, unggul dalam mengelola dan menskalakan aplikasi dalam kontainer. Kubernetes menyediakan fitur-fitur seperti penskalaan otomatis, penyembuhan mandiri, dan penyeimbangan beban, yang sangat penting untuk menjaga ketersediaan dan kinerja yang tinggi dalam lingkungan produksi.</p>
-<h2 id="Why-Use-Them-Together" class="common-anchor-header">Mengapa Menggunakan Keduanya?<button data-href="#Why-Use-Them-Together" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus is a distributed vector database that aims to store, index and manage massive embedding vectors. Its ability to efficiently index and search through trillions of vectors makes Milvus a go-to choice for AI and machine learning workloads.</p>
+<p>Kubernetes (K8s), on the other hand, excels in managing and scaling containerized applications. It provides features like auto-scaling, self-healing, and load balancing, which are crucial for maintaining high availability and performance in production environments.</p>
+<h2 id="Why-Use-Them-Together" class="common-anchor-header">Why Use Them Together?<button data-href="#Why-Use-Them-Together" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,10 +46,10 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>K8 dapat secara otomatis menskalakan cluster Milvus berdasarkan beban kerja. Seiring dengan pertumbuhan data Anda atau peningkatan jumlah kueri, K8 dapat menjalankan lebih banyak instance Milvus untuk menangani beban, sehingga aplikasi Anda tetap responsif.</p>
-<p>Salah satu fitur yang menonjol dari K8 adalah penskalaan horizontalnya, yang membuat perluasan cluster Milvus Anda sangat mudah. Seiring dengan pertumbuhan dataset Anda, K8 dengan mudah mengakomodasi pertumbuhan ini, menjadikannya solusi yang mudah dan efisien.</p>
-<p>Selain itu, kemampuan untuk menangani kueri juga meningkat secara horizontal dengan K8. Ketika beban kueri meningkat, K8 dapat menggunakan lebih banyak instance Milvus untuk menangani kueri pencarian kemiripan yang meningkat, memastikan respons latensi yang rendah bahkan di bawah beban yang berat.</p>
-<h2 id="Prerequisites--Setting-Up-K8s" class="common-anchor-header">Prasyarat &amp; Menyiapkan K8<button data-href="#Prerequisites--Setting-Up-K8s" class="anchor-icon" translate="no">
+    </button></h2><p>K8s can automatically scale the Milvus clusters based on the workload. As your data grows or the number of queries increases, K8s can spin up more Milvus instances to handle the load, ensuring your applications remain responsive.</p>
+<p>One of the standout features of K8s is its horizontal scaling, which makes expanding your Milvus cluster a breeze. As your dataset grows, K8s effortlessly accommodates this growth, making it a straightforward and efficient solution.</p>
+<p>In addition, the ability to handle queries also scales horizontally with K8s. As the query load increases, K8s can deploy more Milvus instances to handle the increased similarity search queries, ensuring low latency responses even under heavy loads.</p>
+<h2 id="Prerequisites--Setting-Up-K8s" class="common-anchor-header">Prerequisites &amp; Setting Up K8s<button data-href="#Prerequisites--Setting-Up-K8s" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,27 +64,27 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prasyarat</h3><ul>
-<li><p><strong>Docker</strong> - Pastikan Docker telah terinstal di sistem Anda.</p></li>
-<li><p><strong>Kubernetes</strong> - Siapkan cluster Kubernetes. Anda dapat menggunakan <code translate="no">minikube</code> untuk pengembangan lokal atau layanan Kubernetes penyedia cloud untuk lingkungan produksi.</p></li>
-<li><p><strong>Helm</strong> - Instal Helm, manajer paket untuk Kubernetes, untuk membantu Anda mengelola aplikasi Kubernetes, Anda dapat memeriksa dokumentasi kami untuk mengetahui cara melakukannya <a href="https://milvus.io/docs/install_cluster-helm.md">https://milvus.io/docs/install_cluster-helm.md</a></p></li>
-<li><p><strong>Kubectl</strong> - Instal <code translate="no">kubectl</code>, alat baris perintah untuk berinteraksi dengan cluster Kubernetes, untuk menerapkan aplikasi, memeriksa dan mengelola sumber daya cluster, dan melihat log.</p></li>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><ul>
+<li><p><strong>Docker</strong> - Ensure Docker is installed on your system.</p></li>
+<li><p><strong>Kubernetes</strong> - Have a Kubernetes cluster ready. You can use <code translate="no">minikube</code> for local development or a cloud provider’s Kubernetes service for production environments.</p></li>
+<li><p><strong>Helm</strong> - Install Helm, a package manager for Kubernetes, to help you manage Kubernetes applications, you can check our documentation to see how to do that <a href="https://milvus.io/docs/install_cluster-helm.md">https://milvus.io/docs/install_cluster-helm.md</a></p></li>
+<li><p><strong>Kubectl</strong> - Install <code translate="no">kubectl</code>, a command-line tool for interacting with Kubernetes clusters, to deploy applications, inspect and manage cluster resources, and view logs.</p></li>
 </ul>
-<h3 id="Setting-Up-K8s" class="common-anchor-header">Menyiapkan K8</h3><p>Setelah menginstal semua yang diperlukan untuk menjalankan klaster K8s, dan jika Anda menggunakan <code translate="no">minikube</code>, mulailah klaster Anda dengan:</p>
+<h3 id="Setting-Up-K8s" class="common-anchor-header">Setting Up K8s</h3><p>After installing everything needed to run a K8s cluster, and if you used <code translate="no">minikube</code>, start your cluster with:</p>
 <pre><code translate="no">minikube start
 <button class="copy-code-btn"></button></code></pre>
-<p>Periksa status klaster K8s Anda dengan:</p>
+<p>Check the status of your K8s cluster with:</p>
 <pre><code translate="no">kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Deploying-Milvus-on-K8s" class="common-anchor-header">Menerapkan Milvus pada K8s</h3><p>Untuk penerapan ini, kami memilih Milvus dalam mode klaster untuk memanfaatkan kemampuan terdistribusi penuhnya. Kami akan menggunakan Helm, untuk menyederhanakan proses instalasi.</p>
-<p><strong>1. Perintah Instalasi Helm</strong></p>
+<h3 id="Deploying-Milvus-on-K8s" class="common-anchor-header">Deploying Milvus on K8s</h3><p>For this deployment, we’re opting for Milvus in cluster-mode to leverage its full distributed capabilities. We’ll be using Helm, to streamline the installation process.</p>
+<p><strong>1. Helm Installation Command</strong></p>
 <pre><code translate="no">helm install my-milvus milvus/milvus --<span class="hljs-built_in">set</span> pulsar.enabled=<span class="hljs-literal">false</span> --<span class="hljs-built_in">set</span> kafka.enabled=<span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Perintah ini menginstal Milvus pada cluster K8s Anda dengan Kafka diaktifkan dan Pulsar dinonaktifkan. Kafka berfungsi sebagai sistem pengiriman pesan dalam Milvus, menangani streaming data di antara berbagai komponen. Menonaktifkan Pulsar dan mengaktifkan Kafka akan menyesuaikan penerapan dengan preferensi dan persyaratan pengiriman pesan spesifik kita.</p>
-<p><strong>2. Penerusan Port</strong></p>
-<p>Untuk mengakses Milvus dari mesin lokal Anda, buat port forward: <code translate="no">kubectl port-forward svc/my-milvus 27017:19530</code>.</p>
-<p>Perintah ini memetakan port <code translate="no">19530</code> dari layanan Milvus <code translate="no">svc/my-milvus</code> ke port yang sama pada mesin lokal Anda, sehingga Anda dapat terhubung ke Milvus menggunakan alat lokal. Jika Anda membiarkan port lokal tidak ditentukan (seperti pada <code translate="no">:19530</code>), K8 akan mengalokasikan port yang tersedia, membuatnya dinamis. Pastikan Anda mencatat port lokal yang dialokasikan jika Anda memilih metode ini.</p>
-<p><strong>3. Memverifikasi Penyebaran:</strong></p>
+<p>This command installs Milvus on your K8s cluster with Kafka enabled and Pulsar disabled. Kafka serves as the messaging system within Milvus, handling data streaming between different components. Disabling Pulsar and enabling Kafka tailors the deployment to our specific messaging preferences and requirements.</p>
+<p><strong>2. Port Forwarding</strong></p>
+<p>To access Milvus from your local machine, create a port forward: <code translate="no">kubectl port-forward svc/my-milvus 27017:19530</code>.</p>
+<p>This command maps port <code translate="no">19530</code> from the Milvus service <code translate="no">svc/my-milvus</code> to the same port on your local machine, allowing you to connect to Milvus using local tools. If you leave the local port unspecified (as in <code translate="no">:19530</code>), K8s will allocate an available port, making it dynamic. Ensure you note the allocated local port if you choose this method.</p>
+<p><strong>3. Verifying the Deployment:</strong></p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods 
 
 NAME                                    READY   STATUS    RESTARTS   AGE
@@ -110,9 +110,9 @@ my-milvus-zookeeper<span class="hljs-number">-0</span>                   <span c
 my-milvus-zookeeper<span class="hljs-number">-1</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 <button class="copy-code-btn"></button></code></pre>
-<p>Anda akan melihat daftar pod yang mirip dengan keluaran di atas, semuanya dalam status Running. Ini mengindikasikan bahwa klaster Milvus Anda sudah beroperasi. Secara khusus, cari angka 1/1 di bawah kolom <code translate="no">READY</code>, yang menandakan bahwa setiap pod sudah siap dan berjalan. Jika ada pod yang tidak berada dalam status Running, Anda mungkin perlu menyelidiki lebih lanjut untuk memastikan penerapan yang sukses.</p>
-<p>Dengan klaster Milvus Anda yang telah diterapkan dan semua komponen telah dikonfirmasi berjalan, Anda sekarang siap untuk melanjutkan ke proses pemasukan dan pengindeksan data. Ini akan melibatkan penyambungan ke instance Milvus Anda, membuat koleksi, dan memasukkan vektor untuk pencarian dan pengambilan.</p>
-<h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">Pemasukan dan Pengindeksan Data<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
+<p>You should see a list of pods similar to the output above, all in the Running state. This indicates that your Milvus cluster is operational. Specifically, look for the 1/1 under the <code translate="no">READY</code> column, which signifies that each pod is fully ready and running. If any pods are not in the Running state, you may need to investigate further to ensure a successful deployment.</p>
+<p>With your Milvus cluster deployed and all components confirmed running, you’re now ready to proceed to data ingestion and indexing. This will involve connecting to your Milvus instance, creating collections, and inserting vectors for search and retrieval.</p>
+<h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">Data Ingestion and Indexing<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,13 +127,13 @@ my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span c
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk mulai menelan dan mengindeks data dalam cluster Milvus, kita akan menggunakan pymilvus SDK. Ada dua opsi instalasi:</p>
+    </button></h2><p>To start ingesting and indexing data in our Milvus cluster, we’ll use the pymilvus SDK. There are two installation options:</p>
 <ul>
-<li><p>SDK dasar: <code translate="no">pip install pymilvus</code></p></li>
-<li><p>Untuk penyematan teks yang kaya dan model tingkat lanjut: <code translate="no">pip install pymilvus[model]</code></p></li>
+<li><p>Basic SDK: <code translate="no">pip install pymilvus</code></p></li>
+<li><p>For rich text embeddings and advanced models: <code translate="no">pip install pymilvus[model]</code></p></li>
 </ul>
-<p>Saatnya memasukkan data ke dalam klaster kita, kita akan menggunakan <code translate="no">pymilvus</code>, Anda dapat menginstal SDK hanya dengan <code translate="no">pip install pymilvus</code> atau jika Anda ingin mengekstrak rich text embeddings, Anda juga dapat menggunakan <code translate="no">PyMilvus Models</code> dengan menginstal <code translate="no">pip install pymilvus[model]</code>.</p>
-<h3 id="Connecting-and-Creating-a-Collection" class="common-anchor-header">Menghubungkan dan Membuat Koleksi:</h3><p>Pertama, sambungkan ke instans Milvus Anda menggunakan port yang telah Anda teruskan sebelumnya. Pastikan URI sesuai dengan port lokal yang ditetapkan oleh K8:</p>
+<p>Time to insert data in our cluster, we’ll be using <code translate="no">pymilvus</code>, you can either install the SDK only with <code translate="no">pip install pymilvus</code> or if you want to extract rich text embeddings, you can also use <code translate="no">PyMilvus Models</code> by installing <code translate="no">pip install pymilvus[model]</code>.</p>
+<h3 id="Connecting-and-Creating-a-Collection" class="common-anchor-header">Connecting and Creating a Collection:</h3><p>First, connect to your Milvus instance using the port you forwarded earlier. Ensure the URI matches the local port assigned by K8s:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
@@ -142,8 +142,8 @@ client = <span class="hljs-title class_">MilvusClient</span>(
 
 client.<span class="hljs-title function_">create_collection</span>(collection_name=<span class="hljs-string">&quot;quick_setup&quot;</span>, dimension=<span class="hljs-number">5</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Parameter <code translate="no">dimension=5</code> mendefinisikan ukuran vektor untuk koleksi ini, yang penting untuk kemampuan pencarian vektor.</p>
-<h3 id="Insert-Data" class="common-anchor-header">Menyisipkan Data</h3><p>Berikut ini cara memasukkan kumpulan data awal, di mana setiap vektor mewakili sebuah item, dan bidang warna menambahkan atribut deskriptif:</p>
+<p>The <code translate="no">dimension=5</code> parameter defines the vector size for this collection, essential for the vector search capabilities.</p>
+<h3 id="Insert-Data" class="common-anchor-header">Insert Data</h3><p>Here’s how to insert an initial set of data, where each vector represents an item, and the color field adds a descriptive attribute:</p>
 <pre><code translate="no">data=[
     {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;vector&quot;</span>: [<span class="hljs-number">0.3580376395471989</span>, -<span class="hljs-number">0.6023495712049978</span>, <span class="hljs-number">0.18414012509913835</span>, -<span class="hljs-number">0.26286205330961354</span>, <span class="hljs-number">0.9029438446296592</span>], <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;pink_8682&quot;</span>},
     {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&quot;vector&quot;</span>: [<span class="hljs-number">0.19886812562848388</span>, <span class="hljs-number">0.06023560599112088</span>, <span class="hljs-number">0.6976963061752597</span>, <span class="hljs-number">0.2614474506242501</span>, <span class="hljs-number">0.838729485096104</span>], <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;red_7025&quot;</span>},
@@ -164,11 +164,11 @@ res = client.insert(
 
 <span class="hljs-built_in">print</span>(res)
 <button class="copy-code-btn"></button></code></pre>
-<p>Kode yang disediakan mengasumsikan bahwa Anda telah membuat koleksi dengan cara Penyiapan Cepat. Seperti ditunjukkan dalam kode di atas,</p>
-<p>Data yang akan disisipkan diatur ke dalam daftar kamus, di mana setiap kamus mewakili catatan data, yang disebut sebagai entitas.</p>
-<p>Setiap kamus berisi bidang yang tidak ditentukan skema bernama warna.</p>
-<p>Setiap kamus berisi kunci yang sesuai dengan bidang yang telah ditentukan sebelumnya dan bidang dinamis.</p>
-<h3 id="Insert-Even-More-Data" class="common-anchor-header">Masukkan Lebih Banyak Data</h3><pre><code translate="no">colors = [<span class="hljs-string">&quot;green&quot;</span>, <span class="hljs-string">&quot;blue&quot;</span>, <span class="hljs-string">&quot;yellow&quot;</span>, <span class="hljs-string">&quot;red&quot;</span>, <span class="hljs-string">&quot;black&quot;</span>, <span class="hljs-string">&quot;white&quot;</span>, <span class="hljs-string">&quot;purple&quot;</span>, <span class="hljs-string">&quot;pink&quot;</span>, <span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-string">&quot;brown&quot;</span>, <span class="hljs-string">&quot;grey&quot;</span>]
+<p>The provided code assumes that you have created a collection in the Quick Setup manner. As shown in the above code,</p>
+<p>The data to insert is organized into a list of dictionaries, where each dictionary represents a data record, termed as an entity.</p>
+<p>Each dictionary contains a non-schema-defined field named color.</p>
+<p>Each dictionary contains the keys corresponding to both pre-defined and dynamic fields.</p>
+<h3 id="Insert-Even-More-Data" class="common-anchor-header">Insert Even More Data</h3><pre><code translate="no">colors = [<span class="hljs-string">&quot;green&quot;</span>, <span class="hljs-string">&quot;blue&quot;</span>, <span class="hljs-string">&quot;yellow&quot;</span>, <span class="hljs-string">&quot;red&quot;</span>, <span class="hljs-string">&quot;black&quot;</span>, <span class="hljs-string">&quot;white&quot;</span>, <span class="hljs-string">&quot;purple&quot;</span>, <span class="hljs-string">&quot;pink&quot;</span>, <span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-string">&quot;brown&quot;</span>, <span class="hljs-string">&quot;grey&quot;</span>]
 data = [ {
     <span class="hljs-string">&quot;id&quot;</span>: i, 
     <span class="hljs-string">&quot;vector&quot;</span>: [ random.uniform(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>) <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>) ], 
@@ -182,7 +182,7 @@ res = client.insert(
 
 <span class="hljs-built_in">print</span>(res)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Similarity-Search" class="common-anchor-header">Pencarian Kemiripan<button data-href="#Similarity-Search" class="anchor-icon" translate="no">
+<h2 id="Similarity-Search" class="common-anchor-header">Similarity Search<button data-href="#Similarity-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -197,7 +197,7 @@ res = client.insert(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah mengisi koleksi, Anda dapat melakukan pencarian kemiripan untuk menemukan vektor yang mendekati vektor kueri. Nilai variabel query_vectors adalah sebuah daftar yang berisi sub-daftar float. Sub-daftar mewakili penyematan vektor 5 dimensi.</p>
+    </button></h2><p>After populating the collection, you can perform a similarity search to find vectors close to a query vector. The value of the query_vectors variable is a list containing a sub-list of floats. The sub-list represents a vector embedding of 5 dimensions.</p>
 <pre><code translate="no">query_vectors = [
     [0.041732933, 0.013779674, -0.027564144, -0.013061441, 0.009748648]
 ]
@@ -210,8 +210,8 @@ res = client.search(
 
 <span class="hljs-built_in">print</span>(res)
 <button class="copy-code-btn"></button></code></pre>
-<p>Kueri ini mencari 3 vektor teratas yang paling mirip dengan vektor kueri kita, yang menunjukkan kemampuan pencarian Milvus yang kuat.</p>
-<h2 id="Uninstall-Milvus-from-K8s" class="common-anchor-header">Copot pemasangan Milvus dari K8<button data-href="#Uninstall-Milvus-from-K8s" class="anchor-icon" translate="no">
+<p>This query searches for the top 3 vectors most similar to our query vector, demonstrating Milvus’s powerful search capabilities.</p>
+<h2 id="Uninstall-Milvus-from-K8s" class="common-anchor-header">Uninstall Milvus from K8s<button data-href="#Uninstall-Milvus-from-K8s" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -226,9 +226,9 @@ res = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah Anda selesai dengan tutorial ini, silakan hapus instalan Milvus dari cluster K8s Anda dengan:<code translate="no">helm uninstall my-milvus</code>.</p>
-<p>Perintah ini akan menghapus semua komponen Milvus yang digunakan dalam rilis <code translate="no">my-milvus</code>, membebaskan sumber daya cluster.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>Once you are done with this tutorial, feel free to uninstall Milvus from your K8s cluster with:<code translate="no">helm uninstall my-milvus</code>.</p>
+<p>This command will remove all Milvus components deployed in the <code translate="no">my-milvus</code> release, freeing up cluster resources.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -244,7 +244,7 @@ res = client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Menerapkan Milvus di cluster Kubernetes menunjukkan skalabilitas dan fleksibilitas basis data vektor dalam menangani beban kerja AI dan pembelajaran mesin. Melalui tutorial ini, Anda telah mempelajari dasar-dasar menyiapkan Milvus dengan Helm, membuat koleksi, dan melakukan konsumsi data serta pencarian kemiripan.</p></li>
-<li><p>Menginstal Milvus di cluster Kubernetes dengan Helm seharusnya sangat mudah. Untuk mempelajari lebih dalam tentang penskalaan cluster Milvus untuk kumpulan data yang lebih besar atau beban kerja yang lebih intensif, dokumentasi kami menawarkan panduan terperinci <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
+<li><p>Deploying Milvus on a Kubernetes cluster showcases the scalability and flexibility of vector databases in handling AI and machine learning workloads. Through this tutorial, you’ve learned the basics of setting up Milvus with Helm, creating a collection, and performing data ingestion and similarity searches.</p></li>
+<li><p>Installing Milvus on a Kubernetes cluster with Helm should be straightforward. To go deeper into scaling Milvus clusters for larger datasets or more intensive workloads, our documentation offers detailed guidance <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
 </ul>
-<p>Jangan ragu untuk memeriksa kode di <a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a>, melihat <a href="https://github.com/milvus-io/milvus">Milvus</a>, bereksperimen dengan berbagai konfigurasi dan kasus penggunaan, dan berbagi pengalaman Anda dengan komunitas dengan bergabung di <a href="https://discord.gg/FG6hMJStWu">Discord</a> kami.</p>
+<p>Feel free to check out the code on <a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a>, check out <a href="https://github.com/milvus-io/milvus">Milvus</a>, experiment with different configurations and use cases, and share your experiences with the community by joining our <a href="https://discord.gg/FG6hMJStWu">Discord</a>.</p>

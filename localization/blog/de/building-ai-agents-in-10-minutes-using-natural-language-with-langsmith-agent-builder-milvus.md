@@ -1,15 +1,14 @@
 ---
 id: >-
   building-ai-agents-in-10-minutes-using-natural-language-with-langsmith-agent-builder-milvus.md
-title: >-
-  Erstellung von KI-Agenten in 10 Minuten mit natürlicher Sprache mit LangSmith
-  Agent Builder + Milvus
+title: >
+  Building AI Agents in 10 Minutes Using Natural Language with LangSmith Agent
+  Builder + Milvus
 author: Min Yin
 date: 2026-01-22T00:00:00.000Z
 desc: >-
-  Erfahren Sie, wie Sie mit LangSmith Agent Builder und Milvus in wenigen
-  Minuten speicherfähige KI-Agenten erstellen können - ohne Code, in natürlicher
-  Sprache und produktionsreif.
+  Learn how to build memory-enabled AI agents in minutes using LangSmith Agent
+  Builder and Milvus—no code, natural language, production-ready.
 cover: assets.zilliz.com/cover_LS_MVS_ab8af19bfa.png
 tag: Tutorials
 recommend: false
@@ -23,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/building-ai-agents-in-10-minutes-using-natural-language-with-langsmith-agent-builder-milvus.md
 ---
-<p>Da die Entwicklung von KI immer schneller voranschreitet, entdecken immer mehr Teams, dass für die Entwicklung eines KI-Assistenten nicht unbedingt ein Hintergrundwissen im Bereich Softwaretechnik erforderlich ist. Die Leute, die Assistenten am meisten brauchen - Produktteams, Betriebsabläufe, Support, Forscher - wissen oft genau, was der Agent tun soll, aber nicht, wie man es in Code umsetzt. Herkömmliche "No-Code"-Tools versuchten, diese Lücke mit Drag-and-Drop-Grafiken zu schließen, aber sie brechen in dem Moment zusammen, in dem Sie echtes Agentenverhalten benötigen: mehrstufiges Denken, Verwendung von Tools oder persistenter Speicher.</p>
-<p>Der neu veröffentlichte <a href="https://www.langchain.com/langsmith/agent-builder"><strong>LangSmith Agent Builder</strong></a> verfolgt einen anderen Ansatz. Anstatt Workflows zu entwerfen, beschreiben Sie die Ziele des Agenten und die verfügbaren Werkzeuge in einfacher Sprache, und die Laufzeitumgebung übernimmt die Entscheidungsfindung. Keine Flussdiagramme, keine Skripte - nur eine klare Absicht.</p>
-<p>Aber Absicht allein macht noch keinen intelligenten Assistenten. Das <strong>Gedächtnis</strong> tut es. Hier bietet <a href="https://milvus.io/"><strong>Milvus</strong></a>, die weit verbreitete Open-Source-Vektordatenbank, die Grundlage. Durch die Speicherung von Dokumenten und Gesprächsverläufen als Einbettungen ermöglicht Milvus Ihrem Agenten, sich an den Kontext zu erinnern, relevante Informationen abzurufen und in großem Umfang präzise zu reagieren.</p>
-<p>Dieser Leitfaden zeigt Ihnen, wie Sie mit <strong>LangSmith Agent Builder und Milvus</strong> einen produktionsreifen, speicherfähigen KI-Assistenten erstellen können, ohne eine einzige Zeile Code schreiben zu müssen.</p>
-<h2 id="What-is-LangSmith-Agent-Builder-and-How-It-Works" class="common-anchor-header">Was ist LangSmith Agent Builder und wie funktioniert er?<button data-href="#What-is-LangSmith-Agent-Builder-and-How-It-Works" class="anchor-icon" translate="no">
+<p>As AI development accelerates, more teams are discovering that building an AI assistant doesn’t necessarily require a software engineering background. The people who need assistants the most—product teams, operations, support, researchers—often know exactly what the agent should do, but not how to implement it in code. Traditional “no-code” tools tried to bridge that gap with drag-and-drop canvases, yet they collapse the moment you need real agent behavior: multi-step reasoning, tool use, or persistent memory.</p>
+<p>The newly released <a href="https://www.langchain.com/langsmith/agent-builder"><strong>LangSmith Agent Builder</strong></a> takes a different approach. Instead of designing workflows, you describe the agent’s goals and available tools in plain language, and the runtime handles the decision-making. No flowcharts, no scripting—just clear intent.</p>
+<p>But intent alone doesn’t produce an intelligent assistant. <strong>Memory</strong> does. This is where <a href="https://milvus.io/"><strong>Milvus</strong></a>, the widely adopted open-source vector database, provides the foundation. By storing documents and conversation history as embeddings, Milvus allows your agent to recall context, retrieve relevant information, and respond accurately at scale.</p>
+<p>This guide walks through how to build a production-ready, memory-enabled AI assistant using <strong>LangSmith Agent Builder + Milvus</strong>, all without writing a single line of code.</p>
+<h2 id="What-is-LangSmith-Agent-Builder-and-How-It-Works" class="common-anchor-header">What is LangSmith Agent Builder and How It Works?<button data-href="#What-is-LangSmith-Agent-Builder-and-How-It-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,15 +41,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wie der Name schon sagt, ist <a href="https://www.google.com/search?q=LangSmith+Agent+Builder&amp;oq=what+is+LangSmith+Agent+Builder&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIGCAgQABgDMggICRAAGBYYHtIBCTI1OTJqMGoxNagCCLACAfEF2Mylr_IuXLk&amp;sourceid=chrome&amp;ie=UTF-8&amp;ved=2ahUKEwjV1LfvxZ6SAxVFsFYBHYzTJAsQgK4QegQIARAB">LangSmith Agent Builder</a> ein No-Code-Tool von LangChain, mit dem Sie KI-Agenten in einfacher Sprache erstellen, einsetzen und verwalten können. Anstatt Logik zu schreiben oder visuelle Abläufe zu entwerfen, erklären Sie, was der Agent tun soll, welche Tools er verwenden kann und wie er sich verhalten soll. Das System kümmert sich dann um den schwierigen Teil - die Erstellung von Eingabeaufforderungen, die Auswahl von Tools, die Verknüpfung von Komponenten und die Aktivierung von Speicher.</p>
+    </button></h2><p>Just as its name reveals, <a href="https://www.google.com/search?q=LangSmith+Agent+Builder&amp;oq=what+is+LangSmith+Agent+Builder&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIGCAgQABgDMggICRAAGBYYHtIBCTI1OTJqMGoxNagCCLACAfEF2Mylr_IuXLk&amp;sourceid=chrome&amp;ie=UTF-8&amp;ved=2ahUKEwjV1LfvxZ6SAxVFsFYBHYzTJAsQgK4QegQIARAB">LangSmith Agent Builder</a> is a no-code tool from LangChain that lets you build, deploy, and manage AI agents using plain language. Instead of writing logic or designing visual flows, you explain what the agent should do, what tools it can use, and how it should behave. The system then handles the hard parts—generating prompts, selecting tools, wiring components together, and enabling memory.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/_57c5cee35b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Im Gegensatz zu herkömmlichen No-Code- oder Workflow-Tools verfügt Agent Builder nicht über eine Drag-and-Drop-Oberfläche und keine Knotenbibliothek. Sie interagieren mit ihm auf die gleiche Weise wie mit ChatGPT. Beschreiben Sie, was Sie bauen möchten, beantworten Sie ein paar klärende Fragen, und der Builder erstellt einen voll funktionsfähigen Agenten auf der Grundlage Ihrer Absicht.</p>
-<p>Hinter den Kulissen wird dieser Agent aus vier Kernbausteinen aufgebaut.</p>
+<p>Unlike traditional no-code or workflow tools, Agent Builder doesn’t have drag-and-drop canvas and no node library. You interact with it the same way you would with ChatGPT. Describe what you want to build, answer a few clarifying questions, and the Builder produces a fully functioning agent based on your intent.</p>
+<p>Behind the scenes, that agent is constructed from four core building blocks.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_05b90b1f3d.webp" alt="" class="doc-image" id="" />
@@ -58,12 +57,12 @@ origin: >-
   </span>
 </p>
 <ul>
-<li><strong>Eingabeaufforderung:</strong> Der Prompt ist das Gehirn des Agenten und definiert seine Ziele, Einschränkungen und Entscheidungslogik. LangSmith Agent Builder verwendet Meta-Prompting, um diesen automatisch zu erstellen: Sie beschreiben, was Sie wollen, es werden klärende Fragen gestellt, und Ihre Antworten werden zu einem detaillierten, produktionsreifen Systemprompt zusammengefasst. Anstatt die Logik von Hand zu schreiben, drücken Sie einfach Ihre Absicht aus.</li>
-<li><strong>Werkzeuge:</strong> Tools ermöglichen es dem Agenten, Maßnahmen zu ergreifen - das Senden von E-Mails, das Posten auf Slack, das Erstellen von Kalenderereignissen, das Durchsuchen von Daten oder das Aufrufen von APIs. Agent Builder integriert diese Tools über das Model Context Protocol (MCP), das eine sichere, erweiterbare Methode zur Offenlegung von Funktionen bietet. Benutzer können sich auf integrierte Integrationen verlassen oder benutzerdefinierte MCP-Server hinzufügen, darunter Milvus <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">MCP-Server</a>für die Vektorsuche und den Langzeitspeicher.</li>
-<li><strong>Auslöser:</strong> Auslöser definieren, wann ein Agent ausgeführt wird. Zusätzlich zur manuellen Ausführung können Sie Agenten an Zeitpläne oder externe Ereignisse anhängen, damit sie automatisch auf Nachrichten, E-Mails oder Webhook-Aktivitäten reagieren. Wenn ein Auslöser ausgelöst wird, startet Agent Builder einen neuen Ausführungs-Thread und führt die Logik des Agenten aus, was ein kontinuierliches, ereignisgesteuertes Verhalten ermöglicht.</li>
-<li><strong>Unteragenten:</strong> Unteragenten unterteilen komplexe Aufgaben in kleinere, spezialisierte Einheiten. Ein primärer Agent kann die Arbeit an Unteragenten delegieren - jeder mit eigener Eingabeaufforderung und eigenem Toolset -, so dass Aufgaben wie Datenabruf, Zusammenfassung oder Formatierung von speziellen Helfern erledigt werden. Auf diese Weise wird ein einzelner überladener Prompt vermieden und eine modularere, skalierbare Agentenarchitektur geschaffen.</li>
+<li><strong>Prompt:</strong> The prompt is the agent’s brain, defining its goals, constraints, and decision logic. LangSmith Agent Builder uses meta-prompting to build this automatically: you describe what you want, it asks clarifying questions, and your answers are synthesized into a detailed, production-ready system prompt. Instead of hand-writing logic, you simply express intent.</li>
+<li><strong>Tools:</strong> Tools let the agent take action—sending emails, posting to Slack, creating calendar events, searching data, or calling APIs. Agent Builder integrates these tools through the Model Context Protocol (MCP), which provides a secure, extensible way to expose capabilities. Users can rely on built-in integrations or add custom MCP servers, including Milvus <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">MCP server</a>s for vector search and long-term memory.</li>
+<li><strong>Triggers:</strong> Triggers define when an agent runs. In addition to manual execution, you can attach agents to schedules or external events so they automatically respond to messages, emails, or webhook activity. When a trigger fires, Agent Builder starts a new execution thread and runs the agent’s logic, enabling continuous, event-driven behavior.</li>
+<li><strong>Subagents:</strong> Subagents break complex tasks into smaller, specialized units. A primary agent can delegate work to subagents—each with its own prompt and toolset—so tasks like data retrieval, summarization, or formatting are handled by dedicated helpers. This avoids a single overloaded prompt and creates a more modular, scalable agent architecture.</li>
 </ul>
-<h2 id="How-Does-an-Agent-Remember-Your-Preferences" class="common-anchor-header">Wie merkt sich ein Agent Ihre Präferenzen?<button data-href="#How-Does-an-Agent-Remember-Your-Preferences" class="anchor-icon" translate="no">
+<h2 id="How-Does-an-Agent-Remember-Your-Preferences" class="common-anchor-header">How Does an Agent Remember Your Preferences?<button data-href="#How-Does-an-Agent-Remember-Your-Preferences" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,10 +77,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Was Agent Builder einzigartig macht, ist die Art und Weise, wie er mit dem <em>Speicher</em> umgeht. Anstatt die Einstellungen in den Chatverlauf zu packen, kann der Agent seine eigenen Verhaltensregeln während der Ausführung aktualisieren. Wenn Sie sagen: "Von nun an beende jede Slack-Nachricht mit einem Gedicht", behandelt der Agent dies nicht als einmalige Anforderung, sondern speichert es als dauerhafte Einstellung, die in zukünftigen Ausführungen gilt.</p>
-<p>Unter der Haube speichert der Agent eine interne Speicherdatei - im Wesentlichen seine sich entwickelnde Systemeingabeaufforderung. Jedes Mal, wenn er startet, liest er diese Datei, um zu entscheiden, wie er sich verhalten soll. Wenn Sie Korrekturen oder Auflagen machen, bearbeitet der Agent die Datei, indem er strukturierte Regeln hinzufügt, wie z. B. "Schließe das Briefing immer mit einem kurzen, aufmunternden Gedicht ab." Dieser Ansatz ist weitaus stabiler als das Verlassen auf den Gesprächsverlauf, da der Agent seine Betriebsanweisungen aktiv umschreibt, anstatt Ihre Präferenzen in einer Abschrift zu verbergen.</p>
-<p>Dieses Design stammt von DeepAgents FilesystemMiddleware, ist aber im Agent Builder vollständig abstrahiert. Sie berühren Dateien nie direkt: Sie drücken Aktualisierungen in natürlicher Sprache aus, und das System erledigt die Änderungen im Hintergrund. Wenn Sie mehr Kontrolle benötigen, können Sie einen benutzerdefinierten MCP-Server einbinden oder die DeepAgents-Schicht für eine erweiterte Speicheranpassung nutzen.</p>
-<h2 id="Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="common-anchor-header">Praktische Demo: Erstellen eines Milvus-Assistenten in 10 Minuten mit Agent Builder<button data-href="#Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="anchor-icon" translate="no">
+    </button></h2><p>What makes Agent Builder unique is how it treats <em>memory</em>. Instead of stuffing preferences into chat history, the agent can update its own behavior rules while running. If you say, “From now on, end every Slack message with a poem,” the agent doesn’t treat that as a one-off request—it stores it as a persistent preference that applies in future runs.</p>
+<p>Under the hood, the agent keeps an internal memory file—essentially its evolving system prompt. Each time it starts, it reads this file to decide how to behave. When you give corrections or constraints, the agent edits the file by adding structured rules like “Always close the briefing with a short uplifting poem.” This approach is far more stable than relying on conversation history because the agent actively rewrites its operating instructions rather than burying your preferences inside a transcript.</p>
+<p>This design comes from DeepAgents’ FilesystemMiddleware but is fully abstracted in Agent Builder. You never touch files directly: you express updates in natural language, and the system handles the edits behind the scenes. If you need more control, you can plug in a custom MCP server or drop to the DeepAgents layer for advanced memory customization.</p>
+<h2 id="Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="common-anchor-header">Hands-on Demo: Building a Milvus Assistant in 10 Minutes using Agent Builder<button data-href="#Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,35 +95,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem wir nun die Design-Philosophie hinter Agent Builder erläutert haben, wollen wir den gesamten Erstellungsprozess anhand eines praktischen Beispiels durchlaufen. Unser Ziel ist es, einen intelligenten Assistenten zu erstellen, der technische Fragen zu Milvus beantworten, die offizielle Dokumentation durchsuchen und sich die Präferenzen des Benutzers merken kann.</p>
-<h3 id="Step-1-Sign-In-to-the-LangChain-Website" class="common-anchor-header">Schritt 1. Anmeldung bei der LangChain-Website</h3><p>
+    </button></h2><p>Now that we’ve covered the design philosophy behind Agent Builder, let’s walk through the full build process with a hands-on example. Our goal is to create an intelligent assistant that can answer Milvus-related technical questions, search the official documentation, and remember user preferences over time.</p>
+<h3 id="Step-1-Sign-In-to-the-LangChain-Website" class="common-anchor-header">Step 1. Sign In to the LangChain Website</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_1_b3c461d39b.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Set-Up-Your-Anthropic-API-Key" class="common-anchor-header">Schritt 2. Richten Sie Ihren Anthropic-API-Schlüssel ein</h3><p><strong>Hinweis:</strong> Anthropic wird standardmäßig unterstützt. Sie können auch ein benutzerdefiniertes Modell verwenden, solange dessen Typ in der Liste der offiziell von LangChain unterstützten Modelle enthalten ist.</p>
+<h3 id="Step-2-Set-Up-Your-Anthropic-API-Key" class="common-anchor-header">Step 2. Set Up Your Anthropic API Key</h3><p><strong>Note:</strong> Anthropic is supported by default. You can also use a custom model, as long as its type is included in the list officially supported by LangChain.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_2_c04400695e.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>1. Fügen Sie einen API-Schlüssel hinzu</strong></p>
+<p><strong>1. Add an API Key</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_3_11db4b3824.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>2. Geben Sie den API-Schlüssel ein und speichern Sie ihn</strong></p>
+<p><strong>2. Enter and Save the API Key</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_4_abfc27d796.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Create-a-New-Agent" class="common-anchor-header">Schritt 3. Erstellen Sie einen neuen Agenten</h3><p><strong>Hinweis:</strong> Klicken Sie auf <strong>Mehr erfahren</strong>, um die Nutzungsdokumentation anzuzeigen.</p>
+<h3 id="Step-3-Create-a-New-Agent" class="common-anchor-header">Step 3. Create a New Agent</h3><p><strong>Note:</strong> Click <strong>Learn More</strong> to view the usage documentation.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_5_e90bf254f2.webp" alt="" class="doc-image" id="" />
@@ -138,7 +137,7 @@ origin: >-
   </span>
 </p>
 <ol>
-<li><strong>Konfigurieren Sie ein benutzerdefiniertes Modell (optional)</strong></li>
+<li><strong>Configure a Custom Model (Optional)</strong></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -146,7 +145,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>(1) Parameter eingeben und speichern</strong></p>
+<p><strong>(1) Enter Parameters and Save</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_8_85f9e3008f.webp" alt="" class="doc-image" id="" />
@@ -159,7 +158,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Describe-Your-Requirements-to-Create-the-Agent" class="common-anchor-header">Schritt 4. Beschreiben Sie Ihre Anforderungen, um den Agenten zu erstellen</h3><p><strong>Hinweis:</strong> Erstellen Sie den Agenten mit einer Beschreibung in natürlicher Sprache.</p>
+<h3 id="Step-4-Describe-Your-Requirements-to-Create-the-Agent" class="common-anchor-header">Step 4. Describe Your Requirements to Create the Agent</h3><p><strong>Note:</strong> Create the agent using a natural language description.</p>
 <pre><code translate="no">
 I need a Milvus technical consultant to <span class="hljs-built_in">help</span> me answer technical questions about vector databases. 
 
@@ -173,33 +172,37 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
   </span>
 </p>
 <ol>
-<li><strong>Das System stellt Folgefragen zur Verfeinerung der Anforderungen</strong></li>
+<li><strong>The System Asks Follow-Up Questions to Refine Requirements</strong></li>
 </ol>
-<p>Frage 1: Wählen Sie die Milvus-Index-Typen, die sich der Agent merken soll</p>
+<p>Question 1: Select the Milvus index types you want the agent to remember</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_11_050ac891f0.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Frage 2: Wählen Sie, wie der Agent technische Fragen behandeln soll  <span class="img-wrapper">
+<p>Question 2: Choose how the agent should handle technical questions
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_12_d1d6d4f2ed.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Frage 3: Geben Sie an, ob der Agent sich auf die Anleitung für eine bestimmte Milvus-Version konzentrieren soll  <span class="img-wrapper">
+<p>Question 3: Specify whether the agent should focus on guidance for a specific Milvus version
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_13_5d60df75e9.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-5-Review-and-Confirm-the-Generated-Agent" class="common-anchor-header">Schritt 5. Überprüfen und Bestätigen des generierten Agenten</h3><p><strong>Hinweis:</strong> Das System generiert die Agentenkonfiguration automatisch.</p>
+<h3 id="Step-5-Review-and-Confirm-the-Generated-Agent" class="common-anchor-header">Step 5. Review and Confirm the Generated Agent</h3><p><strong>Note:</strong> The system automatically generates the agent configuration.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_14_8a596ae853.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Bevor Sie den Agenten erstellen, können Sie seine Metadaten, Tools und Eingabeaufforderungen überprüfen. Wenn alles korrekt aussieht, klicken Sie auf <strong>Erstellen</strong>, um fortzufahren.</p>
+<p>Before creating the agent, you can review its metadata, tools, and prompts. Once everything looks correct, click <strong>Create</strong> to proceed.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_15_5c0b27aca7.webp" alt="" class="doc-image" id="" />
@@ -212,13 +215,13 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<h3 id="Step-6-Explore-the-Interface-and-Feature-Areas" class="common-anchor-header">Schritt 6. Erkunden Sie die Schnittstelle und die Funktionsbereiche</h3><p>Nachdem der Agent erstellt wurde, sehen Sie drei Funktionsbereiche in der unteren linken Ecke der Benutzeroberfläche:</p>
-<p><strong>(1) Auslöser</strong></p>
-<p>Auslöser definieren, wann der Agent ausgeführt werden soll, entweder als Reaktion auf externe Ereignisse oder nach einem Zeitplan:</p>
+<h3 id="Step-6-Explore-the-Interface-and-Feature-Areas" class="common-anchor-header">Step 6. Explore the Interface and Feature Areas</h3><p>After the agent is created, you’ll see three functional areas in the lower-left corner of the interface:</p>
+<p><strong>(1) Triggers</strong></p>
+<p>Triggers define when the agent should run, either in response to external events or on a schedule:</p>
 <ul>
-<li><strong>Slack:</strong> Aktivieren Sie den Agenten, wenn eine Nachricht in einem bestimmten Kanal eingeht.</li>
-<li><strong>Gmail:</strong> Auslösen des Agenten, wenn eine neue E-Mail eingeht</li>
-<li><strong>Cron:</strong> Führen Sie den Agenten in einem geplanten Intervall aus</li>
+<li><strong>Slack:</strong> Activate the agent when a message arrives in a specific channel</li>
+<li><strong>Gmail:</strong> Trigger the agent when a new email is received</li>
+<li><strong>Cron:</strong> Run the agent on a scheduled interval</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -226,13 +229,15 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<p><strong>(2) Werkzeugkasten</strong></p>
-<p>Dies ist der Satz von Tools, die der Agent aufrufen kann. Im gezeigten Beispiel werden die drei Tools automatisch während der Erstellung generiert, und Sie können weitere hinzufügen, indem Sie auf <strong>Tool hinzufügen</strong> klicken.  <span class="img-wrapper">
+<p><strong>(2) Toolbox</strong></p>
+<p>This is the set of tools the agent can call. In the example shown, the three tools are generated automatically during creation, and you can add more by clicking <strong>Add tool</strong>.
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_18_94637d4548.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Wenn Ihr Agent Vektorsuchfunktionen benötigt - wie z. B. die semantische Suche in großen Mengen technischer Dokumentation - können Sie den MCP-Server von Milvus einsetzen</strong> und ihn hier über die Schaltfläche <strong>MCP</strong> hinzufügen. Vergewissern Sie sich, dass der MCP-Server <strong>an einem erreichbaren Netzwerkendpunkt</strong> ausgeführt wird; andernfalls kann er von Agent Builder nicht aufgerufen werden.</p>
+<p><strong>If your agent needs vector search capabilities—such as semantic search across large volumes of technical documentation—you can deploy Milvus’s MCP Server</strong> and add it here using the <strong>MCP</strong> button. Make sure the MCP server is running <strong>at a reachable network endpoint</strong>; otherwise, Agent Builder won’t be able to invoke it.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_19_94fe99a3b8.webp" alt="" class="doc-image" id="" />
@@ -245,9 +250,9 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<p><strong>(3) Unter-Agenten</strong></p>
-<p>Erstellen Sie unabhängige Agentenmodule für bestimmte Teilaufgaben, um ein modulares Systemdesign zu ermöglichen.</p>
-<h3 id="Step-7-Test-the-Agent" class="common-anchor-header">Schritt 7. Testen Sie den Agenten</h3><p>Klicken Sie auf <strong>Test</strong> in der oberen rechten Ecke, um den Testmodus zu aktivieren. Nachfolgend sehen Sie ein Beispiel für die Testergebnisse.</p>
+<p><strong>(3) Sub-agents</strong></p>
+<p>Create independent agent modules dedicated to specific subtasks, enabling a modular system design.</p>
+<h3 id="Step-7-Test-the-Agent" class="common-anchor-header">Step 7. Test the Agent</h3><p>Click <strong>Test</strong> in the top-right corner to enter testing mode. Below is a sample of the test results.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_22_527619519b.webp" alt="" class="doc-image" id="" />
@@ -272,7 +277,7 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<h2 id="Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="common-anchor-header">Agent Builder vs. DeepAgents: Welches sollten Sie wählen?<button data-href="#Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="anchor-icon" translate="no">
+<h2 id="Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="common-anchor-header">Agent Builder vs. DeepAgents: Which One Should You Choose?<button data-href="#Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -287,12 +292,12 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>LangChain bietet mehrere Agenten-Frameworks an, und die richtige Wahl hängt davon ab, wie viel Kontrolle Sie benötigen. <a href="https://www.google.com/search?q=DeepAgents&amp;newwindow=1&amp;sca_esv=0e7ec9ce2aa7d5b4&amp;sxsrf=ANbL-n5pe1KqjmJVjQCqmc3jneYhmGGOUg%3A1769066335766&amp;ei=X89xab21Lp3a1e8Ppam06Ag&amp;ved=2ahUKEwio15nYzZ6SAxU_mq8BHcf3BqUQgK4QegQIARAB&amp;uact=5&amp;oq=what+is+DeepAgents&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiEndoYXQgaXMgRGVlcEFnZW50czIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzINEAAYgAQYsAMYQxiKBTINEAAYgAQYsAMYQxiKBUi8BlAYWL8FcAF4AZABAJgBqgKgAbAKqgEFMC4yLjS4AQPIAQD4AQGYAgGgAgyYAwCIBgGQBgqSBwExoAehHrIHALgHAMIHAzMtMcgHCYAIAA&amp;sclient=gws-wiz-serp">DeepAgents</a> ist ein Werkzeug zur Erstellung von Agenten. Es wird verwendet, um autonome, langlaufende KI-Agenten zu erstellen, die komplexe, mehrstufige Aufgaben bewältigen. Es basiert auf LangGraph und unterstützt fortschrittliche Planung, dateibasiertes Kontextmanagement und die Orchestrierung von Subagenten, was es ideal für Projekte mit langem Zeithorizont oder für die Produktion macht.</p>
-<p>Was ist der Unterschied zu <strong>Agent Builder</strong>, und wann sollten Sie beide einsetzen?</p>
-<p><strong>Agent Builder</strong> konzentriert sich auf Einfachheit und Geschwindigkeit. Er abstrahiert die meisten Implementierungsdetails und ermöglicht es Ihnen, Ihren Agenten in natürlicher Sprache zu beschreiben, Tools zu konfigurieren und ihn sofort auszuführen. Arbeitsspeicher, Toolverwendung und Arbeitsabläufe, an denen der Mensch beteiligt ist, werden für Sie erledigt. Dadurch eignet sich Agent Builder perfekt für Rapid Prototyping, interne Tools und Validierungen im Frühstadium, bei denen die Benutzerfreundlichkeit wichtiger ist als eine detaillierte Kontrolle.</p>
-<p><strong>DeepAgents</strong> hingegen ist für Szenarien konzipiert, in denen Sie die volle Kontrolle über Speicher, Ausführung und Infrastruktur benötigen. Sie können die Middleware anpassen, jedes Python-Tool integrieren, das Speicher-Backend modifizieren (einschließlich der Persistenz des Speichers in <a href="https://milvus.io/blog">Milvus</a>) und den Zustandsgraphen des Agenten explizit verwalten. Der Nachteil ist der technische Aufwand: Sie müssen selbst Code schreiben, Abhängigkeiten verwalten und Fehlermodi handhaben, aber Sie erhalten einen vollständig anpassbaren Agent-Stack.</p>
-<p>Wichtig ist, dass <strong>Agent Builder und DeepAgents keine getrennten Ökosysteme sind - sie bilden ein einziges Kontinuum</strong>. Agent Builder ist auf DeepAgents aufgebaut. Das bedeutet, dass Sie mit einem schnellen Prototyp in Agent Builder beginnen und dann zu DeepAgents wechseln können, wenn Sie mehr Flexibilität benötigen, ohne alles von Grund auf neu schreiben zu müssen. Der umgekehrte Weg funktioniert ebenfalls: In DeepAgents erstellte Muster können als Agent Builder-Vorlagen verpackt werden, so dass auch technisch nicht versierte Benutzer sie wiederverwenden können.</p>
-<h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>LangChain offers multiple agent frameworks, and the right choice depends on how much control you need. <a href="https://www.google.com/search?q=DeepAgents&amp;newwindow=1&amp;sca_esv=0e7ec9ce2aa7d5b4&amp;sxsrf=ANbL-n5pe1KqjmJVjQCqmc3jneYhmGGOUg%3A1769066335766&amp;ei=X89xab21Lp3a1e8Ppam06Ag&amp;ved=2ahUKEwio15nYzZ6SAxU_mq8BHcf3BqUQgK4QegQIARAB&amp;uact=5&amp;oq=what+is+DeepAgents&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiEndoYXQgaXMgRGVlcEFnZW50czIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzINEAAYgAQYsAMYQxiKBTINEAAYgAQYsAMYQxiKBUi8BlAYWL8FcAF4AZABAJgBqgKgAbAKqgEFMC4yLjS4AQPIAQD4AQGYAgGgAgyYAwCIBgGQBgqSBwExoAehHrIHALgHAMIHAzMtMcgHCYAIAA&amp;sclient=gws-wiz-serp">DeepAgents</a> is agent building tool. It is used to build autonomous, long-running AI agents that handle complex, multi-step tasks. Built on LangGraph, it supports advanced planning, file-based context management, and subagent orchestration—making it ideal for long-horizon or production-grade projects.</p>
+<p>So how does that compare to <strong>Agent Builder</strong>, and when should you use each?</p>
+<p><strong>Agent Builder</strong> focuses on simplicity and speed. It abstracts away most implementation details, letting you describe your agent in natural language, configure tools, and run it immediately. Memory, tool use, and human-in-the-loop workflows are handled for you. This makes Agent Builder perfect for rapid prototyping, internal tools, and early-stage validation where ease of use matters more than granular control.</p>
+<p><strong>DeepAgents</strong>, by contrast, is designed for scenarios where you need full control over memory, execution, and infrastructure. You can customize middleware, integrate any Python tool, modify the storage backend (including persisting memory in <a href="https://milvus.io/blog">Milvus</a>), and explicitly manage the agent’s state graph. The trade-off is engineering effort—you write code, manage dependencies, and handle failure modes yourself—but you get a fully customizable agent stack.</p>
+<p>Importantly, <strong>Agent Builder and DeepAgents are not separate ecosystems—they form a single continuum</strong>. Agent Builder is built on top of DeepAgents. That means you can start with a quick prototype in Agent Builder, then drop into DeepAgents when you need more flexibility, without rewriting everything from scratch. The reverse also works: patterns built in DeepAgents can be packaged as Agent Builder templates so non-technical users can reuse them.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -307,6 +312,6 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dank der Entwicklung der Künstlichen Intelligenz (KI) sind für die Entwicklung von KI-Agenten keine komplexen Arbeitsabläufe oder schweres Engineering mehr erforderlich. Mit LangSmith Agent Builder können Sie zustandsabhängige, langlebige Assistenten allein mit natürlicher Sprache erstellen. Sie konzentrieren sich darauf, zu beschreiben, was der Agent tun soll, während das System die Planung, die Werkzeugausführung und die laufenden Speicheraktualisierungen übernimmt.</p>
-<p>In Verbindung mit <a href="https://milvus.io/blog">Milvus</a> erhalten diese Agenten einen zuverlässigen, dauerhaften Speicher für die semantische Suche, die Verfolgung von Präferenzen und den langfristigen Kontext über mehrere Sitzungen hinweg. Ganz gleich, ob Sie eine Idee validieren oder ein skalierbares System bereitstellen möchten, LangSmith Agent Builder und Milvus bieten eine einfache, flexible Grundlage für Agenten, die nicht nur reagieren, sondern sich auch erinnern und mit der Zeit verbessern.</p>
-<p>Haben Sie Fragen oder möchten Sie eine ausführliche Einführung? Treten Sie unserem <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack-Kanal</a> bei oder buchen Sie eine 20-minütige <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus-Sprechstunde</a>, um eine persönliche Beratung zu erhalten.</p>
+    </button></h2><p>Thanks to the development of AI, building AI agents no longer requires complex workflows or heavy engineering. With LangSmith Agent Builder, you can create stateful, long-running assistants using natural language alone. You focus on describing what the agent should do, while the system handles planning, tool execution, and ongoing memory updates.</p>
+<p>Paired with <a href="https://milvus.io/blog">Milvus</a>, these agents gain reliable, persistent memory for semantic search, preference tracking, and long-term context across sessions. Whether you’re validating an idea or deploying a scalable system, LangSmith Agent Builder and Milvus provide a simple, flexible foundation for agents that don’t just respond—they remember and improve over time.</p>
+<p>Have questions or want a deeper walkthrough? Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session for personalized guidance.</p>

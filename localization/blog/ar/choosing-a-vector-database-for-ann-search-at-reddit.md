@@ -1,6 +1,7 @@
 ---
 id: choosing-a-vector-database-for-ann-search-at-reddit.md
-title: اختيار قاعدة بيانات المتجهات للبحث عن الشبكة العنكبوتية في Reddit
+title: |
+  Choosing a vector database for ANN search at Reddit
 author: Chris Fournie
 date: 2025-11-28T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Nov_29_2025_12_03_05_AM_min_1_05250269a8.png
@@ -12,14 +13,14 @@ meta_keywords: 'Milvus, vector database, reddit'
 meta_title: |
   Choosing a vector database for ANN search at Reddit
 desc: >-
-  يصف هذا المنشور العملية التي استخدمها فريق Reddit لاختيار قاعدة بيانات
-  المتجهات الأكثر ملاءمة وسبب اختيارهم لـ Milvus.
+  This post describes the process the Reddit team used to select their most
+  suitable vector database and why they chose Milvus.
 origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-reddit.md'
 ---
-<p><em>كتب هذا المنشور كريس فورني، مهندس البرمجيات في ريديت، ونُشر في الأصل على موقع</em> <a href="https://www.reddit.com/r/RedditEng/comments/1ozxnjc/choosing_a_vector_database_for_ann_search_at/">ريديت،</a> ويُعاد نشره هنا بإذن.</p>
-<p>في عام 2024، استخدمت فرق ريديت مجموعة متنوعة من الحلول لإجراء بحث متجه الجار الأقرب التقريبي (ANN). بدءًا من <a href="https://docs.cloud.google.com/vertex-ai/docs/vector-search/overview">Vertex AI Vector Search</a> من Google وتجربة استخدام <a href="https://solr.apache.org/guide/solr/latest/query-guide/dense-vector-search.html">بحث متجه ANN في أباتشي سولر (Apache Solr</a> ) في بعض مجموعات البيانات الأكبر حجمًا، إلى <a href="https://github.com/facebookresearch/faiss">مكتبة FAISS</a> من فيسبوك لمجموعات البيانات الأصغر (المستضافة في سيارات جانبية متدرجة رأسيًا). أراد المزيد والمزيد من الفرق في Reddit حلاً مدعومًا على نطاق واسع للبحث عن متجهات ANN يكون فعالاً من حيث التكلفة، ويتمتع بميزات البحث التي يرغبون فيها، ويمكنه التوسع في بيانات بحجم Reddit. لتلبية هذه الحاجة، بحثنا في عام 2025 عن قاعدة بيانات المتجهات المثالية لفرق Reddit.</p>
-<p>يصف هذا المنشور العملية التي استخدمناها لاختيار أفضل قاعدة بيانات متجهة لاحتياجات Reddit اليوم. وهو لا يصف أفضل قاعدة بيانات متجهات بشكل عام، ولا مجموعة المتطلبات الوظيفية وغير الوظيفية الأكثر أهمية لجميع الحالات. إنه يصف ما قدّره ريديت وثقافته الهندسية وأعطاه الأولوية عند اختيار قاعدة بيانات المتجهات. قد يكون هذا المنشور بمثابة مصدر إلهام لجمع المتطلبات الخاصة بك وتقييمها، ولكن لكل مؤسسة ثقافتها وقيمها واحتياجاتها الخاصة.</p>
-<h2 id="Evaluation-process" class="common-anchor-header">عملية التقييم<button data-href="#Evaluation-process" class="anchor-icon" translate="no">
+<p><em>This post was written by Chris Fournie, the Staff Software Engineer at Reddit, and originally published on</em> <a href="https://www.reddit.com/r/RedditEng/comments/1ozxnjc/choosing_a_vector_database_for_ann_search_at/">Reddit</a>, and is reposted here with permission.</p>
+<p>In 2024, Reddit teams used a variety of solutions to perform approximate nearest neighbour (ANN) vector search. From Google’s <a href="https://docs.cloud.google.com/vertex-ai/docs/vector-search/overview">Vertex AI Vector Search</a> and experimenting with using <a href="https://solr.apache.org/guide/solr/latest/query-guide/dense-vector-search.html">Apache Solr’s ANN vector search</a> for some larger datasets, to Facebook’s <a href="https://github.com/facebookresearch/faiss">FAISS library</a> for smaller datasets (hosted in vertically scaled side-cars). More and more teams at Reddit wanted a broadly supported ANN vector search solution that was cost-effective, had the search features they desired, and could scale to Reddit-sized data. To address this need, in 2025, we sought out the ideal vector database for Reddit teams.</p>
+<p>This post describes the process we used to select the best vector database for Reddit’s needs today. It does not describe the best vector database overall, nor the most essential set of functional and non-functional requirements for all situations. It describes what Reddit and its engineering culture valued and prioritized when selecting a vector database. This post may serve as inspiration for your own requirements collection and evaluation, but each organization has its own culture, values, and needs.</p>
+<h2 id="Evaluation-process" class="common-anchor-header">Evaluation process<button data-href="#Evaluation-process" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,240 +35,240 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بشكل عام، كانت خطوات الاختيار هي</p>
-<p>1. جمع السياق من الفرق</p>
-<p>2. التقييم النوعي للحلول</p>
-<p>3. التقييم الكمي لأفضل المتنافسين</p>
-<p>4. الاختيار النهائي</p>
-<h3 id="1-Collect-context-from-teams" class="common-anchor-header">1. جمع السياق من الفرق</h3><p>تم جمع ثلاثة أجزاء من السياق من الفرق المهتمة بإجراء بحث متجه الشبكة النانوية الاصطناعية:</p>
+    </button></h2><p>Overall, the selection steps were:</p>
+<p>1. Collect context from teams</p>
+<p>2. Qualitatively evaluate solutions</p>
+<p>3. Quantitatively evaluate top contenders</p>
+<p>4. Final selection</p>
+<h3 id="1-Collect-context-from-teams" class="common-anchor-header">1. Collect context from teams</h3><p>Three pieces of context were collected from teams interested in performing ANN vector search:</p>
 <ul>
-<li><p>المتطلبات الوظيفية (على سبيل المثال، البحث المتجه الهجين والبحث المعجمي؟ استعلامات بحث النطاق؟ التصفية حسب السمات غير المتجهة؟)</p></li>
-<li><p>المتطلبات غير الوظيفية (على سبيل المثال، هل يمكن أن يدعم متجهات 1B؟ هل يمكن أن يصل زمن الوصول إلى أقل من 100 مللي ثانية من زمن الاستجابة P99؟)</p></li>
-<li><p>كانت فرق قواعد بيانات المتجهات مهتمة بالفعل</p></li>
+<li><p>Functional requirements (e.g., Hybrid vector and lexical search? Range search queries? Filtering by non-vector attributes?)</p></li>
+<li><p>Non-functional requirements (e.g, Can it support 1B vectors? Can it reach &lt;100ms P99 latency?)</p></li>
+<li><p>Vector databases teams were already interested in</p></li>
 </ul>
-<p>إجراء مقابلات مع الفرق لمعرفة المتطلبات ليس بالأمر الهيّن. سيصف الكثيرون احتياجاتهم من حيث كيفية حلهم للمشكلة حاليًا، والتحدي الذي يواجهك هو فهم هذا التحيز وإزالته.</p>
-<p>على سبيل المثال، كان أحد الفرق يستخدم بالفعل FAISS للبحث عن ناقلات الشبكة الوسيطة وذكر أن الحل الجديد يجب أن يُرجع 10 آلاف نتيجة بكفاءة لكل استدعاء بحث. بعد مزيد من المناقشة، كان السبب في الحصول على 10 آلاف نتيجة هو أنهم كانوا بحاجة إلى إجراء تصفية لاحقة، ولا يوفر FAISS تصفية نتائج الشبكة العصبية الاصطناعية في وقت الاستعلام. كانت مشكلتهم الفعلية هي أنهم كانوا بحاجة إلى التصفية، لذا فإن أي حل يوفر تصفية فعالة سيكون كافياً، وكان إرجاع 10 آلاف نتيجة مجرد حل بديل مطلوب لتحسين عملية التذكر. كانوا يرغبون بشكل مثالي في التصفية المسبقة للمجموعة بأكملها قبل العثور على أقرب الجيران.</p>
-<p>كما كان طلب قواعد بيانات المتجهات التي تستخدمها الفرق بالفعل أو مهتمة بها أمراً قيماً أيضاً. إذا كان لدى فريق واحد على الأقل وجهة نظر إيجابية عن الحل الحالي، فهذه علامة على أن قاعدة بيانات المتجهات يمكن أن تكون حلاً مفيداً يمكن مشاركته عبر الشركة بأكملها. إذا كان لدى الفرق وجهات نظر سلبية فقط عن الحل، فلا ينبغي أن ندرجه كخيار. كما أن قبول الحلول التي كانت الفرق مهتمة بها كان أيضًا وسيلة للتأكد من أن الفرق شعرت بأنها مشمولة في العملية وساعدنا في تشكيل قائمة أولية من المتنافسين الرئيسيين لتقييمها؛ فهناك الكثير من حلول البحث عن المتجهات في قواعد البيانات الجديدة والحالية في قواعد البيانات الجديدة والحالية بحيث لا يمكن اختبارها جميعًا بشكل شامل.</p>
-<h3 id="2-Qualitatively-evaluate-solutions" class="common-anchor-header">2. التقييم النوعي للحلول</h3><p>بدءًا من قائمة الحلول التي كانت الفرق مهتمة بها، ولإجراء تقييم نوعي لحلول البحث عن متجهات الشبكة العصبية الاصطناعية التي تناسب احتياجاتنا بشكل أفضل، قمنا</p>
+<p>Interviewing teams for requirements is not trivial. Many will describe their needs in terms of how they are currently solving a problem, and your challenge is to understand and remove that bias.</p>
+<p>For example, a team was already using FAISS for ANN vector search and stated that the new solution must efficiently return 10K results per search call. Upon further discussion, the reason for the 10K results was that they needed to perform post-hoc filtering, and FAISS does not offer filtering ANN results at query time. Their actual problem was that they needed filtering, so any solution that offered efficient filtering would suffice, and returning 10K results was simply a workaround required to improve their recall. They would ideally like to pre-filter the entire collection before finding nearest neighbours.</p>
+<p>Asking for the vector databases that teams were already using or were interested in was also valuable. If at least one team had a positive view of their current solution, it’s a sign that vector database could be a useful solution to share across the entire company. If teams only had negative views of a solution, then we should not include it as an option. Accepting solutions that teams were interested in was also a way to make sure that teams felt included in the process and helped us form an initial list of leading contenders to evaluate; there are too many ANN vector search solutions in new and existing databases to exhaustively test all of them.</p>
+<h3 id="2-Qualitatively-evaluate-solutions" class="common-anchor-header">2. Qualitatively evaluate solutions</h3><p>Starting with the list of solutions that teams were interested in, to qualitatively evaluate which ANN vector search solution best fit our needs, we:</p>
 <ul>
-<li><p>بحثنا في كل حل وقمنا بتسجيل مدى استيفائه لكل متطلب مقابل الأهمية المرجحة لذلك المتطلب</p></li>
-<li><p>إزالة الحلول بناءً على المعايير النوعية والمناقشة</p></li>
-<li><p>اخترنا أفضل الحلول N لاختبارها كميًا</p></li>
+<li><p>Researched each solution and scored how well it fulfilled each requirement vs the weighted importance of that requirement</p></li>
+<li><p>Removed solutions based on qualitative criteria and discussion</p></li>
+<li><p>Picked our top N solutions to quantitatively test</p></li>
 </ul>
-<p>تضمنت قائمتنا الأولية لحلول البحث عن متجهات الشبكة العصبية الاصطناعية ما يلي:</p>
+<p>Our starting list of ANN vector search solutions included:</p>
 <ul>
-<li><p><a href="https://milvus.io/">ميلفوس</a></p></li>
+<li><p><a href="https://milvus.io/">Milvus</a></p></li>
 <li><p>Qdrant</p></li>
-<li><p>ويفييت</p></li>
-<li><p>البحث المفتوح</p></li>
-<li><p>Pgvector (يستخدم بالفعل Postgres كنظام إدارة محتوى رقمي RDBMS)</p></li>
-<li><p>ريديس (مستخدم بالفعل كمخزن KV وذاكرة تخزين مؤقت)</p></li>
-<li><p>كاساندرا (يستخدم بالفعل للبحث غير الشبكي)</p></li>
-<li><p>Solr (يُستخدم بالفعل في البحث المعجمي وجرّب البحث المتجه)</p></li>
-<li><p>فيسبا</p></li>
-<li><p>بينيكون</p></li>
-<li><p>Vertex AI (مستخدمة بالفعل للبحث عن متجهات الشبكة العصبية الاصطناعية)</p></li>
+<li><p>Weviate</p></li>
+<li><p>Open Search</p></li>
+<li><p>Pgvector (already using Postgres as an RDBMS)</p></li>
+<li><p>Redis (already used as a KV store and cache)</p></li>
+<li><p>Cassandra (already used for non-ANN search)</p></li>
+<li><p>Solr (already using for lexical search and experimented with vector search)</p></li>
+<li><p>Vespa</p></li>
+<li><p>Pinecone</p></li>
+<li><p>Vertex AI (already used for ANN vector search)</p></li>
 </ul>
-<p>ثم أخذنا بعد ذلك كل المتطلبات الوظيفية وغير الوظيفية التي ذكرتها الفرق، بالإضافة إلى بعض القيود الأخرى التي تمثل قيمنا وأهدافنا الهندسية، وقمنا بوضع هذه الصفوف في جدول بيانات، وقمنا بتقييم مدى أهميتها (من 1 إلى 3؛ كما هو موضح في الجدول المختصر أدناه).</p>
-<p>بالنسبة لكل حل كنا نقارنه، قمنا بتقييم (على مقياس من 0 إلى 3) مدى تلبية كل نظام لهذا المطلب (كما هو موضح في الجدول أدناه). كان التقييم بهذه الطريقة غير موضوعي إلى حد ما، لذلك اخترنا نظامًا واحدًا وأعطينا أمثلة على الدرجات مع مبررات مكتوبة وجعلنا المراجعين يرجعون إلى تلك الأمثلة. قدمنا أيضًا الإرشادات التالية لتعيين قيمة كل درجة: قم بتعيين هذه القيمة إذا:</p>
+<p>We then took every functional and non-functional requirement that was mentioned by teams, plus some more constraints representing our engineering values and objectives, made those rows in a spreadsheet, and weighed how important they were (from 1 to 3; shown in the abridged table below).</p>
+<p>For each solution we were comparing, we evaluated (on a scale of 0 to 3) how well each system satisfied that requirement (as shown in the table below). Scoring in this way was somewhat subjective, so we picked one system and gave examples of scores with written rationale and had reviewers refer back to those examples. We also gave the following guidance for assigning each score value: assign this value if:</p>
 <ul>
-<li><p>0: لا يوجد دعم/دليل على دعم المتطلبات</p></li>
-<li><p>1: دعم أساسي أو غير كافٍ للمتطلبات.</p></li>
-<li><p>2: دعم المتطلبات بشكل معقول</p></li>
-<li><p>3: دعم المتطلبات القوي الذي يتجاوز الحلول المماثلة</p></li>
+<li><p>0: No support/evidence of requirement support</p></li>
+<li><p>1: Basic or inadequate requirement support</p></li>
+<li><p>2: Requirement reasonably supported</p></li>
+<li><p>3: Robust requirement support that goes above and beyond comparable solutions</p></li>
 </ul>
-<p>ثم أنشأنا بعد ذلك درجة إجمالية لكل حل من خلال أخذ مجموع حاصل ضرب درجة دعم المتطلبات الخاصة بالحل وأهمية ذلك المتطلب (على سبيل المثال، حصل Qdrant على 3 درجات لإعادة الترتيب/التصنيف، والتي لها أهمية 2، لذا 3 × 2 = 6، كرر ذلك لجميع الصفوف وجمعها معًا). في النهاية، يكون لدينا نتيجة إجمالية يمكن استخدامها كأساس لترتيب الحلول ومناقشتها، وأي المتطلبات أكثر أهمية (لاحظ أن النتيجة لا تُستخدم لاتخاذ قرار نهائي ولكن كأداة للمناقشة).</p>
-<p><strong><em>ملاحظة المحرر:</em></strong> <em>استندت هذه المراجعة إلى Milvus 2.4. لقد قمنا منذ ذلك الحين بطرح Milvus 2.5 و</em> <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><em>Milvus 2.6</em></a><em> و Milvus 3.0 على الأبواب، لذا قد تكون بعض الأرقام قديمة. ومع ذلك، لا تزال المقارنة تقدم رؤى قوية وتظل مفيدة للغاية.</em></p>
+<p>We then created an overall score for each solution by taking the sum of the product of a solution’s requirement score and that requirement’s importance (e.g., Qdrant scored 3 for re-ranking/score combining, which has importance 2, so 3 x 2 = 6, repeat that for all rows and sum together). At the end, we have an overall score that can be used as the basis for ranking and discussing solutions, and which requirements matter most (note that the score is not used to make a final decision but as a discussion tool).</p>
+<p><strong><em>Editor’s note:</em></strong> <em>This review was based on Milvus 2.4. We’ve since rolled out Milvus 2.5,</em> <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><em>Milvus 2.6</em></a><em>, and Milvus 3.0 is right around the corner, so a few numbers may be out of date. Even so, the comparison still offers strong insights and remains very helpful.</em></p>
 <table>
 <thead>
 <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>الفئة</strong></td><td><strong>الأهمية</strong></td><td><strong>كيودرانت</strong></td><td><a href="https://milvus.io/"><strong>ميلفوس</strong></a> <strong>(2.4)</strong></td><td><strong>كاساندرا</strong></td><td><strong>ويفييت</strong></td><td><strong>سولر</strong></td><td><strong>فيرتكس للذكاء الاصطناعي</strong></td></tr>
+<tr><td><strong>Category</strong></td><td><strong>Importance</strong></td><td><strong>Qdrant</strong></td><td><a href="https://milvus.io/"><strong>Milvus</strong></a> <strong>(2.4)</strong></td><td><strong>Cassandra</strong></td><td><strong>Weviate</strong></td><td><strong>Solr</strong></td><td><strong>Vertex AI</strong></td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>نوع البحث</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">بحث هجين</a></td><td>1</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>البحث عن الكلمات المفتاحية</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
-<tr><td>بحث تقريبي في الشبكة العصبية</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>بحث المدى</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td></tr>
-<tr><td>إعادة الترتيب/الجمع بين النتائج</td><td>2</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td><strong>Search Type</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Hybrid Search</a></td><td>1</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Keyword Search</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
+<tr><td>Approximate NN search</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Range Search</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>Re-ranking/score combining</td><td>2</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>1</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>طريقة الفهرسة</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><strong>Indexing Method</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>HNSW</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>يدعم طرق الفهرسة المتعددة</td><td>3</td><td>0</td><td>3</td><td>1</td><td>2</td><td>1</td><td>1</td></tr>
-<tr><td>التحويل الكمي</td><td>1</td><td>3</td><td>3</td><td>0</td><td>3</td><td>0</td><td>0</td></tr>
-<tr><td>التجزئة الحساسة للموقع (LSH)</td><td>1</td><td>0</td><td>0ملاحظة: <a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">يدعمها Milvus 2.6. </a></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Supports multiple indexing methods</td><td>3</td><td>0</td><td>3</td><td>1</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>Quantization</td><td>1</td><td>3</td><td>3</td><td>0</td><td>3</td><td>0</td><td>0</td></tr>
+<tr><td>Locality Sensitive Hashing (LSH)</td><td>1</td><td>0</td><td>0Note: <a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 2.6 supports it. </a></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>البيانات</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>أنواع المتجهات غير العائمة</td><td>1</td><td>2</td><td>2</td><td>0</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>سمات البيانات الوصفية على المتجهات (تدعم سمات متعددة، وحجم سجل كبير، إلخ)</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>خيارات تصفية البيانات الوصفية (يمكن التصفية على البيانات الوصفية، ولها تصفية قبل/بعد التصفية)</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td></tr>
-<tr><td>أنواع بيانات سمة البيانات الوصفية (مخطط قوي، مثل bool، int، سلسلة، json، مصفوفات)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
-<tr><td>حدود سمات البيانات الوصفية (استعلامات النطاق، على سبيل المثال 10 &lt; س &lt; 15)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>تنوع النتائج حسب السمة (على سبيل المثال الحصول على ما لا يزيد عن N نتائج من كل موقع فرعي في الرد)</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td><td>3</td><td>0</td></tr>
+<tr><td><strong>Data</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Vector types other than float</td><td>1</td><td>2</td><td>2</td><td>0</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Metadata attributes on vectors (supports multiple attribs, a large record size, etc.)</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Metadata filtering options (can filter on metadata, has pre/post filtering)</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td></tr>
+<tr><td>Metadata attribute datatypes (robust schema, e.g. bool, int, string, json, arrays)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
+<tr><td>Metadata attributes limits (range queries, e.g. 10 &lt; x &lt; 15)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Diversity of results by attribute (e.g. getting not more than N results from each subreddit in a response)</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td><td>3</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>المقياس</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>مؤشر متجه مئات الملايين</td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>2</td><td>3</td></tr>
-<tr><td>مؤشر متجه المليار</td><td>1</td><td>2</td><td>2</td><td></td><td>1</td><td>2</td><td>2</td></tr>
-<tr><td>متجهات الدعم 2k على الأقل</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td></tr>
-<tr><td>متجهات الدعم أكبر من 2 ك</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td>زمن انتقال P95 من 50 إلى 100 مللي ثانية في الثانية X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>2</td></tr>
-<tr><td>زمن انتقال P99 &lt;= 10 مللي ثانية عند X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td><td>2</td></tr>
-<tr><td>99.9% استرجاع التوفر 99.9%</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>توفر الفهرسة/التخزين بنسبة 99.99%</td><td>2</td><td>1</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td><strong>Scale</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Hundreds of millions vector index</td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>Billion vector index</td><td>1</td><td>2</td><td>2</td><td></td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td>Support vectors at least 2k</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>Support vectors greater than 2k</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>P95 Latency 50-100ms @ X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>2</td></tr>
+<tr><td>P99 Latency &lt;= 10ms @ X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td><td>2</td></tr>
+<tr><td>99.9% availability retrieval</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>99.99% availability indexing/storage</td><td>2</td><td>1</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>عمليات التخزين</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>قابلة للاستضافة في AWS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>0</td></tr>
-<tr><td>متعدد المناطق</td><td>1</td><td>1</td><td>2</td><td>3</td><td>1</td><td>2</td><td>2</td></tr>
-<tr><td>ترقيات وقت التعطيل الصفري</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>متعدد السحابة</td><td>1</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td><strong>Storage Operations</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Hostable in AWS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>Multi-Region</td><td>1</td><td>1</td><td>2</td><td>3</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td>Zero-downtime upgrades</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Multi-Cloud</td><td>1</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>واجهات برمجة التطبيقات/المكتبات</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><strong>APIs/Libraries</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>gRPC</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td><td>2</td></tr>
-<tr><td>واجهة برمجة تطبيقات RESTful</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>الذهاب للمكتبة</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>مكتبة جافا</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>بايثون</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>لغات أخرى (C++، روبي، إلخ)</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>RESTful API</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Go Library</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Java Library</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Python</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Other languages (C++, Ruby, etc)</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>عمليات وقت التشغيل</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>مقاييس بروميثيوس</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
-<tr><td>عمليات قاعدة البيانات الأساسية</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>إدراج</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
-<tr><td>مشغل Kubernetes</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>ترقيم الصفحات للنتائج</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>تضمين البحث عن طريق المعرف</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>إرجاع التضمينات مع معرف المرشح ودرجات المرشح</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>المعرف المقدم من المستخدم</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>القدرة على البحث في سياق دفعي واسع النطاق</td><td>1</td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>النسخ الاحتياطية / اللقطات: يدعم إمكانية إنشاء نسخ احتياطية لقاعدة البيانات بأكملها</td><td>1</td><td>2</td><td>2</td><td>2</td><td>3</td><td>3</td><td>2</td></tr>
-<tr><td>دعم الفهرس الكبير الفعال (التمييز بين التخزين البارد والساخن)</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td><strong>Runtime Operations</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Prometheus Metrics</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
+<tr><td>Basic DB Operations</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Upserts</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td>Kubernetes Operator</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Pagination of results</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Embedding lookup by ID</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Return Embeddings with Candidate ID and candidate scores</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>User supplied ID</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Able to search in large scale batch context</td><td>1</td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Backups / Snapshots: supports the ability to create backups of the entire database</td><td>1</td><td>2</td><td>2</td><td>2</td><td>3</td><td>3</td><td>2</td></tr>
+<tr><td>Efficient large index support (cold vs hot storage distinction)</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>الدعم/المجتمع</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>حياد البائعين</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
-<tr><td>دعم قوي لواجهة برمجة التطبيقات</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>دعم البائعين</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>سرعة المجتمع</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>قاعدة مستخدمي الإنتاج</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>شعور المجتمع</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>نجوم جيثب</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td><strong>Support/Community</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Vendor neutrality</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>Robust api support</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Vendor support</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Community Velocity</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Production Userbase</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Community Feel</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Github Stars</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>التكوين</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>التعامل مع الأسرار</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td><strong>Configuration</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Secrets Handling</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>المصدر</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>المصدر المفتوح</td><td>3</td><td>3</td><td>3</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
-<tr><td>اللغة</td><td>2</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
-<tr><td>الإصدارات</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>اختبار المنبع</td><td>1</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>توافر الوثائق</td><td>3</td><td>3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>1</td></tr>
+<tr><td><strong>Source</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Open Source</td><td>3</td><td>3</td><td>3</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>Language</td><td>2</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
+<tr><td>Releases</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Upstream testing</td><td>1</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Availability of documentation</td><td>3</td><td>3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>1</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>التكلفة</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>فعالة من حيث التكلفة</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td><strong>Cost</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Cost Effective</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>الأداء</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>دعم ضبط استخدام الموارد لوحدة المعالجة المركزية والذاكرة والقرص</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>التجزئة متعددة العُقد (الحجرة)</td><td>3</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>امتلاك القدرة على ضبط النظام لتحقيق التوازن بين زمن الاستجابة والإنتاجية</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>التقسيم المحدد من قبل المستخدم (الكتابة)</td><td>1</td><td>3</td><td>2</td><td>3</td><td>1</td><td>2</td><td>0</td></tr>
-<tr><td>متعدد المستأجرين</td><td>1</td><td>3</td><td>2</td><td>1</td><td>3</td><td>2</td><td>2</td></tr>
-<tr><td>التقسيم</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>النسخ المتماثل</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>التكرار</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>التجاوز التلقائي للفشل التلقائي</td><td>3</td><td>2</td><td>0 ملاحظة: <a href="https://milvus.io/docs/coordinator_ha.md">يدعمه Milvus 2.6. </a></td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>موازنة التحميل</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>دعم وحدة معالجة الرسومات</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td><strong>Performance</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Support for tuning resource utilization for CPU, memory, and disk</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Multi-node (pod) sharding</td><td>3</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Have the ability to tune the system to balance between latency and throughput</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>User-defined partitioning (writes)</td><td>1</td><td>3</td><td>2</td><td>3</td><td>1</td><td>2</td><td>0</td></tr>
+<tr><td>Multi-tenant</td><td>1</td><td>3</td><td>2</td><td>1</td><td>3</td><td>2</td><td>2</td></tr>
+<tr><td>Partitioning</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Replication</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Redundancy</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Automatic Failover</td><td>3</td><td>2</td><td>0 Note: <a href="https://milvus.io/docs/coordinator_ha.md">Milvus 2.6 supports it. </a></td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Load Balancing</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>GPU Support</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td></td><td></td><td><strong>كدرانت</strong></td><td><a href="https://milvus.io/"><strong>ميلفوس</strong></a></td><td><strong>كاساندرا</strong></td><td><strong>ويفييت</strong></td><td><strong>سولر</strong></td><td><strong>فيرتكس للذكاء الاصطناعي</strong></td></tr>
-<tr><td><strong>النتائج الإجمالية للحلول</strong></td><td></td><td>292</td><td>281</td><td>264</td><td>250</td><td>242</td><td>173</td></tr>
+<tr><td></td><td></td><td><strong>Qdrant</strong></td><td><a href="https://milvus.io/"><strong>Milvus</strong></a></td><td><strong>Cassandra</strong></td><td><strong>Weviate</strong></td><td><strong>Solr</strong></td><td><strong>Vertex AI</strong></td></tr>
+<tr><td><strong>Overall solution scores</strong></td><td></td><td>292</td><td>281</td><td>264</td><td>250</td><td>242</td><td>173</td></tr>
 </tbody>
 </table>
-<p>ناقشنا الدرجات الإجمالية والمتطلبات لمختلف الأنظمة، وسعينا إلى فهم ما إذا كنا قد قمنا بترجيح أهمية المتطلبات بشكل مناسب، وما إذا كانت بعض المتطلبات مهمة للغاية بحيث يجب اعتبارها قيودًا أساسية. كان أحد هذه المتطلبات التي حددناها هو ما إذا كان الحل مفتوح المصدر أم لا، لأننا كنا نرغب في حل يمكننا المشاركة فيه والمساهمة فيه وإصلاح المشاكل الصغيرة بسرعة إذا واجهنا مشاكل صغيرة على نطاقنا. المساهمة في البرمجيات مفتوحة المصدر واستخدامها جزء مهم من ثقافة Reddit الهندسية. وقد أدى ذلك إلى استبعاد الحلول المستضافة فقط (Vertex AI وPinecone) من حساباتنا.</p>
-<p>خلال المناقشات، وجدنا أن بعض المتطلبات الرئيسية الأخرى كانت ذات أهمية كبيرة بالنسبة لنا:</p>
+<p>We discussed the overall and requirement scores of the various systems and sought to understand whether we had appropriately weighted the importance of the requirements and whether some requirements were so important that they should be considered core constraints. One such requirement we identified was whether the solution was open-source or not, because we desired a solution that we could become involved with, contribute towards, and quickly fix small issues if we experienced them at our scale. Contributing to and using open-source software is an important part of Reddit’s engineering culture. This eliminated the hosted-only solutions (Vertex AI, Pinecone) from our consideration.</p>
+<p>During discussions, we found that a few other key requirements were of outsized importance to us:</p>
 <ul>
-<li><p>النطاق والموثوقية: أردنا أن نرى دليلاً على وجود شركات أخرى تدير الحل مع أكثر من 100 مليون أو حتى 1 مليار ناقل</p></li>
-<li><p>المجتمع: أردنا حلاً يتمتع بمجتمع سليم يتمتع بزخم كبير في هذا المجال سريع النضج</p></li>
-<li><p>أنواع معبرة من البيانات الوصفية والتصفية لتمكين المزيد من حالات الاستخدام لدينا (التصفية حسب التاريخ أو حسب المنطقية أو غيرها)</p></li>
-<li><p>دعم أنواع متعددة من الفهارس (وليس فقط HNSW أو DiskANN) لتناسب الأداء بشكل أفضل للعديد من حالات الاستخدام الفريدة لدينا</p></li>
+<li><p>Scale and reliability: we wanted to see evidence of other companies running the solution with 100M+ or even 1B vectors</p></li>
+<li><p>Community: We wanted a solution with a healthy community with a lot of momentum in this rapidly maturing space</p></li>
+<li><p>Expressive metadata types and filtering to enable more of our use-cases (filtering by date, boolean, etc.)</p></li>
+<li><p>Supports for multiple index types (not just HNSW or DiskANN) to better fit performance for our many unique use-cases</p></li>
 </ul>
-<p>قادتنا نتيجة مناقشاتنا وصقلنا للمتطلبات الرئيسية إلى اختيار الاختبار (بالترتيب) الكمي</p>
+<p>The result of our discussions and honing of key requirements led us to choose to test (in order) quantitatively:</p>
 <ol>
 <li><p>Qdrant</p></li>
-<li><p>ميلفوس</p></li>
-<li><p>فيسبا، و</p></li>
-<li><p>ويفييت</p></li>
+<li><p>Milvus</p></li>
+<li><p>Vespa, and</p></li>
+<li><p>Weviate</p></li>
 </ol>
-<p>لسوء الحظ، مثل هذه القرارات تستغرق وقتًا وموارد، ولا توجد منظمة لديها كميات غير محدودة من أي منهما. بالنظر إلى ميزانيتنا، قررنا اختبار Qdrant و Milvus، وتركنا اختبار Vespa و Weviate كأهداف ممتدة.</p>
-<p>كما كان اختبار Qdrant مقابل Milvus اختبارًا مثيرًا للاهتمام بين بنيتين مختلفتين:</p>
+<p>Unfortunately, decisions like this take time and resources, and no organization has unlimited amounts of either. Given our budget, we decided to test Qdrant and Milvus, and to leave testing Vespa and Weviate as stretch goals.</p>
+<p>Qdrant vs Milvus was also an interesting test of two different architectures:</p>
 <ul>
-<li><p><strong>Qdrant</strong> أنواع العقد المتجانسة التي تؤدي جميع عمليات قاعدة بيانات ناقلات الشبكة الوطنية المتجهة</p></li>
-<li><p>ميلفوس<strong>:</strong> <a href="https://milvus.io/docs/architecture_overview.md">أنواع عقد غير متجانسة</a> (ميلفوس؛ واحدة للاستعلامات، وأخرى للفهرسة، وأخرى لاستيعاب البيانات، ووكيل، إلخ).</p></li>
+<li><p><strong>Qdrant:</strong> Homogeneous node types that perform all ANN vector database operations</p></li>
+<li><p><strong>Milvus:</strong> <a href="https://milvus.io/docs/architecture_overview.md">Heterogeneous node types</a> (Milvus; one for queries, another for indexing, another for data ingest, a proxy, etc.)</p></li>
 </ul>
-<p>أيهما كان سهل الإعداد (اختبار لوثائقهما)؟ أيهما كان من السهل تشغيله (اختبار لميزات المرونة والصقل الخاصة بهم)؟ وأيهما أفضل أداء لحالات الاستخدام والحجم الذي يهمنا؟ هذه الأسئلة التي سعينا للإجابة عليها أثناء المقارنة الكمية بين الحلول.</p>
-<h3 id="3-Quantitatively-evaluate-top-contenders" class="common-anchor-header">3. التقييم الكمي لأفضل المتنافسين</h3><p>أردنا أن نفهم بشكل أفضل مدى قابلية كل حل للتطوير، وفي هذه العملية، اختبرنا كيف سيكون إعداد كل حل وتكوينه وصيانته وتشغيله على نطاق واسع. للقيام بذلك، قمنا بجمع ثلاث مجموعات بيانات من متجهات المستندات والاستعلامات لثلاث حالات استخدام مختلفة، وقمنا بإعداد كل حل بموارد مماثلة داخل Kubernetes، وقمنا بتحميل المستندات في كل حل، وأرسلنا أحمال استعلام متطابقة باستخدام <a href="https://k6.io/">K6 من Grafana</a> مع منفذ معدل وصول متزايد لتسخين الأنظمة قبل الوصول إلى الإنتاجية المستهدفة (على سبيل المثال، 100 QPS).</p>
-<p>لقد اختبرنا الإنتاجية، ونقطة الانهيار لكل حل، والعلاقة بين الإنتاجية وزمن الوصول، وكيفية تفاعلها مع فقدان العُقد تحت الحمل (معدل الخطأ، وتأثير زمن الوصول، وما إلى ذلك). كان <strong>تأثير التصفية على زمن الكمون</strong> من أهم الأمور التي أثارت اهتمامنا. كان لدينا أيضًا اختبارات بسيطة بنعم/لا للتحقق من أن الإمكانية في الوثائق تعمل كما هو موصوف (على سبيل المثال، عمليات الإدراج والحذف والحصول على حسب المعرف وإدارة المستخدم، إلخ) ولتجربة بيئة العمل الخاصة بواجهات برمجة التطبيقات هذه.</p>
-<p><strong>تم إجراء الاختبار على Milvus v2.4 و Qdrant v1.12.</strong> ونظراً لضيق الوقت، لم نقم بضبط أو اختبار جميع أنواع إعدادات الفهرس بشكل شامل؛ تم استخدام إعدادات مماثلة مع كل حل، مع التحيز نحو استدعاء ANN عالٍ، وركزت الاختبارات على أداء فهارس HNSW. كما تم إعطاء موارد وحدة معالجة مركزية وذاكرة مماثلة لكل حل.</p>
-<p>في تجاربنا، وجدنا بعض الاختلافات المثيرة للاهتمام بين الحلين. في التجارب التالية، كان لكل حل ما يقرب من 340 مليون متجه من متجهات رديت البريدية ذات 384 بُعدًا لكل منها، بالنسبة لـ HNSW، M=16، و efConstruction=100.</p>
-<p>في إحدى التجارب، وجدنا أنه بالنسبة لنفس معدل إنتاجية الاستعلام (100 كيو بي إس مع عدم وجود استيعاب في نفس الوقت)، أثرت إضافة التصفية على زمن انتقال ميلفوس أكثر من Qdrant.</p>
+<p>Which one was easy to set up (a test of their documentation)? Which one was easy to run (a test of their resiliency features and polish)? And which one performed best for the use cases and scale that we cared about? These questions we sought to answer as we quantitatively compared the solutions.</p>
+<h3 id="3-Quantitatively-evaluate-top-contenders" class="common-anchor-header">3. Quantitatively evaluate top contenders</h3><p>We wanted to better understand how scalable each solution was, and in the process, experience what it would be like to set up, configure, maintain, and run each solution at scale. To do this, we collected three datasets of document and query vectors for three different use-cases, set up each solution with similar resources within Kubernetes, loaded documents into each solution, and sent identical query loads using <a href="https://k6.io/">Grafana’s K6</a> with a ramping arrival rate executor to warm systems up before then hitting a target throughput (e.g., 100 QPS).</p>
+<p>We tested throughput, the breaking point of each solution, the relationship between throughput and latency, and how they react to losing nodes under load (error rate, latency impact, etc.). Of key interest was <strong>the effect of filtering on latency</strong>. We also had simple yes/no tests to verify that a capability in documentation worked as described (e.g., upserts, delete, get by ID, user administration, etc.) and to experience the ergonomics of those APIs.</p>
+<p><strong>Testing was done on Milvus v2.4 and Qdrant v1.12.</strong> Due to time constraints, we did not exhaustively tune or test all types of index settings; similar settings were used with each solution, with a bias towards high ANN recall, and tests focused on the performance of HNSW indexes. Similar CPU and memory resources were also given to each solution.</p>
+<p>In our experimentation, we found a few interesting differences between the two solutions. In the following experiments, each solution had approximately 340M Reddit post vectors of 384 dimensions each, for HNSW, M=16, and efConstruction=100.</p>
+<p>In one experiment, we found that for the same query throughput (100 QPS with no ingestion at the same time), adding filtering affected the latency of Milvus more than Qdrant.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Post_query_latency_with_filtering_2cb4c03d5b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>نشرات كمون الاستعلام مع التصفية</p>
-<p>من ناحية أخرى، وجدنا أن هناك تفاعلاً أكبر بكثير بين الابتلاع وحمل الاستعلام على Qdrant مقارنةً بـ Milvus (كما هو موضح أدناه عند معدل إنتاجية ثابت). ويرجع هذا على الأرجح إلى بنيتها؛ حيث تقسم Milvus الكثير من عمليات الاستيعاب على أنواع عقد منفصلة عن تلك التي تخدم حركة الاستعلام، بينما تخدم Qdrant حركة الاستيعاب والاستعلام من نفس العقد.</p>
+<p>Posts query latency with filtering</p>
+<p>In another, we found that there was far more of an interaction between ingestion and query load on Qdrant than on Milvus (shown below at constant throughput). This is likely due to their architecture; Milvus splits much of its ingestion over separate node types from those that serve query traffic, whereas Qdrant serves both ingestion and query traffic from the same nodes.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Posts_query_latency_100_QPS_during_ingest_e919a448cb.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>نشر كمون الاستعلام بـ 100 QPS أثناء الاستيعاب</p>
-<p>عند اختبار تنوع النتائج حسب السمة (على سبيل المثال الحصول على ما لا يزيد عن N من النتائج من كل موقع فرعي في الاستجابة)، وجدنا أنه بالنسبة لنفس الإنتاجية، كان زمن استجابة ميلفوس أسوأ من Qdrant (عند 100 QPS).</p>
+<p>Posts query latency @ 100 QPS during ingest</p>
+<p>When testing the diversity of results by attribute (e.g. getting not more than N results from each subreddit in a response), we found that for the same throughput, Milvus had worse latency than Qdrant (at 100 QPS).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Post_query_latency_with_result_diversity_b126f562cd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>كمون ما بعد الاستعلام مع تنوع النتائج</p>
-<p>أردنا أيضًا أن نرى مدى فعالية كل حل عند إضافة المزيد من النسخ المتماثلة للبيانات (أي زيادة عامل النسخ المتماثل، RF، من 1 إلى 2). في البداية، بالنظر إلى عامل التردد اللاسلكي = 1، كان Qdrant قادرًا على منحنا زمن استجابة مُرضٍ مقابل إنتاجية أكبر من Milvus (لم تظهر QPS الأعلى لأن الاختبارات لم تكتمل دون أخطاء).</p>
+<p>Post query latency with result diversity</p>
+<p>We also wanted to see how effectively each solution scaled when more replicas of data were added (i.e. the replication factor, RF, was increased from 1 to 2). Initially, looking at RF=1, Qdrant was able to give us satisfactory latency for more throughput than Milvus (higher QPS not shown because tests did not complete without errors).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Qdrant_posts_RF_1_latency_for_varying_throughput_bc161c8b1c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ينشر Qdrant زمن استجابة RF=1 لمعدل كمون متفاوت للإنتاجية المتفاوتة</p>
+<p>Qdrant posts RF=1 latency for varying throughput</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Milvus_posts_RF_1_latency_for_varying_throughput_e81775b3af.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ينشر Milvus زمن استجابة = 1 لزمن انتقال لمعدل إنتاجية متفاوت</p>
-<p>ومع ذلك، عند زيادة عامل النسخ المتماثل، تحسن زمن انتقال Qdrant p99، لكن Milvus كان قادرًا على الحفاظ على إنتاجية أعلى من Qdrant، مع زمن انتقال مقبول (لم يتم عرض Qdrant 400 QPS لأن الاختبار لم يكتمل بسبب زمن الانتقال العالي والأخطاء).</p>
+<p>Milvus posts RF=1 latency for varying throughput</p>
+<p>However, when increasing the replication factor, Qdrant’s p99 latency improved, but Milvus was able to sustain higher throughput than Qdrant was, with acceptable latency (Qdrant 400 QPS not shown because the test did not complete due to high latency and errors).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Milvus_posts_RF_2_latency_for_varying_throughput_7737dfb8a3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ينشر Milvus زمن استجابة RF=2 لزمن انتقال متفاوت للإنتاجية المتفاوتة</p>
+<p>Milvus posts RF=2 latency for varying throughput</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Qdrant_posts_RF_2_latency_for_varying_throughput_13fb26aaa1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>تنشر Qdrant زمن استجابة RF=2 لزمن انتقال متفاوت للإنتاجية المتفاوتة</p>
-<p>نظرًا لضيق الوقت، لم يكن لدينا وقت كافٍ لمقارنة استدعاء الشبكة العصبية الاصطناعية بين الحلول على مجموعات البيانات الخاصة بنا، لكننا أخذنا في الاعتبار قياسات استدعاء الشبكة العصبية الاصطناعية للحلول المقدمة من <a href="https://ann-benchmarks.com/">https://ann-benchmarks.com/</a> على مجموعات البيانات المتاحة للجمهور.</p>
-<h3 id="4-Final-selection" class="common-anchor-header">4. الاختيار النهائي</h3><p>من<strong>ناحية الأداء،</strong> وبدون الكثير من الضبط وباستخدام HNSW فقط، بدا أن Qdrant يتمتع بزمن استجابة خام أفضل من Milvus في العديد من الاختبارات. ومع ذلك، بدا أن Milvus يبدو أنه سيتوسع بشكل أفضل مع زيادة النسخ المتماثل، وكان لديه عزل أفضل بين الاستيعاب وحمل الاستعلام بسبب بنيته متعددة العقد.</p>
-<p><strong>من ناحية التشغيل،</strong> على الرغم من تعقيد بنية ميلفوس (أنواع متعددة من العقد، والاعتماد على سجل خارجي للكتابة الأمامية مثل كافكا ومخزن بيانات وصفية مثل إلخd)، كان لدينا وقت أسهل في تصحيح أخطاء ميلفوس وإصلاحها مقارنةً ب Qdrant عندما يدخل أي من الحلين في حالة سيئة. يحتوي Milvus أيضًا على إعادة توازن تلقائية عند زيادة عامل النسخ المتماثل للمجموعة، بينما في Qdrant مفتوح المصدر، يلزم إنشاء أو إسقاط الأجزاء يدويًا لزيادة عامل النسخ المتماثل (وهي ميزة كان علينا أن نبنيها بأنفسنا أو نستخدم الإصدار غير مفتوح المصدر).</p>
-<p>Milvus هي تقنية "على شكل ريديت" أكثر من Qdrant؛ فهي تشترك في أوجه تشابه أكثر مع بقية مجموعتنا التقنية. كُتبت Milvus بلغة Golang، وهي لغة البرمجة الخلفية المفضلة لدينا، وبالتالي يسهل علينا المساهمة فيها أكثر من Qdrant، المكتوبة بلغة Rust. ويتمتع Milvus بسرعة ممتازة في تنفيذ المشاريع في مشروعه المفتوح المصدر مقارنةً ب Qdrant، كما أنه يلبي المزيد من متطلباتنا الرئيسية.</p>
-<p>في النهاية، استوفى كلا الحلين معظم متطلباتنا، وفي بعض الحالات، كان لدى Qdrant ميزة في الأداء، لكننا شعرنا أنه يمكننا توسيع نطاق Milvus بشكل أكبر، وشعرنا براحة أكبر في تشغيله، وكان أفضل تطابقًا لمؤسستنا من Qdrant. كنا نتمنى لو كان لدينا المزيد من الوقت لاختبار Vespa و Weaviate، ولكن ربما تم اختيارهما أيضًا بسبب الملاءمة التنظيمية (كون Vespa يعتمد على Java) والبنية (كون Weaviate من نوع العقدة الواحدة مثل Qdrant).</p>
-<h2 id="Key-takeaways" class="common-anchor-header">الوجبات الرئيسية<button data-href="#Key-takeaways" class="anchor-icon" translate="no">
+<p>Qdrant posts RF=2 latency for varying throughput</p>
+<p>Due to time constraints, we did not have enough time to compare ANN recall between solutions on our datasets, but we did take into account the ANN recall measurements for solutions provided by <a href="https://ann-benchmarks.com/">https://ann-benchmarks.com/</a> on publicly available datasets.</p>
+<h3 id="4-Final-selection" class="common-anchor-header">4. Final selection</h3><p><strong>Performance-wise</strong>, without much tuning and only using HNSW, Qdrant appeared to have better raw latency in many tests than Milvus. Milvus looked like it would, however, scale better with increased replication, and had better isolation between ingestion and query load due to its multiple-node-type architecture.</p>
+<p><strong>Operation-wise,</strong> despite the complexity of Milvus’ architecture (multiple node types, relying upon an external write-ahead log like Kafka and a metadata store like etcd), we had an easier time debugging and fixing Milvus than Qdrant when either solution entered a bad state. Milvus also has automatic rebalancing when increasing the replication factor of a collection, whereas in open-source Qdrant, manual creation or dropping of shards is required to increase the replication factor (a feature we would have had to build ourselves or use the non-open-source version).</p>
+<p>Milvus is a more “Reddit-shaped” technology than Qdrant; it shares more similarities with the rest of our tech stack. Milvus is written in Golang, our preferred backend programming language, and thus easier for us to contribute to than Qdrant, which is written in Rust. Milvus has excellent project velocity for its open-source offering compared to Qdrant, and it met more of our key requirements.</p>
+<p>In the end, both solutions met most of our requirements, and in some cases, Qdrant had a performance edge, but we felt that we could scale Milvus further, felt more comfortable running it, and it was a better match for our organization than Qdrant. We wish we had had more time to test Vespa and Weaviate, but they too may have been selected out for organizational fit (Vespa being Java-based) and architecture (Weaviate being single-node-type like Qdrant).</p>
+<h2 id="Key-takeaways" class="common-anchor-header">Key takeaways<button data-href="#Key-takeaways" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -283,12 +284,12 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>تحدي المتطلبات التي يتم إعطاؤك إياها ومحاولة إزالة التحيز للحلول الحالية.</p></li>
-<li><p>قيّم الحلول المرشحة واستخدم ذلك لإثراء مناقشة المتطلبات الأساسية، وليس كحل نهائي</p></li>
-<li><p>تقييم الحلول من الناحية الكمية، ولكن على طول الطريق، قم بتدوين ما يشبه العمل مع الحل</p></li>
-<li><p>اختر الحل الأنسب لمؤسستك من منظور الصيانة والتكلفة وسهولة الاستخدام والأداء، وليس فقط لأن الحل هو الأفضل أداءً.</p></li>
+<li><p>Challenge the requirements you are given and try to remove existing solution bias.</p></li>
+<li><p>Score candidate solutions, and use that to inform the discussion of essential requirements, not as a be-all end-all</p></li>
+<li><p>Quantitatively evaluate solutions, but along the way, take note of what it’s like to work with the solution.</p></li>
+<li><p>Pick the solution that fits best within your organization from a maintenance, cost, usability, and performance perspective, not just because a solution performs the best.</p></li>
 </ul>
-<h2 id="Acknowledgements" class="common-anchor-header">شكر وتقدير<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
+<h2 id="Acknowledgements" class="common-anchor-header">Acknowledgements<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -303,8 +304,8 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قام بهذا العمل التقييم بن كوتشي وتشارلز نجوروجي وأميت كومار وأنا. كما نشكر الآخرين الذين ساهموا في هذا العمل، بما في ذلك آني يانغ، وكونراد رايش، وسابرينا كونغ، وأندرو جونسون، على البحث النوعي للحلول.</p>
-<h2 id="Editor’s-Notes" class="common-anchor-header">ملاحظات المحرر<button data-href="#Editor’s-Notes" class="anchor-icon" translate="no">
+    </button></h2><p>This evaluation work was performed by Ben Kochie, Charles Njoroge, Amit Kumar, and me. Thanks also to others who contributed to this work, including Annie Yang, Konrad Reiche, Sabrina Kong, and Andrew Johnson, for qualitative solution research.</p>
+<h2 id="Editor’s-Notes" class="common-anchor-header">Editor’s Notes<button data-href="#Editor’s-Notes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -319,23 +320,23 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>نريد أن نقدم شكرًا حقيقيًا لفريق ريديت الهندسي - ليس فقط لاختيارهم ميلفوس لأعباء عمل البحث المتجه، ولكن أيضًا لتخصيصهم الوقت لنشر مثل هذا التقييم المفصل والعادل. من النادر أن نرى هذا المستوى من الشفافية في كيفية مقارنة الفرق الهندسية الحقيقية لقواعد البيانات، وستكون كتابتهم مفيدة لأي شخص في مجتمع ميلفوس (وخارجه) يحاول فهم مشهد قواعد البيانات المتجهة المتنامية.</p>
-<p>كما ذكر كريس في المنشور، لا توجد قاعدة بيانات متجهة واحدة "أفضل". ما يهم هو ما إذا كان النظام يناسب عبء العمل والقيود والفلسفة التشغيلية. تعكس مقارنة ريديت هذا الواقع جيدًا. لا يتصدر ميلفوس كل فئة، وهذا متوقع تمامًا نظرًا للمفاضلة بين نماذج البيانات المختلفة وأهداف الأداء.</p>
-<p>شيء واحد يستحق التوضيح: استخدم تقييم ريديت برنامج <strong>Milvus 2.4،</strong> والذي كان الإصدار المستقر في ذلك الوقت. بعض الميزات - مثل LSH والعديد من تحسينات الفهرس - إما أنها لم تكن موجودة بعد أو لم تكن ناضجة في الإصدار 2.4، لذا فإن بعض النتائج تعكس بطبيعة الحال ذلك الإصدار الأساسي الأقدم. منذ ذلك الحين، أصدرنا ميلفوس 2.5 ثم <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>ميلفوس 2.6،</strong></a> وهو نظام مختلف تمامًا من حيث الأداء والكفاءة والمرونة. كانت استجابة المجتمع قوية، وقد قامت العديد من الفرق بالترقية بالفعل.</p>
-<p><strong>فيما يلي نظرة سريعة على الجديد في الإصدار 2.6 من ميلفوس:</strong></p>
+    </button></h2><p>We want to give a genuine thank-you to the Reddit engineering team — not just for choosing Milvus for their vector search workloads, but for taking the time to publish such a detailed and fair evaluation. It’s rare to see this level of transparency in how real engineering teams compare databases, and their write-up will be helpful to anyone in the Milvus community (and beyond) who’s trying to make sense of the growing vector database landscape.</p>
+<p>As Chris mentioned in the post, there’s no single “best” vector database. What matters is whether a system fits your workload, constraints, and operational philosophy. Reddit’s comparison reflects that reality well. Milvus doesn’t top every category, and that’s completely expected given the trade-offs across different data models and performance goals.</p>
+<p>One thing worth clarifying: Reddit’s evaluation used <strong>Milvus 2.4</strong>, which was the stable release at the time. Some features — like LSH and several index optimizations — either didn’t exist yet or weren’t mature in 2.4, so a few scores naturally reflect that older baseline. Since then, we’ve released Milvus 2.5 and then <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6</strong></a>, and it’s a very different system in terms of performance, efficiency, and flexibility. The community response has been strong, and many teams have already upgraded.</p>
+<p><strong>Here’s a quick look at what’s new in Milvus 2.6:</strong></p>
 <ul>
-<li><p><strong>استخدام أقل للذاكرة بنسبة</strong> تصل إلى <strong>72%</strong> <strong>واستعلامات أسرع 4 مرات</strong> مع تكميم RaBitQ 1 بت</p></li>
-<li><p><strong>تخفيض التكلفة بنسبة 50%</strong> مع التخزين المتدرج الذكي</p></li>
-<li><p><strong>بحث في النص الكامل BM25 أسرع 4× 4 مرات</strong> مقارنة ب Elasticsearch</p></li>
-<li><p><strong>تصفية JSON أسرع 100× أسرع</strong> مع فهرس المسار الجديد</p></li>
-<li><p>بنية جديدة خالية من الأقراص للبحث الأحدث بتكلفة أقل</p></li>
-<li><p>سير عمل أبسط "إدخال البيانات وإخراجها" لتضمين خطوط الأنابيب</p></li>
-<li><p>دعم <strong>لأكثر من 100 ألف مجموعة</strong> للتعامل مع البيئات الكبيرة متعددة المستأجرين</p></li>
+<li><p>Up to <strong>72% lower memory usage</strong> and <strong>4× faster queries</strong> with RaBitQ 1-bit quantization</p></li>
+<li><p><strong>50% cost reduction</strong> with intelligent tiered storage</p></li>
+<li><p><strong>4× faster BM25 full-text search</strong> compared to Elasticsearch</p></li>
+<li><p><strong>100× faster JSON filtering</strong> with the new Path Index</p></li>
+<li><p>A new zero-disk architecture for fresher search at lower cost</p></li>
+<li><p>A simpler “data-in, data-out” workflow for embedding pipelines</p></li>
+<li><p>Support for <strong>100K+ collections</strong> to handle large multi-tenant environments</p></li>
 </ul>
-<p>إذا كنت تريد التفاصيل الكاملة، فإليك بعض المتابعات الجيدة:</p>
+<p>If you want the full breakdown, here are a few good follow-ups:</p>
 <ul>
-<li><p>مدونة: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">تقديم ميلفوس 2.6: بحث متجه ميسور التكلفة على نطاق المليار</a></p></li>
-<li><p><a href="https://milvus.io/docs/release_notes.md">ملاحظات إصدار ميلفوس 2.6: ملاحظات الإصدار: </a></p></li>
-<li><p><a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBench 1.0: المقارنة المعيارية في العالم الحقيقي لقواعد بيانات المتجهات - مدونة ميلفوس</a></p></li>
+<li><p>Blog: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 release notes: </a></p></li>
+<li><p><a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBench 1.0: Real-World Benchmarking for Vector Databases - Milvus Blog</a></p></li>
 </ul>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل Milvus المكتبية</a>.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

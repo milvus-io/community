@@ -1,12 +1,12 @@
 ---
 id: getting-started-with-hnswlib.md
-title: Introducción a HNSWlib
+title: Getting Started with HNSWlib
 author: Haziqa Sajid
 date: 2024-11-25T00:00:00.000Z
 desc: >-
-  HNSWlib, una biblioteca que implementa HNSW, es altamente eficiente y
-  escalable, con un buen rendimiento incluso con millones de puntos. Aprenda a
-  implementarla en cuestión de minutos.
+  HNSWlib, a library implementing HNSW, is highly efficient and scalable,
+  performing well even with millions of points. Learn how to implement it in
+  minutes.
 metaTitle: Getting Started with HNSWlib
 cover: assets.zilliz.com/Getting_Started_with_HNS_Wlib_30922def3e.png
 tag: Engineering
@@ -16,15 +16,15 @@ tags: >-
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/getting-started-with-hnswlib.md'
 ---
-<p><a href="https://zilliz.com/glossary/semantic-search">La búsqueda semántica</a> permite a las máquinas comprender el lenguaje y obtener mejores resultados de búsqueda, lo que resulta esencial en la IA y el análisis de datos. Una vez representado el lenguaje como <a href="https://zilliz.com/learn/everything-you-should-know-about-vector-embeddings">incrustaciones</a>, la búsqueda puede realizarse mediante métodos exactos o aproximados. La búsqueda aproximada por <a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">vecino</a> más próximo (<a href="https://zilliz.com/glossary/anns">RNA</a>) es un método utilizado para encontrar rápidamente en un conjunto de datos los puntos más cercanos a un punto de consulta dado, a diferencia de <a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">la búsqueda exacta por vecino más próximo</a>, que puede ser costosa desde el punto de vista computacional para datos de alta dimensión. La RNA permite una recuperación más rápida al proporcionar resultados aproximadamente próximos a los vecinos más cercanos.</p>
-<p>Uno de los algoritmos de búsqueda de vecinos más próximos aproximados (RNA) es <a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a> (Hierarchical Navigable Small Worlds), implementado en <a href="https://zilliz.com/learn/learn-hnswlib-graph-based-library-for-fast-anns">HNSWlib</a>, que será el tema central de la discusión de hoy. En este blog:</p>
+<p><a href="https://zilliz.com/glossary/semantic-search">Semantic search</a> allows machines to understand language and yield better search results, which is essential in AI and data analytics. Once the language is represented as <a href="https://zilliz.com/learn/everything-you-should-know-about-vector-embeddings">embeddings</a>, the search can be performed using exact or approximate methods. Approximate Nearest Neighbor (<a href="https://zilliz.com/glossary/anns">ANN</a>) search is a method used to quickly find points in a dataset that are closest to a given query point, unlike <a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">exact nearest neighbor search</a>, which can be computationally expensive for high-dimensional data. ANN allows faster retrieval by providing results that are approximately close to the nearest neighbors.</p>
+<p>One of the algorithms for Approximate Nearest Neighbor (ANN) search is <a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a> (Hierarchical Navigable Small Worlds), implemented under <a href="https://zilliz.com/learn/learn-hnswlib-graph-based-library-for-fast-anns">HNSWlib</a>, which will be the focus of today’s discussion. In this blog, we will:</p>
 <ul>
-<li><p>Entenderemos el algoritmo HNSW.</p></li>
-<li><p>Exploraremos HNSWlib y sus principales características.</p></li>
-<li><p>Configurar HNSWlib, incluyendo la creación de índices y la implementación de búsquedas.</p></li>
-<li><p>Compararlo con Milvus.</p></li>
+<li><p>Understand the HNSW algorithm.</p></li>
+<li><p>Explore HNSWlib and its key features.</p></li>
+<li><p>Set up HNSWlib, covering index building and search implementation.</p></li>
+<li><p>Compare it with Milvus.</p></li>
 </ul>
-<h2 id="Understanding-HNSW" class="common-anchor-header">Entender HNSW<button data-href="#Understanding-HNSW" class="anchor-icon" translate="no">
+<h2 id="Understanding-HNSW" class="common-anchor-header">Understanding HNSW<button data-href="#Understanding-HNSW" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,11 +39,11 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-hnswlib.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Hierarchical Navigable Small Worlds (</strong><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW"><strong>HNSW</strong></a><strong>)</strong> es una estructura de datos basada en gráficos que permite búsquedas eficientes de similitud, particularmente en espacios de alta dimensión, mediante la construcción de un gráfico de múltiples capas de redes de "mundo pequeño". Introducido en <a href="https://arxiv.org/abs/1603.09320">2016</a>, HNSW aborda los problemas de escalabilidad asociados con los métodos de búsqueda tradicionales como la fuerza bruta y las búsquedas basadas en árboles. Es ideal para aplicaciones que implican grandes conjuntos de datos, como los sistemas de recomendación, el reconocimiento de imágenes y <a href="https://zilliz.com/vector-database-use-cases/llm-retrieval-augmented-generation">la generación de recuperación aumentada (RAG)</a>.</p>
-<h3 id="Why-HNSW-Matters" class="common-anchor-header">Por qué es importante HNSW</h3><p>HNSW mejora significativamente el rendimiento de la búsqueda del vecino más próximo en espacios de gran dimensión. Al combinar la estructura jerárquica con la navegabilidad en mundos pequeños, se evita la ineficacia computacional de los métodos antiguos, lo que permite obtener buenos resultados incluso con conjuntos de datos masivos y complejos. Para entenderlo mejor, veamos cómo funciona ahora.</p>
-<h3 id="How-HNSW-Works" class="common-anchor-header">Cómo funciona HNSW</h3><ol>
-<li><p><strong>Capas jerárquicas:</strong> HNSW organiza los datos en una jerarquía de capas, donde cada capa contiene nodos conectados por aristas. Las capas superiores son más dispersas, lo que permite "saltar" ampliamente por el gráfico, de forma parecida a cuando se aleja el zoom en un mapa para ver sólo las principales autopistas entre ciudades. Las capas inferiores son más densas y ofrecen más detalles y conexiones entre los vecinos más cercanos.</p></li>
-<li><p><strong>Concepto de pequeños mundos navegables:</strong> Cada capa de HNSW se basa en el concepto de una red de "mundos pequeños", en la que los nodos (puntos de datos) se encuentran a pocos "saltos" unos de otros. El algoritmo de búsqueda comienza en la capa más alta y dispersa y va descendiendo hacia capas cada vez más densas para refinar la búsqueda. De este modo, se pasa de una visión global a un nivel de vecindad más detallado, reduciendo gradualmente el área de búsqueda.</p></li>
+    </button></h2><p><strong>Hierarchical Navigable Small Worlds (</strong><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW"><strong>HNSW</strong></a><strong>)</strong> is a graph-based data structure that allows efficient similarity searches, particularly in high-dimensional spaces, by building a multi-layered graph of “small world” networks. Introduced in <a href="https://arxiv.org/abs/1603.09320">2016</a>, HNSW addresses the scalability issues associated with traditional search methods like brute-force and tree-based searches. It is ideal for applications involving large datasets, such as recommendation systems, image recognition, and <a href="https://zilliz.com/vector-database-use-cases/llm-retrieval-augmented-generation">retrieval-augmented generation (RAG)</a>.</p>
+<h3 id="Why-HNSW-Matters" class="common-anchor-header">Why HNSW Matters</h3><p>HNSW significantly enhances the performance of nearest-neighbor search in high-dimensional spaces. Combining the hierarchical structure with small-world navigability avoids the computational inefficiency of older methods, enabling it to perform well even with massive, complex datasets. To understand this better, let’s look at how it works now.</p>
+<h3 id="How-HNSW-Works" class="common-anchor-header">How HNSW Works</h3><ol>
+<li><p><strong>Hierarchical Layers:</strong> HNSW organizes data into a hierarchy of layers, where each layer contains nodes connected by edges. The top layers are sparser, allowing for broad “skips” across the graph, much like zooming out on a map to see only major highways between cities. Lower layers increase in density, providing finer detail and more connections between closer neighbors.</p></li>
+<li><p><strong>Navigable Small Worlds Concept:</strong> Each layer in HNSW builds on the concept of a “small world” network, where nodes (data points) are only a few “hops” away from each other. The search algorithm begins at the highest, sparsest layer and works downward, moving to progressively denser layers to refine the search. This approach is like moving from a global view down to neighborhood-level details, gradually narrowing the search area.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -51,9 +51,9 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-hnswlib.md'
     <span></span>
   </span>
 </p>
-<p><a href="https://daniel-at-world.blogspot.com/2019/04/navigable-small-world-graphs-for.html">Fig. 1</a>: Ejemplo de gráfico de mundo pequeño navegable</p>
+<p><a href="https://daniel-at-world.blogspot.com/2019/04/navigable-small-world-graphs-for.html">Fig 1</a>: An Example of a Navigable Small World Graph</p>
 <ol start="3">
-<li><strong>Estructura jerárquica:</strong> El aspecto jerárquico de HNSW se asemeja a una lista de exclusión, una estructura de datos probabilística en la que las capas superiores tienen menos nodos, lo que permite realizar búsquedas iniciales más rápidas.</li>
+<li><strong>Skip List-Like Structure:</strong> The hierarchical aspect of HNSW resembles a skip list, a probabilistic data structure where higher layers have fewer nodes, allowing for faster initial searches.</li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -61,14 +61,14 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-hnswlib.md'
     <span></span>
   </span>
 </p>
-<p><a href="https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/skiplists.pdf">Fig. 2</a>: Ejemplo de estructura de lista de exclusión</p>
-<p>Para buscar 96 en la lista de exclusión dada, empezamos en el nivel superior, en el extremo izquierdo, en el nodo de cabecera. Moviéndonos hacia la derecha, encontramos 31, menos que 96, así que continuamos hasta el siguiente nodo. Ahora, tenemos que bajar un nivel donde volvemos a ver 31; como sigue siendo menor que 96, bajamos otro nivel. Al encontrar 31 una vez más, nos movemos a la derecha y llegamos a 96, nuestro valor objetivo. Así, localizamos 96 sin necesidad de descender a los niveles más bajos de la lista de saltos.</p>
+<p><a href="https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/skiplists.pdf">Fig 2</a>: An Example of Skip List Structure</p>
+<p>To search for 96 in the given skip list, we begin at the top level on the far left at the header node. Moving to the right, we encounter 31, less than 96, so we continue to the next node. Now, we need to move down a level where we see 31 again; since it’s still less than 96, we descend another level. Finding 31 once more, we then move right and reach 96, our target value. Thus, we locate 96 without needing to descend to the lowest levels of the skip list.</p>
 <ol start="4">
-<li><p><strong>Eficacia de la búsqueda:</strong> El algoritmo HNSW parte de un nodo de entrada en la capa más alta y avanza hacia los vecinos más cercanos en cada paso. Desciende a través de las capas, utilizando cada una de ellas para una exploración de grano grueso a fino, hasta llegar a la capa más baja, donde probablemente se encuentren los nodos más similares. Esta navegación por capas reduce el número de nodos y aristas que hay que explorar, haciendo que la búsqueda sea rápida y precisa.</p></li>
-<li><p><strong>Inserción y mantenimiento</strong>: Al añadir un nuevo nodo, el algoritmo determina su capa de entrada en función de la probabilidad y lo conecta a los nodos cercanos mediante una heurística de selección de vecinos. La heurística pretende optimizar la conectividad, creando enlaces que mejoren la navegabilidad al tiempo que equilibran la densidad del grafo. Este enfoque mantiene la estructura robusta y adaptable a nuevos puntos de datos.</p></li>
+<li><p><strong>Search Efficiency:</strong> The HNSW algorithm starts from an entry node at the highest layer, progressing to closer neighbors with each step. It descends through the layers, using each one for coarse-to-fine-grained exploration, until it reaches the lowest layer where the most similar nodes are likely found. This layered navigation reduces the number of nodes and edges that need to be explored, making the search fast and accurate.</p></li>
+<li><p><strong>Insertion and Maintenance</strong>: When adding a new node, the algorithm determines its entry layer based on probability and connects it to nearby nodes using a neighbor selection heuristic. The heuristic aims to optimize connectivity, creating links that improve navigability while balancing graph density. This approach keeps the structure robust and adaptable to new data points.</p></li>
 </ol>
-<p>Aunque tenemos un conocimiento básico del algoritmo HNSW, aplicarlo desde cero puede resultar abrumador. Afortunadamente, la comunidad ha desarrollado bibliotecas como <a href="https://github.com/nmslib/hnswlib">HNSWlib</a> para simplificar su uso, haciéndolo accesible sin tener que rascarse la cabeza. Echemos un vistazo a HNSWlib.</p>
-<h2 id="Overview-of-HNSWlib" class="common-anchor-header">Visión general de HNSWlib<button data-href="#Overview-of-HNSWlib" class="anchor-icon" translate="no">
+<p>While we have a foundational understanding of the HNSW algorithm, implementing it from scratch can be overwhelming. Fortunately, the community has developed libraries like <a href="https://github.com/nmslib/hnswlib">HNSWlib</a> to simplify usage, making it accessible without scratching your head. So, let’s take a closer look at HNSWlib.</p>
+<h2 id="Overview-of-HNSWlib" class="common-anchor-header">Overview of HNSWlib<button data-href="#Overview-of-HNSWlib" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,17 +83,17 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-hnswlib.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>HNSWlib, una popular librería que implementa HNSW, es altamente eficiente y escalable, funcionando bien incluso con millones de puntos. Alcanza una complejidad temporal sublineal al permitir saltos rápidos entre capas de grafos y optimizar la búsqueda de datos densos y de alta dimensión. Estas son las principales características de HNSWlib</p>
+    </button></h2><p>HNSWlib, a popular library implementing HNSW, is highly efficient and scalable, performing well even with millions of points. It achieves sublinear time complexity by allowing quick jumps between graph layers and optimizing the search for dense, high-dimensional data. Here are the key features of HNSWlib include:</p>
 <ul>
-<li><p><strong>Estructura basada en grafos:</strong> Un grafo de varias capas representa los puntos de datos, lo que permite realizar búsquedas rápidas por proximidad.</p></li>
-<li><p><strong>Eficiencia en altas dimensiones:</strong> Optimizado para datos de alta dimensión, proporciona búsquedas aproximadas rápidas y precisas.</p></li>
-<li><p><strong>Tiempo de búsqueda sublineal:</strong> logra una complejidad sublineal saltándose capas, lo que mejora significativamente la velocidad.</p></li>
-<li><p><strong>Actualizaciones dinámicas:</strong> Permite insertar y eliminar nodos en tiempo real sin necesidad de reconstruir todo el grafo.</p></li>
-<li><p><strong>Eficiencia de memoria:</strong> Uso eficiente de la memoria, adecuado para grandes conjuntos de datos.</p></li>
-<li><p><strong>Escalabilidad:</strong> Se adapta bien a millones de puntos de datos, por lo que es ideal para aplicaciones de escala media como los sistemas de recomendación.</p></li>
+<li><p><strong>Graph-Based Structure:</strong> A multi-layered graph represents data points, allowing fast, nearest-neighbor searches.</p></li>
+<li><p><strong>High-Dimensional Efficiency:</strong> Optimized for high-dimensional data, providing quick and accurate approximate searches.</p></li>
+<li><p><strong>Sublinear Search Time:</strong> Achieves sublinear complexity by skipping layers, improving speed significantly.</p></li>
+<li><p><strong>Dynamic Updates:</strong> Supports real-time insertion and deletion of nodes without requiring a complete graph rebuild.</p></li>
+<li><p><strong>Memory Efficiency:</strong> Efficient memory usage, suitable for large datasets.</p></li>
+<li><p><strong>Scalability:</strong> Scales well to millions of data points, making it ideal for medium-scale applications like recommendation systems.</p></li>
 </ul>
-<p><strong>Nota:</strong> HNSWlib es excelente para crear prototipos sencillos de aplicaciones de búsqueda vectorial. Sin embargo, debido a las limitaciones de escalabilidad, puede haber mejores opciones, como <a href="https://zilliz.com/blog/what-is-a-real-vector-database">bases de datos vectoriales creadas específicamente</a> para escenarios más complejos que impliquen cientos de millones o incluso miles de millones de puntos de datos. Veámoslo en acción.</p>
-<h2 id="Getting-Started-with-HNSWlib-A-Step-by-Step-Guide" class="common-anchor-header">Primeros pasos con HNSWlib: Guía paso a paso<button data-href="#Getting-Started-with-HNSWlib-A-Step-by-Step-Guide" class="anchor-icon" translate="no">
+<p><strong>Note:</strong> HNSWlib is excellent for creating simple prototypes for vector search applications. However, due to scalability limitations, there may be better choices such as <a href="https://zilliz.com/blog/what-is-a-real-vector-database">purpose-built vector databases</a> for more complex scenarios involving hundreds of millions or even billions of data points. Let’s see that in action.</p>
+<h2 id="Getting-Started-with-HNSWlib-A-Step-by-Step-Guide" class="common-anchor-header">Getting Started with HNSWlib: A Step-by-Step Guide<button data-href="#Getting-Started-with-HNSWlib-A-Step-by-Step-Guide" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -108,69 +108,69 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-hnswlib.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Esta sección demostrará el uso de HNSWlib como <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">biblioteca de búsqueda vectorial</a> mediante la creación de un índice HNSW, la inserción de datos y la realización de búsquedas. Comencemos con la instalación:</p>
-<h3 id="Setup-and-Imports" class="common-anchor-header">Instalación e importaciones</h3><p>Para empezar con HNSWlib en Python, primero instálalo usando pip:</p>
+    </button></h2><p>This section will demonstrate using HNSWlib as a <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">vector search library</a> by creating an HNSW index, inserting data, and performing searches. Let’s start with installation:</p>
+<h3 id="Setup-and-Imports" class="common-anchor-header">Setup and Imports</h3><p>To get started with HNSWlib in Python, first install it using pip:</p>
 <pre><code translate="no">pip install hnswlib
 <button class="copy-code-btn"></button></code></pre>
-<p>Luego, importa las librerías necesarias:</p>
+<p>Then, import the necessary libraries:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> hnswlib 
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Preparing-Data" class="common-anchor-header">Preparación de datos</h3><p>En este ejemplo, vamos a utilizar <code translate="no">NumPy</code>para generar un conjunto de datos aleatorios con 10.000 elementos, cada uno con una dimensión de tamaño 256.</p>
+<h3 id="Preparing-Data" class="common-anchor-header">Preparing Data</h3><p>In this example, we’ll use <code translate="no">NumPy</code>to generate a random dataset with 10,000 elements, each with a dimension size 256.</p>
 <pre><code translate="no">dim = <span class="hljs-number">256</span>  <span class="hljs-comment"># Dimensionality of your vectors</span>
 num_elements = <span class="hljs-number">10000</span>  <span class="hljs-comment"># Number of elements to insert</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Vamos a crear los datos:</p>
+<p>Let’s create the data:</p>
 <pre><code translate="no">data = np.random.rand(num_elements, dim).astype(np.float32)  <span class="hljs-comment"># Example data</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Ahora que nuestros datos están listos, vamos a construir un índice.</p>
-<h3 id="Building-an-Index" class="common-anchor-header">Creación de un índice</h3><p>Para construir un índice, necesitamos definir la dimensionalidad de los vectores y el tipo de espacio. Creemos un índice:</p>
+<p>Now our data is ready, let’s build an index.</p>
+<h3 id="Building-an-Index" class="common-anchor-header">Building an Index</h3><p>In building an index, we need to define the dimensionality of the vectors and the space type. Let’s create an index:</p>
 <pre><code translate="no">p = hnswlib.<span class="hljs-title class_">Index</span>(space=<span class="hljs-string">&#x27;l2&#x27;</span>, dim=dim)
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">space='l2'</code>: Este parámetro define la métrica de distancia utilizada para la similitud. Si se establece en <code translate="no">'l2'</code>, se utilizará la distancia euclidiana (norma L2). Si por el contrario lo establecemos en <code translate="no">'ip'</code>, se utilizará el producto interior, que es útil para tareas como la similitud coseno.</li>
+<li><code translate="no">space='l2'</code>: This parameter defines the distance metric used for similarity. Setting it to <code translate="no">'l2'</code> means using the Euclidean distance (L2 norm). If you instead set it to <code translate="no">'ip'</code>, it would use the inner product, which is helpful for tasks like cosine similarity.</li>
 </ul>
 <ul>
-<li><code translate="no">dim=dim</code>: Este parámetro especifica la dimensionalidad de los puntos de datos con los que trabajará. Debe coincidir con la dimensión de los datos que planea añadir al índice.</li>
+<li><code translate="no">dim=dim</code>: This parameter specifies the dimensionality of the data points you’ll be working with. It must match the dimension of the data you plan to add to the index.</li>
 </ul>
-<p>Así es como se inicializa un índice:</p>
+<p>Here’s how to initialize an index:</p>
 <pre><code translate="no">p.init_index(max_elements=num_elements, ef_construction=200, M=16)
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">max_elements=num_elements</code>: Establece el número máximo de elementos que se pueden añadir al índice. <code translate="no">Num_elements</code> es la capacidad máxima, así que lo establecemos en 10.000 ya que estamos trabajando con 10.000 puntos de datos.</li>
+<li><code translate="no">max_elements=num_elements</code>: This sets the maximum number of elements that can be added to the index. <code translate="no">Num_elements</code> is the maximum capacity, so we set this to 10,000 as we are working with 10,000 data points.</li>
 </ul>
 <ul>
-<li><code translate="no">ef_construction=200</code>: Este parámetro controla la compensación entre precisión y velocidad de construcción durante la creación del índice. Un valor más alto mejora la recuperación (precisión) pero aumenta el uso de memoria y el tiempo de construcción. Los valores comunes oscilan entre 100 y 200.</li>
+<li><code translate="no">ef_construction=200</code>: This parameter controls the accuracy vs. construction speed trade-off during index creation. A higher value improves recall (accuracy) but increases memory usage and build time. Common values range from 100 to 200.</li>
 </ul>
 <ul>
-<li><code translate="no">M=16</code>: Este parámetro determina el número de enlaces bidireccionales creados para cada punto de datos, lo que influye en la precisión y la velocidad de búsqueda. Los valores típicos están entre 12 y 48; 16 suele ser un buen equilibrio para una precisión y velocidad moderadas.</li>
+<li><code translate="no">M=16</code>: This parameter determines the number of bi-directional links created for each data point, influencing accuracy and search speed. Typical values are between 12 and 48; 16 is often a good balance for moderate accuracy and speed.</li>
 </ul>
 <pre><code translate="no">p.set_ef(<span class="hljs-number">50</span>)  <span class="hljs-comment"># This parameter controls the speed/accuracy trade-off</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">ef</code>: El parámetro <code translate="no">ef</code>, abreviatura de "factor de exploración", determina cuántos vecinos se examinan durante una búsqueda. A mayor valor de <code translate="no">ef</code>, más vecinos se exploran, lo que generalmente aumenta la precisión (recall) de la búsqueda, pero también la hace más lenta. Por el contrario, un valor menor de <code translate="no">ef</code> puede hacer que la búsqueda sea más rápida pero puede reducir la precisión.</li>
+<li><code translate="no">ef</code>: The <code translate="no">ef</code> parameter, short for “exploration factor,” determines how many neighbors are examined during a search. A higher <code translate="no">ef</code> value results in more neighbors being explored, which generally increases the accuracy (recall) of the search but also makes it slower. Conversely, a lower <code translate="no">ef</code> value can search faster but might reduce accuracy.</li>
 </ul>
-<p>En este caso, establecer <code translate="no">ef</code> a 50 significa que el algoritmo de búsqueda evaluará hasta 50 vecinos cuando encuentre los puntos de datos más similares.</p>
-<p>Nota: <code translate="no">ef_construction</code> establece el esfuerzo de búsqueda de vecinos durante la creación del índice, mejorando la precisión pero ralentizando la construcción. <code translate="no">ef</code> controla el esfuerzo de búsqueda durante la consulta, equilibrando la velocidad y la recuperación dinámicamente para cada consulta.</p>
-<h3 id="Performing-Searches" class="common-anchor-header">Realización de búsquedas</h3><p>Para realizar una búsqueda de vecinos más cercanos con HNSWlib, primero creamos un vector de consulta aleatorio. En este ejemplo, la dimensionalidad del vector coincide con los datos indexados.</p>
+<p>In this case, Setting <code translate="no">ef</code> to 50 means the search algorithm will evaluate up to 50 neighbors when finding the most similar data points.</p>
+<p>Note: <code translate="no">ef_construction</code> sets neighbor search effort during index creation, enhancing accuracy but slowing construction. <code translate="no">ef</code> controls search effort during querying, balancing speed and recall dynamically for each query.</p>
+<h3 id="Performing-Searches" class="common-anchor-header">Performing Searches</h3><p>To perform a nearest neighbor search using HNSWlib, we first create a random query vector. In this example, the vector’s dimensionality matches the indexed data.</p>
 <pre><code translate="no">query_vector = np.random.rand(dim).astype(np.float32)  <span class="hljs-comment"># Example query</span>
 
 labels, distances = p.knn_query(query_vector, k=<span class="hljs-number">5</span>)  <span class="hljs-comment"># k is the number of nearest neighbors</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">query_vector</code>: Esta línea genera un vector aleatorio con la misma dimensionalidad que los datos indexados, lo que garantiza la compatibilidad para la búsqueda del vecino más próximo.</li>
-<li><code translate="no">knn_query</code>: El método busca los <code translate="no">k</code> vecinos más cercanos de <code translate="no">query_vector</code> dentro del índice <code translate="no">p</code>. Devuelve dos matrices: <code translate="no">labels</code>, que contiene los índices de los vecinos más cercanos, y <code translate="no">distances</code>, que indica las distancias desde el vector de consulta a cada uno de estos vecinos. Aquí, <code translate="no">k=5</code> especifica que queremos encontrar los cinco vecinos más cercanos.</li>
+<li><code translate="no">query_vector</code>: This line generates a random vector with the same dimensionality as the indexed data, ensuring compatibility for the nearest neighbor search.</li>
+<li><code translate="no">knn_query</code>: The method searches for the <code translate="no">k</code> nearest neighbors of the <code translate="no">query_vector</code> within the index <code translate="no">p</code>. It returns two arrays: <code translate="no">labels</code>, which contain the indices of the nearest neighbors, and <code translate="no">distances</code>, which indicate the distances from the query vector to each of these neighbors. Here, <code translate="no">k=5</code> specifies that we want to find the five closest neighbors.</li>
 </ul>
-<p>Aquí están los resultados después de imprimir las etiquetas y las distancias:</p>
+<p>Here are the results after printing the labels and distances:</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Nearest neighbors&#x27; labels:&quot;</span>, labels)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Distances:&quot;</span>, distances)
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">&gt; Nearest neighbors&#x27; labels: [[4498 1751 5647 4483 2471]]
 &gt; Distances: [[33.718    35.484592 35.627766 35.828312 35.91495 ]]
 <button class="copy-code-btn"></button></code></pre>
-<p>Aquí lo tenemos, una guía sencilla para poner las ruedas en marcha con HNSWlib.</p>
-<p>Como ya hemos mencionado, HNSWlib es un gran motor de búsqueda vectorial para crear prototipos o experimentar con conjuntos de datos de tamaño medio. Si tiene requisitos de escalabilidad más altos o necesita otras características de nivel empresarial, es posible que tenga que elegir una base de datos vectorial creada específicamente, como <a href="https://zilliz.com/what-is-milvus">Milvus</a> de código abierto o su servicio totalmente gestionado en <a href="https://zilliz.com/cloud">Zilliz Cloud</a>. Por lo tanto, en la siguiente sección, compararemos HNSWlib con Milvus.</p>
-<h2 id="HNSWlib-vs-Purpose-Built-Vector-Databases-Like-Milvus" class="common-anchor-header">HNSWlib frente a bases de datos vectoriales específicas como Milvus<button data-href="#HNSWlib-vs-Purpose-Built-Vector-Databases-Like-Milvus" class="anchor-icon" translate="no">
+<p>Here we have it, a simple guide to get your wheels started with HNSWlib.</p>
+<p>As mentioned, HNSWlib is a great vector search engine for prototyping or experimenting with medium-sized datasets. If you have higher scalability requirements or need other enterprise-level features, you may need to choose a purpose-built vector database like the open-source <a href="https://zilliz.com/what-is-milvus">Milvus</a> or its fully managed service on <a href="https://zilliz.com/cloud">Zilliz Cloud</a>. So, in the following section, we will compare HNSWlib with Milvus.</p>
+<h2 id="HNSWlib-vs-Purpose-Built-Vector-Databases-Like-Milvus" class="common-anchor-header">HNSWlib vs. Purpose-Built Vector Databases Like Milvus<button data-href="#HNSWlib-vs-Purpose-Built-Vector-Databases-Like-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -185,32 +185,32 @@ labels, distances = p.knn_query(query_vector, k=<span class="hljs-number">5</spa
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Una <a href="https://zilliz.com/learn/what-is-vector-database">base de datos vectorial</a> almacena datos como representaciones matemáticas, lo que permite a <a href="https://zilliz.com/ai-models">los modelos de aprendizaje automático</a> potenciar la búsqueda, las recomendaciones y la generación de texto mediante la identificación de datos a través de <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">métricas de similitud</a> para la comprensión contextual.</p>
-<p>Las bibliotecas de índices vectoriales como HNSWlib mejoran la<a href="https://zilliz.com/learn/vector-similarity-search">búsqueda</a> y recuperación de vectores, pero carecen de las funciones de gestión de una base de datos completa. Por otro lado, las bases de datos vectoriales, como <a href="https://milvus.io/">Milvus</a>, están diseñadas para manejar incrustaciones vectoriales a escala, proporcionando ventajas en la gestión de datos, indexación y capacidades de consulta que las bibliotecas independientes suelen carecer. He aquí algunas otras ventajas de utilizar Milvus:</p>
+    </button></h2><p>A <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> stores data as mathematical representations, enabling <a href="https://zilliz.com/ai-models">machine learning models</a> to power search, recommendations, and text generation by identifying data through <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">similarity metrics</a> for contextual understanding.</p>
+<p>Vector indices libraries like HNSWlib improve v<a href="https://zilliz.com/learn/vector-similarity-search">ector search</a> and retrieval but lack the management features of a full database. On the other hand, vector databases, like <a href="https://milvus.io/">Milvus</a>, are designed to handle vector embeddings at scale, providing advantages in data management, indexing, and querying capabilities that standalone libraries typically lack. Here are some other benefits of using Milvus:</p>
 <ul>
-<li><p><strong>Búsqueda de similitud vectorial de alta velocidad</strong>: Milvus proporciona un rendimiento de búsqueda a nivel de milisegundos en conjuntos de datos vectoriales a escala de miles de millones, ideal para aplicaciones como la recuperación de imágenes, los sistemas de recomendación, el procesamiento del lenguaje natural<a href="https://zilliz.com/learn/A-Beginner-Guide-to-Natural-Language-Processing">(PLN</a>) y la generación de recuperación aumentada<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>).</p></li>
-<li><p><strong>Escalabilidad y alta disponibilidad:</strong> Diseñado para manejar grandes volúmenes de datos, Milvus se escala horizontalmente e incluye mecanismos de replicación y conmutación por error para mayor fiabilidad.</p></li>
-<li><p><strong>Arquitectura distribuida:</strong> Milvus utiliza una arquitectura distribuida y escalable que separa el almacenamiento y la computación en múltiples nodos para mayor flexibilidad y robustez.</p></li>
-<li><p><a href="https://zilliz.com/blog/a-review-of-hybrid-search-in-milvus"><strong>Búsqueda híbrida</strong></a><strong>:</strong> Milvus admite la búsqueda multimodal, la <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">búsqueda híbrida dispersa y densa</a>, y la <a href="https://thenewstack.io/elasticsearch-was-great-but-vector-databases-are-the-future/">búsqueda</a> híbrida densa y <a href="https://thenewstack.io/elasticsearch-was-great-but-vector-databases-are-the-future/">de texto completo</a>, ofreciendo una funcionalidad de búsqueda versátil y flexible.</p></li>
-<li><p><strong>Soporte flexible de datos</strong>: Milvus admite varios tipos de datos -vectores, escalares y datos estructurados-, lo que permite una gestión y un análisis sin fisuras dentro de un único sistema.</p></li>
-<li><p><a href="https://discord.com/invite/8uyFbECzPX"><strong>Comunidad</strong></a> <strong>y soporte</strong><a href="https://discord.com/invite/8uyFbECzPX"><strong>activos</strong></a>: Una próspera comunidad proporciona actualizaciones periódicas, tutoriales y soporte, asegurando que Milvus permanezca alineado con las necesidades de los usuarios y los avances en el campo.</p></li>
-<li><p><a href="https://milvus.io/docs/integrations_overview.md">Integración de IA</a>: Milvus se ha integrado con varios marcos y tecnologías de IA populares, lo que facilita a los desarrolladores la creación de aplicaciones con sus pilas tecnológicas familiares.</p></li>
+<li><p><strong>High-Speed Vector Similarity Search</strong>: Milvus provides millisecond-level search performance across billion-scale vector datasets, ideal for applications like image retrieval, recommendation systems, natural language processing (<a href="https://zilliz.com/learn/A-Beginner-Guide-to-Natural-Language-Processing">NLP</a>), and retrieval augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>).</p></li>
+<li><p><strong>Scalability and High Availability:</strong> Built to handle massive data volumes, Milvus scales horizontally and includes replication and failover mechanisms for reliability.</p></li>
+<li><p><strong>Distributed Architecture:</strong> Milvus uses a distributed, scalable architecture that separates storage and computing across multiple nodes for flexibility and robustness.</p></li>
+<li><p><a href="https://zilliz.com/blog/a-review-of-hybrid-search-in-milvus"><strong>Hybrid search</strong></a><strong>:</strong> Milvus supports multimodal search, hybrid <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">sparse and dense search</a>, and hybrid dense and <a href="https://thenewstack.io/elasticsearch-was-great-but-vector-databases-are-the-future/">full-text search</a>, offering versatile and flexible search functionality.</p></li>
+<li><p><strong>Flexible Data Support</strong>: Milvus supports various data types—vectors, scalars, and structured data—allowing seamless management and analysis within a single system.</p></li>
+<li><p><a href="https://discord.com/invite/8uyFbECzPX"><strong>Active Community</strong></a> <strong>and Support</strong>: A thriving community provides regular updates, tutorials, and support, ensuring Milvus remains aligned with user needs and advances in the field.</p></li>
+<li><p><a href="https://milvus.io/docs/integrations_overview.md">AI integration</a>: Milvus has integrated with various popular AI frameworks and technologies, making it easier for developers to build applications with their familiar tech stacks.</p></li>
 </ul>
-<p>Milvus también proporciona un servicio totalmente gestionado en <a href="https://zilliz.com/cloud">Ziliz Cloud</a>, que no presenta problemas y es 10 veces más rápido que Milvus.</p>
-<h3 id="Comparison-Milvus-vs-HNSWlib" class="common-anchor-header">Comparación: Milvus frente a HNSWlib</h3><table>
+<p>Milvus also provides a fully managed service on <a href="https://zilliz.com/cloud">Ziliz Cloud</a>, which is hassle-free and 10x faster than Milvus.</p>
+<h3 id="Comparison-Milvus-vs-HNSWlib" class="common-anchor-header">Comparison: Milvus vs. HNSWlib</h3><table>
 <thead>
-<tr><th style="text-align:center"><strong>Características</strong></th><th style="text-align:center"><strong>Milvus</strong></th><th style="text-align:center"><strong>HNSWlib</strong></th></tr>
+<tr><th style="text-align:center"><strong>Feature</strong></th><th style="text-align:center"><strong>Milvus</strong></th><th style="text-align:center"><strong>HNSWlib</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Escalabilidad</td><td style="text-align:center">Maneja miles de millones de vectores con facilidad</td><td style="text-align:center">Adecuado para conjuntos de datos más pequeños debido al uso de RAM</td></tr>
-<tr><td style="text-align:center">Ideal para</td><td style="text-align:center">Prototipos, experimentos y aplicaciones empresariales</td><td style="text-align:center">Centrado en prototipos y tareas ligeras de RNA</td></tr>
-<tr><td style="text-align:center">Indexación</td><td style="text-align:center">Admite más de 10 algoritmos de indexación, como HNSW, DiskANN, cuantización y binario.</td><td style="text-align:center">Sólo utiliza HNSW basado en grafos</td></tr>
-<tr><td style="text-align:center">Integración</td><td style="text-align:center">Ofrece API y servicios nativos en la nube</td><td style="text-align:center">Funciona como una biblioteca ligera e independiente</td></tr>
-<tr><td style="text-align:center">Rendimiento</td><td style="text-align:center">Optimizado para grandes volúmenes de datos y consultas distribuidas</td><td style="text-align:center">Ofrece alta velocidad pero escalabilidad limitada</td></tr>
+<tr><td style="text-align:center">Scalability</td><td style="text-align:center">Handles billions of vectors with ease</td><td style="text-align:center">Fit for smaller datasets due to RAM usage</td></tr>
+<tr><td style="text-align:center">Ideal for</td><td style="text-align:center">Prototyping, experimenting, and enterprise-level applications</td><td style="text-align:center">Focuses on prototypes and lightweight ANN tasks</td></tr>
+<tr><td style="text-align:center">Indexing</td><td style="text-align:center">Supports 10+ indexing algorithms, including HNSW, DiskANN, Quantization, and Binary</td><td style="text-align:center">Uses a graph-based HNSW only</td></tr>
+<tr><td style="text-align:center">Integration</td><td style="text-align:center">Offers APIs and cloud-native services</td><td style="text-align:center">Serves as a lightweight, standalone library</td></tr>
+<tr><td style="text-align:center">Performance</td><td style="text-align:center">Optimizes for large data, distributed queries</td><td style="text-align:center">Offers high speed but limited scalability</td></tr>
 </tbody>
 </table>
-<p>En general, Milvus es preferible para aplicaciones de producción a gran escala con necesidades de indexación complejas, mientras que HNSWlib es ideal para la creación de prototipos y casos de uso más sencillos.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Overall, Milvus is generally preferable for large-scale, production-grade applications with complex indexing needs, while HNSWlib is ideal for prototyping and more straightforward use cases.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -225,9 +225,9 @@ labels, distances = p.knn_query(query_vector, k=<span class="hljs-number">5</spa
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La búsqueda semántica puede consumir muchos recursos, por lo que la estructuración interna de datos, como la que realiza HNSW, es esencial para una recuperación de datos más rápida. Las bibliotecas como HNSWlib se preocupan por la implementación, por lo que los desarrolladores tienen las recetas listas para crear prototipos de capacidades vectoriales. Con unas pocas líneas de código, podemos construir nuestro propio índice y realizar búsquedas.</p>
-<p>HNSWlib es una buena forma de empezar. Sin embargo, si queremos crear aplicaciones de IA complejas y listas para la producción, la mejor opción son las bases de datos vectoriales creadas a tal efecto. Por ejemplo, <a href="https://milvus.io/">Milvus</a> es una base de datos vectorial de código abierto con muchas características empresariales, como búsqueda vectorial de alta velocidad, escalabilidad, disponibilidad y flexibilidad en cuanto a tipos de datos y lenguaje de programación.</p>
-<h2 id="Further-Reading" class="common-anchor-header">Más información<button data-href="#Further-Reading" class="anchor-icon" translate="no">
+    </button></h2><p>Semantic search can be resource-intensive, so internal data structuring, like that performed by HNSW, is essential for faster data retrieval. Libraries like HNSWlib care about the implementation, so the developers have the recipes ready to prototype vector capabilities. With just a few lines of code, we can build up our own index and perform searches.</p>
+<p>HNSWlib is a great way to start. However, if you want to build complex and production-ready AI applications, purpose-built vector databases are the best option. For example, <a href="https://milvus.io/">Milvus</a> is an open-source vector database with many enterprise-ready features such as high-speed vector search, scalability, availability, and flexibility in terms of data types and programming language.</p>
+<h2 id="Further-Reading" class="common-anchor-header">Further Reading<button data-href="#Further-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -243,12 +243,12 @@ labels, distances = p.knn_query(query_vector, k=<span class="hljs-number">5</spa
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://zilliz.com/learn/faiss">¿Qué es Faiss (Facebook AI Similarity Search)? </a></p></li>
-<li><p><a href="https://zilliz.com/learn/learn-hnswlib-graph-based-library-for-fast-anns">¿Qué es HNSWlib? Una biblioteca basada en grafos para la búsqueda rápida de RNA </a></p></li>
-<li><p><a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">¿Qué es ScaNN (Scalable Nearest Neighbors)? </a></p></li>
-<li><p><a href="https://zilliz.com/vector-database-benchmark-tool?database=ZillizCloud%2CMilvus%2CElasticCloud%2CPgVector%2CPinecone%2CQdrantCloud%2CWeaviateCloud&amp;dataset=medium&amp;filter=none%2Clow%2Chigh&amp;tab=1">VectorDBBench: Una herramienta de evaluación comparativa de VectorDB de código abierto</a></p></li>
+<li><p><a href="https://zilliz.com/learn/faiss">What is Faiss (Facebook AI Similarity Search)? </a></p></li>
+<li><p><a href="https://zilliz.com/learn/learn-hnswlib-graph-based-library-for-fast-anns">What is HNSWlib? A Graph-based Library for Fast ANN Search </a></p></li>
+<li><p><a href="https://zilliz.com/learn/what-is-scann-scalable-nearest-neighbors-google">What is ScaNN (Scalable Nearest Neighbors)? </a></p></li>
+<li><p><a href="https://zilliz.com/vector-database-benchmark-tool?database=ZillizCloud%2CMilvus%2CElasticCloud%2CPgVector%2CPinecone%2CQdrantCloud%2CWeaviateCloud&amp;dataset=medium&amp;filter=none%2Clow%2Chigh&amp;tab=1">VectorDBBench: An Open-Source VectorDB Benchmark Tool</a></p></li>
 <li><p><a href="https://zilliz.com/learn/generative-ai">Generative AI Resource Hub | Zilliz</a></p></li>
-<li><p><a href="https://zilliz.com/learn/what-is-vector-database">¿Qué son las bases de datos vectoriales y cómo funcionan? </a></p></li>
-<li><p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">¿Qué es RAG? </a></p></li>
-<li><p><a href="https://zilliz.com/ai-models">Modelos de IA de alto rendimiento para tus aplicaciones de GenAI | Zilliz</a></p></li>
+<li><p><a href="https://zilliz.com/learn/what-is-vector-database">What are Vector Databases and How Do They Work? </a></p></li>
+<li><p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">What is RAG? </a></p></li>
+<li><p><a href="https://zilliz.com/ai-models">Top Performing AI Models for Your GenAI Apps | Zilliz</a></p></li>
 </ul>

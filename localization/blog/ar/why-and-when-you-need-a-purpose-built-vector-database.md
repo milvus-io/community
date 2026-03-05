@@ -1,6 +1,6 @@
 ---
 id: why-and-when-you-need-a-purpose-built-vector-database.md
-title: لماذا ومتى تحتاج إلى قاعدة بيانات متجهات مصممة لغرض معين؟
+title: Why and When Do You Need a Purpose-Built Vector Database?
 author: James Luan
 date: 2023-08-29T00:00:00.000Z
 cover: >-
@@ -10,9 +10,9 @@ tags: >-
   Vector Database, AI, Artificial Intelligence, Machine Learning, Milvus, LLM,
   Large Language Models, Embeddings, Vector search, Vector similarity search
 desc: >-
-  يقدم هذا المنشور لمحة عامة عن البحث عن المتجهات وطريقة عملها، ويقارن بين
-  تقنيات البحث عن المتجهات المختلفة، ويشرح سبب أهمية اختيار قاعدة بيانات متجهات
-  مصممة لهذا الغرض.
+  This post provides an overview of vector search and its functioning, compare
+  different vector search technologies, and explain why opting for a
+  purpose-built vector database is crucial.
 recommend: true
 canonicalUrl: >-
   https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/
@@ -23,10 +23,10 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><em>نُشرت هذه المقالة في الأصل على موقع <a href="https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/">AIAI</a> ويعاد نشرها هنا بإذن.</em></p>
-<p>أدى تزايد شعبية <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> وغيرها من النماذج اللغوية الكبيرة (LLMs) إلى زيادة شعبية تقنيات البحث المتجه، بما في ذلك قواعد بيانات المتجهات المصممة لهذا الغرض مثل <a href="https://milvus.io/docs/overview.md">Milvus</a> و <a href="https://zilliz.com/cloud">Zilliz Cloud،</a> ومكتبات البحث المتجه مثل <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS،</a> ومكونات البحث المتجه المدمجة مع قواعد البيانات التقليدية. ومع ذلك، قد يكون اختيار الحل الأفضل لاحتياجاتك أمراً صعباً. مثل الاختيار بين مطعم راقٍ وسلسلة مطاعم للوجبات السريعة، يعتمد اختيار تقنية البحث المتجه المناسبة على احتياجاتك وتوقعاتك.</p>
-<p>في هذا المنشور، سأقدم لمحة عامة عن البحث المتجه ووظائفه، وأقارن بين تقنيات البحث المتجه المختلفة، وأشرح سبب أهمية اختيار قاعدة بيانات متجهة مصممة لهذا الغرض.</p>
-<h2 id="What-is-vector-search-and-how-does-it-work" class="common-anchor-header">ما هو البحث المتجه، وكيف يعمل؟<button data-href="#What-is-vector-search-and-how-does-it-work" class="anchor-icon" translate="no">
+<p><em>This article was originally published on <a href="https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/">AIAI</a> and is reposted here with permission.</em></p>
+<p>The increasing popularity of <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> and other large language models (LLMs) has fueled the rise of vector search technologies, including purpose-built vector databases such as <a href="https://milvus.io/docs/overview.md">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, vector search libraries such as <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a>, and vector search plugins integrated with traditional databases. However, choosing the best solution for your needs can be challenging. Like choosing between a high-end restaurant and a fast-food chain, selecting the right vector search technology depends on your needs and expectations.</p>
+<p>In this post, I will provide an overview of vector search and its functioning, compare different vector search technologies, and explain why opting for a purpose-built vector database is crucial.</p>
+<h2 id="What-is-vector-search-and-how-does-it-work" class="common-anchor-header">What is vector search, and how does it work?<button data-href="#What-is-vector-search-and-how-does-it-work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,18 +41,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/blog/vector-similarity-search">البحث عن</a> المتجهات، والمعروف أيضًا باسم البحث عن تشابه المتجهات، هو تقنية لاسترجاع أفضل-ك من النتائج الأكثر تشابهًا أو ارتباطًا دلاليًا بمتجه استعلام معين من بين مجموعة واسعة من بيانات المتجهات الكثيفة.</p>
-<p>قبل إجراء عمليات البحث عن التشابه، نستفيد من الشبكات العصبية لتحويل <a href="https://zilliz.com/blog/introduction-to-unstructured-data">البيانات غير المهيكلة،</a> مثل النصوص والصور ومقاطع الفيديو والصوت، إلى متجهات رقمية عالية الأبعاد تسمى متجهات التضمين. على سبيل المثال، يمكننا استخدام الشبكة العصبية التلافيفية ResNet-50 المدربة مسبقًا لتحويل صورة طائر إلى مجموعة من التضمينات ذات 2048 بُعدًا. ندرج هنا العناصر المتجهة الثلاثة الأولى والأخيرة: <code translate="no">[0.1392, 0.3572, 0.1988, ..., 0.2888, 0.6611, 0.2909]</code>.</p>
+    </button></h2><p><a href="https://zilliz.com/blog/vector-similarity-search">Vector search</a>, also known as vector similarity search, is a technique for retrieving the top-k results that are most similar or semantically related to a given query vector among an extensive collection of dense vector data.</p>
+<p>Before conducting similarity searches, we leverage neural networks to transform <a href="https://zilliz.com/blog/introduction-to-unstructured-data">unstructured data</a>, such as text, images, videos, and audio, into high-dimensional numerical vectors called embedding vectors. For example, we can use the pre-trained ResNet-50 convolutional neural network to transform a bird image into a collection of embeddings with 2,048 dimensions. Here, we list the first three and last three vector elements: <code translate="no">[0.1392, 0.3572, 0.1988, ..., 0.2888, 0.6611, 0.2909]</code>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/bird_image_4a1be18f99.png" alt="A bird image by Patrice Bouchard" class="doc-image" id="a-bird-image-by-patrice-bouchard" />
-   </span> <span class="img-wrapper"> <span>صورة طائر بواسطة باتريس بوشارد</span> </span></p>
-<p>بعد توليد متجهات التضمين، تقارن محركات البحث عن المتجهات المسافة المكانية بين متجه الاستعلام المدخلات والمتجهات في مخازن المتجهات. كلما اقتربوا في الفضاء، كلما كانوا أكثر تشابهاً.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/bird_image_4a1be18f99.png" alt="A bird image by Patrice Bouchard" class="doc-image" id="a-bird-image-by-patrice-bouchard" />
+    <span>A bird image by Patrice Bouchard</span>
+  </span>
+</p>
+<p>After generating embedding vectors, vector search engines compare the spatial distance between the input query vector and the vectors in the vector stores. The closer they are in space, the more similar they are.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_3732_20230510_073643_25f985523e.png" alt="Embedding arithmetic" class="doc-image" id="embedding-arithmetic" />
-   </span> <span class="img-wrapper"> <span>حساب التضمين</span> </span></p>
-<h2 id="Popular-vector-search-technologies" class="common-anchor-header">تقنيات البحث عن المتجهات الشائعة<button data-href="#Popular-vector-search-technologies" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_3732_20230510_073643_25f985523e.png" alt="Embedding arithmetic" class="doc-image" id="embedding-arithmetic" />
+    <span>Embedding arithmetic</span>
+  </span>
+</p>
+<h2 id="Popular-vector-search-technologies" class="common-anchor-header">Popular vector search technologies<button data-href="#Popular-vector-search-technologies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,8 +71,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تتوفر العديد من تقنيات البحث عن المتجهات في السوق، بما في ذلك مكتبات التعلم الآلي مثل NumPy من Python، ومكتبات البحث عن المتجهات مثل FAISS، ومكونات البحث عن المتجهات المبنية على قواعد البيانات التقليدية، وقواعد البيانات المتجهة المتخصصة مثل Milvus و Zilliz Cloud.</p>
-<h3 id="Machine-learning-libraries" class="common-anchor-header">مكتبات التعلم الآلي</h3><p>يعد استخدام مكتبات التعلم الآلي أسهل طريقة لتنفيذ عمليات البحث المتجهية. على سبيل المثال، يمكننا استخدام NumPy من Python لتنفيذ خوارزمية الجار الأقرب في أقل من 20 سطرًا من التعليمات البرمجية.</p>
+    </button></h2><p>Multiple vector search technologies are available in the market, including machine learning libraries like Python’s NumPy, vector search libraries like FAISS, vector search plugins built on traditional databases, and specialized vector databases like Milvus and Zilliz Cloud.</p>
+<h3 id="Machine-learning-libraries" class="common-anchor-header">Machine learning libraries</h3><p>Using machine learning libraries is the easiest way to implement vector searches. For instance, we can use Python’s NumPy to implement a nearest neighbor algorithm in less than 20 lines of code.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 
 <span class="hljs-comment"># Function to calculate euclidean distance</span>
@@ -91,7 +95,7 @@ closest_k_indices = sorted_distances[:k, <span class="hljs-number">1</span>].ast
 <span class="hljs-comment"># Return the top k closest vectors</span>
 <span class="hljs-keyword">return</span> data[closest_k_indices]
 <button class="copy-code-btn"></button></code></pre>
-<p>يمكننا توليد 100 متجه ثنائي الأبعاد وإيجاد أقرب جار للمتجه [0.5، 0.5].</p>
+<p>We can generate 100 two-dimensional vectors and find the nearest neighbor to the vector [0.5, 0.5].</p>
 <pre><code translate="no"><span class="hljs-comment"># Define some 2D vectors</span>
 data = np.random.rand(<span class="hljs-number">100</span>, <span class="hljs-number">2</span>)
 
@@ -108,16 +112,16 @@ closest_vectors = knn(data, target, k)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The closest vectors are:&quot;</span>)
 <span class="hljs-built_in">print</span>(closest_vectors)
 <button class="copy-code-btn"></button></code></pre>
-<p>توفر مكتبات التعلم الآلي، مثل NumPy من Python، مرونة كبيرة بتكلفة منخفضة. ومع ذلك، فإن لها بعض القيود. على سبيل المثال، يمكنها فقط التعامل مع كمية صغيرة من البيانات ولا تضمن ثبات البيانات.</p>
-<p>أوصي فقط باستخدام NumPy أو مكتبات التعلم الآلي الأخرى للبحث المتجه عندما:</p>
+<p>Machine learning libraries, such as Python’s NumPy, offer great flexibility at a low cost. However, they do have some limitations. For instance, they can only handle a small amount of data and do not ensure data persistence.</p>
+<p>I only recommend using NumPy or other machine learning libraries for vector search when:</p>
 <ul>
-<li>تحتاج إلى نماذج أولية سريعة.</li>
-<li>لا تهتم باستمرار البيانات.</li>
-<li>حجم بياناتك أقل من مليون، ولا تحتاج إلى تصفية عددية.</li>
-<li>لا تحتاج إلى أداء عالٍ.</li>
+<li>You need quick prototyping.</li>
+<li>You don’t care about data persistence.</li>
+<li>Your data size is under one million, and you do not require scalar filtering.</li>
+<li>You do not need high performance.</li>
 </ul>
-<h3 id="Vector-search-libraries" class="common-anchor-header">مكتبات البحث المتجهية</h3><p>يمكن أن تساعدك مكتبات البحث المتجهية في بناء نظام بحث متجهي نموذجي عالي الأداء بسرعة. FAISS هو مثال نموذجي. وهي مفتوحة المصدر وتم تطويرها بواسطة Meta للبحث الفعال عن التشابه وتجميع المتجهات الكثيفة. يمكن ل FAISS التعامل مع مجموعات المتجهات من أي حجم، حتى تلك التي لا يمكن تحميلها بالكامل في الذاكرة. بالإضافة إلى ذلك، يوفر FAISS أدوات للتقييم وضبط المعلمات. على الرغم من كتابته بلغة C++، إلا أن FAISS يوفر واجهة Python/NumPy.</p>
-<p>فيما يلي رمز لمثال بحث متجه يعتمد على FAISS:</p>
+<h3 id="Vector-search-libraries" class="common-anchor-header">Vector search libraries</h3><p>Vector search libraries can help you quickly build a high-performance prototype vector search system. FAISS is a typical example. It is open-source and developed by Meta for efficient similarity search and dense vector clustering. FAISS can handle vector collections of any size, even those that cannot be fully loaded into memory. Additionally, FAISS offers tools for evaluation and parameter tuning. Even though written in C++, FAISS provides a Python/NumPy interface.</p>
+<p>Below is the code for an example vector search based on FAISS:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> faiss
 
@@ -149,19 +153,19 @@ distances, indices = index.search(query_vectors, k)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Indices of nearest neighbors: \n&quot;</span>, indices)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nL2 distances to the nearest neighbors: \n&quot;</span>, distances)
 <button class="copy-code-btn"></button></code></pre>
-<p>تعد مكتبات البحث عن المتجهات مثل FAISS سهلة الاستخدام وسريعة بما يكفي للتعامل مع بيئات الإنتاج على نطاق صغير مع ملايين المتجهات. يمكنك تحسين أداء استعلاماتها من خلال استخدام التكميم ووحدات معالجة الرسومات وتقليل أبعاد البيانات.</p>
-<p>ومع ذلك، فإن هذه المكتبات لديها بعض القيود عند استخدامها في الإنتاج. على سبيل المثال، لا تدعم FAISS إضافة البيانات وحذفها في الوقت الحقيقي، أو المكالمات عن بُعد، أو اللغات المتعددة، أو التصفية القياسية، أو قابلية التوسع، أو التعافي من الكوارث.</p>
-<h3 id="Different-types-of-vector-databases" class="common-anchor-header">أنواع مختلفة من قواعد البيانات المتجهة</h3><p>ظهرت قواعد البيانات المتجهة لمعالجة قيود المكتبات المذكورة أعلاه، مما يوفر حلاً أكثر شمولاً وعملياً لتطبيقات الإنتاج.</p>
-<p>تتوفر أربعة أنواع من قواعد البيانات المتجهة في ساحة المعركة:</p>
+<p>Vector search libraries such as FAISS are easy to use and fast enough to handle small-scale production environments with millions of vectors. You can enhance their query performance by utilizing quantization and GPUs and reducing data dimensions.</p>
+<p>However, these libraries have some limitations when used in production. For example, FAISS does not support real-time data addition and deletion, remote calls, multiple languages, scalar filtering, scalability, or disaster recovery.</p>
+<h3 id="Different-types-of-vector-databases" class="common-anchor-header">Different types of vector databases</h3><p>Vector databases have emerged to address the limitations of the libraries above, providing a more comprehensive and practical solution for production applications.</p>
+<p>Four types of vector databases are available on the battlefield:</p>
 <ul>
-<li>قواعد البيانات العلائقية أو العمودية الحالية التي تتضمن مكونًا إضافيًا للبحث عن المتجهات. مثال على ذلك PG Vector.</li>
-<li>محركات البحث التقليدية ذات الفهرس المقلوب مع دعم فهرسة المتجهات الكثيفة. <a href="https://zilliz.com/comparison/elastic-vs-milvus">ElasticSearch</a> مثال على ذلك.</li>
-<li>قواعد البيانات المتجهة خفيفة الوزن المبنية على مكتبات البحث المتجهية. كروما مثال على ذلك.</li>
-<li><strong>قواعد البيانات المتجهة المصممة لغرض معين</strong>. هذا النوع من قواعد البيانات مصمم خصيصًا ومحسّن للبحث عن المتجهات من الأسفل إلى الأعلى. عادةً ما تقدم قواعد البيانات المتجهة المصممة لغرض معين ميزات أكثر تقدمًا، بما في ذلك الحوسبة الموزعة واستعادة البيانات بعد الكوارث واستمرار البيانات. <a href="https://zilliz.com/what-is-milvus">ميلفوس</a> هو مثال أساسي على ذلك.</li>
+<li>Existing relational or columnar databases that incorporate a vector search plugin. PG Vector is an example.</li>
+<li>Traditional inverted index search engines with support for dense vector indexing. <a href="https://zilliz.com/comparison/elastic-vs-milvus">ElasticSearch</a> is an example.</li>
+<li>Lightweight vector databases built on vector search libraries. Chroma is an example.</li>
+<li><strong>Purpose-built vector databases</strong>. This type of database is specifically designed and optimized for vector searching from the bottom up. Purpose-built vector databases typically offer more advanced features, including distributed computing, disaster recovery, and data persistence. <a href="https://zilliz.com/what-is-milvus">Milvus</a> is a primary example.</li>
 </ul>
-<p>لا يتم إنشاء جميع قواعد البيانات المتجهة على قدم المساواة. فكل حزمة لها مزايا وقيود فريدة من نوعها، مما يجعلها أكثر أو أقل ملاءمة للتطبيقات المختلفة.</p>
-<p>أفضّل قواعد البيانات المتجهة المتخصصة على الحلول الأخرى لأنها الخيار الأكثر كفاءة وملاءمة، وتقدم العديد من المزايا الفريدة. في الأقسام التالية، سأستخدم ميلفوس كمثال لشرح أسباب تفضيلي لها.</p>
-<h2 id="Key-benefits-of-purpose-built-vector-databases" class="common-anchor-header">الفوائد الرئيسية لقواعد البيانات المتجهة المصممة لهذا الغرض<button data-href="#Key-benefits-of-purpose-built-vector-databases" class="anchor-icon" translate="no">
+<p>Not all vector databases are created equal. Each stack has unique advantages and limitations, making them more or less suitable for different applications.</p>
+<p>I prefer specialized vector databases over other solutions because they are the most efficient and convenient option, offering numerous unique benefits. In the following sections, I will use Milvus as an example to explain the reasons for my preference.</p>
+<h2 id="Key-benefits-of-purpose-built-vector-databases" class="common-anchor-header">Key benefits of purpose-built vector databases<button data-href="#Key-benefits-of-purpose-built-vector-databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -176,14 +180,14 @@ distances, indices = index.search(query_vectors, k)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">ميلفوس</a> هي قاعدة بيانات متجهات مفتوحة المصدر وموزعة ومصممة لهذا الغرض، ويمكنها تخزين وفهرسة وإدارة واسترجاع مليارات من متجهات التضمين. وهي أيضًا واحدة من أشهر قواعد البيانات المتجهة الأكثر شيوعًا <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">للجيل المعزز لاسترجاع LLM</a>. كمثال نموذجي لقواعد البيانات المتجهة المصممة لهذا الغرض، تشترك ميلفوس في العديد من المزايا الفريدة مع نظيراتها.</p>
-<h3 id="Data-Persistence-and-Cost-Effective-Storage" class="common-anchor-header">ثبات البيانات والتخزين الفعال من حيث التكلفة</h3><p>في حين أن منع فقدان البيانات هو الحد الأدنى من متطلبات قاعدة البيانات، فإن العديد من قواعد البيانات المتجهة أحادية الجهاز وخفيفة الوزن لا تعطي الأولوية لموثوقية البيانات. على النقيض من ذلك، فإن قواعد البيانات المتجهة الموزعة المصممة لهذا الغرض مثل <a href="https://zilliz.com/what-is-milvus">ميلفوس</a> تعطي الأولوية لمرونة النظام وقابلية التوسع واستمرار البيانات من خلال فصل التخزين عن الحوسبة.</p>
-<p>علاوةً على ذلك، تحتاج معظم قواعد البيانات المتجهة التي تستخدم فهارس أقرب جار تقريبي (ANN) إلى الكثير من الذاكرة لإجراء البحث عن المتجهات، حيث إنها تقوم بتحميل فهارس ANN في الذاكرة فقط. ومع ذلك، تدعم Milvus فهارس الأقراص، مما يجعل التخزين أكثر فعالية من حيث التكلفة بأكثر من عشرة أضعاف الفهارس داخل الذاكرة.</p>
-<h3 id="Optimal-Query-Performance" class="common-anchor-header">الأداء الأمثل للاستعلام</h3><p>توفر قاعدة البيانات المتجهة المتخصصة الأداء الأمثل للاستعلام مقارنةً بخيارات البحث المتجهة الأخرى. على سبيل المثال، تعدّ Milvus أسرع بعشر مرات في معالجة الاستعلامات من ملحقات البحث المتجه. يستخدم Milvus <a href="https://zilliz.com/glossary/anns">خوارزمية ANN</a> بدلاً من خوارزمية البحث الوحشي KNN للبحث المتجه بشكل أسرع. بالإضافة إلى ذلك، فإنه يقوم بتجزئة فهارسه، مما يقلل من الوقت الذي يستغرقه إنشاء فهرس مع زيادة حجم البيانات. يُمكّن هذا النهج ميلفوس من التعامل بسهولة مع مليارات المتجهات مع إضافات البيانات وحذفها في الوقت الفعلي. وعلى النقيض من ذلك، فإن الوظائف الإضافية الأخرى للبحث عن المتجهات مناسبة فقط للسيناريوهات التي تحتوي على أقل من عشرات الملايين من البيانات والإضافات والحذف غير المتكرر.</p>
-<p>يدعم Milvus أيضًا تسريع وحدة معالجة الرسومات. تُظهر الاختبارات الداخلية أن فهرسة المتجهات المسرَّعة بوحدة معالجة الرسومات يمكن أن تحقق أكثر من 10,000+ QPS عند البحث في عشرات الملايين من البيانات، وهو أسرع بعشر مرات على الأقل من فهرسة وحدة المعالجة المركزية التقليدية لأداء الاستعلام في جهاز واحد.</p>
-<h3 id="System-Reliability" class="common-anchor-header">موثوقية النظام</h3><p>تستخدم العديد من التطبيقات قواعد البيانات المتجهة للاستعلامات عبر الإنترنت التي تتطلب زمن استعلام منخفض وإنتاجية عالية. وتتطلب هذه التطبيقات تجاوز الفشل في جهاز واحد على مستوى الدقائق، وبعضها يتطلب التعافي من الكوارث عبر المناطق في السيناريوهات الحرجة. وتعاني استراتيجيات النسخ المتماثل التقليدية القائمة على رافت/باكسوس من إهدار خطير للموارد وتحتاج إلى مساعدة لتجزئة البيانات مسبقًا، مما يؤدي إلى ضعف الموثوقية. في المقابل، تمتلك Milvus بنية موزعة تستفيد من قوائم انتظار رسائل K8s من أجل التوافر العالي، مما يقلل من وقت الاسترداد ويوفر الموارد.</p>
-<h3 id="Operability-and-Observability" class="common-anchor-header">قابلية التشغيل والمراقبة</h3><p>لخدمة المستخدمين من المؤسسات بشكل أفضل، يجب أن تقدم قواعد البيانات المتجهة مجموعة من الميزات على مستوى المؤسسات لتحسين قابلية التشغيل والمراقبة. تدعم Milvus طرق نشر متعددة، بما في ذلك مخطط K8s Operator و Helm، و docker-compose، وPip install، مما يجعلها في متناول المستخدمين ذوي الاحتياجات المختلفة. كما يوفر Milvus أيضًا نظام مراقبة وإنذار يعتمد على Grafana و Prometheus و Loki، مما يحسّن من إمكانية مراقبته. وبفضل البنية السحابية الموزعة الأصلية، تُعد Milvus أول قاعدة بيانات متجهة في المجال تدعم العزل متعدد المستأجرين، ونظام RBAC، وتحديد الحصص، والترقيات المتجددة. كل هذه الأساليب تجعل إدارة Milvus ومراقبتها أبسط بكثير.</p>
-<h2 id="Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="common-anchor-header">بدء العمل مع Milvus في 3 خطوات بسيطة في غضون 10 دقائق<button data-href="#Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source, distributed, purpose-built vector database that can store, index, manage, and retrieve billions of embedding vectors. It is also one of the most popular vector databases for <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">LLM retrieval augmented generation</a>. As an exemplary instance of purpose-built vector databases, Milvus shares many unique advantages with its counterparts.</p>
+<h3 id="Data-Persistence-and-Cost-Effective-Storage" class="common-anchor-header">Data Persistence and Cost-Effective Storage</h3><p>While preventing data loss is the minimum requirement for a database, many single-machine and lightweight vector databases do not prioritize data reliability. By contrast, purpose-built distributed vector databases like <a href="https://zilliz.com/what-is-milvus">Milvus</a> prioritize system resilience, scalability, and data persistence by separating storage and computation.</p>
+<p>Moreover, most vector databases that utilize approximate nearest neighbor (ANN) indexes need a lot of memory to perform vector searching, as they load ANN indexes purely into memory. However, Milvus supports disk indexes, making storage over ten times more cost-effective than in-memory indexes.</p>
+<h3 id="Optimal-Query-Performance" class="common-anchor-header">Optimal Query Performance</h3><p>A specialized vector database provides optimal query performance compared to other vector search options. For example, Milvus is ten times faster at handling queries than vector search plugins. Milvus uses the <a href="https://zilliz.com/glossary/anns">ANN algorithm</a> instead of the KNN brutal search algorithm for faster vector searching. Additionally, it shards its indexes, reducing the time it takes to construct an index as the data volume increases. This approach enables Milvus to easily handle billions of vectors with real-time data additions and deletions. In contrast, other vector search add-ons are only suitable for scenarios with fewer than tens of millions of data and infrequent additions and deletions.</p>
+<p>Milvus also supports GPU acceleration. Internal testing shows that GPU-accelerated vector indexing can achieve 10,000+ QPS when searching tens of millions of data, which is at least ten times faster than traditional CPU indexing for single-machine query performance.</p>
+<h3 id="System-Reliability" class="common-anchor-header">System Reliability</h3><p>Many applications use vector databases for online queries that require low query latency and high throughput. These applications demand single-machine failover at the minute level, and some even require cross-region disaster recovery for critical scenarios. Traditional replication strategies based on Raft/Paxos suffer from serious resource waste and need help to pre-shard the data, leading to poor reliability. In contrast, Milvus has a distributed architecture that leverages K8s message queues for high availability, reducing recovery time and saving resources.</p>
+<h3 id="Operability-and-Observability" class="common-anchor-header">Operability and Observability</h3><p>To better serve enterprise users, vector databases must offer a range of enterprise-level features for better operability and observability. Milvus supports multiple deployment methods, including K8s Operator and Helm chart, docker-compose, and pip install, making it accessible to users with different needs. Milvus also provides a monitoring and alarm system based on Grafana, Prometheus, and Loki, improving its observability. With a distributed cloud-native architecture, Milvus is the industry’s first vector database to support multi-tenant isolation, RBAC, quota limiting, and rolling upgrades. All of these approaches make managing and monitoring Milvus much simpler.</p>
+<h2 id="Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="common-anchor-header">Getting started with Milvus in 3 simple steps within 10 minutes<button data-href="#Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -198,9 +202,9 @@ distances, indices = index.search(query_vectors, k)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يعد إنشاء قاعدة بيانات متجهة مهمة معقدة، ولكن استخدام واحدة منها بسيط مثل استخدام Numpy و FAISS. حتى الطلاب الذين ليسوا على دراية بالذكاء الاصطناعي يمكنهم تنفيذ البحث المتجه استنادًا إلى Milvus في عشر دقائق فقط. لتجربة خدمات بحث متجهية عالية الأداء وقابلة للتطوير، اتبع هذه الخطوات الثلاث:</p>
+    </button></h2><p>Building a vector database is a complex task, but using one is as simple as using Numpy and FAISS. Even students unfamiliar with AI can implement vector search based on Milvus in just ten minutes. To experience highly scalable and high-performance vector search services, follow these three steps:</p>
 <ul>
-<li>نشر ميلفوس على الخادم الخاص بك بمساعدة <a href="https://milvus.io/docs/install_standalone-docker.md">مستند نشر ميلفوس</a>.</li>
-<li>تنفيذ البحث المتجه باستخدام 50 سطرًا فقط من التعليمات البرمجية بالرجوع إلى مستند <a href="https://milvus.io/docs/example_code.md">Hello Milvus</a>.</li>
-<li>استكشف <a href="https://github.com/towhee-io/examples/">أمثلة مستندات Towhee</a> لاكتساب نظرة ثاقبة <a href="https://zilliz.com/use-cases">لحالات الاستخدام</a> الشائعة <a href="https://zilliz.com/use-cases">لقواعد بيانات المتجهات</a>.</li>
+<li>Deploy Milvus on your server with the help of the <a href="https://milvus.io/docs/install_standalone-docker.md">Milvus deployment document</a>.</li>
+<li>Implement vector search with just 50 lines of code by referring to the <a href="https://milvus.io/docs/example_code.md">Hello Milvus document</a>.</li>
+<li>Explore the <a href="https://github.com/towhee-io/examples/">example documents of Towhee</a> to gain insight into popular <a href="https://zilliz.com/use-cases">use cases of vector databases</a>.</li>
 </ul>

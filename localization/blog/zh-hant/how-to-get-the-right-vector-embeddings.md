@@ -1,9 +1,11 @@
 ---
 id: how-to-get-the-right-vector-embeddings.md
-title: 如何取得正確的向量嵌入
+title: How to Get the Right Vector Embeddings
 author: Yujian Tang
 date: 2023-12-08T00:00:00.000Z
-desc: 全面介紹向量嵌入以及如何使用流行的開放原始碼模型產生向量嵌入。
+desc: >-
+  A comprehensive introduction to vector embeddings and how to generate them
+  with popular open-source models.
 cover: assets.zilliz.com/How_to_Get_the_Right_Vector_Embedding_d9ebcacbbb.png
 tag: Engineering
 tags: >-
@@ -18,16 +20,18 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
     <span></span>
   </span>
 </p>
-<p><em>本文最初發表於<a href="https://thenewstack.io/how-to-get-the-right-vector-embeddings/">The New Stack</a>，經授權後在此轉載。</em></p>
-<p><strong>全面介紹向量嵌入以及如何使用流行的開放原始碼模型產生向量嵌入。</strong></p>
+<p><em>This article was originally published in <a href="https://thenewstack.io/how-to-get-the-right-vector-embeddings/">The New Stack</a> and is reposted here with permission.</em></p>
+<p><strong>A comprehensive introduction to vector embeddings and how to generate them with popular open source models.</strong></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/how_to_get_right_vector_embeddings_e0838623b7.png" alt="Image by Денис Марчук from Pixabay" class="doc-image" id="image-by-денис-марчук-from-pixabay" />
-   </span> <span class="img-wrapper"> <span>圖片：Денис Марчук 來自 Pixabay</span> </span></p>
-<p>向量嵌入在處理<a href="https://zilliz.com/blog/vector-similarity-search">語意相似性</a>時非常重要。不過，向量只是一連串的數字；向量嵌入則是代表輸入資料的一連串數字。使用向量內嵌，我們可以<a href="https://zilliz.com/blog/introduction-to-unstructured-data">將非結構化的資料</a>結構化，或將任何類型的資料轉換成一連串的數字來處理。這種方法讓我們可以對輸入資料執行數學運算，而不是依賴於定性比較。</p>
-<p>向量內嵌對許多任務都很有影響力，特別是對於<a href="https://zilliz.com/glossary/semantic-search">語意搜尋</a>。然而，在使用之前，取得適當的向量內嵌是至關重要的。舉例來說，如果您使用圖像模型來向量化文字，或反之亦然，您很可能會得到很差的結果。</p>
-<p>在這篇文章中，我們將學習向量嵌入的意義、如何使用不同的模型為您的應用程式產生適當的向量嵌入，以及如何透過向量資料庫 (例如<a href="https://milvus.io/">Milvus</a>和<a href="https://zilliz.com/">Zilliz Cloud</a>) 來善用向量嵌入。</p>
-<h2 id="How-are-vector-embeddings-created" class="common-anchor-header">向量內嵌是如何產生的？<button data-href="#How-are-vector-embeddings-created" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/how_to_get_right_vector_embeddings_e0838623b7.png" alt="Image by Денис Марчук from Pixabay" class="doc-image" id="image-by-денис-марчук-from-pixabay" />
+    <span>Image by Денис Марчук from Pixabay</span>
+  </span>
+</p>
+<p>Vector embeddings are critical when working with  <a href="https://zilliz.com/blog/vector-similarity-search">semantic similarity</a>. However, a vector is simply a series of numbers; a vector embedding is a series of numbers representing input data. Using vector embeddings, we can structure  <a href="https://zilliz.com/blog/introduction-to-unstructured-data">unstructured data</a>  or work with any type of data by converting it into a series of numbers. This approach allows us to perform mathematical operations on the input data, rather than relying on qualitative comparisons.</p>
+<p>Vector embeddings are influential for many tasks, particularly for  <a href="https://zilliz.com/glossary/semantic-search">semantic search</a>. However, it is crucial to obtain the appropriate vector embeddings before using them. For instance, if you use an image model to vectorize text, or vice versa, you will probably get poor results.</p>
+<p>In this post, we will learn what vector embeddings mean, how to generate the right vector embeddings for your applications using different models and how to make the best use of vector embeddings with vector databases like  <a href="https://milvus.io/">Milvus</a>  and  <a href="https://zilliz.com/">Zilliz Cloud</a>.</p>
+<h2 id="How-are-vector-embeddings-created" class="common-anchor-header">How are vector embeddings created?<button data-href="#How-are-vector-embeddings-created" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,10 +52,10 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
     <span></span>
   </span>
 </p>
-<p>既然我們瞭解向量內嵌的重要性，讓我們來瞭解它們如何運作。向量嵌入是深度學習模型（也稱為嵌入模型或深度神經網路）中輸入資料的內部表示。那麼，我們如何擷取這些資訊呢？</p>
-<p>我們透過移除最後一層，並從倒數第二層的輸出取得向量。神經網路的最後一層通常會輸出模型的預測，因此我們取倒數第二層的輸出。向量嵌入是饋送給神經網路預測層的資料。</p>
-<p>向量嵌入的維度等同於模型中倒數第二層的大小，因此可與向量的大小或長度互換。常見的向量維度包括 384 (由 Sentence Transformers Mini-LM 產生)、768 (由 Sentence Transformers MPNet 產生)、1,536 (由 OpenAI 產生) 和 2,048 (由 ResNet-50 產生)。</p>
-<h2 id="What-does-a-vector-embedding-mean" class="common-anchor-header">向量嵌入是什麼意思？<button data-href="#What-does-a-vector-embedding-mean" class="anchor-icon" translate="no">
+<p>Now that we understand the importance of vector embeddings, let’s learn how they work. A vector embedding is the internal representation of input data in a deep learning model, also known as embedding models or a deep neural network. So, how do we extract this information?</p>
+<p>We obtain vectors by removing the last layer and taking the output from the second-to-last layer. The last layer of a neural network usually outputs the model’s prediction, so we take the output of the second-to-last layer. The vector embedding is the data fed to a neural network’s predictive layer.</p>
+<p>The dimensionality of a vector embedding is equivalent to the size of the second-to-last layer in the model and, thus, interchangeable with the vector’s size or length. Common vector dimensionalities include 384 (generated by Sentence Transformers Mini-LM), 768 (by Sentence Transformers MPNet), 1,536 (by OpenAI) and 2,048 (by ResNet-50).</p>
+<h2 id="What-does-a-vector-embedding-mean" class="common-anchor-header">What does a vector embedding mean?<button data-href="#What-does-a-vector-embedding-mean" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,9 +70,9 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>曾經有人問我向量嵌入中每個維度的意義。簡短的答案是沒什麼。向量內嵌中的單一維度沒有任何意義，因為它太抽象，無法確定其意義。但是，當我們把所有的維度放在一起時，它們就提供了輸入資料的語意。</p>
-<p>向量的維度是不同屬性的高層次抽象表示。所代表的屬性取決於訓練資料和模型本身。文字模型和圖像模型會產生不同的內嵌，因為它們是針對根本不同的資料類型所訓練的。即使是不同的文字模型也會產生不同的嵌入。有時它們的大小不同，有時它們代表的屬性也不同。例如，針對法律資料訓練的模型與針對健康照護資料訓練的模型會學到不同的東西。我在<a href="https://zilliz.com/blog/comparing-different-vector-embeddings">比較向量內嵌</a>的文章中探討過這個主題。</p>
-<h2 id="Generate-the-right-vector-embeddings" class="common-anchor-header">產生正確的向量內嵌<button data-href="#Generate-the-right-vector-embeddings" class="anchor-icon" translate="no">
+    </button></h2><p>Someone once asked me about the meaning of each dimension in a vector embedding. The short answer is nothing. A single dimension in a vector embedding does not mean anything, as it is too abstract to determine its meaning. However, when we take all dimensions together, they provide the semantic meaning of the input data.</p>
+<p>The dimensions of the vector are high-level, abstract representations of different attributes. The represented attributes depend on the training data and the model itself. Text and image models generate different embeddings because they’re trained for fundamentally different data types. Even different text models generate different embeddings. Sometimes they differ in size; other times, they differ in the attributes they represent. For instance, a model trained on legal data will learn different things than one trained on health-care data. I explored this topic in my post  <a href="https://zilliz.com/blog/comparing-different-vector-embeddings">comparing vector embeddings</a>.</p>
+<h2 id="Generate-the-right-vector-embeddings" class="common-anchor-header">Generate the right vector embeddings<button data-href="#Generate-the-right-vector-embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,11 +87,11 @@ canonicalUrl: 'https://zilliz.com/blog/how-to-get-the-right-vector-embeddings'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>如何獲得正確的向量嵌入？首先要確定您想要嵌入的資料類型。本節涵蓋嵌入五種不同類型的資料：影像、文字、音訊、視訊和多模態資料。我們在此介紹的所有模型都是開放原始碼，來自 Hugging Face 或 PyTorch。</p>
-<h3 id="Image-embeddings" class="common-anchor-header">圖像嵌入</h3><p>2012 年，AlexNet 一炮而紅，圖像識別隨之興起。自此之後，電腦視覺領域見證了無數的進步。最新的顯著圖像識別模型是 ResNet-50，這是基於前 ResNet-34 架構的 50 層深度殘差網路。</p>
-<p>殘差神經網路 (ResNet) 使用捷徑連接解決了深度卷積神經網路中的梯度消失問題。這些連接允許較早層的輸出直接進入較後層，而不經過所有中間層，從而避免了虛擬梯度問題。這種設計使得 ResNet 的複雜度低於 VGGNet (Visual Geometry Group)，VGGNet 是之前表現最出色的卷繞神經網路。</p>
-<p>我推薦兩個 ResNet-50 實作為範例： <a href="https://huggingface.co/microsoft/resnet-50">Hugging Face 上的 ResNet 50</a>和<a href="https://pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html">PyTorch Hub 上的 ResNet 50</a>。雖然網路相同，但獲得嵌入的過程卻不同。</p>
-<p>以下的程式碼範例展示了如何使用 PyTorch 取得向量內嵌。首先，我們從 PyTorch Hub 載入模型。接下來，我們移除最後一層，並呼叫<code translate="no">.eval()</code> 來指示模型的行為，就像它正在執行推論一樣。接著，<code translate="no">embed</code> 函式產生向量嵌入。</p>
+    </button></h2><p>How do you obtain the proper vector embeddings? It all starts with identifying the type of data you wish to embed. This section covers embedding five different types of data: images, text, audio, videos and multimodal data. All models we introduce here are open source and come from Hugging Face or PyTorch.</p>
+<h3 id="Image-embeddings" class="common-anchor-header">Image embeddings</h3><p>Image recognition took off in 2012 after AlexNet hit the scene. Since then, the field of computer vision has witnessed numerous advancements. The latest notable image recognition model is ResNet-50, a 50-layer deep residual network based on the former ResNet-34 architecture.</p>
+<p>Residual neural networks (ResNet) solve the vanishing gradient problem in deep convolutional neural networks using shortcut connections. These connections allow the output from earlier layers to go to later layers directly without passing through all the intermediate layers, thus avoiding the vanishing gradient problem. This design makes ResNet less complex than VGGNet (Visual Geometry Group), a previously top-performing convolutional neural network.</p>
+<p>I recommend two ResNet-50 implementations as examples:  <a href="https://huggingface.co/microsoft/resnet-50">ResNet 50 on Hugging Face</a>  and  <a href="https://pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html">ResNet 50 on PyTorch Hub</a>. While the networks are the same, the process of obtaining embeddings differs.</p>
+<p>The code sample below demonstrates how to use PyTorch to obtain vector embeddings. First, we load the model from PyTorch Hub. Next, we remove the last layer and call  <code translate="no">.eval()</code>  to instruct the model to behave like it’s running for inference. Then, the  <code translate="no">embed</code>  function generates the vector embedding.</p>
 <pre><code translate="no"><span class="hljs-comment"># Load the embedding model with the last layer removed</span>
 model = torch.hub.load(<span class="hljs-string">&#x27;pytorch/vision:v0.10.0&#x27;</span>, <span class="hljs-string">&#x27;resnet50&#x27;</span>, pretrained=<span class="hljs-literal">True</span>) model = torch.nn.Sequential(*(<span class="hljs-built_in">list</span>(model.children())[:-<span class="hljs-number">1</span>]))
 model.<span class="hljs-built_in">eval</span>()
@@ -98,7 +102,7 @@ model.<span class="hljs-built_in">eval</span>()
 output = model(torch.stack(data[<span class="hljs-number">0</span>])).squeeze()
 <span class="hljs-keyword">return</span> output
 <button class="copy-code-btn"></button></code></pre>
-<p>HuggingFace 使用稍微不同的設定。以下程式碼示範如何從 Hugging Face 取得向量內嵌。首先，我們需要<code translate="no">transformers</code> 函式庫中的特徵萃取器和模型。我們會使用特徵萃取器來取得模型的輸入，並使用模型來取得輸出和萃取最後的隱藏狀態。</p>
+<p>HuggingFace uses a slightly different setup. The code below demonstrates how to obtain a vector embedding from Hugging Face. First, we need a feature extractor and model from the  <code translate="no">transformers</code>  library. We will use the feature extractor to get inputs for the model and use the model to obtain outputs and extract the last hidden state.</p>
 <pre><code translate="no"><span class="hljs-comment"># Load model directly</span>
 <span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoFeatureExtractor, AutoModelForImageClassification
 
@@ -121,28 +125,28 @@ inputs = extractor(images=image, return_tensors=<span class="hljs-string">&quot;
 outputs = model(**inputs)
 vector_embeddings = outputs[<span class="hljs-number">1</span>][-<span class="hljs-number">1</span>].squeeze()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Text-embeddings" class="common-anchor-header">文字嵌入</h3><p>自從人工智能發明以來，工程師和研究人員就一直在實驗自然語言和人工智能。最早的一些實驗包括</p>
+<h3 id="Text-embeddings" class="common-anchor-header">Text embeddings</h3><p>Engineers and researchers have been experimenting with natural language and AI since the invention of AI. Some of the earliest experiments include:</p>
 <ul>
-<li>ELIZA, 第一個 AI 治療師聊天機器人。</li>
-<li>John Searle's Chinese Room，一個研究中英文互譯能力是否需要理解語言的思想實驗。</li>
-<li>英語與俄語之間基於規則的翻譯。</li>
+<li>ELIZA, the first AI therapist chatbot.</li>
+<li>John Searle’s Chinese Room, a thought experiment that examines whether the ability to translate between Chinese and English requires an understanding of the language.</li>
+<li>Rule-based translations between English and Russian.</li>
 </ul>
-<p>AI 對自然語言的操作已從其基於規則的嵌入顯著演進。從初級神經網路開始，我們透過 RNN 增加遞歸關係來追蹤時間步驟。從此，我們使用轉換器來解決序列轉換問題。</p>
-<p>轉換器由編碼器、注意矩陣和解碼器組成，編碼器將輸入編碼為代表狀態的矩陣。解碼器對狀態和注意力矩陣進行解碼，以預測正確的下一個符號來完成輸出序列。GPT-3 是目前最流行的語言模型，包含嚴格的解碼器。它們對輸入進行編碼，並預測正確的下一個符號。</p>
-<p>以下是兩個來自 Hugging Face 的<code translate="no">sentence-transformers</code> 函式庫的模型，除了 OpenAI 的 embeddings 之外，您還可以使用這些模型：</p>
+<p>AI’s operation on natural language has evolved significantly from its rule-based embeddings. Starting with primary neural networks, we added recurrence relations through RNNs to keep track of steps in time. From there, we used transformers to solve the sequence transduction problem.</p>
+<p>Transformers consist of an encoder, which encodes an input into a matrix representing the state, an attention matrix and a decoder. The decoder decodes the state and attention matrix to predict the correct next token to finish the output sequence. GPT-3, the most popular language model to date, comprises strict decoders. They encode the input and predict the right next token(s).</p>
+<p>Here are two models from the  <code translate="no">sentence-transformers</code>  library by Hugging Face that you can use in addition to OpenAI’s embeddings:</p>
 <ul>
-<li><a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">MiniLM-L6-v2</a>: 一個 384 維的模型</li>
-<li><a href="https://huggingface.co/sentence-transformers/all-mpnet-base-v2">MPNet-Base-V2</a>：768 維模型</li>
+<li><a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">MiniLM-L6-v2</a>: a 384-dimensional model</li>
+<li><a href="https://huggingface.co/sentence-transformers/all-mpnet-base-v2">MPNet-Base-V2</a>: a 768-dimensional model</li>
 </ul>
-<p>您可以以相同的方式存取這兩種模型的嵌入式資料。</p>
+<p>You can access embeddings from both models in the same way.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> sentence_transformers <span class="hljs-keyword">import</span> SentenceTransformer
 
 
 model = SentenceTransformer(<span class="hljs-string">&quot;&lt;model-name&gt;&quot;</span>)
 vector_embeddings = model.encode(“&lt;<span class="hljs-built_in">input</span>&gt;”)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Multimodal-embeddings" class="common-anchor-header">多模態嵌入</h3><p>多模態模型不如圖像或文字模型那麼完善。它們通常將圖像與文字相關聯。</p>
-<p>最有用的開放原始碼範例是<a href="https://huggingface.co/openai/clip-vit-large-patch14">CLIP VIT</a>，這是一種圖像轉文字模型。您可以像存取圖像模型一樣存取 CLIP VIT 的嵌入，如下所示。</p>
+<h3 id="Multimodal-embeddings" class="common-anchor-header">Multimodal embeddings</h3><p>Multimodal models are less well-developed than image or text models. They often relate images to text.</p>
+<p>The most useful open source example is <a href="https://huggingface.co/openai/clip-vit-large-patch14">CLIP VIT</a>, an image-to-text model. You can access CLIP VIT’s embeddings in the same way as you would an image model, as shown in the code below.</p>
 <pre><code translate="no"><span class="hljs-comment"># Load model directly</span>
 <span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoProcessor, AutoModelForZeroShotImageClassification
 
@@ -163,7 +167,7 @@ inputs = extractor(images=image, return_tensors=<span class="hljs-string">&quot;
 outputs = model(**inputs)
 vector_embeddings = outputs[<span class="hljs-number">1</span>][-<span class="hljs-number">1</span>].squeeze()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Audio-embeddings" class="common-anchor-header">音訊嵌入</h3><p>與文字或圖片的人工智慧相比，音訊的人工智慧受到的關注較少。音訊最常見的使用案例是呼叫中心、醫療技術和無障礙等行業的語音轉文字。<a href="https://huggingface.co/openai/whisper-large-v2">OpenAI 的 Whisper</a> 是一個很受歡迎的語音轉文字開放原始碼模型。以下程式碼顯示如何從語音轉文字模型取得向量嵌入。</p>
+<h3 id="Audio-embeddings" class="common-anchor-header">Audio embeddings</h3><p>AI for audio has received less attention than AI for text or images. The most common use case for audio is speech-to-text for industries such as call centers, medical technology and accessibility. One popular open source model for speech-to-text is  <a href="https://huggingface.co/openai/whisper-large-v2">Whisper from OpenAI</a>. The code below shows how to obtain vector embeddings from the speech-to-text model.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 from transformers <span class="hljs-keyword">import</span> AutoFeatureExtractor, WhisperModel
 from datasets <span class="hljs-keyword">import</span> <span class="hljs-type">load_dataset</span>
@@ -177,8 +181,8 @@ input_features = inputs.<span class="hljs-type">input_features</span>
 <span class="hljs-variable">decoder_input_ids</span> <span class="hljs-operator">=</span> torch.tensor([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]]) * model.config.<span class="hljs-type">decoder_start_token_id</span>
 <span class="hljs-variable">vector_embedding</span> <span class="hljs-operator">=</span> model(input_features, decoder_input_ids=decoder_input_ids).last_hidden_state
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Video-embeddings" class="common-anchor-header">視訊嵌入</h3><p>視訊嵌入比音訊或影像嵌入更為複雜。由於視訊包含同步的音訊和影像，因此在處理視訊時必須使用多模式方法。其中一個流行的視訊模型是 DeepMind 的<a href="https://huggingface.co/deepmind/multimodal-perceiver">多模態感知器</a>。<a href="https://github.com/NielsRogge/Transformers-Tutorials/blob/master/Perceiver/Perceiver_for_Multimodal_Autoencoding.ipynb">本筆記本教學將</a>展示如何使用該模型來對視訊進行分類。</p>
-<p>若要取得輸入的 embeddings，請使用<code translate="no">outputs[1][-1].squeeze()</code> 從筆記型電腦中顯示的程式碼，而不是刪除輸出。我在<code translate="no">autoencode</code> 函式中高亮顯示此程式碼片段。</p>
+<h3 id="Video-embeddings" class="common-anchor-header">Video embeddings</h3><p>Video embeddings are more complex than audio or image embeddings. A multimodal approach is necessary when working with videos, as they include synchronized audio and images. One popular video model is the  <a href="https://huggingface.co/deepmind/multimodal-perceiver">multimodal perceiver</a>  from DeepMind. This  <a href="https://github.com/NielsRogge/Transformers-Tutorials/blob/master/Perceiver/Perceiver_for_Multimodal_Autoencoding.ipynb">notebook tutorial</a>  shows how to use the model to classify a video.</p>
+<p>To get the embeddings of the input, use  <code translate="no">outputs[1][-1].squeeze()</code>  from the code shown in the notebook instead of deleting the outputs. I highlight this code snippet in the  <code translate="no">autoencode</code>  function.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">autoencode_video</span>(<span class="hljs-params">images, audio</span>):
      <span class="hljs-comment"># only create entire video once as inputs</span>
      inputs = {<span class="hljs-string">&#x27;image&#x27;</span>: torch.from_numpy(np.moveaxis(images, -<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)).<span class="hljs-built_in">float</span>().to(device),
@@ -220,7 +224,7 @@ input_features = inputs.<span class="hljs-type">input_features</span>
 
      <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="common-anchor-header">使用向量資料庫儲存、索引和搜尋向量內嵌值<button data-href="#Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="anchor-icon" translate="no">
+<h2 id="Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="common-anchor-header">Storing, indexing, and searching vector embeddings with vector databases<button data-href="#Storing-indexing-and-searching-vector-embeddings-with-vector-databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -235,12 +239,12 @@ input_features = inputs.<span class="hljs-type">input_features</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>既然我們瞭解了向量內嵌是什麼，以及如何使用各種強大的內嵌模型來產生它們，接下來的問題就是如何儲存並運用它們。向量資料庫就是答案。</p>
-<p>像<a href="https://zilliz.com/what-is-milvus">Milvus</a>和<a href="https://zilliz.com/cloud">Zilliz Cloud</a>之類的向量資料庫，是專為透過向量嵌入，在大量非結構化資料集上進行儲存、索引和搜尋而建立的。它們也是各種 AI 堆疊最重要的基礎架構之一。</p>
-<p>向量資料庫通常使用<a href="https://zilliz.com/glossary/anns">近似最近鄰 (ANN)</a>演算法來計算查詢向量與資料庫中儲存的向量之間的空間距離。兩個向量的位置越接近，相關性就越高。然後，演算法會找出前 k 個最近的鄰居，並將它們提供給使用者。</p>
-<p>向量資料庫在使用案例中很受歡迎，例如<a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">LLM 檢索擴增生成</a>(RAG)、問答系統、推薦系統、語義搜尋，以及圖像、視訊和音訊相似性搜尋。</p>
-<p>若要進一步瞭解向量嵌入、非結構化資料和向量資料庫，請考慮從<a href="https://zilliz.com/blog?tag=39&amp;page=1">向量資料庫 101</a>系列開始。</p>
-<h2 id="Summary" class="common-anchor-header">摘要<button data-href="#Summary" class="anchor-icon" translate="no">
+    </button></h2><p>Now that we understand what vector embeddings are and how to generate them using various powerful embedding models, the next question is how to store and take advantage of them. Vector databases are the answer.</p>
+<p>Vector databases like  <a href="https://zilliz.com/what-is-milvus">Milvus</a>  and  <a href="https://zilliz.com/cloud">Zilliz Cloud</a>  are purposely built for storing, indexing, and searching across massive datasets of unstructured data through vector embeddings. They are also one of the most critical infrastructures for various AI stacks.</p>
+<p>Vector databases usually use the  <a href="https://zilliz.com/glossary/anns">Approximate Nearest Neighbor (ANN)</a>  algorithm to calculate the spatial distance between the query vector and vectors stored in the database. The closer the two vectors are located, the more relevant they are. Then the algorithm finds the top k nearest neighbors and delivers them to the user.</p>
+<p>Vector databases are popular in use cases such as  <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">LLM retrieval augmented generation</a>  (RAG), question and answer systems, recommender systems, semantic searches, and image, video and audio similarity searches.</p>
+<p>To learn more about vector embeddings, unstructured data, and vector databases, consider starting with the  <a href="https://zilliz.com/blog?tag=39&amp;page=1">Vector Database 101</a>  series.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -255,5 +259,5 @@ input_features = inputs.<span class="hljs-type">input_features</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>向量是處理非結構化資料的強大工具。使用向量，我們可以根據語意相似性，以數學方式比較不同的非結構化資料。選擇正確的向量嵌入模型，對於為任何應用程式建立向量搜尋引擎來說都至關重要。</p>
-<p>在這篇文章中，我們了解到向量嵌入是神經網路中輸入資料的內部表示。因此，它們在很大程度上取決於網路架構和用來訓練模型的資料。不同的資料類型（例如圖像、文字和音訊）需要特定的模型。幸運的是，有許多預先訓練好的開放原始碼模型可供使用。在這篇文章中，我們涵蓋了五種最常見資料類型的模型：影像、文字、多模態、音訊和視訊。此外，如果您想要善用向量嵌入，向量資料庫是最常用的工具。</p>
+    </button></h2><p>Vectors are a powerful tool for working with unstructured data. Using vectors, we can mathematically compare different pieces of unstructured data based on semantic similarity. Choosing the right vector-embedding model is critical for building a vector search engine for any application.</p>
+<p>In this post, we learned that vector embeddings are the internal representation of input data in a neural network. As a result, they depend highly on the network architecture and the data used to train the model. Different data types (such as images, text, and audio) require specific models. Fortunately, many pretrained open source models are available for use. In this post, we covered models for the five most common types of data: images, text, multimodal, audio, and video. In addition, if you want to make the best use of vector embeddings, vector databases are the most popular tool.</p>

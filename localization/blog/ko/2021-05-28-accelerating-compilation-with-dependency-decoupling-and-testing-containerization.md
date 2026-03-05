@@ -1,84 +1,94 @@
 ---
 id: >-
   accelerating-compilation-with-dependency-decoupling-and-testing-containerization.md
-title: 종속성 분리 및 테스트 컨테이너화를 통한 컴파일 2.5배 가속화
+title: >-
+  Accelerating Compilation 2.5X with Dependency Decoupling & Testing
+  Containerization
 author: Zhifeng Zhang
 date: 2021-05-28T00:00:00.000Z
 desc: >-
-  zilliz가 대규모 AI 및 MLOps 프로젝트에서 종속성 분리 및 컨테이너화 기술을 사용하여 컴파일 시간을 2.5배 단축하는 방법을
-  알아보세요.
+  Discover how zilliz to reduce compile times 2.5x using dependency decoupling
+  and containerization techniques for large-scale AI and MLOps projects.
 cover: assets.zilliz.com/cover_20e3cddb96.jpeg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/accelerating-compilation-with-dependency-decoupling-and-testing-containerization
 ---
-<custom-h1>의존성 분리 및 테스트 컨테이너화로 컴파일 2.5배 가속화하기</custom-h1><p>컴파일 시간은 운영 체제나 하드웨어 아키텍처와 같은 컴파일 환경의 변화뿐만 아니라 개발 프로세스 전반에 걸쳐 진화하는 복잡한 내부 및 외부 종속성으로 인해 더 늘어날 수 있습니다. 다음은 대규모 AI 또는 MLOps 프로젝트를 진행할 때 발생할 수 있는 일반적인 문제입니다:</p>
-<p><strong>엄청나게 긴 컴파일</strong> - 코드 통합은 매일 수백 번 수행됩니다. 수십만 줄의 코드가 포함되어 있기 때문에 작은 변경 사항만 있어도 전체 컴파일에 보통 한 시간 이상이 소요될 수 있습니다.</p>
-<p><strong>복잡한 컴파일 환경</strong> - 프로젝트 코드는 CentOS, Ubuntu와 같은 다양한 운영 체제, GCC, LLVM, CUDA와 같은 기본 종속성, 하드웨어 아키텍처 등 다양한 환경에서 컴파일해야 합니다. 그리고 특정 환경에서의 컴파일은 일반적으로 다른 환경에서는 작동하지 않을 수 있습니다.</p>
-<p><strong>복잡한</strong> 종속성 - 프로젝트 컴파일에는 컴포넌트 간 및 타사 종속성이 30개 이상 포함됩니다. 프로젝트 개발 과정에서 종속성이 변경되는 경우가 많기 때문에 필연적으로 종속성 충돌이 발생합니다. 종속성 간의 버전 제어가 너무 복잡하여 종속성 버전을 업데이트하면 다른 컴포넌트에 쉽게 영향을 미칩니다.</p>
-<p><strong>타사 종속성 다운로드가 느리거나 실패</strong> - 네트워크 지연 또는 불안정한 타사 종속성 라이브러리로 인해 리소스 다운로드가 느려지거나 액세스 실패가 발생하여 코드 통합에 심각한 영향을 미칩니다.</p>
-<p>종속성을 분리하고 테스트 컨테이너화를 구현함으로써 오픈 소스 임베딩 유사성 검색 프로젝트 <a href="https://milvus.io/">Milvus를</a> 진행하면서 평균 컴파일 시간을 60%까지 단축할 수 있었습니다.</p>
+<custom-h1>Accelerating Compilation 2.5X with Dependency Decoupling &amp; Testing Containerization</custom-h1><p>Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects:</p>
+<p><strong>Prohibitively long compilation</strong> - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours.</p>
+<p><strong>Complex compilation environment</strong> - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.</p>
+<p><strong>Complex dependencies</strong> - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.</p>
+<p><strong>Third-party dependency download is slow or fails</strong> - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration.</p>
+<p>By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project <a href="https://milvus.io/">Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">프로젝트의 종속성 분리</h3><p>프로젝트 컴파일에는 일반적으로 많은 수의 내부 및 외부 컴포넌트 종속성이 포함됩니다. 프로젝트에 종속성이 많을수록 종속성을 관리하기가 더 복잡해집니다. 소프트웨어가 성장함에 따라 종속성을 변경하거나 제거하기가 더 어려워지고 그 효과를 파악하는 데도 비용이 많이 듭니다. 종속성이 제대로 작동하려면 개발 프로세스 전반에 걸쳐 정기적인 유지 관리가 필요합니다. 유지 관리가 부실하거나 종속성이 복잡하거나 종속성에 결함이 있으면 충돌이 발생하여 개발이 느려지거나 중단될 수 있습니다. 실제로는 리소스 다운로드 지연, 코드 통합에 부정적인 영향을 미치는 액세스 실패 등이 발생할 수 있습니다. 프로젝트 종속성을 분리하면 결함을 완화하고 컴파일 시간을 단축하여 시스템 테스트를 가속화하고 불필요한 소프트웨어 개발 지연을 방지할 수 있습니다.</p>
-<p>따라서 프로젝트 종속성을 분리하는 것이 좋습니다:</p>
+<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Decouple the dependencies of the project</h3><p>Project compilation usually involves a large number of internal and external component dependencies. The more dependencies a project has, the more complex it becomes to manage them. As software grows, it becomes more difficult and costly to change or remove dependencies, as well as identify the effects of doing so. Regular maintenance is required throughout the development process to ensure the dependencies functions properly.
+Poor maintenance, complex dependencies, or faulty dependencies can cause conflicts that slow or stall development. In practice, this can mean lagging resource downloads, access failures that negatively impact code integration, and more. Decoupling project dependencies can mitigate defects and reduce compile time, accelerating system testing and avoiding unnecessary drag on software development.</p>
+<p>Therefore, we recommend decouple dependencies your project:</p>
 <ul>
-<li>복잡한 종속성이 있는 컴포넌트 분리하기</li>
-<li>버전 관리를 위해 다른 리포지토리를 사용하세요.</li>
-<li>구성 파일을 사용하여 버전 정보, 컴파일 옵션, 종속성 등을 관리합니다.</li>
-<li>구성 파일을 컴포넌트 라이브러리에 추가하여 프로젝트가 반복될 때 업데이트되도록 하세요.</li>
+<li>Split up components with complex dependencies</li>
+<li>Use different repositories for version management.</li>
+<li>Use configuration files to manage version information, compilation options, dependencies, etc.</li>
+<li>Add the configuration files to the component libraries so that they are updated as the project iterates.</li>
 </ul>
-<p><strong>컴포넌트 간 컴파일 최적화</strong> - 구성 파일에 기록된 종속성 및 컴파일 옵션에 따라 관련 컴포넌트를 가져와 컴파일합니다. 바이너리 컴파일 결과와 해당 매니페스트 파일에 태그를 지정하고 패킹한 다음 비공개 리포지토리에 업로드합니다. 컴포넌트 또는 컴포넌트가 종속된 컴포넌트를 변경하지 않으면 매니페스트 파일에 따라 컴파일 결과를 재생합니다. 네트워크 지연이나 불안정한 타사 종속 라이브러리 등의 문제가 있는 경우 내부 리포지토리를 설정하거나 미러 리포지토리를 사용해 보세요.</p>
-<p>컴포넌트 간 컴파일을 최적화하려면</p>
-<p>1. 종속성 관계 그래프 만들기 - 컴포넌트 라이브러리의 구성 파일을 사용하여 종속성 관계 그래프를 만듭니다. 종속성 관계를 사용하여 업스트림 및 다운스트림 종속 컴포넌트의 버전 정보(Git 브랜치, 태그, Git 커밋 ID) 및 컴파일 옵션 등을 검색하세요.</p>
+<p><strong>Compile optimization between components</strong> — Pull and compile the relevant component according to the dependencies and the compile options recorded in the configuration files. Tag and pack the binary compilation results and the corresponding manifest files, and then upload them to your private repository. If no change is made to a component or the components it depends on, playback its compilation results according to the manifest files. For issues such as network delays or unstable third-party dependency libraries, try setting up an internal repository or using mirrored repositories.</p>
+<p>To optimize compilation between components:</p>
+<p>1.Create dependency relationship graph — Use the configuration files in the component libraries to create dependency relationship graph. Use the dependency relationship to retrieve the version information (Git Branch, Tag, and Git commit ID) and compilation options and more of both upstream and downstream dependent components.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p>2<strong>.종속성 확인</strong> - 순환 종속성, 버전 충돌 및 구성 요소 간에 발생하는 기타 문제에 대한 경고를 생성합니다.</p>
-<p>3. 종속성<strong>평탄화</strong> - DFS(심도 우선 검색)로 종속성을 정렬하고 중복 종속성이 있는 컴포넌트를 앞 병합하여 종속성 그래프를 형성합니다.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>2.<strong>Check for dependencies</strong> — Generate alerts for circular dependencies, version conflicts, and other issues that arise between components.</p>
+<p>3.<strong>Flatten dependencies</strong> — Sort dependencies by Depth First Search (DFS) and front-merge components with duplicate dependencies to form a dependency graph.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>4.머클트리 알고리즘을 사용하여 버전 정보, 컴파일 옵션 등을 기반으로 각 컴포넌트의 종속성을 포함하는 해시(루트 해시)를 생성합니다. 이 알고리즘은 컴포넌트 이름과 같은 정보와 결합하여 각 컴포넌트에 대한 고유 태그를 형성합니다.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>4.Use MerkleTree algorithm to generate a hash (Root Hash) containing dependencies of each component based on version information, compilation options, and more. Combined with information such as component name, the algorithm forms a unique tag for each component.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<p>5. 컴포넌트의 고유 태그 정보를 기반으로 해당 컴파일 아카이브가 비공개 리포지토리에 있는지 확인합니다. 컴파일 아카이브가 있으면 압축을 풀어 재생할 매니페스트 파일을 가져오고, 없으면 컴포넌트를 컴파일하고 생성된 컴파일 객체 파일과 매니페스트 파일을 마크업한 후 비공개 리포지토리에 업로드합니다.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<p>5.Based on the component’s unique tag information, check if a corresponding compilation archive exists in the private repo. If a compilation archive is retrieved, unzip it to get the manifest file for playback; if not, compile the component, mark up the generated compilation object files and manifest file, and upload them to the private repo.</p>
 <p><br/></p>
-<p><strong>컴포넌트 내에서 컴파일 최적화 구현</strong> - 언어별 컴파일 캐시 도구를 선택하여 컴파일된 오브젝트 파일을 캐시하고 비공개 리포지토리에 업로드하여 저장합니다. C/C++ 컴파일의 경우 CCache와 같은 컴파일 캐시 도구를 선택하여 C/C++ 컴파일 중간 파일을 캐시한 다음 컴파일 후 로컬 CCache 캐시를 아카이브하세요. 이러한 컴파일 캐시 도구는 컴파일 후 변경된 코드 파일을 하나씩 캐시하고 변경되지 않은 코드 파일의 컴파일된 컴포넌트를 복사하여 최종 컴파일에 직접 관여할 수 있습니다. 컴포넌트 내 컴파일 최적화는 다음 단계를 포함합니다:</p>
+<p><strong>Implement compilation optimizations within components</strong> — Choose a language-specific compilation cache tool to cache the compiled object files, and upload and store them in your private repository. For C/C++ compilation, choose a compilation cache tool like CCache to cache the C/C++ compilation intermediate files, and then archive the local CCache cache after compilation. Such compile cache tools simply cache the changed code files one by one after compilation, and copy the compiled components of the unchanged code file so that they can be directly involved in the final compilation.
+Optimization of the compilation within components includes the following steps:</p>
 <ol>
-<li>필요한 컴파일 종속성을 Docker파일에 추가합니다. Hadolint를 사용하여 이미지가 Docker의 모범 사례를 준수하는지 확인하기 위해 Dockerfile에서 컴플라이언스 검사를 수행합니다.</li>
-<li>프로젝트 스프린트 버전(버전 + 빌드), 운영 체제 및 기타 정보에 따라 컴파일 환경을 미러링합니다.</li>
-<li>미러링된 컴파일 환경 컨테이너를 실행하고 이미지 ID를 환경 변수로 컨테이너에 전송합니다. 다음은 이미지 ID를 가져오는 명령의 예입니다: "docker inspect ' - type=image' - 형식 '{{.ID}}' repository/build-env:v0.1-centos7".</li>
-<li>적절한 컴파일 캐시 도구를 선택합니다: 코드를 통합하고 컴파일할 컨테이너를 입력하고 적절한 컴파일 캐시가 있는지 비공개 리포지토리에서 확인합니다. 있다면 다운로드하여 지정된 디렉터리에 압축을 풉니다. 모든 컴포넌트가 컴파일되면 컴파일 캐시 도구에서 생성된 캐시가 프로젝트 버전과 이미지 ID에 따라 패키징되어 비공개 리포지토리에 업로드됩니다.</li>
+<li>Add the necessary compilation dependencies to Dockerfile. Use Hadolint to perform compliance checks on Dockerfile to ensure that the image conforms to Docker’s best practices.</li>
+<li>Mirror the compilation environment according to the project sprint version (version + build), operating system, and other information.</li>
+<li>Run the mirrored compilation environment container, and transfer the image ID to the container as an environment variable. Here’s an example command for getting image ID: “docker inspect ‘ — type=image’ — format ‘{{.ID}}’ repository/build-env:v0.1-centos7”.</li>
+<li>Choose the appropriate compile cache tool: Enter your containter to integrate and compile your codes and check in your private repository if an appropriate compile cache exists. If yes, download and extract it to the specified directory. After all components are compiled, the cache generated by the compile cache tool is packaged and uploaded to your private repository based on the project version and image ID.</li>
 </ol>
 <p><br/></p>
-<h3 id="Further-compilation-optimization" class="common-anchor-header">추가 컴파일 최적화</h3><p>처음에 빌드한 이미지가 디스크 공간과 네트워크 대역폭을 너무 많이 차지하고 배포하는 데 시간이 오래 걸리기 때문에 다음과 같은 조치를 취했습니다:</p>
+<h3 id="Further-compilation-optimization" class="common-anchor-header">Further compilation optimization</h3><p>Our initially-built occupies too much disk space and network bandwidth, and takes a long time to deploy, we took the following measures:</p>
 <ol>
-<li>이미지 크기를 줄이기 위해 가장 간결한 기본 이미지(예: 알파인, 바쁨 상자 등)를 선택합니다.</li>
-<li>이미지 레이어 수를 줄입니다. 가능한 한 종속성을 재사용합니다. 여러 명령을 "&amp;&amp;"로 병합하세요.</li>
-<li>이미지 빌드 중에 중간 제품을 정리합니다.</li>
-<li>가능한 한 이미지 캐시를 사용하여 이미지를 빌드하세요.</li>
+<li>Choose the leanest base image to reduce the image size, e.g. alpine, busybox, etc.</li>
+<li>Reduce the number of image layers. Reuse dependencies as much as possible. Merge multiple commands with “&amp;&amp;”.</li>
+<li>Clean up the intermediate products during image building.</li>
+<li>Use image cache to build image as much as possible.</li>
 </ol>
-<p>프로젝트가 계속 진행되면서 컴파일 캐시가 증가함에 따라 디스크 사용량과 네트워크 리소스가 급증하기 시작했고, 일부 컴파일 캐시는 활용도가 낮았습니다. 그런 다음 다음과 같이 조정했습니다:</p>
-<p><strong>정기적으로 캐시 파일 정리</strong> - 비공개 저장소를 정기적으로 확인(예: 스크립트 사용)하여 한동안 변경되지 않았거나 다운로드 횟수가 많지 않은 캐시 파일을 정리합니다.</p>
-<p><strong>선택적 컴파일 캐싱</strong> - 리소스를 많이 사용하는 컴파일만 캐싱하고 리소스를 많이 필요로 하지 않는 컴파일은 캐싱을 건너뜁니다.</p>
+<p>As our project continues to progress, disk usage and network resource began to soar as the compilation cache increases, while some of the compilation caches are underutilized. We then made the following adjustments:</p>
+<p><strong>Regularly clean up cache files</strong> — Regularly check the private repository (using scripts for example), and clean up cache files that have not changed for a while or have not been downloaded much.</p>
+<p><strong>Selective compile caching</strong> — Only cache resource-demanding compiles, and skip caching compiles that do not require much resource.</p>
 <p><br/></p>
-<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">컨테이너화된 테스트를 활용하여 오류 감소, 안정성 및 신뢰성 향상</h3><p>코드는 다양한 운영 체제(예: CentOS 및 Ubuntu), 기본 종속성(예: GCC, LLVM 및 CUDA) 및 특정 하드웨어 아키텍처를 포함하는 다양한 환경에서 컴파일되어야 합니다. 특정 환경에서 성공적으로 컴파일된 코드가 다른 환경에서는 실패할 수 있습니다. 컨테이너 내에서 테스트를 실행하면 테스트 프로세스가 더 빠르고 정확해집니다.</p>
-<p>컨테이너화는 테스트 환경의 일관성을 보장하고 애플리케이션이 예상대로 작동하는지 확인합니다. 컨테이너화된 테스트 접근 방식은 테스트를 이미지 컨테이너로 패키징하고 진정으로 격리된 테스트 환경을 구축합니다. 저희 테스터들은 이 접근 방식이 매우 유용하다는 것을 알게 되었고, 결국 컴파일 시간을 60%까지 단축할 수 있었습니다.</p>
-<p><strong>일관된 컴파일 환경 보장</strong> - 컴파일된 제품은 시스템 환경의 변화에 민감하기 때문에 운영 체제마다 알 수 없는 오류가 발생할 수 있습니다. 컴파일 환경의 변화에 따라 컴파일된 제품 캐시에 태그를 지정하고 보관해야 하지만, 이를 분류하기 어렵습니다. 그래서 이러한 문제를 해결하기 위해 컴파일 환경을 일원화하기 위해 컨테이너화 기술을 도입했습니다.</p>
+<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Leveraging containerized testing to reduce errors, improve stability and reliability</h3><p>Codes have to be compiled in different environments, which involve variety of operating systems (e.g. CentOS and Ubuntu), underlying dependencies (e.g. GCC, LLVM, and CUDA), and specific hardware architectures. Code that successfully compiles under a specific environment fail in a different environment. By running tests inside containers, the testing process becomes faster and more accurate.</p>
+<p>Containerization ensures that the test environment is consistent, and that an application is working as expected. The containerized testing approach packages tests as image containers and builds a truly-isolated test environment. Our testers found that this approach pretty useful, which ended up reducing compile times by as much as 60%.</p>
+<p><strong>Ensure a consistent compile environment</strong> — As the compiled products are sensitive to changes in the system environment, unknown errors may occur in different operating systems. We have to tag and archive the compiled product cache according to the changes in the compile environment, but they are difficult to categorize. So we introduced containerization technology to unify the compile environment to solve such issues.</p>
 <p><br/></p>
-<h3 id="Conclusion" class="common-anchor-header">결론</h3><p>이 글에서는 프로젝트 종속성을 분석하여 컴포넌트 간 및 컴포넌트 내에서 컴파일 최적화를 위한 다양한 방법을 소개함으로써 안정적이고 효율적인 연속 코드 통합을 구축하기 위한 아이디어와 모범 사례를 제공했습니다. 이러한 방법들은 복잡한 종속성으로 인한 느린 코드 통합을 해결하고, 컨테이너 내부의 작업을 통합하여 환경의 일관성을 보장하며, 컴파일 결과의 재생과 컴파일 캐시 도구를 사용하여 중간 컴파일 결과를 캐시함으로써 컴파일 효율성을 개선하는 데 도움이 되었습니다.</p>
-<p>위와 같은 방법을 통해 프로젝트의 컴파일 시간을 평균 60% 단축하여 코드 통합의 전반적인 효율성을 크게 향상시켰습니다. 앞으로도 컴파일 시간을 더욱 단축하기 위해 컴포넌트 간 및 컴포넌트 내에서 컴파일을 병렬화하는 작업을 계속할 예정입니다.</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>By analyzing project dependencies, this article introduces different methods for compilation optimization between and within components, providing ideas and best practices for building stable and efficient continuous code integration. These methods helped solve slow code integration caused by complex dependencies, unify operations inside the container to ensure the consistency of the environment, and improve compilation efficiency through the playback of the compilation results and the use of compilation cache tools to cache the intermediate compilation results.</p>
+<p>This above-mentioned practices have reduced the compile time of the project by 60% on average, greatly improving the overall efficiency of code integration. Moving forward, we will continue parallelizing compilation between and within components to further reduce compilation times.</p>
 <p><br/></p>
-<p><em>이 글에는 다음 소스가 사용되었습니다:</em></p>
+<p><em>The following sources were used for this article:</em></p>
 <ul>
-<li>"소스 트리를 빌드 수준 컴포넌트로 분리하기"</li>
-<li>"<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">프로젝트에 타사 종속성을 추가할 때 고려해야 할 요소</a>"</li>
-<li>"<a href="https://queue.acm.org/detail.cfm?id=3344149">살아남은 소프트웨어 종속성</a>"</li>
-<li>"<a href="https://www.cc.gatech.edu/~beki/t1.pdf">종속성 이해하기: 소프트웨어 개발의 조정 과제에 대한 연구</a>"</li>
+<li>“Decoupling Source Trees into Build-Level Components”</li>
+<li>“<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Factors to consider when adding third party dependencies to a project</a>”</li>
+<li>“<a href="https://queue.acm.org/detail.cfm?id=3344149">Surviving Software Dependencies</a>”</li>
+<li>“<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Understanding Dependencies: A Study of the Coordination Challenges in Software Development</a>”</li>
 </ul>
 <p><br/></p>
-<h3 id="About-the-author" class="common-anchor-header">저자 소개</h3><p>Zhifeng Zhang은 Zilliz.com에서 오픈 소스 벡터 데이터베이스인 Milvus를 개발하는 선임 DevOps 엔지니어이자 중국 LF 오픈 소스 소프트웨어 대학의 공인 강사입니다. 그는 광저우 소프트웨어 공학원에서 사물 인터넷(IOT) 학사 학위를 받았습니다. 그는 CI/CD, DevOps, IT 인프라 관리, 클라우드 네이티브 툴킷, 컨테이너화 및 컴파일 프로세스 최적화 분야의 프로젝트에 참여하고 이끌며 경력을 쌓았습니다.</p>
+<h3 id="About-the-author" class="common-anchor-header">About the author</h3><p>Zhifeng Zhang is a senior DevOps engineer at Zilliz.com working on Milvus, an open-source vector database, and authorized instructor of the LF open-source software university in China. He received his bachelor’s degree in Internet of Things (IOT) from Software Engineering Institute of Guangzhou. He spends his career participating in and leading projects in the area of CI/CD, DevOps, IT infrastructure management, Cloud-Native toolkit, containerization, and compilation process optimization.</p>

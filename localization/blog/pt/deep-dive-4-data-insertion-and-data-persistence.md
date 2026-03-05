@@ -1,35 +1,37 @@
 ---
 id: deep-dive-4-data-insertion-and-data-persistence.md
-title: Inserção de dados e persistência de dados numa base de dados vetorial
+title: Data Insertion and Data Persistence in a Vector Database
 author: Bingyi Sun
 date: 2022-04-06T00:00:00.000Z
 desc: >-
-  Conheça o mecanismo subjacente à inserção e persistência de dados na base de
-  dados vetorial Milvus.
+  Learn about the mechanism behind data insertion and data persistence in Milvus
+  vector database.
 cover: assets.zilliz.com/Deep_Dive_4_812021d715.png
 tag: Engineering
 tags: 'Data science, Database, Technology, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deep_Dive_4_812021d715.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Imagem da capa</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deep_Dive_4_812021d715.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Este artigo foi escrito por <a href="https://github.com/sunby">Bingyi Sun</a> e transcrito por <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is written by <a href="https://github.com/sunby">Bingyi Sun</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>No post anterior da série Deep Dive, apresentámos <a href="https://milvus.io/blog/deep-dive-3-data-processing.md">a forma como os dados são processados no Milvus</a>, a base de dados vetorial mais avançada do mundo. Neste artigo, continuaremos a examinar os componentes envolvidos na inserção de dados, ilustraremos o modelo de dados em pormenor e explicaremos como se consegue a persistência de dados no Milvus.</p>
-<p>Saltar para:</p>
+<p>In the previous post in the Deep Dive series, we have introduced <a href="https://milvus.io/blog/deep-dive-3-data-processing.md">how data is processed in Milvus</a>, the world’s most advanced vector database. In this article, we will continue to examine the components involved in data insertion, illustrate the data model in detail, and explain how data persistence is achieved in Milvus.</p>
+<p>Jump to:</p>
 <ul>
-<li><a href="#Milvus-architecture-recap">Recapitulação da arquitetura do Milvus</a></li>
-<li><a href="#The-portal-of-data-insertion-requests">O portal de pedidos de inserção de dados</a></li>
-<li><a href="#Data-coord-and-data-node">Coordenada de dados e nó de dados</a></li>
-<li><a href="#Root-coord-and-Time-Tick">Coordenada de raiz e Time Tick</a></li>
-<li><a href="#Data-organization-collection-partition-shard-channel-segment">Organização dos dados: coleção, partição, fragmento (canal), segmento</a></li>
-<li><a href="#Data-allocation-when-and-how">Atribuição de dados: quando e como</a></li>
-<li><a href="#Binlog-file-structure-and-data-persistence">Estrutura do ficheiro Binlog e persistência dos dados</a></li>
+<li><a href="#Milvus-architecture-recap">Milvus architecture recap</a></li>
+<li><a href="#The-portal-of-data-insertion-requests">The portal of data insertion requests</a></li>
+<li><a href="#Data-coord-and-data-node">Data coord and data node</a></li>
+<li><a href="#Root-coord-and-Time-Tick">Root coord and Time Tick</a></li>
+<li><a href="#Data-organization-collection-partition-shard-channel-segment">Data organization: collection, partition, shard (channel), segment</a></li>
+<li><a href="#Data-allocation-when-and-how">Data allocation: when and how</a></li>
+<li><a href="#Binlog-file-structure-and-data-persistence">Binlog file structure and data persistence</a></li>
 </ul>
-<h2 id="Milvus-architecture-recap" class="common-anchor-header">Recapitulação da arquitetura Milvus<button data-href="#Milvus-architecture-recap" class="anchor-icon" translate="no">
+<h2 id="Milvus-architecture-recap" class="common-anchor-header">Milvus architecture recap<button data-href="#Milvus-architecture-recap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,13 +47,15 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_c7910cb89d.png" alt="Milvus architecture." class="doc-image" id="milvus-architecture." />
-   </span> <span class="img-wrapper"> <span>Arquitetura do Milvus</span>. </span></p>
-<p>O SDK envia pedidos de dados para o proxy, o portal, através do balanceador de carga. Em seguida, o proxy interage com o serviço de coordenação para escrever pedidos DDL (linguagem de definição de dados) e DML (linguagem de manipulação de dados) no armazenamento de mensagens.</p>
-<p>Os nós de trabalho, incluindo o nó de consulta, o nó de dados e o nó de índice, consomem os pedidos do armazenamento de mensagens. Mais especificamente, o nó de consulta é responsável pela consulta de dados; o nó de dados é responsável pela inserção e persistência de dados; e o nó de índice trata principalmente da criação de índices e da aceleração de consultas.</p>
-<p>A camada inferior é o armazenamento de objectos, que utiliza principalmente o MinIO, o S3 e o AzureBlob para armazenar registos, binlogs delta e ficheiros de índice.</p>
-<h2 id="The-portal-of-data-insertion-requests" class="common-anchor-header">O portal de pedidos de inserção de dados<button data-href="#The-portal-of-data-insertion-requests" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_c7910cb89d.png" alt="Milvus architecture." class="doc-image" id="milvus-architecture." />
+    <span>Milvus architecture.</span>
+  </span>
+</p>
+<p>SDK sends data requests to proxy, the portal, via load balancer. Then the proxy interacts with coordinator service to write DDL (data definition language) and DML (data manipulation language) requests into message storage.</p>
+<p>Worker nodes, including query node, data node, and index node, consume the requests from message storage. More specifically, the query node is in charge of data query; the data node is responsible for data insertion and data persistence; and the index node mainly deals with index building and query acceleration.</p>
+<p>The bottom layer is object storage, which mainly leverages MinIO, S3, and AzureBlob for storing logs, delta binlogs, and index files.</p>
+<h2 id="The-portal-of-data-insertion-requests" class="common-anchor-header">The portal of data insertion requests<button data-href="#The-portal-of-data-insertion-requests" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,16 +71,18 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Proxy_in_Milvus_aa6b724e0b.jpeg" alt="Proxy in Milvus." class="doc-image" id="proxy-in-milvus." />
-   </span> <span class="img-wrapper"> <span>Proxy em Milvus</span>. </span></p>
-<p>O proxy funciona como um portal de pedidos de inserção de dados.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Proxy_in_Milvus_aa6b724e0b.jpeg" alt="Proxy in Milvus." class="doc-image" id="proxy-in-milvus." />
+    <span>Proxy in Milvus.</span>
+  </span>
+</p>
+<p>Proxy serves as a portal of data insertion requests.</p>
 <ol>
-<li>Inicialmente, o proxy aceita os pedidos de inserção de dados dos SDKs e atribui esses pedidos a vários baldes utilizando um algoritmo de hash.</li>
-<li>Em seguida, o proxy solicita à coordenação de dados que atribua segmentos, a unidade mais pequena do Milvus para armazenamento de dados.</li>
-<li>Depois, o proxy insere as informações dos segmentos solicitados no armazenamento de mensagens para que essas informações não se percam.</li>
+<li>Initially, proxy accepts data insertion requests from SDKs, and allocates those requests into several buckets using hash algorithm.</li>
+<li>Then the proxy requests data coord to assign segments, the smallest unit in Milvus for data storage.</li>
+<li>Afterwards, the proxy inserts information of the requested segments into message store so that these information will not be lost.</li>
 </ol>
-<h2 id="Data-coord-and-data-node" class="common-anchor-header">Coordenação de dados e nó de dados<button data-href="#Data-coord-and-data-node" class="anchor-icon" translate="no">
+<h2 id="Data-coord-and-data-node" class="common-anchor-header">Data coord and data node<button data-href="#Data-coord-and-data-node" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,29 +97,39 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A principal função da coordenação de dados é gerir a atribuição de canais e segmentos, enquanto a principal função do nó de dados é consumir e manter os dados inseridos.</p>
+    </button></h2><p>The main function of data coord is to manage channel and segment allocation while the main function of data node is to consume and persist inserted data.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Data_coord_and_data_node_in_Milvus_8bcf010f9e.jpeg" alt="Data coord and data node in Milvus." class="doc-image" id="data-coord-and-data-node-in-milvus." />
-   </span> <span class="img-wrapper"> <span>Coordenação de dados e nó de dados em Milvus</span>. </span></p>
-<h3 id="Function" class="common-anchor-header">Função</h3><p>A coordenação de dados tem as seguintes funções</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Data_coord_and_data_node_in_Milvus_8bcf010f9e.jpeg" alt="Data coord and data node in Milvus." class="doc-image" id="data-coord-and-data-node-in-milvus." />
+    <span>Data coord and data node in Milvus.</span>
+  </span>
+</p>
+<h3 id="Function" class="common-anchor-header">Function</h3><p>Data coord serves in the following aspects:</p>
 <ul>
-<li><p><strong>Alocar espaço de segmento</strong>O data coord aloca espaço em segmentos crescentes para o proxy para que o proxy possa usar espaço livre em segmentos para inserir dados.</p></li>
-<li><p><strong>Registar a atribuição do segmento e o tempo de expiração do espaço atribuído no segmento</strong>O espaço dentro de cada segmento atribuído pela coord de dados não é permanente, portanto, a coord de dados também precisa de manter um registo do tempo de expiração de cada atribuição de segmento.</p></li>
-<li><p><strong>Descarregar automaticamente os dados do segmento</strong>Se o segmento estiver cheio, a coordenação de dados desencadeia automaticamente a descarga de dados.</p></li>
-<li><p><strong>Atribuir canais aos nós de dados</strong>Uma coleção pode ter vários <a href="https://milvus.io/docs/v2.0.x/glossary.md#VChannel">vchannels</a>. A coordenação de dados determina quais os vchannels que são consumidos pelos nós de dados.</p></li>
+<li><p><strong>Allocate segment space</strong>
+Data coord allocates space in growing segments to the proxy so that the proxy can use free space in segments to insert data.</p></li>
+<li><p><strong>Record segment allocation and the expiry time of the allocated space in the segment</strong>
+The space within each segment allocated by the data coord is not permanent, therefore, the data coord also needs to keep a record of the expiry time of each segment allocation.</p></li>
+<li><p><strong>Automatically flush segment data</strong>
+If the segment is full, the data coord automatically triggers data flush.</p></li>
+<li><p><strong>Allocate channels to data nodes</strong>
+A collection can have multiple <a href="https://milvus.io/docs/v2.0.x/glossary.md#VChannel">vchannels</a>. Data coord determines which vchannels are consumed by which data nodes.</p></li>
 </ul>
-<p>O nó de dados serve nos seguintes aspectos:</p>
+<p>Data node serves in the following aspects:</p>
 <ul>
-<li><p><strong>Consumir dados</strong>O nó de dados consome dados dos canais atribuídos pela coordenação de dados e cria uma sequência para os dados.</p></li>
-<li><p><strong>Persistência de dados</strong>Armazena em cache os dados inseridos na memória e transfere-os automaticamente para o disco quando o volume de dados atinge um determinado limiar.</p></li>
+<li><p><strong>Consume data</strong>
+Data node consumes data from the channels allocated by data coord and creates a sequence for the data.</p></li>
+<li><p><strong>Data persistence</strong>
+Cache inserted data in memory and auto-flush those inserted data to disk when data volume reach a certain threshold.</p></li>
 </ul>
-<h3 id="Workflow" class="common-anchor-header">Fluxo de trabalho</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/One_vchannel_can_only_be_assigned_to_one_data_node_14aa3bd718.png" alt="One vchannel can only be assigned to one data node." class="doc-image" id="one-vchannel-can-only-be-assigned-to-one-data-node." />
-   </span> <span class="img-wrapper"> <span>Um vchannel só pode ser atribuído a um nó de dados</span>. </span></p>
-<p>Como mostrado na imagem acima, a coleção tem quatro vchannels (V1, V2, V3 e V4) e há dois nós de dados. É muito provável que a coordenação de dados atribua um nó de dados para consumir dados de V1 e V2, e o outro nó de dados de V3 e V4. Um único vchannel não pode ser atribuído a múltiplos nós de dados e isso é para evitar a repetição do consumo de dados, que de outra forma causaria o mesmo lote de dados sendo inserido no mesmo segmento repetidamente.</p>
-<h2 id="Root-coord-and-Time-Tick" class="common-anchor-header">Coordenada de raiz e Time Tick<button data-href="#Root-coord-and-Time-Tick" class="anchor-icon" translate="no">
+<h3 id="Workflow" class="common-anchor-header">Workflow</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/One_vchannel_can_only_be_assigned_to_one_data_node_14aa3bd718.png" alt="One vchannel can only be assigned to one data node." class="doc-image" id="one-vchannel-can-only-be-assigned-to-one-data-node." />
+    <span>One vchannel can only be assigned to one data node.</span>
+  </span>
+</p>
+<p>As shown in the image above, the collection has four vchannels (V1, V2, V3, and V4)  and there are two data nodes. It is very likely that data coord will assign one data node to consume data from V1 and V2, and the other data node from V3 and V4. One single vchannel cannot be assigned to multiple data nodes and this is to prevent repetition of data consumption, which will otherwise cause the same batch of data being inserted into the same segment repetitively.</p>
+<h2 id="Root-coord-and-Time-Tick" class="common-anchor-header">Root coord and Time Tick<button data-href="#Root-coord-and-Time-Tick" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -128,14 +144,16 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A coord de raiz gere o TSO (timestamp Oracle) e publica globalmente mensagens de time tick. Cada pedido de inserção de dados tem um carimbo de data/hora atribuído pela coordenada de raiz. O Time Tick é a pedra angular de Milvus que actua como um relógio em Milvus e significa em que ponto do tempo está o sistema Milvus.</p>
-<p>Quando os dados são escritos em Milvus, cada pedido de inserção de dados tem um carimbo de tempo. Durante o consumo de dados, cada nó de dados temporais consome dados cujos carimbos temporais estão dentro de um determinado intervalo.</p>
+    </button></h2><p>Root coord manages TSO (timestamp Oracle), and publishes time tick messages globally. Each data insertion request has a timestamp assigned by root coord. Time Tick is the cornerstone of Milvus which acts like a clock in Milvus and signifies at which point of time is the Milvus system in.</p>
+<p>When data are written in Milvus, each data insertion request carries a timestamp. During data consumption, each time data node consumes data whose timestamps are within a certain range.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/An_example_of_data_insertion_and_data_consumption_based_on_timestamp_e820f682f9.jpeg" alt="An example of data insertion and data consumption based on timestamp." class="doc-image" id="an-example-of-data-insertion-and-data-consumption-based-on-timestamp." />
-   </span> <span class="img-wrapper"> <span>Um exemplo de inserção e consumo de dados com base num carimbo de data/hora</span>. </span></p>
-<p>A imagem acima representa o processo de inserção de dados. Os valores dos carimbos de data/hora são representados pelos números 1,2,6,5,7,8. Os dados são escritos no sistema por dois proxies: p1 e p2. Durante o consumo de dados, se a hora atual do carimbo de tempo for 5, os nós de dados só podem ler os dados 1 e 2. Depois, durante a segunda leitura, se a hora atual do Time Tick for 9, os dados 6,7,8 podem ser lidos pelo nó de dados.</p>
-<h2 id="Data-organization-collection-partition-shard-channel-segment" class="common-anchor-header">Organização de dados: coleção, partição, fragmento (canal), segmento<button data-href="#Data-organization-collection-partition-shard-channel-segment" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/An_example_of_data_insertion_and_data_consumption_based_on_timestamp_e820f682f9.jpeg" alt="An example of data insertion and data consumption based on timestamp." class="doc-image" id="an-example-of-data-insertion-and-data-consumption-based-on-timestamp." />
+    <span>An example of data insertion and data consumption based on timestamp.</span>
+  </span>
+</p>
+<p>The image above is the process of data insertion. The value of the timestamps are represented by numbers 1,2,6,5,7,8. The data are written into the system by two proxies: p1 and p2. During data consumption, if the current time of the Time Tick is 5, data nodes can only read data 1 and 2. Then during the second read, if the current time of the Time Tick becomes 9, data 6,7,8 can be read by data node.</p>
+<h2 id="Data-organization-collection-partition-shard-channel-segment" class="common-anchor-header">Data organization: collection, partition, shard (channel), segment<button data-href="#Data-organization-collection-partition-shard-channel-segment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -151,58 +169,68 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Data_organization_in_Milvus_75ad710752.jpeg" alt="Data organization in Milvus." class="doc-image" id="data-organization-in-milvus." />
-   </span> <span class="img-wrapper"> <span>Organização de dados em Milvus</span>. </span></p>
-<p>Leia este <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">artigo</a> primeiro para compreender o modelo de dados em Milvus e os conceitos de coleção, fragmento, partição e segmento.</p>
-<p>Em resumo, a maior unidade de dados em Milvus é uma coleção que pode ser comparada a uma tabela numa base de dados relacional. Uma coleção pode ter vários fragmentos (cada um correspondendo a um canal) e várias partições dentro de cada fragmento. Como se pode ver na ilustração acima, os canais (shards) são as barras verticais, enquanto as partições são as barras horizontais. Em cada intersecção está o conceito de segmento, a menor unidade para alocação de dados. No Milvus, os índices são construídos sobre segmentos. Durante uma consulta, o sistema Milvus também equilibra as cargas de consulta em diferentes nós de consulta e este processo é realizado com base na unidade de segmentos. Os segmentos contêm vários <a href="https://milvus.io/docs/v2.0.x/glossary.md#Binlog">binlogs</a>, e quando os dados do segmento são consumidos, é gerado um ficheiro binlog.</p>
-<h3 id="Segment" class="common-anchor-header">Segmento</h3><p>Existem três tipos de segmentos com diferentes estados em Milvus: segmento em crescimento, selado e descarregado.</p>
-<h4 id="Growing-segment" class="common-anchor-header">Segmento em crescimento</h4><p>Um segmento crescente é um segmento recém-criado que pode ser alocado ao proxy para inserção de dados. O espaço interno de um segmento pode ser usado, alocado ou livre.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Data_organization_in_Milvus_75ad710752.jpeg" alt="Data organization in Milvus." class="doc-image" id="data-organization-in-milvus." />
+    <span>Data organization in Milvus.</span>
+  </span>
+</p>
+<p>Read this <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">article</a> first to understand the data model in Milvus and the concepts of collection, shard, partition, and segment.</p>
+<p>In summary, the largest data unit in Milvus is a collection which can be likened to a table in a relational database. A collection can have multiple shards (each corresponding to a channel) and multiple partitions within each shard. As shown in the illustration above, channels (shards) are the vertical bars while the partitions are the horizontal ones. At each intersection is the concept of segment, the smallest unit for data allocation. In Milvus, indexes are built on segments. During a query, the Milvus system also balances query loads in different query nodes and this process is conducted based on the unit of segments. Segments contain several <a href="https://milvus.io/docs/v2.0.x/glossary.md#Binlog">binlogs</a>, and when the segment data are consumed, a binlog file will be generated.</p>
+<h3 id="Segment" class="common-anchor-header">Segment</h3><p>There are three types of segments with different status in Milvus: growing, sealed, and flushed segment.</p>
+<h4 id="Growing-segment" class="common-anchor-header">Growing segment</h4><p>A growing segment is a newly created segment that can be allocated to the proxy for data insertion. The internal space of a segment can be used, allocated, or free.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Three_status_in_a_growing_segment_bdae45e26f.png" alt="Three status in a growing segment" class="doc-image" id="three-status-in-a-growing-segment" />
-   </span> <span class="img-wrapper"> <span>Três status em um segmento crescente</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Three_status_in_a_growing_segment_bdae45e26f.png" alt="Three status in a growing segment" class="doc-image" id="three-status-in-a-growing-segment" />
+    <span>Three status in a growing segment</span>
+  </span>
+</p>
 <ul>
-<li>Usado: essa parte do espaço de um segmento crescente foi consumida pelo nó de dados.</li>
-<li>Alocado: esta parte do espaço de um segmento crescente foi solicitada pelo proxy e alocada pela coordenada de dados. O espaço atribuído expirará após um determinado período de tempo.</li>
-<li>Livre: esta parte do espaço de um segmento em crescimento não foi utilizada. O valor do espaço livre é igual ao espaço total do segmento subtraído pelo valor do espaço utilizado e atribuído. Assim, o espaço livre de um segmento aumenta à medida que o espaço atribuído expira.</li>
+<li>Used: this part of space of a growing segment has been consumed by data node.</li>
+<li>Allocated: this part of space of a growing segment has been requested by the proxy and allocated by data coord. Allocated space will expire after a certain period time.</li>
+<li>Free: this part of space of a growing segment has not been used. The value of free space equals the overall space of the segment subtracted by the value of used and allocated space. So the free space of a segment increases as the allocated space expires.</li>
 </ul>
-<h4 id="Sealed-segment" class="common-anchor-header">Segmento fechado</h4><p>Um segmento selado é um segmento fechado que já não pode ser atribuído ao proxy para inserção de dados.</p>
+<h4 id="Sealed-segment" class="common-anchor-header">Sealed segment</h4><p>A sealed segment is a closed segment that can no longer be allocated to the proxy for data insertion.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Sealed_segment_in_Milvus_8def5567e1.jpeg" alt="Sealed segment in Milvus" class="doc-image" id="sealed-segment-in-milvus" />
-   </span> <span class="img-wrapper"> <span>Segmento selado em Milvus</span> </span></p>
-<p>Um segmento em expansão é selado nas seguintes circunstâncias:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Sealed_segment_in_Milvus_8def5567e1.jpeg" alt="Sealed segment in Milvus" class="doc-image" id="sealed-segment-in-milvus" />
+    <span>Sealed segment in Milvus</span>
+  </span>
+</p>
+<p>A growing segment is sealed in the following circumstances:</p>
 <ul>
-<li>Se o espaço utilizado num segmento crescente atingir 75% do espaço total, o segmento será selado.</li>
-<li>Flush() é chamado manualmente por um utilizador Milvus para persistir todos os dados numa coleção.</li>
-<li>Os segmentos em crescimento que não forem selados após um longo período de tempo serão selados, uma vez que demasiados segmentos em crescimento fazem com que os nós de dados consumam demasiada memória.</li>
+<li>If the used space in a growing segment reaches 75% of the total space, the segment will be sealed.</li>
+<li>Flush() is manually called by a Milvus user to persist all data in a collection.</li>
+<li>Growing segments that are not sealed after a long period of time will be sealed as too many growing segments cause data nodes to over-consume memory.</li>
 </ul>
-<h4 id="Flushed-segment" class="common-anchor-header">Segmento de descarga</h4><p>Um segmento flushed é um segmento que já foi gravado no disco. Flush refere-se ao armazenamento de dados do segmento no armazenamento de objetos para fins de persistência de dados. Um segmento só pode ser descarregado quando o espaço alocado em um segmento selado expira. Quando descarregado, o segmento selado se transforma em um segmento descarregado.</p>
+<h4 id="Flushed-segment" class="common-anchor-header">Flushed segment</h4><p>A flushed segment is a segment that has already been written into disk. Flush refers to storing segment data to object storage for the sake of data persistence. A segment can only be flushed when the allocated space in a sealed segment expires. When flushed, the sealed segment turns into a flushed segment.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Flushed_segment_in_Milvus_0c1f54d432.png" alt="Flushed segment in Milvus" class="doc-image" id="flushed-segment-in-milvus" />
-   </span> <span class="img-wrapper"> <span>Segmento flushed em Milvus</span> </span></p>
-<h3 id="Channel" class="common-anchor-header">Canal</h3><p>Um canal é alocado :</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Flushed_segment_in_Milvus_0c1f54d432.png" alt="Flushed segment in Milvus" class="doc-image" id="flushed-segment-in-milvus" />
+    <span>Flushed segment in Milvus</span>
+  </span>
+</p>
+<h3 id="Channel" class="common-anchor-header">Channel</h3><p>A channel is allocated :</p>
 <ul>
-<li>Quando o nó de dados inicia ou desliga; ou</li>
-<li>Quando o espaço do segmento alocado é solicitado pelo proxy.</li>
+<li>When data node starts or shuts down; or</li>
+<li>When segment space allocated is requested by proxy.</li>
 </ul>
-<p>Existem então várias estratégias de atribuição de canais. Milvus suporta 2 dessas estratégias:</p>
+<p>Then there are several strategies of channel allocation. Milvus supports 2 of the strategies:</p>
 <ol>
-<li>Hashing consistente</li>
+<li>Consistent hashing</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Consistency_hashing_in_Milvus_fb5e5d84ce.jpeg" alt="Consistency hashing in Milvus" class="doc-image" id="consistency-hashing-in-milvus" />
-   </span> <span class="img-wrapper"> <span>Consistência de hashing em Milvus</span> </span></p>
-<p>A estratégia padrão em Milvus. Esta estratégia aproveita a técnica de hashing para atribuir a cada canal uma posição no anel e, em seguida, procura na direção do relógio para encontrar o nó de dados mais próximo de um canal. Assim, na ilustração acima, o canal 1 é atribuído ao nó de dados 2, enquanto o canal 2 é atribuído ao nó de dados 3.</p>
-<p>No entanto, um problema com esta estratégia é que o aumento ou diminuição do número de nós de dados (por exemplo, um novo nó de dados começa ou um nó de dados desliga-se subitamente) pode afetar o processo de atribuição de canais. Para resolver este problema, o data coord monitoriza o estado dos nós de dados através do etcd para que o data coord possa ser imediatamente notificado se houver alguma alteração no estado dos nós de dados. Em seguida, o coordenador de dados determina ainda a que nó de dados devem ser atribuídos os canais corretamente.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Consistency_hashing_in_Milvus_fb5e5d84ce.jpeg" alt="Consistency hashing in Milvus" class="doc-image" id="consistency-hashing-in-milvus" />
+    <span>Consistency hashing in Milvus</span>
+  </span>
+</p>
+<p>The default strategy in Milvus. This strategy leverages the hashing technique to assign each channel a position on the ring, then searches in a clock-wise direction to find the nearest data node to a channel. Thus, in the illustration above, channel 1 is allocated to data node 2, while channel 2 is allocated to data node 3.</p>
+<p>However, one problem with this strategy is that the increase or decrease in the number of data nodes (eg. A new data node starts or a data node suddenly shuts down) can affect the process of channel allocation. To solve this issue, data coord monitors the status of data nodes via etcd so that data coord can be immediately notified if there is any change in the status of data nodes. Then data coord further determines to which data node to allocate the channels properly.</p>
 <ol start="2">
-<li>Balanceamento de carga</li>
+<li>Load balancing</li>
 </ol>
-<p>A segunda estratégia consiste em atribuir canais da mesma coleção a diferentes nós de dados, garantindo que os canais são atribuídos de forma uniforme. O objetivo desta estratégia é conseguir o equilíbrio da carga.</p>
-<h2 id="Data-allocation-when-and-how" class="common-anchor-header">Atribuição de dados: quando e como<button data-href="#Data-allocation-when-and-how" class="anchor-icon" translate="no">
+<p>The second strategy is to allocate channels of the same collection to different data nodes, ensuring the channels are evenly allocated. The purpose of this strategy is to achieve load balance.</p>
+<h2 id="Data-allocation-when-and-how" class="common-anchor-header">Data allocation: when and how<button data-href="#Data-allocation-when-and-how" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -218,13 +246,15 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/The_process_of_data_allocation_in_Milvus_0ba86b3ad1.jpeg" alt="The process of data allocation in Milvus" class="doc-image" id="the-process-of-data-allocation-in-milvus" />
-   </span> <span class="img-wrapper"> <span>O processo de atribuição de dados em Milvus</span> </span></p>
-<p>O processo de atribuição de dados parte do cliente. Começa por enviar pedidos de inserção de dados com um carimbo de data/hora <code translate="no">t1</code> para o proxy. Em seguida, o proxy envia um pedido de atribuição de segmentos à coordenação dos dados.</p>
-<p>Ao receber o pedido de atribuição de segmento, o coordenador de dados verifica o estado do segmento e atribui o segmento. Se o espaço atual dos segmentos criados for suficiente para as novas linhas de dados inseridas, a coordenada de dados atribui esses segmentos criados. No entanto, se o espaço disponível nos segmentos actuais não for suficiente, a coordenada de dados atribui um novo segmento. A coordenada de dados pode devolver um ou mais segmentos a cada pedido. Entretanto, a coordenada de dados também guarda o segmento atribuído no meta servidor para persistência dos dados.</p>
-<p>Subsequentemente, o coordenador de dados devolve a informação do segmento atribuído (incluindo o ID do segmento, o número de linhas, o tempo de expiração <code translate="no">t2</code>, etc.) ao proxy. O proxy envia essas informações do segmento atribuído para o armazenamento de mensagens, de modo a que essas informações sejam devidamente registadas. Note-se que o valor de <code translate="no">t1</code> deve ser inferior ao de <code translate="no">t2</code>. O valor por defeito de <code translate="no">t2</code> é de 2 000 milissegundos e pode ser alterado configurando o parâmetro <code translate="no">segment.assignmentExpiration</code> no ficheiro <code translate="no">data_coord.yaml</code>.</p>
-<h2 id="Binlog-file-structure-and-data-persistence" class="common-anchor-header">Estrutura do ficheiro Binlog e persistência de dados<button data-href="#Binlog-file-structure-and-data-persistence" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/The_process_of_data_allocation_in_Milvus_0ba86b3ad1.jpeg" alt="The process of data allocation in Milvus" class="doc-image" id="the-process-of-data-allocation-in-milvus" />
+    <span>The process of data allocation in Milvus</span>
+  </span>
+</p>
+<p>The process of data allocation starts from the client. It first sends data insertion requests with a timestamp <code translate="no">t1</code> to proxy. Then the proxy sends a request to data coord for segment allocation.</p>
+<p>Upon receiving the segment allocation request, the data coord checks segment status and allocates segment. If the current space of the created segments is sufficient for the newly inserted rows of data, the data coord allocates those created segments. However, if the space available in current segments is not sufficient, the data coord will allocate a new segment. The data coord can return one or more segments upon each request. In the meantime, the data coord also saves the allocated segment in meta server for data persistence.</p>
+<p>Subsequently, the data coord returns the information of the allocated segment (including segment ID, number of rows, expiry time <code translate="no">t2</code>, etc.) to the proxy. The proxy sends such information of the allocated segment to message store so that these information are properly recorded. Note that the value of <code translate="no">t1</code> must be smaller than that of <code translate="no">t2</code>. The default value of <code translate="no">t2</code> is 2,000 millisecond and it can be changed by configuring the parameter <code translate="no">segment.assignmentExpiration</code> in the <code translate="no">data_coord.yaml</code> file.</p>
+<h2 id="Binlog-file-structure-and-data-persistence" class="common-anchor-header">Binlog file structure and data persistence<button data-href="#Binlog-file-structure-and-data-persistence" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -240,31 +270,39 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Data_node_flush_86832f46d0.png" alt="Data node flush" class="doc-image" id="data-node-flush" />
-   </span> <span class="img-wrapper"> <span>Descarga do nó de dados</span> </span></p>
-<p>O nó de dados subscreve o armazenamento de mensagens porque os pedidos de inserção de dados são mantidos no armazenamento de mensagens e os nós de dados podem assim consumir mensagens de inserção. Os nós de dados começam por colocar os pedidos de inserção numa memória intermédia de inserção e, à medida que os pedidos se acumulam, são descarregados para o armazenamento de objectos após atingirem um determinado limiar.</p>
-<h3 id="Binlog-file-structure" class="common-anchor-header">Estrutura do ficheiro Binlog</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Binlog_file_structure_ca2897a095.png" alt="Binlog file structure." class="doc-image" id="binlog-file-structure." />
-   </span> <span class="img-wrapper"> <span>Estrutura do ficheiro binlog</span>. </span></p>
-<p>A estrutura do ficheiro binlog no Milvus é semelhante à do MySQL. O binlog é utilizado para servir duas funções: recuperação de dados e construção de índices.</p>
-<p>Um binlog contém muitos <a href="https://github.com/milvus-io/milvus/blob/master/docs/developer_guides/chap08_binlog.md#event-format">eventos</a>. Cada evento tem um cabeçalho e dados de evento.</p>
-<p>Os metadados, incluindo a hora de criação do binlog, o ID do nó de escrita, a duração do evento e NextPosition (offset do próximo evento), etc., são escritos no cabeçalho do evento.</p>
-<p>Os dados do evento podem ser divididos em duas partes: fixos e variáveis.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Data_node_flush_86832f46d0.png" alt="Data node flush" class="doc-image" id="data-node-flush" />
+    <span>Data node flush</span>
+  </span>
+</p>
+<p>Data node subscribes to the message store because data insertion requests are kept in the message store and the data nodes can thus consume insert messages. The data nodes first place insert requests in an insert buffer, and as the requests accumulate, they will be flushed to object storage after reaching a threshold.</p>
+<h3 id="Binlog-file-structure" class="common-anchor-header">Binlog file structure</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Binlog_file_structure_ca2897a095.png" alt="Binlog file structure." class="doc-image" id="binlog-file-structure." />
+    <span>Binlog file structure.</span>
+  </span>
+</p>
+<p>The binlog file structure in Milvus is similar to that in MySQL. Binlog is used to serve two functions: data recovery and index building.</p>
+<p>A binlog contains many <a href="https://github.com/milvus-io/milvus/blob/master/docs/developer_guides/chap08_binlog.md#event-format">events</a>. Each event has an event header and event data.</p>
+<p>Metadata including binlog creation time, write node ID, event length, and NextPosition (offset of the next event), etc. are written in the event header.</p>
+<p>Event data can be divided into two parts: fixed and variable.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/File_structure_of_an_insert_event_829b1f628d.png" alt="File structure of an insert event." class="doc-image" id="file-structure-of-an-insert-event." />
-   </span> <span class="img-wrapper"> <span>Estrutura de ficheiro de um evento de inserção</span>. </span></p>
-<p>A parte fixa dos dados de um evento <code translate="no">INSERT_EVENT</code> contém <code translate="no">StartTimestamp</code>, <code translate="no">EndTimestamp</code>, e <code translate="no">reserved</code>.</p>
-<p>A parte variável armazena, de facto, os dados inseridos. Os dados de inserção são sequenciados no formato de parquet e armazenados neste ficheiro.</p>
-<h3 id="Data-persistence" class="common-anchor-header">Persistência de dados</h3><p>Se existirem várias colunas no esquema, o Milvus armazena os binlogs nas colunas.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/File_structure_of_an_insert_event_829b1f628d.png" alt="File structure of an insert event." class="doc-image" id="file-structure-of-an-insert-event." />
+    <span>File structure of an insert event.</span>
+  </span>
+</p>
+<p>The fixed part in the event data of an <code translate="no">INSERT_EVENT</code> contains <code translate="no">StartTimestamp</code>, <code translate="no">EndTimestamp</code>, and <code translate="no">reserved</code>.</p>
+<p>The variable part in fact stores inserted data. The insert data are sequenced into the format of parquet and stored in this file.</p>
+<h3 id="Data-persistence" class="common-anchor-header">Data persistence</h3><p>If there are multiple columns in schema, Milvus will store binlogs in columns.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Binlog_data_persistence_0c028bf26a.png" alt="Binlog data persistence." class="doc-image" id="binlog-data-persistence." />
-   </span> <span class="img-wrapper"> <span>Persistência dos dados do binlog</span>. </span></p>
-<p>Tal como ilustrado na imagem acima, a primeira coluna é a chave primária binlog. A segunda é a coluna de carimbo de data/hora. As restantes são as colunas definidas no esquema. O caminho do ficheiro dos binlogs no MinIO também está indicado na imagem acima.</p>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Sobre a série Deep Dive<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Binlog_data_persistence_0c028bf26a.png" alt="Binlog data persistence." class="doc-image" id="binlog-data-persistence." />
+    <span>Binlog data persistence.</span>
+  </span>
+</p>
+<p>As illustrated in the image above, the first column is primary key binlog. The second one is timestamp column. The rest are the columns defined in schema. The file path of binlogs in MinIO is also indicated in the image above.</p>
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -279,14 +317,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persis
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Com o <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">anúncio oficial da disponibilidade geral</a> do Milvus 2.0, orquestrámos esta série de blogs Milvus Deep Dive para fornecer uma interpretação aprofundada da arquitetura e do código fonte do Milvus. Os tópicos abordados nesta série de blogues incluem:</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Visão geral da arquitetura do Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs e SDKs Python</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Processamento de dados</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Gestão de dados</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Consulta em tempo real</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Motor de execução escalar</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">Sistema QA</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Motor de execução vetorial</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

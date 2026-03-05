@@ -1,11 +1,15 @@
 ---
 id: >-
   bring-vector-compression-to-the-extreme-how-milvus-serves-3×-more-queries-with-rabitq.md
-title: 'ベクトル圧縮を極限まで: MilvusがRaBitQで3倍のクエリーに対応する方法'
+title: >
+  Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries
+  with RaBitQ
 author: 'Alexandr Guzhva, Li Liu, Jiang Chen'
 date: 2025-05-13T00:00:00.000Z
 desc: >-
-  MilvusがどのようにRaBitQを活用してベクトル検索の効率を高め、精度を維持しながらメモリコストを削減しているかをご覧ください。今すぐAIソリューションを最適化する方法をご覧ください！
+  Discover how Milvus leverages RaBitQ to enhance vector search efficiency,
+  reducing memory costs while maintaining accuracy. Learn to optimize your AI
+  solutions today!
 cover: >-
   assets.zilliz.com/Bring_Vector_Compression_to_the_Extreme_How_Milvus_Serves_3_More_Queries_with_Ra_Bit_Q_12f5b4d932.jpg
 tag: Engineering
@@ -21,15 +25,15 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3×-more-queries-with-rabitq.md
 ---
-<p><a href="https://milvus.io/docs/overview.md">Milvusは</a>、10億ベクトル規模のセマンティック検索を可能にする、オープンソースで拡張性の高いベクトルデータベースです。ユーザーがRAGチャットボット、AIカスタマーサービス、ビジュアル検索をこの規模で展開するにつれ、<strong>インフラコストという</strong>共通の課題が浮かび上がってくる。対照的に、指数関数的なビジネスの成長はエキサイティングだが、クラウド料金の高騰はそうではない。高速ベクトル検索には通常、ベクトルをメモリに保存する必要があり、それにはコストがかかる。当然、あなたはこう尋ねるかもしれない：<em>検索の質を犠牲にすることなく、スペースを節約するためにベクトルを圧縮できないか？</em></p>
-<p>このブログでは、Milvusが<a href="https://dl.acm.org/doi/pdf/10.1145/3654970"><strong>RaBitQと</strong></a>呼ばれる新しいテクニックを実装することで、同等の精度を維持しながら、より低いメモリコストで3倍のトラフィックに対応できるようになった方法を紹介します。また、オープンソースのMilvusと<a href="https://zilliz.com/cloud">Zilliz Cloud</a>上のフルマネージドMilvusサービスにRaBitQを統合することで得られた実践的な教訓も共有します。</p>
+<p><a href="https://milvus.io/docs/overview.md">Milvus</a> is an open-source, highly scalable vector database powering semantic search at a billion-vector scale. As users deploy RAG chatbots, AI customer service, and visual search at this magnitude, a common challenge emerges: <strong>infrastructure costs.</strong> In contrast, exponential business growth is exciting; skyrocketing cloud bills are not. Fast vector search typically requires storing vectors in memory, which is expensive. Naturally, you might ask: <em>Can we compress vectors to save space without sacrificing search quality?</em></p>
+<p>The answer is <strong>YES</strong>, and in this blog, we’ll show you how implementing a novel technique called <a href="https://dl.acm.org/doi/pdf/10.1145/3654970"><strong>RaBitQ</strong></a> enables Milvus to serve 3× more traffic with lower memory cost while maintaining comparable accuracy. We’ll also share the practical lessons learned from integrating RaBitQ into open-source Milvus and the fully-managed Milvus service on <a href="https://zilliz.com/cloud">Zilliz Cloud</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Bring_Vector_Compression_to_the_Extreme_How_Milvus_Serves_3_More_Queries_with_Ra_Bit_Q_12f5b4d932.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Understanding-Vector-Search-and-Compression" class="common-anchor-header">ベクトル検索と圧縮を理解する<button data-href="#Understanding-Vector-Search-and-Compression" class="anchor-icon" translate="no">
+<h2 id="Understanding-Vector-Search-and-Compression" class="common-anchor-header">Understanding Vector Search and Compression<button data-href="#Understanding-Vector-Search-and-Compression" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,12 +48,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RaBitQを理解する前に、この課題を理解しよう。</p>
-<p><a href="https://zilliz.com/glossary/anns"><strong>近似最近傍（ANN）</strong></a>検索アルゴリズムは、ベクトルデータベースの中核であり、与えられたクエリに最も近い上位k個のベクトルを見つける。ベクトルとは、高次元空間における座標のことで、多くの場合、数百の浮動小数点数で構成されます。ベクトル・データがスケールアップするにつれて、ストレージと計算の需要も増加します。例えば、<a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a>（ANN検索アルゴリズム）をFP32で10億個の768次元ベクトルを使って実行するには、3TB以上のメモリが必要だ！</p>
-<p>MP3が人間の耳に聞こえない周波数を削除して音声を圧縮するように、ベクトルデータも検索精度への影響を最小限に抑えて圧縮することができる。研究によれば、ANNでは全精度のFP32は不要なことが多い。一般的な圧縮手法である<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization"> スカラー量子化</a>（SQ）は、浮動小数点値を離散的なビンにマッピングし、低ビット整数を使用してビンのインデックスのみを格納します。量子化手法は、同じ情報をより少ないビット数で表現することで、メモリ使用量を大幅に削減する。この分野の研究では、精度の損失を最小限に抑えながら、最大の節約を達成しようと努めている。</p>
-<p>最も極端な圧縮手法である1ビットスカラー量子化（<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization">バイナリ量子化とも</a>呼ばれる）は、各浮動小数点数を1ビットで<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization">表現する</a>。FP32（32ビット・エンコーディング）と比較して、メモリ使用量を32倍削減できます。ベクトル探索ではメモリが主なボトルネックになることが多いため、このような圧縮はパフォーマンスを大幅に向上させる。<strong>しかし、課題は探索精度を維持することにある。</strong>一般的に、1ビットSQは再現率を70％以下にまで低下させ、事実上使い物にならなくなる。</p>
-<p><strong>RaBitQは</strong>、高いリコールを維持しながら1ビット量子化を実現する優れた圧縮技術です。Milvusはバージョン2.6からRaBitQをサポートし、同等の精度を維持しながら3倍のQPSでベクトルデータベースを提供できるようになりました。</p>
-<h2 id="A-Brief-Intro-to-RaBitQ" class="common-anchor-header">RaBitQの簡単な紹介<button data-href="#A-Brief-Intro-to-RaBitQ" class="anchor-icon" translate="no">
+    </button></h2><p>Before diving into RaBitQ, let’s understand the challenge.</p>
+<p><a href="https://zilliz.com/glossary/anns"><strong>Approximate Nearest Neighbor (ANN)</strong></a> search algorithms are at the heart of a vector database, finding the top-k vectors closest to a given query. A vector is a coordinate in high-dimensional space, often comprising hundreds of floating-point numbers. As vector data scales up, so do storage and compute demands. For instance, running <a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">HNSW</a> (an ANN search algorithm) with one billion 768-dimensional vectors in FP32 requires over 3TB of memory!</p>
+<p>Like MP3 compresses audio by discarding frequencies imperceptible to the human ear, vector data can be compressed with minimal impact on search accuracy. Research shows that full-precision FP32 is often unnecessary for ANN.<a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization"> Scalar Quantization</a> (SQ), a popular compression technique, maps floating-point values into discrete bins and stores only the bin indices using low-bit integers. Quantization methods significantly reduce memory usage by representing the same information with fewer bits. Research in this domain strives to achieve the most savings with the least loss in accuracy.</p>
+<p>The most extreme compression technique—1-bit Scalar Quantization, also known as <a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization">Binary Quantization</a>—represents each float with a single bit. Compared to FP32 (32-bit encoding), this reduces memory usage by 32×. Since memory is often the main bottleneck in vector search, such compression can significantly boost performance. <strong>The challenge, however, lies in preserving search accuracy.</strong> Typically, 1-bit SQ reduces recall to below 70%, making it practically unusable.</p>
+<p>This is where <strong>RaBitQ</strong> stands out—an excellent compression technique that achieves 1-bit quantization while preserving high recall. Milvus now supports RaBitQ starting from version 2.6, enabling the vector database to serve 3× the QPS while maintaining a comparable level of accuracy.</p>
+<h2 id="A-Brief-Intro-to-RaBitQ" class="common-anchor-header">A Brief Intro to RaBitQ<button data-href="#A-Brief-Intro-to-RaBitQ" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,26 +68,26 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://dl.acm.org/doi/pdf/10.1145/3654970">RaBitQは</a>、高次元空間の幾何学的特性を活用し、効率的で高精度なベクトル圧縮を実現する、賢く設計されたバイナリ量子化手法です。</p>
-<p>一見すると、ベクトルの各次元を1ビットに削減するのは強引すぎるように思えるかもしれないが、高次元空間では直感はしばしば裏切られる。RaBitQの著者であるJianyang Gaoが<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg"> 説明したように</a>、高次元ベクトルは、個々の座標がゼロの周辺に集中しやすいという性質を示す。これにより、正確な最近傍探索に必要な相対構造を維持したまま、元の精度の多くを捨てることが可能になる。</p>
+    </button></h2><p><a href="https://dl.acm.org/doi/pdf/10.1145/3654970">RaBitQ</a> is a smartly designed binary quantization method that leverages the geometry property of high-dimensional space to achieve efficient and accurate vector compression.</p>
+<p>At first glance, reducing each dimension of a vector to a single bit may seem too aggressive, but in high-dimensional space, our intuitions often fail us. As Jianyang Gao, an author of RaBitQ,<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg"> illustrated</a>, high-dimensional vectors exhibit the property that individual coordinates tend to be tightly concentrated around zero, a result of a counterintuitive phenomenon explained in<a href="https://en.wikipedia.org/wiki/Concentration_of_measure"> Concentration of Measure</a>. This makes it possible to discard much of the original precision while still preserving the relative structure needed for an accurate nearest neighbor search.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_The_counterintuitive_value_distribution_in_high_dimensional_geometry_fad6143bfd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図：高次元幾何学における反直観的な値分布。<em>単位球から一様にサンプリングされたランダムな単位ベクトルの最初の次元の値を考えてみよう。しかし、高次元空間（例えば1000次元）では、値はゼロ付近に集中する。これは高次元幾何学の直感的でない性質である。(画像出典：<a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg">直感に反する高次元空間における量子化）</a></em></p>
-<p>この高次元空間の性質にヒントを得て、<strong>RaBitQは正確な空間座標よりも角度情報を符号化することに重点を置いて</strong>いる。RaBitQは、各データベクトルをデータセットの重心などの基準点に対して正規化することでこれを行う。その後、各ベクトルは超立方体上の最も近い頂点にマッピングされ、1次元あたりわずか1ビットで表現できるようになる。このアプローチは、<code translate="no">IVF_RABITQ</code> 、正規化が最も近いクラスタ重心に対して行われるため、ローカル・エンコーディングの精度が向上する。</p>
+<p>Figure: The counterintuitive value distribution in high-dimensional geometry. <em>Consider the value of the first dimension for a random unit vector uniformly sampled from the unit sphere; the values are uniformly spread in 3D space. However, for high-dimensional space (e.g., 1000D), the values concentrate around zero, an unintuitive property of high-dimensional geometry. (Image source: <a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg">Quantization in The Counterintuitive High-Dimensional Space</a>)</em></p>
+<p>Inspired by this property of high-dimensional space, <strong>RaBitQ focuses on encoding angular information rather than exact spatial coordinates</strong>. It does this by normalizing each data vector relative to a reference point such as the centroid of the dataset. Each vector is then mapped to its nearest vertex on the hypercube, allowing representation with just 1 bit per dimension. This approach naturally extends to <code translate="no">IVF_RABITQ</code>, where normalization is done relative to the closest cluster centroid, improving local encoding accuracy.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Compressing_a_vector_by_finding_its_closest_approximation_on_the_hypercube_so_that_each_dimension_can_be_represented_with_just_1_bit_cd0d50bb30.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>図：図：超立方体上で最も近い近似を見つけることによってベクトルを圧縮し、各次元をわずか1ビットで表現できるようにする。(画像出典：</em> <a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg"><em>直感に反する高次元空間における量子化）</em></a></p>
-<p>このように圧縮された表現であっても検索の信頼性を確保するため、RaBitQはクエリベクトルとバイナリ量子化された文書ベクトル間の距離について、<strong>理論的根拠のある不偏推定量を</strong>導入している。これにより再構成誤差を最小化し、高いリコールを維持することができる。</p>
-<p>また、RaBitQは<a href="https://www.vldb.org/pvldb/vol9/p288-andre.pdf"> FastScanや</a><a href="https://github.com/facebookresearch/faiss/wiki/Pre--and-post-processing"> ランダム回転前処理の</a>ような他の最適化技術と高い互換性を持つ。さらに、RaBitQは<strong>学習が軽く、実行が速い</strong>。学習は各ベクトル成分の符号を決定するだけでよく、検索は最新のCPUでサポートされている高速ビット演算によって高速化される。これらの最適化により、RaBitQは精度の低下を最小限に抑えながら高速な探索を実現している。</p>
-<h2 id="Engineering-RaBitQ-in-Milvus-From-Academic-Research-to-Production" class="common-anchor-header">MilvusにおけるRaBitQのエンジニアリング：学術研究から生産へ<button data-href="#Engineering-RaBitQ-in-Milvus-From-Academic-Research-to-Production" class="anchor-icon" translate="no">
+<p><em>Figure: Compressing a vector by finding its closest approximation on the hypercube, so that each dimension can be represented with just 1 bit. (Image source:</em> <a href="https://dev.to/gaoj0017/quantization-in-the-counterintuitive-high-dimensional-space-4feg"><em>Quantization in The Counterintuitive High-Dimensional Space</em></a><em>)</em></p>
+<p>To ensure search remains reliable even with such compressed representations, RaBitQ introduces a <strong>theoretically grounded, unbiased estimator</strong> for the distance between a query vector and binary-quantized document vectors. This helps minimize reconstruction error and sustain high recall.</p>
+<p>RaBitQ is also highly compatible with other optimization techniques, such as<a href="https://www.vldb.org/pvldb/vol9/p288-andre.pdf"> FastScan</a> and<a href="https://github.com/facebookresearch/faiss/wiki/Pre--and-post-processing"> random rotation preprocessing</a>. Moreover, RaBitQ is <strong>lightweight to train and fast to execute</strong>. Training involves simply determining the sign of each vector component, and search is accelerated via fast bitwise operations supported by modern CPUs. Together, these optimizations enable RaBitQ to deliver high-speed search with minimal loss of accuracy.</p>
+<h2 id="Engineering-RaBitQ-in-Milvus-From-Academic-Research-to-Production" class="common-anchor-header">Engineering RaBitQ in Milvus: From Academic Research to Production<button data-href="#Engineering-RaBitQ-in-Milvus-From-Academic-Research-to-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,13 +102,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RaBitQは概念的には単純であり、<a href="https://github.com/gaoj0017/RaBitQ"> リファレンス実装が</a>付属していますが、Milvusのような分散した実運用レベルのベクトルデータベースに適応させるには、いくつかのエンジニアリング上の課題がありました。我々はRaBitQをMilvusのコアとなるベクトル検索エンジンであるKnowhereに実装し、さらにオープンソースのANN検索ライブラリ<a href="https://github.com/facebookresearch/faiss"> FAISSに</a>最適化バージョンを提供しました。</p>
-<p>このアルゴリズムをMilvusでどのように実現したかを見てみましょう。</p>
-<h3 id="Implementation-Tradeoffs" class="common-anchor-header">実装のトレードオフ</h3><p>重要な設計上の決定事項の1つは、ベクトルごとの補助データの処理です。RaBitQでは、インデックス作成時に事前計算されたベクトルごとに2つの浮動小数点値と、その場で計算するか事前計算するかの3つ目の値が必要です。Knowhereでは、検索時の効率を向上させるために、この値をインデックス作成時に事前計算し、格納しています。一方、FAISSの実装では、クエリ時にこの値を計算することでメモリを節約し、メモリ使用量とクエリ速度のトレードオフを変えています。</p>
-<h3 id="Hardware-Acceleration" class="common-anchor-header">ハードウェアアクセラレーション</h3><p>最近のCPUは、バイナリ演算を大幅に高速化できる特別な命令を提供している。我々は最新のCPU命令を利用するために距離計算カーネルをカスタマイズした。RaBitQはpopcount演算に依存しているため、AVX512用の<code translate="no">VPOPCNTDQ</code> 命令が利用可能な場合はそれを使用するようにKnowhereに特化したパスを作成しました。サポートされているハードウェア（Intel IceLakeやAMD Zen 4など）では、デフォルトの実装に比べてバイナリ距離計算を数倍高速化することができます。</p>
-<h3 id="Query-Optimization" class="common-anchor-header">クエリの最適化</h3><p>Milvusの検索エンジンKnowhereとFAISSの最適化バージョンは、クエリベクトルのスカラー量子化(SQ1-SQ8)をサポートしています。これは、4ビットの量子化であっても、高い再現性を維持しながら計算量を大幅に削減することができ、高いスループットでクエリを処理する必要がある場合に特に有効です。</p>
-<p>私たちはさらに一歩進んで、フルマネージドMilvus on Zilliz Cloudの原動力となる独自のCardinalエンジンを最適化しています。オープンソースのMilvusの機能を超えて、グラフベースのベクトルインデックスとの統合、最適化のレイヤーの追加、Arm SVE命令のサポートなど、高度な機能拡張を導入しています。</p>
-<h2 id="The-Performance-Gain-3×-More-QPS-with-Comparable-Accuracy" class="common-anchor-header">性能向上：同等の精度で3倍のQPSを実現<button data-href="#The-Performance-Gain-3×-More-QPS-with-Comparable-Accuracy" class="anchor-icon" translate="no">
+    </button></h2><p>While RaBitQ is conceptually straightforward and accompanied by a<a href="https://github.com/gaoj0017/RaBitQ"> reference implementation</a>, adapting it in a distributed, production-grade vector database like Milvus presented several engineering challenges. We’ve implemented RaBitQ in Knowhere, the core vector search engine behind Milvus, and also contributed an optimized version to the open-source ANN search library<a href="https://github.com/facebookresearch/faiss"> FAISS</a>.</p>
+<p>Let’s look at how we brought this algorithm to life in Milvus.</p>
+<h3 id="Implementation-Tradeoffs" class="common-anchor-header">Implementation Tradeoffs</h3><p>One important design decision involved handling per-vector auxiliary data. RaBitQ requires two floating-point values per vector pre-computed during indexing time, and a third value that can either be computed on-the-fly or pre-computed. In Knowhere, we pre-computed this value at indexing time and stored it to improve efficiency during search. In contrast, the FAISS implementation conserves memory by calculating it at query time, taking a different tradeoff between memory usage and query speed.</p>
+<h3 id="Hardware-Acceleration" class="common-anchor-header">Hardware Acceleration</h3><p>Modern CPUs offer specialized instructions that can significantly accelerate binary operations. We tailored the distance computation kernel to take advantage of modern CPU instructions. Since RaBitQ relies on popcount operations, we created a specialized path in Knowhere that uses the <code translate="no">VPOPCNTDQ</code> instructions for AVX512 when available. On supported hardware (e.g., Intel IceLake or AMD Zen 4), this can accelerate binary distance computations by several factors compared to default implementations.</p>
+<h3 id="Query-Optimization" class="common-anchor-header">Query Optimization</h3><p>Both Knowhere (Milvus’s search engine) and our optimized FAISS version support scalar quantization (SQ1–SQ8) on query vectors. This provides additional flexibility: even with 4-bit query quantization, recall remains high while computational demands decrease significantly, which is particularly useful when queries must be processed at high throughput.</p>
+<p>We go a step further in optimizing our proprietary Cardinal engine, which powers the fully managed Milvus on Zilliz Cloud. Beyond the capabilities of the open-source Milvus, we introduce advanced enhancements, including integration with a graph-based vector index, additional layers of optimization, and support for Arm SVE instructions.</p>
+<h2 id="The-Performance-Gain-3×-More-QPS-with-Comparable-Accuracy" class="common-anchor-header">The Performance Gain: 3× More QPS with Comparable Accuracy<button data-href="#The-Performance-Gain-3×-More-QPS-with-Comparable-Accuracy" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -119,8 +123,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>バージョン2.6から、Milvusは新しい<code translate="no">IVF_RABITQ</code> インデックスタイプを導入しました。この新しいインデックスは、RaBitQとIVFクラスタリング、ランダム回転変換、およびオプションの精密化を組み合わせ、性能、メモリ効率、精度の最適なバランスを実現します。</p>
-<h3 id="Using-IVFRABITQ-in-Your-Application" class="common-anchor-header">アプリケーションでの IVF_RABITQ の使用</h3><p>Milvus アプリケーションに<code translate="no">IVF_RABITQ</code> を実装する方法を説明します：</p>
+    </button></h2><p>Starting with version 2.6, Milvus introduces the new <code translate="no">IVF_RABITQ</code> index type. This new index combines RaBitQ with IVF clustering, random rotation transformation, and optional refinement to deliver an optimal balance of performance, memory efficiency, and accuracy.</p>
+<h3 id="Using-IVFRABITQ-in-Your-Application" class="common-anchor-header">Using IVF_RABITQ in Your Application</h3><p>Here’s how to implement <code translate="no">IVF_RABITQ</code> in your Milvus application:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 index_params = MilvusClient.prepare_index_params()
@@ -135,39 +139,39 @@ index_params.add_index(
     } <span class="hljs-comment"># Index building params</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Benchmarking-Numbers-Tell-the-Story" class="common-anchor-header">ベンチマーク数字が物語るもの</h3><p>ベクターデータベースを評価するためのオープンソースベンチマークツールである<a href="https://github.com/zilliztech/vectordbbench"> vdb-benchを</a>使用して、さまざまな構成をベンチマークしました。テスト環境とコントロール環境の両方で、AWS EC2<code translate="no">m6id.2xlarge</code> インスタンスにデプロイされた Milvus Standalone を使用しています。これらのマシンは、8つのvCPU、32GBのRAM、およびVPOPCNTDQ AVX-512命令セットをサポートするIce LakeアーキテクチャベースのIntel Xeon 8375C CPUを備えています。</p>
-<p>vdb-benchのSearch Performance Testを使用し、それぞれ768次元の100万ベクトルのデータセットを使用した。Milvusのデフォルトのセグメントサイズは1GBであり、生のデータセット（768次元×1Mベクトル×4バイト/フロート）は合計約3GBであるため、ベンチマークではデータベースごとに複数のセグメントを使用した。</p>
+<h3 id="Benchmarking-Numbers-Tell-the-Story" class="common-anchor-header">Benchmarking: Numbers Tell the Story</h3><p>We benchmarked different configurations using<a href="https://github.com/zilliztech/vectordbbench"> vdb-bench</a>, an open-source benchmarking tool for evaluating vector databases. Both the test and control environments use Milvus Standalone deployed on AWS EC2 <code translate="no">m6id.2xlarge</code> instances. These machines feature 8 vCPUs, 32 GB of RAM, and an Intel Xeon 8375C CPU based on the Ice Lake architecture, which supports the VPOPCNTDQ AVX-512 instruction set.</p>
+<p>We used the Search Performance Test from vdb-bench, with a dataset of 1 million vectors, each with 768 dimensions. Since the default segment size in Milvus is 1 GB, and the raw dataset (768 dimensions × 1M vectors × 4 bytes per float) totals roughly 3 GB, the benchmarking involved multiple segments per database.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Example_test_configuration_in_vdb_bench_000142f634.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図：vdb-bench のテスト構成例。</p>
-<p>以下は、IVF、RaBitQ、精密化処理の設定ノブに関する低レベルの詳細です：</p>
+<p>Figure: Example test configuration in vdb-bench.</p>
+<p>Here are some low level details about the configuration knobs for IVF, RaBitQ and refinement process:</p>
 <ul>
-<li><p><code translate="no">nlist</code> と は全ての ベースの手法の標準パラメータである。<code translate="no">nprobe</code> <code translate="no">IVF</code></p></li>
-<li><p><code translate="no">nlist</code> は非負の整数で、データセットのIVFバケットの総数を指定します。</p></li>
-<li><p><code translate="no">nprobe</code> は非負の整数で、探索処理中に1つのデータベクトルに対して訪れる IVF バケットの数を指定する。これは検索関連のパラメータである。</p></li>
-<li><p><code translate="no">rbq_bits_query</code> はクエリーベクトルの量子化レベルを指定する。 ... レベルの量子化には 1 ～ 8 の値を使用する。量子化を無効にするには 0 を使用する。これは検索関連のパラメータである。<code translate="no">SQ1</code><code translate="no">SQ8</code> </p></li>
-<li><p><code translate="no">refine</code> <code translate="no">refine_type</code> および パラメータは、refine プロセスの標準パラメータです。<code translate="no">refine_k</code> </p></li>
-<li><p><code translate="no">refine</code> はブール値で、refinement ストラテジーを有効にします。</p></li>
-<li><p><code translate="no">refine_k</code> は非負の fp 値です。絞り込み処理では、より質の高い量子化法を用いて、 を用いて選択された 倍の候補プールから、必要な数の最近傍を選び出します。これは検索関連のパラメータである。<code translate="no">IVFRaBitQ</code> <code translate="no">refine_k</code> </p></li>
-<li><p><code translate="no">refine_type</code> は、絞り込みインデックスの量子化タイプを指定する文字列です。利用可能なオプションは、 , , , および / です。<code translate="no">SQ6</code> <code translate="no">SQ8</code> <code translate="no">FP16</code> <code translate="no">BF16</code> <code translate="no">FP32</code> <code translate="no">FLAT</code></p></li>
+<li><p><code translate="no">nlist</code> and <code translate="no">nprobe</code> are standard parameters for all <code translate="no">IVF</code>-based methods</p></li>
+<li><p><code translate="no">nlist</code> is a non-negative integer that specifies the total number of IVF buckets for the dataset.</p></li>
+<li><p><code translate="no">nprobe</code> is a non-negative integer that specifies the number of IVF buckets that are visited for a single data vector during the search process. It is a search-related parameter.</p></li>
+<li><p><code translate="no">rbq_bits_query</code> specifies the level of quantization of a query vector. Use 1…8 values for the <code translate="no">SQ1</code>…<code translate="no">SQ8</code> levels of quantization. Use 0 value to disable quantization. It is a search-related parameter.</p></li>
+<li><p><code translate="no">refine</code>, <code translate="no">refine_type</code> and <code translate="no">refine_k</code> parameters are standard parameters for the refine process</p></li>
+<li><p><code translate="no">refine</code> is a boolean that enables the refinement strategy.</p></li>
+<li><p><code translate="no">refine_k</code> is a non-negative fp-value. The refining process uses a higher quality quantization method to pick the needed number of nearest neighbors from a <code translate="no">refine_k</code> times larger pool of candidates, chosen using <code translate="no">IVFRaBitQ</code>. It is a search-related parameter.</p></li>
+<li><p><code translate="no">refine_type</code> is a string that specifies the quantization type for a refining index. Available options are <code translate="no">SQ6</code>, <code translate="no">SQ8</code>, <code translate="no">FP16</code>, <code translate="no">BF16</code> and <code translate="no">FP32</code> / <code translate="no">FLAT</code>.</p></li>
 </ul>
-<p>結果は重要な洞察を明らかにしている：</p>
+<p>The results reveal important insights:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Cost_and_performance_comparison_of_baseline_IVF_FLAT_IVF_SQ_8_and_IVF_RABITQ_with_different_refinement_strategies_9f69fa449f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図：ベースライン(IVF_FLAT)、IVF_SQ8、IVF_RABITQのコストと性能の比較。</p>
-<p>ベースライン<code translate="no">IVF_FLAT</code> インデックスはリコール95.2%で236 QPSを達成しているのに対し、<code translate="no">IVF_RABITQ</code> はFP32クエリで648 QPS、SQ8クエリで898 QPSと大幅に高いスループットを達成している。これらの数値はRaBitQの性能の優位性を示しており、特にrefinementが適用された場合に顕著である。</p>
-<p>しかしながら、この性能はリコールにおいて顕著なトレードオフを伴う。絞り込みなしで<code translate="no">IVF_RABITQ</code> 、再現率は約76%に留まり、高い精度を必要とするアプリケーションには不十分かもしれない。とはいえ、1ビットベクトル圧縮を使用してこのレベルの想起率を達成したことは、依然として印象的である。</p>
-<p>精度を回復させるには絞り込みが不可欠です。SQ8クエリーとSQ8リファインメントで構成した場合、<code translate="no">IVF_RABITQ</code> 、優れたパフォーマンスと想起率の両方を実現する。IVF_FLATにほぼ匹敵する94.7%という高い再現率を維持しながら、IVF_FLATより3倍以上高い864 QPSを達成している。もうひとつの一般的な量子化インデックス<code translate="no">IVF_SQ8</code> と比較しても、SQ8洗練を施した<code translate="no">IVF_RABITQ</code> は、わずかなコスト増で、同様の想起率で半分以上のスループットを達成している。このため、速度と精度の両方が要求されるシナリオに最適な選択肢となる。</p>
-<p>要するに、<code translate="no">IVF_RABITQ</code> は単独でも、許容できる想起でスループットを最大化するのに優れており、<code translate="no">IVF_FLAT</code> と比較してほんのわずかなメモリスペースしか使用せずに、品質ギャップを縮めるために洗練と組み合わせると、さらに強力になります。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Figure: Cost and performance comparison of baseline (IVF_FLAT), IVF_SQ8 and IVF_RABITQ with different refinement strategies</p>
+<p>Compared to the baseline <code translate="no">IVF_FLAT</code> index, which achieves 236 QPS with 95.2% recall, <code translate="no">IVF_RABITQ</code> reaches significantly higher throughput—648 QPS with FP32 queries and 898 QPS when paired with SQ8-quantized queries. These numbers demonstrate the performance advantage of RaBitQ, especially when refinement is applied.</p>
+<p>However, this performance comes with a noticeable trade-off in recall. When <code translate="no">IVF_RABITQ</code> is used without refinement, recall levels off at around 76%, which may fall short for applications that require high accuracy. That said, achieving this level of recall using 1-bit vector compression is still impressive.</p>
+<p>Refinement is essential for recovering accuracy. When configured with SQ8 query and SQ8 refinement, <code translate="no">IVF_RABITQ</code> delivers both great performance and recall. It maintains a high recall of 94.7%, nearly matching IVF_FLAT, while achieving 864 QPS, over 3× higher than IVF_FLAT. Even compared with another popular quantization index <code translate="no">IVF_SQ8</code>, <code translate="no">IVF_RABITQ</code> with SQ8 refinement achieves more than half of the throughput at similar recall, only with a marginal more cost. This makes it an excellent option for scenarios that demand both speed and accuracy.</p>
+<p>In short, <code translate="no">IVF_RABITQ</code> alone is great for maximizing throughput with acceptable recall, and becomes even more powerful when paired with refinement to close the quality gap, using only a fraction of the memory space compared to <code translate="no">IVF_FLAT</code>.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -182,10 +186,10 @@ index_params.add_index(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RaBitQは、ベクトル量子化技術に大きな進歩をもたらした。バイナリ量子化とスマートなエンコーディング戦略を組み合わせることで、不可能と思われた、精度の低下を最小限に抑えた極端な圧縮を実現しています。</p>
-<p>Milvusはバージョン2.6からIVF_RABITQを導入し、この強力な圧縮技術をIVFクラスタリングおよび洗練戦略と統合することで、バイナリ量子化を実運用に導入します。この組み合わせは、精度、速度、メモリ効率の実用的なバランスを生み出し、ベクトル検索のワークロードを変革します。</p>
-<p>私たちは、オープンソースのMilvusとZilliz Cloud上のフルマネージドサービスの両方にこのようなイノベーションをもたらし、ベクトル検索をより効率的で誰にとっても利用しやすいものにすることをお約束します。</p>
-<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Milvus 2.6を始めよう<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+    </button></h2><p>RaBitQ marks a significant advancement in vector quantization technology. Combining binary quantization with smart encoding strategies, it achieves what seemed impossible: extreme compression with minimal accuracy loss.</p>
+<p>Starting with version 2.6, Milvus will introduce IVF_RABITQ, integrating this powerful compression technique with IVF clustering and refinement strategies to bring binary quantization to production. This combination creates a practical balance between accuracy, speed, and memory efficiency that can transform your vector search workloads.</p>
+<p>We’re committed to bringing more innovations like this to both open-source Milvus and its fully managed service on Zilliz Cloud, making vector search more efficient and accessible for everyone.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Getting Started with Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -200,6 +204,6 @@ index_params.add_index(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6は現在利用可能です。RabitQに加え、階層型ストレージ、Meanhash LSH、強化された全文検索、マルチテナンシーなど、多数の新機能とパフォーマンスの最適化が導入されており、今日のベクトル検索における最も差し迫った課題である、コストを抑えながら効率的に拡張するという課題に直接取り組んでいます。</p>
-<p>Milvus 2.6が提供する全てのものをご覧になる準備はできましたか？<a href="https://milvus.io/docs/release_notes.md"> リリースノート</a>、<a href="https://milvus.io/docs"> ドキュメント、</a><a href="https://milvus.io/blog"> 機能ブログを</a>ご覧ください。</p>
-<p>ご質問がある場合、または同じようなユースケースをお持ちの場合は、<a href="https://discord.com/invite/8uyFbECzPX">Discordコミュニティを通じて</a>、または<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題をご投稿ください。</p>
+    </button></h2><p>Milvus 2.6 is available now. In addition to RabitQ, it introduces dozens of new features and performance optimizations such as tiered storage, Meanhash LSH, and enhanced full-text search and multitenancy, directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.</p>
+<p>Ready to explore everything Milvus 2.6 offers? Dive into our<a href="https://milvus.io/docs/release_notes.md"> release notes</a>, browse the<a href="https://milvus.io/docs"> complete documentation</a>, or check out our<a href="https://milvus.io/blog"> feature blogs</a>.</p>
+<p>If you have any questions or have a similar use case, feel free to reach out to us through our <a href="https://discord.com/invite/8uyFbECzPX">Discord community</a> or file an issue on<a href="https://github.com/milvus-io/milvus"> GitHub</a> — we’re here to help you make the most of Milvus 2.6.</p>

@@ -1,6 +1,7 @@
 ---
 id: choosing-a-vector-database-for-ann-search-at-reddit.md
-title: Elección de una base de datos vectorial para la búsqueda de RNA en Reddit
+title: |
+  Choosing a vector database for ANN search at Reddit
 author: Chris Fournie
 date: 2025-11-28T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Nov_29_2025_12_03_05_AM_min_1_05250269a8.png
@@ -12,14 +13,14 @@ meta_keywords: 'Milvus, vector database, reddit'
 meta_title: |
   Choosing a vector database for ANN search at Reddit
 desc: >-
-  Este post describe el proceso que utilizó el equipo de Reddit para seleccionar
-  su base de datos vectorial más adecuada y por qué eligieron Milvus.
+  This post describes the process the Reddit team used to select their most
+  suitable vector database and why they chose Milvus.
 origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-reddit.md'
 ---
-<p><em>Este artículo ha sido escrito por Chris Fournie, ingeniero de software de Reddit, y publicado originalmente en</em> <a href="https://www.reddit.com/r/RedditEng/comments/1ozxnjc/choosing_a_vector_database_for_ann_search_at/">Reddit</a>.</p>
-<p>En 2024, los equipos de Reddit utilizaron diversas soluciones para realizar búsquedas vectoriales por aproximación al vecino más cercano (RNA). Desde la <a href="https://docs.cloud.google.com/vertex-ai/docs/vector-search/overview">búsqueda vectorial de IA Vertex</a> de Google y experimentando con el uso de <a href="https://solr.apache.org/guide/solr/latest/query-guide/dense-vector-search.html">la búsqueda vectorial de RNA de Apache Solr</a> para algunos conjuntos de datos más grandes, hasta la <a href="https://github.com/facebookresearch/faiss">biblioteca FAISS</a> de Facebook para conjuntos de datos más pequeños (alojados en carros laterales escalados verticalmente). Cada vez más equipos de Reddit querían una solución de búsqueda vectorial de RNA ampliamente compatible que fuera rentable, tuviera las características de búsqueda que deseaban y pudiera escalar a datos del tamaño de Reddit. Para responder a esta necesidad, en 2025 buscamos la base de datos vectorial ideal para los equipos de Reddit.</p>
-<p>Este post describe el proceso que utilizamos para seleccionar la mejor base de datos vectorial para las necesidades actuales de Reddit. No describe la mejor base de datos vectorial en general, ni el conjunto más esencial de requisitos funcionales y no funcionales para todas las situaciones. Describe lo que Reddit y su cultura de ingeniería valoraron y priorizaron al seleccionar una base de datos vectorial. Este post puede servir de inspiración para su propia recopilación y evaluación de requisitos, pero cada organización tiene su propia cultura, valores y necesidades.</p>
-<h2 id="Evaluation-process" class="common-anchor-header">Proceso de evaluación<button data-href="#Evaluation-process" class="anchor-icon" translate="no">
+<p><em>This post was written by Chris Fournie, the Staff Software Engineer at Reddit, and originally published on</em> <a href="https://www.reddit.com/r/RedditEng/comments/1ozxnjc/choosing_a_vector_database_for_ann_search_at/">Reddit</a>, and is reposted here with permission.</p>
+<p>In 2024, Reddit teams used a variety of solutions to perform approximate nearest neighbour (ANN) vector search. From Google’s <a href="https://docs.cloud.google.com/vertex-ai/docs/vector-search/overview">Vertex AI Vector Search</a> and experimenting with using <a href="https://solr.apache.org/guide/solr/latest/query-guide/dense-vector-search.html">Apache Solr’s ANN vector search</a> for some larger datasets, to Facebook’s <a href="https://github.com/facebookresearch/faiss">FAISS library</a> for smaller datasets (hosted in vertically scaled side-cars). More and more teams at Reddit wanted a broadly supported ANN vector search solution that was cost-effective, had the search features they desired, and could scale to Reddit-sized data. To address this need, in 2025, we sought out the ideal vector database for Reddit teams.</p>
+<p>This post describes the process we used to select the best vector database for Reddit’s needs today. It does not describe the best vector database overall, nor the most essential set of functional and non-functional requirements for all situations. It describes what Reddit and its engineering culture valued and prioritized when selecting a vector database. This post may serve as inspiration for your own requirements collection and evaluation, but each organization has its own culture, values, and needs.</p>
+<h2 id="Evaluation-process" class="common-anchor-header">Evaluation process<button data-href="#Evaluation-process" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,240 +35,240 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En general, los pasos de selección fueron</p>
-<p>1. 1. Recopilar el contexto de los equipos</p>
-<p>2. Evaluar cualitativamente las soluciones</p>
-<p>3. 3. Evaluar cuantitativamente a los principales contendientes</p>
-<p>4. Selección final</p>
-<h3 id="1-Collect-context-from-teams" class="common-anchor-header">1. Recopilación del contexto de los equipos</h3><p>Se recopilaron tres elementos de contexto de los equipos interesados en realizar búsquedas vectoriales de RNA:</p>
+    </button></h2><p>Overall, the selection steps were:</p>
+<p>1. Collect context from teams</p>
+<p>2. Qualitatively evaluate solutions</p>
+<p>3. Quantitatively evaluate top contenders</p>
+<p>4. Final selection</p>
+<h3 id="1-Collect-context-from-teams" class="common-anchor-header">1. Collect context from teams</h3><p>Three pieces of context were collected from teams interested in performing ANN vector search:</p>
 <ul>
-<li><p>Requisitos funcionales (por ejemplo, ¿búsqueda vectorial y léxica híbrida? ¿Consultas de búsqueda por rango? ¿Filtrado por atributos no vectoriales?)</p></li>
-<li><p>Requisitos no funcionales (por ejemplo, ¿puede admitir vectores 1B? ¿puede alcanzar una latencia P99 &lt;100 ms?).</p></li>
-<li><p>Las bases de datos vectoriales ya interesaban a los equipos</p></li>
+<li><p>Functional requirements (e.g., Hybrid vector and lexical search? Range search queries? Filtering by non-vector attributes?)</p></li>
+<li><p>Non-functional requirements (e.g, Can it support 1B vectors? Can it reach &lt;100ms P99 latency?)</p></li>
+<li><p>Vector databases teams were already interested in</p></li>
 </ul>
-<p>Entrevistar a los equipos en busca de requisitos no es trivial. Muchos describirán sus necesidades en términos de cómo están resolviendo actualmente un problema, y su reto es comprender y eliminar ese sesgo.</p>
-<p>Por ejemplo, un equipo ya utilizaba FAISS para la búsqueda vectorial de RNA y afirmó que la nueva solución debía devolver de forma eficiente 10.000 resultados por llamada de búsqueda. Tras una discusión más profunda, la razón de los 10.000 resultados era que necesitaban realizar un filtrado post-hoc, y FAISS no ofrece filtrado de resultados de RNA en el momento de la consulta. Su problema real era que necesitaban filtrar, por lo que cualquier solución que ofreciera un filtrado eficaz sería suficiente, y devolver 10.000 resultados era simplemente una solución provisional necesaria para mejorar la recuperación. Lo ideal sería prefiltrar toda la colección antes de encontrar los vecinos más próximos.</p>
-<p>Preguntar por las bases de datos vectoriales que los equipos ya utilizaban o en las que estaban interesados también fue valioso. Si al menos un equipo tenía una opinión positiva de su solución actual, es señal de que la base de datos vectorial podría ser una solución útil para compartir en toda la empresa. Si los equipos sólo tenían opiniones negativas de una solución, entonces no deberíamos incluirla como opción. Aceptar soluciones en las que los equipos estaban interesados también era una forma de asegurarnos de que los equipos se sentían incluidos en el proceso y nos ayudó a formar una lista inicial de los principales contendientes a evaluar; hay demasiadas soluciones de búsqueda vectorial de RNA en bases de datos nuevas y existentes como para probarlas todas exhaustivamente.</p>
-<h3 id="2-Qualitatively-evaluate-solutions" class="common-anchor-header">2. Evaluar cualitativamente las soluciones</h3><p>Partiendo de la lista de soluciones en las que estaban interesados los equipos, para evaluar cualitativamente qué solución de búsqueda vectorial de RNA se ajustaba mejor a nuestras necesidades:</p>
+<p>Interviewing teams for requirements is not trivial. Many will describe their needs in terms of how they are currently solving a problem, and your challenge is to understand and remove that bias.</p>
+<p>For example, a team was already using FAISS for ANN vector search and stated that the new solution must efficiently return 10K results per search call. Upon further discussion, the reason for the 10K results was that they needed to perform post-hoc filtering, and FAISS does not offer filtering ANN results at query time. Their actual problem was that they needed filtering, so any solution that offered efficient filtering would suffice, and returning 10K results was simply a workaround required to improve their recall. They would ideally like to pre-filter the entire collection before finding nearest neighbours.</p>
+<p>Asking for the vector databases that teams were already using or were interested in was also valuable. If at least one team had a positive view of their current solution, it’s a sign that vector database could be a useful solution to share across the entire company. If teams only had negative views of a solution, then we should not include it as an option. Accepting solutions that teams were interested in was also a way to make sure that teams felt included in the process and helped us form an initial list of leading contenders to evaluate; there are too many ANN vector search solutions in new and existing databases to exhaustively test all of them.</p>
+<h3 id="2-Qualitatively-evaluate-solutions" class="common-anchor-header">2. Qualitatively evaluate solutions</h3><p>Starting with the list of solutions that teams were interested in, to qualitatively evaluate which ANN vector search solution best fit our needs, we:</p>
 <ul>
-<li><p>Investigamos cada solución y puntuamos lo bien que cumplía cada requisito frente a la importancia ponderada de dicho requisito.</p></li>
-<li><p>Eliminamos soluciones basándonos en criterios cualitativos y en el debate.</p></li>
-<li><p>Seleccionamos las N mejores soluciones para probarlas cuantitativamente.</p></li>
+<li><p>Researched each solution and scored how well it fulfilled each requirement vs the weighted importance of that requirement</p></li>
+<li><p>Removed solutions based on qualitative criteria and discussion</p></li>
+<li><p>Picked our top N solutions to quantitatively test</p></li>
 </ul>
-<p>Nuestra lista inicial de soluciones de búsqueda vectorial de RNA incluía:</p>
+<p>Our starting list of ANN vector search solutions included:</p>
 <ul>
 <li><p><a href="https://milvus.io/">Milvus</a></p></li>
 <li><p>Qdrant</p></li>
 <li><p>Weviate</p></li>
-<li><p>Búsqueda abierta</p></li>
-<li><p>Pgvector (ya utiliza Postgres como RDBMS)</p></li>
-<li><p>Redis (ya se utiliza como almacén y caché de KV)</p></li>
-<li><p>Cassandra (ya se utiliza para la búsqueda noANN)</p></li>
-<li><p>Solr (ya se utiliza para la búsqueda léxica y se ha experimentado con la búsqueda vectorial)</p></li>
+<li><p>Open Search</p></li>
+<li><p>Pgvector (already using Postgres as an RDBMS)</p></li>
+<li><p>Redis (already used as a KV store and cache)</p></li>
+<li><p>Cassandra (already used for non-ANN search)</p></li>
+<li><p>Solr (already using for lexical search and experimented with vector search)</p></li>
 <li><p>Vespa</p></li>
 <li><p>Pinecone</p></li>
-<li><p>Vertex AI (ya utilizado para la búsqueda vectorial RNA)</p></li>
+<li><p>Vertex AI (already used for ANN vector search)</p></li>
 </ul>
-<p>A continuación, tomamos todos los requisitos funcionales y no funcionales que mencionaron los equipos, además de algunas restricciones más que representaban nuestros valores y objetivos de ingeniería, hicimos esas filas en una hoja de cálculo y ponderamos su importancia (de 1 a 3; se muestra en la tabla abreviada a continuación).</p>
-<p>Para cada solución que comparábamos, evaluábamos (en una escala de 0 a 3) lo bien que cada sistema satisfacía ese requisito (como se muestra en la tabla siguiente). Esta forma de puntuar era un tanto subjetiva, por lo que elegimos un sistema y dimos ejemplos de puntuaciones con una justificación por escrito y pedimos a los revisores que se remitieran a esos ejemplos. También dimos la siguiente orientación para asignar cada valor de puntuación: asigne este valor si:</p>
+<p>We then took every functional and non-functional requirement that was mentioned by teams, plus some more constraints representing our engineering values and objectives, made those rows in a spreadsheet, and weighed how important they were (from 1 to 3; shown in the abridged table below).</p>
+<p>For each solution we were comparing, we evaluated (on a scale of 0 to 3) how well each system satisfied that requirement (as shown in the table below). Scoring in this way was somewhat subjective, so we picked one system and gave examples of scores with written rationale and had reviewers refer back to those examples. We also gave the following guidance for assigning each score value: assign this value if:</p>
 <ul>
-<li><p>0: No hay apoyo/evidencia de apoyo a los requisitos</p></li>
-<li><p>1: Apoyo básico o inadecuado del requisito</p></li>
-<li><p>2: Requisito razonablemente apoyado</p></li>
-<li><p>3: Apoyo sólido a los requisitos que va más allá de soluciones comparables.</p></li>
+<li><p>0: No support/evidence of requirement support</p></li>
+<li><p>1: Basic or inadequate requirement support</p></li>
+<li><p>2: Requirement reasonably supported</p></li>
+<li><p>3: Robust requirement support that goes above and beyond comparable solutions</p></li>
 </ul>
-<p>A continuación, creamos una puntuación global para cada solución sumando el producto de la puntuación de un requisito de la solución y la importancia de ese requisito (por ejemplo, Qdrant puntuó 3 para la combinación de re-clasificación/puntuación, que tiene una importancia de 2, por lo que 3 x 2 = 6, se repite para todas las filas y se suman). Al final, tenemos una puntuación global que se puede utilizar como base para clasificar y discutir soluciones, y qué requisitos son más importantes (tenga en cuenta que la puntuación no se utiliza para tomar una decisión final, sino como una herramienta de discusión).</p>
-<p><strong><em>Nota del editor:</em></strong> <em>Esta reseña se basó en Milvus 2.4. Desde entonces hemos lanzado Milvus 2.5,</em> <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><em>Milvus 2.6</em></a><em>, y Milvus 3.0 está a la vuelta de la esquina, por lo que algunos números pueden estar desfasados. Aun así, la comparación sigue siendo muy útil.</em></p>
+<p>We then created an overall score for each solution by taking the sum of the product of a solution’s requirement score and that requirement’s importance (e.g., Qdrant scored 3 for re-ranking/score combining, which has importance 2, so 3 x 2 = 6, repeat that for all rows and sum together). At the end, we have an overall score that can be used as the basis for ranking and discussing solutions, and which requirements matter most (note that the score is not used to make a final decision but as a discussion tool).</p>
+<p><strong><em>Editor’s note:</em></strong> <em>This review was based on Milvus 2.4. We’ve since rolled out Milvus 2.5,</em> <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><em>Milvus 2.6</em></a><em>, and Milvus 3.0 is right around the corner, so a few numbers may be out of date. Even so, the comparison still offers strong insights and remains very helpful.</em></p>
 <table>
 <thead>
 <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Categoría</strong></td><td><strong>Importancia</strong></td><td><strong>Qdrant</strong></td><td><a href="https://milvus.io/"><strong>Milvus</strong></a> <strong>(2.4)</strong></td><td><strong>Cassandra</strong></td><td><strong>Weviate</strong></td><td><strong>Solr</strong></td><td><strong>Vertex AI</strong></td></tr>
+<tr><td><strong>Category</strong></td><td><strong>Importance</strong></td><td><strong>Qdrant</strong></td><td><a href="https://milvus.io/"><strong>Milvus</strong></a> <strong>(2.4)</strong></td><td><strong>Cassandra</strong></td><td><strong>Weviate</strong></td><td><strong>Solr</strong></td><td><strong>Vertex AI</strong></td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Tipo de búsqueda</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Búsqueda híbrida</a></td><td>1</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Búsqueda por palabra clave</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
-<tr><td>Búsqueda aproximada NN</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Alcance Búsqueda</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td></tr>
-<tr><td>Reordenación/combinación de puntuaciones</td><td>2</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td><strong>Search Type</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">Hybrid Search</a></td><td>1</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Keyword Search</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
+<tr><td>Approximate NN search</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Range Search</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>Re-ranking/score combining</td><td>2</td><td>3</td><td>2</td><td>0</td><td>2</td><td>2</td><td>1</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Método de indexación</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><strong>Indexing Method</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>HNSW</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>Admite varios métodos de indexación</td><td>3</td><td>0</td><td>3</td><td>1</td><td>2</td><td>1</td><td>1</td></tr>
-<tr><td>Cuantización</td><td>1</td><td>3</td><td>3</td><td>0</td><td>3</td><td>0</td><td>0</td></tr>
-<tr><td>Hashing sensible a la localidad (LSH)</td><td>1</td><td>0</td><td>0Nota: <a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 2.6 lo soporta. </a></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Supports multiple indexing methods</td><td>3</td><td>0</td><td>3</td><td>1</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>Quantization</td><td>1</td><td>3</td><td>3</td><td>0</td><td>3</td><td>0</td><td>0</td></tr>
+<tr><td>Locality Sensitive Hashing (LSH)</td><td>1</td><td>0</td><td>0Note: <a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 2.6 supports it. </a></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Datos</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Tipos de vector distintos de float</td><td>1</td><td>2</td><td>2</td><td>0</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>Atributos de metadatos en vectores (admite múltiples atributos, un gran tamaño de registro, etc.)</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>Opciones de filtrado de metadatos (puede filtrar por metadatos, tiene filtrado previo y posterior)</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td></tr>
-<tr><td>Tipos de datos de atributos de metadatos (esquema sólido, por ejemplo, bool, int, string, json, arrays)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
-<tr><td>Límites de atributos de metadatos (consultas de rango, por ejemplo, 10 &lt; x &lt; 15)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>Diversidad de resultados por atributo (por ejemplo, no obtener más de N resultados de cada subreddit en una respuesta)</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td><td>3</td><td>0</td></tr>
+<tr><td><strong>Data</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Vector types other than float</td><td>1</td><td>2</td><td>2</td><td>0</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Metadata attributes on vectors (supports multiple attribs, a large record size, etc.)</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Metadata filtering options (can filter on metadata, has pre/post filtering)</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td></tr>
+<tr><td>Metadata attribute datatypes (robust schema, e.g. bool, int, string, json, arrays)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>3</td><td>1</td></tr>
+<tr><td>Metadata attributes limits (range queries, e.g. 10 &lt; x &lt; 15)</td><td>1</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Diversity of results by attribute (e.g. getting not more than N results from each subreddit in a response)</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td><td>3</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Escala</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Índice vectorial de cientos de millones</td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>2</td><td>3</td></tr>
-<tr><td>Índice vectorial de miles de millones</td><td>1</td><td>2</td><td>2</td><td></td><td>1</td><td>2</td><td>2</td></tr>
-<tr><td>Vectores soporte al menos 2k</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td></tr>
-<tr><td>Vectores soporte superiores a 2k</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td>P95 Latencia 50-100ms @ X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>2</td></tr>
-<tr><td>P99 Latencia &lt;= 10ms @ X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td><td>2</td></tr>
-<tr><td>99,9% disponibilidad recuperación</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>99,99% de disponibilidad indexación/almacenamiento</td><td>2</td><td>1</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td><strong>Scale</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Hundreds of millions vector index</td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>Billion vector index</td><td>1</td><td>2</td><td>2</td><td></td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td>Support vectors at least 2k</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>Support vectors greater than 2k</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>P95 Latency 50-100ms @ X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>2</td></tr>
+<tr><td>P99 Latency &lt;= 10ms @ X QPS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>1</td><td>2</td></tr>
+<tr><td>99.9% availability retrieval</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>99.99% availability indexing/storage</td><td>2</td><td>1</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Operaciones de almacenamiento</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Hospedable en AWS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>0</td></tr>
-<tr><td>Multi-Región</td><td>1</td><td>1</td><td>2</td><td>3</td><td>1</td><td>2</td><td>2</td></tr>
-<tr><td>Actualizaciones sin tiempo de inactividad</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>Nube múltiple</td><td>1</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td><strong>Storage Operations</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Hostable in AWS</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>Multi-Region</td><td>1</td><td>1</td><td>2</td><td>3</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td>Zero-downtime upgrades</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Multi-Cloud</td><td>1</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>API/Bibliotecas</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><strong>APIs/Libraries</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>gRPC</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td><td>2</td></tr>
-<tr><td>API RESTful</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>Ir a la biblioteca</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>Biblioteca Java</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>RESTful API</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Go Library</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Java Library</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
 <tr><td>Python</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Otros lenguajes (C++, Ruby, etc.)</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Other languages (C++, Ruby, etc)</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Operaciones en tiempo de ejecución</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Métricas de Prometheus</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
-<tr><td>Operaciones básicas de BD</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td><strong>Runtime Operations</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Prometheus Metrics</td><td>3</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
+<tr><td>Basic DB Operations</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
 <tr><td>Upserts</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
-<tr><td>Operador de Kubernetes</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>Paginación de los resultados</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>Incrustación de búsqueda por ID</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Devuelve Embeddings con ID de candidato y puntuaciones de candidato</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>ID suministrado por el usuario</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Capaz de buscar en un contexto de lotes a gran escala</td><td>1</td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>Copias de seguridad / Instantáneas: permite crear copias de seguridad de toda la base de datos.</td><td>1</td><td>2</td><td>2</td><td>2</td><td>3</td><td>3</td><td>2</td></tr>
-<tr><td>Soporte eficiente de grandes índices (distinción entre almacenamiento en frío y en caliente)</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Kubernetes Operator</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Pagination of results</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Embedding lookup by ID</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Return Embeddings with Candidate ID and candidate scores</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>User supplied ID</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Able to search in large scale batch context</td><td>1</td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Backups / Snapshots: supports the ability to create backups of the entire database</td><td>1</td><td>2</td><td>2</td><td>2</td><td>3</td><td>3</td><td>2</td></tr>
+<tr><td>Efficient large index support (cold vs hot storage distinction)</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Apoyo/Comunidad</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Neutralidad de los proveedores</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
-<tr><td>Sólido soporte api</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Apoyo a proveedores</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>Velocidad comunitaria</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
-<tr><td>Base de usuarios de producción</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
-<tr><td>Sentimiento comunitario</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
-<tr><td>Estrellas de Github</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td><strong>Support/Community</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Vendor neutrality</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>Robust api support</td><td>3</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Vendor support</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Community Velocity</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>Production Userbase</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>1</td><td>2</td></tr>
+<tr><td>Community Feel</td><td>1</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td>Github Stars</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Configuración</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Manejo de secretos</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td><strong>Configuration</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Secrets Handling</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Fuente</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Fuente abierta</td><td>3</td><td>3</td><td>3</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
-<tr><td>Idioma</td><td>2</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
-<tr><td>Liberaciones</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Pruebas previas</td><td>1</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Disponibilidad de documentación</td><td>3</td><td>3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>1</td></tr>
+<tr><td><strong>Source</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Open Source</td><td>3</td><td>3</td><td>3</td><td>3</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>Language</td><td>2</td><td>3</td><td>3</td><td>2</td><td>3</td><td>2</td><td>0</td></tr>
+<tr><td>Releases</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Upstream testing</td><td>1</td><td>2</td><td>3</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Availability of documentation</td><td>3</td><td>3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>1</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Coste</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Coste Efectivo</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
+<tr><td><strong>Cost</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Cost Effective</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td><strong>Rendimiento</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Soporte para ajustar la utilización de recursos de CPU, memoria y disco</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Fragmentación multinodo (pod)</td><td>3</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Capacidad de ajustar el sistema para equilibrar latencia y rendimiento</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Partición definida por el usuario (escrituras)</td><td>1</td><td>3</td><td>2</td><td>3</td><td>1</td><td>2</td><td>0</td></tr>
-<tr><td>Multiinquilino</td><td>1</td><td>3</td><td>2</td><td>1</td><td>3</td><td>2</td><td>2</td></tr>
-<tr><td>Partición</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Replicación</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Redundancia</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Conmutación automática por error</td><td>3</td><td>2</td><td>0 Nota: <a href="https://milvus.io/docs/coordinator_ha.md">Milvus 2.6 lo soporta. </a></td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Equilibrio de carga</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><td>Soporte GPU</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td><strong>Performance</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Support for tuning resource utilization for CPU, memory, and disk</td><td>3</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Multi-node (pod) sharding</td><td>3</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Have the ability to tune the system to balance between latency and throughput</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>User-defined partitioning (writes)</td><td>1</td><td>3</td><td>2</td><td>3</td><td>1</td><td>2</td><td>0</td></tr>
+<tr><td>Multi-tenant</td><td>1</td><td>3</td><td>2</td><td>1</td><td>3</td><td>2</td><td>2</td></tr>
+<tr><td>Partitioning</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Replication</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Redundancy</td><td>1</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Automatic Failover</td><td>3</td><td>2</td><td>0 Note: <a href="https://milvus.io/docs/coordinator_ha.md">Milvus 2.6 supports it. </a></td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>Load Balancing</td><td>2</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>GPU Support</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td></td><td></td><td><strong>Qdrant</strong></td><td><a href="https://milvus.io/"><strong>Milvus</strong></a></td><td><strong>Cassandra</strong></td><td><strong>Weviate</strong></td><td><strong>Solr</strong></td><td><strong>Vertex AI</strong></td></tr>
-<tr><td><strong>Puntuación global de las soluciones</strong></td><td></td><td>292</td><td>281</td><td>264</td><td>250</td><td>242</td><td>173</td></tr>
+<tr><td><strong>Overall solution scores</strong></td><td></td><td>292</td><td>281</td><td>264</td><td>250</td><td>242</td><td>173</td></tr>
 </tbody>
 </table>
-<p>Debatimos las puntuaciones generales y por requisitos de los distintos sistemas y tratamos de entender si habíamos ponderado adecuadamente la importancia de los requisitos y si algunos de ellos eran tan importantes que debían considerarse limitaciones básicas. Uno de los requisitos que identificamos fue si la solución era de código abierto o no, porque deseábamos una solución con la que pudiéramos involucrarnos, a la que pudiéramos contribuir y que solucionara rápidamente pequeños problemas si los experimentábamos a nuestra escala. Contribuir y utilizar software de código abierto es una parte importante de la cultura de ingeniería de Reddit. Esto eliminó las soluciones alojadas (Vertex AI, Pinecone) de nuestra consideración.</p>
-<p>Durante las discusiones, nos dimos cuenta de que algunos otros requisitos clave eran de gran importancia para nosotros:</p>
+<p>We discussed the overall and requirement scores of the various systems and sought to understand whether we had appropriately weighted the importance of the requirements and whether some requirements were so important that they should be considered core constraints. One such requirement we identified was whether the solution was open-source or not, because we desired a solution that we could become involved with, contribute towards, and quickly fix small issues if we experienced them at our scale. Contributing to and using open-source software is an important part of Reddit’s engineering culture. This eliminated the hosted-only solutions (Vertex AI, Pinecone) from our consideration.</p>
+<p>During discussions, we found that a few other key requirements were of outsized importance to us:</p>
 <ul>
-<li><p>Escala y fiabilidad: queríamos ver pruebas de otras empresas que utilizaran la solución con más de 100 millones de vectores o incluso 1.000 millones.</p></li>
-<li><p>Comunidad: Queríamos una solución con una comunidad saludable con mucho ímpetu en este espacio de rápida maduración</p></li>
-<li><p>Tipos de metadatos expresivos y filtrado para permitir más de nuestros casos de uso (filtrado por fecha, booleano, etc.)</p></li>
-<li><p>Compatibilidad con múltiples tipos de índices (no sólo HNSW o DiskANN) para adaptar mejor el rendimiento a nuestros numerosos y exclusivos casos de uso.</p></li>
+<li><p>Scale and reliability: we wanted to see evidence of other companies running the solution with 100M+ or even 1B vectors</p></li>
+<li><p>Community: We wanted a solution with a healthy community with a lot of momentum in this rapidly maturing space</p></li>
+<li><p>Expressive metadata types and filtering to enable more of our use-cases (filtering by date, boolean, etc.)</p></li>
+<li><p>Supports for multiple index types (not just HNSW or DiskANN) to better fit performance for our many unique use-cases</p></li>
 </ul>
-<p>El resultado de nuestros debates y el perfeccionamiento de los requisitos clave nos llevaron a elegir probar (por orden) cuantitativamente:</p>
+<p>The result of our discussions and honing of key requirements led us to choose to test (in order) quantitatively:</p>
 <ol>
 <li><p>Qdrant</p></li>
 <li><p>Milvus</p></li>
-<li><p>Vespa y</p></li>
+<li><p>Vespa, and</p></li>
 <li><p>Weviate</p></li>
 </ol>
-<p>Por desgracia, este tipo de decisiones requieren tiempo y recursos, y ninguna organización dispone de una cantidad ilimitada de ambos. Dado nuestro presupuesto, decidimos probar Qdrant y Milvus, y dejar las pruebas de Vespa y Weviate como objetivos a largo plazo.</p>
-<p>Qdrant frente a Milvus fue también una prueba interesante de dos arquitecturas diferentes:</p>
+<p>Unfortunately, decisions like this take time and resources, and no organization has unlimited amounts of either. Given our budget, we decided to test Qdrant and Milvus, and to leave testing Vespa and Weviate as stretch goals.</p>
+<p>Qdrant vs Milvus was also an interesting test of two different architectures:</p>
 <ul>
-<li><p><strong>Qdrant:</strong> Tipos de nodos homogéneos que realizan todas las operaciones de la base de datos vectorial de RNA.</p></li>
-<li><p><strong>Milvus</strong>: <a href="https://milvus.io/docs/architecture_overview.md">Tipos de nodos heterogéneos</a> (Milvus; uno para consultas, otro para indexación, otro para ingesta de datos, un proxy, etc.)</p></li>
+<li><p><strong>Qdrant:</strong> Homogeneous node types that perform all ANN vector database operations</p></li>
+<li><p><strong>Milvus:</strong> <a href="https://milvus.io/docs/architecture_overview.md">Heterogeneous node types</a> (Milvus; one for queries, another for indexing, another for data ingest, a proxy, etc.)</p></li>
 </ul>
-<p>¿Cuál fue fácil de configurar (una prueba de su documentación)? ¿Cuál era fácil de ejecutar (una prueba de sus características de resistencia y pulido)? ¿Y cuál funcionaba mejor para los casos de uso y la escala que nos interesaban? Estas son las preguntas que tratamos de responder al comparar cuantitativamente las soluciones.</p>
-<h3 id="3-Quantitatively-evaluate-top-contenders" class="common-anchor-header">3. Evaluar cuantitativamente a los principales contendientes</h3><p>Queríamos comprender mejor el grado de escalabilidad de cada solución y, de paso, experimentar cómo sería instalar, configurar, mantener y ejecutar cada una de ellas a gran escala. Para ello, recopilamos tres conjuntos de datos de documentos y vectores de consulta para tres casos de uso diferentes, configuramos cada solución con recursos similares dentro de Kubernetes, cargamos documentos en cada solución y enviamos cargas de consulta idénticas utilizando <a href="https://k6.io/">K6 de Grafana</a> con un ejecutor de tasa de llegada de rampa para calentar los sistemas antes de alcanzar un rendimiento objetivo (por ejemplo, 100 QPS).</p>
-<p>Probamos el rendimiento, el punto de ruptura de cada solución, la relación entre rendimiento y latencia, y cómo reaccionan a la pérdida de nodos bajo carga (tasa de error, impacto de latencia, etc.). Lo más interesante fue el <strong>efecto del filtrado en la latencia</strong>. También realizamos pruebas simples de sí/no para verificar que una capacidad de la documentación funcionaba tal y como se describía (por ejemplo, upserts, delete, get by ID, administración de usuarios, etc.) y para experimentar la ergonomía de esas API.</p>
-<p><strong>Las pruebas se realizaron en Milvus v2.4 y Qdrant v1.12.</strong> Debido a las limitaciones de tiempo, no ajustamos ni probamos exhaustivamente todos los tipos de configuraciones de índices; se utilizaron configuraciones similares con cada solución, con un sesgo hacia una alta recuperación de RNA, y las pruebas se centraron en el rendimiento de los índices HNSW. También se asignaron recursos de CPU y memoria similares a cada solución.</p>
-<p>En nuestra experimentación, encontramos algunas diferencias interesantes entre las dos soluciones. En los siguientes experimentos, cada solución tenía aproximadamente 340M de postvectores Reddit de 384 dimensiones cada uno, para HNSW, M=16, y efConstruction=100.</p>
-<p>En un experimento, descubrimos que para el mismo rendimiento de consulta (100 QPS sin ingestión al mismo tiempo), añadir filtrado afectaba más a la latencia de Milvus que a la de Qdrant.</p>
+<p>Which one was easy to set up (a test of their documentation)? Which one was easy to run (a test of their resiliency features and polish)? And which one performed best for the use cases and scale that we cared about? These questions we sought to answer as we quantitatively compared the solutions.</p>
+<h3 id="3-Quantitatively-evaluate-top-contenders" class="common-anchor-header">3. Quantitatively evaluate top contenders</h3><p>We wanted to better understand how scalable each solution was, and in the process, experience what it would be like to set up, configure, maintain, and run each solution at scale. To do this, we collected three datasets of document and query vectors for three different use-cases, set up each solution with similar resources within Kubernetes, loaded documents into each solution, and sent identical query loads using <a href="https://k6.io/">Grafana’s K6</a> with a ramping arrival rate executor to warm systems up before then hitting a target throughput (e.g., 100 QPS).</p>
+<p>We tested throughput, the breaking point of each solution, the relationship between throughput and latency, and how they react to losing nodes under load (error rate, latency impact, etc.). Of key interest was <strong>the effect of filtering on latency</strong>. We also had simple yes/no tests to verify that a capability in documentation worked as described (e.g., upserts, delete, get by ID, user administration, etc.) and to experience the ergonomics of those APIs.</p>
+<p><strong>Testing was done on Milvus v2.4 and Qdrant v1.12.</strong> Due to time constraints, we did not exhaustively tune or test all types of index settings; similar settings were used with each solution, with a bias towards high ANN recall, and tests focused on the performance of HNSW indexes. Similar CPU and memory resources were also given to each solution.</p>
+<p>In our experimentation, we found a few interesting differences between the two solutions. In the following experiments, each solution had approximately 340M Reddit post vectors of 384 dimensions each, for HNSW, M=16, and efConstruction=100.</p>
+<p>In one experiment, we found that for the same query throughput (100 QPS with no ingestion at the same time), adding filtering affected the latency of Milvus more than Qdrant.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Post_query_latency_with_filtering_2cb4c03d5b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Puestos de latencia de consulta con filtrado</p>
-<p>Por otro lado, observamos que la interacción entre la ingesta y la carga de consulta era mucho mayor en Qdrant que en Milvus (como se muestra a continuación con un rendimiento constante). Esto se debe probablemente a su arquitectura; Milvus divide gran parte de su ingesta en tipos de nodos separados de los que sirven al tráfico de consulta, mientras que Qdrant sirve tanto a la ingesta como al tráfico de consulta desde los mismos nodos.</p>
+<p>Posts query latency with filtering</p>
+<p>In another, we found that there was far more of an interaction between ingestion and query load on Qdrant than on Milvus (shown below at constant throughput). This is likely due to their architecture; Milvus splits much of its ingestion over separate node types from those that serve query traffic, whereas Qdrant serves both ingestion and query traffic from the same nodes.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Posts_query_latency_100_QPS_during_ingest_e919a448cb.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Puestos de latencia de consulta a 100 QPS durante la ingesta</p>
-<p>Al probar la diversidad de resultados por atributo (por ejemplo, no obtener más de N resultados de cada subreddit en una respuesta), descubrimos que para el mismo rendimiento, Milvus tenía peor latencia que Qdrant (a 100 QPS).</p>
+<p>Posts query latency @ 100 QPS during ingest</p>
+<p>When testing the diversity of results by attribute (e.g. getting not more than N results from each subreddit in a response), we found that for the same throughput, Milvus had worse latency than Qdrant (at 100 QPS).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Post_query_latency_with_result_diversity_b126f562cd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Latencia posterior a la consulta con diversidad de resultados</p>
-<p>También queríamos ver la eficacia de cada solución cuando se añadían más réplicas de datos (es decir, el factor de replicación, RF, se incrementaba de 1 a 2). Inicialmente, con RF=1, Qdrant fue capaz de ofrecernos una latencia satisfactoria a cambio de un mayor rendimiento que Milvus (no se muestran los QPS más altos porque las pruebas no se completaron sin errores).</p>
+<p>Post query latency with result diversity</p>
+<p>We also wanted to see how effectively each solution scaled when more replicas of data were added (i.e. the replication factor, RF, was increased from 1 to 2). Initially, looking at RF=1, Qdrant was able to give us satisfactory latency for more throughput than Milvus (higher QPS not shown because tests did not complete without errors).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Qdrant_posts_RF_1_latency_for_varying_throughput_bc161c8b1c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Qdrant presenta una latencia RF=1 para un rendimiento variable</p>
+<p>Qdrant posts RF=1 latency for varying throughput</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Milvus_posts_RF_1_latency_for_varying_throughput_e81775b3af.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Milvus registra una latencia RF=1 para un rendimiento variable.</p>
-<p>Sin embargo, al aumentar el factor de replicación, la latencia p99 de Qdrant mejoró, pero Milvus fue capaz de mantener un mayor rendimiento que Qdrant, con una latencia aceptable (Qdrant 400 QPS no se muestra porque la prueba no se completó debido a la alta latencia y los errores).</p>
+<p>Milvus posts RF=1 latency for varying throughput</p>
+<p>However, when increasing the replication factor, Qdrant’s p99 latency improved, but Milvus was able to sustain higher throughput than Qdrant was, with acceptable latency (Qdrant 400 QPS not shown because the test did not complete due to high latency and errors).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Milvus_posts_RF_2_latency_for_varying_throughput_7737dfb8a3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Milvus registra una latencia RF=2 para un rendimiento variable</p>
+<p>Milvus posts RF=2 latency for varying throughput</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Qdrant_posts_RF_2_latency_for_varying_throughput_13fb26aaa1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Qdrant registra una latencia RF=2 para un rendimiento variable.</p>
-<p>Debido a las limitaciones de tiempo, no tuvimos tiempo suficiente para comparar la recuperación de la RNA entre soluciones en nuestros conjuntos de datos, pero sí tuvimos en cuenta las mediciones de recuperación de la RNA para soluciones proporcionadas por <a href="https://ann-benchmarks.com/">https://ann-benchmarks.com/</a> en conjuntos de datos disponibles públicamente.</p>
-<h3 id="4-Final-selection" class="common-anchor-header">4. Selección final</h3><p><strong>En cuanto al rendimiento</strong>, sin mucho ajuste y utilizando únicamente HNSW, Qdrant parecía tener mejor latencia bruta en muchas pruebas que Milvus. Sin embargo, Milvus parecía escalar mejor con un aumento de la replicación y tenía un mejor aislamiento entre la carga de ingesta y la de consulta debido a su arquitectura de nodos múltiples.</p>
-<p><strong>Desde el punto de vista operativo,</strong> a pesar de la complejidad de la arquitectura de Milvus (múltiples tipos de nodos, dependencia de un registro externo de escritura anticipada como Kafka y un almacén de metadatos como etcd), nos resultó más fácil depurar y reparar Milvus que Qdrant cuando cualquiera de las dos soluciones entraba en mal estado. Milvus también tiene un reequilibrio automático al aumentar el factor de replicación de una colección, mientras que en Qdrant de código abierto, se requiere la creación manual o la eliminación de fragmentos para aumentar el factor de replicación (una característica que habríamos tenido que construir nosotros mismos o utilizar la versión que no es de código abierto).</p>
-<p>Milvus es una tecnología más "en forma de Reddit" que Qdrant; comparte más similitudes con el resto de nuestra pila tecnológica. Milvus está escrito en Golang, nuestro lenguaje de programación backend preferido, y por lo tanto es más fácil para nosotros contribuir que Qdrant, que está escrito en Rust. Milvus tiene una velocidad de proyecto excelente para su oferta de código abierto en comparación con Qdrant, y cumplía más de nuestros requisitos clave.</p>
-<p>Al final, ambas soluciones cumplían la mayoría de nuestros requisitos y, en algunos casos, Qdrant tenía una ventaja de rendimiento, pero pensamos que podíamos escalar más Milvus, nos sentíamos más cómodos ejecutándolo y se adaptaba mejor a nuestra organización que Qdrant. Nos hubiera gustado disponer de más tiempo para probar Vespa y Weaviate, pero es posible que también los hubiéramos seleccionado por su adecuación a la organización (Vespa se basa en Java) y su arquitectura (Weaviate es de tipo nodo único, como Qdrant).</p>
-<h2 id="Key-takeaways" class="common-anchor-header">Puntos clave<button data-href="#Key-takeaways" class="anchor-icon" translate="no">
+<p>Qdrant posts RF=2 latency for varying throughput</p>
+<p>Due to time constraints, we did not have enough time to compare ANN recall between solutions on our datasets, but we did take into account the ANN recall measurements for solutions provided by <a href="https://ann-benchmarks.com/">https://ann-benchmarks.com/</a> on publicly available datasets.</p>
+<h3 id="4-Final-selection" class="common-anchor-header">4. Final selection</h3><p><strong>Performance-wise</strong>, without much tuning and only using HNSW, Qdrant appeared to have better raw latency in many tests than Milvus. Milvus looked like it would, however, scale better with increased replication, and had better isolation between ingestion and query load due to its multiple-node-type architecture.</p>
+<p><strong>Operation-wise,</strong> despite the complexity of Milvus’ architecture (multiple node types, relying upon an external write-ahead log like Kafka and a metadata store like etcd), we had an easier time debugging and fixing Milvus than Qdrant when either solution entered a bad state. Milvus also has automatic rebalancing when increasing the replication factor of a collection, whereas in open-source Qdrant, manual creation or dropping of shards is required to increase the replication factor (a feature we would have had to build ourselves or use the non-open-source version).</p>
+<p>Milvus is a more “Reddit-shaped” technology than Qdrant; it shares more similarities with the rest of our tech stack. Milvus is written in Golang, our preferred backend programming language, and thus easier for us to contribute to than Qdrant, which is written in Rust. Milvus has excellent project velocity for its open-source offering compared to Qdrant, and it met more of our key requirements.</p>
+<p>In the end, both solutions met most of our requirements, and in some cases, Qdrant had a performance edge, but we felt that we could scale Milvus further, felt more comfortable running it, and it was a better match for our organization than Qdrant. We wish we had had more time to test Vespa and Weaviate, but they too may have been selected out for organizational fit (Vespa being Java-based) and architecture (Weaviate being single-node-type like Qdrant).</p>
+<h2 id="Key-takeaways" class="common-anchor-header">Key takeaways<button data-href="#Key-takeaways" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -283,12 +284,12 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Desafía los requisitos que te dan e intenta eliminar los prejuicios existentes sobre las soluciones.</p></li>
-<li><p>Puntúa las soluciones candidatas y utilízalas para fundamentar el debate sobre los requisitos esenciales, no como una regla de oro.</p></li>
-<li><p>Evalúe cuantitativamente las soluciones, pero a lo largo del proceso, tome nota de cómo es trabajar con la solución.</p></li>
-<li><p>Elija la solución que mejor se adapte a su organización desde el punto de vista del mantenimiento, el coste, la facilidad de uso y el rendimiento, y no sólo porque sea la mejor.</p></li>
+<li><p>Challenge the requirements you are given and try to remove existing solution bias.</p></li>
+<li><p>Score candidate solutions, and use that to inform the discussion of essential requirements, not as a be-all end-all</p></li>
+<li><p>Quantitatively evaluate solutions, but along the way, take note of what it’s like to work with the solution.</p></li>
+<li><p>Pick the solution that fits best within your organization from a maintenance, cost, usability, and performance perspective, not just because a solution performs the best.</p></li>
 </ul>
-<h2 id="Acknowledgements" class="common-anchor-header">Agradecimientos<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
+<h2 id="Acknowledgements" class="common-anchor-header">Acknowledgements<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -303,8 +304,8 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Este trabajo de evaluación ha sido realizado por Ben Kochie, Charles Njoroge, Amit Kumar y yo. Gracias también a otras personas que han contribuido a este trabajo, como Annie Yang, Konrad Reiche, Sabrina Kong y Andrew Johnson, por la investigación cualitativa de soluciones.</p>
-<h2 id="Editor’s-Notes" class="common-anchor-header">Notas del editor<button data-href="#Editor’s-Notes" class="anchor-icon" translate="no">
+    </button></h2><p>This evaluation work was performed by Ben Kochie, Charles Njoroge, Amit Kumar, and me. Thanks also to others who contributed to this work, including Annie Yang, Konrad Reiche, Sabrina Kong, and Andrew Johnson, for qualitative solution research.</p>
+<h2 id="Editor’s-Notes" class="common-anchor-header">Editor’s Notes<button data-href="#Editor’s-Notes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -319,23 +320,23 @@ origin: 'https://milvus.io/blog/choosing-a-vector-database-for-ann-search-at-red
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Queremos agradecer sinceramente al equipo de ingeniería de Reddit, no sólo por elegir Milvus para sus cargas de trabajo de búsqueda vectorial, sino por tomarse el tiempo de publicar una evaluación tan detallada y justa. Es raro ver este nivel de transparencia en la forma en que los equipos de ingeniería reales comparan las bases de datos, y su escrito será útil para cualquier persona en la comunidad Milvus (y más allá) que está tratando de dar sentido al creciente panorama de las bases de datos vectoriales.</p>
-<p>Como Chris menciona en el post, no existe una única "mejor" base de datos vectorial. Lo que importa es si un sistema se adapta a tu carga de trabajo, limitaciones y filosofía operativa. La comparación de Reddit refleja bien esa realidad. Milvus no encabeza todas las categorías, y eso es totalmente esperable dadas las compensaciones entre los diferentes modelos de datos y objetivos de rendimiento.</p>
-<p>Vale la pena aclarar una cosa: La evaluación de Reddit utilizó <strong>Milvus 2.4</strong>, que era la versión estable en ese momento. Algunas características - como LSH y varias optimizaciones de índice - no existían todavía o no estaban maduras en 2.4, por lo que algunas puntuaciones reflejan naturalmente esa línea de base más antigua. Desde entonces, hemos lanzado Milvus 2.5 y luego <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6</strong></a>, y es un sistema muy diferente en términos de rendimiento, eficiencia y flexibilidad. La respuesta de la comunidad ha sido fuerte y muchos equipos ya se han actualizado.</p>
-<p><strong>He aquí un rápido vistazo a las novedades de Milvus 2.6:</strong></p>
+    </button></h2><p>We want to give a genuine thank-you to the Reddit engineering team — not just for choosing Milvus for their vector search workloads, but for taking the time to publish such a detailed and fair evaluation. It’s rare to see this level of transparency in how real engineering teams compare databases, and their write-up will be helpful to anyone in the Milvus community (and beyond) who’s trying to make sense of the growing vector database landscape.</p>
+<p>As Chris mentioned in the post, there’s no single “best” vector database. What matters is whether a system fits your workload, constraints, and operational philosophy. Reddit’s comparison reflects that reality well. Milvus doesn’t top every category, and that’s completely expected given the trade-offs across different data models and performance goals.</p>
+<p>One thing worth clarifying: Reddit’s evaluation used <strong>Milvus 2.4</strong>, which was the stable release at the time. Some features — like LSH and several index optimizations — either didn’t exist yet or weren’t mature in 2.4, so a few scores naturally reflect that older baseline. Since then, we’ve released Milvus 2.5 and then <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Milvus 2.6</strong></a>, and it’s a very different system in terms of performance, efficiency, and flexibility. The community response has been strong, and many teams have already upgraded.</p>
+<p><strong>Here’s a quick look at what’s new in Milvus 2.6:</strong></p>
 <ul>
-<li><p>Hasta <strong>un 72% menos de uso de memoria</strong> y <strong>consultas 4 veces más rápidas</strong> con la cuantización RaBitQ de 1 bit.</p></li>
-<li><p><strong>Reducción de costes del 50%</strong> con almacenamiento inteligente por niveles</p></li>
-<li><p><strong>Búsqueda de texto completo BM25 4 veces más rápida</strong> en comparación con Elasticsearch</p></li>
-<li><p><strong>Filtrado JSON 100 veces más rápido</strong> con el nuevo Path Index</p></li>
-<li><p>Una nueva arquitectura de disco cero para búsquedas más frescas a menor coste</p></li>
-<li><p>Un flujo de trabajo "data-in, data-out" más sencillo para la integración de pipelines</p></li>
-<li><p>Compatibilidad con <strong>más de 100.000 colecciones</strong> para gestionar grandes entornos multiusuario.</p></li>
+<li><p>Up to <strong>72% lower memory usage</strong> and <strong>4× faster queries</strong> with RaBitQ 1-bit quantization</p></li>
+<li><p><strong>50% cost reduction</strong> with intelligent tiered storage</p></li>
+<li><p><strong>4× faster BM25 full-text search</strong> compared to Elasticsearch</p></li>
+<li><p><strong>100× faster JSON filtering</strong> with the new Path Index</p></li>
+<li><p>A new zero-disk architecture for fresher search at lower cost</p></li>
+<li><p>A simpler “data-in, data-out” workflow for embedding pipelines</p></li>
+<li><p>Support for <strong>100K+ collections</strong> to handle large multi-tenant environments</p></li>
 </ul>
-<p>Si desea conocer el desglose completo, aquí tiene un par de buenos artículos de seguimiento:</p>
+<p>If you want the full breakdown, here are a few good follow-ups:</p>
 <ul>
-<li><p>Blog: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Presentación de Milvus 2.6: Búsqueda vectorial asequible a escala de miles de millones</a></p></li>
-<li><p><a href="https://milvus.io/docs/release_notes.md">Notas de la versión de Milvus 2.6: </a></p></li>
-<li><p><a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBench 1.0: Benchmarking del mundo real para bases de datos vectoriales - Milvus Blog</a></p></li>
+<li><p>Blog: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 release notes: </a></p></li>
+<li><p><a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBench 1.0: Real-World Benchmarking for Vector Databases - Milvus Blog</a></p></li>
 </ul>
-<p>¿Tiene alguna pregunta o desea profundizar en alguna función? Únase a nuestro<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> o presente incidencias en<a href="https://github.com/milvus-io/milvus"> GitHub</a>. También puede reservar una sesión individual de 20 minutos para obtener información, orientación y respuestas a sus preguntas a través de<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

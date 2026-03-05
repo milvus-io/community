@@ -1,12 +1,11 @@
 ---
 id: diskann-explained.md
-title: شرح ديسكان
+title: DiskANN Explained
 author: Stefan Webb
 date: 2025-05-20T00:00:00.000Z
 desc: >-
-  تعرّف على كيفية قيام DiskANN بتوفير عمليات بحث متجهة بمليارات الدولارات
-  باستخدام محركات أقراص الحالة الصلبة SSD، وتحقيق التوازن بين الاستخدام المنخفض
-  للذاكرة والدقة العالية والأداء القابل للتطوير.
+  Learn how DiskANN delivers billion-scale vector searches using SSDs, balancing
+  low memory usage, high accuracy, and scalable performance.
 cover: assets.zilliz.com/Disk_ANN_Explained_35db4b3ef1.png
 tag: Engineering
 recommend: false
@@ -18,7 +17,7 @@ meta_keywords: >-
 meta_title: DiskANN Explained
 origin: 'https://milvus.io/blog/diskann-explained.md'
 ---
-<h2 id="What-is-DiskANN" class="common-anchor-header">ما هو DiskANN؟<button data-href="#What-is-DiskANN" class="anchor-icon" translate="no">
+<h2 id="What-is-DiskANN" class="common-anchor-header">What is DiskANN?<button data-href="#What-is-DiskANN" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,18 +32,18 @@ origin: 'https://milvus.io/blog/diskann-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يمثل<a href="https://github.com/microsoft/DiskANN">DiskANN</a> نهجًا يُحدث نقلة نوعية في <a href="https://zilliz.com/learn/vector-similarity-search">البحث عن تشابه المتجهات</a>. قبل ذلك، كانت معظم أنواع الفهارس المتجهة مثل HNSW تعتمد بشكل كبير على ذاكرة الوصول العشوائي لتحقيق زمن استجابة منخفض واستدعاء عالٍ. على الرغم من فعالية هذا النهج بالنسبة لمجموعات البيانات متوسطة الحجم، إلا أنه يصبح باهظ التكلفة وأقل قابلية للتطوير مع نمو أحجام البيانات. يوفر DiskANN بديلاً فعالاً من حيث التكلفة من خلال الاستفادة من أقراص SSD لتخزين الفهرس، مما يقلل بشكل كبير من متطلبات الذاكرة.</p>
-<p>يستخدم DiskANN هيكل رسم بياني مسطح مُحسَّن للوصول إلى القرص، مما يسمح له بمعالجة مجموعات بيانات بمليارات من مجموعات البيانات بجزء بسيط من مساحة الذاكرة التي تتطلبها الطرق داخل الذاكرة. على سبيل المثال، يمكن ل DiskANN فهرسة ما يصل إلى مليار متجه مع تحقيق دقة بحث بنسبة 95% مع زمن انتقال قدره 5 مللي ثانية، في حين أن الخوارزميات القائمة على ذاكرة الوصول العشوائي تصل إلى 100-200 مليون نقطة لأداء مماثل.</p>
+    </button></h2><p><a href="https://github.com/microsoft/DiskANN">DiskANN</a> represents a paradigm-shifting approach to <a href="https://zilliz.com/learn/vector-similarity-search">vector similarity search</a>. Before that, most vector index types like HNSW rely heavily on RAM to achieve low latency and high recall. While effective for moderate-sized datasets, this approach becomes prohibitively expensive and less scalable as data volumes grow. DiskANN offers a cost-effective alternative by leveraging SSDs to store the index, significantly reducing memory requirements.</p>
+<p>DiskANN employs a flat graph structure optimized for disk access, allowing it to handle billion-scale datasets with a fraction of the memory footprint required by in-memory methods. For instance, DiskANN can index up to a billion vectors while achieving 95% search accuracy with 5ms latencies, whereas RAM-based algorithms peak at 100–200 million points for similar performance.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Vector_indexing_and_search_workflow_with_Disk_ANN_41cdf33652.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل 1: فهرسة المتجهات وسير عمل البحث باستخدام DiskANN</em></p>
-<p>على الرغم من أن DiskANN قد يؤدي إلى زمن انتقال أعلى قليلاً مقارنةً بالنهج القائمة على ذاكرة الوصول العشوائي، إلا أن المفاضلة مقبولة في كثير من الأحيان نظرًا للتوفير الكبير في التكاليف وفوائد قابلية التوسع. يعد DiskANN مناسبًا بشكل خاص للتطبيقات التي تتطلب بحثًا متجهًا واسع النطاق على أجهزة سلعية.</p>
-<p>سوف تشرح هذه المقالة الطرق الذكية التي يمتلكها DiskANN للاستفادة من قرص DiskANN للاستفادة من SSD بالإضافة إلى ذاكرة الوصول العشوائي وتقليل قراءات SSD المكلفة.</p>
-<h2 id="How-Does-DiskANN-Work" class="common-anchor-header">كيف يعمل DiskANN؟<button data-href="#How-Does-DiskANN-Work" class="anchor-icon" translate="no">
+<p><em>Figure 1: Vector indexing and search workflow with DiskANN</em></p>
+<p>Although DiskANN may introduce slightly higher latency compared to RAM-based approaches, the trade-off is often acceptable given the substantial cost savings and scalability benefits. DiskANN is particularly suitable for applications requiring large-scale vector search on commodity hardware.</p>
+<p>This article will explain the clever methods DiskANN has to leverage SSD in addition to RAM and reduce costly SSD reads.</p>
+<h2 id="How-Does-DiskANN-Work" class="common-anchor-header">How Does DiskANN Work?<button data-href="#How-Does-DiskANN-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -59,33 +58,33 @@ origin: 'https://milvus.io/blog/diskann-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DiskANN هي طريقة بحث متجهية قائمة على الرسم البياني في نفس عائلة الطرق مثل HNSW. نقوم أولاً ببناء رسم بياني للبحث حيث تتوافق العقد مع المتجهات (أو مجموعات من المتجهات)، وتشير الحواف إلى أن زوجًا من المتجهات "قريب نسبيًا" بمعنى ما. يختار البحث النموذجي بشكل عشوائي "عقدة دخول"، وينتقل إلى جارتها الأقرب إلى الاستعلام، ويكرر بطريقة جشعة حتى يتم الوصول إلى الحد الأدنى المحلي.</p>
-<p>تختلف أطر الفهرسة المستندة إلى الرسم البياني بشكل أساسي في كيفية إنشاء الرسم البياني للبحث وإجراء البحث. وفي هذا القسم، سوف نتعمق في هذا القسم في ابتكارات DiskANN لهذه الخطوات وكيف تسمح بأداء منخفض الكمون ومنخفض الذاكرة. (انظر الشكل أعلاه للحصول على ملخص).</p>
-<h3 id="An-Overview" class="common-anchor-header">نظرة عامة</h3><p>نفترض أن المستخدم قد أنشأ مجموعة من تضمينات متجهات المستندات. الخطوة الأولى هي تجميع التضمينات. يتم إنشاء رسم بياني للبحث لكل مجموعة بشكل منفصل باستخدام خوارزمية Vamana (الموضحة في القسم التالي)، ويتم دمج النتائج في رسم بياني واحد. <em>تقلل استراتيجية فرّق تسد لإنشاء الرسم البياني النهائي للبحث بشكل كبير من استخدام الذاكرة دون التأثير بشكل كبير على زمن انتقال البحث أو الاسترجاع.</em></p>
+    </button></h2><p>DiskANN is a graph-based vector search method in the same family of methods as HNSW. We first construct a search graph where the nodes correspond to vectors (or groups of vectors), and edges denote that a pair of vectors is “relatively close” in some sense. A typical search randomly chooses an “entry node”, and navigates to its neighbor closest to the query, repeating in a greedy fashion until a local minimum is reached.</p>
+<p>Graph-based indexing frameworks differ primarily in how they construct the search graph and perform search. And in this section, we will do a technical deep dive into the innovations of DiskANN for these steps and how they permit low-latency, low-memory performance. (See the above figure for a summary.)</p>
+<h3 id="An-Overview" class="common-anchor-header">An Overview</h3><p>We assume that the user has generated a set of document vector embeddings. The first step is to cluster the embeddings. A search graph for each cluster is constructed separately using the Vamana algorithm (explained in the next section), and the results are merged into a single graph. <em>The divide-and-conquer strategy for creating the final search graph significantly reduces memory usage without too greatly affecting search latency or recall.</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/How_Disk_ANN_stores_vector_index_across_RAM_and_SSD_d6564b087f.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل 2: كيف يخزن DiskANN فهرس المتجهات عبر ذاكرة الوصول العشوائي ومحرك أقراص الحالة الصلبة</em></p>
-<p>بعد إنتاج الرسم البياني العالمي للبحث، يتم تخزينه على SSD مع تضمينات المتجهات كاملة الدقة. يتمثل أحد التحديات الرئيسية في إنهاء البحث ضمن عدد محدود من قراءات SSD، نظرًا لأن الوصول إلى SSD مكلف مقارنةً بالوصول إلى ذاكرة الوصول العشوائي. لذلك، يتم استخدام بعض الحيل الذكية لتقييد عدد مرات القراءة:</p>
-<p>أولاً، تحفّز خوارزمية Vamana المسارات الأقصر بين العُقد المتقاربة مع وضع حد أقصى لعدد جيران العقدة. ثانيًا، يتم استخدام بنية بيانات ذات حجم ثابت لتخزين تضمين كل عقدة وجيرانها (انظر الشكل أعلاه). ما يعنيه هذا هو أنه يمكننا معالجة البيانات الوصفية للعقدة ببساطة عن طريق ضرب حجم بنية البيانات في فهرس العقدة واستخدام ذلك كإزاحة أثناء جلب تضمين العقدة في نفس الوقت. ثالثًا، نظرًا لكيفية عمل SSD، يمكننا جلب عدة عُقد لكل طلب قراءة - في حالتنا، العُقد المجاورة - مما يقلل من عدد طلبات القراءة أكثر.</p>
-<p>بشكل منفصل، نقوم بضغط التضمينات باستخدام تكميم المنتج وتخزينها في ذاكرة الوصول العشوائي. وبذلك، يمكننا استيعاب مجموعات بيانات المتجهات بمليارات الدولارات في ذاكرة قابلة للتطبيق على جهاز واحد لحساب <em>أوجه التشابه التقريبي للمت</em> جهات بسرعة دون الحاجة إلى قراءات على القرص. يوفر ذلك إرشادات لتقليل عدد العقد المجاورة التي يجب الوصول إليها بعد ذلك على قرص SSD. والأهم من ذلك، يتم اتخاذ قرارات البحث باستخدام <em>التشابهات المت</em>جهة <em>الدقيقة،</em> مع استرجاع التضمينات الكاملة من SSD، مما يضمن استرجاعًا أعلى. وللتأكيد على ذلك، هناك مرحلة أولية من البحث باستخدام التضمينات الكمية في الذاكرة، وبحث لاحق على مجموعة فرعية أصغر تُقرأ من SSD.</p>
-<p>في هذا الوصف، قمنا بالتغاضي عن خطوتين مهمتين وإن كانتا متضمنتين: كيفية إنشاء الرسم البياني، وكيفية البحث في الرسم البياني - الخطوتان المشار إليهما بالمربعات الحمراء أعلاه. لنفحص كل واحدة منهما على حدة.</p>
-<h3 id="Vamana-Graph-Construction" class="common-anchor-header">بناء الرسم البياني "فامانا"</h3><p>
+<p><em>Figure 2: How DiskANN stores vector index across RAM and SSD</em></p>
+<p>Having produced the global search graph, it’s stored on SSD together with the full-precision vector embeddings. A major challenge is to finish the search within a bounded number of SSD reads, since SSD access is expensive relative to RAM access. So, a few clever tricks are used to restrict the number of reads:</p>
+<p>First, the Vamana algorithm incentivizes shorter paths between close nodes while capping the maximum number of neighbors of a node. Second, a fixed-size data structure is used to store each node’s embedding and its neighbors (see the above figure). What this means is that we can address a node’s metadata by simply multiplying the data structure size by the node’s index and using this as an offset while simultaneously fetching the node’s embedding. Third, due to how SSD works, we can fetch multiple nodes per read request - in our case, the neighbor nodes - reducing the number of read requests further.</p>
+<p>Separately, we compress the embeddings using product quantization and store them in RAM. In doing so, we can fit billions-scale vector datasets into a memory that is feasible on a single machine for quickly calculating <em>approximate vector similarities</em> without disk reads. This provides guidance for reducing the number of neighbor nodes to access next on the SSD. Importantly, however, the search decisions are made using the <em>exact vector similarities</em>, with the full embeddings retrieved from SSD, which ensures higher recall. To emphasize, there is an initial phase of search using quantized embeddings in memory, and a subsequent search on a smaller subset reading from SSD.</p>
+<p>In this description, we have glossed over two important albeit involved steps: how to construct the graph, and how to search the graph - the two steps indicated by the red boxes above. Let’s examine each of these in turn.</p>
+<h3 id="Vamana-Graph-Construction" class="common-anchor-header">“Vamana” Graph Construction</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Vamana_Graph_Construction_ecb4dab839.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل: بناء الرسم البياني "فامانا"</em></p>
-<p>طوّر مؤلفا DiskANN طريقة جديدة لبناء الرسم البياني للبحث، والتي أطلقوا عليها اسم خوارزمية "فامانا". تقوم بتهيئة الرسم البياني للبحث عن طريق إضافة حواف O(N) عشوائيًا. سينتج عن ذلك رسم بياني "متصل بشكل جيد"، على الرغم من عدم وجود أي ضمانات بشأن تقارب البحث الجشع. ثم يقوم بعد ذلك بتهذيب الحواف وإعادة توصيلها بطريقة ذكية لضمان وجود اتصالات بعيدة المدى كافية (انظر الشكل أعلاه). اسمح لنا بالتوضيح:</p>
-<h4 id="Initialization" class="common-anchor-header">التهيئة</h4><p>تتم تهيئة الرسم البياني للبحث على رسم بياني عشوائي موجه حيث يكون لكل عقدة R جيران خارجيين. نقوم أيضًا بحساب الوسيط في الرسم البياني، أي النقطة التي لديها أدنى متوسط مسافة إلى جميع النقاط الأخرى. يمكنك التفكير في هذا الأمر على أنه مماثل للنقطة المركزية التي هي عضو في مجموعة العقد.</p>
-<h4 id="Search-for-Candidates" class="common-anchor-header">البحث عن المرشحين</h4><p>بعد التهيئة نقوم بالتكرار على العُقد، حيث نقوم بإضافة وإزالة الحواف في كل خطوة. أولاً، نقوم بتشغيل خوارزمية بحث على العقدة المختارة، p، لتوليد قائمة بالمرشحين. تبدأ خوارزمية البحث من الوسيط وتتنقل بشراهة أقرب وأقرب إلى العقدة المختارة، مضيفةً الجيران الخارجيين لأقرب عقدة تم العثور عليها حتى الآن في كل خطوة. يتم إرجاع قائمة العقد L التي تم العثور عليها الأقرب إلى p. (إذا لم تكن معتادًا على هذا المفهوم، فإن وسط الرسم البياني هو النقطة التي لها أدنى متوسط مسافة إلى جميع النقاط الأخرى وتعمل كنظير للنقطة المركزية في الرسوم البيانية).</p>
-<h4 id="Pruning-and-Adding-Edges" class="common-anchor-header">تشذيب وإضافة الحواف</h4><p>يتم فرز جيران العقدة المرشحين حسب المسافة، ولكل مرشح، تتحقق الخوارزمية مما إذا كان "قريبًا جدًا" في الاتجاه من جار تم اختياره بالفعل. إذا كان الأمر كذلك، يتم تشذيبها. هذا يعزز التنوع الزاوي بين الجيران، مما يؤدي تجريبياً إلى خصائص تنقل أفضل. عمليًا، هذا يعني أن البحث الذي يبدأ من عقدة عشوائية يمكن أن يصل بسرعة أكبر إلى أي عقدة مستهدفة من خلال استكشاف مجموعة متفرقة من الروابط المحلية والبعيدة المدى.</p>
-<p>بعد تشذيب الحواف، تتم إضافة حواف على طول مسار البحث الجشع إلى p. يتم إجراء مسارين للتقليم، مع تغيير عتبة المسافة للتقليم بحيث تتم إضافة حواف طويلة المدى في المسار الثاني.</p>
-<h2 id="What’s-Next" class="common-anchor-header">ما التالي؟<button data-href="#What’s-Next" class="anchor-icon" translate="no">
+<p><em>Figure: “Vamana” Graph Construction</em></p>
+<p>The DiskANN authors develop a novel method for constructing the search graph, which they call the Vamana algorithm. It initializes the search graph by randomly adding O(N) edges. This will result in a graph that is “well-connected”, although without any guarantees on greedy search convergence. It then prunes and reconnects the edges in an intelligent way to ensure there are sufficient long-range connections (see above figure). Allow us to elaborate:</p>
+<h4 id="Initialization" class="common-anchor-header">Initialization</h4><p>The search graph is initialized to a random directed graph where each node has R out-neighbors. We also calculate the medoid of the graph, that is, the point that has the minimum average distance to all other points. You can think of this as analogous to a centroid that is a member of the set of nodes.</p>
+<h4 id="Search-for-Candidates" class="common-anchor-header">Search for Candidates</h4><p>After initialization, we iterate over the nodes, performing both adding and removing edges at each step. First, we run a search algorithm on the selected node, p, to generate a list of candidates. The search algorithm starts at the medoid and greedily navigates closer and closer to the selected node, adding the out-neighbors of the closest node found so far at each step. The list of L found nodes closest to p is returned. (If you’re not familiar with the concept, the medoid of a graph is the point that has the minimum average distance to all other points and acts as an analog of a centroid for graphs.)</p>
+<h4 id="Pruning-and-Adding-Edges" class="common-anchor-header">Pruning and Adding Edges</h4><p>The node’s candidate neighbors are sorted by distance, and for each candidate, the algorithm checks whether it is “too close” in direction to an already chosen neighbor. If so, it’s pruned. This promotes angular diversity among neighbors, which empirically leads to better navigation properties. In practice, this means that a search starting from a random node can more quickly reach any target node by exploring a sparse set of long-range and local links.</p>
+<p>After pruning edges, edges along the greedy search path to p are added. Two passes of pruning are performed, varying the distance threshold for pruning so that long-term edges are added in the second pass.</p>
+<h2 id="What’s-Next" class="common-anchor-header">What’s Next?<button data-href="#What’s-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,7 +99,7 @@ origin: 'https://milvus.io/blog/diskann-explained.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بُنيت الأعمال اللاحقة على DiskANN لإجراء تحسينات إضافية. أحد الأمثلة الجديرة بالملاحظة، والمعروف باسم <a href="https://arxiv.org/abs/2105.09613">FreshDiskANN،</a> يعدل الطريقة للسماح بتحديث الفهرس بسهولة بعد الإنشاء. يتوفر فهرس البحث هذا، الذي يوفر مفاضلة ممتازة بين معايير الأداء، في قاعدة بيانات <a href="https://milvus.io/docs/overview.md">Milvus</a> vector كنوع الفهرس <code translate="no">DISKANN</code>.</p>
+    </button></h2><p>Subsequent work has been built upon DiskANN for additional improvements. One noteworthy example, known as <a href="https://arxiv.org/abs/2105.09613">FreshDiskANN</a>, modifies the method to allow for the easy updating of the index after construction. This search index, which provides an excellent tradeoff between performance criteria, is available in the <a href="https://milvus.io/docs/overview.md">Milvus</a> vector database as the <code translate="no">DISKANN</code> index type.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Prepare index parameters</span>
 index_params = client.prepare_index_params()
 
@@ -118,8 +117,8 @@ client.create_collection(
     index_params=index_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>يمكنك أيضًا ضبط معلمات DiskANN، مثل <code translate="no">MaxDegree</code> و <code translate="no">BeamWidthRatio</code>: راجع <a href="https://milvus.io/docs/disk_index.md#On-disk-Index">صفحة التوثيق</a> لمزيد من التفاصيل.</p>
-<h2 id="Resources" class="common-anchor-header">الموارد<button data-href="#Resources" class="anchor-icon" translate="no">
+<p>You can even tune the DiskANN parameters, such as <code translate="no">MaxDegree</code> and  <code translate="no">BeamWidthRatio</code>: see <a href="https://milvus.io/docs/disk_index.md#On-disk-Index">the documentation page</a> for more details.</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -135,7 +134,7 @@ client.create_collection(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/docs/disk_index.md#On-disk-Index">وثائق ميلفوس حول استخدام DiskANN</a></p></li>
-<li><p><a href="https://suhasjs.github.io/files/diskann_neurips19.pdf">"DiskANN: بحث سريع ودقيق بمليار نقطة لأقرب جار على عقدة واحدة"</a></p></li>
-<li><p><a href="https://arxiv.org/abs/2105.09613">"FreshDiskDiskANN: فهرس ANN سريع ودقيق قائم على الرسم البياني للبحث عن التشابه المتدفق"</a></p></li>
+<li><p><a href="https://milvus.io/docs/disk_index.md#On-disk-Index">Milvus Documentation on using DiskANN</a></p></li>
+<li><p><a href="https://suhasjs.github.io/files/diskann_neurips19.pdf">“DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node”</a></p></li>
+<li><p><a href="https://arxiv.org/abs/2105.09613">“FreshDiskANN: A Fast and Accurate Graph-Based ANN Index for Streaming Similarity Search”</a></p></li>
 </ul>

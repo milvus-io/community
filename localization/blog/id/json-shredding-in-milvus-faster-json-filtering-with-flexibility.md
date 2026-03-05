@@ -1,8 +1,7 @@
 ---
 id: json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
-title: >-
-  Penghancuran JSON di Milvus: Pemfilteran JSON 88,9x Lebih Cepat dengan
-  Fleksibilitas
+title: |
+  JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility
 author: Jack Zhang
 date: 2025-12-04T00:00:00.000Z
 cover: assets.zilliz.com/JSON_Shredding_new_Cover_1_f9253063f5.png
@@ -14,22 +13,21 @@ meta_keywords: 'Milvus, JSON Shredding, JSON performance, columnar storage'
 meta_title: |
   Milvus JSON Shredding: Faster JSON Filtering With Flexibility
 desc: >-
-  Temukan bagaimana Milvus JSON Shredding menggunakan penyimpanan kolom yang
-  dioptimalkan untuk mempercepat kueri JSON hingga 89× sambil mempertahankan
-  fleksibilitas skema penuh.
+  Discover how Milvus JSON Shredding uses optimized columnar storage to speed up
+  JSON queries by up to 89× while preserving full schema flexibility.
 origin: >-
   https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md
 ---
-<p>Sistem AI modern menghasilkan lebih banyak data JSON semi-terstruktur daripada sebelumnya. Informasi pelanggan dan produk dipadatkan ke objek JSON, layanan mikro memancarkan log JSON pada setiap permintaan, perangkat IoT mengalirkan pembacaan sensor dalam muatan JSON yang ringan, dan aplikasi AI saat ini semakin terstandardisasi pada JSON untuk keluaran terstruktur. Hasilnya adalah banjir data seperti JSON yang mengalir ke dalam basis data vektor.</p>
-<p>Secara tradisional, ada dua cara untuk menangani dokumen JSON:</p>
+<p>Modern AI systems are producing more semi-structured JSON data than ever before. Customer and product information are compacted to a JSON object, microservices emit JSON logs on every request, IoT devices stream sensor readings in lightweight JSON payloads, and today’s AI applications increasingly standardize on JSON for structured output. The result is a flood of JSON-like data flowing into vector databases.</p>
+<p>Traditionally, there are two ways to handle JSON documents:</p>
 <ul>
-<li><p><strong>Menentukan setiap bidang JSON ke dalam skema tetap dan membangun indeks:</strong> Pendekatan ini memberikan kinerja kueri yang solid, tetapi kaku. Setelah format data berubah, setiap bidang yang baru atau dimodifikasi akan memicu pembaruan Data Definition Language (DDL) dan migrasi skema yang menyakitkan.</p></li>
-<li><p><strong>Menyimpan seluruh objek JSON sebagai satu kolom (baik tipe JSON maupun Skema Dinamis di Milvus menggunakan pendekatan ini):</strong> Opsi ini menawarkan fleksibilitas yang sangat baik, tetapi dengan mengorbankan kinerja kueri. Setiap permintaan membutuhkan penguraian JSON pada saat runtime dan sering kali pemindaian tabel secara penuh, yang menghasilkan latensi yang meningkat seiring dengan bertambahnya kumpulan data.</p></li>
+<li><p><strong>Predefine every field of JSON into a fixed schema and build an index:</strong> This approach delivers solid query performance, but it’s rigid. Once the data format changes, every new or modified field triggers another round of painful Data Definition Language (DDL) updates and schema migrations.</p></li>
+<li><p><strong>Store the entire JSON object as a single column (both JSON type and Dynamic Schema in Milvus use this approach):</strong> This option offers excellent flexibility, but at the cost of query performance. Each request requires runtime JSON parsing and often a full table scan, resulting in latency that spikes as the dataset grows.</p></li>
 </ul>
-<p>Dulu ini merupakan dilema antara fleksibilitas dan kinerja.</p>
-<p>Tidak lagi dengan fitur JSON Shredding yang baru diperkenalkan di <a href="https://milvus.io/">Milvus</a>.</p>
-<p>Dengan diperkenalkannya <a href="https://milvus.io/docs/json-shredding.md">JSON Shredding</a>, Milvus sekarang mencapai kelincahan bebas skema dengan kinerja penyimpanan kolumnar, yang pada akhirnya membuat data semi-terstruktur berskala besar menjadi fleksibel dan ramah terhadap kueri.</p>
-<h2 id="How-JSON-Shredding-Works" class="common-anchor-header">Cara Kerja Penghancuran JSON<button data-href="#How-JSON-Shredding-Works" class="anchor-icon" translate="no">
+<p>It used to be a dilemma of flexibility and performance.</p>
+<p>Not anymore with the newly introduced JSON Shredding feature in <a href="https://milvus.io/">Milvus</a>.</p>
+<p>With the introduction of <a href="https://milvus.io/docs/json-shredding.md">JSON Shredding</a>, Milvus now achieves schema-free agility with the performance of columnar storage, finally making large-scale semi-structured data both flexible and query-friendly.</p>
+<h2 id="How-JSON-Shredding-Works" class="common-anchor-header">How JSON Shredding Works<button data-href="#How-JSON-Shredding-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,48 +42,48 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Penghancuran JSON mempercepat kueri JSON dengan mengubah dokumen JSON berbasis baris menjadi penyimpanan kolumnar yang sangat dioptimalkan. Milvus mempertahankan fleksibilitas JSON untuk pemodelan data sambil secara otomatis mengoptimalkan penyimpanan kolumnar-secara signifikan meningkatkan akses data dan kinerja kueri.</p>
-<p>Untuk menangani bidang JSON yang jarang atau langka secara efisien, Milvus juga memiliki indeks terbalik untuk kunci bersama. Semua ini terjadi secara transparan kepada pengguna: Anda dapat memasukkan dokumen JSON seperti biasa, dan menyerahkannya kepada Milvus untuk mengelola strategi penyimpanan dan pengindeksan yang optimal secara internal.</p>
-<p>Ketika Milvus menerima catatan JSON mentah dengan berbagai bentuk dan struktur, Milvus menganalisis setiap kunci JSON untuk rasio kemunculan dan stabilitas jenisnya (apakah jenis datanya konsisten di seluruh dokumen). Berdasarkan analisis ini, setiap kunci diklasifikasikan ke dalam salah satu dari tiga kategori:</p>
+    </button></h2><p>JSON shredding speeds up JSON queries by transforming row-based JSON documents into highly optimized columnar storage. Milvus preserves the flexibility of JSON for data modeling while automatically optimizing columnar storage—significantly improving data access and query performance.</p>
+<p>To handle sparse or rare JSON fields efficiently, Milvus also has an inverted index for shared keys. All of this happens transparently to users: you can insert JSON documents as usual, and leave it to Milvus to manage the optimal storage and indexing strategy internally.</p>
+<p>When Milvus receives raw JSON records with varying shapes and structures, it analyzes each JSON key for its occurrence ratio and type stability (whether its data type is consistent across documents). Based on this analysis, each key is classified into one of three categories:</p>
 <ul>
-<li><p><strong>Kunci yang diketik:</strong> Kunci yang muncul di sebagian besar dokumen dan selalu memiliki tipe data yang sama (misalnya, semua bilangan bulat atau semua string).</p></li>
-<li><p><strong>Kunci dinamis</strong>: Kunci yang sering muncul namun memiliki tipe data campuran (misalnya, terkadang berupa string, terkadang berupa bilangan bulat).</p></li>
-<li><p><strong>Kunci bersama:</strong> Kunci yang jarang muncul, jarang, atau bersarang, berada di bawah ambang batas frekuensi yang dapat dikonfigurasi.</p></li>
+<li><p><strong>Typed keys:</strong> Keys that appear in most documents and always have the same data type (e.g., all integers or all strings).</p></li>
+<li><p><strong>Dynamic keys</strong>: Keys that appear frequently but have mixed data types (e.g., sometimes a string, sometimes an integer).</p></li>
+<li><p><strong>Shared keys:</strong> Keys that are infrequent, sparse, or nested, falling below a configurable frequency threshold.</p></li>
 </ul>
-<p>Milvus menangani setiap kategori secara berbeda untuk memaksimalkan efisiensi:</p>
+<p>Milvus handles each category differently to maximize efficiency:</p>
 <ul>
-<li><p><strong>Tombol</strong> yang diketik disimpan dalam kolom khusus yang diketik dengan kuat.</p></li>
-<li><p><strong>Kunci dinamis</strong> ditempatkan ke dalam kolom dinamis berdasarkan jenis nilai aktual yang diamati pada saat runtime.</p></li>
-<li><p>Baik kolom yang diketik maupun kolom dinamis disimpan dalam format kolom Panah/Partikel untuk pemindaian cepat dan eksekusi kueri yang sangat dioptimalkan.</p></li>
-<li><p><strong>Kunci bersama</strong> dikonsolidasikan ke dalam kolom biner-JSON yang ringkas, disertai dengan indeks terbalik kunci bersama. Indeks ini mempercepat kueri pada bidang berfrekuensi rendah dengan memangkas baris yang tidak relevan lebih awal dan membatasi pencarian hanya pada dokumen yang berisi kunci yang ditanyakan.</p></li>
+<li><p><strong>Typed keys</strong> are stored in dedicated, strongly typed columns.</p></li>
+<li><p><strong>Dynamic keys</strong> are placed into dynamic columns based on the actual value type observed at runtime.</p></li>
+<li><p>Both typed and dynamic columns are stored in Arrow/Parquet columnar formats for fast scanning and highly optimized query execution.</p></li>
+<li><p><strong>Shared keys</strong> are consolidated into a compact binary-JSON column, accompanied by a shared-key inverted index. This index accelerates queries on low-frequency fields by pruning irrelevant rows early and restricting the search to only those documents that contain the queried key.</p></li>
 </ul>
-<p>Kombinasi penyimpanan kolumnar adaptif dan pengindeksan terbalik ini merupakan inti dari mekanisme penghancuran JSON Milvus, yang memungkinkan fleksibilitas dan kinerja tinggi dalam skala besar.</p>
-<p>Alur kerja keseluruhan diilustrasikan di bawah ini:</p>
+<p>This combination of adaptive columnar storage and inverted indexing forms the core of Milvus’s JSON shredding mechanism, enabling both flexibility and high performance at scale.</p>
+<p>The overall workflow is illustrated below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/json_shredding_79a62a9661.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Sekarang setelah kita membahas dasar-dasar cara kerja penghancuran JSON, mari kita lihat lebih dekat kemampuan utama yang membuat pendekatan ini fleksibel dan berkinerja tinggi.</p>
-<h3 id="Shredding-and-Columnarization" class="common-anchor-header">Penghancuran dan Kolomisasi</h3><p>Ketika sebuah dokumen JSON baru ditulis, Milvus memecahnya dan mengaturnya kembali ke dalam penyimpanan kolom yang dioptimalkan:</p>
+<p>Now that we’ve covered the basics of how JSON Shredding works, let’s take a closer look at the key capabilities that make this approach both flexible and high-performance.</p>
+<h3 id="Shredding-and-Columnarization" class="common-anchor-header">Shredding and Columnarization</h3><p>When a new JSON document is written, Milvus breaks it down and reorganizes it into optimized columnar storage:</p>
 <ul>
-<li><p>Kunci yang diketik dan dinamis secara otomatis diidentifikasi dan disimpan dalam kolom khusus.</p></li>
-<li><p>Jika JSON berisi objek bersarang, Milvus menghasilkan nama kolom berbasis jalur secara otomatis. Sebagai contoh, kolom <code translate="no">name</code> di dalam objek <code translate="no">user</code> dapat disimpan dengan nama kolom <code translate="no">/user/name</code>.</p></li>
-<li><p>Kunci yang digunakan bersama disimpan bersama dalam satu kolom JSON biner yang ringkas. Karena kunci-kunci ini jarang muncul, Milvus membuat indeks terbalik untuk kunci-kunci tersebut, sehingga memungkinkan pemfilteran yang cepat dan memungkinkan sistem untuk dengan cepat menemukan baris yang berisi kunci yang ditentukan.</p></li>
+<li><p>Typed and dynamic keys are automatically identified and stored in dedicated columns.</p></li>
+<li><p>If the JSON contains nested objects, Milvus generates path-based column names automatically. For example, a <code translate="no">name</code> field inside a <code translate="no">user</code> object can be stored with the column name <code translate="no">/user/name</code>.</p></li>
+<li><p>Shared keys are stored together in a single, compact binary JSON column. Because these keys appear infrequently, Milvus builds an inverted index for them, enabling fast filtering and allowing the system to quickly locate the rows that contain the specified key.</p></li>
 </ul>
-<h3 id="Intelligent-Column-Management" class="common-anchor-header">Manajemen Kolom Cerdas</h3><p>Selain merobek-robek JSON menjadi kolom-kolom, Milvus menambahkan lapisan kecerdasan tambahan melalui manajemen kolom yang dinamis, memastikan bahwa penghancuran JSON tetap fleksibel seiring perkembangan data.</p>
+<h3 id="Intelligent-Column-Management" class="common-anchor-header">Intelligent Column Management</h3><p>Beyond shredding JSON into columns, Milvus adds an additional layer of intelligence through dynamic column management, ensuring that JSON Shredding stays flexible as data evolves.</p>
 <ul>
-<li><p><strong>Kolom dibuat sesuai kebutuhan:</strong> Ketika kunci baru muncul dalam dokumen JSON yang masuk, Milvus secara otomatis mengelompokkan nilai dengan kunci yang sama ke dalam kolom khusus. Hal ini mempertahankan keunggulan kinerja penyimpanan kolom tanpa mengharuskan pengguna merancang skema di awal. Milvus juga menyimpulkan tipe data dari kolom baru (misalnya, INTEGER, DOUBLE, VARCHAR) dan memilih format kolom yang efisien untuk kolom tersebut.</p></li>
-<li><p><strong>Setiap kunci ditangani secara otomatis:</strong> Milvus menganalisis dan memproses setiap kunci dalam dokumen JSON. Hal ini memastikan cakupan kueri yang luas tanpa memaksa pengguna untuk menentukan bidang atau membangun indeks terlebih dahulu.</p></li>
+<li><p><strong>Columns created as needed:</strong> When new keys appear in incoming JSON documents, Milvus automatically groups values with the same key into a dedicated column. This preserves the performance advantages of columnar storage without requiring users to design schemas upfront. Milvus also infers the data type of new fields (e.g., INTEGER, DOUBLE, VARCHAR) and selects an efficient columnar format for them.</p></li>
+<li><p><strong>Every key is handled automatically:</strong> Milvus analyzes and processes every key in the JSON document. This ensures broad query coverage without forcing users to predefine fields or build indexes in advance.</p></li>
 </ul>
-<h3 id="Query-Optimization" class="common-anchor-header">Pengoptimalan Kueri</h3><p>Setelah data disusun ulang ke dalam kolom yang tepat, Milvus memilih jalur eksekusi yang paling efisien untuk setiap kueri:</p>
+<h3 id="Query-Optimization" class="common-anchor-header">Query Optimization</h3><p>Once the data is reorganized into the right columns, Milvus selects the most efficient execution path for each query:</p>
 <ul>
-<li><p><strong>Pemindaian kolom langsung untuk kunci yang diketik dan kunci dinamis:</strong> Jika kueri menargetkan bidang yang telah dipecah menjadi kolom tersendiri, Milvus dapat memindai kolom tersebut secara langsung. Hal ini mengurangi jumlah total data yang perlu diproses dan memanfaatkan komputasi kolom yang dipercepat oleh SIMD untuk eksekusi yang lebih cepat.</p></li>
-<li><p><strong>Pencarian terindeks untuk kunci bersama:</strong> Jika kueri melibatkan kolom yang tidak dipromosikan ke dalam kolomnya sendiri-biasanya merupakan kunci yang langka-Milvus mengevaluasinya terhadap kolom kunci bersama. Indeks terbalik yang dibangun di atas kolom ini memungkinkan Milvus dengan cepat mengidentifikasi baris mana yang berisi kunci yang ditentukan dan melewatkan sisanya, sehingga secara signifikan meningkatkan kinerja untuk bidang-bidang yang berfrekuensi rendah.</p></li>
-<li><p><strong>Manajemen metadata otomatis:</strong> Milvus secara terus menerus mengelola metadata dan kamus global sehingga kueri tetap akurat dan efisien, bahkan ketika struktur dokumen JSON yang masuk berevolusi dari waktu ke waktu.</p></li>
+<li><p><strong>Direct column scans for typed and dynamic keys:</strong> If a query targets a field that has already been split into its own column, Milvus can scan that column directly. This reduces the total amount of data that needs to be processed and leverages SIMD-accelerated columnar computation for even faster execution.</p></li>
+<li><p><strong>Indexed lookup for shared keys:</strong> If the query involves a field that was not promoted into its own column—typically a rare key—Milvus evaluates it against the shared-key column. The inverted index built on this column allows Milvus to quickly identify which rows contain the specified key and skip over the rest, significantly improving performance for low-frequency fields.</p></li>
+<li><p><strong>Automatic metadata management:</strong> Milvus continuously maintains global metadata and dictionaries so that queries remain accurate and efficient, even as the structure of incoming JSON documents evolves over time.</p></li>
 </ul>
-<h2 id="Performance-benchmarks" class="common-anchor-header">Tolok ukur kinerja<button data-href="#Performance-benchmarks" class="anchor-icon" translate="no">
+<h2 id="Performance-benchmarks" class="common-anchor-header">Performance benchmarks<button data-href="#Performance-benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,34 +98,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kami merancang tolok ukur untuk membandingkan performa kueri dalam menyimpan seluruh dokumen JSON sebagai satu field mentah dibandingkan dengan menggunakan fitur JSON Shredding yang baru saja dirilis.</p>
-<h3 id="Test-environment-and-methodology" class="common-anchor-header">Lingkungan dan metodologi pengujian</h3><ul>
-<li><p>Perangkat keras: 1 inti / 8GB cluster</p></li>
-<li><p>Dataset: 1 juta dokumen dari <a href="https://github.com/ClickHouse/JSONBench.git">JSONBench</a></p></li>
-<li><p>Metodologi: Mengukur QPS dan latensi di berbagai pola kueri yang berbeda</p></li>
+    </button></h2><p>We designed a benchmark to compare the query performance of storing the entire JSON document as a single raw field versus using the newly released JSON Shredding feature.</p>
+<h3 id="Test-environment-and-methodology" class="common-anchor-header">Test environment and methodology</h3><ul>
+<li><p>Hardware: 1 core/8GB cluster</p></li>
+<li><p>Dataset: 1 million documents from <a href="https://github.com/ClickHouse/JSONBench.git">JSONBench</a></p></li>
+<li><p>Methodology: Measure QPS and latency across different query patterns</p></li>
 </ul>
-<h3 id="Results-typed-keys" class="common-anchor-header">Hasil: kunci yang diketik</h3><p>Pengujian ini mengukur performa saat meng-query kunci yang ada di sebagian besar dokumen.</p>
+<h3 id="Results-typed-keys" class="common-anchor-header">Results: typed keys</h3><p>This test measured performance when querying a key present in most documents.</p>
 <table>
 <thead>
-<tr><th>Ekspresi Kueri</th><th>QPS (tanpa penghancuran)</th><th>QPS (dengan penghancuran)</th><th>Peningkatan Kinerja</th></tr>
+<tr><th>Query Expression</th><th>QPS (without shredding)</th><th>QPS (with shredding)</th><th>Performance Boost</th></tr>
 </thead>
 <tbody>
-<tr><td>json['time_us'] &gt; 0</td><td>8.69</td><td>287.5</td><td><strong>33x</strong></td></tr>
-<tr><td>json['jenis'] == 'komit'</td><td>8.42</td><td>126.1</td><td><strong>14.9x</strong></td></tr>
+<tr><td>json[‘time_us’] &gt; 0</td><td>8.69</td><td>287.5</td><td><strong>33x</strong></td></tr>
+<tr><td>json[‘kind’] == ‘commit’</td><td>8.42</td><td>126.1</td><td><strong>14.9x</strong></td></tr>
 </tbody>
 </table>
-<h3 id="Results-shared-keys" class="common-anchor-header">Hasil: kunci bersama</h3><p>Pengujian ini berfokus pada kueri kunci bersarang yang jarang yang termasuk dalam kategori "bersama".</p>
+<h3 id="Results-shared-keys" class="common-anchor-header">Results: shared keys</h3><p>This test focused on querying sparse, nested keys that fall into the “shared” category.</p>
 <table>
 <thead>
-<tr><th>Ekspresi Kueri</th><th>QPS (tanpa penghancuran)</th><th>QPS (dengan penghancuran)</th><th>Peningkatan Kinerja</th></tr>
+<tr><th>Query Expression</th><th>QPS (without shredding)</th><th>QPS (with shredding)</th><th>Performance Boost</th></tr>
 </thead>
 <tbody>
-<tr><td>json['identitas']['seq'] &gt; 0</td><td>4.33</td><td>385</td><td><strong>88.9x</strong></td></tr>
-<tr><td>json['identity']['did'] == 'xxxxx'</td><td>7.6</td><td>352</td><td><strong>46.3x</strong></td></tr>
+<tr><td>json[‘identity’][‘seq’] &gt; 0</td><td>4.33</td><td>385</td><td><strong>88.9x</strong></td></tr>
+<tr><td>json[‘identity’][‘did’] == ‘xxxxx’</td><td>7.6</td><td>352</td><td><strong>46.3x</strong></td></tr>
 </tbody>
 </table>
-<p>Kueri shared-key menunjukkan peningkatan yang paling dramatis (hingga 89x lebih cepat), sementara kueri typed-key memberikan peningkatan kecepatan 15-30x secara konsisten. Secara keseluruhan, setiap jenis kueri mendapatkan manfaat dari JSON Shredding, dengan peningkatan kinerja yang jelas di seluruh bagian.</p>
-<h2 id="Try-It-Now" class="common-anchor-header">Coba Sekarang<button data-href="#Try-It-Now" class="anchor-icon" translate="no">
+<p>Shared-key queries show the most dramatic improvements (up to 89× faster), while typed-key queries deliver consistent 15–30× speedups. Overall, every query type benefits from JSON Shredding, with clear performance gains across the board.</p>
+<h2 id="Try-It-Now" class="common-anchor-header">Try It Now<button data-href="#Try-It-Now" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -142,6 +140,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Baik Anda bekerja dengan log API, data sensor IoT, atau muatan aplikasi yang berkembang pesat, JSON Shredding memberi Anda kemampuan langka untuk memiliki fleksibilitas dan kinerja tinggi.</p>
-<p>Fitur ini sekarang sudah tersedia dan silakan mencobanya sekarang. Anda juga dapat melihat <a href="https://milvus.io/docs/json-shredding.md">dokumen ini</a> untuk informasi lebih lanjut.</p>
-<p>Ada pertanyaan atau ingin mendalami fitur-fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+    </button></h2><p>Whether you’re working with API logs, IoT sensor data, or rapidly evolving application payloads, JSON Shredding gives you the rare ability to have both flexibility and high performance.</p>
+<p>The feature is now available and welcome to try it out now. You can also check <a href="https://milvus.io/docs/json-shredding.md">this doc</a> for more details.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

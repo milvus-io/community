@@ -1,9 +1,9 @@
 ---
 id: >-
   vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-systems-the-smart-way.md
-title: >-
-  جهاز التوجيه الدلالي vLLM + ميلفوس: كيف يمكن للتوجيه الدلالي والتخزين المؤقت
-  بناء أنظمة ذكاء اصطناعي قابلة للتطوير بالطريقة الذكية
+title: >
+  vLLM Semantic Router + Milvus: How Semantic Routing and Caching Build Scalable
+  AI Systems the Smart Way
 author: Min Yin
 date: 2025-10-17T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_19_2025_04_30_18_PM_af7fda1170.png
@@ -14,17 +14,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, semantic routing, cache layer, vector database, vllm semantic router'
 meta_title: Scale Your AI Apps the Smart Way with vLLM Semantic Router and Milvus
 desc: >-
-  تعرّف على كيفية تحسين الاستدلال على النماذج الكبيرة وتقليل تكاليف الحوسبة
-  وتعزيز أداء الذكاء الاصطناعي عبر عمليات النشر القابلة للتطوير.
+  Learn how vLLM, Milvus, and semantic routing optimize large model inference,
+  reduce compute costs, and boost AI performance across scalable deployments.
 origin: >-
   https://milvus.io/blog/vllm-semantic-router-milvus-how-semantic-routing-and-caching-scale-ai-systems-the-smart-way.md
 ---
-<p>تعتمد معظم تطبيقات الذكاء الاصطناعي على نموذج واحد لكل طلب. لكن هذا النهج سرعان ما يصطدم بحدود. فالنماذج الكبيرة قوية ولكنها مكلفة، حتى عند استخدامها للاستعلامات البسيطة. أما النماذج الأصغر حجماً فهي أرخص وأسرع ولكنها لا تستطيع التعامل مع المنطق المعقد. عندما ترتفع حركة المرور - لنفترض أن تطبيق الذكاء الاصطناعي الخاص بك ينتشر فجأة مع عشرة ملايين مستخدم بين عشية وضحاها - يصبح عدم كفاءة هذا الإعداد القائم على نموذج واحد للجميع واضحًا بشكل مؤلم. يرتفع زمن الوصول، وترتفع فواتير وحدة معالجة الرسومات، ويبدأ النموذج الذي كان يعمل بشكل جيد بالأمس في اللهاث من أجل الهواء.</p>
-<p>ويتعين <em>عليك</em> يا صديقي، <em>أنت</em> المهندس الذي يقف وراء هذا التطبيق، أن تصلح الأمر بسرعة.</p>
-<p>تخيل نشر نماذج متعددة بأحجام مختلفة وجعل نظامك يختار تلقائياً أفضلها لكل طلب. الطلبات البسيطة تذهب إلى النماذج الأصغر؛ أما الطلبات المعقدة فتذهب إلى النماذج الأكبر. هذه هي الفكرة وراء <a href="https://github.com/vllm-project/semantic-router"><strong>الموجه الدلالي vLLM Semantic Router - وهي</strong></a>آلية توجيه توجه الطلبات بناءً على المعنى، وليس على نقاط النهاية. حيث يقوم بتحليل المحتوى الدلالي والتعقيد والقصد من كل مدخلات لتحديد النموذج اللغوي الأنسب، مما يضمن معالجة كل استعلام بواسطة النموذج الأفضل تجهيزًا له.</p>
-<p>ولجعل هذا الأمر أكثر كفاءة، يقترن الموجه الدلالي مع <a href="https://milvus.io/"><strong>Milvus،</strong></a> وهي قاعدة بيانات متجهة مفتوحة المصدر تعمل <strong>كطبقة تخزين مؤقت دلالي</strong>. قبل إعادة حساب الاستجابة، يتحقق الموجه الدلالي مما إذا كان قد تمت معالجة استعلام مشابه دلالياً بالفعل ويسترجع النتيجة المخزنة مؤقتاً على الفور إذا تم العثور عليها. والنتيجة: استجابات أسرع، وتكاليف أقل، ونظام استرجاع يتوسع بذكاء بدلاً من الإهدار.</p>
-<p>في هذا المنشور، سنتعمق أكثر في كيفية عمل الموجه <strong>الدلالي vLLM،</strong> وكيف يعمل <strong>Milvus</strong> على تشغيل طبقة التخزين المؤقت الخاصة به، وكيف يمكن تطبيق هذه البنية في تطبيقات الذكاء الاصطناعي في العالم الحقيقي.</p>
-<h2 id="What-is-a-Semantic-Router" class="common-anchor-header">ما هو الموجه الدلالي؟<button data-href="#What-is-a-Semantic-Router" class="anchor-icon" translate="no">
+<p>Most AI apps rely on a single model for every request. But that approach quickly runs into limits. Large models are powerful yet expensive, even when they’re used for simple queries. Smaller models are cheaper and faster but can’t handle complex reasoning. When traffic surges—say your AI app suddenly goes viral with ten million users overnight—the inefficiency of this one-model-for-all setup becomes painfully apparent. Latency spikes, GPU bills explode, and the model that ran fine yesterday starts gasping for air.</p>
+<p>And my friend, <em>you</em>, the engineer behind this app, have to fix it—fast.</p>
+<p>Imagine deploying multiple models of varying sizes and having your system automatically select the best one for each request. Simple prompts go to smaller models; complex queries route to larger ones. That’s the idea behind the <a href="https://github.com/vllm-project/semantic-router"><strong>vLLM Semantic Router</strong></a>—a routing mechanism that directs requests based on meaning, not endpoints. It analyzes the semantic content, complexity, and intent of each input to select the most suitable language model, ensuring every query is handled by the model best equipped for it.</p>
+<p>To make this even more efficient, the Semantic Router pairs with <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database that serves as a <strong>semantic cache layer</strong>. Before recomputing a response, it checks whether a semantically similar query has already been processed and instantly retrieves the cached result if found. The result: faster responses, lower costs, and a retrieval system that scales intelligently rather than wastefully.</p>
+<p>In this post, we’ll dive deeper into how the <strong>vLLM Semantic Router</strong> works, how <strong>Milvus</strong> powers its caching layer, and how this architecture can be applied in real-world AI applications.</p>
+<h2 id="What-is-a-Semantic-Router" class="common-anchor-header">What is a Semantic Router?<button data-href="#What-is-a-Semantic-Router" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,39 +39,39 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في جوهره، الموجه <strong>الدلالي</strong> هو نظام يقرر <em>أي نموذج</em> يجب أن يتعامل مع طلب معين بناءً على معناه وتعقيده وقصده. فبدلاً من توجيه كل شيء إلى نموذج واحد، يقوم بتوزيع الطلبات بذكاء عبر نماذج متعددة لتحقيق التوازن بين الدقة والكمون والتكلفة.</p>
-<p>من الناحية المعمارية، فهو مبني على ثلاث طبقات رئيسية: <strong>التوجيه</strong> الدلالي، <strong>ومزيج النماذج (MoM)</strong>، وطبقة <strong>التخزين المؤقت</strong>.</p>
-<h3 id="Semantic-Routing-Layer" class="common-anchor-header">طبقة التوجيه الدلالي</h3><p><strong>طبقة التوجيه الدلالي</strong> هي العقل المدبر للنظام. فهي تحلل كل مدخل - ما الذي يطلبه، ومدى تعقيده، ونوع الاستدلال الذي يتطلبه - لتحديد النموذج الأنسب للمهمة. على سبيل المثال، قد يتم توجيه عملية بحث بسيطة عن الحقائق إلى نموذج خفيف الوزن، بينما يتم توجيه استعلام استدلالي متعدد الخطوات إلى نموذج أكبر. يحافظ هذا التوجيه الديناميكي على استجابة النظام حتى مع زيادة حركة المرور وتنوع الاستعلامات.</p>
+    </button></h2><p>At its core, a <strong>Semantic Router</strong> is a system that decides <em>which model</em> should handle a given request based on its meaning, complexity, and intent. Instead of routing everything to one model, it distributes requests intelligently across multiple models to balance accuracy, latency, and cost.</p>
+<p>Architecturally, it’s built on three key layers: <strong>Semantic Routing</strong>, <strong>Mixture of Models (MoM)</strong>, and a <strong>Cache Layer</strong>.</p>
+<h3 id="Semantic-Routing-Layer" class="common-anchor-header">Semantic Routing Layer</h3><p>The <strong>semantic routing layer</strong> is the brain of the system. It analyzes each input—what it’s asking, how complex it is, and what kind of reasoning it requires—to select the model best suited for the job. For example, a simple fact lookup might go to a lightweight model, while a multi-step reasoning query is routed to a larger one. This dynamic routing keeps the system responsive even as traffic and query diversity increase.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/modern_approach_714403b61c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="The-Mixture-of-Models-MoM-Layer" class="common-anchor-header">طبقة مزيج النماذج (MoM)</h3><p>تدمج الطبقة الثانية، وهي طبقة مزيج <strong>النماذج (MoM)</strong>، نماذج متعددة ذات أحجام وقدرات مختلفة في نظام واحد موحد. وهي مستوحاة من بنية مزيج <a href="https://zilliz.com/learn/what-is-mixture-of-experts"><strong>النماذج</strong></a> <strong>(MoE)</strong> ، ولكن بدلاً من اختيار "خبراء" داخل نموذج واحد كبير، فإنها تعمل عبر نماذج مستقلة متعددة. يقلل هذا التصميم من زمن الاستجابة ويقلل من التكاليف ويتجنب التقيد بأي مزود نموذج واحد.</p>
+<h3 id="The-Mixture-of-Models-MoM-Layer" class="common-anchor-header">The Mixture of Models (MoM) Layer</h3><p>The second layer, the <strong>Mixture of Models (MoM)</strong>, integrates multiple models of different sizes and capabilities into one unified system. It’s inspired by the <a href="https://zilliz.com/learn/what-is-mixture-of-experts"><strong>Mixture of Experts</strong></a> <strong>(MoE)</strong> architecture, but instead of picking “experts” inside a single large model, it operates across multiple independent models. This design reduces latency, lowers costs, and avoids being locked into any single model provider.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/MOM_0a3eb61985.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="The-Cache-Layer-Where-Milvus-Makes-the-Difference" class="common-anchor-header">طبقة التخزين المؤقت: حيث يصنع ميلفوس الفرق</h3><p>أخيرًا، <a href="https://milvus.io/">تعمل</a> <strong>طبقة ذاكرة التخزين المؤقت -</strong>التي تعمل بواسطة <a href="https://milvus.io/">قاعدة بيانات Milvus Vector Database -</a>بمثابة ذاكرة النظام. قبل تشغيل استعلام جديد، فإنها تتحقق مما إذا كان قد تمت معالجة طلب مشابه من الناحية الدلالية من قبل. إذا كان الأمر كذلك، فإنه يسترجع النتيجة المخزنة مؤقتًا على الفور، مما يوفر وقت الحوسبة ويحسن الإنتاجية.</p>
-<p>تعتمد أنظمة التخزين المؤقت التقليدية على مخازن القيمة الرئيسية في الذاكرة، ومطابقة الطلبات حسب السلاسل أو القوالب الدقيقة. يعمل ذلك بشكل جيد عندما تكون الاستعلامات متكررة ومتوقعة. لكن المستخدمين الحقيقيين نادراً ما يكتبون نفس الشيء مرتين. وبمجرد أن تتغير الصياغة - ولو بشكل طفيف - تفشل ذاكرة التخزين المؤقت في التعرف على نفس القصد. وبمرور الوقت، ينخفض معدل الوصول إلى ذاكرة التخزين المؤقت، وتتلاشى مكاسب الأداء مع انحراف اللغة بشكل طبيعي.</p>
+<h3 id="The-Cache-Layer-Where-Milvus-Makes-the-Difference" class="common-anchor-header">The Cache Layer: Where Milvus Makes the Difference</h3><p>Finally, the <strong>cache layer</strong>—powered by <a href="https://milvus.io/">Milvus Vector Database</a>—acts as the system’s memory. Before running a new query, it checks whether a semantically similar request has been processed before. If so, it retrieves the cached result instantly, saving compute time and improving throughput.</p>
+<p>Traditional caching systems rely on in-memory key-value stores, matching requests by exact strings or templates. That works fine when queries are repetitive and predictable. But real users rarely type the same thing twice. Once the phrasing changes—even slightly—the cache fails to recognize it as the same intent. Over time, the cache hit rate drops, and performance gains vanish as language naturally drifts.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/semantic_caching_for_vllm_routing_df889058c9.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>لإصلاح ذلك، نحتاج إلى تخزين مؤقت يفهم <em>المعنى،</em> وليس فقط الكلمات المطابقة. وهنا يأتي دور <strong>الاسترجاع الدلالي</strong>. فبدلاً من مقارنة السلاسل، فإنه يقارن بين التمثيلات المتجهة عالية الأبعاد التي تلتقط التشابه الدلالي. لكن التحدي يكمن في الحجم. إن إجراء بحث بالقوة الغاشمة عبر ملايين أو مليارات المتجهات على جهاز واحد (مع تعقيد زمني O(N-d)) أمر باهظ من الناحية الحسابية. حيث تنفجر تكاليف الذاكرة، وتنهار قابلية التوسع الأفقي، ويكافح النظام للتعامل مع الارتفاع المفاجئ في حركة المرور أو الاستعلامات الطويلة.</p>
+<p>To fix this, we need caching that understands <em>meaning</em>, not just matching words. That’s where <strong>semantic retrieval</strong> comes in. Instead of comparing strings, it compares embeddings—high-dimensional vector representations that capture semantic similarity. The challenge, though, is scale. Running a brute-force search across millions or billions of vectors on a single machine (with time complexity O(N·d)) is computationally prohibitive. Memory costs explode, horizontal scalability collapses, and the system struggles to handle sudden traffic spikes or long-tail queries.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_routing_system_5837b93074.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>وباعتبارها قاعدة بيانات متجهة موزعة مصممة خصيصًا للبحث الدلالي واسع النطاق، توفر <strong>Milvus</strong> قابلية التوسع الأفقي والتسامح مع الأخطاء التي تحتاجها طبقة التخزين المؤقت هذه. فهو يخزّن التضمينات بكفاءة عبر العُقد ويقوم بإجراء عمليات بحث <a href="https://zilliz.com/blog/ANN-machine-learning">تقريبية لأقرب جار</a>(ANN) بأقل زمن استجابة، حتى على نطاق واسع. باستخدام عتبات التشابه الصحيحة والاستراتيجيات الاحتياطية الصحيحة، يضمن Milvus أداءً مستقرًا ويمكن التنبؤ به - مما يحول طبقة التخزين المؤقت إلى ذاكرة دلالية مرنة لنظام التوجيه بأكمله.</p>
-<h2 id="How-Developers-Are-Using-Semantic-Router-+-Milvus-in-Production" class="common-anchor-header">كيف يستخدم المطورون الموجه الدلالي + Milvus في الإنتاج<button data-href="#How-Developers-Are-Using-Semantic-Router-+-Milvus-in-Production" class="anchor-icon" translate="no">
+<p>As a distributed vector database purpose-built for large-scale semantic search, <strong>Milvus</strong> brings the horizontal scalability and fault tolerance this cache layer needs. It stores embeddings efficiently across nodes and performs <a href="https://zilliz.com/blog/ANN-machine-learning">Approximate Nearest Neighbo</a>r (ANN) searches with minimal latency, even at massive scale. With the right similarity thresholds and fallback strategies, Milvus ensures stable, predictable performance—turning the cache layer into a resilient semantic memory for your entire routing system.</p>
+<h2 id="How-Developers-Are-Using-Semantic-Router-+-Milvus-in-Production" class="common-anchor-header">How Developers Are Using Semantic Router + Milvus in Production<button data-href="#How-Developers-Are-Using-Semantic-Router-+-Milvus-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,13 +86,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يتألق الجمع بين الموجه <strong>الدلالي vLLM Semantic Router</strong> <strong>وMilvus</strong> في بيئات الإنتاج في العالم الحقيقي حيث تكون السرعة والتكلفة وقابلية إعادة الاستخدام كلها أمور مهمة.</p>
-<p>تبرز ثلاثة سيناريوهات شائعة:</p>
-<h3 id="1-Customer-Service-QA" class="common-anchor-header">1. أسئلة وأجوبة خدمة العملاء</h3><p>تتعامل الروبوتات التي تواجه العملاء مع كميات هائلة من الاستفسارات المتكررة كل يوم - إعادة تعيين كلمة المرور وتحديثات الحساب وحالات التسليم. هذا المجال حساس من حيث التكلفة وزمن الاستجابة، مما يجعله مثاليًا للتوجيه الدلالي. يرسل الموجه الأسئلة الروتينية إلى نماذج أصغر وأسرع ويصعّد الأسئلة المعقدة أو الغامضة إلى نماذج أكبر للاستدلال الأعمق. في هذه الأثناء، يقوم ميلفوس بتخزين أزواج الأسئلة والأجوبة السابقة مؤقتًا، لذا عندما تظهر استفسارات مماثلة، يمكن للنظام إعادة استخدام الإجابات السابقة على الفور بدلاً من إعادة توليدها.</p>
-<h3 id="2-Code-Assistance" class="common-anchor-header">2. المساعدة البرمجية</h3><p>في أدوات المطوّرين أو مساعدي IDE، تتداخل العديد من الاستعلامات - مساعدة في بناء الجملة، والبحث عن واجهة برمجة التطبيقات، وتلميحات صغيرة لتصحيح الأخطاء. من خلال تحليل البنية الدلالية لكل مطالبة، يختار الموجه ديناميكيًا حجم النموذج المناسب: خفيف الوزن للمهام البسيطة، وأكثر قدرة على التفكير متعدد الخطوات. يعزز Milvus الاستجابة بشكل أكبر من خلال التخزين المؤقت لمشاكل الترميز المماثلة وحلولها، مما يحول تفاعلات المستخدم السابقة إلى قاعدة معرفية قابلة لإعادة الاستخدام.</p>
-<h3 id="3-Enterprise-Knowledge-Base" class="common-anchor-header">3. قاعدة المعرفة المؤسسية</h3><p>تميل الاستعلامات المؤسسية إلى التكرار بمرور الوقت - عمليات البحث عن السياسات، ومراجع الامتثال، والأسئلة الشائعة حول المنتجات. مع استخدام Milvus كطبقة تخزين مؤقت دلالي، يمكن تخزين الأسئلة المتكررة وإجاباتها واسترجاعها بكفاءة. وهذا يقلل من العمليات الحسابية الزائدة عن الحاجة مع الحفاظ على اتساق الإجابات عبر الأقسام والمناطق.</p>
-<p>تحت غطاء المحرك، يتم تنفيذ خط أنابيب <strong>الموجه الدلالي + Milvus</strong> <strong>بلغة Go</strong> <strong>وRust</strong> لتحقيق أداء عالٍ وزمن استجابة منخفض. وهو مدمج في طبقة البوابة، ويراقب باستمرار المقاييس الرئيسية - مثل معدلات الوصول، وزمن انتقال التوجيه، وأداء النموذج - لضبط استراتيجيات التوجيه في الوقت الفعلي.</p>
-<h2 id="How-to-Quickly-Test-the-Semantic-Caching-in-the-Semantic-Router" class="common-anchor-header">كيفية اختبار التخزين المؤقت الدلالي بسرعة في الموجه الدلالي<button data-href="#How-to-Quickly-Test-the-Semantic-Caching-in-the-Semantic-Router" class="anchor-icon" translate="no">
+    </button></h2><p>The combination of <strong>vLLM Semantic Router</strong> and <strong>Milvus</strong> shines in real-world production environments where speed, cost, and reusability all matter.</p>
+<p>Three common scenarios stand out:</p>
+<h3 id="1-Customer-Service-QA" class="common-anchor-header">1. Customer Service Q&amp;A</h3><p>Customer-facing bots handle massive volumes of repetitive queries every day—password resets, account updates, delivery statuses. This domain is both cost- and latency-sensitive, making it ideal for semantic routing. The router sends routine questions to smaller, faster models and escalates complex or ambiguous ones to larger models for deeper reasoning. Meanwhile, Milvus caches previous Q&amp;A pairs, so when similar queries appear, the system can instantly reuse past answers instead of regenerating them.</p>
+<h3 id="2-Code-Assistance" class="common-anchor-header">2. Code Assistance</h3><p>In developer tools or IDE assistants, many queries overlap—syntax help, API lookups, small debugging hints. By analyzing the semantic structure of each prompt, the router dynamically selects an appropriate model size: lightweight for simple tasks, more capable for multi-step reasoning. Milvus boosts responsiveness further by caching similar coding problems and their solutions, turning prior user interactions into a reusable knowledge base.</p>
+<h3 id="3-Enterprise-Knowledge-Base" class="common-anchor-header">3. Enterprise Knowledge Base</h3><p>Enterprise queries tend to repeat over time—policy lookups, compliance references, product FAQs. With Milvus as the semantic cache layer, frequently asked questions and their answers can be stored and retrieved efficiently. This minimizes redundant computation while keeping responses consistent across departments and regions.</p>
+<p>Under the hood, the <strong>Semantic Router + Milvus</strong> pipeline is implemented in <strong>Go</strong> and <strong>Rust</strong> for high performance and low latency. Integrated at the gateway layer, it continuously monitors key metrics—like hit rates, routing latency, and model performance—to fine-tune routing strategies in real time.</p>
+<h2 id="How-to-Quickly-Test-the-Semantic-Caching-in-the-Semantic-Router" class="common-anchor-header">How to Quickly Test the Semantic Caching in the Semantic Router<button data-href="#How-to-Quickly-Test-the-Semantic-Caching-in-the-Semantic-Router" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -107,16 +107,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قبل نشر التخزين المؤقت الدلالي على نطاق واسع، من المفيد التحقق من صحة سلوكه في إعداد محكوم. في هذا القسم، سنقوم في هذا القسم بإجراء اختبار محلي سريع يوضح كيفية استخدام الموجه الدلالي ل <strong>Milvus</strong> كذاكرة تخزين مؤقت دلالية. سترى كيف تصل الاستعلامات المتشابهة إلى ذاكرة التخزين المؤقت على الفور بينما تؤدي الاستعلامات الجديدة أو المتميزة إلى إنشاء نموذج - مما يثبت منطق التخزين المؤقت أثناء العمل.</p>
-<h3 id="Prerequisites" class="common-anchor-header">المتطلبات الأساسية</h3><ul>
-<li>بيئة الحاوية: Docker + Docker Compose</li>
-<li>قاعدة بيانات المتجهات: خدمة ميلفوس</li>
-<li>LLM + التضمين: تنزيل المشروع محلياً</li>
+    </button></h2><p>Before deploying semantic caching at scale, it’s useful to validate how it behaves in a controlled setup. In this section, we’ll walk through a quick local test that shows how the Semantic Router uses <strong>Milvus</strong> as its semantic cache. You’ll see how similar queries hit the cache instantly while new or distinct ones trigger model generation—proving the caching logic in action.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><ul>
+<li>Container Environment: Docker + Docker Compose</li>
+<li>Vector Database: Milvus Service</li>
+<li>LLM + Embedding: Project downloaded locally</li>
 </ul>
-<h3 id="1Deploy-the-Milvus-Vector-Database" class="common-anchor-header">1- نشر قاعدة بيانات Milvus Vector قاعدة بيانات Milvus</h3><p>تنزيل ملفات النشر</p>
+<h3 id="1Deploy-the-Milvus-Vector-Database" class="common-anchor-header">1.Deploy the Milvus Vector Database</h3><p>Download the deployment files</p>
 <pre><code translate="no">wget https://github.com/Milvus-io/Milvus/releases/download/v2.5.12/Milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<p>ابدأ تشغيل خدمة ميلفوس</p>
+<p>Start the Milvus service.</p>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">docker-compose ps -a
@@ -127,9 +127,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="2-Clone-the-project" class="common-anchor-header">2. استنساخ المشروع</h3><pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/vllm-project/semantic-router.git
+<h3 id="2-Clone-the-project" class="common-anchor-header">2. Clone the project</h3><pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/vllm-project/semantic-router.git
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Download-local-models" class="common-anchor-header">3. تنزيل النماذج المحلية</h3><pre><code translate="no"><span class="hljs-built_in">cd</span> semantic-router
+<h3 id="3-Download-local-models" class="common-anchor-header">3. Download local models</h3><pre><code translate="no"><span class="hljs-built_in">cd</span> semantic-router
 make download-models
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -138,7 +138,7 @@ make download-models
     <span></span>
   </span>
 </p>
-<h3 id="4-Configuration-Modifications" class="common-anchor-header">4. تعديلات التكوين</h3><p>ملاحظة: قم بتعديل نوع semantic_cache إلى milvus</p>
+<h3 id="4-Configuration-Modifications" class="common-anchor-header">4. Configuration Modifications</h3><p>Note: Modify the semantic_cache type to milvus</p>
 <pre><code translate="no">vim config.yaml
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">semantic_cache:
@@ -150,7 +150,8 @@ make download-models
   ttl_seconds: <span class="hljs-number">3600</span>
   eviction_policy: <span class="hljs-string">&quot;fifo&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>تعديل تهيئة Mmilvus ملاحظة: قم بتعبئة خدمة Milvusmilvus التي تم نشرها للتو</p>
+<p>Modify the Mmilvus configuration
+Note: Fill in the Milvusmilvus service just deployed</p>
 <pre><code translate="no">vim milvus.yaml
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-comment"># Milvus connection settings</span>
@@ -197,7 +198,7 @@ collection:
       M: <span class="hljs-number">16</span>              <span class="hljs-comment"># Number of bi-directional links for each node</span>
       efConstruction: <span class="hljs-number">64</span>  <span class="hljs-comment"># Search scope during index construction</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="5-Start-the-project" class="common-anchor-header">5. بدء تشغيل المشروع</h3><p>ملاحظة: يوصى بتعديل بعض تبعيات ملف Dockerfile إلى المصادر المحلية</p>
+<h3 id="5-Start-the-project" class="common-anchor-header">5. Start the project</h3><p>Note: It is recommended to modify some Dockerfile dependencies to domestic sources</p>
 <pre><code translate="no">docker compose --profile testing up --build
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -206,7 +207,8 @@ collection:
     <span></span>
   </span>
 </p>
-<h3 id="6-Test-Requests" class="common-anchor-header">6. اختبار الطلبات</h3><p>ملاحظة: طلبان إجمالاً (بدون ذاكرة تخزين مؤقت وضرب ذاكرة التخزين المؤقت) الطلب الأول:</p>
+<h3 id="6-Test-Requests" class="common-anchor-header">6. Test Requests</h3><p>Note: Two requests in total (no cache and cache hit)
+First request:</p>
 <pre><code translate="no"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 第一次请求（无缓存状态） ===&quot;</span> &amp;&amp; \
 <span class="hljs-keyword">time</span> curl -X POST http://localhost:8801/v1/chat/completions \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
@@ -220,12 +222,12 @@ collection:
     &quot;temperature&quot;: 0.7
   }&#x27;</span> | jq .
 <button class="copy-code-btn"></button></code></pre>
-<p>الإخراج:</p>
+<p>Output:</p>
 <pre><code translate="no"><span class="hljs-built_in">real</span>    <span class="hljs-number">0</span>m16<span class="hljs-number">.546</span>s
 user    <span class="hljs-number">0</span>m0<span class="hljs-number">.116</span>s
 sys     <span class="hljs-number">0</span>m0<span class="hljs-number">.033</span>s
 <button class="copy-code-btn"></button></code></pre>
-<p>الطلب الثاني:</p>
+<p>Second request:</p>
 <pre><code translate="no"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 第二次请求（缓存状态） ===&quot;</span> &amp;&amp; \
 <span class="hljs-keyword">time</span> curl -X POST http://localhost:8801/v1/chat/completions \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
@@ -239,13 +241,13 @@ sys     <span class="hljs-number">0</span>m0<span class="hljs-number">.033</span
     &quot;temperature&quot;: 0.7
   }&#x27;</span> | jq .
 <button class="copy-code-btn"></button></code></pre>
-<p>الإخراج:</p>
+<p>Output:</p>
 <pre><code translate="no"><span class="hljs-built_in">real</span>    <span class="hljs-number">0</span>m2<span class="hljs-number">.393</span>s
 user    <span class="hljs-number">0</span>m0<span class="hljs-number">.116</span>s
 sys     <span class="hljs-number">0</span>m0<span class="hljs-number">.021</span>s
 <button class="copy-code-btn"></button></code></pre>
-<p>يوضح هذا الاختبار التخزين المؤقت الدلالي لموجه الدلالات أثناء العمل. من خلال الاستفادة من Milvus كقاعدة بيانات المتجه، فإنه يطابق الاستعلامات المتشابهة دلالياً بكفاءة، مما يحسن من أوقات الاستجابة عندما يسأل المستخدمون نفس الأسئلة أو أسئلة مشابهة.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This test demonstrates Semantic Router’s semantic caching in action. By leveraging Milvus as the vector database, it efficiently matches semantically similar queries, improving response times when users ask the same or similar questions.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -260,6 +262,6 @@ sys     <span class="hljs-number">0</span>m0<span class="hljs-number">.021</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>مع نمو أعباء عمل الذكاء الاصطناعي وتزايد أعباء العمل في الذكاء الاصطناعي وأصبح تحسين التكلفة أمرًا ضروريًا، فإن الجمع بين موجه الدلالات vLLM و <a href="https://milvus.io/">Milvus</a> يوفر طريقة عملية للتوسع بذكاء. من خلال توجيه كل استعلام إلى النموذج الصحيح وتخزين النتائج المتشابهة دلالياً مع قاعدة بيانات متجهة موزعة، يقلل هذا الإعداد من النفقات العامة للحساب مع الحفاظ على سرعة الاستجابات واتساقها عبر حالات الاستخدام.</p>
-<p>باختصار، ستحصل على تحجيم أكثر ذكاءً - قوة غاشمة أقل، وعقول أكثر.</p>
-<p>إذا كنت ترغب في استكشاف هذا الأمر بشكل أكبر، انضم إلى المحادثة في <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> أو افتح مشكلة على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> جلسة ساعات عمل Milvus المكتبية</a> لمدة 20 دقيقة للحصول على إرشادات فردية ورؤى وتعمّق تقني من الفريق الذي يقف وراء Milvus.</p>
+    </button></h2><p>As AI workloads grow and cost optimization becomes essential, the combination of vLLM Semantic Router and <a href="https://milvus.io/">Milvus</a> provides a practical way to scale intelligently. By routing each query to the right model and caching semantically similar results with a distributed vector database, this setup cuts compute overhead while keeping responses fast and consistent across use cases.</p>
+<p>In short, you get smarter scaling—less brute force, more brains.</p>
+<p>If you’d like to explore this further, join the conversation in our <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> or open an issue on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours session</a> for one-on-one guidance, insights, and technical deep dives from the team behind Milvus.</p>

@@ -1,6 +1,6 @@
 ---
 id: get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md
-title: Milvus 2.5でハイブリッドセマンティック/フルテキスト検索を始める
+title: Getting Started with Hybrid Semantic / Full-Text Search with Milvus 2.5
 author: Stefan Webb
 date: 2024-12-17T00:00:00.000Z
 cover: assets.zilliz.com/Full_Text_Search_with_Milvus_2_5_7ba74461be.png
@@ -10,9 +10,9 @@ recommend: false
 canonicalUrl: >-
   https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md
 ---
-<p>この記事では、新しい全文検索機能を素早く立ち上げ、ベクトル埋め込みに基づく従来のセマンティック検索と組み合わせる方法を紹介します。</p>
+<p>In this article, we will show you how to quickly get up and running with the new full-text search feature and combine it with the conventional semantic search based on vector embeddings.</p>
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/3bftbAjQF7Q" title="Beyond Keywords: Hybrid Search with Milvus 2.5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<h2 id="Requirement" class="common-anchor-header">必要条件<button data-href="#Requirement" class="anchor-icon" translate="no">
+<h2 id="Requirement" class="common-anchor-header">Requirement<button data-href="#Requirement" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,11 +27,11 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>まず、Milvus 2.5がインストールされていることを確認してください：</p>
+    </button></h2><p>First, ensure you have installed Milvus 2.5:</p>
 <pre><code translate="no">pip install -U pymilvus[model]
 <button class="copy-code-btn"></button></code></pre>
-<p>そして、<a href="https://milvus.io/docs/prerequisite-docker.md">Milvusのドキュメントにあるインストール手順を</a>使用して、Milvus Standaloneのインスタンス（ローカルマシンなど）を実行していることを確認してください。</p>
-<h2 id="Building-the-Data-Schema-and-Search-Indices" class="common-anchor-header">データスキーマと検索インデックスの構築<button data-href="#Building-the-Data-Schema-and-Search-Indices" class="anchor-icon" translate="no">
+<p>and have a running instance of Milvus Standalone (e.g. on your local machine) using the <a href="https://milvus.io/docs/prerequisite-docker.md">installation instructions in the Milvus docs</a>.</p>
+<h2 id="Building-the-Data-Schema-and-Search-Indices" class="common-anchor-header">Building the Data Schema and Search Indices<button data-href="#Building-the-Data-Schema-and-Search-Indices" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,11 +46,12 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>必要なクラスと関数をインポートします：</p>
+    </button></h2><p>We import the required classes and functions:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>, <span class="hljs-title class_">DataType</span>, <span class="hljs-title class_">Function</span>, <span class="hljs-title class_">FunctionType</span>, model
 <button class="copy-code-btn"></button></code></pre>
-<p>Milvus 2.5では、<code translate="no">Function</code> と<code translate="no">FunctionType</code> という2つの新しいエントリが追加されました。</p>
-<p>次に、Milvus Standaloneで、つまりローカルでデータベースを開き、データスキーマを作成します。スキーマは整数のプライマリキー、テキスト文字列、384次元の密なベクトル、および（次元数無制限の）疎なベクトルから構成される。 Milvus Liteは現在全文検索をサポートしておらず、Milvus StandaloneとMilvus Distributedのみサポートしている。</p>
+<p>You may have noticed two new entries for Milvus 2.5, <code translate="no">Function</code> and <code translate="no">FunctionType</code>, which we will explain shortly.</p>
+<p>Next we open the database with Milvus Standalone, that is, locally, and create the data schema. The schema comprises an integer primary key, a text string, a dense vector of dimension 384, and a sparse vector (of unlimited dimensionality).
+Note that Milvus Lite does not currently support full-text search, only Milvus Standalone and Milvus Distributed.</p>
 <pre><code translate="no">client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
 
 schema = client.create_schema()
@@ -62,8 +63,8 @@ schema.add_field(field_name=<span class="hljs-string">&quot;sparse&quot;</span>,
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">{<span class="hljs-string">&#x27;auto_id&#x27;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;fields&#x27;</span>: [{<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.INT64: <span class="hljs-number">5</span>&gt;, <span class="hljs-string">&#x27;is_primary&#x27;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&#x27;auto_id&#x27;</span>: <span class="hljs-literal">True</span>}, {<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;text&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.VARCHAR: <span class="hljs-number">21</span>&gt;, <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;max_length&#x27;</span>: <span class="hljs-number">1000</span>, <span class="hljs-string">&#x27;enable_analyzer&#x27;</span>: <span class="hljs-literal">True</span>}}, {<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;dense&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.FLOAT_VECTOR: <span class="hljs-number">101</span>&gt;, <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;dim&#x27;</span>: <span class="hljs-number">768</span>}}, {<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;sparse&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.SPARSE_FLOAT_VECTOR: <span class="hljs-number">104</span>&gt;}], <span class="hljs-string">&#x27;enable_dynamic_field&#x27;</span>: <span class="hljs-literal">False</span>}
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">enable_analyzer=True</code> パラメータにお気づきでしょうか。これはMilvus 2.5に対して、このフィールドの字句解析機能を有効にし、全文検索に必要なトークンとトークンの出現頻度のリストを作成するように指示します。<code translate="no">sparse</code> フィールドには、構文解析から生成されたbag-of-wordsとしてのドキュメントのベクトル表現が格納されます<code translate="no">text</code> 。</p>
-<p>しかし、<code translate="no">text</code> と<code translate="no">sparse</code> フィールドをどのように接続し、<code translate="no">text</code> から<code translate="no">sparse</code> をどのように計算すべきかをmilvusに伝えるのでしょうか？そこで、<code translate="no">Function</code> オブジェクトを呼び出し、スキーマに追加する必要があります：</p>
+<p>You may have noticed the <code translate="no">enable_analyzer=True</code> parameter. This tells Milvus 2.5 to enable the lexical parser on this field and build a list of tokens and token frequencies, which are required for full-text search. The <code translate="no">sparse</code> field will hold a vector representation of the documentation as a bag-of-words produced from the parsing <code translate="no">text</code>.</p>
+<p>But how do we connect the <code translate="no">text</code> and <code translate="no">sparse</code> fields, and tell Milvus how <code translate="no">sparse</code> should be calculated from <code translate="no">text</code>? This is where we need to invoke the <code translate="no">Function</code> object and add it to the schema:</p>
 <pre><code translate="no">bm25_function = Function(
     name=<span class="hljs-string">&quot;text_bm25_emb&quot;</span>, <span class="hljs-comment"># Function name</span>
     input_field_names=[<span class="hljs-string">&quot;text&quot;</span>], <span class="hljs-comment"># Name of the VARCHAR field containing raw text data</span>
@@ -75,11 +76,11 @@ schema.add_function(bm25_function)
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">{<span class="hljs-string">&#x27;auto_id&#x27;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;fields&#x27;</span>: [{<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.INT64: <span class="hljs-number">5</span>&gt;, <span class="hljs-string">&#x27;is_primary&#x27;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&#x27;auto_id&#x27;</span>: <span class="hljs-literal">True</span>}, {<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;text&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.VARCHAR: <span class="hljs-number">21</span>&gt;, <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;max_length&#x27;</span>: <span class="hljs-number">1000</span>, <span class="hljs-string">&#x27;enable_analyzer&#x27;</span>: <span class="hljs-literal">True</span>}}, {<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;dense&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.FLOAT_VECTOR: <span class="hljs-number">101</span>&gt;, <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;dim&#x27;</span>: <span class="hljs-number">768</span>}}, {<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;sparse&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.SPARSE_FLOAT_VECTOR: <span class="hljs-number">104</span>&gt;, <span class="hljs-string">&#x27;is_function_output&#x27;</span>: <span class="hljs-literal">True</span>}], <span class="hljs-string">&#x27;enable_dynamic_field&#x27;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&#x27;functions&#x27;</span>: [{<span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;text_bm25_emb&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;FunctionType.BM25: <span class="hljs-number">1</span>&gt;, <span class="hljs-string">&#x27;input_field_names&#x27;</span>: [<span class="hljs-string">&#x27;text&#x27;</span>], <span class="hljs-string">&#x27;output_field_names&#x27;</span>: [<span class="hljs-string">&#x27;sparse&#x27;</span>], <span class="hljs-string">&#x27;params&#x27;</span>: {}}]}
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">Function</code> オブジェクトの抽象化は、全文検索の適用よりも一般的です。将来的には、あるフィールドが別のフィールドの関数である必要がある他のケースに使われるかもしれない。私たちの場合、<code translate="no">FunctionType.BM25</code> という関数を介して、<code translate="no">sparse</code> が<code translate="no">text</code> の関数であることを指定しています。<code translate="no">BM25</code> は、（文書の集合に対する）クエリの文書に対する類似度を計算するために使われる、情報検索における一般的なメトリックを指します。</p>
-<p>Milvusのデフォルト埋め込みモデルである<a href="https://huggingface.co/GPTCache/paraphrase-albert-small-v2">paraphrase-albert-small-v2を</a>使用する：</p>
+<p>The abstraction of the <code translate="no">Function</code> object is more general than that of applying full-text search. In the future, it may be used for other cases where one field needs to be a function of another field. In our case, we specify that <code translate="no">sparse</code> is a function of <code translate="no">text</code> via the function <code translate="no">FunctionType.BM25</code>. <code translate="no">BM25</code> refers to a common metric in information retrieval used for calculating a query’s similarity to a document (relative to a collection of documents).</p>
+<p>We use the default embedding model in Milvus, which is <a href="https://huggingface.co/GPTCache/paraphrase-albert-small-v2">paraphrase-albert-small-v2</a>:</p>
 <pre><code translate="no">embedding_fn = model.DefaultEmbeddingFunction()
 <button class="copy-code-btn"></button></code></pre>
-<p>次のステップは検索インデックスを追加することである。密なベクトル用のインデックスと疎なベクトル用のインデックスがあります。全文検索には標準的な密なベクトルの検索方法とは異なる検索方法が必要なため、インデックスタイプは<code translate="no">SPARSE_INVERTED_INDEX</code> 、<code translate="no">BM25</code> 。</p>
+<p>The next step is to add our search indices. We have one for the dense vector and a separate one for the sparse vector. The index type is <code translate="no">SPARSE_INVERTED_INDEX</code> with <code translate="no">BM25</code> since full-text search requires a different search method than those for standard dense vectors.</p>
 <pre><code translate="no">index_params = client.<span class="hljs-title function_">prepare_index_params</span>()
 
 index_params.<span class="hljs-title function_">add_index</span>(
@@ -94,7 +95,7 @@ index_params.<span class="hljs-title function_">add_index</span>(
     metric_type=<span class="hljs-string">&quot;BM25&quot;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>最後に、コレクションを作成します：</p>
+<p>Finally, we create our collection:</p>
 <pre><code translate="no">client.<span class="hljs-title function_">drop_collection</span>(<span class="hljs-string">&#x27;demo&#x27;</span>)
 client.<span class="hljs-title function_">list_collections</span>()
 <button class="copy-code-btn"></button></code></pre>
@@ -110,8 +111,8 @@ client.<span class="hljs-title function_">list_collections</span>()
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">[<span class="hljs-string">&#x27;demo&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>これで、テキスト・ドキュメントを受け入れ、セマンティック検索と全文検索を実行するための空のデータベースがセットアップされたことになる！</p>
-<h2 id="Inserting-Data-and-Performing-Full-Text-Search" class="common-anchor-header">データの挿入と全文検索<button data-href="#Inserting-Data-and-Performing-Full-Text-Search" class="anchor-icon" translate="no">
+<p>And with that, we have an empty database set up to accept text documents and perform semantic and full-text searches!</p>
+<h2 id="Inserting-Data-and-Performing-Full-Text-Search" class="common-anchor-header">Inserting Data and Performing Full-Text Search<button data-href="#Inserting-Data-and-Performing-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -126,7 +127,7 @@ client.<span class="hljs-title function_">list_collections</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>データの挿入は以前のmilvusと変わりません：</p>
+    </button></h2><p>Inserting data is no different than previous versions of Milvus:</p>
 <pre><code translate="no">docs = [
     <span class="hljs-string">&#x27;information retrieval is a field of study.&#x27;</span>,
     <span class="hljs-string">&#x27;information retrieval focuses on finding relevant information in large datasets.&#x27;</span>,
@@ -141,7 +142,7 @@ client.insert(<span class="hljs-string">&#x27;demo&#x27;</span>, [
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">{<span class="hljs-string">&#x27;insert_count&#x27;</span>: <span class="hljs-number">3</span>, <span class="hljs-string">&#x27;ids&#x27;</span>: [<span class="hljs-number">454387371651630485</span>, <span class="hljs-number">454387371651630486</span>, <span class="hljs-number">454387371651630487</span>], <span class="hljs-string">&#x27;cost&#x27;</span>: <span class="hljs-number">0</span>}
 <button class="copy-code-btn"></button></code></pre>
-<p>ハイブリッド検索に移る前に、まず全文検索を説明しましょう：</p>
+<p>Let’s first illustrate a full-text search before we move on to hybrid search:</p>
 <pre><code translate="no">search_params = {
     <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;drop_ratio_search&#x27;</span>: 0.2},
 }
@@ -155,8 +156,8 @@ results = client.search(
     search_params=search_params
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>検索パラメータ<code translate="no">drop_ratio_search</code> は、検索アルゴリズム中に低得点文書の割合を落とすことを意味します。</p>
-<p>その結果を見てみよう：</p>
+<p>The search parameter <code translate="no">drop_ratio_search</code> refers to the proportion of lower-scoring documents to drop during the search algorithm.</p>
+<p>Let’s view the results:</p>
 <pre><code translate="no"><span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> results[<span class="hljs-number">0</span>]:
     <span class="hljs-built_in">print</span>(hit)
 <button class="copy-code-btn"></button></code></pre>
@@ -164,7 +165,7 @@ results = client.search(
 {<span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">454387371651630486</span>, <span class="hljs-string">&#x27;distance&#x27;</span>: <span class="hljs-number">0.29726022481918335</span>, <span class="hljs-string">&#x27;entity&#x27;</span>: {<span class="hljs-string">&#x27;text&#x27;</span>: <span class="hljs-string">&#x27;information retrieval focuses on finding relevant information in large datasets.&#x27;</span>}}
 {<span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">454387371651630487</span>, <span class="hljs-string">&#x27;distance&#x27;</span>: <span class="hljs-number">0.2715056240558624</span>, <span class="hljs-string">&#x27;entity&#x27;</span>: {<span class="hljs-string">&#x27;text&#x27;</span>: <span class="hljs-string">&#x27;data mining and information retrieval overlap in research.&#x27;</span>}}
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Performing-Hybrid-Semantic-and-Full-Text-Search" class="common-anchor-header">セマンティック検索と全文検索のハイブリッド検索<button data-href="#Performing-Hybrid-Semantic-and-Full-Text-Search" class="anchor-icon" translate="no">
+<h2 id="Performing-Hybrid-Semantic-and-Full-Text-Search" class="common-anchor-header">Performing Hybrid Semantic and Full-Text Search<button data-href="#Performing-Hybrid-Semantic-and-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -179,7 +180,7 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>それでは、学んだことを組み合わせて、セマンティック検索と全文検索を別々にリランカーと組み合わせたハイブリッド検索を実行してみよう：</p>
+    </button></h2><p>Let’s now combine what we’ve learned to perform a hybrid search that combines separate semantic and full-text searches with a reranker:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">AnnSearchRequest</span>, <span class="hljs-title class_">RRFRanker</span>
 query = <span class="hljs-string">&#x27;whats the focus of information retrieval?&#x27;</span>
 query_dense_vector = <span class="hljs-title function_">embedding_fn</span>([query])
@@ -223,8 +224,8 @@ res = client.hybrid_search(
 {<span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">454387371651630486</span>, <span class="hljs-string">&#x27;distance&#x27;</span>: <span class="hljs-number">0.032258063554763794</span>, <span class="hljs-string">&#x27;entity&#x27;</span>: {<span class="hljs-string">&#x27;text&#x27;</span>: <span class="hljs-string">&#x27;information retrieval focuses on finding relevant information in large datasets.&#x27;</span>}}
 {<span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">454387371651630487</span>, <span class="hljs-string">&#x27;distance&#x27;</span>: <span class="hljs-number">0.0317460335791111</span>, <span class="hljs-string">&#x27;entity&#x27;</span>: {<span class="hljs-string">&#x27;text&#x27;</span>: <span class="hljs-string">&#x27;data mining and information retrieval overlap in research.&#x27;</span>}}
 <button class="copy-code-btn"></button></code></pre>
-<p>お気づきかもしれませんが、これは2つの別々のセマンティックフィールドを持つハイブリッド検索（Milvus 2.4から利用可能）と変わりません。この単純な例では、結果はフルテキスト検索と同じですが、より大きなデータベースやキーワードに特化した検索では、ハイブリッド検索の方が一般的にリコールが高くなります。</p>
-<h2 id="Summary" class="common-anchor-header">まとめ<button data-href="#Summary" class="anchor-icon" translate="no">
+<p>As you may have noticed, this is no different than a hybrid search with two separate semantic fields (available since Milvus 2.4). The results are identical to full-text search in this simple example, but for larger databases and keyword specific searches hybrid search typically has higher recall.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -239,8 +240,8 @@ res = client.hybrid_search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.5でフルテキスト検索とハイブリッドセマンティック/フルテキスト検索を実行するために必要な知識はすべて身につけました。フルテキスト検索がどのように機能するのか、なぜセマンティック検索を補完するのかについては以下の記事を参照してください：</p>
+    </button></h2><p>You’re now equipped with all the knowledge needed to perform full-text and hybrid semantic/full-text search with Milvus 2.5. See the following articles for more discussion on how full-text search works and why it is complementary to semantic search:</p>
 <ul>
-<li><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus2.5の紹介：フルテキスト検索、より強力なメタデータフィルタリング、ユーザビリティの向上！</a></li>
-<li><a href="https://milvus.io/blog/semantic-search-vs-full-text-search-which-one-should-i-choose-with-milvus-2-5.md">セマンティック検索対全文検索：Milvus 2.5ではどちらを選ぶべきか？</a></li>
+<li><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Introducing Milvus 2.5: Full-Text Search, More Powerful Metadata Filtering, and Usability Improvements!</a></li>
+<li><a href="https://milvus.io/blog/semantic-search-vs-full-text-search-which-one-should-i-choose-with-milvus-2-5.md">Semantic Search v.s. Full-Text Search: Which Do I Choose in Milvus 2.5?</a></li>
 </ul>

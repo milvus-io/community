@@ -1,17 +1,18 @@
 ---
 id: milvus-performance-AVX-512-vs-AVX2.md
-title: Was sind erweiterte Vektorerweiterungen?
+title: What are Advanced Vector Extensions?
 author: milvus
 date: 2020-11-10T22:15:39.156Z
 desc: >-
-  Entdecken Sie, wie Milvus auf AVX-512 im Vergleich zu AVX2 unter Verwendung
-  verschiedener Vektorindizes abschneidet.
+  Discover how Milvus performs on AVX-512 vs. AVX2 using a variety of different
+  vector indexes.
 cover: assets.zilliz.com/header_milvus_performance_avx_512_vs_avx2_2c9f14ef96.png
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
 ---
-<custom-h1>Milvus-Leistung auf AVX-512 vs. AVX2</custom-h1><p>Bewusste intelligente Maschinen, die die Welt übernehmen wollen, sind ein fester Bestandteil der Science-Fiction, aber in Wirklichkeit sind moderne Computer sehr gehorsam. Ohne dass man es ihnen sagt, wissen sie selten, was sie mit sich selbst anfangen sollen. Computer führen Aufgaben auf der Grundlage von Anweisungen oder Befehlen aus, die von einem Programm an einen Prozessor gesendet werden. Auf der untersten Ebene ist jede Anweisung eine Folge von Einsen und Nullen, die eine Operation beschreibt, die der Computer ausführen soll. In den Assemblersprachen von Computern entspricht jede Anweisung in der Maschinensprache in der Regel einer Prozessoranweisung. Die Zentraleinheit (CPU) stützt sich auf Anweisungen, um Berechnungen durchzuführen und Systeme zu steuern. Darüber hinaus wird die CPU-Leistung häufig anhand der Fähigkeit zur Befehlsausführung (z. B. Ausführungszeit) gemessen.</p>
-<h2 id="What-are-Advanced-Vector-Extensions" class="common-anchor-header">Was sind erweiterte Vektorerweiterungen?<button data-href="#What-are-Advanced-Vector-Extensions" class="anchor-icon" translate="no">
+<custom-h1>Milvus performance on AVX-512 vs. AVX2</custom-h1><p>Conscious intelligent machines that want to take over the world are a steady fixture in science fiction, but in reality modern computers are very obedient. Without being told, they seldom know what to do with themselves. Computers perform tasks based on instructions, or orders, sent from a program to a processor. At their lowest level, each instruction is a sequence of ones and zeroes that describes an operation for a computer to execute.
+Typically, in computer assembly languages each machine language statement corresponds to a processor instruction. The central processing unit (CPU) relies on instructions to perform calculations and control systems. Additionally, CPU performance is often measured in terms of instruction execution capability (e.g., execution time).</p>
+<h2 id="What-are-Advanced-Vector-Extensions" class="common-anchor-header">What are Advanced Vector Extensions?<button data-href="#What-are-Advanced-Vector-Extensions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,10 +27,10 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Advanced Vector Extensions (AVX) sind ein Befehlssatz für Mikroprozessoren, die auf der x86-Familie von Befehlssatzarchitekturen basieren. Erstmals von Intel im März 2008 vorgeschlagen, fand AVX drei Jahre später mit der Einführung von Sandy Bridge - einer Mikroarchitektur, die in der zweiten Generation von Intel Core-Prozessoren (z. B. Core i7, i5, i3) verwendet wird - und der konkurrierenden Mikroarchitektur von AMD, die ebenfalls 2011 veröffentlicht wurde, Bulldozer, breite Unterstützung.</p>
-<p>Mit AVX wurden ein neues Kodierungsschema, neue Funktionen und neue Anweisungen eingeführt. AVX2 erweitert die meisten Ganzzahloperationen auf 256 Bit und führt FMA-Operationen (Fused Multiply-Accumulate) ein. AVX-512 erweitert AVX auf 512-Bit-Operationen unter Verwendung einer neuen EVEX-Präfixkodierung (Enhanced Vector Extension).</p>
-<p><a href="https://milvus.io/docs">Milvus</a> ist eine Open-Source-Vektordatenbank, die für die Ähnlichkeitssuche und Anwendungen der künstlichen Intelligenz (KI) entwickelt wurde. Die Plattform unterstützt den AVX-512-Befehlssatz, d. h. sie kann mit allen CPUs verwendet werden, die AVX-512-Befehle enthalten. Milvus hat ein breites Anwendungsspektrum, das Empfehlungssysteme, Computer Vision, natürliche Sprachverarbeitung (NLP) und mehr umfasst. In diesem Artikel werden Leistungsergebnisse und Analysen einer Milvus-Vektor-Datenbank auf AVX-512 und AVX2 vorgestellt.</p>
-<h2 id="Milvus-performance-on-AVX-512-vs-AVX2" class="common-anchor-header">Milvus-Leistung auf AVX-512 vs. AVX2<button data-href="#Milvus-performance-on-AVX-512-vs-AVX2" class="anchor-icon" translate="no">
+    </button></h2><p>Advanced Vector Extensions (AVX) are an instruction set for microprocessors that rely on the x86 family of instruction set architectures. First proposed by Intel in March 2008, AVX saw broad support three years later with the launch of Sandy Bridge—a microarchitecture used in the second generation of Intel Core processors (e.g, Core i7, i5, i3)— and AMD’s competing microarchitecture also released in 2011, Bulldozer.</p>
+<p>AVX introduced a new coding scheme, new features, and new instructions. AVX2 expands most integer operations to 256 bits and introduces fused multiply-accumulate (FMA) operations. AVX-512 expands AVX to 512-bit operations using a new enhanced vector extension (EVEX) prefix encoding.</p>
+<p><a href="https://milvus.io/docs">Milvus</a> is an open-source vector database designed for similarity search and artificial intelligence (AI) applications. The platform supports the AVX-512 instruction set, meaning it can be used with all CPUs that include the AVX-512 instructions. Milvus has broad applications spanning recommender systems, computer vision, natural language processing (NLP) and more. This article presents performance results and analysis of a Milvus vector database on AVX-512 and AVX2.</p>
+<h2 id="Milvus-performance-on-AVX-512-vs-AVX2" class="common-anchor-header">Milvus performance on AVX-512 vs. AVX2<button data-href="#Milvus-performance-on-AVX-512-vs-AVX2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,29 +45,49 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="System-configuration" class="common-anchor-header">System-Konfiguration</h3><ul>
-<li>CPU: Intel® Platinum 8163 CPU @ 2.50GHz24 Kerne 48 Threads</li>
-<li>Anzahl der CPUs: 2</li>
-<li>Grafikkarte, GeForce RTX 2080Ti 11GB 4 Karten</li>
-<li>Arbeitsspeicher: 768 GB</li>
-<li>Festplatte: 2TB SSD</li>
+    </button></h2><h3 id="System-configuration" class="common-anchor-header">System configuration</h3><ul>
+<li>CPU: Intel® Platinum 8163 CPU @ 2.50GHz24 cores 48 threads</li>
+<li>Number of CPU: 2</li>
+<li>Graphics card, GeForce RTX 2080Ti 11GB 4 cards</li>
+<li>Mem: 768GB</li>
+<li>Disk: 2TB SSD</li>
 </ul>
-<h3 id="Milvus-parameters" class="common-anchor-header">Milvus-Parameter</h3><ul>
-<li>cahce.cahe_size: 25, Die Größe des CPU-Speichers, der zum Zwischenspeichern von Daten für schnellere Abfragen verwendet wird.</li>
+<h3 id="Milvus-parameters" class="common-anchor-header">Milvus parameters</h3><ul>
+<li>cahce.cahe_size: 25, The size of CPU memory used for caching data for faster query.</li>
 <li>nlist: 4096</li>
 <li>nprobe: 128</li>
 </ul>
-<p>Hinweis: <code translate="no">nlist</code> ist der Indizierungsparameter, der vom Client erstellt wird; <code translate="no">nprobe</code> ist der Suchparameter. Sowohl IVF_FLAT als auch IVF_SQ8 verwenden einen Clustering-Algorithmus, um eine große Anzahl von Vektoren in Buckets zu partitionieren, wobei <code translate="no">nlist</code> die Gesamtzahl der Buckets ist, die während des Clustering partitioniert werden. Der erste Schritt bei einer Abfrage besteht darin, die Anzahl der Buckets zu finden, die dem Zielvektor am nächsten liegen, und der zweite Schritt besteht darin, die Top-k-Vektoren in diesen Buckets zu finden, indem der Abstand der Vektoren verglichen wird. <code translate="no">nprobe</code> bezieht sich auf die Anzahl der Buckets im ersten Schritt.</p>
-<h3 id="Dataset-SIFT10M-dataset" class="common-anchor-header">Datensatz: SIFT10M-Datensatz</h3><p>Für diese Tests wird der <a href="https://archive.ics.uci.edu/ml/datasets/SIFT10M">SIFT10M-Datensatz</a> verwendet, der eine Million 128-dimensionale Vektoren enthält und häufig für die Analyse der Leistung entsprechender Nearest-Neighbor-Suchmethoden verwendet wird. Die Top-1-Suchzeit für nq = [1, 10, 100, 500, 1000] wird zwischen den beiden Befehlssätzen verglichen.</p>
-<h3 id="Results-by-vector-index-type" class="common-anchor-header">Ergebnisse nach Vektorindex-Typ</h3><p><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Vektorindizes</a> sind zeit- und platzsparende Datenstrukturen, die auf dem Vektorfeld einer Sammlung unter Verwendung verschiedener mathematischer Modelle aufgebaut sind. Mit Hilfe der Vektorindizierung können große Datensätze effizient durchsucht werden, wenn versucht wird, ähnliche Vektoren wie ein Eingangsvektor zu identifizieren. Da eine genaue Suche sehr zeitaufwändig ist, verwenden die meisten <a href="https://milvus.io/docs/v2.0.x/index.md#CPU">von Milvus unterstützten</a> Indexarten die ANN-Suche (approximate nearest neighbor).</p>
-<p>Für diese Tests wurden drei Indizes mit AVX-512 und AVX2 verwendet: IVF_FLAT, IVF_SQ8 und HNSW.</p>
-<h3 id="IVFFLAT" class="common-anchor-header">IVF_FLAT</h3><p>Invertierte Datei (IVF_FLAT) ist ein auf Quantisierung basierender Indextyp. Er ist der einfachste IVF-Index, und die kodierten Daten, die in jeder Einheit gespeichert sind, stimmen mit den Originaldaten überein. Der Index unterteilt die Vektordaten in eine Anzahl von Cluster-Einheiten (nlist) und vergleicht dann die Abstände zwischen dem Zieleingangsvektor und dem Zentrum jedes Clusters. Je nach der Anzahl der Cluster, die das System abfragen soll (nprobe), werden die Ergebnisse der Ähnlichkeitssuche nur auf der Grundlage von Vergleichen zwischen der Zieleingabe und den Vektoren in den ähnlichsten Clustern zurückgegeben, was die Abfragezeit drastisch verkürzt. Durch die Anpassung von nprobe kann ein ideales Gleichgewicht zwischen Genauigkeit und Geschwindigkeit für ein bestimmtes Szenario gefunden werden.</p>
-<p><strong>Leistungsergebnisse</strong> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/IVF_FLAT_3688377fc8.png" alt="IVF_FLAT.png" class="doc-image" id="ivf_flat.png" /><span>IVF_FLAT.png</span> </span></p>
-<h3 id="IVFSQ8" class="common-anchor-header">IVF_SQ8</h3><p>IVF_FLAT führt keine Komprimierung durch, so dass die erzeugten Indexdateien ungefähr die gleiche Größe haben wie die ursprünglichen, nicht indizierten Vektordaten. Wenn Festplatten-, CPU- oder GPU-Speicherressourcen begrenzt sind, ist IVF_SQ8 eine bessere Option als IVF_FLAT. Dieser Indextyp kann jede Dimension des ursprünglichen Vektors von einer Vier-Byte-Gleitkommazahl in eine vorzeichenlose Ein-Byte-Ganzzahl konvertieren, indem er eine skalare Quantisierung durchführt. Dies reduziert den Festplatten-, CPU- und GPU-Speicherverbrauch um 70-75 %.</p>
-<p><strong>Leistungsergebnisse</strong> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/IVF_SQ_8_bed28307f7.png" alt="IVF_SQ8.png" class="doc-image" id="ivf_sq8.png" /><span>IVF_SQ8.png</span> </span></p>
-<h3 id="HNSW" class="common-anchor-header">HNSW</h3><p>Hierarchical Small World Graph (HNSW) ist ein graphbasierter Indizierungsalgorithmus. Abfragen beginnen in der obersten Ebene mit der Suche nach dem Knoten, der dem Ziel am nächsten liegt, und gehen dann in die nächste Ebene für eine weitere Suchrunde. Nach mehreren Iterationen kann er sich schnell der Zielposition nähern.</p>
-<p><strong>Leistungsergebnisse</strong> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/HNSW_52aba39214.png" alt="HNSW.png" class="doc-image" id="hnsw.png" /><span>HNSW.png</span> </span></p>
-<h2 id="Comparing-vector-indexes" class="common-anchor-header">Vergleich der Vektorindizes<button data-href="#Comparing-vector-indexes" class="anchor-icon" translate="no">
+<p>Note: <code translate="no">nlist</code> is the indexing parameter to create from the client; <code translate="no">nprobe</code> the searching parameter. Both IVF_FLAT and IVF_SQ8 use a clustering algorithm to partition a large number of vectors into buckets, <code translate="no">nlist</code> being the total number of buckets to partition during clustering. The first step in a query is to find the number of buckets that are closest to the target vector, and the second step is to find the top-k vectors in these buckets by comparing the distance of the vectors. <code translate="no">nprobe</code> refers to the number of buckets in the first step.</p>
+<h3 id="Dataset-SIFT10M-dataset" class="common-anchor-header">Dataset: SIFT10M dataset</h3><p>These tests use the <a href="https://archive.ics.uci.edu/ml/datasets/SIFT10M">SIFT10M dataset</a>, which contains one million 128-dimensional vectors and is often used for analyzing the performance of corresponding nearest-neighbor search methods. The top-1 search time for nq = [1, 10, 100, 500, 1000] will be compared between the two instruction sets.</p>
+<h3 id="Results-by-vector-index-type" class="common-anchor-header">Results by vector index type</h3><p><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Vector indexes</a> are time- and space-efficient data structures built on the vector field of a collection using various mathematical models. Vector indexing allows large datasets to be searched efficiently when trying to identify similar vectors to an input vector. Due to the time consuming nature of accurate retrieval, most of the index types <a href="https://milvus.io/docs/v2.0.x/index.md#CPU">supported by Milvus</a> use approximate nearest neighbor (ANN) search.</p>
+<p>For these tests, three indexes were used with AVX-512 and AVX2: IVF_FLAT, IVF_SQ8, and HNSW.</p>
+<h3 id="IVFFLAT" class="common-anchor-header">IVF_FLAT</h3><p>Inverted file (IVF_FLAT) is an index type based on quantization. It is the most basic IVF index, and the encoded data stored in each unit is consistent with the original data.
+The index divides vector data into a number of cluster units (nlist), and then compares distances between the target input vector and the center of each cluster. Depending on the number of clusters the system is set to query (nprobe), similarity search results are returned based on comparisons between the target input and the vectors in the most similar cluster(s) only — drastically reducing query time. By adjusting nprobe, an ideal balance between accuracy and speed can be found for a given scenario.</p>
+<p><strong>Performance results</strong>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/IVF_FLAT_3688377fc8.png" alt="IVF_FLAT.png" class="doc-image" id="ivf_flat.png" />
+    <span>IVF_FLAT.png</span>
+  </span>
+</p>
+<h3 id="IVFSQ8" class="common-anchor-header">IVF_SQ8</h3><p>IVF_FLAT does not perform any compression, so the index files it produces are roughly the same size as the original, raw non-indexed vector data. When disk, CPU, or GPU memory resources are limited, IVF_SQ8 is a better option than IVF_FLAT.
+This index type can convert each dimension of the original vector from a four-byte floating-point number to a one-byte unsigned integer by performing scalar quantization. This reduces disk, CPU, and GPU memory consumption by 70–75%.</p>
+<p><strong>Performance results</strong>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/IVF_SQ_8_bed28307f7.png" alt="IVF_SQ8.png" class="doc-image" id="ivf_sq8.png" />
+    <span>IVF_SQ8.png</span>
+  </span>
+</p>
+<h3 id="HNSW" class="common-anchor-header">HNSW</h3><p>Hierarchical Small World Graph (HNSW) is a graph-based indexing algorithm. Queries begin in the uppermost layer by finding the node closest to the target, it then goes down to the next layer for another round of search. After multiple iterations, it can quickly approach the target position.</p>
+<p><strong>Performance results</strong>
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/HNSW_52aba39214.png" alt="HNSW.png" class="doc-image" id="hnsw.png" />
+    <span>HNSW.png</span>
+  </span>
+</p>
+<h2 id="Comparing-vector-indexes" class="common-anchor-header">Comparing vector indexes<button data-href="#Comparing-vector-indexes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,9 +102,15 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Vektorabruf ist mit dem AVX-512-Befehlssatz durchweg schneller als mit AVX2. Das liegt daran, dass AVX-512 512-Bit-Berechnungen unterstützt, während AVX2 nur 256-Bit-Berechnungen unterstützt. Theoretisch sollte AVX-512 doppelt so schnell sein wie AVX2, allerdings führt Milvus neben den Vektorähnlichkeitsberechnungen auch andere zeitaufwändige Aufgaben durch. Es ist unwahrscheinlich, dass die Gesamtabrufzeit von AVX-512 in realen Szenarien doppelt so kurz ist wie die von AVX2. <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/comparison_a64b92f1dd.png" alt="comparison.png" class="doc-image" id="comparison.png" /><span>comparison.png</span> </span></p>
-<p>Der Abruf ist mit dem HNSW-Index deutlich schneller als mit den beiden anderen Indizes, während der Abruf mit IVF_SQ8 bei beiden Befehlssätzen etwas schneller ist als mit IVF_FLAT. Dies liegt wahrscheinlich daran, dass IVF_SQ8 nur 25 % des Speicherbedarfs von IVF_FLAT benötigt. IVF_SQ8 lädt 1 Byte für jede Vektordimension, während IVF_FLAT 4 Byte pro Vektordimension lädt. Die für die Berechnung benötigte Zeit wird höchstwahrscheinlich durch die Speicherbandbreite begrenzt. Infolgedessen benötigt IVF_SQ8 nicht nur weniger Platz, sondern auch weniger Zeit zum Abrufen von Vektoren.</p>
-<h2 id="Milvus-is-a-versatile-high-performance-vector-database" class="common-anchor-header">Milvus ist eine vielseitige, leistungsstarke Vektordatenbank<button data-href="#Milvus-is-a-versatile-high-performance-vector-database" class="anchor-icon" translate="no">
+    </button></h2><p>Vector retrieval is consistently faster on the AVX-512 instruction set than on AVX2. This is because  AVX-512 supports 512-bit computation, compared to just 256-bit computation on AVX2. Theoretically, AVX-512 should be twice as fast as the AVX2 however, Milvus conducts other time-consuming tasks in addition to vector similarity calculations. The overall retrieval time of AVX-512 is unlikely to be twice as short as AVX2 in real-world scenarios.
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/comparison_a64b92f1dd.png" alt="comparison.png" class="doc-image" id="comparison.png" />
+    <span>comparison.png</span>
+  </span>
+</p>
+<p>Retrieval is significantly faster on the HNSW index than the other two indexes, while IVF_SQ8 retrieval is slightly faster than IVF_FLAT on both instruction sets. This is likely because IVF_SQ8 requires just 25% of the memory need by IVF_FLAT. IVF_SQ8 loads 1 byte for each vector dimension, while IVF_FLAT loads 4 bytes per vector dimension. The time required for the calculation is most likely constrained by memory bandwidth. As a result, IVF_SQ8 not only takes up less space, but also requires less time to retrieve vectors.</p>
+<h2 id="Milvus-is-a-versatile-high-performance-vector-database" class="common-anchor-header">Milvus is a versatile, high-performance vector database<button data-href="#Milvus-is-a-versatile-high-performance-vector-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,10 +125,10 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-performance-AVX-512-vs-AVX2'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die in diesem Artikel vorgestellten Tests zeigen, dass Milvus sowohl auf dem AVX-512- als auch auf dem AVX2-Befehlssatz unter Verwendung verschiedener Indizes eine hervorragende Leistung bietet. Unabhängig vom Index-Typ schneidet Milvus auf AVX-512 besser ab.</p>
-<p>Milvus ist mit einer Vielzahl von Deep-Learning-Plattformen kompatibel und wird in verschiedenen KI-Anwendungen eingesetzt. <a href="https://zilliz.com/news/lfaidata-launches-milvus-2.0-an-advanced-cloud-native-vector-database-built-for-ai">Milvus 2.0</a>, eine überarbeitete Version der beliebtesten Vektordatenbank der Welt, wurde im Juli 2021 unter einer Open-Source-Lizenz veröffentlicht. Weitere Informationen über das Projekt finden Sie in den folgenden Ressourcen:</p>
+    </button></h2><p>The tests presented in this article demonstrate that Milvus offers excellent performance on both the AVX-512 and AVX2 instruction sets using different indexes. Regardless of the index type, Milvus  performs better on AVX-512.</p>
+<p>Milvus is compatible with a variety of deep learning platforms and is used in miscellaneous AI applications. <a href="https://zilliz.com/news/lfaidata-launches-milvus-2.0-an-advanced-cloud-native-vector-database-built-for-ai">Milvus 2.0</a>, a reimagined version of the world’s most popular vector database, was released under an open-source license in July 2021. For more information about the project, check out the following resources:</p>
 <ul>
-<li>Finden Sie Milvus auf <a href="https://github.com/milvus-io/milvus/">GitHub</a> oder tragen Sie dazu bei.</li>
-<li>Interagieren Sie mit der Community über <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Verbinden Sie sich mit uns auf <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

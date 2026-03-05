@@ -1,15 +1,15 @@
 ---
 id: select-index-parameters-ivf-index.md
-title: 1.index_file_size
+title: 1. index_file_size
 author: milvus
 date: 2020-02-26T22:57:02.071Z
-desc: 体外受精指標のベストプラクティス
+desc: Best practices for IVF index
 cover: assets.zilliz.com/header_4d3fc44879.jpg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
 ---
-<custom-h1>IVFインデックスのパラメータ選択方法</custom-h1><p><a href="https://medium.com/@milvusio/best-practices-for-milvus-configuration-f38f1e922418">Milvus設定のベストプラクティスでは</a>、Milvus 0.6.0設定のベストプラクティスを紹介しました。今回は、Milvusクライアントにおいて、テーブルの作成、インデックスの作成、検索などの操作を行う際の主要なパラメータを設定する際のベストプラクティスについても紹介します。これらのパラメータは検索性能に影響を与えます。</p>
-<h2 id="1-codeindexfilesizecode" class="common-anchor-header">1.<code translate="no">index_file_size</code><button data-href="#1-codeindexfilesizecode" class="anchor-icon" translate="no">
+<custom-h1>How to Select Index Parameters for IVF Index</custom-h1><p>In <a href="https://medium.com/@milvusio/best-practices-for-milvus-configuration-f38f1e922418">Best Practices for Milvus Configuration</a>, some best practices for Milvus 0.6.0 configuration were introduced. In this article, we will also introduce some best practices for setting key parameters in Milvus clients for operations including creating a table, creating indexes, and searching. These parameters can affect search performance.</p>
+<h2 id="1-codeindexfilesizecode" class="common-anchor-header">1. <code translate="no">index_file_size</code><button data-href="#1-codeindexfilesizecode" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,15 +24,17 @@ canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>テーブルを作成する際、index_file_sizeパラメータを使用して、データ格納用の単一ファイルのサイズをMB単位で指定します。デフォルトは1024です。ベクターデータをインポートする際、Milvusはデータをインクリメンタルにファイルに結合します。ファイルサイズがindex_file_sizeに達すると、このファイルは新しいデータを受け付けず、Milvusは新しいデータを別のファイルに保存します。これらはすべて生データファイルである。インデックスが作成されると、Milvusは各rawデータファイルに対してインデックスファイルを生成します。IVFLATインデックスタイプの場合、インデックスファイルのサイズは対応する生データファイルのサイズにほぼ等しくなります。SQ8インデックスの場合、インデックスファイルのサイズは対応する生データファイルの約30%である。</p>
-<p>検索中、Milvusは各インデックスファイルを1つずつ検索します。我々の経験では、index_file_sizeを1024から2048に変更すると、検索性能は30%から50%向上する。しかし、この値が大きすぎると、大きなファイルをGPUメモリ（あるいはCPUメモリ）にロードできないことがあります。たとえば、GPU メモリが 2 GB で index_file_size が 3 GB の場合、インデックス・ファイルは GPU メモリにロードできません。通常、index_file_size を 1024 MB または 2048 MB に設定します。</p>
-<p>次の表は、index_file_size に sift50m を使用したテストです。インデックス・タイプはSQ8です。</p>
+    </button></h2><p>When creating a table, the index_file_size parameter is used to specify the size, in MB, of a single file for data storage. The default is 1024. When vector data is being imported, Milvus incrementally combines data into files. When the file size reaches index_file_size, this file does not accept new data and Milvus saves new data to another file. These are all raw data files. When an index is created, Milvus generates an index file for each raw data file. For the IVFLAT index type, the index file size approximately equals to the size of the corresponding raw data file. For the SQ8 index, the size of an index file is approximately 30 percent of the corresponding raw data file.</p>
+<p>During a search, Milvus searches each index file one by one. Per our experience, when index_file_size changes from 1024 to 2048, the search performance improves by 30 percent to 50 percent. However, if the value is too large, large files may fail to be loaded to GPU memory (or even CPU memory). For example, if GPU memory is 2 GB and index_file_size is 3 GB, the index file cannot be loaded to GPU memory. Usually, we set index_file_size to 1024 MB or 2048 MB.</p>
+<p>The following table shows a test using sift50m for index_file_size. The index type is SQ8.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_sift50m_test_results_milvus_74f60de4aa.png" alt="1-sift50m-test-results-milvus.png" class="doc-image" id="1-sift50m-test-results-milvus.png" />
-   </span> <span class="img-wrapper"> <span>1-sift50m-テスト結果-milvus.png</span> </span></p>
-<p>CPUモードでもGPUモードでも、index_file_sizeが1024 MBの代わりに2048 MBになると、検索パフォーマンスが大幅に向上することがわかる。</p>
-<h2 id="2-codenlistcode-and-codenprobecode" class="common-anchor-header">2.<code translate="no">nlist</code> <strong>と</strong> <code translate="no">nprobe</code><button data-href="#2-codenlistcode-and-codenprobecode" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_sift50m_test_results_milvus_74f60de4aa.png" alt="1-sift50m-test-results-milvus.png" class="doc-image" id="1-sift50m-test-results-milvus.png" />
+    <span>1-sift50m-test-results-milvus.png</span>
+  </span>
+</p>
+<p>We can see that in CPU mode and GPU mode, when index_file_size is 2048 MB instead of 1024 MB, the search performance significantly improves.</p>
+<h2 id="2-codenlistcode-and-codenprobecode" class="common-anchor-header">2. <code translate="no">nlist</code> <strong>and</strong> <code translate="no">nprobe</code><button data-href="#2-codenlistcode-and-codenprobecode" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,17 +49,19 @@ canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><code translate="no">nlist</code> パラメーターはインデックス作成に使用され、<code translate="no">nprobe</code> パラメーターは検索に使用されます。IVFLATとSQ8はどちらもクラスタリング・アルゴリズムを使って大量のベクトルをクラスタ（バケット）に分割します。<code translate="no">nlist</code> はクラスタリング中のバケットの数です。</p>
-<p>インデックスを使って検索する場合、最初のステップはターゲット・ベクトルに最も近いバケットを一定数見つけることであり、2番目のステップはバケットからベクトル距離によって最も類似したk個のベクトルを見つけることである。<code translate="no">nprobe</code> はステップ1におけるバケット数である。</p>
-<p>一般的に、<code translate="no">nlist</code> を増やすとバケット数が増え、クラスタリング中のバケット内のベクトル数が少なくなる。その結果、計算負荷が減少し、検索性能が向上する。しかし、類似度比較のためのベクトルが少なくなると、正しい結果が見落とされる可能性があります。</p>
-<p><code translate="no">nprobe</code> を増やすと、検索するバケットが増える。その結果、計算負荷は増加し、検索性能は悪化するが、検索精度は向上する。分布の異なるデータセットごとに状況は異なるかもしれない。<code translate="no">nlist</code> と<code translate="no">nprobe</code> を設定する際には，データセットのサイズも考慮する必要がある．一般に，<code translate="no">nlist</code> は<code translate="no">4 * sqrt(n)</code> とすることが推奨される．ここで n はベクトルの総数である．<code translate="no">nprobe</code> については、精度と効率のトレードオフを行う必要があり、試行錯誤を繰り返して値を決定するのが最良の方法である。</p>
-<p>次の表は、<code translate="no">nlist</code> と<code translate="no">nprobe</code> に対して sift50m を使用したテストです。インデックス・タイプはSQ8である。</p>
+    </button></h2><p>The <code translate="no">nlist</code> parameter is used for index creating and the <code translate="no">nprobe</code> parameter is used for searching. IVFLAT and SQ8 both use clustering algorithms to split a large number of vectors into clusters, or buckets. <code translate="no">nlist</code> is the number of buckets during clustering.</p>
+<p>When searching using indexes, the first step is to find a certain number of buckets closest to the target vector and the second step is to find the most similar k vectors from the buckets by vector distance. <code translate="no">nprobe</code> is the number of buckets in step one.</p>
+<p>Generally, increasing <code translate="no">nlist</code> leads to more buckets and fewer vectors in a bucket during clustering. As a result, the computation load decreases and search performance improves. However, with fewer vectors for similarity comparison, the correct result might be missed.</p>
+<p>Increasing <code translate="no">nprobe</code> leads to more buckets to search. As a result, the computation load increases and search performance deteriorates, but search precision improves. The situation may differ per datasets with different distributions. You should also consider the size of the dataset when setting <code translate="no">nlist</code> and <code translate="no">nprobe</code>. Generally, it is recommended that <code translate="no">nlist</code> can be <code translate="no">4 * sqrt(n)</code>, where n is the total number of vectors. As for <code translate="no">nprobe</code>, you must make a trade-off between precision and efficiency and the best way is to determine the value through trial and error.</p>
+<p>The following table shows a test using sift50m for <code translate="no">nlist</code> and <code translate="no">nprobe</code>. The index type is SQ8.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/sq8_index_test_sift50m_b5daa9f7b5.png" alt="sq8-index-test-sift50m.png" class="doc-image" id="sq8-index-test-sift50m.png" />
-   </span> <span class="img-wrapper"> <span>sq8-index-test-sift50m.png</span> </span></p>
-<p>この表は、<code translate="no">nlist</code>/<code translate="no">nprobe</code> の異なる値を使用して、検索性能と精度を比較したものです。 CPU と GPU のテストが同様の結果を示したため、GPU の結果のみが表示されています。このテストでは、<code translate="no">nlist</code>/<code translate="no">nprobe</code> の値が同じ割合で増加すると、検索精度も増加します。<code translate="no">nlist</code> = 4096、<code translate="no">nprobe</code> が 128 のとき、Milvus は最高の検索性能を発揮します。結論として、<code translate="no">nlist</code> と<code translate="no">nprobe</code> の値を決定する際には、異なるデータセットと要件を考慮して、性能と精度のトレードオフを行う必要がある。</p>
-<h2 id="Summary" class="common-anchor-header">まとめ<button data-href="#Summary" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/sq8_index_test_sift50m_b5daa9f7b5.png" alt="sq8-index-test-sift50m.png" class="doc-image" id="sq8-index-test-sift50m.png" />
+    <span>sq8-index-test-sift50m.png</span>
+  </span>
+</p>
+<p>The table compares search performance and precision using different values of <code translate="no">nlist</code>/<code translate="no">nprobe</code>. Only GPU results are displayed because CPU and GPU tests have similar results. In this test, as the values of <code translate="no">nlist</code>/<code translate="no">nprobe</code> increase by the same percentage, search precision also increase. When <code translate="no">nlist</code> = 4096 and <code translate="no">nprobe</code> is 128, Milvus has the best search performance. In conclusion, when determining the values for <code translate="no">nlist</code> and <code translate="no">nprobe</code>, you must make a trade-off between performance and precision with consideration to different datasets and requirements.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,4 +76,5 @@ canonicalUrl: 'https://zilliz.com/blog/select-index-parameters-ivf-index'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><code translate="no">index_file_size</code>:データサイズが<code translate="no">index_file_size</code> より大きい場合、<code translate="no">index_file_size</code> の値が大きいほど、検索性能は向上する。<code translate="no">nlist</code> と<code translate="no">nprobe</code>：性能と精度のトレードオフを行う必要がある。</p>
+    </button></h2><p><code translate="no">index_file_size</code>: When the data size is greater than <code translate="no">index_file_size</code>, the greater the value of <code translate="no">index_file_size</code>, the better the search performance.
+<code translate="no">nlist</code> and <code translate="no">nprobe</code>：You must make a trade-off between performance and precision.</p>

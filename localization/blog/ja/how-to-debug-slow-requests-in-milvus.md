@@ -1,6 +1,7 @@
 ---
 id: how-to-debug-slow-requests-in-milvus.md
-title: Milvusで検索要求の遅さをデバッグする方法
+title: |
+  How to Debug Slow Search Requests in Milvus
 author: Jael Gu
 date: 2025-10-02T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_2_2025_10_52_33_AM_min_fdb227d8c6.png
@@ -11,13 +12,16 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, vector database, slow requests, debug Milvus'
 meta_title: |
   How to Debug Slow Search Requests in Milvus
-desc: この投稿では、Milvusで遅いリクエストをトリアージする方法と、レイテンシを予測可能で安定し、一貫して低く保つためにできる実践的なステップを紹介します。
+desc: >-
+  In this post, we’ll share how to triage slow requests in Milvus and share
+  practical steps you can take to keep latency predictable, stable, and
+  consistently low.
 origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
-<p>Milvusの心臓部はパフォーマンスです。通常であれば、Milvus内の検索リクエストはわずか数ミリ秒で完了します。しかし、クラスタが遅くなった場合、つまり検索レイテンシが秒単位になった場合はどうなるでしょうか？</p>
-<p>検索が遅くなることは頻繁に起こることではありませんが、規模が大きくなったり、複雑な作業負荷がかかったりすると、検索が遅くなることがあります。ユーザー・エクスペリエンスを阻害し、アプリケーションのパフォーマンスを歪め、セットアップの隠れた非効率性を露呈することもしばしばです。</p>
-<p>この投稿では、Milvusで遅いリクエストをトリアージする方法を説明し、レイテンシを予測可能で、安定し、一貫して低く保つためにできる実践的なステップを共有します。</p>
-<h2 id="Identifying-Slow-Searches" class="common-anchor-header">遅い検索の特定<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
+<p>Performance is at the heart of Milvus. Under normal conditions, a search request within Milvus completes in just milliseconds. But what happens when your cluster slows down—when search latency stretches into whole seconds instead?</p>
+<p>Slow searches don’t happen often, but they can surface at scale or under complex workloads. And when they do, they matter: they disrupt user experience, skew application performance, and often expose hidden inefficiencies in your setup.</p>
+<p>In this post, we’ll walk through how to triage slow requests in Milvus and share practical steps you can take to keep latency predictable, stable, and consistently low.</p>
+<h2 id="Identifying-Slow-Searches" class="common-anchor-header">Identifying Slow Searches<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -32,8 +36,8 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>遅いリクエストを診断するには、2つの質問から始めます。Milvusは、メトリクスとログを通して両方の答えを提供します。</p>
-<h3 id="Milvus-Metrics" class="common-anchor-header">Milvusメトリクス</h3><p>Milvusは、Grafanaダッシュボードで監視できる詳細なメトリクスをエクスポートします。</p>
+    </button></h2><p>Diagnosing a slow request starts with two questions: <strong>how often does it happen, and where is the time going?</strong> Milvus gives you both answers through metrics and logs.</p>
+<h3 id="Milvus-Metrics" class="common-anchor-header">Milvus Metrics</h3><p>Milvus exports detailed metrics you can monitor in Grafana dashboards.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_2_64a5881bf2.png" alt="" class="doc-image" id="" />
@@ -46,23 +50,23 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
     <span></span>
   </span>
 </p>
-<p>主なパネルは以下の通りです：</p>
+<p>Key panels include:</p>
 <ul>
-<li><p><strong>サービス品質→遅いクエリ</strong>：proxy.slowQuerySpanInSeconds（デフォルト：5秒）を超えるリクエストにフラグを立てます。これらはPrometheusでもマークされる。</p></li>
-<li><p><strong>サービス品質 → 検索レイテンシ</strong>：全体的な待ち時間の分布を表示します。これが正常に見えてもエンドユーザが遅延を感じる場合、問題はMilvus外のネットワークまたはアプリケーション層にある可能性が高い。</p></li>
-<li><p><strong>クエリノード → フェーズ別検索レイテンシ</strong>：待ち時間をキュー、クエリ、リデュースの各段階に分けます。より詳細な原因については、<em>Scalar</em> <em>Filter Latency</em>、<em>Vector Search Latency</em>、<em>Wait tSafe Latencyなどの</em>パネルで、どの段階が支配的であるかを明らかにします。</p></li>
+<li><p><strong>Service Quality → Slow Query</strong>: Flags any request exceeding proxy.slowQuerySpanInSeconds (default: 5s). These are also marked in Prometheus.</p></li>
+<li><p><strong>Service Quality → Search Latency</strong>: Shows overall latency distribution. If this looks normal, but end users still see delays, the problem is likely outside Milvus—in the network or application layer.</p></li>
+<li><p><strong>Query Node → Search Latency by Phase</strong>: Breaks latency into queue, query, and reduce stages. For deeper attribution, panels such as <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em>, and <em>Wait tSafe Latency</em> reveal which stage dominates.</p></li>
 </ul>
-<h3 id="Milvus-Logs" class="common-anchor-header">Milvusログ</h3><p>Milvusはまた、1秒以上続くリクエストを[Search slow]のようなマーカーでタグ付けしてログに記録します。これらのログは、<em>どの</em>クエリが<em>遅いかを</em>示し、メトリクスからの洞察を補完します。目安として</p>
+<h3 id="Milvus-Logs" class="common-anchor-header">Milvus Logs</h3><p>Milvus also logs any request lasting more than one second, tagged with markers like [Search slow]. These logs show <em>which</em> queries are slow, complementing the <em>where</em> insights from metrics. As a rule of thumb:</p>
 <ul>
-<li><p><strong>&lt; 30 ms</strong>→ ほとんどのシナリオで健全な検索レイテンシ</p></li>
-<li><p><strong>&gt; 100ミリ秒以上</strong>→ 調査する価値がある</p></li>
-<li><p><strong>&gt; 1 s</strong>→ 間違いなく遅いので注意が必要</p></li>
+<li><p><strong>&lt; 30 ms</strong> → healthy search latency in most scenarios</p></li>
+<li><p><strong>&gt; 100 ms</strong> → worth investigating</p></li>
+<li><p><strong>&gt; 1 s</strong> → definitely slow and requires attention</p></li>
 </ul>
-<p>ログの例：</p>
+<p>Example log:</p>
 <pre><code translate="no">[<span class="hljs-number">2025</span>/<span class="hljs-number">08</span>/<span class="hljs-number">23</span> <span class="hljs-number">19</span>:<span class="hljs-number">22</span>:<span class="hljs-number">19.900</span> +<span class="hljs-number">00</span>:<span class="hljs-number">00</span>] [INFO] [proxy/impl.<span class="hljs-keyword">go</span>:<span class="hljs-number">3141</span>] [<span class="hljs-string">&quot;Search slow&quot;</span>] [traceID=<span class="hljs-number">9100</span>b3092108604716f1472e4c7d54e4] [role=proxy] [db=<span class="hljs-keyword">default</span>] [collection=my_repos] [partitions=<span class="hljs-string">&quot;[]&quot;</span>] [dsl=<span class="hljs-string">&quot;user == \&quot;milvus-io\&quot; &amp;&amp; repo == \&quot;proxy.slowQuerySpanInSeconds\&quot;&quot;</span>] [<span class="hljs-built_in">len</span>(PlaceholderGroup)=<span class="hljs-number">8204</span>] [OutputFields=<span class="hljs-string">&quot;[user,repo,path,descripion]&quot;</span>] [search_params=<span class="hljs-string">&quot;[{\&quot;key\&quot;:\&quot;topk\&quot;,\&quot;value\&quot;:\&quot;10\&quot;},{\&quot;key\&quot;:\&quot;metric_type\&quot;,\&quot;value\&quot;:\&quot;COSINE\&quot;},{\&quot;key\&quot;:\&quot;anns_field\&quot;,\&quot;value\&quot;:\&quot;vector\&quot;},{\&quot;key\&quot;:\&quot;params\&quot;,\&quot;value\&quot;:\&quot;{\\\&quot;nprobe\\\&quot;:256,\\\&quot;metric_type\\\&quot;:\\\&quot;COSINE\\\&quot;}\&quot;}]&quot;</span>] [ConsistencyLevel=Strong] [useDefaultConsistency=<span class="hljs-literal">true</span>] [guarantee_timestamp=<span class="hljs-number">460318735832711168</span>] [nq=<span class="hljs-number">1</span>] [duration=<span class="hljs-number">5</span>m12<span class="hljs-number">.002784545</span>s] [durationPerNq=<span class="hljs-number">5</span>m12<span class="hljs-number">.002784545</span>s]
 <button class="copy-code-btn"></button></code></pre>
-<p>要するに、<strong>メトリクスは時間がどこに流れているかを示し、ログはどのクエリがヒットしたかを示す。</strong></p>
-<h2 id="Analyzing-Root-Cause" class="common-anchor-header">根本原因の分析<button data-href="#Analyzing-Root-Cause" class="anchor-icon" translate="no">
+<p>In short, <strong>metrics tell you where the time is going; logs tell you which queries are hit.</strong></p>
+<h2 id="Analyzing-Root-Cause" class="common-anchor-header">Analyzing Root Cause<button data-href="#Analyzing-Root-Cause" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,103 +81,103 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Heavy-Workload" class="common-anchor-header">重いワークロード</h3><p>遅いリクエストの一般的な原因は、過剰なワークロードです。リクエストの<strong>NQ</strong>（リクエストあたりのクエリー数）が非常に大きい場合、そのリクエストは長期間実行され、クエリーノードのリソースを独占することがあります。他のリクエストはその後ろに積み重なり、結果としてキューの待ち時間が増加します。各リクエストのNQが小さくても、全体のスループット（QPS）が非常に高ければ、milvusが内部で同時並行する検索リクエストをマージする可能性があるため、やはり同じ効果を引き起こす可能性があります。</p>
+    </button></h2><h3 id="Heavy-Workload" class="common-anchor-header">Heavy Workload</h3><p>A common cause of slow requests is an excessive workload. When a request has a very large <strong>NQ</strong> (number of queries per request), it can run for an extended period and monopolize query node resources. Other requests stack up behind it, resulting in rising queue latency. Even if each request has a small NQ, a very high overall throughput (QPS) can still cause the same effect, as Milvus may merge concurrent search requests internally.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/high_workload_cf9c75e24c.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>注意すべきシグナル</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>すべてのクエリが予想外に高い待ち時間を示す。</p></li>
-<li><p>クエリ・ノード・メトリクスが高い<strong>キュー内待ち時間を</strong>報告する。</p></li>
-<li><p>ログに、NQが大きく、総所要時間が長いリクエストが表示されるが、DurationPerNQは比較的小さい。</p></li>
+<li><p>All queries show unexpectedly high latency.</p></li>
+<li><p>Query Node metrics report high <strong>in-queue latency</strong>.</p></li>
+<li><p>Logs show a request with a large NQ and a long total duration, but a relatively small durationPerNQ—indicating that one oversized request is dominating resources.</p></li>
 </ul>
-<p><strong>修正方法</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><p><strong>バッチクエリにする</strong>：NQを控えめにして、1つのリクエストに負荷がかかりすぎないようにします。</p></li>
-<li><p><strong>クエリーノードをスケールアウトする</strong>：高い同時実行が常態化している場合は、クエリーノードを追加して負荷を分散し、低レイテンシーを維持します。</p></li>
+<li><p><strong>Batch queries</strong>: Keep NQ modest to avoid overloading a single request.</p></li>
+<li><p><strong>Scale out query nodes</strong>: If high concurrency is a regular part of your workload, add query nodes to spread the load and maintain low latency.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">非効率なフィルタリング</h3><p>もう一つの一般的なボトルネックは、非効率的なフィルターに起因します。フィルタの表現が不十分であったり、フィールドにスカラーインデックスがない場合、milvusは小さなサブセットをスキャンするのではなく、<strong>フルスキャンに</strong>フォールバックすることがあります。JSONフィルターや厳格な一貫性設定は、オーバーヘッドをさらに増大させる可能性がある。</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Inefficient Filtering</h3><p>Another common bottleneck comes from inefficient filters. If filter expressions are poorly conducted or fields lack scalar indexes, Milvus may fall back to a <strong>full scan</strong> instead of scanning a small, targeted subset. JSON filters and strict consistency settings can further increase overhead.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>注意すべきシグナル</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>クエリノードメトリクスの<strong>スカラーフィルターのレイテンシーが</strong>高い。</p></li>
-<li><p>フィルタが適用されたときのみ、顕著なレイテンシの急増。</p></li>
-<li><p>厳密な一貫性が有効になっている場合、<strong>tSafe待ち時間が</strong>長い。</p></li>
+<li><p>High <strong>Scalar Filter Latency</strong> in Query Node metrics.</p></li>
+<li><p>Noticeable latency spikes only when filters are applied.</p></li>
+<li><p>Long <strong>Wait tSafe Latency</strong> if strict consistency is enabled.</p></li>
 </ul>
-<p><strong>修正方法：</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><strong>フィルタ式を単純化します</strong>：フィルタを最適化することで、クエリ・プランの複雑さを軽減します。例えば、長いORチェーンをIN式に置き換えます：</li>
+<li><strong>Simplify filter expressions</strong>: Reduce query plan complexity by optimizing filters. For example, replace long OR chains with an IN expression:</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Replace chains of OR conditions with IN</span>
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p>Milvusはまた、複雑な式の解析に費やす時間を削減することで効率を改善するように設計されたフィルタ式のテンプレート化機構を導入しています。詳細は<a href="https://milvus.io/docs/filtering-templating.md">このドキュメントを</a>参照してください。</p></li>
-<li><p><strong>適切なインデックスを追加</strong>する：フィルターで使用されるフィールドにスカラーインデックスを作成することで、フルスキャンを回避します。</p></li>
-<li><p><strong>JSONを効率的に扱う</strong>：Milvus 2.6では、JSONフィールドにパスインデックスとフラットインデックスを導入し、JSONデータの効率的な取り扱いを可能にしました。また、JSONのシュレッダーも<a href="https://milvus.io/docs/roadmap.md">ロードマップに</a>あり、パフォーマンスをさらに向上させます。詳細については<a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSONフィールドのドキュメントを</a>参照してください。</p></li>
-<li><p><strong>一貫性レベルの調整</strong>：厳密な保証が必要ない場合は、<em>Bounded</em>または<em>Eventually</em>consistent readを使用し、<em>tSafeの</em>待ち時間を短縮します。</p></li>
+<li><p>Milvus also introduces a filter expression templating mechanism designed to improve efficiency by reducing the time spent parsing complex expressions. See <a href="https://milvus.io/docs/filtering-templating.md">this document</a> for more details.</p></li>
+<li><p><strong>Add proper indexes</strong>: Avoid full scans by creating scalar indexes on fields used in filters.</p></li>
+<li><p><strong>Handle JSON efficiently</strong>: Milvus 2.6 introduced path and flat indexes for JSON fields, enabling efficient handling of JSON data. JSON shredding is also on <a href="https://milvus.io/docs/roadmap.md">the roadmap</a> to further improve performance. Refer to <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">the JSON field document</a> for additional information.</p></li>
+<li><p><strong>Tune consistency level</strong>: Use <em>Bounded</em> or <em>Eventually</em> consistent reads when strict guarantees are not required, reducing <em>tSafe</em> wait time.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">ベクターインデックスの不適切な選択</h3><p><a href="https://milvus.io/docs/index-explained.md">ベクターインデックスは</a>万能ではありません。インデックスの選択を誤ると、レイテンシに大きな影響を与えます。インメモリインデックスは最速のパフォーマンスを提供しますが、より多くのメモリを消費します。一方、オンディスクインデックスは速度の代償としてメモリを節約します。バイナリーベクターもまた、特殊なインデックス戦略を必要とする。</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Improper Choice of Vector Index</h3><p><a href="https://milvus.io/docs/index-explained.md">Vector indexes</a> are not one-size-fits-all. Selecting the wrong index can significantly impact latency. In-memory indexes deliver the fastest performance but consume more memory, while on-disk indexes save memory at the cost of speed. Binary vectors also require specialized indexing strategies.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>注意すべきシグナル</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>クエリ・ノード・メトリクスにおける高いベクトル検索待ち時間。</p></li>
-<li><p>DiskANNまたはMMAP使用時のディスクI/O飽和。</p></li>
-<li><p>キャッシュのコールド・スタートによる再起動直後のクエリの低下。</p></li>
+<li><p>High Vector Search Latency in Query Node metrics.</p></li>
+<li><p>Disk I/O saturation when using DiskANN or MMAP.</p></li>
+<li><p>Slower queries immediately after restart due to cache cold start.</p></li>
 </ul>
-<p><strong>修正方法</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><p><strong>インデックスをワークロードに合わせる（フロート・ベクトル）：</strong></p>
+<li><p><strong>Match index to workload (float vectors):</strong></p>
 <ul>
-<li><p><strong>HNSW</strong>- 回収率が高く、レイテンシが低いインメモリ使用ケースに最適。</p></li>
-<li><p><strong>IVFファミリー</strong>- 回想とスピードの間で柔軟なトレードオフが可能。</p></li>
-<li><p><strong>DiskANN</strong>- 億単位のデータセットをサポートするが、強力なディスク帯域幅が必要。</p></li>
+<li><p><strong>HNSW</strong> — best for in-memory use cases with high recall and low latency.</p></li>
+<li><p><strong>IVF family</strong> — flexible trade-offs between recall and speed.</p></li>
+<li><p><strong>DiskANN</strong> — supports billion-scale datasets, but requires strong disk bandwidth.</p></li>
 </ul></li>
-<li><p><strong>バイナリベクトル</strong> <a href="https://milvus.io/docs/minhash-lsh.md">MINHASH_LSHインデックス</a>（Milvus 2.6で導入）とMHJACCARDメトリックを使用し、効率的にJaccard類似度を近似する。</p></li>
-<li><p><a href="https://milvus.io/docs/mmap.md"><strong>MMAPを</strong></a><strong>有効にする</strong>：レイテンシとメモリ使用量のバランスを取るために、インデックスファイルを完全に常駐させるのではなく、メモリにマップする。</p></li>
-<li><p><strong>インデックス/検索パラメータを調整する</strong>：作業負荷に応じて、リコールとレイテンシのバランスをとるように設定を調整します。</p></li>
-<li><p><strong>コールドスタートの軽減</strong>：再起動後に頻繁にアクセスするセグメントをウォームアップし、最初のクエリの遅れを回避する。</p></li>
+<li><p><strong>For binary vectors:</strong> Use the <a href="https://milvus.io/docs/minhash-lsh.md">MINHASH_LSH index</a> (introduced in Milvus 2.6) with the MHJACCARD metric to efficiently approximate Jaccard similarity.</p></li>
+<li><p><strong>Enable</strong> <a href="https://milvus.io/docs/mmap.md"><strong>MMAP</strong></a>: Map index files into memory instead of keeping them fully resident to strike a balance between latency and memory usage.</p></li>
+<li><p><strong>Tune index/search parameters</strong>: Adjust settings to balance recall and latency for your workload.</p></li>
+<li><p><strong>Mitigate cold starts</strong>: Warm up frequently accessed segments after a restart to avoid initial query slowness.</p></li>
 </ul>
-<h3 id="Runtime--Environment-Conditions" class="common-anchor-header">ランタイムと環境条件</h3><p>すべての遅いクエリがクエリ自体に起因するわけではありません。クエリ・ノードは多くの場合、コンパクション、データ移行、インデックス構築などのバックグラウンド・ジョブとリソースを共有しています。アップサートが頻繁に行われると、インデックスのない小さなセグメントが多数生成され、検索は生のデータをスキャンすることを余儀なくされます。場合によっては、バージョン特有の非効率性により、パッチが適用されるまで待ち時間が発生することもある。</p>
+<h3 id="Runtime--Environment-Conditions" class="common-anchor-header">Runtime &amp; Environment Conditions</h3><p>Not all slow queries are caused by the query itself. Query nodes often share resources with background jobs, such as compaction, data migration, or index building. Frequent upserts can generate many small, unindexed segments, forcing searches to scan raw data. In some cases, version-specific inefficiencies can also introduce latency until patched.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/img_v3_02q5_4dd2e545_93dc_4c58_b609_d76d50c2013g_aad0a89208.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>注意すべきシグナル</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>バックグラウンドジョブ（コンパクション、マイグレーション、インデックス構築）中のCPU使用率の急上昇。</p></li>
-<li><p>クエリーパフォーマンスに影響を与えるディスクI/Oの飽和。</p></li>
-<li><p>再起動後のキャッシュのウォームアップが非常に遅い。</p></li>
-<li><p>インデックスのない小さなセグメントが大量にある（頻繁なアップサートによる）。</p></li>
-<li><p>特定のmilvusバージョンに関連したレイテンシの後退。</p></li>
+<li><p>CPU usage spikes during background jobs (compaction, migration, index builds).</p></li>
+<li><p>Disk I/O saturation affecting query performance.</p></li>
+<li><p>Very slow cache warm-up after a restart.</p></li>
+<li><p>Large numbers of small, unindexed segments (from frequent upserts).</p></li>
+<li><p>Latency regressions tied to specific Milvus versions.</p></li>
 </ul>
-<p><strong>対処法</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><p><strong>バックグラウンドタスク</strong>（コンパクションなど）の<strong>スケジュールを</strong>オフピーク時に変更する。</p></li>
-<li><p><strong>未使用のコレクションを解放して</strong>メモリを解放する。</p></li>
-<li><p>再起動後の<strong>ウォームアップ時間を考慮し</strong>、必要であればキャッシュを事前にウォームアップする。</p></li>
-<li><p>小さなセグメントの作成を減らし、コンパクションを維持させるために、<strong>アップサートをバッチ化</strong>する。</p></li>
-<li><p><strong>最新の状態に保つ</strong>：Milvusの新しいバージョンにアップグレードし、バグフィックスと最適化を行う。</p></li>
-<li><p><strong>リソースの確保</strong>：レイテンシに敏感なワークロードにCPUやメモリを割り当てます。</p></li>
+<li><p><strong>Reschedule background tasks</strong> (e.g., compaction) to off-peak hours.</p></li>
+<li><p><strong>Release unused collections</strong> to free memory.</p></li>
+<li><p><strong>Account for warm-up time</strong> after restarts; pre-warm caches if needed.</p></li>
+<li><p><strong>Batch upserts</strong> to reduce the creation of tiny segments and let compaction keep up.</p></li>
+<li><p><strong>Stay current</strong>: upgrade to newer Milvus versions for bug fixes and optimizations.</p></li>
+<li><p><strong>Provision resources</strong>: dedicate extra CPU/memory to latency-sensitive workloads.</p></li>
 </ul>
-<p>各シグナルを適切なアクションにマッチさせることで、ほとんどの遅いクエリを迅速かつ予測可能に解決することができます。</p>
-<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">遅い検索を防ぐベストプラクティス<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
+<p>By matching each signal with the right action, most slow queries can be resolved quickly and predictably.</p>
+<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">Best Practices to Prevent Slow Searches<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -188,17 +192,17 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最良のデバッグセッションは、実行する必要のないセッションです。Milvusの経験では、いくつかの簡単な習慣が遅いクエリを防ぐのに大いに役立ちます：</p>
+    </button></h2><p>The best debugging session is the one you never need to run. In our experience, a few simple habits go a long way toward preventing slow queries in Milvus:</p>
 <ul>
-<li><p>CPUとディスクの競合を避けるために<strong>リソースの割り当てを計画</strong>する。</p></li>
-<li><p>障害とレイテンシ急増の両方に対して<strong>プロアクティブなアラートを設定</strong>する。</p></li>
-<li><p><strong>フィルタ式を</strong>短く、シンプルに、効率的に保つ。</p></li>
-<li><p><strong>アップサートをバッチ化</strong>し、NQ/QPSを持続可能なレベルに保つ。</p></li>
-<li><p>フィルターで使用される<strong>全てのフィールドにインデックスを付ける</strong>。</p></li>
+<li><p><strong>Plan resource allocation</strong> to avoid CPU and disk contention.</p></li>
+<li><p><strong>Set proactive alerts</strong> for both failures and latency spikes.</p></li>
+<li><p><strong>Keep filter expressions</strong> short, simple, and efficient.</p></li>
+<li><p><strong>Batch upserts</strong> and keep NQ/QPS at sustainable levels.</p></li>
+<li><p><strong>Index all fields</strong> that are used in filters.</p></li>
 </ul>
-<p>Milvusで遅いクエリが発生することは稀であり、発生した場合、通常は診断可能な明確な原因があります。メトリクス、ログ、そして構造化されたアプローチにより、問題を素早く特定し、解決することができます。これは弊社のサポートチームが毎日使用しているものと同じものです。</p>
-<p>このガイドが、トラブルシューティングのフレームワークを提供するだけでなく、Milvusワークロードを円滑かつ効率的に稼動させ続ける自信を提供することを願っています。</p>
-<h2 id="💡-Want-to-dive-deeper" class="common-anchor-header">💡 もっと深く知りたいですか?<button data-href="#💡-Want-to-dive-deeper" class="anchor-icon" translate="no">
+<p>Slow queries in Milvus are rare, and when they do appear, they usually have clear, diagnosable causes. With metrics, logs, and a structured approach, you can quickly identify and resolve issues. This is the same playbook our support team uses every day — and now it’s yours too.</p>
+<p>We hope this guide provides not only a troubleshooting framework but also the confidence to keep your Milvus workloads running smoothly and efficiently.</p>
+<h2 id="💡-Want-to-dive-deeper" class="common-anchor-header">💡 Want to dive deeper?<button data-href="#💡-Want-to-dive-deeper" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -214,6 +218,6 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://discord.com/invite/8uyFbECzPX"><strong>MilvusのDiscordに</strong></a>参加して、質問をしたり、経験を共有したり、コミュニティから学んだりしましょう。</p></li>
-<li><p><a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvusオフィスアワーに</strong></a>登録し、チームと直接話し、ワークロードに関する実践的な支援を受けましょう。</p></li>
+<li><p>Join the <a href="https://discord.com/invite/8uyFbECzPX"><strong>Milvus Discord</strong></a> to ask questions, share experiences, and learn from the community.</p></li>
+<li><p>Sign up for our <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> to speak directly with the team and receive hands-on assistance with your workloads.</p></li>
 </ul>

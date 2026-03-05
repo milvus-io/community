@@ -1,13 +1,9 @@
 ---
 id: scalable-and-blazing-fast-similarity-search-with-milvus-vector-database.md
-title: >-
-  Búsqueda de similitudes escalable y rapidísima con la base de datos vectorial
-  Milvus
+title: Scalable and Blazing Fast Similarity Search with Milvus Vector Database
 author: Dipanjan Sarkar
 date: 2022-06-21T00:00:00.000Z
-desc: >-
-  Almacene, indexe, gestione y busque billones de vectores de documentos en
-  milisegundos.
+desc: 'Store, index, manage and search trillions of document vectors in milliseconds!'
 cover: assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
@@ -15,10 +11,12 @@ canonicalUrl: >-
   https://milvus.io/blog/scalable_and_blazing_fast_similarity_search_with_milvus_vector_database.md
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>imagen de portada</span> </span></p>
-<h2 id="Introduction" class="common-anchor-header">Introducción<button data-href="#Introduction" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,32 +31,34 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En este artículo trataremos algunos aspectos interesantes relacionados con las bases de datos vectoriales y la búsqueda de similitudes a escala. En el mundo actual, en rápida evolución, vemos nuevas tecnologías, nuevos negocios, nuevas fuentes de datos y, en consecuencia, tendremos que seguir utilizando nuevas formas de almacenar, gestionar y aprovechar estos datos para obtener información. Los datos estructurados y tabulares se han almacenado en bases de datos relacionales durante décadas, y el Business Intelligence se nutre del análisis y la extracción de información a partir de dichos datos. Sin embargo, teniendo en cuenta el panorama actual de los datos, "más del 80-90% de los datos es información no estructurada, como texto, vídeo, audio, registros de servidores web, redes sociales, etc.". Las organizaciones han estado aprovechando el poder del aprendizaje automático y el aprendizaje profundo para tratar de extraer información de estos datos, ya que los métodos tradicionales basados en consultas pueden no ser suficientes o ni siquiera posibles. Existe un enorme potencial sin explotar para extraer información valiosa de estos datos, ¡y solo estamos empezando!</p>
+    </button></h2><p>In this article, we will cover some interesting aspects relevant to vector databases and similarity search at scale. In today’s rapidly evolving world, we see new technology, new businesses, new data sources and consequently we will need to keep using new ways to store, manage and leverage this data for insights. Structured, tabular data has been stored in relational databases for decades, and Business Intelligence thrives on analyzing and extracting insights from such data. However, considering the current data landscape, “over 80–90% of data is unstructured information like text, video, audio, web server logs, social media, and more”. Organizations have been leveraging the power of machine learning and deep learning to try and extract insights from such data as traditional query-based methods may not be enough or even possible. There is a huge, untapped potential to extract valuable insights from such data and we are only getting started!</p>
 <blockquote>
-<p>"Dado que la mayoría de los datos del mundo no están estructurados, la capacidad de analizarlos y actuar en consecuencia representa una gran oportunidad". - Mikey Shulman, Director de ML, Kensho</p>
+<p>“Since most of the world’s data is unstructured, an ability to analyze and act on it presents a big opportunity.” — Mikey Shulman, Head of ML, Kensho</p>
 </blockquote>
-<p>Los datos no estructurados, como su nombre indica, no tienen una estructura implícita, como una tabla de filas y columnas (de ahí que se denominen datos tabulares o estructurados). A diferencia de los datos estructurados, no existe una forma sencilla de almacenar el contenido de los datos no estructurados en una base de datos relacional. El aprovechamiento de los datos no estructurados para obtener información plantea tres problemas principales:</p>
+<p>Unstructured data, as the name suggests, does not have an implicit structure, like a table of rows and columns (hence called tabular or structured data). Unlike structured data, there is no easy way to store the contents of unstructured data within a relational database. There are three main challenges with leveraging unstructured data for insights:</p>
 <ul>
-<li><strong>Almacenamiento:</strong> Las bases de datos relacionales normales sirven para almacenar datos estructurados. Aunque se pueden utilizar bases de datos NoSQL para almacenar dichos datos, el procesamiento de los mismos para extraer las representaciones adecuadas para potenciar las aplicaciones de IA a escala supone una sobrecarga adicional.</li>
-<li><strong>Representación:</strong> Los ordenadores no entienden el texto o las imágenes como nosotros. Sólo entienden de números y necesitamos convertir los datos no estructurados en alguna representación numérica útil, normalmente vectores o incrustaciones.</li>
-<li><strong>Consulta:</strong> Los datos no estructurados no se pueden consultar directamente a partir de sentencias condicionales definidas, como ocurre con los datos estructurados en SQL. Imagínese, por ejemplo, que intenta buscar zapatos similares a partir de una foto de su par favorito. No puede utilizar valores de píxeles sin procesar para la búsqueda, ni tampoco puede representar características estructuradas como la forma, el tamaño, el estilo, el color, etc. de los zapatos. Imagínese tener que hacer esto con millones de zapatos.</li>
+<li><strong>Storage:</strong> Regular relational databases are good for holding structured data. While you can use NoSQL databases to store such data, it becomes an additional overhead to process such data to extract the right representations to power AI applications at scale</li>
+<li><strong>Representation:</strong> Computers don’t understand text or images like we do. They only understand numbers and we need to covert unstructed data into some useful numeric representation, typically vectors or embeddings.</li>
+<li><strong>Querying:</strong> You can’t query unstructured data directly based on definite conditional statements like SQL for structured data. Imagine, a simple example of you trying to search for similar shoes given a photo of your favorite pair of shoes! You can’t use raw pixel values for search, neither can you represent structured features like shoe shape, size, style, color and more. Now imagine having to do this for millions of shoes!</li>
 </ul>
-<p>Por eso, para que los ordenadores entiendan, procesen y representen datos no estructurados, solemos convertirlos en vectores densos, a menudo llamados embeddings.</p>
+<p>Hence, in order for computers to understand, process and represent unstructured data, we typically convert them into dense vectors, often called embeddings.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Representing_Images_as_Dense_Embedding_Vectors_0b6a5f516c.png" alt="figure 1" class="doc-image" id="figure-1" />
-   </span> <span class="img-wrapper"> <span>Figura 1</span> </span></p>
-<p>Existe una variedad de metodologías que aprovechan especialmente el aprendizaje profundo, incluidas las redes neuronales convolucionales (CNN) para datos visuales como imágenes y Transformers para datos de texto que pueden utilizarse para transformar dichos datos no estructurados en incrustaciones. <a href="https://zilliz.com/">Zilliz</a> tiene <a href="https://zilliz.com/learn/embedding-generation">un excelente artículo que cubre diferentes técnicas de incrustación</a>.</p>
-<p>Ahora bien, no basta con almacenar estos vectores de incrustación. También es necesario poder consultar y encontrar vectores similares. ¿Por qué? La mayoría de las aplicaciones del mundo real se basan en la búsqueda de vectores similares para soluciones basadas en IA. Esto incluye la búsqueda visual (de imágenes) en Google, los sistemas de recomendaciones en Netflix o Amazon, los motores de búsqueda de texto en Google, la búsqueda multimodal, la desduplicación de datos y muchas más.</p>
-<p>Almacenar, gestionar y consultar vectores a escala no es una tarea sencilla. Para ello se necesitan herramientas especializadas, y las bases de datos vectoriales son las más eficaces. En este artículo trataremos los siguientes aspectos:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Representing_Images_as_Dense_Embedding_Vectors_0b6a5f516c.png" alt="figure 1" class="doc-image" id="figure-1" />
+    <span>figure 1</span>
+  </span>
+</p>
+<p>There exist a variety of methodologies especially leveraging deep learning, including convolutional neural networks (CNNs) for visual data like images and Transformers for text data which can be used to transform such unstructured data into embeddings. <a href="https://zilliz.com/">Zilliz</a> has <a href="https://zilliz.com/learn/embedding-generation">an excellent article covering different embedding techiques</a>!</p>
+<p>Now storing these embedding vectors is not enough. One also needs to be able to query and find out similar vectors. Why do you ask? A majority of real-world applications are powered by vector similarity search for AI based solutions. This includes visual (image) search in Google, recommendations systems in Netflix or Amazon, text search engines in Google, multi-modal search, data de-duplication and many more!</p>
+<p>Storing, managing and querying vectors at scale is not a simple task. You need specialized tools for this and vector databases are the most effective tool for the job! In this article we will cover the following aspects:</p>
 <ul>
-<li><a href="#Vectors-and-Vector-Similarity-Search">Vectores y búsqueda de similitud de vectores</a></li>
-<li><a href="#What-is-a-Vector-Database">¿Qué es una base de datos vectorial?</a></li>
-<li><a href="#Milvus—The-World-s-Most-Advanced-Vector-Database">Milvus - La base de datos vectorial más avanzada del mundo</a></li>
-<li><a href="#Performing-visual-image-search-with-Milvus—A-use-case-blueprint">Realización de búsquedas visuales de imágenes con Milvus - Un modelo de caso de uso</a></li>
+<li><a href="#Vectors-and-Vector-Similarity-Search">Vectors and Vector Similarity Search</a></li>
+<li><a href="#What-is-a-Vector-Database">What is a Vector Database?</a></li>
+<li><a href="#Milvus—The-World-s-Most-Advanced-Vector-Database">Milvus — The World’s Most Advanced Vector Database</a></li>
+<li><a href="#Performing-visual-image-search-with-Milvus—A-use-case-blueprint">Performing visual image search with Milvus — A use-case blueprint</a></li>
 </ul>
-<p>Empecemos</p>
-<h2 id="Vectors-and-Vector-Similarity-Search" class="common-anchor-header">Vectores y búsqueda de similitud de vectores<button data-href="#Vectors-and-Vector-Similarity-Search" class="anchor-icon" translate="no">
+<p>Let’s get started!</p>
+<h2 id="Vectors-and-Vector-Similarity-Search" class="common-anchor-header">Vectors and Vector Similarity Search<button data-href="#Vectors-and-Vector-Similarity-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,33 +73,39 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Anteriormente, establecimos la necesidad de representar datos no estructurados como imágenes y texto como vectores, ya que los ordenadores sólo pueden entender números. Normalmente utilizamos modelos de IA, más concretamente modelos de aprendizaje profundo, para convertir datos no estructurados en vectores numéricos que puedan ser leídos por las máquinas. Normalmente, estos vectores son básicamente una lista de números de coma flotante que representan colectivamente el elemento subyacente (imagen, texto, etc.).</p>
-<h3 id="Understanding-Vectors" class="common-anchor-header">Comprender los vectores</h3><p>En el campo del procesamiento del lenguaje natural (PLN) disponemos de muchos modelos de incrustación de palabras, como <a href="https://towardsdatascience.com/understanding-feature-engineering-part-4-deep-learning-methods-for-text-data-96c44370bbfa">Word2Vec, GloVe y FastText</a>, que pueden ayudar a representar palabras como vectores numéricos. Con el paso del tiempo, hemos asistido a la aparición de modelos <a href="https://arxiv.org/abs/1706.03762">de transformación</a> como <a href="https://jalammar.github.io/illustrated-bert/">BERT</a>, que pueden aprovecharse para aprender vectores de incrustación contextuales y mejores representaciones de frases y párrafos enteros.</p>
-<p>Del mismo modo, en el campo de la visión por ordenador tenemos modelos como <a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">las redes neuronales convolucionales (CNN)</a>, que pueden ayudar a aprender representaciones a partir de datos visuales como imágenes y vídeos. Con el auge de los transformadores, también tenemos <a href="https://arxiv.org/abs/2010.11929">transformadores de visión</a> que pueden funcionar mejor que las CNN normales.</p>
+    </button></h2><p>Earlier, we established the necessity of representing unstructured data like images and text as vectors, since computers can only understand numbers. We typically leverage AI models, to be more specific deep learning models to convert unstructured data into numeric vectors which can be read in by machines. Typically these vectors are basically a list of floating point numbers which collectively represents the underlying item (image, text etc.).</p>
+<h3 id="Understanding-Vectors" class="common-anchor-header">Understanding Vectors</h3><p>Considering the field of natural language processing (NLP) we have many word embedding models like <a href="https://towardsdatascience.com/understanding-feature-engineering-part-4-deep-learning-methods-for-text-data-96c44370bbfa">Word2Vec, GloVe and FastText</a> which can help represent words as numeric vectors. With advancements over time, we have seen the rise of <a href="https://arxiv.org/abs/1706.03762">Transformer</a> models like <a href="https://jalammar.github.io/illustrated-bert/">BERT</a> which can be leveraged to learn contextual embedding vectors and better representations for entire sentences and paragraphs.</p>
+<p>Similarly for the field of computer vision we have models like <a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">Convolutional Neural Networks (CNNs)</a> which can help in learning representations from visual data such as images and videos. With the rise of Transformers, we also have <a href="https://arxiv.org/abs/2010.11929">Vision Transformers</a> which can perform better than regular CNNs.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Sample_workflow_for_extracting_insights_from_unstructured_data_c74f08f75a.png" alt="figure 2" class="doc-image" id="figure-2" />
-   </span> <span class="img-wrapper"> <span>Figura 2</span> </span></p>
-<p>La ventaja de estos vectores es que podemos aprovecharlos para resolver problemas del mundo real, como la búsqueda visual, en la que se sube una foto y se obtienen resultados de búsqueda que incluyen imágenes visualmente similares. Google tiene esta característica muy popular en su motor de búsqueda, como se muestra en el siguiente ejemplo.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Sample_workflow_for_extracting_insights_from_unstructured_data_c74f08f75a.png" alt="figure 2" class="doc-image" id="figure-2" />
+    <span>figure 2</span>
+  </span>
+</p>
+<p>The advantage with such vectors is that we can leverage them for solving real-world problems such as visual search, where you typically upload a photo and get search results including visually similar images. Google has this as a very popular feature in their search engine as depicted in the following example.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/An_example_of_Google_s_Visual_Image_Search_fa49b81e88.png" alt="figure 3" class="doc-image" id="figure-3" />
-   </span> <span class="img-wrapper"> <span>Figura 3</span> </span></p>
-<p>Este tipo de aplicaciones funcionan con vectores de datos y búsqueda de similitud vectorial. Si consideramos dos puntos en un espacio de coordenadas cartesianas X-Y. La distancia entre dos puntos se puede calcular como una simple distancia euclidiana representada por la siguiente ecuación.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/An_example_of_Google_s_Visual_Image_Search_fa49b81e88.png" alt="figure 3" class="doc-image" id="figure-3" />
+    <span>figure 3</span>
+  </span>
+</p>
+<p>Such applications are powered with data vectors and vector similarity search. If you consider two points in an X-Y cartesian coordinate space. The distance between two points can be computed as a simple euclidean distance depicted by the following equation.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_D_Euclidean_Distance_6a52b7bc2f.png" alt="figure 4" class="doc-image" id="figure-4" />
-   </span> <span class="img-wrapper"> <span>figura 4</span> </span></p>
-<p>Imaginemos ahora que cada punto de datos es un vector con dimensiones D. Podríamos seguir utilizando la distancia euclídea o incluso otras métricas de distancia, como la distancia de Hamming o la distancia coseno, para averiguar la proximidad entre dos puntos de datos. Esto puede ayudar a construir una noción de cercanía o similitud que podría utilizarse como una métrica cuantificable para encontrar elementos similares dado un elemento de referencia utilizando sus vectores.</p>
-<h3 id="Understanding-Vector-Similarity-Search" class="common-anchor-header">Comprensión de la búsqueda de similitud vectorial</h3><p>La búsqueda por similitud vectorial, a menudo conocida como búsqueda del vecino más cercano (NN), consiste básicamente en calcular la similitud (o distancia) entre pares de un elemento de referencia (para el que queremos encontrar elementos similares) y una colección de elementos existentes (normalmente en una base de datos) y devolver los 'k' vecinos más cercanos que son los 'k' elementos más similares. El componente clave para calcular esta similitud es la métrica de similitud, que puede ser la distancia euclídea, el producto interior, la distancia coseno, la distancia hamming, etc. Cuanto menor es la distancia, más similares son los vectores.</p>
-<p>El reto de la búsqueda exacta del vecino más próximo (NN) es la escalabilidad. Es necesario calcular N distancias (suponiendo que existan N elementos) cada vez para obtener elementos similares. Esto puede ser muy lento, especialmente si no almacena e indexa los datos en algún lugar (¡como una base de datos de vectores!). Para acelerar el cálculo, solemos aprovechar la búsqueda aproximada del vecino más cercano, que a menudo se denomina búsqueda RNA y que acaba almacenando los vectores en un índice. El índice ayuda a almacenar estos vectores de forma inteligente para permitir la recuperación rápida de vecinos "aproximadamente" similares para un elemento de consulta de referencia. Las metodologías típicas de indexación de RNA incluyen</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_D_Euclidean_Distance_6a52b7bc2f.png" alt="figure 4" class="doc-image" id="figure-4" />
+    <span>figure 4</span>
+  </span>
+</p>
+<p>Now imagine each data point is a vector having D-dimensions, you could still use euclidean distance or even other distance metrics like hamming or cosine distance to find out how close the two data points are to each other. This can help build a notion of closeness or similarity which could be used as a quantifiable metric to find similar items given a reference item using their vectors.</p>
+<h3 id="Understanding-Vector-Similarity-Search" class="common-anchor-header">Understanding Vector Similarity Search</h3><p>Vector similarity search, often known as nearest neighbor (NN) search, is basically the process of computing pairwise similarity (or distances) between a reference item (for which we want to find similar items) and a collection of existing items (typically in a database) and returning the top ‘k’ nearest neighbors which are the top ‘k’ most similar items. The key component to compute this similarity is the similarity metric which can be euclidean distance, inner product, cosine distance, hamming distance, etc. The smaller the distance, the more similar are the vectors.</p>
+<p>The challenge with exact nearest neighbor (NN) search is scalability. You need to compute N-distances (assuming N existing items) everytime to get similar items. This can be super slow especially if you don’t store and index the data somewhere (like a vector database!). To speed up computation, we typically leverage approximate nearest neighbor search which is often called ANN search which ends up storing the vectors into an index. The index helps in storing these vectors in an intelligent way to enable quick retrieval of ‘approximately’ similar neighbors for a reference query item. Typical ANN indexing methodologies include:</p>
 <ul>
-<li><strong>Transformaciones de vectores:</strong> Incluye la adición de transformaciones adicionales a los vectores, como la reducción de dimensiones (por ejemplo, PCA \ t-SNE), la rotación, etc.</li>
-<li><strong>Codificación de vectores:</strong> Incluye la aplicación de técnicas basadas en estructuras de datos como Locality Sensitive Hashing (LSH), cuantificación, árboles, etc., que pueden ayudar a recuperar más rápidamente elementos similares.</li>
-<li><strong>Métodos de búsqueda no exhaustiva:</strong> Se utilizan principalmente para evitar la búsqueda exhaustiva e incluyen métodos como los grafos de vecindad, los índices invertidos, etc.</li>
+<li><strong>Vector Transformations:</strong> This includes adding additional transformations to the vectors like dimension reduction (e.g PCA \ t-SNE), rotation and so on</li>
+<li><strong>Vector Encoding:</strong> This includes applying techniques based on data structures like Locality Sensitive Hashing (LSH), Quantization, Trees etc. which can help in faster retrieval of similar items</li>
+<li><strong>Non-Exhaustive Search Methods:</strong> This is mostly used to prevent exhaustive search and includes methods like neighborhood graphs, inverted indices etc.</li>
 </ul>
-<p>Para crear cualquier aplicación de búsqueda vectorial de similitudes, se necesita una base de datos que pueda ayudar a almacenar, indexar y consultar (buscar) de forma eficiente a gran escala. Las bases de datos vectoriales.</p>
-<h2 id="What-is-a-Vector-Database" class="common-anchor-header">¿Qué es una base de datos vectorial?<button data-href="#What-is-a-Vector-Database" class="anchor-icon" translate="no">
+<p>This establishes the case that to build any vector similarity search application, you need a database which can help you with efficient storing, indexing and querying (search) at scale. Enter vector databases!</p>
+<h2 id="What-is-a-Vector-Database" class="common-anchor-header">What is a Vector Database?<button data-href="#What-is-a-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,22 +120,24 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ahora que ya sabemos cómo se pueden utilizar los vectores para representar datos no estructurados y cómo funciona la búsqueda vectorial, podemos combinar ambos conceptos para crear una base de datos vectorial.</p>
-<p>Las bases de datos vectoriales son plataformas de datos escalables para almacenar, indexar y consultar vectores incrustados que se generan a partir de datos no estructurados (imágenes, texto, etc.) utilizando modelos de aprendizaje profundo.</p>
-<p>Manejar un número masivo de vectores para la búsqueda de similitudes (incluso con índices) puede resultar muy caro. A pesar de ello, las mejores y más avanzadas bases de datos vectoriales deberían permitirte insertar, indexar y buscar entre millones o miles de millones de vectores objetivo, además de especificar un algoritmo de indexación y una métrica de similitud de tu elección.</p>
-<p>Las bases de datos vectoriales deben satisfacer principalmente los siguientes requisitos clave para que un sistema de gestión de bases de datos robusto pueda utilizarse en la empresa:</p>
+    </button></h2><p>Given that we now understand how vectors can be used to represent unstructured data and how vector search works, we can combine the two concepts together to build a vector database.</p>
+<p>Vector databases are scalable data platforms to store, index and query across embedding vectors which are generated from unstructured data (images, text etc.) using deep learning models.</p>
+<p>Handling a massive numbers of vectors for similarity search (even with indices) can be super expensive. Despite this, the best and most advanced vector databases should allow you to insert, index and search across millions or billions of target vectors, in addition to specifying an indexing algorithm and similarity metric of your choice.</p>
+<p>Vector databases mainly should satisfy the following key requirements considering a robust database management system to be used in the enterprise:</p>
 <ol>
-<li><strong>Escalable:</strong> Las bases de datos vectoriales deben ser capaces de indexar y ejecutar la búsqueda aproximada del vecino más próximo para miles de millones de vectores incrustados</li>
-<li><strong>Fiables:</strong> Las bases de datos vectoriales deben ser capaces de gestionar fallos internos sin pérdida de datos y con un impacto operativo mínimo, es decir, ser tolerantes a fallos.</li>
-<li><strong>Rápidas:</strong> Las velocidades de consulta y escritura son importantes para las bases de datos vectoriales. Para plataformas como Snapchat e Instagram, que pueden tener cientos o miles de nuevas imágenes cargadas por segundo, la velocidad se convierte en un factor increíblemente importante.</li>
+<li><strong>Scalable:</strong> Vector databases should be able to index and run approximate nearest neighbor search for billions of embedding vectors</li>
+<li><strong>Reliable:</strong> Vector databases should be able to handle internal faults without data loss and with minimal operational impact, i.e be fault-tolerant</li>
+<li><strong>Fast:</strong> Query and write speeds are important for vector databases. For platforms such as Snapchat and Instagram, which can have hundreds or thousands of new images uploaded per second, speed becomes an incredibly important factor.</li>
 </ol>
-<p>Las bases de datos vectoriales no sólo almacenan vectores de datos. También son responsables de utilizar estructuras de datos eficientes para indexar estos vectores para una recuperación rápida y soportar operaciones CRUD (crear, leer, actualizar y eliminar). Idealmente, las bases de datos vectoriales también deberían soportar el filtrado de atributos, es decir, el filtrado basado en campos de metadatos que suelen ser campos escalares. Un ejemplo sencillo sería recuperar zapatos similares a partir de los vectores de imágenes de una marca concreta. En este caso, la marca sería el atributo en función del cual se realizaría el filtrado.</p>
+<p>Vector databases don’t just store data vectors. They are also responsible for using efficient data structures to index these vectors for fast retrieval and supporting CRUD (create, read, update and delete) operations. Vector databases should also ideally support attribute filtering which is filtering based on metadata fields which are usually scalar fields. A simple example would be retrieving similar shoes based on the image vectors for a specific brand. Here brand would be the attribute based on which filtering would be done.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Bitmask_f72259b751.png" alt="figure 5" class="doc-image" id="figure-5" />
-   </span> <span class="img-wrapper"> <span>Figura 5</span> </span></p>
-<p>La figura anterior muestra cómo <a href="https://milvus.io/">Milvus</a>, la base de datos vectorial de la que hablaremos en breve, utiliza el filtrado por atributos. <a href="https://milvus.io/">Milvus</a> introduce el concepto de máscara de bits en el mecanismo de filtrado para mantener vectores similares con una máscara de bits de 1 basada en la satisfacción de filtros de atributos específicos. Más detalles <a href="https://zilliz.com/learn/attribute-filtering">aquí</a>.</p>
-<h2 id="Milvus--The-World’s-Most-Advanced-Vector-Database" class="common-anchor-header">Milvus - La base de datos vectorial más avanzada del mundo<button data-href="#Milvus--The-World’s-Most-Advanced-Vector-Database" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Bitmask_f72259b751.png" alt="figure 5" class="doc-image" id="figure-5" />
+    <span>figure 5</span>
+  </span>
+</p>
+<p>The figure above showcases how <a href="https://milvus.io/">Milvus</a>, the vector database we will talk about shortly, uses attribute filtering. <a href="https://milvus.io/">Milvus</a> introduces the concept of a bitmask to the filtering mechanism to keep similar vectors with a bitmask of 1 based on satisfying specific attribute filters. More details on this <a href="https://zilliz.com/learn/attribute-filtering">here</a>.</p>
+<h2 id="Milvus--The-World’s-Most-Advanced-Vector-Database" class="common-anchor-header">Milvus — The World’s Most Advanced Vector Database<button data-href="#Milvus--The-World’s-Most-Advanced-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,64 +152,70 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> es una plataforma de gestión de bases de datos vectoriales de código abierto construida específicamente para datos vectoriales a gran escala y para agilizar las operaciones de aprendizaje automático (MLOps).</p>
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source vector database management platform built specifically for massive-scale vector data and streamlining machine learning operations (MLOps).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_Logo_ee3ae48b61.png" alt="figure 6" class="doc-image" id="figure-6" />
-   </span> <span class="img-wrapper"> <span>figura 6</span> </span></p>
-<p><a href="https://zilliz.com/">Zilliz</a>, es la organización que está detrás de la construcción de <a href="https://milvus.io/">Milvus</a>, la base de datos vectorial más avanzada del mundo, para acelerar el desarrollo del tejido de datos de próxima generación. Milvus es actualmente un proyecto de graduación en la <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a> y se centra en la gestión de conjuntos masivos de datos no estructurados para su almacenamiento y búsqueda. La eficiencia y fiabilidad de la plataforma simplifica el proceso de despliegue de modelos de IA y MLOps a escala. Milvus tiene amplias aplicaciones que abarcan el descubrimiento de fármacos, la visión por ordenador, los sistemas de recomendación, los chatbots y mucho más.</p>
-<h3 id="Key-Features-of-Milvus" class="common-anchor-header">Características principales de Milvus</h3><p>Milvus está repleto de características y capacidades útiles, tales como:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_Logo_ee3ae48b61.png" alt="figure 6" class="doc-image" id="figure-6" />
+    <span>figure 6</span>
+  </span>
+</p>
+<p><a href="https://zilliz.com/">Zilliz</a>, is the organization behind building <a href="https://milvus.io/">Milvus</a>, the world’s most advanced vector database, to accelerate the development of next generation data fabric. Milvus is currently a graduation project at the <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a> and focuses on managing massive unstructured datasets for storage and search. The platform’s efficiency and reliability simplifies the process of deploying AI models and MLOps at scale. Milvus has broad applications spanning drug discovery, computer vision, recommendation systems, chatbots, and much more.</p>
+<h3 id="Key-Features-of-Milvus" class="common-anchor-header">Key Features of Milvus</h3><p>Milvus is packed with useful features and capabilities, such as:</p>
 <ul>
-<li><strong>Velocidades de búsqueda fulgurantes en un billón de conjuntos de datos vectoriales:</strong> La latencia media de la búsqueda y recuperación de vectores se ha medido en milisegundos en un billón de conjuntos de datos vectoriales.</li>
-<li><strong>Gestión simplificada de datos no estructurados:</strong> Milvus cuenta con ricas API diseñadas para flujos de trabajo de ciencia de datos.</li>
-<li><strong>Base de datos vectorial fiable y siempre activa:</strong> Las funciones integradas de replicación y failover/failback de Milvus garantizan que los datos y las aplicaciones puedan mantener la continuidad del negocio siempre.</li>
-<li><strong>Altamente escalable y elástica:</strong> La escalabilidad a nivel de componente permite aumentar y reducir la escala según la demanda.</li>
-<li><strong>Búsqueda híbrida:</strong> Además de vectores, Milvus admite tipos de datos como booleanos, cadenas, enteros, números de punto flotante y más. Milvus combina el filtrado escalar con una potente búsqueda de similitud vectorial (como se ve en el ejemplo anterior de similitud de zapatos).</li>
-<li><strong>Estructura lambda unificada:</strong> Milvus combina el flujo y el procesamiento por lotes para el almacenamiento de datos para equilibrar la puntualidad y la eficiencia.</li>
-<li><strong><a href="https://milvus.io/docs/v2.0.x/timetravel_ref.md">Viaje en el tiempo</a>:</strong> Milvus mantiene una línea de tiempo para todas las operaciones de inserción y eliminación de datos. Permite a los usuarios especificar marcas de tiempo en una búsqueda para recuperar una vista de datos en un punto específico en el tiempo.</li>
-<li><strong>Respaldado por la comunidad y reconocido por la industria:</strong> Con más de 1.000 usuarios empresariales, más de 10.500 estrellas en <a href="https://github.com/milvus-io/milvus">GitHub</a> y una comunidad activa de código abierto, no está solo cuando utiliza Milvus. Como proyecto de posgrado de la <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>, Milvus cuenta con apoyo institucional.</li>
+<li><strong>Blazing search speeds on a trillion vector datasets:</strong> Average latency of vector search and retrieval has been measured in milliseconds on a trillion vector datasets.</li>
+<li><strong>Simplified unstructured data management:</strong> Milvus has rich APIs designed for data science workflows.</li>
+<li><strong>Reliable, always on vector database:</strong> Milvus’ built-in replication and failover/failback features ensure data and applications can maintain business continuity always.</li>
+<li><strong>Highly scalable and elastic:</strong> Component-level scalability makes it possible to scale up and down on demand.</li>
+<li><strong>Hybrid search:</strong> In addition to vectors, Milvus supports data types such as Boolean, String, integers, floating-point numbers, and more. Milvus pairs scalar filtering with powerful vector similarity search (as seen in the shoe similarity example earlier).</li>
+<li><strong>Unified Lambda structure:</strong> Milvus combines stream and batch processing for data storage to balance timeliness and efficiency.</li>
+<li><strong><a href="https://milvus.io/docs/v2.0.x/timetravel_ref.md">Time Travel</a>:</strong> Milvus maintains a timeline for all data insert and delete operations. It allows users to specify timestamps in a search to retrieve a data view at a specified point in time.</li>
+<li><strong>Community supported &amp; Industry recognized:</strong> With over 1,000 enterprise users, 10.5K+ stars on <a href="https://github.com/milvus-io/milvus">GitHub</a>, and an active open-source community, you’re not alone when you use Milvus. As a graduate project under the <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>, Milvus has institutional support.</li>
 </ul>
-<h3 id="Existing-Approaches-to-Vector-Data-Management-and-Search" class="common-anchor-header">Enfoques existentes para la gestión y búsqueda de datos vectoriales</h3><p>Una forma común de construir un sistema de IA basado en la búsqueda de similitud vectorial es emparejar algoritmos como la búsqueda del vecino más cercano aproximado (ANNS) con bibliotecas de código abierto como:</p>
+<h3 id="Existing-Approaches-to-Vector-Data-Management-and-Search" class="common-anchor-header">Existing Approaches to Vector Data Management and Search</h3><p>A common way to build an AI system powered by vector similarity search is to pair algorithms like Approximate Nearest Neighbor Search (ANNS) with open-source libraries such as:</p>
 <ul>
-<li><strong><a href="https://ai.facebook.com/tools/faiss/">Facebook AI Similarity Search (FAISS)</a>:</strong> Este marco permite la búsqueda eficiente de similitudes y la agrupación de vectores densos. Contiene algoritmos que buscan en conjuntos de vectores de cualquier tamaño, hasta los que posiblemente no quepan en la memoria RAM. Admite funciones de indexación como el multiíndice invertido y la cuantización de productos.</li>
-<li><strong><a href="https://github.com/spotify/annoy">Annoy de Spotify (Approximate Nearest Neighbors Oh Yeah)</a>:</strong> Este marco utiliza <a href="http://en.wikipedia.org/wiki/Locality-sensitive_hashing#Random_projection">proyecciones aleatorias</a> y construye un árbol para permitir ANNS a escala para vectores densos.</li>
-<li><strong><a href="https://github.com/google-research/google-research/tree/master/scann">ScaNN (Scalable Nearest Neighbors) de Google</a>:</strong> Este marco realiza una búsqueda eficiente de similitudes vectoriales a escala. Consta de implementaciones que incluyen la poda del espacio de búsqueda y la cuantización para la búsqueda máxima de productos internos (MIPS).</li>
+<li><strong><a href="https://ai.facebook.com/tools/faiss/">Facebook AI Similarity Search (FAISS)</a>:</strong> This framework enables efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that possibly do not fit in RAM. It supports indexing capabilities like inverted multi-index and product quantization</li>
+<li><strong><a href="https://github.com/spotify/annoy">Spotify’s Annoy (Approximate Nearest Neighbors Oh Yeah)</a>:</strong> This framework uses <a href="http://en.wikipedia.org/wiki/Locality-sensitive_hashing#Random_projection">random projections</a> and builds up a tree to enable ANNS at scale for dense vectors</li>
+<li><strong><a href="https://github.com/google-research/google-research/tree/master/scann">Google’s ScaNN (Scalable Nearest Neighbors)</a>:</strong> This framework performs efficient vector similarity search at scale. Consists of implementations, which includes search space pruning and quantization for Maximum Inner Product Search (MIPS)</li>
 </ul>
-<p>Aunque cada una de estas bibliotecas es útil a su manera, debido a varias limitaciones, estas combinaciones de algoritmo y biblioteca no son equivalentes a un sistema completo de gestión de datos vectoriales como Milvus. A continuación analizaremos algunas de estas limitaciones.</p>
-<h3 id="Limitations-of-Existing-Approaches" class="common-anchor-header">Limitaciones de los enfoques existentes</h3><p>Los enfoques existentes utilizados para la gestión de datos vectoriales, tal y como se ha comentado en la sección anterior, presentan las siguientes limitaciones:</p>
+<p>While each of these libraries are useful in their own way, due to several limitations, these algorithm-library combinations are not equivalent to a full-fledged vector data management system like Milvus. We will discuss some of these limitations now.</p>
+<h3 id="Limitations-of-Existing-Approaches" class="common-anchor-header">Limitations of Existing Approaches</h3><p>Existing approaches used for managing vector data as discussed in the previous section has the following limitations:</p>
 <ol>
-<li><strong>Flexibilidad:</strong> Los sistemas existentes suelen almacenar todos los datos en la memoria principal, por lo que no pueden ejecutarse fácilmente en modo distribuido en varias máquinas y no son adecuados para gestionar conjuntos de datos masivos.</li>
-<li><strong>Tratamiento dinámico de datos:</strong> A menudo se asume que los datos son estáticos una vez introducidos en los sistemas existentes, lo que complica el procesamiento de datos dinámicos e imposibilita la búsqueda en tiempo casi real.</li>
-<li><strong>Procesamiento avanzado de consultas:</strong> La mayoría de las herramientas no admiten el procesamiento avanzado de consultas (por ejemplo, filtrado de atributos, búsqueda híbrida y consultas multivectoriales), que es esencial para construir motores de búsqueda de similitudes en el mundo real que admitan el filtrado avanzado.</li>
-<li><strong>Optimizaciones para computación heterogénea:</strong> Pocas plataformas ofrecen optimizaciones para arquitecturas de sistemas heterogéneos tanto en CPU como en GPU (excluyendo FAISS), lo que conlleva pérdidas de eficiencia.</li>
+<li><strong>Flexibility:</strong> Existing systems typically store all data in main memory, hence they cannot be run in distributed mode across multiple machines easily and are not well-suited for handling massive datasets</li>
+<li><strong>Dynamic data handling:</strong> Data is often assumed to be static once fed into existing systems, complicating processing for dynamic data and making near real-time search impossible</li>
+<li><strong>Advanced query processing:</strong> Most tools do not support advanced query processing (e.g., attribute filtering, hybrid search and multi-vector queries), which is essential for building real-world similarity search engines supporting advanced filtering.</li>
+<li><strong>Heterogeneous computing optimizations:</strong> Few platforms offer optimizations for heterogenous system architectures on both CPUs and GPUs (excluding FAISS), leading to efficiency losses.</li>
 </ol>
-<p><a href="https://milvus.io/">Milvus</a> intenta superar todas estas limitaciones y lo analizaremos en detalle en la siguiente sección.</p>
-<h3 id="The-Milvus-Advantage-Understanding-Knowhere" class="common-anchor-header">La ventaja de Milvus: comprender Knowhere</h3><p><a href="https://milvus.io/">Milvus</a> intenta abordar y resolver con éxito las limitaciones de los sistemas existentes construidos sobre algoritmos ineficientes de gestión de datos vectoriales y de búsqueda de similitudes de las siguientes maneras:</p>
+<p><a href="https://milvus.io/">Milvus</a> attempts to overcome all of these limitations and we will discuss this in detail in the next section.</p>
+<h3 id="The-Milvus-Advantage-Understanding-Knowhere" class="common-anchor-header">The Milvus Advantage —Understanding Knowhere</h3><p><a href="https://milvus.io/">Milvus</a> tries to tackle and successfully solve the limitations of existing systems build on top of inefficient vector data management and similarity search algorithms in the following ways:</p>
 <ul>
-<li>Mejora la flexibilidad ofreciendo soporte para una variedad de interfaces de aplicación (incluyendo SDKs en Python, Java, Go, C++ y RESTful APIs).</li>
-<li>Soporta múltiples tipos de índices vectoriales (por ejemplo, índices basados en cuantización e índices basados en grafos) y procesamiento avanzado de consultas.</li>
-<li>Milvus maneja datos vectoriales dinámicos utilizando un árbol de fusión estructurado en registros (árbol LSM), manteniendo la eficiencia de las inserciones y supresiones de datos y el ritmo de las búsquedas en tiempo real.</li>
-<li>Milvus también proporciona optimizaciones para arquitecturas informáticas heterogéneas en CPU y GPU modernas, lo que permite a los desarrolladores ajustar los sistemas a escenarios, conjuntos de datos y entornos de aplicación específicos.</li>
+<li>It enhances flexibility by offering support for a variety of application interfaces (including SDKs in Python, Java, Go, C++ and RESTful APIs)</li>
+<li>It supports multiple vector index types (e.g., quantization-based indexes and graph-based indexes), and advanced query processing</li>
+<li>Milvus handles dynamic vector data using a log-structured merge-tree (LSM tree), keeping data insertions and deletions efficient and searches humming along in real time</li>
+<li>Milvus also provides optimizations for heterogeneous computing architectures on modern CPUs and GPUs, allowing developers to adjust systems for specific scenarios, datasets, and application environments</li>
 </ul>
-<p>Knowhere, el motor de ejecución vectorial de Milvus, es una interfaz de operaciones para acceder a servicios en las capas superiores del sistema y a bibliotecas de búsqueda de similitud vectorial como Faiss, Hnswlib, Annoy en las capas inferiores del sistema. Además, Knowhere también se encarga de la computación heterogénea. Knowhere controla en qué hardware (por ejemplo, CPU o GPU) se ejecutan las solicitudes de creación de índices y de búsqueda. Así es como Knowhere obtiene su nombre - sabiendo dónde ejecutar las operaciones. Más tipos de hardware incluyendo DPU y TPU serán soportados en futuras versiones.</p>
+<p>Knowhere, the vector execution engine of Milvus, is an operation interface for accessing services in the upper layers of the system and vector similarity search libraries like Faiss, Hnswlib, Annoy in the lower layers of the system. In addition, Knowhere is also in charge of heterogeneous computing. Knowhere controls on which hardware (eg. CPU or GPU) to execute index building and search requests. This is how Knowhere gets its name — knowing where to execute the operations. More types of hardware including DPU and TPU will be supported in future releases.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/knowhere_architecture_f1be3dbb1a.png" alt="figure 7" class="doc-image" id="figure-7" />
-   </span> <span class="img-wrapper"> <span>Figura 7</span> </span></p>
-<p>La computación en Milvus implica principalmente operaciones vectoriales y escalares. Knowhere sólo maneja las operaciones sobre vectores en Milvus. La figura anterior ilustra la arquitectura Knowhere en Milvus. La capa inferior es el hardware del sistema. Las bibliotecas de índices de terceros están sobre el hardware. Luego Knowhere interactúa con el nodo de índice y el nodo de consulta en la parte superior a través de CGO. Knowhere no sólo amplía las funciones de Faiss, sino que también optimiza el rendimiento y tiene varias ventajas, incluyendo soporte para BitsetView, soporte para más métricas de similitud, soporte para el conjunto de instrucciones AVX512, selección automática de instrucciones SIMD y otras optimizaciones de rendimiento. Encontrará más información <a href="https://milvus.io/blog/deep-dive-8-knowhere.md">aquí</a>.</p>
-<h3 id="Milvus-Architecture" class="common-anchor-header">Arquitectura de Milvus</h3><p>La siguiente figura muestra la arquitectura general de la plataforma Milvus. Milvus separa el flujo de datos del flujo de control y se divide en cuatro capas que son independientes en términos de escalabilidad y recuperación de desastres.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/knowhere_architecture_f1be3dbb1a.png" alt="figure 7" class="doc-image" id="figure-7" />
+    <span>figure 7</span>
+  </span>
+</p>
+<p>Computation in Milvus mainly involves vector and scalar operations. Knowhere only handles the operations on vectors in Milvus. The figure above illustrates the Knowhere architecture in Milvus. The bottom-most layer is the system hardware. The third-party index libraries are on top of the hardware. Then Knowhere interacts with the index node and query node on the top via CGO. Knowhere not only further extends the functions of Faiss but also optimizes the performance and has several advantages including support for BitsetView, support for more similarity metrics, support for AVX512 instruction set, automatic SIMD-instruction selection and other performance optimizations. Details can be found <a href="https://milvus.io/blog/deep-dive-8-knowhere.md">here</a>.</p>
+<h3 id="Milvus-Architecture" class="common-anchor-header">Milvus Architecture</h3><p>The following figure showcases the overall architecture of the Milvus platform. Milvus separates data flow from control flow, and is divided into four layers that are independent in terms of scalability and disaster recovery.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ca80be5f96.png" alt="figure 8" class="doc-image" id="figure-8" />
-   </span> <span class="img-wrapper"> <span>Figura 8</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_architecture_ca80be5f96.png" alt="figure 8" class="doc-image" id="figure-8" />
+    <span>figure 8</span>
+  </span>
+</p>
 <ul>
-<li><strong>Capa de acceso:</strong> La capa de acceso está compuesta por un grupo de proxies sin estado y sirve como capa frontal del sistema y punto final para los usuarios.</li>
-<li><strong>Servicio de coordinación:</strong> El servicio de coordinación es responsable de la gestión de los nodos de la topología del clúster, el equilibrio de carga, la generación de marcas de tiempo, la declaración de datos y la gestión de datos.</li>
-<li><strong>Nodos de trabajo:</strong> El nodo trabajador, o de ejecución, ejecuta las instrucciones emitidas por el servicio coordinador y los comandos del lenguaje de manipulación de datos (DML) iniciados por el proxy. Un nodo trabajador en Milvus es similar a un nodo de datos en <a href="https://hadoop.apache.org/">Hadoop</a> o a un servidor de región en HBase.</li>
-<li><strong>Almacenamiento:</strong> Es la piedra angular de Milvus, responsable de la persistencia de los datos. La capa de almacenamiento se compone de <strong>meta store</strong>, <strong>log broker</strong> y <strong>object storage</strong>.</li>
+<li><strong>Access layer:</strong> The access layer is composed of a group of stateless proxies and serves as the front layer of the system and endpoint to users.</li>
+<li><strong>Coordinator service:</strong> The coordinator service is responsible for cluster topology node management, load balancing, timestamp generation, data declaration, and data management</li>
+<li><strong>Worker nodes:</strong> The worker, or execution, node executes instructions issued by the coordinator service and the data manipulation language (DML) commands initiated by the proxy. A worker node in Milvus is similar to a data node in <a href="https://hadoop.apache.org/">Hadoop</a>, or a region server in HBase</li>
+<li><strong>Storage:</strong> This is the cornerstone of Milvus, responsible for data persistence. The storage layer is comprised of <strong>meta store</strong>, <strong>log broker</strong> and <strong>object storage</strong></li>
 </ul>
-<p>Consulte <a href="https://milvus.io/docs/v2.0.x/four_layers.md">aquí</a> más detalles sobre la arquitectura.</p>
-<h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">Realizar búsquedas visuales de imágenes con Milvus - Un modelo de caso de uso<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
+<p>Do check out more details about the architecture <a href="https://milvus.io/docs/v2.0.x/four_layers.md">here</a>!</p>
+<h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">Performing visual image search with Milvus — A use-case blueprint<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,18 +230,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Las bases de datos vectoriales de código abierto como Milvus permiten a cualquier empresa crear su propio sistema de búsqueda de imágenes visuales con un número mínimo de pasos. Los desarrolladores pueden utilizar modelos de IA preentrenados para convertir sus propios conjuntos de datos de imágenes en vectores y, a continuación, aprovechar Milvus para permitir la búsqueda de productos similares por imagen. Veamos en el siguiente esquema cómo diseñar y construir un sistema de este tipo.</p>
+    </button></h2><p>Open-source vector databases like Milvus makes it possible for any business to create their own visual image search system with a minimum number of steps. Developers can use pre-trained AI models to convert their own image datasets into vectors, and then leverage Milvus to enable searching for similar products by image. Let’s look at the following blueprint of how to design and build such a system.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Workflow_for_Visual_Image_Search_c490906a58.jpeg" alt="figure 9" class="doc-image" id="figure-9" />
-   </span> <span class="img-wrapper"> <span>Figura 9</span> </span></p>
-<p>En este flujo de trabajo podemos utilizar un marco de trabajo de código abierto como <a href="https://github.com/towhee-io/towhee">towhee</a> para aprovechar un modelo preentrenado como ResNet-50 y extraer vectores de imágenes, almacenar e indexar estos vectores con facilidad en Milvus y también almacenar una asignación de ID de imagen a las imágenes reales en una base de datos MySQL. Una vez indexados los datos, podemos cargar cualquier imagen nueva con facilidad y realizar búsquedas de imágenes a escala utilizando Milvus. La siguiente figura muestra un ejemplo de búsqueda visual de imágenes.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Workflow_for_Visual_Image_Search_c490906a58.jpeg" alt="figure 9" class="doc-image" id="figure-9" />
+    <span>figure 9</span>
+  </span>
+</p>
+<p>In this workflow we can use an open-source framework like <a href="https://github.com/towhee-io/towhee">towhee</a> to leverage a pre-trained model like ResNet-50 and extract vectors from images, store and index these vectors with ease in Milvus and also store a mapping of image IDs to the actual pictures in a MySQL database. Once the data is indexed we can upload any new image with ease and perform image search at scale using Milvus. The following figure shows a sample visual image search.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Sample_Visual_Search_Example_52c6410dfd.png" alt="figure 10" class="doc-image" id="figure-10" />
-   </span> <span class="img-wrapper"> <span>figura 10</span> </span></p>
-<p>Eche un vistazo al <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">tutorial</a> detallado que se ha abierto en GitHub gracias a Milvus.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Sample_Visual_Search_Example_52c6410dfd.png" alt="figure 10" class="doc-image" id="figure-10" />
+    <span>figure 10</span>
+  </span>
+</p>
+<p>Do check out the detailed <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">tutorial</a> which has been open-sourced on GitHub thanks to Milvus.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -242,9 +260,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hemos cubierto una buena cantidad de terreno en este artículo. Empezamos con los retos de representar datos no estructurados, aprovechando los vectores y la búsqueda de similitud vectorial a escala con Milvus, una base de datos vectorial de código abierto. Hablamos de los detalles de la estructura de Milvus y de los componentes clave que la impulsan, así como de un plan para resolver un problema del mundo real: la búsqueda visual de imágenes con Milvus. Pruébelo y empiece a resolver sus propios problemas del mundo real con <a href="https://milvus.io/">Milvus</a>.</p>
-<p>¿Le ha gustado este artículo? Póngase <a href="https://www.linkedin.com/in/dipanzan/">en contacto conmigo</a> para hablar más sobre él o para darme su opinión.</p>
-<h2 id="About-the-author" class="common-anchor-header">Sobre el autor<button data-href="#About-the-author" class="anchor-icon" translate="no">
+    </button></h2><p>We’ve covered a fair amount of ground in this article. We started with challenges in representing unstrucutured data, leveraging vectors and vector similarity search at scale with Milvus, an open-source vector database. We discussed about details on how Milvus is structured and the key components powering it and a blueprint of how to solve a real-world problem, visual image search with Milvus. Do give it a try and start solving your own real-world problems with <a href="https://milvus.io/">Milvus</a>!</p>
+<p>Liked this article? Do <a href="https://www.linkedin.com/in/dipanzan/">reach out to me</a> to discuss more on it or give feedback!</p>
+<h2 id="About-the-author" class="common-anchor-header">About the author<button data-href="#About-the-author" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -259,4 +277,4 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dipanjan (DJ) Sarkar es Jefe de Ciencia de Datos, Experto en Desarrollo de Google - Aprendizaje Automático, Autor, Consultor y Asesor de IA. Contacto: http://bit.ly/djs_linkedin</p>
+    </button></h2><p>Dipanjan (DJ) Sarkar is a Data Science Lead, Google Developer Expert — Machine Learning, Author, Consultant and AI Advisor. Connect: http://bit.ly/djs_linkedin</p>

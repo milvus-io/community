@@ -1,7 +1,8 @@
 ---
 id: >-
   adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md
-title: إضافة ذاكرة ثابتة إلى كود كلود مع المكوّن الإضافي خفيف الوزن memsearch
+title: |
+  Adding Persistent Memory to Claude Code with the Lightweight memsearch Plugin
 author: Cheney Zhang
 date: 2026-02-13T00:00:00.000Z
 cover: assets.zilliz.com/blog_cover_memsearch_ccplugin_43b5ecfd6f.png
@@ -14,34 +15,35 @@ meta_keywords: >-
   memory AI
 meta_title: |
   Persistent Memory for Claude Code: memsearch ccplugin
-desc: >-
-  امنح كلود كود ذاكرة طويلة المدى مع ميمسارش ccplugin. تخزين ماركداون خفيف الوزن
-  وشفاف، واسترجاع دلالي تلقائي، ونفقات رمزية صفرية.
+desc: >
+  Give Claude Code long-term memory with memsearch ccplugin. Lightweight,
+  transparent Markdown storage, automatic semantic retrieval, zero token
+  overhead.
 origin: >-
   https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md
 ---
-<p>لقد أنشأنا مؤخرًا مكتبة <a href="https://github.com/zilliztech/memsearch">ذاكرة</a> طويلة الأمد مستقلة ومفتوحة المصدر، وهي مكتبة ذاكرة طويلة الأمد مستقلة وقابلة للتوصيل والتشغيل تمنح أي وكيل ذاكرة ثابتة وشفافة وقابلة للتحرير البشري. تستخدم نفس بنية الذاكرة الأساسية مثل OpenClaw - فقط بدون بقية مكدس OpenClaw. هذا يعني أنه يمكنك إسقاطها في أي إطار عمل وكيل (Claude وGPT وLlama والوكلاء المخصصين ومحركات سير العمل) وإضافة ذاكرة دائمة وقابلة للاستعلام على الفور. <em>(إذا كنت تريد التعمق في كيفية عمل memsearch، فقد كتبنا</em> <a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md"><em>منشورًا منفصلًا هنا</em></a><em>).</em></p>
-<p>في معظم عمليات سير عمل الوكلاء، تعمل memsearch على النحو المنشود تمامًا. لكن <strong>الترميز العميل</strong> قصة مختلفة. فجلسات الترميز تستغرق وقتًا طويلاً، وتبديلات السياق ثابتة، والمعلومات التي تستحق الحفظ تتراكم على مدار أيام أو أسابيع. يكشف هذا الحجم الهائل والتقلب الهائل عن نقاط الضعف في أنظمة ذاكرة الوكيل النموذجية - بما في ذلك البحث عن الذاكرة. في سيناريوهات الترميز، تختلف أنماط الاسترجاع بما يكفي بحيث لا يمكننا ببساطة إعادة استخدام الأداة الحالية كما هي.</p>
-<p>لمعالجة هذا الأمر، قمنا ببناء <strong>مكون إضافي للذاكرة الدائمة مصمم خصيصًا لـ Claude Code</strong>. وهي موجودة فوق واجهة برمجة memsearch CLI، ونطلق عليها اسم <strong>memsearch ccplugin</strong>.</p>
+<p>We recently built and open-sourced <a href="https://github.com/zilliztech/memsearch">memsearch</a>, a standalone, plug-and-play long-term memory library that gives any agent persistent, transparent, and human-editable memory. It uses the same underlying memory architecture as OpenClaw—just without the rest of the OpenClaw stack. That means you can drop it into any agent framework (Claude, GPT, Llama, custom agents, workflow engines) and instantly add durable, queryable memory. <em>(If you want the deep dive into how memsearch works, we wrote a</em> <a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md"><em>separate post here</em></a><em>.)</em></p>
+<p>In most agent workflows, memsearch performs exactly as intended. But <strong>agentic coding</strong> is a different story. Coding sessions run long, context switches are constant, and the information worth keeping accumulates over days or weeks. That sheer volume and volatility expose weaknesses in typical agent memory systems—memsearch included. In coding scenarios, retrieval patterns differ enough that we couldn’t simply reuse the existing tool as-is.</p>
+<p>To address this, we built a <strong>persistent memory plugin designed specifically for Claude Code</strong>. It sits on top of the memsearch CLI, and we’re calling it the <strong>memsearch ccplugin</strong>.</p>
 <ul>
-<li>GitHub Repo: <a href="https://github.com/zilliztech/memsearch"></a><a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a> <em>(مفتوح المصدر، رخصة MIT)</em></li>
+<li>GitHub Repo: <a href="https://github.com/zilliztech/memsearch"></a><a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a> <em>(open-source, MIT license)</em></li>
 </ul>
-<p>من خلال البرنامج <strong>المساعد memsearch ccplugin</strong> خفيف الوزن الذي يدير الذاكرة خلف الكواليس، يكتسب Claude Code القدرة على تذكر كل محادثة وكل قرار وكل تفضيل نمط وكل سلسلة رسائل متعددة الأيام - مفهرسة تلقائيًا وقابلة للبحث بشكل كامل ومستمرة عبر الجلسات.</p>
+<p>With the lightweight <strong>memsearch ccplugin</strong> managing memory behind the scenes, Claude Code gains the ability to remember every conversation, every decision, every style preference, and every multi-day thread—automatically indexed, fully searchable, and persistent across sessions.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/memsearch_plugin_diagram_41563f84dd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>للتوضيح خلال هذا المنشور يشير مصطلح "ccplugin" إلى الطبقة العليا، أو المكون الإضافي Claude Code نفسه. تشير كلمة "memsearch" إلى الطبقة السفلى، أو أداة CLI المستقلة الموجودة تحتها.</em></p>
-<p>إذًا لماذا تحتاج البرمجة إلى مكون إضافي خاص بها، ولماذا بنينا شيئًا خفيفًا جدًا؟ يعود الأمر إلى مشكلتين من المؤكد أنك واجهتهما: افتقار Claude Code إلى الذاكرة المستمرة، وغلظة وتعقيد الحلول الحالية مثل claude-mem.</p>
-<p>فلماذا إذن لماذا بناء مكون إضافي مخصص أصلاً؟ لأن وكلاء الترميز يصطدمون بنقطتي ألم من المؤكد أنك واجهتهما بنفسك:</p>
+<p><em>For clarity throughout this post: “ccplugin” refers to the upper layer, or the Claude Code plugin itself. “memsearch” refers to the lower layer, the standalone CLI tool underneath it.</em></p>
+<p>So why does coding need its own plugin, and why did we build something so lightweight? It comes down to two problems you’ve almost certainly hit: Claude Code’s lack of persistent memory, and the clunkiness and complexity of existing solutions like claude-mem.</p>
+<p>So why build a dedicated plugin at all? Because coding agents run into two pain points you’ve almost certainly experienced yourself:</p>
 <ul>
-<li><p>كلود كود ليس لديه ذاكرة ثابتة.</p></li>
-<li><p>العديد من حلول المجتمع الحالية - مثل <em>claude-mem -</em>قوية ولكنها ثقيلة أو ثقيلة أو معقدة للغاية بالنسبة لأعمال الترميز اليومية.</p></li>
+<li><p>Claude Code has no persistent memory.</p></li>
+<li><p>Many existing community solutions—like <em>claude-mem</em>—are powerful but heavy, clunky, or overly complex for day-to-day coding work.</p></li>
 </ul>
-<p>تهدف الإضافة ccplugin إلى حل كلتا المشكلتين بطبقة بسيطة وشفافة وسهلة الاستخدام للمطورين فوق ميمسارش.</p>
-<h2 id="Claude-Codes-Memory-Problem-It-Forgets-Everything-When-a-Session-Ends" class="common-anchor-header">مشكلة ذاكرة كود كلود كود: ينسى كل شيء عند انتهاء الجلسة<button data-href="#Claude-Codes-Memory-Problem-It-Forgets-Everything-When-a-Session-Ends" class="anchor-icon" translate="no">
+<p>The ccplugin aims to solve both problems with a minimal, transparent, developer-friendly layer on top of memsearch.</p>
+<h2 id="Claude-Codes-Memory-Problem-It-Forgets-Everything-When-a-Session-Ends" class="common-anchor-header">Claude Code’s Memory Problem: It Forgets Everything When a Session Ends<button data-href="#Claude-Codes-Memory-Problem-It-Forgets-Everything-When-a-Session-Ends" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,48 +58,48 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لنبدأ بسيناريو واجهه مستخدمو كلود كود بالتأكيد.</p>
-<p>تفتح كلود كود في الصباح. تكتب: "أكمل إعادة بناء مصادقة الأمس". يرد كلود: "لست متأكدًا مما كنت تعمل عليه بالأمس." لذا تقضي الدقائق العشر التالية في نسخ ولصق سجلات الأمس. إنها ليست مشكلة كبيرة، لكنها سرعان ما تصبح مزعجة لأنها تظهر بشكل متكرر.</p>
-<p>على الرغم من أن كلود كود لديه آليات الذاكرة الخاصة به، إلا أنها بعيدة كل البعد عن أن تكون مرضية. يمكن للملف <code translate="no">CLAUDE.md</code> تخزين توجيهات المشروع والتفضيلات، لكنه يعمل بشكل أفضل للقواعد الثابتة والأوامر القصيرة، وليس لتجميع المعرفة طويلة الأجل.</p>
-<p>يوفر كلود كود <code translate="no">resume</code> و <code translate="no">fork</code> الأوامر، لكنها بعيدة كل البعد عن كونها سهلة الاستخدام. بالنسبة لأوامر التشعب، تحتاج إلى تذكر معرّفات الجلسات، وكتابة الأوامر يدويًا، وإدارة شجرة من تواريخ المحادثات المتفرعة. عند تشغيل <code translate="no">/resume</code> ، ستحصل على حائط من عناوين الجلسات. إذا كنت لا تتذكر سوى تفاصيل قليلة حول ما قمت به وكان ذلك قبل أكثر من بضعة أيام، فحظًا موفقًا في العثور على الجلسة الصحيحة.</p>
+    </button></h2><p>Let’s start with a scenario that Claude Code Users most definitely have run into.</p>
+<p>You open Claude Code in the morning. “Continue yesterday’s auth refactor,” you type. Claude replies: “I’m not sure what you were working on yesterday.” So you spend the next ten minutes copy-pasting yesterday’s logs. It’s not a huge problem, but it gets annoying quickly because it appears so frequently.</p>
+<p>Even though Claude Code has its own memory mechanisms, they’re far from satisfactory. The <code translate="no">CLAUDE.md</code> file can store project directives and preferences, but it works better for static rules and short commands, not for accumulating long-term knowledge.</p>
+<p>Claude Code does offer <code translate="no">resume</code> and <code translate="no">fork</code> commands, but they’re far from user-friendly. For fork commands, you need to remember session IDs, type commands manually, and manage a tree of branching conversation histories. When you run <code translate="no">/resume</code>, you get a wall of session titles. If you only remember a few details about what you did and it was more than a few days ago, good luck finding the right one.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/code_snippet_82ec01cc5e.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>بالنسبة لتراكم المعرفة طويل الأجل عبر المشاريع، فإن هذا النهج برمته مستحيل.</p>
-<p>لتحقيق هذه الفكرة، يستخدم claude-mem نظام ذاكرة من ثلاثة مستويات. يبحث المستوى الأول في الملخصات عالية المستوى. يبحث المستوى الثاني في جدول زمني لمزيد من التفاصيل. يسحب المستوى الثالث الملاحظات الكاملة للمحادثة الأولية. علاوة على ذلك، هناك تصنيفات الخصوصية، وتتبع التكلفة، وواجهة تصور الويب.</p>
-<p>إليك كيف تعمل تحت الغطاء:</p>
+<p>For long-term, cross-project knowledge accumulation, this whole approach is impossible.</p>
+<p>To deliver on that idea, claude-mem uses a three-tier memory system. The first tier searches high-level summaries. The second tier digs into a timeline for more detail. The third tier pulls full observations for raw conversation. On top of that, there are privacy labels, cost tracking, and a web visualization interface.</p>
+<p>Here’s how it works under the hood:</p>
 <ul>
-<li><p><strong>طبقة وقت التشغيل.</strong> تعمل خدمة Node.js Worker على المنفذ 37777. تعيش البيانات الوصفية للجلسة في قاعدة بيانات SQLite خفيفة الوزن. قاعدة بيانات متجهة تتعامل مع الاسترجاع الدلالي الدقيق لمحتوى الذاكرة.</p></li>
-<li><p><strong>طبقة التفاعل.</strong> تتيح لك واجهة مستخدم الويب المستندة إلى React عرض الذكريات الملتقطة في الوقت الفعلي: الملخصات والجداول الزمنية والسجلات الأولية.</p></li>
-<li><p><strong>طبقة الواجهة.</strong> يعرض خادم MCP (بروتوكول سياق النموذج) واجهات أداة موحدة. يمكن لكلود استدعاء <code translate="no">search</code> (الاستعلام عن الملخصات عالية المستوى) و <code translate="no">timeline</code> (عرض الجداول الزمنية المفصلة) و <code translate="no">get_observations</code> (استرداد سجلات التفاعل الخام) لاسترداد الذكريات واستخدامها مباشرةً.</p></li>
+<li><p><strong>Runtime layer.</strong> A Node.js Worker service runs on port 37777. Session metadata lives in a lightweight SQLite database. A vector database handles precise semantic retrieval over memory content.</p></li>
+<li><p><strong>Interaction layer.</strong> A React-based web UI lets you view captured memories in real time: summaries, timelines, and raw records.</p></li>
+<li><p><strong>Interface layer.</strong> An MCP (Model Context Protocol) server exposes standardized tool interfaces. Claude can call <code translate="no">search</code> (query high-level summaries), <code translate="no">timeline</code> (view detailed timelines), and <code translate="no">get_observations</code> (retrieve raw interaction records) to retrieve and use memories directly.</p></li>
 </ul>
-<p>لكي نكون منصفين، هذا منتج قوي يحل مشكلة ذاكرة كلود كود. ولكنه معقّد ومُعقّد من نواحٍ مختلفة من يوم لآخر.</p>
+<p>To be fair, this is a solid product that solves Claude Code’s memory problem. But it’s clunky and complex in ways that matter day-to-day.</p>
 <table>
 <thead>
-<tr><th>الطبقة</th><th>التقنية</th></tr>
+<tr><th>Layer</th><th>Technology</th></tr>
 </thead>
 <tbody>
-<tr><td>اللغة</td><td>TypeScript (ES2022، وحدات ESNext)</td></tr>
-<tr><td>وقت التشغيل</td><td>Node.js 18+</td></tr>
-<tr><td>قاعدة البيانات</td><td>SQLite 3 مع برنامج تشغيل bun:sqlite</td></tr>
-<tr><td>مخزن المتجهات</td><td>ChromaDB (اختياري، للبحث الدلالي)</td></tr>
-<tr><td>خادم HTTP</td><td>Express.js 4.18</td></tr>
-<tr><td>الوقت الحقيقي</td><td>الأحداث المرسلة من الخادم (SSE)</td></tr>
-<tr><td>إطار عمل واجهة المستخدم</td><td>React + TypeScript</td></tr>
-<tr><td>SDK للذكاء الاصطناعي</td><td>@Aanthropic-ai/claude-agent-sdk</td></tr>
-<tr><td>أداة البناء</td><td>esbuild (حزم TypeScript)</td></tr>
-<tr><td>مدير العمليات</td><td>الكعكة</td></tr>
-<tr><td>اختبار</td><td>أداة تشغيل الاختبار المدمجة في Node.js</td></tr>
+<tr><td>Language</td><td>TypeScript (ES2022, ESNext modules)</td></tr>
+<tr><td>Runtime</td><td>Node.js 18+</td></tr>
+<tr><td>Database</td><td>SQLite 3 with bun:sqlite driver</td></tr>
+<tr><td>Vector Store</td><td>ChromaDB (optional, for semantic search)</td></tr>
+<tr><td>HTTP Server</td><td>Express.js 4.18</td></tr>
+<tr><td>Real-time</td><td>Server-Sent Events (SSE)</td></tr>
+<tr><td>UI Framework</td><td>React + TypeScript</td></tr>
+<tr><td>AI SDK</td><td>@anthropic-ai/claude-agent-sdk</td></tr>
+<tr><td>Build Tool</td><td>esbuild (bundles TypeScript)</td></tr>
+<tr><td>Process Manager</td><td>Bun</td></tr>
+<tr><td>Testing</td><td>Node.js built-in test runner</td></tr>
 </tbody>
 </table>
-<p><strong>بالنسبة للمبتدئين، الإعداد ثقيل.</strong> تشغيل claude-mem يعني تثبيت Node.js و Bun ووقت تشغيل MCP، ثم إعداد خدمة عامل، وخادم Express، و React UI، و SQLite، ومخزن متجه فوق ذلك. هناك الكثير من الأجزاء المتحركة التي يجب نشرها وصيانتها وتصحيحها عند حدوث عطل ما.</p>
-<p><strong>كل هذه المكونات تحرق أيضًا رموزًا لم تطلب إنفاقها.</strong> يتم تحميل تعريفات أداة MCP بشكل دائم في نافذة سياق Claude، وكل استدعاء أداة يستهلك الرموز المميزة في الطلب والاستجابة. خلال الجلسات الطويلة، تتراكم هذه النفقات الزائدة بسرعة ويمكن أن تخرج تكاليف الرموز عن السيطرة.</p>
-<p><strong>لا يمكن الاعتماد على استدعاء الذاكرة لأنه يعتمد كليًا على اختيار كلود للبحث.</strong> يجب على كلود أن تقرر من تلقاء نفسها استدعاء أدوات مثل <code translate="no">search</code> لتشغيل الاسترجاع. إذا لم يدرك أنه يحتاج إلى ذاكرة، فلن يظهر المحتوى ذو الصلة أبدًا. ويتطلب كل مستوى من مستويات الذاكرة الثلاثة استدعاء الأداة الخاصة به بشكل صريح، لذلك لا يوجد أي تراجع إذا لم يفكر كلود في البحث.</p>
-<p><strong>أخيرًا، تخزين البيانات غير شفاف، مما يجعل تصحيح الأخطاء والترحيل غير سار.</strong> يتم تقسيم الذكريات عبر SQLite للبيانات الوصفية للجلسة و Chroma لبيانات المتجه الثنائي، مع عدم وجود تنسيق مفتوح يربطهما معًا. الترحيل يعني كتابة البرامج النصية للتصدير. رؤية ما يتذكره الذكاء الاصطناعي بالفعل يعني المرور عبر واجهة مستخدم الويب أو واجهة استعلام مخصصة. لا توجد طريقة للنظر إلى البيانات الخام فقط.</p>
-<h2 id="Why-the-memsearch-Plugin-for-Claude-Code-is-Better" class="common-anchor-header">لماذا يعد البرنامج الإضافي memsearch لـ كلود كود أفضل؟<button data-href="#Why-the-memsearch-Plugin-for-Claude-Code-is-Better" class="anchor-icon" translate="no">
+<p><strong>For starters, setup is heavy.</strong> Getting claude-mem running means installing Node.js, Bun, and the MCP runtime, then standing up a Worker service, Express server, React UI, SQLite, and a vector store on top of that. That’s a lot of moving parts to deploy, maintain, and debug when something breaks.</p>
+<p><strong>All those components also burn tokens you didn’t ask to spend.</strong> MCP tool definitions load permanently into Claude’s context window, and every tool call eats tokens on the request and response. Over long sessions, that overhead adds up fast and can push token costs out of control.</p>
+<p><strong>Memory recall is unreliable because it depends entirely on Claude choosing to search.</strong> Claude has to decide on its own to call tools like <code translate="no">search</code> to trigger retrieval. If it doesn’t realize it needs a memory, the relevant content just never shows up. And each of the three memory tiers requires its own explicit tool invocation, so there’s no fallback if Claude doesn’t think to look.</p>
+<p><strong>Finally, data storage is opaque, which makes debugging and migration unpleasant.</strong> Memories are split across SQLite for session metadata and Chroma for binary vector data, with no open format tying them together. Migrating means writing export scripts. Seeing what the AI actually remembers means going through the Web UI or a dedicated query interface. There’s no way to just look at the raw data.</p>
+<h2 id="Why-the-memsearch-Plugin-for-Claude-Code-is-Better" class="common-anchor-header">Why the memsearch Plugin for Claude Code is Better?<button data-href="#Why-the-memsearch-Plugin-for-Claude-Code-is-Better" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -112,60 +114,60 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد أردنا طبقة ذاكرة خفيفة الوزن حقًا - لا خدمات إضافية، ولا بنية متشابكة، ولا نفقات تشغيلية زائدة. هذا ما حفزنا على بناء ميمسارش <strong>ccplugin</strong>. كان هذا في جوهره تجربة: <em>هل يمكن لنظام ذاكرة يركز على الترميز أن يكون أبسط بشكل جذري؟</em></p>
-<p>نعم، وقد أثبتنا ذلك.</p>
+    </button></h2><p>We wanted a memory layer that was truly lightweight—no extra services, no tangled architecture, no operational overhead. That’s what motivated us to build the <strong>memsearch ccplugin</strong>. At its core, this was an experiment: <em>could a coding-focused memory system be radically simpler?</em></p>
+<p>Yes, and we proved it.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/memsearch_icon_d68365006a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>إن ccplugin ccplugin بأكمله عبارة عن أربعة خطافات صدفة بالإضافة إلى عملية مراقبة في الخلفية. لا يوجد Node.js، ولا خادم MCP، ولا واجهة مستخدم ويب. إنها مجرد نصوص برمجية تستدعي واجهة مستخدم memsearch CLI، مما يقلل من شريط الإعداد والصيانة بشكل كبير.</p>
-<p>يمكن أن يكون ccplugin بهذه النحافة بسبب حدود المسؤولية الصارمة. فهو لا يتعامل مع تخزين الذاكرة أو استرجاع المتجهات أو تضمين النص. كل ذلك مفوض إلى واجهة مستخدم memsearch CLI الموجودة تحته. يحتوي ccplugin على وظيفة واحدة: ربط أحداث دورة حياة Claude Code (بدء الجلسة، إرسال المطالبة، إيقاف الاستجابة، نهاية الجلسة) بوظائف memsearch CLI المقابلة.</p>
+<p>The entire ccplugin is four shell hooks plus a background watch process. No Node.js, no MCP server, no Web UI. It’s just shell scripts calling the memsearch CLI, which drops the setup and maintenance bar dramatically.</p>
+<p>The ccplugin can be this thin because of strict responsibility boundaries. It doesn’t handle memory storage, vector retrieval, or text embedding. All of that is delegated to the memsearch CLI underneath. The ccplugin has one job: bridge Claude Code’s lifecycle events (session start, prompt submission, response stop, session end) to the corresponding memsearch CLI functions.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/memsearch_diagram_2_6b2dbeaaf6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>هذا التصميم المنفصل يجعل النظام مرنًا بما يتجاوز كلود كود. تعمل واجهة برمجة تطبيقات memsearch CLI بشكل مستقل مع IDEs الأخرى أو أطر عمل الوكلاء الآخرين أو حتى الاستدعاء اليدوي البسيط. فهو غير مقفل على حالة استخدام واحدة.</p>
-<p>عمليًا، يوفر هذا التصميم ثلاث مزايا رئيسية.</p>
-<h3 id="1-All-Memories-Live-in-Plain-Markdown-Files" class="common-anchor-header">1. جميع الذكريات تعيش في ملفات Markdown العادية</h3><p>تعيش كل ذاكرة ينشئها ccplugin في <code translate="no">.memsearch/memory/</code> كملف Markdown.</p>
+<p>This decoupled design makes the system flexible beyond Claude Code. The memsearch CLI works independently with other IDEs, other agent frameworks, or even plain manual invocation. It’s not locked to a single use case.</p>
+<p>In practice, this design delivers three key advantages.</p>
+<h3 id="1-All-Memories-Live-in-Plain-Markdown-Files" class="common-anchor-header">1. All Memories Live in Plain Markdown Files</h3><p>Every memory the ccplugin creates lives in <code translate="no">.memsearch/memory/</code> as a Markdown file.</p>
 <pre><code translate="no">.memsearch/memory/
 ├── 2026-02-09.md
 ├── 2026-02-10.md
 └── 2026-02-11.md
 <button class="copy-code-btn"></button></code></pre>
-<p>إنه ملف واحد لكل يوم. يحتوي كل ملف على ملخصات جلسات ذلك اليوم بنص عادي يمكن قراءته بشكل كامل. إليك لقطة شاشة لملفات الذاكرة اليومية من مشروع memsearch نفسه:</p>
+<p>It’s one file per day. Each file contains that day’s session summaries in plain text, fully human-readable. Here’s a screenshot of the daily memory files from the memsearch project itself:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/markdown_file_d0ab53e13b.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>يمكنك رؤية التنسيق على الفور: الطابع الزمني، ومعرف الجلسة، ومعرف الدوران، وملخص الجلسة. لا شيء مخفي.</p>
-<p>هل تريد معرفة ما يتذكره الذكاء الاصطناعي؟ افتح ملف Markdown. هل تريد تحرير الذاكرة؟ استخدم محرر النصوص الخاص بك. هل تريد ترحيل بياناتك؟ انسخ المجلد <code translate="no">.memsearch/memory/</code>.</p>
-<p>فهرس متجه <a href="https://milvus.io/">ميلفوس</a> هو ذاكرة تخزين مؤقت لتسريع البحث الدلالي. يُعاد بناؤه من Markdown في أي وقت. لا توجد قواعد بيانات مبهمة ولا صناديق سوداء ثنائية. جميع البيانات قابلة للتتبع وإعادة البناء بالكامل.</p>
+<p>You can see the format right away: timestamp, session ID, turn ID, and a summary of the session. Nothing is hidden.</p>
+<p>Want to know what the AI remembers? Open the Markdown file. Want to edit a memory? Use your text editor. Want to migrate your data? Copy the <code translate="no">.memsearch/memory/</code> folder.</p>
+<p>The <a href="https://milvus.io/">Milvus</a> vector index is a cache to speed up semantic search. It rebuilds from Markdown at any time. No opaque databases, no binary black boxes. All data is traceable and fully reconstructable.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_index_workflow_e8de4628da.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="2-Automatic-Context-Injection-Costs-Zero-Extra-Tokens" class="common-anchor-header">2. حقن السياق التلقائي لا يكلف أي رموز إضافية</h3><p>التخزين الشفاف هو أساس هذا النظام. يأتي المردود الحقيقي من كيفية استخدام هذه الذكريات، وفي ccplugin، يتم استدعاء الذاكرة تلقائيًا بالكامل.</p>
-<p>في كل مرة يتم فيها إرسال موجهة، يقوم خطاف <code translate="no">UserPromptSubmit</code> بإطلاق بحث دلالي ويحقن أفضل 3 ذكريات ذات صلة في السياق. لا يقرر كلود ما إذا كان سيتم البحث أم لا. بل يحصل فقط على السياق.</p>
-<p>أثناء هذه العملية، لا يرى Claude أبدًا تعريفات أداة MCP، لذلك لا يوجد شيء إضافي يشغل نافذة السياق. يعمل الخطاف في طبقة CLI ويحقن نتائج بحث نصية عادية. لا توجد نفقات IPC زائدة ولا تكاليف رمز استدعاء الأداة. اختفى تمامًا انتفاخ نافذة السياق الذي يأتي مع تعريفات أدوات MCP.</p>
+<h3 id="2-Automatic-Context-Injection-Costs-Zero-Extra-Tokens" class="common-anchor-header">2. Automatic Context Injection Costs Zero Extra Tokens</h3><p>Transparent storage is the foundation of this system. The real payoff comes from how these memories get used, and in ccplugin, memory recall is fully automatic.</p>
+<p>Every time a prompt is submitted, the <code translate="no">UserPromptSubmit</code> hook fires a semantic search and injects the top-3 relevant memories into context. Claude doesn’t decide whether to search. It just gets the context.</p>
+<p>During this process, Claude never sees MCP tool definitions, so nothing extra occupies the context window. The hook runs at the CLI layer and injects plain text search results. No IPC overhead, no tool-call token costs. The context-window bloat that comes with MCP tool definitions is gone entirely.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/diagram_3_b9e8391c2a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>بالنسبة للحالات التي لا تكفي فيها أعلى 3 مستويات تلقائيًا، قمنا أيضًا ببناء ثلاثة مستويات من الاسترجاع التدريجي. جميع المستويات الثلاثة هي أوامر CLI، وليست أدوات MCP.</p>
+<p>For cases where the automatic top-3 isn’t enough, we also built three tiers of progressive retrieval. All three are CLI commands, not MCP tools.</p>
 <ul>
-<li><p><strong>L1 (تلقائي):</strong> تقوم كل مطالبة بإرجاع أفضل 3 نتائج بحث دلالية مع معاينة <code translate="no">chunk_hash</code> و 200 حرف. يغطي هذا معظم الاستخدام اليومي.</p></li>
-<li><p><strong>L2 (عند الطلب):</strong> عند الحاجة إلى السياق الكامل، يقوم <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> بإرجاع قسم Markdown الكامل بالإضافة إلى البيانات الوصفية.</p></li>
-<li><p><strong>L3 (عميق):</strong> عندما تكون هناك حاجة إلى المحادثة الأصلية، يسحب <code translate="no">memsearch transcript &lt;jsonl_path&gt; --turn &lt;uuid&gt;</code> سجل JSONL الخام من Claude Code.</p></li>
+<li><p><strong>L1 (automatic):</strong> Every prompt returns the top-3 semantic search results with a <code translate="no">chunk_hash</code> and 200-character preview. This covers most everyday use.</p></li>
+<li><p><strong>L2 (on-demand):</strong> When full context is needed, <code translate="no">memsearch expand &lt;chunk_hash&gt;</code> returns the complete Markdown section plus metadata.</p></li>
+<li><p><strong>L3 (deep):</strong> When the original conversation is needed, <code translate="no">memsearch transcript &lt;jsonl_path&gt; --turn &lt;uuid&gt;</code> pulls the raw JSONL record from Claude Code.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -179,10 +181,10 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="3-Session-Summaries-Are-Generated-in-the-Background-at-Near-Zero-Cost" class="common-anchor-header">3. يتم إنشاء ملخصات الجلسات في الخلفية بتكلفة تقترب من الصفر</h3><p>يغطي الاسترجاع كيفية استخدام الذكريات. ولكن يجب كتابة الذكريات أولاً. كيف يتم إنشاء كل ملفات Markdown هذه؟</p>
-<p>ينشئها ccplugin من خلال خط أنابيب في الخلفية يعمل بشكل غير متزامن ولا يكلف شيئًا تقريبًا. في كل مرة تقوم فيها بإيقاف استجابة كلود ، يتم تشغيل خطاف <code translate="no">Stop</code>: يقوم بتحليل نص المحادثة ، ويستدعي كلود هايكو (<code translate="no">claude -p --model haiku</code>) لإنشاء ملخص ، ويلحقه بملف Markdown لليوم الحالي. إن مكالمات واجهة برمجة تطبيقات Haiku رخيصة للغاية، تكاد لا تذكر لكل استدعاء.</p>
-<p>من هناك، تكتشف عملية المراقبة تغيير الملف وتقوم تلقائيًا بفهرسة المحتوى الجديد في ملف Milvus بحيث يكون متاحًا للاسترجاع على الفور. يعمل التدفق بأكمله في الخلفية دون مقاطعة عملك، وتبقى التكاليف تحت السيطرة.</p>
-<h2 id="Quickstart-memsearch-plugin-with-Claude-Code" class="common-anchor-header">بدء تشغيل ملحق memsearch السريع مع كلود كود<button data-href="#Quickstart-memsearch-plugin-with-Claude-Code" class="anchor-icon" translate="no">
+<h3 id="3-Session-Summaries-Are-Generated-in-the-Background-at-Near-Zero-Cost" class="common-anchor-header">3. Session Summaries Are Generated in the Background at Near-Zero Cost</h3><p>Retrieval covers how memories get used. But the memories have to be written first. How do all those Markdown files get created?</p>
+<p>The ccplugin generates them through a background pipeline that runs asynchronously and costs almost nothing. Every time you stop a Claude response, the <code translate="no">Stop</code> hook fires: it parses the conversation transcript, calls Claude Haiku (<code translate="no">claude -p --model haiku</code>) to generate a summary, and appends it to the current day’s Markdown file. Haiku API calls are extremely cheap, nearly negligible per invocation.</p>
+<p>From there, the watch process detects the file change and automatically indexes the new content into Milvus so it’s available for retrieval right away. The whole flow runs in the background without interrupting your work, and costs stay controlled.</p>
+<h2 id="Quickstart-memsearch-plugin-with-Claude-Code" class="common-anchor-header">Quickstart memsearch plugin with Claude Code<button data-href="#Quickstart-memsearch-plugin-with-Claude-Code" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -197,18 +199,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="First-install-from-the-Claude-Code-plugin-marketplace" class="common-anchor-header">أولاً، قم بالتثبيت من سوق ملحقات Claude Code:</h3><pre><code translate="no">
+    </button></h2><h3 id="First-install-from-the-Claude-Code-plugin-marketplace" class="common-anchor-header">First, install from the Claude Code plugin marketplace:</h3><pre><code translate="no">
 bash
 <span class="hljs-comment"># Run in Claude Code terminal</span>
 /plugin marketplace add zilliztech/memsearch
 /plugin install memsearch
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Second-restart-Claude-Code" class="common-anchor-header">ثانيًا، أعد تشغيل Claude Code.</h3><p>تقوم الإضافة بتهيئة تكوينها تلقائيًا.</p>
-<h3 id="Third-after-a-conversation-check-the-days-memory-file" class="common-anchor-header">ثالثًا، بعد المحادثة، تحقق من ملف ذاكرة اليوم:</h3><pre><code translate="no">bash
+<h3 id="Second-restart-Claude-Code" class="common-anchor-header">Second, restart Claude Code.</h3><p>The plugin initializes its configuration automatically.</p>
+<h3 id="Third-after-a-conversation-check-the-days-memory-file" class="common-anchor-header">Third, after a conversation, check the day’s memory file:</h3><pre><code translate="no">bash
 <span class="hljs-built_in">cat</span> .memsearch/memory/$(<span class="hljs-built_in">date</span> +%Y-%m-%d).md
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Fourth-enjoy" class="common-anchor-header">رابعًا، استمتع.</h3><p>في المرة التالية التي يبدأ فيها Claude Code، يسترجع النظام تلقائيًا الذكريات ذات الصلة ويحقنها. لا حاجة لخطوات إضافية.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="Fourth-enjoy" class="common-anchor-header">Fourth, enjoy.</h3><p>The next time Claude Code starts, the system automatically retrieves and injects relevant memories. No extra steps needed.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -223,31 +225,31 @@ bash
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>دعونا نعود إلى السؤال الأصلي: كيف تمنح الذكاء الاصطناعي ذاكرة مستمرة؟ كلود ميم وذاكرة ميم سيبلوغين memsearch ccplugin يتخذان نهجين مختلفين، ولكل منهما نقاط قوة مختلفة. لخصنا دليلًا سريعًا للاختيار بينهما:</p>
+    </button></h2><p>Let’s go back to the original question: how do you give AI persistent memory? claude-mem and memsearch ccplugin take different approaches, each with different strengths. We summed up a quick guide to choosing between them:</p>
 <table>
 <thead>
-<tr><th>الفئة</th><th>memsearch</th><th>كلود ميم</th></tr>
+<tr><th>Category</th><th>memsearch</th><th>claude-mem</th></tr>
 </thead>
 <tbody>
-<tr><td>البنية</td><td>4 خطافات صدفة + 1 عملية مراقبة</td><td>عامل Node.js + عامل Node.js + Express + React UI</td></tr>
-<tr><td>طريقة التكامل</td><td>خطافات أصلية + CLI</td><td>خادم MCP (stdio)</td></tr>
-<tr><td>الاستدعاء</td><td>تلقائي (حقن الخطاف)</td><td>مدفوع بالوكيل (يتطلب استدعاء الأداة)</td></tr>
-<tr><td>استهلاك السياق</td><td>صفر (حقن نص النتيجة فقط)</td><td>تستمر تعريفات أداة MCP</td></tr>
-<tr><td>ملخص الجلسة</td><td>مكالمة واحدة غير متزامنة من Haiku CLI</td><td>مكالمات واجهة برمجة التطبيقات المتعددة + ضغط الملاحظة</td></tr>
-<tr><td>تنسيق التخزين</td><td>ملفات تخفيض السعر العادي</td><td>SQLite + تضمينات كروما</td></tr>
-<tr><td>ترحيل البيانات</td><td>ملفات تخفيض السعر العادي</td><td>ملفات SQLite + تضمينات Chroma</td></tr>
-<tr><td>طريقة الترحيل</td><td>نسخ ملفات .md</td><td>التصدير من قاعدة البيانات</td></tr>
-<tr><td>وقت التشغيل</td><td>بايثون + كلود CLI</td><td>Node.js + Bun + وقت تشغيل MCP</td></tr>
+<tr><td>Architecture</td><td>4 shell hooks + 1 watch process</td><td>Node.js Worker + Express + React UI</td></tr>
+<tr><td>Integration Method</td><td>Native hooks + CLI</td><td>MCP server (stdio)</td></tr>
+<tr><td>Recall</td><td>Automatic (hook injection)</td><td>Agent-driven (requires tool invocation)</td></tr>
+<tr><td>Context Consumption</td><td>Zero (inject result text only)</td><td>MCP tool definitions persist</td></tr>
+<tr><td>Session Summary</td><td>One asynchronous Haiku CLI call</td><td>Multiple API calls + observation compression</td></tr>
+<tr><td>Storage Format</td><td>Plain Markdown files</td><td>SQLite + Chroma embeddings</td></tr>
+<tr><td>Data Migration</td><td>Plain Markdown files</td><td>SQLite + Chroma embeddings</td></tr>
+<tr><td>Migration Method</td><td>Copying .md files</td><td>Exporting from database</td></tr>
+<tr><td>Runtime</td><td>Python + Claude CLI</td><td>Node.js + Bun + MCP runtime</td></tr>
 </tbody>
 </table>
-<p>يوفر claude-mem ميزات أكثر ثراءً، وواجهة مستخدم مصقولة، وتحكمًا أكثر دقة. بالنسبة للفرق التي تحتاج إلى التعاون أو التصور على الويب أو إدارة الذاكرة التفصيلية، فهو اختيار قوي.</p>
-<p>يوفر البرنامج المساعد memsearch ccplugin تصميمًا بسيطًا، ونفقات زائدة في نافذة السياق صفر، وتخزينًا شفافًا تمامًا. بالنسبة للمهندسين الذين يريدون طبقة ذاكرة خفيفة الوزن بدون تعقيدات إضافية، فهو الأنسب للمهندسين الذين يريدون طبقة ذاكرة خفيفة الوزن بدون تعقيدات إضافية. أيهما أفضل يعتمد على ما تحتاج إليه.</p>
-<p>هل تريد التعمق أكثر أو الحصول على مساعدة في البناء باستخدام memsearch أو Milvus؟</p>
+<p>claude-mem offers richer features, a polished UI, and finer-grained control. For teams that need collaboration, web visualization, or detailed memory management, it’s a strong pick.</p>
+<p>memsearch ccplugin offers minimal design, zero context-window overhead, and fully transparent storage. For engineers who want a lightweight memory layer without additional complexity, it’s the better fit. Which one is better depends on what you need.</p>
+<p>Want to dive deeper or get help building with memsearch or Milvus?</p>
 <ul>
-<li><p>انضم إلى <a href="https://milvus.io/slack">مجتمع Milvus Slack</a> t للتواصل مع مطورين آخرين ومشاركة ما تقوم ببنائه.</p></li>
-<li><p>احجز <a href="https://milvus.io/office-hours">ساعات عمل Milvus المكتبية للحصول على</a>أسئلة وأجوبة مباشرة ودعم مباشر من الفريق.</p></li>
+<li><p>Join the <a href="https://milvus.io/slack">Milvus Slack community</a> t to connect with other developers and share what you’re building.</p></li>
+<li><p>Book our <a href="https://milvus.io/office-hours">Milvus Office Hours</a>for live Q&amp;A and direct support from the team.</p></li>
 </ul>
-<h2 id="Resources" class="common-anchor-header">الموارد<button data-href="#Resources" class="anchor-icon" translate="no">
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -263,10 +265,10 @@ bash
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><strong>وثائق برنامج memsearch ccplugin:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
-<li><p><strong>جيثب:</strong> <a href="https://github.com/zilliztech/memsearch/tree/main/ccplugin">https://github.com/zilliztech/memsearch/tree/main/ccplugin</a></p></li>
-<li><p><strong>مشروع memsearch:</strong> <a href="https://github.com/zilliztech/memsearch">https://github.com/zilliztech/memsearch</a></p></li>
-<li><p>مدونة <a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">لقد استخرجنا نظام ذاكرة OpenClaw وقمنا بفتح مصادره (memsearch)</a></p></li>
-<li><p>مدونة: <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">ما هو OpenClaw؟ الدليل الكامل لعامل الذكاء الاصطناعي المفتوح المصدر -</a></p></li>
-<li><p>مدونة: <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">البرنامج التعليمي لـ OpenClaw الاتصال بـ Slack لمساعد الذكاء الاصطناعي المحلي</a></p></li>
+<li><p><strong>memsearch ccplugin documentation:</strong> <a href="https://zilliztech.github.io/memsearch/claude-plugin/">https://zilliztech.github.io/memsearch/claude-plugin/</a></p></li>
+<li><p><strong>GitHub:</strong> <a href="https://github.com/zilliztech/memsearch/tree/main/ccplugin">https://github.com/zilliztech/memsearch/tree/main/ccplugin</a></p></li>
+<li><p><strong>memsearch project:</strong> <a href="https://github.com/zilliztech/memsearch">https://github.com/zilliztech/memsearch</a></p></li>
+<li><p>Blog: <a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)</a></p></li>
+<li><p>Blog: <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent -</a></p></li>
+<li><p>Blog: <a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></p></li>
 </ul>

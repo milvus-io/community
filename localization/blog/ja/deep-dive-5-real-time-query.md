@@ -1,31 +1,33 @@
 ---
 id: deep-dive-5-real-time-query.md
-title: Milvusベクターデータベースのリアルタイムクエリへの利用
+title: Using the Milvus Vector Database for Real-Time Query
 author: Xi Ge
 date: 2022-04-11T00:00:00.000Z
-desc: Milvusのリアルタイムクエリの基本的なメカニズムについて学びます。
+desc: Learn about the underlying mechanism of real-time query in Milvus.
 cover: assets.zilliz.com/deep_dive_5_5e9175c7f7.png
 tag: Engineering
 tags: 'Data science, Database, Technology, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_dive_5_5e9175c7f7.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>表紙画像</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/deep_dive_5_5e9175c7f7.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>この記事は<a href="https://github.com/xige-16">Xi Geによって</a>書かれ、<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Niによって</a>翻訳されました。</p>
+<p>This article is written by <a href="https://github.com/xige-16">Xi Ge</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>前回の記事では、Milvusにおける<a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">データ挿入とデータ永続化について</a>お話しました。今回は、Milvusの<a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">様々なコンポーネントが</a>どのように相互作用し、リアルタイムのデータクエリを完了するのかについて説明します。</p>
-<p><em>始める前に役立つリソースを以下に示します。本記事のトピックをよりよく理解するために、まずこれらを読むことをお勧めします。</em></p>
+<p>In the previous post, we have talked about <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">data insertion and data persistence</a> in Milvus. In this article, we will continue to explain how <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">different components</a> in Milvus interact with each other to complete real-time data query.</p>
+<p><em>Some useful resources before getting started are listed below. We recommend reading them first to better understand the topic in this post.</em></p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvusアーキテクチャのディープダイブ</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">Milvusデータモデル</a></li>
-<li><a href="https://milvus.io/docs/v2.0.x/four_layers.md">Milvusの各コンポーネントの役割と機能</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Milvusにおけるデータ処理</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Milvusにおけるデータ挿入とデータ永続化</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Deep dive into the Milvus architecture</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">Milvus data model</a></li>
+<li><a href="https://milvus.io/docs/v2.0.x/four_layers.md">The role and function of each Milvus component</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing in Milvus</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data insertion and data persistence in Milvus</a></li>
 </ul>
-<h2 id="Load-data-to-query-node" class="common-anchor-header">クエリノードへのデータロード<button data-href="#Load-data-to-query-node" class="anchor-icon" translate="no">
+<h2 id="Load-data-to-query-node" class="common-anchor-header">Load data to query node<button data-href="#Load-data-to-query-node" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,16 +42,18 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>クエリを実行する前に、まずクエリノードにデータをロードする必要があります。</p>
-<p>クエリノードにロードされるデータには、<a href="https://milvus.io/docs/v2.0.x/four_layers.md#Log-broker">ログブローカからの</a>ストリーミングデータと<a href="https://milvus.io/docs/v2.0.x/four_layers.md#Object-storage">オブジェクトストレージ</a>（以下、永続ストレージとも呼ぶ）からの履歴データの2種類があります。</p>
+    </button></h2><p>Before a query is executed, the data has to be loaded to the query nodes first.</p>
+<p>There are two types of data that are loaded to query node: streaming data from <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Log-broker">log broker</a>, and historical data from <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Object-storage">object storage</a> (also called persistent storage below).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/flowchart_b1c51dfdaa.png" alt="Flowchart" class="doc-image" id="flowchart" />
-   </span> <span class="img-wrapper"> <span>フローチャート</span> </span></p>
-<p>データコーディネータは、Milvusに継続的に投入されるストリーミングデータの処理を担当します。Milvusユーザがコレクションをロードするために<code translate="no">collection.load()</code> を呼び出すと、query coordはどのセグメントがストレージに永続化されているか、また対応するチェックポイントを知るためにdata coordに問い合わせます。チェックポイントは、チェックポイントの前に永続化されたセグメントは消費され、チェックポイントの後に永続化されたセグメントは消費されないことを示すマークである。</p>
-<p>次に、クエリコーデ ィネータは、データコーデネータからの情報に基づいて、セグメントごと、またはチャンネルごと の割り当て戦略を出力する。セグメントアロケータは、永続ストレージ内のセグメント（バッチデータ）を異なるクエリノードに割り当てる役割を担っている。例えば、上の画像では、セグメントアロケータはセグメント 1 と 3 (S1, S3) をクエリノード 1 に、セグメント 2 と 4 (S2, S4) をクエリノード 2 に割り当てている。チャネルアロケータは、ログブローカ内の複数のデータ操作<a href="https://milvus.io/docs/v2.0.x/data_processing.md#Data-insertion">チャネル</a>（DMChannels）を監視するために、異なるクエリノードを割り当てます。例えば上の画像では、チャネルアロケータはクエリノード1をチャネル1（Ch1）の監視に割り当て、クエリノード2をチャネル2（Ch2）の監視に割り当てています。</p>
-<p>この割り当て戦略により、各クエリノードはセグメントデータをロードし、それに応じてチャネルを監視する。画像のクエリノード1では、過去のデータ（バッチデータ）が、永続ストレージから割り当てられたS1とS3を介してロードされる。一方、クエリノード1は、ログブローカのチャネル1にサブスクライブすることで、増分データ（ストリーミングデータ）をロードする。</p>
-<h2 id="Data-management-in-query-node" class="common-anchor-header">クエリノードにおけるデータ管理<button data-href="#Data-management-in-query-node" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/flowchart_b1c51dfdaa.png" alt="Flowchart" class="doc-image" id="flowchart" />
+    <span>Flowchart</span>
+  </span>
+</p>
+<p>Data coord is in charge of handling streaming data that are continuously inserted into Milvus. When a Milvus user calls <code translate="no">collection.load()</code> to load a collection, query coord will inquire the data coord to learn which segments have been persisted in storage and their corresponding checkpoints. A checkpoint is a mark to signify that persisted segments before the checkpoints are consumed while those after the checkpoint are not.</p>
+<p>Then, the query coord outputs allocation strategy based on the information from the data coord: either by segment or by channel. The segment allocator is responsible for allocating segments in persistent storage  (batch data) to different query nodes. For instance, in the image above, the segment allocator allocates segment 1 and 3 (S1, S3) to query node 1, and segment 2 and 4 (S2, S4) to query node 2. The channel allocator assigns different query nodes to watch multiple data manipulation <a href="https://milvus.io/docs/v2.0.x/data_processing.md#Data-insertion">channels</a> (DMChannels) in the log broker. For instance, in the image above, the channel allocator assigns query node 1 to watch  channel 1 (Ch1), and query node 2 to watch channel 2 (Ch2).</p>
+<p>With the allocation strategy, each query node loads segment data and watch the channels accordingly. In query node 1 in the image, historical data (batch data), are loaded via the allocated S1 and S3 from persistent storage. In the meanwhile, query node 1 loads incremental data (streaming data) by subscribing to channel 1 in log broker.</p>
+<h2 id="Data-management-in-query-node" class="common-anchor-header">Data management in query node<button data-href="#Data-management-in-query-node" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,27 +68,33 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>クエリノードは履歴データと増分データの両方を管理する必要がある。履歴データは<a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Sealed-segment">密封された</a>セグメントに保存され、増分データは<a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Growing-segment">成長する</a>セグメントに保存される。</p>
-<h3 id="Historical-data-management" class="common-anchor-header">履歴データの管理</h3><p>履歴データ管理には、主にロードバランスとクエリノードのフェイルオーバーという2つの考慮事項があります。</p>
+    </button></h2><p>A query node needs to manage both historical and incremental data. Historical data are stored in <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Sealed-segment">sealed segments</a> while incremental data are stored in <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Growing-segment">growing segments</a>.</p>
+<h3 id="Historical-data-management" class="common-anchor-header">Historical data management</h3><p>There are mainly two considerations for historical data management: load balance and query node failover.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/load_balance_c77e22bb5c.png" alt="Load balance" class="doc-image" id="load-balance" />
-   </span> <span class="img-wrapper"> <span>ロードバランス</span> </span></p>
-<p>例えば、図に示すように、クエリーノード4は他のクエリーノードよりも多くの封印セグメントを割り当てられています。このため、クエリ・ノード4がボトルネックとなり、クエリ・プロセス全体が遅くなる可能性が非常に高い。この問題を解決するために、システムはクエリーノード4のいくつかのセグメントを他のクエリーノードに割り当てる必要があります。これをロードバランスと呼ぶ。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/load_balance_c77e22bb5c.png" alt="Load balance" class="doc-image" id="load-balance" />
+    <span>Load balance</span>
+  </span>
+</p>
+<p>For instance, as shown in the illustration, query node 4 has been allocated more sealed segments than the rest of the query nodes. Very likely, this will make query node 4 the bottleneck that slows down the whole query process. To solve this issue, the system needs to allocate several segments in query node 4 to other query nodes. This is called load balance.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Query_node_failover_3278c0e307.png" alt="Query node failover" class="doc-image" id="query-node-failover" />
-   </span> <span class="img-wrapper"> <span>クエリーノードのフェイルオーバー</span> </span></p>
-<p>もう1つ考えられる状況を上の図に示します。ノードの一つであるクエリーノード4が突然ダウンした。この場合、クエリー結果の正確性を確保するために、負荷（クエリーノード4に割り当てられたセグメント）を他の稼働中のクエリーノードに転送する必要があります。</p>
-<h3 id="Incremental-data-management" class="common-anchor-header">インクリメンタルデータ管理</h3><p>クエリーノードはインクリメンタルデータを受信するためにDMChannelsを監視する。このプロセスにフローグラフが導入される。まず、すべてのデータ挿入メッセージをフィルタリングする。これは、指定されたパーティションのデータのみがロードされることを保証するためである。Milvusの各コレクションには対応するチャネルがあり、そのチャネルはコレクション内のすべてのパーティションで共有される。したがって、Milvusユーザーが特定のパーティションのデータのみをロードする必要がある場合、挿入されたデータをフィルタリングするためのフローグラフが必要となる。そうでなければ、コレクション内のすべてのパーティションのデータがクエリノードにロードされる。</p>
-<p>フィルタリングされた後、増分データは成長するセグメントに挿入され、さらにサーバタイムノードに渡される。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Query_node_failover_3278c0e307.png" alt="Query node failover" class="doc-image" id="query-node-failover" />
+    <span>Query node failover</span>
+  </span>
+</p>
+<p>Another possible situation is illustrated in the image above. One of the nodes, query node 4, is suddenly down. In this case, the load (segments allocated to query node 4) needs to be transferred to other working query nodes to ensure the accuracy of query results.</p>
+<h3 id="Incremental-data-management" class="common-anchor-header">Incremental data management</h3><p>Query node watches DMChannels to receive incremental data. Flowgraph is introduced in this process. It first filters all the data insertion messages. This is to ensure that only data in a specified partition is loaded. Each collection in Milvus has a corresponding channel, which is shared by all partitions in that collection. Therefore, a flowgraph is needed for filtering inserted data if a Milvus user only needs to load data in a certain partition. Otherwise, data in all partitions in the collection will be loaded to query node.</p>
+<p>After being filtered, the incremental data are inserted into growing segments, and further passed on to server time nodes.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/flow_graph_dc58651367.png" alt="Flowgraph" class="doc-image" id="flowgraph" />
-   </span> <span class="img-wrapper"> <span>フローチャート</span> </span></p>
-<p>データ挿入中、各挿入メッセージにはタイムスタンプが割り当てられる。上図のDMChannelでは、データは左から右の順に挿入される。最初の挿入メッセージのタイムスタンプは「1」、2番目は「2」、3番目は「6」です。赤で示された4番目のメッセージは挿入メッセージではなく、タイムティック・メッセージです。これは、挿入されたデータのタイムスタンプがこのタイムティックより小さいものが、すでにログブローカにあることを示すものです。言い換えれば、このタイムティックメッセージの後に挿入されたデータは、すべてこのタイムティックより大きなタイムスタンプを持つはずです。例えば、上の図では、クエリノードが現在のタイムティックが5であると認識すると、タイムスタンプの値が5より小さい挿入メッセージはすべてクエリノードにロードされることを意味します。</p>
-<p>サーバー時間ノードは、挿入ノードからタイムティックを受信するたびに、更新された<code translate="no">tsafe</code> 。<code translate="no">tsafe</code> は安全時間を意味し、この時点より前に挿入されたすべてのデータを照会できる。例えば、<code translate="no">tsafe</code> = 9の場合、9より小さいタイムスタンプで挿入されたデータは全てクエリ可能である。</p>
-<h2 id="Real-time-query-in-Milvus" class="common-anchor-header">Milvusのリアルタイムクエリー<button data-href="#Real-time-query-in-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/flow_graph_dc58651367.png" alt="Flowgraph" class="doc-image" id="flowgraph" />
+    <span>Flowgraph</span>
+  </span>
+</p>
+<p>During data insertion, each insertion message is assigned a timestamp. In the DMChannel shown in the image above, data are are inserted in order, from left to right. The timestamp for the first insertion message is 1; the second, 2; and the third, 6. The fourth message marked in red is not an insertion message, but rather a timetick message. This is to signify that inserted data whose timestamps are smaller than this timetick are already in log broker. In other words, data inserted after this timetick message should all have timestamps whose values are bigger than this timetick. For instance, in the image above, when query node perceives that the current timetick is 5, it means all insertion messages whose timestamp value is less than 5 are all loaded to query node.</p>
+<p>The server time node provides an updated <code translate="no">tsafe</code> value every time it receives a timetick from the insert node. <code translate="no">tsafe</code> means safety time, and all data inserted before this point of time can be queried. Take an example, if <code translate="no">tsafe</code> = 9, inserted data with timestamps smaller than 9 can all be queried.</p>
+<h2 id="Real-time-query-in-Milvus" class="common-anchor-header">Real-time query in Milvus<button data-href="#Real-time-query-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,34 +109,38 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusのリアルタイムクエリはクエリメッセージによって実現されます。クエリメッセージはプロキシによってログブローカに挿入される。クエリノードはログブローカのクエリチャネルを見てクエリメッセージを取得します。</p>
-<h3 id="Query-message" class="common-anchor-header">クエリメッセージ</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_message_4d57814f47.png" alt="Query message" class="doc-image" id="query-message" />
-   </span> <span class="img-wrapper"> <span>クエリメッセージ</span> </span></p>
-<p>クエリメッセージには、クエリに関する以下の重要な情報が含まれます：</p>
+    </button></h2><p>Real-time query in Milvus is enabled by query messages. Query messages are inserted into log broker by proxy. Then query nodes obtain query messages by watching the query channel in log broker.</p>
+<h3 id="Query-message" class="common-anchor-header">Query message</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_message_4d57814f47.png" alt="Query message" class="doc-image" id="query-message" />
+    <span>Query message</span>
+  </span>
+</p>
+<p>A query message includes the following crucial information about a query:</p>
 <ul>
-<li><code translate="no">msgID</code>:メッセージID、システムによって割り当てられたクエリーメッセージのID。</li>
-<li><code translate="no">collectionID</code>:クエリするコレクションのID（ユーザーによって指定された場合）。</li>
-<li><code translate="no">execPlan</code>:実行計画は主にクエリの属性フィルタリングに使用されます。</li>
-<li><code translate="no">service_ts</code>:サービス・タイムスタンプは、上記の<code translate="no">tsafe</code> 。サービスタイムスタンプは、どの時点でサービスが開始されたかを示す。<code translate="no">service_ts</code> より前に挿入されたデータはすべてクエリーに利用できる。</li>
-<li><code translate="no">travel_ts</code>:トラベルタイムスタンプは過去の時間範囲を指定する。そして、クエリは<code translate="no">travel_ts</code> で指定された期間に存在するデータに対して行われる。</li>
-<li><code translate="no">guarantee_ts</code>:保証タイムスタンプは、クエリを実行する必要がある期間を指定します。クエリは<code translate="no">service_ts</code> &gt;<code translate="no">guarantee_ts</code> の時のみ実行されます。</li>
+<li><code translate="no">msgID</code>: Message ID, the ID of the query message assigned by the system.</li>
+<li><code translate="no">collectionID</code>: The ID of the collection to query (if specified by user).</li>
+<li><code translate="no">execPlan</code>: The execution plan is mainly used for attribute filtering in a query.</li>
+<li><code translate="no">service_ts</code>: Service timestamp will be updated together with <code translate="no">tsafe</code> mentioned above. Service timestamp signifies at which point is the service in. All data inserted before <code translate="no">service_ts</code> are available for query.</li>
+<li><code translate="no">travel_ts</code>: Travel timestamp specifies a range of time in the past. And the query will be conducted on data existing in the time period specified by <code translate="no">travel_ts</code>.</li>
+<li><code translate="no">guarantee_ts</code>: Guarantee timestamp specifies a period of time after which the query needs to be conducted. Query will only be conducted when <code translate="no">service_ts</code> &gt; <code translate="no">guarantee_ts</code>.</li>
 </ul>
-<h3 id="Real-time-query" class="common-anchor-header">リアルタイムクエリ</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_process_7f676972d8.png" alt="Query process" class="doc-image" id="query-process" />
-   </span> <span class="img-wrapper"> <span>問い合わせプロセス</span> </span></p>
-<p>Milvusは、クエリメッセージを受信すると、まず、現在のサービス時間（<code translate="no">service_ts</code> ）が、クエリメッセージに含まれるギャランティタイムスタンプ（<code translate="no">guarantee_ts</code> ）よりも大きいかどうかを判定する。Yesの場合、クエリが実行される。クエリは、履歴データと増分データの両方に対して並行して実行される。ストリーミング・データとバッチ・データの間にはデータの重複があり得るため、冗長なクエリ結果をフィルタリングするために「ローカル・リデュース」と呼ばれるアクションが必要である。</p>
-<p>しかし、新しく挿入されたクエリーメッセージにおいて、現在のサービス時間が保証タイムスタンプよりも小さい場合、そのクエリーメッセージは未解決メッセージとなり、サービス時間が保証タイムスタンプよりも大きくなるまで処理されるのを待つ。</p>
-<p>クエリ結果は最終的に結果チャネルにプッシュされる。プロキシはそのチャネルからクエリ結果を取得する。同様に、プロキシは、複数のクエリノードから結果を受信し、クエリ結果が繰 り返される可能性があるため、「グローバルリダクション」も実行する。</p>
-<p>SDKに結果を返す前に、プロキシがすべてのクエリ結果を受け取ったことを確認するために、結果メッセージは、検索されたシールされたセグメント、検索されたDMChannels、およびグローバルシールされたセグメント(すべてのクエリノード上のすべてのセグメント)を含む情報の記録も保持する。システムは、以下の両方の条件が満たされた場合にのみ、プロキシがすべてのクエリ結果を受信したと結論づけることができる：</p>
+<h3 id="Real-time-query" class="common-anchor-header">Real-time query</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_process_7f676972d8.png" alt="Query process" class="doc-image" id="query-process" />
+    <span>Query process</span>
+  </span>
+</p>
+<p>When a query message is received, Milvus first judges if the current service time, <code translate="no">service_ts</code>, is larger than the guarantee timestamp, <code translate="no">guarantee_ts</code>, in the query message. If yes, the query will be executed. Query will be conducted in parallel on both historical data and incremental data. Since there can be an overlap of data between streaming data and batch data , an action called “local reduce” is needed to filter out the redundant query results.</p>
+<p>However, if the current service time is smaller than the guarantee timestamp in a newly inserted query message, the query message will become an unsolved message and wait to be processed till the service time becomes bigger than the guarantee timestamp.</p>
+<p>Query results are ultimately pushed to the result channel. Proxy obtains the query results from that channel. Likewise, proxy will conduct a “global reduce” as well because it receives results from multiple query nodes and query results might be repetitive.</p>
+<p>To ensure that the proxy has received all query results before returning them to the SDK, result message will also keep a record of information including searched sealed segments, searched DMChannels, and global sealed segments (all segments on all query nodes). The system can conclude that the proxy has received all query results only if both of the following conditions are met:</p>
 <ul>
-<li>すべての結果メッセージに記録されている、検索されたすべてのシ ールされたセグメントの合計が、グローバルシールされたセグメン トよりも大きい、</li>
-<li>コレクション内のすべてのDMChannelsに問い合わせが行われた。</li>
+<li>The union of all searched sealed segments recorded in all result messages is larger than global sealed segments,</li>
+<li>All DMChannels in the collection are queried.</li>
 </ul>
-<p>最終的に、proxyは「global reduce」後の最終結果をmilvus SDKに返します。</p>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">ディープダイブシリーズについて<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+<p>Ultimately, proxy returns the final results after “global reduce” to the Milvus SDK.</p>
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -141,14 +155,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.0の<a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">一般提供の正式発表に</a>伴い、Milvusのアーキテクチャとソースコードの詳細な解釈を提供するために、このMilvus Deep Diveブログシリーズを企画しました。このブログシリーズで扱うトピックは以下の通りです：</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvusアーキテクチャの概要</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIとPython SDK</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">データ処理</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">データ管理</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">リアルタイムクエリ</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">スカラー実行エンジン</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QAシステム</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">ベクトル実行エンジン</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

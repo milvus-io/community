@@ -1,12 +1,14 @@
 ---
 id: >-
   building-ai-agents-in-10-minutes-using-natural-language-with-langsmith-agent-builder-milvus.md
-title: 使用 LangSmith Agent Builder + Milvus 在 10 分鐘內使用自然語言建立 AI 代理程式
+title: >
+  Building AI Agents in 10 Minutes Using Natural Language with LangSmith Agent
+  Builder + Milvus
 author: Min Yin
 date: 2026-01-22T00:00:00.000Z
 desc: >-
-  了解如何使用 LangSmith Agent Builder 和 Milvus 在幾分鐘內建立支援記憶體的 AI
-  代理--無需代碼、自然語言、可直接投入生產。
+  Learn how to build memory-enabled AI agents in minutes using LangSmith Agent
+  Builder and Milvus—no code, natural language, production-ready.
 cover: assets.zilliz.com/cover_LS_MVS_ab8af19bfa.png
 tag: Tutorials
 recommend: false
@@ -20,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/building-ai-agents-in-10-minutes-using-natural-language-with-langsmith-agent-builder-milvus.md
 ---
-<p>隨著 AI 開發的加速，越來越多的團隊發現建立 AI 助理不一定需要軟體工程背景。最需要助理的人 - 產品團隊、營運、支援、研究人員 - 往往清楚知道代理應該做什麼，卻不知道如何用程式碼實作。傳統的「無代碼」工具嘗試以拖放畫布來彌補這個缺口，然而當您需要真正的代理行為時，這些工具就會崩潰：多步推理、工具使用或持續記憶。</p>
-<p>新發佈的<a href="https://www.langchain.com/langsmith/agent-builder"><strong>LangSmith Agent Builder</strong></a>採用了不同的方法。您不需要設計工作流程，而是以簡單的語言描述代理程式的目標和可用工具，然後運行時會處理決策。沒有流程圖、沒有腳本，只有清楚的意圖。</p>
-<p>但僅有意向並不能產生智慧型助理。<strong>記憶體</strong>才是關鍵。這就是被廣泛採用的開放原始碼向量資料庫<a href="https://milvus.io/"><strong>Milvus 所</strong></a>提供的基礎。Milvus 可以將文件和對話記錄儲存為嵌入式資料，讓您的座席能夠回想上下文、擷取相關資訊，並作出準確的大規模回應。</p>
-<p>本指南將介紹如何使用<strong>LangSmith Agent Builder + Milvus</strong> 來建立一個生產就緒、具備記憶功能的 AI 助理，而且完全不需要寫任何程式碼。</p>
-<h2 id="What-is-LangSmith-Agent-Builder-and-How-It-Works" class="common-anchor-header">LangSmith Agent Builder 是什麼？<button data-href="#What-is-LangSmith-Agent-Builder-and-How-It-Works" class="anchor-icon" translate="no">
+<p>As AI development accelerates, more teams are discovering that building an AI assistant doesn’t necessarily require a software engineering background. The people who need assistants the most—product teams, operations, support, researchers—often know exactly what the agent should do, but not how to implement it in code. Traditional “no-code” tools tried to bridge that gap with drag-and-drop canvases, yet they collapse the moment you need real agent behavior: multi-step reasoning, tool use, or persistent memory.</p>
+<p>The newly released <a href="https://www.langchain.com/langsmith/agent-builder"><strong>LangSmith Agent Builder</strong></a> takes a different approach. Instead of designing workflows, you describe the agent’s goals and available tools in plain language, and the runtime handles the decision-making. No flowcharts, no scripting—just clear intent.</p>
+<p>But intent alone doesn’t produce an intelligent assistant. <strong>Memory</strong> does. This is where <a href="https://milvus.io/"><strong>Milvus</strong></a>, the widely adopted open-source vector database, provides the foundation. By storing documents and conversation history as embeddings, Milvus allows your agent to recall context, retrieve relevant information, and respond accurately at scale.</p>
+<p>This guide walks through how to build a production-ready, memory-enabled AI assistant using <strong>LangSmith Agent Builder + Milvus</strong>, all without writing a single line of code.</p>
+<h2 id="What-is-LangSmith-Agent-Builder-and-How-It-Works" class="common-anchor-header">What is LangSmith Agent Builder and How It Works?<button data-href="#What-is-LangSmith-Agent-Builder-and-How-It-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,15 +41,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>正如其名所示，<a href="https://www.google.com/search?q=LangSmith+Agent+Builder&amp;oq=what+is+LangSmith+Agent+Builder&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIGCAgQABgDMggICRAAGBYYHtIBCTI1OTJqMGoxNagCCLACAfEF2Mylr_IuXLk&amp;sourceid=chrome&amp;ie=UTF-8&amp;ved=2ahUKEwjV1LfvxZ6SAxVFsFYBHYzTJAsQgK4QegQIARAB">LangSmith Agent Builder</a>是 LangChain 推出的免程式碼工具，可讓您使用純語言建立、部署和管理 AI 代理。您不需要撰寫邏輯或設計可視化流程，只需要說明代理程式應該做什麼、可以使用什麼工具，以及應該如何運作。系統會處理困難的部分 - 產生提示、選擇工具、將元件連接在一起，以及啟用記憶體。</p>
+    </button></h2><p>Just as its name reveals, <a href="https://www.google.com/search?q=LangSmith+Agent+Builder&amp;oq=what+is+LangSmith+Agent+Builder&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIGCAgQABgDMggICRAAGBYYHtIBCTI1OTJqMGoxNagCCLACAfEF2Mylr_IuXLk&amp;sourceid=chrome&amp;ie=UTF-8&amp;ved=2ahUKEwjV1LfvxZ6SAxVFsFYBHYzTJAsQgK4QegQIARAB">LangSmith Agent Builder</a> is a no-code tool from LangChain that lets you build, deploy, and manage AI agents using plain language. Instead of writing logic or designing visual flows, you explain what the agent should do, what tools it can use, and how it should behave. The system then handles the hard parts—generating prompts, selecting tools, wiring components together, and enabling memory.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/_57c5cee35b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>與傳統的無程式碼或工作流程工具不同，Agent Builder 沒有拖放畫布，也沒有節點庫。您與它互動的方式與 ChatGPT 相同。描述您想要建立的東西，回答幾個說明問題，Agent Builder 就會根據您的意向產生一個功能完整的代理程式。</p>
-<p>在幕後，這個代理程式是由四個核心建構區塊所構成。</p>
+<p>Unlike traditional no-code or workflow tools, Agent Builder doesn’t have drag-and-drop canvas and no node library. You interact with it the same way you would with ChatGPT. Describe what you want to build, answer a few clarifying questions, and the Builder produces a fully functioning agent based on your intent.</p>
+<p>Behind the scenes, that agent is constructed from four core building blocks.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_05b90b1f3d.webp" alt="" class="doc-image" id="" />
@@ -55,12 +57,12 @@ origin: >-
   </span>
 </p>
 <ul>
-<li><strong>提示：</strong>提示是代理程式的大腦，定義它的目標、限制和決策邏輯。LangSmith Agent Builder 使用元提示來自動建構：您描述您想要的東西，它會問清楚問題，然後您的答案會被合成為一個詳細的、可生產的系統提示。您只需表達意圖，而無需手寫邏輯。</li>
-<li><strong>工具：</strong>工具可讓代理採取行動 - 發送電子郵件、張貼至 Slack、建立行事曆事件、搜尋資料或呼叫 API。Agent Builder 透過模型上下文通訊協定 (Model Context Protocol, MCP) 整合這些工具，提供安全、可擴充的方式來揭露功能。使用者可以依賴內建的整合，或新增自訂的 MCP 伺服器，包括用於向量搜尋和長期記憶的 Milvus<a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">MCP 伺服器</a>。</li>
-<li><strong>觸發器：</strong>觸發器定義代理程式何時執行。除了手動執行之外，您還可以將代理附加到排程或外部事件，讓它們自動回應訊息、電子郵件或 webhook 活動。觸發器啟動時，Agent Builder 會啟動一個新的執行線程並執行代理的邏輯，從而實現連續的、事件驅動的行為。</li>
-<li><strong>子代理：</strong>子代理將複雜的任務分解成更小、更專業的單元。主代理可以將工作委派給子代理 - 每個子代理都有自己的提示和工具集 - 因此資料擷取、總結或格式化等任務都是由專門的助手來處理。這可避免單一提示過載，並創造更模組化、可擴充的代理體架構。</li>
+<li><strong>Prompt:</strong> The prompt is the agent’s brain, defining its goals, constraints, and decision logic. LangSmith Agent Builder uses meta-prompting to build this automatically: you describe what you want, it asks clarifying questions, and your answers are synthesized into a detailed, production-ready system prompt. Instead of hand-writing logic, you simply express intent.</li>
+<li><strong>Tools:</strong> Tools let the agent take action—sending emails, posting to Slack, creating calendar events, searching data, or calling APIs. Agent Builder integrates these tools through the Model Context Protocol (MCP), which provides a secure, extensible way to expose capabilities. Users can rely on built-in integrations or add custom MCP servers, including Milvus <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">MCP server</a>s for vector search and long-term memory.</li>
+<li><strong>Triggers:</strong> Triggers define when an agent runs. In addition to manual execution, you can attach agents to schedules or external events so they automatically respond to messages, emails, or webhook activity. When a trigger fires, Agent Builder starts a new execution thread and runs the agent’s logic, enabling continuous, event-driven behavior.</li>
+<li><strong>Subagents:</strong> Subagents break complex tasks into smaller, specialized units. A primary agent can delegate work to subagents—each with its own prompt and toolset—so tasks like data retrieval, summarization, or formatting are handled by dedicated helpers. This avoids a single overloaded prompt and creates a more modular, scalable agent architecture.</li>
 </ul>
-<h2 id="How-Does-an-Agent-Remember-Your-Preferences" class="common-anchor-header">代理如何記住您的偏好？<button data-href="#How-Does-an-Agent-Remember-Your-Preferences" class="anchor-icon" translate="no">
+<h2 id="How-Does-an-Agent-Remember-Your-Preferences" class="common-anchor-header">How Does an Agent Remember Your Preferences?<button data-href="#How-Does-an-Agent-Remember-Your-Preferences" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,10 +77,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agent Builder 的獨特之處在於它如何處理<em>記憶體</em>。代理程式不會將偏好設定塞入聊天記錄，而是可以在執行時更新自己的行為規則。如果您說：「從現在開始，以一首詩結束每一則 Slack 訊息」，代理程式不會將其視為一次性的要求，而是將其儲存為適用於未來執行的持久性偏好設定。</p>
-<p>在引擎蓋下，代理程式會保留一個內部記憶體檔案，基本上就是它不斷演進的系統提示。每次啟動時，它都會讀取這個檔案，以決定如何執行。當您提出修正或限制時，代理程式會加入結構化規則來編輯檔案，例如「總是以一首振奮人心的短詩結束簡報」。這種方法遠比依賴對話記錄來得穩定，因為代理程式會主動重寫操作指令，而不是將您的喜好埋藏在記錄檔中。</p>
-<p>這個設計來自 DeepAgents 的 FilesystemMiddleware，但在 Agent Builder 中被完全抽象化。您從來不會直接接觸檔案：您只需以自然語言表達更新，系統就會在幕後處理編輯。如果您需要更多的控制，您可以插入自訂的 MCP 伺服器，或下放到 DeepAgents 層以進行進階的記憶體自訂。</p>
-<h2 id="Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="common-anchor-header">實作示範：使用 Agent Builder 在 10 分鐘內建立 Milvus Assistant<button data-href="#Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="anchor-icon" translate="no">
+    </button></h2><p>What makes Agent Builder unique is how it treats <em>memory</em>. Instead of stuffing preferences into chat history, the agent can update its own behavior rules while running. If you say, “From now on, end every Slack message with a poem,” the agent doesn’t treat that as a one-off request—it stores it as a persistent preference that applies in future runs.</p>
+<p>Under the hood, the agent keeps an internal memory file—essentially its evolving system prompt. Each time it starts, it reads this file to decide how to behave. When you give corrections or constraints, the agent edits the file by adding structured rules like “Always close the briefing with a short uplifting poem.” This approach is far more stable than relying on conversation history because the agent actively rewrites its operating instructions rather than burying your preferences inside a transcript.</p>
+<p>This design comes from DeepAgents’ FilesystemMiddleware but is fully abstracted in Agent Builder. You never touch files directly: you express updates in natural language, and the system handles the edits behind the scenes. If you need more control, you can plug in a custom MCP server or drop to the DeepAgents layer for advanced memory customization.</p>
+<h2 id="Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="common-anchor-header">Hands-on Demo: Building a Milvus Assistant in 10 Minutes using Agent Builder<button data-href="#Hands-on-Demo-Building-a-Milvus-Assistant-in-10-Minutes-using-Agent-Builder" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -93,35 +95,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>既然我們已經介紹了 Agent Builder 背後的設計理念，現在讓我們以實作範例來瞭解完整的建置流程。我們的目標是建立一個智慧型的助理，可以回答 Milvus 相關的技術問題、搜尋官方文件，並隨著時間的推移記住使用者的喜好。</p>
-<h3 id="Step-1-Sign-In-to-the-LangChain-Website" class="common-anchor-header">步驟 1.登入 LangChain 網站</h3><p>
+    </button></h2><p>Now that we’ve covered the design philosophy behind Agent Builder, let’s walk through the full build process with a hands-on example. Our goal is to create an intelligent assistant that can answer Milvus-related technical questions, search the official documentation, and remember user preferences over time.</p>
+<h3 id="Step-1-Sign-In-to-the-LangChain-Website" class="common-anchor-header">Step 1. Sign In to the LangChain Website</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_1_b3c461d39b.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Set-Up-Your-Anthropic-API-Key" class="common-anchor-header">步驟 2.設定您的 Anthropic API 金鑰</h3><p><strong>注意：</strong>預設支援 Anthropic。您也可以使用自訂模型，只要其類型包含在 LangChain 正式支援的清單中。</p>
+<h3 id="Step-2-Set-Up-Your-Anthropic-API-Key" class="common-anchor-header">Step 2. Set Up Your Anthropic API Key</h3><p><strong>Note:</strong> Anthropic is supported by default. You can also use a custom model, as long as its type is included in the list officially supported by LangChain.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_2_c04400695e.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>1.新增 API 金鑰</strong></p>
+<p><strong>1. Add an API Key</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_3_11db4b3824.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>2.輸入並儲存 API 金鑰</strong></p>
+<p><strong>2. Enter and Save the API Key</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_4_abfc27d796.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Create-a-New-Agent" class="common-anchor-header">步驟 3.建立新代理</h3><p><strong>注意：</strong>按一下<strong>Learn More</strong>檢視使用說明文件。</p>
+<h3 id="Step-3-Create-a-New-Agent" class="common-anchor-header">Step 3. Create a New Agent</h3><p><strong>Note:</strong> Click <strong>Learn More</strong> to view the usage documentation.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_5_e90bf254f2.webp" alt="" class="doc-image" id="" />
@@ -135,7 +137,7 @@ origin: >-
   </span>
 </p>
 <ol>
-<li><strong>設定自訂模型 (選用)</strong></li>
+<li><strong>Configure a Custom Model (Optional)</strong></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -143,7 +145,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>(1) 輸入參數並儲存</strong></p>
+<p><strong>(1) Enter Parameters and Save</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_8_85f9e3008f.webp" alt="" class="doc-image" id="" />
@@ -156,7 +158,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Describe-Your-Requirements-to-Create-the-Agent" class="common-anchor-header">步驟 4.描述您的需求以建立代理程式</h3><p><strong>注意：</strong>使用自然語言描述來建立代理。</p>
+<h3 id="Step-4-Describe-Your-Requirements-to-Create-the-Agent" class="common-anchor-header">Step 4. Describe Your Requirements to Create the Agent</h3><p><strong>Note:</strong> Create the agent using a natural language description.</p>
 <pre><code translate="no">
 I need a Milvus technical consultant to <span class="hljs-built_in">help</span> me answer technical questions about vector databases. 
 
@@ -170,33 +172,37 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
   </span>
 </p>
 <ol>
-<li><strong>系统会询问后续问题以完善需求</strong></li>
+<li><strong>The System Asks Follow-Up Questions to Refine Requirements</strong></li>
 </ol>
-<p>問題 1: 選擇您希望代理記住的 Milvus 索引類型</p>
+<p>Question 1: Select the Milvus index types you want the agent to remember</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_11_050ac891f0.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>問題 2：選擇代理應如何處理技術問題  <span class="img-wrapper">
+<p>Question 2: Choose how the agent should handle technical questions
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_12_d1d6d4f2ed.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>問題 3：指定代理是否應專注於特定 Milvus 版本的指導  <span class="img-wrapper">
+<p>Question 3: Specify whether the agent should focus on guidance for a specific Milvus version
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_13_5d60df75e9.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-5-Review-and-Confirm-the-Generated-Agent" class="common-anchor-header">步驟 5.檢查並確認生成的代理</h3><p><strong>注意：</strong>系統自動生成代理配置。</p>
+<h3 id="Step-5-Review-and-Confirm-the-Generated-Agent" class="common-anchor-header">Step 5. Review and Confirm the Generated Agent</h3><p><strong>Note:</strong> The system automatically generates the agent configuration.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_14_8a596ae853.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>在創建代理之前，您可以查看其元資料、工具和提示。一旦一切正常，請按一下「<strong>建立」繼</strong>續。</p>
+<p>Before creating the agent, you can review its metadata, tools, and prompts. Once everything looks correct, click <strong>Create</strong> to proceed.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_15_5c0b27aca7.webp" alt="" class="doc-image" id="" />
@@ -209,13 +215,13 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<h3 id="Step-6-Explore-the-Interface-and-Feature-Areas" class="common-anchor-header">步驟 6.探索介面和功能區域</h3><p>代理程式建立後，您會在介面左下角看到三個功能區域：</p>
-<p><strong>(1) 觸發器</strong></p>
-<p>觸發器定義代理程式應在何時執行，可回應外部事件或依據排程執行：</p>
+<h3 id="Step-6-Explore-the-Interface-and-Feature-Areas" class="common-anchor-header">Step 6. Explore the Interface and Feature Areas</h3><p>After the agent is created, you’ll see three functional areas in the lower-left corner of the interface:</p>
+<p><strong>(1) Triggers</strong></p>
+<p>Triggers define when the agent should run, either in response to external events or on a schedule:</p>
 <ul>
-<li><strong>Slack：</strong>當訊息傳送到特定頻道時啟動代理程式</li>
-<li><strong>Gmail：</strong>收到新電子郵件時觸發代理程式</li>
-<li><strong>Cron：</strong>在排定的時間間隔執行代理程式</li>
+<li><strong>Slack:</strong> Activate the agent when a message arrives in a specific channel</li>
+<li><strong>Gmail:</strong> Trigger the agent when a new email is received</li>
+<li><strong>Cron:</strong> Run the agent on a scheduled interval</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -223,13 +229,15 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<p><strong>(2) 工具箱</strong></p>
-<p>這是代理程式可以呼叫的工具集。在顯示的範例中，三個工具是在建立時自動產生的，您可以按一下<strong>新增工具</strong>來增加更多工具。  <span class="img-wrapper">
+<p><strong>(2) Toolbox</strong></p>
+<p>This is the set of tools the agent can call. In the example shown, the three tools are generated automatically during creation, and you can add more by clicking <strong>Add tool</strong>.
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_18_94637d4548.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>如果您的代理需要向量搜尋功能，例如跨大量技術文件的語意搜尋，您可以部署 Milvus 的 MCP 伺服器</strong>，並使用<strong>MCP</strong>按鈕在此新增。請確定 MCP 伺服器是<strong>在可接達的網路端點</strong>執行；否則，Agent Builder 將無法呼叫它。</p>
+<p><strong>If your agent needs vector search capabilities—such as semantic search across large volumes of technical documentation—you can deploy Milvus’s MCP Server</strong> and add it here using the <strong>MCP</strong> button. Make sure the MCP server is running <strong>at a reachable network endpoint</strong>; otherwise, Agent Builder won’t be able to invoke it.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_19_94fe99a3b8.webp" alt="" class="doc-image" id="" />
@@ -242,9 +250,9 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<p><strong>(3) 子代理</strong></p>
-<p>建立獨立的代理模組，專門處理特定的子任務，實現模組化系統設計。</p>
-<h3 id="Step-7-Test-the-Agent" class="common-anchor-header">步驟 7.測試代理</h3><p>按一下右上角的<strong>Test</strong>，進入測試模式。以下是測試結果的範例。</p>
+<p><strong>(3) Sub-agents</strong></p>
+<p>Create independent agent modules dedicated to specific subtasks, enabling a modular system design.</p>
+<h3 id="Step-7-Test-the-Agent" class="common-anchor-header">Step 7. Test the Agent</h3><p>Click <strong>Test</strong> in the top-right corner to enter testing mode. Below is a sample of the test results.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_22_527619519b.webp" alt="" class="doc-image" id="" />
@@ -269,7 +277,7 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
     <span></span>
   </span>
 </p>
-<h2 id="Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="common-anchor-header">Agent Builder vs. DeepAgents：您應該選擇哪一個？<button data-href="#Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="anchor-icon" translate="no">
+<h2 id="Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="common-anchor-header">Agent Builder vs. DeepAgents: Which One Should You Choose?<button data-href="#Agent-Builder-vs-DeepAgents-Which-One-Should-You-Choose" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -284,12 +292,12 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>LangChain 提供多種代理框架，正確的選擇取決於您需要多少控制權。<a href="https://www.google.com/search?q=DeepAgents&amp;newwindow=1&amp;sca_esv=0e7ec9ce2aa7d5b4&amp;sxsrf=ANbL-n5pe1KqjmJVjQCqmc3jneYhmGGOUg%3A1769066335766&amp;ei=X89xab21Lp3a1e8Ppam06Ag&amp;ved=2ahUKEwio15nYzZ6SAxU_mq8BHcf3BqUQgK4QegQIARAB&amp;uact=5&amp;oq=what+is+DeepAgents&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiEndoYXQgaXMgRGVlcEFnZW50czIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzINEAAYgAQYsAMYQxiKBTINEAAYgAQYsAMYQxiKBUi8BlAYWL8FcAF4AZABAJgBqgKgAbAKqgEFMC4yLjS4AQPIAQD4AQGYAgGgAgyYAwCIBgGQBgqSBwExoAehHrIHALgHAMIHAzMtMcgHCYAIAA&amp;sclient=gws-wiz-serp">DeepAgents</a>是代理建置工具。它用於建立自主、長時間運行的 AI 代理，以處理複雜、多步驟的任務。它以 LangGraph 為基礎，支援進階規劃、檔案式上下文管理和子代理協調，非常適合長期或生產級專案。</p>
-<p>那麼，<strong>Agent Builder</strong> 與<strong>Agent Builder</strong> 相比有何優勢？</p>
-<p><strong>Agent Builder</strong>著重於簡單和速度。它抽象化了大部分實作細節，讓您可以用自然語言描述您的代理程式、配置工具，並立即執行。記憶體、工具使用和人為迴圈工作流程都會為您處理。這使得 Agent Builder 成為快速原型、內部工具和早期驗證的完美選擇，在這些應用程式中，易用性比細節控制更重要。</p>
-<p>相比之下，<strong>DeepAgents 專為</strong>需要完全控制記憶體、執行和基礎架構的場景而設計。您可以自訂中間件、整合任何 Python 工具、修改儲存後端 (包括在<a href="https://milvus.io/blog">Milvus</a> 中持久化記憶體)，並明確管理代理的狀態圖。這樣做的代價是工程上的努力--您要自己寫程式碼、管理依賴關係、處理故障模式，但您會得到一個完全可客製化的代理堆疊。</p>
-<p>重要的是，<strong>Agent Builder 和 DeepAgents 並非獨立的生態系統，它們形成了一個單一的連續體</strong>。Agent Builder 建立在 DeepAgents 之上。這表示您可以先在 Agent Builder 中建立快速原型，然後在需要更多的彈性時，再進入 DeepAgents，而無需從頭重寫一切。反之亦然：在 DeepAgents 中建立的模式可以打包為 Agent Builder 模板，以便非技術使用者可以重複使用。</p>
-<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>LangChain offers multiple agent frameworks, and the right choice depends on how much control you need. <a href="https://www.google.com/search?q=DeepAgents&amp;newwindow=1&amp;sca_esv=0e7ec9ce2aa7d5b4&amp;sxsrf=ANbL-n5pe1KqjmJVjQCqmc3jneYhmGGOUg%3A1769066335766&amp;ei=X89xab21Lp3a1e8Ppam06Ag&amp;ved=2ahUKEwio15nYzZ6SAxU_mq8BHcf3BqUQgK4QegQIARAB&amp;uact=5&amp;oq=what+is+DeepAgents&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiEndoYXQgaXMgRGVlcEFnZW50czIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzIKEAAYsAMY1gQYRzINEAAYgAQYsAMYQxiKBTINEAAYgAQYsAMYQxiKBUi8BlAYWL8FcAF4AZABAJgBqgKgAbAKqgEFMC4yLjS4AQPIAQD4AQGYAgGgAgyYAwCIBgGQBgqSBwExoAehHrIHALgHAMIHAzMtMcgHCYAIAA&amp;sclient=gws-wiz-serp">DeepAgents</a> is agent building tool. It is used to build autonomous, long-running AI agents that handle complex, multi-step tasks. Built on LangGraph, it supports advanced planning, file-based context management, and subagent orchestration—making it ideal for long-horizon or production-grade projects.</p>
+<p>So how does that compare to <strong>Agent Builder</strong>, and when should you use each?</p>
+<p><strong>Agent Builder</strong> focuses on simplicity and speed. It abstracts away most implementation details, letting you describe your agent in natural language, configure tools, and run it immediately. Memory, tool use, and human-in-the-loop workflows are handled for you. This makes Agent Builder perfect for rapid prototyping, internal tools, and early-stage validation where ease of use matters more than granular control.</p>
+<p><strong>DeepAgents</strong>, by contrast, is designed for scenarios where you need full control over memory, execution, and infrastructure. You can customize middleware, integrate any Python tool, modify the storage backend (including persisting memory in <a href="https://milvus.io/blog">Milvus</a>), and explicitly manage the agent’s state graph. The trade-off is engineering effort—you write code, manage dependencies, and handle failure modes yourself—but you get a fully customizable agent stack.</p>
+<p>Importantly, <strong>Agent Builder and DeepAgents are not separate ecosystems—they form a single continuum</strong>. Agent Builder is built on top of DeepAgents. That means you can start with a quick prototype in Agent Builder, then drop into DeepAgents when you need more flexibility, without rewriting everything from scratch. The reverse also works: patterns built in DeepAgents can be packaged as Agent Builder templates so non-technical users can reuse them.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -304,6 +312,6 @@ Search the official documentation <span class="hljs-keyword">and</span> remember
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>由於人工智能的發展，建立人工智能代理不再需要複雜的工作流程或繁重的工程。使用 LangSmith Agent Builder，您可以僅使用自然語言建立有狀態、長時間運行的助理。您只需專注於描述代理程式應該做什麼，系統則會處理規劃、工具執行以及持續的記憶體更新。</p>
-<p>搭配<a href="https://milvus.io/blog">Milvus</a>，這些代理程式就能獲得可靠、持續的記憶，以進行語意搜尋、偏好追蹤和跨會話的長期情境。無論您是在驗證一個想法或是部署一個可擴充的系統，LangSmith Agent Builder 與 Milvus 都提供了一個簡單、靈活的基礎，讓您的座席不僅能回應，還能隨時間記憶與改進。</p>
-<p>有問題或想要深入了解？加入我們的<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack 頻道</a>或預約 20 分鐘的<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours 課程</a>，獲得個人化的指導。</p>
+    </button></h2><p>Thanks to the development of AI, building AI agents no longer requires complex workflows or heavy engineering. With LangSmith Agent Builder, you can create stateful, long-running assistants using natural language alone. You focus on describing what the agent should do, while the system handles planning, tool execution, and ongoing memory updates.</p>
+<p>Paired with <a href="https://milvus.io/blog">Milvus</a>, these agents gain reliable, persistent memory for semantic search, preference tracking, and long-term context across sessions. Whether you’re validating an idea or deploying a scalable system, LangSmith Agent Builder and Milvus provide a simple, flexible foundation for agents that don’t just respond—they remember and improve over time.</p>
+<p>Have questions or want a deeper walkthrough? Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session for personalized guidance.</p>

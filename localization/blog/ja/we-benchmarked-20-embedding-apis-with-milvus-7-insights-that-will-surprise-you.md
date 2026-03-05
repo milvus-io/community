@@ -1,11 +1,15 @@
 ---
 id: >-
   we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md
-title: 'Milvusで20以上のエンベッディングAPIをベンチマーク: 驚くべき7つのインサイト'
+title: >
+  We Benchmarked 20+ Embedding APIs with Milvus: 7 Insights That Will Surprise
+  You
 author: Jeremy Zhu
 date: 2025-05-23T00:00:00.000Z
 desc: >-
-  最も人気のあるエンベデッドAPIは最速ではないモデル・アーキテクチャよりも地理が重要だ。そして、月20ドルのCPUが月200ドルのAPIコールに勝ることもある。
+  The most popular embedding APIs aren't the fastest. Geography matters more
+  than model architecture. And sometimes a $20/month CPU beats a $200/month API
+  call.
 cover: >-
   assets.zilliz.com/We_Benchmarked_20_Embedding_AP_Is_with_Milvus_7_Insights_That_Will_Surprise_You_12268622f0.png
 tag: Engineering
@@ -19,17 +23,17 @@ meta_title: >
 origin: >-
   https://milvus.io/blog/we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md
 ---
-<p><strong>おそらくすべてのAI開発者は、自分のローカル環境で完璧に動作するRAGシステムを構築したことがあるだろう。</strong></p>
-<p>検索精度に釘付けになり、ベクター・データベースを最適化し、デモはまるでバターのように動く。そして本番環境にデプロイすると、突然こうなる：</p>
+<p><strong>Probably every AI developer has built a RAG system that works perfectly… in their local environment.</strong></p>
+<p>You’ve nailed the retrieval accuracy, optimized your vector database, and your demo runs like butter. Then you deploy to production and suddenly:</p>
 <ul>
-<li><p>200msのローカルクエリが、実際のユーザーには3秒かかる。</p></li>
-<li><p>異なる地域の同僚が、まったく異なるパフォーマンスを報告</p></li>
-<li><p>最高の精度」のために選んだエンベッディング・プロバイダが最大のボトルネックになる</p></li>
+<li><p>Your 200ms local queries take 3 seconds for actual users</p></li>
+<li><p>Colleagues in different regions report completely different performance</p></li>
+<li><p>The embedding provider you chose for “best accuracy” becomes your biggest bottleneck</p></li>
 </ul>
-<p>何が起こったのか？<strong>エンベッディングAPIのレイテンシー</strong>です。</p>
-<p>MTEBランキングは、リコールスコアやモデルサイズにこだわる一方で、ユーザーがレスポンスが表示されるまでの待ち時間という指標を無視しています。私たちは、主要なエンベッディングプロバイダーを実環境でテストし、極端なレイテンシの違いを発見しました。</p>
-<p><strong><em>ネタバレ最も人気のあるエンベッディングAPIが最も速いわけではありません。モデル・アーキテクチャよりも地理が重要。そして、<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">20/monthCPUbeatsa</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>20</mi><mn>/</mn></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">monthCPUbeatsa</span><span class="mord">200/monthAPI</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">コールに勝る</annotation><mrow><mn>20/monthCPUbeatsa20/</mn></mrow><annotation encoding="application/x-tex">monthCPUが</annotation></semantics></math></span></span>ある。</em></strong></p>
-<h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">APIレイテンシーの埋め込みがRAGの隠れたボトルネックである理由<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
+<p>What happened? Here’s the performance killer no one benchmarks: <strong>embedding API latency</strong>.</p>
+<p>While MTEB rankings obsess over recall scores and model sizes, they ignore the metric your users feel—how long they wait before seeing any response. We tested every major embedding provider across real-world conditions and discovered extreme latency differences they’ll make you question your entire provider selection strategy.</p>
+<p><strong><em>Spoiler: The most popular embedding APIs aren’t the fastest. Geography matters more than model architecture. And sometimes a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mi>C</mi><mi>P</mi><mi>U</mi><mi>b</mi><mi>e</mi><mi>a</mi><mi>t</mi><mi>s</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">20/month CPU beats a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">20/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal" style="margin-right:0.13889em;">CP</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord mathnormal">b</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">s</span><span class="mord mathnormal">a</span></span></span></span>200/month API call.</em></strong></p>
+<h2 id="Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="common-anchor-header">Why Embedding API Latency Is the Hidden Bottleneck in RAG<button data-href="#Why-Embedding-API-Latency-Is-the-Hidden-Bottleneck-in-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,20 +48,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAGシステム、電子商取引検索、または推薦エンジンを構築する場合、埋め込みモデルはテキストをベクトルに変換し、機械がセマンティクスを理解し、効率的な類似検索を実行できるようにするコアコンポーネントである。通常、ドキュメント・ライブラリのエンベッディングは事前に計算されますが、ユーザ・クエリは、検索前に質問をベクトルに変換するためにリアルタイムのエンベッディングAPIコールを必要とし、このリアルタイムの待ち時間がアプリケーション・チェーン全体のパフォーマンスのボトルネックになることがよくあります。</p>
-<p>MTEBのような一般的なエンベッディングベンチマークは、リコール精度やモデルサイズに重点を置いており、重要なパフォーマンス指標であるAPIレイテンシを見落としています。Milvusの<code translate="no">TextEmbedding</code> 関数を使用して、北米とアジアの主要なエンベッディング・サービス・プロバイダで包括的な実環境テストを実施しました。</p>
-<p>エンベッディングの待ち時間は2つの重要な段階で現れます：</p>
-<h3 id="Query-Time-Impact" class="common-anchor-header">クエリ時間の影響</h3><p>典型的なRAGのワークフローでは、ユーザーが質問をすると、システムは次のことをしなければならない：</p>
+    </button></h2><p>When building RAG systems, e-commerce search, or recommendation engines, embedding models are the core component that transforms text into vectors, enabling machines to understand semantics and perform efficient similarity searches. While we typically pre-compute embeddings for document libraries, user queries still require real-time embedding API calls to convert questions into vectors before retrieval, and this real-time latency often becomes the performance bottleneck in the entire application chain.</p>
+<p>Popular embedding benchmarks like MTEB focus on recall accuracy or model size, often overlooking the crucial performance metric—API latency. Using Milvus’s <code translate="no">TextEmbedding</code> Function, we conducted comprehensive real-world tests on major embedding service providers in North America and Asia.</p>
+<p>Embedding latency manifests at two critical stages:</p>
+<h3 id="Query-Time-Impact" class="common-anchor-header">Query-Time Impact</h3><p>In a typical RAG workflow, when a user asks a question, the system must:</p>
 <ul>
-<li><p>エンベッディングAPIコールを介してクエリをベクトルに変換する。</p></li>
-<li><p>Milvusで類似したベクトルを検索する。</p></li>
-<li><p>結果と元の質問をLLMに送る</p></li>
-<li><p>答えを生成して返す</p></li>
+<li><p>Convert the query to a vector via an embedding API call</p></li>
+<li><p>Search for similar vectors in Milvus</p></li>
+<li><p>Feed results and the original question to an LLM</p></li>
+<li><p>Generate and return the answer</p></li>
 </ul>
-<p>多くの開発者は、LLMの回答生成が最も遅い部分だと考えています。しかし、多くのLLMのストリーミング出力機能は、最初のトークンがすぐに表示されるため、スピードが速いと錯覚してしまいます。実際には、エンベッディングAPIの呼び出しに数百ミリ秒から数秒かかる場合、レスポンスチェーンの最初の、そして最も顕著なボトルネックになります。</p>
-<h3 id="Data-Ingestion-Impact" class="common-anchor-header">データ取り込みの影響</h3><p>ゼロからインデックスを構築するにしても、定期的な更新を行うにしても、一括取り込みには何千、何百万ものテキストチャンクをベクトル化する必要があります。各エンベッディングコールが高いレイテンシーを経験すると、データパイプライン全体が劇的に遅くなり、製品リリースやナレッジベースの更新が遅れます。</p>
-<p>どちらの状況でも、エンベッディングAPIのレイテンシは、プロダクションRAGシステムにとって譲れないパフォーマンス指標となります。</p>
-<h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">Milvusによる実世界のエンベッディングAPIレイテンシの測定<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
+<p>Many developers assume the LLM’s answer generation is the slowest part. However, many LLMs’ streaming output capability creates an illusion of speed—you see the first token quickly. In reality, if your embedding API call takes hundreds of milliseconds or even seconds, it becomes the first—and most noticeable—bottleneck in your response chain.</p>
+<h3 id="Data-Ingestion-Impact" class="common-anchor-header">Data Ingestion Impact</h3><p>Whether building an index from scratch or performing routine updates, bulk ingestion requires vectorizing thousands or millions of text chunks. If each embedding call experiences high latency, your entire data pipeline slows dramatically, delaying product releases and knowledge base updates.</p>
+<p>Both situations make embedding API latency a non-negotiable performance metric for production RAG systems.</p>
+<h2 id="Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="common-anchor-header">Measuring Real-World Embedding API Latency with Milvus<button data-href="#Measuring-Real-World-Embedding-API-Latency-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,40 +76,40 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusはオープンソースの高性能ベクトルデータベースで、新しい<code translate="no">TextEmbedding</code> 関数インターフェースを提供します。この機能は、OpenAI、Cohere、AWS Bedrock、Google Vertex AI、Voyage AI、その他多くのプロバイダーから人気のあるエンベッディングモデルをデータパイプラインに直接統合し、1回の呼び出しでベクトル検索パイプラインを合理化します。</p>
-<p>この新しい関数インターフェイスを使用して、OpenAIやCohereのような有名なプロバイダーから、AliCloudやSiliconFlowのような他のプロバイダーまで、人気のあるエンベッディングAPIをテストし、ベンチマークし、現実的な展開シナリオでエンドツーエンドのレイテンシを測定しました。</p>
-<p>私たちの包括的なテストスイートは、様々なモデル構成をカバーしています：</p>
+    </button></h2><p>Milvus is an open-source, high-performance vector database that offers a new <code translate="no">TextEmbedding</code> Function interface. This feature directly integrates popular embedding models from OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and many more providers into your data pipeline, streamlining your vector search pipeline with a single call.</p>
+<p>Using this new function interface, we tested and benchmarked popular embedding APIs from well-known providers like OpenAI and Cohere, as well as others like AliCloud and SiliconFlow, measuring their end-to-end latency in realistic deployment scenarios.</p>
+<p>Our comprehensive test suite covered various model configurations:</p>
 <table>
 <thead>
-<tr><th><strong>プロバイダー</strong></th><th><strong>モデル</strong></th><th><strong>ディメンション</strong></th></tr>
+<tr><th><strong>Provider</strong></th><th><strong>Model</strong></th><th><strong>Dimensions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>OpenAI</td><td>テキスト埋め込み</td><td>1536</td></tr>
-<tr><td>オープンAI</td><td>テキスト埋め込み-3-小</td><td>1536</td></tr>
-<tr><td>OpenAI</td><td>テキスト埋め込み-3-大</td><td>3072</td></tr>
-<tr><td>AWSベッドロック</td><td>amazon.titan-embed-text-v2:0</td><td>1024</td></tr>
-<tr><td>グーグル・バーテックスAI</td><td>テキスト埋め込み-005</td><td>768</td></tr>
-<tr><td>グーグル バーテックスAI</td><td>テキスト多言語埋め込み-002</td><td>768</td></tr>
-<tr><td>ボヤージュAI</td><td>ボヤージュ-3-ラージ</td><td>1024</td></tr>
-<tr><td>ボヤージュAI</td><td>ボヤージュ3</td><td>1024</td></tr>
-<tr><td>ボヤージュAI</td><td>ボヤージュ3ライト</td><td>512</td></tr>
-<tr><td>ボヤージュ-AI</td><td>ボヤージュ-コード-3</td><td>1024</td></tr>
-<tr><td>コヒーレ</td><td>英語埋め込み-v3.0</td><td>1024</td></tr>
-<tr><td>Cohere</td><td>多言語埋め込み-v3.0</td><td>1024</td></tr>
-<tr><td>Cohere</td><td>エンベッド英語-ライト-v3.0</td><td>384</td></tr>
-<tr><td>Cohere</td><td>埋め込み多言語ライト-v3.0</td><td>384</td></tr>
-<tr><td>アリユン・ダッシュスコープ</td><td>テキスト埋め込み-v1</td><td>1536</td></tr>
-<tr><td>阿里雲ダッシュスコープ</td><td>テキスト埋め込み-v2</td><td>1536</td></tr>
-<tr><td>アリユン・ダッシュスコープ</td><td>テキスト埋め込み-v3</td><td>1024</td></tr>
-<tr><td>シリコンフロー</td><td>BAAI/bge-large-zh-v1.5</td><td>1024</td></tr>
-<tr><td>シリコンフロー</td><td>BAAI/bge-large-ja-v1.5</td><td>1024</td></tr>
-<tr><td>シリコンフロー</td><td>網易用度/bce-embedding-base_v1</td><td>768</td></tr>
-<tr><td>シリコンフロー</td><td>BAAI/bge-m3</td><td>1024</td></tr>
-<tr><td>シリコンフロー</td><td>プロ/BAAI/bge-m3</td><td>1024</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-ada-002</td><td>1536</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-small</td><td>1536</td></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-large</td><td>3072</td></tr>
+<tr><td>AWS Bedrock</td><td>amazon.titan-embed-text-v2:0</td><td>1024</td></tr>
+<tr><td>Google Vertex AI</td><td>text-embedding-005</td><td>768</td></tr>
+<tr><td>Google Vertex AI</td><td>text-multilingual-embedding-002</td><td>768</td></tr>
+<tr><td>VoyageAI</td><td>voyage-3-large</td><td>1024</td></tr>
+<tr><td>VoyageAI</td><td>voyage-3</td><td>1024</td></tr>
+<tr><td>VoyageAI</td><td>voyage-3-lite</td><td>512</td></tr>
+<tr><td>VoyageAI</td><td>voyage-code-3</td><td>1024</td></tr>
+<tr><td>Cohere</td><td>embed-english-v3.0</td><td>1024</td></tr>
+<tr><td>Cohere</td><td>embed-multilingual-v3.0</td><td>1024</td></tr>
+<tr><td>Cohere</td><td>embed-english-light-v3.0</td><td>384</td></tr>
+<tr><td>Cohere</td><td>embed-multilingual-light-v3.0</td><td>384</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v1</td><td>1536</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v2</td><td>1536</td></tr>
+<tr><td>Aliyun Dashscope</td><td>text-embedding-v3</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-large-zh-v1.5</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-large-en-v1.5</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>netease-youdao/bce-embedding-base_v1</td><td>768</td></tr>
+<tr><td>Siliconflow</td><td>BAAI/bge-m3</td><td>1024</td></tr>
+<tr><td>Siliconflow</td><td>Pro/BAAI/bge-m3</td><td>1024</td></tr>
 <tr><td>TEI</td><td>BAAI/bge-base-en-v1.5</td><td>768</td></tr>
 </tbody>
 </table>
-<h2 id="7-Key-Findings-from-Our-Benchmarking-Results" class="common-anchor-header">7 ベンチマーキング結果から得られた主な結果<button data-href="#7-Key-Findings-from-Our-Benchmarking-Results" class="anchor-icon" translate="no">
+<h2 id="7-Key-Findings-from-Our-Benchmarking-Results" class="common-anchor-header">7 Key Findings from Our Benchmarking Results<button data-href="#7-Key-Findings-from-Our-Benchmarking-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -120,23 +124,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>様々なバッチサイズ、トークンの長さ、ネットワーク条件下で、主要なエンベッディングモデルをテストし、すべてのシナリオにおける遅延の中央値を測定しました。その結果、エンベッディングAPIの選択と最適化の方法を変える重要な洞察が得られました。それでは見てみましょう。</p>
-<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1.グローバル・ネットワークの影響は、あなたが考えている以上に大きい</h3><p>ネットワーク環境は、おそらくエンベッディングAPIのパフォーマンスに影響を与える最も重要な要因である。同じエンベッディングAPIサービス・プロバイダーでも、ネットワーク環境によってパフォーマンスが劇的に異なることがあります。</p>
+    </button></h2><p>We tested leading embedding models under varying batch sizes, token lengths, and network conditions, measuring median latency across all scenarios. The results uncover key insights that could reshape how you choose and optimize embedding APIs. Let’s take a look.</p>
+<h3 id="1-Global-Network-Effects-Are-More-Significant-Than-You-Think" class="common-anchor-header">1. Global Network Effects Are More Significant Than You Think</h3><p>The network environment is perhaps the most critical factor affecting embedding API performance. The same embedding API service provider can perform dramatically differently across network environments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/latency_in_Asia_vs_in_US_cb4b5a425a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>アプリケーションがアジアにデプロイされ、北米にデプロイされたOpenAI、Cohere、VoyageAIのようなサービスにアクセスする場合、ネットワークの待ち時間は大幅に増加します。私たちの実際のテストでは、APIコールのレイテンシは普遍的に<strong>3〜4倍</strong>増加しました！</p>
-<p>逆に、アプリケーションが北米にデプロイされ、AliCloud DashscopeやSiliconFlowのようなアジアのサービスにアクセスする場合、パフォーマンスの低下はさらに深刻になります。特にSiliconFlowでは、クロスリージョンシナリオでレイテンシが<strong>100倍近く</strong>増加しました！</p>
-<p>つまり、エンベッディング・プロバイダーは、常に展開場所とユーザーの地理に基づいて選択する必要があります。ネットワークのコンテキストを伴わないパフォーマンスの主張は無意味です。</p>
-<h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2.モデル・パフォーマンス・ランキングの驚くべき結果</h3><p>包括的なレイテンシ・テストにより、明確なパフォーマンス・ヒエラルキーが明らかになりました：</p>
+<p>When your application is deployed in Asia and accesses services like OpenAI, Cohere, or VoyageAI deployed in North America, network latency increases significantly. Our real-world tests show API call latency universally increased by <strong>3 to 4 times</strong>!</p>
+<p>Conversely, when your application is deployed in North America and accesses Asian services like AliCloud Dashscope or SiliconFlow, performance degradation is even more severe. SiliconFlow, in particular, showed latency increases of <strong>nearly 100 times</strong> in cross-region scenarios!</p>
+<p>This means you must always select embedding providers based on your deployment location and user geography—performance claims without network context are meaningless.</p>
+<h3 id="2-Model-Performance-Rankings-Reveal-Surprising-Results" class="common-anchor-header">2. Model Performance Rankings Reveal Surprising Results</h3><p>Our comprehensive latency testing revealed clear performance hierarchies:</p>
 <ul>
-<li><p><strong>北米ベースのモデル（レイテンシーの中央値）</strong>：Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
-<li><p><strong>アジアベースのモデル（レイテンシーの中央値）</strong>：SiliconFlow &gt; AliCloud Dashscope</p></li>
+<li><p><strong>North America-based Models (median latency)</strong>: Cohere &gt; Google Vertex AI &gt; VoyageAI &gt; OpenAI &gt; AWS Bedrock</p></li>
+<li><p><strong>Asia-based Models (median latency)</strong>: SiliconFlow &gt; AliCloud Dashscope</p></li>
 </ul>
-<p>これらのランキングは、プロバイダー選択に関する従来の常識を覆すものである。</p>
+<p>These rankings challenge conventional wisdom about provider selection.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/median_latency_with_batch_size_1_ef83bec9c8.png" alt="" class="doc-image" id="" />
@@ -161,11 +165,11 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>注：リアルタイムエンベッディングAPIのレイテンシーには、ネットワーク環境とサーバーの地域が大きく影響するため、北米とアジアベースのモデルのレイテンシーを別々に比較した。</p>
-<h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3.モデルサイズの影響はプロバイダによって大きく異なる</h3><p>一般的な傾向として、大きなモデルは標準的なモデルよりもレイテンシが高く、小さなモデルやライトモデルよりもレイテンシが高いことが確認されました。しかし、このパターンは普遍的なものではなく、バックエンドアーキテクチャに関する重要な洞察が明らかになりました。例えば</p>
+<p>Note: Due to the significant impact of network environment and server geographic regions on real-time embedding API latency, we compared North America and Asia-based model latencies separately.</p>
+<h3 id="3-Model-Size-Impact-Varies-Dramatically-by-Provider" class="common-anchor-header">3. Model Size Impact Varies Dramatically by Provider</h3><p>We observed a general trend where larger models have higher latency than standard models, which have higher latency than smaller/lite models. However, this pattern wasn’t universal and revealed important insights about backend architecture. For example:</p>
 <ul>
-<li><p><strong>CohereとOpenAIは</strong>、モデルサイズ間のパフォーマンスギャップを最小限に抑えた。</p></li>
-<li><p><strong>VoyageAIは</strong>、モデルサイズによって明確なパフォーマンスの違いを示した。</p></li>
+<li><p><strong>Cohere and OpenAI</strong> showed minimal performance gaps between model sizes</p></li>
+<li><p><strong>VoyageAI</strong> exhibited clear performance differences based on model size</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -185,47 +189,47 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>このことから、APIのレスポンスタイムは、バックエンドのバッチ戦略、リクエスト処理の最適化、プロバイダ固有のインフラストラクチャなど、モデルアーキテクチャ以外の複数の要因に依存することがわかる。教訓は明確です：<em>信頼できるパフォーマンス指標としてモデルサイズやリリース日を信用してはいけません-常にあなた自身のデプロイ環境でテストしてください。</em></p>
-<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4.トークンの長さとバッチサイズが複雑なトレードオフを生む</h3><p>バックエンドの実装、特にバッチ戦略によって異なります。バッチ・サイズが大きくなるまでは、トークンの長さはレイテンシにほとんど影響しないかもしれません。我々のテストでは、いくつかの明確なパターンが明らかになった：</p>
+<p>This indicates that API response time depends on multiple factors beyond model architecture, including backend batching strategies, request handling optimization, and provider-specific infrastructure. The lesson is clear: <em>don’t trust model size or release date as reliable performance indicators—always test in your own deployment environment.</em></p>
+<h3 id="4-Token-Length-and-Batch-Size-Create-Complex-Trade-offs" class="common-anchor-header">4. Token Length and Batch Size Create Complex Trade-offs</h3><p>Depending on your backend implementation, especially your batching strategy. Token length may have little impact on latency until batch sizes grow. Our testing revealed some clear patterns:</p>
 <ul>
-<li><p><strong>OpenAIのレイテンシは</strong>小さいバッチと大きいバッチの間でかなり一貫しており、バックエンドのバッチ処理能力に余裕があることを示唆している<strong>。</strong></p></li>
-<li><p><strong>VoyageAIは</strong>トークン長による影響を明確に示しており、バックエンドのバッチ最適化が最小限であることを示唆している。</p></li>
+<li><p><strong>OpenAI’s latency</strong> remained fairly consistent between small and large batches, suggesting generous backend batching capabilities</p></li>
+<li><p><strong>VoyageAI</strong> showed clear token-length effects, implying minimal backend batching optimization</p></li>
 </ul>
-<p>バッチサイズを大きくすると、絶対的なレイテンシは増加するが、全体的なスループットは向上する。我々のテストでは、batch=1からbatch=10に移行することで、レイテンシは2×-5×増加したが、総スループットは大幅に向上した。これは、個々のリクエストのレイテンシと引き換えにシステム全体のスループットを劇的に向上させることができる、バルク処理ワークフローの重要な最適化の機会を示している。</p>
+<p>Larger batch sizes increase absolute latency but improve overall throughput. In our tests, moving from batch=1 to batch=10 increased latency by 2×-5×, while substantially boosting total throughput. This represents a critical optimization opportunity for bulk processing workflows where you can trade individual request latency for dramatically improved overall system throughput.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Going_from_batch_1_to_10_latency_increased_2_5_9811536a3c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>バッチ=1から10にすることで、レイテンシは2×-5×増加した。</p>
-<h3 id="5-API-Reliability-Introduces-Production-Risk" class="common-anchor-header">5.APIの信頼性が生産リスクをもたらす</h3><p>特にOpenAIとVoyageAIではレイテンシに大きなばらつきが見られ、本番システムに予測不可能性をもたらしている。</p>
+<p>Going from batch=1 to 10, latency increased 2×–5×</p>
+<h3 id="5-API-Reliability-Introduces-Production-Risk" class="common-anchor-header">5. API Reliability Introduces Production Risk</h3><p>We observed significant variability in latency, particularly with OpenAI and VoyageAI, introducing unpredictability into production systems.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Latency_variance_when_batch_1_d9cd88fb73.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>バッチ=1でのレイテンシのばらつき</p>
+<p>Latency variance when batch=1</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Latency_variance_when_batch_10_5efc33bf4e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>バッチ=10時のレイテンシのばらつき</p>
-<p>我々のテストは主にレイテンシーに焦点を当てたが、外部APIに依存することは、ネットワークの変動、プロバイダのレート制限、サービス停止を含む固有の障害リスクをもたらす。プロバイダーからの明確なSLAがなければ、開発者は本番環境でシステムの信頼性を維持するために、リトライ、タイムアウト、サーキットブレーカーを含む強固なエラー処理戦略を実装すべきである。</p>
-<h3 id="6-Local-Inference-Can-Be-Surprisingly-Competitive" class="common-anchor-header">6.ローカル推論は驚くほど競争力がある</h3><p>我々のテストでは、中規模のエンベッディング・モデルをローカルにデプロイすることで、クラウドAPIに匹敵するパフォーマンスを提供できることも明らかになった。</p>
-<p>例えば、4c8gのCPUでTEI（Text Embeddings Inference）を介してオープンソースの<code translate="no">bge-base-en-v1.5</code> をデプロイすると、SiliconFlowのレイテンシパフォーマンスに匹敵し、手頃な価格のローカル推論代替手段を提供しました。この発見は、エンタープライズグレードのGPUリソースがなくても高性能なエンベッディング機能を必要とする個人開発者や小規模チームにとって特に重要です。</p>
+<p>Latency variance when batch=10</p>
+<p>While our testing focused primarily on latency, relying on any external API introduces inherent failure risks, including network fluctuations, provider rate limiting, and service outages. Without clear SLAs from providers, developers should implement robust error handling strategies, including retries, timeouts, and circuit breakers to maintain system reliability in production environments.</p>
+<h3 id="6-Local-Inference-Can-Be-Surprisingly-Competitive" class="common-anchor-header">6. Local Inference Can Be Surprisingly Competitive</h3><p>Our tests also revealed that deploying mid-sized embedding models locally can offer performance comparable to cloud APIs—a crucial finding for budget-conscious or latency-sensitive applications.</p>
+<p>For example, deploying the open-source <code translate="no">bge-base-en-v1.5</code> via TEI (Text Embeddings Inference) on a modest 4c8g CPU matched SiliconFlow’s latency performance, providing an affordable local-inference alternative. This finding is particularly significant for individual developers and small teams who may lack enterprise-grade GPU resources but still need high-performance embedding capabilities.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/TEI_Latency_2f09be1ef0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>TEIのレイテンシ</p>
-<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7.Milvusのオーバーヘッドはごくわずか</h3><p>エンベッディングAPIのレイテンシをテストするためにMilvusを使用したため、MilvusのTextEmbedding Functionによってもたらされる追加のオーバーヘッドが最小限であり、事実上無視できることを検証しました。我々の測定によると、埋め込みAPIの呼び出しが数百ミリ秒から数秒かかるのに対し、Milvusの操作は合計で20-40ミリ秒しか追加されない。パフォーマンスのボトルネックは、Milvusサーバ層ではなく、主にネットワーク伝送とエンベッディングAPIサービスプロバイダの処理能力にあります。</p>
-<h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">ヒントRAGエンベッディングのパフォーマンスを最適化する方法<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
+<p>TEI Latency</p>
+<h3 id="7-Milvus-Overhead-Is-Negligible" class="common-anchor-header">7. Milvus Overhead Is Negligible</h3><p>Since we used Milvus to test embedding API latency, we validated that the additional overhead introduced by Milvus’s TextEmbedding Function is minimal and virtually negligible. Our measurements show Milvus operations add only 20-40ms in total while embedding API calls take hundreds of milliseconds to several seconds, meaning Milvus adds less than 5% overhead to the total operation time. The performance bottleneck primarily lies in network transmission and the embedding API service providers’ processing capabilities, not in the Milvus server layer.</p>
+<h2 id="Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="common-anchor-header">Tips: How to Optimize Your RAG Embedding Performance<button data-href="#Tips-How-to-Optimize-Your-RAG-Embedding-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -240,20 +244,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベンチマークに基づき、RAGシステムのエンベッディングパフォーマンスを最適化するために、以下の戦略をお勧めします：</p>
-<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1.常にテストをローカライズする</h3><p>一般的なベンチマークレポート（このレポートを含む！）を信用しないでください。公開されているベンチマークだけに頼るのではなく、常に実際の展開環境でモデルをテストする必要があります。ネットワーク条件、地理的な近さ、インフラの違いは、実際のパフォーマンスに劇的な影響を与える可能性があります。</p>
-<h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2.プロバイダーを戦略的に地理的にマッチさせる</h3><ul>
-<li><p><strong>北米での展開の場合</strong>Cohere、VoyageAI、OpenAI/Azure、またはGCP Vertex AIを検討し、常に独自のパフォーマンス検証を行います。</p></li>
-<li><p><strong>アジアのデプロイメント</strong>：AliCloud DashscopeやSiliconFlowのようなアジアのモデルプロバイダーを真剣に検討してください。</p></li>
-<li><p><strong>グローバル向け</strong>：マルチリージョン・ルーティングを実装するか、グローバルに分散されたインフラを持つプロバイダーを選択することで、クロスリージョンのレイテンシ・ペナルティを最小限に抑えることができます。</p></li>
+    </button></h2><p>Based on our benchmarks, we recommend the following strategies to optimize your RAG system’s embedding performance:</p>
+<h3 id="1-Always-Localize-Your-Testing" class="common-anchor-header">1. Always Localize Your Testing</h3><p>Don’t trust any generic benchmark reports (including this one!). You should always test models within your actual deployment environment rather than relying solely on published benchmarks. Network conditions, geographic proximity, and infrastructure differences can dramatically impact real-world performance.</p>
+<h3 id="2-Geo-Match-Your-Providers-Strategically" class="common-anchor-header">2. Geo-Match Your Providers Strategically</h3><ul>
+<li><p><strong>For North American deployments</strong>: Consider Cohere, VoyageAI, OpenAI/Azure, or GCP Vertex AI—and always conduct your own performance validation</p></li>
+<li><p><strong>For Asian deployments</strong>: Seriously consider Asian model providers such as AliCloud Dashscope or SiliconFlow, which offer better regional performance</p></li>
+<li><p><strong>For global audiences</strong>: Implement multi-region routing or select providers with globally distributed infrastructure to minimize cross-region latency penalties</p></li>
 </ul>
-<h3 id="3-Question-Default-Provider-Choices" class="common-anchor-header">3.デフォルトのプロバイダーの選択を疑う</h3><p>OpenAIのエンベッディングモデルは非常に人気があり、多くの企業や開発者がデフォルトのオプションとして選択しています。しかし、私たちのテストでは、OpenAIのレイテンシと安定性は、市場での人気にもかかわらず、せいぜい平均的であることが明らかになりました。独自の厳密なベンチマークで「最高の」プロバイダーについての仮定に挑戦してください-人気は、あなたの特定のユースケースに最適なパフォーマンスと必ずしも相関しません。</p>
-<h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4.バッチ構成とチャンク構成の最適化</h3><p>1つの構成がすべてのモデルやユースケースに適合するわけではありません。最適なバッチサイズとチャンクの長さは、バックエンドアーキテクチャやバッチ戦略の違いにより、プロバイダーによって大きく異なります。さまざまな構成で体系的に実験し、特定のアプリケーション要件に対するスループット対レイテンシのトレードオフを考慮しながら、最適なパフォーマンスポイントを見つけましょう。</p>
-<h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5.戦略的キャッシュの実装</h3><p>頻度の高いクエリについては、クエリテキストと生成されたエンベッディングの両方をキャッシュする（Redisなどのソリューションを使用）。後続の同一のクエリは、直接キャッシュをヒットすることができ、レイテンシをミリ秒に短縮することができます。これは、最も費用対効果が高く、インパクトのあるクエリレイテンシ最適化テクニックの1つです。</p>
-<h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6.ローカル推論の導入を検討する</h3><p>データ取り込みレイテンシ、クエリレイテンシ、データプライバシーに対する要件が極めて高い場合、あるいはAPIコールコストが法外な場合、推論用の埋め込みモデルをローカルに展開することを検討する。標準的なAPIプランには、QPSの制限、不安定なレイテンシ、SLA保証の欠如がしばしば付きまとう。</p>
-<p>多くの個人開発者や小規模チームにとって、エンタープライズ・グレードのGPUがないことは、高性能エンベッディング・モデルをローカルにデプロイする際の障壁となります。しかし、これはローカル推論を完全に放棄することを意味しません。<a href="https://github.com/huggingface/text-embeddings-inference">Hugging Faceのtext-embeddings-inferenceの</a>ような高性能な推論エンジンを使えば、CPU上で小～中規模の埋め込みモデルを実行することで、特に大規模なオフライン埋め込み生成の場合、高レイテンシのAPIコールを凌駕するような適切なパフォーマンスを達成することができます。</p>
-<p>このアプローチでは、コスト、パフォーマンス、メンテナンスの複雑さのトレードオフを慎重に考慮する必要があります。</p>
-<h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">Milvusがエンベッディングワークフローを簡素化する方法<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
+<h3 id="3-Question-Default-Provider-Choices" class="common-anchor-header">3. Question Default Provider Choices</h3><p>OpenAI’s embedding models are so popular that many enterprises and developers choose them as default options. However, our tests revealed that OpenAI’s latency and stability were average at best, despite its market popularity. Challenge assumptions about “best” providers with your own rigorous benchmarks—popularity doesn’t always correlate with optimal performance for your specific use case.</p>
+<h3 id="4-Optimize-Batch-and-Chunk-Configurations" class="common-anchor-header">4. Optimize Batch and Chunk Configurations</h3><p>One configuration doesn’t fit all models or use cases. The optimal batch size and chunk length vary significantly between providers due to different backend architectures and batching strategies. Experiment systematically with different configurations to find your optimal performance point, considering the throughput vs. latency trade-offs for your specific application requirements.</p>
+<h3 id="5-Implement-Strategic-Caching" class="common-anchor-header">5. Implement Strategic Caching</h3><p>For high-frequency queries, cache both the query text and its generated embeddings (using solutions like Redis). Subsequent identical queries can directly hit the cache, reducing latency to milliseconds. This represents one of the most cost-effective and impactful query latency optimization techniques.</p>
+<h3 id="6-Consider-Local-Inference-Deployment" class="common-anchor-header">6. Consider Local Inference Deployment</h3><p>If you have extremely high requirements for data ingestion latency, query latency, and data privacy, or if API call costs are prohibitive, consider deploying embedding models locally for inference. Standard API plans often come with QPS limitations, unstable latency, and lack of SLA guarantees—constraints that can be problematic for production environments.</p>
+<p>For many individual developers or small teams, the lack of enterprise-grade GPUs is a barrier to local deployment of high-performance embedding models. However, this doesn’t mean abandoning local inference entirely. With high-performance inference engines like <a href="https://github.com/huggingface/text-embeddings-inference">Hugging Face’s text-embeddings-inference</a>, even running small to medium-sized embedding models on a CPU can achieve decent performance that may outperform high-latency API calls, especially for large-scale offline embedding generation.</p>
+<p>This approach requires careful consideration of trade-offs between cost, performance, and maintenance complexity.</p>
+<h2 id="How-Milvus-Simplifies-Your-Embedding-Workflow" class="common-anchor-header">How Milvus Simplifies Your Embedding Workflow<button data-href="#How-Milvus-Simplifies-Your-Embedding-Workflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -268,18 +272,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>前述の通り、Milvusは単なる高性能なベクトルデータベースではなく、OpenAI、Cohere、AWS Bedrock、Google Vertex AI、Voyage AIなど、世界中の様々なプロバイダーから提供されている一般的なエンベッディングモデルをベクトル検索パイプラインにシームレスに統合する便利なエンベッディング機能インターフェイスも提供しています。</p>
-<p>Milvusは、エンベッディングの統合を効率化する機能により、ベクターの保存と検索にとどまりません：</p>
+    </button></h2><p>As mentioned, Milvus is not just a high-performance vector database—it also offers a convenient embedding function interface that seamlessly integrates with popular embedding models from various providers such as OpenAI, Cohere, AWS Bedrock, Google Vertex AI, Voyage AI, and more across the world into your vector search pipeline.</p>
+<p>Milvus goes beyond vector storage and retrieval with features that streamline embedding integration:</p>
 <ul>
-<li><p><strong>効率的なベクトル管理</strong>：Milvusは、膨大なベクターコレクションのために構築された高性能データベースとして、信頼性の高いストレージ、柔軟なインデックスオプション（HNSW、IVF、RaBitQ、DiskANNなど）、高速で正確な検索機能を提供します。</p></li>
-<li><p><strong>プロバイダ切り替えの合理化</strong>: Milvusは、<code translate="no">TextEmbedding</code> 関数インターフェースを提供しており、複雑なSDKの統合なしに、APIキーで関数を設定し、プロバイダやモデルを即座に切り替え、実際のパフォーマンスを測定することができます。</p></li>
-<li><p><strong>エンドツーエンドのデータパイプライン</strong>：<code translate="no">insert()</code> Milvusは1回の操作で自動的にベクトルを埋め込み、保存します。これにより、データパイプラインのコードを劇的に簡素化します。</p></li>
-<li><p><strong>1回の呼び出しでテキストから結果へ</strong>：テキストクエリで<code translate="no">search()</code> を呼び出すと、Milvus は埋め込み、検索、結果の返送をすべて 1 回の API 呼び出しで処理します。</p></li>
-<li><p><strong>プロバイダに依存しない統合</strong>：Milvusはプロバイダの実装の詳細を抽象化します。ファンクションとAPIキーを一度設定するだけで準備は完了です。</p></li>
-<li><p><strong>オープンソースエコシステムとの互換性</strong>：Milvusは、組み込みの<code translate="no">TextEmbedding</code> 関数、ローカル推論、またはその他の方法を使用して埋め込みデータを生成する場合でも、統一されたストレージと検索機能を提供します。</p></li>
+<li><p><strong>Efficient Vector Management</strong>: As a high-performance database built for massive vector collections, Milvus offers reliable storage, flexible indexing options (HNSW, IVF, RaBitQ, DiskANN, and more), and fast, accurate retrieval capabilities.</p></li>
+<li><p><strong>Streamlined Provider Switching</strong>: Milvus offers a <code translate="no">TextEmbedding</code> Function interface, allowing you to configure the function with your API keys, switch providers or models instantly, and measure real-world performance without complex SDK integration.</p></li>
+<li><p><strong>End-to-End Data Pipelines</strong>: Call <code translate="no">insert()</code> with raw text, and Milvus automatically embeds and stores vectors in one operation, dramatically simplifying your data pipeline code.</p></li>
+<li><p><strong>Text-to-Results in One Call</strong>: Call <code translate="no">search()</code> with text queries, and Milvus handles embedding, searching, and returning results—all in a single API call.</p></li>
+<li><p><strong>Provider-Agnostic Integration</strong>: Milvus abstracts provider implementation details; just configure your Function and API key once, and you’re ready to go.</p></li>
+<li><p><strong>Open-Source Ecosystem Compatibility</strong>: Whether you generate embeddings via our built-in <code translate="no">TextEmbedding</code> Function, local inference, or another method, Milvus provides unified storage and retrieval capabilities.</p></li>
 </ul>
-<p>これにより、Milvusがベクトル生成を内部で処理することで、合理化された "Data-In, Insight-Out "エクスペリエンスが実現され、アプリケーションコードをよりわかりやすく、保守しやすくします。</p>
-<h2 id="Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="common-anchor-header">結論RAGシステムに必要なパフォーマンスの真実<button data-href="#Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="anchor-icon" translate="no">
+<p>This creates a streamlined “Data-In, Insight-Out” experience where Milvus handles vector generation internally, making your application code more straightforward and maintainable.</p>
+<h2 id="Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="common-anchor-header">Conclusion: The Performance Truth Your RAG System Needs<button data-href="#Conclusion-The-Performance-Truth-Your-RAG-System-Needs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -294,7 +298,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAG パフォーマンスのサイレントキラーは、ほとんどの開発者が見ているところではありません。チームがプロンプトエンジニアリングとLLM最適化にリソースを注ぐ一方で、APIレイテンシを埋め込むことは、予想よりも100倍も悪い遅延でユーザーエクスペリエンスを静かに妨害します。我々の包括的なベンチマークは、厳しい現実を露呈している：人気があるからといってパフォーマンスが高いわけではなく、多くの場合アルゴリズムの選択よりも地理的な問題の方が重要であり、ローカル推論が高価なクラウドAPIに勝ることもある。</p>
-<p>これらの発見は、RAG最適化における重要な盲点を浮き彫りにしている。リージョンをまたぐレイテンシ・ペナルティ、予想外のプロバイダ・パフォーマンス・ランキング、そしてローカル推論の驚くべき競争力は、エッジケースではなく、実際のアプリケーションに影響を与えるプロダクションの現実なのだ。エンベッディング API のパフォーマンスを理解し測定することは、応答性の高いユーザー体験を提供するために不可欠です。</p>
-<p>エンベッディング・プロバイダの選択は、RAG パフォーマンス・パズルの重要なピースのひとつです。実際のデプロイ環境でテストし、地理的に適切なプロバイダーを選択し、ローカル推論のような代替案を検討することで、ユーザーとの対面における遅延の主な原因を排除し、真に応答性の高い AI アプリケーションを構築することができます。</p>
-<p>このベンチマークの実施方法の詳細については、<a href="https://github.com/zhuwenxing/text-embedding-bench">こちらのノートブックを</a>ご覧ください。</p>
+    </button></h2><p>The silent killer of RAG performance isn’t where most developers are looking. While teams pour resources into prompt engineering and LLM optimization, embedding API latency quietly sabotages user experience with delays that can be 100x worse than expected. Our comprehensive benchmarks expose the harsh reality: popular doesn’t mean performant, geography matters more than algorithm choice in many cases, and local inference sometimes beats expensive cloud APIs.</p>
+<p>These findings highlight a crucial blind spot in RAG optimization. Cross-region latency penalties, unexpected provider performance rankings, and the surprising competitiveness of local inference aren’t edge cases—they’re production realities affecting real applications. Understanding and measuring embedding API performance is essential for delivering responsive user experiences.</p>
+<p>Your embedding provider choice is one critical piece of your RAG performance puzzle. By testing in your actual deployment environment, selecting geographically appropriate providers, and considering alternatives like local inference, you can eliminate a major source of user-facing delays and build truly responsive AI applications.</p>
+<p>For more details on how we did this benchmarking, check <a href="https://github.com/zhuwenxing/text-embedding-bench">this notebook</a>.</p>

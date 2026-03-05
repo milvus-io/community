@@ -1,6 +1,7 @@
 ---
 id: multimodal-rag-made-simple-rag-anything-milvus-instead-of-20-separate-tools.md
-title: マルチモーダルRAGをシンプルに：RAG-Anything＋milvus、20の別々のツールに代わる
+title: |
+  Multimodal RAG Made Simple: RAG-Anything + Milvus Instead of 20 Separate Tools
 author: Min Yin
 date: 2025-11-25T00:00:00.000Z
 cover: assets.zilliz.com/rag_anything_cover_6b4e9bc6c0.png
@@ -11,14 +12,15 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, RAG-Anything, Multimodal RAG, Vector Database'
 meta_title: RAG-Anything and Milvus for Multimodal RAG Systems
 desc: >-
-  RAG-AnythingとMilvusが、テキスト、画像、構造化データにわたるマルチモーダルRAGをどのように実現しているのか、そして検索支援AIの次の展望をご覧ください。
+  See how RAG-Anything and Milvus enable multimodal RAG across text, images, and
+  structured data—and what’s next for retrieval-augmented AI.
 origin: >-
   https://milvus.io/blog/multimodal-rag-made-simple-rag-anything-milvus-instead-of-20-separate-tools.md
 ---
-<p>マルチモーダルRAGシステムの構築は、OCR用、表用、数式用、埋め込み用、検索用など、12種類の専用ツールをつなぎ合わせることを意味していました。従来のRAGパイプラインはテキスト用に設計されており、文書に画像、表、数式、チャート、その他の構造化されたコンテンツが含まれるようになると、ツールチェーンはすぐに乱雑になり、管理できなくなりました。</p>
-<p>HKUによって開発された<a href="https://github.com/HKUDS/RAG-Anything"><strong>RAG-Anythingは</strong></a>、それを変えます。LightRAG上に構築されたRAG-Anythingは、多様なタイプのコンテンツを並行して解析し、統一されたナレッジグラフにマッピングできるAll-in-Oneプラットフォームを提供する。しかし、パイプラインの統一は物語の半分に過ぎない。様々なモダリティの証拠を検索するには、一度に多くの埋め込みタイプを処理できる、高速でスケーラブルなベクトル検索が必要です。そこで<a href="https://milvus.io/"><strong>Milvusの</strong></a>出番だ。オープンソースの高性能ベクトルデータベースであるMilvusは、複数のストレージや検索ソリューションを必要としません。Milvusは、大規模なANN検索、ハイブリッドベクターキーワード検索、メタデータフィルタリング、柔軟なエンベッディング管理をすべて一箇所でサポートします。</p>
-<p>この記事では、RAG-AnythingとMilvusがどのように連携し、断片化されたマルチモーダルツールチェーンをクリーンで統一されたスタックに置き換えるのか、また、わずかなステップで実用的なマルチモーダルRAG Q&amp;Aシステムを構築する方法をご紹介します。</p>
-<h2 id="What-Is-RAG-Anything-and-How-It-Works" class="common-anchor-header">RAG-Anythingとは何か？<button data-href="#What-Is-RAG-Anything-and-How-It-Works" class="anchor-icon" translate="no">
+<p>Building a multimodal RAG system used to mean stitching together a dozen specialized tools—one for OCR, one for tables, one for math formulas, one for embeddings, one for search, and so on. Traditional RAG pipelines were designed for text, and once documents started including images, tables, equations, charts, and other structured content, the toolchain quickly became messy and unmanageable.</p>
+<p><a href="https://github.com/HKUDS/RAG-Anything"><strong>RAG-Anything</strong></a>, developed by HKU, changes that. Built on LightRAG, it provides an All-in-One platform that can parse diverse content types in parallel and map them into a unified knowledge graph. But unifying the pipeline is only half the story. To retrieve evidence across these varied modalities, you still need a fast, scalable vector search that can handle many embedding types at once. That’s where <a href="https://milvus.io/"><strong>Milvus</strong></a> comes in. As an open-source, high-performance vector database, Milvus eliminates the need for multiple storage and search solutions. It supports large-scale ANN search, hybrid vector–keyword retrieval, metadata filtering, and flexible embedding management—all in one place.</p>
+<p>In this post, we’ll break down how RAG-Anything and Milvus work together to replace a fragmented multimodal toolchain with a clean, unified stack—and we’ll show how you can build a practical multimodal RAG Q&amp;A system with just a few steps.</p>
+<h2 id="What-Is-RAG-Anything-and-How-It-Works" class="common-anchor-header">What Is RAG-Anything and How It Works<button data-href="#What-Is-RAG-Anything-and-How-It-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,28 +35,28 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/HKUDS/RAG-Anything">RAG-Anythingは</a>、従来のシステムのテキストのみの壁を破るために設計されたRAGフレームワークです。複数の専門的なツールに依存する代わりに、様々な種類のコンテンツを解析し、処理し、情報を取得できる単一の統一された環境を提供します。</p>
-<p>このフレームワークは、テキスト、ダイアグラム、表、数式を含むドキュメントをサポートしており、ユーザーは単一のまとまったインターフェイスを通じて、あらゆるモダリティにまたがるクエリーを行うことができる。このため、学術研究、財務報告、企業の知識管理など、マルチモーダルな資料が一般的な分野で特に有用です。</p>
-<p>その中核となるRAG-Anythingは、文書解析→コンテンツ解析→ナレッジグラフ→インテリジェント検索という多段階のマルチモーダルパイプライン上に構築されています。このアーキテクチャは、インテリジェントなオーケストレーションとクロスモーダルな理解を可能にし、システムが単一の統合されたワークフロー内で多様なコンテンツモダリティをシームレスに扱うことを可能にする。</p>
+    </button></h2><p><a href="https://github.com/HKUDS/RAG-Anything">RAG-Anything</a> is a RAG framework designed to break the text-only barrier of traditional systems. Instead of relying on multiple specialized tools, it offers a single, unified environment that can parse, process, and retrieve information across mixed content types.</p>
+<p>The framework supports documents containing text, diagrams, tables, and mathematical expressions, enabling users to query across all modalities through a single cohesive interface. This makes it particularly useful in fields such as academic research, financial reporting, and enterprise knowledge management, where multimodal materials are common.</p>
+<p>At its core, RAG-Anything is built on a multi-stage multimodal pipeline: document parsing→content analysis→knowledge graph→intelligent retrieval. This architecture enables intelligent orchestration and cross-modal understanding, allowing the system to seamlessly handle diverse content modalities within a single integrated workflow.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/rag_anything_framework_d3513593a3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="The-1-+-3-+-N-Architecture" class="common-anchor-header">1 + 3 + N」アーキテクチャ</h3><p>エンジニアリングレベルでは、RAG-Anythingの機能は「1 + 3 + N」アーキテクチャによって実現されています：</p>
-<p><strong>コアエンジン</strong></p>
-<p>RAG-Anythingの中心には、<a href="https://github.com/HKUDS/LightRAG">LightRAGに</a>インスパイアされたナレッジグラフエンジンがあります。このコアユニットは、マルチモーダルなエンティティ抽出、クロスモーダルな関係マッピング、ベクトル化されたセマンティックストレージを担当する。従来のテキストのみのRAGシステムとは異なり、このエンジンはテキスト、画像内の視覚的オブジェクト、テーブルに埋め込まれた関係構造から実体を理解する。</p>
-<p><strong>3つのモーダルプロセッサ</strong></p>
-<p>RAG-Anythingは、モダリティに特化した深い理解のために設計された3つの特殊なモダリティプロセッサを統合している。これらは一緒になって、システムのマルチモーダル分析レイヤーを形成する。</p>
+<h3 id="The-1-+-3-+-N-Architecture" class="common-anchor-header">The “1 + 3 + N” Architecture</h3><p>At the engineering level, RAG-Anything’s capabilities are realized through its “1 + 3 + N” architecture:</p>
+<p><strong>The Core Engine</strong></p>
+<p>At the center of RAG-Anything is a knowledge graph engine inspired by <a href="https://github.com/HKUDS/LightRAG">LightRAG</a>. This core unit is responsible for multimodal entity extraction, cross-modal relationship mapping, and vectorized semantic storage. Unlike traditional text-only RAG systems, the engine understands entities from text, visual objects within images, and relational structures embedded in tables.</p>
+<p><strong>3 Modal Processors</strong></p>
+<p>RAG-Anything integrates three specialized modality processors designed for deep, modality-specific understanding. Together, they form the system’s multimodal analysis layer.</p>
 <ul>
-<li><p><strong>ImageModalProcessorは</strong>視覚的コンテンツとその文脈的意味を解釈します。</p></li>
-<li><p><strong>TableModalProcessor は</strong>表構造を解析し、データ内の論理的および数値的関係を解読します。</p></li>
-<li><p><strong>EquationModalProcessor</strong>は、数学記号や数式の背後にあるセマンティクスを理解します。</p></li>
+<li><p><strong>ImageModalProcessor</strong> interprets visual content and its contextual meaning.</p></li>
+<li><p><strong>TableModalProcessor</strong> parses table structures and decodes logical and numerical relationships within data.</p></li>
+<li><p><strong>EquationModalProcessor</strong> understands the semantics behind mathematical symbols and formulas.</p></li>
 </ul>
-<p><strong>Nパーサー</strong></p>
-<p>実世界のドキュメントの多様な構造をサポートするために、RAG-Anythingは複数の抽出エンジン上に構築された拡張可能な構文解析レイヤーを提供します。現在、MinerUとDoclingの両方を統合し、文書の種類と構造の複雑さに基づいて最適なパーサーを自動的に選択します。</p>
-<p>1 + 3 + N "アーキテクチャに基づき、RAG-Anythingは、異なるコンテンツタイプを処理する方法を変更することで、従来のRAGパイプラインを改善します。テキスト、画像、表を1つずつ処理する代わりに、システムはそれらをすべて一度に処理する。</p>
+<p><strong>N Parsers</strong></p>
+<p>To support the diverse structure of real-world documents, RAG-Anything provides an extensible parsing layer built on multiple extraction engines. Currently, it integrates both MinerU and Docling, automatically selecting the optimal parser based on document type and structural complexity.</p>
+<p>Building on the “1 + 3 + N” architecture, RAG-Anything improves the traditional RAG pipeline by changing how different content types are handled. Instead of processing text, images, and tables one at a time, the system processes them all at once.</p>
 <pre><code translate="no"><span class="hljs-comment"># The core configuration demonstrates the parallel processing design</span>
 config = RAGAnythingConfig(
     working_dir=<span class="hljs-string">&quot;./rag_storage&quot;</span>,
@@ -66,22 +68,22 @@ config = RAGAnythingConfig(
     max_workers=<span class="hljs-number">8</span>  <span class="hljs-comment"># Supports multi-threaded parallel processing</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>この設計により、大規模な技術文書の処理が大幅にスピードアップします。ベンチマークテストによると、システムがより多くのCPUコアを使用すると、処理速度が著しく向上し、各文書の処理に必要な時間が大幅に短縮されます。</p>
-<h3 id="Layered-Storage-and-Retrieval-Optimization" class="common-anchor-header">レイヤー化された保存と検索の最適化</h3><p>マルチモーダル設計に加え、RAG-Anythingは、結果をより正確かつ効率的にするために、階層的な保存と検索のアプローチも採用しています。</p>
+<p>This design greatly speeds up the handling of large technical documents. Benchmark tests show that when the system uses more CPU cores, it becomes noticeably faster, which sharply reduces the time needed to process each document.</p>
+<h3 id="Layered-Storage-and-Retrieval-Optimization" class="common-anchor-header">Layered Storage and Retrieval Optimization</h3><p>On top of its multimodal design, RAG-Anything also uses a layered storage and retrieval approach to make results more accurate and efficient.</p>
 <ul>
-<li><p><strong>テキストは</strong>従来のベクターデータベースに保存されます。</p></li>
-<li><p><strong>画像は</strong>別の視覚的特徴ストアで管理される。</p></li>
-<li><p><strong>テーブルは</strong>構造化データ・ストレージに保管される。</p></li>
-<li><p><strong>数式は</strong>意味ベクトルに変換される。</p></li>
+<li><p><strong>Text</strong> is stored in a traditional vector database.</p></li>
+<li><p><strong>Image</strong> are managed in a separate visual feature store.</p></li>
+<li><p><strong>Tables</strong> are kept in structured data storage.</p></li>
+<li><p><strong>Mathematical formulas</strong> are are turned into semantic vectors.</p></li>
 </ul>
-<p>各コンテンツタイプをそれぞれに適したフォーマットで保存することで、システムは単一の一般的な類似検索に頼るのではなく、各モダリティに最適な検索方法を選択することができる。これにより、様々な種類のコンテンツにおいて、より高速で信頼性の高い検索結果を得ることができる。</p>
+<p>By storing each content type in its own suitable format, the system can choose the best retrieval method for each modality instead of relying on a single, generic similarity search. This leads to faster and more reliable results across different kinds of content.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/layered_storage_c9441feff1.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="How-Milvus-Fits-into-RAG-Anything" class="common-anchor-header">MilvusのRAG-Anythingへの適合性<button data-href="#How-Milvus-Fits-into-RAG-Anything" class="anchor-icon" translate="no">
+<h2 id="How-Milvus-Fits-into-RAG-Anything" class="common-anchor-header">How Milvus Fits into RAG-Anything<button data-href="#How-Milvus-Fits-into-RAG-Anything" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,16 +98,16 @@ config = RAGAnythingConfig(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAG-Anythingは強力なマルチモーダル検索を提供しますが、これをうまく行うには、あらゆる種類の埋め込みを横断する迅速でスケーラブルなベクトル検索が必要です。<a href="https://milvus.io/">Milvusは</a>この役割を完璧に果たす。</p>
-<p>クラウドネイティブなアーキテクチャと計算機とストレージの分離により、Milvusは高いスケーラビリティとコスト効率の両方を実現する。Milvusは、読み書き分離とストリーム・バッチの統一をサポートしているため、新しいデータが挿入されるとすぐに検索可能になるというリアルタイムのクエリ性能を維持しながら、高同時処理のワークロードを処理することができます。</p>
-<p>Milvusはまた、分散型のフォールトトレラント設計により、個々のノードに障害が発生した場合でもシステムを安定させ、エンタープライズグレードの信頼性を確保します。このため、本番レベルのマルチモーダルRAGの導入に適している。</p>
+    </button></h2><p>RAG-Anything provides strong multimodal retrieval, but doing this well requires quick and scalable vector search across all kinds of embeddings. <a href="https://milvus.io/">Milvus</a> fills this role perfectly.</p>
+<p>With its cloud-native architecture and compute-storage separation, Milvus delivers both high scalability and cost efficiency. It supports read–write separation and stream–batch unification, allowing the system to handle high-concurrency workloads while maintaining real-time query performance—new data becomes searchable immediately after insertion.</p>
+<p>Milvus also ensures enterprise-grade reliability through its distributed, fault-tolerant design, which keeps the system stable even if individual nodes fail. This makes it a strong fit for production-level multimodal RAG deployments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_ab54d5e798.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="How-to-Build-a-Multimodal-QA-System-with-RAG-Anything-and-Milvus" class="common-anchor-header">RAG-AnythingとmilvusによるマルチモーダルQ&amp;Aシステムの構築方法<button data-href="#How-to-Build-a-Multimodal-QA-System-with-RAG-Anything-and-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-to-Build-a-Multimodal-QA-System-with-RAG-Anything-and-Milvus" class="common-anchor-header">How to Build a Multimodal Q&amp;A System with RAG-Anything and Milvus<button data-href="#How-to-Build-a-Multimodal-QA-System-with-RAG-Anything-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -120,29 +122,29 @@ config = RAGAnythingConfig(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>このデモは、RAG-Anythingフレームワーク、Milvusベクトルデータベース、TongYiエンベッディングモデルを使用して、マルチモーダルQ&amp;Aシステムを構築する方法を示しています。(この例はコア実装コードに焦点を当てており、完全な本番セットアップではありません)</p>
-<h3 id="Hands-on-Demo" class="common-anchor-header">ハンズオンデモ</h3><p><strong>前提条件</strong></p>
+    </button></h2><p>This demo shows how to build a multimodal Q&amp;A system using the RAG-Anything framework, the Milvus vector database, and TongYi embedding model. (This example focuses on the core implementation code and is not a full production setup.)</p>
+<h3 id="Hands-on-Demo" class="common-anchor-header">Hands-on Demo</h3><p><strong>Prerequisites：</strong></p>
 <ul>
-<li><p><strong>Python：</strong>3.10以上</p></li>
-<li><p><strong>ベクターデータベース</strong>Milvusサービス（Milvus Lite）</p></li>
-<li><p><strong>クラウドサービス</strong>Alibaba Cloud APIキー（LLMおよびエンベッディングサービス用）</p></li>
-<li><p><strong>LLMモデル:</strong> <code translate="no">qwen-vl-max</code> (ビジョン対応モデル)</p></li>
+<li><p><strong>Python:</strong> 3.10 or higher</p></li>
+<li><p><strong>Vector Database:</strong> Milvus service (Milvus Lite)</p></li>
+<li><p><strong>Cloud Service:</strong> Alibaba Cloud API key (for LLM and embedding services)</p></li>
+<li><p><strong>LLM Model:</strong> <code translate="no">qwen-vl-max</code> (vision-enabled model)</p></li>
 </ul>
-<p><strong>エンベッディングモデル</strong>：<code translate="no">tongyi-embedding-vision-plus</code></p>
+<p><strong>Embedding Model:</strong> <code translate="no">tongyi-embedding-vision-plus</code></p>
 <pre><code translate="no">- python -m venv .venv &amp;&amp; <span class="hljs-built_in">source</span> .venv/bin/activate  <span class="hljs-comment"># For Windows users:  .venvScriptsactivate</span>
 - pip install -r requirements-min.txt
 - <span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span> <span class="hljs-comment">#add DASHSCOPE_API_KEY</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>最小限の動作例を実行します：</strong></p>
+<p><strong>Execute the minimal working example:</strong></p>
 <pre><code translate="no">python minimal_[main.py](&lt;http:<span class="hljs-comment">//main.py&gt;)</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>期待される出力：</strong></p>
-<p>スクリプトが正常に実行されると、ターミナルに表示されます：</p>
+<p><strong>Expected Output:</strong></p>
+<p>Once the script runs successfully, the terminal should display:</p>
 <ul>
-<li><p>LLMによって生成されたテキストベースのQ&amp;A結果。</p></li>
-<li><p>クエリに対応する検索された画像の説明。</p></li>
+<li><p>The text-based Q&amp;A result generated by the LLM.</p></li>
+<li><p>The retrieved image description corresponding to the query.</p></li>
 </ul>
-<h3 id="Project-Structure" class="common-anchor-header">プロジェクトの構造</h3><pre><code translate="no">.
+<h3 id="Project-Structure" class="common-anchor-header">Project Structure</h3><pre><code translate="no">.
 ├─ requirements-min.txt
 ├─ .env.example
 ├─ [config.py](&lt;http:<span class="hljs-comment">//config.py&gt;)</span>
@@ -155,7 +157,7 @@ config = RAGAnythingConfig(
    └─ images
       └─ milvus_arch.png
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>プロジェクトの依存関係</strong></p>
+<p><strong>Project Dependencies</strong></p>
 <pre><code translate="no">raganything
 lightrag
 pymilvus[lite]&gt;=2.3.0
@@ -166,7 +168,7 @@ Pillow&gt;=9.0.0
 numpy&gt;=1.21.0,&lt;2.0.0
 rich&gt;=12.0.0
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>環境変数</strong></p>
+<p><strong>Environment Variables</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Alibaba Cloud DashScope</span>
 DASHSCOPE_API_KEY=your_api_key_here
 <span class="hljs-comment"># If the endpoint changes in future releases, please update it accordingly.</span>
@@ -182,7 +184,7 @@ MILVUS_URI=milvus_lite.db
 MILVUS_COLLECTION=rag_multimodal_collection
 EMBED_DIM=1152
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>構成</strong></p>
+<p><strong>Configuration</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> dotenv <span class="hljs-keyword">import</span> load_dotenv
 load_dotenv()
@@ -200,7 +202,7 @@ EMBED_DIM = <span class="hljs-built_in">int</span>(os.getenv(<span class="hljs-s
 TIMEOUT = <span class="hljs-number">60</span>
 MAX_RETRIES = <span class="hljs-number">2</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>モデル呼び出し</strong></p>
+<p><strong>Model Invocation</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> base64
 <span class="hljs-keyword">import</span> aiohttp
@@ -264,7 +266,7 @@ HEADERS = {
                 data = <span class="hljs-keyword">await</span> r.json()
                 <span class="hljs-keyword">return</span> data[<span class="hljs-string">&quot;output&quot;</span>][<span class="hljs-string">&quot;embeddings&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;embedding&quot;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Milvus Liteとの統合</strong></p>
+<p><strong>Milvus Lite Integration</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>, <span class="hljs-type">Dict</span>, <span class="hljs-type">Any</span>, <span class="hljs-type">Optional</span>
@@ -332,7 +334,7 @@ HEADERS = {
             } <span class="hljs-keyword">for</span> h <span class="hljs-keyword">in</span> hits])
         <span class="hljs-keyword">return</span> out
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>メインエントリーポイント</strong></p>
+<p><strong>Main Entry Point</strong></p>
 <pre><code translate="no"><span class="hljs-string">&quot;&quot;&quot;
 Minimal Working Example:
 - Insert a short text FAQ into LightRAG (text retrieval context)
@@ -405,8 +407,8 @@ SAMPLE_IMG = Path(<span class="hljs-string">&quot;sample/images/milvus_arch.png&
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
     [asyncio.run](&lt;http://asyncio.run&gt;)(main())
 <button class="copy-code-btn"></button></code></pre>
-<p>これで、マルチモーダルRAGシステムを独自のデータセットでテストすることができます。</p>
-<h2 id="The-Future-for-Multimodal-RAG" class="common-anchor-header">マルチモーダルRAGの未来<button data-href="#The-Future-for-Multimodal-RAG" class="anchor-icon" translate="no">
+<p>Now, you can test your multimodal RAG system with your own dataset.</p>
+<h2 id="The-Future-for-Multimodal-RAG" class="common-anchor-header">The Future for Multimodal RAG<button data-href="#The-Future-for-Multimodal-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -421,10 +423,10 @@ SAMPLE_IMG = Path(<span class="hljs-string">&quot;sample/images/milvus_arch.png&
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>より多くの実世界のデータがプレーンテキストを超えるにつれて、RAG（Retrieval-Augmented Generation）システムは真のマルチモダリティに向けて進化し始めています。<strong>RAG-Anythingの</strong>ようなソリューションはすでに、テキスト、画像、表、数式、その他の構造化コンテンツを統一的な方法で処理できることを示している。今後、3つの主要なトレンドが、マルチモーダルRAGの次の段階を形成すると思います：</p>
-<h3 id="Expanding-to-More-Modalities" class="common-anchor-header">より多くのモダリティへの拡張</h3><p>RAG-Anythingのような現在のフレームワークは、すでにテキスト、画像、表、数式を扱うことができる。次のフロンティアは、<strong>ビデオ、オーディオ、センサーデータ、3Dモデルなど</strong>、さらにリッチなコンテンツタイプをサポートすることで、RAGシステムが現代のあらゆるデータから情報を理解し、取得できるようにすることです。</p>
-<h3 id="Real-Time-Data-Updates" class="common-anchor-header">リアルタイムのデータ更新</h3><p>今日、ほとんどのRAGパイプラインは、比較的静的なデータソースに依存しています。情報がより急速に変化するにつれて、将来のシステムでは、<strong>リアルタイムの文書更新、ストリーミング取り込み、インクリメンタルなインデックス作成が</strong>必要になります。このシフトにより、RAGはダイナミックな環境において、より応答性が高く、タイムリーで、信頼性の高いものになります。</p>
-<h3 id="Moving-RAG-to-Edge-Devices" class="common-anchor-header">RAGのエッジデバイスへの移行</h3><p><a href="https://github.com/milvus-io/milvus-lite">Milvus Liteの</a>ような軽量ベクターツールにより、マルチモーダルRAGはもはやクラウドに限定されるものではない。<strong>エッジデバイスやIoT</strong>システムにRAGを導入することで、インテリジェントな検索をデータが生成される場所で行うことができ、レイテンシ、プライバシー、全体的な効率が向上します。</p>
-<p>👉 マルチモーダルRAGを探求する準備はできましたか？</p>
-<p>お客様のマルチモーダルパイプラインと<a href="https://milvus.io">Milvusを組み合わせて</a>、テキスト、画像、その他にまたがる高速でスケーラブルな検索をお試しください。</p>
-<p>ご質問がある場合、または機能の詳細を知りたい場合は、Discordチャンネルにご参加ください。私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察、ガイダンス、質問への回答を得ることもできます。</p>
+    </button></h2><p>As more real-world data moves beyond plain text, Retrieval-Augmented Generation (RAG) systems are beginning to evolve toward true multimodality. Solutions like <strong>RAG-Anything</strong> already demonstrate how text, images, tables, formulas, and other structured content can be processed in a unified way. Looking ahead, I think three major trends will shape the next phase of multimodal RAG:</p>
+<h3 id="Expanding-to-More-Modalities" class="common-anchor-header">Expanding to More Modalities</h3><p>Current frameworks—such as RAG-Anything—can already handle text, images, tables, and mathematical expressions. The next frontier is supporting even richer content types, including <strong>video, audio, sensor data, and 3D models</strong>, enabling RAG systems to understand and retrieve information from the full spectrum of modern data.</p>
+<h3 id="Real-Time-Data-Updates" class="common-anchor-header">Real-Time Data Updates</h3><p>Most RAG pipelines today rely on relatively static data sources. As information changes more rapidly, future systems will require <strong>real-time document updates, streaming ingestion, and incremental indexing</strong>. This shift will make RAG more responsive, timely, and reliable in dynamic environments.</p>
+<h3 id="Moving-RAG-to-Edge-Devices" class="common-anchor-header">Moving RAG to Edge Devices</h3><p>With lightweight vector tools such as <a href="https://github.com/milvus-io/milvus-lite">Milvus Lite</a>, multimodal RAG is no longer confined to the cloud. Deploying RAG on <strong>edge devices and IoT systems</strong> allows intelligent retrieval to happen closer to where data is generated—improving latency, privacy, and overall efficiency.</p>
+<p>👉 Ready to explore multimodal RAG?</p>
+<p>Try pairing your multimodal pipeline with <a href="https://milvus.io">Milvus</a> and experience fast, scalable retrieval across text, images, and more.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

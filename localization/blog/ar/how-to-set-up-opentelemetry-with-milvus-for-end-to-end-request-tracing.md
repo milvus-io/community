@@ -1,12 +1,12 @@
 ---
 id: how-to-set-up-opentelemetry-with-milvus-for-end-to-end-request-tracing.md
-title: كيفية إعداد OpenTelemetry مع Milvus لتتبع الطلبات من النهاية إلى النهاية
+title: How to Set Up OpenTelemetry with Milvus for End-to-End Request Tracing
 author: Yi Gong
 date: 2025-06-05T00:00:00.000Z
 desc: >-
-  مراقبة أداء قاعدة بيانات Milvus vector لقاعدة بيانات Milvus باستخدام تتبع
-  OpenTelemetry. برنامج تعليمي كامل مع إعداد Docker، وعميل Python، وتصور Jaeger،
-  ونصائح تصحيح الأخطاء.
+  Monitor Milvus vector database performance with OpenTelemetry tracing.
+  Complete tutorial with Docker setup, Python client, Jaeger visualization, and
+  debugging tips.
 cover: >-
   assets.zilliz.com/How_to_Set_Up_Open_Telemetry_with_Milvus_for_End_to_End_Request_Tracing_f1842af82a.png
 tag: Tutorial
@@ -20,7 +20,7 @@ meta_title: How to Set Up OpenTelemetry with Milvus for End-to-End Request Traci
 origin: >-
   https://milvus.io/blog/how-to-set-up-opentelemetry-with-milvus-for-end-to-end-request-tracing.md
 ---
-<h2 id="Introduction" class="common-anchor-header">مقدمة<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,12 +35,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>عند إنشاء تطبيقات مدعومة بالذكاء الاصطناعي باستخدام <a href="https://milvus.io/blog/what-is-a-vector-database.md">قواعد البيانات المتجهة،</a> يصبح فهم أداء النظام أمرًا بالغ الأهمية مع توسع نطاق تطبيقك. قد يؤدي طلب بحث واحد إلى تشغيل عمليات داخلية متعددة - فهرسة المتجهات وحسابات التشابه واسترجاع البيانات - عبر مكونات مختلفة. بدون إمكانية المراقبة المناسبة، يصبح تشخيص التباطؤ أو الأعطال مثل العثور على إبرة في كومة قش.</p>
-<p>يعمل<strong>التتبع الموزع</strong> على حل هذه المشكلة من خلال تتبع الطلبات أثناء تدفقها عبر نظامك، مما يمنحك صورة كاملة لما يحدث تحت الغطاء.</p>
-<p><a href="https://github.com/open-telemetry"><strong>OpenTelemetry (OTEL)</strong></a> هو إطار عمل مفتوح المصدر للمراقبة مدعوم من <a href="https://www.cncf.io/">مؤسسة الحوسبة السحابية الأصلية (CNCF)</a> يساعدك على جمع الآثار والمقاييس والسجلات من تطبيقاتك. وهو محايد من حيث البائعين، ومعتمد على نطاق واسع، ويعمل بسلاسة مع أدوات المراقبة الشائعة.</p>
-<p>في هذا الدليل، سنوضح لك في هذا الدليل كيفية إضافة التتبع الشامل إلى <a href="https://milvus.io/"><strong>Milvus،</strong></a> وهي قاعدة بيانات متجهة عالية الأداء مصممة لتطبيقات الذكاء الاصطناعي. ستتعلم كيفية تتبع كل شيء من طلبات العميل إلى عمليات قاعدة البيانات الداخلية، مما يجعل تحسين الأداء وتصحيح الأخطاء أسهل بكثير.</p>
-<p>سنستخدم أيضًا <a href="https://github.com/jaegertracing/jaeger-ui"><strong>Jaeger</strong></a> لتصور بيانات التتبع، مما يوفر لك رؤى قوية حول عمليات قاعدة البيانات المتجهة.</p>
-<h2 id="What-Well-Build" class="common-anchor-header">ما سنقوم ببنائه<button data-href="#What-Well-Build" class="anchor-icon" translate="no">
+    </button></h2><p>When building AI-powered applications with <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector databases</a>, understanding system performance becomes critical as your application scales. A single search request might trigger multiple internal operations—vector indexing, similarity calculations, and data retrieval—across different components. Without proper observability, diagnosing slowdowns or failures becomes like finding a needle in a haystack.</p>
+<p><strong>Distributed tracing</strong> solves this problem by tracking requests as they flow through your system, giving you a complete picture of what’s happening under the hood.</p>
+<p><a href="https://github.com/open-telemetry"><strong>OpenTelemetry (OTEL)</strong></a> is an open-source observability framework backed by the <a href="https://www.cncf.io/">Cloud Native Computing Foundation (CNCF)</a> that helps you collect traces, metrics, and logs from your applications. It’s vendor-neutral, widely adopted, and works seamlessly with popular monitoring tools.</p>
+<p>In this guide, we’ll show you how to add end-to-end tracing to <a href="https://milvus.io/"><strong>Milvus</strong></a>, a high-performance vector database built for AI applications. You’ll learn to track everything from client requests to internal database operations, making performance optimization and debugging much easier.</p>
+<p>We’ll also utilize <a href="https://github.com/jaegertracing/jaeger-ui"><strong>Jaeger</strong></a> to visualize the trace data, providing you with powerful insights into your vector database operations.</p>
+<h2 id="What-Well-Build" class="common-anchor-header">What We’ll Build<button data-href="#What-Well-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,15 +55,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بنهاية هذا البرنامج التعليمي، سيكون لديك خط تتبع كامل يتكون من</p>
+    </button></h2><p>By the end of this tutorial, you’ll have a complete tracing pipeline consisting of:</p>
 <ol>
-<li><p><strong>قاعدة بيانات ميلفوس المتجهة</strong> مع تمكين تتبع OpenTelemetry</p></li>
-<li><p><strong>جايجر</strong> لتصور التتبع وتحليله.</p></li>
-<li><p><strong>عميل بايثون</strong> يتتبع جميع عمليات ميلفوس تلقائيًا</p></li>
-<li><p><strong>رؤية شاملة</strong> من<strong>النهاية إلى النهاية</strong> من طلبات العميل إلى عمليات قاعدة البيانات</p></li>
+<li><p><strong>Milvus vector database</strong> with OpenTelemetry tracing enabled</p></li>
+<li><p><strong>Jaeger</strong> for trace visualization and analysis</p></li>
+<li><p><strong>A Python client</strong> that automatically traces all Milvus operations</p></li>
+<li><p><strong>End-to-end visibility</strong> from client requests to database operations</p></li>
 </ol>
-<p>الوقت المقدر للإعداد: 15-20 دقيقة</p>
-<h2 id="Quick-Start-5-Minutes" class="common-anchor-header">البدء السريع (5 دقائق)<button data-href="#Quick-Start-5-Minutes" class="anchor-icon" translate="no">
+<p>Estimated setup time: 15-20 minutes</p>
+<h2 id="Quick-Start-5-Minutes" class="common-anchor-header">Quick Start (5 Minutes)<button data-href="#Quick-Start-5-Minutes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,30 +78,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>هل تريد رؤيته يعمل أولاً؟ إليك المسار الأسرع</p>
+    </button></h2><p>Want to see it working first? Here’s the fastest path:</p>
 <ol>
-<li>استنساخ المستودع التجريبي:</li>
+<li>Clone the demo repository:</li>
 </ol>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/topikachu/milvus-py-otel
 <span class="hljs-built_in">cd</span> milvus-py-otel
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>ابدأ تشغيل الخدمات:</li>
+<li>Start the services:</li>
 </ol>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li><p>انتظر 30 ثانية، ثم تحقق من واجهة مستخدم Jaeger في: <code translate="no">http://localhost:16686</code></p></li>
-<li><p>قم بتشغيل مثال Python:</p></li>
+<li><p>Wait 30 seconds, then check Jaeger UI at: <code translate="no">http://localhost:16686</code></p></li>
+<li><p>Run the Python example:</p></li>
 </ol>
 <pre><code translate="no">pip install -r requirements.txt
 python example.py
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>قم بتحديث Jaeger وابحث عن آثار من كل من خدمات <code translate="no">standalone</code> (Milvus) و <code translate="no">milvus-client</code>.</li>
+<li>Refresh Jaeger and look for traces from both <code translate="no">standalone</code> (Milvus) and <code translate="no">milvus-client</code> services.</li>
 </ol>
-<p>إذا رأيت آثارًا تظهر، فهذا يعني أن كل شيء يعمل! الآن دعنا نفهم كيف يتناسب كل ذلك معًا.</p>
-<h2 id="Environment-Setup" class="common-anchor-header">إعداد البيئة<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
+<p>If you see traces appearing, everything is working! Now let’s understand how it all fits together.</p>
+<h2 id="Environment-Setup" class="common-anchor-header">Environment Setup<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,15 +116,15 @@ python example.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إليك ما ستحتاج إليه</p>
+    </button></h2><p>Here’s what you’ll need:</p>
 <ul>
-<li><p><strong>ميلفوس 2.5.11</strong> (قاعدة بيانات المتجهات)</p></li>
-<li><p><strong>جايجر 1.46.0</strong> (تصور التتبع)</p></li>
-<li><p><strong>بايثون 3.7+</strong> (تطوير العميل)</p></li>
-<li><p><strong>Docker و Docker Compose</strong> (تنسيق الحاويات)</p></li>
+<li><p><strong>Milvus 2.5.11</strong> (vector database)</p></li>
+<li><p><strong>Jaeger 1.46.0</strong> (trace visualization)</p></li>
+<li><p><strong>Python 3.7+</strong> (client development)</p></li>
+<li><p><strong>Docker and Docker Compose</strong> (container orchestration)</p></li>
 </ul>
-<p>تم اختبار هذه الإصدارات معًا؛ ومع ذلك، يجب أن تعمل الإصدارات الأحدث أيضًا بشكل جيد.</p>
-<h2 id="Setting-Up-Milvus-and-Jaeger" class="common-anchor-header">إعداد ميلفوس وجايجر<button data-href="#Setting-Up-Milvus-and-Jaeger" class="anchor-icon" translate="no">
+<p>These versions have been tested together; however, newer versions should also work fine.</p>
+<h2 id="Setting-Up-Milvus-and-Jaeger" class="common-anchor-header">Setting Up Milvus and Jaeger<button data-href="#Setting-Up-Milvus-and-Jaeger" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,8 +139,8 @@ python example.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>سنستخدم Docker Compose لتشغيل كلتا الخدمتين مع الشبكات والتهيئة المناسبة.</p>
-<h3 id="Docker-Compose-Configuration" class="common-anchor-header">تكوين Docker Compose Compose</h3><p>قم بإنشاء ملف <code translate="no">docker-compose.yaml</code>:</p>
+    </button></h2><p>We’ll use Docker Compose to run both services with proper networking and configuration.</p>
+<h3 id="Docker-Compose-Configuration" class="common-anchor-header">Docker Compose Configuration</h3><p>Create a <code translate="no">docker-compose.yaml</code> file:</p>
 <pre><code translate="no">version: <span class="hljs-string">&#x27;3.7&#x27;</span>
 Services:
 <span class="hljs-comment"># Milvus - configured to send traces to Jaeger</span>
@@ -181,8 +181,8 @@ Services:
     environment:
       - COLLECTOR_OTLP_ENABLED=<span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>ملاحظة:</strong> يمكن العثور على أمثلة لملفات التكوين <code translate="no">embedEtcd.yaml</code> و <code translate="no">milvus.yaml</code> على: <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel.</a></p>
-<h3 id="Milvus-Tracing-Configuration" class="common-anchor-header">تكوين تتبع ميلفوس</h3><p>إنشاء <code translate="no">configs/milvus.yaml</code> مع تكوين التتبع:</p>
+<p><strong>Note:</strong> Example configuration files <code translate="no">embedEtcd.yaml</code> and <code translate="no">milvus.yaml</code> can be found at: <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel</a>.</p>
+<h3 id="Milvus-Tracing-Configuration" class="common-anchor-header">Milvus Tracing Configuration</h3><p>Create <code translate="no">configs/milvus.yaml</code> with the tracing configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># OpenTelemetry tracing configuration</span>
 trace:
   exporter: otlp           <span class="hljs-comment"># Use OpenTelemetry Protocol</span>
@@ -193,19 +193,19 @@ trace:
     secure: <span class="hljs-literal">false</span>         <span class="hljs-comment"># No TLS (use true in production)</span>
     initTimeoutSeconds: 10
 <button class="copy-code-btn"></button></code></pre>
-<p>شرح التكوين:</p>
+<p>Configuration explained:</p>
 <ul>
-<li><p><code translate="no">sampleFraction: 1.0</code> تتبع كل طلب (مفيد للتطوير، ولكن استخدم 0.1 أو أقل في الإنتاج)</p></li>
-<li><p><code translate="no">secure: false</code> تعطيل TLS (تمكين في الإنتاج)</p></li>
-<li><p><code translate="no">endpoint: jaeger:4317</code> يستخدم اسم خدمة Docker للاتصال الداخلي</p></li>
+<li><p><code translate="no">sampleFraction: 1.0</code> traces every request (useful for development, but use 0.1 or lower in production)</p></li>
+<li><p><code translate="no">secure: false</code> disables TLS (enable in production)</p></li>
+<li><p><code translate="no">endpoint: jaeger:4317</code> uses Docker service name for internal communication</p></li>
 </ul>
-<h3 id="Starting-the-Services" class="common-anchor-header">بدء تشغيل الخدمات</h3><pre><code translate="no">docker-compose up -d
+<h3 id="Starting-the-Services" class="common-anchor-header">Starting the Services</h3><pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Verifying-Trace-Delivery-from-Milvus-to-Jaeger" class="common-anchor-header">التحقق من تسليم التتبع من ميلفوس إلى جايجر</h3><p>بمجرد تشغيل الخدمات، يمكنك التحقق مما إذا كانت بيانات التتبع تنبعث من ميلفوس المستقلة وتستقبلها جايجر.</p>
+<h3 id="Verifying-Trace-Delivery-from-Milvus-to-Jaeger" class="common-anchor-header">Verifying Trace Delivery from Milvus to Jaeger</h3><p>Once the services are running, you can verify if trace data is emitted from the Milvus standalone and received by Jaeger.</p>
 <ul>
-<li><p>افتح متصفحك وقم بزيارة واجهة مستخدم Jaeger على: <code translate="no">http://localhost:16686/search</code></p></li>
-<li><p>في لوحة <strong>البحث</strong> (أعلى اليسار)، اختر القائمة المنسدلة <strong>للخدمة</strong> واختر <code translate="no">standalone</code>. إذا كنت ترى <code translate="no">standalone</code> في قائمة الخدمة، فهذا يعني أن تكوين OpenTelemetry المدمج في ميلفوس يعمل وقد نجح في دفع بيانات التتبع إلى جايجر.</p></li>
-<li><p>انقر فوق <strong>البحث عن التتبعات</strong> لاستكشاف سلاسل التتبع التي تم إنشاؤها بواسطة مكونات ملفوس الداخلية (مثل تفاعلات gRPC بين الوحدات النمطية).</p></li>
+<li><p>Open your browser and visit Jaeger UI at: <code translate="no">http://localhost:16686/search</code></p></li>
+<li><p>In the <strong>Search</strong> panel (top-left), choose the <strong>Service</strong> dropdown and select <code translate="no">standalone</code>. If you see <code translate="no">standalone</code> in the service list, it means Milvus’s built-in OpenTelemetry configuration is working and has successfully pushed trace data to Jaeger.</p></li>
+<li><p>Click <strong>Find Traces</strong> to explore trace chains generated by internal Milvus components (such as gRPC interactions between modules).</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -213,12 +213,12 @@ trace:
     <span></span>
   </span>
 </p>
-<h3 id="If-Trace-Data-Is-Not-Showing" class="common-anchor-header">إذا لم تظهر بيانات التتبع:</h3><ul>
-<li><p>تحقق مرة أخرى من أن كتلة <code translate="no">trace</code> في <code translate="no">milvus.yaml</code> قد تم تكوينها بشكل صحيح وأن جايجر يعمل دون مشاكل.</p></li>
-<li><p>افحص سجلات حاوية ميلفوس لمعرفة ما إذا كانت هناك أي أخطاء متعلقة بتهيئة التتبع.</p></li>
-<li><p>انتظر بضع ثوانٍ وقم بتحديث واجهة مستخدم Jaeger؛ قد تواجه تقارير التتبع تأخيرًا قصيرًا.</p></li>
+<h3 id="If-Trace-Data-Is-Not-Showing" class="common-anchor-header">If Trace Data Is Not Showing:</h3><ul>
+<li><p>Double-check that the <code translate="no">trace</code> block in <code translate="no">milvus.yaml</code> is configured correctly and that Jaeger is running without issues.</p></li>
+<li><p>Inspect the Milvus container logs to see if there are any errors related to Trace initialization.</p></li>
+<li><p>Wait a few seconds and refresh the Jaeger UI; trace reporting may experience a short delay.</p></li>
 </ul>
-<h2 id="Python-Client-Setup-and-Dependencies" class="common-anchor-header">إعداد عميل بايثون والتبعيات<button data-href="#Python-Client-Setup-and-Dependencies" class="anchor-icon" translate="no">
+<h2 id="Python-Client-Setup-and-Dependencies" class="common-anchor-header">Python Client Setup and Dependencies<button data-href="#Python-Client-Setup-and-Dependencies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -233,8 +233,8 @@ trace:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لنقم الآن بإعداد عميل بايثون لتتبع جميع عمليات ميلفوس تلقائيًا.</p>
-<p>أولاً، قم بإنشاء ملف <code translate="no">requirements.txt</code>:</p>
+    </button></h2><p>Now let’s set up the Python client to trace all Milvus operations automatically.</p>
+<p>First, create a <code translate="no">requirements.txt</code> file:</p>
 <pre><code translate="no"><span class="hljs-comment"># OpenTelemetry core</span>
 opentelemetry-api==<span class="hljs-number">1.33</span><span class="hljs-number">.1</span>
 opentelemetry-sdk==<span class="hljs-number">1.33</span><span class="hljs-number">.1</span>
@@ -246,11 +246,11 @@ opentelemetry-instrumentation-grpc==<span class="hljs-number">0.54</span>b1
 <span class="hljs-comment"># Milvus client</span>
 pymilvus==<span class="hljs-number">2.5</span><span class="hljs-number">.9</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>ثم قم بتثبيت التبعيات عبر:</p>
+<p>Then install dependencies via:</p>
 <pre><code translate="no">pip install -r requirements.txt
 <button class="copy-code-btn"></button></code></pre>
-<p>هذا يضمن أن بيئة Python الخاصة بك جاهزة لتتبع مكالمات gRPC التي يتم إجراؤها إلى الواجهة الخلفية لـ Milvus.</p>
-<h2 id="Initializing-OpenTelemetry-in-Python" class="common-anchor-header">تهيئة OpenTelemetry في بايثون<button data-href="#Initializing-OpenTelemetry-in-Python" class="anchor-icon" translate="no">
+<p>This ensures your Python environment is ready for tracing gRPC calls made to the Milvus backend.</p>
+<h2 id="Initializing-OpenTelemetry-in-Python" class="common-anchor-header">Initializing OpenTelemetry in Python<button data-href="#Initializing-OpenTelemetry-in-Python" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -265,7 +265,7 @@ pymilvus==<span class="hljs-number">2.5</span><span class="hljs-number">.9</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>الآن، لنقم بتهيئة التتبع داخل تطبيق Python الخاص بك. يقوم هذا المقتطف بإعداد OTEL مع أجهزة gRPC وإعداد المتتبع.</p>
+    </button></h2><p>Now, let’s configure tracing within your Python application. This snippet sets up OTEL with gRPC instrumentation and prepares a tracer.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> opentelemetry <span class="hljs-keyword">import</span> trace
 <span class="hljs-keyword">from</span> opentelemetry.sdk.resources <span class="hljs-keyword">import</span> Resource
@@ -299,8 +299,8 @@ grpc_client_instrumentor.instrument()
 <span class="hljs-comment"># Acquire tracer</span>
 tracer = trace.get_tracer(__name__)
 <button class="copy-code-btn"></button></code></pre>
-<p>هنا ، <code translate="no">GrpcInstrumentorClient()</code> يربط بمكدس gRPC الأساسي حتى لا تحتاج إلى تعديل كود العميل يدويًا للأجهزة. يتم تكوين <code translate="no">OTLPSpanExporter()</code> لإرسال بيانات التتبع إلى مثيل Jaeger المحلي الخاص بك.</p>
-<h2 id="Complete-Milvus-Python-Example-with-Tracing" class="common-anchor-header">مثال ميلفوس بايثون الكامل مع التتبع<button data-href="#Complete-Milvus-Python-Example-with-Tracing" class="anchor-icon" translate="no">
+<p>Here, <code translate="no">GrpcInstrumentorClient()</code> hooks into the underlying gRPC stack so you don’t need to manually modify client code for instrumentation. The <code translate="no">OTLPSpanExporter()</code> is configured to send trace data to your local Jaeger instance.</p>
+<h2 id="Complete-Milvus-Python-Example-with-Tracing" class="common-anchor-header">Complete Milvus Python Example with Tracing<button data-href="#Complete-Milvus-Python-Example-with-Tracing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -315,7 +315,7 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لنقم الآن بإنشاء مثال شامل يوضح التتبع مع عمليات Milvus الواقعية:</p>
+    </button></h2><p>Now let’s create a comprehensive example that demonstrates tracing with realistic Milvus operations:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-keyword">from</span> opentelemetry <span class="hljs-keyword">import</span> trace
 
@@ -339,7 +339,7 @@ tracer = trace.get_tracer(__name__)
     
     milvus_client.close()
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Viewing-Trace-Output" class="common-anchor-header">عرض مخرجات التتبع<button data-href="#Viewing-Trace-Output" class="anchor-icon" translate="no">
+<h2 id="Viewing-Trace-Output" class="common-anchor-header">Viewing Trace Output<button data-href="#Viewing-Trace-Output" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -354,15 +354,15 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بمجرد أن يرسل عميل Python بيانات التتبع، ارجع إلى Jaeger: <a href="http://localhost:16686"><code translate="no">http://localhost:16686</code></a></p>
-<p>اختر خدمة <code translate="no">milvus-client</code> لعرض مسافات التتبع التي تتوافق مع عمليات عميل Python الخاصة بك في Milvus. هذا يجعل من الأسهل بكثير تحليل الأداء وتتبع التفاعلات عبر حدود النظام.</p>
+    </button></h2><p>Once your Python client sends trace data, return to Jaeger: <a href="http://localhost:16686"><code translate="no">http://localhost:16686</code></a></p>
+<p>Select the <code translate="no">milvus-client</code> service to view trace spans that correspond to your Python client’s Milvus operations. This makes it much easier to analyze performance and trace interactions across system boundaries.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_client_22aab6ab9f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Examples-in-Other-Languages" class="common-anchor-header">أمثلة بلغات أخرى<button data-href="#Examples-in-Other-Languages" class="anchor-icon" translate="no">
+<h2 id="Examples-in-Other-Languages" class="common-anchor-header">Examples in Other Languages<button data-href="#Examples-in-Other-Languages" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -377,10 +377,12 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بالإضافة إلى بايثون، يمكنك تنفيذ تتبع ميلفوس بلغات أخرى:</p>
-<p><a href="https://github.com/topikachu/milvus-java-otel"><strong>👉جافا</strong></a>: استخدم وكيل OpenTelemetry Java Agent للأجهزة ذات التعليمات البرمجية الصفرية <a href="https://github.com/topikachu/milvus-go-otel"><strong>👉Go</strong></a>: الاستفادة من OpenTelemetry Go SDK للتكامل الأصلي 👉Node<a href="https://github.com/topikachu/milvus-nodejs-otel"><strong>.js</strong></a>: استدعاءات gRPC للأداة التلقائية للأداة gRPC باستخدام مجموعة تطوير البرمجيات SDK لجافا سكريبت</p>
-<p>يتبع كل مثال أنماطًا متشابهة ولكنه يستخدم مكتبات OpenTelemetry الخاصة باللغة.</p>
-<h2 id="Summary" class="common-anchor-header">الملخص<button data-href="#Summary" class="anchor-icon" translate="no">
+    </button></h2><p>Beyond Python, you can implement Milvus tracing in other languages:</p>
+<p>👉<a href="https://github.com/topikachu/milvus-java-otel"><strong>Java</strong></a>: Use the OpenTelemetry Java Agent for zero-code instrumentation
+👉<a href="https://github.com/topikachu/milvus-go-otel"><strong>Go</strong></a>: Leverage the OpenTelemetry Go SDK for native integration
+👉<a href="https://github.com/topikachu/milvus-nodejs-otel"><strong>Node.js</strong></a>: Auto-instrument gRPC calls with the JavaScript SDK</p>
+<p>Each example follows similar patterns but uses language-specific OpenTelemetry libraries.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -395,17 +397,17 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد نجحت في تنفيذ التتبع الشامل لعمليات ميلفوس! إليك ما أنجزته:</p>
+    </button></h2><p>You’ve successfully implemented end-to-end tracing for Milvus operations! Here’s what you’ve accomplished:</p>
 <ul>
-<li><p>✅ <strong>البنية التحتية</strong>: قم بإعداد ميلفوس وجايجر مع الشبكات المناسبة</p></li>
-<li><p>✅ <strong>التتبع من جانب الخادم</strong>: تهيئة ميلفوس لتصدير التتبع تلقائيًا</p></li>
-<li><p>✅ <strong>التتبع من جانب العميل</strong>: عميل بايثون المجهز بأدوات مع OpenTelemetry</p></li>
-<li><p>✅ <strong>التصور</strong>: استخدام Jaeger لتحليل أداء النظام</p></li>
-<li><p>✅ <strong>جاهزية الإنتاج</strong>: تعلمت أفضل ممارسات التكوين</p></li>
+<li><p>✅ <strong>Infrastructure</strong>: Set up Milvus and Jaeger with proper networking</p></li>
+<li><p>✅ <strong>Server-side tracing</strong>: Configured Milvus to export traces automatically</p></li>
+<li><p>✅ <strong>Client-side tracing</strong>: Instrumented Python client with OpenTelemetry</p></li>
+<li><p>✅ <strong>Visualization</strong>: Used Jaeger to analyze system performance</p></li>
+<li><p>✅ <strong>Production readiness</strong>: Learned configuration best practices</p></li>
 </ul>
-<p>كل ذلك يعمل دون أي تغييرات على التعليمات البرمجية المصدرية لـ Milvus SDK. فقط عدد قليل من إعدادات التهيئة ويصبح خط أنابيب التتبع الخاص بك بسيطًا وفعالًا وجاهزًا للإنتاج.</p>
-<p>يمكنك الذهاب إلى أبعد من ذلك من خلال دمج السجلات والمقاييس لبناء حل مراقبة كامل لنشر قاعدة بيانات ناقلات الذكاء الاصطناعي الأصلية الخاصة بك.</p>
-<h2 id="Learn-More" class="common-anchor-header">معرفة المزيد<button data-href="#Learn-More" class="anchor-icon" translate="no">
+<p>All works without any changes to the Milvus SDK source code. Just a few configuration settings and your tracing pipeline is live—simple, effective, and ready for production.</p>
+<p>You can take it further by integrating logs and metrics to build a complete monitoring solution for your AI-native vector database deployment.</p>
+<h2 id="Learn-More" class="common-anchor-header">Learn More<button data-href="#Learn-More" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -421,8 +423,8 @@ tracer = trace.get_tracer(__name__)
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>وثائق ميلفوس: <a href="https://milvus.io/docs">https://milvus.io/docs</a></p></li>
-<li><p>OpenTelemetry لبايثون: <a href="https://opentelemetry.io/docs/instrumentation/python/">https://opentelemetry.io/docs/instrumentation/python/</a></p></li>
-<li><p>وثائق جايجر: <a href="https://www.jaegertracing.io/docs/">https://www.jaegertracing.io/docs/</a></p></li>
-<li><p>عرض Milvus OpenTelemetry Integration Demo (Python): <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel</a></p></li>
+<li><p>Milvus Documentation: <a href="https://milvus.io/docs">https://milvus.io/docs</a></p></li>
+<li><p>OpenTelemetry for Python: <a href="https://opentelemetry.io/docs/instrumentation/python/">https://opentelemetry.io/docs/instrumentation/python/</a></p></li>
+<li><p>Jaeger Documentation: <a href="https://www.jaegertracing.io/docs/">https://www.jaegertracing.io/docs/</a></p></li>
+<li><p>Milvus OpenTelemetry Integration Demo (Python): <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel</a></p></li>
 </ul>

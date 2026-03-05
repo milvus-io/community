@@ -1,8 +1,8 @@
 ---
 id: build-multi-tenancy-rag-with-milvus-best-practices-part-one.md
 title: >-
-  Проектирование многопользовательских RAG с помощью Milvus: лучшие практики для
-  масштабируемых корпоративных баз знаний
+  Designing Multi-Tenancy RAG with Milvus: Best Practices for Scalable
+  Enterprise Knowledge Bases
 author: Robert Guo
 date: 2024-12-04T00:00:00.000Z
 cover: assets.zilliz.com/Designing_Multi_Tenancy_RAG_with_Milvus_40b3737145.png
@@ -14,7 +14,7 @@ recommend: true
 canonicalUrl: >-
   https://zilliz.com/blog/build-multi-tenancy-rag-with-milvus-best-practices-part-one
 ---
-<h2 id="Introduction" class="common-anchor-header">Введение<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,15 +29,15 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>За последние несколько лет технология <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval-Augmented Generation (RAG)</a> стала надежным решением для крупных организаций, позволяющим усовершенствовать их приложения <a href="https://zilliz.com/glossary/large-language-models-(llms)">на базе LLM</a>, особенно те, в которых работают разные пользователи. По мере роста таких приложений внедрение многопользовательской системы становится необходимым. <strong>Многопользовательская среда</strong> обеспечивает безопасный изолированный доступ к данным для различных групп пользователей, гарантируя доверие пользователей, соответствие нормативным стандартам и повышение эффективности работы.</p>
-<p><a href="https://zilliz.com/what-is-milvus">Milvus</a> - это <a href="https://zilliz.com/learn/what-is-vector-database">векторная база данных</a> с открытым исходным кодом, созданная для работы с высокоразмерными <a href="https://zilliz.com/glossary/vector-embeddings">векторными данными</a>. Она является незаменимым инфраструктурным компонентом RAG, хранящим и извлекающим контекстную информацию для LLM из внешних источников. Milvus предлагает <a href="https://milvus.io/docs/multi_tenancy.md">гибкие стратегии многопользовательского доступа</a> для различных нужд, включая <strong>многопользовательский доступ на уровне базы данных, коллекции и раздела</strong>.</p>
-<p>В этом посте мы расскажем:</p>
+    </button></h2><p>Over the past couple of years, <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval-Augmented Generation (RAG)</a> has emerged as a trusted solution for large organizations to enhance their <a href="https://zilliz.com/glossary/large-language-models-(llms)">LLM</a>-powered applications, especially those with diverse users. As such applications grow, implementing a multi-tenancy framework becomes essential. <strong>Multi-tenancy</strong> provides secure, isolated access to data for different user groups, ensuring user trust, meeting regulatory standards, and improving operational efficiency.</p>
+<p><a href="https://zilliz.com/what-is-milvus">Milvus</a> is an open-source <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> built to handle high-dimensional <a href="https://zilliz.com/glossary/vector-embeddings">vector data</a>. It is an indispensable infrastructure component of RAG, storing and retrieving contextual information for LLMs from external sources. Milvus offers <a href="https://milvus.io/docs/multi_tenancy.md">flexible multi-tenancy strategies</a> for various needs, including <strong>database-level, collection-level, and partition-level multi-tenancy</strong>.</p>
+<p>In this post, we’ll cover:</p>
 <ul>
-<li><p>Что такое мультиарендность и почему она важна.</p></li>
-<li><p>Стратегии многопользовательской аренды в Milvus</p></li>
-<li><p>Пример: Стратегия многопользовательского доступа для корпоративной базы знаний на базе RAG</p></li>
+<li><p>What is Multi-Tenancy and Why It Matters</p></li>
+<li><p>Multi-Tenancy Strategies in Milvus</p></li>
+<li><p>Example: Multi-Tenancy Strategy for a RAG-Powered Enterprise Knowledge Base</p></li>
 </ul>
-<h2 id="What-is-Multi-Tenancy-and-Why-It-Matters" class="common-anchor-header">Что такое мультиарендность и почему она важна<button data-href="#What-is-Multi-Tenancy-and-Why-It-Matters" class="anchor-icon" translate="no">
+<h2 id="What-is-Multi-Tenancy-and-Why-It-Matters" class="common-anchor-header">What is Multi-Tenancy and Why It Matters<button data-href="#What-is-Multi-Tenancy-and-Why-It-Matters" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,17 +52,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/multi_tenancy.md"><strong>Мультиарендность</strong></a> - это архитектура, в которой несколько клиентов или команд, известных как &quot;<strong>арендаторы&quot;,</strong> совместно используют один экземпляр приложения или системы. Данные и конфигурации каждого арендатора логически изолированы, что обеспечивает конфиденциальность и безопасность, в то время как все арендаторы используют одну и ту же базовую инфраструктуру.</p>
-<p>Представьте себе платформу SaaS, которая предоставляет решения на основе знаний нескольким компаниям. Каждая компания является арендатором.</p>
+    </button></h2><p><a href="https://milvus.io/docs/multi_tenancy.md"><strong>Multi-tenancy</strong></a> is an architecture where multiple customers or teams, known as &quot;<strong>tenants,</strong>&quot; share a single instance of an application or system. Each tenant’s data and configurations are logically isolated, ensuring privacy and security, while all tenants share the same underlying infrastructure.</p>
+<p>Imagine a SaaS platform that provides knowledge-based solutions to multiple companies. Each company is a tenant.</p>
 <ul>
-<li><p>Арендатор A - это медицинская организация, хранящая часто задаваемые вопросы для пациентов и документы о соответствии нормативным требованиям.</p></li>
-<li><p>Арендатор B - технологическая компания, управляющая внутренними рабочими процессами по устранению неполадок в ИТ.</p></li>
-<li><p>Арендатор C - компания розничной торговли, в которой хранятся часто задаваемые вопросы по обслуживанию клиентов для возврата товаров.</p></li>
+<li><p>Tenant A is a healthcare organization storing patient-facing FAQs and compliance documents.</p></li>
+<li><p>Tenant B is a tech company managing internal IT troubleshooting workflows.</p></li>
+<li><p>Tenant C is a retail business with customer service FAQs for product returns.</p></li>
 </ul>
-<p>Каждый арендатор работает в полностью изолированной среде, гарантируя, что данные арендатора A не просочатся в систему арендатора B и наоборот. Кроме того, распределение ресурсов, производительность запросов и решения по масштабированию зависят от конкретного арендатора, что обеспечивает высокую производительность независимо от скачков нагрузки на одного арендатора.</p>
-<p>Многопользовательская система также подходит для систем, обслуживающих разные команды в одной организации. Представьте себе крупную компанию, использующую базу знаний на базе RAG для обслуживания своих внутренних отделов, таких как отдел кадров, юридический отдел и отдел маркетинга. В этом случае каждый <strong>отдел является арендатором</strong> с изолированными данными и ресурсами.</p>
-<p>Многопользовательская аренда дает значительные преимущества, включая <strong>экономическую эффективность, масштабируемость и надежную защиту данных</strong>. Благодаря совместному использованию единой инфраструктуры поставщики услуг могут сократить накладные расходы и обеспечить более эффективное использование ресурсов. Кроме того, этот подход легко масштабируется - для подключения новых арендаторов требуется гораздо меньше ресурсов, чем при создании отдельных экземпляров для каждого из них, как в моделях с одним арендатором. Важно отметить, что многопользовательский подход обеспечивает надежную защиту данных, гарантируя строгую изоляцию данных для каждого арендатора, а также контроль доступа и шифрование, защищающие конфиденциальную информацию от несанкционированного доступа. Кроме того, обновления, исправления и новые функции могут быть развернуты одновременно для всех арендаторов, что упрощает обслуживание системы и снижает нагрузку на администраторов, обеспечивая постоянное соблюдение стандартов безопасности и соответствия.</p>
-<h2 id="Multi-Tenancy-Strategies-in-Milvus" class="common-anchor-header">Стратегии многопользовательской работы в Milvus<button data-href="#Multi-Tenancy-Strategies-in-Milvus" class="anchor-icon" translate="no">
+<p>Each tenant operates in a completely isolated environment, ensuring that no data from Tenant A leaks into Tenant B’s system or vice versa. Furthermore, resource allocation, query performance, and scaling decisions are tenant-specific, ensuring high performance regardless of workload spikes in one tenant.</p>
+<p>Multi-tenancy also works for systems serving different teams within the same organization. Imagine a large company using a RAG-powered knowledge base to serve its internal departments, such as HR, Legal, and Marketing. Each <strong>department is a tenant</strong> with isolated data and resources in this setup.</p>
+<p>Multi-tenancy offers significant benefits, including <strong>cost efficiency, scalability, and robust data security</strong>. By sharing a single infrastructure, service providers can reduce overhead costs and ensure more effective resource consumption. This approach also scales effortlessly—onboarding new tenants requires far fewer resources than creating separate instances for each one, as with single-tenancy models. Importantly, multi-tenancy maintains robust data security by ensuring strict data isolation for each tenant, with access controls and encryption protecting sensitive information from unauthorized access. Additionally, updates, patches, and new features can be deployed across all tenants simultaneously, simplifying system maintenance and reducing the burden on administrators while ensuring that security and compliance standards are consistently upheld.</p>
+<h2 id="Multi-Tenancy-Strategies-in-Milvus" class="common-anchor-header">Multi-Tenancy Strategies in Milvus<button data-href="#Multi-Tenancy-Strategies-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,47 +77,49 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Чтобы понять, как Milvus поддерживает многопользовательскую работу, важно сначала рассмотреть, как он организует пользовательские данные.</p>
-<h3 id="How-Milvus-Organizes-User-Data" class="common-anchor-header">Как Milvus организует пользовательские данные</h3><p>Milvus структурирует данные на трех уровнях, двигаясь от широкого к гранулированному: <a href="https://milvus.io/docs/manage_databases.md"><strong>База данных</strong></a>, <a href="https://milvus.io/docs/manage-collections.md"><strong>Коллекция</strong></a> и <a href="https://milvus.io/docs/manage-partitions.md"><strong>Раздел/ключ раздела</strong></a>.</p>
+    </button></h2><p>To understand how Milvus supports multi-tenancy, it’s important to first look at how it organizes user data.</p>
+<h3 id="How-Milvus-Organizes-User-Data" class="common-anchor-header">How Milvus Organizes User Data</h3><p>Milvus structures data across three layers, moving from broad to granular: <a href="https://milvus.io/docs/manage_databases.md"><strong>Database</strong></a>, <a href="https://milvus.io/docs/manage-collections.md"><strong>Collection</strong></a>, and <a href="https://milvus.io/docs/manage-partitions.md"><strong>Partition/Partition Key</strong></a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_How_Milvus_organizes_user_data_4521c4b8f9.png" alt="Figure- How Milvus organizes user data .png" class="doc-image" id="figure--how-milvus-organizes-user-data-.png" />
-   </span> <span class="img-wrapper"> <span>Рисунок - Как Milvus организует пользовательские данные .png</span> </span></p>
-<p><em>Рисунок: Как Milvus организует пользовательские данные</em></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_How_Milvus_organizes_user_data_4521c4b8f9.png" alt="Figure- How Milvus organizes user data .png" class="doc-image" id="figure--how-milvus-organizes-user-data-.png" />
+    <span>Figure- How Milvus organizes user data .png</span>
+  </span>
+</p>
+<p><em>Figure: How Milvus organizes user data</em></p>
 <ul>
-<li><p><strong>База данных</strong>: Действует как логический контейнер, подобно базе данных в традиционных реляционных системах.</p></li>
-<li><p><strong>Коллекция</strong>: Сравнимая с таблицей в базе данных, коллекция организует данные в управляемые группы.</p></li>
-<li><p><strong>Раздел/ключ раздела</strong>: Внутри коллекции данные могут быть разделены на <strong>разделы</strong>. С помощью <strong>ключа раздела</strong> данные с одинаковым ключом группируются вместе. Например, если в качестве <strong>ключа раздела</strong> используется <strong>идентификатор пользователя</strong>, все данные для конкретного пользователя будут храниться в одном логическом сегменте. Это упрощает получение данных, связанных с отдельными пользователями.</p></li>
+<li><p><strong>Database</strong>: This acts as a logical container, similar to a database in traditional relational systems.</p></li>
+<li><p><strong>Collection</strong>: Comparable to a table within a database, a collection organizes data into manageable groups.</p></li>
+<li><p><strong>Partition/Partition Key</strong>: Within a collection, data can be further segmented by <strong>Partitions</strong>. Using a <strong>Partition Key</strong>, data with the same key is grouped together. For example, if you use a <strong>user ID</strong> as the <strong>Partition Key</strong>, all data for a specific user will be stored in the same logical segment. This makes it straightforward to retrieve data tied to individual users.</p></li>
 </ul>
-<p>По мере перехода от <strong>базы данных</strong> к <strong>коллекции</strong> и <strong>ключу раздела</strong> детализация организации данных становится все более тонкой.</p>
-<p>Для обеспечения большей безопасности данных и надлежащего контроля доступа Milvus также предоставляет надежный <a href="https://zilliz.com/blog/enabling-fine-grained-access-control-with-milvus-row-level-rbac"><strong>контроль доступа на основе ролей (RBAC)</strong></a>, позволяющий администраторам определять конкретные разрешения для каждого пользователя. Только авторизованные пользователи могут получить доступ к определенным данным.</p>
-<p>Milvus поддерживает <a href="https://milvus.io/docs/multi_tenancy.md">несколько стратегий</a> реализации многопользовательского доступа, обеспечивая гибкость в зависимости от потребностей вашего приложения: <strong>многопользовательский доступ на уровне базы данных, на уровне коллекций и на уровне разделов</strong>.</p>
-<h3 id="Database-Level-Multi-Tenancy" class="common-anchor-header">Многопользовательская лицензия на уровне базы данных</h3><p>При многопользовательском подходе на уровне базы данных каждому арендатору назначается своя база данных в рамках одного кластера Milvus. Эта стратегия обеспечивает надежную изоляцию данных и оптимальную производительность поиска. Однако она может привести к неэффективному использованию ресурсов, если некоторые арендаторы остаются неактивными.</p>
-<h3 id="Collection-Level-Multi-Tenancy" class="common-anchor-header">Многопользовательская аренда на уровне коллекции</h3><p>При мультиарендности на уровне коллекций мы можем организовать данные для арендаторов двумя способами.</p>
+<p>As you move from <strong>Database</strong> to <strong>Collection</strong> to <strong>Partition Key</strong>, the granularity of data organization becomes progressively finer.</p>
+<p>To ensure stronger data security and proper access control, Milvus also provides robust <a href="https://zilliz.com/blog/enabling-fine-grained-access-control-with-milvus-row-level-rbac"><strong>Role-Based Access Control (RBAC)</strong></a>, allowing administrators to define specific permissions for each user. Only authorized users can access certain data.</p>
+<p>Milvus supports <a href="https://milvus.io/docs/multi_tenancy.md">multiple strategies</a> for implementing multi-tenancy, offering flexibility based on the needs of your application: <strong>database-level, collection-level, and partition-level multi-tenancy</strong>.</p>
+<h3 id="Database-Level-Multi-Tenancy" class="common-anchor-header">Database-Level Multi-Tenancy</h3><p>With the database-level multi-tenancy approach, each tenant is assigned their own database within the same Milvus cluster. This strategy provides strong data isolation and ensures optimal search performance. However, it can lead to inefficient resource utilization if certain tenants remain inactive.</p>
+<h3 id="Collection-Level-Multi-Tenancy" class="common-anchor-header">Collection-Level Multi-Tenancy</h3><p>Here, in collection-level multi-tenancy, we can organize data for tenants in two ways.</p>
 <ul>
-<li><p><strong>Одна коллекция для всех арендаторов</strong>: Все арендаторы пользуются одной коллекцией, а для фильтрации используются поля, относящиеся к конкретным арендаторам. Несмотря на простоту реализации, такой подход может столкнуться с узкими местами в производительности при увеличении числа арендаторов.</p></li>
-<li><p><strong>Одна коллекция для каждого арендатора</strong>: Каждый арендатор может иметь отдельную коллекцию, что улучшает изоляцию и производительность, но требует больше ресурсов. Такая схема может столкнуться с ограничениями масштабируемости, если количество арендаторов превысит возможности коллекции Milvus.</p></li>
+<li><p><strong>One Collection for All Tenants</strong>: All tenants share a single collection, with tenant-specific fields used for filtering. While simple to implement, this approach can encounter performance bottlenecks as the number of tenants increases.</p></li>
+<li><p><strong>One Collection per Tenant</strong>: Each tenant can have a dedicated collection, improving isolation and performance but requiring more resources. This setup may face scalability limitations if the number of tenants exceeds Milvus’s collection capacity.</p></li>
 </ul>
-<h3 id="Partition-Level-Multi-Tenancy" class="common-anchor-header">Многопользовательская аренда на уровне разделов</h3><p>Мультиарендаторство на уровне разделов сосредоточено на организации арендаторов в рамках одной коллекции. Здесь у нас также есть два способа организации данных арендаторов.</p>
+<h3 id="Partition-Level-Multi-Tenancy" class="common-anchor-header">Partition-Level Multi-Tenancy</h3><p>Partition-Level Multi-Tenancy focuses on organizing tenants within a single collection. Here, we also have two ways to organize tenant data.</p>
 <ul>
-<li><p><strong>Один раздел на арендатора</strong>: Арендаторы совместно используют коллекцию, но их данные хранятся в отдельных разделах. Мы можем изолировать данные, назначив каждому арендатору отдельный раздел, что позволит сбалансировать изоляцию и производительность поиска. Однако этот подход ограничен максимальным лимитом разделов Milvus.</p></li>
-<li><p><strong>Мультиарендаторство на основе ключей разделов</strong>: Это более масштабируемый вариант, при котором единая коллекция использует ключи разделов для разграничения арендаторов. Этот метод упрощает управление ресурсами и обеспечивает более высокую масштабируемость, но не поддерживает массовую вставку данных.</p></li>
+<li><p><strong>One Partition per Tenant</strong>: Tenants share a collection, but their data is stored in separate partitions. We can isolate data by assigning each tenant a dedicated partition, balancing isolation and search performance. However, this approach is constrained by Milvus’s maximum partition limit.</p></li>
+<li><p><strong>Partition-Key-Based Multi-Tenancy</strong>: This is a more scalable option in which a single collection uses partition keys to distinguish tenants. This method simplifies resource management and supports higher scalability but does not support bulk data inserts.</p></li>
 </ul>
-<p>В таблице ниже приведены основные различия между ключевыми подходами к многопользовательству.</p>
+<p>The table below summarizes the key differences between key multi-tenancy approaches.</p>
 <table>
 <thead>
-<tr><th><strong>Гранулярность</strong></th><th><strong>Уровень базы данных</strong></th><th><strong>Уровень коллекции</strong></th><th><strong>Уровень ключа раздела</strong></th></tr>
+<tr><th><strong>Granularity</strong></th><th><strong>Database-level</strong></th><th><strong>Collection-level</strong></th><th><strong>Partition Key-level</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Максимальное количество поддерживаемых арендаторов</td><td>~1,000</td><td>~10,000</td><td>~10,000,000</td></tr>
-<tr><td>Гибкость организации данных</td><td>Высокая: Пользователи могут определять несколько коллекций с пользовательскими схемами.</td><td>Средний: Пользователи ограничены одной коллекцией с пользовательской схемой.</td><td>Низкая: все пользователи используют одну коллекцию, что требует согласованной схемы.</td></tr>
-<tr><td>Стоимость для одного пользователя</td><td>Высокая</td><td>Средняя</td><td>Низкая</td></tr>
-<tr><td>Изоляция физических ресурсов</td><td>Да</td><td>Да</td><td>Нет</td></tr>
-<tr><td>RBAC</td><td>Да</td><td>Да</td><td>Нет</td></tr>
-<tr><td>Производительность поиска</td><td>Сильный</td><td>Средняя</td><td>Сильный</td></tr>
+<tr><td>Max Tenants Supported</td><td>~1,000</td><td>~10,000</td><td>~10,000,000</td></tr>
+<tr><td>Data Organization Flexibility</td><td>High: Users can define multiple collections with custom schemas.</td><td>Medium: Users are limited to one collection with a custom schema.</td><td>Low: All users share a collection, requiring a consistent schema.</td></tr>
+<tr><td>Cost per User</td><td>High</td><td>Medium</td><td>Low</td></tr>
+<tr><td>Physical Resource Isolation</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><td>RBAC</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+<tr><td>Search Performance</td><td>Strong</td><td>Medium</td><td>Strong</td></tr>
 </tbody>
 </table>
-<h2 id="Example-Multi-Tenancy-Strategy-for-a-RAG-Powered-Enterprise-Knowledge-Base" class="common-anchor-header">Пример: Стратегия многопользовательской аренды для корпоративной базы знаний на базе RAG<button data-href="#Example-Multi-Tenancy-Strategy-for-a-RAG-Powered-Enterprise-Knowledge-Base" class="anchor-icon" translate="no">
+<h2 id="Example-Multi-Tenancy-Strategy-for-a-RAG-Powered-Enterprise-Knowledge-Base" class="common-anchor-header">Example: Multi-Tenancy Strategy for a RAG-Powered Enterprise Knowledge Base<button data-href="#Example-Multi-Tenancy-Strategy-for-a-RAG-Powered-Enterprise-Knowledge-Base" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,50 +134,54 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>При разработке стратегии многопользовательской аренды для системы RAG важно согласовать свой подход с конкретными потребностями вашего бизнеса и ваших арендаторов. Milvus предлагает различные стратегии многопользовательской работы, и выбор правильной стратегии зависит от количества арендаторов, их требований и необходимого уровня изоляции данных. Вот практическое руководство по принятию этих решений на примере корпоративной базы знаний на базе RAG.</p>
-<h3 id="Understanding-Tenant-Structure-Before-Choosing-a-Multi-Tenancy-Strategy" class="common-anchor-header">Понимание структуры арендаторов перед выбором стратегии многопользовательской работы</h3><p>Корпоративная база знаний на базе RAG часто обслуживает небольшое количество арендаторов. Эти арендаторы обычно являются независимыми бизнес-подразделениями, такими как ИТ-отдел, отдел продаж, юридический отдел и отдел маркетинга, каждому из которых требуются отдельные услуги базы знаний. Например, отдел кадров управляет конфиденциальной информацией о сотрудниках, такой как руководства по вступлению в должность и политика льгот, которая должна быть конфиденциальной и доступной только для сотрудников отдела кадров.</p>
-<p>В этом случае каждое подразделение должно рассматриваться как отдельный арендатор, и <strong>стратегия многопользовательской аренды на уровне баз данных</strong> часто является наиболее подходящей. Назначая выделенные базы данных для каждого арендатора, организации могут добиться сильной логической изоляции, упростить управление и повысить безопасность. Такая схема обеспечивает арендаторам значительную гибкость - они могут определять пользовательские модели данных в коллекциях, создавать столько коллекций, сколько необходимо, и самостоятельно управлять контролем доступа к своим коллекциям.</p>
-<h3 id="Enhancing-Security-with-Physical-Resource-Isolation" class="common-anchor-header">Повышение безопасности с помощью физической изоляции ресурсов</h3><p>В ситуациях, когда безопасности данных придается большое значение, логической изоляции на уровне базы данных может быть недостаточно. Например, некоторые бизнес-подразделения могут работать с критическими или очень чувствительными данными, требуя более надежных гарантий от вмешательства других арендаторов. В таких случаях мы можем реализовать <a href="https://milvus.io/docs/resource_group.md">подход физической изоляции</a> поверх структуры многопользовательской аренды на уровне базы данных.</p>
-<p>Milvus позволяет нам сопоставлять логические компоненты, такие как базы данных и коллекции, с физическими ресурсами. Этот метод гарантирует, что деятельность других арендаторов не повлияет на критически важные операции. Давайте рассмотрим, как этот подход работает на практике.</p>
+    </button></h2><p>When designing the multi-tenancy strategy for a RAG system, it’s essential to align your approach with the specific needs of your business and your tenants. Milvus offers various multi-tenancy strategies, and choosing the right one depends on the number of tenants, their requirements, and the level of data isolation needed. Here’s a practical guide for making these decisions, taking a  RAG-powered enterprise knowledge base as an example.</p>
+<h3 id="Understanding-Tenant-Structure-Before-Choosing-a-Multi-Tenancy-Strategy" class="common-anchor-header">Understanding Tenant Structure Before Choosing a Multi-Tenancy Strategy</h3><p>A RAG-powered enterprise knowledge base often serves a small number of tenants. These tenants are usually independent business units like IT, Sales, Legal, and Marketing, each requiring distinct knowledge base services. For example, the HR Department manages sensitive employee information like onboarding guides and benefits policies, which should be confidential and accessible only to HR personnel.</p>
+<p>In this case, each business unit should be treated as a separate tenant and a <strong>Database-level multi-tenancy strategy</strong> is often the most suitable. By assigning dedicated databases to each tenant, organizations can achieve strong logical isolation, simplifying management and enhancing security. This setup provides tenants with significant flexibility—they can define custom data models within collections, create as many collections as needed, and independently manage access control for their collections.</p>
+<h3 id="Enhancing-Security-with-Physical-Resource-Isolation" class="common-anchor-header">Enhancing Security with Physical Resource Isolation</h3><p>In situations where data security is highly prioritized, logical isolation at the database level may not be enough. For example, some business units might handle critical or highly sensitive data, requiring stronger guarantees against interference from other tenants. In such cases, we can implement a <a href="https://milvus.io/docs/resource_group.md">physical isolation approach</a> on top of a database-level multi-tenancy structure.</p>
+<p>Milvus enables us to map logical components, such as databases and collections, to physical resources. This method ensures that the activities of other tenants do not impact critical operations. Let’s explore how this approach works in practice.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_How_Milvus_manages_physical_resources_6269b908d7.png" alt="Figure- How Milvus manages physical resources.png" class="doc-image" id="figure--how-milvus-manages-physical-resources.png" />
-   </span> <span class="img-wrapper"> <span>Рисунок - Как Milvus управляет физическими ресурсами.png</span> </span></p>
-<p>Рисунок: Как Milvus управляет физическими ресурсами</p>
-<p>Как показано на диаграмме выше, в Milvus существует три уровня управления ресурсами: <strong>Узел запросов</strong>, <strong>Группа ресурсов</strong> и <strong>База данных</strong>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_How_Milvus_manages_physical_resources_6269b908d7.png" alt="Figure- How Milvus manages physical resources.png" class="doc-image" id="figure--how-milvus-manages-physical-resources.png" />
+    <span>Figure- How Milvus manages physical resources.png</span>
+  </span>
+</p>
+<p>Figure: How Milvus manages physical resources</p>
+<p>As shown in the diagram above, there are three layers of resource management in Milvus: <strong>Query Node</strong>, <strong>Resource Group</strong>, and <strong>Database</strong>.</p>
 <ul>
-<li><p><strong>Узел запросов</strong>: Компонент, обрабатывающий задачи запросов. Он работает на физической машине или в контейнере (например, в капсуле в Kubernetes).</p></li>
-<li><p><strong>Группа ресурсов (Resource Group</strong>): Набор узлов запросов, который выступает в качестве связующего звена между логическими компонентами (базами данных и коллекциями) и физическими ресурсами. Вы можете назначить одну или несколько баз данных или коллекций одной группе ресурсов.</p></li>
+<li><p><strong>Query Node</strong>: The component that processes query tasks. It runs on a physical machine or container (e.g., a pod in Kubernetes).</p></li>
+<li><p><strong>Resource Group</strong>: A collection of Query Nodes that acts as a bridge between logical components (databases and collections) and physical resources. You can allocate one or more databases or collections to a single Resource Group.</p></li>
 </ul>
-<p>В примере, показанном на диаграмме выше, есть три логические <strong>базы данных</strong>: X, Y и Z.</p>
+<p>In the example shown in the diagram above, there are three logical <strong>Databases</strong>: X, Y, and Z.</p>
 <ul>
-<li><p><strong>База данных X</strong>: содержит <strong>коллекцию A</strong>.</p></li>
-<li><p><strong>База данных Y</strong>: содержит <strong>коллекции B</strong> и <strong>C</strong>.</p></li>
-<li><p><strong>База данных Z</strong>: содержит <strong>коллекции D</strong> и <strong>E</strong>.</p></li>
+<li><p><strong>Database X</strong>: Contains <strong>Collection A</strong>.</p></li>
+<li><p><strong>Database Y</strong>: Contains <strong>Collections B</strong> and <strong>C</strong>.</p></li>
+<li><p><strong>Database Z</strong>: Contains <strong>Collections D</strong> and <strong>E</strong>.</p></li>
 </ul>
-<p>Допустим, в <strong>базе данных X</strong> хранится критически важная база знаний, на которую не должна влиять нагрузка из <strong>базы данных Y</strong> или <strong>Z</strong>. Чтобы обеспечить изоляцию данных:</p>
+<p>Let’s say <strong>Database X</strong> holds a critical knowledge base that we don’t want to be affected by the load from <strong>Database Y</strong> or <strong>Database Z</strong>. To ensure data isolation:</p>
 <ul>
-<li><p><strong>Базе данных X</strong> назначается собственная <strong>группа ресурсов</strong>, чтобы гарантировать, что ее критическая база знаний не будет затронута нагрузкой от других баз данных.</p></li>
-<li><p><strong>Коллекция E</strong> также выделена в отдельную <strong>группу ресурсов</strong> в родительской базе данных<strong>(Z</strong>). Это обеспечивает изоляцию на уровне коллекции для конкретных критических данных в общей базе данных.</p></li>
+<li><p><strong>Database X</strong> is assigned its own <strong>Resource Group</strong> to guarantee that its critical knowledge base is unaffected by workloads from other databases.</p></li>
+<li><p><strong>Collection E</strong> is also allocated to a separate <strong>Resource Group</strong> within its parent database (<strong>Z</strong>). This provides isolation at the collection level for specific critical data within a shared database.</p></li>
 </ul>
-<p>Тем временем остальные коллекции в <strong>базах данных Y</strong> и <strong>Z</strong> совместно используют физические ресурсы <strong>группы ресурсов 2</strong>.</p>
-<p>Тщательно сопоставляя логические компоненты с физическими ресурсами, организации могут создать гибкую, масштабируемую и безопасную архитектуру многопользовательского доступа, соответствующую их специфическим бизнес-потребностям.</p>
-<h3 id="Designing-End-User-Level-Access" class="common-anchor-header">Проектирование доступа на уровне конечного пользователя</h3><p>Теперь, когда мы ознакомились с лучшими практиками выбора стратегии многопользовательского доступа для корпоративной RAG, давайте рассмотрим, как спроектировать доступ на уровне пользователя в таких системах.</p>
-<p>В таких системах конечные пользователи обычно взаимодействуют с базой знаний в режиме "только чтение" через LLM. Однако организациям все равно необходимо отслеживать данные вопросов и ответов, генерируемые пользователями, и связывать их с конкретными пользователями для различных целей, например для повышения точности базы знаний или предоставления персонализированных услуг.</p>
-<p>Возьмем для примера интеллектуальную консультационную службу больницы. Пациенты могут задавать такие вопросы, как "Есть ли сегодня свободные встречи со специалистом?" или "Нужна ли какая-то особая подготовка к предстоящей операции?". Хотя эти вопросы не оказывают прямого влияния на базу знаний, больнице важно отслеживать такие взаимодействия для улучшения качества обслуживания. Эти пары вопросов и ответов обычно хранятся в отдельной базе данных (не обязательно векторной), предназначенной для регистрации взаимодействий.</p>
+<p>Meanwhile, the remaining collections in <strong>Databases Y</strong> and <strong>Z</strong> share the physical resources of <strong>Resource Group 2</strong>.</p>
+<p>By carefully mapping logical components to physical resources, organizations can achieve a flexible, scalable, and secure multi-tenancy architecture tailored to their specific business needs.</p>
+<h3 id="Designing-End-User-Level-Access" class="common-anchor-header">Designing End User-Level Access</h3><p>Now that we’ve learned the best practices for choosing a multi-tenancy strategy for an enterprise RAG, let’s explore how to design user-level access in such systems.</p>
+<p>In these systems, end users usually interact with the knowledge base in a read-only mode through LLMs. However, organizations still need to track such Q&amp;A data generated by users and link it to specific users for various purposes, such as improving the knowledge base’s accuracy or offering personalized services.</p>
+<p>Take a hospital’s smart consultation service desk as an example. Patients might ask questions like, “Are there any available appointments with the specialist today?” or “Is there any specific preparation needed for my upcoming surgery?” While these questions don’t directly impact the knowledge base, it’s important for the hospital to track such interactions to improve services. These Q&amp;A pairs are usually stored in a separate database (it doesn’t necessarily have to be a vector database) dedicated to logging interactions.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_The_multi_tenancy_architecture_for_an_enterprise_RAG_knowledge_base_7c9ad8d4d1.png" alt="Figure- The multi-tenancy architecture for an enterprise RAG knowledge base .png" class="doc-image" id="figure--the-multi-tenancy-architecture-for-an-enterprise-rag-knowledge-base-.png" />
-   </span> <span class="img-wrapper"> <span>Рисунок - Архитектура многопользовательского доступа для корпоративной базы знаний RAG .png</span> </span></p>
-<p><em>Рисунок: Многопользовательская архитектура для корпоративной базы знаний RAG</em></p>
-<p>На диаграмме выше показана многопользовательская архитектура корпоративной системы RAG.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_The_multi_tenancy_architecture_for_an_enterprise_RAG_knowledge_base_7c9ad8d4d1.png" alt="Figure- The multi-tenancy architecture for an enterprise RAG knowledge base .png" class="doc-image" id="figure--the-multi-tenancy-architecture-for-an-enterprise-rag-knowledge-base-.png" />
+    <span>Figure- The multi-tenancy architecture for an enterprise RAG knowledge base .png</span>
+  </span>
+</p>
+<p><em>Figure: The multi-tenancy architecture for an enterprise RAG knowledge base</em></p>
+<p>The diagram above shows the multi-tenancy architecture of an enterprise RAG system.</p>
 <ul>
-<li><p><strong>Системные администраторы</strong> следят за работой системы RAG, управляют распределением ресурсов, назначают базы данных, сопоставляют их с группами ресурсов и обеспечивают масштабируемость. Они управляют физической инфраструктурой, как показано на диаграмме, где каждая группа ресурсов (например, группа ресурсов 1, 2 и 3) сопоставлена с физическими серверами (узлами запросов).</p></li>
-<li><p><strong>Арендаторы (владельцы и разработчики баз данных)</strong> управляют базой знаний, итерируя ее на основе данных вопросов и ответов, генерируемых пользователями, как показано на диаграмме. Различные базы данных (Database X, Y, Z) содержат коллекции с различным содержанием базы знаний (Collection A, B и т. д.).</p></li>
-<li><p><strong>Конечные пользователи</strong> взаимодействуют с системой только в режиме чтения через LLM. По мере того как они запрашивают систему, их вопросы регистрируются в отдельной таблице записей вопросов и ответов (отдельная база данных), непрерывно передавая ценные данные обратно в систему.</p></li>
+<li><p><strong>System Administrators</strong> oversee the RAG system, manage resource allocation, assign databases, map them to resource groups, and ensure scalability. They handle the physical infrastructure, as shown in the diagram, where each resource group (e.g., Resource Group 1, 2, and 3) is mapped to physical servers (query nodes).</p></li>
+<li><p><strong>Tenants (Database owners and developers)</strong> manage the knowledge base, iterating on it based on the user-generated Q&amp;A data, as shown in the diagram. Different databases (Database X, Y, Z) contain collections with different knowledge base content (Collection A, B, etc.).</p></li>
+<li><p><strong>End Users</strong> interact with the system in a read-only manner through the LLM. As they query the system, their questions are logged in the separate Q&amp;A record table (a separate database), continuously feeding valuable data back into the system.</p></li>
 </ul>
-<p>Такая конструкция обеспечивает бесперебойную работу каждого уровня процесса - от взаимодействия с пользователями до администрирования системы, - помогая организации создать надежную и постоянно совершенствующуюся базу знаний.</p>
-<h2 id="Summary" class="common-anchor-header">Резюме<button data-href="#Summary" class="anchor-icon" translate="no">
+<p>This design ensures that each process layer—from user interaction to system administration—works seamlessly, helping the organization build a robust and continuously improving knowledge base.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,9 +196,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В этом блоге мы рассмотрели, как фреймворки с <a href="https://milvus.io/docs/multi_tenancy.md"><strong>множественными правами аренды</strong></a> играют важную роль в масштабируемости, безопасности и производительности баз знаний на основе RAG. Изолируя данные и ресурсы для разных арендаторов, компании могут обеспечить конфиденциальность, соответствие нормативным требованиям и оптимизировать распределение ресурсов в общей инфраструктуре. <a href="https://milvus.io/docs/overview.md">Milvus</a> с его гибкими стратегиями многопользовательской аренды позволяет предприятиям выбирать нужный уровень изоляции данных - от уровня базы данных до уровня раздела - в зависимости от их конкретных потребностей. Правильный выбор многопользовательского подхода позволяет компаниям предоставлять арендаторам индивидуальные услуги даже при работе с различными данными и рабочими нагрузками.</p>
-<p>Следуя приведенным здесь рекомендациям, организации могут эффективно проектировать и управлять системами RAG с несколькими арендаторами, которые не только обеспечивают превосходный пользовательский опыт, но и легко масштабируются по мере роста потребностей бизнеса. Архитектура Milvus позволяет предприятиям поддерживать высокий уровень изоляции, безопасности и производительности, что делает ее важнейшим компонентом для создания баз знаний RAG корпоративного уровня.</p>
-<h2 id="Stay-Tuned-for-More-Insights-into-Multi-Tenancy-RAG" class="common-anchor-header">Оставайтесь с нами, чтобы узнать больше о многопользовательской системе RAG<button data-href="#Stay-Tuned-for-More-Insights-into-Multi-Tenancy-RAG" class="anchor-icon" translate="no">
+    </button></h2><p>In this blog, we’ve explored how <a href="https://milvus.io/docs/multi_tenancy.md"><strong>multi-tenancy</strong></a> frameworks play a critical role in the scalability, security, and performance of RAG-powered knowledge bases. By isolating data and resources for different tenants, businesses can ensure privacy, regulatory compliance, and optimized resource allocation across a shared infrastructure. <a href="https://milvus.io/docs/overview.md">Milvus</a>, with its flexible multi-tenancy strategies, allows businesses to choose the right level of data isolation—from database level to partition level—depending on their specific needs. Choosing the right multi-tenancy approach ensures companies can provide tailored services to tenants, even when dealing with diverse data and workloads.</p>
+<p>By following the best practices outlined here, organizations can effectively design and manage multi-tenancy RAG systems that not only deliver superior user experiences but also scale effortlessly as business needs grow. Milvus’ architecture ensures that enterprises can maintain high levels of isolation, security, and performance, making it a crucial component in building enterprise-grade, RAG-powered knowledge bases.</p>
+<h2 id="Stay-Tuned-for-More-Insights-into-Multi-Tenancy-RAG" class="common-anchor-header">Stay Tuned for More Insights into Multi-Tenancy RAG<button data-href="#Stay-Tuned-for-More-Insights-into-Multi-Tenancy-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -207,7 +213,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В этом блоге мы рассказали о том, как стратегии многопользовательской работы Milvus предназначены для управления арендаторами, но не конечными пользователями в этих арендаторах. Взаимодействие с конечными пользователями обычно происходит на уровне приложений, в то время как сама векторная база данных остается в неведении относительно этих пользователей.</p>
-<p>Вы можете задаться вопросом: <em>Если я хочу предоставлять более точные ответы на основе истории запросов каждого конечного пользователя, разве Milvus не должен поддерживать персонализированный контекст вопросов и ответов для каждого пользователя?</em></p>
-<p>Это отличный вопрос, и ответ на него зависит от конкретного случая использования. Например, в службе консультаций по требованию запросы носят случайный характер, и основное внимание уделяется качеству базы знаний, а не отслеживанию исторического контекста пользователя.</p>
-<p>Однако в других случаях системы RAG должны учитывать контекст. Когда это требуется, Milvus должен сотрудничать с прикладным уровнем, чтобы поддерживать персонализированную память о контексте каждого пользователя. Такая конструкция особенно важна для приложений с большим количеством конечных пользователей, о чем мы подробнее расскажем в моем следующем посте. Оставайтесь с нами, чтобы узнать больше!</p>
+    </button></h2><p>In this blog, we’ve discussed how Milvus’ multi-tenancy strategies are designed to manage tenants, but not end users within those tenants. End-user interactions usually happen at the application layer, while the vector database itself remains unaware of those users.</p>
+<p>You might be wondering: <em>If I want to provide more precise answers based on each end user’s query history, doesn’t Milvus need to maintain a personalized Q&amp;A context for each user?</em></p>
+<p>That’s a great question, and the answer really depends on the use case. For example, in an on-demand consultation service, queries are random, and the main focus is on the quality of the knowledge base rather than on keeping track of a user’s historical context.</p>
+<p>However, in other cases, RAG systems must be context-aware. When this is required, Milvus needs to collaborate with the application layer to maintain a personalized memory of each user’s context. This design is especially important for applications with massive end users, which we’ll explore in greater detail in my next post. Stay tuned for more insights!</p>

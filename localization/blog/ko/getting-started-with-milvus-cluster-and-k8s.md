@@ -1,9 +1,11 @@
 ---
 id: getting-started-with-milvus-cluster-and-k8s.md
-title: Milvus 클러스터 및 K8 시작하기
+title: Getting started with Milvus cluster and K8s
 author: Stephen Batifol
 date: 2024-04-03T00:00:00.000Z
-desc: '이 튜토리얼을 통해 헬름으로 Milvus를 설정하고, 컬렉션을 만들고, 데이터 수집 및 유사성 검색을 수행하는 기본 사항을 배우게 됩니다.'
+desc: >-
+  Through this tutorial, you'll learn the basics of setting up Milvus with Helm,
+  creating a collection, and performing data ingestion and similarity searches.
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
 tag: Engineering
 tags: >-
@@ -12,7 +14,7 @@ tags: >-
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
 ---
-<h2 id="Introduction" class="common-anchor-header">소개<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,9 +29,9 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus는 대규모 임베딩 벡터를 저장, 색인, 관리하는 것을 목표로 하는 분산형 벡터 데이터베이스입니다. 수조 개의 벡터를 효율적으로 색인하고 검색할 수 있는 Milvus는 AI 및 머신 러닝 워크로드를 위한 최고의 선택입니다.</p>
-<p>반면에 Kubernetes(K8s)는 컨테이너화된 애플리케이션을 관리하고 확장하는 데 탁월합니다. 자동 확장, 자가 복구, 로드 밸런싱과 같은 기능을 제공하며, 이는 프로덕션 환경에서 고가용성과 성능을 유지하는 데 매우 중요합니다.</p>
-<h2 id="Why-Use-Them-Together" class="common-anchor-header">왜 함께 사용해야 할까요?<button data-href="#Why-Use-Them-Together" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus is a distributed vector database that aims to store, index and manage massive embedding vectors. Its ability to efficiently index and search through trillions of vectors makes Milvus a go-to choice for AI and machine learning workloads.</p>
+<p>Kubernetes (K8s), on the other hand, excels in managing and scaling containerized applications. It provides features like auto-scaling, self-healing, and load balancing, which are crucial for maintaining high availability and performance in production environments.</p>
+<h2 id="Why-Use-Them-Together" class="common-anchor-header">Why Use Them Together?<button data-href="#Why-Use-Them-Together" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,10 +46,10 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>K8은 워크로드에 따라 Milvus 클러스터를 자동으로 확장할 수 있습니다. 데이터가 증가하거나 쿼리 수가 증가하면 K8은 더 많은 Milvus 인스턴스를 스핀업하여 부하를 처리함으로써 애플리케이션의 응답성을 유지할 수 있습니다.</p>
-<p>K8의 뛰어난 기능 중 하나는 수평적 확장이 가능하기 때문에 Milvus 클러스터를 손쉽게 확장할 수 있다는 점입니다. 데이터 세트가 증가함에 따라 K8s는 이러한 증가를 손쉽게 수용하여 간단하고 효율적인 솔루션이 됩니다.</p>
-<p>또한, 쿼리 처리 기능도 K8s를 통해 수평적으로 확장할 수 있습니다. 쿼리 부하가 증가하면 K8은 더 많은 Milvus 인스턴스를 배포하여 늘어난 유사도 검색 쿼리를 처리할 수 있으므로 부하가 많은 상황에서도 지연 시간이 짧은 응답을 보장합니다.</p>
-<h2 id="Prerequisites--Setting-Up-K8s" class="common-anchor-header">전제 조건 및 K8 설정하기<button data-href="#Prerequisites--Setting-Up-K8s" class="anchor-icon" translate="no">
+    </button></h2><p>K8s can automatically scale the Milvus clusters based on the workload. As your data grows or the number of queries increases, K8s can spin up more Milvus instances to handle the load, ensuring your applications remain responsive.</p>
+<p>One of the standout features of K8s is its horizontal scaling, which makes expanding your Milvus cluster a breeze. As your dataset grows, K8s effortlessly accommodates this growth, making it a straightforward and efficient solution.</p>
+<p>In addition, the ability to handle queries also scales horizontally with K8s. As the query load increases, K8s can deploy more Milvus instances to handle the increased similarity search queries, ensuring low latency responses even under heavy loads.</p>
+<h2 id="Prerequisites--Setting-Up-K8s" class="common-anchor-header">Prerequisites &amp; Setting Up K8s<button data-href="#Prerequisites--Setting-Up-K8s" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,27 +64,27 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">전제 조건</h3><ul>
-<li><p><strong>도커</strong> - 시스템에 도커가 설치되어 있는지 확인합니다.</p></li>
-<li><p><strong>Kubernetes</strong> - Kubernetes 클러스터를 준비합니다. 로컬 개발의 경우 <code translate="no">minikube</code>, 프로덕션 환경의 경우 클라우드 제공업체의 Kubernetes 서비스를 사용할 수 있습니다.</p></li>
-<li><p><strong>Helm</strong> - Kubernetes 애플리케이션을 관리하는 데 도움이 되는 Kubernetes용 패키지 매니저인 Helm을 설치하며, 그 방법은 <a href="https://milvus.io/docs/install_cluster-helm.md">https://milvus.io/docs/install_cluster-helm.md</a> 에서 설명서를 확인할 수 있습니다.</p></li>
-<li><p><strong>Kubectl</strong> - 애플리케이션을 배포하고, 클러스터 리소스를 검사 및 관리하고, 로그를 보기 위해 Kubernetes 클러스터와 상호 작용하기 위한 명령줄 도구인 <code translate="no">kubectl</code> 를 설치합니다.</p></li>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><ul>
+<li><p><strong>Docker</strong> - Ensure Docker is installed on your system.</p></li>
+<li><p><strong>Kubernetes</strong> - Have a Kubernetes cluster ready. You can use <code translate="no">minikube</code> for local development or a cloud provider’s Kubernetes service for production environments.</p></li>
+<li><p><strong>Helm</strong> - Install Helm, a package manager for Kubernetes, to help you manage Kubernetes applications, you can check our documentation to see how to do that <a href="https://milvus.io/docs/install_cluster-helm.md">https://milvus.io/docs/install_cluster-helm.md</a></p></li>
+<li><p><strong>Kubectl</strong> - Install <code translate="no">kubectl</code>, a command-line tool for interacting with Kubernetes clusters, to deploy applications, inspect and manage cluster resources, and view logs.</p></li>
 </ul>
-<h3 id="Setting-Up-K8s" class="common-anchor-header">K8 설정</h3><p>K8s 클러스터를 실행하는 데 필요한 모든 것을 설치한 후 <code translate="no">minikube</code> 를 사용하여 클러스터를 시작하세요:</p>
+<h3 id="Setting-Up-K8s" class="common-anchor-header">Setting Up K8s</h3><p>After installing everything needed to run a K8s cluster, and if you used <code translate="no">minikube</code>, start your cluster with:</p>
 <pre><code translate="no">minikube start
 <button class="copy-code-btn"></button></code></pre>
-<p>를 사용하여 K8s 클러스터의 상태를 확인합니다:</p>
+<p>Check the status of your K8s cluster with:</p>
 <pre><code translate="no">kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Deploying-Milvus-on-K8s" class="common-anchor-header">K8s에 Milvus 배포하기</h3><p>이 배포에서는 전체 분산 기능을 활용하기 위해 클러스터 모드에서 Milvus를 선택합니다. 설치 프로세스를 간소화하기 위해 Helm을 사용할 것입니다.</p>
-<p><strong>1. 헬름 설치 명령어</strong></p>
+<h3 id="Deploying-Milvus-on-K8s" class="common-anchor-header">Deploying Milvus on K8s</h3><p>For this deployment, we’re opting for Milvus in cluster-mode to leverage its full distributed capabilities. We’ll be using Helm, to streamline the installation process.</p>
+<p><strong>1. Helm Installation Command</strong></p>
 <pre><code translate="no">helm install my-milvus milvus/milvus --<span class="hljs-built_in">set</span> pulsar.enabled=<span class="hljs-literal">false</span> --<span class="hljs-built_in">set</span> kafka.enabled=<span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>이 명령은 Kafka를 활성화하고 Pulsar를 비활성화한 상태에서 K8s 클러스터에 Milvus를 설치합니다. Kafka는 Milvus 내에서 메시징 시스템 역할을 하며 서로 다른 구성 요소 간의 데이터 스트리밍을 처리합니다. Pulsar를 비활성화하고 Kafka를 활성화하면 특정 메시징 기본 설정 및 요구 사항에 맞게 배포가 조정됩니다.</p>
-<p><strong>2. 포트 포워딩</strong></p>
-<p>로컬 컴퓨터에서 Milvus에 액세스하려면 포트 포워딩을 생성하세요: <code translate="no">kubectl port-forward svc/my-milvus 27017:19530</code>.</p>
-<p>이 명령은 Milvus 서비스 <code translate="no">svc/my-milvus</code> 의 포트 <code translate="no">19530</code> 를 로컬 컴퓨터의 동일한 포트에 매핑하여 로컬 도구를 사용하여 Milvus에 연결할 수 있도록 합니다. 로컬 포트를 지정하지 않은 채로 두면( <code translate="no">:19530</code>), K8에서 사용 가능한 포트를 할당하여 동적으로 만듭니다. 이 방법을 선택하는 경우 할당된 로컬 포트를 기억해 두세요.</p>
-<p><strong>3. 배포 확인:</strong></p>
+<p>This command installs Milvus on your K8s cluster with Kafka enabled and Pulsar disabled. Kafka serves as the messaging system within Milvus, handling data streaming between different components. Disabling Pulsar and enabling Kafka tailors the deployment to our specific messaging preferences and requirements.</p>
+<p><strong>2. Port Forwarding</strong></p>
+<p>To access Milvus from your local machine, create a port forward: <code translate="no">kubectl port-forward svc/my-milvus 27017:19530</code>.</p>
+<p>This command maps port <code translate="no">19530</code> from the Milvus service <code translate="no">svc/my-milvus</code> to the same port on your local machine, allowing you to connect to Milvus using local tools. If you leave the local port unspecified (as in <code translate="no">:19530</code>), K8s will allocate an available port, making it dynamic. Ensure you note the allocated local port if you choose this method.</p>
+<p><strong>3. Verifying the Deployment:</strong></p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods 
 
 NAME                                    READY   STATUS    RESTARTS   AGE
@@ -108,9 +110,9 @@ my-milvus-zookeeper<span class="hljs-number">-0</span>                   <span c
 my-milvus-zookeeper<span class="hljs-number">-1</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 <button class="copy-code-btn"></button></code></pre>
-<p>위의 출력과 유사한 파드 목록이 표시되어야 하며 모두 실행 중 상태여야 합니다. 이는 Milvus 클러스터가 작동 중임을 나타냅니다. 특히 <code translate="no">READY</code> 열 아래에서 1/1을 찾아보세요. 이는 각 파드가 완전히 준비되어 실행 중임을 의미합니다. 실행 중 상태가 아닌 파드가 있는 경우, 성공적인 배포를 위해 추가 조사가 필요할 수 있습니다.</p>
-<p>Milvus 클러스터가 배포되고 모든 구성 요소가 실행 중임을 확인했으면 이제 데이터 수집 및 색인 작업을 진행할 준비가 되었습니다. 여기에는 Milvus 인스턴스에 연결하고, 컬렉션을 만들고, 검색 및 검색을 위한 벡터를 삽입하는 작업이 포함됩니다.</p>
-<h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">데이터 수집 및 인덱싱<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
+<p>You should see a list of pods similar to the output above, all in the Running state. This indicates that your Milvus cluster is operational. Specifically, look for the 1/1 under the <code translate="no">READY</code> column, which signifies that each pod is fully ready and running. If any pods are not in the Running state, you may need to investigate further to ensure a successful deployment.</p>
+<p>With your Milvus cluster deployed and all components confirmed running, you’re now ready to proceed to data ingestion and indexing. This will involve connecting to your Milvus instance, creating collections, and inserting vectors for search and retrieval.</p>
+<h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">Data Ingestion and Indexing<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,13 +127,13 @@ my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span c
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 클러스터에서 데이터 수집 및 색인 작업을 시작하려면 pymilvus SDK를 사용하겠습니다. 두 가지 설치 옵션이 있습니다:</p>
+    </button></h2><p>To start ingesting and indexing data in our Milvus cluster, we’ll use the pymilvus SDK. There are two installation options:</p>
 <ul>
-<li><p>기본 SDK: <code translate="no">pip install pymilvus</code></p></li>
-<li><p>서식 있는 텍스트 임베딩 및 고급 모델용: <code translate="no">pip install pymilvus[model]</code></p></li>
+<li><p>Basic SDK: <code translate="no">pip install pymilvus</code></p></li>
+<li><p>For rich text embeddings and advanced models: <code translate="no">pip install pymilvus[model]</code></p></li>
 </ul>
-<p>클러스터에 데이터를 삽입할 때는 <code translate="no">pymilvus</code> 를 사용하여 SDK만 설치하거나 <code translate="no">pip install pymilvus</code> 또는 리치 텍스트 임베딩을 추출하려는 경우 <code translate="no">PyMilvus Models</code> 를 설치하여 <code translate="no">pip install pymilvus[model]</code> 를 사용할 수 있습니다.</p>
-<h3 id="Connecting-and-Creating-a-Collection" class="common-anchor-header">컬렉션 연결 및 생성하기:</h3><p>먼저, 앞서 전달한 포트를 사용하여 Milvus 인스턴스에 연결합니다. URI가 K8에서 할당된 로컬 포트와 일치하는지 확인합니다:</p>
+<p>Time to insert data in our cluster, we’ll be using <code translate="no">pymilvus</code>, you can either install the SDK only with <code translate="no">pip install pymilvus</code> or if you want to extract rich text embeddings, you can also use <code translate="no">PyMilvus Models</code> by installing <code translate="no">pip install pymilvus[model]</code>.</p>
+<h3 id="Connecting-and-Creating-a-Collection" class="common-anchor-header">Connecting and Creating a Collection:</h3><p>First, connect to your Milvus instance using the port you forwarded earlier. Ensure the URI matches the local port assigned by K8s:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 client = <span class="hljs-title class_">MilvusClient</span>(
@@ -140,8 +142,8 @@ client = <span class="hljs-title class_">MilvusClient</span>(
 
 client.<span class="hljs-title function_">create_collection</span>(collection_name=<span class="hljs-string">&quot;quick_setup&quot;</span>, dimension=<span class="hljs-number">5</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">dimension=5</code> 매개변수는 이 컬렉션의 벡터 크기를 정의하며, 벡터 검색 기능에 필수적입니다.</p>
-<h3 id="Insert-Data" class="common-anchor-header">데이터 삽입</h3><p>다음은 각 벡터가 항목을 나타내고 색상 필드가 설명 속성을 추가하는 초기 데이터 집합을 삽입하는 방법입니다:</p>
+<p>The <code translate="no">dimension=5</code> parameter defines the vector size for this collection, essential for the vector search capabilities.</p>
+<h3 id="Insert-Data" class="common-anchor-header">Insert Data</h3><p>Here’s how to insert an initial set of data, where each vector represents an item, and the color field adds a descriptive attribute:</p>
 <pre><code translate="no">data=[
     {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;vector&quot;</span>: [<span class="hljs-number">0.3580376395471989</span>, -<span class="hljs-number">0.6023495712049978</span>, <span class="hljs-number">0.18414012509913835</span>, -<span class="hljs-number">0.26286205330961354</span>, <span class="hljs-number">0.9029438446296592</span>], <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;pink_8682&quot;</span>},
     {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&quot;vector&quot;</span>: [<span class="hljs-number">0.19886812562848388</span>, <span class="hljs-number">0.06023560599112088</span>, <span class="hljs-number">0.6976963061752597</span>, <span class="hljs-number">0.2614474506242501</span>, <span class="hljs-number">0.838729485096104</span>], <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;red_7025&quot;</span>},
@@ -162,11 +164,11 @@ res = client.insert(
 
 <span class="hljs-built_in">print</span>(res)
 <button class="copy-code-btn"></button></code></pre>
-<p>제공된 코드는 빠른 설정 방식으로 컬렉션을 만들었다고 가정합니다. 위 코드에서 볼 수 있듯이,</p>
-<p>삽입할 데이터는 사전 목록으로 구성되며, 각 사전은 엔티티라고 하는 데이터 레코드를 나타냅니다.</p>
-<p>각 사전에는 색상이라는 스키마에 정의되지 않은 필드가 포함되어 있습니다.</p>
-<p>각 사전에는 사전 정의된 필드와 동적 필드에 해당하는 키가 모두 포함되어 있습니다.</p>
-<h3 id="Insert-Even-More-Data" class="common-anchor-header">더 많은 데이터 삽입</h3><pre><code translate="no">colors = [<span class="hljs-string">&quot;green&quot;</span>, <span class="hljs-string">&quot;blue&quot;</span>, <span class="hljs-string">&quot;yellow&quot;</span>, <span class="hljs-string">&quot;red&quot;</span>, <span class="hljs-string">&quot;black&quot;</span>, <span class="hljs-string">&quot;white&quot;</span>, <span class="hljs-string">&quot;purple&quot;</span>, <span class="hljs-string">&quot;pink&quot;</span>, <span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-string">&quot;brown&quot;</span>, <span class="hljs-string">&quot;grey&quot;</span>]
+<p>The provided code assumes that you have created a collection in the Quick Setup manner. As shown in the above code,</p>
+<p>The data to insert is organized into a list of dictionaries, where each dictionary represents a data record, termed as an entity.</p>
+<p>Each dictionary contains a non-schema-defined field named color.</p>
+<p>Each dictionary contains the keys corresponding to both pre-defined and dynamic fields.</p>
+<h3 id="Insert-Even-More-Data" class="common-anchor-header">Insert Even More Data</h3><pre><code translate="no">colors = [<span class="hljs-string">&quot;green&quot;</span>, <span class="hljs-string">&quot;blue&quot;</span>, <span class="hljs-string">&quot;yellow&quot;</span>, <span class="hljs-string">&quot;red&quot;</span>, <span class="hljs-string">&quot;black&quot;</span>, <span class="hljs-string">&quot;white&quot;</span>, <span class="hljs-string">&quot;purple&quot;</span>, <span class="hljs-string">&quot;pink&quot;</span>, <span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-string">&quot;brown&quot;</span>, <span class="hljs-string">&quot;grey&quot;</span>]
 data = [ {
     <span class="hljs-string">&quot;id&quot;</span>: i, 
     <span class="hljs-string">&quot;vector&quot;</span>: [ random.uniform(-<span class="hljs-number">1</span>, <span class="hljs-number">1</span>) <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>) ], 
@@ -180,7 +182,7 @@ res = client.insert(
 
 <span class="hljs-built_in">print</span>(res)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Similarity-Search" class="common-anchor-header">유사성 검색<button data-href="#Similarity-Search" class="anchor-icon" translate="no">
+<h2 id="Similarity-Search" class="common-anchor-header">Similarity Search<button data-href="#Similarity-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -195,7 +197,7 @@ res = client.insert(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>컬렉션을 채운 후 유사도 검색을 수행하여 쿼리 벡터에 가까운 벡터를 찾을 수 있습니다. 쿼리 벡터 변수의 값은 부동 소수점의 하위 목록이 포함된 목록입니다. 하위 목록은 5차원의 벡터 임베딩을 나타냅니다.</p>
+    </button></h2><p>After populating the collection, you can perform a similarity search to find vectors close to a query vector. The value of the query_vectors variable is a list containing a sub-list of floats. The sub-list represents a vector embedding of 5 dimensions.</p>
 <pre><code translate="no">query_vectors = [
     [0.041732933, 0.013779674, -0.027564144, -0.013061441, 0.009748648]
 ]
@@ -208,8 +210,8 @@ res = client.search(
 
 <span class="hljs-built_in">print</span>(res)
 <button class="copy-code-btn"></button></code></pre>
-<p>이 쿼리는 쿼리 벡터와 가장 유사한 상위 3개의 벡터를 검색하여 Milvus의 강력한 검색 기능을 보여줍니다.</p>
-<h2 id="Uninstall-Milvus-from-K8s" class="common-anchor-header">K8s에서 Milvus 제거하기<button data-href="#Uninstall-Milvus-from-K8s" class="anchor-icon" translate="no">
+<p>This query searches for the top 3 vectors most similar to our query vector, demonstrating Milvus’s powerful search capabilities.</p>
+<h2 id="Uninstall-Milvus-from-K8s" class="common-anchor-header">Uninstall Milvus from K8s<button data-href="#Uninstall-Milvus-from-K8s" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -224,9 +226,9 @@ res = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이 튜토리얼을 완료했으면 다음을 사용하여 K8s 클러스터에서 Milvus를 제거하세요:<code translate="no">helm uninstall my-milvus</code>.</p>
-<p>이 명령은 <code translate="no">my-milvus</code> 릴리스에 배포된 모든 Milvus 구성 요소를 제거하여 클러스터 리소스를 확보합니다.</p>
-<h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>Once you are done with this tutorial, feel free to uninstall Milvus from your K8s cluster with:<code translate="no">helm uninstall my-milvus</code>.</p>
+<p>This command will remove all Milvus components deployed in the <code translate="no">my-milvus</code> release, freeing up cluster resources.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -242,7 +244,7 @@ res = client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Kubernetes 클러스터에 Milvus를 배포하면 AI 및 머신 러닝 워크로드를 처리하는 데 있어 벡터 데이터베이스의 확장성과 유연성을 확인할 수 있습니다. 이 튜토리얼을 통해 헬름으로 Milvus를 설정하고, 컬렉션을 생성하고, 데이터 수집 및 유사도 검색을 수행하는 기본 사항을 배웠습니다.</p></li>
-<li><p>헬름을 사용하여 Kubernetes 클러스터에 Milvus를 설치하는 것은 간단합니다. 더 큰 데이터 세트나 더 집약적인 워크로드를 위해 Milvus 클러스터를 확장하는 방법에 대해 자세히 알아보려면, 저희 문서( <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md)</a>에서 자세한 지침을 확인하세요 <a href="https://milvus.io/docs/scaleout.md">.</a></p></li>
+<li><p>Deploying Milvus on a Kubernetes cluster showcases the scalability and flexibility of vector databases in handling AI and machine learning workloads. Through this tutorial, you’ve learned the basics of setting up Milvus with Helm, creating a collection, and performing data ingestion and similarity searches.</p></li>
+<li><p>Installing Milvus on a Kubernetes cluster with Helm should be straightforward. To go deeper into scaling Milvus clusters for larger datasets or more intensive workloads, our documentation offers detailed guidance <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
 </ul>
-<p><a href="https://github.com/stephen37/K8s-tutorial-milvus">Github에서</a> 코드를 확인하고, <a href="https://github.com/milvus-io/milvus">Milvus를</a> 살펴보고, 다양한 구성과 사용 사례를 실험해보고, <a href="https://discord.gg/FG6hMJStWu">Discord에</a> 참여하여 커뮤니티와 경험을 공유해 보세요.</p>
+<p>Feel free to check out the code on <a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a>, check out <a href="https://github.com/milvus-io/milvus">Milvus</a>, experiment with different configurations and use cases, and share your experiences with the community by joining our <a href="https://discord.gg/FG6hMJStWu">Discord</a>.</p>

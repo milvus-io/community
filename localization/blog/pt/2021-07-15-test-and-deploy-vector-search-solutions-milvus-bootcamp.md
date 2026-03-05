@@ -1,56 +1,54 @@
 ---
 id: test-and-deploy-vector-search-solutions-milvus-bootcamp.md
-title: >-
-  Teste e Implemente Rapidamente Soluções de Pesquisa Vetorial com o Bootcamp
-  Milvus 2.0
+title: Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp
 author: milvus
 date: 2021-07-15T03:05:45.742Z
 desc: >-
-  Crie, teste e personalize soluções de pesquisa de semelhanças vectoriais com o
-  Milvus, uma base de dados vetorial de código aberto.
+  Build, test, and customize vector similarity search solutions with Milvus, an
+  open-source vector database.
 cover: assets.zilliz.com/cover_80db9ee49c.png
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/test-and-deploy-vector-search-solutions-milvus-bootcamp
 ---
-<custom-h1>Teste e Implemente Rapidamente Soluções de Pesquisa Vetorial com o Bootcamp do Milvus 2.0</custom-h1><p>Com o lançamento do Milvus 2.0, a equipa renovou o <a href="https://github.com/milvus-io/bootcamp">bootcamp</a> do Milvus. O novo e melhorado bootcamp oferece guias actualizados e exemplos de código mais fáceis de seguir para uma variedade de casos de utilização e implementações. Além disso, esta nova versão é actualizada para o <a href="https://milvus.io/blog/milvus2.0-redefining-vector-database.md">Milvus 2.0</a>, uma versão reimaginada do banco de dados vetorial mais avançado do mundo.</p>
-<h3 id="Stress-test-your-system-against-1M-and-100M-dataset-benchmarks" class="common-anchor-header">Teste de stress do seu sistema contra benchmarks de conjuntos de dados de 1M e 100M</h3><p>O <a href="https://github.com/milvus-io/bootcamp/tree/master/benchmark_test">diretório</a> de benchmark contém testes de benchmark de 1 milhão e 100 milhões de vetores que indicam como seu sistema reagirá a conjuntos de dados de tamanhos diferentes.</p>
+<custom-h1>Quickly Test and Deploy Vector Search Solutions with the Milvus 2.0 Bootcamp</custom-h1><p>With the release of Milvus 2.0, the team has revamped the Milvus <a href="https://github.com/milvus-io/bootcamp">bootcamp</a>. The new and improved bootcamp offers updated guides and easier to follow code examples for a variety of use cases and deployments. Additionally, this new version is updated for <a href="https://milvus.io/blog/milvus2.0-redefining-vector-database.md">Milvus 2.0</a>, a reimagined version of the world’s most advanced vector databse.</p>
+<h3 id="Stress-test-your-system-against-1M-and-100M-dataset-benchmarks" class="common-anchor-header">Stress test your system against 1M and 100M dataset benchmarks</h3><p>The <a href="https://github.com/milvus-io/bootcamp/tree/master/benchmark_test">benchmark directory</a> contains 1 million and 100 million vector benchmark tests that indicate how your system will react to differently sized datasets.</p>
 <p><br/></p>
-<h3 id="Explore-and-build-popular-vector-similarity-search-solutions" class="common-anchor-header">Explore e crie soluções populares de pesquisa de similaridade de vetores</h3><p>O diretório <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions">de soluções</a> inclui os casos de utilização de pesquisa por semelhança de vectores mais populares. Cada caso de uso contém uma solução de notebook e uma solução implantável no Docker. Os casos de uso incluem:</p>
+<h3 id="Explore-and-build-popular-vector-similarity-search-solutions" class="common-anchor-header">Explore and build popular vector similarity search solutions</h3><p>The <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions">solution directory</a> includes the most popular vector similarity search use cases. Each use case contains a notebook solution and a docker deployable solution. Use cases include:</p>
 <ul>
-<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search">Pesquisa de similaridade de imagens</a></li>
-<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search">Pesquisa de similaridade de vídeo</a></li>
-<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/audio_similarity_search">Pesquisa de similaridade de áudio</a></li>
-<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/recommendation_system">Sistema de recomendação</a></li>
-<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/molecular_similarity_search">Pesquisa molecular</a></li>
-<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/question_answering_system">Sistema de resposta a perguntas</a></li>
+<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search">Image similarity search</a></li>
+<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search">Video similarity search</a></li>
+<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/audio_similarity_search">Audio similarity search</a></li>
+<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/recommendation_system">Recommendation system</a></li>
+<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/molecular_similarity_search">Molecular search</a></li>
+<li><a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/question_answering_system">Question answering system</a></li>
 </ul>
 <p><br/></p>
-<h3 id="Quickly-deploy-a-fully-built-application-on-any-system" class="common-anchor-header">Implementar rapidamente uma aplicação totalmente criada em qualquer sistema</h3><p>As soluções de implementação rápida são soluções dockerizadas que permitem aos utilizadores implementar aplicações totalmente criadas em qualquer sistema. Essas soluções são ideais para demonstrações breves, mas exigem trabalho adicional para personalizar e entender em comparação com os notebooks.</p>
+<h3 id="Quickly-deploy-a-fully-built-application-on-any-system" class="common-anchor-header">Quickly deploy a fully built application on any system</h3><p>The quick deploy solutions are dockerized solutions that allow users to deploy fully built applications on any system. These solutions are ideal for brief demos, but require additional work to customize and understand compared to notebooks.</p>
 <p><br/></p>
-<h3 id="Use-scenario-specific-notebooks-to-easily-deploy-pre-configured-applications" class="common-anchor-header">Use notebooks específicos do cenário para implantar facilmente aplicativos pré-configurados</h3><p>Os notebooks contêm um exemplo simples de implantação do Milvus para resolver o problema em um determinado caso de uso. Cada um dos exemplos pode ser executado do início ao fim sem a necessidade de gerir ficheiros ou configurações. Cada caderno é também fácil de seguir e modificável, tornando-os ficheiros de base ideais para outros projectos.</p>
+<h3 id="Use-scenario-specific-notebooks-to-easily-deploy-pre-configured-applications" class="common-anchor-header">Use scenario specific notebooks to easily deploy pre-configured applications</h3><p>The notebooks contain a simple example of deploying Milvus to solve the problem in a given use case. Each of the examples are able to be run from start to finish without the need to manage files or configurations. Each notebook is also easy to follow and modifiable, making them ideal base files for other projects.</p>
 <p><br/></p>
-<h3 id="Image-similarity-search-notebook-example" class="common-anchor-header">Exemplo de bloco de notas de pesquisa de semelhança de imagens</h3><p>A pesquisa de semelhança de imagens é uma das ideias centrais por detrás de muitas tecnologias diferentes, incluindo carros autónomos que reconhecem objectos. Este exemplo explica como construir facilmente programas de visão computacional com o Milvus.</p>
-<p>Este bloco de notas gira em torno de três coisas:</p>
+<h3 id="Image-similarity-search-notebook-example" class="common-anchor-header">Image similarity search notebook example</h3><p>Image similarity search is one of the core ideas behind many different technologies, including autonomous cars recognizing objects. This example explains how to easily build computer vision programs with Milvus.</p>
+<p>This notebookrevolves around three things:</p>
 <ul>
-<li>Servidor Milvus</li>
-<li>Servidor Redis (para armazenamento de metadados)</li>
-<li>Modelo Resnet-18 pré-treinado.</li>
+<li>Milvus server</li>
+<li>Redis server (for metadata storage)</li>
+<li>Pretrained Resnet-18 model.</li>
 </ul>
-<h4 id="Step-1-Download-required-packages" class="common-anchor-header">Passo 1: Descarregar os pacotes necessários</h4><p>Comece por descarregar todos os pacotes necessários para este projeto. Este bloco de notas inclui uma tabela que lista os pacotes a utilizar.</p>
+<h4 id="Step-1-Download-required-packages" class="common-anchor-header">Step 1: Download required packages</h4><p>Begin by downloading all the required packages for this project. This notebook includes a table listing the packages to use.</p>
 <pre><code translate="no">pip install -r requirements.txt
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-2-Server-startup" class="common-anchor-header">Passo 2: Arranque do servidor</h4><p>Depois de os pacotes estarem instalados, inicie os servidores e certifique-se de que ambos estão a funcionar corretamente. Certifique-se de seguir as instruções corretas para iniciar os servidores <a href="https://milvus.io/docs/v2.0.x/install_standalone-docker.md">Milvus</a> e <a href="https://hub.docker.com/_/redis">Redis</a>.</p>
-<h4 id="Step-3-Download-project-data" class="common-anchor-header">Passo 3: Descarregar dados do projeto</h4><p>Por predefinição, este bloco de notas extrai um fragmento dos dados VOCImage para utilização como exemplo, mas qualquer diretório com imagens deve funcionar desde que siga a estrutura de ficheiros que pode ser vista no topo do bloco de notas.</p>
+<h4 id="Step-2-Server-startup" class="common-anchor-header">Step 2: Server startup</h4><p>After the packages are installed, start the servers and ensure both are running properly. Be sure to follow the correct instructions for starting the <a href="https://milvus.io/docs/v2.0.x/install_standalone-docker.md">Milvus</a> and <a href="https://hub.docker.com/_/redis">Redis</a> servers.</p>
+<h4 id="Step-3-Download-project-data" class="common-anchor-header">Step 3: Download project data</h4><p>By default, this notebook pulls a snippet of the VOCImage data for use as an example, but any directory with images should work as long as it follows the file structure that can be seen at the top of the notebook.</p>
 <pre><code translate="no">! gdown <span class="hljs-string">&quot;https://drive.google.com/u/1/uc?id=1jdudBiUu41kL-U5lhH3ari_WBRXyedWo&amp;export=download&quot;</span>
 ! tar -xf <span class="hljs-string">&#x27;VOCdevkit.zip&#x27;</span>
 ! <span class="hljs-built_in">rm</span> <span class="hljs-string">&#x27;VOCdevkit.zip&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-4-Connect-to-the-servers" class="common-anchor-header">Passo 4: Ligar aos servidores</h4><p>Neste exemplo, os servidores estão a funcionar nas portas predefinidas no localhost.</p>
+<h4 id="Step-4-Connect-to-the-servers" class="common-anchor-header">Step 4: Connect to the servers</h4><p>In this example, the servers are running on the default ports on the localhost.</p>
 <pre><code translate="no">connections.<span class="hljs-title function_">connect</span>(host=<span class="hljs-string">&quot;127.0.0.1&quot;</span>, port=<span class="hljs-number">19537</span>)
 red = redis.<span class="hljs-title class_">Redis</span>(host = <span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, port=<span class="hljs-number">6379</span>, db=<span class="hljs-number">0</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-5-Create-a-collection" class="common-anchor-header">Passo 5: Criar uma coleção</h4><p>Depois de iniciar os servidores, crie uma coleção no Milvus para armazenar todos os vectores. Neste exemplo, o tamanho da dimensão é definido como 512, o tamanho da saída do resnet-18, e a métrica de similaridade é definida como a distância euclidiana (L2). O Milvus suporta uma variedade de <a href="https://milvus.io/docs/v2.0.x/metric.md">métricas de similaridade</a> diferentes.</p>
+<h4 id="Step-5-Create-a-collection" class="common-anchor-header">Step 5: Create a collection</h4><p>After starting the servers, create a collection in Milvus for storing all the vectors. In this example, the dimension size is set to 512, the size of the resnet-18 output, and the similarity metric is set to the Euclidean distance (L2). Milvus supports a variety of different <a href="https://milvus.io/docs/v2.0.x/metric.md">similarity metrics</a>.</p>
 <pre><code translate="no">collection_name = <span class="hljs-string">&quot;image_similarity_search&quot;</span>
 dim = <span class="hljs-number">512</span>
 default_fields = [
@@ -60,16 +58,16 @@ default_fields = [
 default_schema = schema.CollectionSchema(fields=default_fields, description=<span class="hljs-string">&quot;Image test collection&quot;</span>)
 collection = Collection(name=collection_name, schema=default_schema)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-6-Build-an-index-for-the-collection" class="common-anchor-header">Passo 6: Construir um índice para a coleção</h4><p>Uma vez criada a coleção, construa um índice para a mesma. Neste caso, é utilizado o índice IVF_SQ8. Este índice requer o parâmetro 'nlist', que indica ao Milvus quantos clusters devem ser criados em cada ficheiro de dados (segmento). <a href="https://milvus.io/docs/v2.0.x/index.md">Índices</a> diferentes requerem parâmetros diferentes.</p>
+<h4 id="Step-6-Build-an-index-for-the-collection" class="common-anchor-header">Step 6: Build an index for the collection</h4><p>Once the collection is made, build an index for it. In this case, the IVF_SQ8 index is used. This index requires the ‘nlist’ parameter, which tells Milvus how many clusters to make within each datafile (segment). Different <a href="https://milvus.io/docs/v2.0.x/index.md">indices</a> require different parameters.</p>
 <pre><code translate="no">default_index = {<span class="hljs-string">&quot;index_type&quot;</span>: <span class="hljs-string">&quot;IVF_SQ8&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nlist&quot;</span>: <span class="hljs-number">2048</span>}, <span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;L2&quot;</span>}
 collection.<span class="hljs-title function_">create_index</span>(field_name=<span class="hljs-string">&quot;vector&quot;</span>, index_params=default_index)
 collection.<span class="hljs-title function_">load</span>()
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-7-Set-up-model-and-data-loader" class="common-anchor-header">Etapa 7: Configurar o modelo e o carregador de dados</h4><p>Após a construção do índice IVF_SQ8, configure a rede neural e o carregador de dados. O pytorch resnet-18 pré-treinado utilizado neste exemplo não tem a última camada, que comprime os vectores para classificação e pode perder informações valiosas.</p>
+<h4 id="Step-7-Set-up-model-and-data-loader" class="common-anchor-header">Step 7: Set up model and data loader</h4><p>After the IVF_SQ8 index is built, set up the neural network and data loader. The pretrained pytorch resnet-18 used in this example is sans its last layer, which compresses vectors for classification and may lose valuable information.</p>
 <pre><code translate="no">model = torch.hub.load(<span class="hljs-string">&#x27;pytorch/vision:v0.9.0&#x27;</span>, <span class="hljs-string">&#x27;resnet18&#x27;</span>, pretrained=<span class="hljs-literal">True</span>)
 encoder = torch.nn.Sequential(*(<span class="hljs-built_in">list</span>(model.children())[:-<span class="hljs-number">1</span>]))
 <button class="copy-code-btn"></button></code></pre>
-<p>O conjunto de dados e o carregador de dados precisam de ser modificados para poderem pré-processar e agrupar as imagens, fornecendo também os caminhos dos ficheiros das imagens. Isto pode ser feito com um carregador de dados torchvision ligeiramente modificado. Para o pré-processamento, as imagens precisam de ser cortadas e normalizadas devido ao facto de o modelo resnet-18 ter sido treinado num tamanho e intervalo de valores específicos.</p>
+<p>The dataset and data loader needs to be modified so that they are able to preprocess and batch the images while also providing the file paths of the images. This can be done with a slightly modified torchvision dataloader. For preprocessing, the images need to be cropped and normalized due to the resnet-18 model being trained on a specific size and value range.</p>
 <pre><code translate="no">dataset = ImageFolderWithPaths(data_dir, transform=transforms.Compose([
                                                 transforms.Resize(256),
                                                 transforms.CenterCrop(224),
@@ -78,7 +76,7 @@ encoder = torch.nn.Sequential(*(<span class="hljs-built_in">list</span>(model.ch
 
 dataloader = torch.utils.data.DataLoader(dataset, num_workers=0, batch_si
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-8-Insert-vectors-into-the-collection" class="common-anchor-header">Passo 8: Inserir vectores na coleção</h4><p>Com a configuração da coleção, as imagens podem ser processadas e carregadas na coleção criada. Primeiro, as imagens são extraídas pelo carregador de dados e executadas através do modelo resnet-18. Os embeddings vectoriais resultantes são depois inseridos no Milvus, que devolve um ID único para cada vetor. Os IDs dos vectores e os caminhos dos ficheiros de imagem são então inseridos como pares chave-valor no servidor Redis.</p>
+<h4 id="Step-8-Insert-vectors-into-the-collection" class="common-anchor-header">Step 8: Insert vectors into the collection</h4><p>With the collection setup, the images can be processed and loaded into the created collection. First the images are pulled by the dataloader and run through the resnet-18 model. The resulting vector embeddings are then inserted into Milvus, which returns a unique ID for each vector. The vector IDs and image file paths are then inserted as key-value pairs into the Redis server.</p>
 <pre><code translate="no">steps = <span class="hljs-built_in">len</span>(dataloader)
 step = <span class="hljs-number">0</span>
 <span class="hljs-keyword">for</span> inputs, labels, paths <span class="hljs-keyword">in</span> dataloader:
@@ -94,11 +92,11 @@ step = <span class="hljs-number">0</span>
         <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Insert Step: &quot;</span> + <span class="hljs-built_in">str</span>(step) + <span class="hljs-string">&quot;/&quot;</span> + <span class="hljs-built_in">str</span>(steps))
     step += <span class="hljs-number">1</span>
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-9-Conduct-a-vector-similarity-search" class="common-anchor-header">Etapa 9: realizar uma pesquisa de similaridade de vetor</h4><p>Depois que todos os dados são inseridos no Milvus e no Redis, a pesquisa de similaridade de vetores pode ser realizada. Para este exemplo, três imagens selecionadas aleatoriamente são retiradas do servidor Redis para uma pesquisa de semelhança vetorial.</p>
+<h4 id="Step-9-Conduct-a-vector-similarity-search" class="common-anchor-header">Step 9: Conduct a vector similarity search</h4><p>Once all of the data is inserted into Milvus and Redis, the actual vector similarity search can be performed. For this example, three randomly selected images are pulled out of the Redis server for a vector similarity search.</p>
 <pre><code translate="no">random_ids = [<span class="hljs-built_in">int</span>(red.randomkey()) <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>)]
 search_images = [x.decode(<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> red.mget(random_ids)]
 <button class="copy-code-btn"></button></code></pre>
-<p>Estas imagens passam primeiro pelo mesmo pré-processamento que é encontrado no Passo 7 e são depois passadas pelo modelo resnet-18.</p>
+<p>These images first go through the same preprocessing that is found in Step 7 and are then pushed through the resnet-18 model.</p>
 <pre><code translate="no">transform_ops = transforms.Compose([
                 transforms.Resize(<span class="hljs-number">256</span>),
                 transforms.CenterCrop(<span class="hljs-number">224</span>),
@@ -111,22 +109,37 @@ embeddings = torch.stack(embeddings, dim=<span class="hljs-number">0</span>)
 <span class="hljs-keyword">with</span> torch.no_grad():
     embeddings = encoder(embeddings).squeeze().numpy()
 <button class="copy-code-btn"></button></code></pre>
-<p>Em seguida, os embeddings vectoriais resultantes são utilizados para efetuar uma pesquisa. Primeiro, defina os parâmetros de pesquisa, incluindo o nome da coleção a pesquisar, nprobe (o número de clusters a pesquisar) e top_k (o número de vectores devolvidos). Neste exemplo, a pesquisa deve ser muito rápida.</p>
+<p>Then the resulting vector embeddings are used to perform a search. First, set the search parameters, including the name of the collection to search, nprobe (the number of the clusters to search), and top_k (the number of returned vectors). In this example, the search should be very quick.</p>
 <pre><code translate="no">search_params = {<span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;L2&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: 32}}
 start = time.time()
 results = collection.search(embeddings, <span class="hljs-string">&quot;vector&quot;</span>, param=search_params, <span class="hljs-built_in">limit</span>=3, <span class="hljs-built_in">expr</span>=None)
 end = time.time() - start
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-10-Image-search-results" class="common-anchor-header">Passo 10: Resultados da pesquisa de imagens</h4><p>Os IDs dos vectores devolvidos pelas consultas são utilizados para encontrar as imagens correspondentes. O Matplotlib é então utilizado para apresentar os resultados da pesquisa de imagens.<br/></p>
+<h4 id="Step-10-Image-search-results" class="common-anchor-header">Step 10: Image search results</h4><p>The vector IDs returned from the queries are used to find the corresponding images. Matplotlib is then used to display the image search results.
+<br/></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/pic1_c8652c7fae.png" alt="pic1.png" class="doc-image" id="pic1.png" />
-   </span> <span class="img-wrapper"> <span>pic1.png</span> </span> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/pic2_355b054161.png" alt="pic2.png" class="doc-image" id="pic2.png" /><span>pic2.png</span> </span> <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/pic3_01780c6aac.png" alt="pic3.png" class="doc-image" id="pic3.png" /><span>pic3.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/pic1_c8652c7fae.png" alt="pic1.png" class="doc-image" id="pic1.png" />
+    <span>pic1.png</span>
+  </span>
+
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/pic2_355b054161.png" alt="pic2.png" class="doc-image" id="pic2.png" />
+    <span>pic2.png</span>
+  </span>
+
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/pic3_01780c6aac.png" alt="pic3.png" class="doc-image" id="pic3.png" />
+    <span>pic3.png</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="Learn-how-to-deploy-Milvus-in-different-enviroments" class="common-anchor-header">Saiba como implementar o Milvus em diferentes ambientes</h3><p>A <a href="https://github.com/milvus-io/bootcamp/tree/master/deployments">secção de implementações</a> do novo bootcamp contém toda a informação para utilizar o Milvus em diferentes ambientes e configurações. Inclui a implantação de Mishards, usando Kubernetes com Milvus, balanceamento de carga e muito mais. Cada ambiente tem um guia passo a passo detalhado que explica como fazer o Milvus funcionar nele.</p>
+<h3 id="Learn-how-to-deploy-Milvus-in-different-enviroments" class="common-anchor-header">Learn how to deploy Milvus in different enviroments</h3><p>The <a href="https://github.com/milvus-io/bootcamp/tree/master/deployments">deployments section</a> of the new bootcamp contains all the information for using Milvus in different environments and setups. It includes deploying Mishards, using Kubernetes with Milvus, load balancing, and more. Each environment has a detailed step by step guide explaining how to get Milvus working in it.</p>
 <p><br/></p>
-<h3 id="Dont-be-a-stranger" class="common-anchor-header">Não seja um estranho</h3><ul>
-<li>Leia o nosso <a href="https://zilliz.com/blog">blogue</a>.</li>
-<li>Interaja com a nossa comunidade de código aberto no <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Utilize ou contribua para o Milvus, a base de dados vetorial mais popular do mundo, no <a href="https://github.com/milvus-io/milvus">Github</a>.</li>
+<h3 id="Dont-be-a-stranger" class="common-anchor-header">Don’t be a stranger</h3><ul>
+<li>Read our our <a href="https://zilliz.com/blog">blog</a>.</li>
+<li>Interact with our open-source community on <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Use or contribute to Milvus, the world’s most popular vector database, on <a href="https://github.com/milvus-io/milvus">Github</a>.</li>
 </ul>

@@ -1,13 +1,12 @@
 ---
 id: we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md
-title: >-
-  Nous avons remplacé Kafka/Pulsar par un pic pour Milvus - voici ce qui s'est
-  passé
+title: |
+  We Replaced Kafka/Pulsar with a Woodpecker for Milvus—Here’s What Happened
 author: James Luan
 date: 2025-05-15T00:00:00.000Z
 desc: >-
-  Nous avons construit Woodpecker, un système WAL natif, pour remplacer Kafka et
-  Pulsar dans Milvus afin de réduire la complexité opérationnelle et les coûts.
+  We built Woodpecker, a cloud-native WAL system, to replace Kafka and Pulsar in
+  Milvus for lower operational complexity and cost.
 cover: >-
   assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png
 tag: Engineering
@@ -22,14 +21,14 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md
 ---
-<p><strong>TL;DR :</strong> Nous avons construit Woodpecker, un système WAL (Write-Ahead Logging) en nuage, pour remplacer Kafka et Pulsar dans Milvus 2.6. Le résultat ? Des opérations simplifiées, de meilleures performances et des coûts réduits pour notre base de données vectorielle Milvus.</p>
+<p><strong>TL;DR:</strong> We built Woodpecker, a cloud-native Write-Ahead Logging (WAL) system, to replace Kafka and Pulsar in Milvus 2.6. The result? Simplified operations, better performance, and lower costs for our Milvus vector database.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/We_Replaced_Kafka_Pulsar_with_a_Woodpecker_for_Milvus_Here_s_What_Happened_77e8de27a9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="The-Starting-Point-When-Message-Queues-No-Longer-Fit" class="common-anchor-header">Le point de départ : Quand les files d'attente de messages ne conviennent plus<button data-href="#The-Starting-Point-When-Message-Queues-No-Longer-Fit" class="anchor-icon" translate="no">
+<h2 id="The-Starting-Point-When-Message-Queues-No-Longer-Fit" class="common-anchor-header">The Starting Point: When Message Queues No Longer Fit<button data-href="#The-Starting-Point-When-Message-Queues-No-Longer-Fit" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,9 +43,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nous aimions et utilisions Kafka et Pulsar. Ils ont fonctionné jusqu'à ce qu'ils ne fonctionnent plus. Au fur et à mesure de l'évolution de Milvus, la principale base de données vectorielle open-source, nous avons constaté que ces puissantes files d'attente de messages ne répondaient plus à nos exigences en matière d'évolutivité. Nous avons donc pris une décision audacieuse : nous avons réécrit l'épine dorsale du streaming dans Milvus 2.6 et mis en œuvre notre propre WAL - <strong>Woodpecker</strong>.</p>
-<p>Permettez-moi de vous accompagner tout au long de notre parcours et d'expliquer pourquoi nous avons opéré ce changement, qui peut sembler contre-intuitif à première vue.</p>
-<h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">Cloud-Native dès le premier jour<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
+    </button></h2><p>We loved and used Kafka and Pulsar. They worked until they didn’t. As Milvus, the leading open-source vector database, evolved, we found that these powerful message queues no longer met our scalability requirements. So we made a bold move: we rewrote the streaming backbone in Milvus 2.6 and implemented our own WAL — <strong>Woodpecker</strong>.</p>
+<p>Let me walk you through our journey and explain why we made this change, which might seem counterintuitive at first glance.</p>
+<h2 id="Cloud-Native-From-Day-One" class="common-anchor-header">Cloud-Native From Day One<button data-href="#Cloud-Native-From-Day-One" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,14 +60,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus est une base de données vectorielle cloud-native depuis sa création. Nous nous appuyons sur Kubernetes pour une mise à l'échelle élastique et une reprise rapide en cas de défaillance, ainsi que sur des solutions de stockage d'objets comme Amazon S3 et MinIO pour la persistance des données.</p>
-<p>Cette approche "cloud-first" offre d'énormes avantages, mais elle présente aussi quelques défis :</p>
+    </button></h2><p>Milvus has been a cloud-native vector database from its inception. We leverage Kubernetes for elastic scaling and quick failure recovery, alongside object storage solutions like Amazon S3 and MinIO for data persistence.</p>
+<p>This cloud-first approach offers tremendous advantages, but it also presents some challenges:</p>
 <ul>
-<li><p>Les services de stockage d'objets dans le nuage tels que S3 offrent une capacité pratiquement illimitée de traitement des débits et de disponibilité, mais avec des temps de latence dépassant souvent 100 ms.</p></li>
-<li><p>Les modèles de tarification de ces services (basés sur les schémas et la fréquence d'accès) peuvent ajouter des coûts inattendus aux opérations de base de données en temps réel.</p></li>
-<li><p>L'équilibre entre les caractéristiques "cloud-native" et les exigences de la recherche vectorielle en temps réel pose d'importants défis architecturaux.</p></li>
+<li><p>Cloud object storage services like S3 provide virtually unlimited capability of handling throughputs and availability, but with latencies often exceeding 100ms.</p></li>
+<li><p>These services’ pricing models (based on access patterns and frequency) can add unexpected costs to real-time database operations.</p></li>
+<li><p>Balancing cloud-native characteristics with the demands of real-time vector search introduces significant architectural challenges.</p></li>
 </ul>
-<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">L'architecture du journal partagé : Notre base<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
+<h2 id="The-Shared-Log-Architecture-Our-Foundation" class="common-anchor-header">The Shared Log Architecture: Our Foundation<button data-href="#The-Shared-Log-Architecture-Our-Foundation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,11 +82,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>De nombreux systèmes de recherche vectorielle se limitent au traitement par lots, car la mise en place d'un système en continu dans un environnement "cloud-native" présente des défis encore plus importants. En revanche, Milvus donne la priorité à la fraîcheur des données en temps réel et met en œuvre une architecture de journaux partagés, que l'on peut comparer à un disque dur pour un système de fichiers.</p>
-<p>Cette architecture de journal partagé constitue une base essentielle qui sépare les protocoles de consensus de la fonctionnalité principale de la base de données. En adoptant cette approche, Milvus élimine la nécessité de gérer directement des protocoles de consensus complexes, ce qui nous permet de nous concentrer sur la fourniture de capacités de recherche vectorielle exceptionnelles.</p>
-<p>Nous ne sommes pas les seuls à adopter ce modèle architectural : des bases de données telles que AWS Aurora, Azure Socrates et Neon s'appuient toutes sur une conception similaire. <strong>Cependant, une lacune importante subsiste dans l'écosystème open-source : malgré les avantages évidents de cette approche, la communauté manque d'une implémentation distribuée WAL (write-ahead log) à faible latence, évolutive et rentable.</strong></p>
-<p>Les solutions existantes comme Bookie se sont révélées inadaptées à nos besoins en raison de la lourdeur de leur conception client et de l'absence de SDK prêts à la production pour Golang et C++. Cette lacune technologique nous a conduits à notre approche initiale avec les files de messages.</p>
-<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">Notre solution initiale : Les files de messages en tant que WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
+    </button></h2><p>Many vector search systems restrict themselves to batch processing because building a streaming system in a cloud-native environment presents even greater challenges. In contrast, Milvus prioritizes real-time data freshness and implements a shared log architecture—think of it as a hard drive for a filesystem.</p>
+<p>This shared log architecture provides a critical foundation that separates consensus protocols from core database functionality. By adopting this approach, Milvus eliminates the need to manage complex consensus protocols directly, allowing us to focus on delivering exceptional vector search capabilities.</p>
+<p>We’re not alone in this architectural pattern—databases such as AWS Aurora, Azure Socrates, and Neon all leverage a similar design. <strong>However, a significant gap remains in the open-source ecosystem: despite the clear advantages of this approach, the community lacks a low-latency, scalable, and cost-effective distributed write-ahead log (WAL) implementation.</strong></p>
+<p>Existing solutions like Bookie proved inadequate for our needs due to their heavyweight client design and the absence of production-ready SDKs for Golang and C++. This technological gap led us to our initial approach with message queues.</p>
+<h2 id="Our-Initial-Solution-Message-Queues-as-WAL" class="common-anchor-header">Our Initial Solution: Message Queues as WAL<button data-href="#Our-Initial-Solution-Message-Queues-as-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,11 +101,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pour combler cette lacune, notre approche initiale utilisait des files de messages (Kafka/Pulsar) comme journal d'écriture (WAL). L'architecture fonctionnait comme suit :</p>
+    </button></h2><p>To bridge this gap, our initial approach utilized message queues (Kafka/Pulsar) as our write-ahead log (WAL). The architecture worked like this:</p>
 <ul>
-<li><p>Toutes les mises à jour entrantes en temps réel passent par la file d'attente de messages.</p></li>
-<li><p>Les rédacteurs reçoivent une confirmation immédiate une fois qu'elle est acceptée par la file de messages.</p></li>
-<li><p>QueryNode et DataNode traitent ces données de manière asynchrone, ce qui garantit un débit d'écriture élevé tout en préservant la fraîcheur des données</p></li>
+<li><p>All incoming real-time updates flow through the message queue.</p></li>
+<li><p>Writers receive immediate confirmation once it is accepted by the message queue.</p></li>
+<li><p>QueryNode and DataNode process this data asynchronously, ensuring high write throughput while maintaining data freshness</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -114,9 +113,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Figure : Vue d'ensemble de l'architecture Milvus 2.0</p>
-<p>Ce système fournit effectivement une confirmation d'écriture immédiate tout en permettant un traitement asynchrone des données, ce qui était essentiel pour maintenir l'équilibre entre le débit et la fraîcheur des données que les utilisateurs de Milvus attendent.</p>
-<h2 id="Why-We-Needed-Something-Different-for-WAL" class="common-anchor-header">Pourquoi nous avions besoin de quelque chose de différent pour WAL<button data-href="#Why-We-Needed-Something-Different-for-WAL" class="anchor-icon" translate="no">
+<p>Figure: Milvus 2.0 Architecture Overview</p>
+<p>This system effectively provided immediate write confirmation while enabling asynchronous data processing, which was crucial for maintaining the balance between throughput and data freshness that Milvus users expect.</p>
+<h2 id="Why-We-Needed-Something-Different-for-WAL" class="common-anchor-header">Why We Needed Something Different for WAL<button data-href="#Why-We-Needed-Something-Different-for-WAL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -131,29 +130,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Avec Milvus 2.6, nous avons décidé d'abandonner progressivement les files d'attente de messages externes au profit de Woodpecker, notre implémentation WAL native dans le nuage. Cette décision n'a pas été prise à la légère. Après tout, nous avons utilisé avec succès Kafka et Pulsar pendant des années.</p>
-<p>Le problème n'était pas lié à ces technologies elles-mêmes, qui sont toutes deux d'excellents systèmes dotés de puissantes capacités. Le problème venait plutôt de la complexité et de la surcharge croissantes que ces systèmes externes introduisaient au fur et à mesure de l'évolution de Milvus. Au fur et à mesure que nos besoins devenaient plus spécialisés, l'écart entre les files d'attente de messages à usage général et les besoins de notre base de données vectorielle continuait à se creuser.</p>
-<p>Trois facteurs spécifiques ont finalement motivé notre décision de construire un système de remplacement :</p>
-<h3 id="Operational-Complexity" class="common-anchor-header">Complexité opérationnelle</h3><p>Les dépendances externes comme Kafka ou Pulsar exigent des machines dédiées avec plusieurs nœuds et une gestion minutieuse des ressources. Cela crée plusieurs défis :</p>
+    </button></h2><p>With Milvus 2.6, we’ve decided to phase out external message queues in favor of Woodpecker, our purpose-built, cloud-native WAL implementation. This wasn’t a decision we made lightly. After all, we had successfully used Kafka and Pulsar for years.</p>
+<p>The issue wasn’t with these technologies themselves—both are excellent systems with powerful capabilities. Instead, the challenge came from the increasing complexity and overhead that these external systems introduced as Milvus evolved. As our requirements became more specialized, the gap between what general-purpose message queues offered and what our vector database needed continued to widen.</p>
+<p>Three specific factors ultimately drove our decision to build a replacement:</p>
+<h3 id="Operational-Complexity" class="common-anchor-header">Operational Complexity</h3><p>External dependencies like Kafka or Pulsar demand dedicated machines with multiple nodes and careful resource management. This creates several challenges:</p>
 <ul>
-<li>Complexité opérationnelle accrue</li>
+<li>Increased operational complexity</li>
 </ul>
 <ul>
-<li>Courbes d'apprentissage plus raides pour les administrateurs système</li>
+<li>Steeper learning curves for system administrators</li>
 </ul>
 <ul>
-<li>Risques accrus d'erreurs de configuration et de failles de sécurité</li>
+<li>Higher risks of configuration errors and security vulnerabilities</li>
 </ul>
-<h3 id="Architectural-Constraints" class="common-anchor-header">Contraintes architecturales</h3><p>Les files d'attente de messages comme Kafka ont des limites inhérentes au nombre de sujets pris en charge. Nous avons développé VShard comme solution de contournement pour le partage des sujets entre les composants, mais cette solution, tout en répondant efficacement aux besoins de mise à l'échelle, a introduit une complexité architecturale significative.</p>
-<p>Ces dépendances externes ont rendu plus difficile l'implémentation de fonctionnalités critiques, telles que le ramassage des logs, et ont augmenté les frictions d'intégration avec d'autres modules du système. Au fil du temps, l'inadéquation architecturale entre les files de messages à usage général et les exigences spécifiques et performantes d'une base de données vectorielle est devenue de plus en plus évidente, ce qui nous a incités à réévaluer nos choix de conception.</p>
-<h3 id="Resource-Inefficiency" class="common-anchor-header">Inefficacité des ressources</h3><p>Assurer une haute disponibilité avec des systèmes tels que Kafka et Pulsar exige généralement ce qui suit</p>
+<h3 id="Architectural-Constraints" class="common-anchor-header">Architectural Constraints</h3><p>Message queues like Kafka have inherent limitations on the number of supported topics. We developed VShard as a workaround for topic sharing across components, but this solution—while effectively addressing scaling needs—introduced significant architectural complexity.</p>
+<p>These external dependencies made it harder to implement critical features—such as log garbage collection—and increased integration friction with other system modules. Over time, the architectural mismatch between general-purpose message queues and the specific, high-performance demands of a vector database became increasingly clear, prompting us to reassess our design choices.</p>
+<h3 id="Resource-Inefficiency" class="common-anchor-header">Resource Inefficiency</h3><p>Ensuring high availability with systems like Kafka and Pulsar typically demands:</p>
 <ul>
-<li><p>un déploiement distribué sur plusieurs nœuds</p></li>
-<li><p>une allocation de ressources substantielle, même pour les petites charges de travail</p></li>
-<li><p>Le stockage de signaux éphémères (comme le Timetick de Milvus), qui n'ont pas besoin d'être conservés à long terme.</p></li>
+<li><p>Distributed deployment across multiple nodes</p></li>
+<li><p>Substantial resource allocation even for smaller workloads</p></li>
+<li><p>Storage for ephemeral signals (like Milvus’s Timetick), which don’t actually require long-term retention</p></li>
 </ul>
-<p>Toutefois, ces systèmes manquent de souplesse pour contourner la persistance de ces signaux transitoires, ce qui entraîne des opérations d'E/S et une utilisation du stockage inutiles. Cela entraîne une surcharge disproportionnée des ressources et une augmentation des coûts, en particulier dans les environnements à petite échelle ou à ressources limitées.</p>
-<h2 id="Introducing-Woodpecker---A-Cloud-Native-High-Performance-WAL-Engine" class="common-anchor-header">Présentation de Woodpecker - un moteur WAL hautes performances natif pour le cloud<button data-href="#Introducing-Woodpecker---A-Cloud-Native-High-Performance-WAL-Engine" class="anchor-icon" translate="no">
+<p>However, these systems lack the flexibility to bypass persistence for such transient signals, leading to unnecessary I/O operations and storage usage. This leads to disproportionate resource overhead and increased cost—especially in smaller-scale or resource-constrained environments.</p>
+<h2 id="Introducing-Woodpecker---A-Cloud-Native-High-Performance-WAL-Engine" class="common-anchor-header">Introducing Woodpecker - A Cloud-Native, High-Performance WAL Engine<button data-href="#Introducing-Woodpecker---A-Cloud-Native-High-Performance-WAL-Engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -168,13 +167,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans Milvus 2.6, nous avons remplacé Kafka/Pulsar par <strong>Woodpecker</strong>, un système WAL natif conçu à cet effet. Conçu pour le stockage d'objets, Woodpecker simplifie les opérations tout en augmentant les performances et l'évolutivité.</p>
-<p>Woodpecker a été conçu dès le départ pour maximiser le potentiel du stockage natif dans le nuage, avec un objectif précis : devenir la solution WAL la plus performante, optimisée pour les environnements dans le nuage, tout en offrant les fonctionnalités de base nécessaires à un journal d'écriture en avance (append-only write-ahead log).</p>
-<h3 id="The-Zero-Disk-Architecture-for-Woodpecker" class="common-anchor-header">L'architecture zéro disque de Woodpecker</h3><p>L'innovation principale de Woodpecker est son <strong>architecture Zero-Disk</strong>:</p>
+    </button></h2><p>In Milvus 2.6, we’ve replaced Kafka/Pulsar with <strong>Woodpecker</strong>, a purpose-built, cloud-native WAL system. Designed for object storage, Woodpecker simplifies operations while boosting performance and scalability.</p>
+<p>Woodpecker is built from the ground up to maximize the potential of cloud-native storage, with a focused goal: to become the highest-throughput WAL solution optimized for cloud environments while delivering the core capabilities needed for an append-only write-ahead log.</p>
+<h3 id="The-Zero-Disk-Architecture-for-Woodpecker" class="common-anchor-header">The Zero-Disk Architecture for Woodpecker</h3><p>Woodpecker’s core innovation is its <strong>Zero-Disk architecture</strong>:</p>
 <ul>
-<li><p>Toutes les données du journal sont stockées dans un système de stockage d'objets dans le nuage (comme Amazon S3, Google Cloud Storage ou Alibaba OS).</p></li>
-<li><p>Les métadonnées sont gérées par des magasins de clés-valeurs distribués comme etcd.</p></li>
-<li><p>Aucune dépendance à l'égard des disques locaux pour les opérations de base</p></li>
+<li><p>All log data stored in cloud object storage (such as Amazon S3, Google Cloud Storage, or Alibaba OS)</p></li>
+<li><p>Metadata managed through distributed key-value stores like etcd</p></li>
+<li><p>No local disk dependencies for core operations</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -182,67 +181,67 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Figure :  Vue d'ensemble de l'architecture de Woodpecker</p>
-<p>Cette approche réduit considérablement les frais généraux d'exploitation tout en maximisant la durabilité et l'efficacité du cloud. En éliminant les dépendances des disques locaux, Woodpecker s'aligne parfaitement sur les principes "cloud-native" et réduit considérablement la charge opérationnelle des administrateurs système.</p>
-<h3 id="Performance-Benchmarks-Exceeding-Expectations" class="common-anchor-header">Repères de performance : Dépasser les attentes</h3><p>Nous avons effectué des tests complets pour évaluer les performances de Woodpecker dans une configuration à un seul nœud, un seul client et un seul flux de logs. Les résultats ont été impressionnants par rapport à Kafka et Pulsar :</p>
+<p>Figure:  Woodpecker Architecture Overview</p>
+<p>This approach dramatically reduces operational overhead while maximizing durability and cloud efficiency. By eliminating local disk dependencies, Woodpecker aligns perfectly with cloud-native principles and significantly reduces the operational burden on system administrators.</p>
+<h3 id="Performance-Benchmarks-Exceeding-Expectations" class="common-anchor-header">Performance Benchmarks: Exceeding Expectations</h3><p>We ran comprehensive benchmarks to evaluate Woodpecker’s performance in a single-node, single-client, single-log-stream setup. The results were impressive when compared to Kafka and Pulsar:</p>
 <table>
 <thead>
-<tr><th><strong>Système</strong></th><th><strong>Kafka</strong></th><th><strong>Pulsar</strong></th><th><strong>WP MinIO</strong></th><th><strong>WP Local</strong></th><th><strong>WP S3</strong></th></tr>
+<tr><th><strong>System</strong></th><th><strong>Kafka</strong></th><th><strong>Pulsar</strong></th><th><strong>WP MinIO</strong></th><th><strong>WP Local</strong></th><th><strong>WP S3</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Débit</td><td>129,96 MB/s</td><td>107 MB/s</td><td>71 MB/s</td><td>450 MB/s</td><td>750 MB/s</td></tr>
-<tr><td>Temps de latence</td><td>58 ms</td><td>35 ms</td><td>184 ms</td><td>1,8 ms</td><td>166 ms</td></tr>
+<tr><td>Throughput</td><td>129.96 MB/s</td><td>107 MB/s</td><td>71 MB/s</td><td>450 MB/s</td><td>750 MB/s</td></tr>
+<tr><td>Latency</td><td>58 ms</td><td>35 ms</td><td>184 ms</td><td>1.8 ms</td><td>166 ms</td></tr>
 </tbody>
 </table>
-<p>Pour situer le contexte, nous avons mesuré les limites de débit théoriques de différents backends de stockage sur notre machine de test :</p>
+<p>For context, we measured the theoretical throughput limits of different storage backends on our test machine:</p>
 <ul>
-<li><p><strong>MinIO</strong>: ~110 Mo/s</p></li>
-<li><p><strong>Système de fichiers local</strong>: 600-750 Mo/s</p></li>
-<li><p><strong>Amazon S3 (instance EC2 unique)</strong>: jusqu'à 1,1 Go/s</p></li>
+<li><p><strong>MinIO</strong>: ~110 MB/s</p></li>
+<li><p><strong>Local file system</strong>: 600–750 MB/s</p></li>
+<li><p><strong>Amazon S3 (single EC2 instance)</strong>: up to 1.1 GB/s</p></li>
 </ul>
-<p>Fait remarquable, Woodpecker a constamment atteint 60 à 80 % du débit maximal possible pour chaque backend, ce qui représente un niveau d'efficacité exceptionnel pour un middleware.</p>
-<h4 id="Key-Performance-Insights" class="common-anchor-header">Principales informations sur les performances</h4><ol>
-<li><p><strong>Mode système de fichiers local</strong>: Woodpecker a atteint 450 Mo/s, soit 3,5 fois plus vite que Kafka et 4,2 fois plus vite que Pulsar, avec une latence ultra-faible de seulement 1,8 ms, ce qui en fait l'outil idéal pour les déploiements haute performance à un seul nœud.</p></li>
-<li><p><strong>Mode de stockage dans le nuage (S3)</strong>: En écrivant directement sur S3, Woodpecker a atteint 750 Mo/s (environ 68 % de la limite théorique de S3), soit 5,8 fois plus que Kafka et 7 fois plus que Pulsar. Bien que la latence soit plus élevée (166 ms), cette configuration offre un débit exceptionnel pour les charges de travail par lots.</p></li>
-<li><p><strong>Mode de stockage d'objets (MinIO)</strong>: Même avec MinIO, Woodpecker a atteint 71 Mo/s, soit environ 65 % de la capacité de MinIO. Ces performances sont comparables à celles de Kafka et de Pulsar, mais avec des besoins en ressources nettement inférieurs.</p></li>
+<p>Remarkably, Woodpecker consistently achieved 60-80% of the maximum possible throughput for each backend—an exceptional efficiency level for middleware.</p>
+<h4 id="Key-Performance-Insights" class="common-anchor-header">Key Performance Insights</h4><ol>
+<li><p><strong>Local File System Mode</strong>: Woodpecker achieved 450 MB/s—3.5× faster than Kafka and 4.2× faster than Pulsar—with ultra-low latency at just 1.8 ms, making it ideal for high-performance single-node deployments.</p></li>
+<li><p><strong>Cloud Storage Mode (S3)</strong>: When writing directly to S3, Woodpecker reached 750 MB/s (about 68% of S3’s theoretical limit), 5.8× higher than Kafka and 7× higher than Pulsar. While latency is higher (166 ms), this setup provides exceptional throughput for batch-oriented workloads.</p></li>
+<li><p><strong>Object Storage Mode (MinIO)</strong>: Even with MinIO, Woodpecker achieved 71 MB/s—around 65% of MinIO’s capacity. This performance is comparable to Kafka and Pulsar but with significantly lower resource requirements.</p></li>
 </ol>
-<p>Woodpecker est particulièrement optimisé pour les écritures simultanées de gros volumes, pour lesquelles le maintien de l'ordre est essentiel. Et ces résultats ne reflètent que les premières étapes du développement - les optimisations en cours dans la fusion des E/S, la mise en mémoire tampon intelligente et l'extraction préalable devraient permettre de pousser les performances encore plus près des limites théoriques.</p>
-<h3 id="Design-Goals" class="common-anchor-header">Objectifs de conception</h3><p>Woodpecker répond aux exigences évolutives des charges de travail de recherche vectorielle en temps réel par le biais de ces exigences techniques clés :</p>
+<p>Woodpecker is particularly optimized for concurrent, high-volume writes where maintaining order is critical. And these results only reflect the early stages of development—ongoing optimizations in I/O merging, intelligent buffering, and prefetching are expected to push performance even closer to theoretical limits.</p>
+<h3 id="Design-Goals" class="common-anchor-header">Design Goals</h3><p>Woodpecker addresses the evolving demands of real-time vector search workloads through these key technical requirements:</p>
 <ul>
-<li><p>ingestion de données à haut débit avec persistance durable à travers la zone de disponibilité</p></li>
-<li><p>Des lectures de queue à faible latence pour les abonnements en temps réel et des lectures de rattrapage à haut débit pour la reprise sur panne.</p></li>
-<li><p>Supports de stockage enfichables, y compris le stockage d'objets dans le nuage et les systèmes de fichiers avec prise en charge du protocole NFS</p></li>
-<li><p>Options de déploiement flexibles, prenant en charge à la fois les configurations autonomes légères et les clusters à grande échelle pour les déploiements Milvus multi-tenant.</p></li>
+<li><p>High-throughput data ingestion with durable persistence across availability zone</p></li>
+<li><p>Low-latency tail reads for real-time subscriptions and high-throughput catch-up reads for failure recovery</p></li>
+<li><p>Pluggable storage backends, including cloud object storage and file systems with NFS protocol support</p></li>
+<li><p>Flexible deployment options, supporting both lightweight standalone setups and large-scale clusters for multi-tenant Milvus deployments</p></li>
 </ul>
-<h3 id="Architecture-Components" class="common-anchor-header">Composants de l'architecture</h3><p>Un déploiement standard de Woodpecker comprend les composants suivants.</p>
+<h3 id="Architecture-Components" class="common-anchor-header">Architecture Components</h3><p>A standard Woodpecker deployment includes the following components.</p>
 <ul>
-<li><p><strong>Client</strong> - Couche d'interface pour l'émission de demandes de lecture et d'écriture</p></li>
-<li><p><strong>LogStore</strong> - gère la mise en mémoire tampon d'écriture à grande vitesse, les téléchargements asynchrones vers le stockage et le compactage des journaux.</p></li>
-<li><p><strong>Backend de stockage</strong> - Prend en charge les services de stockage évolutifs et peu coûteux tels que S3, GCS et les systèmes de fichiers tels que EFS.</p></li>
-<li><p><strong>ETCD</strong> - Stocke les métadonnées et coordonne l'état des journaux sur les nœuds distribués.</p></li>
+<li><p><strong>Client</strong> – Interface layer for issuing read and write requests</p></li>
+<li><p><strong>LogStore</strong> – Manages high-speed write buffering, asynchronous uploads to storage, and log compaction</p></li>
+<li><p><strong>Storage Backend</strong> – Supports scalable, low-cost storage services such as S3, GCS, and file systems like EFS</p></li>
+<li><p><strong>ETCD</strong> – Stores metadata and coordinates log state across distributed nodes</p></li>
 </ul>
-<h3 id="Flexible-Deployments-to-Match-Your-Specific-Needs" class="common-anchor-header">Des déploiements flexibles pour répondre à vos besoins spécifiques</h3><p>Woodpecker propose deux modes de déploiement pour répondre à vos besoins spécifiques :</p>
-<p><strong>Mode MemoryBuffer - Léger et sans maintenance</strong></p>
-<p>Le mode MemoryBuffer offre une option de déploiement simple et légère dans laquelle Woodpecker met temporairement en mémoire tampon les écritures entrantes et les évacue périodiquement vers un service de stockage d'objets dans le nuage. Les métadonnées sont gérées à l'aide de etcd pour assurer la cohérence et la coordination. Ce mode convient mieux aux charges de travail lourdes en lots dans les déploiements à petite échelle ou les environnements de production qui privilégient la simplicité à la performance, en particulier lorsqu'une faible latence d'écriture n'est pas critique.</p>
+<h3 id="Flexible-Deployments-to-Match-Your-Specific-Needs" class="common-anchor-header">Flexible Deployments to Match Your Specific Needs</h3><p>Woodpecker offers two deployment modes to match your specific needs:</p>
+<p><strong>MemoryBuffer Mode – Lightweight and Maintenance-Free</strong></p>
+<p>MemoryBuffer Mode provides a simple and lightweight deployment option where Woodpecker temporarily buffers incoming writes in memory and periodically flushes them to a cloud object storage service. Metadata is managed using etcd to ensure consistency and coordination. This mode is best suited for batch-heavy workloads in smaller-scale deployments or production environments that prioritize simplicity over performance, especially when low write latency is not critical.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_The_memory_Buffer_Mode_3429d693a1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figure 1 : Le mode memoryBuffer Le mode memoryBuffer</em></p>
-<p><strong>Mode QuorumBuffer - Optimisé pour les déploiements à faible latence et à haute durabilité</strong></p>
-<p>Le mode QuorumBuffer est conçu pour les charges de travail de lecture/écriture sensibles à la latence et à haute fréquence, qui nécessitent à la fois une réactivité en temps réel et une forte tolérance aux pannes. Dans ce mode, Woodpecker fonctionne comme un tampon d'écriture à grande vitesse avec des écritures quorum à trois répliques, assurant une forte cohérence et une haute disponibilité.</p>
-<p>Une écriture est considérée comme réussie lorsqu'elle est répliquée sur au moins deux des trois nœuds, généralement dans un délai de quelques millisecondes, après quoi les données sont évacuées de manière asynchrone vers le stockage d'objets dans le nuage pour une durabilité à long terme. Cette architecture minimise l'état sur le nœud, élimine le besoin de gros volumes de disques locaux et évite les réparations anti-entropie complexes souvent nécessaires dans les systèmes traditionnels basés sur le quorum.</p>
-<p>Il en résulte une couche WAL rationalisée et robuste, idéale pour les environnements de production critiques où la cohérence, la disponibilité et la restauration rapide sont essentielles.</p>
+<p><em>Figure: The memoryBuffer Mode</em></p>
+<p><strong>QuorumBuffer Mode – Optimized for Low-Latency, High-Durability Deployments</strong></p>
+<p>QuorumBuffer Mode is designed for latency-sensitive, high-frequency read/write workloads requiring both real-time responsiveness and strong fault tolerance. In this mode, Woodpecker functions as a high-speed write buffer with three-replica quorum writes, ensuring strong consistency and high availability.</p>
+<p>A write is considered successful once it’s replicated to at least two of the three nodes, typically completing within single-digit milliseconds, after which the data is asynchronously flushed to cloud object storage for long-term durability. This architecture minimizes on-node state, eliminates the need for large local disk volumes, and avoids complex anti-entropy repairs often required in traditional quorum-based systems.</p>
+<p>The result is a streamlined, robust WAL layer ideal for mission-critical production environments where consistency, availability, and fast recovery are essential.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_The_Quorum_Buffer_Mode_72573dc666.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figure : Le mode QuorumBuffer</em></p>
-<h2 id="StreamingService-Built-for-Real-Time-Data-Flow" class="common-anchor-header">StreamingService : Conçu pour les flux de données en temps réel<button data-href="#StreamingService-Built-for-Real-Time-Data-Flow" class="anchor-icon" translate="no">
+<p><em>Figure: The QuorumBuffer Mode</em></p>
+<h2 id="StreamingService-Built-for-Real-Time-Data-Flow" class="common-anchor-header">StreamingService: Built for Real-Time Data Flow<button data-href="#StreamingService-Built-for-Real-Time-Data-Flow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -257,40 +256,40 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Au-delà de Woodpecker, Milvus 2.6 introduit le <strong>StreamingService, un</strong>composant spécialisé conçu pour la gestion des journaux, l'ingestion des journaux et l'abonnement aux données en continu.</p>
-<p>Pour comprendre le fonctionnement de notre nouvelle architecture, il est important de clarifier la relation entre ces deux composants :</p>
+    </button></h2><p>Beyond Woodpecker, Milvus 2.6 introduces the <strong>StreamingService</strong>—a specialized component designed for log management, log ingestion, and streaming data subscription.</p>
+<p>To understand how our new architecture works, it’s important to clarify the relationship between these two components:</p>
 <ul>
-<li><p><strong>Woodpecker</strong> est la couche de stockage qui gère la persistance réelle des journaux en avance sur l'écriture, offrant durabilité et fiabilité.</p></li>
-<li><p><strong>StreamingService</strong> est la couche de service qui gère les opérations de journalisation et fournit des capacités de flux de données en temps réel.</p></li>
+<li><p><strong>Woodpecker</strong> is the storage layer that handles the actual persistence of write-ahead logs, providing durability and reliability</p></li>
+<li><p><strong>StreamingService</strong> is the service layer that manages log operations and provides real-time data streaming capabilities</p></li>
 </ul>
-<p>Ensemble, ils remplacent complètement les files d'attente de messages externes. Woodpecker fournit la base de stockage durable, tandis que StreamingService fournit la fonctionnalité de haut niveau avec laquelle les applications interagissent directement. Cette séparation des préoccupations permet à chaque composant d'être optimisé pour son rôle spécifique tout en fonctionnant de manière transparente en tant que système intégré.</p>
-<h3 id="Adding-Streaming-Service-to-Milvus-26" class="common-anchor-header">Ajout du service de streaming à Milvus 2.6</h3><p>
+<p>Together, they form a complete replacement for external message queues. Woodpecker provides the durable storage foundation, while StreamingService delivers the high-level functionality that applications interact with directly. This separation of concerns allows each component to be optimized for its specific role while working seamlessly together as an integrated system.</p>
+<h3 id="Adding-Streaming-Service-to-Milvus-26" class="common-anchor-header">Adding Streaming Service to Milvus 2.6</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_2_6_Architecture_Overview_238428c58f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Figure : Service de diffusion en continu ajouté à l'architecture de Milvus 2.6</p>
-<p>Le service de diffusion en continu est composé de trois éléments principaux :</p>
-<p><strong>Coordinateur de diffusion en continu</strong></p>
+<p>Figure: Streaming Service Added in Milvus 2.6 Architecture</p>
+<p>The Streaming Service is composed of three core components:</p>
+<p><strong>Streaming Coordinator</strong></p>
 <ul>
-<li><p>Découvre les nœuds de diffusion en continu disponibles en surveillant les sessions ETCD de Milvus.</p></li>
-<li><p>Gère l'état des WAL et collecte les mesures d'équilibrage de charge par le biais du ManagerService.</p></li>
+<li><p>Discovers available Streaming Nodes by monitoring Milvus ETCD sessions</p></li>
+<li><p>Manages the status of WALs and collects load balancing metrics through the ManagerService</p></li>
 </ul>
-<p><strong>Client de diffusion en continu</strong></p>
+<p><strong>Streaming Client</strong></p>
 <ul>
-<li><p>Interroge le service d'affectation pour déterminer la répartition des segments WAL entre les nœuds de diffusion en continu.</p></li>
-<li><p>Effectue des opérations de lecture/écriture via le HandlerService sur le nœud de diffusion approprié.</p></li>
+<li><p>Queries the AssignmentService to determine WAL segment distribution across Streaming Nodes</p></li>
+<li><p>Performs read/write operations via the HandlerService on the appropriate Streaming Node</p></li>
 </ul>
-<p><strong>Nœud de diffusion en continu</strong></p>
+<p><strong>Streaming Node</strong></p>
 <ul>
-<li><p>Gère les opérations WAL proprement dites et fournit des capacités de publication et d'abonnement pour la diffusion de données en temps réel.</p></li>
-<li><p>Inclut le <strong>service ManagerService</strong> pour l'administration du WAL et l'établissement de rapports sur les performances</p></li>
-<li><p>Comprend le <strong>HandlerService</strong> qui met en œuvre des mécanismes efficaces de publication et d'abonnement pour les entrées WAL.</p></li>
+<li><p>Handles actual WAL operations and provides publish-subscribe capabilities for real-time data streaming</p></li>
+<li><p>Includes the <strong>ManagerService</strong> for WAL administration and performance reporting</p></li>
+<li><p>Features the <strong>HandlerService</strong> that implements efficient publish-subscribe mechanisms for WAL entries</p></li>
 </ul>
-<p>Cette architecture en couches permet à Milvus de maintenir une séparation claire entre la fonctionnalité de diffusion en continu (abonnement, traitement en temps réel) et les mécanismes de stockage proprement dits. Woodpecker gère le "comment" du stockage des journaux, tandis que StreamingService gère le "quoi" et le "quand" des opérations sur les journaux.</p>
-<p>En conséquence, le StreamingService améliore considérablement les capacités en temps réel de Milvus en introduisant la prise en charge native des abonnements, ce qui élimine le besoin de files d'attente de messages externes. Il réduit la consommation de mémoire en consolidant les caches précédemment dupliqués dans les chemins d'interrogation et de données, diminue la latence pour les lectures fortement cohérentes en supprimant les délais de synchronisation asynchrones, et améliore à la fois l'évolutivité et la vitesse de récupération dans l'ensemble du système.</p>
-<h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">Conclusion - Streaming sur une architecture à disque zéro<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
+<p>This layered architecture allows Milvus to maintain clear separation between the streaming functionality (subscription, real-time processing) and the actual storage mechanisms. Woodpecker handles the “how” of log storage, while StreamingService manages the “what” and “when” of log operations.</p>
+<p>As a result, the Streaming Service significantly enhances the real-time capabilities of Milvus by introducing native subscription support, eliminating the need for external message queues. It reduces memory consumption by consolidating previously duplicated caches in the query and data paths, lowers latency for strongly consistent reads by removing asynchronous synchronization delays, and improves both scalability and recovery speed across the system.</p>
+<h2 id="Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="common-anchor-header">Conclusion - Streaming on a Zero-Disk Architecture<button data-href="#Conclusion---Streaming-on-a-Zero-Disk-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -305,12 +304,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La gestion de l'état est difficile. Les systèmes avec état sacrifient souvent l'élasticité et l'évolutivité. La réponse de plus en plus acceptée dans la conception cloud-native est de découpler l'état de l'informatique, ce qui permet à chacun d'évoluer indépendamment.</p>
-<p>Plutôt que de réinventer la roue, nous déléguons la complexité du stockage durable et évolutif aux équipes d'ingénieurs de classe mondiale qui travaillent sur des services tels que AWS S3, Google Cloud Storage et MinIO. Parmi ces services, S3 se distingue par sa capacité pratiquement illimitée, sa durabilité de onze neuf (99,999999999 %), sa disponibilité de 99,99 % et ses performances de lecture/écriture à haut débit.</p>
-<p>Cependant, même les architectures "zéro disque" présentent des inconvénients. Les magasins d'objets sont toujours confrontés à une latence d'écriture élevée et à l'inefficacité des petits fichiers - des limites qui restent non résolues dans de nombreuses charges de travail en temps réel.</p>
-<p>Pour les bases de données vectorielles, en particulier celles qui prennent en charge les charges de travail critiques de type RAG, agents d'intelligence artificielle et recherche à faible latence, l'accès en temps réel et les écritures rapides ne sont pas négociables. C'est pourquoi nous avons réarchitecturé Milvus autour de Woodpecker et du service de streaming. Ce changement simplifie l'ensemble du système (soyons réalistes, personne ne souhaite maintenir une pile Pulsar complète dans une base de données vectorielle), garantit des données plus fraîches, améliore la rentabilité et accélère la reprise sur panne.</p>
-<p>Nous pensons que Woodpecker est plus qu'un simple composant Milvus : il peut servir de base à d'autres systèmes " cloud-native ". Au fur et à mesure de l'évolution de l'infrastructure en nuage, des innovations telles que S3 Express pourraient nous rapprocher de l'idéal : la durabilité inter-zones avec une latence d'écriture de l'ordre de la milliseconde.</p>
-<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Démarrer avec Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
+    </button></h2><p>Managing state is hard. Stateful systems often sacrifice elasticity and scalability. The increasingly accepted answer in cloud-native design is to decouple state from compute—allowing each to scale independently.</p>
+<p>Rather than reinventing the wheel, we delegate the complexity of durable, scalable storage to the world-class engineering teams behind services like AWS S3, Google Cloud Storage, and MinIO. Among them, S3 stands out for its virtually unlimited capacity, eleven nines (99.999999999%) of durability, 99.99% availability, and high-throughput read/write performance.</p>
+<p>But even “zero-disk” architectures have trade-offs. Object stores still struggle with high write latency and small-file inefficiencies—limitations that remain unresolved in many real-time workloads.</p>
+<p>For vector databases—especially those supporting mission-critical RAG, AI agents, and low-latency search workloads—real-time access and fast writes are non-negotiable. That’s why we rearchitected Milvus around Woodpecker and the Streaming Service. This shift simplifies the overall system (let’s face it—no one wants to maintain a full Pulsar stack inside a vector database), ensures fresher data, improves cost-efficiency, and speeds up failure recovery.</p>
+<p>We believe Woodpecker is more than just a Milvus component—it can serve as a foundational building block for other cloud-native systems. As cloud infrastructure evolves, innovations like S3 Express may bring us even closer to the ideal: cross-AZ durability with single-digit millisecond write latency.</p>
+<h2 id="Getting-Started-with-Milvus-26" class="common-anchor-header">Getting Started with Milvus 2.6<button data-href="#Getting-Started-with-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -325,6 +324,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 est disponible dès maintenant. Outre Woodpecker, elle introduit des dizaines de nouvelles fonctionnalités et d'optimisations des performances, telles que le stockage hiérarchisé, la méthode de quantification RabbitQ, la recherche en texte intégral améliorée et la multilocation, répondant directement aux défis les plus urgents de la recherche vectorielle aujourd'hui : une mise à l'échelle efficace tout en gardant les coûts sous contrôle.</p>
-<p>Prêt à découvrir tout ce qu'offre Milvus ? Plongez dans nos<a href="https://milvus.io/docs/release_notes.md"> notes de version</a>, parcourez la<a href="https://milvus.io/docs"> documentation complète</a> ou consultez nos<a href="https://milvus.io/blog"> blogs sur les fonctionnalités</a>.</p>
-<p>Vous avez des questions ? N'hésitez pas à rejoindre notre <a href="https://discord.com/invite/8uyFbECzPX">communauté Discord</a> ou à déposer un problème sur<a href="https://github.com/milvus-io/milvus"> GitHub</a> - nous sommes là pour vous aider à tirer le meilleur parti de Milvus 2.6.</p>
+    </button></h2><p>Milvus 2.6 is available now. In addition to Woodpecker, it introduces dozens of new features and performance optimizations such as tiered storage, RabbitQ quantization method, and enhanced full-text search and multitenancy, directly addressing the most pressing challenges in vector search today: scaling efficiently while keeping costs under control.</p>
+<p>Ready to explore everything Milvus offers? Dive into our<a href="https://milvus.io/docs/release_notes.md"> release notes</a>, browse the<a href="https://milvus.io/docs"> complete documentation</a>, or check out our<a href="https://milvus.io/blog"> feature blogs</a>.</p>
+<p>Have questions? You’re also welcome to join our <a href="https://discord.com/invite/8uyFbECzPX">Discord community</a> or file an issue on<a href="https://github.com/milvus-io/milvus"> GitHub</a> — we’re here to help you make the most of Milvus 2.6.</p>

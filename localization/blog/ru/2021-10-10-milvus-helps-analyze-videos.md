@@ -1,20 +1,18 @@
 ---
 id: 2021-10-10-milvus-helps-analyze-videos.md
-title: Обнаружение объектов
+title: Object detection
 author: Shiyu Chen
 date: 2021-10-11T00:00:00.000Z
-desc: >-
-  Узнайте, как Milvus обеспечивает искусственный интеллект для анализа
-  видеоматериалов.
+desc: Learn how Milvus powers the AI analysis of video contents.
 cover: assets.zilliz.com/Who_is_it_e9d4510ace.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently'
 ---
-<custom-h1>Создание системы анализа видео с помощью векторной базы данных Milvus</custom-h1><p><em>Шиюй Чен, инженер по обработке данных в Zilliz, окончила Университет Сидянь по специальности "Компьютерные науки". С момента прихода в Zilliz она занимается поиском решений для Milvus в различных областях, таких как анализ аудио и видео, поиск формул молекул и т. д., что значительно обогатило сценарии применения сообщества. В настоящее время она занимается поиском новых интересных решений. В свободное время она любит спорт и чтение.</em></p>
-<p>Когда я смотрела фильм <em>"Свободный парень"</em> в прошлые выходные, мне показалось, что я уже где-то видела актера, который играет охранника Бадди, но не могла вспомнить ни одной его работы. Моя голова была забита вопросами "кто этот парень?". Я был уверен, что видел это лицо, и изо всех сил пытался вспомнить его имя. Похожий случай: однажды я увидел, как ведущий актер в видеоролике пьет напиток, который мне раньше очень нравился, но так и не смог вспомнить название бренда.</p>
-<p>Ответ был на кончике моего языка, но мой мозг чувствовал себя полностью застрявшим.</p>
-<p>Феномен кончика языка (TOT) сводит меня с ума при просмотре фильмов. Если бы только существовала система обратного поиска изображений для видео, которая позволила бы мне находить видео и анализировать его содержание. Раньше я создал <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">систему обратного поиска изображений с помощью Milvus</a>. Учитывая, что анализ видеоконтента чем-то похож на анализ изображений, я решил создать механизм анализа видеоконтента на основе Milvus.</p>
-<h2 id="Object-detection" class="common-anchor-header">Обнаружение объектов<button data-href="#Object-detection" class="anchor-icon" translate="no">
+<custom-h1>Building a Video Analysis System with Milvus Vector Database</custom-h1><p><em>Shiyu Chen, a data engineer at Zilliz, graduated from Xidian University with a degree in Computer Science. Since joining Zilliz, she has been exploring solutions for Milvus in various fields, such as audio and video analysis, molecule formula retrieval, etc., which has greatly enriched the application scenarios of the community. She is currently exploring more interesting solutions. In her spare time, she loves sports and reading.</em></p>
+<p>When I was watching <em>Free Guy</em> last weekend, I felt that I’d seen the actor who plays Buddy, the security guard, somewhere before, yet couldn’t recall any of his works. My head was stuffed with “who’s this guy?” I was sure about having seen that face and was trying so hard to remember his name. A similar case is that once I saw the leading actor in a video having a drink I used to like a lot, but I ended up failing to recall the brand name.</p>
+<p>The answer was on the tip of my tongue, but my brain felt completely stuck.</p>
+<p>The tip of the tongue (TOT) phenomenon drives me crazy when watching movies. If only there was a reverse image search engine for videos that enables me to find videos and analyze video content. Before, I built a <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">reverse image search engine using Milvus</a>. Considering that video content analysis somehow resembles image analysis, I decided to build a video content analysis engine based on Milvus.</p>
+<h2 id="Object-detection" class="common-anchor-header">Object detection<button data-href="#Object-detection" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,26 +27,26 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Overview" class="common-anchor-header">Обзор</h3><p>Прежде чем приступить к анализу, необходимо обнаружить объекты на видео. Эффективное и точное обнаружение объектов на видео является основной задачей. Это также важная задача для таких приложений, как автопилот, носимые устройства и IoT.</p>
-<p>Сегодня основные модели для обнаружения объектов развиваются от традиционных алгоритмов обработки изображений до глубоких нейронных сетей (DNN), включая R-CNN, FRCNN, SSD и YOLO. Система анализа видео на основе глубокого обучения Milvus, представленная в этой теме, может быстро и интеллектуально обнаруживать объекты.</p>
-<h3 id="Implementation" class="common-anchor-header">Реализация</h3><p>Чтобы обнаружить и распознать объекты на видео, система должна сначала извлечь кадры из видео и обнаружить объекты на изображениях кадров с помощью функции обнаружения объектов, во-вторых, извлечь векторы признаков из обнаруженных объектов и, наконец, проанализировать объект на основе векторов признаков.</p>
+    </button></h2><h3 id="Overview" class="common-anchor-header">Overview</h3><p>Before being analyzed, objects in a video should be detected first. Detecting objects in a video effectively and accurately is the main challenge of the task. It is also an important task for applications such as autopilot, wearable devices, and IoT.</p>
+<p>Developed from traditional image processing algorithms to deep neural networks (DNN), today’s mainstream models for object detection include R-CNN, FRCNN, SSD, and YOLO. The Milvus-based deep learning video analysis system introduced in this topic can detect objects intelligently and quickly.</p>
+<h3 id="Implementation" class="common-anchor-header">Implementation</h3><p>To detect and recognize objects in a video, the system should first extract frames from a video and detect objects in the frame images using object detection, secondly, extract feature vectors from detected objects, and lastly, analyze the object based on the feature vectors.</p>
 <ul>
-<li>Извлечение кадров</li>
+<li>Frame extraction</li>
 </ul>
-<p>Анализ видео преобразуется в анализ изображений с помощью извлечения кадров. В настоящее время технология извлечения кадров очень развита. Такие программы, как FFmpeg и OpenCV, поддерживают извлечение кадров через заданные интервалы времени. В этой статье рассказывается о том, как извлекать кадры из видео каждую секунду с помощью OpenCV.</p>
+<p>Video analysis is converted to image analysis using frame extraction. Currently, frame extraction technology is very mature. Programs such as FFmpeg and OpenCV support extracting frames at specified intervals. This article introduces how to extract frames from a video every second using OpenCV.</p>
 <ul>
-<li>Обнаружение объектов</li>
+<li>Object detection</li>
 </ul>
-<p>Обнаружение объектов - это поиск объектов в извлеченных кадрах и извлечение скриншотов объектов в соответствии с их положением. Как показано на следующих рисунках, были обнаружены велосипед, собака и автомобиль. В этой теме рассказывается о том, как обнаружить объекты с помощью YOLOv3, который обычно используется для обнаружения объектов.</p>
+<p>Object detection is about finding objects in extracted frames and extracting screenshots of the objects according to their positions. As shown in the following figures, a bike, a dog, and a car were detected. This topic introduces how to detect objects using YOLOv3, which is commonly used for object detection.</p>
 <ul>
-<li>Извлечение признаков</li>
+<li>Feature extraction</li>
 </ul>
-<p>Извлечение признаков - это преобразование неструктурированных данных, которые трудно распознать машинам, в векторы признаков. Например, изображения могут быть преобразованы в многомерные векторы признаков с помощью моделей глубокого обучения. В настоящее время наиболее популярными моделями ИИ для распознавания изображений являются VGG, GNN и ResNet. В этой теме рассказывается о том, как извлекать признаки из обнаруженных объектов с помощью ResNet-50.</p>
+<p>Feature extraction refers to converting unstructured data, which is difficult for machines to recognize, to feature vectors. For example, images can be converted to multi-dimensional feature vectors using deep learning models. Currently, the most popular image recognition AI models include VGG, GNN, and ResNet. This topic introduces how to extract features from detected objects using ResNet-50.</p>
 <ul>
-<li>Векторный анализ</li>
+<li>Vector analysis</li>
 </ul>
-<p>Извлеченные векторы признаков сравниваются с библиотечными векторами, и возвращается информация, соответствующая наиболее похожим векторам. Для больших наборов данных векторов признаков вычисление представляет собой огромную проблему. В этой теме рассказывается о том, как анализировать векторы признаков с помощью Milvus.</p>
-<h2 id="Key-technologies" class="common-anchor-header">Ключевые технологии<button data-href="#Key-technologies" class="anchor-icon" translate="no">
+<p>Extracted feature vectors are compared with library vectors, and the corresponding information to the most similar vectors is returned. For large-scale feature vector datasets, calculation is a huge challenge. This topic introduces how to analyze feature vectors using Milvus.</p>
+<h2 id="Key-technologies" class="common-anchor-header">Key technologies<button data-href="#Key-technologies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,8 +61,8 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="OpenCV" class="common-anchor-header">OpenCV</h3><p>Open Source Computer Vision Library (OpenCV) - это кроссплатформенная библиотека компьютерного зрения, которая предоставляет множество универсальных алгоритмов для обработки изображений и компьютерного зрения. OpenCV широко используется в области компьютерного зрения.</p>
-<p>В следующем примере показано, как с помощью OpenCV и Python захватить видеокадры через заданные промежутки времени и сохранить их как изображения.</p>
+    </button></h2><h3 id="OpenCV" class="common-anchor-header">OpenCV</h3><p>Open Source Computer Vision Library (OpenCV) is a cross-platform computer vision library, which provides many universal algorithms for image processing and computer vision. OpenCV is commonly used in the computer vision field.</p>
+<p>The following example shows how to capture video frames at specified intervals and save them as images using OpenCV with Python.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> cv2 
 <span class="hljs-built_in">cap</span> = cv2.VideoCapture(file_path)   
 framerate = <span class="hljs-built_in">cap</span>.get(cv2.CAP_PROP_FPS)   
@@ -72,16 +70,16 @@ allframes = <span class="hljs-type">int</span>(cv2.VideoCapture.get(<span cl
 success, image = <span class="hljs-built_in">cap</span>.read() 
 cv2.imwrite(file_name, image)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="YOLOv3" class="common-anchor-header">YOLOv3</h3><p>You Only Look Once, Version 3 (YOLOv3 [5]) - это одноэтапный алгоритм обнаружения объектов, предложенный в последние годы. По сравнению с традиционными алгоритмами обнаружения объектов с той же точностью, YOLOv3 работает в два раза быстрее. YOLOv3, упоминаемый в данной теме, является улучшенной версией PaddlePaddle [6]. Она использует несколько методов оптимизации и отличается более высокой скоростью вывода.</p>
-<h3 id="ResNet-50" class="common-anchor-header">ResNet-50</h3><p>ResNet [7] - победитель ILSVRC 2015 в области классификации изображений благодаря своей простоте и практичности. Являясь основой многих методов анализа изображений, ResNet оказывается популярной моделью, специализирующейся на обнаружении, сегментации и распознавании изображений.</p>
-<h3 id="Milvus" class="common-anchor-header">Milvus</h3><p><a href="https://milvus.io/">Milvus</a> - это облачная база данных векторов с открытым исходным кодом, созданная для управления векторами встраивания, генерируемыми моделями машинного обучения и нейронными сетями. Она широко используется в таких областях, как компьютерное зрение, обработка естественного языка, вычислительная химия, персонализированные рекомендательные системы и т. д.</p>
-<p>Ниже описаны процедуры работы Milvus.</p>
+<h3 id="YOLOv3" class="common-anchor-header">YOLOv3</h3><p>You Only Look Once, Version 3 (YOLOv3 [5]) is a one-stage object detection algorithm proposed in recent years. Compared to the traditional object detection algorithms with the same accuracy, YOLOv3 is twice as fast. YOLOv3 mentioned in this topic is the enhanced version from PaddlePaddle [6]. It uses multiple optimization methods with a higher inference speed.</p>
+<h3 id="ResNet-50" class="common-anchor-header">ResNet-50</h3><p>ResNet [7] is the winner of ILSVRC 2015 in image classification because of its simplicity and practicality. As the basis of many image analysis methods, ResNet proves to be a popular model specialized in image detection, segmentation, and recognition.</p>
+<h3 id="Milvus" class="common-anchor-header">Milvus</h3><p><a href="https://milvus.io/">Milvus</a> is a cloud-native, open-source vector database built to manage embedding vectors generated by machine learning models and neural networks. It is widely used in scenarios such as computer vision, natural language processing, computational chemistry, personalized recommender systems, and more.</p>
+<p>The following procedures describe how Milvus works.</p>
 <ol>
-<li>Неструктурированные данные преобразуются в векторы признаков с помощью моделей глубокого обучения и импортируются в Milvus.</li>
-<li>Milvus хранит и индексирует векторы признаков.</li>
-<li>Milvus возвращает векторы, наиболее похожие на вектор, запрашиваемый пользователем.</li>
+<li>Unstructured data is converted to feature vectors by using deep learning models and is imported to Milvus.</li>
+<li>Milvus stores and indexes the feature vectors.</li>
+<li>Milvus returns the most similar vectors to the vector queried by users.</li>
 </ol>
-<h2 id="Deployment" class="common-anchor-header">Развертывание<button data-href="#Deployment" class="anchor-icon" translate="no">
+<h2 id="Deployment" class="common-anchor-header">Deployment<button data-href="#Deployment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,20 +94,20 @@ cv2.imwrite(file_name, image)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Теперь вы имеете некоторое представление о системах видеоанализа на базе Milvus. Система состоит в основном из двух частей, как показано на следующем рисунке.</p>
+    </button></h2><p>Now you have some understanding of Milvus-based video analysis systems. The system mainly consists of two parts, as shown in the following figure.</p>
 <ul>
-<li><p>Красные стрелки указывают на процесс импорта данных. Используйте ResNet-50 для извлечения векторов признаков из набора данных изображений и импортируйте векторы признаков в Milvus.</p></li>
-<li><p>Черные стрелки указывают на процесс анализа видео. Во-первых, извлеките кадры из видео и сохраните их как изображения. Во-вторых, обнаруживаем и извлекаем объекты на изображениях с помощью YOLOv3. Затем с помощью ResNet-50 извлекаются векторы признаков из изображений. И наконец, Milvus ищет и возвращает информацию об объектах с соответствующими векторами признаков.</p></li>
+<li><p>The red arrows indicate the data import process. Use ResNet-50 to extract feature vectors from the image dataset and import the feature vectors to Milvus.</p></li>
+<li><p>The black arrows indicate the video analysis process. First, extract frames from a video and save the frames as images. Second, detect and extract objects in the images using YOLOv3. Then, use ResNet-50 to extract feature vectors from the images. Lastly, Milvus searches and returns the information of the objects with the corresponding feature vectors.</p></li>
 </ul>
-<p>Для получения дополнительной информации см. раздел <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search/object_detection">Milvus Bootcamp: Система обнаружения видеообъектов</a>.</p>
-<p><strong>Импорт данных</strong></p>
-<p>Процесс импорта данных прост. Преобразуйте данные в 2 048-мерные векторы и импортируйте векторы в Milvus.</p>
+<p>For more information, see <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search/object_detection">Milvus Bootcamp: Video Object Detection System</a>.</p>
+<p><strong>Data import</strong></p>
+<p>The data import process is simple. Convert the data into 2,048-dimensional vectors and import the vectors into Milvus.</p>
 <pre><code translate="no" class="language-python">vector = image_encoder.execute(filename)
 entities = [vector]
 collection.insert(data=entities)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Анализ видео</strong></p>
-<p>Как было сказано выше, процесс анализа видео включает в себя захват видеокадров, обнаружение объектов в каждом кадре, извлечение векторов из объектов, вычисление сходства векторов с помощью метрики евклидова расстояния (L2) и поиск результатов с помощью Milvus.</p>
+<p><strong>Video analysis</strong></p>
+<p>As introduced above, the video analysis process includes capturing video frames, detecting objects in each frame, extracting vectors from the objects, calculating vector similarity with Euclidean distance (L2) metrics, and searching for results using Milvus.</p>
 <pre><code translate="no" class="language-python">images = extract_frame(filename, 1, prefix)   
 detector = Detector()   
 run(detector, DATA_PATH)       
@@ -117,7 +115,7 @@ vectors = get_object_vector(image_encoder, DATA_PATH)
 search_params = {<span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;L2&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: 10}}
 results = collection.search(vectors, param=search_params, <span class="hljs-built_in">limit</span>=10)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,10 +130,10 @@ results = collection.search(vectors, param=search_params, <span class="hljs-buil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В настоящее время более 80 % данных являются неструктурированными. С быстрым развитием ИИ появляется все больше моделей глубокого обучения для анализа неструктурированных данных. Такие технологии, как обнаружение объектов и обработка изображений, достигли больших успехов как в научных кругах, так и в промышленности. Благодаря этим технологиям все больше и больше платформ ИИ отвечают практическим требованиям.</p>
-<p>Система видеоанализа, рассматриваемая в этой теме, построена на базе Milvus, которая может быстро анализировать видеоконтент.</p>
-<p>Являясь векторной базой данных с открытым исходным кодом, Milvus поддерживает векторы признаков, извлеченные с помощью различных моделей глубокого обучения. Интегрированный с такими библиотеками, как Faiss, NMSLIB и Annoy, Milvus предоставляет набор интуитивно понятных API, поддерживающих переключение типов индексов в зависимости от сценария. Кроме того, Milvus поддерживает скалярную фильтрацию, что повышает скорость запоминания и гибкость поиска. Milvus применяется во многих областях, таких как обработка изображений, компьютерное зрение, обработка естественного языка, распознавание речи, рекомендательные системы и поиск новых лекарств.</p>
-<h2 id="References" class="common-anchor-header">Ссылки<button data-href="#References" class="anchor-icon" translate="no">
+    </button></h2><p>Currently, more than 80% of the data is unstructured. With the rapid development of AI, an increasing number of deep learning models have been developed for analyzing unstructured data. Technologies such as object detection and image processing have achieved great breakthroughs in both academia and industry. Empowered by these technologies, more and more AI platforms have fulfilled practical requirements.</p>
+<p>The video analysis system discussed in this topic is built with Milvus, which can quickly analyze video content.</p>
+<p>As an open-source vector database, Milvus supports feature vectors extracted using various deep learning models. Integrated with libraries such as Faiss, NMSLIB, and Annoy, Milvus provides a set of intuitive APIs, supporting switching index types according to scenarios. Additionally, Milvus supports scalar filtering, which increases recall rate and search flexibility. Milvus has been applied to many fields such as image processing, computer vision, natural language processing, speech recognition, recommender system, and new drug discovery.</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -150,10 +148,10 @@ results = collection.search(vectors, param=search_params, <span class="hljs-buil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>[1] А. Д. Багданов, Л. Баллан, М. Бертини, А. Дель Бимбо. "Сопоставление и поиск товарных знаков в базах данных спортивного видео". Труды международного семинара по мультимедийному информационному поиску, ACM, 2007. https://www.researchgate.net/publication/210113141_Trademark_matching_and_retrieval_in_sports_video_databases</p>
-<p>[2] J. Kleban, X. Xie, W.-Y. Ma. "Пространственная пирамида для обнаружения логотипов в естественных сценах". Международная конференция IEEE, 2008. https://ieeexplore.ieee.org/document/4607625</p>
-<p>[3] Р. Бойя, К. Флореа, Л. Флореа, Р. Догару. "Локализация и распознавание логотипов на естественных изображениях с помощью графов гомографических классов". Machine Vision and Applications 27 (2), 2016. https://link.springer.com/article/10.1007/s00138-015-0741-7</p>
-<p>[4] R. Boia, C. Florea, L. Florea. "Агломерация эллиптических асифтов в прототипе класса для обнаружения логотипов". BMVC, 2015. http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=5C87F52DE38AB0C90F8340DFEBB841F7?doi=10.1.1.707.9371&amp;rep=rep1&amp;type=pdf</p>
+    </button></h2><p>[1] A. D. Bagdanov, L. Ballan, M. Bertini, A. Del Bimbo. “Trademark matching and retrieval in sports video databases.” Proceedings of the international workshop on Workshop on multimedia information retrieval, ACM, 2007. https://www.researchgate.net/publication/210113141_Trademark_matching_and_retrieval_in_sports_video_databases</p>
+<p>[2] J. Kleban, X. Xie, W.-Y. Ma. “Spatial pyramid mining for logo detection in natural scenes.” IEEE International Conference, 2008. https://ieeexplore.ieee.org/document/4607625</p>
+<p>[3] R. Boia, C. Florea, L. Florea, R. Dogaru. “Logo localization and recognition in natural images using homographic class graphs.” Machine Vision and Applications 27 (2), 2016. https://link.springer.com/article/10.1007/s00138-015-0741-7</p>
+<p>[4] R. Boia, C. Florea, L. Florea. “Elliptical asift agglomeration in class prototype for logo detection.” BMVC, 2015. http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=5C87F52DE38AB0C90F8340DFEBB841F7?doi=10.1.1.707.9371&amp;rep=rep1&amp;type=pdf</p>
 <p>[5] https://arxiv.org/abs/1804.02767</p>
 <p>[6] https://paddlepaddle.org.cn/modelbasedetail/yolov3</p>
 <p>[7] https://arxiv.org/abs/1512.03385</p>

@@ -1,8 +1,8 @@
 ---
 id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
-title: >-
-  Bagaimana Kami Membangun Model Penyorotan Semantik untuk Pemangkasan Konteks
-  RAG dan Penyimpanan Token
+title: >
+  How We Built a Semantic Highlighting Model for RAG Context Pruning and Token
+  Saving
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
 cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
@@ -16,14 +16,13 @@ meta_keywords: >-
 meta_title: |
   Semantic Highlighting for RAG Context Pruning and Token Saving
 desc: >-
-  Pelajari bagaimana Zilliz membangun model penyorotan semantik untuk
-  pemfilteran noise RAG, pemangkasan konteks, dan penyimpanan token menggunakan
-  arsitektur khusus penyandi, penalaran LLM, dan data pelatihan dwibahasa
-  berskala besar.
+  Learn how Zilliz built a semantic highlighting model for RAG noise filtering,
+  context pruning, and token saving using encoder-only architectures, LLM
+  reasoning, and large-scale bilingual training data.
 origin: >-
   https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 ---
-<h2 id="The-Problem-RAG-Noise-and-Token-Waste" class="common-anchor-header">Masalahnya: Kebisingan RAG dan Pemborosan Token<button data-href="#The-Problem-RAG-Noise-and-Token-Waste" class="anchor-icon" translate="no">
+<h2 id="The-Problem-RAG-Noise-and-Token-Waste" class="common-anchor-header">The Problem: RAG Noise and Token Waste<button data-href="#The-Problem-RAG-Noise-and-Token-Waste" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,11 +37,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Pencarian vektor</strong> merupakan fondasi yang kuat untuk sistem RAG - asisten perusahaan, agen AI, bot dukungan pelanggan, dan banyak lagi. Sistem ini dapat diandalkan untuk menemukan dokumen yang penting. Namun, pencarian saja tidak menyelesaikan masalah konteks. Bahkan indeks yang disetel dengan baik pun hanya mengembalikan potongan-potongan yang relevan secara luas, sementara hanya sebagian kecil kalimat di dalam potongan-potongan tersebut yang benar-benar menjawab pertanyaan.</p>
-<p>Dalam sistem produksi, kesenjangan ini segera muncul. Satu kueri dapat menarik lusinan dokumen, yang masing-masing terdiri dari ribuan token. Hanya beberapa kalimat yang berisi sinyal yang sebenarnya; sisanya adalah konteks yang membengkakkan penggunaan token, memperlambat inferensi, dan sering kali mengalihkan perhatian LLM. Masalahnya menjadi semakin jelas dalam alur kerja agen, di mana kueri itu sendiri merupakan hasil dari penalaran multi-langkah dan hanya mencocokkan sebagian kecil dari teks yang diambil.</p>
-<p>Hal ini menciptakan kebutuhan yang jelas akan model yang dapat <em><strong>mengidentifikasi dan menyoroti</strong></em> <em>kalimat-kalimat yang berguna dan mengabaikan sisanya-pada dasarnya</em>, pemfilteran relevansi tingkat kalimat, atau yang disebut oleh banyak tim sebagai pemangkasan <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>konteks</strong></a>. Tujuannya sederhana: mempertahankan bagian yang penting dan membuang noise sebelum mencapai LLM.</p>
-<p>Penyorotan berbasis kata kunci tradisional tidak dapat menyelesaikan masalah ini. Sebagai contoh, jika pengguna bertanya, "Bagaimana cara meningkatkan efisiensi eksekusi kode Python?", penyorot kata kunci akan memilih "Python" dan "efisiensi", tetapi melewatkan kalimat yang sebenarnya menjawab pertanyaan - "Gunakan operasi vektor NumPy alih-alih perulangan" - karena tidak ada kata kunci yang sama dengan kueri. Yang kita butuhkan adalah pemahaman semantik, bukan pencocokan string.</p>
-<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">Model Penyorotan Semantik untuk Penyaringan Derau RAG dan Pemangkasan Konteks<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Vector search</strong> is a solid foundation for RAG systems—enterprise assistants, AI agents, customer support bots, and more. It reliably finds the documents that matter. But retrieval alone doesn’t solve the context problem. Even well-tuned indexes return chunks that are broadly relevant, while only a small fraction of the sentences inside those chunks actually answer the query.</p>
+<p>In production systems, this gap shows up immediately. A single query may pull in dozens of documents, each thousands of tokens long. Only a handful of sentences contain the actual signal; the rest is context that bloats token usage, slows inference, and often distracts the LLM. The problem becomes even more obvious in agent workflows, where the queries themselves are the output of multi-step reasoning and only match small parts of the retrieved text.</p>
+<p>This creates a clear need for a model that can <em><strong>identify and highlight</strong></em> <em>the useful sentences and ignore the rest</em>—essentially, sentence-level relevance filtering, or what many teams refer to as <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>context pruning</strong></a>. The goal is simple: keep the parts that matter and drop the noise before it ever reaches the LLM.</p>
+<p>Traditional keyword-based highlighting can’t solve this problem. For example, if a user asks, “How do I improve Python code execution efficiency?”, a keyword highlighter will pick out “Python” and “efficiency,” but miss the sentence that actually answers the question—“Use NumPy vectorized operations instead of loops”—because it shares no keywords with the query. What we need instead is semantic understanding, not string matching.</p>
+<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">A Semantic Highlighting Model for RAG Noise Filtering and Context Pruning<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,35 +56,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk mempermudah pembangun RAG, kami melatih dan membuat sumber terbuka <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>model Penyorotan Semantik</strong></a> yang mengidentifikasi dan menyoroti kalimat-kalimat dalam dokumen yang diambil yang secara semantik lebih selaras dengan kueri. Model ini saat ini memberikan kinerja canggih pada bahasa Inggris dan Mandarin dan dirancang untuk dimasukkan langsung ke dalam pipa RAG yang sudah ada.</p>
+    </button></h2><p>To make this easy for RAG builders, we trained and open-sourced a <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>Semantic Highlighting model</strong></a> that identifies and highlights the sentences in retrieved documents that are more semantically aligned with the query. The model currently delivers the state-of-the-art performance on both English and Chinese and is designed to slot directly into existing RAG pipelines.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/context_pruning_80f7b16280.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Detail Model</strong></p>
+<p><strong>Model Details</strong></p>
 <ul>
 <li><p><strong>HuggingFace:</strong> <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p><strong>Lisensi</strong> MIT (ramah komersial)</p></li>
-<li><p><strong>Arsitektur:</strong> Model khusus penyandi 0.6B berdasarkan BGE-M3 Reranker v2</p></li>
-<li><p><strong>Jendela Konteks:</strong> 8192 token</p></li>
-<li><p><strong>Bahasa yang didukung:</strong> Bahasa Inggris dan Mandarin</p></li>
+<li><p><strong>License:</strong> MIT (commercial-friendly)</p></li>
+<li><p><strong>Architecture:</strong> 0.6B encoder-only model based on BGE-M3 Reranker v2</p></li>
+<li><p><strong>Context Window:</strong> 8192 tokens</p></li>
+<li><p><strong>Supported Languages:</strong> English and Chinese</p></li>
 </ul>
-<p>Penyorotan Semantik memberikan sinyal relevansi yang diperlukan untuk memilih hanya bagian yang berguna dari dokumen yang telah lama diambil. Dalam praktiknya, model ini memungkinkan:</p>
+<p>Semantic Highlighting provides the relevance signals needed to select only the useful parts of long retrieved documents. In practice, this model enables:</p>
 <ul>
-<li><p><strong>Peningkatan kemampuan interpretasi</strong>, menunjukkan bagian mana dari dokumen yang benar-benar penting</p></li>
-<li><p><strong>Pengurangan 70-80% dalam biaya token</strong> dengan mengirimkan hanya kalimat yang disorot ke LLM</p></li>
-<li><p><strong>Kualitas jawaban yang lebih baik</strong>, karena model ini mengurangi konteks yang tidak relevan</p></li>
-<li><p><strong>Debugging yang lebih mudah</strong>, karena teknisi dapat memeriksa kecocokan tingkat kalimat secara langsung</p></li>
+<li><p><strong>Improved interpretability</strong>, showing which parts of a document actually matter</p></li>
+<li><p><strong>70–80% reduction in token cost</strong> by sending only highlighted sentences to the LLM</p></li>
+<li><p><strong>Better answer quality</strong>, since the model sees less irrelevant context</p></li>
+<li><p><strong>Easier debugging</strong>, because engineers can inspect sentence-level matches directly</p></li>
 </ul>
-<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">Hasil Evaluasi: Mencapai Kinerja SOTA</h3><p>Kami mengevaluasi model Penyorotan Semantik kami di berbagai set data yang mencakup bahasa Inggris dan Cina, baik dalam kondisi di dalam maupun di luar domain.</p>
-<p>Rangkaian tolok ukur meliputi:</p>
+<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">Evaluation Results: Achieving SOTA Performance</h3><p>We evaluated our Semantic Highlighting model across multiple datasets spanning both English and Chinese, in both in-domain and out-of-domain conditions.</p>
+<p>The benchmark suites include:</p>
 <ul>
-<li><p><strong>QA multi-bentang bahasa Inggris:</strong> multispanqa</p></li>
-<li><p><strong>Wikipedia bahasa Inggris di luar domain:</strong> wikitext2</p></li>
-<li><p><strong>QA multi-bentang bahasa Mandarin:</strong> multispanqa_zh</p></li>
-<li><p><strong>Wikipedia di luar domain bahasa Mandarin:</strong> wikitext2_zh</p></li>
+<li><p><strong>English multi-span QA:</strong> multispanqa</p></li>
+<li><p><strong>English out-of-domain Wikipedia:</strong> wikitext2</p></li>
+<li><p><strong>Chinese multi-span QA:</strong> multispanqa_zh</p></li>
+<li><p><strong>Chinese out-of-domain Wikipedia:</strong> wikitext2_zh</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -93,15 +92,15 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Model yang dievaluasi meliputi:</p>
+<p>Evaluated models include:</p>
 <ul>
-<li><p>Seri Open Provence</p></li>
-<li><p>Seri Provence/XProvence dari Naver</p></li>
-<li><p>Penyorot semantik OpenSearch</p></li>
-<li><p>Model dwibahasa terlatih kami: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p>Open Provence series</p></li>
+<li><p>Naver’s Provence/XProvence series</p></li>
+<li><p>OpenSearch’s semantic-highlighter</p></li>
+<li><p>Our trained bilingual model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 </ul>
-<p>Di keempat dataset, model kami mencapai peringkat teratas. Lebih penting lagi, ini adalah <em>satu-satunya</em> model yang berkinerja baik secara konsisten pada bahasa Inggris dan Mandarin. Model yang bersaing hanya berfokus pada bahasa Inggris atau menunjukkan penurunan kinerja yang jelas pada teks bahasa Mandarin.</p>
-<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">Bagaimana Kami Membangun Model Penyorotan Semantik Ini<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Across all four datasets, our model achieves the top ranking. More importantly, it is the <em>only</em> model that performs consistently well on both English and Chinese. Competing models either focus exclusively on English or show clear performance drops on Chinese text.</p>
+<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">How We Built This Semantic Highlighting Model<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,21 +115,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Melatih model untuk tugas ini bukanlah bagian yang sulit; melatih model yang <em>baik</em> yang menangani masalah sebelumnya dan memberikan kinerja yang mendekati SOTA adalah pekerjaan yang sesungguhnya. Pendekatan kami berfokus pada dua hal:</p>
+    </button></h2><p>Training a model for this task isn’t the hard part; training a <em>good</em> model that handles the earlier problems and delivers near-SOTA performance is where the real work happens. Our approach focused on two things:</p>
 <ul>
-<li><p><strong>Arsitektur model:</strong> menggunakan desain khusus penyandi untuk inferensi yang cepat.</p></li>
-<li><p><strong>Data pelatihan:</strong> menghasilkan label relevansi berkualitas tinggi menggunakan LLM yang mampu bernalar dan membuat data skala dengan kerangka kerja inferensi lokal.</p></li>
+<li><p><strong>Model architecture:</strong> use an encoder-only design for fast inference.</p></li>
+<li><p><strong>Training data:</strong> generate high-quality relevance labels using reasoning-capable LLMs and scale data generation with local inference frameworks.</p></li>
 </ul>
-<h3 id="Model-Architecture" class="common-anchor-header">Arsitektur Model</h3><p>Kami membangun model sebagai jaringan <strong>khusus penyandi</strong> ringan yang memperlakukan pemangkasan konteks sebagai <strong>tugas penilaian relevansi tingkat token</strong>. Desain ini terinspirasi oleh <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, pendekatan pemangkasan konteks yang diperkenalkan oleh Naver di ICLR 2025, yang membingkai ulang pemangkasan dari "memilih potongan yang tepat" menjadi "menilai setiap token." Pembingkaian tersebut selaras secara alami dengan penyorotan semantik, di mana sinyal berbutir halus sangat penting.</p>
-<p>Model encoder-only bukanlah arsitektur terbaru, tetapi tetap sangat praktis di sini: model ini cepat, mudah diskalakan, dan dapat menghasilkan nilai relevansi untuk semua posisi token secara paralel. Untuk sistem RAG produksi, keunggulan kecepatan tersebut jauh lebih penting daripada menggunakan model decoder yang lebih besar.</p>
-<p>Setelah kami menghitung skor relevansi tingkat token, kami menggabungkannya ke dalam skor <strong>tingkat kalimat</strong>. Langkah ini mengubah sinyal token yang berisik menjadi metrik relevansi yang stabil dan dapat ditafsirkan. Kalimat di atas ambang batas yang dapat dikonfigurasi akan disorot; yang lainnya akan disaring. Hal ini menghasilkan mekanisme yang sederhana dan dapat diandalkan untuk memilih kalimat yang benar-benar penting bagi kueri.</p>
-<h3 id="Inference-Process" class="common-anchor-header">Proses Inferensi</h3><p>Pada saat proses, model penyorotan semantik kami mengikuti alur sederhana:</p>
+<h3 id="Model-Architecture" class="common-anchor-header">Model Architecture</h3><p>We built the model as a lightweight <strong>encoder-only</strong> network that treats context pruning as a <strong>token-level relevance scoring task</strong>. This design is inspired by <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, a context-pruning approach introduced by Naver at ICLR 2025, which reframes pruning from “choose the right chunk” to “score every token.” That framing aligns naturally with semantic highlighting, where fine-grained signals are essential.</p>
+<p>Encoder-only models aren’t the newest architecture, but they remain extremely practical here: they’re fast, easy to scale, and can produce relevance scores for all token positions in parallel. For a production RAG system, that speed advantage matters far more than using a larger decoder model.</p>
+<p>Once we compute token-level relevance scores, we aggregate them into <strong>sentence-level</strong> scores. This step turns noisy token signals into a stable, interpretable relevance metric. Sentences above a configurable threshold are highlighted; everything else is filtered out. This produces a simple and reliable mechanism for selecting the sentences that actually matter to the query.</p>
+<h3 id="Inference-Process" class="common-anchor-header">Inference Process</h3><p>At runtime, our semantic highlighting model follows a simple pipeline:</p>
 <ol>
-<li><p><strong>Masukan-</strong> Proses dimulai dengan kueri pengguna. Dokumen yang diambil diperlakukan sebagai konteks kandidat untuk evaluasi relevansi.</p></li>
-<li><p><strong>Pemrosesan Model-</strong> Kueri dan konteks digabungkan menjadi satu urutan: [BOS] + Kueri + Konteks</p></li>
-<li><p><strong>Penilaian Token-</strong> Setiap token dalam konteks diberi skor relevansi antara 0 dan 1, yang mencerminkan seberapa kuat kaitannya dengan kueri.</p></li>
-<li><p><strong>Agregasi Kalimat-</strong> Skor token diagregasi pada tingkat kalimat, biasanya dengan rata-rata, untuk menghasilkan skor relevansi untuk setiap kalimat.</p></li>
-<li><p><strong>Penyaringan Ambang Batas-</strong> Kalimat dengan skor di atas ambang batas yang dapat dikonfigurasi disorot dan dipertahankan, sementara kalimat dengan skor rendah disaring sebelum diteruskan ke LLM hilir.</p></li>
+<li><p><strong>Input—</strong> The process starts with a user query. Retrieved documents are treated as candidate context for relevance evaluation.</p></li>
+<li><p><strong>Model Processing—</strong> The query and context are concatenated into a single sequence: [BOS] + Query + Context</p></li>
+<li><p><strong>Token Scoring—</strong> Each token in the context is assigned a relevance score between 0 and 1, reflecting how strongly it is related to the query.</p></li>
+<li><p><strong>Sentence Aggregation—</strong> Token scores are aggregated at the sentence level, typically by averaging, to produce a relevance score for each sentence.</p></li>
+<li><p><strong>Threshold Filtering—</strong> Sentences with scores above a configurable threshold are highlighted and retained, while low-scoring sentences are filtered out before being passed to the downstream LLM.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -138,16 +137,16 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">Model Dasar: BGE-M3 Reranker v2</h3><p>Kami memilih BGE-M3 Reranker v2 sebagai model dasar karena beberapa alasan:</p>
+<h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">Base Model: BGE-M3 Reranker v2</h3><p>We selected BGE-M3 Reranker v2 as our base model for several reasons:</p>
 <ol>
-<li><p>Menggunakan arsitektur Encoder yang cocok untuk penilaian token dan kalimat</p></li>
-<li><p>Mendukung berbagai bahasa dengan pengoptimalan untuk bahasa Inggris dan Mandarin</p></li>
-<li><p>Menyediakan jendela konteks 8192 token yang sesuai untuk dokumen RAG yang lebih panjang</p></li>
-<li><p>Mempertahankan 0,6B parameter - cukup kuat tanpa menjadi berat secara komputasi</p></li>
-<li><p>Memastikan pengetahuan dunia yang cukup dalam model dasar</p></li>
-<li><p>Dilatih untuk pemeringkatan ulang, yang sangat sesuai dengan tugas penilaian relevansi</p></li>
+<li><p>It employs an Encoder architecture suitable for token and sentence scoring</p></li>
+<li><p>Supports multiple languages with optimization for both English and Chinese</p></li>
+<li><p>Provides an 8192-token context window appropriate for longer RAG documents</p></li>
+<li><p>Maintains 0.6B parameters—strong enough without being computationally heavy</p></li>
+<li><p>Ensures sufficient world knowledge in the base model</p></li>
+<li><p>Trained for reranking, which closely aligns with relevance judgment tasks</p></li>
 </ol>
-<h2 id="Training-Data-LLM-Annotation-with-Reasoning" class="common-anchor-header">Data Pelatihan: Anotasi LLM dengan Penalaran<button data-href="#Training-Data-LLM-Annotation-with-Reasoning" class="anchor-icon" translate="no">
+<h2 id="Training-Data-LLM-Annotation-with-Reasoning" class="common-anchor-header">Training Data: LLM Annotation with Reasoning<button data-href="#Training-Data-LLM-Annotation-with-Reasoning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -162,41 +161,41 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah kami menyelesaikan arsitektur model, tantangan berikutnya adalah membangun dataset yang benar-benar dapat melatih model yang andal. Kami mulai dengan melihat bagaimana Open Provence menangani hal ini. Pendekatan mereka menggunakan dataset QA publik dan LLM kecil untuk melabeli kalimat mana yang relevan. Pendekatan ini berskala besar dan mudah diotomatisasi, sehingga menjadi dasar yang baik bagi kami.</p>
-<p>Namun kami segera mengalami masalah yang sama seperti yang mereka jelaskan: jika Anda meminta LLM untuk mengeluarkan label tingkat kalimat secara langsung, hasilnya tidak selalu stabil. Beberapa label sudah benar, yang lain dipertanyakan, dan sulit untuk membersihkannya setelah itu. Anotasi manual sepenuhnya juga bukan pilihan-kami membutuhkan lebih banyak data daripada yang bisa kami beri label secara manual.</p>
-<p>Untuk meningkatkan stabilitas tanpa mengorbankan skalabilitas, kami membuat satu perubahan: LLM harus menyediakan cuplikan penalaran singkat untuk setiap label yang dihasilkannya. Setiap contoh pelatihan mencakup kueri, dokumen, rentang kalimat, dan penjelasan singkat mengapa sebuah kalimat relevan atau tidak relevan. Penyesuaian kecil ini membuat anotasi menjadi jauh lebih konsisten dan memberikan kami sesuatu yang konkret untuk dijadikan referensi ketika memvalidasi atau men-debug dataset.</p>
-<p>Menyertakan alasan ternyata sangat berharga:</p>
+    </button></h2><p>Once we finalized the model architecture, the next challenge was building a dataset that would actually train a reliable model. We started by looking at how Open Provence handles this. Their approach uses public QA datasets and a small LLM to label which sentences are relevant. It scales well and is easy to automate, which made it a good baseline for us.</p>
+<p>But we quickly ran into the same issue they describe: if you ask an LLM to output sentence-level labels directly, the results aren’t always stable. Some labels are correct, others are questionable, and it’s hard to clean things up afterward. Fully manual annotation wasn’t an option either—we needed far more data than we could ever label by hand.</p>
+<p>To improve stability without sacrificing scalability, we made one change: the LLM must provide a short reasoning snippet for every label it outputs. Each training example includes the query, the document, the sentence spans, and a brief explanation of why a sentence is relevant or irrelevant. This small adjustment made the annotations much more consistent and gave us something concrete to reference when validating or debugging the dataset.</p>
+<p>Including the reasoning turned out to be surprisingly valuable:</p>
 <ul>
-<li><p><strong>Kualitas anotasi yang lebih tinggi:</strong> Menuliskan alasan berfungsi sebagai pemeriksaan mandiri, yang mengurangi label yang acak atau tidak konsisten.</p></li>
-<li><p><strong>Pengamatan yang lebih baik:</strong> Kita dapat melihat <em>mengapa</em> sebuah kalimat dipilih daripada memperlakukan label sebagai kotak hitam.</p></li>
-<li><p><strong>Debugging yang lebih mudah:</strong> Ketika ada sesuatu yang terlihat salah, penalaran membuatnya mudah untuk mengetahui apakah masalahnya adalah perintah, domain, atau logika anotasi.</p></li>
-<li><p><strong>Data yang dapat digunakan kembali:</strong> Bahkan jika kita beralih ke model pelabelan yang berbeda di masa mendatang, jejak penalaran tetap berguna untuk pelabelan ulang atau audit.</p></li>
+<li><p><strong>Higher annotation quality:</strong> Writing out the reasoning works as a self-check, which reduces random or inconsistent labels.</p></li>
+<li><p><strong>Better observability:</strong> We can see <em>why</em> a sentence was selected instead of treating the label as a black box.</p></li>
+<li><p><strong>Easier debugging:</strong> When something looks wrong, the reasoning makes it easy to spot whether the issue is the prompt, the domain, or the annotation logic.</p></li>
+<li><p><strong>Reusable data:</strong> Even if we switch to a different labeling model in the future, the reasoning traces remain useful for re-labeling or auditing.</p></li>
 </ul>
-<p>Alur kerja anotasi terlihat seperti ini:</p>
+<p>The annotation workflow looks like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/annotation_data_generation_ff93eb18f4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B untuk Anotasi</h3><p>Untuk anotasi, kami memilih Qwen3 8B karena secara native mendukung "mode berpikir" melalui output, membuatnya lebih mudah untuk mengekstrak jejak penalaran yang konsisten. Model yang lebih kecil tidak memberikan label yang stabil, dan model yang lebih besar lebih lambat dan tidak perlu mahal untuk jenis pipeline ini. Qwen3 8B mencapai keseimbangan yang tepat antara kualitas, kecepatan, dan biaya.</p>
-<p>Kami menjalankan semua anotasi menggunakan <strong>layanan vLLM lokal</strong>, bukan API cloud. Hal ini memberi kami throughput yang tinggi, kinerja yang dapat diprediksi, dan biaya yang jauh lebih rendah-pada dasarnya menukar waktu GPU dengan biaya token API, yang merupakan kesepakatan yang lebih baik ketika menghasilkan jutaan sampel.</p>
-<h3 id="Dataset-Scale" class="common-anchor-header">Skala Dataset</h3><p>Secara keseluruhan, kami membuat <strong>lebih dari 5 juta sampel pelatihan dwibahasa</strong>, dibagi secara merata antara bahasa Inggris dan Mandarin.</p>
+<h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B for Annotation</h3><p>For annotation, we chose Qwen3 8B because it natively supports a “thinking mode” via outputs, making it much easier to extract consistent reasoning traces. Smaller models didn’t give us stable labels, and larger models were slower and unnecessarily expensive for this kind of pipeline. Qwen3 8B hit the right balance between quality, speed, and cost.</p>
+<p>We ran all annotations using a <strong>local vLLM service</strong> instead of cloud APIs. This gave us high throughput, predictable performance, and much lower cost—essentially trading GPU time for API token fees, which is the better deal when generating millions of samples.</p>
+<h3 id="Dataset-Scale" class="common-anchor-header">Dataset Scale</h3><p>In total, we built <strong>over 5 million bilingual training samples</strong>, split roughly evenly between English and Chinese.</p>
 <ul>
-<li><p><strong>Sumber bahasa Inggris:</strong> MS MARCO, Natural Questions, GooAQ</p></li>
-<li><p><strong>Sumber bahasa Mandarin:</strong> DuReader, Wikipedia bahasa Mandarin, mmarco_chinese</p></li>
+<li><p><strong>English sources:</strong> MS MARCO, Natural Questions, GooAQ</p></li>
+<li><p><strong>Chinese sources:</strong> DuReader, Chinese Wikipedia, mmarco_chinese</p></li>
 </ul>
-<p>Sebagian dari dataset ini berasal dari anotasi ulang data yang sudah ada yang digunakan oleh proyek-proyek seperti Open Provence. Sisanya dihasilkan dari korpora mentah dengan terlebih dahulu membuat pasangan kueri-konteks dan kemudian melabelinya dengan pipeline berbasis penalaran kami.</p>
-<p>Semua data pelatihan beranotasi juga tersedia di HuggingFace untuk pengembangan komunitas dan referensi pelatihan: <a href="https://huggingface.co/zilliz/datasets">Kumpulan Data Zilliz</a></p>
+<p>Part of the dataset comes from re-annotating existing data used by projects like Open Provence. The rest was generated from raw corpora by first creating query–context pairs and then labeling them with our reasoning-based pipeline.</p>
+<p>All annotated training data is also available on HuggingFace for community development and training reference: <a href="https://huggingface.co/zilliz/datasets">Zilliz Datasets</a></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zilliz_datasets_dd91330d4d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Training-Method" class="common-anchor-header">Metode Pelatihan</h3><p>Setelah arsitektur model dan dataset siap, kami melatih model pada <strong>GPU 8× A100</strong> selama tiga epoch, yang memakan waktu sekitar <strong>9 jam dari</strong> awal hingga akhir.</p>
-<p><strong>Catatan:</strong> Pelatihan ini hanya menargetkan <strong>Pruning Head</strong>, yang bertanggung jawab atas tugas penyorotan semantik. Kami tidak melatih <strong>Rerank Head</strong>, karena hanya berfokus pada tujuan pemangkasan akan memberikan hasil yang lebih baik untuk penilaian relevansi tingkat kalimat.</p>
-<h2 id="Real-World-Case-Study" class="common-anchor-header">Studi Kasus Dunia Nyata<button data-href="#Real-World-Case-Study" class="anchor-icon" translate="no">
+<h3 id="Training-Method" class="common-anchor-header">Training Method</h3><p>Once the model architecture and dataset were ready, we trained the model on <strong>8× A100 GPUs</strong> for three epochs, which took roughly <strong>9 hours</strong> end-to-end.</p>
+<p><strong>Note:</strong> The training only targeted the <strong>Pruning Head</strong>, which is responsible for the semantic highlighting task. We did not train the <strong>Rerank Head</strong>, since focusing solely on the pruning objective yielded better results for sentence-level relevance scoring.</p>
+<h2 id="Real-World-Case-Study" class="common-anchor-header">Real-World Case Study<button data-href="#Real-World-Case-Study" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -211,9 +210,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Tolok ukur hanya menceritakan sebagian dari cerita, jadi inilah contoh nyata yang menunjukkan bagaimana model berperilaku pada kasus tepi yang umum: ketika teks yang diambil berisi jawaban yang benar dan distraktor yang sangat menggoda.</p>
-<p><strong>Pertanyaan:</strong> <em>Siapa yang menulis "Pembunuhan Rusa Suci"?</em></p>
-<p><strong>Konteks (5 kalimat):</strong></p>
+    </button></h2><p>Benchmarks only tell part of the story, so here’s a real example that shows how the model behaves on a common edge case: when the retrieved text contains both the correct answer and a very tempting distractor.</p>
+<p><strong>Query:</strong> <em>Who wrote The Killing of a Sacred Deer?</em></p>
+<p><strong>Context (5 sentences):</strong></p>
 <pre><code translate="no">1\. The Killing of a Sacred Deer is a 2017 psychological horror film directed by Yorgos Lanthimos,
 
    with a screenplay by Lanthimos and Efthymis Filippou.
@@ -230,42 +229,42 @@ origin: >-
 
 5\. He introduces the boy to his family, who then mysteriously fall ill.
 <button class="copy-code-btn"></button></code></pre>
-<p>Jawaban yang benar: Kalimat 1 (secara eksplisit menyatakan "skenario oleh Lanthimos dan Efthymis Filippou")</p>
-<p>Contoh ini memiliki jebakan: Kalimat 3 menyebutkan bahwa "Euripides" yang menulis naskah aslinya. Namun pertanyaannya menanyakan "siapa yang menulis film The Killing of a Sacred Deer," dan jawabannya seharusnya adalah penulis skenario film tersebut, bukan penulis naskah Yunani dari ribuan tahun yang lalu.</p>
-<h3 id="Model-results" class="common-anchor-header">Hasil model</h3><table>
+<p>Correct answer: Sentence 1 (explicitly states “screenplay by Lanthimos and Efthymis Filippou”)</p>
+<p>This example has a trap: Sentence 3 mentions that “Euripides” wrote the original play. But the question asks “who wrote the film The Killing of a Sacred Deer,” and the answer should be the film’s screenwriters, not the Greek playwright from thousands of years ago.</p>
+<h3 id="Model-results" class="common-anchor-header">Model results</h3><table>
 <thead>
-<tr><th>Model</th><th>Menemukan jawaban yang benar?</th><th>Prediksi</th></tr>
+<tr><th>Model</th><th>Finds correct answer?</th><th>Prediction</th></tr>
 </thead>
 <tbody>
-<tr><td>Model kami</td><td>✓</td><td>Kalimat yang dipilih 1 (benar) dan 3</td></tr>
-<tr><td>XProvence v1</td><td>✗</td><td>Hanya memilih kalimat 3, tidak ada jawaban yang benar</td></tr>
-<tr><td>XProvence v2</td><td>✗</td><td>Hanya memilih kalimat 3, jawaban yang benar terlewat</td></tr>
+<tr><td>Our Model</td><td>✓</td><td>Selected sentences 1 (correct) and 3</td></tr>
+<tr><td>XProvence v1</td><td>✗</td><td>Only selected sentence 3, missed correct answer</td></tr>
+<tr><td>XProvence v2</td><td>✗</td><td>Only selected sentence 3, missed correct answer</td></tr>
 </tbody>
 </table>
-<p><strong>Perbandingan Skor Kalimat Kunci:</strong></p>
+<p><strong>Key Sentence Score Comparison:</strong></p>
 <table>
 <thead>
-<tr><th>Kalimat</th><th>Model Kami</th><th>XProvence v1</th><th>XProvence v2</th></tr>
+<tr><th>Sentence</th><th>Our Model</th><th>XProvence v1</th><th>XProvence v2</th></tr>
 </thead>
 <tbody>
-<tr><td>Kalimat 1 (skenario film, jawaban yang benar)</td><td>0.915</td><td>0.133</td><td>0.081</td></tr>
-<tr><td>Kalimat 3 (naskah asli, distraktor)</td><td>0.719</td><td>0.947</td><td>0.802</td></tr>
+<tr><td>Sentence 1 (film screenplay, correct answer)</td><td>0.915</td><td>0.133</td><td>0.081</td></tr>
+<tr><td>Sentence 3 (original play, distractor)</td><td>0.719</td><td>0.947</td><td>0.802</td></tr>
 </tbody>
 </table>
-<p>Model XProvence:</p>
+<p>XProvence models:</p>
 <ul>
-<li><p>Sangat tertarik pada "Euripides" dan "permainan", memberikan nilai yang nyaris sempurna pada kalimat 3 (0,947 dan 0,802)</p></li>
-<li><p>Sama sekali mengabaikan jawaban yang sebenarnya (kalimat 1), memberikan nilai yang sangat rendah (0,133 dan 0,081)</p></li>
-<li><p>Bahkan ketika menurunkan ambang batas dari 0,5 ke 0,2, tetap saja tidak dapat menemukan jawaban yang benar</p></li>
+<li><p>Strongly attracted to “Euripides” and “play,” giving sentence 3 near-perfect scores (0.947 and 0.802)</p></li>
+<li><p>Completely ignores the actual answer (sentence 1), giving extremely low scores (0.133 and 0.081)</p></li>
+<li><p>Even when lowering the threshold from 0.5 to 0.2, it still can’t find the correct answer</p></li>
 </ul>
-<p>Model kami:</p>
+<p>Our model:</p>
 <ul>
-<li><p>Dengan tepat memberikan nilai tertinggi pada kalimat 1 (0,915)</p></li>
-<li><p>Masih memberikan kalimat 3 beberapa relevansi (0,719) karena terkait dengan latar belakang</p></li>
-<li><p>Memisahkan keduanya dengan jelas dengan selisih ~0,2</p></li>
+<li><p>Correctly gives sentence 1 the highest score (0.915)</p></li>
+<li><p>Still assigns sentence 3 some relevance (0.719) because it’s related to the background</p></li>
+<li><p>Clearly separates the two with a ~0.2 margin</p></li>
 </ul>
-<p>Contoh ini menunjukkan kekuatan utama model: memahami <strong>maksud kueri</strong> dan bukan hanya mencocokkan kata kunci di permukaan. Dalam konteks ini, "Siapa yang menulis " <em>The Killing of a Sacred Deer</em>" mengacu pada film, bukan drama Yunani kuno. Model kami memahami hal tersebut, sementara model lainnya terganggu oleh isyarat leksikal yang kuat.</p>
-<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Cobalah dan Beri Tahu Kami Pendapat Anda<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
+<p>This example shows the model’s core strength: understanding <strong>query intent</strong> rather than just matching surface-level keywords. In this context, “Who wrote <em>The Killing of a Sacred Deer</em>” refers to the film, not the ancient Greek play. Our model picks up on that, while others get distracted by strong lexical cues.</p>
+<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Try It Out and Tell Us What You Think<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -280,16 +279,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Model <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a> kami sekarang sepenuhnya bersumber terbuka di bawah lisensi MIT dan siap untuk digunakan dalam produksi. Anda dapat menyambungkannya ke dalam pipeline RAG Anda, menyempurnakannya untuk domain Anda sendiri, atau membangun alat baru di atasnya. Kami juga menerima kontribusi dan umpan balik dari komunitas.</p>
+    </button></h2><p>Our <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a> model is now fully open-sourced under the MIT license and ready for production use. You can plug it into your RAG pipeline, fine-tune it for your own domain, or build new tools on top of it. We also welcome contributions and feedback from the community.</p>
 <ul>
-<li><p><strong>Unduh dari HuggingFace</strong>: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p><strong>Semua data pelatihan beranotasi:</strong> <a href="https://huggingface.co/zilliz/datasets">https://huggingface.co/zilliz/datasets</a></p></li>
+<li><p><strong>Download from HuggingFace</strong>: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p><strong>All annotated training data</strong>: <a href="https://huggingface.co/zilliz/datasets">https://huggingface.co/zilliz/datasets</a></p></li>
 </ul>
-<h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Penyorotan Semantik Tersedia di Milvus dan Zilliz Cloud</h3><p>Penyorotan semantik juga dibangun langsung ke dalam <a href="https://milvus.io/">Milvus</a> dan <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (Milvus yang dikelola secara penuh), sehingga pengguna dapat melihat dengan jelas <em>mengapa</em> setiap dokumen diambil. Alih-alih memindai seluruh bagian, Anda dapat langsung melihat kalimat spesifik yang berhubungan dengan kueri Anda - bahkan ketika kata-katanya tidak sama persis. Hal ini membuat pengambilan lebih mudah dipahami dan lebih cepat untuk di-debug. Untuk pipeline RAG, hal ini juga memperjelas apa yang diharapkan menjadi fokus LLM hilir, yang membantu dalam desain dan pemeriksaan kualitas yang cepat.</p>
-<p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>Coba Penyorotan Semantik di Zilliz Cloud yang dikelola sepenuhnya secara gratis</strong></a></p>
-<p>Kami ingin mendengar bagaimana fitur ini bekerja untuk Anda-laporan bug, ide perbaikan, atau apa pun yang Anda temukan saat mengintegrasikannya ke dalam alur kerja Anda.</p>
-<p>Jika Anda ingin membicarakan sesuatu dengan lebih detail, jangan ragu untuk bergabung dengan <a href="https://discord.com/invite/8uyFbECzPX">saluran Discord</a> kami atau memesan sesi <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> selama 20 menit. Kami selalu senang mengobrol dengan pembuat lain dan bertukar catatan.</p>
-<h2 id="Acknowledgements" class="common-anchor-header">Ucapan terima kasih<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
+<h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Semantic Highlighting Available in Milvus and Zilliz Cloud</h3><p>Semantic highlighting is also built directly into <a href="https://milvus.io/">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed Milvus), giving users a clear view of <em>why</em> each document was retrieved. Instead of scanning entire chunks, you immediately see the specific sentences that relate to your query — even when the wording doesn’t match exactly. This makes retrieval easier to understand and much faster to debug. For RAG pipelines, it also clarifies what the downstream LLM is expected to focus on, which helps with prompt design and quality checks.</p>
+<p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>Try Semantic Highlighting in a fully managed Zilliz Cloud for free</strong></a></p>
+<p>We’d love to hear how it works for you—bug reports, improvement ideas, or anything you discover while integrating it into your workflow.</p>
+<p>If you want to talk through anything in more detail, feel free to join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session. We’re always happy to chat with other builders and swap notes.</p>
+<h2 id="Acknowledgements" class="common-anchor-header">Acknowledgements<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -304,16 +303,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Karya ini dibangun di atas banyak ide hebat dan kontribusi sumber terbuka, dan kami ingin menyoroti proyek-proyek yang membuat model ini menjadi mungkin.</p>
+    </button></h2><p>This work builds on a lot of great ideas and open-source contributions, and we want to highlight the projects that made this model possible.</p>
 <ul>
-<li><p><strong>Provence</strong> memperkenalkan pembingkaian yang bersih dan praktis untuk pemangkasan konteks menggunakan model encoder yang ringan.</p></li>
-<li><p><strong>Open Provence</strong> menyediakan basis kode yang solid dan direkayasa dengan baik - jalur pelatihan, pemrosesan data, dan kepala model - di bawah lisensi permisif. Ini memberi kami titik awal yang kuat untuk bereksperimen.</p></li>
+<li><p><strong>Provence</strong> introduced a clean and practical framing for context pruning using lightweight encoder models.</p></li>
+<li><p><strong>Open Provence</strong> provided a solid, well-engineered codebase—training pipelines, data processing, and model heads—under a permissive license. It gave us a strong starting point for experimentation.</p></li>
 </ul>
-<p>Di atas fondasi tersebut, kami menambahkan beberapa kontribusi kami sendiri:</p>
+<p>On top of that foundation, we added several contributions of our own:</p>
 <ul>
-<li><p>Menggunakan <strong>penalaran LLM</strong> untuk menghasilkan label relevansi yang lebih berkualitas</p></li>
-<li><p>Membuat <strong>hampir 5 juta</strong> sampel pelatihan dwibahasa yang diselaraskan dengan beban kerja RAG yang sebenarnya</p></li>
-<li><p>Memilih model dasar yang lebih cocok untuk penilaian relevansi konteks panjang<strong>(BGE-M3 Reranker v2</strong>)</p></li>
-<li><p>Melatih hanya <strong>Kepala Pemangkasan</strong> untuk mengkhususkan model untuk penyorotan semantik</p></li>
+<li><p>Using <strong>LLM reasoning</strong> to generate higher-quality relevance labels</p></li>
+<li><p>Creating <strong>nearly 5 million</strong> bilingual training samples aligned with real RAG workloads</p></li>
+<li><p>Choosing a base model better suited for long-context relevance scoring (<strong>BGE-M3 Reranker v2</strong>)</p></li>
+<li><p>Training only the <strong>Pruning Head</strong> to specialize the model for semantic highlighting</p></li>
 </ul>
-<p>Kami berterima kasih kepada tim Provence dan Open Provence yang telah mempublikasikan hasil kerja mereka secara terbuka. Kontribusi mereka secara signifikan mempercepat pengembangan kami dan membuat proyek ini menjadi mungkin.</p>
+<p>We’re grateful to the Provence and Open Provence teams for publishing their work openly. Their contributions significantly accelerated our development and made this project possible.</p>

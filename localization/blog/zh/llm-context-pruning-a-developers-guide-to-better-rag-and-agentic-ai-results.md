@@ -1,6 +1,7 @@
 ---
 id: llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md
-title: LLM 上下文剪枝：开发人员指南：获得更好的 RAG 和 Agents AI 结果
+title: |
+  LLM Context Pruning: A Developer’s Guide to Better RAG and Agentic AI Results
 author: Cheney Zhang
 date: 2026-01-15T00:00:00.000Z
 cover: assets.zilliz.com/context_pruning_cover_d1b034ba67.png
@@ -11,21 +12,24 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Context Pruning, RAG, long context LLMs, context engineering'
 meta_title: |
   LLM Context Pruning: Improving RAG and Agentic AI Systems
-desc: 了解上下文剪枝在长上下文 RAG 系统中的工作原理、其重要性以及 Provence 等模型如何实现语义过滤并在实践中发挥作用。
+desc: >-
+  Learn how context pruning works in long-context RAG systems, why it matters,
+  and how models like Provence enable semantic filtering and perform in
+  practice.
 origin: >-
   https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md
 ---
-<p>最近，LLM 的上下文窗口变得越来越大。有些模型一次就能处理一百万个或更多的标记，而每个新版本似乎都在不断推高这一数字。这很令人兴奋，但如果你实际构建过任何使用长上下文的东西，你就会知道在<em>可能</em>和<em>有用</em>之间存在差距。</p>
+<p>Context windows in LLMs have gotten huge lately. Some models can take a million tokens or more in a single pass, and every new release seems to push that number higher. It’s exciting, but if you’ve actually built anything that uses long context, you know there’s a gap between what’s <em>possible</em> and what’s <em>useful</em>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/LLM_Leaderboard_7c64e4a18c.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>一个模型<em>能</em>在一次提示中读完一整本书，并不意味着你应该给它一次提示。大多数冗长的输入内容都是模型不需要的。一旦你开始将成百上千的标记输入一个提示符，你通常会得到更慢的响应、更高的计算费用，有时还会得到更低质量的答案，因为模型试图同时关注所有的东西。</p>
-<p>因此，即使上下文窗口不断变大，真正的问题仍然是：<strong>我们到底应该在里面放些什么？</strong>这就是<strong>上下文修剪的</strong>用武之地。从根本上说，这就是对检索或组装的上下文中无助于模型回答问题的部分进行修剪的过程。如果方法得当，它能使系统保持快速、稳定，并且更具可预测性。</p>
-<p>在本文中，我们将讨论为什么长上下文的表现往往与你的预期不同，剪枝如何帮助控制局面，以及<strong>Provence</strong>等剪枝工具如何融入实际的 RAG 管道，而不会让你的设置变得更加复杂。</p>
-<h2 id="Four-Common-Failure-Modes-in-Long-Context-Systems" class="common-anchor-header">长上下文系统中常见的四种故障模式<button data-href="#Four-Common-Failure-Modes-in-Long-Context-Systems" class="anchor-icon" translate="no">
+<p>Just because a model <em>can</em> read an entire book in one prompt doesn’t mean you should give it one. Most long inputs are full of stuff the model doesn’t need. Once you start dumping hundreds of thousands of tokens into a prompt, you usually get slower responses, higher compute bills, and sometimes lower-quality answers because the model is trying to pay attention to everything at once.</p>
+<p>So even though context windows keep getting bigger, the real question becomes: <strong>what should we actually put in there?</strong> That’s where <strong>Context Pruning</strong> comes in. It’s basically the process of trimming away the parts of your retrieved or assembled context that don’t help the model answer the question. Done right, it keeps your system fast, stable, and a lot more predictable.</p>
+<p>In this article, we’ll talk about why long context often behaves differently than you’d expect, how pruning helps keep things under control, and how pruning tools like <strong>Provence</strong> fit into real RAG pipelines without making your setup more complicated.</p>
+<h2 id="Four-Common-Failure-Modes-in-Long-Context-Systems" class="common-anchor-header">Four Common Failure Modes in Long-Context Systems<button data-href="#Four-Common-Failure-Modes-in-Long-Context-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,22 +44,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>更大的上下文窗口并不能神奇地让模型变得更聪明。相反，一旦你开始在提示中塞入大量信息，你就会发现一系列新的出错方式。以下是在构建长语境或 RAG 系统时经常会遇到的四个问题。</p>
+    </button></h2><p>A bigger context window doesn’t magically make the model smarter. If anything, once you start stuffing a ton of information into the prompt, you unlock a whole new set of ways things can go wrong. Here are four issues you’ll see all the time when building long-context or RAG systems.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Four_Failure_Modes_e9b9bcb3b2.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="1-Context-Clash" class="common-anchor-header">1.上下文冲突</h3><p>当多个回合中积累的信息变得相互矛盾时，就会发生上下文冲突。</p>
-<p>例如，用户可能会在对话初期说 "我喜欢苹果"，随后又说 "我不喜欢水果"。当这两种说法都保留在上下文中时，模型就没有可靠的方法来解决冲突，从而导致不一致或犹豫不决的反应。</p>
-<h3 id="2-Context-Confusion" class="common-anchor-header">2.语境混淆</h3><p>当上下文包含大量不相关或弱相关的信息，使得模型难以选择正确的行动或工具时，就会出现上下文混乱。</p>
-<p>这一问题在工具增强系统中尤为明显。当上下文中充斥着大量不相关的细节时，模型可能会误解用户意图，选择错误的工具或操作--这并不是因为缺少正确的选项，而是因为信号被掩盖在噪音之下。</p>
-<h3 id="3-Context-Distraction" class="common-anchor-header">3.上下文分心</h3><p>当过多的上下文信息占据了模型的注意力，降低了模型对预先训练的知识和一般推理的依赖性时，就会出现上下文分心。</p>
-<p>模型不依赖广泛学习的模式，而是过度重视上下文中的近期细节，即使这些细节不完整或不可靠。这可能会导致推理过于肤浅或脆性，过于紧密地反映上下文，而不是应用更高层次的理解。</p>
-<h3 id="4-Context-Poisoning" class="common-anchor-header">4.语境中毒</h3><p>当不正确的信息进入语境并在多个回合中被反复引用和强化时，就会出现语境中毒。</p>
-<p>对话初期引入的一个错误陈述可能成为后续推理的基础。随着对话的继续，模型会建立在这一错误假设的基础上，使错误更加复杂，离正确答案越来越远。</p>
-<h2 id="What-Is-Context-Pruning-and-Why-It-Matters" class="common-anchor-header">什么是上下文剪枝及其重要性<button data-href="#What-Is-Context-Pruning-and-Why-It-Matters" class="anchor-icon" translate="no">
+<h3 id="1-Context-Clash" class="common-anchor-header">1. Context Clash</h3><p>Context Clash occurs when information accumulated across multiple turns becomes internally contradictory.</p>
+<p>For example, a user might say “I like apples” early in a conversation and later state “I don’t like fruit.” When both statements remain in the context, the model has no reliable way to resolve the conflict, leading to inconsistent or hesitant responses.</p>
+<h3 id="2-Context-Confusion" class="common-anchor-header">2. Context Confusion</h3><p>Context Confusion arises when the context contains large amounts of irrelevant or weakly related information, making it difficult for the model to select the correct action or tool.</p>
+<p>This issue is especially visible in tool-augmented systems. When the context is cluttered with unrelated details, the model may misinterpret user intent and select the wrong tool or action—not because the correct option is missing, but because the signal is buried under noise.</p>
+<h3 id="3-Context-Distraction" class="common-anchor-header">3. Context Distraction</h3><p>Context Distraction happens when excessive contextual information dominates the model’s attention, reducing its reliance on pretrained knowledge and general reasoning.</p>
+<p>Instead of relying on broadly learned patterns, the model overweights recent details in the context, even when they are incomplete or unreliable. This can lead to shallow or brittle reasoning that mirrors the context too closely rather than applying higher-level understanding.</p>
+<h3 id="4-Context-Poisoning" class="common-anchor-header">4. Context Poisoning</h3><p>Context Poisoning occurs when incorrect information enters the context and is repeatedly referenced and reinforced over multiple turns.</p>
+<p>A single false statement introduced early in the conversation can become the basis for subsequent reasoning. As the dialogue continues, the model builds on this flawed assumption, compounding the error and drifting further from the correct answer.</p>
+<h2 id="What-Is-Context-Pruning-and-Why-It-Matters" class="common-anchor-header">What Is Context Pruning and Why It Matters<button data-href="#What-Is-Context-Pruning-and-Why-It-Matters" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,19 +74,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一旦开始处理较长的上下文，你很快就会意识到你需要不止一种技巧来控制局面。在实际系统中，团队通常会结合一系列策略--RAG、工具加载、汇总、隔离特定消息、卸载旧历史记录等。它们都以不同的方式提供帮助。但<strong>"上下文剪枝"（Context Pruning）</strong>是直接决定<em>哪些信息会被送入</em>模型的手段。</p>
-<p>简单来说，上下文剪枝就是在无关信息、低价值信息或冲突信息进入模型上下文窗口之前自动将其删除的过程。它基本上是一个过滤器，只保留对当前任务最重要的文本片段。</p>
-<p>其他策略可能会重组上下文、压缩上下文或将某些部分放到一边备用。剪枝策略更为直接：<strong>它回答的问题是 "这部分信息是否应该出现在提示中？</strong></p>
-<p>这就是为什么剪枝在 RAG 系统中尤为重要。向量搜索很好，但并不完美。它经常会返回一大袋候选信息--有些有用，有些关系松散，有些完全不靠谱。如果你把它们都扔进提示器，就会遇到我们前面提到的失败模式。剪枝位于检索和模型之间，就像一个看门人，决定哪些数据块需要保留。</p>
+    </button></h2><p>Once you start dealing with long contexts, you quickly realize you need more than one trick to keep things under control. In real systems, teams usually combine a bunch of tactics—RAG, tool loadout, summarization, quarantining certain messages, offloading old history, and so on. They all help in different ways. But <strong>Context Pruning</strong> is the one that directly decides <em>what actually gets fed</em> to the model.</p>
+<p>Context Pruning, in simple terms, is the process of automatically removing irrelevant, low-value, or conflicting information before it enters the model’s context window. It’s basically a filter that keeps only the text pieces most likely to matter for the current task.</p>
+<p>Other strategies might reorganize the context, compress it, or push some parts aside for later. Pruning is more direct: <strong>it answers the question, “Should this piece of information go into the prompt at all?”</strong></p>
+<p>That’s why pruning ends up being especially important in RAG systems. Vector search is great, but it isn’t perfect. It often returns a big grab bag of candidates—some useful, some loosely related, some completely off-base. If you just dump all of them into the prompt, you’ll hit the failure modes we covered earlier. Pruning sits between retrieval and the model, acting as a gatekeeper that decides which chunks to keep.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/RAG_Pipeline_with_Context_Pruning_01a0d40819.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>当剪枝工作顺利进行时，好处就会立即显现出来：上下文更清晰、答案更一致、标记使用率更低、无关文本潜入造成的奇怪副作用更少。即使不改变检索设置，增加一个可靠的剪枝步骤也能明显改善系统的整体性能。</p>
-<p>在实践中，剪枝是长语境或 RAG 管道中效率最高的优化之一--想法简单，影响巨大。</p>
-<h2 id="Provence-A-Practical-Context-Pruning-Model" class="common-anchor-header">普罗旺斯实用的上下文剪枝模型<button data-href="#Provence-A-Practical-Context-Pruning-Model" class="anchor-icon" translate="no">
+<p>When pruning works well, the benefits show up immediately: cleaner context, more consistent answers, lower token usage, and fewer weird side effects from irrelevant text sneaking in. Even if you don’t change anything about your retrieval setup, adding a solid pruning step can noticeably improve overall system performance.</p>
+<p>In practice, pruning is one of the highest-leverage optimizations in a long-context or RAG pipeline—simple idea, big impact.</p>
+<h2 id="Provence-A-Practical-Context-Pruning-Model" class="common-anchor-header">Provence: A Practical Context Pruning Model<button data-href="#Provence-A-Practical-Context-Pruning-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -97,42 +101,42 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在探索上下文剪枝方法时，我发现了<strong>Naver Labs Europe</strong> 开发的两个引人注目的开源模型：<a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a>及其多语言变体<a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a>。</p>
+    </button></h2><p>While exploring approaches to context pruning, I came across two compelling open-source models developed at <strong>Naver Labs Europe</strong>: <a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a> and its multilingual variant, <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/provence1_b9d2c43276.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Provence 是一种为检索增强生成训练轻量级上下文剪枝模型的方法，尤其侧重于问题解答。给定一个用户问题和一个检索到的段落，它会识别并删除无关的句子，只保留对最终答案有帮助的信息。</p>
-<p>通过在生成前修剪低价值内容，Provence 减少了模型输入中的噪音，缩短了提示时间，降低了 LLM 推理延迟。它还具有即插即用的特点，可与任何 LLM 或检索系统配合使用，无需进行紧密集成或架构更改。</p>
-<p>Provence 为现实世界中的 RAG 管道提供了几项实用功能。</p>
-<p><strong>1.文档级理解</strong></p>
-<p>Provence 将文档作为一个整体进行推理，而不是孤立地对句子进行评分。这一点很重要，因为现实世界中的文档经常包含 "it"、"this "或 "the method above "等引用。孤立地看，这些句子可能模棱两可，甚至毫无意义。如果结合上下文来看，它们的相关性就会一目了然。通过对文档进行整体模型化，Provence 可以做出更准确、更连贯的剪枝决定。</p>
-<p><strong>2.自适应句子选择</strong></p>
-<p>Provence 会自动决定从检索到的文档中保留多少句子。它不依赖于 "保留前五句 "这样的固定规则，而是根据查询和内容进行调整。</p>
-<p>有些问题只需一个句子就能回答，而其他问题则需要多个辅助语句。Provence 可以动态地处理这种变化，它使用的相关性阈值在各个领域都能很好地发挥作用，并且可以在需要时进行调整--在大多数情况下无需手动调整。</p>
-<p><strong>3.通过集成 Rerankers 实现高效率</strong></p>
-<p>Provence 的设计宗旨是高效。它是一个紧凑、轻量级的模型，与基于 LLM 的剪枝方法相比，运行速度明显更快、成本更低。</p>
-<p>更重要的是，Provence 可以将 Rerankers 和上下文剪枝合并为一个步骤。由于重排已经是现代 RAG 管道中的一个标准阶段，在这一点上整合剪枝使得上下文剪枝的额外成本接近于零，同时还能提高传递给语言模型的上下文质量。</p>
-<p><strong>4.通过 XProvence 支持多语言</strong></p>
-<p>Provence 还有一个名为 XProvence 的变体，它使用相同的架构，但在多语言数据上进行训练。这使它能够评估跨语言（如中文、英文和韩文）的查询和文档，从而适用于多语言和跨语言 RAG 系统。</p>
-<h3 id="How-Provence-Is-Trained" class="common-anchor-header">如何训练 Provence</h3><p>Provence 采用基于交叉编码器架构的简洁有效的训练设计。在训练过程中，查询和每个检索到的段落都被串联成一个输入，并一起编码。这样，模型就能同时观察到问题和段落的全部上下文，并直接推理出它们的相关性。</p>
+<p>Provence is a method for training a lightweight context pruning model for retrieval-augmented generation, with a particular focus on question answering. Given a user question and a retrieved passage, it identifies and removes irrelevant sentences, keeping only information that contributes to the final answer.</p>
+<p>By pruning low-value content before generation, Provence reduces noise in the model’s input, shortens prompts, and lowers LLM inference latency. It is also plug-and-play, working with any LLM or retrieval system without requiring tight integration or architectural changes.</p>
+<p>Provence offers several practical features for real-world RAG pipelines.</p>
+<p><strong>1. Document-Level Understanding</strong></p>
+<p>Provence reasons about documents as a whole, rather than scoring sentences in isolation. This matters because real-world documents frequently contain references such as “it,” “this,” or “the method above.” In isolation, these sentences can be ambiguous or even meaningless. When viewed in context, their relevance becomes clear. By modeling the document holistically, Provence produces more accurate and coherent pruning decisions.</p>
+<p><strong>2. Adaptive Sentence Selection</strong></p>
+<p>Provence automatically determines how many sentences to keep from a retrieved document. Instead of relying on fixed rules like “keep the top five sentences,” it adapts to the query and the content.</p>
+<p>Some questions can be answered with a single sentence, while others require multiple supporting statements. Provence handles this variation dynamically, using a relevance threshold that works well across domains and can be adjusted when needed—without manual tuning in most cases.</p>
+<p><strong>3. High Efficiency with Integrated Reranking</strong></p>
+<p>Provence is designed to be efficient. It is a compact, lightweight model, making it significantly faster and cheaper to run than LLM-based pruning approaches.</p>
+<p>More importantly, Provence can combine reranking and context pruning into a single step. Since reranking is already a standard stage in modern RAG pipelines, integrating pruning at this point makes the additional cost of context pruning close to zero, while still improving the quality of the context passed to the language model.</p>
+<p><strong>4. Multilingual Support via XProvence</strong></p>
+<p>Provence also has a variant called XProvence, which uses the same architecture but is trained on multilingual data. This enables it to evaluate queries and documents across languages—such as Chinese, English, and Korean—making it suitable for multilingual and cross-lingual RAG systems.</p>
+<h3 id="How-Provence-Is-Trained" class="common-anchor-header">How Provence Is Trained</h3><p>Provence uses a clean and effective training design based on a cross-encoder architecture. During training, the query and each retrieved passage are concatenated into a single input and encoded together. This allows the model to observe the full context of both the question and the passage at once and reason directly about their relevance.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/provence2_80523f7a9e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>这种联合编码使 Provence 能够从细粒度的相关性信号中学习。该模型在<a href="https://zilliz.com/ai-faq/what-is-the-difference-between-bert-roberta-and-deberta-for-embeddings"><strong>DeBERTa</strong></a>上作为轻量级编码器进行了微调，并进行了优化，以同时执行两项任务：</p>
+<p>This joint encoding enables Provence to learn from fine-grained relevance signals. The model is fine-tuned on <a href="https://zilliz.com/ai-faq/what-is-the-difference-between-bert-roberta-and-deberta-for-embeddings"><strong>DeBERTa</strong></a> as a lightweight encoder and optimized to perform two tasks simultaneously:</p>
 <ol>
-<li><p><strong>文档级相关性评分（Rerankers 分数）：</strong>该模型预测整个文档的相关性得分，表明其与查询的匹配程度。例如，0.8 分代表强相关性。</p></li>
-<li><p><strong>令牌级相关性标记（二进制掩码）：</strong>与此同时，模型会给每个标记符分配一个二进制标签，标明它与查询是相关（<code translate="no">1</code> ）还是不相关（<code translate="no">0</code> ）。</p></li>
+<li><p><strong>Document-level relevance scoring (rerank score):</strong> The model predicts a relevance score for the entire document, indicating how well it matches the query. For example, a score of 0.8 represents strong relevance.</p></li>
+<li><p><strong>Token-level relevance labeling (binary mask):</strong> In parallel, the model assigns a binary label to each token, marking whether it is relevant (<code translate="no">1</code>) or irrelevant (<code translate="no">0</code>) to the query.</p></li>
 </ol>
-<p>因此，训练有素的模型可以评估文档的整体相关性，并确定哪些部分应该保留或删除。</p>
-<p>在推理时，Provence 会在标记级别预测相关性标签。然后在句子层面对这些预测进行汇总：如果一个句子包含的相关标记多于不相关标记，则保留该句子；反之，则删除该句子。由于模型是在句子级别的监督下进行训练的，因此同一句子中的标记预测往往是一致的，这使得这种聚合策略在实践中是可靠的。剪枝行为也可以通过调整聚合阈值来实现更保守或更激进的剪枝。</p>
-<p>最重要的是，Provence 重用了大多数 RAG 管道已经包含的重排步骤。这意味着增加上下文剪枝几乎不需要额外的开销，这使得 Provence 特别适用于现实世界中的 RAG 系统。</p>
-<h2 id="Evaluating-Context-Pruning-Performance-Across-Models" class="common-anchor-header">评估不同模型的上下文剪枝性能<button data-href="#Evaluating-Context-Pruning-Performance-Across-Models" class="anchor-icon" translate="no">
+<p>As a result, the trained model can assess a document’s overall relevance and identify which parts should be kept or removed.</p>
+<p>At inference time, Provence predicts relevance labels at the token level. These predictions are then aggregated at the sentence level: a sentence is retained if it contains more relevant tokens than irrelevant ones; otherwise, it is pruned. Since the model is trained with sentence-level supervision, token predictions within the same sentence tend to be consistent, making this aggregation strategy reliable in practice. The pruning behavior can also be tuned by adjusting the aggregation threshold to achieve more conservative or more aggressive pruning.</p>
+<p>Crucially, Provence reuses the reranking step that most RAG pipelines already include. This means context pruning can be added with little to no additional overhead, making Provence especially practical for real-world RAG systems.</p>
+<h2 id="Evaluating-Context-Pruning-Performance-Across-Models" class="common-anchor-header">Evaluating Context Pruning Performance Across Models<button data-href="#Evaluating-Context-Pruning-Performance-Across-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,46 +151,46 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>到目前为止，我们主要介绍了 Provence 的设计和训练。下一步是评估它在实践中的表现：它修剪上下文的效果如何，与其他方法相比如何，以及在真实世界条件下的表现如何。</p>
-<p>为了回答这些问题，我们设计了一组定量实验，在现实评估环境中比较多个模型的上下文剪枝质量。</p>
-<p>实验重点关注两个主要目标：</p>
+    </button></h2><p>So far, we’ve focused on Provence’s design and training. The next step is to evaluate how it performs in practice: how well it prunes context, how it compares with other approaches, and how it behaves under real-world conditions.</p>
+<p>To answer these questions, we designed a set of quantitative experiments to compare the quality of context pruning across multiple models in realistic evaluation settings.</p>
+<p>The experiments focus on two primary goals:</p>
 <ul>
-<li><p><strong>剪枝效果：</strong>我们使用精确度、召回率和 F1 分数等标准指标来衡量每个模型在去除无关信息的同时保留相关内容的准确度。</p></li>
-<li><p><strong>域外泛化：</strong>我们评估每个模型在不同于其训练数据的数据分布上的表现，从而评估其在域外场景中的鲁棒性。</p></li>
+<li><p><strong>Pruning effectiveness:</strong> We measure how accurately each model retains relevant content while removing irrelevant information, using standard metrics such as Precision, Recall, and F1 score.</p></li>
+<li><p><strong>Out-of-domain generalization:</strong> We evaluate how well each model performs on data distributions that differ from its training data, assessing robustness in out-of-domain scenarios.</p></li>
 </ul>
-<h3 id="Models-Compared" class="common-anchor-header">比较的模型</h3><ul>
-<li><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>普罗旺斯</strong></a></p></li>
+<h3 id="Models-Compared" class="common-anchor-header">Models Compared</h3><ul>
+<li><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a></p></li>
 <li><p><a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a></p></li>
-<li><p><a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>OpenSearch Semantic Highlighter</strong></a>（基于 BERT 架构的剪枝模型，专为语义高亮任务而设计）</p></li>
+<li><p><a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>OpenSearch Semantic Highlighter</strong></a> (A pruning model based on a BERT architecture, designed specifically for semantic highlighting tasks)</p></li>
 </ul>
-<h3 id="Dataset" class="common-anchor-header">数据集</h3><p>我们使用 WikiText-2 作为评估数据集。WikiText-2 源自维基百科文章，包含多种文档结构，其中的相关信息往往分布在多个句子中，语义关系可能并不复杂。</p>
-<p>重要的是，WikiText-2 与通常用于训练上下文剪枝模型的数据有很大不同，但仍然类似于现实世界中的知识密集型内容。这使得它非常适合域外评估，而这正是我们实验的重点。</p>
-<h3 id="Query-Generation-and-Annotation" class="common-anchor-header">查询生成和注释</h3><p>为了构建域外剪枝任务，我们使用<strong>GPT-4o-mini</strong> 从原始 WikiText-2 语料库中自动生成问答对。每个评估样本由三个部分组成：</p>
+<h3 id="Dataset" class="common-anchor-header">Dataset</h3><p>We use WikiText-2 as the evaluation dataset. WikiText-2 is derived from Wikipedia articles and contains diverse document structures, where relevant information is often spread across multiple sentences and semantic relationships can be non-trivial.</p>
+<p>Importantly, WikiText-2 differs substantially from the data typically used to train context pruning models, while still resembling real-world, knowledge-heavy content. This makes it well suited for out-of-domain evaluation, which is a key focus of our experiments.</p>
+<h3 id="Query-Generation-and-Annotation" class="common-anchor-header">Query Generation and Annotation</h3><p>To construct an out-of-domain pruning task, we automatically generate question–answer pairs from the raw WikiText-2 corpus using <strong>GPT-4o-mini</strong>. Each evaluation sample consists of three components:</p>
 <ul>
-<li><p><strong>查询：</strong>从文档中生成的自然语言问题。</p></li>
-<li><p><strong>上下文：</strong>未经修改的完整文档。</p></li>
-<li><p><strong>地面实况：</strong>句子级注释，表明哪些句子包含答案（保留），哪些句子无关（剪枝）。</p></li>
+<li><p><strong>Query:</strong> A natural language question generated from the document.</p></li>
+<li><p><strong>Context:</strong> The complete, unmodified document.</p></li>
+<li><p><strong>Ground Truth:</strong> Sentence-level annotations indicating which sentences contain the answer (to be retained) and which are irrelevant (to be pruned).</p></li>
 </ul>
-<p>这种设置很自然地定义了上下文剪枝任务：给定查询和完整文档后，模型必须识别出真正重要的句子。包含答案的句子被标记为相关句，应予以保留，而其他句子则被视为不相关句，应予以剪枝。这种表述方式允许使用精确度、召回率和 F1 分数来量化衡量剪枝质量。</p>
-<p>最重要的是，生成的问题不会出现在任何评估模型的训练数据中。因此，性能反映的是真正的泛化而不是记忆。我们总共生成了 300 个样本，涵盖了简单的基于事实的问题、多跳推理任务和更复杂的分析提示，以更好地反映真实世界的使用模式。</p>
-<h3 id="Evaluation-Pipeline" class="common-anchor-header">评估流程</h3><p>
+<p>This setup naturally defines a context pruning task: given a query and a full document, the model must identify the sentences that actually matter. Sentences that contain the answer are labeled as relevant and should be retained, while all other sentences are treated as irrelevant and should be pruned. This formulation allows pruning quality to be measured quantitatively using Precision, Recall, and F1 score.</p>
+<p>Crucially, the generated questions do not appear in the training data of any evaluated model. As a result, performance reflects true generalization rather than memorization. In total, we generate 300 samples, spanning simple fact-based questions, multi-hop reasoning tasks, and more complex analytical prompts, in order to better reflect real-world usage patterns.</p>
+<h3 id="Evaluation-Pipeline" class="common-anchor-header">Evaluation Pipeline</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/pipeline_77e52002fc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>超参数优化：对于每个模型，我们都会在预定义的超参数空间内进行网格搜索，并选择能使 F1 分数最大化的配置。</p>
-<h3 id="Results-and-Analysis" class="common-anchor-header">结果与分析</h3><p>
+<p>Hyperparameter Optimization: For each model, we perform grid search over a predefined hyperparameter space and select the configuration that maximizes the F1 score.</p>
+<h3 id="Results-and-Analysis" class="common-anchor-header">Results and Analysis</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/result_0df098152a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>结果显示，三种模型之间存在明显的性能差异。</p>
-<p><strong>普罗旺斯</strong>的整体性能最强，<strong>F1 得分为 66.76%</strong>。其精确度<strong>（69.53%</strong>）和召回率<strong>（64.19%</strong>）非常均衡，表明其具有强大的域外泛化能力。最佳配置使用的剪枝阈值为<strong>0.6</strong>和 α<strong>= 0.051</strong>，这表明模型的相关性得分校准良好，剪枝行为直观且易于在实践中调整。</p>
-<p><strong>XProvence</strong>的<strong>F1 得分为 58.97%</strong>，特点是<strong>召回率高（75.52%）</strong>，<strong>精度较低（48.37%）</strong>。这反映了一种更为保守的剪枝策略，即优先保留潜在的相关信息，而不是积极去除噪音。在误报代价高昂的领域（如医疗保健或法律应用），这种行为可能是可取的，但它也会增加误报率，从而降低精确度。尽管如此，XProvence 的多语言功能使其成为非英语或跨语言环境的有力选择。</p>
-<p>相比之下，<strong>OpenSearch Semantic Highlighter</strong>的表现要差得多，<strong>F1 得分为 46.37%</strong>（精确度<strong>62.35%</strong>，召回率<strong>36.98%</strong>）。与Provence和XProvence的差距表明，在分数校准和域外泛化方面都存在局限性，尤其是在域外条件下。</p>
-<h2 id="Semantic-Highlighting-Another-Way-to-Find-What-Actually-Matters-in-Text" class="common-anchor-header">语义高亮找到文本中真正重要内容的另一种方法<button data-href="#Semantic-Highlighting-Another-Way-to-Find-What-Actually-Matters-in-Text" class="anchor-icon" translate="no">
+<p>The results reveal clear performance differences across the three models.</p>
+<p><strong>Provence</strong> achieves the strongest overall performance, with an <strong>F1 score of 66.76%</strong>. Its Precision (<strong>69.53%</strong>) and Recall (<strong>64.19%</strong>) are well balanced, indicating robust out-of-domain generalization. The optimal configuration uses a pruning threshold of <strong>0.6</strong> and <strong>α = 0.051</strong>, suggesting that the model’s relevance scores are well calibrated and that the pruning behavior is intuitive and easy to tune in practice.</p>
+<p><strong>XProvence</strong> reaches an <strong>F1 score of 58.97%</strong>, characterized by <strong>high recall (75.52%)</strong> and <strong>lower precision (48.37%)</strong>. This reflects a more conservative pruning strategy that prioritizes retaining potentially relevant information over aggressively removing noise. Such behavior can be desirable in domains where false negatives are costly—such as healthcare or legal applications—but it also increases false positives, which lowers precision. Despite this trade-off, XProvence’s multilingual capability makes it a strong option for non-English or cross-lingual settings.</p>
+<p>In contrast, <strong>OpenSearch Semantic Highlighter</strong> performs substantially worse, with an <strong>F1 score of 46.37%</strong> (Precision <strong>62.35%</strong>, Recall <strong>36.98%</strong>). The gap relative to Provence and XProvence points to limitations in both score calibration and out-of-domain generalization, especially under out-of-domain conditions.</p>
+<h2 id="Semantic-Highlighting-Another-Way-to-Find-What-Actually-Matters-in-Text" class="common-anchor-header">Semantic Highlighting: Another Way to Find What Actually Matters in Text<button data-href="#Semantic-Highlighting-Another-Way-to-Find-What-Actually-Matters-in-Text" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,21 +205,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>既然我们已经谈到了上下文剪枝，那么就应该看看拼图中的相关部分：<a href="https://milvus.io/blog/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md"><strong>语义高亮</strong></a>。从技术上讲，这两种功能的基本工作几乎是一样的--它们都是根据文本片段与查询的相关程度对其进行评分。区别在于如何在管道中使用结果。</p>
-<p>大多数人一听到 "高亮"，就会想到 Elasticsearch 或 Solr 中的经典关键词高亮工具。这些工具基本上是查找字面上的关键词匹配，然后用类似<code translate="no">&lt;em&gt;</code> 这样的东西将其包装起来。这些工具既便宜又可预测，但只有在文本使用了与查询<em>完全相同</em>的词语时才会起作用。如果文档进行了转述、使用了同义词或对观点进行了不同的表述，传统的高亮工具就会完全错过。</p>
-<p><strong>语义高亮则采取了不同的方法。</strong>它不检查精确的字符串匹配，而是使用一个模型来估计查询和不同文本跨度之间的语义相似性。这样，即使措辞完全不同，它也能突出显示相关内容。对于 RAG 管道、Agent 工作流或任何人工智能搜索系统来说，意义比词组更重要，语义高亮可以让你更清楚地了解检索文档的<em>原因</em>。</p>
-<p>问题在于，大多数现有的语义高亮解决方案都不是为生产型人工智能工作负载而构建的。我们测试了所有可用的解决方案，但没有一个能提供真正的 RAG 和 Agents 系统所需的精度、延迟或多语言可靠性。因此，我们最终训练并开源了自己的模型：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1。</a></p>
-<p>从高层次来看，<strong>上下文剪枝和语义高亮解决的是相同的核心任务</strong>：给定一个查询和一大段文本，找出其中真正重要的部分。唯一的区别在于接下来会发生什么。</p>
+    </button></h2><p>Now that we’ve talked about context pruning, it’s worth looking at a related piece of the puzzle: <a href="https://milvus.io/blog/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md"><strong>semantic highlighting</strong></a>. Technically, both features are doing almost the same underlying job—they score pieces of text based on how relevant they are to a query. The difference is how the result is used in the pipeline.</p>
+<p>Most people hear “highlighting” and think of the classic keyword highlighters you see in Elasticsearch or Solr. These tools basically look for literal keyword matches and wrap them in something like <code translate="no">&lt;em&gt;</code>. They’re cheap and predictable, but they only work when the text uses the <em>exact</em> same words as the query. If the document paraphrases, uses synonyms, or phrases the idea differently, traditional highlighters miss it completely.</p>
+<p><strong>Semantic highlighting takes a different route.</strong> Instead of checking for exact string matches, it uses a model to estimate semantic similarity between the query and different text spans. This lets it highlight relevant content even when the wording is totally different. For RAG pipelines, agent workflows, or any AI search system where meaning matters more than tokens, semantic highlighting gives you a far clearer picture of <em>why</em> a document was retrieved.</p>
+<p>The problem is that most existing semantic highlighting solutions aren’t built for production AI workloads. We tested everything available, and none of them delivered the level of precision, latency, or multilingual reliability we needed for real RAG and agent systems. So we ended up training and open-sourcing our own model instead: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p>
+<p>At a high level, <strong>context pruning and semantic highlighting solve the same core task</strong>: given a query and a chunk of text, figure out which parts actually matter. The only difference is what happens next.</p>
 <ul>
-<li><p><strong>上下文剪枝会</strong>在生成前删除不相关的部分。</p></li>
-<li><p><strong>语义高亮则</strong>保留全文，但在视觉上<strong>突出</strong>重要的部分。</p></li>
+<li><p><strong>Context pruning</strong> drops the irrelevant parts before generation.</p></li>
+<li><p><strong>Semantic highlighting</strong> keeps the full text but visually surfaces the important spans.</p></li>
 </ul>
-<p>由于底层操作符非常相似，因此相同的模型通常可以支持这两种功能。这样就更容易在堆栈中重复使用组件，并使 RAG 系统在整体上更简单、更高效。</p>
-<h3 id="Semantic-Highlighting-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Milvus和Zilliz Cloud中的语义高亮功能</h3><p><a href="https://milvus.io">Milvus</a>和<a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>（Milvus的全面托管服务）现在完全支持语义高亮，而且它已经被证明对任何使用RAG或人工智能驱动搜索的人都非常有用。该功能解决了一个非常简单但令人头疼的问题：当向量搜索返回大量语块时，如何快速找出<em>这些语块中哪些句子是真正重要的</em>？</p>
-<p>如果没有高亮功能，用户最终只能通过阅读整个文档来了解为什么会检索到某些内容。有了内置的语义高亮功能，Milvus 和 Zilliz Cloud 可以自动标记与您的查询语义相关的特定句段，即使措辞不同也是如此。无需再寻找匹配的关键字或猜测某块内容出现的原因。</p>
-<p>这使得检索更加透明。Milvus 不只是返回 "相关文档"，而是显示相关性<em>所在</em>。对于 RAG 管道，这一点尤其有帮助，因为您可以立即看到模型应该关注的内容，从而使调试和提示构建变得更加容易。</p>
-<p>我们在 Milvus 和 Zilliz Cloud 中直接内置了这种支持，因此您不必为了获得可用的归因而附加外部模型或运行其他服务。一切都在检索路径中运行：向量搜索 → 相关性评分 → 突出显示跨度。它可以开箱即用，并通过我们的<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>模型支持多语言工作负载。</p>
-<h2 id="Looking-Ahead" class="common-anchor-header">展望未来<button data-href="#Looking-Ahead" class="anchor-icon" translate="no">
+<p>Because the underlying operation is so similar, the same model can often power both features. That makes it easier to reuse components across the stack and keeps your RAG system simpler and more efficient overall.</p>
+<h3 id="Semantic-Highlighting-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Semantic Highlighting in Milvus and Zilliz Cloud</h3><p>Semantic highlighting is now fully supported in <a href="https://milvus.io">Milvus</a> and <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a> (the fully managed service of Milvus), and it’s already proving useful for anyone working with RAG or AI-driven search. The feature solves a very simple but painful problem: when vector search returns a ton of chunks, how do you quickly figure out <em>which sentences inside those chunks actually matter</em>?</p>
+<p>Without highlighting, users end up reading entire documents just to understand why something was retrieved. With semantic highlighting built in, Milvus and Zilliz Cloud automatically marks the specific spans that are semantically related to your query — even if the wording is different. No more hunting for keyword matches or guessing why a chunk showed up.</p>
+<p>This makes retrieval far more transparent. Instead of just returning “relevant documents,” Milvus shows <em>where</em> the relevance lives. For RAG pipelines, this is especially helpful because you can instantly see what the model is supposed to attend to, making debugging and prompt construction much easier.</p>
+<p>We built this support directly into Milvus and Zilliz Cloud, so you don’t have to bolt on external models or run another service just to get usable attribution. Everything runs inside the retrieval path: vector search → relevance scoring → highlighted spans. It works out of the box at scale and supports multilingual workloads with our <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a> model.</p>
+<h2 id="Looking-Ahead" class="common-anchor-header">Looking Ahead<button data-href="#Looking-Ahead" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,8 +234,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>上下文工程仍然是一项全新的技术，还有很多问题有待解决。即使剪枝和语义高亮在<a href="https://milvus.io">Milvus</a>和<a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a>中运行良好<strong>，</strong>我们也远未到故事结束的时候。还有很多领域需要真正的工程设计工作--在不降低速度的前提下提高剪枝模型的准确性，更好地处理奇怪的或领域外的查询，并将所有环节连接起来，使检索→Rerankers→剪枝→高亮感觉就像一个简洁的流水线，而不是粘在一起的一组黑客。</p>
-<p>随着上下文窗口的不断增加，这些决策只会变得越来越重要。良好的上下文管理不再是 "锦上添花"，它已成为长上下文和 RAG 系统可靠运行的核心部分。</p>
-<p>我们将继续进行实验、基准测试，并推出能真正为开发人员带来改变的产品。我们的目标很简单：让构建系统变得更容易，使其不会在混乱的数据、不可预测的查询或大规模工作负载下崩溃。</p>
-<p>如果您想讨论其中的任何问题，或者只是需要调试方面的帮助，您可以进入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 频道</a>，或者通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 预约 20 分钟的一对一会议，以获得见解、指导和问题解答。</p>
-<p>我们总是很乐意与其他建设者聊天和交流。</p>
+    </button></h2><p>Context engineering is still pretty new, and there’s plenty left to figure out. Even with pruning and semantic highlighting working well inside <a href="https://milvus.io">Milvus</a> and <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a><strong>,</strong> we’re nowhere near the end of the story. There are a bunch of areas that still need real engineering work — making pruning models more accurate without slowing things down, getting better at handling weird or out-of-domain queries, and wiring all the pieces together so retrieval → rerank → prune → highlight feels like one clean pipeline instead of a set of hacks glued together.</p>
+<p>As context windows keep growing, these decisions only get more important. Good context management isn’t a “nice bonus” anymore; it’s becoming a core part of making long-context and RAG systems behave reliably.</p>
+<p>We’re going to keep experimenting, benchmarking, and shipping the pieces that actually make a difference for developers. The goal is straightforward: make it easier to build systems that don’t break under messy data, unpredictable queries, or large-scale workloads.</p>
+<p>If you want to talk through any of this — or just need help debugging something — you can hop into our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> or book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>Always happy to chat and trade notes with other builders.</p>

@@ -1,11 +1,11 @@
 ---
 id: top-10-keywords-dominates-milvus-community-in-2023.md
-title: 'Оглашение Топ-10 ключевых слов, доминирующих в сообществе Milvus в 2023 году'
+title: Unveiling the Top 10 Keywords Dominating the Milvus Community in 2023
 author: 'Jack Li, Fendy Feng'
 date: 2024-1-21
 desc: >-
-  В этом посте мы исследуем сердце сообщества, анализируя истории чатов и
-  выявляя 10 ключевых слов в обсуждениях.
+  This post explores the heart of the community by analyzing chat histories and
+  revealing the top 10 keywords in discussions.
 metaTitle: Top 10 Keywords Dominating the Milvus Community in 2023
 cover: >-
   assets.zilliz.com/Top_10_Keywords_in_the_Milvus_Community_20240116_111204_1_f65b17a8ea.png
@@ -16,9 +16,9 @@ tags: >-
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community-in-2023.md'
 ---
-<p>Завершая 2023 год, давайте проанализируем удивительный путь сообщества Milvus: <a href="https://github.com/milvus-io/milvus">25 000 звезд GitHub</a>, запуск <a href="https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md">Milvus 2.3.0</a> и более 10 миллионов загрузок <a href="https://hub.docker.com/r/milvusdb/milvus">образов Docker</a>. В этом посте мы исследуем сердце сообщества, анализируя истории чатов и выявляя 10 ключевых слов в обсуждениях.</p>
+<p>As we conclude 2023, let’s review the Milvus community’s remarkable journey: boasting <a href="https://github.com/milvus-io/milvus">25,000 GitHub Stars</a>, the launch of <a href="https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md">Milvus 2.3.0</a>, and exceeding 10 million <a href="https://hub.docker.com/r/milvusdb/milvus">Docker image</a> downloads. This post explores the heart of the community by analyzing chat histories and revealing the top 10 keywords in discussions.</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/o5uMdNLioQ0?list=PLPg7_faNDlT5Fb8WN8r1PzzQTNzdechnS" title="Mastering Milvus: Turbocharge Your Vector Database with Optimization Secrets!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-<h2 id="1-Version--The-rise-of-AIGC-drives-rapid-Milvus-iteration" class="common-anchor-header">#1 Version - Возникновение AIGC способствует быстрой итерации Milvus<button data-href="#1-Version--The-rise-of-AIGC-drives-rapid-Milvus-iteration" class="anchor-icon" translate="no">
+<h2 id="1-Version--The-rise-of-AIGC-drives-rapid-Milvus-iteration" class="common-anchor-header">#1 Version — The rise of AIGC drives rapid Milvus iteration<button data-href="#1-Version--The-rise-of-AIGC-drives-rapid-Milvus-iteration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,10 +33,10 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Удивительно, но слово "Version" стало самым обсуждаемым ключевым словом в 2023 году. Это открытие связано с волной ИИ этого года, когда векторные базы данных стали критически важной инфраструктурой для решения проблем, связанных с галлюцинациями в приложениях AIGC.</p>
-<p>Энтузиазм вокруг векторных баз данных подтолкнул Milvus к стадии быстрой итерации. Только в 2023 году сообщество выпустило двадцать версий, удовлетворяя запросы разработчиков AIGC, заваливших сообщество запросами о выборе оптимальной версии Milvus для различных приложений. Пользователям, ориентирующимся в этих обновлениях, мы рекомендуем использовать последнюю версию для расширения возможностей и повышения производительности.</p>
-<p>Если вы интересуетесь планированием выпуска Milvus, обратитесь к странице <a href="https://wiki.lfaidata.foundation/display/MIL/Milvus+Long+Term+Roadmap+and+Time+schedule">Milvus Roadmap</a> на официальном сайте.</p>
-<h2 id="2-Search--beyond-Vector-Search" class="common-anchor-header">#2 Поиск - за пределами векторного поиска<button data-href="#2-Search--beyond-Vector-Search" class="anchor-icon" translate="no">
+    </button></h2><p>Surprisingly, “Version” emerged as the most discussed keyword in 2023. This revelation is rooted in the year’s AI wave, with vector databases as a critical infrastructure to tackle challenges in AIGC applications’ hallucination issues.</p>
+<p>The enthusiasm around vector databases drives Milvus into a stage of swift iteration. The community witnessed the release of Twenty versions in 2023 alone, accommodating the demands of AIGC developers flooding the community with inquiries about choosing the optimal version of Milvus for various applications. For users navigating these updates, we recommend embracing the latest version for enhanced features and performance.</p>
+<p>If you are interested in Milvus’s release planning, refer to the <a href="https://wiki.lfaidata.foundation/display/MIL/Milvus+Long+Term+Roadmap+and+Time+schedule">Milvus Roadmap</a> page on the official website.</p>
+<h2 id="2-Search--beyond-Vector-Search" class="common-anchor-header">#2 Search — beyond Vector Search<button data-href="#2-Search--beyond-Vector-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,9 +51,9 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>"Поиск" занимает второе место, что отражает его фундаментальную роль в работе с базами данных. Milvus поддерживает различные возможности поиска, от Top-K ANN-поиска до поиска со скалярной фильтрацией и поиска по диапазону. Ближайший выпуск Milvus 3.0 (Beta) обещает поиск по ключевым словам (разреженные вкрапления), чего с нетерпением ожидают многие разработчики приложений RAG.</p>
-<p>Обсуждения поиска в сообществе сосредоточены на производительности, возможностях и принципах. Пользователи часто задают вопросы о фильтрации атрибутов, настройке пороговых значений индексов и решении проблем с задержкой. Такие ресурсы, как <a href="https://milvus.io/docs/v2.0.x/search.md">документация по запросам и поиску</a>, <a href="https://wiki.lfaidata.foundation/pages/viewpage.action?pageId=43287103">предложения по усовершенствованию Milvus (MEPs)</a> и обсуждения в Discord, стали основными источниками информации для разгадки тонкостей поиска в Milvus.</p>
-<h2 id="3-Memory--trade-offs-between-performance-and-accuracy-for-minimized-memory-overhead" class="common-anchor-header">#3 Память - компромисс между производительностью и точностью для минимизации затрат памяти<button data-href="#3-Memory--trade-offs-between-performance-and-accuracy-for-minimized-memory-overhead" class="anchor-icon" translate="no">
+    </button></h2><p>“Search” takes second place, reflecting its fundamental role in database operations. Milvus supports various search capabilities, from Top-K ANN search to scalar filtered search and range search. The imminent release of Milvus 3.0 (Beta) promises keyword search (sparse embeddings), which many RAG app developers eagerly await.</p>
+<p>Community discussions about searching focus on performance, capabilities, and principles. Users often ask questions about attribute filtering, setting index threshold values, and addressing latency concerns. Resources like <a href="https://milvus.io/docs/v2.0.x/search.md">query and search documentation</a>, <a href="https://wiki.lfaidata.foundation/pages/viewpage.action?pageId=43287103">Milvus Enhancement Proposals (MEPs)</a>, and Discord discussions have become the go-to references for unraveling the intricacies of searching within Milvus.</p>
+<h2 id="3-Memory--trade-offs-between-performance-and-accuracy-for-minimized-memory-overhead" class="common-anchor-header">#3 Memory — trade-offs between performance and accuracy for minimized memory overhead<button data-href="#3-Memory--trade-offs-between-performance-and-accuracy-for-minimized-memory-overhead" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,10 +68,10 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>"Память" также заняла центральное место в обсуждениях сообщества за последний год. Векторы, как особый тип данных, по своей природе имеют высокую размерность. Хранение векторов в памяти - обычная практика для оптимальной производительности, но растущий объем данных ограничивает доступную память. Milvus оптимизирует использование памяти, применяя такие техники, как <a href="https://zilliz.com/blog/milvus-introduced-mmap-for-redefined-data-management-increased-storage-capability">MMap</a> и DiskANN.</p>
-<p>Однако достижение низкого использования памяти, отличной производительности и высокой точности одновременно в системе баз данных остается сложной задачей, требующей компромисса между производительностью и точностью для минимизации затрат памяти.</p>
-<p>В случае с контентом, генерируемым искусственным интеллектом (AIGC), разработчики обычно отдают предпочтение быстрым ответам и точности результатов перед жесткими требованиями к производительности. Добавление MMap и DiskANN в Milvus минимизирует использование памяти, но при этом максимизирует обработку данных и точность результатов, обеспечивая баланс, который соответствует практическим потребностям приложений AIGC.</p>
-<h2 id="4-Insert--smooth-sailing-through-data-insertion" class="common-anchor-header">#4 Insert - плавный ввод данных<button data-href="#4-Insert--smooth-sailing-through-data-insertion" class="anchor-icon" translate="no">
+    </button></h2><p>“Memory” also took center stage in community discussions over the past year. As a distinctive data type, vectors inherently have high dimensions. Storing vectors in memory is a common practice for optimal performance, but the escalating data volume limits available memory. Milvus optimizes memory usage by adopting techniques like <a href="https://zilliz.com/blog/milvus-introduced-mmap-for-redefined-data-management-increased-storage-capability">MMap</a> and DiskANN.</p>
+<p>However, achieving low memory usage, excellent performance, and high accuracy simultaneously in a database system remains complex, necessitating trade-offs between performance and accuracy to minimize memory overhead.</p>
+<p>In the case of Artificial Intelligence Generated Content (AIGC), developers usually prioritize fast responses and result accuracy over stringent performance requirements. Milvus’s addition of MMap and DiskANN minimizes memory usage while maximizing data processing and result accuracy, striking a balance that aligns with the practical needs of AIGC applications.</p>
+<h2 id="4-Insert--smooth-sailing-through-data-insertion" class="common-anchor-header">#4 Insert — smooth sailing through data insertion<button data-href="#4-Insert--smooth-sailing-through-data-insertion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,14 +86,14 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Эффективная вставка данных - важнейшая задача для разработчиков, что вызывает частые дискуссии об оптимизации скорости вставки в сообществе Milvus. Milvus превосходит всех в эффективной вставке потоковых данных и построении индексов благодаря умелому разделению потоковых и пакетных данных. Эта возможность выделяет ее как высокопроизводительное решение по сравнению с другими поставщиками векторных баз данных, такими как Pinecone.</p>
-<p>Вот некоторые ценные сведения и рекомендации по вставке данных:</p>
+    </button></h2><p>Efficient data insertion is a crucial concern for developers, sparking frequent discussions on optimizing insertion speed within the Milvus community. Milvus excels in the efficient insertion of streaming data and the building of indexes, thanks to its adept separation of streaming and batch data. This capability sets it apart as a highly performant solution compared to other vector database providers, such as Pinecone.</p>
+<p>Here are some valuable insights and recommendations about data insertions:</p>
 <ul>
-<li><p><strong>Пакетная вставка:</strong> Для повышения эффективности выбирайте пакетную, а не однорядную вставку. Примечательно, что вставка из файлов превосходит пакетную вставку по скорости. При работе с большими наборами данных, превышающими десять миллионов записей, используйте интерфейс <code translate="no">bulk_insert</code> для упрощения и ускорения процесса импорта.</p></li>
-<li><p><strong>Стратегическое использование <code translate="no">flush()</code>:</strong> Вместо того чтобы вызывать интерфейс <code translate="no">flush()</code> после каждого пакета, сделайте один вызов после завершения вставки всех данных. Чрезмерное использование интерфейса <code translate="no">flush()</code> между партиями может привести к созданию фрагментированных сегментных файлов, что создаст значительную нагрузку на систему при уплотнении данных.</p></li>
-<li><p><strong>Дедупликация первичных ключей:</strong> Milvus не выполняет дедупликацию первичных ключей при использовании интерфейса <code translate="no">insert</code> для вставки данных. Если вам необходимо дедуплицировать первичные ключи, мы рекомендуем использовать интерфейс <code translate="no">upsert</code>. Однако производительность вставки <code translate="no">upsert</code>ниже, чем у <code translate="no">insert</code>, из-за дополнительной внутренней операции запроса.</p></li>
+<li><p><strong>Batch Insertion:</strong> Opt for batch over single-row insertion for enhanced efficiency. Notably, insertion from files surpasses batch insertion in speed. When handling large datasets exceeding ten million records, consider using the <code translate="no">bulk_insert</code> interface for a streamlined and accelerated import process.</p></li>
+<li><p><strong>Strategic <code translate="no">flush()</code> Usage:</strong> Rather than invoking the <code translate="no">flush()</code> interface after each batch, make a single call after completing all data insertion. Excessive use of the <code translate="no">flush()</code> interface between batches can lead to the generation of fragmented segment files, placing a considerable compaction burden on the system.</p></li>
+<li><p><strong>Primary Key Deduplication:</strong> Milvus does not perform primary key deduplication when using the <code translate="no">insert</code> interface for data insertion. If you need to deduplicate primary keys, we recommend you deploy the <code translate="no">upsert</code> interface. However, the insertion performance of <code translate="no">upsert</code>is lower than that of <code translate="no">insert</code>, owing to an additional internal query operation.</p></li>
 </ul>
-<h2 id="5-Configuration--decoding-the-parameter-maze" class="common-anchor-header">#5 Конфигурация - расшифровка лабиринта параметров<button data-href="#5-Configuration--decoding-the-parameter-maze" class="anchor-icon" translate="no">
+<h2 id="5-Configuration--decoding-the-parameter-maze" class="common-anchor-header">#5 Configuration — decoding the parameter maze<button data-href="#5-Configuration--decoding-the-parameter-maze" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -108,10 +108,10 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus - это распределенная векторная база данных, в которую интегрировано множество сторонних компонентов, таких как хранилище объектов, очереди сообщений и Etcd. Пользователи пытались настроить параметры и понять их влияние на производительность Milvus, поэтому тема "Конфигурация" стала одной из самых обсуждаемых.</p>
-<p>Среди всех вопросов о конфигурациях вопрос "какие параметры настраивать" является, пожалуй, самым сложным, поскольку в разных ситуациях параметры меняются. Например, оптимизация параметров производительности поиска отличается от оптимизации параметров производительности вставки и в значительной степени зависит от практического опыта.</p>
-<p>Как только пользователи определят, "какие параметры нужно настроить", последующие вопросы о том, "как настроить", станут более понятными. Конкретные процедуры описаны в нашей документации по <a href="https://milvus.io/docs/configure-helm.md">настройке Milvus</a>. Отличная новость: начиная с версии 2.3.0 Milvus поддерживает динамическую настройку параметров, что избавляет от необходимости перезапускать систему, чтобы изменения вступили в силу. Конкретные процедуры см. в разделе <a href="https://milvus.io/docs/dynamic_config.md">"Настройка Milvus на лету"</a>.</p>
-<h2 id="6-Logs--navigating-the-troubleshooting-compass" class="common-anchor-header">#6 Журналы - навигация по компасу поиска и устранения неисправностей<button data-href="#6-Logs--navigating-the-troubleshooting-compass" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus is a distributed vector database that integrates many third-party components like object storage, message queues, and Etcd. Users grappled with adjusting parameters and understanding their impact on Milvus’s performance, making “Configuration” a frequently discussed topic.</p>
+<p>Among all the questions about configurations, “which parameters to adjust” is arguably the most challenging aspect, as the parameters vary in different situations. For instance, optimizing search performance parameters differs from optimizing insertion performance parameters and relies heavily on practical experience.</p>
+<p>Once users identify “which parameters to adjust,” the subsequent questions of “how to adjust” become more manageable. For specific procedures, refer to our documentation <a href="https://milvus.io/docs/configure-helm.md">Configure Milvus</a>. The great news is that Milvus has supported dynamic parameter adjustments since version 2.3.0, eliminating the need for restarts for changes to take effect. For specific procedures, refer to <a href="https://milvus.io/docs/dynamic_config.md">Configure Milvus on the Fly</a>.</p>
+<h2 id="6-Logs--navigating-the-troubleshooting-compass" class="common-anchor-header">#6 Logs — navigating the troubleshooting compass<button data-href="#6-Logs--navigating-the-troubleshooting-compass" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -126,13 +126,13 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>"Журналы" служат компасом для поиска неисправностей. Пользователи обращались в сообщество за советами по экспорту журналов Milvus, настройке уровней журналов и интеграции с такими системами, как Grafana's Loki. Вот несколько предложений по поводу журналов Milvus.</p>
+    </button></h2><p>“Logs” serve as the troubleshooter’s compass. Users sought guidance in the community on exporting Milvus logs, adjusting log levels, and integrating with systems like Grafana’s Loki. Here are some suggestions about Milvus logs.</p>
 <ul>
-<li><p><strong>Как просматривать и экспортировать журналы Milvus:</strong> Вы можете легко экспортировать журналы Milvus с помощью скрипта <a href="https://github.com/milvus-io/milvus/tree/master/deployments/export-log">export-milvus-log.sh</a>, который доступен в репозитории GitHub одним щелчком мыши.</p></li>
-<li><p><strong>Уровень журнала:</strong> Milvus имеет несколько уровней журналов для различных случаев использования. Уровня info достаточно для большинства случаев, а уровень debug предназначен для отладки. Избыток журналов Milvus может свидетельствовать о неправильно настроенных уровнях журналов.</p></li>
-<li><p><strong>Мы рекомендуем интегрировать журналы Milvus с системой сбора журналов</strong>, например Loki, для упрощения поиска журналов при устранении неполадок в будущем.</p></li>
+<li><p><strong>How to view and export Milvus logs:</strong> You can easily export Milvus logs with the one-click script <a href="https://github.com/milvus-io/milvus/tree/master/deployments/export-log">export-milvus-log.sh</a> which is available on the GitHub repository.</p></li>
+<li><p><strong>Log level:</strong> Milvus has multiple log levels to accommodate diverse use cases. The info level is enough for most cases, and the debug level is for debugging. An excess of Milvus logs may signal misconfigured log levels.</p></li>
+<li><p><strong>We recommend integrating Milvus logs with a log collection system</strong> like Loki for streamlined log retrieval in future troubleshooting.</p></li>
 </ul>
-<h2 id="7-Cluster--scaling-for-production-environments" class="common-anchor-header">Кластер #7 - масштабирование для производственных сред<button data-href="#7-Cluster--scaling-for-production-environments" class="anchor-icon" translate="no">
+<h2 id="7-Cluster--scaling-for-production-environments" class="common-anchor-header">#7 Cluster — scaling for production environments<button data-href="#7-Cluster--scaling-for-production-environments" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,9 +147,9 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Учитывая, что Milvus является распределенной векторной базой данных, термин "кластер" является частой темой для обсуждения в сообществе. Разговоры ведутся вокруг масштабирования данных в кластере, миграции данных, резервного копирования и синхронизации данных.</p>
-<p>В производственных средах надежная масштабируемость и высокая доступность являются стандартными требованиями к системам распределенных баз данных. Архитектура Milvus с разделением хранения и вычислений обеспечивает плавное масштабирование данных за счет увеличения ресурсов вычислительных узлов и узлов хранения, что позволяет безгранично масштабировать данные. Milvus также обеспечивает высокую доступность благодаря архитектуре с несколькими репликами и надежным возможностям резервного копирования и синхронизации.  Для получения дополнительной информации обратитесь к разделу <a href="https://milvus.io/docs/coordinator_ha.md#Coordinator-HA">Coordinator HA</a>.</p>
-<h2 id="8-Documentation--the-gateway-to-understanding-Milvus" class="common-anchor-header">#8 Документация - путь к пониманию Milvus<button data-href="#8-Documentation--the-gateway-to-understanding-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Given Milvus’s identity as a distributed vector database, the term “cluster” is a frequent topic of discussion in the community. Conversations revolve around scaling data in a cluster, data migration, and data backup and synchronization.</p>
+<p>In production environments, robust scalability and high availability are standard requirements for distributed database systems. Milvus’s storage-computation separation architecture allows seamless data scalability by expanding resources for computation and storage nodes, accommodating limitless data scales. Milvus also provides high availability with a multi-replica architecture and robust backup and syncing capabilities.  For more information, refer to <a href="https://milvus.io/docs/coordinator_ha.md#Coordinator-HA">Coordinator HA</a>.</p>
+<h2 id="8-Documentation--the-gateway-to-understanding-Milvus" class="common-anchor-header">#8 Documentation — the gateway to understanding Milvus<button data-href="#8-Documentation--the-gateway-to-understanding-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,9 +164,9 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>"Документация" - еще одно часто поднимаемое ключевое слово в обсуждениях сообщества, часто связанное с вопросами о том, существует ли страница документации по конкретной функции и где ее найти.</p>
-<p>Около 80 % запросов сообщества находят ответы в <a href="https://milvus.io/docs">официальной документации</a>, служащей воротами к пониманию Milvus. Мы рекомендуем вам прочитать нашу документацию, прежде чем использовать Milvus или столкнуться с какими-либо проблемами. Кроме того, вы можете изучить примеры кода в различных репозиториях SDK, чтобы получить представление об использовании Milvus.</p>
-<h2 id="9-Deployment--simplifying-the-Milvus-journey" class="common-anchor-header">#9 Развертывание - упрощение пути к Milvus<button data-href="#9-Deployment--simplifying-the-Milvus-journey" class="anchor-icon" translate="no">
+    </button></h2><p>“Documentation” is another frequently raised keyword in community discussions, often tied to questions about whether there is any documentation page for a specific feature and where to find it.</p>
+<p>Serving as the gateway to understanding Milvus, around 80% of community inquiries find answers in the <a href="https://milvus.io/docs">official documentation</a>. We recommend you read our documentation before using Milvus or encountering any problems. In addition, you can explore code examples in various SDK repositories for insights into using Milvus.</p>
+<h2 id="9-Deployment--simplifying-the-Milvus-journey" class="common-anchor-header">#9 Deployment — simplifying the Milvus journey<button data-href="#9-Deployment--simplifying-the-Milvus-journey" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,9 +181,9 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Простота развертывания остается постоянной целью команды Milvus. Чтобы выполнить это обязательство, мы представили <a href="https://milvus.io/docs/milvus_lite.md#Get-Started-with-Milvus-Lite">Milvus Lite</a>, легкую альтернативу Milvus, которая полностью функциональна, но не имеет зависимостей от K8s или Docker.</p>
-<p>Мы еще больше упростили развертывание, внедрив более легкое решение <a href="https://zilliz.com/blog/optimizing-data-communication-milvus-embraces-nats-messaging">NATS</a> для обмена сообщениями и консолидировав компоненты узла. В ответ на отзывы пользователей мы готовимся к выпуску автономной версии без зависимостей, а также постоянно работаем над расширением возможностей и упрощением операций развертывания. Быстрая итерация Milvus демонстрирует постоянную приверженность сообщества к постоянному совершенствованию процесса развертывания.</p>
-<h2 id="10-Deletion--unraveling-the-impact" class="common-anchor-header">#10 Удаление - разгадка последствий<button data-href="#10-Deletion--unraveling-the-impact" class="anchor-icon" translate="no">
+    </button></h2><p>Simple deployment remains the Milvus team’s ongoing goal. To fulfill this commitment, we introduced <a href="https://milvus.io/docs/milvus_lite.md#Get-Started-with-Milvus-Lite">Milvus Lite</a>, a lightweight alternative to Milvus that is fully functional but has no K8s or Docker dependencies.</p>
+<p>We further streamlined deployment by introducing the lighter <a href="https://zilliz.com/blog/optimizing-data-communication-milvus-embraces-nats-messaging">NATS</a> messaging solution and consolidating node components. Responding to user feedback, we’re gearing up to release a standalone version without dependencies, with ongoing efforts to enhance features and simplify deployment operations. The rapid iteration of Milvus showcases the community’s continuous commitment to the continued refinement of the deployment process.</p>
+<h2 id="10-Deletion--unraveling-the-impact" class="common-anchor-header">#10 Deletion — unraveling the impact<button data-href="#10-Deletion--unraveling-the-impact" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -198,9 +198,9 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Распространенные дискуссии об удалении касаются неизменности количества данных после удаления, возможности извлечения удаленных данных и невозможности восстановления дискового пространства после удаления.</p>
-<p>В Milvus 2.3 появилось выражение <code translate="no">count(*)</code> для решения проблемы задержки обновления количества сущностей. Сохранение удаленных данных в запросах, вероятно, связано с неправильным использованием <a href="https://zilliz.com/blog/understand-consistency-models-for-vector-databases">моделей согласованности данных</a>. Проблемы с восстановлением дискового пространства натолкнули на мысль переработать механизм сборки мусора в Milvus, который устанавливает период ожидания перед полным удалением данных. Такой подход позволяет получить временное окно для возможного восстановления.</p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>The prevalent discussions on “deletion” revolve around unchanged data counts after deletion, the continued retrievability of deleted data, and the failure of disk space recovery after deletion.</p>
+<p>Milvus 2.3 introduces the <code translate="no">count(*)</code> expression to address delayed entity count updates. The persistence of deleted data in queries is probably due to the inappropriate use of <a href="https://zilliz.com/blog/understand-consistency-models-for-vector-databases">data consistency models</a>. Disk space recovery failure concerns prompt insights into redesigning Milvus’s garbage collection mechanism, which sets a waiting period before the complete deletion of data. This approach allows a time window for potential recovery.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -215,5 +215,5 @@ canonicalUrl: 'https://milvus.io/blog/top-10-keywords-dominates-milvus-community
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Десять ключевых слов дают представление об оживленных дискуссиях в сообществе Milvus. Поскольку Milvus продолжает развиваться, сообщество остается бесценным ресурсом для разработчиков, которые ищут решения, делятся опытом и вносят свой вклад в развитие векторных баз данных в эпоху искусственного интеллекта.</p>
-<p>Присоединяйтесь к этому захватывающему путешествию, присоединившись к нашему <a href="https://discord.com/invite/8uyFbECzPX">каналу Discord</a> в 2024 году. Там вы сможете пообщаться с нашими блестящими инженерами и объединиться с единомышленниками - энтузиастами Milvus. Кроме того, каждый вторник с 12:00 до 12:30 вечера по тихоокеанскому времени вы сможете посетить <a href="https://discord.com/invite/RjNbk8RR4f">обед и обучение сообщества Milvus</a>. Делитесь своими мыслями, вопросами и отзывами, ведь каждый вклад способствует укреплению духа сотрудничества, двигающего Milvus вперед. Ваше активное участие не просто приветствуется, оно ценится. Давайте внедрять инновации вместе!</p>
+    </button></h2><p>The top 10 keywords offer a glimpse into the vibrant discussions within the Milvus community. As Milvus continues to evolve, the community remains an invaluable resource for developers seeking solutions, sharing experiences, and contributing to advancing vector databases in the era of AI.</p>
+<p>Join this exciting journey by joining our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> in 2024. There, you can engage with our brilliant engineers and connect with like-minded Milvus enthusiasts. Also, attend the <a href="https://discord.com/invite/RjNbk8RR4f">Milvus Community Lunch and Learn</a> every Tuesday from 12:00 to 12:30 PM PST. Share your thoughts, questions, and feedback, as every contribution adds to the collaborative spirit propelling Milvus forward. Your active participation is not just welcomed; it’s appreciated. Let’s innovate together!</p>

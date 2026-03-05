@@ -1,18 +1,18 @@
 ---
 id: 2019-11-08-data-management.md
-title: كيف تتم إدارة البيانات في ميلفوس
+title: How data management is done in Milvus
 author: Yihua Mo
 date: 2019-11-08T00:00:00.000Z
-desc: يقدم هذا المنشور استراتيجية إدارة البيانات في Milvus.
+desc: This post introduces the data management strategy in Milvus.
 cover: null
 tag: Engineering
 origin: null
 ---
-<custom-h1>إدارة البيانات في محرك البحث المتجه الهائل النطاق</custom-h1><blockquote>
-<p>المؤلف: ييهوا مو</p>
-<p>التاريخ: 2019-11-08-2019</p>
+<custom-h1>Managing Data in Massive-Scale Vector Search Engine</custom-h1><blockquote>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-11-08</p>
 </blockquote>
-<h2 id="How-data-management-is-done-in-Milvus" class="common-anchor-header">كيف تتم إدارة البيانات في ميلفوس<button data-href="#How-data-management-is-done-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-data-management-is-done-in-Milvus" class="common-anchor-header">How data management is done in Milvus<button data-href="#How-data-management-is-done-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,123 +27,149 @@ origin: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>أولاً، بعض المفاهيم الأساسية لميلفوس:</p>
+    </button></h2><p>First of all, some basic concepts of Milvus:</p>
 <ul>
-<li>الجدول: الجدول عبارة عن مجموعة بيانات من المتجهات، بحيث يكون لكل متجه معرف فريد. يمثل كل متجه ومعرفه صفًا من الجدول. يجب أن يكون لجميع المتجهات في الجدول نفس الأبعاد. فيما يلي مثال لجدول يحتوي على متجهات ذات 10 أبعاد:</li>
+<li>Table: Table is a data set of vectors, with each vector having a unique ID. Each vector and its ID represent a row of the table. All vectors in a table must have the same dimensions. Below is an example of a table with 10-dimensional vectors:</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png" alt="table" class="doc-image" id="table" />
-   </span> <span class="img-wrapper"> <span>الجدول</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/table.png" alt="table" class="doc-image" id="table" />
+    <span>table</span>
+  </span>
+</p>
 <ul>
-<li>فهرس: بناء الفهرس هو عملية تجميع المتجهات بواسطة خوارزمية معينة، والتي تتطلب مساحة إضافية على القرص. تتطلب بعض أنواع الفهارس مساحة أقل لأنها تبسط المتجهات وتضغطها، بينما تتطلب بعض الأنواع الأخرى مساحة أكبر من المتجهات الخام.</li>
+<li>Index: Building index is the process of vector clustering by certain algorithm, which requires additional disk space. Some index types require less space since they simplify and compress vectors, while some other types require more space than raw vectors.</li>
 </ul>
-<p>في Milvus، يمكن للمستخدمين تنفيذ مهام مثل إنشاء جدول وإدراج المتجهات وبناء الفهارس والبحث في المتجهات واسترجاع معلومات الجدول وإسقاط الجداول وإزالة البيانات الجزئية في الجدول وإزالة الفهارس، إلخ.</p>
-<p>لنفترض أن لدينا 100 مليون متجه مكون من 512 متجهًا من 512 بُعدًا، ونحتاج إلى إدراجها وإدارتها في Milvus للبحث الفعال عن المتجهات.</p>
-<p><strong>(1) إدراج المتجهات</strong></p>
-<p>دعونا نلقي نظرة على كيفية إدراج المتجهات في ملفوس.</p>
-<p>نظرًا لأن كل متجه يستهلك مساحة 2 كيلوبايت، فإن الحد الأدنى لمساحة التخزين لـ 100 مليون متجه هو حوالي 200 جيجابايت، مما يجعل إدراج كل هذه المتجهات لمرة واحدة غير واقعي. يجب أن تكون هناك ملفات بيانات متعددة بدلاً من ملف واحد. أداء الإدراج هو أحد مؤشرات الأداء الرئيسية. يدعم Milvus الإدراج لمرة واحدة لمئات أو حتى عشرات الآلاف من المتجهات. على سبيل المثال، يستغرق الإدراج لمرة واحدة لـ 30 ألف متجه من 512 متجهًا لمرة واحدة بشكل عام ثانية واحدة فقط.</p>
+<p>In Milvus, users can perform tasks such as creating a table, inserting vectors, building indexes, searching vectors, retrieving table information, dropping tables, removing partial data in a table and removing indexes, etc.</p>
+<p>Assume we have 100 million 512-dimensional vectors, and need to insert and manage them in Milvus for efficient vector search.</p>
+<p><strong>(1) Vector Insert</strong></p>
+<p>Let’s take a look at how vectors are inserted into Milvus.</p>
+<p>As each vector takes 2 KB space, the minimum storage space for 100 million vectors is about 200 GB, which makes one-time insertion of all these vectors unrealistic. There need to be multiple data files instead of one. Insertion performance is one of the key performance indicators. Milvus supports one-time insertion of hundreds or even tens of thousands of vectors. For example, one-time insertion of 30 thousand 512-dimensional vectors generally takes only 1 second.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png" alt="insert" class="doc-image" id="insert" />
-   </span> <span class="img-wrapper"> <span>الإدراج</span> </span></p>
-<p>لا يتم تحميل كل إدراج متجه في القرص. حيث يحتفظ ميلفوس بمخزن مؤقت قابل للتغيير في ذاكرة وحدة المعالجة المركزية لكل جدول يتم إنشاؤه، حيث يمكن كتابة البيانات المدرجة بسرعة. وعندما تصل البيانات الموجودة في المخزن المؤقت القابل للتغيير إلى حجم معين، سيتم تصنيف هذه المساحة على أنها غير قابلة للتغيير. وفي الوقت نفسه، سيتم حجز مخزن مؤقت جديد قابل للتغيير. تتم كتابة البيانات في المخزن المؤقت غير القابل للتغيير على القرص بانتظام ويتم تحرير ذاكرة وحدة المعالجة المركزية المقابلة. تتشابه آلية الكتابة المنتظمة على القرص مع تلك المستخدمة في Elasticsearch، والتي تكتب البيانات المخزنة على القرص كل ثانية واحدة. بالإضافة إلى ذلك، يمكن للمستخدمين المطلعين على LevelDB/RocksDB رؤية بعض التشابه مع MemTable هنا.</p>
-<p>أهداف آلية إدراج البيانات هي:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/insert.png" alt="insert" class="doc-image" id="insert" />
+    <span>insert</span>
+  </span>
+</p>
+<p>Not every vector insertion is loaded into disk. Milvus reserves a mutable buffer in the CPU memory for every table that is created, where inserted data can be quickly written to. And as the data in the mutable buffer reaches a certain size, this space will be labeled as immutable. In the mean time, a new mutable buffer will be reserved. Data in immutable buffer are written to disk regularly and corresponding CPU memory is freed up. The regular writing to disk mechanism is similar to the one used in Elasticsearch, which writes buffered data to disk every 1 second. In addition, users that are familiar with LevelDB/RocksDB can see some resemblance to MemTable here.</p>
+<p>The goals of the Data Insert mechanism are:</p>
 <ul>
-<li>يجب أن يكون إدخال البيانات فعالاً.</li>
-<li>يمكن استخدام البيانات المدرجة على الفور.</li>
-<li>يجب ألا تكون ملفات البيانات مجزأة للغاية.</li>
+<li>Data insertion must be efficient.</li>
+<li>Inserted data can be used instantly.</li>
+<li>Data files should not be too fragmented.</li>
 </ul>
-<p><strong>(2) ملف البيانات الخام</strong></p>
-<p>عند كتابة المتجهات على القرص، يتم حفظها في ملف بيانات خام يحتوي على المتجهات الخام. كما ذكرنا من قبل، يجب حفظ المتجهات ذات الحجم الضخم وإدارتها في ملفات بيانات متعددة. يختلف حجم البيانات المدرجة حيث يمكن للمستخدمين إدراج 10 متجهات أو مليون متجه في وقت واحد. ومع ذلك، يتم تنفيذ عملية الكتابة على القرص مرة واحدة كل ثانية واحدة. وبالتالي يتم إنشاء ملفات بيانات بأحجام مختلفة.</p>
-<p>ملفات البيانات المجزأة ليست ملائمة للإدارة ولا يسهل الوصول إليها للبحث عن المتجهات. يقوم Milvus بدمج ملفات البيانات الصغيرة هذه باستمرار حتى يصل حجم الملف المدمج إلى حجم معين، على سبيل المثال، 1 جيجابايت. يمكن تكوين هذا الحجم المحدد في معلمة واجهة برمجة التطبيقات <code translate="no">index_file_size</code> في إنشاء الجدول. ولذلك، سيتم توزيع 100 مليون ناقل من 512 متجه من 512 بُعدًا وحفظها في حوالي 200 ملف بيانات.</p>
-<p>بالنظر إلى سيناريوهات الحساب التزايدي، حيث يتم إدراج المتجهات والبحث عنها بشكل متزامن، نحتاج إلى التأكد من أنه بمجرد كتابة المتجهات على القرص، تكون متاحة للبحث. وبالتالي، قبل دمج ملفات البيانات الصغيرة، يمكن الوصول إليها والبحث فيها. بمجرد اكتمال الدمج، ستتم إزالة ملفات البيانات الصغيرة، وسيتم استخدام الملفات المدمجة حديثًا للبحث بدلاً من ذلك.</p>
-<p>هكذا تبدو الملفات التي تم الاستعلام عنها قبل الدمج:</p>
+<p><strong>(2) Raw Data File</strong></p>
+<p>When vectors are written to disk, they are saved in Raw Data File containing the raw vectors. As mentioned before, massive-scale vectors need to be saved and managed in multiple data files. Inserted data size varies as users can insert 10 vectors, or 1 million vectors at one time. However, the operation of writing to disk is executed once every 1 second. Thus data files of different sizes are generated.</p>
+<p>Fragmented data files are neither convenient to manage nor easy to access for vector search. Milvus constantly merges these small data files until the merged file size reaches a particular size, for example, 1GB. This particular size can be configured in the API parameter <code translate="no">index_file_size</code> in table creation. Therefore, 100 million 512-dimensional vectors will be distributed and saved in about 200 data files.</p>
+<p>In consideration to incremental computation scenarios, where vectors are inserted and searched concurrently, we need to make sure that once vectors are written to disk, they are available for search. Thus, before the small data files are merged, they can be accessed and searched. Once the merge is completed, the small data files will be removed, and newly merged files will be used for search instead.</p>
+<p>This is how queried files look before the merge:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png" alt="rawdata1" class="doc-image" id="rawdata1" />
-   </span> <span class="img-wrapper"> <span>rawdata1</span> </span></p>
-<p>الملفات التي تم الاستعلام عنها بعد الدمج:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata1.png" alt="rawdata1" class="doc-image" id="rawdata1" />
+    <span>rawdata1</span>
+  </span>
+</p>
+<p>Queried files after the merge:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png" alt="rawdata2" class="doc-image" id="rawdata2" />
-   </span> <span class="img-wrapper"> <span>rawdata2</span> </span></p>
-<p><strong>(3) ملف الفهرس</strong></p>
-<p>البحث المستند إلى ملف البيانات الخام هو بحث القوة الغاشمة الذي يقارن المسافات بين متجهات الاستعلام ومتجهات الأصل، ويحسب أقرب k متجهات. البحث بالقوة الغاشمة غير فعال. يمكن زيادة كفاءة البحث بشكل كبير إذا كان البحث يعتمد على ملف الفهرس حيث تتم فهرسة المتجهات. يتطلب بناء الفهرس مساحة إضافية على القرص وعادةً ما يستغرق وقتًا طويلاً.</p>
-<p>إذن ما هي الاختلافات بين ملفات البيانات الأولية وملفات الفهرس؟ لتبسيط الأمر، يسجل ملف البيانات الأولية كل متجه على حدة مع معرفه الفريد بينما يسجل ملف الفهرس نتائج تجميع المتجهات مثل نوع الفهرس ومراكز التجميع والمتجهات في كل مجموعة.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/rawdata2.png" alt="rawdata2" class="doc-image" id="rawdata2" />
+    <span>rawdata2</span>
+  </span>
+</p>
+<p><strong>(3) Index File</strong></p>
+<p>The search based on Raw Data File is brute-force search which compares the distances between query vectors and origin vectors, and computes the nearest k vectors. Brute-force search is inefficient. Search efficiency can be greatly increased if the search is based on Index File where vectors are indexed. Building index requires additional disk space and is usually time-consuming.</p>
+<p>So what are the differences between Raw Data Files and Index Files? To put it simple, Raw Data File records every single vector together with their unique ID while Index File records vector clustering results such as index type, cluster centroids, and vectors in each cluster.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png" alt="indexfile" class="doc-image" id="indexfile" />
-   </span> <span class="img-wrapper"> <span>ملف الفهرس</span> </span></p>
-<p>بشكل عام، يحتوي ملف الفهرس على معلومات أكثر من ملف البيانات الخام، ومع ذلك فإن أحجام الملفات أصغر بكثير حيث يتم تبسيط المتجهات وتكميمها أثناء عملية بناء الفهرس (لأنواع معينة من الفهارس).</p>
-<p>يتم البحث في الجداول التي تم إنشاؤها حديثًا بشكل افتراضي عن طريق الحساب الغاشم. بمجرد إنشاء الفهرس في النظام، سيقوم Milvus تلقائيًا ببناء فهرس للملفات المدمجة التي يصل حجمها إلى 1 جيجابايت في مؤشر ترابط مستقل. عند اكتمال بناء الفهرس، يتم إنشاء ملف فهرس جديد. ستتم أرشفة ملفات البيانات الأولية لبناء الفهرس بناءً على أنواع الفهارس الأخرى.</p>
-<p>يقوم برنامج Milvus تلقائياً ببناء فهرس للملفات التي يصل حجمها إلى 1 جيجابايت:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfile.png" alt="indexfile" class="doc-image" id="indexfile" />
+    <span>indexfile</span>
+  </span>
+</p>
+<p>Generally speaking, Index File contains more information than Raw Data File, yet the file sizes are much smaller as vectors are simplified and quantized during the index building process (for certain index types).</p>
+<p>Newly created tables are by default searched by brute-computation. Once the index is created in the system, Milvus will automatically build index for merged files that reach the size of 1 GB in a standalone thread. When the index building is completed, a new Index File is generated. The raw data files will be archived for index building based on other index types.</p>
+<p>Milvus automatically build index for files that reach 1 GB:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png" alt="buildindex" class="doc-image" id="buildindex" />
-   </span> <span class="img-wrapper"> <span>بناء الفهرس</span> </span></p>
-<p>اكتمل بناء الفهرس:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/buildindex.png" alt="buildindex" class="doc-image" id="buildindex" />
+    <span>buildindex</span>
+  </span>
+</p>
+<p>Index building completed:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png" alt="indexcomplete" class="doc-image" id="indexcomplete" />
-   </span> <span class="img-wrapper"> <span>اكتمل بناء الفهرس</span> </span></p>
-<p>لن يتم بناء الفهرس تلقائيًا لملفات البيانات الخام التي لا تصل إلى 1 جيجابايت، مما قد يؤدي إلى إبطاء سرعة البحث. لتجنب هذا الموقف، تحتاج إلى فرض بناء الفهرس يدويًا لهذا الجدول.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexcomplete.png" alt="indexcomplete" class="doc-image" id="indexcomplete" />
+    <span>indexcomplete</span>
+  </span>
+</p>
+<p>Index will not be automatically built for raw data files that do not reach 1 GB, which may slow down the search speed. To avoid this situation, you need to manually force build index for this table.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png" alt="forcebuild" class="doc-image" id="forcebuild" />
-   </span> <span class="img-wrapper"> <span>فرض إنشاء الفهرس</span> </span></p>
-<p>بعد فرض بناء الفهرس للملف، يتم تحسين أداء البحث بشكل كبير.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/forcebuild.png" alt="forcebuild" class="doc-image" id="forcebuild" />
+    <span>forcebuild</span>
+  </span>
+</p>
+<p>After index is force built for the file, the search performance is greatly enhanced.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png" alt="indexfinal" class="doc-image" id="indexfinal" />
-   </span> <span class="img-wrapper"> <span>الفهرس النهائي</span> </span></p>
-<p><strong>(4) البيانات الوصفية</strong></p>
-<p>كما ذكرنا سابقًا، يتم حفظ 100 مليون متجه مكون من 512 متجهًا في 200 ملف على القرص. عندما يتم بناء الفهرس لهذه المتجهات، سيكون هناك 200 ملف فهرس إضافي، مما يجعل العدد الإجمالي للملفات يصل إلى 400 ملف (بما في ذلك ملفات القرص وملفات الفهرس). هناك حاجة إلى آلية فعالة لإدارة البيانات الوصفية (حالات الملفات والمعلومات الأخرى) لهذه الملفات من أجل التحقق من حالات الملفات أو إزالتها أو إنشاء ملفات.</p>
-<p>يعد استخدام قواعد بيانات OLTP لإدارة هذه المعلومات خيارًا جيدًا. يستخدم برنامج Milvus المستقل SQLite لإدارة البيانات الوصفية بينما في النشر الموزع، يستخدم برنامج Milvus MySQL. عند بدء تشغيل خادم Milvus، يتم إنشاء جدولين (وهما "الجداول" و "TableFiles") في SQLite/ MySQL على التوالي. تسجل "الجداول" معلومات الجدول وتسجل "ملفات الجدول" معلومات ملفات البيانات وملفات الفهرس.</p>
-<p>كما هو موضح في المخطط الانسيابي أدناه، تحتوي "الجداول" على معلومات البيانات الوصفية مثل اسم الجدول (table_id)، والبعد المتجه (dimension)، وتاريخ إنشاء الجدول (create_on)، وحالة الجدول (state)، ونوع الفهرس (engine_type)، وعدد مجموعات المتجهات (nlist) وطريقة حساب المسافة (metric_type).</p>
-<p>ويحتوي "TableFiles" على اسم الجدول الذي ينتمي إليه الملف (table_id)، ونوع فهرس الملف (نوع_المحرك)، واسم الملف (file_id)، ونوع الملف (file_type)، وحجم الملف (file_size)، وعدد الصفوف (row_count)، وتاريخ إنشاء الملف (create_on).</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/indexfinal.png" alt="indexfinal" class="doc-image" id="indexfinal" />
+    <span>indexfinal</span>
+  </span>
+</p>
+<p><strong>(4) Meta Data</strong></p>
+<p>As mentioned earlier, 100 million 512-dimensional vectors are saved in 200 disk files. When index is built for these vectors, there would be 200 additional index files, which makes the total number of files to 400 (including both disk files and index files). An efficient mechanism is required to manage the meta data (file statuses and other information) of these files in order to check the file statuses, remove or create files.</p>
+<p>Using OLTP databases to manage these information is a good choice. Standalone Milvus uses SQLite to manage meta data while in distributed deployment, Milvus uses MySQL. When Milvus server starts, 2 tables (namely ‘Tables’ and ‘TableFiles’) are created in SQLite/MySQL respectively. ‘Tables’ records table information and ‘TableFiles’ records information of data files and index files.</p>
+<p>As demonstrated in below flowchart, ‘Tables’ contains meta data information such as table name (table_id), vector dimension (dimension), table creation date (created_on), table status (state), index type (engine_type), and number of vector clusters (nlist) and distance computation method (metric_type).</p>
+<p>And ‘TableFiles’ contains name of the table the file belongs to (table_id), index type of the file (engine_type), file name (file_id), file type (file_type), file size (file_size), number of rows (row_count) and file creation date (created_on).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png" alt="metadata" class="doc-image" id="metadata" />
-   </span> <span class="img-wrapper"> <span>البيانات الوصفية</span> </span></p>
-<p>باستخدام بيانات التعريف هذه، يمكن تنفيذ عمليات مختلفة. فيما يلي بعض الأمثلة:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/Metadata.png" alt="metadata" class="doc-image" id="metadata" />
+    <span>metadata</span>
+  </span>
+</p>
+<p>With these meta data, various operations can be executed. The following are some examples:</p>
 <ul>
-<li>لإنشاء جدول، يحتاج مدير التعريف فقط إلى تنفيذ عبارة SQL: <code translate="no">INSERT INTO TABLES VALUES(1, 'table_2, 512, xxx, xxx, ...)</code>.</li>
-<li>لتنفيذ بحث متجه على الجدول_2، سيقوم مدير Meta Manager بتنفيذ استعلام في SQLite/MySQL، وهو عبارة SQL فعلية: <code translate="no">SELECT * FROM TableFiles WHERE table_id='table_2'</code> لاسترداد معلومات ملف الجدول_2. ثم سيتم تحميل هذه الملفات في الذاكرة بواسطة برنامج جدولة الاستعلام لحساب البحث.</li>
-<li>لا يُسمح بحذف جدول على الفور لأنه قد يكون هناك استعلامات يتم تنفيذها عليه. هذا هو السبب في وجود الحذف الناعم والحذف الصلب لجدول ما. عند حذف جدول، سيتم تصنيفه على أنه "حذف ناعم"، ولن يُسمح بإجراء أي استعلامات أو تغييرات أخرى عليه. ومع ذلك، تظل الاستعلامات التي كانت تعمل قبل الحذف مستمرة. فقط عند اكتمال جميع استعلامات ما قبل الحذف هذه، سيتم حذف الجدول مع بياناته الوصفية والملفات ذات الصلة بشكل نهائي.</li>
+<li>To create a table, Meta Manager only needs to execute a SQL statement: <code translate="no">INSERT INTO TABLES VALUES(1, 'table_2, 512, xxx, xxx, ...)</code>.</li>
+<li>To execute vector search on table_2, Meta Manager will execute a query in SQLite/MySQL, which is a de facto SQL statement: <code translate="no">SELECT * FROM TableFiles WHERE table_id='table_2'</code> to retrieve the file information of table_2. Then these files will be loaded into memory by Query Scheduler for search computation.</li>
+<li>It is not allowed to instantly delete a table as there might be queries being executed on it. That’s why there are soft-delete and hard-delete for a table. When you delete a table, it will be labeled as ‘soft-delete’, and no further querying or changes are allowed to be made to it. However, the queries that were running before the deletion is still going on. Only when all these pre-deletion queries are completed, the table, together with its meta data and related files, will be hard-deleted for good.</li>
 </ul>
-<p><strong>(5) جدولة الاستعلام</strong></p>
-<p>يوضح الرسم البياني أدناه عملية البحث عن المتجهات في كل من وحدة المعالجة المركزية ووحدة معالجة الرسومات من خلال الاستعلام عن الملفات (ملفات البيانات الأولية وملفات الفهرس) التي يتم نسخها وحفظها في القرص وذاكرة وحدة المعالجة المركزية وذاكرة وحدة معالجة الرسومات لأعلىk أكثر المتجهات تشابهًا.</p>
+<p><strong>(5) Query Scheduler</strong></p>
+<p>Below chart demonstrates the vector search process in both CPU and GPU by querying files (raw data files and index files) which are copied and saved in disk, CPU memory and GPU memory for the topk most similar vectors.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png" alt="topkresult" class="doc-image" id="topkresult" />
-   </span> <span class="img-wrapper"> <span>topkresult</span> </span></p>
-<p>تعمل خوارزمية جدولة الاستعلام على تحسين أداء النظام بشكل كبير. تتمثل فلسفة التصميم الأساسية في تحقيق أفضل أداء بحث من خلال الاستفادة القصوى من موارد الأجهزة. فيما يلي مجرد وصف موجز لجدولة الاستعلام وسيكون هناك مقال مخصص حول هذا الموضوع في المستقبل.</p>
-<p>نحن نسمي الاستعلام الأول مقابل جدول معين بالاستعلام "البارد"، والاستعلامات اللاحقة بالاستعلام "الدافئ". عندما يتم إجراء الاستعلام الأول مقابل جدول معين، يقوم Milvus بالكثير من العمل لتحميل البيانات في ذاكرة وحدة المعالجة المركزية، وبعض البيانات في ذاكرة وحدة معالجة الرسومات، وهو ما يستغرق وقتًا طويلاً. في الاستعلامات الأخرى، يكون البحث أسرع بكثير حيث تكون البيانات جزئيًا أو كلها موجودة بالفعل في ذاكرة وحدة المعالجة المركزية مما يوفر وقت القراءة من القرص.</p>
-<p>لتقصير وقت البحث في الاستعلام الأول، يوفر Milvus تكوين جدول التحميل المسبق (<code translate="no">preload_table</code>) الذي يتيح التحميل المسبق التلقائي للجداول في ذاكرة وحدة المعالجة المركزية عند بدء تشغيل الخادم. بالنسبة لجدول يحتوي على 100 مليون متجه من 512 متجهًا من 512 بُعدًا، أي 200 جيجابايت، تكون سرعة البحث هي الأسرع إذا كانت ذاكرة وحدة المعالجة المركزية كافية لتخزين كل هذه البيانات. ومع ذلك، إذا كان الجدول يحتوي على ناقلات بمليار ناقلة، فلا مفر في بعض الأحيان من تحرير ذاكرة وحدة المعالجة المركزية/وحدة المعالجة المركزية لإضافة بيانات جديدة لم يتم الاستعلام عنها. حاليًا، نستخدم LRU (آخر ما تم استخدامه مؤخرًا) كاستراتيجية لاستبدال البيانات.</p>
-<p>كما هو موضح في المخطط أدناه، افترض وجود جدول يحتوي على 6 ملفات فهرس مخزنة على القرص. يمكن لذاكرة وحدة المعالجة المركزية تخزين 3 ملفات فهرس فقط، وذاكرة وحدة معالجة الرسومات ملف فهرس واحد فقط.</p>
-<p>عند بدء البحث، يتم تحميل 3 ملفات فهرس في ذاكرة وحدة المعالجة المركزية للاستعلام. سيتم تحرير الملف الأول من ذاكرة وحدة المعالجة المركزية فور الاستعلام عنه. وفي الوقت نفسه، يتم تحميل الملف الرابع في ذاكرة وحدة المعالجة المركزية. بنفس الطريقة، عند الاستعلام عن ملف في ذاكرة وحدة معالجة الرسومات، سيتم تحريره على الفور واستبداله بملف جديد.</p>
-<p>يعالج برنامج جدولة الاستعلام بشكل أساسي مجموعتين من قوائم انتظار المهام، إحداهما تتعلق بتحميل البيانات والأخرى تتعلق بتنفيذ البحث.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/topkresult.png" alt="topkresult" class="doc-image" id="topkresult" />
+    <span>topkresult</span>
+  </span>
+</p>
+<p>Query scheduling algorithm significantly improves system performance. The basic design philosophy is to achieve the best search performance through maximum utilization of hardware resources. Below is just a brief description of query scheduler and there will be a dedicated article about this topic in the future.</p>
+<p>We call the first query against a given table the ‘cold’ query, and subsequent queries the ‘warm’ query. When the first query is made against a given table, Milvus does a lot of work to load data into CPU memory, and some data into GPU memory, which is time-consuming. In further queries, the search is much faster as partial or all the data are already in CPU memory which saves the time to read from the disk.</p>
+<p>To shorten the search time of the first query, Milvus provides Preload Table (<code translate="no">preload_table</code>) configuration which enables automatic pre-loading of tables into CPU memory upon server start-up. For a table containing 100 million 512-dimensional vectors, which is 200 GB, the search speed is the fastest if there’s enough CPU memory to store all these data. However, if the table contains billion-scale vectors, it is sometimes inevitable to free up CPU/GPU memory to add new data that are not queried. Currently, we use LRU (Latest Recently Used) as the data replacement strategy.</p>
+<p>As shown in below chart, assume there is a table that has 6 index files stored on the disk. The CPU memory can only store 3 index files, and GPU memory only 1 index file.</p>
+<p>When the search starts, 3 index files are loaded into CPU memory for query. The first file will be released from CPU memory immediately after it is queried. Meanwhile, the 4th file is loaded into CPU memory. In the same way, when a file is queried in GPU memory, it will be instantly released and replaced with a new file.</p>
+<p>Query scheduler mainly handles 2 sets of task queues, one queue is about data loading and another is about search execution.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png" alt="queryschedule" class="doc-image" id="queryschedule" />
-   </span> <span class="img-wrapper"> <span>جدولة الاستعلام</span> </span></p>
-<p><strong>(6) مخفض النتائج</strong></p>
-<p>هناك معلمتان رئيسيتان تتعلقان بالبحث عن المتجهات: إحداهما هي "n" التي تعني n عدد المتجهات المستهدفة؛ والأخرى هي "k" التي تعني أعلى k من المتجهات الأكثر تشابهًا. نتائج البحث هي في الواقع عبارة عن مجموعات n من أزواج KVP (أزواج قيمة المفتاح)، كل منها يحتوي على k من أزواج قيمة المفتاح. نظرًا لأنه يجب تنفيذ الاستعلامات مقابل كل ملف على حدة، بغض النظر عن كونه ملف بيانات خام أو ملف فهرس، سيتم استرداد مجموعات n من مجموعات النتائج الأعلى k لكل ملف. يتم دمج كل مجموعات النتائج هذه للحصول على مجموعات النتائج الأعلى-ك من الجدول.</p>
-<p>يوضح المثال أدناه كيفية دمج مجموعات النتائج وتقليلها للبحث المتجه مقابل جدول يحتوي على 4 ملفات فهرس (n=2، k=3). لاحظ أن كل مجموعة نتائج تحتوي على عمودين. يمثل العمود الأيسر معرف المتجه ويمثل العمود الأيمن المسافة الإقليدية.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/queryschedule.png" alt="queryschedule" class="doc-image" id="queryschedule" />
+    <span>queryschedule</span>
+  </span>
+</p>
+<p><strong>(6) Result Reducer</strong></p>
+<p>There are 2 key parameters related to vector search: one is ’n’ which means n number of target vectors; another is ‘k’ meaning the top k most similar vectors. The search results are actually n sets of KVP (key-value pairs), each having k pairs of key-value. As queries need to be executed against each individual file, no matter it is raw data file or index file, n sets of top-k result sets will be retrieved for each file. All these result sets are merged to get the top-k result sets of the table.</p>
+<p>Below example shows how result sets are merged and reduced for the vector search against a table with 4 index files (n=2, k=3). Note that each result set has 2 columns. The left column represents the vector id and the right column represents the Euclidean distance.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png" alt="result" class="doc-image" id="result" />
-   </span> <span class="img-wrapper"> <span>النتيجة</span> </span></p>
-<p><strong>(7) التحسين المستقبلي</strong></p>
-<p>فيما يلي بعض الأفكار حول التحسينات الممكنة لإدارة البيانات.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/data_manage/resultreduce.png" alt="result" class="doc-image" id="result" />
+    <span>result</span>
+  </span>
+</p>
+<p><strong>(7) Future Optimization</strong></p>
+<p>The following are some thoughts on possible optimizations of data management.</p>
 <ul>
-<li>ماذا لو كان من الممكن أيضًا الاستعلام عن البيانات الموجودة في المخزن المؤقت غير القابل للتغيير أو حتى المخزن المؤقت القابل للتغيير على الفور؟ في الوقت الحالي، لا يمكن الاستعلام عن البيانات الموجودة في المخزن المؤقت غير القابل للتغيير حتى يتم كتابتها على القرص. يهتم بعض المستخدمين أكثر بالوصول الفوري للبيانات بعد الإدراج.</li>
-<li>توفير وظيفة تقسيم الجداول التي تسمح للمستخدم بتقسيم الجداول الكبيرة جدًا إلى أقسام أصغر، وتنفيذ البحث المتجه مقابل قسم معين.</li>
-<li>إضافة بعض السمات إلى المتجهات التي يمكن تصفيتها. على سبيل المثال، يريد بعض المستخدمين البحث فقط بين المتجهات ذات سمات معينة. مطلوب استرداد سمات المتجهات وحتى المتجهات الخام. أحد الأساليب الممكنة هو استخدام قاعدة بيانات KV مثل RocksDB.</li>
-<li>توفير وظيفة ترحيل البيانات التي تتيح الترحيل التلقائي للبيانات القديمة إلى مساحة تخزين أخرى. بالنسبة لبعض السيناريوهات التي تتدفق فيها البيانات طوال الوقت، قد تكون البيانات قديمة. وبما أن بعض المستخدمين لا يهتمون وينفذون عمليات البحث إلا على بيانات الشهر الأخير، فإن البيانات القديمة تصبح أقل فائدة لكنها تستهلك مساحة كبيرة على القرص. تساعد آلية ترحيل البيانات على تحرير مساحة القرص للبيانات الجديدة.</li>
+<li>What if the data in immutable buffer or even mutable buffer can also be instantly queried? Currently, the data in immutable buffer cannot be queried, not until they are written to disk. Some users are more interested in instantaneous access of data after insertion.</li>
+<li>Provide table partitioning functionality that allows user to divide very large tables into smaller partitions, and execute vector search against a given partition.</li>
+<li>Add to vectors some attributes which can be filtered. For example, some users only want to search among the vectors with certain attributes. It is required to retrieve vector attributes and even raw vectors. One possible approach is to use a KV database such as RocksDB.</li>
+<li>Provide data migration functionality that enables automatic migration of outdated data to other storage space. For some scenarios where data flows in all the time, data might be aging. As some users only care about and execute searches against the data of the most recent month, the older data become less useful yet they consume much disk space. A data migration mechanism helps free up disk space for new data.</li>
 </ul>
-<h2 id="Summary" class="common-anchor-header">الملخص<button data-href="#Summary" class="anchor-icon" translate="no">
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -158,8 +184,8 @@ origin: null
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تقدم هذه المقالة بشكل أساسي استراتيجية إدارة البيانات في ملفوس. المزيد من المقالات حول النشر الموزع في Milvus، واختيار طرق الفهرسة المتجهة وجدولة الاستعلام ستصدر قريبًا. ابقوا معنا!</p>
-<h2 id="Related-blogs" class="common-anchor-header">المدونات ذات الصلة<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+    </button></h2><p>This article mainly introduces the data management strategy in Milvus. More articles about Milvus distributed deployment, selection of vector indexing methods and query scheduler will be coming soon. Stay tuned!</p>
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,6 +201,6 @@ origin: null
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">إدارة البيانات الوصفية في ميلفوس (1): كيفية عرض البيانات الوصفية</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d">إدارة البيانات الوصفية لميلفوس ميتاداتا (2): الحقول في جدول البيانات الوصفية</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus Metadata Management (1): How to View Metadata</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-2-fields-in-the-metadata-table-3bf0d296ca6d">Milvus Metadata Management (2): Fields in the Metadata Table</a></li>
 </ul>
